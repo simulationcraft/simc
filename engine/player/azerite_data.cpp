@@ -3986,15 +3986,10 @@ void vision_of_perfection(special_effect_t& effect)
     }
   };
 
-  // TODO: What's the real driver and where is the RPPM?
-  // - R1 Major Base doesn't have it.
-  // - R2 Major Base doesn't have it but Upgrade has it at 1 rppm
-  // - R3 Major Base doesn't have it and Upgrade doesn't exist
-  // - R4 Major Base doesn't have it but Upgrade has it at 1 rppm
-  // Assume R2 Major Upgrade  for now and hardcode proc_flag_ & ppm_
+  // PLACEHOLDER: until rppm spells get whitelisted in
   effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_HEAL | PF_NONE_SPELL
                      | PF_MAGIC_HEAL | PF_MAGIC_SPELL | PF_PERIODIC | PF_TRAP_TRIGGERED;
-  effect.ppm_ = -1.0 * (1.0 + effect.player->vision_of_perfection_rppm_mod());
+  effect.ppm_ = -0.85 * (1.0 + effect.player->vision_of_perfection_rppm_mod());
 
   if (essence.rank() >= 3)
   {
@@ -4146,6 +4141,27 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
   }
 
   return nullptr;
+}
+
+/**
+ * 8.2 Vision of Perfection minor essence CDR function
+ *
+ * Tooltip formula reads ((<effect#1> + 2896) / 100)% reduction, minimum 10%, maximum 25%,
+ * where <effect#1> is a large negative value.
+ */
+double vision_of_perfection_cdr( azerite_essence_t essence )
+{
+  if ( essence.enabled() )
+  {
+    // Formula from tooltip
+    double cdr = ( essence.spell( 1u, essence_type::MINOR )->effectN( 1 ).average( essence.item() ) + 2896 ) / -100;
+    // Clamped to 10 .. 25
+    cdr = fmax( 10, fmin( 25, cdr ) );
+    // return the negative percent
+    return cdr / -100;
+  }
+
+  return 0.0;
 }
 
 } // Namespace azerite ends

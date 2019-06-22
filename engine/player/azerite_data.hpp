@@ -357,6 +357,9 @@ void strive_for_perfection( special_effect_t& effect );
 void vision_of_perfection( special_effect_t& effect );
 } // Namepsace azerite_essences ends
 
+// Vision of Perfection CDR helper
+double vision_of_perfection_cdr( azerite_essence_t essence );
+
 } // Namespace azerite ends
 
 #endif /* AZERITE_DATA_HPP */

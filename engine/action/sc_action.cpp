@@ -4173,25 +4173,3 @@ std::ostream& operator<<(std::ostream &os, const action_t& p)
   fmt::print(os, "action {}", p.name() );
   return os;
 }
-
-/**
- * 8.2 Vision of Perfection minor essence CDR function
- *
- * Tooltip formula reads ((<effect#1> + 2896) / 100)% reduction, minimum 10%, maximum 25%,
- * where <effect#1> is a large negative value.
- * Override in class modules as necessary if classes / specs / spells get one-off adjustments
- */
-double action_t::vision_of_perfection_cdr( azerite_essence_t essence )
-{
-  if ( essence.enabled() )
-  {
-    // Formula from tooltip
-    double cdr = ( essence.spell( 1u, essence_type::MINOR )->effectN( 1 ).average( essence.item() ) + 2896 ) / -100;
-    // Clamped to 10 .. 25
-    cdr = fmax( 10, fmin( 25, cdr ) );
-    // return the negative percent
-    return cdr / -100;
-  }
-
-  return 0.0;
-}

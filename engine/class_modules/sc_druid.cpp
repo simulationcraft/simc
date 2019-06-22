@@ -5371,7 +5371,7 @@ struct celestial_alignment_t : public druid_spell_t
     precombat()
   {
     harmful = false;
-    base_recharge_multiplier *= 1.0 + vision_of_perfection_cdr(player->essences.vision_of_perfection);
+    base_recharge_multiplier *= 1.0 + azerite::vision_of_perfection_cdr(player->essences.vision_of_perfection);
   }
 
   void init_finished() override
@@ -5797,7 +5797,7 @@ struct incarnation_t : public druid_spell_t
     {
     case DRUID_BALANCE:
       spec_buff = p -> buff.incarnation_moonkin;
-      base_recharge_multiplier *= 1.0 + vision_of_perfection_cdr(p->essences.vision_of_perfection);
+      base_recharge_multiplier *= 1.0 + azerite::vision_of_perfection_cdr(p->essences.vision_of_perfection);
       break;
     case DRUID_FERAL:
       spec_buff = p -> buff.incarnation_cat;
@@ -9925,10 +9925,9 @@ const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_s
 
 void druid_t::vision_of_perfection_proc()
 {
-  auto essence = find_azerite_essence( "Vision of Perfection" );
-  double duration_mul = essence.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
-  if ( essence.rank() >= 2)
-    duration_mul += essence.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
+  double duration_mul = essences.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
+  if ( essences.vision_of_perfection.rank() >= 2)
+    duration_mul += essences.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
 
   if (specialization() == DRUID_BALANCE)
   {

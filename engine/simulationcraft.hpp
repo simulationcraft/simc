@@ -5552,8 +5552,6 @@ public:
   virtual double recharge_multiplier() const
   { return base_recharge_multiplier; }
 
-  virtual double vision_of_perfection_cdr( azerite_essence_t essence );
-
   /** Cooldown base duration for action based cooldowns. */
   virtual timespan_t cooldown_base_duration( const cooldown_t& cd ) const
   { return cd.duration; }
