@@ -511,7 +511,6 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* wasting_infection;
     buff_t* everchill;
     buff_t* choking_brine;
-//    buff_t* blood_of_the_enemy; // debuff from blood of the enemy major essence
   } debuff;
 
   struct atd_dot_t
@@ -4476,6 +4475,10 @@ public:
   virtual void adjust_global_cooldown( haste_type_e haste_type );
   virtual void adjust_auto_attack( haste_type_e haste_type );
 
+  // 8.2 Vision of Perfection essence
+  virtual void vision_of_perfection_proc();
+  virtual double vision_of_perfection_rppm_mod();
+
 private:
   void do_update_movement( double yards );
   void check_resource_callback_deactivation();
@@ -5548,6 +5551,8 @@ public:
 
   virtual double recharge_multiplier() const
   { return base_recharge_multiplier; }
+
+  virtual double vision_of_perfection_cdr( azerite_essence_t essence );
 
   /** Cooldown base duration for action based cooldowns. */
   virtual timespan_t cooldown_base_duration( const cooldown_t& cd ) const

@@ -9612,6 +9612,28 @@ azerite_essence_t player_t::find_azerite_essence( const std::string& name, bool 
 }
 
 /**
+ * 8.2 Vision of Perfection proc handler
+ *
+ * Carries out class & spec-specific code when Vision of Perfection Procs.
+ * Overridden in class modules.
+ */
+void player_t::vision_of_perfection_proc()
+{
+  return;
+}
+
+/**
+ * 8.2 Vision of Perfection RPPM modifier
+ *
+ * Returns percent change to base RPPM, to be overriden per class / spec if specific
+ * hotfixes occur. For ex: a return value of -0.5 results in rppm reduction of 50%,
+ * or from the assumed 1.0 rppm to 0.5 rppm. A return of 2.0 results in 3.0 rppm.
+ */
+double player_t::vision_of_perfection_rppm_mod()
+{
+  return 0.0;
+}
+/**
  * Tries to find spell data by name.
  *
  * It does this by going through various spell lists in following order:
