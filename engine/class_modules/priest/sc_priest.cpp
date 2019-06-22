@@ -654,8 +654,10 @@ void priest_t::create_gains()
   gains.insanity_vampiric_touch_onhit          = get_gain( "Insanity Gained from Vampiric Touch Casts" );
   gains.insanity_void_bolt                     = get_gain( "Insanity Gained from Void Bolt" );
   gains.insanity_void_torrent                  = get_gain( "Insanity Gained from Void Torrent" );
+  gains.insanity_dark_ascension                = get_gain( "Insanity Gained from Dark Ascension" );
   gains.vampiric_touch_health                  = get_gain( "Health from Vampiric Touch Ticks" );
   gains.insanity_dark_void                     = get_gain( "Insanity Gained from Dark Void" );
+  gains.insanity_lucid_dreams                  = get_gain( "Insanity Gained from Lucid Dreams" );
 }
 
 /** Construct priest procs */
@@ -970,6 +972,38 @@ void priest_t::create_pets()
   }
 }
 
+  void priest_t::trigger_lucid_dreams( double cost )
+{
+  if ( !specs.lucid_dreams )
+    return;
+
+  double multiplier  = specs.lucid_dreams->effectN( 1 ).percent();
+  double proc_chance = ( specialization() == PRIEST_SHADOW )
+                           ? options.priest_lucid_dreams_proc_chance_shadow
+                           : ( specialization() == PRIEST_HOLY ) ? options.priest_lucid_dreams_proc_chance_holy
+                                                                 : options.priest_lucid_dreams_proc_chance_disc;
+
+  if ( rng().roll( proc_chance ) )
+  {
+    double current_drain;
+    switch ( specialization() )
+    {
+      case PRIEST_SHADOW:
+        current_drain = insanity.insanity_drain_per_second();
+        generate_insanity( current_drain * multiplier, gains.insanity_lucid_dreams, nullptr );
+        break;
+      case PRIEST_HOLY:
+      case PRIEST_DISCIPLINE:
+        resource_gain( RESOURCE_MANA, multiplier * cost );
+        break;
+      default:
+        break;
+    }
+
+    player_t::buffs.lucid_dreams->trigger();
+  }
+}
+
 void priest_t::init_base_stats()
 {
   base_t::init_base_stats();
@@ -1020,6 +1054,11 @@ void priest_t::init_spells()
   mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );
   mastery_spells.echo_of_light  = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.madness        = find_mastery_spell( PRIEST_SHADOW );
+
+  auto essence = find_azerite_essence( "Memory of Lucid Dreams" );
+
+  if ( essence.enabled() )
+    specs.lucid_dreams = essence.spell( 1u, essence_type::MINOR );
 }
 
 void priest_t::create_buffs()
@@ -1288,6 +1327,9 @@ void priest_t::create_options()
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
   add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
   add_option( opt_int( "priest_set_voidform_duration", options.priest_set_voidform_duration ) );
+  add_option( opt_float( "priest_lucid_dreams_proc_chance_disc", options.priest_lucid_dreams_proc_chance_disc ) );
+  add_option( opt_float( "priest_lucid_dreams_proc_chance_holy", options.priest_lucid_dreams_proc_chance_holy ) );
+  add_option( opt_float( "priest_lucid_dreams_proc_chance_shadow", options.priest_lucid_dreams_proc_chance_shadow ) );
 }
 
 std::string priest_t::create_profile( save_e type )

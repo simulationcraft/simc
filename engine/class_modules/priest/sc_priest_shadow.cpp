@@ -1263,6 +1263,10 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
       // For some reason, as a shadow priest as long as you are not sitting you gain stacks of the VERS buffs
       // I think it is ties to resource gen, but you effectively get 100% uptime
       expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, priest );
+
+      // Memory of Lucid Dreams minor effect tries to give instanity back every 1 second, lining up with 
+      // the time Drain increases.
+      priest->trigger_lucid_dreams( 0.0 );
     }
   };
 

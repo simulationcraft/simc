@@ -259,6 +259,8 @@ public:
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
     const spell_data_t* shadow_priest;
+
+    const spell_data_t* lucid_dreams;
   } specs;
 
   // Mastery Spells
@@ -324,6 +326,7 @@ public:
     propagate_const<gain_t*> insanity_dark_ascension;
     propagate_const<gain_t*> insanity_death_throes;
     propagate_const<gain_t*> power_of_the_dark_side;
+    propagate_const<gain_t*> insanity_lucid_dreams;
   } gains;
 
   // Benefits
@@ -342,8 +345,6 @@ public:
     propagate_const<proc_t*> shadowy_apparition_overflow;
     propagate_const<proc_t*> surge_of_light;
     propagate_const<proc_t*> surge_of_light_overflow;
-    propagate_const<proc_t*> void_eruption_has_dots;
-    propagate_const<proc_t*> void_eruption_no_dots;
     propagate_const<proc_t*> holy_fire_cd;
     propagate_const<proc_t*> power_of_the_dark_side;
     propagate_const<proc_t*> power_of_the_dark_side_overflow;
@@ -376,10 +377,13 @@ public:
   // Options
   struct
   {
-    bool autoUnshift                 = true;  // Shift automatically out of stance/form
-    bool priest_fixed_time           = true;
-    bool priest_ignore_healing       = false;  // Remove Healing calculation codes
-    int priest_set_voidform_duration = 0;      // Voidform will always have this duration
+    bool autoUnshift                       = true;  // Shift automatically out of stance/form
+    bool priest_fixed_time                 = true;
+    bool priest_ignore_healing             = false;  // Remove Healing calculation codes
+    int priest_set_voidform_duration       = 0;      // Voidform will always have this duration
+    double priest_lucid_dreams_proc_chance_disc   = 0.08;
+    double priest_lucid_dreams_proc_chance_holy   = 0.08;
+    double priest_lucid_dreams_proc_chance_shadow = 0.15;
   } options;
 
   // Azerite
@@ -490,6 +494,7 @@ private:
 
 public:
   void generate_insanity( double num_amount, gain_t* g, action_t* action );
+  void trigger_lucid_dreams( double cost );
 
   /**
    * Insanity tracking
@@ -1271,6 +1276,14 @@ struct priest_spell_t : public priest_action_t<spell_t>
         pet->resource_gain( RESOURCE_HEALTH, amount, pet->gains.vampiric_embrace );
       }
     }
+  }
+
+  void consume_resource() override
+  {
+    spell_t::consume_resource();
+
+    if ( priest().specialization() != PRIEST_SHADOW )
+      priest().trigger_lucid_dreams( last_resource_cost );
   }
 };
 
