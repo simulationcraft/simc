@@ -342,7 +342,7 @@ public:
 
   // Miscellaneous
   double distance_from_rune;
-  const spell_data_t* lucid_dreams;
+  double lucid_dreams_refund;
 
   // Data collection
   auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
@@ -763,6 +763,7 @@ public:
   void      trigger_arcane_charge( int stacks = 1 );
   void      trigger_leyshock( unsigned id, const action_state_t* s, leyshock_trigger_e trigger_type );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type );
+  void      trigger_lucid_dreams( double cost );
 
   void apl_precombat();
   void apl_arcane();
@@ -1486,48 +1487,12 @@ public:
     p()->trigger_leyshock( id, s, mage_t::LEYSHOCK_IMPACT );
   }
 
-  void trigger_lucid_dreams()
-  {
-    if ( !p()->lucid_dreams )
-      return;
-
-    if ( current_resource() != RESOURCE_MANA )
-      return;
-
-    if ( last_resource_cost <= 0.0 )
-      return;
-
-    double multiplier = p()->lucid_dreams->effectN( 1 ).percent();
-    double proc_chance =
-      ( p()->specialization() == MAGE_ARCANE ) ? p()->options.lucid_dreams_proc_chance_arcane :
-      ( p()->specialization() == MAGE_FIRE   ) ? p()->options.lucid_dreams_proc_chance_fire :
-                                                 p()->options.lucid_dreams_proc_chance_frost;
-
-    if ( rng().roll( proc_chance ) )
-    {
-      switch ( p()->specialization() )
-      {
-        case MAGE_ARCANE:
-          p()->resource_gain( RESOURCE_MANA, multiplier * last_resource_cost, p()->gains.lucid_dreams );
-          break;
-        case MAGE_FIRE:
-          p()->cooldowns.fire_blast->adjust( -multiplier * cooldown_t::cooldown_duration( p()->cooldowns.fire_blast ) );
-          break;
-        case MAGE_FROST:
-          p()->trigger_icicle_gain( target, p()->icicle.lucid_dreams );
-          break;
-        default:
-          break;
-      }
-
-      p()->player_t::buffs.lucid_dreams->trigger();
-    }
-  }
-
   void consume_resource() override
   {
     spell_t::consume_resource();
-    trigger_lucid_dreams();
+
+    if ( current_resource() == RESOURCE_MANA )
+      p()->trigger_lucid_dreams( last_resource_cost );
   }
 };
 
@@ -4807,7 +4772,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_bomb_target(),
   last_frostbolt_target(),
   distance_from_rune(),
-  lucid_dreams(),
+  lucid_dreams_refund(),
   action(),
   benefits(),
   buffs(),
@@ -5241,9 +5206,7 @@ void mage_t::init_spells()
   azerite.tunnel_of_ice            = find_azerite_spell( "Tunnel of Ice"            );
   azerite.whiteout                 = find_azerite_spell( "Whiteout"                 );
 
-  auto essence = find_azerite_essence( "Memory of Lucid Dreams" );
-  if ( essence.enabled() )
-    lucid_dreams = essence.spell( 1u, essence_type::MINOR );
+  lucid_dreams_refund = find_azerite_essence( "Memory of Lucid Dreams" ).spell( 1u, essence_type::MINOR )->effectN( 1 ).percent();
 }
 
 void mage_t::init_base_stats()
@@ -6621,6 +6584,40 @@ void mage_t::trigger_leyshock( unsigned id, const action_state_t*, leyshock_trig
   }
 
   expansion::bfa::trigger_leyshocks_grand_compilation( buff, this );
+}
+
+void mage_t::trigger_lucid_dreams( double cost )
+{
+  if ( lucid_dreams_refund <= 0.0 )
+    return;
+
+  if ( cost <= 0.0 )
+    return;
+
+  double proc_chance =
+    ( specialization() == MAGE_ARCANE ) ? options.lucid_dreams_proc_chance_arcane :
+    ( specialization() == MAGE_FIRE   ) ? options.lucid_dreams_proc_chance_fire :
+                                          options.lucid_dreams_proc_chance_frost;
+
+  if ( rng().roll( proc_chance ) )
+  {
+    switch ( specialization() )
+    {
+      case MAGE_ARCANE:
+        resource_gain( RESOURCE_MANA, lucid_dreams_refund * cost, gains.lucid_dreams );
+        break;
+      case MAGE_FIRE:
+        cooldowns.fire_blast->adjust( -lucid_dreams_refund * cooldown_t::cooldown_duration( cooldowns.fire_blast ) );
+        break;
+      case MAGE_FROST:
+        trigger_icicle_gain( target, icicle.lucid_dreams );
+        break;
+      default:
+        break;
+    }
+
+    player_t::buffs.lucid_dreams->trigger();
+  }
 }
 
 /* Report Extension Class
