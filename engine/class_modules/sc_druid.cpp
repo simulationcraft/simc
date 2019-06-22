@@ -752,6 +752,7 @@ public:
     caster_melee_attack( nullptr ),
     cat_melee_attack( nullptr ),
     bear_melee_attack( nullptr ),
+	lucid_dreams( spell_data_t::not_found() ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
@@ -1427,6 +1428,7 @@ public:
   bool hasted_gcd;
   double gore_chance;
   bool triggers_galactic_guardian;
+  double lucid_dreams_multiplier;
 
   druid_action_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
@@ -1434,7 +1436,9 @@ public:
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
     rend_and_tear( ab::data().affected_by( player -> spec.thrash_bear_dot -> effectN( 2 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) ),
-    gore_chance( player -> spec.gore -> effectN( 1 ).percent() ), triggers_galactic_guardian( true )
+    gore_chance( player -> spec.gore -> effectN( 1 ).percent() ), 
+	triggers_galactic_guardian( true ),
+	lucid_dreams_multiplier(p()->lucid_dreams->effectN(1).percent())
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1560,13 +1564,12 @@ public:
 
   void trigger_lucid_dreams()
   {
-    if ( !p()->lucid_dreams )
+    if ( !p()->lucid_dreams->ok() )
       return;
 
     if ( ab::last_resource_cost <= 0.0 )
       return;
 
-    double multiplier  = p()->lucid_dreams->effectN( 1 ).percent();
     double proc_chance = ( p()->specialization() == DRUID_BALANCE )
                              ? p()->lucid_dreams_proc_chance_balance
                              : ( p()->specialization() == DRUID_FERAL ) ? p()->lucid_dreams_proc_chance_feral : 0.0;
@@ -1576,10 +1579,10 @@ public:
       switch ( p()->specialization() )
       {
         case DRUID_BALANCE:
-          p()->resource_gain( RESOURCE_ASTRAL_POWER, multiplier * ab::last_resource_cost, p()->gain.lucid_dreams );
+          p()->resource_gain( RESOURCE_ASTRAL_POWER, lucid_dreams_multiplier * ab::last_resource_cost, p()->gain.lucid_dreams );
           break;
         case DRUID_FERAL:
-          p()->resource_gain( RESOURCE_ENERGY, multiplier * ab::last_resource_cost, p()->gain.lucid_dreams );
+          p()->resource_gain( RESOURCE_ENERGY, lucid_dreams_multiplier * ab::last_resource_cost, p()->gain.lucid_dreams );
           break;
         default:
           break;
@@ -7480,7 +7483,7 @@ void druid_t::init_spells()
   //Azerite essences
   auto essence = find_azerite_essence( "Memory of Lucid Dreams" );
   if ( essence.enabled() )
-    lucid_dreams = essence.spell( 1u, essence_type::MINOR );
+	  lucid_dreams = essence.spell( 1u, essence_type::MINOR );
 
   // Affinities =============================================================
 
