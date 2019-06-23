@@ -1253,7 +1253,7 @@ class SpellDataGenerator(DataGenerator):
          # The Unbound Force Azerite Essence damage spell
          298453,
          # Essence of the Focusing Iris major damage spell
-         295374,
+         295374, 295338,
          # Spell cast by summon from Condensed Life-Force major power
          295856,
          # 8.2 Famine Evaluator And Snack Table buffs
