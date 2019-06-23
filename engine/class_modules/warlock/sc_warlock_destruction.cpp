@@ -815,6 +815,8 @@ namespace warlock {
         infernal_awakening = new infernal_awakening_t(p);
         infernal_awakening->stats = stats;
         radius = infernal_awakening->radius;
+        if ( p->dbc.ptr && p->azerite.crashing_chaos.ok() )
+          cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
       }
 
       virtual void execute() override
