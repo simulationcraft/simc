@@ -206,6 +206,7 @@ public:
     gain_t* valarjar_berserking;
     gain_t* lord_of_war;
     gain_t* simmering_rage;
+    gain_t* memory_of_lucid_dreams;
   } gain;
 
   // Spells
@@ -444,7 +445,21 @@ public:
     azerite_power_t bloodcraze;
     azerite_power_t cold_steel_hot_blood;
     azerite_power_t unbridled_ferocity;
+
+    // Essences
+    azerite_essence_t memory_of_lucid_dreams;
   } azerite;
+
+  struct azerite_spells_t
+  {
+    // General
+    const spell_data_t* memory_of_lucid_dreams;
+  } azerite_spells;
+
+  struct warrior_options_t
+  {
+    double memory_of_lucid_dreams_proc_chance = 0.15;
+  } options;
 
   // Default consumables
   std::string default_potion() const override;
@@ -941,6 +956,27 @@ public:
     if ( ab::result_is_miss( ab::execute_state->result ) && rage > 0 && !ab::aoe )
     {
       p()->resource_gain( RESOURCE_RAGE, rage * 0.8, p()->gain.avoided_attacks );
+    }
+
+    // Memory of Lucid Dreams Essence
+    if ( p()->azerite.memory_of_lucid_dreams.enabled() && ab::last_resource_cost > 0 )
+    {
+      resource_e cr = ab::current_resource();
+      if ( cr == RESOURCE_RAGE )
+      {
+        if ( p()->rng().roll( p()->options.memory_of_lucid_dreams_proc_chance ) )
+        {
+          // Gains are rounded up to the nearest whole value, which can be seen with the Lucid Dreams active up
+          const double amount =
+              ceil( ab::last_resource_cost * p()->azerite_spells.memory_of_lucid_dreams->effectN( 1 ).percent() );
+          p()->resource_gain( cr, amount, p()->gain.memory_of_lucid_dreams );
+        }
+
+        if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
+        {
+          p()->buffs.lucid_dreams->trigger();
+        }
+      }
     }
   }
 
@@ -4815,6 +4851,9 @@ void warrior_t::init_spells()
   azerite.bloodcraze        = find_azerite_spell( "Bloodcraze" );
   azerite.cold_steel_hot_blood   = find_azerite_spell( "Cold Steel, Hot Blood" );
   azerite.unbridled_ferocity     = find_azerite_spell( "Unbridled Ferocity" );
+  // Essences
+  azerite.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
+  azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
 
   // Generic spells
   spell.battle_shout          = find_class_spell( "Battle Shout" );
@@ -5844,6 +5883,9 @@ void warrior_t::init_gains()
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
   gain.simmering_rage         = get_gain( "simmering_rage" );
   gain.execute_refund         = get_gain( "execute_refund" );
+
+  // Azerite
+  gain.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams_proc" );
 }
 
 // warrior_t::init_position ====================================================
@@ -6469,6 +6511,11 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
       a *= 1.0 + spec.recklessness->effectN( 4 ).percent();
   }
+  // Memory of Lucid Dreams
+  if ( buffs.memory_of_lucid_dreams->up() )
+  {
+    a *= 1.0 + buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+  }
   return player_t::resource_gain( r, a, g, action );
 }
 
@@ -6686,6 +6733,7 @@ void warrior_t::create_options()
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
   add_option( opt_int( "into_the_fray_friends", into_the_fray_friends ) );
   add_option( opt_int( "never_surrender_percentage", never_surrender_percentage ) );
+  add_option( opt_float( "memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
 }
 
 // warrior_t::create_profile ================================================
