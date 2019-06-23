@@ -306,6 +306,9 @@ public:
     const spell_data_t* last_resort;        // NYI
     const spell_data_t* void_reaver;
     const spell_data_t* soul_barrier;
+
+    // PvP Talents
+    const spell_data_t* demonic_origins;
   } talent;
 
   // Specialization Spells
@@ -361,13 +364,18 @@ public:
     azerite_power_t thirsting_blades;
 
     // General
+    azerite_essence_t conflict_and_strife;
     azerite_essence_t memory_of_lucid_dreams;
+    azerite_essence_t vision_of_perfection;
   } azerite;
 
   struct azerite_spells_t
   {
     // General
     const spell_data_t* memory_of_lucid_dreams;
+    const spell_data_t* vision_of_perfection_1;
+    const spell_data_t* vision_of_perfection_2;
+
   } azerite_spells;
 
   // Mastery Spells
@@ -530,6 +538,7 @@ public:
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
+  void vision_of_perfection_proc() override;
 
   // custom demon_hunter_t init functions
 private:
@@ -2421,6 +2430,12 @@ struct metamorphosis_t : public demon_hunter_spell_t
       min_gcd                 = timespan_t::from_seconds( 1.0 );  // Cannot use skills during travel time
       travel_speed            = 1.0;                              // Allows use in the precombat list
 
+      // Conflict and Strife -> Demonic Origins PvP Talent
+      if ( p->azerite.conflict_and_strife.enabled() && p->talent.demonic_origins->ok() )
+      {
+        cooldown->duration += p->talent.demonic_origins->effectN( 1 ).time_value();
+      }
+
       impact_action = new metamorphosis_impact_t( p );
       // Don't assign the stats here because we don't want Meta to show up in the DPET chart
     }
@@ -3856,6 +3871,12 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       tick_behavior = buff_tick_behavior::NONE;
       add_invalidate( CACHE_HASTE );
       add_invalidate( CACHE_LEECH );
+
+      // Conflict and Strife -> Demonic Origins PvP Talent
+      if ( p->azerite.conflict_and_strife.enabled() && p->talent.demonic_origins->ok() )
+      {
+        buff_duration += p->talent.demonic_origins->effectN( 2 ).time_value();
+      }
     }
     else // DEMON_HUNTER_VENGEANCE
     {
@@ -4840,11 +4861,18 @@ void demon_hunter_t::init_spells()
   talent.void_reaver          = find_talent_spell( "Void Reaver" );
   talent.soul_barrier         = find_talent_spell( "Soul Barrier" );
 
+  // PvP Talents
+  talent.demonic_origins      = find_spell( 235893, DEMON_HUNTER_HAVOC );
+
   // Azerite ================================================================
 
   // General
+  azerite.conflict_and_strife           = find_azerite_essence( "Conflict and Strife" );
   azerite.memory_of_lucid_dreams        = find_azerite_essence( "Memory of Lucid Dreams" );
   azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  azerite.vision_of_perfection          = find_azerite_essence( "Vision of Perfection" );
+  azerite_spells.vision_of_perfection_1 = azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR );
+  azerite_spells.vision_of_perfection_2 = azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
   
   // Havoc
   azerite.chaotic_transformation  = find_azerite_spell( "Chaotic Transformation" );
@@ -4935,6 +4963,24 @@ role_e demon_hunter_t::primary_role() const
       return ROLE_TANK;
     default:
       return ROLE_NONE;
+  }
+}
+
+// demon_hunter_t::vision_of_perfection_proc ================================
+
+void demon_hunter_t::vision_of_perfection_proc()
+{
+  const double percentage = azerite_spells.vision_of_perfection_1->effectN( 1 ).percent() + 
+                            azerite_spells.vision_of_perfection_2->effectN( 1 ).percent();
+  const timespan_t duration = buff.metamorphosis->data().duration() * percentage;
+  
+  if ( buff.metamorphosis->check() )
+  {
+    buff.metamorphosis->extend_duration( this, duration );
+  }
+  else
+  {
+    buff.metamorphosis->trigger( 1, buff.metamorphosis->default_value, -1.0, duration );
   }
 }
 
