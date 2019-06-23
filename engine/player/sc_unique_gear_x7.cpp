@@ -92,6 +92,7 @@ namespace enchants
 
   /* 8.2 */
   void machinists_brilliance( special_effect_t& );
+  void force_multiplier( special_effect_t& );
 }
 
 namespace items
@@ -432,6 +433,58 @@ custom_cb_t enchants::weapon_navigation( unsigned buff_id )
 
 // Machinist's Brilliance ===================================================
 
+namespace
+{
+// Simple functor to trigger the highest buff for Machinist's Brilliance and Force Multiplier
+// enchants
+struct bfa_82_enchant_functor_t
+{
+  buff_t *haste, *crit, *mastery;
+
+  bfa_82_enchant_functor_t( buff_t* h, buff_t* c, buff_t* m ) :
+    haste( h ), crit( c ), mastery( m )
+  { }
+
+  void operator()( buff_t* b, int /* old */, int new_ )
+  {
+    stat_e highest_rating = ::util::highest_stat( b->source,
+      { STAT_CRIT_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING } );
+    buff_t* selected_buff = nullptr;
+    switch ( highest_rating )
+    {
+      case STAT_CRIT_RATING:
+        selected_buff = crit;
+        break;
+      case STAT_MASTERY_RATING:
+        selected_buff = mastery;
+        break;
+      case STAT_HASTE_RATING:
+        selected_buff = haste;
+        break;
+      default:
+        break;
+    }
+
+    // Couldn't pick anything, don't trigger
+    if ( !selected_buff )
+    {
+      return;
+    }
+
+    if ( new_ == 1 )
+    {
+      selected_buff->trigger();
+    }
+    else
+    {
+      selected_buff->expire();
+    }
+  }
+};
+
+} // Anonymous namespace ends
+
+
 void enchants::machinists_brilliance( special_effect_t& effect )
 {
   auto crit = buff_t::find( effect.player, "machinists_brilliance_crit" );
@@ -452,40 +505,45 @@ void enchants::machinists_brilliance( special_effect_t& effect )
   if ( ! buff )
   {
     buff = make_buff<stat_buff_t>( effect.player, "machinists_brilliance", effect.player->find_spell( 300693 ) );
-    buff->set_stack_change_callback( [crit, haste, mastery]( buff_t* b, int, int new_ ) {
-      stat_e highest_rating = ::util::highest_stat( b->source,
-        { STAT_CRIT_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING } );
-      buff_t* selected_buff = nullptr;
-      switch ( highest_rating )
-      {
-        case STAT_CRIT_RATING:
-          selected_buff = crit;
-          break;
-        case STAT_MASTERY_RATING:
-          selected_buff = mastery;
-          break;
-        case STAT_HASTE_RATING:
-          selected_buff = haste;
-          break;
-        default:
-          break;
-      }
+    buff->set_stack_change_callback( bfa_82_enchant_functor_t( haste, crit, mastery ) );
+  }
 
-      // Couldn't pick anything, don't trigger
-      if ( !selected_buff )
-      {
-        return;
-      }
+  effect.custom_buff = buff;
 
-      if ( new_ == 1 )
-      {
-        selected_buff->trigger();
-      }
-      else
-      {
-        selected_buff->expire();
-      }
-    } );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Force Multiplier ==========================================================
+
+void enchants::force_multiplier( special_effect_t& effect )
+{
+  auto crit = buff_t::find( effect.player, "force_multiplier_crit" );
+  if ( !crit )
+  {
+    crit = make_buff<stat_buff_t>( effect.player, "force_multiplier_crit", effect.player->find_spell( 300801 ) );
+  }
+  auto haste = buff_t::find( effect.player, "force_multiplier_haste" );
+  {
+    haste = make_buff<stat_buff_t>( effect.player, "force_multiplier_haste", effect.player->find_spell( 300802 ) );
+  }
+  auto mastery = buff_t::find( effect.player, "force_multiplier_mastery" );
+  {
+    mastery = make_buff<stat_buff_t>( effect.player, "force_multiplier_mastery", effect.player->find_spell( 300809 ) );
+  }
+
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "force_multiplier" ) );
+  if ( ! buff )
+  {
+    if ( effect.player->convert_hybrid_stat( STAT_STR_AGI ) == STAT_STRENGTH )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, "force_multiplier", effect.player->find_spell( 300691 ) );
+    }
+    else
+    {
+      buff = make_buff<stat_buff_t>( effect.player, "force_multiplier", effect.player->find_spell( 300893 ) );
+    }
+
+    buff->set_stack_change_callback( bfa_82_enchant_functor_t( haste, crit, mastery ) );
   }
 
   effect.custom_buff = buff;
@@ -2985,6 +3043,8 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 265090, "265092Trigger" ); // Incendiary Ammunition
   register_special_effect( 265094, "265096Trigger" ); // Frost-Laced Ammunition
   register_special_effect( 300718, enchants::machinists_brilliance );
+  register_special_effect( 300795, enchants::force_multiplier );
+
 
   // Trinkets
   register_special_effect( 274484, items::kajafied_banana );
