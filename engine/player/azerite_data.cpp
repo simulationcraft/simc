@@ -3686,18 +3686,13 @@ struct focused_azerite_beam_tick_t : public spell_t
     aoe = -1;
     background = true;
     may_crit = true;
-
+    base_execute_time = 0_ms;
     base_dd_min = base_dd_max = td;
   }
 
   dmg_e amount_type( const action_state_t* /* s */, bool ) const override
   {
     return DMG_OVER_TIME;
-  }
-
-  timespan_t execute_time() const override
-  {
-    return 0_ms;
   }
 };
 
@@ -3848,13 +3843,12 @@ struct purifying_blast_t : public azerite_essence_major_t
   struct purifying_blast_tick_t : public spell_t
   {
     purifying_blast_tick_t( const std::string& n, player_t* p, double ta = 0 ) :
-      spell_t( n, p, p->find_spell( 295293 ) )
+      spell_t( n, p, p->find_spell( 295338 ) )
     {
       aoe = -1;
       background = ground_aoe = true;
       may_crit = true;
       base_dd_min = base_dd_max = ta;
-      school = SCHOOL_FIRE;
     }
 
     dmg_e amount_type( const action_state_t* /* s */, bool ) const override
