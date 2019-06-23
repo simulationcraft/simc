@@ -15,17 +15,10 @@
 // - Further seperate Totem Mastery buffs between the 2 specs
 //
 // Elemental
-//
-// + implemented
-// - missing
-//      Name                        ID
-//    + Ancestral Resonance         277666
-//    + Echo of the Elementals      275381
-//    + Igneous Potential           279829
-//    + Lava Shock                  273448
-//    + Natural Harmony             278697
-//    + Synapse Shock               277671
-//    + Tectonic Thunder            286949
+// Vision of Perfection Major
+// Vision of Perfection Minor
+// Memory of Lucid Dreams Major APL adjustement
+// Adding all major essence abilities to the APL
 //
 // Enhancement
 // Nothing at the moment.
@@ -305,9 +298,9 @@ public:
     pet_t* pet_storm_elemental;
 
     std::array<pet_t*, 2> guardian_fire_elemental;
-    pet_t* guardian_ember_elemental;
+    std::array<pet_t*, 3> guardian_ember_elemental;
     std::array<pet_t*, 2> guardian_storm_elemental;
-    pet_t* guardian_spark_elemental;
+    std::array<pet_t*, 3> guardian_spark_elemental;
     pet_t* guardian_earth_elemental;
 
     std::array<pet_t*, 2> spirit_wolves;
@@ -569,7 +562,7 @@ public:
 
   struct
   {
-    azerite_essence_t memory_of_lucid_dreams;  // Mewmory of lucid dreams minor
+    azerite_essence_t memory_of_lucid_dreams;  // Memory of Lucid Dreams minor
   } azerite_essence;
 
   // Misc Spells
@@ -2453,7 +2446,7 @@ struct fire_elemental_t : public primal_elemental_t
 
     if ( o()->azerite.echo_of_the_elementals.ok() )
     {
-      o()->pet.guardian_ember_elemental->summon( o()->find_spell( 275385 )->duration() );
+      pet::summon( o()->pet.guardian_ember_elemental, o()->find_spell( 275385 )->duration() );
     }
   }
 };
@@ -2635,7 +2628,7 @@ struct storm_elemental_t : public primal_elemental_t
     o()->buff.wind_gust->expire();
     if ( o()->azerite.echo_of_the_elementals.ok() )
     {
-      o()->pet.guardian_spark_elemental->summon( o()->find_spell( 275386 )->duration() );
+      pet::summon( o()->pet.guardian_spark_elemental, o()->find_spell( 275386 )->duration() );
     }
   }
 };
@@ -4017,7 +4010,7 @@ struct ember_elemental_t : public shaman_spell_t
 
     if ( p()->azerite.echo_of_the_elementals.ok() )
     {
-      p()->pet.guardian_ember_elemental->summon( base_spell->duration() );
+      pet::summon( p()->pet.guardian_ember_elemental, base_spell->duration() );
     }
   }
 };
@@ -4069,7 +4062,7 @@ struct spark_elemental_t : public shaman_spell_t
 
     if ( p()->azerite.echo_of_the_elementals.ok() )
     {
-      p()->pet.guardian_spark_elemental->summon( base_spell->duration() );
+      pet::summon( p()->pet.guardian_spark_elemental, base_spell->duration() );
     }
   }
 };
@@ -6744,9 +6737,16 @@ void shaman_t::create_pets()
   if ( azerite.echo_of_the_elementals.ok() )
   {
     if ( !talent.storm_elemental->ok() )
-      pet.guardian_ember_elemental = create_pet( "ember_elemental" );
+      for ( size_t i = 0; i < pet.guardian_ember_elemental.size(); ++i )
+      {
+        pet.guardian_ember_elemental[ i ] = new pet::ember_elemental_t( this, true );
+      }
+
     if ( talent.storm_elemental->ok() )
-      pet.guardian_spark_elemental = create_pet( "spark_elemental" );
+      for ( size_t i = 0; i < pet.guardian_spark_elemental.size(); ++i )
+      {
+        pet.guardian_spark_elemental[ i ] = new pet::spark_elemental_t( this, true );
+      }
   }
 
   if ( talent.liquid_magma_totem->ok() && find_action( "liquid_magma_totem" ) )
