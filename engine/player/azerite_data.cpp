@@ -3406,7 +3406,7 @@ struct concentrated_flame_t : public azerite_essence_major_t
     double multiplier;
 
     missile_t( player_t* p, const azerite_essence_t& essence ) :
-      proc_spell_t( "concentrated_flame", p, p->find_spell( 295374 ), essence.item() ),
+      proc_spell_t( "concentrated_flame_missile", p, p->find_spell( 295374 ), essence.item() ),
       cast_number( 1u ), multiplier( essence.spell_ref( 1u ).effectN( 3 ).percent() )
     {
       // Base damage is defined in the minor spell for some reason
