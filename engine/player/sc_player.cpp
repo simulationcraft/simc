@@ -3810,6 +3810,12 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + buffs.demon_damage_buff->data().effectN( 2 ).percent();
   }
 
+  auto td = get_target_data( target );
+  if ( td )
+  {
+    m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
+  }
+
   return m;
 }
 

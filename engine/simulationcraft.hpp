@@ -5669,29 +5669,21 @@ public:
 
   virtual double composite_target_crit_chance( player_t* target ) const
   {
+    double tc = 0.0;
+
     // Essence: Blood of the Enemy Major debuff
     actor_target_data_t* td = player -> get_target_data( target );
-
     if ( td )
     {
-      return td -> debuff.blood_of_the_enemy -> check_value();
+      tc += td -> debuff.blood_of_the_enemy -> check_value();
     }
 
-    return 0.0;
+    return tc;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
   {
-    // Essence: Condensed Life-Force debuff
-    actor_target_data_t* td = player -> get_target_data( target );
-    double ctm = player -> composite_player_target_multiplier( target, get_school() );
-
-    if ( td )
-    {
-      ctm *= 1.0 + td -> debuff.condensed_lifeforce -> check_value();
-    }
-
-    return ctm;
+    return player -> composite_player_target_multiplier( target, get_school() );
   }
 
   virtual double composite_target_damage_vulnerability( player_t* target ) const
