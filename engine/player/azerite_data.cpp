@@ -1135,7 +1135,23 @@ void register_azerite_target_data_initializers( sim_t* sim )
     else
     {
       td->debuff.blood_of_the_enemy = make_buff( *td, "blood_of_the_enemy" )
-        ->set_quiet(true);
+        ->set_quiet( true );
+    }
+  } );
+
+  // Condensed Life-Force
+  sim->register_target_data_initializer( [] ( actor_target_data_t* td ) {
+    auto essence = td->source->find_azerite_essence( "Condensed Life-Force" );
+    if ( essence.enabled() )
+    {
+      td->debuff.condensed_lifeforce = make_buff( *td, "condensed_life_force", td->source->find_spell( 295838 ) )
+        ->set_default_value( td->source->find_spell( 295838 )->effectN( 1 ).percent() );
+      td->debuff.condensed_lifeforce->reset();
+    }
+    else
+    {
+      td->debuff.condensed_lifeforce = make_buff( *td, "condensed_lifeforce" )
+        ->set_quiet( true );
     }
   } );
 }
@@ -3516,9 +3532,9 @@ void blood_of_the_enemy(special_effect_t& effect)
 
   struct bloodsoaked_callback_t : public dbc_proc_callback_t
   {
+    buff_t* haste_buff;
     double chance;
     int dec;
-    buff_t* haste_buff;
 
     bloodsoaked_callback_t(player_t *p, special_effect_t& e, buff_t* b, double c, int d) :
       dbc_proc_callback_t(p, e), haste_buff(b), chance(c), dec(d)
@@ -3715,11 +3731,48 @@ struct focused_azerite_beam_t : public azerite_essence_major_t
   }
 }; //End of Essence of the Focusing Iris
 
-//Condensed Life-Force
-//Major Power: Guardian of Azeroth
+/**Condensed Life Force
+ * Minor Power: Condensed Life Force
+ * Launches missile id=295835, debuffs targets with id=295838 on missile proc,
+ * not impact, to take 5% more damage
+ */
 void condensed_life_force(special_effect_t& effect)
 {
+  auto essence = effect.player->find_azerite_essence(effect.driver()->essence_id());
+  if (!essence.enabled())
+    return;
 
+  struct condensed_lifeforce_t : public unique_gear::proc_spell_t
+  {
+    azerite_essence_t essence;
+
+    condensed_lifeforce_t(const special_effect_t& e, const std::string& n, const azerite_essence_t& ess) :
+      proc_spell_t(n, e.player, e.player->find_spell( 295835 )), essence(ess)
+    {
+      double dam = ess.spell_ref(1u, essence_type::MINOR).effectN(1).average(ess.item()); // R1
+      dam *= 1.0 + ess.spell_ref(2u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent(); // R2
+      base_dd_min = base_dd_max = dam;
+    }
+
+    void execute() override
+    {
+      unique_gear::proc_spell_t::execute();
+
+      if (essence.rank() >= 3)
+      {
+        // Debuff applies on execute BEFORE the missile impacts
+        auto td = player->get_target_data(target);
+        td->debuff.condensed_lifeforce->trigger();
+      }
+    }
+  };
+
+  auto action = unique_gear::create_proc_action<condensed_lifeforce_t>( "azerite_spike", effect, "azerite_spike", essence );
+
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.execute_action = action;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 struct guardian_of_azeroth_t : public azerite_essence_major_t

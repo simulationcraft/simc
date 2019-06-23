@@ -512,6 +512,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* everchill;
     buff_t* choking_brine;
     buff_t* blood_of_the_enemy;
+    buff_t* condensed_lifeforce;
   } debuff;
 
   struct atd_dot_t
@@ -5708,7 +5709,16 @@ public:
 
   virtual double composite_target_multiplier( player_t* target ) const
   {
-    return player -> composite_player_target_multiplier( target, get_school() );
+    // Essence: Condensed Life-Force debuff
+    actor_target_data_t* td = player -> get_target_data( target );
+    double ctm = player -> composite_player_target_multiplier( target, get_school() );
+
+    if ( td )
+    {
+      ctm *= 1.0 + td -> debuff.condensed_lifeforce -> check_value();
+    }
+
+    return ctm;
   }
 
   virtual double composite_target_damage_vulnerability( player_t* target ) const
