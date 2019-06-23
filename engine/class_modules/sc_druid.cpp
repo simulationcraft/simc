@@ -7712,6 +7712,7 @@ void druid_t::create_buffs()
 
   buff.natures_balance = make_buff(this, "natures_balance", talent.natures_balance)
     ->set_tick_zero(true)
+    ->set_quiet(true)
     ->set_tick_callback([this] (buff_t*, int, const timespan_t&) {
         resource_gain(RESOURCE_ASTRAL_POWER, talent.natures_balance->effectN(1).resource(RESOURCE_ASTRAL_POWER), gain.natures_balance);
       } );
