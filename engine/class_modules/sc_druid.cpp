@@ -1550,7 +1550,10 @@ public:
      form restrictions of the spell. eg: Predatory Swiftness */
   virtual bool check_form_restriction()
   {
-    return ! form_mask || ( form_mask & p() -> get_form() ) == p() -> get_form();
+    return ! form_mask || ( form_mask & p() -> get_form() ) == p() -> get_form() ||
+      ( p() -> specialization() == DRUID_GUARDIAN && 
+        p() -> buff.bear_form -> check() && 
+        ab::data().affected_by( p() -> buff.bear_form -> data().effectN( 2 ) ) );
   }
 
   virtual bool ready() override
