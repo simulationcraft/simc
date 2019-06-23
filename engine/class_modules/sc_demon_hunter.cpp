@@ -2439,6 +2439,11 @@ struct metamorphosis_t : public demon_hunter_spell_t
       impact_action = new metamorphosis_impact_t( p );
       // Don't assign the stats here because we don't want Meta to show up in the DPET chart
     }
+
+    if ( p->azerite.vision_of_perfection.enabled() )
+    {
+      cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite.vision_of_perfection );
+    }
   }
 
   // leap travel time, independent of distance
