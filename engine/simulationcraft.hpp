@@ -7269,6 +7269,7 @@ typedef std::vector<const special_effect_db_item_t*> special_effect_set_t;
 
 void register_hotfixes();
 void register_hotfixes_legion();
+void register_hotfixes_bfa();
 void register_special_effects();
 void register_special_effects_legion(); // Legion special effects
 void register_special_effects_bfa(); // Battle for Azeroth special effects

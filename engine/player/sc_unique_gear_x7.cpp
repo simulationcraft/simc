@@ -3003,6 +3003,17 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
   sim -> register_target_data_initializer( briny_barnacle_constructor_t( 159619, items ) );
 }
 
+void unique_gear::register_hotfixes_bfa()
+{
+  /*
+  hotfix::register_effect( "The Crucible of Flame", "2019-06-23", "Correct Ancient Flame base damage.", 773336 )
+    .field( "coefficient" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 1.2251 )
+    .verification_value( 2.277085 );
+  */
+}
+
 namespace expansion
 {
 namespace bfa
