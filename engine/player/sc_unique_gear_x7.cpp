@@ -82,6 +82,7 @@ namespace consumables
   void potion_of_rising_death( special_effect_t& );
   void potion_of_bursting_blood( special_effect_t& );
   void potion_of_unbridled_fury( special_effect_t& );
+  void potion_of_focused_resolve( special_effect_t& );
 }
 
 namespace enchants
@@ -332,6 +333,141 @@ void consumables::potion_of_unbridled_fury( special_effect_t& effect )
     } )
     ->set_cooldown( timespan_t::zero() ) // Handled by the action
     ->set_chance( 1.0 ); // Override chance so the buff actually triggers
+}
+
+// Potion of Focused Resolve ================================================
+
+struct potion_of_focused_resolve_t : public item_targetdata_initializer_t
+{
+  potion_of_focused_resolve_t() : item_targetdata_initializer_t( 0, {} )
+  { }
+
+  const special_effect_t* find_effect( player_t* player ) const override
+  {
+    auto it = range::find_if( player->special_effects, []( const special_effect_t* effect ) {
+      return effect->spell_id == 298317;
+    } );
+
+    if ( it != player->special_effects.end() )
+    {
+      return *it;
+    }
+
+    return nullptr;
+  }
+
+  // Create the choking brine debuff that is checked on enemy demise
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if ( !effect )
+    {
+      td->debuff.choking_brine = make_buff( *td, "focused_resolve" );
+      return;
+    }
+    assert( !td->debuff.focused_resolve );
+
+    td->debuff.focused_resolve =
+      make_buff( *td, "focused_resolve", td->source->find_spell( 298614 ) )
+        ->set_default_value( td->source->find_spell( 298614 )->effectN( 1 ).percent() );
+
+    td->debuff.focused_resolve->reset();
+  }
+};
+
+void consumables::potion_of_focused_resolve( special_effect_t& effect )
+{
+  struct pofr_callback_t : public dbc_proc_callback_t
+  {
+    player_t* current_target;
+
+    pofr_callback_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect ), current_target( nullptr )
+    { }
+
+    void execute( action_t* /* a */, action_state_t* state ) override
+    {
+      if ( current_target != state->target )
+      {
+        set_target( state->target );
+      }
+    }
+
+    void set_target( player_t* t )
+    {
+      if ( current_target )
+      {
+        auto td = listener->get_target_data( current_target );
+        td->debuff.focused_resolve->expire();
+      }
+
+      auto td = listener->get_target_data( t );
+      td->debuff.focused_resolve->trigger();
+
+      current_target = t;
+    }
+
+    void add_stack()
+    {
+      if ( current_target )
+      {
+        auto td = listener->get_target_data( current_target );
+        td->debuff.focused_resolve->trigger();
+      }
+    }
+
+    void deactivate() override
+    {
+      dbc_proc_callback_t::deactivate();
+
+      if ( current_target )
+      {
+        auto td = listener->get_target_data( current_target );
+        td->debuff.focused_resolve->expire();
+      }
+    }
+
+    void activate() override
+    {
+      dbc_proc_callback_t::activate();
+
+      current_target = nullptr;
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "potion_of_focused_resolve" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "potion_of_focused_resolve", effect.driver() );
+  }
+
+  effect.custom_buff = buff;
+
+  auto proc_obj = new special_effect_t( effect.player );
+  proc_obj->type = SPECIAL_EFFECT_EQUIP;
+  proc_obj->spell_id = effect.spell_id;
+  // Make buff jump around per target hit on aoe situations
+  proc_obj->proc_flags2_ = PF2_HIT | PF2_CRIT | PF2_GLANCE;
+  effect.player->special_effects.push_back( proc_obj );
+
+  auto cb = new pofr_callback_t( *proc_obj );
+  cb->initialize();
+  cb->deactivate();
+
+  buff->set_stack_change_callback( [ cb ]( buff_t* /* b */, int /* old */, int new_ ) {
+    if ( new_ )
+    {
+      cb->activate();
+    }
+    else
+    {
+      cb->deactivate();
+    }
+  } );
+
+  buff -> set_tick_callback( [ cb ]( buff_t*, int, const timespan_t& ) {
+    cb->add_stack();
+  } );
 }
 
 // Gale-Force Striking ======================================================
@@ -3029,6 +3165,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 269853, consumables::potion_of_rising_death );
   register_special_effect( 251316, consumables::potion_of_bursting_blood );
   register_special_effect( 300714, consumables::potion_of_unbridled_fury );
+  register_special_effect( 298317, consumables::potion_of_focused_resolve );
 
   // Enchants
   register_special_effect( 255151, enchants::galeforce_striking );
@@ -3128,6 +3265,7 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
   sim -> register_target_data_initializer( syringe_of_bloodborne_infirmity_constructor_t( 160655, items ) );
   sim -> register_target_data_initializer( everchill_anchor_constructor_t( 165570, items ) );
   sim -> register_target_data_initializer( briny_barnacle_constructor_t( 159619, items ) );
+  sim->register_target_data_initializer( potion_of_focused_resolve_t() );
 }
 
 void unique_gear::register_hotfixes_bfa()

@@ -513,6 +513,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* choking_brine;
     buff_t* blood_of_the_enemy;
     buff_t* condensed_lifeforce;
+    buff_t* focused_resolve;
   } debuff;
 
   struct atd_dot_t
@@ -5669,16 +5670,19 @@ public:
 
   virtual double composite_target_crit_chance( player_t* target ) const
   {
-    double tc = 0.0;
-
-    // Essence: Blood of the Enemy Major debuff
     actor_target_data_t* td = player -> get_target_data( target );
+
+    double c = 0.0;
+
     if ( td )
     {
-      tc += td -> debuff.blood_of_the_enemy -> check_value();
+      // Essence: Blood of the Enemy Major debuff
+      c += td->debuff.blood_of_the_enemy->stack_value();
+      // Consumable: Potion of Focused Resolve
+      c += td->debuff.focused_resolve->stack_value();
     }
 
-    return tc;
+    return c;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
