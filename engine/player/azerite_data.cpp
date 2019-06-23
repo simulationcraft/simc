@@ -3770,16 +3770,137 @@ void condensed_life_force(special_effect_t& effect)
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+/**Condesed Life-Force
+ * Major Power: Guardian of Azeroth
+ * Summoning spell id=300091
+ * Summon buff on player id=295840
+ * Stacking haste buff from R3 id=295855
+ * Guardian standard cast id=295856
+ *  standard damage is id=302555
+ *  standard amount is r1 minor base (id=295834)
+ * Guardian volley cast is id=303347
+ *  volley damage is id=303351
+ *  volley amount is r2 major upgrade (id=295841)
+ * Shard debuff on target id=295838
+ */
+  
 struct guardian_of_azeroth_t : public azerite_essence_major_t
 {
+  struct guardian_of_azeroth_pet_t : public pet_t
+  {
+    struct azerite_spike_t : public spell_t
+    {
+      azerite_essence_t essence;
+      player_t* owner;
+      
+      azerite_spike_t(const std::string& n, pet_t* p, const std::string& options, const azerite_essence_t& ess) :
+        spell_t(n, p, p->find_spell(295856)), essence(ess), owner(p->owner)
+      {
+        parse_options(options);
+        double dam = ess.spell_ref(1u, essence_type::MINOR).effectN(1).average(ess.item()); // R1
+        dam *= 1.0 + ess.spell_ref(2u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent(); // R2
+        base_dd_min = base_dd_max = dam;
+      }
+
+      void impact(action_state_t* s) override
+      {
+        spell_t::impact(s);
+
+        if (essence.rank() >= 3)
+        {
+          actor_target_data_t* td;
+          if (s->target)
+            td = owner->get_target_data(s->target);
+          if (td)
+            td->debuff.condensed_lifeforce->trigger();
+          owner->buffs.guardian_of_azeroth->trigger();
+        }
+      }
+    };
+
+    struct azerite_volley_tick_t : public unique_gear::proc_spell_t
+    {
+      azerite_volley_tick_t(player_t* p, const azerite_essence_t& ess) :
+        proc_spell_t("azerite_volley", p, p->find_spell(303351), ess.item())
+      {
+        aoe = -1;
+        base_dd_min = base_dd_max = ess.spell_ref(2u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(1).average(ess.item());
+      }
+    };
+
+    azerite_essence_t essence;
+    buff_t* azerite_volley;
+
+    // TODO: Does pet inherit player's stats? Some, all, or none?
+    guardian_of_azeroth_pet_t(player_t* p, const azerite_essence_t& ess) :
+      pet_t(p->sim, p, "guardian_of_azeroth", true, true), essence(ess)
+    {}
+
+    action_t* create_action(const std::string& name, const std::string& options) override
+    {
+      if (name == "azerite_spike")
+        return new azerite_spike_t(name, this, options, essence);
+      
+      return pet_t::create_action(name, options);
+    }
+
+    void init_action_list() override
+    {
+      pet_t::init_action_list();
+
+      if (action_list_str.empty())
+        get_action_priority_list("default")->add_action("azerite_spike");
+    }
+
+    void create_buffs() override
+    {
+      pet_t::create_buffs();
+
+      auto volley = new azerite_volley_tick_t(this, essence);
+      azerite_volley = make_buff(this, "azerite_volley", find_spell(303347))
+        ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
+        ->set_tick_callback([volley, this](buff_t*, int, const timespan_t&) {
+          volley->set_target(target);
+          volley->execute();
+        });
+    }
+
+    void arise() override
+    {
+      pet_t::arise();
+
+      if (essence.rank() >= 2)
+        azerite_volley->trigger();
+    }
+
+
+    void demise() override
+    {
+      pet_t::demise();
+      
+      azerite_volley->expire();
+      owner->buffs.guardian_of_azeroth->expire();
+    }
+  };
+
+  pet_t* rockboi;
+  buff_t* azerite_volley;
+  
   guardian_of_azeroth_t(player_t* p, const std::string& options_str) :
     azerite_essence_major_t(p, "guardian_of_azeroth", p->find_spell(295840))
   {
     parse_options( options_str );
+    harmful = may_crit = false;
+    rockboi = new guardian_of_azeroth_pet_t(p, essence);
   }
 
-  //Summons a guardian pet that will cast a copy of the minor effect (spellid 295834).
-  //Higher ranks grant a haste buff while guardian is active (spellid 295855)
+  void execute() override
+  {
+    azerite_essence_major_t::execute();
+    
+    if (rockboi->is_sleeping())
+      rockboi->summon(player->find_spell(300091)->duration());
+  }
 }; //End of Condensed Life-Force
 
 //Conflict and Strife
