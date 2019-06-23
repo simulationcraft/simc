@@ -3285,9 +3285,7 @@ struct soul_capacitor_buff_t : public buff_t
   soul_capacitor_buff_t( player_t* player, special_effect_t& effect ) :
     buff_t( player, "spirit_shift", player -> find_spell( 184293 ), effect.item ),
     explosion( new soul_capacitor_explosion_t( player, effect ) )
-  {
-    player -> sim -> target_non_sleeping_list.register_callback( spirit_shift_explode_callback_t( this ) );
-  }
+  { }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -3317,8 +3315,9 @@ void spirit_shift_explode_callback_t::operator()(player_t* player)
 
 void item::soul_capacitor( special_effect_t& effect )
 {
-  buff_t* b = effect.custom_buff = new soul_capacitor_buff_t( effect.player, effect );
+  auto b = new soul_capacitor_buff_t( effect.player, effect );
 
+  effect.custom_buff = b;
   // Perform Spirit Shift accounting just before the target actor is damaged. Spirit Shift will stop
   // the assessing of the state object.
   effect.player -> assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [ b ]( dmg_e, action_state_t* state ) {
@@ -3340,6 +3339,10 @@ void item::soul_capacitor( special_effect_t& effect )
 
     return assessor::STOP;
   } );
+
+  effect.activation_cb = [ b ]() {
+    b->sim->target_non_sleeping_list.register_callback( spirit_shift_explode_callback_t( b ) );
+  };
 
   new dbc_proc_callback_t( effect.player, effect );
 }
