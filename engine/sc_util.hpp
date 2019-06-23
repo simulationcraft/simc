@@ -29,6 +29,8 @@ struct player_t;
  */
 namespace util
 {
+stat_e highest_stat( const player_t* p, const std::vector<stat_e>& stat );
+
 double wall_time();
 double cpu_time();
 
@@ -120,7 +122,10 @@ race_e translate_race_id( int rid );
 bool is_alliance( race_e );
 bool is_horde( race_e );
 stat_e translate_item_mod( int item_mod );
+rating_e stat_to_rating( stat_e );
 bool is_combat_rating( item_mod_type t );
+bool is_combat_rating( stat_e t );
+bool is_primary_stat( stat_e );
 int translate_stat( stat_e stat );
 stat_e translate_attribute( attribute_e attribute );
 stat_e translate_rating_mod( unsigned ratings );

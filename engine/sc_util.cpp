@@ -187,11 +187,77 @@ bool is_proc_description( const std::string& description_str )
   return false;
 }
 
+double stat_value( const player_t* p, stat_e stat )
+{
+  double v = 0;
+  switch ( stat )
+  {
+    case STAT_CRIT_RATING:
+      v = p->composite_melee_crit_rating();
+      break;
+    case STAT_HASTE_RATING:
+      v = p->composite_melee_haste_rating();
+      break;
+    case STAT_MASTERY_RATING:
+      v = p->composite_mastery_rating();
+      break;
+    case STAT_VERSATILITY_RATING:
+      v = p->composite_damage_versatility_rating();
+      break;
+    default:
+      break;
+  }
+
+  // Ignore scale factor contributions when determining highest stat
+  if ( p->sim->scaling->scale_stat == stat )
+  {
+    if ( util::is_combat_rating( stat ) )
+    {
+      v -= p->sim->scaling->scale_value *
+        p->composite_rating_multiplier( util::stat_to_rating( stat ) );
+    }
+    else if ( util::is_primary_stat( stat ) )
+    {
+      // stat_e and attribute_e match on primary stats
+      v -= p->sim->scaling->scale_value *
+        p->composite_attribute_multiplier( static_cast<attribute_e>( stat ) );
+    }
+    else if ( stat == STAT_SPELL_POWER )
+    {
+      v -= p->sim->scaling->scale_value * p->composite_spell_power_multiplier();
+    }
+    else if ( stat == STAT_ATTACK_POWER )
+    {
+      v -= p->sim->scaling->scale_value * p->composite_attack_power_multiplier();
+    }
+  }
+
+  return v;
+}
+
 } // anonymous namespace ============================================
 
 
 double util::wall_time() { return wall_sw.elapsed(); }
 double util::cpu_time() { return cpu_sw.elapsed(); }
+
+// Note, does not take into account that technically players could have different amounts of
+// melee/spell/ranged ratings for specific things. Blizzard has not used this system thus far in any
+// "normal" player-driven stuff.
+stat_e util::highest_stat( const player_t* p, const std::vector<stat_e>& stats )
+{
+  std::vector<double> values;
+
+  range::for_each( stats, [p, &values]( stat_e stat ) {
+      values.push_back( stat_value( p, stat ) );
+  } );
+
+  auto it = std::max_element( values.cbegin(), values.cend() );
+  auto index = std::distance( values.cbegin(), it );
+
+  return stats[ index ];
+}
+
 
 /// case-insensitive string comparison
 bool util::str_compare_ci( const std::string& l,
@@ -1983,6 +2049,43 @@ stat_e util::translate_rating_mod( unsigned ratings )
   return STAT_NONE;
 }
 
+rating_e util::stat_to_rating( stat_e s )
+{
+  switch ( s )
+  {
+    case STAT_EXPERTISE_RATING:
+    case STAT_EXPERTISE_RATING2:
+      return RATING_EXPERTISE;
+    case STAT_HIT_RATING:
+    case STAT_HIT_RATING2:
+      return RATING_MELEE_HIT;
+    case STAT_CRIT_RATING:
+      return RATING_MELEE_CRIT;
+    case STAT_HASTE_RATING:
+      return RATING_MELEE_HASTE;
+    case STAT_MASTERY_RATING:
+      return RATING_MASTERY;
+    case STAT_VERSATILITY_RATING:
+      return RATING_DAMAGE_VERSATILITY;
+    case STAT_LEECH_RATING:
+      return RATING_LEECH;
+    case STAT_SPEED_RATING:
+      return RATING_SPEED;
+    case STAT_AVOIDANCE_RATING:
+      return RATING_AVOIDANCE;
+    case STAT_RESILIENCE_RATING:
+      return RATING_PVP_RESILIENCE;
+    case STAT_DODGE_RATING:
+      return RATING_DODGE;
+    case STAT_PARRY_RATING:
+      return RATING_PARRY;
+    case STAT_BLOCK_RATING:
+      return RATING_BLOCK;
+    default:
+      return RATING_MAX;
+  }
+}
+
 // translate_weapon_subclass ================================================
 
 weapon_e util::translate_weapon_subclass( int weapon_subclass )
@@ -2674,6 +2777,34 @@ bool util::is_combat_rating( item_mod_type t )
     case ITEM_MOD_AVOIDANCE_RATING:
     case ITEM_MOD_VERSATILITY_RATING:
     case ITEM_MOD_EXTRA_ARMOR:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool util::is_combat_rating( stat_e t )
+{
+  switch ( t )
+  {
+    case STAT_CRIT_RATING:
+    case STAT_HASTE_RATING:
+    case STAT_MASTERY_RATING:
+    case STAT_VERSATILITY_RATING:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool util::is_primary_stat( stat_e t )
+{
+  switch ( t )
+  {
+    case STAT_AGILITY:
+    case STAT_INTELLECT:
+    case STAT_STRENGTH:
+    case STAT_STAMINA:
       return true;
     default:
       return false;

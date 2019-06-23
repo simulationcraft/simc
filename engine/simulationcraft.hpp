@@ -1902,33 +1902,6 @@ inline event_t* make_repeating_event( sim_t* s, const timespan_t& t, const T& f,
 
 // Gear Rating Conversions ==================================================
 
-enum rating_e
-{
-  RATING_DODGE = 0,
-  RATING_PARRY,
-  RATING_BLOCK,
-  RATING_MELEE_HIT,
-  RATING_RANGED_HIT,
-  RATING_SPELL_HIT,
-  RATING_MELEE_CRIT,
-  RATING_RANGED_CRIT,
-  RATING_SPELL_CRIT,
-  RATING_PVP_RESILIENCE,
-  RATING_LEECH,
-  RATING_MELEE_HASTE,
-  RATING_RANGED_HASTE,
-  RATING_SPELL_HASTE,
-  RATING_EXPERTISE,
-  RATING_MASTERY,
-  RATING_PVP_POWER,
-  RATING_DAMAGE_VERSATILITY,
-  RATING_HEAL_VERSATILITY,
-  RATING_MITIGATION_VERSATILITY,
-  RATING_SPEED,
-  RATING_AVOIDANCE,
-  RATING_MAX
-};
-
 inline cache_e cache_from_rating( rating_e r )
 {
   switch ( r )

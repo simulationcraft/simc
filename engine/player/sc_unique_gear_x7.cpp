@@ -89,6 +89,9 @@ namespace enchants
   void galeforce_striking( special_effect_t& );
   void torrent_of_elements( special_effect_t& );
   custom_cb_t weapon_navigation( unsigned );
+
+  /* 8.2 */
+  void machinists_brilliance( special_effect_t& );
 }
 
 namespace items
@@ -425,6 +428,69 @@ custom_cb_t enchants::weapon_navigation( unsigned buff_id )
 
     new navigation_proc_callback_t( effect.player, effect, final_buff );
   };
+}
+
+// Machinist's Brilliance ===================================================
+
+void enchants::machinists_brilliance( special_effect_t& effect )
+{
+  auto crit = buff_t::find( effect.player, "machinists_brilliance_crit" );
+  if ( !crit )
+  {
+    crit = make_buff<stat_buff_t>( effect.player, "machinists_brilliance_crit", effect.player->find_spell( 298431 ) );
+  }
+  auto haste = buff_t::find( effect.player, "machinists_brilliance_haste" );
+  {
+    haste = make_buff<stat_buff_t>( effect.player, "machinists_brilliance_haste", effect.player->find_spell( 300761 ) );
+  }
+  auto mastery = buff_t::find( effect.player, "machinists_brilliance_mastery" );
+  {
+    mastery = make_buff<stat_buff_t>( effect.player, "machinists_brilliance_mastery", effect.player->find_spell( 300762 ) );
+  }
+
+  auto buff = buff_t::find( effect.player, "machinists_brilliance" );
+  if ( ! buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "machinists_brilliance", effect.player->find_spell( 300693 ) );
+    buff->set_stack_change_callback( [crit, haste, mastery]( buff_t* b, int, int new_ ) {
+      stat_e highest_rating = ::util::highest_stat( b->source,
+        { STAT_CRIT_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING } );
+      buff_t* selected_buff = nullptr;
+      switch ( highest_rating )
+      {
+        case STAT_CRIT_RATING:
+          selected_buff = crit;
+          break;
+        case STAT_MASTERY_RATING:
+          selected_buff = mastery;
+          break;
+        case STAT_HASTE_RATING:
+          selected_buff = haste;
+          break;
+        default:
+          break;
+      }
+
+      // Couldn't pick anything, don't trigger
+      if ( !selected_buff )
+      {
+        return;
+      }
+
+      if ( new_ == 1 )
+      {
+        selected_buff->trigger();
+      }
+      else
+      {
+        selected_buff->expire();
+      }
+    } );
+  }
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Kaja-fied Banana =========================================================
@@ -2918,6 +2984,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 264958, "264957Trigger" ); // Monelite Scope of Alacrity
   register_special_effect( 265090, "265092Trigger" ); // Incendiary Ammunition
   register_special_effect( 265094, "265096Trigger" ); // Frost-Laced Ammunition
+  register_special_effect( 300718, enchants::machinists_brilliance );
 
   // Trinkets
   register_special_effect( 274484, items::kajafied_banana );
