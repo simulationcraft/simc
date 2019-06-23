@@ -362,7 +362,7 @@ struct potion_of_focused_resolve_t : public item_targetdata_initializer_t
     const special_effect_t* effect = find_effect( td -> source );
     if ( !effect )
     {
-      td->debuff.choking_brine = make_buff( *td, "focused_resolve" );
+      td->debuff.focused_resolve = make_buff( *td, "focused_resolve" );
       return;
     }
     assert( !td->debuff.focused_resolve );
