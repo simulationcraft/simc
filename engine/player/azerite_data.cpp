@@ -3299,7 +3299,6 @@ void arcane_heart( special_effect_t& effect )
   buff_t* buff = buff_t::find( effect.player, "arcane_heart" );
   if ( !buff )
   {
-    
     buff = make_buff( effect.player, "arcane_heart", counter )
       // Damage/heal threshold (currently at 1.5million) stored in default_value of the "arcane_heart" buff
       ->set_default_value( power.spell_ref().effectN( 1 ).base_value() ); 
@@ -3919,11 +3918,29 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
   }
 }; //End of Condensed Life-Force
 
-//Conflict and Strife
-//Major Power: Conflict
-void conflict_and_strife(special_effect_t& /* effect */)
+/**Conflict and Strike
+ * Minor Power: Strife
+ * driver id=305148
+ * stacking vers buff from driver->effect#1->trigger id=304056
+ * R2 duration inc from R2:MINOR:UPGRADE id=304055
+ * R3 maxstack inc from R3:MINOR:UPGRADE id=304125
+ */
+void conflict_and_strife(special_effect_t& effect)
 {
+  auto essence = effect.player->find_azerite_essence(effect.driver()->essence_id());
+  if (!essence.enabled())
+    return;
 
+  effect.spell_id = 305148;
+
+  const spell_data_t* strife = effect.player->find_spell(effect.spell_id)->effectN(1).trigger();
+
+  effect.stat = STAT_VERSATILITY_RATING;
+  effect.stat_amount = strife->effectN(1).average(essence.item());
+  effect.duration_ = strife->duration() + essence.spell_ref(2u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).time_value();
+  effect.max_stacks = strife->max_stacks() + essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).base_value();
+
+  new dbc_proc_callback_t(effect.player, effect);
 }
 
 struct conflict_t : public azerite_essence_major_t
