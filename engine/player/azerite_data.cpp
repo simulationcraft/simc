@@ -3686,18 +3686,13 @@ struct focused_azerite_beam_tick_t : public spell_t
     aoe = -1;
     background = true;
     may_crit = true;
-
+    base_execute_time = 0_ms;
     base_dd_min = base_dd_max = td;
   }
 
   dmg_e amount_type( const action_state_t* /* s */, bool ) const override
   {
     return DMG_OVER_TIME;
-  }
-
-  timespan_t execute_time() const override
-  {
-    return 0_ms;
   }
 };
 
