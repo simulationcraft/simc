@@ -3668,6 +3668,26 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
   new focused_energy_driver_t(effect, haste_buff, is);
 }
 
+struct focused_azerite_beam_tick_t : public spell_t
+{
+  focused_azerite_beam_tick_t(player_t* p, const std::string& n, double td) :
+    spell_t( n, p )
+  {
+    aoe = -1;
+    background = true;
+    may_crit = true;
+
+    school = SCHOOL_FIRE;
+    
+    base_dd_min = base_dd_max = td;
+  }
+
+  dmg_e amount_type( const action_state_t* s, bool ) const override
+  {
+    return DMG_OVER_TIME;
+  }
+};
+
 struct focused_azerite_beam_t : public azerite_essence_major_t
 {
   focused_azerite_beam_t( player_t* p, const std::string& options_str ) :
@@ -3677,12 +3697,16 @@ struct focused_azerite_beam_t : public azerite_essence_major_t
 
     harmful = true;
     channeled = true;
-    aoe = -1;
+    tick_zero = true;
 
-    base_td = essence.spell_ref(1u, essence_type::MAJOR).effectN(1).average(essence.item());
+    double tick = essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 1 ).average( essence.item() );
+    double mult = 1 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
 
-    if(essence.rank() >= 2)
-      base_execute_time *= (1.0 + p->find_spell(295262)->effectN(1).percent());
+    base_execute_time *= mult;
+
+    dot_duration = base_tick_time * round( dot_duration/base_tick_time );
+
+    tick_action = new focused_azerite_beam_tick_t( p, "focused_azerite_beam_tick", tick );
   }
 
   bool usable_moving() const override
