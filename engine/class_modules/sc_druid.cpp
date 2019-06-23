@@ -8971,7 +8971,7 @@ double druid_t::composite_armor_multiplier() const
 
   if ( buff.bear_form -> check() )
   {
-    a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent();
+    a *= 1.0 + buff.bear_form -> data().effectN( 4 ).percent();
     a *= 1.0 + buff.incarnation_bear -> data().effectN( 5 ).percent();
   }
 
@@ -9221,7 +9221,7 @@ double druid_t::composite_crit_avoidance() const
   double c = player_t::composite_crit_avoidance();
 
   if ( buff.bear_form -> check() )
-    c += buff.bear_form -> data().effectN( 2 ).percent();
+    c += buff.bear_form -> data().effectN( 3 ).percent();
 
   return c;
 }
