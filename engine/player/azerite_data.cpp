@@ -3607,7 +3607,7 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
       cooldown->duration *= 1.0 + essence.spell_ref(2u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(1).percent();
   }
 
-  void impact(action_state_t* s)
+  void impact(action_state_t* s) override
   {
     azerite_essence_major_t::impact(s);
 
@@ -3691,11 +3691,11 @@ struct focused_azerite_beam_tick_t : public spell_t
     may_crit = true;
 
     school = SCHOOL_FIRE;
-    
+
     base_dd_min = base_dd_max = td;
   }
 
-  dmg_e amount_type( const action_state_t* s, bool ) const override
+  dmg_e amount_type( const action_state_t* /* s */, bool ) const override
   {
     return DMG_OVER_TIME;
   }
@@ -3780,7 +3780,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
   guardian_of_azeroth_t(player_t* p, const std::string& options_str) :
     azerite_essence_major_t(p, "guardian_of_azeroth", p->find_spell(295840))
   {
-
+    parse_options( options_str );
   }
 
   //Summons a guardian pet that will cast a copy of the minor effect (spellid 295834).
@@ -3789,7 +3789,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
 
 //Conflict and Strife
 //Major Power: Conflict
-void conflict_and_strife(special_effect_t& effect)
+void conflict_and_strife(special_effect_t& /* effect */)
 {
 
 }
@@ -3799,7 +3799,7 @@ struct conflict_t : public azerite_essence_major_t
   conflict_t(player_t* p, const std::string& options_str) :
     azerite_essence_major_t(p, "conflict", p->find_spell(303823))
   {
-    
+    parse_options( options_str );
   }
 
   //Spell id used above is possible driver but this is going to be overridden for every spec probably
@@ -3857,7 +3857,7 @@ struct purifying_blast_t : public azerite_essence_major_t
       school = SCHOOL_FIRE;
     }
 
-    dmg_e amount_type( const action_state_t* s, bool ) const override
+    dmg_e amount_type( const action_state_t* /* s */, bool ) const override
     {
       return DMG_OVER_TIME;
     }
@@ -3917,6 +3917,8 @@ struct ripple_in_space_t : public azerite_essence_major_t
   ripple_in_space_t(player_t* p, const std::string& options_str) :
     azerite_essence_major_t(p, "ripple_in_space", p->find_spell(302731))
   {
+    parse_options( options_str );
+
     aoe = -1;
 
     base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 2 ).average( essence.item() );
@@ -4147,7 +4149,7 @@ void worldvein_resonance( special_effect_t& effect )
 
   for ( int i = 0; i < effect.player->sim->bfa_opts.worldvein_allies+1; i++ )
   {
-    effect.player->register_combat_begin( [period_min, period_max, lifeblood]( player_t* p ) {
+    effect.player->register_combat_begin( [period_min, period_max, lifeblood]( player_t* /* p */ ) {
       make_event<lifeblood_event_t>( *lifeblood->sim, period_min, period_max, lifeblood );
     } );
   }
