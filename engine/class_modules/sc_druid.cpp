@@ -246,6 +246,10 @@ public:
 
   //Azerite
   streaking_stars_e previous_streaking_stars;
+  double lucid_dreams_proc_chance_balance;
+  double lucid_dreams_proc_chance_feral;
+  double vision_of_perfection_dur;
+  double vision_of_perfection_cdr;
 
   // RPPM objects
   struct rppms_t
@@ -267,8 +271,6 @@ public:
   bool catweave_bear;
   bool t21_2pc;
   bool t21_4pc;
-  double lucid_dreams_proc_chance_balance;
-  double lucid_dreams_proc_chance_feral;
   bool vop_ap_bug; // BUGGGED
 
   struct active_actions_t
@@ -348,13 +350,7 @@ public:
 
   } azerite;
 
-  struct
-  {
-    azerite_essence_t memory_of_lucid_dreams;  // Memory of lucid dreams minor
-    azerite_essence_t vision_of_perfection;
-  } essences;
-
-  // azerite essence spells
+  // azerite essence
   const spell_data_t* lucid_dreams; // Memory of Lucid Dreams R1 MINOR BASE
 
   // Buffs
@@ -3275,6 +3271,7 @@ struct berserk_t : public cat_attack_t
     cat_attack_t( "berserk", player, player -> find_specialization_spell( "Berserk" ), options_str )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
+    cooldown->duration *= 1.0 + player -> vision_of_perfection_cdr;
   }
 
   void execute() override
@@ -5375,7 +5372,7 @@ struct celestial_alignment_t : public druid_spell_t
     precombat()
   {
     harmful = false;
-    base_recharge_multiplier *= 1.0 + azerite::vision_of_perfection_cdr(player->essences.vision_of_perfection);
+    cooldown->duration *= 1.0 + player->vision_of_perfection_cdr;
   }
 
   void init_finished() override
@@ -5801,10 +5798,11 @@ struct incarnation_t : public druid_spell_t
     {
     case DRUID_BALANCE:
       spec_buff = p -> buff.incarnation_moonkin;
-      base_recharge_multiplier *= 1.0 + azerite::vision_of_perfection_cdr(p->essences.vision_of_perfection);
+      cooldown->duration *= 1.0 + p->vision_of_perfection_cdr;
       break;
     case DRUID_FERAL:
       spec_buff = p -> buff.incarnation_cat;
+      cooldown->duration *= 1.0 + p->vision_of_perfection_cdr;
       break;
     case DRUID_GUARDIAN:
       spec_buff = p -> buff.incarnation_bear;
@@ -6881,8 +6879,9 @@ struct survival_instincts_t : public druid_spell_t
     // Spec-based cooldown modifiers
     cooldown -> duration += player -> spec.feral_overrides2 -> effectN( 6 ).time_value();
     cooldown -> duration *= 1.0 + player -> spec.guardian -> effectN( 3 ).percent();
-
-    cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
+    cooldown -> duration *= 1.0
+      + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent()
+      + player -> vision_of_perfection_cdr;
   }
 
   void execute() override
@@ -7491,7 +7490,11 @@ void druid_t::init_spells()
   azerite.burst_of_savagery = find_azerite_spell("Burst of Savagery");
 
   //Azerite essences
-  essences.vision_of_perfection = find_azerite_essence("Vision of Perfection");
+  auto essence_vop = find_azerite_essence("Vision of Perfection");
+  vision_of_perfection_cdr = azerite::vision_of_perfection_cdr(essence_vop);
+  vision_of_perfection_dur = essence_vop.spell(1u, essence_type::MAJOR)->effectN(1).percent()
+    + essence_vop.spell(2u, essence_spell::UPGRADE, essence_type::MAJOR)->effectN(1).percent();
+
   lucid_dreams = find_azerite_essence("Memory of Lucid Dreams").spell(1u, essence_type::MINOR);
 
   // Affinities =============================================================
@@ -7672,7 +7675,8 @@ void druid_t::create_buffs()
 
   buff.jungle_stalker        = make_buff( this, "jungle_stalker", find_spell( 252071 ) );
 
-  buff.incarnation_bear      = make_buff( this, "incarnation_guardian_of_ursoc", talent.incarnation_bear )
+  buff.incarnation_bear      = make_buff( this, "incarnation_guardian_of_ursoc",
+        talent.incarnation_bear->ok() ? talent.incarnation_bear : find_spell(102558) ) // for bear VoP
     ->add_invalidate( CACHE_ARMOR )
     ->set_cooldown( timespan_t::zero() );
 
@@ -9927,35 +9931,53 @@ const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_s
 
 void druid_t::vision_of_perfection_proc()
 {
-  double duration_mul = essences.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
-  if ( essences.vision_of_perfection.rank() >= 2)
-    duration_mul += essences.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
+  buff_t* vp_buff;
+  timespan_t vp_dur;
 
-  if (specialization() == DRUID_BALANCE)
+  switch (specialization())
   {
-    buff_t* vp_buff;
-    timespan_t vp_dur;
+    case DRUID_BALANCE:
+      if (talent.incarnation_moonkin->ok())
+        vp_buff = buff.incarnation_moonkin;
+      else
+        vp_buff = buff.celestial_alignment;
 
-    if (talent.incarnation_moonkin->ok())
-      vp_buff = buff.incarnation_moonkin;
-    else
-      vp_buff = buff.celestial_alignment;
-
-    vp_dur = vp_buff->s_data->duration() * duration_mul;
-
-    if (vp_buff->check())
-    {
-      vp_buff->extend_duration(this, vp_dur);
-    }
-    else
-    {
-      vp_buff->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, vp_dur);
-      // BUGGGED...?
-      if (vop_ap_bug)
+      if (!vp_buff->check() && vop_ap_bug) // BUGGGED...?
         resource_gain(RESOURCE_ASTRAL_POWER, 40, gain.vision_of_perfection);
-    }
-    resource_gain(RESOURCE_ASTRAL_POWER, 40 * duration_mul, gain.vision_of_perfection);
+
+      resource_gain(RESOURCE_ASTRAL_POWER, 40 * vision_of_perfection_dur, gain.vision_of_perfection);
+      if (azerite.streaking_stars.ok())
+        previous_streaking_stars = SS_CELESTIAL_ALIGNMENT;
+      break;
+
+    case DRUID_GUARDIAN:
+      vp_buff = buff.incarnation_bear;
+      cooldown.mangle->reset(false);
+      cooldown.thrash_bear->reset(false);
+      cooldown.growl->reset(false);
+      cooldown.maul->reset(false);
+      break;
+
+    case DRUID_FERAL:
+      if (talent.incarnation_cat->ok())
+      {
+        vp_buff = buff.incarnation_cat;
+        buff.jungle_stalker->trigger();
+      }
+      else
+        vp_buff = buff.berserk;
+      break;
+
+    default:
+      return;
   }
+
+  vp_dur = vp_buff->data().duration() * vision_of_perfection_dur;
+
+  if (vp_buff->check())
+    vp_buff->extend_duration(this, vp_dur);
+  else
+    vp_buff->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, vp_dur);
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )

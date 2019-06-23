@@ -3616,7 +3616,7 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
     azerite_essence_major_t::impact(s);
 
     // 25% increased chance to be hit debuff
-    auto td = s->action->player->get_target_data(s->target);
+    auto td = player->get_target_data(s->target);
     td->debuff.blood_of_the_enemy->trigger();
   }
 
