@@ -852,6 +852,8 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
 
   auto splits = util::string_split( value, "/" );
 
+  m_state.clear();
+
   for ( size_t i = 0u; i < splits.size(); ++i )
   {
     // Split by :
