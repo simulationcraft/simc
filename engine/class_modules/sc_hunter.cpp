@@ -323,6 +323,8 @@ public:
 
   struct {
     azerite_essence_t memory_of_lucid_dreams; // Memory of Lucid Dreams Minor
+    double memory_of_lucid_dreams_major_mult = 0.0;
+    double memory_of_lucid_dreams_minor_mult = 0.0;
   } azerite_essence;
 
   // Buffs
@@ -388,7 +390,8 @@ public:
     gain_t* spitting_cobra;
     gain_t* hunters_mark;
     gain_t* terms_of_engagement;
-    gain_t* memory_of_lucid_dreams;
+    gain_t* memory_of_lucid_dreams_major;
+    gain_t* memory_of_lucid_dreams_minor;
   } gains;
 
   // Procs
@@ -516,11 +519,6 @@ public:
     spell_data_ptr_t spirit_bond;
   } mastery;
 
-  // Misc Spells
-  struct {
-    spell_data_ptr_t memory_of_lucid_dreams;
-  } spell;
-
   cdwaste::player_data_t cd_waste;
 
   player_t* current_hunters_mark_target;
@@ -595,8 +593,8 @@ public:
   double    composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   void      invalidate_cache( cache_e ) override;
-  double    resource_regen_per_second( resource_e ) const override;
   void      regen( timespan_t periodicity ) override;
+  double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void      create_options() override;
   expr_t*   create_expression( const std::string& name ) override;
   expr_t*     create_action_expression( action_t&, const std::string& name ) override;
@@ -621,8 +619,6 @@ public:
   std::string default_rune() const override;
 
   std::string special_use_item_action( const std::string& item_name, const std::string& condition = std::string() ) const;
-
-  void trigger_focus_gain( double amount, gain_t* gain = nullptr, action_t* action = nullptr );
 
   target_specific_t<hunter_td_t> target_data;
 
@@ -813,21 +809,11 @@ public:
     if ( !ab::player -> rng().roll( p() -> options.memory_of_lucid_dreams_proc_chance ) )
       return;
 
-    const double gain = ab::last_resource_cost * p() -> spell.memory_of_lucid_dreams -> effectN( 1 ).percent();
-    p() -> trigger_focus_gain( gain, p() -> gains.memory_of_lucid_dreams );
+    const double gain = ab::last_resource_cost * p() -> azerite_essence.memory_of_lucid_dreams_minor_mult;
+    p() -> resource_gain( RESOURCE_FOCUS, gain, p() -> gains.memory_of_lucid_dreams_minor );
 
     if ( p() -> azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
       ab::player -> buffs.lucid_dreams -> trigger();
-  }
-
-  double composite_energize_amount( const action_state_t* s ) const override
-  {
-    double amount = ab::composite_energize_amount( s );
-
-    if ( amount != 0 && ab::player -> buffs.memory_of_lucid_dreams -> check() )
-      amount *= 1.0 + ab::player -> buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
-
-    return amount;
   }
 
   virtual double cast_regen( const action_state_t* s ) const
@@ -841,8 +827,20 @@ public:
       int num_targets = this -> n_targets();
       targets_hit = ( num_targets < 0 ) ? tl_size : std::min( tl_size, as<size_t>( num_targets ) );
     }
-    return ( regen * cast_time.total_seconds() ) +
-           ( targets_hit * this -> composite_energize_amount( s ) );
+    double total_regen = regen * cast_time.total_seconds();
+    double total_energize = targets_hit * this -> composite_energize_amount( s );
+
+    if ( ab::player -> buffs.memory_of_lucid_dreams -> check() )
+    {
+      const timespan_t remains = ab::player -> buffs.memory_of_lucid_dreams -> remains();
+
+      total_regen += regen * std::min( cast_time, remains ).total_seconds() *
+                     p() -> azerite_essence.memory_of_lucid_dreams_major_mult;
+      if ( this -> execute_time() < remains )
+        total_energize *= 1.0 + p() -> azerite_essence.memory_of_lucid_dreams_major_mult;
+    }
+
+    return total_regen + total_energize;
   }
 
   // action list expressions
@@ -1243,7 +1241,14 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
   double resource_regen_per_second( resource_e r ) const override
   {
     if ( r == RESOURCE_FOCUS )
-      return o() -> resource_regen_per_second( r ) * 1.25;
+    {
+      double amount = owner -> resource_regen_per_second( RESOURCE_FOCUS );
+
+      if ( owner -> buffs.memory_of_lucid_dreams -> check() )
+        amount *= 1.0 + o() -> azerite_essence.memory_of_lucid_dreams_major_mult;
+
+      return amount * 1.25;
+    }
     return hunter_main_pet_base_t::resource_regen_per_second( r );
   }
 
@@ -2790,7 +2795,7 @@ struct rapid_fire_t: public hunter_spell_t
       p() -> buffs.trick_shots -> up(); // benefit tracking
 
       if ( rng().roll( focused_fire.chance ) )
-        p() -> trigger_focus_gain( focused_fire.amount, focused_fire.gain, this );
+        p() -> resource_gain( RESOURCE_FOCUS, focused_fire.amount, focused_fire.gain, this );
     }
 
     double bonus_da( const action_state_t* s ) const override
@@ -4411,7 +4416,7 @@ void hunter_td_t::target_demise()
 
   if ( debuffs.hunters_mark -> check() )
   {
-    p -> trigger_focus_gain( p -> find_spell( 259558 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p -> gains.hunters_mark );
+    p -> resource_gain( RESOURCE_FOCUS, p -> find_spell( 259558 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p -> gains.hunters_mark );
     p -> current_hunters_mark_target = nullptr;
   }
 
@@ -4776,7 +4781,9 @@ void hunter_t::init_spells()
   azerite.wildfire_cluster      = find_azerite_spell( "Wildfire Cluster" );
 
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  spell.memory_of_lucid_dreams = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  azerite_essence.memory_of_lucid_dreams_major_mult = find_spell( 298357 ) -> effectN( 1 ).percent();
+  azerite_essence.memory_of_lucid_dreams_minor_mult =
+    azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR ) -> effectN( 1 ).percent();
 }
 
 // hunter_t::init_base ======================================================
@@ -4825,7 +4832,7 @@ void hunter_t::create_buffs()
       -> set_activated( true )
       -> set_default_value( specs.aspect_of_the_wild -> effectN( 1 ).percent() )
       -> set_tick_callback( [ this ]( buff_t *b, int, const timespan_t& ){
-                        trigger_focus_gain( b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild );
+                        resource_gain( RESOURCE_FOCUS, b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild );
                         if ( auto pet = pets.main )
                           pet -> resource_gain( RESOURCE_FOCUS, b -> data().effectN( 5 ).resource( RESOURCE_FOCUS ), pet -> gains.aspect_of_the_wild );
                       } );
@@ -4844,7 +4851,7 @@ void hunter_t::create_buffs()
         -> set_default_value( barbed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
                               talents.scent_of_blood -> effectN( 1 ).base_value() )
         -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                          trigger_focus_gain( b -> default_value, gains.barbed_shot );
+                          resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot );
                         } );
   }
 
@@ -4862,7 +4869,7 @@ void hunter_t::create_buffs()
     make_buff( this, "spitting_cobra", talents.spitting_cobra )
       -> set_default_value( find_spell( 194407 ) -> effectN( 2 ).resource( RESOURCE_FOCUS ) )
       -> set_tick_callback( [ this ]( buff_t *buff, int, const timespan_t& ){
-                        trigger_focus_gain( buff -> default_value, gains.spitting_cobra );
+                        resource_gain( RESOURCE_FOCUS, buff -> default_value, gains.spitting_cobra );
                       } );
 
   // Marksmanship
@@ -5005,7 +5012,8 @@ void hunter_t::init_gains()
   gains.spitting_cobra         = get_gain( "spitting_cobra" );
   gains.hunters_mark           = get_gain( "hunters_mark" );
   gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
-  gains.memory_of_lucid_dreams = get_gain( "Lucid Dreams (Minor)" );
+  gains.memory_of_lucid_dreams_major = get_gain( "Lucid Dreams (Major)" );
+  gains.memory_of_lucid_dreams_minor = get_gain( "Lucid Dreams (Minor)" );
 }
 
 // hunter_t::init_position ==================================================
@@ -5183,17 +5191,6 @@ void hunter_t::init_action_list()
     use_default_action_list = true;
     player_t::init_action_list();
   }
-}
-
-void hunter_t::trigger_focus_gain( double amount, gain_t* gain, action_t* action )
-{
-  if ( amount <= 0 )
-    return;
-
-  if ( player_t::buffs.memory_of_lucid_dreams -> up() )
-    amount *= 1.0 + player_t::buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
-
-  resource_gain( RESOURCE_FOCUS, amount, gain, action );
 }
 
 // Item Actions =======================================================================
@@ -5666,16 +5663,6 @@ void hunter_t::invalidate_cache( cache_e c )
   }
 }
 
-double hunter_t::resource_regen_per_second( resource_e resource ) const
-{
-  double regen = player_t::resource_regen_per_second( resource );
-
-  if ( player_t::buffs.memory_of_lucid_dreams -> check() )
-    regen *= 1.0 + player_t::buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
-
-  return regen;
-}
-
 // hunter_t::regen =========================================================
 
 void hunter_t::regen( timespan_t periodicity )
@@ -5686,7 +5673,23 @@ void hunter_t::regen( timespan_t periodicity )
     return;
 
   if ( buffs.terms_of_engagement -> check() )
-    trigger_focus_gain( buffs.terms_of_engagement -> check_value() * periodicity.total_seconds(), gains.terms_of_engagement );
+    resource_gain( RESOURCE_FOCUS, buffs.terms_of_engagement -> check_value() * periodicity.total_seconds(), gains.terms_of_engagement );
+}
+
+// hunter_t::resource_gain =================================================
+
+double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, action_t* a )
+{
+  double actual_amount = player_t::resource_gain( type, amount, g, a );
+
+  if ( type == RESOURCE_FOCUS && amount > 0.0 && player_t::buffs.memory_of_lucid_dreams -> check() )
+  {
+    actual_amount += player_t::resource_gain( RESOURCE_FOCUS,
+                                              amount * azerite_essence.memory_of_lucid_dreams_major_mult,
+                                              gains.memory_of_lucid_dreams_major, a );
+  }
+
+  return actual_amount;
 }
 
 // hunter_t::matching_gear_multiplier =======================================
