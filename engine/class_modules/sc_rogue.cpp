@@ -491,6 +491,8 @@ struct rogue_t : public player_t
     azerite_power_t twist_the_knife;
 
     azerite_essence_t memory_of_lucid_dreams;
+    azerite_essence_t vision_of_perfection;
+    double            vision_of_perfection_percentage;
   } azerite;
 
   // Procs
@@ -602,6 +604,7 @@ struct rogue_t : public player_t
   resource_e  primary_resource() const override { return RESOURCE_ENERGY; }
   role_e      primary_role() const override  { return ROLE_ATTACK; }
   stat_e      convert_hybrid_stat( stat_e s ) const override;
+  void        vision_of_perfection_proc() override;
 
   // Default consumables
   std::string default_potion() const override;
@@ -2051,13 +2054,21 @@ struct adrenaline_rush_t : public rogue_attack_t
     parse_options( options_str );
 
     harmful = may_miss = may_crit = false;
+
+    if ( p->azerite.vision_of_perfection.enabled() )
+    {
+      cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite.vision_of_perfection );
+    }
   }
 
   void execute() override
   {
     rogue_attack_t::execute();
 
-    p() -> buffs.adrenaline_rush -> trigger();
+    // 6/23/2019 - Casting while a Vision of Perfection proc is up cancels the existing buff
+    //             This also means the existing Brigand's Blitz stack gets reset
+    p()->buffs.adrenaline_rush->expire();
+    p()->buffs.adrenaline_rush->trigger();
 
     if ( precombat_seconds && ! p() -> in_combat ) {
       timespan_t precombat_lost_seconds = - timespan_t::from_seconds( precombat_seconds );
@@ -3388,6 +3399,11 @@ struct shadow_blades_t : public rogue_attack_t
 
     school = SCHOOL_SHADOW;
     add_child( p -> shadow_blades_attack );
+
+    if ( p->azerite.vision_of_perfection.enabled() )
+    {
+      cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite.vision_of_perfection );
+    }
   }
 
   void execute() override
@@ -3875,14 +3891,19 @@ struct vendetta_t : public rogue_attack_t
       nothing_personal_dot = new nothing_personal_t( p );
       add_child( nothing_personal_dot );
     }
+
+    if ( p->azerite.vision_of_perfection.enabled() )
+    {
+      cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite.vision_of_perfection );
+    }
   }
 
   void execute() override
   {
     rogue_attack_t::execute();
 
-    rogue_td_t* td = this -> td( execute_state -> target );
-    td -> debuffs.vendetta -> trigger();
+    rogue_td_t* td = this->td( execute_state->target );
+    td->debuffs.vendetta->trigger();
 
     if ( precombat_seconds && ! p() -> in_combat ) {
       timespan_t precombat_lost_seconds = - timespan_t::from_seconds( precombat_seconds );
@@ -4445,6 +4466,18 @@ struct adrenaline_rush_t : public buff_t
     rogue->buffs.brigands_blitz_driver->trigger();
   }
 
+  void refresh( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::refresh( stacks, value, duration );
+
+    // 6/23/2019 - Vision of Perfection refresh procs trigger Loaded Dice and extend Brigand's Blitz
+    rogue_t* rogue = debug_cast<rogue_t*>( source );
+    if ( rogue->talent.loaded_dice->ok() )
+      rogue->buffs.loaded_dice->trigger();
+
+    rogue->buffs.brigands_blitz_driver->trigger();
+  }
+
   void expire_override(int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -4721,9 +4754,13 @@ struct vendetta_debuff_t : public buff_t
     buff_t::start( stacks, value, duration );
 
     rogue_t* p = static_cast<rogue_t*>( source );
+
+    // TOCHECK - See if the energy regen applies on refresh() and not just start()
     p->buffs.vendetta->trigger();
 
     // 6/22/2019 - Vision of Perfection procs trigger Nothing Personal for the same duration
+    //             This only applies for the initial cast/trigger, extensions do not trigger NP
+    //             NP dot is logged as 'refreshed' after a true Vendetta cast, but adds no duration
     if ( p->azerite.nothing_personal.ok() && nothing_personal )
     {
       p->buffs.nothing_personal->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, remains() );
@@ -6476,6 +6513,10 @@ void rogue_t::init_spells()
   azerite.memory_of_lucid_dreams  = find_azerite_essence( "Memory of Lucid Dreams" );
   spell.memory_of_lucid_dreams    = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
 
+  azerite.vision_of_perfection            = find_azerite_essence( "Vision of Perfection" );
+  azerite.vision_of_perfection_percentage = azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
+  azerite.vision_of_perfection_percentage += azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
+
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
   shadow_blades_attack = new actions::shadow_blades_attack_t( this );
@@ -7357,6 +7398,58 @@ stat_e rogue_t::convert_hybrid_stat( stat_e s ) const
   case STAT_BONUS_ARMOR:
       return STAT_NONE;
   default: return s;
+  }
+}
+
+// rogue_t::vision_of_perfection_proc ========================================
+
+void rogue_t::vision_of_perfection_proc()
+{
+  switch ( specialization() )
+  {
+    case ROGUE_ASSASSINATION:
+    {
+      rogue_td_t* td = this->get_target_data( this->target );
+      const timespan_t duration = td->debuffs.vendetta->data().duration() * azerite.vision_of_perfection_percentage;
+      if ( td->debuffs.vendetta->check() )
+      {
+        // 6/23/2019 - Confirmed in-game that Vendetta extends, but the behavior with secondary procs is inconsistent
+        //             Nothing Personal does not refresh or get re-applied on additional procs
+        td->debuffs.vendetta->extend_duration( this, duration );
+      }
+      else
+      {
+        td->debuffs.vendetta->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+      }
+      break;
+    }
+
+    case ROGUE_SUBTLETY:
+    {
+      const timespan_t duration = this->buffs.shadow_blades->data().duration() * azerite.vision_of_perfection_percentage;
+      if ( this->buffs.shadow_blades->check() )
+      {
+        this->buffs.shadow_blades->extend_duration( this, duration );
+      }
+      else
+      {
+        this->buffs.shadow_blades->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+      }
+      break;
+    }
+    case ROGUE_OUTLAW:
+    {
+      const timespan_t duration = this->buffs.adrenaline_rush->data().duration() * azerite.vision_of_perfection_percentage;
+      if ( this->buffs.adrenaline_rush->check() )
+      {
+        this->buffs.adrenaline_rush->extend_duration( this, duration );
+      }
+      else
+      {
+        this->buffs.adrenaline_rush->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+      }
+      break;
+    }
   }
 }
 
