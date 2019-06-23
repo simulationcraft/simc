@@ -3542,10 +3542,6 @@ void blood_of_the_enemy(special_effect_t& effect)
 
     void execute(action_t*, action_state_t* s) override
     {
-      // TODO?: Are there any caps, icds, or other restrictions?
-      if (s->result != RESULT_CRIT)
-        return;
-
       // Does not proc when haste buff is up
       if (haste_buff->check())
         return;
@@ -3561,6 +3557,7 @@ void blood_of_the_enemy(special_effect_t& effect)
     }
   };
 
+  effect.proc_flags2_ = PF2_CRIT;
   // buff id=297162, not referenced in spell data
   effect.custom_buff = buff_t::find(effect.player, "bloodsoaked_counter");
   if (!effect.custom_buff)
