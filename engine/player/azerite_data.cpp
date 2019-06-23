@@ -819,6 +819,16 @@ azerite_essence_t azerite_essence_state_t::get_essence( unsigned id ) const
   return { m_player, it->type(), it->rank(), &essence };
 }
 
+void azerite_essence_state_t::copy_state( const std::unique_ptr<azerite_essence_state_t>& other )
+{
+  if ( other.get() == this )
+  {
+    return;
+  }
+
+  m_state = other->m_state;
+}
+
 // Formats:
 // token/token/token/...
 // Where token:

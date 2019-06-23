@@ -263,6 +263,9 @@ public:
   azerite_essence_t get_essence( unsigned id ) const;
   azerite_essence_t get_essence( const std::string& name, bool tokenized = false ) const;
 
+  /// Clone state from another actor
+  void copy_state( const std::unique_ptr<azerite_essence_state_t>& other );
+
   bool parse_azerite_essence( sim_t*, const std::string& /* name */, const std::string& /* value */ );
 
   std::vector<unsigned> enabled_essences() const;

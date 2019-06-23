@@ -10844,6 +10844,10 @@ void player_t::copy_from( player_t* source )
   {
     azerite -> copy_overrides( source -> azerite );
   }
+  if ( azerite_essence )
+  {
+    azerite_essence -> copy_state( source -> azerite_essence );
+  }
 
   talent_overrides_str = source->talent_overrides_str;
   action_list_str      = source->action_list_str;
