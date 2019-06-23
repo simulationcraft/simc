@@ -268,6 +268,9 @@ public:
 
   bool parse_azerite_essence( sim_t*, const std::string& /* name */, const std::string& /* value */ );
 
+  /// Create essence-related expressions
+  expr_t* create_expression( const std::vector<std::string>& expr_str ) const;
+
   std::vector<unsigned> enabled_essences() const;
 };
 

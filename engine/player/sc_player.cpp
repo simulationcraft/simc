@@ -10348,6 +10348,11 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     return azerite -> create_expression( splits );
   }
 
+  if ( splits[ 0 ] == "essence" )
+  {
+    return azerite_essence->create_expression( splits );
+  }
+
   return sim->create_expression( expression_str );
 }
 

@@ -990,6 +990,30 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
   return true;
 }
 
+expr_t* azerite_essence_state_t::create_expression( const std::vector<std::string>& expr_str ) const
+{
+  if ( expr_str.size() <= 2 )
+    return nullptr;
+
+  const auto& entry = azerite_essence_entry_t::find( expr_str[ 1 ], true, m_player->dbc.ptr );
+  if ( entry.id == 0 )
+    throw std::invalid_argument( fmt::format( "Unknown azerite essence '{}'.", expr_str[ 1 ] ) );
+
+  auto essence = get_essence( entry.id );
+  if ( util::str_compare_ci( expr_str[ 2 ], "enabled" ) )
+    return expr_t::create_constant( "essence_enabled", as<double>( essence.enabled() ) );
+  else if ( util::str_compare_ci( expr_str[ 2 ], "rank" ) )
+    return expr_t::create_constant( "essence_rank", as<double>( essence.rank() ) );
+  else if ( util::str_compare_ci( expr_str[ 2 ], "major" ) )
+    return expr_t::create_constant( "essence_major", as<double>( essence.is_major() ) );
+  else if ( util::str_compare_ci( expr_str[ 2 ], "minor" ) )
+    return expr_t::create_constant( "essence_minor", as<double>( essence.is_minor() ) );
+  else
+    throw std::invalid_argument( fmt::format( "Unknown azerite essence expression: '{}'.", expr_str[ 2 ] ) );
+
+  return nullptr;
+}
+
 std::vector<unsigned> azerite_essence_state_t::enabled_essences() const
 {
   std::vector<unsigned> spells;
