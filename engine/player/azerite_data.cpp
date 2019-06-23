@@ -3358,6 +3358,7 @@ void the_crucible_of_flame( special_effect_t& effect )
       proc_spell_t( name, effect.player, effect.player->find_spell( 295367 ), essence.item() )
     {
       base_td = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() );
+      base_td *= 1 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
     }
 
     // Refresh to 10 seconds
@@ -3375,27 +3376,6 @@ void the_crucible_of_flame( special_effect_t& effect )
   effect.execute_action = action;
 
   new dbc_proc_callback_t( effect.player, effect );
-
-  // Implement rank 2 as a separate effect.
-  if ( essence.rank() >= 2u )
-  {
-    auto rank_2_proc = new special_effect_t( effect.player );
-    effect.player->special_effects.push_back( rank_2_proc );
-
-    rank_2_proc->type = SPECIAL_EFFECT_EQUIP;
-    rank_2_proc->source = SPECIAL_EFFECT_SOURCE_AZERITE_ESSENCE;
-    rank_2_proc->name_str = "ancient_flame_cauterize";
-    rank_2_proc->spell_id = essence.spell_ref( 2u, essence_type::MINOR ).id();
-
-    auto action = unique_gear::create_proc_action<ancient_flame_t>( "ancient_flame_cauterize", *rank_2_proc,
-        "ancient_flame_cauterize", essence );
-    action->base_multiplier *= essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
-
-    rank_2_proc->execute_action = action;
-
-    auto cb = new dbc_proc_callback_t( effect.player, *rank_2_proc );
-    cb->initialize();
-  }
 }
 
 struct concentrated_flame_t : public azerite_essence_major_t
