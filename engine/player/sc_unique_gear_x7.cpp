@@ -3273,13 +3273,17 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 
 void unique_gear::register_hotfixes_bfa()
 {
-  /*
   hotfix::register_effect( "The Crucible of Flame", "2019-06-23", "Correct Ancient Flame base damage.", 773336 )
     .field( "coefficient" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 1.2251 )
     .verification_value( 2.277085 );
-  */
+
+  hotfix::register_effect( "The Crucible of Flame", "2019-06-23-2", "Correct Ancient Flame rank 2 upgrade.", 764487 )
+    .field( "base_value" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 35 )
+    .verification_value( 25 );
 }
 
 namespace expansion
