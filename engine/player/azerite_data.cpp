@@ -3681,13 +3681,11 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
 struct focused_azerite_beam_tick_t : public spell_t
 {
   focused_azerite_beam_tick_t(player_t* p, const std::string& n, double td) :
-    spell_t( n, p )
+    spell_t( n, p, p->find_spell( 295261 ) )
   {
     aoe = -1;
     background = true;
     may_crit = true;
-
-    school = SCHOOL_FIRE;
 
     base_dd_min = base_dd_max = td;
   }
@@ -3695,6 +3693,11 @@ struct focused_azerite_beam_tick_t : public spell_t
   dmg_e amount_type( const action_state_t* /* s */, bool ) const override
   {
     return DMG_OVER_TIME;
+  }
+
+  timespan_t execute_time() const override
+  {
+    return 0_ms;
   }
 };
 
