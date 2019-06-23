@@ -343,6 +343,8 @@ public:
   // Miscellaneous
   double distance_from_rune;
   double lucid_dreams_refund;
+  double strive_for_perfection_multiplier;
+  double vision_of_perfection_multiplier;
 
   // Data collection
   auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
@@ -706,6 +708,7 @@ public:
   void        datacollection_end() override;
   void        regen( timespan_t ) override;
   void        moving() override;
+  void        vision_of_perfection_proc() override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -2496,6 +2499,7 @@ struct arcane_power_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    cooldown->duration *= p->strive_for_perfection_multiplier;
   }
 
   void execute() override
@@ -2659,6 +2663,7 @@ struct combustion_t : public fire_mage_spell_t
     dot_duration = 0_ms;
     harmful = false;
     usable_while_casting = true;
+    cooldown->duration *= p->strive_for_perfection_multiplier;
   }
 
   void execute() override
@@ -3645,6 +3650,7 @@ struct icy_veins_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    cooldown->duration *= p->strive_for_perfection_multiplier;
   }
 
   void init_finished() override
@@ -3674,12 +3680,9 @@ struct icy_veins_t : public frost_mage_spell_t
     if ( precombat )
       p()->buffs.icy_veins->trigger();
 
-    if ( p()->azerite.frigid_grasp.enabled() )
-    {
-      // Frigid Grasp buff doesn't refresh.
-      p()->buffs.frigid_grasp->expire();
-      p()->buffs.frigid_grasp->trigger();
-    }
+    // Frigid Grasp buff doesn't refresh.
+    p()->buffs.frigid_grasp->expire();
+    p()->buffs.frigid_grasp->trigger();
   }
 };
 
@@ -4773,6 +4776,8 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_frostbolt_target(),
   distance_from_rune(),
   lucid_dreams_refund(),
+  strive_for_perfection_multiplier(),
+  vision_of_perfection_multiplier(),
   action(),
   benefits(),
   buffs(),
@@ -5206,7 +5211,14 @@ void mage_t::init_spells()
   azerite.tunnel_of_ice            = find_azerite_spell( "Tunnel of Ice"            );
   azerite.whiteout                 = find_azerite_spell( "Whiteout"                 );
 
-  lucid_dreams_refund = find_azerite_essence( "Memory of Lucid Dreams" ).spell( 1u, essence_type::MINOR )->effectN( 1 ).percent();
+  auto memory = find_azerite_essence( "Memory of Lucid Dreams" );
+  lucid_dreams_refund = memory.spell( 1u, essence_type::MINOR )->effectN( 1 ).percent();
+
+  auto vision = find_azerite_essence( "Vision of Perfection" );
+  strive_for_perfection_multiplier = 1.0 + azerite::vision_of_perfection_cdr( vision );
+  vision_of_perfection_multiplier =
+    vision.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent() +
+    vision.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
 }
 
 void mage_t::init_base_stats()
@@ -6323,6 +6335,64 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
       return STAT_NONE;
     default:
       return s;
+  }
+}
+
+void mage_t::vision_of_perfection_proc()
+{
+  if ( vision_of_perfection_multiplier <= 0.0 )
+    return;
+
+  buff_t* primary = nullptr;
+  buff_t* secondary = nullptr;
+
+  switch ( specialization() )
+  {
+    case MAGE_ARCANE:
+      primary = buffs.arcane_power;
+      break;
+    case MAGE_FIRE:
+      primary = buffs.combustion;
+      secondary = buffs.wildfire;
+      break;
+    case MAGE_FROST:
+      primary = buffs.icy_veins;
+      secondary = buffs.frigid_grasp;
+      break;
+    default:
+      return;
+  }
+
+  // Hotfixed to use the base duration of the buffs.
+  timespan_t primary_duration = vision_of_perfection_multiplier * primary->data().duration();
+  timespan_t secondary_duration = secondary ? vision_of_perfection_multiplier * secondary->data().duration() : 0_ms;
+
+  if ( primary->check() )
+  {
+    primary->extend_duration( this, primary_duration );
+    if ( secondary )
+      secondary->extend_duration( this, secondary_duration );
+  }
+  else
+  {
+    primary->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, primary_duration );
+    if ( secondary )
+    {
+      // For some reason, Frigid Grasp activates at a full duration.
+      // TODO: This might be a bug.
+      if ( specialization() == MAGE_FROST )
+      {
+        // When Vision of Perfection is triggered by Ice Lance, the
+        // Fingers of Frost from Frigid Grasp can be consumed by the
+        // Ice Lance without any effect. Apply the buff after the
+        // spell has finished executing.
+        make_event( *sim, [ secondary ] { secondary->trigger(); } );
+      }
+      else
+      {
+        secondary->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, secondary_duration );
+      }
+    }
   }
 }
 
