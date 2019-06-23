@@ -423,7 +423,10 @@ void consumables::potion_of_focused_resolve( special_effect_t& effect )
       if ( current_target )
       {
         auto td = listener->get_target_data( current_target );
+        auto remaining_time = td->debuff.focused_resolve->remains();
         td->debuff.focused_resolve->expire();
+        // Leave a single stack debuff on the target for 2
+        td->debuff.focused_resolve->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, remaining_time );
       }
     }
 
