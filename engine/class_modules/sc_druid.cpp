@@ -6879,13 +6879,13 @@ struct survival_instincts_t : public druid_spell_t
     // Spec-based cooldown modifiers
     cooldown -> duration += player -> spec.feral_overrides2 -> effectN( 6 ).time_value();
     cooldown -> duration *= 1.0 + player -> spec.guardian -> effectN( 3 ).percent();
-	if (player->specialization() == DRUID_GUARDIAN) //because vision of perfection does exist, but does not affect this spell for feral.
-	{
+	  if (player->specialization() == DRUID_GUARDIAN) //because vision of perfection does exist, but does not affect this spell for feral.
+	  {
 		//this stacking mechanism looks funky - tested in game 2019-06-23.
           cooldown->duration *=
               ( 1 - ( 1.0 + std::abs( player->talent.survival_of_the_fittest->effectN( 1 ).percent() ) ) *
-                        ( 1.0 + std::abs( player->vision_of_perfection_cdr ) ) );
-	}
+                    ( 1.0 + std::abs( player->vision_of_perfection_cdr ) ) );
+	  }
   }
 
   void execute() override
@@ -9964,12 +9964,10 @@ void druid_t::vision_of_perfection_proc()
 
     case DRUID_FERAL:
       if (talent.incarnation_cat->ok())
-      {
         vp_buff = buff.incarnation_cat;
-        buff.jungle_stalker->trigger();
-      }
       else
         vp_buff = buff.berserk;
+      buff.jungle_stalker->trigger();
       break;
 
     default:
