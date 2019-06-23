@@ -3800,6 +3800,8 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
         may_crit = true;
         double dam = ess.spell_ref(1u, essence_type::MINOR).effectN(1).average(ess.item()); // R1
         dam *= 1.0 + ess.spell_ref(2u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent(); // R2
+        // Hotfix per https://us.forums.blizzard.com/en/wow/t/essences-feedback-damage-essences/181165/41
+        dam *= 0.65;
         base_dd_min = base_dd_max = dam;
       }
 
@@ -3860,6 +3862,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
       auto volley = new azerite_volley_tick_t(this, essence);
       azerite_volley = make_buff(this, "azerite_volley", find_spell(303347))
         ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
+        ->set_quiet(true)
         ->set_tick_callback([volley, this](buff_t*, int, const timespan_t&) {
           volley->set_target(target);
           volley->execute();
