@@ -3420,7 +3420,7 @@ struct concentrated_flame_t : public azerite_essence_major_t
 
     burn_t( player_t* p, const azerite_essence_t& essence ) :
       proc_spell_t( "concentrated_flame_burn", p, p->find_spell( 295368 ), essence.item() ),
-      multiplier( essence.spell_ref( 2u ).effectN( 3 ).percent() )
+      multiplier( essence.spell_ref( 2u, essence_spell::UPGRADE ).effectN( 1 ).percent() )
     {
       callbacks = false;
     }
