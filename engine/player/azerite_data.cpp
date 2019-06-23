@@ -3770,7 +3770,7 @@ void condensed_life_force(special_effect_t& effect)
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-/**Condesed Life-Force
+/**Condensed Life-Force
  * Major Power: Guardian of Azeroth
  * Summoning spell id=300091
  * Summon buff on player id=295840
@@ -3783,7 +3783,7 @@ void condensed_life_force(special_effect_t& effect)
  *  volley amount is r2 major upgrade (id=295841)
  * Shard debuff on target id=295838
  */
-  
+
 struct guardian_of_azeroth_t : public azerite_essence_major_t
 {
   struct guardian_of_azeroth_pet_t : public pet_t
@@ -3792,7 +3792,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
     {
       azerite_essence_t essence;
       player_t* owner;
-      
+
       azerite_spike_t(const std::string& n, pet_t* p, const std::string& options, const azerite_essence_t& ess) :
         spell_t(n, p, p->find_spell(295856)), essence(ess), owner(p->owner)
       {
@@ -3840,7 +3840,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
     {
       if (name == "azerite_spike")
         return new azerite_spike_t(name, this, options, essence);
-      
+
       return pet_t::create_action(name, options);
     }
 
@@ -3877,7 +3877,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
     void demise() override
     {
       pet_t::demise();
-      
+
       azerite_volley->expire();
       owner->buffs.guardian_of_azeroth->expire();
     }
@@ -3885,7 +3885,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
 
   pet_t* rockboi;
   buff_t* azerite_volley;
-  
+
   guardian_of_azeroth_t(player_t* p, const std::string& options_str) :
     azerite_essence_major_t(p, "guardian_of_azeroth", p->find_spell(295840))
   {
@@ -3897,7 +3897,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
   void execute() override
   {
     azerite_essence_major_t::execute();
-    
+
     if (rockboi->is_sleeping())
       rockboi->summon(player->find_spell(300091)->duration());
   }
