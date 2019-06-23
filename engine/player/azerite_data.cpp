@@ -3797,6 +3797,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
         spell_t(n, p, p->find_spell(295856)), essence(ess), owner(p->owner)
       {
         parse_options(options);
+        may_crit = true;
         double dam = ess.spell_ref(1u, essence_type::MINOR).effectN(1).average(ess.item()); // R1
         dam *= 1.0 + ess.spell_ref(2u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent(); // R2
         base_dd_min = base_dd_max = dam;
