@@ -13148,6 +13148,14 @@ void player_t::activate()
 
   // .. and activate all actor pets
   range::for_each( pet_list, []( player_t* p ) { p->activate(); } );
+
+  // .. aaand activate any special effect with an activation callback
+  range::for_each( special_effects, []( special_effect_t* e ) {
+    if ( e->activation_cb )
+    {
+      e->activation_cb();
+    }
+  } );
 }
 
 void player_t::deactivate()

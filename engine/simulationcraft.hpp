@@ -2176,6 +2176,8 @@ struct special_effect_t
   std::function<void(special_effect_t&)> custom_init;
   // New-style object-based custom second phase initializer
   std::vector<scoped_callback_t*> custom_init_object;
+  // Activation callback, if set, called when an actor becomes active
+  std::function<void(void)> activation_cb;
 
   special_effect_t( player_t* p ) :
     item( nullptr ), player( p ),
