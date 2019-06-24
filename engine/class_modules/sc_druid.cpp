@@ -248,6 +248,7 @@ public:
   streaking_stars_e previous_streaking_stars;
   double lucid_dreams_proc_chance_balance;
   double lucid_dreams_proc_chance_feral;
+  double lucid_dreams_proc_chance_guardian;
   double vision_of_perfection_dur;
   double vision_of_perfection_cdr;
 
@@ -737,6 +738,7 @@ public:
     form( NO_FORM ),
     lucid_dreams_proc_chance_balance( 0.15 ),
     lucid_dreams_proc_chance_feral( 0.15 ),
+    lucid_dreams_proc_chance_guardian( 0.15 ),
     starshards( 0.0 ),
     previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
@@ -855,6 +857,7 @@ public:
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual double    resource_regen_per_second( resource_e ) const override;
+  virtual double    resource_gain( resource_e, double, gain_t*, action_t* a = nullptr ) override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* ) override;
@@ -1577,9 +1580,22 @@ public:
     if ( ab::last_resource_cost <= 0.0 )
       return;
 
-    double proc_chance = ( p()->specialization() == DRUID_BALANCE )
-                             ? p()->lucid_dreams_proc_chance_balance
-                             : ( p()->specialization() == DRUID_FERAL ) ? p()->lucid_dreams_proc_chance_feral : 0.0;
+    double proc_chance = 0.0;
+
+    switch ( p()->specialization() )
+    {
+      case DRUID_BALANCE:
+        proc_chance = p()->lucid_dreams_proc_chance_balance;
+        break;
+      case DRUID_FERAL:
+        proc_chance = p()->lucid_dreams_proc_chance_feral;
+        break;
+      case DRUID_GUARDIAN:
+        proc_chance = p()->lucid_dreams_proc_chance_guardian;
+        break;
+      default:
+        break;
+    }
 
     if ( ab::rng().roll( proc_chance ) )
     {
@@ -1590,6 +1606,9 @@ public:
           break;
         case DRUID_FERAL:
           p()->resource_gain( RESOURCE_ENERGY, lucid_dreams_multiplier * ab::last_resource_cost, p()->gain.lucid_dreams );
+          break;
+        case DRUID_GUARDIAN:
+          p()->resource_gain( RESOURCE_RAGE, lucid_dreams_multiplier * ab::last_resource_cost, p()->gain.lucid_dreams );
           break;
         default:
           break;
@@ -7668,8 +7687,7 @@ void druid_t::create_buffs()
 
   buff.arcanic_pulsar = make_buff(this, "arcanic_pulsar", azerite.arcanic_pulsar.spell()->effectN(1).trigger()->effectN(1).trigger());
 
-  if ( specialization() == DRUID_FERAL )
-    player_t::buffs.memory_of_lucid_dreams->set_affects_regen( true );
+  player_t::buffs.memory_of_lucid_dreams->set_affects_regen( true );
 
   // Talent buffs
   buff.tiger_dash = new tiger_dash_buff_t(*this);
@@ -8797,6 +8815,18 @@ double druid_t::resource_regen_per_second( resource_e r ) const
   }
 
   return reg;
+}
+
+// druid_t::resource_gain ===================================================
+
+double druid_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
+{
+  if ( resource_type == RESOURCE_RAGE && player_t::buffs.memory_of_lucid_dreams -> up() )
+  {
+    amount *= 1.0 + player_t::buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
+  }
+
+  return player_t::resource_gain( resource_type, amount, source, action );
 }
 
 // druid_t::available =======================================================
