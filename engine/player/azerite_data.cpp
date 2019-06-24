@@ -4263,10 +4263,12 @@ void vision_of_perfection(special_effect_t& effect)
     }
   };
 
-  // PLACEHOLDER: until rppm spells get whitelisted in
-  effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_HEAL | PF_NONE_SPELL
-                     | PF_MAGIC_HEAL | PF_MAGIC_SPELL | PF_PERIODIC | PF_TRAP_TRIGGERED;
-  effect.ppm_ = -0.85;
+  // There appear to be 3 RPPM spells for Vision of Perfection
+  //   1) id=297866 0.85 rppm, 0.1s icd, yellow hits + dot -- dps or tank specs?
+  //   2) id=297868 0.85 rppm, 0.1s icd, heals only -- healer specs
+  //   3) id=297869 0.85 rppm, 3.5s icd, yellow hits + dot -- dps or tank specs?
+  // Using option 3 for now.
+  effect.spell_id = 297869;
 
   if (essence.rank() >= 3)
   {
