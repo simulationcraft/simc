@@ -161,6 +161,7 @@ namespace items
   void legplates_of_unbound_anguish( special_effect_t& );
   // 8.2.0 - Rise of Azshara Trinkets and Special Items
   void damage_to_aberrations( special_effect_t& );
+  void highborne_compendium_of_sundering( special_effect_t& );
 }
 
 namespace util
@@ -3197,6 +3198,55 @@ void items::damage_to_aberrations( special_effect_t& effect )
   effect.type = SPECIAL_EFFECT_NONE;
 }
 
+// Highborne Compendium of Sundering ======================================
+
+void items::highborne_compendium_of_sundering( special_effect_t& effect )
+{
+  struct volcanic_eruption_t : public unique_gear::proc_spell_t
+  {
+    volcanic_eruption_t( const special_effect_t& effect ) :
+      proc_spell_t( "volcanic_eruption", effect.player, effect.player->find_spell( 300907 ), effect.item )
+    {
+      aoe = -1;
+      base_dd_min = base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
+    }
+
+  };
+
+  struct volcanic_pressure_t : public unique_gear::proc_spell_t
+  {
+    action_t* eruption;
+
+    volcanic_pressure_t( const special_effect_t& effect ) :
+      proc_spell_t( "volcanic_pressure", effect.player, effect.player->find_spell( 300832 ), effect.item ),
+      eruption( create_proc_action<volcanic_eruption_t>( "volcanic_eruption", effect ) )
+    {
+      base_td = effect.driver()->effectN( 1 ).average( effect.item );
+
+      add_child( eruption );
+    }
+
+    // TODO: How does the Volcanic Eruption work in game?
+    void impact( action_state_t* s ) override
+    {
+      // Trigger explosion first
+      auto dot = get_dot( s->target );
+      if ( dot->current_stack() == dot->max_stack - 1 )
+      {
+        eruption->set_target( s->target );
+        eruption->execute();
+        dot->cancel();
+      }
+
+      proc_spell_t::impact( s );
+    }
+  };
+
+  effect.execute_action = create_proc_action<volcanic_pressure_t>( "volcanic_pressure", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -3330,6 +3380,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 292650, items::trident_of_deep_ocean );
   register_special_effect( 295427, items::legplates_of_unbound_anguish );
   register_special_effect( 302382, items::damage_to_aberrations );
+  register_special_effect( 300830, items::highborne_compendium_of_sundering );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );

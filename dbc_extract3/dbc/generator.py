@@ -1265,7 +1265,9 @@ class SpellDataGenerator(DataGenerator):
          # 8.2 Naga Hide enchant buffs (agi, str)
          298466, 300800,
          # 8.2 Vision of Perfection RPPM
-         297866, 297868, 297869
+         297866, 297868, 297869,
+         # Volcanic Eruption for the Highborne Compendium of Sundering
+         300907
         ),
 
         # Warrior:
