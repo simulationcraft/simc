@@ -903,7 +903,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
     // For 2 and 3 element tokens, try to find the essence with a tokenized name
     if ( id == 0 && token_split.size() > 1 )
     {
-      const auto& essence = azerite_essence_entry_t::find( token_split[ 1 ], true, m_player->dbc.ptr );
+      const auto& essence = azerite_essence_entry_t::find( token_split[ 0 ], true, m_player->dbc.ptr );
       if ( essence.id == 0 )
       {
         sim->errorf( "Unable to find Azerite Essence with name '%s'", splits[ 0 ].c_str() );
