@@ -3863,7 +3863,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
 
         if (essence.rank() >= 3)
         {
-          actor_target_data_t* td;
+          actor_target_data_t* td = nullptr;
           if (s->target)
             td = owner->get_target_data(s->target);
           if (td)
