@@ -65,6 +65,7 @@ namespace warlock
       std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
       bool wracking_brilliance;
       double agony_accumulator;
+      double memory_of_lucid_dreams_accumulator; // Memory of Lucid Dreams Azerite Essence tracking.
       std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG 
       double flashpoint_threshold; //Flashpoint (Destruction Azerite trait) does not have the 80% in spell data
 
@@ -227,6 +228,7 @@ namespace warlock
       } azerite;
 
       struct {
+        azerite_essence_t memory_of_lucid_dreams;  // Memory of Lucid Dreams minor
         azerite_essence_t vision_of_perfection;
       } azerite_essence;
 
@@ -366,6 +368,8 @@ namespace warlock
         gain_t* doom;
         gain_t* demonic_meteor;
         gain_t* baleful_invocation;
+
+        gain_t* memory_of_lucid_dreams;
       } gains;
 
       // Procs
@@ -394,6 +398,7 @@ namespace warlock
         spell_t* melee;
         spell_t* seed_of_corruption_aoe;
         spell_t* implosion_aoe;
+        const spell_data_t* memory_of_lucid_dreams_base;
       } spells;
 
       int initial_soul_shards;
@@ -418,6 +423,7 @@ namespace warlock
       int       get_spawning_imp_count();
       timespan_t time_to_imps(int count);
       int       imps_spawned_during( timespan_t period );
+      void      trigger_memory_of_lucid_dreams( double gain );
       action_t* create_action( const std::string& name, const std::string& options ) override;
       pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
       void      create_pets() override;
@@ -633,6 +639,8 @@ namespace warlock
 
           if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat)
           {
+            p()->trigger_memory_of_lucid_dreams( last_resource_cost );
+
             // lets try making all lock specs not react instantly to shard gen
             if (p()->talents.soul_conduit->ok())
             {

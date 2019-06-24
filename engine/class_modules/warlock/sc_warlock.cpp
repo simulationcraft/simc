@@ -210,12 +210,50 @@ namespace warlock
     }
   }
 
+  void warlock_t::trigger_memory_of_lucid_dreams( double cost )
+  {
+    if ( !azerite_essence.memory_of_lucid_dreams.enabled() )
+    {
+      return;
+    }
+
+    if ( cost <= 0 )
+    {
+      return;
+    }
+
+    if ( specialization() == SPEC_NONE )
+    {
+      return;
+    }
+    
+    //Harcoded 15% proc chance.
+    if ( !rng().roll( 0.15 ) )
+    {
+      return;
+    }
+    
+    memory_of_lucid_dreams_accumulator += cost * spells.memory_of_lucid_dreams_base->effectN( 1 ).percent();
+
+    while ( memory_of_lucid_dreams_accumulator >= 1.0 )
+    {
+      resource_gain( RESOURCE_SOUL_SHARD, 1.0, gains.memory_of_lucid_dreams );
+      memory_of_lucid_dreams_accumulator -= 1.0;
+
+      if ( azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
+      {
+        player_t::buffs.lucid_dreams->trigger();
+      }
+    }
+  }
+
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     havoc_spells(),
     wracking_brilliance(false),
     agony_accumulator( 0.0 ),
+    memory_of_lucid_dreams_accumulator( 0.0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
     active(),
@@ -538,6 +576,8 @@ void warlock_t::init_spells()
   talents.soul_conduit                  = find_talent_spell( "Soul Conduit" );
 
   // Azerite Essences
+  azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
+  spells.memory_of_lucid_dreams_base = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
 }
 
@@ -571,6 +611,7 @@ void warlock_t::init_gains()
   gains.soul_conduit                    = get_gain( "soul_conduit" );
 
   gains.chaos_shards                    = get_gain( "chaos_shards" );
+  gains.memory_of_lucid_dreams          = get_gain( "memory_of_lucid_dreams" );
 }
 
 void warlock_t::init_procs()
@@ -790,6 +831,7 @@ void warlock_t::reset()
   warlock_pet_list.active = nullptr;
   havoc_target = nullptr;
   agony_accumulator = rng().range( 0.0, 0.99 );
+  memory_of_lucid_dreams_accumulator = 0.0;
   wild_imp_spawns.clear();
 }
 
