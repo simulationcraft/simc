@@ -414,6 +414,9 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 {
   if ( resource_type == RESOURCE_SOUL_SHARD )
   {
+    if ( player_t::buffs.memory_of_lucid_dreams->up() )
+      amount *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+
     int current_soul_shards = (int)resources.current[ resource_type ];
     if ( current_soul_shards % 2 == 0 )
     {
