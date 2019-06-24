@@ -83,6 +83,7 @@ namespace consumables
   void potion_of_bursting_blood( special_effect_t& );
   void potion_of_unbridled_fury( special_effect_t& );
   void potion_of_focused_resolve( special_effect_t& );
+  void potion_of_empowered_proximity( special_effect_t& );
 }
 
 namespace enchants
@@ -471,6 +472,64 @@ void consumables::potion_of_focused_resolve( special_effect_t& effect )
   buff -> set_tick_callback( [ cb ]( buff_t*, int, const timespan_t& ) {
     cb->add_stack();
   } );
+}
+
+// Potion of Empowered Proximity ============================================
+
+void consumables::potion_of_empowered_proximity( special_effect_t& effect )
+{
+  auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "potion_of_empowered_proximity" ) );
+  if ( buff )
+  {
+    return;
+  }
+
+  stat_e primary_stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
+  double stat_value = std::ceil( effect.driver()->effectN( 5 ).average( effect.player ) );
+  double max_value = as<double>( effect.driver()->effectN( 6 ).base_value() );
+  buff = make_buff<stat_buff_t>( effect.player, "potion_of_empowered_proximity", effect.driver() );
+  buff->add_stat( primary_stat, stat_value );
+  buff->set_stack_change_callback( [ buff, stat_value, max_value ]( buff_t* /* b */, int /* old */, int new_ ) {
+    // Stack change callback is called (in stat_buff_t::bump) before stat_buff_t grants stacks, so
+    // this is an ok way to grant everything in one go based on the current active enemy state
+    if ( new_ )
+    {
+      auto new_value = clamp( stat_value + buff->sim->target_non_sleeping_list.size() * stat_value,
+        0.0, max_value );
+      buff->stats.front().amount = new_value;
+    }
+    else
+    {
+      buff->stats.front().amount = stat_value;
+    }
+  } );
+
+  // Note, you cannot make callbacks to the global vectors (target_non_sleeping_list, target_list,
+  // player_non_sleeping_list, etc ...) since those will be reset after init (due to single actor
+  // simulation mode vs multi actor mode)
+  effect.activation_cb = [ buff, stat_value, primary_stat, max_value ]() {
+    buff->sim->target_non_sleeping_list.register_callback(
+      [ buff, stat_value, primary_stat, max_value ]( player_t* ) {
+        if ( !buff->up() )
+        {
+          return;
+        }
+
+        auto new_value = clamp( stat_value + buff->sim->target_non_sleeping_list.size() * stat_value, 0.0, max_value );
+        auto diff = new_value - buff->stats.front().current_value;
+        if ( diff > 0 )
+        {
+          buff->source->stat_gain( primary_stat, diff, buff->stat_gain );
+        }
+        else if ( diff < 0 )
+        {
+          buff->source->stat_loss( primary_stat, fabs( diff ), buff->stat_gain );
+        }
+
+        buff->stats.front().current_value += diff;
+      }
+    );
+  };
 }
 
 // Gale-Force Striking ======================================================
@@ -3169,6 +3228,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 251316, consumables::potion_of_bursting_blood );
   register_special_effect( 300714, consumables::potion_of_unbridled_fury );
   register_special_effect( 298317, consumables::potion_of_focused_resolve );
+  register_special_effect( 298225, consumables::potion_of_empowered_proximity );
 
   // Enchants
   register_special_effect( 255151, enchants::galeforce_striking );
