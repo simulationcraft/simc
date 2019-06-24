@@ -949,7 +949,8 @@ struct icy_edge_buff_t : public buff_t
   icy_edge_buff_t( shaman_t* p ) : buff_t( p, "icy_edge", p->find_spell( 224126 ) )
   {
     set_duration( s_data->duration() );
-    set_max_stack( 2 );
+    set_max_stack( !p->dbc.ptr ? 2 : 10 );
+    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   }
 };
 
@@ -961,6 +962,7 @@ struct molten_weapon_buff_t : public buff_t
     set_default_value( 1.0 + s_data->effectN( 1 ).percent() );
     set_max_stack( !p->dbc.ptr ? 2 : 10 );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   }
 };
 
@@ -970,7 +972,8 @@ struct crackling_surge_buff_t : public buff_t
   {
     set_duration( s_data->duration() );
     set_default_value( s_data->effectN( 1 ).percent() );
-    set_max_stack( 2 );
+    set_max_stack( !p->dbc.ptr ? 2 : 10 );
+    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   }
 };
 
@@ -6987,15 +6990,15 @@ void shaman_t::summon_feral_spirits( const timespan_t& duration )
     {
       case FIRE_WOLF:
         pet.fire_wolves.spawn( duration );
-        buff.molten_weapon->trigger();
+        buff.molten_weapon->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
         break;
       case FROST_WOLF:
         pet.frost_wolves.spawn( duration );
-        buff.icy_edge->trigger();
+        buff.icy_edge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
         break;
       case LIGHTNING_WOLF:
         pet.lightning_wolves.spawn( duration );
-        buff.crackling_surge->trigger();
+        buff.crackling_surge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
         break;
       default:
         assert( 0 );
