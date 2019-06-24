@@ -747,7 +747,7 @@ public:
     lucid_dreams_proc_chance_balance( 0.15 ),
     lucid_dreams_proc_chance_feral( 0.15 ),
     lucid_dreams_proc_chance_guardian( 0.15 ),
-    thorns_attack_period( 1.5 ),
+    thorns_attack_period( 2.0 ),
     starshards( 0.0 ),
     previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
@@ -6992,7 +6992,7 @@ struct thorns_t : public druid_spell_t
     thorns_proc_t(druid_t* player) : druid_spell_t("thorns_hit", player, player->find_spell(305496))
     {
       background = true;
-			if (p()->specialization() == DRUID_FERAL)
+      if (p()->specialization() == DRUID_FERAL)
       { // a little gnarly, TODO(xan): clean this up
         attack_power_mod.direct = 1.2 * p()->spec.feral->effectN(10).percent();
         spell_power_mod.direct = 0;
