@@ -371,6 +371,7 @@ public:
     buff_t* wild_charge_movement;
     buff_t* sephuzs_secret;
     buff_t* innervate;
+	buff_t* thorns;
 
     // Balance
     buff_t* natures_balance;
@@ -6980,6 +6981,104 @@ struct typhoon_t : public druid_spell_t
   }
 };
 
+// Thorns ===================================================================
+
+struct thorns_t : public druid_spell_t
+{
+	struct thorns_proc_t : public druid_spell_t
+	{
+		thorns_proc_t(druid_t* player) : druid_spell_t("thorns_hit", player, player->find_spell(305496))
+		{
+			background = true;
+			if (p()->specialization() == DRUID_FERAL)
+			{ // a little gnarly, TODO(xan): clean this up
+				attack_power_mod.direct = 1.2 * p()->spec.feral->effectN(10).percent();
+				spell_power_mod.direct = 0;
+			}
+
+		}
+	};
+
+	struct thorns_attack_event_t : public event_t
+	{
+		action_t* thorns;
+		player_t* target_actor;
+		timespan_t attack_period;
+		druid_t* source;
+		bool randomize_first;
+
+		thorns_attack_event_t(druid_t* player, action_t* thorns_proc, player_t* source, bool randomize = false) :
+			event_t(*player),
+			thorns(thorns_proc),
+			target_actor(source),
+			attack_period(timespan_t::from_seconds(2)), //TODO(Xan): make this an user specified option
+			source(player),
+			randomize_first(randomize)
+		{
+			//this will delay the first psudo autoattack by a random amount between 0 and a full attack period
+			if (randomize_first)
+				schedule(rng().real() * attack_period);
+			else
+				schedule(attack_period);
+		}
+
+		const char* name() const override
+		{
+			return "Thorns auto attack event";
+		}
+
+		void execute() override
+		{
+			// Terminate the rescheduling if the target is dead, or if thorns would run out before next attack
+
+			if (target_actor->is_sleeping())
+				return;
+
+			thorns->target = target_actor;
+			if (thorns->ready())
+				thorns->execute();
+
+			if (source->buff.thorns->remains() >= attack_period)
+				make_event<thorns_attack_event_t>(*source->sim, source, thorns, target_actor, false);
+		}
+	};
+
+	bool available = false;
+	thorns_proc_t* thorns_proc = nullptr;
+
+	thorns_t(druid_t* player, const std::string& options_str) :
+		druid_spell_t("thorns", player, player->find_spell(305497), options_str)
+	{
+		available = p()->find_azerite_essence("Conflict and Strife").enabled();
+
+		if (!thorns_proc)
+		{
+			thorns_proc = new thorns_proc_t(player);
+			thorns_proc->stats = stats;
+		}
+	}
+
+	virtual bool ready() override
+	{
+		if (!available)	return false;
+
+		return druid_spell_t::ready();
+	}
+
+	void execute() override
+	{
+		p()->buff.thorns->trigger();
+
+		for (player_t* target : p()->sim->target_non_sleeping_list)
+		{
+			make_event<thorns_attack_event_t>(*sim, p(), thorns_proc, target, true);
+		}
+
+		druid_spell_t::execute();
+	}
+
+};
+
 // Warrior of Elune =========================================================
 
 struct warrior_of_elune_t : public druid_spell_t
@@ -7325,6 +7424,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "swipe"                  ) return new            swipe_proxy_t( this, options_str );
   if ( name == "swiftmend"              ) return new              swiftmend_t( this, options_str );
   if ( name == "tigers_fury"            ) return new            tigers_fury_t( this, options_str );
+  if ( name == "thorns"					) return new				 thorns_t( this, options_str );
   if ( name == "thrash_bear"            ) return new            thrash_bear_t( this, options_str );
   if ( name == "thrash_cat"             ) return new             thrash_cat_t( this, options_str );
   if ( name == "thrash"                 ) return new           thrash_proxy_t( this, options_str );
@@ -7722,6 +7822,8 @@ void druid_t::create_buffs()
   buff.prowl = make_buff( this, "prowl", find_class_spell( "Prowl" ) );
 
   buff.innervate = new innervate_buff_t(*this);
+
+  buff.thorns = make_buff(this, "thorns", find_spell(305497));
 
   // Azerite
   buff.shredding_fury = make_buff( this, "shredding_fury", find_spell( 274426 ) )
