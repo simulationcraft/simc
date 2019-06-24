@@ -8250,8 +8250,6 @@ void shaman_t::init_action_list_enhancement()
 
   // Turn on auto-attack first thing
   def->add_action( "auto_attack" );
-  // On-use actions
-  def->add_action( "use_items" );
 
   def->add_action( "call_action_list,name=opener" );
   def->add_action( "call_action_list,name=asc,if=buff.ascendance.up" );
@@ -8272,6 +8270,7 @@ void shaman_t::init_action_list_enhancement()
   priority->add_action( this, "Crash Lightning",
                         "if=active_enemies>=(8-(talent.forceful_winds.enabled*3))"
                         "&variable.freezerburn_enabled&variable.furyCheck_CL" );
+  priority->add_action( "the_unbound_force,if=buff.reckless_force.up|time<5" );
   priority->add_action( this, "Lava Lash",
                         "if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10"
                         "&active_enemies=1&variable.freezerburn_enabled&variable.furyCheck_LL" );
@@ -8285,6 +8284,8 @@ void shaman_t::init_action_list_enhancement()
                         "if=buff.fury_of_air.up&&spell_targets.fury_of_air_damage<(1+variable.freezerburn_enabled)" );
   priority->add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<=2*gcd" );
   priority->add_talent( this, "Sundering", "if=active_enemies>=3" );
+  priority->add_action( "focused_azerite_beam,if=active_enemies>=3" );
+  priority->add_action( "purifying_blast,if=active_enemies>=3" );
   priority->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
   priority->add_action(
       this, "Frostbrand",
@@ -8311,8 +8312,12 @@ void shaman_t::init_action_list_enhancement()
   cds->add_action(
       "potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60",
       "Attempt to sync your DPS potion with a cooldown, unless the target is about to die." );
+  cds->add_action( "guardian_of_azeroth" );
+  cds->add_action( "memory_of_lucid_dreams" );
   cds->add_action( this, "Feral Spirit" );
+  cds->add_action( "blood_of_the_enemy" );
   cds->add_talent( this, "Ascendance", "if=cooldown.strike.remains>0" );
+  cds->add_action( "use_items" );
   cds->add_action( this, "Earth Elemental" );
 
   freezerburn_core->add_action( this, "Lava Lash",
@@ -8349,6 +8354,10 @@ void shaman_t::init_action_list_enhancement()
   default_core->add_action( this, "Stormstrike", "if=variable.OCPool_SS&variable.furyCheck_SS" );
 
   filler->add_talent( this, "Sundering" );
+  filler->add_action( "focused_azerite_beam" );
+  filler->add_action( "purifying_blast" );
+  filler->add_action( "concentrated_flame" );
+  filler->add_action( "worldvein_resonance" );
   filler->add_action( this, "Crash Lightning",
                       "if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL" );
   filler->add_action( this, "Flametongue", "if=talent.searing_assault.enabled" );
