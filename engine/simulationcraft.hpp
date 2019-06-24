@@ -4631,6 +4631,7 @@ public:
 
   double composite_attribute( attribute_e attr ) const override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_player_target_multiplier( player_t*, school_e ) const override;
 
   // new pet scaling by Ghostcrawler, see http://us.battle.net/wow/en/forum/topic/5889309137?page=49#977
   // http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143

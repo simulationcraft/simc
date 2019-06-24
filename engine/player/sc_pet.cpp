@@ -103,6 +103,16 @@ double pet_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+double pet_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  if ( auto td = owner->get_target_data( target ) )
+    m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
+
+  return m;
+}
+
 void pet_t::init()
 {
   player_t::init();
