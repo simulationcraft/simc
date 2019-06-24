@@ -1110,6 +1110,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 298407, azerite_essences::the_unbound_force );
   unique_gear::register_special_effect( 295078, azerite_essences::worldvein_resonance );
   unique_gear::register_special_effect( 296320, azerite_essences::strive_for_perfection );
+  unique_gear::register_special_effect( 294964, azerite_essences::anima_of_life_and_death );
   // Vision of Perfection major Azerite Essence
   unique_gear::register_special_effect( 296325, azerite_essences::vision_of_perfection );
 }
@@ -4378,6 +4379,62 @@ struct worldvein_resonance_t : public azerite_essence_major_t
   //Major power summons a number of shards based on rank.
 }; //End of Worldvein Resonance
 
+//Anima of Life and Death
+//Healing effects aren't implemented
+//Major Power: Anima of Death
+
+void anima_of_life_and_death( special_effect_t& effect )
+{
+  auto essence = effect.player -> find_azerite_essence( effect.driver() -> essence_id() );
+  if ( ! essence.enabled() )
+  {
+    return;
+  }
+
+  const spell_data_t* base_spell = essence.spell( 1u, essence_type::MINOR );
+  const spell_data_t* buff_spell = effect.player -> find_spell( 294966 );
+  
+  buff_t* buff = buff_t::find( effect.player, "anima_of_life" ) ;
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "anima_of_life", buff_spell )
+      -> add_stat( STAT_MAX_HEALTH, buff_spell -> effectN( 1 ).average( essence.item() ) );
+  }
+
+  effect.player -> register_combat_begin( [ buff, base_spell ]( player_t* )
+  {
+    make_repeating_event( *buff -> sim, base_spell -> effectN( 1 ).period(), [ buff ]() {
+      buff -> trigger();
+    } );
+  } );
+}
+
+struct anima_of_death_t : public azerite_essence_major_t
+{
+  anima_of_death_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "anima_of_death", p -> find_spell( 294926 ) )
+  {
+    parse_options( options_str );
+    may_crit = false;
+    aoe = -1;
+    snapshot_flags = update_flags = 0; // The damage is based on the player's maximum health and doesn't seem to scale with anything
+    if ( essence.rank() >= 2 )
+    {
+      cooldown -> duration *= 1.0 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
+    }
+  }
+
+  double base_da_min( const action_state_t* ) const override
+  {
+    return player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
+  }
+
+  double base_da_max( const action_state_t* ) const override
+  {
+    return player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
+  }
+};
+
 } // Namespace azerite essences ends
 
 action_t* create_action( player_t* player, const std::string& name, const std::string& options )
@@ -4417,6 +4474,10 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
   else if (util::str_compare_ci(name, "worldvein_resonance"))
   {
     return new azerite_essences::worldvein_resonance_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "anima_of_death" ) )
+  {
+    return new azerite_essences::anima_of_death_t( player, options );
   }
 
   return nullptr;

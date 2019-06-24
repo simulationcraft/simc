@@ -362,6 +362,7 @@ void the_unbound_force( special_effect_t& effect );
 void worldvein_resonance( special_effect_t& effect );
 void strive_for_perfection( special_effect_t& effect );
 void vision_of_perfection( special_effect_t& effect );
+void anima_of_life_and_death( special_effect_t& effect );
 } // Namepsace azerite_essences ends
 
 // Vision of Perfection CDR helper
