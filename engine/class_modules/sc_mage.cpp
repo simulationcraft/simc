@@ -5832,6 +5832,7 @@ void mage_t::apl_frost()
   action_priority_list_t* single       = get_action_priority_list( "single"     );
   action_priority_list_t* aoe          = get_action_priority_list( "aoe"        );
   action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns"  );
+  action_priority_list_t* essences     = get_action_priority_list( "essences"   );
   action_priority_list_t* movement     = get_action_priority_list( "movement"   );
   action_priority_list_t* talent_rop   = get_action_priority_list( "talent_rop" );
 
@@ -5864,6 +5865,7 @@ void mage_t::apl_frost()
         "put them at 1-3 Icicle stacks. Difference between shattering Frostbolt with 1-3 Icicles and 1-4 Icicles is small, but 1-3 tends "
         "to be better in more situations (the higher GS damage is, the more it leans towards 1-3). Forcing shatter on Frostbolt is still "
         "a small gain, so is not caring about FoF. Ice Lance is too weak to warrant delaying Brain Freeze Flurry." );
+      single->add_action( "call_action_list,name=essences" );
       single->add_action( this, "Frozen Orb" );
       single->add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2",
         "With Freezing Rain and at least 2 targets, Blizzard needs to be used with higher priority to make sure you can fit both instant Blizzards "
@@ -5887,6 +5889,7 @@ void mage_t::apl_frost()
     case ROTATION_NO_ICE_LANCE:
       single->add_action( this, "Flurry", "if=talent.ebonbolt.enabled&prev_gcd.1.ebonbolt&buff.brain_freeze.react" );
       single->add_action( this, "Flurry", "if=prev_gcd.1.glacial_spike&buff.brain_freeze.react" );
+      single->add_action( "call_action_list,name=essences" );
       single->add_action( this, "Frozen Orb" );
       single->add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&cast_time=0" );
       single->add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react&talent.splitting_ice.enabled&active_enemies>1" );
@@ -5895,6 +5898,7 @@ void mage_t::apl_frost()
       single->add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt" );
       break;
     case ROTATION_FROZEN_ORB:
+      single->add_action( "call_action_list,name=essences" );
       single->add_action( this, "Frozen Orb" );
       single->add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt&buff.brain_freeze.react" );
       single->add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&cast_time=0" );
@@ -5921,6 +5925,7 @@ void mage_t::apl_frost()
     "With Freezing Rain, it's better to prioritize using Frozen Orb when both FO and Blizzard are off cooldown. "
     "Without Freezing Rain, the converse is true although the difference is miniscule until very high target counts." );
   aoe->add_action( this, "Blizzard" );
+  aoe->add_action( "call_action_list,name=essences" );
   aoe->add_talent( this, "Comet Storm" );
   aoe->add_talent( this, "Ice Nova" );
   aoe->add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.frostbolt&(buff.icicles.stack<4|!talent.glacial_spike.enabled)|prev_gcd.1.glacial_spike)",
@@ -5950,12 +5955,40 @@ void mage_t::apl_frost()
     "extra Rune of Power charges that should be used with active talents, if possible." );
   cooldowns->add_action( "potion,if=prev_gcd.1.icy_veins|target.time_to_die<30" );
   cooldowns->add_action( "use_items" );
+  cooldowns->add_action( options.rotation == ROTATION_FROZEN_ORB ? "guardian_of_azeroth,if=cooldown.frozen_orb.remains<5" : "guardian_of_azeroth" );
   for ( const auto& ra : racial_actions )
   {
     if ( ra == "arcane_torrent" )
       continue;
 
     cooldowns->add_action( ra );
+  }
+
+  switch ( options.rotation )
+  {
+    case ROTATION_STANDARD:
+    case ROTATION_NO_ICE_LANCE:
+      essences->add_action( "focused_azerite_beam" );
+      essences->add_action( "memory_of_lucid_dreams,if=buff.icicles.stack<2" );
+      essences->add_action( "blood_of_the_enemy,if=buff.icicles.stack=5&buff.brain_freeze.react|active_enemies>4" );
+      essences->add_action( "purifying_blast" );
+      essences->add_action( "ripple_in_space" );
+      essences->add_action( "concentrated_flame" );
+      essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
+      essences->add_action( "worldvein_resonance" );
+      break;
+    case ROTATION_FROZEN_ORB:
+      essences->add_action( "focused_azerite_beam,if=debuff.packed_ice.down" );
+      essences->add_action( "memory_of_lucid_dreams,if=debuff.packed_ice.down" );
+      essences->add_action( "blood_of_the_enemy,if=prev_gcd.1.rune_of_power&prev_gcd.2.frozen_orb" );
+      essences->add_action( "purifying_blast,if=debuff.packed_ice.down" );
+      essences->add_action( "ripple_in_space,if=debuff.packed_ice.down" );
+      essences->add_action( "concentrated_flame,if=debuff.packed_ice.down" );
+      essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
+      essences->add_action( "worldvein_resonance,if=debuff.packed_ice.down" );
+      break;
+    default:
+      break;
   }
 
   talent_rop->add_talent( this, "Rune of Power",
