@@ -1147,7 +1147,7 @@ void priest_t::create_apl_precombat()
 std::string priest_t::default_potion() const
 {
   std::string lvl120_potion =
-    ( specialization() == PRIEST_SHADOW ) ? "rising_death" :
+    ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" :
                                             "battle_potion_of_intellect";
 
   return ( true_level >  110 ) ? lvl120_potion :
@@ -1160,7 +1160,7 @@ std::string priest_t::default_potion() const
 
 std::string priest_t::default_flask() const
 {
-  return ( true_level >  110 ) ? "endless_fathoms" :
+  return ( true_level >  110 ) ? "greater_flask_of_endless_fathoms" :
          ( true_level >= 100 ) ? "whispered_pact" :
          ( true_level >=  90 ) ? "greater_draenic_intellect_flask" :
          ( true_level >=  85 ) ? "warm_sun" :
@@ -1170,7 +1170,7 @@ std::string priest_t::default_flask() const
 
 std::string priest_t::default_food() const
 {
-  return ( true_level > 110 ) ? "honeyglazed_haunches" :
+  return ( true_level > 110 ) ? "baked_port_tato" :
          ( true_level > 100 ) ? "azshari_salad" :
          ( true_level >  90 ) ? "buttered_sturgeon" :
          ( true_level >= 90 ) ? "mogu_fish_stew" :
