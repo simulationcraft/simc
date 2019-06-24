@@ -365,7 +365,7 @@ void vision_of_perfection( special_effect_t& effect );
 } // Namepsace azerite_essences ends
 
 // Vision of Perfection CDR helper
-double vision_of_perfection_cdr( azerite_essence_t essence );
+double vision_of_perfection_cdr( const azerite_essence_t& essence );
 
 } // Namespace azerite ends
 
