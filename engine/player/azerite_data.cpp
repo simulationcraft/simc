@@ -1089,6 +1089,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 303008, special_effects::undulating_tides      );
   unique_gear::register_special_effect( 303007, special_effects::loyal_to_the_end      );
   unique_gear::register_special_effect( 303006, special_effects::arcane_heart          );
+  unique_gear::register_special_effect( 300170, special_effects::clockwork_heart       );
 
   // Generic Azerite Essences
   //
@@ -3332,6 +3333,40 @@ void arcane_heart( special_effect_t& effect )
   effect.player->register_combat_begin( [ buff ] ( player_t* )
   {
     buff->trigger();
+  } );
+}
+
+void clockwork_heart( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell(effect.driver()->name_cstr());
+  if (!power.enabled())
+    return;
+
+  spell_data_t* ticker_s = effect.driver()->effectN(1).trigger();
+  spell_data_t* clock_s = ticker_s->effectN(1).trigger();
+  double amount = power.value(1);
+
+  buff_t* clockwork = buff_t::find(effect.player, "clockwork_heart");
+  if (!clockwork)
+    clockwork = make_buff<stat_buff_t>(effect.player, "clockwork_heart", clock_s)
+      ->add_stat(STAT_CRIT_RATING, amount)
+      ->add_stat(STAT_HASTE_RATING, amount)
+      ->add_stat(STAT_MASTERY_RATING, amount)
+      ->add_stat(STAT_VERSATILITY_RATING, amount);
+
+  buff_t* ticker = buff_t::find(effect.player, "clockwork_heart_ticker");
+  if (!ticker)
+  {
+    ticker = make_buff(effect.player, "clockwork_heart_ticker", effect.driver()->effectN(1).trigger())
+      ->set_quiet(true)
+      ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
+      ->set_tick_callback( [clockwork, effect] (buff_t*, int, const timespan_t& ) {
+        clockwork->trigger();
+      } );
+  }
+
+  effect.player->register_combat_begin( [ticker] (player_t* ) {
+    ticker->trigger();
   } );
 }
 } // Namespace special effects ends

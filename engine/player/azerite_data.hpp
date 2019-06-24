@@ -345,6 +345,7 @@ void fight_or_flight( special_effect_t& effect );
 void undulating_tides( special_effect_t& effect );
 void loyal_to_the_end( special_effect_t& effect );
 void arcane_heart( special_effect_t& effect );
+void clockwork_heart( special_effect_t& effect );
 } // Namespace special_effects ends
 
 namespace azerite_essences
