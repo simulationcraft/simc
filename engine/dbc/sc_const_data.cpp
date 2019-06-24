@@ -364,6 +364,9 @@ bool dbc::valid_gem_color( unsigned color )
     case SOCKET_COLOR_LIFE:
     case SOCKET_COLOR_WIND:
     case SOCKET_COLOR_HOLY:
+    case SOCKET_COLOR_RED_PUNCHCARD:
+    case SOCKET_COLOR_YELLOW_PUNCHCARD:
+    case SOCKET_COLOR_BLUE_PUNCHCARD:
       return true;
     default:
       return false;
