@@ -563,6 +563,7 @@ public:
   struct
   {
     azerite_essence_t memory_of_lucid_dreams;  // Memory of Lucid Dreams minor
+    azerite_essence_t vision_of_perfection;
   } azerite_essence;
 
   // Misc Spells
@@ -571,6 +572,7 @@ public:
     const spell_data_t* resurgence;
     const spell_data_t* maelstrom_melee_gain;
     const spell_data_t* memory_of_lucid_dreams_base;
+    const spell_data_t* strive_for_perfection_base;
   } spell;
 
   struct legendary_t
@@ -657,6 +659,9 @@ public:
 
   // Misc
   bool active_elemental_pet() const;
+
+  // 8.2 Vision of Perfection minor
+  void vision_of_perfection_proc() override;
 
   // triggers
   void trigger_maelstrom_gain( double base, gain_t* gain = nullptr );
@@ -3962,6 +3967,7 @@ struct fire_elemental_t : public shaman_spell_t
       base_spell( player->find_spell( 188592 ) )
   {
     harmful = may_crit = false;
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( player->azerite_essence.vision_of_perfection );
   }
 
   void execute() override
@@ -5201,6 +5207,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
   {
     harmful = false;
     cooldown->duration += player->talent.elemental_spirits->effectN( 1 ).time_value();
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( player->azerite_essence.vision_of_perfection );
   }
 
   double recharge_multiplier() const override
@@ -7033,6 +7040,8 @@ void shaman_t::init_spells()
   // Azerite essences
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
   spell.memory_of_lucid_dreams_base      = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  azerite_essence.vision_of_perfection   = find_azerite_essence( "Vision of Perfection" );
+  spell.strive_for_perfection_base       = azerite_essence.vision_of_perfection.spell( 1u, essence_type::MINOR );
 
   player_t::init_spells();
 }
@@ -7356,6 +7365,10 @@ double shaman_t::composite_maelstrom_gain_coefficient( const action_state_t* /* 
   }
 
   return m;
+}
+
+void shaman_t::vision_of_perfection_proc()
+{
 }
 
 void shaman_t::trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain )
