@@ -3251,18 +3251,6 @@ void arcane_heart( special_effect_t& effect )
   {
     stat_e current_stat = STAT_NONE;
 
-    stat_e rating_to_stat( rating_e r ) const
-    {
-      switch ( r )
-      {
-        case RATING_MELEE_CRIT:         return STAT_CRIT_RATING;
-        case RATING_MELEE_HASTE:        return STAT_HASTE_RATING;
-        case RATING_MASTERY:            return STAT_MASTERY_RATING;
-        case RATING_DAMAGE_VERSATILITY: return STAT_VERSATILITY_RATING;
-        default:                        return STAT_NONE;
-      }
-    }
-
     omnipotence_t( player_t* p, const std::string& name, const spell_data_t* b ) :
       stat_buff_t( p, name, b )
     { }
@@ -3271,31 +3259,8 @@ void arcane_heart( special_effect_t& effect )
     {
       buff_t::execute( stacks, value, duration );
 
-      static const std::vector<rating_e> ratings {
-        RATING_MELEE_CRIT, RATING_MELEE_HASTE, RATING_MASTERY, RATING_DAMAGE_VERSATILITY
-      };
-
-      double high = std::numeric_limits<double>::lowest();
-      rating_e rating = RATING_MAX;
-
-      for ( auto r : ratings )
-      {
-        auto composite = source->composite_rating( r );
-        
-        sim->print_debug( "arcane_heart_omnipotence check_stat stat={} value={}",
-          util::stat_type_string( rating_to_stat( r ) ), composite );
-
-        if ( composite > high )
-        {
-          high = composite;
-          rating = r;
-        }
-      }
-
-      current_stat = rating_to_stat( rating );
-
-      if ( current_stat == STAT_NONE )
-        return;
+      current_stat = util::highest_stat(player,
+        { STAT_CRIT_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_VERSATILITY_RATING } );
 
       source->stat_gain( current_stat, this->default_value );
     }
@@ -3348,9 +3313,7 @@ void arcane_heart( special_effect_t& effect )
   effect.player->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ buff, omni ]( dmg_e, action_state_t* state )
   {
     if ( state->result_amount <= 0 )
-    {
       return assessor::CONTINUE;
-    }
 
     buff->current_value -= state->result_amount;
 
