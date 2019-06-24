@@ -675,7 +675,8 @@ namespace warlock {
         // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
         // player spell crit instead. The state target crit chance of the state object is correct.
         // Targeted Crit debuffs function as a separate multiplier.
-        state->result_total *= 1.0 + player->cache.spell_crit_chance() + state->target_crit_chance;
+        // Updated 06-24-2019: Target crit chance appears to no longer increase Chaos Bolt damage.
+        state->result_total *= 1.0 + player->cache.spell_crit_chance(); //+ state->target_crit_chance;
 
         return state->result_total;
       }
