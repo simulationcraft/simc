@@ -1111,6 +1111,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 295078, azerite_essences::worldvein_resonance );
   unique_gear::register_special_effect( 296320, azerite_essences::strive_for_perfection );
   unique_gear::register_special_effect( 294964, azerite_essences::anima_of_life_and_death );
+  unique_gear::register_special_effect( 295750, azerite_essences::nullification_dynamo );
   // Vision of Perfection major Azerite Essence
   unique_gear::register_special_effect( 296325, azerite_essences::vision_of_perfection );
 }
@@ -4417,7 +4418,9 @@ struct anima_of_death_t : public azerite_essence_major_t
     parse_options( options_str );
     may_crit = false;
     aoe = -1;
-    snapshot_flags = update_flags = 0; // The damage is based on the player's maximum health and doesn't seem to scale with anything
+    // TODO: check that the damage is indeed increased by chaos brand and other target-based modifiers
+    // Known: doesn't scale with versatility
+    snapshot_flags = update_flags = STATE_TGT_MUL_DA; // The damage is based on the player's maximum health and doesn't seem to scale with anything
     if ( essence.rank() >= 2 )
     {
       cooldown -> duration *= 1.0 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
@@ -4434,6 +4437,84 @@ struct anima_of_death_t : public azerite_essence_major_t
     return player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
   }
 };
+
+//Nullification Dynamo
+//Major isn't implemented (absorb+cleanse on-use)
+//Minor is implemented assuming full consumption of the absorb
+//TODO: add an option to make it more realistic based on actual damage taken
+
+void nullification_dynamo( special_effect_t& effect )
+{
+  struct null_barrier_damage_t : public unique_gear::proc_spell_t
+  {
+    null_barrier_damage_t( const special_effect_t& effect, const azerite_essence_t& essence ) :
+      proc_spell_t( "null_barrier_damage", effect.player, 
+                    // Waiting for whitelising
+                    effect.player -> find_spell( 296061 ) == spell_data_t::not_found() ? spell_data_t::nil() : effect.player -> find_spell( 296061 ),
+                    essence.item() )
+    {
+      // A lot of manual data here because the spell isn't whitelisted yet
+      school = SCHOOL_SHADOW;
+      may_crit = false;
+      split_aoe_damage = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
+    }
+  };
+
+  struct null_barrier_absorb_buff_t : absorb_buff_t
+  {
+    action_t* null_barrier_damage;
+
+    null_barrier_absorb_buff_t( player_t* p, const azerite_essence_t& essence, action_t* damage ) :
+      absorb_buff_t( p, "null_barrier", p -> find_spell( 295842 ) ),
+      null_barrier_damage( damage )
+    {
+      default_value = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
+      if ( null_barrier_damage )
+      {
+        null_barrier_damage -> execute();
+      }
+    }
+  };
+
+  auto essence = effect.player -> find_azerite_essence( effect.driver() -> essence_id() );
+  if ( ! essence.enabled() )
+  {
+    return;
+  }
+
+  // The damage only procs at rank 3
+  action_t* nbd = nullptr;
+  if ( essence.rank() >= 3 )
+  {
+    nbd = unique_gear::create_proc_action<null_barrier_damage_t>( "null_barrier_damage", effect, essence );
+  }
+
+  buff_t* buff = buff_t::find( effect.player, "null_barrier" ) ;
+  if ( !buff )
+  {
+    buff = make_buff<null_barrier_absorb_buff_t>( effect.player, essence, nbd );
+  }
+
+  timespan_t interval = essence.spell( 1u, essence_type::MINOR ) -> effectN( 1 ).period();
+  if ( essence.rank() >= 2 )
+  {
+    interval *= 1.0 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+  }
+
+  effect.player -> register_combat_begin( [ buff, interval ]( player_t* )
+  {
+    make_repeating_event( *buff -> sim, interval, [ buff ]() {
+      buff -> trigger();
+    } );
+  } );
+}
 
 } // Namespace azerite essences ends
 

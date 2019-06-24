@@ -1267,7 +1267,9 @@ class SpellDataGenerator(DataGenerator):
          # 8.2 Vision of Perfection RPPM
          297866, 297868, 297869,
          # Volcanic Eruption for the Highborne Compendium of Sundering
-         300907
+         300907,
+         # Nullification Dynamo Essence damage spell
+         296061,
         ),
 
         # Warrior:
