@@ -3128,7 +3128,7 @@ void player_t::create_buffs()
       auto condensed_lifeforce = find_azerite_essence( "Condensed Life-Force" );
       buffs.guardian_of_azeroth = make_buff( this, "guardian_of_azeroth", find_spell( 295855 ) )
         ->set_default_value( find_spell( 295855 )->effectN( 1 ).percent() )
-        ->add_invalidate( CACHE_SPELL_HASTE );
+        ->add_invalidate( CACHE_HASTE );
 
       auto ripple_in_space = find_azerite_essence( "Ripple in Space" );
       buffs.reality_shift = make_buff<stat_buff_t>( this, "reality_shift", find_spell( 302916 ) );
@@ -3257,6 +3257,9 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.berserking->up() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
+
+    if ( buffs.guardian_of_azeroth->check() )
+      h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
 
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
@@ -3570,6 +3573,9 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
+
+    if ( buffs.guardian_of_azeroth->check() )
+      h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
 
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
