@@ -51,7 +51,6 @@ actions+=/variable,name=CLPool_SS,value=active_enemies=1|maelstrom>=(action.cras
 actions+=/variable,name=freezerburn_enabled,value=(talent.hot_hand.enabled&talent.hailstorm.enabled&azerite.primal_primer.enabled)
 actions+=/variable,name=rockslide_enabled,value=(!variable.freezerburn_enabled&(talent.boulderfist.enabled&talent.landslide.enabled&azerite.strength_of_earth.enabled))
 actions+=/auto_attack
-actions+=/use_items
 actions+=/call_action_list,name=opener
 actions+=/call_action_list,name=asc,if=buff.ascendance.up
 actions+=/call_action_list,name=priority
@@ -74,8 +73,12 @@ actions.cds+=/fireblood,if=variable.cooldown_sync
 actions.cds+=/ancestral_call,if=variable.cooldown_sync
 # Attempt to sync your DPS potion with a cooldown, unless the target is about to die.
 actions.cds+=/potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
+actions.cds+=/guardian_of_azeroth
+actions.cds+=/memory_of_lucid_dreams
 actions.cds+=/feral_spirit
+actions.cds+=/blood_of_the_enemy
 actions.cds+=/ascendance,if=cooldown.strike.remains>0
+actions.cds+=/use_items
 actions.cds+=/earth_elemental
 
 actions.default_core=earthen_spike,if=variable.furyCheck_ES
@@ -86,6 +89,10 @@ actions.default_core+=/lightning_bolt,if=talent.overcharge.enabled&active_enemie
 actions.default_core+=/stormstrike,if=variable.OCPool_SS&variable.furyCheck_SS
 
 actions.filler=sundering
+actions.filler+=/focused_azerite_beam
+actions.filler+=/purifying_blast
+actions.filler+=/concentrated_flame
+actions.filler+=/worldvein_resonance
 actions.filler+=/crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL
 actions.filler+=/flametongue,if=talent.searing_assault.enabled
 actions.filler+=/lava_lash,if=!azerite.primal_primer.enabled&talent.hot_hand.enabled&buff.hot_hand.react
@@ -113,12 +120,15 @@ actions.maintenance+=/frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up
 actions.opener=rockbiter,if=maelstrom<15&time<gcd
 
 actions.priority=crash_lightning,if=active_enemies>=(8-(talent.forceful_winds.enabled*3))&variable.freezerburn_enabled&variable.furyCheck_CL
+actions.priority+=/the_unbound_force,if=buff.reckless_force.up|time<5
 actions.priority+=/lava_lash,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10&active_enemies=1&variable.freezerburn_enabled&variable.furyCheck_LL
 actions.priority+=/crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck_CL
 actions.priority+=/fury_of_air,if=!buff.fury_of_air.up&maelstrom>=20&spell_targets.fury_of_air_damage>=(1+variable.freezerburn_enabled)
 actions.priority+=/fury_of_air,if=buff.fury_of_air.up&&spell_targets.fury_of_air_damage<(1+variable.freezerburn_enabled)
 actions.priority+=/totem_mastery,if=buff.resonance_totem.remains<=2*gcd
 actions.priority+=/sundering,if=active_enemies>=3
+actions.priority+=/focused_azerite_beam,if=active_enemies>=3
+actions.priority+=/purifying_blast,if=active_enemies>=3
 actions.priority+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
 # With Natural Harmony, elevate the priority of elemental attacks in order to maintain the buffs when they're about to expire.
 actions.priority+=/frostbrand,if=(azerite.natural_harmony.enabled&buff.natural_harmony_frost.remains<=2*gcd)&talent.hailstorm.enabled&variable.furyCheck_FB

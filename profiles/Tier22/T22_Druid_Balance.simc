@@ -53,10 +53,20 @@ actions+=/use_item,name=dread_gladiators_badge,if=equipped.161902&cooldown.ca_in
 actions+=/use_item,name=azurethos_singed_plumage,if=equipped.161377&cooldown.ca_inc.remains>30
 actions+=/use_item,name=tidestorm_codex,if=equipped.165576
 actions+=/use_items,if=cooldown.ca_inc.remains>30
+actions+=/blood_of_the_enemy,if=cooldown.ca_inc.remains>30
+actions+=/memory_of_lucid_dreams,if=dot.sunfire.remains>10&dot.moonfire.remains>10&(!talent.stellar_flare.enabled|dot.stellar_flare.remains>10)&(astral_power<40|cooldown.ca_inc.remains>30)&!buff.ca_inc.up
+actions+=/purifying_blast
+actions+=/ripple_in_space
+actions+=/concentrated_flame
+actions+=/the_unbound_force,if=buff.reckless_force.up|time<5
+actions+=/worldvein_resonance
+actions+=/focused_azerite_beam
+actions+=/guardian_of_azeroth
+actions+=/thorns
 actions+=/warrior_of_elune
 actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)
-actions+=/incarnation,if=dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)&ap_check&!buff.ca_inc.up
-actions+=/celestial_alignment,if=astral_power>=40&!buff.ca_inc.up&ap_check&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(dot.sunfire.remains>2&dot.moonfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare.enabled))
+actions+=/incarnation,if=dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)&(buff.memory_of_lucid_dreams.up|ap_check)&!buff.ca_inc.up
+actions+=/celestial_alignment,if=!buff.ca_inc.up&(buff.memory_of_lucid_dreams.up|(ap_check&astral_power>=40))&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(dot.sunfire.remains>2&dot.moonfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare.enabled))
 actions+=/fury_of_elune,if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&solar_wrath.ap_check
 actions+=/force_of_nature,if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&ap_check
 # Spenders
