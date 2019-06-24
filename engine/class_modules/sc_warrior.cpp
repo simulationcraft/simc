@@ -6506,7 +6506,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   if ( buff.recklessness->check() && r == RESOURCE_RAGE )
   {
     bool do_not_double_rage = false;
-    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage );
+    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || g == gain.memory_of_lucid_dreams );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
       a *= 1.0 + spec.recklessness->effectN( 4 ).percent();
