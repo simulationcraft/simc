@@ -3840,6 +3840,14 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
         base_dd_min = base_dd_max = dam;
       }
 
+      void execute() override
+      {
+        spell_t::execute();
+
+        if (essence.rank() >= 3)
+          owner->buffs.guardian_of_azeroth->trigger();
+      }
+
       void impact(action_state_t* s) override
       {
         spell_t::impact(s);
@@ -3851,7 +3859,6 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
             td = owner->get_target_data(s->target);
           if (td)
             td->debuff.condensed_lifeforce->trigger();
-          owner->buffs.guardian_of_azeroth->trigger();
         }
       }
     };
