@@ -958,8 +958,8 @@ struct molten_weapon_buff_t : public buff_t
   molten_weapon_buff_t( shaman_t* p ) : buff_t( p, "molten_weapon", p->find_spell( 224125 ) )
   {
     set_duration( s_data->duration() );
-    set_default_value( s_data->effectN( 1 ).percent() );
-    set_max_stack( 2 );
+    set_default_value( 1.0 + s_data->effectN( 1 ).percent() );
+    set_max_stack( !p->dbc.ptr ? 2 : 10 );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
@@ -1092,6 +1092,8 @@ public:
   double maelstrom_gain_coefficient;
   bool enable_enh_mastery_scaling;
 
+  bool affected_by_molten_weapon;
+
   // Generic procs
 
   shaman_action_t( const std::string& n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
@@ -1104,7 +1106,8 @@ public:
       gain( player->get_gain( s->id() > 0 ? s->name_cstr() : n ) ),
       maelstrom_gain( 0 ),
       maelstrom_gain_coefficient( 1.0 ),
-      enable_enh_mastery_scaling( false )
+      enable_enh_mastery_scaling( false ),
+      affected_by_molten_weapon( false )
   {
     ab::may_crit = true;
 
@@ -1147,6 +1150,8 @@ public:
     {
       ab::base_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 7 ).percent();
     }
+
+    affected_by_molten_weapon = ab::data().affected_by_label( player->find_spell( 224125 )->effectN( 1 ).misc_value2() );
   }
 
   std::string full_name() const
@@ -1206,6 +1211,11 @@ public:
           m *= 1.0 + p()->cache.mastery_value();
         }
       }
+    }
+
+    if ( p()->dbc.ptr && affected_by_molten_weapon && p()->buff.molten_weapon->check() )
+    {
+      m *= std::pow( p()->buff.molten_weapon->check_value(), p()->buff.molten_weapon->check() );
     }
 
     return m;
@@ -8695,12 +8705,9 @@ double shaman_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( dbc::is_school( school, SCHOOL_FIRE ) && buff.molten_weapon->up() )
+  if ( !dbc.ptr && dbc::is_school( school, SCHOOL_FIRE ) && buff.molten_weapon->up() )
   {
-    for ( int x = 1; x <= buff.molten_weapon->check(); x++ )
-    {
-      m *= 1.0 + buff.molten_weapon->default_value;
-    }
+    m *= std::pow( buff.molten_weapon->check_value(), buff.molten_weapon->check() );
   }
   return m;
 }
