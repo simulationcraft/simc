@@ -3821,6 +3821,11 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + buffs.demon_damage_buff->data().effectN( 2 ).percent();
   }
 
+  if ( target->race == RACE_ABERRATION && buffs.damage_to_aberrations && buffs.damage_to_aberrations->check() )
+  {
+    m *= 1.0 + buffs.damage_to_aberrations->stack_value();
+  }
+
   auto td = get_target_data( target );
   if ( td )
   {

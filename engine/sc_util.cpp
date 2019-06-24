@@ -353,6 +353,7 @@ const char* util::race_type_string( race_e type )
   switch ( type )
   {
     case RACE_NONE:                return "none";
+    case RACE_ABERRATION:          return "aberration";
     case RACE_BEAST:               return "beast";
     case RACE_BLOOD_ELF:           return "blood_elf";
     case RACE_DEMON:               return "demon";

@@ -159,6 +159,8 @@ namespace items
   void abyssal_speakers_gauntlets( special_effect_t& );
   void trident_of_deep_ocean( special_effect_t& );
   void legplates_of_unbound_anguish( special_effect_t& );
+  // 8.2.0 - Rise of Azshara Trinkets and Special Items
+  void damage_to_aberrations( special_effect_t& );
 }
 
 namespace util
@@ -3173,6 +3175,28 @@ void items::legplates_of_unbound_anguish( special_effect_t& effect )
   new unbound_anguish_cb_t( effect );
 }
 
+// Benthic Armor Aberrations Damage% ======================================
+
+void items::damage_to_aberrations( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "damage_to_aberrations" );
+  // TODO: Multiple items stack or not?
+  if ( buff )
+  {
+    buff->default_value += effect.driver()->effectN( 1 ).percent();
+  }
+  else
+  {
+    buff = make_buff( effect.player, "damage_to_aberrations", effect.driver() );
+    buff->set_default_value( effect.driver()->effectN( 1 ).percent() );
+
+    effect.player->buffs.damage_to_aberrations = buff;
+    effect.player->register_combat_begin( buff );
+  }
+
+  effect.type = SPECIAL_EFFECT_NONE;
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -3305,6 +3329,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295430, items::abyssal_speakers_gauntlets );
   register_special_effect( 292650, items::trident_of_deep_ocean );
   register_special_effect( 295427, items::legplates_of_unbound_anguish );
+  register_special_effect( 302382, items::damage_to_aberrations );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );

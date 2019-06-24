@@ -3851,6 +3851,9 @@ struct player_t : public actor_t
     buff_t* seething_rage; // Blood of the Enemy major - 25% crit dam
     stat_buff_t* reality_shift; // Ripple in Space minor - primary stat on moving 25yds
     buff_t* guardian_of_azeroth; // Condensed Life-Force major - R3 stacking haste on pet cast
+
+    // 8.2 misc
+    buff_t* damage_to_aberrations; // In various Benthic Armor
   } buffs;
 
   struct debuffs_t
