@@ -217,6 +217,8 @@ public:
     const spell_data_t* legacy_of_the_void;
     const spell_data_t* dark_ascension;
     const spell_data_t* surrender_to_madness;
+    // PVP
+    const spell_data_t* void_origins;
   } talents;
 
   // Specialization Spells
@@ -259,7 +261,7 @@ public:
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
     const spell_data_t* shadow_priest;
-        
+
   } specs;
 
   // Mastery Spells
@@ -377,10 +379,10 @@ public:
   // Options
   struct
   {
-    bool autoUnshift                       = true;  // Shift automatically out of stance/form
-    bool priest_fixed_time                 = true;
-    bool priest_ignore_healing             = false;  // Remove Healing calculation codes
-    int priest_set_voidform_duration       = 0;      // Voidform will always have this duration
+    bool autoUnshift                              = true;  // Shift automatically out of stance/form
+    bool priest_fixed_time                        = true;
+    bool priest_ignore_healing                    = false; // Remove Healing calculation codes
+    int priest_set_voidform_duration              = 0;     // Voidform will always have this duration
     double priest_lucid_dreams_proc_chance_disc   = 0.08;
     double priest_lucid_dreams_proc_chance_holy   = 0.08;
     double priest_lucid_dreams_proc_chance_shadow = 0.15;
@@ -408,6 +410,7 @@ public:
   {
     const spell_data_t* lucid_dreams;
     const spell_data_t* memory_of_lucid_dreams;
+    const spell_data_t* conflict_and_strife;
   } azerite_essence;
 
   struct insanity_end_event_t;

@@ -593,7 +593,7 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     active_items(),
     pets(),
     options(),
-    insanity( *this ),    
+    insanity( *this ),
     azerite(),
     azerite_essence()
 {

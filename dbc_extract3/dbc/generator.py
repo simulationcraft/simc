@@ -1389,6 +1389,7 @@ class SpellDataGenerator(DataGenerator):
             ( 275725, 0 ),          # Whispers of the Damned trigger effect
             ( 275726, 0 ),          # Whispers of the damned insanity gain
             ( 288342, 0 ),          # Thought Harvester trigger buff for Mind Sear
+            ( 228630, 0 ),          # Void Origins PvP talent
         ),
 
         # Death Knight:
