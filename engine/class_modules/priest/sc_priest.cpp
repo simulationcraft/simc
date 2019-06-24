@@ -593,7 +593,7 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     active_items(),
     pets(),
     options(),
-    insanity( *this ),    
+    insanity( *this ),
     azerite(),
     azerite_essence()
 {
@@ -1059,11 +1059,18 @@ void priest_t::init_spells()
   mastery_spells.madness        = find_mastery_spell( PRIEST_SHADOW );
 
   auto memory_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
+  auto conflict_and_strife = find_azerite_essence( "Conflict and Strife" );
 
   if ( memory_lucid_dreams.enabled() )
   {
     azerite_essence.lucid_dreams           = memory_lucid_dreams.spell( 1u, essence_type::MINOR );
     azerite_essence.memory_of_lucid_dreams = memory_lucid_dreams.spell( 1u, essence_type::MAJOR );
+  }
+
+  if ( conflict_and_strife.enabled() )
+  {
+    azerite_essence.strife = conflict_and_strife.spell( 1u, essence_type::MINOR );
+    azerite_essence.conflict = conflict_and_strife.spell( 1u, essence_type::MAJOR );
   }
 
 }

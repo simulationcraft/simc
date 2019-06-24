@@ -1032,6 +1032,18 @@ struct void_eruption_t final : public priest_spell_t
     priest().cooldowns.void_bolt->reset( true );
   }
 
+  timespan_t execute_time() const override
+  {
+    if ( priest().talents.void_origins->ok() && priest().azerite_essence.conflict->ok() )
+    {
+      return timespan_t::zero();
+    }
+
+    timespan_t et = priest_spell_t::execute_time();
+
+    return et;
+  }
+
   bool ready() override
   {
     if ( !priest().buffs.voidform->check() && priest().resources.current[ RESOURCE_INSANITY ] >= insanity_required )
@@ -1264,7 +1276,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
       // I think it is ties to resource gen, but you effectively get 100% uptime
       expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, priest );
 
-      // Memory of Lucid Dreams minor effect tries to give instanity back every 1 second, lining up with 
+      // Memory of Lucid Dreams minor effect tries to give instanity back every 1 second, lining up with
       // the time Drain increases.
       priest->trigger_lucid_dreams( 0.0 );
     }
@@ -1512,7 +1524,7 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
     else if ( buffs.surrender_to_madness->check() )
     {
       double total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() );
-      
+
 
       amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN( 1 ).percent();
 
@@ -1523,19 +1535,19 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
             ( amount + amount_from_surrender_to_madness )
           * ( azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
 
-        total_amount = amount 
+        total_amount = amount
                        * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() )
                        * ( 1.0 + azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
       }
 
-      // Make sure the maths line up. 
+      // Make sure the maths line up.
       assert( total_amount == amount + amount_from_surrender_to_madness + amount_from_memory_of_lucid_dreams );
     }
     else if ( player_t::buffs.memory_of_lucid_dreams->check() )
     {
       double total_amount;
-       
-      amount_from_memory_of_lucid_dreams +=   ( amount ) 
+
+      amount_from_memory_of_lucid_dreams +=   ( amount )
                                             * ( azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
 
       total_amount = amount * ( 1.0 + azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
@@ -1859,6 +1871,9 @@ void priest_t::init_spells_shadow()
   talents.legacy_of_the_void   = find_talent_spell( "Legacy of the Void" );
   talents.dark_ascension       = find_talent_spell( "Dark Ascension" );
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
+
+  // PvP
+  talents.void_origins = find_talent_spell( "Void Origins" );
 
   // General Spells
   specs.voidform            = find_specialization_spell( "Voidform" );
