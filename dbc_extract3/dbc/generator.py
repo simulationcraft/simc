@@ -1264,8 +1264,8 @@ class SpellDataGenerator(DataGenerator):
          298431, 300693, 300761, 300762,
          # 8.2 Naga Hide enchant buffs (agi, str)
          298466, 300800,
-         # Machinist's Brilliance secondary stat buffs
-         300761, 300762
+         # 8.2 Vision of Perfection RPPM
+         297866, 297868, 297869
         ),
 
         # Warrior:
