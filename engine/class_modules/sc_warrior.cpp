@@ -448,6 +448,8 @@ public:
 
     // Essences
     azerite_essence_t memory_of_lucid_dreams;
+    azerite_essence_t vision_of_perfection;
+    double vision_of_perfection_percentage;
   } azerite;
 
   struct azerite_spells_t
@@ -558,6 +560,7 @@ public:
   std::string create_profile( save_e type ) override;
   void invalidate_cache( cache_e ) override;
   double temporary_movement_modifier() const override;
+  void vision_of_perfection_proc() override;
 
   void default_apl_dps_precombat();
   void apl_default();
@@ -4322,6 +4325,11 @@ struct recklessness_t : public warrior_spell_t
       energize_type     = ENERGIZE_ON_CAST;
       energize_resource = RESOURCE_RAGE;
     }
+
+    if ( p->azerite.vision_of_perfection.enabled() )
+    {
+      cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite.vision_of_perfection );
+    }
   }
 
   void execute() override
@@ -4854,6 +4862,12 @@ void warrior_t::init_spells()
   // Essences
   azerite.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
   azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  azerite.vision_of_perfection          = find_azerite_essence( "Vision of Perfection" );
+  azerite.vision_of_perfection_percentage =
+      azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
+  azerite.vision_of_perfection_percentage +=
+      azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
+
 
   // Generic spells
   spell.battle_shout          = find_class_spell( "Battle Shout" );
@@ -6600,6 +6614,30 @@ role_e warrior_t::primary_role() const
   }
   return ROLE_ATTACK;
 }
+
+// warrior_t::vision_of_perfection_proc ================================
+
+void warrior_t::vision_of_perfection_proc()
+{
+  switch ( specialization() )
+  {
+    case WARRIOR_FURY:
+    {
+      const timespan_t duration =
+          this->buff.recklessness->data().duration() * azerite.vision_of_perfection_percentage;
+      if ( this->buff.recklessness->check() )
+      {
+        this->buff.recklessness->extend_duration( this, duration );
+      }
+      else
+      {
+        this->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+      }
+      break;
+    }
+  }
+}
+
 
 // warrior_t::convert_hybrid_stat ==============================================
 
