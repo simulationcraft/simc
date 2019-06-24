@@ -2064,7 +2064,7 @@ void priest_t::generate_apl_shadow()
   single->add_action( this, "Void Eruption" );
   single->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
-  single->add_action( "memory_of_lucid_dreams,if=buff.voidform.stack>20&insanity<=50");
+  single->add_action( "memory_of_lucid_dreams,if=buff.voidform.stack>(20+5*buff.bloodlust.up)&insanity<=50");
   single->add_action( this, "Mind Sear",
                       "if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&"
                       "azerite.searing_dialogue.rank>=1" );
@@ -2109,7 +2109,7 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Vampiric Touch", "if=!ticking&azerite.thought_harvester.rank>=1" );
   cleave->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
   cleave->add_action( this, "Void Bolt" );
-  cleave->add_action( "memory_of_lucid_dreams,if=buff.voidform.stack>20&insanity<=50");
+  cleave->add_action( "memory_of_lucid_dreams,if=buff.voidform.stack>(20+5*buff.bloodlust.up)&insanity<=50");
   cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   cleave->add_talent( this, "Dark Void",
