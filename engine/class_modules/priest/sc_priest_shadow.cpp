@@ -1034,7 +1034,7 @@ struct void_eruption_t final : public priest_spell_t
 
   timespan_t execute_time() const override
   {
-    if ( priest().talents.void_origins->check() && priest().azerite_essence.conflict_and_strife->check() )
+    if ( priest().talents.void_origins->ok() && priest().azerite_essence.conflict->ok() )
     {
       return timespan_t::zero();
     }
@@ -1891,9 +1891,6 @@ void priest_t::init_spells_shadow()
   azerite.thought_harvester      = find_azerite_spell( "Thought Harvester" );
   azerite.torment_of_torments    = find_azerite_spell( "Torment of Torments" );
   azerite.whispers_of_the_damned = find_azerite_spell( "Whispers of the Damned" );
-
-  // Azerite Essences
-  azerite_essence.conflict_and_strife = find_azerite_essence( "Conflict and Strife" );
 
   base.distance = 27.0;
 }

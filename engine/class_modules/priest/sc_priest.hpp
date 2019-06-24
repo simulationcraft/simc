@@ -410,7 +410,8 @@ public:
   {
     const spell_data_t* lucid_dreams;
     const spell_data_t* memory_of_lucid_dreams;
-    const spell_data_t* conflict_and_strife;
+    const spell_data_t* conflict;
+    const spell_data_t* strife;
   } azerite_essence;
 
   struct insanity_end_event_t;
