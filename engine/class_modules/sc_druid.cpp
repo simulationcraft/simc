@@ -266,6 +266,7 @@ public:
   // Options
   double predator_rppm_rate;
   double initial_astral_power;
+  double thorns_attack_period;
   int    initial_moon_stage;
   int    lively_spirit_stacks; //to set how many spells a healer will cast during Innervate
   bool ahhhhh_the_great_outdoors;
@@ -371,7 +372,7 @@ public:
     buff_t* wild_charge_movement;
     buff_t* sephuzs_secret;
     buff_t* innervate;
-	buff_t* thorns;
+    buff_t* thorns;
 
     // Balance
     buff_t* natures_balance;
@@ -746,6 +747,7 @@ public:
     lucid_dreams_proc_chance_balance( 0.15 ),
     lucid_dreams_proc_chance_feral( 0.15 ),
     lucid_dreams_proc_chance_guardian( 0.15 ),
+    thorns_attack_period( 1.5 ),
     starshards( 0.0 ),
     previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
@@ -6985,97 +6987,99 @@ struct typhoon_t : public druid_spell_t
 
 struct thorns_t : public druid_spell_t
 {
-	struct thorns_proc_t : public druid_spell_t
-	{
-		thorns_proc_t(druid_t* player) : druid_spell_t("thorns_hit", player, player->find_spell(305496))
-		{
-			background = true;
+  struct thorns_proc_t : public druid_spell_t
+  {
+    thorns_proc_t(druid_t* player) : druid_spell_t("thorns_hit", player, player->find_spell(305496))
+    {
+      background = true;
 			if (p()->specialization() == DRUID_FERAL)
-			{ // a little gnarly, TODO(xan): clean this up
-				attack_power_mod.direct = 1.2 * p()->spec.feral->effectN(10).percent();
-				spell_power_mod.direct = 0;
-			}
+      { // a little gnarly, TODO(xan): clean this up
+        attack_power_mod.direct = 1.2 * p()->spec.feral->effectN(10).percent();
+        spell_power_mod.direct = 0;
+      }
 
-		}
-	};
+    }
+  };
 
-	struct thorns_attack_event_t : public event_t
-	{
-		action_t* thorns;
-		player_t* target_actor;
-		timespan_t attack_period;
-		druid_t* source;
-		bool randomize_first;
+  struct thorns_attack_event_t : public event_t
+   {
+    action_t* thorns;
+    player_t* target_actor;
+    timespan_t attack_period;
+    druid_t* source;
+    bool randomize_first;
 
-		thorns_attack_event_t(druid_t* player, action_t* thorns_proc, player_t* source, bool randomize = false) :
-			event_t(*player),
-			thorns(thorns_proc),
-			target_actor(source),
-			attack_period(timespan_t::from_seconds(2)), //TODO(Xan): make this an user specified option
-			source(player),
-			randomize_first(randomize)
-		{
-			//this will delay the first psudo autoattack by a random amount between 0 and a full attack period
-			if (randomize_first)
-				schedule(rng().real() * attack_period);
-			else
-				schedule(attack_period);
-		}
+    thorns_attack_event_t(druid_t* player, action_t* thorns_proc, player_t* source, bool randomize = false) :
+      event_t(*player),
+      thorns(thorns_proc),
+      target_actor(source),
+      attack_period(timespan_t::from_seconds(player->thorns_attack_period)),
+      source(player),
+      randomize_first(randomize)
+    {
+      //this will delay the first psudo autoattack by a random amount between 0 and a full attack period
+      if (randomize_first)
+        schedule(rng().real() * attack_period);
+      else
+        schedule(attack_period);
+    }
 
-		const char* name() const override
-		{
-			return "Thorns auto attack event";
-		}
+    const char* name() const override
+    {
+      return "Thorns auto attack event";
+    }
 
-		void execute() override
-		{
-			// Terminate the rescheduling if the target is dead, or if thorns would run out before next attack
+    void execute() override
+    {
+      // Terminate the rescheduling if the target is dead, or if thorns would run out before next attack
 
-			if (target_actor->is_sleeping())
-				return;
+      if (target_actor->is_sleeping())
+        return;
 
-			thorns->target = target_actor;
-			if (thorns->ready())
-				thorns->execute();
+      thorns->target = target_actor;
+      if (thorns->ready())
+        thorns->execute();
 
-			if (source->buff.thorns->remains() >= attack_period)
-				make_event<thorns_attack_event_t>(*source->sim, source, thorns, target_actor, false);
-		}
-	};
+      if (source->buff.thorns->remains() >= attack_period)
+        make_event<thorns_attack_event_t>(*source->sim, source, thorns, target_actor, false);
+    }
+  };
 
-	bool available = false;
-	thorns_proc_t* thorns_proc = nullptr;
+  bool available = false;
+  thorns_proc_t* thorns_proc = nullptr;
 
-	thorns_t(druid_t* player, const std::string& options_str) :
-		druid_spell_t("thorns", player, player->find_spell(305497), options_str)
-	{
-		available = p()->find_azerite_essence("Conflict and Strife").enabled();
+  thorns_t(druid_t* player, const std::string& options_str) :
+    druid_spell_t("thorns", player, player->find_spell(305497), options_str)
+   {
+    available = p()->find_azerite_essence("Conflict and Strife").enabled();
+    //workaround so that we do not need to enable mana regen
+    base_costs[ RESOURCE_MANA ] = 0.0;
 
-		if (!thorns_proc)
-		{
-			thorns_proc = new thorns_proc_t(player);
-			thorns_proc->stats = stats;
-		}
-	}
+    if (!thorns_proc)
+    {
+      thorns_proc = new thorns_proc_t(player);
+      thorns_proc->stats = stats;
+    }
+  }
 
-	virtual bool ready() override
-	{
-		if (!available)	return false;
+  virtual bool ready() override
+  {
+    if (!available)	return false;
 
-		return druid_spell_t::ready();
-	}
+    return druid_spell_t::ready();
+  }
 
-	void execute() override
-	{
-		p()->buff.thorns->trigger();
+  void execute() override
+   {
+    p()->buff.thorns->trigger();
 
-		for (player_t* target : p()->sim->target_non_sleeping_list)
-		{
-			make_event<thorns_attack_event_t>(*sim, p(), thorns_proc, target, true);
-		}
+    for (player_t* target : p()->sim->target_non_sleeping_list)
+    {
+      make_event<thorns_attack_event_t>(*sim, p(), thorns_proc, target, true);
+    }
 
-		druid_spell_t::execute();
-	}
+    druid_spell_t::execute();
+  }
 
 };
 
@@ -7424,7 +7428,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "swipe"                  ) return new            swipe_proxy_t( this, options_str );
   if ( name == "swiftmend"              ) return new              swiftmend_t( this, options_str );
   if ( name == "tigers_fury"            ) return new            tigers_fury_t( this, options_str );
-  if ( name == "thorns"					) return new				 thorns_t( this, options_str );
+  if ( name == "thorns"                 ) return new                 thorns_t( this, options_str );
   if ( name == "thrash_bear"            ) return new            thrash_bear_t( this, options_str );
   if ( name == "thrash_cat"             ) return new             thrash_cat_t( this, options_str );
   if ( name == "thrash"                 ) return new           thrash_proxy_t( this, options_str );
@@ -9679,6 +9683,7 @@ void druid_t::create_options()
   add_option( opt_bool  ( "outside", ahhhhh_the_great_outdoors ) );
   add_option( opt_bool  ( "vop_ap_bug", vop_ap_bug ) );
   add_option( opt_bool  ( "catweave_bear", catweave_bear ) );
+  add_option( opt_float ( "thorns_attack_period", thorns_attack_period ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10229,6 +10234,7 @@ void druid_t::copy_from( player_t* source )
   t21_4pc = p -> t21_4pc;
   ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
   vop_ap_bug = p->vop_ap_bug;
+  thorns_attack_period      = p->thorns_attack_period;
 }
 void druid_t::output_json_report(js::JsonOutput& /*root*/) const
 {
