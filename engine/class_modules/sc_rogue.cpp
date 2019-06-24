@@ -4766,7 +4766,7 @@ struct vendetta_debuff_t : public buff_t
       p->buffs.nothing_personal->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, remains() );
       nothing_personal->set_target( player );
       nothing_personal->dot_duration = remains();
-      nothing_personal->execute();
+      nothing_personal->schedule_execute();
     }
   }
 };
