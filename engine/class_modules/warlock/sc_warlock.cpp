@@ -536,6 +536,9 @@ void warlock_t::init_spells()
   talents.grimoire_of_sacrifice         = find_talent_spell( "Grimoire of Sacrifice" ); // aff and destro
   active.grimoire_of_sacrifice_proc     = new actions::grimoire_of_sacrifice_damage_t( this ); // grimoire of sacrifice
   talents.soul_conduit                  = find_talent_spell( "Soul Conduit" );
+
+  // Azerite Essences
+  azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
 }
 
 void warlock_t::init_rng()

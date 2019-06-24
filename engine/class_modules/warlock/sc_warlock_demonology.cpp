@@ -419,6 +419,7 @@ namespace warlock {
       {
         parse_options(options_str);
         harmful = may_crit = false;
+        cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
       }
 
       void execute() override

@@ -226,6 +226,10 @@ namespace warlock
         azerite_power_t chaos_shards;
       } azerite;
 
+      struct {
+        azerite_essence_t vision_of_perfection;
+      } azerite_essence;
+
       // Mastery Spells
       struct mastery_spells_t
       {
