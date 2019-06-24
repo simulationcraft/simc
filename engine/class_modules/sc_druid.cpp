@@ -349,6 +349,8 @@ public:
     azerite_power_t twisted_claws;
     azerite_power_t burst_of_savagery;
 
+    azerite_essence_t conflict_and_strife;
+
   } azerite;
 
   // azerite essence
@@ -423,6 +425,7 @@ public:
     buff_t* masterful_instincts;
     buff_t* twisted_claws;
     buff_t* burst_of_savagery;
+    buff_t* sharpened_claws;
 
     // Restoration
     buff_t* incarnation_tree;
@@ -698,6 +701,9 @@ public:
     const spell_data_t* rend_and_tear;
     const spell_data_t* lunar_beam;
     const spell_data_t* bristling_fur;
+
+    // PvP Talents
+    const spell_data_t* sharpened_claws;
 
     // Restoration
     const spell_data_t* verdant_growth;
@@ -4642,10 +4648,19 @@ struct maul_t : public bear_attack_t
   {
     bear_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> azerite.guardians_wrath.ok() )
+    if ( result_is_hit( s -> result ) )
     {
-      p() -> buff.guardians_wrath -> up(); // benefit tracking
-      p() -> buff.guardians_wrath -> trigger();
+      if ( p() -> azerite.guardians_wrath.ok() )
+      {
+        p() -> buff.guardians_wrath -> up(); // benefit tracking
+        p() -> buff.guardians_wrath -> trigger();
+      }
+
+      if ( p() -> azerite.conflict_and_strife.enabled() && p() -> talent.sharpened_claws -> ok() )
+      {
+        p() -> buff.sharpened_claws -> up(); // benefit tracking
+        p() -> buff.sharpened_claws -> trigger();
+      }
     }
   }
 
@@ -4714,6 +4729,18 @@ struct swipe_bear_t : public bear_attack_t
     bear_attack_t::update_ready( cd );
   }
 
+  virtual double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = bear_attack_t::composite_da_multiplier( s );
+
+    if ( p() -> buff.sharpened_claws -> up() )
+    {
+      m *= 1.0 + p() -> buff.sharpened_claws -> data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   virtual double bonus_da( const action_state_t* s ) const override
   {
     double b = bear_attack_t::bonus_da( s );
@@ -4770,6 +4797,30 @@ struct thrash_bear_t : public bear_attack_t
     bear_attack_t::tick( d );
 
     p() -> resource_gain( RESOURCE_RAGE, blood_frenzy_amount, p() -> gain.blood_frenzy );
+  }
+
+  virtual double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = bear_attack_t::composite_da_multiplier( s );
+
+    if ( p() -> buff.sharpened_claws -> up() )
+    {
+      m *= 1.0 + p() -> buff.sharpened_claws -> data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
+  virtual double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = bear_attack_t::composite_ta_multiplier( s );
+
+    if ( p() -> buff.sharpened_claws -> up() )
+    {
+      m *= 1.0 + p() -> buff.sharpened_claws -> data().effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   virtual void impact( action_state_t* state ) override
@@ -7462,6 +7513,8 @@ void druid_t::init_spells()
   talent.lunar_beam                     = find_talent_spell( "Lunar Beam" );
   talent.bristling_fur                  = find_talent_spell( "Bristling Fur" );
 
+  talent.sharpened_claws                = find_spell( 202110, DRUID_GUARDIAN );
+
   // Restoration
   talent.verdant_growth                 = find_talent_spell( "Verdant Growth" );
   talent.cenarion_ward                  = find_talent_spell( "Cenarion Ward" );
@@ -7522,6 +7575,8 @@ void druid_t::init_spells()
     + essence_vop.spell(2u, essence_spell::UPGRADE, essence_type::MAJOR)->effectN(1).percent();
 
   lucid_dreams = find_azerite_essence("Memory of Lucid Dreams").spell(1u, essence_type::MINOR);
+
+  azerite.conflict_and_strife = find_azerite_essence("Conflict and Strife");
 
   // Affinities =============================================================
 
@@ -7868,6 +7923,10 @@ void druid_t::create_buffs()
 
   buff.burst_of_savagery     = make_buff<stat_buff_t>( this, "burst_of_savagery", find_spell( 289315 ) )
                                -> add_stat( STAT_MASTERY_RATING, azerite.burst_of_savagery.value( 1 ) );
+
+  buff.sharpened_claws       = make_buff( this, "sharpened_claws", find_spell( 279943 ) )
+                               -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                               -> set_default_value( find_spell( 279943 ) -> effectN( 1 ).percent() );
 
   // Restoration
   buff.harmony               = make_buff( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
