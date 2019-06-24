@@ -3639,13 +3639,24 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
       cooldown->duration *= 1.0 + essence.spell_ref(2u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(1).percent();
   }
 
+  result_e calculate_result( action_state_t* s) const override
+  {
+    if (player->rng().roll(1.0 - sim->bfa_opts.blood_of_the_enemy_in_range))
+      return RESULT_MISS;
+
+    return azerite_essence_major_t::calculate_result(s);
+  }
+
   void impact(action_state_t* s) override
   {
     azerite_essence_major_t::impact(s);
 
-    // 25% increased chance to be hit debuff
-    auto td = player->get_target_data(s->target);
-    td->debuff.blood_of_the_enemy->trigger();
+    if (result_is_hit(s->result))
+    {
+      // 25% increased chance to be hit debuff
+      auto td = player->get_target_data(s->target);
+      td->debuff.blood_of_the_enemy->trigger();
+    }
   }
 
   void execute() override

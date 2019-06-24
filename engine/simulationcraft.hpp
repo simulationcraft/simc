@@ -1174,6 +1174,8 @@ struct sim_t : private sc_thread_t
     int                 worldvein_allies = 0;
     /// Chance to proc Reality Shift (normally triggers on moving specific distance)
     double              ripple_in_space_proc_chance = 0.0;
+    /// Chance to be in range to hit with Blood of the Enemy major power (12 yd PBAoE)
+    double              blood_of_the_enemy_in_range = 1.0;
   } bfa_opts;
 
   // Expansion specific data
