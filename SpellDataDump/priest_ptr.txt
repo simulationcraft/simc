@@ -3884,15 +3884,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=290316)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -45 | Scaled Value: -45 | PvP Coefficient: 1.00000 | Misc Value: 12
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 12
                    Affected Spells: Power Word: Barrier (62618), Power Word: Barrier (81782)
                    Family Flags: 88
 #2 (id=313656)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -90000 | Scaled Value: -90000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Power Word: Barrier (62618), Power Word: Barrier (81782), Luminous Barrier (271466)
                    Family Flags: 88, 99
 #3 (id=735853)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value: 3
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3
 Description      : Reduces the cooldown of $?s271466[Luminous Barrier][Power Word: Barrier] by ${($m2/1000)*-1)} sec.
 $?s271466[Luminous Barrier absorbs an additional $s3% damage.][Power Word: Barrier reduces damage taken by an additional $s1%.]
 
