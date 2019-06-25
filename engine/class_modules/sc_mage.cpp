@@ -5953,6 +5953,7 @@ void mage_t::apl_frost()
   aoe->add_action( "call_action_list,name=movement" );
   aoe->add_action( this, "Ice Lance" );
 
+  cooldowns->add_action( options.rotation == ROTATION_FROZEN_ORB ? "guardian_of_azeroth,if=cooldown.frozen_orb.remains<5" : "guardian_of_azeroth" );
   cooldowns->add_action( this, "Icy Veins", options.rotation == ROTATION_FROZEN_ORB ? "if=cooldown.frozen_orb.remains<5" : "" );
   cooldowns->add_talent( this, "Mirror Image" );
   cooldowns->add_talent( this, "Rune of Power", "if=prev_gcd.1.frozen_orb|target.time_to_die>10+cast_time&target.time_to_die<20",
@@ -5964,7 +5965,6 @@ void mage_t::apl_frost()
     "extra Rune of Power charges that should be used with active talents, if possible." );
   cooldowns->add_action( "potion,if=prev_gcd.1.icy_veins|target.time_to_die<30" );
   cooldowns->add_action( "use_items" );
-  cooldowns->add_action( options.rotation == ROTATION_FROZEN_ORB ? "guardian_of_azeroth,if=cooldown.frozen_orb.remains<5" : "guardian_of_azeroth" );
   for ( const auto& ra : racial_actions )
   {
     if ( ra == "arcane_torrent" )
