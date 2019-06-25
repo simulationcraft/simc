@@ -4115,7 +4115,7 @@ struct ripple_in_space_t : public azerite_essence_major_t
     azerite_essence_major_t(p, "ripple_in_space", p->find_spell(302731))
   {
     parse_options( options_str );
-
+    may_crit = true;
     aoe = -1;
 
     base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 2 ).average( essence.item() );
