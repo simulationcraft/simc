@@ -398,6 +398,7 @@ public:
   bool fake_sov;
   int indomitable_justice_pct;
   double proc_chance_ret_memory_of_lucid_dreams;
+  double lucid_dreams_accumulator;
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN );
 

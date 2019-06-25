@@ -28,7 +28,8 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   beacon_target( nullptr ),
   fake_sov( true ),
   indomitable_justice_pct( 0 ),
-  proc_chance_ret_memory_of_lucid_dreams( 0.15 )
+  proc_chance_ret_memory_of_lucid_dreams( 0.15 ),
+  lucid_dreams_accumulator( 0.0 )
 {
   active_consecration = nullptr;
 
@@ -957,7 +958,7 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
     if ( ! rng().roll( proc_chance_ret_memory_of_lucid_dreams ) )
       return;
 
-    double total_gain = cost * spells.memory_of_lucid_dreams_base -> effectN( 1 ).percent();
+    double total_gain = lucid_dreams_accumulator + cost * spells.memory_of_lucid_dreams_base -> effectN( 1 ).percent();
 
     // mserrano note: apparently when you get a proc on a 1-holy-power spender, if it did proc,
     // you always get 1 holy power instead of alternating between 0 and 1. This is based on
@@ -966,7 +967,11 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
       total_gain = 1;
     }
 
-    resource_gain( RESOURCE_HOLY_POWER, total_gain, gains.hp_memory_of_lucid_dreams );
+    double real_gain = floor( total_gain );
+
+    lucid_dreams_accumulator = total_gain - real_gain;
+
+    resource_gain( RESOURCE_HOLY_POWER, real_gain, gains.hp_memory_of_lucid_dreams );
   } else {
     // TODO: implement holy/prot
     return;
@@ -1838,6 +1843,8 @@ void paladin_t::combat_begin()
   {
     resource_loss( RESOURCE_HOLY_POWER, hp_overflow );
   }
+
+  lucid_dreams_accumulator = 0;
 }
 
 // paladin_t::get_how_availability ==========================================
