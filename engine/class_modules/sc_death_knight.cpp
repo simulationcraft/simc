@@ -389,8 +389,6 @@ struct death_knight_td_t : public actor_target_data_t {
 
     // Azerite Traits
     buff_t* deep_cuts;
-    buff_t* frostbolt_apocalypse_magus;
-    buff_t* frostbolt_army_magus;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* death_knight );
@@ -732,14 +730,14 @@ public:
     pets::gargoyle_pet_t* gargoyle;
     pet_t* ghoul_pet;
     pet_t* risen_skulker;
-
+    
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
+    spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> magus_of_the_dead;
 
-    pets_t( death_knight_t* p ) : bloodworms( "bloodworm", p ) {}
-
-    // Note: 2 pets, one for each ability trigger (apoc and aotd)
-    pets::magus_pet_t* apocalype_magus;
-    pets::magus_pet_t* army_magus;
+    pets_t( death_knight_t* p ) :
+      bloodworms( "bloodworm", p ),
+      magus_of_the_dead( "magus_of_the_dead", p )
+    {}
   } pets;
 
   // Procs
@@ -904,7 +902,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
-  
+
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
@@ -977,9 +975,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_cooldown( 0_ms ); // Handled by trigger_festering_wound
 
   debuff.deep_cuts         = make_buff( *this, "deep_cuts", p -> find_spell( 272685 ) );
-
-  debuff.frostbolt_apocalypse_magus = make_buff( *this, "frostbolt_apocalypse_magus", p -> find_spell( 288548 ) );
-  debuff.frostbolt_army_magus = make_buff( *this, "frostbolt_army_magus", p -> find_spell( 288548 ) );
 
   // On target death triggers
   if ( p -> specialization() == DEATH_KNIGHT_UNHOLY )
@@ -2309,12 +2304,33 @@ struct bloodworm_pet_t : public death_knight_pet_t
 
 struct magus_pet_t : public death_knight_pet_t
 {
+  struct magus_td_t : public actor_target_data_t
+  {
+    buff_t* frostbolt_debuff;
+
+    magus_td_t( player_t* target, magus_pet_t* p ) :
+      actor_target_data_t( target, p )
+    {
+      frostbolt_debuff = make_buff( *this, "frostbolt_apocalypse_magus", p -> owner -> find_spell( 288548 ) );
+    }
+  };
+
+  target_specific_t<magus_td_t> target_data;
+
+  magus_td_t* get_target_data( player_t* target ) const override
+  {
+    magus_td_t*& td = target_data[ target ];
+    if ( ! td )
+    {
+      td = new magus_td_t( target, const_cast<magus_pet_t*>( this ) );
+    }
+    return td;
+  }
+
   // Magus of the dead has a special AI:
   // Frostbolt has a 3s cooldown that doesn't seeem to be in spelldata
   // It also applies a 4s snare on non-boss targets hit, and can't target an enemy affected by said snare
-  // The snare isn't shared between the magus spawned by army and apoc.
   // Frostbolt is used on cooldown, and shadow bolt is used the rest of the time
-  bool is_apoc_magus;
 
   struct magus_spell_t : public pet_action_t<magus_pet_t, spell_t>
   {
@@ -2344,27 +2360,21 @@ struct magus_pet_t : public death_knight_pet_t
     {
       magus_spell_t::impact( state );
 
-      magus_pet_t* magus = debug_cast< magus_pet_t* >( p() );
-      death_knight_td_t* td = p() -> o() -> get_target_data( state -> target );
+      magus_td_t* td = p() -> get_target_data( state -> target );
 
       if ( result_is_hit( state -> result )
-           && ( state -> target -> is_add() || state -> target -> level() < sim -> max_player_level + 3 ) )
+            && ( state -> target -> is_add() || state -> target -> level() < sim -> max_player_level + 3 ) )
       {
-        if ( magus -> is_apoc_magus )
-          td -> debuff.frostbolt_apocalypse_magus -> trigger();
-        else
-          td -> debuff.frostbolt_army_magus -> trigger();
+        td -> frostbolt_debuff -> trigger();
       }
     }
 
     bool target_ready( player_t* candidate_target ) override
     {
-      death_knight_td_t* td = p() -> o() -> get_target_data( candidate_target );
-      magus_pet_t* magus = debug_cast< magus_pet_t* >( p() );
+      magus_td_t* td = p() -> get_target_data( candidate_target );
 
       // Frostbolt can't target an enemy already affected by its slowing debuff
-      if ( ( td -> debuff.frostbolt_apocalypse_magus -> check() && magus -> is_apoc_magus ) || 
-        ( td -> debuff.frostbolt_army_magus -> check() && ! magus -> is_apoc_magus ) )
+      if ( td -> frostbolt_debuff -> check() )
         return false;
 
       return magus_spell_t::target_ready( candidate_target );
@@ -2378,9 +2388,8 @@ struct magus_pet_t : public death_knight_pet_t
     { }
   };
 
-  magus_pet_t( death_knight_t* owner, bool apoc_magus ) :
-    death_knight_pet_t( owner, "magus_of_the_dead", true, false ),
-    is_apoc_magus( apoc_magus )
+  magus_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "magus_of_the_dead", true, false )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
@@ -3080,7 +3089,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
 
     if ( p() -> azerite.magus_of_the_dead.enabled() )
     {
-      p() -> pets.apocalype_magus -> summon( magus_duration );
+      p() -> pets.magus_of_the_dead.spawn( magus_duration, 1 );
     }
   }
 
@@ -3202,7 +3211,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
     if ( p() -> azerite.magus_of_the_dead.enabled() )
     {
-      p() -> pets.army_magus -> summon( magus_duration - precombat_time );
+      p() -> pets.magus_of_the_dead.spawn( magus_duration - precombat_time, 1 );
     }
   }
 
@@ -6998,8 +7007,8 @@ void death_knight_t::create_pets()
 
     if ( azerite.magus_of_the_dead.enabled() )
     {
-      pets.apocalype_magus = new pets::magus_pet_t( this, true );
-      pets.army_magus = new pets::magus_pet_t( this, false );
+      pets.magus_of_the_dead.set_creation_callback( 
+        [] ( death_knight_t* p ) { return new pets::magus_pet_t( p ); } );
     }
   }
   
