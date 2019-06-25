@@ -5982,7 +5982,7 @@ void mage_t::apl_frost()
       essences->add_action( "blood_of_the_enemy,if=buff.icicles.stack=5&buff.brain_freeze.react|!talent.glacial_spike.enabled|active_enemies>4" );
       essences->add_action( "purifying_blast" );
       essences->add_action( "ripple_in_space" );
-      essences->add_action( "concentrated_flame" );
+      essences->add_action( "concentrated_flame,line_cd=6" );
       essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
       essences->add_action( "worldvein_resonance" );
       break;
@@ -5992,7 +5992,7 @@ void mage_t::apl_frost()
       essences->add_action( "blood_of_the_enemy,if=prev_gcd.1.rune_of_power&prev_gcd.2.frozen_orb" );
       essences->add_action( "purifying_blast,if=debuff.packed_ice.down" );
       essences->add_action( "ripple_in_space,if=debuff.packed_ice.down" );
-      essences->add_action( "concentrated_flame,if=debuff.packed_ice.down" );
+      essences->add_action( "concentrated_flame,if=debuff.packed_ice.down,line_cd=6" );
       essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
       essences->add_action( "worldvein_resonance,if=debuff.packed_ice.down" );
       break;
