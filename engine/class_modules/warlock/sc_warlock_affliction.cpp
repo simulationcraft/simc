@@ -502,25 +502,9 @@ namespace warlock
             darkglare->summon(data().duration());
           }
         }
+        timespan_t darkglare_extension = timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value());
 
-        for (const auto target : sim->target_non_sleeping_list)
-        {
-          auto td = this->td(target);
-          if (!td)
-          {
-            continue;
-          }
-          timespan_t darkglare_extension = timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value());
-          td->dots_agony->extend_duration(darkglare_extension);
-          td->dots_corruption->extend_duration(darkglare_extension);
-          td->dots_siphon_life->extend_duration(darkglare_extension);
-          td->dots_phantom_singularity->extend_duration(darkglare_extension);
-          td->dots_vile_taint->extend_duration(darkglare_extension);
-          for (auto& current_ua : td->dots_unstable_affliction)
-          {
-            current_ua->extend_duration(darkglare_extension);
-          }
-        }
+        p()->darkglare_extension_helper( p(), darkglare_extension );
       }
     };
 
