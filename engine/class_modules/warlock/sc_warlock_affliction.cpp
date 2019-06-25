@@ -986,9 +986,7 @@ namespace warlock
     timespan_t darkglare_extension = timespan_t::from_seconds(
       vop.spell_ref( vop.rank(), essence_type::MAJOR ).effectN( 3 ).base_value() / 1000);
 
-    make_event( sim, [ this, darkglare_extension ]() {
-      darkglare_extension_helper( this, darkglare_extension );
-    } );
+    darkglare_extension_helper( this, darkglare_extension );
   }
 
   void warlock_t::init_spells_affliction()

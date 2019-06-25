@@ -6424,11 +6424,7 @@ void mage_t::vision_of_perfection_proc()
       // TODO: This might be a bug.
       if ( specialization() == MAGE_FROST )
       {
-        // When Vision of Perfection is triggered by Ice Lance, the
-        // Fingers of Frost from Frigid Grasp can be consumed by the
-        // Ice Lance without any effect. Apply the buff after the
-        // spell has finished executing.
-        make_event( *sim, [ secondary ] { secondary->trigger(); } );
+        secondary->trigger();
       }
       else
       {
