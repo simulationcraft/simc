@@ -256,6 +256,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     wracking_brilliance(false),
     agony_accumulator( 0.0 ),
     memory_of_lucid_dreams_accumulator( 0.0 ),
+    strive_for_perfection_multiplier(),
+    vision_of_perfection_multiplier(),
     active_pets( 0 ),
     warlock_pet_list( this ),
     active(),
@@ -583,7 +585,12 @@ void warlock_t::init_spells()
   // Azerite Essences
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
   spells.memory_of_lucid_dreams_base = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
+  strive_for_perfection_multiplier = 1.0 + azerite::vision_of_perfection_cdr( azerite_essence.vision_of_perfection );
+  vision_of_perfection_multiplier = 
+    azerite_essence.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent() +
+    azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
 }
 
 void warlock_t::init_rng()
@@ -962,6 +969,27 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
+void warlock_t::vision_of_perfection_proc()
+{
+  if( vision_of_perfection_multiplier <= 0.0 )
+    return;
+
+  switch ( specialization() )
+  {
+    case WARLOCK_DESTRUCTION:
+      vision_of_perfection_proc_destro();
+      break;
+    case WARLOCK_AFFLICTION:
+      vision_of_perfection_proc_aff();
+      break;
+    case WARLOCK_DEMONOLOGY:
+      vision_of_perfection_proc_demo();
+      break;
+    default:
+      return;
+  }
+}
+
 pet_t* warlock_t::create_main_pet(const std::string& pet_name, const std::string& pet_type)
 {
   pet_t* p = find_pet(pet_name);
@@ -1290,7 +1318,9 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w ) :
   vicious_hellhounds( "vicious_hellhound", w ),
   illidari_satyrs( "illidari_satyr", w ),
   eyes_of_guldan( "eye_of_guldan", w ),
-  prince_malchezaar( "prince_malchezaar", w )
+  prince_malchezaar( "prince_malchezaar", w ),
+  vop_darkglares( "vop_darkglare", w ),
+  vop_infernals( "vop_infernal", w )
 { }
 }
 

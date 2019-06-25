@@ -89,15 +89,28 @@ namespace warlock {
 
         if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat)
         {
+          bool active_infernal = false;
+
           if (p()->talents.grimoire_of_supremacy->ok())
           {
             for (auto& infernal : p()->warlock_pet_list.infernals)
             {
               if (!infernal->is_sleeping())
               {
-                p()->buffs.grimoire_of_supremacy->trigger(as<int>(last_resource_cost));
+                active_infernal = true;
               }
             }
+
+            for (auto& infernal : p()->warlock_pet_list.vop_infernals)
+            {
+              if (!infernal->is_sleeping())
+              {
+                active_infernal = true;
+              }
+            }
+
+            if(active_infernal)
+              p()->buffs.grimoire_of_supremacy->trigger(as<int>(last_resource_cost));
           }
 
           if (p()->talents.soul_fire->ok())
@@ -651,6 +664,7 @@ namespace warlock {
           p()->buffs.chaotic_inferno->trigger();
 
         p()->buffs.crashing_chaos->decrement();
+        p()->buffs.crashing_chaos_vop->decrement();
         p()->buffs.backdraft->decrement();
       }
 
@@ -665,6 +679,7 @@ namespace warlock {
         double da = destruction_spell_t::bonus_da(s);
         da += p()->azerite.chaotic_inferno.value(2);
         da += p()->buffs.crashing_chaos->check_value();
+        da += p()->buffs.crashing_chaos_vop->check_value();
         return da;
       }
 
@@ -837,7 +852,11 @@ namespace warlock {
         }
 
         if (p()->azerite.crashing_chaos.ok())
+        {
+          //Cancel the Vision of Perfection version if necessary
+          p()->buffs.crashing_chaos_vop->expire();
           p()->buffs.crashing_chaos->trigger(p()->buffs.crashing_chaos->max_stack());
+        }
       }
     };
 
@@ -991,6 +1010,8 @@ namespace warlock {
       ->set_chance( find_spell( 279672 )->proc_chance() );
     buffs.crashing_chaos = make_buff( this, "crashing_chaos", find_spell( 277706 ) )
       ->set_default_value( azerite.crashing_chaos.value() );
+    buffs.crashing_chaos_vop = make_buff( this, "crashing_chaos_vop", find_spell( 277706 ) )
+      ->set_default_value( azerite.crashing_chaos.value() * vision_of_perfection_multiplier );
     buffs.rolling_havoc = make_buff<stat_buff_t>( this, "rolling_havoc", find_spell( 278931 ) )
       ->add_stat( STAT_INTELLECT, azerite.rolling_havoc.value() );
     buffs.flashpoint = make_buff<stat_buff_t>( this, "flashpoint", find_spell( 275429 ) )
@@ -1002,6 +1023,21 @@ namespace warlock {
       ->set_tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
       resource_gain( RESOURCE_SOUL_SHARD, b->data().effectN( 1 ).base_value() / 10.0, gains.chaos_shards );
     } );
+  }
+
+  void warlock_t::vision_of_perfection_proc_destro()
+  {
+    //TODO: Does the proc trigger infernal awakening?
+
+    //Summoning an Infernal overwrites the previous buff with the new one
+    buffs.crashing_chaos->expire();
+
+    timespan_t summon_duration = find_spell(111685)->duration() * vision_of_perfection_multiplier;
+
+    warlock_pet_list.vop_infernals.spawn( summon_duration, 1u );
+
+    if( azerite.crashing_chaos.ok() )
+      buffs.crashing_chaos_vop->trigger( buffs.crashing_chaos_vop->max_stack() );
   }
 
   void warlock_t::init_spells_destruction() {
