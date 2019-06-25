@@ -4265,12 +4265,32 @@ void vision_of_perfection(special_effect_t& effect)
     }
   };
 
-  // There appear to be 3 RPPM spells for Vision of Perfection
-  //   1) id=297866 0.85 rppm, 0.1s icd, yellow hits + dot -- dps or tank specs?
-  //   2) id=297868 0.85 rppm, 0.1s icd, heals only -- healer specs
-  //   3) id=297869 0.85 rppm, 3.5s icd, yellow hits + dot -- dps or tank specs?
-  // Using option 3 for now.
-  effect.spell_id = 297869;
+  // There are 3 RPPM spells for Vision of Perfection
+  //   1) id=297866 0.85 rppm, 0.1s icd, yellow hits + dot -- tank spec: logs show tank spec procing with 2.4s interval
+  //   2) id=297868 0.85 rppm, 0.1s icd, heals only      -- healer spec: hotfix on this spell for holy paladins
+  //   3) id=297869 0.85 rppm, 3.5s icd, yellow hits + dot -- dps spec?: by process of elimination?
+  switch (effect.player->specialization())
+  {
+    case DEATH_KNIGHT_BLOOD:
+    case DEMON_HUNTER_HAVOC:
+    case DRUID_GUARDIAN:
+    case MONK_BREWMASTER:
+    case PALADIN_PROTECTION:
+    case WARRIOR_PROTECTION:
+      effect.spell_id = 297866;
+      break;
+    case DRUID_RESTORATION:
+    case MONK_MISTWEAVER:
+    case PALADIN_HOLY:
+    case PRIEST_DISCIPLINE:
+    case PRIEST_HOLY:
+    case SHAMAN_RESTORATION:
+      effect.spell_id = 297868;
+      break;
+    default:
+      effect.spell_id = 297869;
+      break;
+  }
 
   if (essence.rank() >= 3)
   {
