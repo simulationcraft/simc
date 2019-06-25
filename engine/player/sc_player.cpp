@@ -9612,7 +9612,7 @@ azerite_power_t player_t::find_azerite_spell( const std::string& name, bool toke
 
 azerite_essence_t player_t::find_azerite_essence( unsigned id ) const
 {
-  if ( !azerite_essence || !maybe_ptr( dbc.ptr ) )
+  if ( !azerite_essence )
   {
     return { this };
   }
@@ -9622,7 +9622,7 @@ azerite_essence_t player_t::find_azerite_essence( unsigned id ) const
 
 azerite_essence_t player_t::find_azerite_essence( const std::string& name, bool tokenized ) const
 {
-  if ( !azerite_essence || !maybe_ptr( dbc.ptr ) )
+  if ( !azerite_essence )
   {
     return { this };
   }
