@@ -973,11 +973,11 @@ public:
           const double amount =
               ceil( ab::last_resource_cost * p()->azerite_spells.memory_of_lucid_dreams->effectN( 1 ).percent() );
           p()->resource_gain( cr, amount, p()->gain.memory_of_lucid_dreams );
-        }
 
-        if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
-        {
+          if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
+          {
           p()->buffs.lucid_dreams->trigger();
+          }
         }
       }
     }
@@ -5102,10 +5102,16 @@ void warrior_t::default_apl_dps_precombat()
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   precombat->add_action( "potion" );
+
+  precombat->add_action( "memory_of_lucid_dreams" );
+
+  precombat->add_action( "guardian_of_azeroth" );
+
+  precombat->add_action( "focused_azerite_beam" );
   
   if ( specialization() == WARRIOR_FURY )
   {
-    precombat->add_action( this, "Recklessness", "if=!talent.furious_slash.enabled&!talent.reckless_abandon.enabled" );
+    precombat->add_action( this, "Recklessness", "if=!talent.furious_slash.enabled" );
   }
 }
 
@@ -5137,8 +5143,19 @@ void warrior_t::apl_fury()
                             "if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|("
                             "cooldown.recklessness.remains<3&buff.furious_slash.remains<9))" );
   default_list->add_action( this, "Rampage", "if=cooldown.recklessness.remains<3" );
-  default_list->add_action( this, "Recklessness", "if=!talent.siegebreaker.enabled|(cooldown.siegebreaker.remains<1|"
-                            "cooldown.siegebreaker.remains>5)" );
+
+  default_list->add_action( "blood_of_the_enemy,if=buff.recklessness.up" );
+  default_list->add_action( "purifying_blast,if=!buff.recklessness.up&!buff.siegebreaker.up" );
+  default_list->add_action( "ripple_in_space,if=!buff.recklessness.up&!buff.siegebreaker.up" );
+  default_list->add_action( "worldvein_resonance,if=!buff.recklessness.up&!buff.siegebreaker.up" );
+  default_list->add_action( "focused_azerite_beam,if=!buff.recklessness.up&!buff.siegebreaker.up" );
+  default_list->add_action( "concentrated_flame,if=!buff.recklessness.up&!buff.siegebreaker.up&dot.concentrated_flame_burn.remains=0" );
+  default_list->add_action( "the_unbound_force,if=buff.reckless_force.up" );
+  default_list->add_action( "guardian_of_azeroth,if=!buff.recklessness.up" );
+  default_list->add_action( "memory_of_lucid_dreams,if=!buff.recklessness.up" );
+
+  default_list->add_action( this, "Recklessness", "if=!essence.condensed_lifeforce.major|cooldown.guardian_of_azeroth.remains>20"
+                            "|buff.guardian_of_azeroth.up" );
   default_list->add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.meat_cleaver.up" );
 
   for ( size_t i = 0; i < items.size(); i++ )
@@ -5172,23 +5189,24 @@ void warrior_t::apl_fury()
       default_list->add_action( racial_actions[ i ] );
     }
   }
+
   default_list->add_action( "run_action_list,name=single_target" );
 
   movement->add_action( this, "Heroic Leap" );
 
   single_target->add_talent( this, "Siegebreaker" );
   single_target->add_action( this, "Rampage",
-                             "if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff."
-                             "enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))" );
+                             "if=(buff.recklessness.up|buff.memory_of_lucid_dreams.up)|"
+                             "(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|"
+                             "rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))" );
   single_target->add_action( this, "Execute" );
   single_target->add_talent( this, "Bladestorm",  "if=prev_gcd.1.rampage" );
   single_target->add_action( this, "Bloodthirst", "if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1" );
+  single_target->add_talent( this, "Dragon Roar", "if=buff.enrage.up" );
   single_target->add_action( this, "Raging Blow", "if=charges=2" );
   single_target->add_action( this, "Bloodthirst" );
-  single_target->add_talent( this, "Dragon Roar", "if=buff.enrage.up" );
-  single_target->add_action(
-      this, "Raging Blow",
-      "if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)" );
+  single_target->add_action( this, "Raging Blow", "if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|"
+                             "(talent.frothing_berserker.enabled&rage<90)" );
   single_target->add_talent( this, "Furious Slash", "if=talent.furious_slash.enabled" );
   single_target->add_action( this, "Whirlwind" );
 }
@@ -5251,6 +5269,16 @@ void warrior_t::apl_arms()
       "if=cooldown.colossus_smash.remains<8|(talent.warbreaker.enabled&cooldown.warbreaker.remains<8)" );
   default_list->add_action( this, "Sweeping Strikes", "if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>10"
                             "|cooldown.colossus_smash.remains>8|azerite.test_of_might.enabled)" );
+
+  default_list->add_action( "blood_of_the_enemy,if=buff.test_of_might.up|(debuff.colossus_smash.up&!azerite.test_of_might.enabled)" );
+  default_list->add_action( "purifying_blast,if=!debuff.colossus_smash.up&!buff.test_of_might.up" );
+  default_list->add_action( "ripple_in_space,if=!debuff.colossus_smash.up&!buff.test_of_might.up" );
+  default_list->add_action( "worldvein_resonance,if=!debuff.colossus_smash.up&!buff.test_of_might.up" );
+  default_list->add_action( "focused_azerite_beam,if=!debuff.colossus_smash.up&!buff.test_of_might.up" );
+  default_list->add_action( "concentrated_flame,if=!debuff.colossus_smash.up&!buff.test_of_might.up&dot.concentrated_flame_burn.remains=0" );
+  default_list->add_action( "the_unbound_force,if=buff.reckless_force.up" );
+  default_list->add_action( "guardian_of_azeroth,if=cooldown.colossus_smash.remains<10" );
+  default_list->add_action( "memory_of_lucid_dreams,if=cooldown.colossus_smash.remains<3" );
 
   default_list->add_action( "run_action_list,name=hac,if=raid_event.adds.exists" );
   default_list->add_action( "run_action_list,name=five_target,if=spell_targets.whirlwind>4" );
@@ -5316,45 +5344,45 @@ void warrior_t::apl_arms()
 
 //execute->add_talent( this, "Rend", "if=remains<=duration*0.3&debuff.colossus_smash.down" ); Not worth casting at the moment
   execute->add_talent( this, "Skullsplitter",
-                       "if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)" );
+                       "if=rage<60&buff.deadly_calm.down&buff.memory_of_lucid_dreams.down" );
   execute->add_talent( this, "Ravager",
                        "if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown."
                        "warbreaker.remains<2))" );
-  execute->add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
-  execute->add_talent( this, "Warbreaker", "if=debuff.colossus_smash.down" );
+  execute->add_action( this, "Colossus Smash", "if=!essence.memory_of_lucid_dreams.major|"
+                       "(buff.memory_of_lucid_dreams.up|cooldown.memory_of_lucid_dreams.remains>10)" );
+  execute->add_talent( this, "Warbreaker", "if=!essence.memory_of_lucid_dreams.major|"
+                       "(buff.memory_of_lucid_dreams.up|cooldown.memory_of_lucid_dreams.remains>10)" );
   execute->add_talent( this, "Deadly Calm");
-  execute->add_action( this, "Bladestorm", "if=rage<30&!buff.deadly_calm.up" );
+  execute->add_action( this, "Bladestorm", "if=!buff.memory_of_lucid_dreams.up&buff.test_of_might.up&rage<30&!buff.deadly_calm.up" );
   execute->add_talent( this, "Cleave", "if=spell_targets.whirlwind>2" );
-  execute->add_action( this, "Slam", "if=buff.crushing_assault.up" );
+  execute->add_action( this, "Slam", "if=buff.crushing_assault.up&buff.memory_of_lucid_dreams.down" );
   execute->add_action( this, "Mortal Strike","if=buff.overpower.stack=2&talent.dreadnaught."
                              "enabled|buff.executioners_precision.stack=2" );
-  execute->add_action( this, "Execute" , "if=buff.deadly_calm.up");
+  execute->add_action( this, "Execute" , "if=buff.memory_of_lucid_dreams.up|buff.deadly_calm.up");
   execute->add_action( this, "Overpower" );
   execute->add_action( this, "Execute" );
 
   single_target->add_talent( this, "Rend", "if=remains<=duration*0.3&debuff.colossus_smash.down" );
   single_target->add_talent( this, "Skullsplitter",
-                             "if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)" );
+                             "if=rage<60&buff.deadly_calm.down&buff.memory_of_lucid_dreams.down" );
   single_target->add_talent( this, "Ravager", "if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent."
                              "warbreaker.enabled&cooldown.warbreaker.remains<2))");
-  single_target->add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
-  single_target->add_talent( this, "Warbreaker", "if=debuff.colossus_smash.down" );
+  single_target->add_action( this, "Colossus Smash","if=!essence.memory_of_lucid_dreams.major|"
+                             "(buff.memory_of_lucid_dreams.up|cooldown.memory_of_lucid_dreams.remains>10)" );
+  single_target->add_talent( this, "Warbreaker", "if=!essence.memory_of_lucid_dreams.major|"
+                             "(buff.memory_of_lucid_dreams.up|cooldown.memory_of_lucid_dreams.remains>10)" );
   single_target->add_talent( this, "Deadly Calm" );
   single_target->add_action( this, "Execute", "if=buff.sudden_death.react" );
-  single_target->add_action( this, "Bladestorm",
-                             "if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&"
-                             "((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)" );
+  single_target->add_action( this, "Bladestorm", "if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|"
+                             "buff.deadly_calm.down)&((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|"
+                             "buff.test_of_might.up)&buff.memory_of_lucid_dreams.down" );
   single_target->add_talent( this, "Cleave", "if=spell_targets.whirlwind>2" );
-  single_target->add_action( this, "Overpower", "if=azerite.seismic_wave.rank=3" );
+  single_target->add_action( this, "Overpower", "if=rage<30&buff.memory_of_lucid_dreams.up&debuff.colossus_smash.up" );
   single_target->add_action( this, "Mortal Strike" );
-  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(buff.deadly_calm.up|rage>=60)" );
+  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(buff.memory_of_lucid_dreams.up|buff.deadly_calm.up)" );
   single_target->add_action( this, "Overpower" );
-  single_target->add_action( this, "Whirlwind",
-                             "if=talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|"
-                             "debuff.colossus_smash.up)" );
-  single_target->add_action( this, "Slam",
-                             "if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|"
-                             "debuff.colossus_smash.up|buff.deadly_calm.up|rage>=60)");
+  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled" );
+  single_target->add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled");
 }
 
 // Protection Warrior Action Priority List ========================================
