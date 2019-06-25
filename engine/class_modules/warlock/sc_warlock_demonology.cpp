@@ -985,6 +985,8 @@ namespace warlock {
     timespan_t extension = timespan_t::from_seconds(
       essence.spell_ref( essence.rank(), essence_type::MAJOR ).effectN( 2 ).base_value() / 1000 );
 
+    if ( azerite.baleful_invocation.ok() )
+      resource_gain( RESOURCE_SOUL_SHARD, std::round( find_spell( 287060 )->effectN( 1 ).base_value() / 10.0 * vision_of_perfection_multiplier ), gains.baleful_invocation );
     buffs.demonic_power->trigger( 1, buffs.demonic_power->DEFAULT_VALUE(), -1.0, summon_duration );
     
     //TOCHECK: Azerite traits, does proc tyrant extend summoned tyrant and vice versa?
