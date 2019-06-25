@@ -390,7 +390,8 @@ public:
   } azerite;
 
   struct {
-    azerite_essence_t memory_of_lucid_dreams; // Memory of lucid dreams minor
+    azerite_essence_t memory_of_lucid_dreams;
+    azerite_essence_t vision_of_perfection;
   } azerite_essence;
 
   player_t* beacon_target;

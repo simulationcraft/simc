@@ -149,6 +149,8 @@ struct avenging_wrath_t : public paladin_spell_t
 
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.avenging_wrath;
+
+    cooldown -> duration *= 1.0 + azerite::vision_of_perfection_cdr( p -> azerite_essence.vision_of_perfection );
   }
 
   void execute() override
@@ -1353,6 +1355,7 @@ void paladin_t::init_spells()
   // Essences
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
   spells.memory_of_lucid_dreams_base = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
 }
 
 // paladin_t::primary_role ==================================================
