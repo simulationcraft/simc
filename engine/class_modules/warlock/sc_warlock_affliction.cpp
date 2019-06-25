@@ -993,7 +993,31 @@ namespace warlock
 
   void warlock_t::vision_of_perfection_proc_aff()
   {
+    timespan_t summon_duration = spec.summon_darkglare->duration() * vision_of_perfection_multiplier;
 
+    warlock_pet_list.vop_darkglares.spawn( summon_duration, 1u );
+
+    auto vop = find_azerite_essence("Vision of Perfection");
+
+    for (const auto target : sim->target_non_sleeping_list)
+    {
+      warlock_td_t* td = get_target_data( target );
+      if (!td)
+      {
+        continue;
+      }
+      timespan_t darkglare_extension = timespan_t::from_seconds(
+        vop.spell_ref( vop.rank(), essence_type::MAJOR ).effectN( 3 ).base_value() / 1000);
+      td->dots_agony->extend_duration(darkglare_extension);
+      td->dots_corruption->extend_duration(darkglare_extension);
+      td->dots_siphon_life->extend_duration(darkglare_extension);
+      td->dots_phantom_singularity->extend_duration(darkglare_extension);
+      td->dots_vile_taint->extend_duration(darkglare_extension);
+      for (auto& current_ua : td->dots_unstable_affliction)
+      {
+        current_ua->extend_duration(darkglare_extension);
+      }
+     }
   }
 
   void warlock_t::init_spells_affliction()
