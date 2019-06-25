@@ -1451,7 +1451,40 @@ void infernal_t::demise()
 
   buffs.embers->expire();
   immolation->expire();
-  o()->buffs.grimoire_of_supremacy->expire();
+
+  // VoP introduces the possibility of overlapping infernals. GoSup remains active
+  // without resetting current stacks until ALL infernals despawn. As soon as the player
+  // no longer has any active infernals, GoSup expires. This is intended to be a
+  // short-term fix. It needs to be replaced later with a more performance-friendly option.
+  if ( o()->azerite_essence.vision_of_perfection.enabled )
+  {
+    bool active_infernal = false;
+
+    if ( o()->talents.grimoire_of_supremacy->ok() )
+    {
+      for ( auto& infernal : o()->warlock_pet_list.infernals )
+      {
+        if ( !infernal->is_sleeping() )
+        {
+          active_infernal = true;
+        }
+      }
+
+      for ( auto& infernal : o()->warlock_pet_list.vop_infernals )
+      {
+        if ( !infernal->is_sleeping() )
+        {
+          active_infernal = true;
+        }
+      }
+
+      if ( !active_infernal )
+        o()->buffs.grimoire_of_supremacy->expire();
+    }
+  }
+
+  else
+    o()->buffs.grimoire_of_supremacy->expire();
 }
 } // Namespace destruction ends
 
