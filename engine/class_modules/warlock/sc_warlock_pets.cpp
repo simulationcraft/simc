@@ -1456,7 +1456,7 @@ void infernal_t::demise()
   // without resetting current stacks until ALL infernals despawn. As soon as the player
   // no longer has any active infernals, GoSup expires. This is intended to be a
   // short-term fix. It needs to be replaced later with a more performance-friendly option.
-  if ( o()->azerite_essence.vision_of_perfection.enabled )
+  if ( o()->azerite_essence.vision_of_perfection.enabled() )
   {
     bool active_infernal = false;
 
