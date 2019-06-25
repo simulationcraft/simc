@@ -390,7 +390,8 @@ public:
   } azerite;
 
   struct {
-    azerite_essence_t memory_of_lucid_dreams; // Memory of lucid dreams minor
+    azerite_essence_t memory_of_lucid_dreams;
+    azerite_essence_t vision_of_perfection;
   } azerite_essence;
 
   player_t* beacon_target;
@@ -398,6 +399,7 @@ public:
   bool fake_sov;
   int indomitable_justice_pct;
   double proc_chance_ret_memory_of_lucid_dreams;
+  double lucid_dreams_accumulator;
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN );
 
@@ -450,7 +452,6 @@ public:
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_forbearance( player_t* target );
-  void    trigger_memory_of_lucid_dreams( double cost );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
   double  last_defender_damage() const;
@@ -458,6 +459,9 @@ public:
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
   bool    get_how_availability( player_t* t ) const;
+
+  void         trigger_memory_of_lucid_dreams( double cost );
+  virtual void vision_of_perfection_proc() override;
 
   expr_t*   create_consecration_expression( const std::string& expr_str );
 

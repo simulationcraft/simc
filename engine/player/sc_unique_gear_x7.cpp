@@ -3412,8 +3412,8 @@ void unique_gear::register_hotfixes_bfa()
   hotfix::register_effect( "The Crucible of Flame", "2019-06-23", "Correct Ancient Flame base damage.", 773336 )
     .field( "coefficient" )
     .operation( hotfix::HOTFIX_SET )
-    .modifier( 1.2251 )
-    .verification_value( 2.277085 );
+    .modifier( 1.6511 )
+    .verification_value(3.072867);
 
   hotfix::register_effect( "The Crucible of Flame", "2019-06-23-2", "Correct Ancient Flame rank 2 upgrade.", 764487 )
     .field( "base_value" )

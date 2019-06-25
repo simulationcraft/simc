@@ -28,7 +28,8 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   beacon_target( nullptr ),
   fake_sov( true ),
   indomitable_justice_pct( 0 ),
-  proc_chance_ret_memory_of_lucid_dreams( 0.15 )
+  proc_chance_ret_memory_of_lucid_dreams( 0.15 ),
+  lucid_dreams_accumulator( 0.0 )
 {
   active_consecration = nullptr;
 
@@ -148,6 +149,8 @@ struct avenging_wrath_t : public paladin_spell_t
 
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.avenging_wrath;
+
+    cooldown -> duration *= 1.0 + azerite::vision_of_perfection_cdr( p -> azerite_essence.vision_of_perfection );
   }
 
   void execute() override
@@ -957,7 +960,7 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
     if ( ! rng().roll( proc_chance_ret_memory_of_lucid_dreams ) )
       return;
 
-    double total_gain = cost * spells.memory_of_lucid_dreams_base -> effectN( 1 ).percent();
+    double total_gain = lucid_dreams_accumulator + cost * spells.memory_of_lucid_dreams_base -> effectN( 1 ).percent();
 
     // mserrano note: apparently when you get a proc on a 1-holy-power spender, if it did proc,
     // you always get 1 holy power instead of alternating between 0 and 1. This is based on
@@ -966,7 +969,11 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
       total_gain = 1;
     }
 
-    resource_gain( RESOURCE_HOLY_POWER, total_gain, gains.hp_memory_of_lucid_dreams );
+    double real_gain = floor( total_gain );
+
+    lucid_dreams_accumulator = total_gain - real_gain;
+
+    resource_gain( RESOURCE_HOLY_POWER, real_gain, gains.hp_memory_of_lucid_dreams );
   } else {
     // TODO: implement holy/prot
     return;
@@ -974,6 +981,53 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
 
   if ( azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
     player_t::buffs.lucid_dreams -> trigger();
+}
+
+void paladin_t::vision_of_perfection_proc()
+{
+  auto vision = azerite_essence.vision_of_perfection;
+  double vision_multiplier = vision.spell( 1u, essence_type::MAJOR ) -> effectN( 1 ).percent() +
+                             vision.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR ) -> effectN( 1 ).percent();
+  if ( vision_multiplier <= 0 )
+    return;
+
+  // TODO: other 2 specs
+  if ( specialization() == PALADIN_RETRIBUTION )
+  {
+    buff_t* primary = buffs.avenging_wrath;
+    buff_t* secondary = nullptr;
+    buff_t* tertiary = buffs.avenging_wrath_autocrit;
+
+    if ( talents.crusade -> ok() )
+    {
+      primary = buffs.crusade;
+      tertiary = nullptr;
+    }
+
+    if ( azerite.avengers_might.ok() )
+      secondary = buffs.avengers_might;
+
+    timespan_t primary_duration = vision_multiplier * primary -> data().duration();
+    timespan_t secondary_duration = secondary ? (vision_multiplier * secondary -> data().duration()) : 0_ms;
+    timespan_t tertiary_duration = tertiary ? (vision_multiplier * tertiary -> data().duration()) : 0_ms;
+
+    if ( primary -> check() )
+    {
+      primary -> extend_duration( this, primary_duration );
+      if ( secondary )
+        secondary -> extend_duration( this, secondary_duration );
+      if ( tertiary && tertiary -> check() )
+        tertiary -> extend_duration( this, tertiary_duration );
+    }
+    else
+    {
+      primary -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, primary_duration );
+      if ( secondary )
+        secondary -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, secondary_duration );
+      if ( tertiary )
+        tertiary -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, tertiary_duration );
+    }
+  }
 }
 
 int paladin_t::get_local_enemies( double distance ) const
@@ -1348,6 +1402,7 @@ void paladin_t::init_spells()
   // Essences
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
   spells.memory_of_lucid_dreams_base = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
 }
 
 // paladin_t::primary_role ==================================================
@@ -1838,6 +1893,8 @@ void paladin_t::combat_begin()
   {
     resource_loss( RESOURCE_HOLY_POWER, hp_overflow );
   }
+
+  lucid_dreams_accumulator = 0;
 }
 
 // paladin_t::get_how_availability ==========================================

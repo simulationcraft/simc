@@ -180,7 +180,7 @@ struct crusade_t : public paladin_spell_t
     if ( ! ( p -> talents.crusade -> ok() ) )
       background = true;
 
-    cooldown -> charges += as<int>( p -> sets -> set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value() );
+    cooldown -> duration *= 1.0 + azerite::vision_of_perfection_cdr( p -> azerite_essence.vision_of_perfection );
   }
 
   void execute() override

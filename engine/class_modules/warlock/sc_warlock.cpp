@@ -226,19 +226,21 @@ namespace warlock
     {
       return;
     }
-    
+
     //Harcoded 15% proc chance.
     if ( !rng().roll( 0.15 ) )
     {
       return;
     }
-    
+
     memory_of_lucid_dreams_accumulator += cost * spells.memory_of_lucid_dreams_base->effectN( 1 ).percent();
 
-    while ( memory_of_lucid_dreams_accumulator >= 1.0 )
+    double shards_to_give = floor( memory_of_lucid_dreams_accumulator );
+
+    if ( shards_to_give > 0 )
     {
-      resource_gain( RESOURCE_SOUL_SHARD, 1.0, gains.memory_of_lucid_dreams );
-      memory_of_lucid_dreams_accumulator -= 1.0;
+      resource_gain( RESOURCE_SOUL_SHARD, shards_to_give, gains.memory_of_lucid_dreams );
+      memory_of_lucid_dreams_accumulator -= shards_to_give;
 
       if ( azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
       {
@@ -856,7 +858,7 @@ int warlock_t::get_spawning_imp_count()
 //Function for returning the time until a certain number of imps will have spawned
 //In the case where count is equal to or greater than number of incoming imps, time to last imp is returned
 //Otherwise, time to the Nth imp spawn will be returned
-//All other cases will return 0. A negative (or zero) count value will behave as "all" 
+//All other cases will return 0. A negative (or zero) count value will behave as "all"
 timespan_t warlock_t::time_to_imps(int count)
 {
   timespan_t max = 0_ms;
