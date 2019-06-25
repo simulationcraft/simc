@@ -3681,47 +3681,54 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
 
   struct focused_energy_driver_t : dbc_proc_callback_t
   {
-    player_t* primary;
-    buff_t* focus_buff;
+    player_t* trigger_target;
     int init_stacks;
 
-    focused_energy_driver_t(const special_effect_t& effect, buff_t* b, int is) :
-      dbc_proc_callback_t(effect.player, effect), primary(nullptr), focus_buff(b), init_stacks(is)
-    {}
+    focused_energy_driver_t( const special_effect_t& effect, int is ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      trigger_target(),
+      init_stacks( is )
+    { }
 
-    void execute(action_t* a, action_state_t*) override
+    void execute( action_t* a, action_state_t* s ) override
     {
-      //Focused energy appears to not immediately disappear if another target is hit with a spell
-      //Instead, it will simply not increment/refresh stacks unless the original target is hit again
-      //TODO: Some aoe effects may not proc this and should be checked more rigorously. Proc flags include ticks etc
-      if (!primary)
-        primary = a->target;
+      // The effect remembers which target was hit while no buff was active and then only triggers when
+      // that target is hit again.
+      // TODO: Some aoe effects may not proc this and should be checked more rigorously. Proc flags include ticks etc
 
-      if (primary && a->target == primary && focus_buff->up())
+      if ( !proc_buff->check() )
       {
-        focus_buff->trigger();
+        trigger_target = s->target;
+        proc_buff->trigger( init_stacks );
       }
-      else if (!focus_buff->up())
+      else if ( trigger_target == s->target )
       {
-        primary = a->target;
-        focus_buff->trigger(init_stacks);
+        proc_buff->trigger();
       }
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      trigger_target = nullptr;
     }
   };
 
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
   int is = 1;
-  if (essence.rank() >=3)
-    is = essence.spell_ref(3u, essence_type::MINOR).effectN(1).base_value();
+  if ( essence.rank() >= 3 )
+    is = essence.spell_ref( 3u, essence_type::MINOR ).effectN( 1 ).base_value();
 
-  double haste = essence.spell_ref(1u, essence_type::MINOR).effectN(2).average(essence.item());
-  if (essence.rank() >=2)
-    haste *= 1 + effect.player->find_spell(295251)->effectN(1).percent();
+  double haste = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+  if ( essence.rank() >= 2 )
+    haste *= 1.0 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
 
-  auto haste_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "focused_energy",
+  effect.custom_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "focused_energy",
       effect.player->find_spell( 295248 ) )
     ->add_stat( STAT_HASTE_RATING, haste );
 
-  new focused_energy_driver_t(effect, haste_buff, is);
+  new focused_energy_driver_t( effect, is );
 }
 
 struct focused_azerite_beam_tick_t : public spell_t
