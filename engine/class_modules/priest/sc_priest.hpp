@@ -412,8 +412,6 @@ public:
     const spell_data_t* memory_of_lucid_dreams;
     const spell_data_t* conflict;
     const spell_data_t* strife;
-    const spell_data_t* vision_of_perfection;
-    const spell_data_t* strive_for_perfection;
   } azerite_essence;
 
   struct insanity_end_event_t;
@@ -507,7 +505,6 @@ private:
 public:
   void generate_insanity( double num_amount, gain_t* g, action_t* action );
   void trigger_lucid_dreams( double cost );
-  void vision_of_perfection_proc() override;
 
   /**
    * Insanity tracking
