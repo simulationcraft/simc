@@ -7,6 +7,8 @@ role=attack
 position=back
 talents=2303103
 
+azerite_essences="22:3:1"
+
 # Default consumables
 potion=battle_potion_of_strength
 flask=flask_of_the_undertow

@@ -983,6 +983,53 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
     player_t::buffs.lucid_dreams -> trigger();
 }
 
+void paladin_t::vision_of_perfection_proc()
+{
+  auto vision = azerite_essence.vision_of_perfection;
+  double vision_multiplier = vision.spell( 1u, essence_type::MAJOR ) -> effectN( 1 ).percent() +
+                             vision.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR ) -> effectN( 1 ).percent();
+  if ( vision_multiplier <= 0 )
+    return;
+
+  // TODO: other 2 specs
+  if ( specialization() == PALADIN_RETRIBUTION )
+  {
+    buff_t* primary = buffs.avenging_wrath;
+    buff_t* secondary = nullptr;
+    buff_t* tertiary = buffs.avenging_wrath_autocrit;
+
+    if ( talents.crusade -> ok() )
+    {
+      primary = buffs.crusade;
+      tertiary = nullptr;
+    }
+
+    if ( azerite.avengers_might.ok() )
+      secondary = buffs.avengers_might;
+
+    timespan_t primary_duration = vision_multiplier * primary -> data().duration();
+    timespan_t secondary_duration = secondary ? (vision_multiplier * secondary -> data().duration()) : 0_ms;
+    timespan_t tertiary_duration = tertiary ? (vision_multiplier * tertiary -> data().duration()) : 0_ms;
+
+    if ( primary -> check() )
+    {
+      primary -> extend_duration( this, primary_duration );
+      if ( secondary )
+        secondary -> extend_duration( this, secondary_duration );
+      if ( tertiary )
+        tertiary -> extend_duration( this, tertiary_duration );
+    }
+    else
+    {
+      primary -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, primary_duration );
+      if ( secondary )
+        secondary -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, secondary_duration );
+      if ( tertiary )
+        tertiary -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, tertiary_duration );
+    }
+  }
+}
+
 int paladin_t::get_local_enemies( double distance ) const
 {
   int num_nearby = 0;
