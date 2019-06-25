@@ -1363,11 +1363,11 @@ public:
           // Gains are rounded up to the nearest whole value, which can be seen with the Lucid Dreams active up
           const double amount = ceil( ab::last_resource_cost * p()->azerite_spells.memory_of_lucid_dreams->effectN( 1 ).percent() );
           p()->resource_gain( cr, amount, p()->gain.memory_of_lucid_dreams );
-        }
 
-        if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
-        {
-          p()->buffs.lucid_dreams->trigger();
+          if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
+          {
+            p()->buffs.lucid_dreams->trigger();
+          }
         }
       }
     }

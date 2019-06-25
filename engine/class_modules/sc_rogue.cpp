@@ -1779,11 +1779,11 @@ void rogue_attack_t::consume_resource()
           // Gains are rounded up to the nearest whole value, which can be seen with the Lucid Dreams active up
           const double amount = ceil( last_resource_cost * p()->spell.memory_of_lucid_dreams->effectN( 1 ).percent() );
           p()->resource_gain( RESOURCE_ENERGY, amount, p()->gains.memory_of_lucid_dreams );
-        }
 
-        if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
-        {
-          p()->player_t::buffs.lucid_dreams->trigger();
+          if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
+          {
+            p()->player_t::buffs.lucid_dreams->trigger();
+          }
         }
       }
     }
