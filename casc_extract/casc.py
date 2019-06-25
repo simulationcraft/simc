@@ -1006,15 +1006,14 @@ class CASCRootFile(CASCObject):
 		offset = 0
 		n_md5s = 0
 
-		if self.options.ptr:
-			magic, unk_h1, unk_h2 = _ROOT_HEADER.unpack_from(data, offset)
+		magic, unk_h1, unk_h2 = _ROOT_HEADER.unpack_from(data, offset)
 
-			if magic != _ROOT_MAGIC:
-				print('Invalid magic in file, expected "{:s}", got "{:s}"'.format(
-					_ROOT_MAGIC.decode('ascii'), magic.decode('ascii')))
-				return False
-			offset += _ROOT_HEADER.size
-			#print(magic, unk_h1, unk_h2)
+		if magic != _ROOT_MAGIC:
+			print('Invalid magic in file, expected "{:s}", got "{:s}"'.format(
+				_ROOT_MAGIC.decode('ascii'), magic.decode('ascii')))
+			return False
+		offset += _ROOT_HEADER.size
+		#print(magic, unk_h1, unk_h2)
 
 		while offset < len(data):
 			n_entries, unk_1, flags = struct.unpack_from('<iII', data, offset)
@@ -1040,10 +1039,6 @@ class CASCRootFile(CASCObject):
 					file_data_id = csum_file_id + 1 + findex[entry_idx]
 				csum_file_id = file_data_id
 
-				# Skip file name hashes on live, and on PTR most of the time
-				if not self.options.ptr:
-					offset += 8
-
 				if flags != CASCRootFile.LOCALE_ALL and not (flags & self.GetLocale()):
 					continue
 
@@ -1056,7 +1051,7 @@ class CASCRootFile(CASCObject):
 
 			# Skip 8 * n_entries amount of bytes if the PTR root file contains
 			# the "contains name hashes" flag
-			if self.options.ptr and (unk_1 & 0x10000000) == 0:
+			if unk_1 & 0x10000000 == 0:
 				offset += 8 * n_entries
 
 		sys.stdout.write('%u entries\n' % n_md5s)
