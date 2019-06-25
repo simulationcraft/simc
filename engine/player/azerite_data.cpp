@@ -4560,6 +4560,78 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
   {
     return new azerite_essences::anima_of_death_t( player, options );
   }
+  // "Heart Essence" is a proxy action, generating whatever the user has for the major action
+  // selected
+  else if ( util::str_compare_ci( name, "heart_essence" ) )
+  {
+    azerite_essence_t focused_azerite_beam   = player->find_azerite_essence( "Essence of the Focusing Iris" );
+    azerite_essence_t memory_of_lucid_dreams = player->find_azerite_essence( "Memory of Lucid Dreams" );
+    azerite_essence_t blood_of_the_enemy     = player->find_azerite_essence( "Blood of the Enemy" );
+    azerite_essence_t guardian_of_azeroth    = player->find_azerite_essence( "Condensed Life-Force" );
+    azerite_essence_t purifying_blast        = player->find_azerite_essence( "Purification Protocol" );
+    azerite_essence_t ripple_in_space        = player->find_azerite_essence( "Ripple in Space" );
+    azerite_essence_t concentrated_flame     = player->find_azerite_essence( "The Crucible of Flame" );
+    azerite_essence_t the_unbound_force      = player->find_azerite_essence( "The Unbound Force" );
+    azerite_essence_t worldvein_resonance    = player->find_azerite_essence( "Worldvein Resonance" );
+    azerite_essence_t anima_of_death         = player->find_azerite_essence( "Anima of Life and Death" );
+
+    if ( focused_azerite_beam.is_major() )
+    {
+      return new azerite_essences::focused_azerite_beam_t( player, options );
+    }
+    else if ( memory_of_lucid_dreams.is_major() )
+    {
+      return new  azerite_essences::memory_of_lucid_dreams_t( player, options );
+    }
+    else if ( blood_of_the_enemy.is_major() )
+    {
+      return new azerite_essences::blood_of_the_enemy_t( player, options );
+    }
+    else if ( guardian_of_azeroth.is_major() )
+    {
+      return new azerite_essences::guardian_of_azeroth_t( player, options );
+    }
+    else if ( purifying_blast.is_major() )
+    {
+      return new azerite_essences::purifying_blast_t( player, options );
+    }
+    else if ( ripple_in_space.is_major() )
+    {
+      return new azerite_essences::ripple_in_space_t( player, options );
+    }
+    else if ( concentrated_flame.is_major() )
+    {
+      return new azerite_essences::concentrated_flame_t( player, options );
+    }
+    else if ( the_unbound_force.is_major() )
+    {
+      return new azerite_essences::the_unbound_force_t( player, options );
+    }
+    else if ( worldvein_resonance.is_major() )
+    {
+      return new azerite_essences::worldvein_resonance_t( player, options );
+    }
+    else if ( anima_of_death.is_major() )
+    {
+      return new azerite_essences::anima_of_death_t( player, options );
+    }
+    // Construct a dummy action so that "heart_essence" still works in the APL even without a major
+    // essence
+    else
+    {
+      struct heart_essence_dummy_t : public action_t
+      {
+        heart_essence_dummy_t( player_t* p ) :
+          action_t( ACTION_OTHER, "heart_essence", p )
+        {
+          background = quiet = true;
+          callbacks = false;
+        }
+      };
+
+      return new heart_essence_dummy_t( player );
+    }
+  }
 
   return nullptr;
 }
