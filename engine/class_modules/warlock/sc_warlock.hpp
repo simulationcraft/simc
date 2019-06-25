@@ -433,6 +433,7 @@ namespace warlock
       void      vision_of_perfection_proc_destro();
       void      vision_of_perfection_proc_aff();
       void      vision_of_perfection_proc_demo();
+      void      darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
       action_t* create_action( const std::string& name, const std::string& options ) override;
       pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
       void      create_pets() override;

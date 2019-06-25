@@ -906,6 +906,26 @@ timespan_t warlock_t::time_to_imps(int count)
   }
 }
 
+void warlock_t::darkglare_extension_helper(warlock_t* p, timespan_t darkglare_extension)
+{
+  for (const auto target : p->sim->target_non_sleeping_list)
+  {
+    warlock_td_t* td = p->get_target_data( target );
+    if (!td)
+    {
+      continue;
+    }
+    td->dots_agony->extend_duration(darkglare_extension);
+    td->dots_corruption->extend_duration(darkglare_extension);
+    td->dots_siphon_life->extend_duration(darkglare_extension);
+    td->dots_phantom_singularity->extend_duration(darkglare_extension);
+    td->dots_vile_taint->extend_duration(darkglare_extension);
+    for (auto& current_ua : td->dots_unstable_affliction)
+    {
+      current_ua->extend_duration(darkglare_extension);
+    }
+  }
+}
 
 //Function for returning the the number of imps that will spawn in a specified time period.
 int warlock_t::imps_spawned_during( timespan_t period )
