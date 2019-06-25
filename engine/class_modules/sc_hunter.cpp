@@ -981,6 +981,16 @@ struct hunter_pet_t: public pet_t
     main_hand_weapon.swing_time = 2.0_s;
   }
 
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    if ( o() -> mastery.master_of_beasts -> ok() )
+      m *= 1.0 + owner -> cache.mastery_value();
+
+    return m;
+  }
+
   hunter_t* o()             { return static_cast<hunter_t*>( owner ); }
   const hunter_t* o() const { return static_cast<hunter_t*>( owner ); }
 };
@@ -1142,6 +1152,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     double m = hunter_pet_t::composite_player_multiplier( school );
 
     m *= 1.0 + buffs.bestial_wrath -> check_value();
+    m *= 1.0 + o() -> buffs.coordinated_assault -> check_value();
 
     return m;
   }
@@ -1442,7 +1453,10 @@ struct spitting_cobra_t: public hunter_pet_t
   // for some reason it gets the player's multipliers
   double composite_player_multiplier( school_e school ) const override
   {
-    return owner -> composite_player_multiplier( school );
+    double m = owner -> composite_player_multiplier( school );
+    m *= 1.0 + owner -> cache.mastery_value();
+
+    return m;
   }
 
   void schedule_ready( timespan_t delta_time, bool waiting ) override
@@ -5624,16 +5638,11 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s );
 
-  if ( mastery.master_of_beasts -> ok() )
-    m *= 1.0 + cache.mastery_value();
-
   m *= 1.0 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
   m *= 1.0 + specs.survival_hunter -> effectN( 3 ).percent();
   m *= 1.0 + specs.marksmanship_hunter -> effectN( 3 ).percent();
 
   m *= 1.0 + talents.animal_companion -> effectN( 2 ).percent();
-
-  m *= 1.0 + buffs.coordinated_assault -> check_value();
 
   return m;
 }
