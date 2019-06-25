@@ -991,6 +991,11 @@ namespace warlock
       ->set_default_value( azerite.inevitable_demise.value() * ( ( 1.0 + 0.75 * ( azerite.inevitable_demise.n_items() - 1 ) ) / azerite.inevitable_demise.n_items() ) );
   }
 
+  void warlock_t::vision_of_perfection_proc_aff()
+  {
+
+  }
+
   void warlock_t::init_spells_affliction()
   {
     using namespace actions_affliction;

@@ -975,6 +975,11 @@ namespace warlock {
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
   }
 
+  void warlock_t::vision_of_perfection_proc_demo()
+  {
+
+  }
+
   void warlock_t::init_spells_demonology()
   {
     spec.demonology                         = find_specialization_spell( 137044 );
