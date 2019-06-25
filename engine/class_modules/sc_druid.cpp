@@ -6894,15 +6894,11 @@ struct starsurge_t : public druid_spell_t
         if (proc_buff->check())
         {
           proc_buff->extend_duration(p(), pulsar_dur);
-          if (maybe_ptr(p()->dbc.ptr))
-          {
-            p()->resource_gain(RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar); // hardcoded 12AP because 6s / 20s * 40AP = 12AP
-          }
+          p()->resource_gain(RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar); // hardcoded 12AP because 6s / 20s * 40AP = 12AP
         }
         else
         {
           proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
-          //this number is nowhere to be found in the spell data
           p()->resource_gain(RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar); // hardcoded 12AP because 6s / 20s * 40AP = 12AP
         }
 
@@ -8067,94 +8063,106 @@ void druid_t::create_buffs()
 // ALL Spec Pre-Combat Action Priority List =================================
 std::string druid_t::default_flask() const
 {
-   std::string balance_flask =   (true_level > 110) ? "endless_fathoms" :
-                                 (true_level > 100) ? "whispered_pact" :
-                                 (true_level >= 90) ? "greater_draenic_intellect_flask" :
-                                 (true_level >= 85) ? "warm_sun" :
-                                 (true_level >= 80) ? "draconic_mind" :
-                                 "disabled";
+  std::string balance_flask =  (true_level > 110) ? "greater_flask_of_endless_fathoms" :
+                               (true_level > 100) ? "whispered_pact" :
+                               (true_level >= 90) ? "greater_draenic_intellect_flask" :
+                               (true_level >= 85) ? "warm_sun" :
+                               (true_level >= 80) ? "draconic_mind" :
+                               "disabled";
 
-   std::string feral_flask =     (true_level >  110) ? "flask_of_the_currents" :
-                                 (true_level >  100) ? "seventh_demon" :
-                                 (true_level >= 90) ? "greater_draenic_agility_flask" :
-                                 (true_level >= 85) ? "spring_blossoms" :
-                                 (true_level >= 80) ? "winds" :
-                                 "disabled";
+  std::string feral_flask =    (true_level > 110) ? "greater_flask_of_the_currents" :
+                               (true_level > 100) ? "seventh_demon" :
+                               (true_level >= 90) ? "greater_draenic_agility_flask" :
+                               (true_level >= 85) ? "spring_blossoms" :
+                               (true_level >= 80) ? "winds" :
+                               "disabled";
 
-   std::string guardian_flask =  (true_level >  110) ? "flask_of_the_currents" :
-                                 (true_level >  100) ? "seventh_demon" :
-                                 (true_level >= 90) ? "greater_draenic_agility_flask" :
-                                 (true_level >= 85) ? "spring_blossoms" :
-                                 (true_level >= 80) ? "winds" :
-                                 "disabled";
+  std::string guardian_flask = (true_level > 110) ? "greater_flask_of_the_currents" :
+                               (true_level > 100) ? "seventh_demon" :
+                               (true_level >= 90) ? "greater_draenic_agility_flask" :
+                               (true_level >= 85) ? "spring_blossoms" :
+                               (true_level >= 80) ? "winds" :
+                               "disabled";
 
-   switch ( specialization() )
-   {
-   case DRUID_FERAL:
-      return feral_flask;
-   case DRUID_BALANCE:
-      return balance_flask;
-   case DRUID_GUARDIAN:
-      return guardian_flask;
-   default:
-      return "disabled";
-   }
-
+  switch ( specialization() )
+  {
+  case DRUID_FERAL:
+    return feral_flask;
+  case DRUID_BALANCE:
+    return balance_flask;
+  case DRUID_GUARDIAN:
+    return guardian_flask;
+  default:
+    return "disabled";
+  }
 }
 std::string druid_t::default_potion() const
 {
-   std::string balance_pot =  (true_level > 110) ? "battle_potion_of_intellect" :
-                              (true_level > 100) ? "deadly_grace" :
-                              (true_level >= 90) ? "draenic_intellect" :
-                              (true_level >= 85) ? "jade_serpent" :
-                              (true_level >= 80) ? "volcanic" :
-                              "disabled";
+  std::string balance_pot =  (true_level > 110) ? "focused_resolve" :
+                             (true_level > 100) ? "deadly_grace" :
+                             (true_level >= 90) ? "draenic_intellect" :
+                             (true_level >= 85) ? "jade_serpent" :
+                             (true_level >= 80) ? "volcanic" :
+                             "disabled";
 
-      std::string feral_pot = (true_level > 110) ? "battle_potion_of_agility" :
-                              (true_level > 100) ? "potion_of_prolonged_power" :
-                              (true_level >= 90) ? "draenic_agility" :
-                              (true_level >= 85) ? "virmens_bite" :
-                              (true_level >= 80) ? "tolvir" :
-                              "disabled";
+  std::string feral_pot =    (true_level > 110) ? "focused_resolve" :
+                             (true_level > 100) ? "potion_of_prolonged_power" :
+                             (true_level >= 90) ? "draenic_agility" :
+                             (true_level >= 85) ? "virmens_bite" :
+                             (true_level >= 80) ? "tolvir" :
+                             "disabled";
 
-   std::string guardian_pot = (true_level > 110) ? "potion_of_bursting_blood" :
-                              (true_level > 100) ? "old_war" :
-                              (true_level >= 90) ? "draenic_agility" :
-                              (true_level >= 85) ? "virmens_bite" :
-                              (true_level >= 80) ? "tolvir" :
-                              "disabled";
+  std::string guardian_pot = (true_level > 110) ? "focused_resolve" :
+                             (true_level > 100) ? "old_war" :
+                             (true_level >= 90) ? "draenic_agility" :
+                             (true_level >= 85) ? "virmens_bite" :
+                             (true_level >= 80) ? "tolvir" :
+                             "disabled";
 
 
-   switch (specialization())
-   {
-   case DRUID_FERAL:
-      return feral_pot;
-   case DRUID_BALANCE:
-      return balance_pot;
-   case DRUID_GUARDIAN:
-      return guardian_pot;
-   default:
-      return "disabled";
-   }
+  switch (specialization())
+  {
+  case DRUID_FERAL:
+    return feral_pot;
+  case DRUID_BALANCE:
+    return balance_pot;
+  case DRUID_GUARDIAN:
+    return guardian_pot;
+  default:
+    return "disabled";
+  }
 }
 
 std::string druid_t::default_food() const
 {
-   return (true_level > 110) ? "bountiful_captains_feast" :
-          (true_level > 100 && specialization() == DRUID_FERAL) ? "lemon_herb_filet" :
-          (true_level >  100) ? "lavish_suramar_feast" :
-          (true_level >  90) ?  "pickled_eel" :
-          (true_level >= 90) ?  "sea_mist_rice_noodles" :
-          (true_level >= 80) ?  "seafood_magnifique_feast" :
-          "disabled";
+  if (true_level >= 110)
+  {
+    switch (specialization())
+    {
+      case DRUID_BALANCE:
+        return "baked_port_tato";
+      case DRUID_FERAL:
+        return "mechdowels_big_mech";
+      case DRUID_GUARDIAN:
+      default:
+        return "famine_evaluator_and_snack_table";
+    }
+  }
+
+  return (true_level > 100 && specialization() == DRUID_FERAL) ? "lemon_herb_filet" :
+         (true_level > 100) ? "lavish_suramar_feast" :
+         (true_level >  90) ?  "pickled_eel" :
+         (true_level >= 90) ?  "sea_mist_rice_noodles" :
+         (true_level >= 80) ?  "seafood_magnifique_feast" :
+         "disabled";
 }
 
 std::string druid_t::default_rune() const
 {
-   return (true_level >= 120) ? "battle_scarred" :
-          (true_level >= 110) ? "defiled" :
-          (true_level >= 100) ? "hyper" :
-          "disabled";
+  return (true_level >= 120) ? "battle_scarred" :
+         (true_level >= 110) ? "defiled" :
+         (true_level >= 100) ? "hyper" :
+         "disabled";
 }
 
 
@@ -8162,14 +8170,14 @@ void druid_t::apl_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-   // Flask
-   precombat->add_action("flask");
+  // Flask
+  precombat->add_action("flask");
 
-   // Food
-   precombat->add_action("food");
+  // Food
+  precombat->add_action("food");
 
-   // Rune
-   precombat->add_action("augmentation");
+  // Rune
+  precombat->add_action("augmentation");
 
   // Feral: Bloodtalons
   if ( specialization() == DRUID_FERAL && true_level >= 100 )
