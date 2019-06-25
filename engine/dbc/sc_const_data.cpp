@@ -1731,7 +1731,7 @@ double spelleffect_data_t::average( const item_t* item ) const
     const auto& props = item -> player -> dbc.random_property( item -> item_level() );
     budget = props.damage_replace_stat;
   }
-  else if ( item->player->dbc.ptr && _spell->scaling_class() == PLAYER_NONE &&
+  else if ( _spell->scaling_class() == PLAYER_NONE &&
             _spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
   {
     const auto& props = item -> player -> dbc.random_property( item -> item_level() );
