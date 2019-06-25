@@ -34,6 +34,12 @@ actions.precombat+=/pyroblast
 # Executed every time the actor is available.
 actions=counterspell
 actions+=/mirror_image,if=buff.combustion.down
+actions+=/concentrated_flame
+actions+=/focused_azerite_beam
+actions+=/purifying_blast
+actions+=/ripple_in_space
+actions+=/the_unbound_force
+actions+=/worldvein_resonance
 actions+=/rune_of_power,if=talent.firestarter.enabled&firestarter.remains>full_recharge_time|cooldown.combustion.remains>variable.combustion_rop_cutoff&buff.combustion.down|target.time_to_die<cooldown.combustion.remains&buff.combustion.down
 actions+=/use_item,name=malformed_heralds_legwraps,if=cooldown.combustion.remains>55
 actions+=/call_action_list,name=combustion_phase,if=(talent.rune_of_power.enabled&cooldown.combustion.remains<=action.rune_of_power.cast_time|cooldown.combustion.ready)&!firestarter.active|buff.combustion.up
@@ -72,6 +78,9 @@ actions.bm_combustion_phase+=/scorch
 # Combustion phase prepares abilities with a delay, then launches into the Combustion sequence
 actions.combustion_phase=lights_judgment,if=buff.combustion.down
 actions.combustion_phase+=/call_action_list,name=bm_combustion_phase,if=azerite.blaster_master.enabled&talent.flame_on.enabled
+actions.combustion_phase+=/blood_of_the_enemy
+actions.combustion_phase+=/memory_of_lucid_dreams
+actions.combustion_phase+=/guardian_of_azeroth
 actions.combustion_phase+=/rune_of_power,if=buff.combustion.down
 actions.combustion_phase+=/call_action_list,name=active_talents
 actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((action.meteor.in_flight&action.meteor.in_flight_remains<=0.5)|!talent.meteor.enabled)&(buff.rune_of_power.up|!talent.rune_of_power.enabled)
@@ -141,6 +150,7 @@ trinket1=balefire_branch,id=159630,bonus_id=1572/4780
 trinket2=incandescent_sliver,id=165571,bonus_id=4800/1537
 main_hand=desecrated_blade_of_the_disciples,id=165919,bonus_id=4800/1537,enchant=torrent_of_elements
 off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
+
 
 # Gear Summary
 # gear_ilvl=414.94

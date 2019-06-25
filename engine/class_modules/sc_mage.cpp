@@ -5725,6 +5725,14 @@ void mage_t::apl_fire()
 
   default_list->add_action( this, "Counterspell" );
   default_list->add_talent( this, "Mirror Image", "if=buff.combustion.down" );
+  default_list->add_action( "concentrated_flame" );
+  default_list->add_action( "focused_azerite_beam" );
+  default_list->add_action( "purifying_blast" );
+  default_list->add_action( "ripple_in_space" );
+  default_list->add_action( "the_unbound_force" );
+  default_list->add_action( "worldvein_resonance" );
+
+
   default_list->add_talent( this, "Rune of Power", "if=talent.firestarter.enabled&firestarter.remains>full_recharge_time|cooldown.combustion.remains>variable.combustion_rop_cutoff&buff.combustion.down|target.time_to_die<cooldown.combustion.remains&buff.combustion.down" );
   default_list->add_action( "use_item,name=malformed_heralds_legwraps,if=cooldown.combustion.remains>55" );
   default_list->add_action( "call_action_list,name=combustion_phase,if=(talent.rune_of_power.enabled&cooldown.combustion.remains<=action.rune_of_power.cast_time|cooldown.combustion.ready)&!firestarter.active|buff.combustion.up" );
@@ -5736,9 +5744,12 @@ void mage_t::apl_fire()
   active_talents->add_talent( this, "Living Bomb", "if=active_enemies>1&buff.combustion.down&(cooldown.combustion.remains>cooldown.living_bomb.duration|cooldown.combustion.ready)" );
   active_talents->add_talent( this, "Meteor", "if=buff.rune_of_power.up&(firestarter.remains>cooldown.meteor.duration|!firestarter.active)|cooldown.rune_of_power.remains>target.time_to_die&action.rune_of_power.charges<1|(cooldown.meteor.duration<cooldown.combustion.remains|cooldown.combustion.ready)&!talent.rune_of_power.enabled&(cooldown.meteor.duration<firestarter.remains|!talent.firestarter.enabled|!firestarter.active)" );
   active_talents->add_talent( this, "Dragon's Breath", "if=talent.alexstraszas_fury.enabled&(buff.combustion.down&!buff.hot_streak.react|buff.combustion.up&action.fire_blast.charges<action.fire_blast.max_charges&!buff.hot_streak.react)" );
-
+ 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down", "Combustion phase prepares abilities with a delay, then launches into the Combustion sequence" );
   combustion_phase->add_action( "call_action_list,name=bm_combustion_phase,if=azerite.blaster_master.enabled&talent.flame_on.enabled" );
+  combustion_phase->add_action( "blood_of_the_enemy" );
+  combustion_phase->add_action( "memory_of_lucid_dreams" );
+  combustion_phase->add_action( "guardian_of_azeroth" );
   combustion_phase->add_talent( this, "Rune of Power", "if=buff.combustion.down" );
   combustion_phase->add_action( "call_action_list,name=active_talents" );
   combustion_phase->add_action( this, "Combustion", "use_off_gcd=1,use_while_casting=1,if=(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((action.meteor.in_flight&action.meteor.in_flight_remains<=0.5)|!talent.meteor.enabled)&(buff.rune_of_power.up|!talent.rune_of_power.enabled)" );
