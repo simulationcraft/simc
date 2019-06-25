@@ -5736,7 +5736,7 @@ void rogue_t::init_action_list()
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
-    cds -> add_action( this, "Vendetta", "if=!stealthed.rogue&dot.rupture.ticking&(!talent.subterfuge.enabled|!azerite.shrouded_suffocation.enabled|dot.garrote.pmultiplier>1&(spell_targets.fan_of_knives<6|!cooldown.vanish.up))&(!talent.nightstalker.enabled|!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5-2*talent.deeper_stratagem.enabled)" );
+    cds -> add_action( this, "Vendetta", "if=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&(!talent.subterfuge.enabled|!azerite.shrouded_suffocation.enabled|dot.garrote.pmultiplier>1&(spell_targets.fan_of_knives<6|!cooldown.vanish.up))&(!talent.nightstalker.enabled|!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5-2*talent.deeper_stratagem.enabled)" );
     cds -> add_action( this, "Vanish", "if=talent.exsanguinate.enabled&(talent.nightstalker.enabled|talent.subterfuge.enabled&variable.single_target)&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&(!talent.subterfuge.enabled|!azerite.shrouded_suffocation.enabled|dot.garrote.pmultiplier<=1)", "Vanish with Exsg + (Nightstalker, or Subterfuge only on 1T): Maximum CP and Exsg ready for next GCD" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&debuff.vendetta.up", "Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up" );
     cds -> add_action( "variable,name=ss_vanish_condition,value=azerite.shrouded_suffocation.enabled&(non_ss_buffed_targets>=1|spell_targets.fan_of_knives=3)&(ss_buffed_targets_above_pandemic=0|spell_targets.fan_of_knives>=6)", "See full comment on https://github.com/Ravenholdt-TC/Rogue/wiki/Assassination-APL-Research." );
@@ -5746,8 +5746,22 @@ void rogue_t::init_action_list()
     cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
     cds -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable", "Exsanguinate when both Rupture and Garrote are up for long enough" );
     cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking" );
+
+    // Azerite Essences
     if ( maybe_ptr( dbc.ptr ) )
-      cds -> add_action( "memory_of_lucid_dreams,if=energy<50" );
+    {
+      action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
+      essences->add_action( "concentrated_flame" );
+      essences->add_action( "blood_of_the_enemy" );
+      essences->add_action( "guardian_of_azeroth" );
+      essences->add_action( "focused_azerite_beam" );
+      essences->add_action( "purifying_blast" );
+      essences->add_action( "the_unbound_force" );
+      essences->add_action( "ripple_in_space" );
+      essences->add_action( "worldvein_resonance" );
+      essences->add_action( "memory_of_lucid_dreams,if=energy<50" );
+      cds->add_action( "call_action_list,name=essences" );
+    }
 
     // Stealth
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
@@ -5829,8 +5843,22 @@ void rogue_t::init_action_list()
     cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>1" );
     cds -> add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition", "Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell." );
     cds -> add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
+
+    // Azerite Essences
     if ( maybe_ptr( dbc.ptr ) )
-      cds -> add_action( "memory_of_lucid_dreams,if=energy<45" );
+    {
+      action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
+      essences->add_action( "concentrated_flame" );
+      essences->add_action( "blood_of_the_enemy" );
+      essences->add_action( "guardian_of_azeroth" );
+      essences->add_action( "focused_azerite_beam" );
+      essences->add_action( "purifying_blast" );
+      essences->add_action( "the_unbound_force" );
+      essences->add_action( "ripple_in_space" );
+      essences->add_action( "worldvein_resonance" );
+      essences->add_action( "memory_of_lucid_dreams,if=energy<45" );
+      cds->add_action( "call_action_list,name=essences" );
+    }
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
@@ -5903,8 +5931,22 @@ void rogue_t::init_action_list()
     cds -> add_talent( this, "Shuriken Tornado", "if=spell_targets>=3&!talent.shadow_focus.enabled&dot.nightblade.ticking&!stealthed.all&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "At 3+ without Shadow Focus use Tornado with SoD and Dance ready. We will pop those before the first storm comes in." );
     cds -> add_talent( this, "Shuriken Tornado", "if=spell_targets>=3&talent.shadow_focus.enabled&dot.nightblade.ticking&buff.symbols_of_death.up", "At 3+ with Shadow Focus use Tornado with SoD already up." );
     cds -> add_action( this, "Shadow Dance", "if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled&!raid_event.adds.up" );
+
+    // Azerite Essences
     if ( maybe_ptr( dbc.ptr ) )
-      cds->add_action( "memory_of_lucid_dreams,if=energy<40" );
+    {
+      action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
+      essences->add_action( "concentrated_flame" );
+      essences->add_action( "blood_of_the_enemy" );
+      essences->add_action( "guardian_of_azeroth" );
+      essences->add_action( "focused_azerite_beam" );
+      essences->add_action( "purifying_blast" );
+      essences->add_action( "the_unbound_force" );
+      essences->add_action( "ripple_in_space" );
+      essences->add_action( "worldvein_resonance" );
+      essences->add_action( "memory_of_lucid_dreams,if=energy<40" );
+      cds->add_action( "call_action_list,name=essences" );
+    }
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
