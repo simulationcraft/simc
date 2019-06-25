@@ -4268,7 +4268,7 @@ void vision_of_perfection(special_effect_t& effect)
     void execute(action_t* a, action_state_t* s) override
     {
       dbc_proc_callback_t::execute(a, s);
-      listener->vision_of_perfection_proc();
+      make_event( *listener->sim, [ this ] { listener->vision_of_perfection_proc(); } );
     }
   };
 
