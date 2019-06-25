@@ -325,6 +325,8 @@ public:
     azerite_essence_t memory_of_lucid_dreams; // Memory of Lucid Dreams Minor
     double memory_of_lucid_dreams_major_mult = 0.0;
     double memory_of_lucid_dreams_minor_mult = 0.0;
+    azerite_essence_t vision_of_perfection;
+    double vision_of_perfection_major_mult = 0.0;
   } azerite_essence;
 
   // Buffs
@@ -349,6 +351,7 @@ public:
 
     // Survival
     buff_t* coordinated_assault;
+    buff_t* coordinated_assault_vision;
     buff_t* vipers_venom;
     buff_t* tip_of_the_spear;
     buff_t* mongoose_fury;
@@ -358,6 +361,7 @@ public:
 
     // azerite
     buff_t* blur_of_talons;
+    buff_t* blur_of_talons_vision;
     buff_t* dance_of_death;
     buff_t* haze_of_rage;
     buff_t* in_the_rhythm;
@@ -597,7 +601,7 @@ public:
   double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void      create_options() override;
   expr_t*   create_expression( const std::string& name ) override;
-  expr_t*     create_action_expression( action_t&, const std::string& name ) override;
+  expr_t*   create_action_expression( action_t&, const std::string& name ) override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
   void      create_pets() override;
@@ -606,8 +610,8 @@ public:
   stat_e    convert_hybrid_stat( stat_e s ) const override;
   std::string      create_profile( save_e ) override;
   void      copy_from( player_t* source ) override;
-
   void      moving( ) override;
+  void      vision_of_perfection_proc() override;
 
   void              apl_default();
   void              apl_surv();
@@ -1967,7 +1971,10 @@ void trigger_birds_of_prey( hunter_t* p, player_t* t )
     return;
 
   if ( t == p -> pets.main -> target )
+  {
     p -> buffs.coordinated_assault -> extend_duration( p, p -> talents.birds_of_prey -> effectN( 1 ).time_value() );
+    p -> buffs.coordinated_assault_vision -> extend_duration( p, p -> talents.birds_of_prey -> effectN( 1 ).time_value() );
+  }
 }
 
 void trigger_bloodseeker_update( hunter_t* p )
@@ -3083,8 +3090,27 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     hunter_melee_attack_t::execute();
 
     p() -> buffs.vipers_venom -> trigger();
+
     if ( p() -> buffs.coordinated_assault -> check() )
-      p() -> buffs.blur_of_talons -> trigger();
+    {
+      if ( p()->buffs.coordinated_assault_vision->check() )
+      {
+        p()->buffs.blur_of_talons_vision->trigger();
+      }
+      else
+      {
+        if ( p()->buffs.blur_of_talons_vision->check() )
+        {
+          p()->buffs.blur_of_talons->trigger( p()->buffs.blur_of_talons_vision->check() + 1 );
+          p()->buffs.blur_of_talons_vision->expire();
+        }
+        else
+        {
+          p()->buffs.blur_of_talons->trigger();
+        }
+      }
+    }
+
     p() -> buffs.primeval_intuition -> trigger();
 
     trigger_birds_of_prey( p(), target );
@@ -3900,6 +3926,8 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     harmful = may_hit = false;
     dot_duration = 0_ms;
 
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+
     precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
 
@@ -3908,7 +3936,10 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     // AotW buff is applied before the spell is cast, allowing it to
     // reduce GCD of the action that triggered it.
     if ( !precombat )
-      p() -> buffs.aspect_of_the_wild -> trigger();
+    {
+      p()->buffs.aspect_of_the_wild->expire();
+      p()->buffs.aspect_of_the_wild->trigger();
+    }
 
     hunter_spell_t::schedule_execute( s );
   }
@@ -3922,6 +3953,7 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     if ( precombat )
       trigger_buff( p() -> buffs.aspect_of_the_wild, precast_time );
 
+    p()->buffs.primal_instincts->expire();
     if ( trigger_buff( p() -> buffs.primal_instincts, precast_time ) )
       p() -> cooldowns.barbed_shot -> reset( true );
 
@@ -4006,12 +4038,18 @@ struct trueshot_t: public hunter_spell_t
     parse_options( options_str );
     harmful = may_hit = false;
 
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+
     precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
 
   void execute() override
   {
     hunter_spell_t::execute();
+
+    p()->buffs.unerring_vision_driver->expire();
+    p()->buffs.unerring_vision->expire();
+    p()->buffs.trueshot->expire();
 
     trigger_buff( p() -> buffs.trueshot, precast_time );
     trigger_buff( p() -> buffs.unerring_vision_driver, precast_time );
@@ -4086,12 +4124,16 @@ struct coordinated_assault_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = may_hit = false;
+
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
   }
 
   void execute() override
   {
     hunter_spell_t::execute();
 
+    p() -> buffs.coordinated_assault->expire();
+    p() -> buffs.coordinated_assault_vision->expire();
     p() -> buffs.coordinated_assault -> trigger();
   }
 };
@@ -4441,6 +4483,66 @@ void hunter_td_t::target_demise()
   }
 
   damaged = false;
+}
+
+void hunter_t::vision_of_perfection_proc()
+{
+  switch ( specialization() )
+  {
+  case HUNTER_BEAST_MASTERY:
+  {
+    timespan_t dur = buffs.aspect_of_the_wild->buff_duration * azerite_essence.vision_of_perfection_major_mult;
+    if ( buffs.aspect_of_the_wild->check() )
+    {
+      buffs.aspect_of_the_wild->extend_duration( this, dur );
+      buffs.primal_instincts->extend_duration( this, dur );
+    }
+    else
+    {
+      buffs.aspect_of_the_wild->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dur );
+      buffs.primal_instincts->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dur );
+    }
+    break;
+  }
+  case HUNTER_MARKSMANSHIP:
+  {
+    timespan_t ts_dur = buffs.trueshot->buff_duration * azerite_essence.vision_of_perfection_major_mult;
+    timespan_t uv_dur = buffs.unerring_vision_driver->buff_duration * azerite_essence.vision_of_perfection_major_mult;
+    
+    if ( buffs.trueshot->check() )
+    {
+      buffs.trueshot->extend_duration( this, ts_dur );
+      buffs.unerring_vision_driver->extend_duration( this, uv_dur );
+    }
+    else
+    {
+      buffs.trueshot->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, ts_dur );
+      buffs.unerring_vision_driver->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, uv_dur );
+    }
+    break;
+  }
+  case HUNTER_SURVIVAL:
+  {
+    // the vision proc on its own starts at 35% effectiveness, upgraded to 100% if refreshed by the active cooldown
+    timespan_t dur = buffs.coordinated_assault->buff_duration * azerite_essence.vision_of_perfection_major_mult;
+    if ( buffs.coordinated_assault->check() )
+    {
+      buffs.coordinated_assault->extend_duration( this, dur );
+      if ( buffs.coordinated_assault_vision->check() )
+      {
+        buffs.coordinated_assault_vision->extend_duration( this, dur );
+      }
+    }
+    else
+    {
+      buffs.coordinated_assault->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dur );
+      buffs.coordinated_assault_vision->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dur );
+    }
+    break;
+  }
+  default:
+    break;
+  }
 }
 
 /**
@@ -4798,6 +4900,11 @@ void hunter_t::init_spells()
   azerite_essence.memory_of_lucid_dreams_major_mult = find_spell( 298357 ) -> effectN( 1 ).percent();
   azerite_essence.memory_of_lucid_dreams_minor_mult =
     azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR ) -> effectN( 1 ).percent();
+
+  azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
+  azerite_essence.vision_of_perfection_major_mult = 
+    azerite_essence.vision_of_perfection.spell( 1u )->effectN( 1 ).percent() +
+    azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE )->effectN( 1 ).percent();
 }
 
 // hunter_t::init_base ======================================================
@@ -4934,6 +5041,12 @@ void hunter_t::create_buffs()
       -> set_activated( true )
       -> set_default_value( specs.coordinated_assault -> effectN( 1 ).percent() );
 
+  buffs.coordinated_assault_vision =
+    make_buff( this, "coordinated_assault_vision", specs.coordinated_assault )
+    -> set_cooldown( 0_ms )
+    -> set_default_value( specs.coordinated_assault -> effectN( 1 ).percent() )
+    -> set_quiet( true );
+
   buffs.vipers_venom =
     make_buff( this, "vipers_venom", talents.vipers_venom -> effectN( 1 ).trigger() )
       -> set_default_value( talents.vipers_venom -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -4970,6 +5083,12 @@ void hunter_t::create_buffs()
       -> add_stat( STAT_AGILITY, azerite.blur_of_talons.value( 1 ) )
       -> add_stat( STAT_SPEED_RATING, azerite.blur_of_talons.value( 2 ) )
       -> set_trigger_spell( azerite.blur_of_talons );
+
+  buffs.blur_of_talons_vision =
+    make_buff<stat_buff_t>( this, "blur_of_talons_vision", find_spell( 277969 ) )
+    -> add_stat( STAT_AGILITY, azerite.blur_of_talons.value( 1 ) * azerite_essence.vision_of_perfection_major_mult )
+    -> add_stat( STAT_SPEED_RATING, azerite.blur_of_talons.value( 2 ) * azerite_essence.vision_of_perfection_major_mult )
+    -> set_trigger_spell( azerite.blur_of_talons );
 
   buffs.dance_of_death =
     make_buff<stat_buff_t>( this, "dance_of_death", find_spell( 274443 ) )
