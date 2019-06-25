@@ -5979,7 +5979,7 @@ void mage_t::apl_frost()
     case ROTATION_NO_ICE_LANCE:
       essences->add_action( "focused_azerite_beam" );
       essences->add_action( "memory_of_lucid_dreams,if=buff.icicles.stack<2" );
-      essences->add_action( "blood_of_the_enemy,if=buff.icicles.stack=5&buff.brain_freeze.react|active_enemies>4" );
+      essences->add_action( "blood_of_the_enemy,if=buff.icicles.stack=5&buff.brain_freeze.react|!talent.glacial_spike.enabled|active_enemies>4" );
       essences->add_action( "purifying_blast" );
       essences->add_action( "ripple_in_space" );
       essences->add_action( "concentrated_flame" );
