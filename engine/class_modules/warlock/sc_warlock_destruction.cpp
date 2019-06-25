@@ -1036,8 +1036,11 @@ namespace warlock {
 
     warlock_pet_list.vop_infernals.spawn( summon_duration, 1u );
 
-    if( azerite.crashing_chaos.ok() )
+    if ( azerite.crashing_chaos.ok() )
+    {
+      buffs.crashing_chaos->expire();
       buffs.crashing_chaos_vop->trigger( buffs.crashing_chaos_vop->max_stack() );
+    }
   }
 
   void warlock_t::init_spells_destruction() {
