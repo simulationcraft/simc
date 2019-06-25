@@ -6691,14 +6691,6 @@ struct dbc_proc_callback_t : public action_callback_t
     if ( weapon && ( ! a -> weapon || ( a -> weapon && a -> weapon != weapon ) ) )
       return;
 
-    auto state = static_cast<action_state_t*>( call_data );
-
-    // Don't allow procs to proc itself
-    if ( proc_action && state->action && state->action->internal_id == proc_action->internal_id )
-    {
-      return;
-    }
-
     bool triggered = roll( a );
     if ( listener -> sim -> debug )
       listener -> sim -> out_debug.printf( "%s attempts to proc %s on %s: %d",
@@ -6707,7 +6699,7 @@ struct dbc_proc_callback_t : public action_callback_t
                                  a -> name(), triggered );
     if ( triggered )
     {
-      execute( a, state );
+      execute( a, static_cast<action_state_t*>( call_data ) );
 
       if ( cooldown )
         cooldown -> start();
@@ -7314,9 +7306,8 @@ struct proc_action_t : public T_ACTION
   void __initialize()
   {
     this->background = true;
-    this->hasted_ticks = false;
+    this->callbacks = this->hasted_ticks = false;
 
-    this->callbacks = !this->data().flags( spell_attribute::SX_DISABLE_PLAYER_PROCS );
     this->may_crit = !this->data().flags( spell_attribute::SX_CANNOT_CRIT );
     this->tick_may_crit = this->data().flags( spell_attribute::SX_TICK_MAY_CRIT );
     this->may_miss = !this->data().flags( spell_attribute::SX_ALWAYS_HIT );
