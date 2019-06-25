@@ -27,10 +27,10 @@ struct runes_t;
 struct rune_t;
 
 namespace pets {
-//  struct death_knight_pet_t;
+  //  struct death_knight_pet_t;
   struct dancing_rune_weapon_pet_t;
   struct bloodworm_pet_t;
-//  struct ghoul_pet_t;
+  //  struct ghoul_pet_t;
   struct gargoyle_pet_t;
   struct magus_pet_t;
 }
@@ -406,6 +406,10 @@ public:
   // Counters
   double eternal_rune_weapon_counter;
   bool triggered_frozen_tempest;
+
+  // Special azerite data
+  double vision_of_perfection_minor_cdr;
+  double vision_of_perfection_major_coeff, perfection_ghouls_spawn_count;
 
   stats_t* antimagic_shell;
 
@@ -833,7 +837,7 @@ public:
   {
     range::fill( pets.army_ghoul, nullptr );
     range::fill( pets.apoc_ghoul, nullptr );
-    
+
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
     cooldown.army_of_the_dead    = get_cooldown( "army_of_the_dead" );
     cooldown.bone_shield_icd     = get_cooldown( "bone_shield_icd" );
@@ -900,7 +904,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
-
+  
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
@@ -2344,7 +2348,7 @@ struct magus_pet_t : public death_knight_pet_t
       death_knight_td_t* td = p() -> o() -> get_target_data( state -> target );
 
       if ( result_is_hit( state -> result )
-            && ( state -> target -> is_add() || state -> target -> level() < sim -> max_player_level + 3 ) )
+           && ( state -> target -> is_add() || state -> target -> level() < sim -> max_player_level + 3 ) )
       {
         if ( magus -> is_apoc_magus )
           td -> debuff.frostbolt_apocalypse_magus -> trigger();
@@ -2360,7 +2364,7 @@ struct magus_pet_t : public death_knight_pet_t
 
       // Frostbolt can't target an enemy already affected by its slowing debuff
       if ( ( td -> debuff.frostbolt_apocalypse_magus -> check() && magus -> is_apoc_magus ) || 
-           ( td -> debuff.frostbolt_army_magus -> check() && ! magus -> is_apoc_magus ) )
+        ( td -> debuff.frostbolt_army_magus -> check() && ! magus -> is_apoc_magus ) )
         return false;
 
       return magus_spell_t::target_ready( candidate_target );
@@ -3054,6 +3058,8 @@ struct apocalypse_t : public death_knight_melee_attack_t
     magus_duration( p -> find_spell( 288544 ) -> duration() )
   {
     parse_options( options_str );
+
+    cooldown -> duration *= 1.0 + p -> vision_of_perfection_minor_cdr;
   }
 
   void execute() override
@@ -4028,8 +4034,8 @@ struct deaths_caress_t : public death_knight_spell_t
 // Death Coil ===============================================================
 
 // Bastard struct because this is a spell that adds up like a residual action, but is also able to critically hit and pandemics
-struct harrowing_decay_t 
-  : public residual_action::residual_periodic_action_t<death_knight_spell_t>
+struct harrowing_decay_t :
+  public residual_action::residual_periodic_action_t<death_knight_spell_t>
 {
   harrowing_decay_t( death_knight_t* p ) :
     residual_action::residual_periodic_action_t<death_knight_spell_t>
@@ -4052,7 +4058,7 @@ struct harrowing_decay_t
 
   void tick( dot_t* d ) override
   {
-    // The last tick doesn't happen if it's partial 
+    // The last tick doesn't happen if it's partial
     if ( d -> current_tick == d -> num_ticks && d -> last_tick_factor < 1 )
       return;
 
@@ -4384,6 +4390,8 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
     // Buff handles the ticking, this one just triggers the buff
     dot_duration = base_tick_time = 0_ms;
+
+    cooldown -> duration *= 1.0 + p -> vision_of_perfection_minor_cdr;
   }
 
   void execute() override
@@ -6157,6 +6165,8 @@ struct vampiric_blood_t : public death_knight_spell_t
 
     harmful = false;
     base_dd_min = base_dd_max = 0;
+
+    cooldown -> duration *= 1.0 + p -> vision_of_perfection_minor_cdr;
   }
 
   void execute() override
@@ -7288,6 +7298,9 @@ void death_knight_t::init_spells()
   azerite.cankerous_wounds       = find_azerite_spell( "Cankerous Wounds" );
   azerite.magus_of_the_dead      = find_azerite_spell( "Magus of the Dead" );
   azerite.helchains              = find_azerite_spell( "Helchains" );
+
+  azerite_essence_t vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
+  vision_of_perfection_minor_cdr = azerite::vision_of_perfection_cdr( vision_of_perfection );
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
