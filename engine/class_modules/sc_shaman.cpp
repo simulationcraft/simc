@@ -1154,7 +1154,8 @@ public:
       ab::base_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 7 ).percent();
     }
 
-    affected_by_molten_weapon = ab::data().affected_by_label( player->find_spell( 224125 )->effectN( 1 ).misc_value2() );
+    affected_by_molten_weapon =
+        ab::data().affected_by_label( player->find_spell( 224125 )->effectN( 1 ).misc_value2() );
   }
 
   std::string full_name() const
@@ -2411,7 +2412,7 @@ struct fire_elemental_t : public primal_elemental_t
 
   fire_elemental_t( shaman_t* owner, bool guardian )
     : primal_elemental_t( owner, ( guardian ) ? "greater_fire_elemental" : "primal_fire_elemental", guardian, false ),
-    ember_elemental_summon( owner->find_spell( 275385 ) )
+      ember_elemental_summon( owner->find_spell( 275385 ) )
   {
     owner_coeff.sp_from_sp = 1.0;
   }
@@ -2429,10 +2430,13 @@ struct fire_elemental_t : public primal_elemental_t
   {
     fire_blast_t( fire_elemental_t* player, const std::string& options )
       : super( player, "fire_blast", player->find_spell( 57984 ), options )
-    { }
+    {
+    }
 
     bool usable_moving() const override
-    { return true; }
+    {
+      return true;
+    }
   };
 
   struct immolate_t : public pet_spell_t<fire_elemental_t>
@@ -2486,9 +2490,9 @@ struct fire_elemental_t : public primal_elemental_t
 
 struct ember_elemental_t : public primal_elemental_t
 {
-  ember_elemental_t( shaman_t* owner ) :
-    primal_elemental_t( owner, "ember_elemental", true, false )
-  { }
+  ember_elemental_t( shaman_t* owner ) : primal_elemental_t( owner, "ember_elemental", true, false )
+  {
+  }
 
   struct ember_blast_t : public pet_spell_t<ember_elemental_t>
   {
@@ -2500,7 +2504,9 @@ struct ember_elemental_t : public primal_elemental_t
     }
 
     bool usable_moving() const override
-    { return true; }
+    {
+      return true;
+    }
   };
 
   void create_default_apl() override
@@ -2668,9 +2674,9 @@ struct storm_elemental_t : public primal_elemental_t
 
 struct spark_elemental_t : public primal_elemental_t
 {
-  spark_elemental_t( shaman_t* owner ) :
-    primal_elemental_t( owner, "spark_elemental", true, false )
-  { }
+  spark_elemental_t( shaman_t* owner ) : primal_elemental_t( owner, "spark_elemental", true, false )
+  {
+  }
 
   struct shocking_blast_t : public pet_spell_t<spark_elemental_t>
   {
@@ -2682,7 +2688,9 @@ struct spark_elemental_t : public primal_elemental_t
     }
 
     bool usable_moving() const override
-    { return true; }
+    {
+      return true;
+    }
   };
 
   void create_default_apl() override
@@ -6891,7 +6899,8 @@ void shaman_t::init_spells()
   spell.memory_of_lucid_dreams_base      = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
   azerite_essence.vision_of_perfection   = find_azerite_essence( "Vision of Perfection" );
   spell.vision_of_perfection_base        = azerite_essence.vision_of_perfection.spell( 1u, essence_type::MAJOR );
-  spell.vision_of_perfection_r2          = azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
+  spell.vision_of_perfection_r2 =
+      azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
 
   player_t::init_spells();
 }
@@ -7320,14 +7329,13 @@ double shaman_t::composite_maelstrom_gain_coefficient( const action_state_t* /* 
 
 void shaman_t::vision_of_perfection_proc()
 {
-  if ( !azerite_essence.vision_of_perfection.is_major() ||
-       !azerite_essence.vision_of_perfection.enabled() )
+  if ( !azerite_essence.vision_of_perfection.is_major() || !azerite_essence.vision_of_perfection.enabled() )
   {
     return;
   }
 
-  double dmul = spell.vision_of_perfection_base->effectN( 1 ).percent() +
-                spell.vision_of_perfection_r2->effectN( 1 ).percent();
+  double dmul =
+      spell.vision_of_perfection_base->effectN( 1 ).percent() + spell.vision_of_perfection_r2->effectN( 1 ).percent();
 
   timespan_t base_duration = timespan_t::zero();
   switch ( specialization() )
@@ -7971,6 +7979,16 @@ void shaman_t::init_action_list_elemental()
       "talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120&talent.storm_elemental.enabled)" );
   // On-use items
   def->add_action( "use_items" );
+  // Get going with Azerite Essences (necklace effects)
+  def->add_action( "concentrated_flame" );
+  def->add_action( "blood_of_the_enemy" );
+  def->add_action( "guardian_of_azeroth" );
+  def->add_action( "focused_azerite_beam" );
+  def->add_action( "purifying_blast" );
+  def->add_action( "the_unbound_force" );
+  def->add_action( "memory_of_lucid_dreams" );
+  def->add_action( "ripple_in_space" );
+  def->add_action( "worldvein_resonance" );
   // Racials
   def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
@@ -9341,20 +9359,21 @@ struct shaman_module_t : public module_t
   }
 };
 
-shaman_t::pets_t::pets_t( shaman_t* s ) :
-  pet_fire_elemental( nullptr ),
-  pet_storm_elemental( nullptr ),
-  pet_earth_elemental( nullptr ),
-  guardian_fire_elemental( nullptr ),
-  guardian_storm_elemental( nullptr ),
-  guardian_earth_elemental( nullptr ),
-  ember_elemental( "ember_elemental", s, []( shaman_t* s ) { return new pet::ember_elemental_t( s ); } ),
-  spark_elemental( "spark_elemental", s, []( shaman_t* s ) { return new pet::spark_elemental_t( s ); } ),
-  spirit_wolves( "spirit_wolf", s, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
-  fire_wolves( "fiery_wolf", s, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
-  frost_wolves( "frost_wolf", s, []( shaman_t* s ) { return new pet::frost_wolf_t( s ); } ),
-  lightning_wolves( "lightning_wolf", s, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } )
-{ }
+shaman_t::pets_t::pets_t( shaman_t* s )
+  : pet_fire_elemental( nullptr ),
+    pet_storm_elemental( nullptr ),
+    pet_earth_elemental( nullptr ),
+    guardian_fire_elemental( nullptr ),
+    guardian_storm_elemental( nullptr ),
+    guardian_earth_elemental( nullptr ),
+    ember_elemental( "ember_elemental", s, []( shaman_t* s ) { return new pet::ember_elemental_t( s ); } ),
+    spark_elemental( "spark_elemental", s, []( shaman_t* s ) { return new pet::spark_elemental_t( s ); } ),
+    spirit_wolves( "spirit_wolf", s, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
+    fire_wolves( "fiery_wolf", s, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
+    frost_wolves( "frost_wolf", s, []( shaman_t* s ) { return new pet::frost_wolf_t( s ); } ),
+    lightning_wolves( "lightning_wolf", s, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } )
+{
+}
 
 }  // UNNAMED NAMESPACE
 
