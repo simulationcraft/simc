@@ -1016,7 +1016,7 @@ void paladin_t::vision_of_perfection_proc()
       primary -> extend_duration( this, primary_duration );
       if ( secondary )
         secondary -> extend_duration( this, secondary_duration );
-      if ( tertiary )
+      if ( tertiary && tertiary -> check() )
         tertiary -> extend_duration( this, tertiary_duration );
     }
     else
