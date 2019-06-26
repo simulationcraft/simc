@@ -164,6 +164,7 @@ namespace items
   void highborne_compendium_of_sundering( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
+  void subroutine_overclock( special_effect_t& );
 }
 
 namespace util
@@ -3309,6 +3310,42 @@ void items::yellow_punchcard( special_effect_t& effect )
   } );
 }
 
+void items::subroutine_overclock( special_effect_t& effect )
+{
+  if ( !effect.enchant_data )
+  {
+    return;
+  }
+
+  auto item_data = effect.player->dbc.item( effect.enchant_data->id_gem );
+  if ( !item_data )
+  {
+    return;
+  }
+
+  // Make a fake punchcard item and apply bonuses to it
+  item_t punchcard( effect.player, "" );
+
+  punchcard.parsed.data = *item_data;
+  punchcard.name_str = item_data -> name;
+  ::util::tokenize( punchcard.name_str );
+
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "subroutine_overclock" ) );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "subroutine_overclock", effect.player->find_spell( 293142 ) );
+    buff->add_stat( STAT_HASTE_RATING,
+        item_database::apply_combat_rating_multiplier( effect.player,
+          combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
+          punchcard.item_level(),
+          effect.player->find_spell( 293142 )->effectN( 1 ).average( &( punchcard ) ) ) );
+  }
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -3457,6 +3494,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 306410, items::yellow_punchcard );
   register_special_effect( 303596, items::yellow_punchcard );
   register_special_effect( 306409, items::yellow_punchcard );
+  register_special_effect( 293136, items::subroutine_overclock );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
