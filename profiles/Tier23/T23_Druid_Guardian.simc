@@ -8,9 +8,9 @@ position=front
 talents=1000131
 
 # Default consumables
-potion=potion_of_bursting_blood
-flask=flask_of_the_currents
-food=bountiful_captains_feast
+potion=focused_resolve
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -79,7 +79,7 @@ main_hand=hornridged_crusher,id=165589,bonus_id=4800/1537,enchant=quick_navigati
 # gear_agility=5821
 # gear_stamina=9970
 # gear_crit_rating=548
-# gear_haste_rating=1191
+# gear_haste_rating=1197
 # gear_mastery_rating=1081
 # gear_versatility_rating=575
 # gear_armor=2363

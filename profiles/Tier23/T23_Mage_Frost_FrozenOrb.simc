@@ -42,6 +42,7 @@ actions+=/call_action_list,name=single
 # With Freezing Rain, it's better to prioritize using Frozen Orb when both FO and Blizzard are off cooldown. Without Freezing Rain, the converse is true although the difference is miniscule until very high target counts.
 actions.aoe=frozen_orb
 actions.aoe+=/blizzard
+actions.aoe+=/call_action_list,name=essences
 actions.aoe+=/comet_storm
 actions.aoe+=/ice_nova
 # Simplified Flurry conditions from the ST action list. Since the mage is generating far less Brain Freeze charges, the exact condition here isn't all that important.
@@ -58,7 +59,8 @@ actions.aoe+=/frostbolt
 actions.aoe+=/call_action_list,name=movement
 actions.aoe+=/ice_lance
 
-actions.cooldowns=icy_veins,if=cooldown.frozen_orb.remains<5
+actions.cooldowns=guardian_of_azeroth,if=cooldown.frozen_orb.remains<5
+actions.cooldowns+=/icy_veins,if=cooldown.frozen_orb.remains<5
 actions.cooldowns+=/mirror_image
 # Rune of Power is always used with Frozen Orb. Any leftover charges at the end of the fight should be used, ideally if the boss doesn't die in the middle of the Rune buff.
 actions.cooldowns+=/rune_of_power,if=prev_gcd.1.frozen_orb|target.time_to_die>10+cast_time&target.time_to_die<20
@@ -72,11 +74,21 @@ actions.cooldowns+=/lights_judgment
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
 
+actions.essences=focused_azerite_beam,if=debuff.packed_ice.down
+actions.essences+=/memory_of_lucid_dreams,if=debuff.packed_ice.down
+actions.essences+=/blood_of_the_enemy,if=prev_gcd.1.rune_of_power&prev_gcd.2.frozen_orb
+actions.essences+=/purifying_blast,if=debuff.packed_ice.down
+actions.essences+=/ripple_in_space,if=debuff.packed_ice.down
+actions.essences+=/concentrated_flame,if=debuff.packed_ice.down,line_cd=6
+actions.essences+=/the_unbound_force,if=buff.reckless_force.up
+actions.essences+=/worldvein_resonance,if=debuff.packed_ice.down
+
 actions.movement=blink_any,if=movement.distance>10
 actions.movement+=/ice_floes,if=buff.ice_floes.down
 
 # In some situations, you can shatter Ice Nova even after already casting Flurry and Ice Lance. Otherwise this action is used when the mage has FoF after casting Flurry, see above.
 actions.single=ice_nova,if=cooldown.ice_nova.ready&debuff.winters_chill.up
+actions.single+=/call_action_list,name=essences
 actions.single+=/frozen_orb
 actions.single+=/flurry,if=prev_gcd.1.ebonbolt&buff.brain_freeze.react
 actions.single+=/blizzard,if=active_enemies>2|active_enemies>1&cast_time=0
@@ -119,7 +131,7 @@ main_hand=deathspeaker_spire,id=165597,bonus_id=4800/1537,enchant=torrent_of_ele
 # gear_ilvl=416.93
 # gear_stamina=9970
 # gear_intellect=7318
-# gear_crit_rating=1006
+# gear_crit_rating=1012
 # gear_haste_rating=1063
 # gear_mastery_rating=291
 # gear_versatility_rating=1036

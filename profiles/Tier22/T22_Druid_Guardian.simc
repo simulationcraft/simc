@@ -8,9 +8,9 @@ position=front
 talents=1111123
 
 # Default consumables
-potion=potion_of_bursting_blood
-flask=flask_of_the_currents
-food=bountiful_captains_feast
+potion=focused_resolve
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -79,7 +79,7 @@ main_hand=voidbinder,id=160688,bonus_id=4800/1507,enchant=quick_navigation
 # gear_agility=4346
 # gear_stamina=7207
 # gear_crit_rating=772
-# gear_haste_rating=1312
+# gear_haste_rating=1318
 # gear_mastery_rating=584
 # gear_versatility_rating=335
 # gear_armor=1911

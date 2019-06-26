@@ -9,9 +9,9 @@ position=back
 talents=2000122
 
 # Default consumables
-potion=battle_potion_of_agility
-flask=flask_of_the_currents
-food=bountiful_captains_feast
+potion=focused_resolve
+flask=greater_flask_of_the_currents
+food=mechdowels_big_mech
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -127,7 +127,7 @@ main_hand=hornridged_crusher,id=165589,bonus_id=4800/1537,enchant=deadly_navigat
 # gear_ilvl=416.93
 # gear_agility=5821
 # gear_stamina=9970
-# gear_crit_rating=932
+# gear_crit_rating=938
 # gear_haste_rating=793
 # gear_mastery_rating=944
 # gear_versatility_rating=728

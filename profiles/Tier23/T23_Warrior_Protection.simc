@@ -26,6 +26,9 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
+actions.precombat+=/memory_of_lucid_dreams
+actions.precombat+=/guardian_of_azeroth
+actions.precombat+=/focused_azerite_beam
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -90,7 +93,7 @@ off_hand=sunburst_crest,id=165584,bonus_id=4800/1537
 # gear_stamina=10897
 # gear_intellect=666
 # gear_crit_rating=921
-# gear_haste_rating=1332
+# gear_haste_rating=1338
 # gear_mastery_rating=927
 # gear_versatility_rating=214
 # gear_armor=7588

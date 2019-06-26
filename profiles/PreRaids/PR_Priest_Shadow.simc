@@ -8,9 +8,9 @@ position=ranged_back
 talents=1111122
 
 # Default consumables
-potion=rising_death
-flask=endless_fathoms
-food=honeyglazed_haunches
+potion=unbridled_fury
+flask=greater_flask_of_endless_fathoms
+food=baked_port_tato
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -110,6 +110,6 @@ off_hand=rattling_jar_of_eyes,id=159668,bonus_id=4779/1512/4786
 # gear_stamina=4465
 # gear_intellect=3626
 # gear_crit_rating=1029
-# gear_haste_rating=1240
+# gear_haste_rating=1246
 # gear_mastery_rating=209
 # gear_armor=873

@@ -151,7 +151,6 @@ trinket2=incandescent_sliver,id=165571,bonus_id=4800/1537
 main_hand=desecrated_blade_of_the_disciples,id=165919,bonus_id=4800/1537,enchant=torrent_of_elements
 off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
 
-
 # Gear Summary
 # gear_ilvl=414.94
 # gear_stamina=9906
@@ -159,6 +158,6 @@ off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
 # gear_crit_rating=738
 # gear_haste_rating=1450
 # gear_mastery_rating=855
-# gear_versatility_rating=509
+# gear_versatility_rating=515
 # gear_armor=1442
 # set_bonus=gift_of_the_loa_2pc=1

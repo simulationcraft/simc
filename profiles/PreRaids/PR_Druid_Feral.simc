@@ -9,9 +9,9 @@ position=back
 talents=3000212
 
 # Default consumables
-potion=battle_potion_of_agility
-flask=flask_of_the_currents
-food=bountiful_captains_feast
+potion=focused_resolve
+flask=greater_flask_of_the_currents
+food=mechdowels_big_mech
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -128,6 +128,6 @@ main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_nav
 # gear_agility=2883
 # gear_stamina=4465
 # gear_crit_rating=964
-# gear_haste_rating=1305
+# gear_haste_rating=1311
 # gear_mastery_rating=209
 # gear_armor=1430

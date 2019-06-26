@@ -8,9 +8,9 @@ position=ranged_back
 talents=3111111
 
 # Default consumables
-potion=rising_death
-flask=endless_fathoms
-food=honeyglazed_haunches
+potion=unbridled_fury
+flask=greater_flask_of_endless_fathoms
+food=baked_port_tato
 augmentation=battle_scarred
 
 initial_resource=insanity=25
@@ -110,7 +110,7 @@ main_hand=phoenixfire_staff,id=165587,bonus_id=4800/1537,enchant=quick_navigatio
 # gear_stamina=9970
 # gear_intellect=7264
 # gear_crit_rating=711
-# gear_haste_rating=1397
+# gear_haste_rating=1403
 # gear_mastery_rating=1009
 # gear_versatility_rating=278
 # gear_armor=1442
