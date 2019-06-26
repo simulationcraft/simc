@@ -3259,14 +3259,24 @@ void items::highborne_compendium_of_sundering( special_effect_t& effect )
 
 void items::yellow_punchcard( special_effect_t& effect )
 {
-  // TODO: Not this simple, we will need a way to get the item level of the gem from either
-  // Simulationcraft addon, or the blizzard community api. At worst, we will need to add some
-  // options to support this (e.g., gem_ilevel= or such)
-  unsigned base_ilevel = 415;
-
   std::vector<std::tuple<stat_e, double>> stats;
 
-  auto budget = item_database::item_budget( effect.player, base_ilevel );
+  // We don't need to do any further initialization so don't perform phase 2 at all
+  effect.type = SPECIAL_EFFECT_NONE;
+
+  if ( !effect.enchant_data )
+  {
+    return;
+  }
+
+  auto item_data = effect.player->dbc.item( effect.enchant_data->id_gem );
+  if ( !item_data )
+  {
+    return;
+  }
+
+  // TODO: Bonus id handling, when we export that information somehow
+  auto budget = item_database::item_budget( effect.player, item_data->level );
 
   // Collect stats
   for ( size_t i = 1u; i <= effect.driver()->effect_count(); ++i )
@@ -3279,21 +3289,24 @@ void items::yellow_punchcard( special_effect_t& effect )
     auto effect_stats = ::util::translate_all_rating_mod( effect.driver()->effectN( i ).misc_value1() );
     double value = effect.driver()->effectN( i ).m_coefficient() * budget;
     value = item_database::apply_combat_rating_multiplier( effect.player,
-      combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET, base_ilevel, value );
+      combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET, item_data->level, value );
     range::for_each( effect_stats, [ value, &stats ]( stat_e stat ) {
       stats.push_back( { stat, value } );
     } );
   }
 
   // .. and apply them as passive stats to the actor
-  range::for_each( stats, [&effect]( const std::tuple<stat_e, double>& stats ) {
+  range::for_each( stats, [&effect, item_data]( const std::tuple<stat_e, double>& stats ) {
       stat_e stat = std::get<0>( stats );
       double value = std::get<1>( stats );
+      if ( effect.player->sim->debug )
+      {
+        effect.player->sim->out_debug.print( "{} {}: punchcard={} ({}), stat={}, value={}",
+          effect.player->name(), effect.item->name(), item_data->name, item_data->level,
+            ::util::stat_type_string( stat ), value );
+      }
       effect.player->passive.add_stat( stat, value );
   } );
-
-  // We don't need to do any further initialization so don't perform phase 2 at all
-  effect.type = SPECIAL_EFFECT_NONE;
 }
 
 // Waycrest's Legacy Set Bonus ============================================
