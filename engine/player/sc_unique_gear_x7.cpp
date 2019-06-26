@@ -166,6 +166,7 @@ namespace items
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
+  void subroutine_recalibration( special_effect_t& );
 }
 
 namespace util
@@ -3377,6 +3378,105 @@ void items::subroutine_overclock( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void items::subroutine_recalibration( special_effect_t& effect )
+{
+  struct recalibration_cb_t : public dbc_proc_callback_t
+  {
+    unsigned casts, req_casts;
+
+    recalibration_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      casts( 0 ), req_casts( as<unsigned>( effect.driver()->effectN( 2 ).base_value() ) )
+    { }
+
+    void trigger( action_t* a, void* call_data ) override
+    {
+      if ( a->background )
+      {
+        return;
+      }
+
+      dbc_proc_callback_t::trigger( a, call_data );
+    }
+
+    void activate() override
+    {
+      dbc_proc_callback_t::activate();
+      casts = 0;
+    }
+
+    void execute( action_t* /* a */, action_state_t* /* state */ ) override
+    {
+      if ( ++casts == req_casts )
+      {
+        proc_buff->trigger();
+        casts = 0;
+      }
+    }
+  };
+
+  if ( !effect.enchant_data )
+  {
+    return;
+  }
+
+  auto item_data = effect.player->dbc.item( effect.enchant_data->id_gem );
+  if ( !item_data )
+  {
+    return;
+  }
+
+  // Make a fake punchcard item and apply bonuses to it
+  item_t punchcard( effect.player, "" );
+
+  punchcard.parsed.data = *item_data;
+  punchcard.name_str = item_data -> name;
+  ::util::tokenize( punchcard.name_str );
+
+  stat_buff_t* primary_buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player,
+      "subroutine_recalibration" ) );
+  stat_buff_t* recalibration_buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player,
+      "recalibrating" ) );
+
+  if ( !recalibration_buff )
+  {
+    recalibration_buff = make_buff<stat_buff_t>( effect.player, "recalibrating",
+      effect.player->find_spell( 299065 ), effect.item );
+    recalibration_buff->add_stat( STAT_HASTE_RATING,
+        -item_database::apply_combat_rating_multiplier( effect.player,
+          combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
+          punchcard.item_level(),
+          effect.driver()->effectN( 3 ).average( &( punchcard ) ) ) );
+  }
+
+  if ( !primary_buff )
+  {
+    primary_buff = make_buff<stat_buff_t>( effect.player, "subroutine_recalibration",
+      effect.player->find_spell( 299064 ), effect.item );
+    primary_buff->add_stat( STAT_HASTE_RATING,
+        item_database::apply_combat_rating_multiplier( effect.player,
+          combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
+          punchcard.item_level(),
+          effect.driver()->effectN( 1 ).average( &( punchcard ) ) ) );
+    primary_buff->set_stack_change_callback( [recalibration_buff]( buff_t*, int /* old */, int new_ ) {
+      if ( new_ == 0 )
+      {
+        recalibration_buff->trigger();
+      }
+      else
+      {
+        recalibration_buff->expire();
+      }
+    } );
+  }
+
+  effect.proc_flags_ = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_CAST;
+  effect.custom_buff = primary_buff;
+
+  new recalibration_cb_t( effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -3527,6 +3627,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 303596, items::yellow_punchcard );
   register_special_effect( 306409, items::yellow_punchcard );
   register_special_effect( 293136, items::subroutine_overclock );
+  register_special_effect( 299062, items::subroutine_recalibration );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
