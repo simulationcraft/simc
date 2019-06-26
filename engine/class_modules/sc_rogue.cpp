@@ -1281,16 +1281,6 @@ struct blade_flurry_attack_t : public rogue_attack_t
     }
     return tl.size();
   }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-
-    // As of 2018-12-08: Keep Your Wits stacks per BF hit per target.
-    // Changes in 8.2 to once per instance.
-    if ( p() -> azerite.keep_your_wits_about_you.ok() && !maybe_ptr( p() -> dbc.ptr ) )
-      p() -> buffs.keep_your_wits_about_you -> trigger();
-  }
 };
 
 struct internal_bleeding_t : public rogue_attack_t
@@ -5126,7 +5116,7 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   active_blade_flurry -> execute();
 
   // Keep triggers once per instance with 8.2
-  if ( azerite.keep_your_wits_about_you.ok() && maybe_ptr( dbc.ptr ) )
+  if ( azerite.keep_your_wits_about_you.ok() )
       buffs.keep_your_wits_about_you -> trigger();
 }
 
@@ -5748,20 +5738,17 @@ void rogue_t::init_action_list()
     cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking" );
 
     // Azerite Essences
-    if ( maybe_ptr( dbc.ptr ) )
-    {
-      action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
-      essences->add_action( "concentrated_flame" );
-      essences->add_action( "blood_of_the_enemy" );
-      essences->add_action( "guardian_of_azeroth" );
-      essences->add_action( "focused_azerite_beam" );
-      essences->add_action( "purifying_blast" );
-      essences->add_action( "the_unbound_force" );
-      essences->add_action( "ripple_in_space" );
-      essences->add_action( "worldvein_resonance" );
-      essences->add_action( "memory_of_lucid_dreams,if=energy<50" );
-      cds->add_action( "call_action_list,name=essences" );
-    }
+    action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
+    essences->add_action( "concentrated_flame" );
+    essences->add_action( "blood_of_the_enemy" );
+    essences->add_action( "guardian_of_azeroth" );
+    essences->add_action( "focused_azerite_beam" );
+    essences->add_action( "purifying_blast" );
+    essences->add_action( "the_unbound_force" );
+    essences->add_action( "ripple_in_space" );
+    essences->add_action( "worldvein_resonance" );
+    essences->add_action( "memory_of_lucid_dreams,if=energy<50" );
+    cds->add_action( "call_action_list,name=essences" );
 
     // Stealth
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
@@ -5845,20 +5832,17 @@ void rogue_t::init_action_list()
     cds -> add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
 
     // Azerite Essences
-    if ( maybe_ptr( dbc.ptr ) )
-    {
-      action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
-      essences->add_action( "concentrated_flame" );
-      essences->add_action( "blood_of_the_enemy" );
-      essences->add_action( "guardian_of_azeroth" );
-      essences->add_action( "focused_azerite_beam" );
-      essences->add_action( "purifying_blast" );
-      essences->add_action( "the_unbound_force" );
-      essences->add_action( "ripple_in_space" );
-      essences->add_action( "worldvein_resonance" );
-      essences->add_action( "memory_of_lucid_dreams,if=energy<45" );
-      cds->add_action( "call_action_list,name=essences" );
-    }
+    action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
+    essences->add_action( "concentrated_flame" );
+    essences->add_action( "blood_of_the_enemy" );
+    essences->add_action( "guardian_of_azeroth" );
+    essences->add_action( "focused_azerite_beam" );
+    essences->add_action( "purifying_blast" );
+    essences->add_action( "the_unbound_force" );
+    essences->add_action( "ripple_in_space" );
+    essences->add_action( "worldvein_resonance" );
+    essences->add_action( "memory_of_lucid_dreams,if=energy<45" );
+    cds->add_action( "call_action_list,name=essences" );
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
@@ -5933,20 +5917,17 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Shadow Dance", "if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled&!raid_event.adds.up" );
 
     // Azerite Essences
-    if ( maybe_ptr( dbc.ptr ) )
-    {
-      action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
-      essences->add_action( "concentrated_flame" );
-      essences->add_action( "blood_of_the_enemy" );
-      essences->add_action( "guardian_of_azeroth" );
-      essences->add_action( "focused_azerite_beam" );
-      essences->add_action( "purifying_blast" );
-      essences->add_action( "the_unbound_force" );
-      essences->add_action( "ripple_in_space" );
-      essences->add_action( "worldvein_resonance" );
-      essences->add_action( "memory_of_lucid_dreams,if=energy<40" );
-      cds->add_action( "call_action_list,name=essences" );
-    }
+    action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
+    essences->add_action( "concentrated_flame" );
+    essences->add_action( "blood_of_the_enemy" );
+    essences->add_action( "guardian_of_azeroth" );
+    essences->add_action( "focused_azerite_beam" );
+    essences->add_action( "purifying_blast" );
+    essences->add_action( "the_unbound_force" );
+    essences->add_action( "ripple_in_space" );
+    essences->add_action( "worldvein_resonance" );
+    essences->add_action( "memory_of_lucid_dreams,if=energy<40" );
+    cds->add_action( "call_action_list,name=essences" );
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
