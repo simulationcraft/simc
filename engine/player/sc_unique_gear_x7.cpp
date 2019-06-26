@@ -646,7 +646,7 @@ struct bfa_82_enchant_functor_t
     haste( h ), crit( c ), mastery( m )
   { }
 
-  void operator()( buff_t* b, int old, int new_ )
+  void operator()( buff_t* b, int /* old */, int new_ )
   {
     crit->expire();
     haste->expire();

@@ -6707,10 +6707,12 @@ struct dbc_proc_callback_t : public action_callback_t
                                  a -> name(), triggered );
     if ( triggered )
     {
-      execute( a, state );
+      make_event( *listener->sim, [ this, a, state ]() {
+        execute( a, state );
 
-      if ( cooldown )
-        cooldown -> start();
+        if ( cooldown )
+          cooldown -> start();
+      } );
     }
   }
 
