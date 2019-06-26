@@ -66,6 +66,7 @@ actions.cds+=/blood_fury
 actions.cds+=/berserking
 actions.cds+=/fireblood
 actions.cds+=/ancestral_call
+actions.cds+=/call_action_list,name=essences,if=!stealthed.all
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&energy.time_to_max>1
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
@@ -79,7 +80,6 @@ actions.cds+=/blade_rush,if=variable.blade_flurry_sync&energy.time_to_max>1
 # Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell.
 actions.cds+=/vanish,if=!stealthed.all&variable.ambush_condition
 actions.cds+=/shadowmeld,if=!stealthed.all&variable.ambush_condition
-actions.cds+=/call_action_list,name=essences
 
 # Essences
 actions.essences=concentrated_flame

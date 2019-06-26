@@ -52,6 +52,7 @@ actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/fireblood,if=debuff.vendetta.up
 actions.cds+=/ancestral_call,if=debuff.vendetta.up
+actions.cds+=/call_action_list,name=essences,if=dot.rupture.ticking
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)
 # If no adds will die within the next 30s, use MfD on boss without any CP.
@@ -72,7 +73,6 @@ actions.cds+=/shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&
 # Exsanguinate when both Rupture and Garrote are up for long enough
 actions.cds+=/exsanguinate,if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable
 actions.cds+=/toxic_blade,if=dot.rupture.ticking
-actions.cds+=/call_action_list,name=essences
 
 # Direct damage abilities
 # Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.
