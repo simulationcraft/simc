@@ -5117,20 +5117,17 @@ void demon_hunter_t::apl_havoc()
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|target.time_to_die<60" );
   add_havoc_use_items( this, apl_cooldown );
 
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-    action_priority_list_t* essences = get_action_priority_list( "essences" );
-    essences->add_action( "concentrated_flame" );
-    essences->add_action( "blood_of_the_enemy" );
-    essences->add_action( "guardian_of_azeroth" );
-    essences->add_action( "focused_azerite_beam" );
-    essences->add_action( "purifying_blast" );
-    essences->add_action( "the_unbound_force" );
-    essences->add_action( "ripple_in_space" );
-    essences->add_action( "worldvein_resonance" );
-    essences->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );
-    apl_cooldown->add_action( "call_action_list,name=essences" );
-  }
+  action_priority_list_t* essences = get_action_priority_list( "essences" );
+  essences->add_action( "concentrated_flame" );
+  essences->add_action( "blood_of_the_enemy" );
+  essences->add_action( "guardian_of_azeroth" );
+  essences->add_action( "focused_azerite_beam" );
+  essences->add_action( "purifying_blast" );
+  essences->add_action( "the_unbound_force" );
+  essences->add_action( "ripple_in_space" );
+  essences->add_action( "worldvein_resonance" );
+  essences->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );
+  apl_cooldown->add_action( "call_action_list,name=essences" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
   apl_normal->add_action( this, "Vengeful Retreat", "if=talent.momentum.enabled&buff.prepared.down&time>1" );
