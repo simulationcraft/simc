@@ -638,8 +638,6 @@ namespace
 {
 // Simple functor to trigger the highest buff for Machinist's Brilliance and Force Multiplier
 // enchants
-//
-// TODO: Does in-game allow two secondary stat buffs up on refreshes, if the "highest" stat changes?
 struct bfa_82_enchant_functor_t
 {
   buff_t *haste, *crit, *mastery;
@@ -648,8 +646,12 @@ struct bfa_82_enchant_functor_t
     haste( h ), crit( c ), mastery( m )
   { }
 
-  void operator()( buff_t* b, int /* old */, int new_ )
+  void operator()( buff_t* b, int old, int new_ )
   {
+    crit->expire();
+    haste->expire();
+    mastery->expire();
+
     stat_e highest_rating = ::util::highest_stat( b->source,
       { STAT_CRIT_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING } );
     buff_t* selected_buff = nullptr;
