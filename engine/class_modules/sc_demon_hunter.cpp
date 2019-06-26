@@ -4993,7 +4993,7 @@ void demon_hunter_t::vision_of_perfection_proc()
 
 std::string demon_hunter_t::default_flask() const
 {
-  return (true_level >  110) ? "currents" :
+  return (true_level >  110) ? "greater_flask_of_the_currents" :
          (true_level >  100) ? "seventh_demon" :
          (true_level >= 90) ? "greater_draenic_agility_flask" :
          (true_level >= 85) ? "spring_blossoms" :
@@ -5004,7 +5004,7 @@ std::string demon_hunter_t::default_flask() const
 
 std::string demon_hunter_t::default_potion() const
 {
-  return (true_level > 110) ? (specialization() == DEMON_HUNTER_HAVOC ? "battle_potion_of_agility" : "steelskin_potion") :
+  return (true_level > 110) ? (specialization() == DEMON_HUNTER_HAVOC ? "potion_of_focused_resolve" : "steelskin_potion") :
          (true_level > 100) ? (specialization() == DEMON_HUNTER_HAVOC ? "prolonged_power" : "unbending_potion") :
          (true_level >= 90) ? (specialization() == DEMON_HUNTER_HAVOC ? "draenic_agility" : "draenic_versatility") :
          (true_level >= 85) ? "virmens_bite" :
@@ -5015,7 +5015,7 @@ std::string demon_hunter_t::default_potion() const
 
 std::string demon_hunter_t::default_food() const
 {
-  return (true_level >  110) ? "bountiful_captains_feast" :
+  return (true_level >  110) ? "famine_evaluator_and_snack_table" :
          (true_level >  100) ? "lavish_suramar_feast" :
          (true_level >  90) ? "pickled_eel" :
          (true_level >= 90) ? "sea_mist_rice_noodles" :
