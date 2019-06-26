@@ -27,10 +27,9 @@ struct runes_t;
 struct rune_t;
 
 namespace pets {
-  //  struct death_knight_pet_t;
-  struct dancing_rune_weapon_pet_t;
+  struct army_ghoul_pet_t;
   struct bloodworm_pet_t;
-  //  struct ghoul_pet_t;
+  struct dancing_rune_weapon_pet_t;
   struct gargoyle_pet_t;
   struct magus_pet_t;
 }
@@ -723,18 +722,19 @@ public:
 
   // Pets and Guardians
   struct pets_t
-  {
+  {   
     std::array< pet_t*, 4 > apoc_ghoul;
-    std::array< pet_t*, 8 > army_ghoul;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon_pet;
     pets::gargoyle_pet_t* gargoyle;
     pet_t* ghoul_pet;
     pet_t* risen_skulker;
     
+    spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> army_ghouls;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> magus_of_the_dead;
 
     pets_t( death_knight_t* p ) :
+      army_ghouls( "army_ghoul", p ),
       bloodworms( "bloodworm", p ),
       magus_of_the_dead( "magus_of_the_dead", p )
     {}
@@ -833,7 +833,6 @@ public:
     options( options_t() ),
     _runes( this )
   {
-    range::fill( pets.army_ghoul, nullptr );
     range::fill( pets.apoc_ghoul, nullptr );
 
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
@@ -902,7 +901,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
-
+  
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
@@ -1799,7 +1798,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  army_ghoul_pet_t( death_knight_t* owner, const std::string& name ) :
+  army_ghoul_pet_t( death_knight_t* owner, const std::string& name = "army_ghoul" ) :
     base_ghoul_pet_t( owner, name, true )
   { }
 
@@ -3130,7 +3129,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
     void execute() override
     {
-      p -> pets.army_ghoul[ n_ghoul ] -> summon( summon_duration );
+      p -> pets.army_ghouls.spawn( summon_duration, 1 );
       if ( ++n_ghoul < 8 )
       {
         make_event<summon_army_event_t>( sim(), p, n_ghoul, summon_interval, summon_duration );
@@ -3188,8 +3187,9 @@ struct army_of_the_dead_t : public death_knight_spell_t
       double duration_penalty = precombat_delay - ( n_ghoul + 1 ) * summon_interval;
       while ( duration_penalty >= 0 && n_ghoul < 8 )
       {
-        p() -> pets.army_ghoul[ n_ghoul++ ] -> summon( summon_duration - timespan_t::from_seconds( duration_penalty ) );
+        p() -> pets.army_ghouls.spawn( summon_duration - timespan_t::from_seconds( duration_penalty ), 1 );
         duration_penalty -= summon_interval;
+        n_ghoul++;
       }
       
       p() -> cooldown.army_of_the_dead -> adjust( - precombat_time, false );
@@ -3213,14 +3213,6 @@ struct army_of_the_dead_t : public death_knight_spell_t
     {
       p() -> pets.magus_of_the_dead.spawn( magus_duration - precombat_time, 1 );
     }
-  }
-
-  virtual bool ready() override
-  {
-    if ( p() -> pets.army_ghoul[ 0 ] && ! p() -> pets.army_ghoul[ 0 ] -> is_sleeping() )
-      return false;
-
-    return death_knight_spell_t::ready();
   }
 };
 
@@ -6991,10 +6983,8 @@ void death_knight_t::create_pets()
 
     if ( find_action( "army_of_the_dead" ) )
     {
-      for ( int i = 0; i < 8; i++ )
-      {
-        pets.army_ghoul[ i ] = new pets::army_ghoul_pet_t( this, "army_ghoul" );
-      }
+      pets.army_ghouls.set_creation_callback(
+        [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "army_ghoul" ); } );
     }
 
     if ( find_action( "apocalypse" ) )
