@@ -162,6 +162,7 @@ namespace items
   // 8.2.0 - Rise of Azshara Trinkets and Special Items
   void damage_to_aberrations( special_effect_t& );
   void highborne_compendium_of_sundering( special_effect_t& );
+  void highborne_compendium_of_storms( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3207,6 +3208,36 @@ void items::damage_to_aberrations( special_effect_t& effect )
   effect.type = SPECIAL_EFFECT_NONE;
 }
 
+// Highborne Compendium of Storms =========================================
+
+void items::highborne_compendium_of_storms( special_effect_t& effect )
+{
+  struct hcos_cb_t : public dbc_proc_callback_t
+  {
+    hcos_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect )
+    { }
+
+    void execute( action_t* /* a */, action_state_t* state ) override
+    {
+      proc_action->set_target( target( state ) );
+      proc_action->execute();
+      proc_buff->trigger();
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "highborne_compendium_of_storms" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "highborne_compendium_of_storms",
+      effect.driver()->effectN( 2 ).trigger(), effect.item );
+  }
+
+  effect.custom_buff = buff;
+
+  new hcos_cb_t( effect );
+}
+
 // Highborne Compendium of Sundering ======================================
 
 void items::highborne_compendium_of_sundering( special_effect_t& effect )
@@ -3480,6 +3511,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295427, items::legplates_of_unbound_anguish );
   register_special_effect( 302382, items::damage_to_aberrations );
   register_special_effect( 300830, items::highborne_compendium_of_sundering );
+  register_special_effect( 300913, items::highborne_compendium_of_storms );
 
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );
