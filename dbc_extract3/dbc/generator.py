@@ -1270,6 +1270,12 @@ class SpellDataGenerator(DataGenerator):
          300907,
          # Nullification Dynamo Essence damage spell
          296061,
+         # Shiver Venom Relic
+         305290,
+         # Leviathan's Lure
+         302763,
+         # Za'qul's Portal key
+         302960,
         ),
 
         # Warrior:
