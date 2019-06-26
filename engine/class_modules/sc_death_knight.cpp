@@ -405,9 +405,10 @@ public:
   bool triggered_frozen_tempest;
 
   // Special azerite data
-  double vision_of_perfection_minor_cdr;
-  double vision_of_perfection_major_coeff, perfection_ghouls_spawn_count;
-
+  double vision_of_perfection_minor_cdr, vision_of_perfection_major_coeff;
+  int perfection_ghouls_spawn_count;
+  double perfection_rune_generation, perfection_rp_generation;
+  
   stats_t* antimagic_shell;
 
   // Buffs
@@ -516,6 +517,7 @@ public:
     gain_t* power_refund; // RP refund on miss
     gain_t* rune; // Rune regeneration
     gain_t* start_of_combat_overflow;
+    gain_t* vision_of_perfection;
 
     // Blood
     gain_t* drw_heart_strike;
@@ -769,6 +771,8 @@ public:
     proc_t* fw_infected_claws;
     proc_t* fw_pestilence;
     proc_t* fw_unholy_frenzy;
+
+    proc_t* vision_of_perfection;
   } procs;
 
   // Azerite Traits
@@ -902,6 +906,8 @@ public:
   std::string default_food() const override;
   std::string default_rune() const override;
   
+  void vision_of_perfection_proc() override;
+
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
@@ -4366,8 +4372,15 @@ struct empower_rune_weapon_buff_t : public buff_t
     set_trigger_spell( p -> spec.empower_rune_weapon );
     set_default_value( p -> spec.empower_rune_weapon -> effectN( 3 ).percent() );
     add_invalidate( CACHE_HASTE );
+    set_refresh_behavior( buff_refresh_behavior::EXTEND);
+    set_tick_behavior( buff_tick_behavior::REFRESH );
     
-    set_tick_callback( [ p ]( buff_t* b, int, const timespan_t& )
+    //TODO: the exact total duration of the buff when it's refreshed with
+    //Vision of Perfection still needs investigation, as well as when a 
+    //Vision of Perfection proc'd ERW is refreshed by a manual ERW cast
+    //A partial RP gain at the end of ERW was observed
+
+    set_tick_callback( [ p ]( buff_t* b, int, const timespan_t& time )
     {
       p -> replenish_rune( as<unsigned int>( b -> data().effectN( 1 ).base_value() ),
                            p -> gains.empower_rune_weapon );
@@ -4375,6 +4388,13 @@ struct empower_rune_weapon_buff_t : public buff_t
                           b -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
                           p -> gains.empower_rune_weapon );
     } ); 
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    
   }
 };
 
@@ -6768,6 +6788,58 @@ void death_knight_t::start_cold_heart()
   } );
 }
 
+void death_knight_t::vision_of_perfection_proc()
+{
+  sim -> print_log( "Vision of Perfection procs for player {}", name_str );
+  procs.vision_of_perfection -> occur();
+
+  // Unholy is special, Vision of Perfection spawns two army of the dead ghouls for a limited duration
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+  {
+    timespan_t spawn_duration = timespan_t::from_millis( vision_of_perfection_major_coeff );
+    pets.army_ghouls.spawn( spawn_duration, perfection_ghouls_spawn_count );
+
+    // VoP also spawns a magus of the dead if the azerite trait is equipped
+    if ( azerite.magus_of_the_dead.enabled() )
+    {
+      pets.magus_of_the_dead.spawn( spawn_duration, 1 );
+    }
+    return;
+  }
+
+  buff_t* trigger_buff = nullptr;
+
+  switch( specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD:
+      trigger_buff = buffs.vampiric_blood;
+      break;
+    case DEATH_KNIGHT_FROST:
+      trigger_buff = buffs.empower_rune_weapon;
+      break;
+    default:
+      break;
+  }
+
+  if ( trigger_buff )
+  {
+    timespan_t trigger_duration = trigger_buff -> buff_duration * vision_of_perfection_major_coeff;
+
+    if ( trigger_buff -> up() )
+      trigger_buff -> extend_duration( this, trigger_duration );
+    else 
+      trigger_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
+  }
+
+  // Vision of Perfection also generates 5 RP and 1 Rune when it procs for frost
+  // That is on top of the initial Empower Rune Weapon tick
+  if ( specialization() == DEATH_KNIGHT_FROST )
+  {
+    replenish_rune( as<int>( perfection_rune_generation ), gains.vision_of_perfection );
+    resource_gain( RESOURCE_RUNIC_POWER, perfection_rp_generation, gains.vision_of_perfection );
+  }
+}
+
 // ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
@@ -7300,6 +7372,34 @@ void death_knight_t::init_spells()
 
   azerite_essence_t vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
   vision_of_perfection_minor_cdr = azerite::vision_of_perfection_cdr( vision_of_perfection );
+  perfection_rune_generation = perfection_rp_generation = 0;
+
+  // Waiting on spelldata regeneration
+  const spell_data_t* perfection_resource_gen = find_spell( 302656 );
+  if ( perfection_resource_gen == spell_data_t::not_found() )
+  {
+    perfection_rune_generation = 1.0;
+    perfection_rp_generation = 5.0;
+  }
+  else 
+  {
+    perfection_rune_generation = perfection_resource_gen -> effectN( 1 ).resource( RESOURCE_RUNE );
+    perfection_rp_generation = perfection_resource_gen -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
+  }
+  
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+  {
+    // Unholy's proc spawns two ghouls for a given duration, rather than activate a cooldown
+    vision_of_perfection_major_coeff = vision_of_perfection.spell_ref( 1u, essence_type::MAJOR ).effectN( 4 ).base_value() + 
+      vision_of_perfection.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 5 ).base_value();
+    perfection_ghouls_spawn_count = as<int>( vision_of_perfection.spell_ref( 1u, essence_type::MAJOR ).effectN( 5 ).base_value() );
+  }
+  else 
+  {
+    vision_of_perfection_major_coeff = vision_of_perfection.spell_ref( 1u, essence_type::MAJOR ).effectN( 1 ).percent() +
+      vision_of_perfection.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
+  }
+
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
@@ -7914,6 +8014,7 @@ void death_knight_t::init_gains()
   gains.power_refund                     = get_gain( "power_refund" );
   gains.rune                             = get_gain( "Rune Regeneration" );
   gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow" );
+  gains.vision_of_perfection             = get_gain( "Vision of Perfection" );
 
   // Blood
   gains.drw_heart_strike                 = get_gain( "Rune Weapon Heart Strike" );
@@ -7970,6 +8071,8 @@ void death_knight_t::init_procs()
   procs.fw_infected_claws   = get_proc( "Festering Wound from Infected Claws" );
   procs.fw_pestilence       = get_proc( "Festering Wound from Pestilence" );
   procs.fw_unholy_frenzy    = get_proc( "Festering Wound from Unholy Frenzy" );
+
+  procs.vision_of_perfection = get_proc( "Vision of Perfection" );
 }
 
 // death_knight_t::init_finished ============================================

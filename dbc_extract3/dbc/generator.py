@@ -1424,6 +1424,7 @@ class SpellDataGenerator(DataGenerator):
           ( 286836, 0 ), ( 286954, 0 ), ( 290814, 0 ), # Helchains damage (azerite trait)
           ( 287320, 0 ),    # Frostwhelp's Indignation (azerite)
           ( 283499, 0 ), ( 292493, 0 ), # Frost Fever's RP generation spells
+          ( 302656, 0 ), # Vision of Perfection's resource generation for Frost DK
 
         ),
 
