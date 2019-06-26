@@ -1813,24 +1813,10 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = 0.4;
-  }
 
-  // There is currently a bug affecting apoc/army ghouls
-  // Their energy regeneration rate double dips on haste
-  // https://github.com/SimCMinMax/WoW-BugTracker/issues/108
-  double resource_regen_per_second( resource_e r ) const override
-  {
-    double reg = player_t::resource_regen_per_second( r );
-
-    if ( r == RESOURCE_ENERGY && o() -> bugs )
-    {
-      if ( reg )
-      {
-        reg *= ( 1.0 / cache.attack_haste() );
-      }
-    }
-
-    return reg;
+    // The AP inheritance factor was increased by 6% in patch 8.2
+    // Notes mention "damage increased by 6%"
+    owner_coeff.ap_from_ap *= 1.06;
   }
 
   void init_action_list() override
@@ -4541,14 +4527,6 @@ struct festering_wound_t : public death_knight_spell_t
     background = true;
 
     base_multiplier *= 1.0 + p -> talent.bursting_sores -> effectN( 1 ).percent();
-
-    // Bug went unfixed for a while, may be intended ?
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/306
-    if ( p -> bugs )
-    {
-      base_dd_min += data().effectN( 1 ).min( p );
-      base_dd_max += data().effectN( 1 ).max( p );
-    }
   }
 
   void execute() override
