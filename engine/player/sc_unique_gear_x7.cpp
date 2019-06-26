@@ -3292,7 +3292,7 @@ void items::yellow_punchcard( special_effect_t& effect )
     value = item_database::apply_combat_rating_multiplier( effect.player,
       combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET, item_data->level, value );
     range::for_each( effect_stats, [ value, &stats ]( stat_e stat ) {
-      stats.push_back( { stat, value } );
+      stats.emplace_back( stat, value );
     } );
   }
 
