@@ -8,9 +8,9 @@ position=back
 talents=2210032
 
 # Default consumables
-potion=battle_potion_of_agility
-flask=currents
-food=bountiful_captains_feast
+potion=potion_of_focused_resolve
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -72,6 +72,7 @@ actions.cds+=/shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&
 # Exsanguinate when both Rupture and Garrote are up for long enough
 actions.cds+=/exsanguinate,if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable
 actions.cds+=/toxic_blade,if=dot.rupture.ticking
+actions.cds+=/call_action_list,name=essences
 
 # Direct damage abilities
 # Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.
@@ -98,6 +99,17 @@ actions.dot+=/garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.
 actions.dot+=/crimson_tempest,if=spell_targets>=2&remains<2+(spell_targets>=5)&combo_points>=4
 # Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)
 actions.dot+=/rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4
+
+# Essences
+actions.essences=concentrated_flame
+actions.essences+=/blood_of_the_enemy
+actions.essences+=/guardian_of_azeroth
+actions.essences+=/focused_azerite_beam
+actions.essences+=/purifying_blast
+actions.essences+=/the_unbound_force
+actions.essences+=/ripple_in_space
+actions.essences+=/worldvein_resonance
+actions.essences+=/memory_of_lucid_dreams,if=energy<50
 
 # Stealthed Actions
 # Nighstalker, or Subt+Exsg on 1T: Snapshot Rupture
