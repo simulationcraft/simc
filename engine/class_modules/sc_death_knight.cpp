@@ -3526,9 +3526,13 @@ struct breath_of_sindragosa_buff_t : public buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    // BoS generates 2 runes when it expires
     death_knight_t* p = debug_cast< death_knight_t* >( player );
-    p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
+
+    if ( ! p -> sim -> event_mgr.canceled )
+    {
+      // BoS generates 2 runes when it expires
+      p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
+    }
   }
 };
 
