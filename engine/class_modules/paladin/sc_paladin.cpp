@@ -1176,7 +1176,7 @@ void paladin_t::create_buffs()
 
 std::string paladin_t::default_potion() const
 {
-  std::string retribution_pot = (true_level > 110) ? "battle_potion_of_strength" :
+  std::string retribution_pot = (true_level > 110) ? "potion_of_focused_resolve" :
                                 (true_level > 100) ? "old_war" :
                                 (true_level >= 90) ? "draenic_strength" :
                                 (true_level >= 85) ? "mogu_power" :
@@ -1210,7 +1210,7 @@ std::string paladin_t::default_potion() const
 
 std::string paladin_t::default_food() const
 {
-  std::string retribution_food = (true_level > 110) ? "bountiful_captains_feast" :
+  std::string retribution_food = (true_level > 110) ? "famine_evaluator_and_snack_table" :
                                  (true_level > 100) ? "azshari_salad" :
                                  (true_level >= 90) ? "sleeper_sushi" :
                                  (true_level >= 85) ? "black_pepper_ribs_and_shrimp" :
@@ -1251,7 +1251,7 @@ std::string paladin_t::default_food() const
 
 std::string paladin_t::default_flask() const
 {
-  std::string retribution_flask = (true_level > 110) ? "flask_of_the_undertow" :
+  std::string retribution_flask = (true_level > 110) ? "greater_flask_of_the_undertow" :
                                   (true_level > 100) ? "flask_of_the_countless_armies" :
                                   (true_level >= 90) ? "greater_draenic_strength_flask" :
                                   (true_level >= 85) ? "winters_bite" :
