@@ -162,6 +162,8 @@ namespace items
   // 8.2.0 - Rise of Azshara Trinkets and Special Items
   void damage_to_aberrations( special_effect_t& );
   void highborne_compendium_of_sundering( special_effect_t& );
+  // 8.2.0 - Rise of Azshara Punchcards
+  void yellow_punchcard( special_effect_t& );
 }
 
 namespace util
@@ -3253,6 +3255,47 @@ void items::highborne_compendium_of_sundering( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Punchcard stuff ========================================================
+
+void items::yellow_punchcard( special_effect_t& effect )
+{
+  // TODO: Not this simple, we will need a way to get the item level of the gem from either
+  // Simulationcraft addon, or the blizzard community api. At worst, we will need to add some
+  // options to support this (e.g., gem_ilevel= or such)
+  unsigned base_ilevel = 415;
+
+  std::vector<std::tuple<stat_e, double>> stats;
+
+  auto budget = item_database::item_budget( effect.player, base_ilevel );
+
+  // Collect stats
+  for ( size_t i = 1u; i <= effect.driver()->effect_count(); ++i )
+  {
+    if ( effect.driver()->effectN( i ).subtype() != A_MOD_RATING )
+    {
+      continue;
+    }
+
+    auto effect_stats = ::util::translate_all_rating_mod( effect.driver()->effectN( i ).misc_value1() );
+    double value = effect.driver()->effectN( i ).m_coefficient() * budget;
+    value = item_database::apply_combat_rating_multiplier( effect.player,
+      combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET, base_ilevel, value );
+    range::for_each( effect_stats, [ value, &stats ]( stat_e stat ) {
+      stats.push_back( { stat, value } );
+    } );
+  }
+
+  // .. and apply them as passive stats to the actor
+  range::for_each( stats, [&effect]( const std::tuple<stat_e, double>& stats ) {
+      stat_e stat = std::get<0>( stats );
+      double value = std::get<1>( stats );
+      effect.player->passive.add_stat( stat, value );
+  } );
+
+  // We don't need to do any further initialization so don't perform phase 2 at all
+  effect.type = SPECIAL_EFFECT_NONE;
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -3387,6 +3430,20 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295427, items::legplates_of_unbound_anguish );
   register_special_effect( 302382, items::damage_to_aberrations );
   register_special_effect( 300830, items::highborne_compendium_of_sundering );
+
+  // Passive two-stat punchcards
+  register_special_effect( 306402, items::yellow_punchcard );
+  register_special_effect( 306403, items::yellow_punchcard );
+  register_special_effect( 303590, items::yellow_punchcard );
+  register_special_effect( 306406, items::yellow_punchcard );
+  register_special_effect( 303595, items::yellow_punchcard );
+  register_special_effect( 306407, items::yellow_punchcard );
+  register_special_effect( 306405, items::yellow_punchcard );
+  register_special_effect( 306404, items::yellow_punchcard );
+  register_special_effect( 303592, items::yellow_punchcard );
+  register_special_effect( 306410, items::yellow_punchcard );
+  register_special_effect( 303596, items::yellow_punchcard );
+  register_special_effect( 306409, items::yellow_punchcard );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
