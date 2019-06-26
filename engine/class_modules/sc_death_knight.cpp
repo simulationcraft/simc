@@ -3473,11 +3473,8 @@ struct breath_of_sindragosa_buff_t : public buff_t
       // Damage is executed on cast for no cost
       if ( this -> current_tick == 0 )
       {
-        // BoS also generates 2 runes when you cast it on 8.2 PTR
-        if ( player -> dbc.ptr )
-        {
-          player -> replenish_rune( rune_gen, player -> gains.breath_of_sindragosa );
-        }
+        // BoS generates 2 on start
+        player -> replenish_rune( rune_gen, player -> gains.breath_of_sindragosa );
 
         this -> damage -> set_target( bos_target );
         this -> damage -> execute();
@@ -3529,13 +3526,9 @@ struct breath_of_sindragosa_buff_t : public buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    // BoS generates 2 runes when it expires on 8.2 PTR
-    if ( player -> dbc.ptr )
-    {
-      death_knight_t* p = debug_cast< death_knight_t* >( player );
-
-      p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
-    }
+    // BoS generates 2 runes when it expires
+    death_knight_t* p = debug_cast< death_knight_t* >( player );
+    p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
   }
 };
 
@@ -4961,7 +4954,7 @@ struct frost_fever_t : public death_knight_spell_t
     // TODO: Melekus, 2019-05-15: Frost fever proc chance and ICD have been removed from spelldata on PTR
     // Figure out what is up with the "30% proc chance, diminishing beyond the first target" from blue post.
     // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
-    double chance = p() -> dbc.ptr ? 0.3 : p() -> spec.frost_fever -> proc_chance();
+    double chance = 0.3;
 
     if ( p() -> cooldown.frost_fever_icd -> up() && rng().roll( chance ) )
     {
@@ -7141,10 +7134,7 @@ void death_knight_t::init_rng()
 
   // 2019-05-15: Killing Machine's RPPM data was removed on PTR
   // The 4.5 rppm is re-added via a manual hotfix and the scale flags are set here
-  if ( dbc.ptr )
-  {
-    rppm.killing_machine -> set_scaling( RPPM_CRIT | RPPM_HASTE );
-  }
+  rppm.killing_machine -> set_scaling( RPPM_CRIT | RPPM_HASTE );
 }
 
 // death_knight_t::init_base ================================================
@@ -8629,7 +8619,7 @@ struct death_knight_module_t : public module_t {
       .modifier( 3000 )
       .verification_value( 0 );
 
-    hotfix::register_spell( "Death Knight", "2019-05-15", "Real Procs Per Minute data removed from Killing Machine.", 51128, hotfix::HOTFIX_FLAG_PTR )
+    hotfix::register_spell( "Death Knight", "2019-05-15", "Real Procs Per Minute data removed from Killing Machine.", 51128 )
       .field( "rppm" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 4.5 )
