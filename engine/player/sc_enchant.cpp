@@ -346,6 +346,12 @@ bool enchant::passive_enchant( item_t& item, unsigned spell_id )
   if ( ! spell -> ok() )
     return ret;
 
+  // Don't support ilevel-based calculations
+  if ( spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
+  {
+    return ret;
+  }
+
   if ( ! spell -> flags( spell_attribute::SX_PASSIVE ) &&
        spell -> duration() >= timespan_t::zero() )
     return ret;
