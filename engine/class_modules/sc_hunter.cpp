@@ -5506,6 +5506,8 @@ void hunter_t::apl_surv()
   default_list -> add_action( "call_action_list,name=apwfi,if=active_enemies<3&talent.alpha_predator.enabled&talent.wildfire_infusion.enabled" );
   default_list -> add_action( "call_action_list,name=apwfi,if=active_enemies<3&!talent.alpha_predator.enabled&talent.wildfire_infusion.enabled" );
   default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1" );
+  // Basic charge handling for Rank 3 Crucible of Flame (cast on open globals and when chargecapping)
+  default_list -> add_action( "concentrated_flame" );
   // Arcane torrent if nothing else is available
   default_list -> add_action( "arcane_torrent" );
 
@@ -5519,6 +5521,17 @@ void hunter_t::apl_surv()
   cds -> add_action( "potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)|time_to_die<26" );
 
   cds -> add_action( this, "Aspect of the Eagle", "if=target.distance>=6" );
+	
+  // Essences
+  cds->add_action( "focused azerite beam" );
+  cds->add_action( "memory of lucid dreams,if=buff.coordinated_assault.up" );
+  cds->add_action( "blood of the enemy,if=buff.coordinated_assault.up" );
+  cds->add_action( "purifying blast" );
+  cds->add_action( "Guardian of Azeroth" );
+  cds->add_action( "ripple in space" );
+  cds->add_action( "concentrated flame,if=full_recharge_time<1*gcd" );
+  cds->add_action( "the_unbound force,if=buff.reckless_force.up" );
+  cds->add_action( "worldvein resonance" );
 
   st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
   st -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
