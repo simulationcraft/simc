@@ -258,6 +258,7 @@ void enchant::initialize_item_enchant( item_t& item,
   {
     special_effect_t effect( &item );
     effect.source = source;
+    effect.enchant_data = &( enchant );
     switch ( enchant.ench_type[ i ] )
     {
       // "Chance on Hit", we need to help simc a bit with proc flags

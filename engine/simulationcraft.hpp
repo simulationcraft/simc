@@ -2180,6 +2180,9 @@ struct special_effect_t
   std::vector<scoped_callback_t*> custom_init_object;
   // Activation callback, if set, called when an actor becomes active
   std::function<void(void)> activation_cb;
+  // Link to an SpellItemEnchantment entry, set for various "enchant"-based special effects
+  // (Enchants, Gems, Addons)
+  const item_enchantment_data_t* enchant_data;
 
   special_effect_t( player_t* p ) :
     item( nullptr ), player( p ),

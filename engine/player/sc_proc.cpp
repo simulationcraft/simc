@@ -194,6 +194,8 @@ void special_effect_t::reset()
 
   action_disabled = false;
   buff_disabled = false;
+
+  enchant_data = nullptr;
 }
 
 const spell_data_t* special_effect_t::driver() const
