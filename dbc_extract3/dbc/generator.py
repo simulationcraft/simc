@@ -1276,6 +1276,18 @@ class SpellDataGenerator(DataGenerator):
          302763,
          # Za'qul's Portal key
          302960,
+         # Ashvane's Razor Coral
+         303568, 303572,
+         # Dribbling Inkpod
+         302491,
+         # Remote Guidance Device
+         302311, 302312,
+         # Diver's Folly
+         303583, 303621,
+         # Storm of the Eternal (Eternal Palace 2min cycle buff)
+         303731,
+         # Undulating Tides lockout debuff
+         303438,
         ),
 
         # Warrior:
