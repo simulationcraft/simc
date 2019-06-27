@@ -408,6 +408,7 @@ public:
   double vision_of_perfection_minor_cdr, vision_of_perfection_major_coeff;
   int perfection_ghouls_spawn_count;
   double perfection_rune_generation, perfection_rp_generation;
+  double lucid_dreams_minor_refund, lucid_dreams_minor_partial_rune = 0;
 
   stats_t* antimagic_shell;
 
@@ -815,6 +816,7 @@ public:
   // Death Knight Options
   struct options_t
   {
+    double lucid_dreams_minor_proc_chance = 0.15;
   } options;
 
   // Runes
@@ -6313,6 +6315,29 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
         eternal_rune_weapon_counter += duration_increase;
       }
+
+      // Memory of Lucid Dreams minor
+      // TODO: will have to be adapted if blizzard decides
+      // to change the refund value from 50% to something else
+      if ( lucid_dreams_minor_refund > 0 && rng().roll( options.lucid_dreams_minor_proc_chance ) )
+      {
+        double to_refund = lucid_dreams_minor_refund * actual_amount
+                         + lucid_dreams_minor_partial_rune;
+        int runes_refunded = 0;
+        // Compute how many full runes the player gets back
+        while ( to_refund >= 1 )
+        {
+          runes_refunded++;
+          to_refund--;
+        }
+
+        // Store the left-over rune for the next proc
+        lucid_dreams_minor_partial_rune = to_refund;
+
+        replenish_rune( runes_refunded, gains.memory_of_lucid_dreams );
+
+        player_t::buffs.lucid_dreams -> trigger();
+      }
     }
   }
 
@@ -6367,6 +6392,8 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 void death_knight_t::create_options()
 {
   player_t::create_options();
+
+  add_option( opt_float( "lucid_dreams_rune_proc_chance", options.lucid_dreams_minor_proc_chance, 0.0, 1.0 ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -7375,6 +7402,8 @@ void death_knight_t::init_spells()
       vision_of_perfection.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
   }
 
+  azerite_essence_t memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
+  lucid_dreams_minor_refund = memory_of_lucid_dreams.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).percent();
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
