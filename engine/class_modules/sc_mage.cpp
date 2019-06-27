@@ -5649,13 +5649,25 @@ void mage_t::apl_arcane()
   action_priority_list_t* conserve     = get_action_priority_list( "conserve" );
   action_priority_list_t* burn         = get_action_priority_list( "burn" );
   action_priority_list_t* movement     = get_action_priority_list( "movement" );
+  action_priority_list_t* essences     = get_action_priority_list( "essences" );
 
 
-  default_list->add_action( this, "Counterspell", "if=target.debuff.casting.react", "Interrupt the boss when possible." );
+  default_list->add_action( this, "Counterspell" );
+  default_list->add_action( "call_action_list,name=essences" );
   default_list->add_action( "call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length", "Go to Burn Phase when already burning, or when boss will die soon." );
   default_list->add_action( "call_action_list,name=burn,if=(cooldown.arcane_power.remains=0&cooldown.evocation.remains<=variable.average_burn_length&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0&buff.arcane_charge.stack<=1)))", "Start Burn Phase when Arcane Power is ready and Evocation will be ready (on average) before the burn phase is over. Also make sure we got 4 Arcane Charges, or can get 4 Arcane Charges with Charged Up." );
   default_list->add_action( "call_action_list,name=conserve,if=!burn_phase" );
   default_list->add_action( "call_action_list,name=movement" );
+
+  essences->add_action( "blood_of_the_enemy,if=burn_phase&buff.arcane_power.down&buff.rune_of_power.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack|time_to_die<cooldown.arcane_power.remains" );
+  essences->add_action( "concentrated_flame,line_cd=6,if=buff.rune_of_power.down&buff.arcane_power.down&(!burn_phase|time_to_die<cooldown.arcane_power.remains)&mana.time_to_max>=execute_time" );
+  essences->add_action( "focused_azerite_beam,if=buff.rune_of_power.down&buff.arcane_power.down" );
+  essences->add_action( "guardian_of_azeroth,if=buff.rune_of_power.down&buff.arcane_power.down" );
+  essences->add_action( "purifying_blast,if=buff.rune_of_power.down&buff.arcane_power.down" );
+  essences->add_action( "ripple_in_space,if=buff.rune_of_power.down&buff.arcane_power.down" );
+  essences->add_action( "the_unbound_force,if=buff.rune_of_power.down&buff.arcane_power.down" );
+  essences->add_action( "memory_of_lucid_dreams,if=!burn_phase&buff.arcane_power.down&cooldown.arcane_power.remains&buff.arcane_charge.stack=buff.arcane_charge.max_stack&(!talent.rune_of_power.enabled|action.rune_of_power.charges)|time_to_die<cooldown.arcane_power.remains" );
+  essences->add_action( "worldvein_resonance,if=burn_phase&buff.arcane_power.down&buff.rune_of_power.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack|time_to_die<cooldown.arcane_power.remains" );
 
   burn->add_action( "variable,name=total_burns,op=add,value=1,if=!burn_phase", "Increment our burn phase counter. Whenever we enter the `burn` actions without being in a burn phase, it means that we are about to start one." );
   burn->add_action( "start_burn_phase,if=!burn_phase" );
