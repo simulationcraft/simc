@@ -4577,13 +4577,14 @@ void aegis_of_the_deep( special_effect_t& effect )
     {
       if ( aegis_buff ) 
       {
-        effect.player -> sim -> print_debug( "An enemy arises! Stand your Ground is increased by one stack" );
+        effect.player -> sim -> print_debug( "An enemy arises! Stand your Ground on player {} is increased by one stack",
+                                             effect.player -> name_str );
         aegis_buff -> trigger();
       }
     } );
 
 
-    target -> callbacks_on_demise.push_back( [ aegis_buff ] ( player_t* target ) 
+    target -> callbacks_on_demise.push_back( [ effect, aegis_buff ] ( player_t* target ) 
     {
       // Don't do anything if the sim is ending
       if ( target -> sim -> event_mgr.canceled )
@@ -4593,12 +4594,14 @@ void aegis_of_the_deep( special_effect_t& effect )
 
       if ( aegis_buff ) 
       {
-        target -> sim -> print_debug( "Enemy {} demises, stand your ground is reduced by one stack", target -> name_str );
+        target -> sim -> print_debug( "Enemy {} demises! Stand your Ground on player {} is reduced by one stack",
+                                      target -> name_str, effect.player -> name_str );
         aegis_buff -> decrement();
       }
     } );
   } );
 
+  // Required because players spawn after the enemies
   effect.player -> register_combat_begin( [ aegis_buff, effect ]( player_t* )
   {
     aegis_buff -> trigger( effect.player -> sim -> desired_targets );

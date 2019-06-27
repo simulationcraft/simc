@@ -517,6 +517,9 @@ public:
     gain_t* power_refund; // RP refund on miss
     gain_t* rune; // Rune regeneration
     gain_t* start_of_combat_overflow;
+    
+    // Essences
+    gain_t* memory_of_lucid_dreams;
     gain_t* vision_of_perfection;
 
     // Blood
@@ -7986,6 +7989,9 @@ void death_knight_t::init_gains()
   gains.power_refund                     = get_gain( "power_refund" );
   gains.rune                             = get_gain( "Rune Regeneration" );
   gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow" );
+
+  // Essences
+  gains.memory_of_lucid_dreams           = get_gain( "Memory of Lucid Dream" );
   gains.vision_of_perfection             = get_gain( "Vision of Perfection" );
 
   // Blood
