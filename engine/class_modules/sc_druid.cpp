@@ -8210,6 +8210,13 @@ void druid_t::apl_precombat()
     precombat->add_action("variable,name=sf_targets,op=add,value=1,if=azerite.streaking_stars.rank>2&azerite.arcanic_pulsar.enabled");
     precombat->add_action("variable,name=sf_targets,op=sub,value=1,if=!talent.twin_moons.enabled");
   }
+
+  // Guardian
+  if ( specialization() == DRUID_GUARDIAN )
+  {
+    // Memory of Lucid Dreams doubles the Rage gain from Bear Form
+    precombat->add_action( "memory_of_lucid_dreams" );
+  }
   
   // Forms
   if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) ||
@@ -8645,13 +8652,16 @@ void druid_t::apl_guardian()
 
   if ( sim -> allow_potions )
     cooldowns -> add_action( "potion" );
-  // Racials don't currently work
+
+  cooldowns -> add_action( "heart_essence" );
 
   for (size_t i = 0; i < racial_actions.size(); i++)
     cooldowns -> add_action( racial_actions[i] );
+
   cooldowns -> add_action( this, "Barkskin", "if=buff.bear_form.up" );
   cooldowns -> add_talent( this, "Lunar Beam", "if=buff.bear_form.up" );
   cooldowns -> add_talent( this, "Bristling Fur", "if=buff.bear_form.up" );
+  cooldowns -> add_action( "incarnation,if=(dot.moonfire.ticking|active_enemies>1)&dot.thrash_bear.ticking" );
   cooldowns -> add_action( "use_items" );
 
   if ( catweave_bear && talent.feral_affinity -> ok() )
@@ -8667,17 +8677,16 @@ void druid_t::apl_guardian()
 
     bear -> add_action( this, "Bear Form" );
     bear -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
+    bear -> add_action( this, "Maul", "if=essence.conflict_and_strife.major&!buff.sharpened_claws.up" );
     bear -> add_action( this, "Ironfur", "if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)" );
     bear -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
     bear -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
-    bear -> add_action( "incarnation" );
     bear -> add_action( "thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)" );
     bear -> add_action( "swipe,if=buff.incarnation.down&active_enemies>4" );
     bear -> add_action( this, "Mangle", "if=dot.thrash_bear.ticking" );
     bear -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
     bear -> add_action( "thrash" );
     bear -> add_action( this, "Maul" );
-    bear -> add_action( this, "Moonfire", "if=azerite.power_of_the_moon.rank>1&active_enemies=1", "Fill with Moonfire with PotMx2" );
     bear -> add_action( "swipe" );
 
     cat -> add_action( this, "Cat Form" );
@@ -8689,17 +8698,16 @@ void druid_t::apl_guardian()
     default_list -> add_action( "auto_attack" );
     default_list -> add_action( "call_action_list,name=cooldowns" );
     default_list -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
+    default_list -> add_action( this, "Maul", "if=essence.conflict_and_strife.major&!buff.sharpened_claws.up" );
     default_list -> add_action( this, "Ironfur", "if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)" );
     default_list -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
     default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
-    default_list -> add_action( "incarnation" );
     default_list -> add_action( "thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)" );
     default_list -> add_action( "swipe,if=buff.incarnation.down&active_enemies>4" );
     default_list -> add_action( this, "Mangle", "if=dot.thrash_bear.ticking" );
     default_list -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
     default_list -> add_action( "thrash" );
     default_list -> add_action( this, "Maul" );
-    default_list -> add_action( this, "Moonfire", "if=azerite.power_of_the_moon.rank>1&active_enemies=1", "Fill with Moonfire with PotMx2" );
     default_list -> add_action( "swipe" );
   }
 }
