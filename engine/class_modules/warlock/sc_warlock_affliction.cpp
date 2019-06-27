@@ -1085,9 +1085,9 @@ namespace warlock
     cds->add_action( "fireblood,if=!cooldown.summon_darkglare.up" );
     cds->add_action( "blood_fury,if=!cooldown.summon_darkglare.up" );
     cds->add_action( "memory_of_lucid_dreams" );
-    cds->add_action( "blood_of_the_enemy" );
-    cds->add_action( "worldvein_resonance" );
-    cds->add_action( "ripple_in_space" );
+    cds->add_action( "blood_of_the_enemy,if=pet.darkglare.active|cooldown.summon_darkglare.remains>30" );
+    cds->add_action( "worldvein_resonance,if=pet.darkglare.active|cooldown.summon_darkglare.remains>30" );
+    cds->add_action( "ripple_in_space,if=pet.darkglare.active|cooldown.summon_darkglare.remains>30" );
 
     dots->add_action( "seed_of_corruption,if=dot.corruption.remains<=action.seed_of_corruption.cast_time+time_to_shard+4.2*(1-talent.creeping_death.enabled*0.15)&spell_targets.seed_of_corruption_aoe>=3+raid_event.invulnerable.up+talent.writhe_in_agony.enabled&!dot.seed_of_corruption.remains&!action.seed_of_corruption.in_flight" );
     dots->add_action( "agony,target_if=min:remains,if=talent.creeping_death.enabled&active_dot.agony<6&target.time_to_die>10&(remains<=gcd|cooldown.summon_darkglare.remains>10&(remains<5|!azerite.pandemic_invocation.rank&refreshable))" );
