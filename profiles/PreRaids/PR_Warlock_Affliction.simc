@@ -64,9 +64,9 @@ actions.cooldowns+=/use_items,if=cooldown.summon_darkglare.remains>70|time_to_di
 actions.cooldowns+=/fireblood,if=!cooldown.summon_darkglare.up
 actions.cooldowns+=/blood_fury,if=!cooldown.summon_darkglare.up
 actions.cooldowns+=/memory_of_lucid_dreams
-actions.cooldowns+=/blood_of_the_enemy
-actions.cooldowns+=/worldvein_resonance
-actions.cooldowns+=/ripple_in_space
+actions.cooldowns+=/blood_of_the_enemy,if=pet.darkglare.active|cooldown.summon_darkglare.remains>30
+actions.cooldowns+=/worldvein_resonance,if=pet.darkglare.active|cooldown.summon_darkglare.remains>30
+actions.cooldowns+=/ripple_in_space,if=pet.darkglare.active|cooldown.summon_darkglare.remains>30
 
 actions.db_refresh=siphon_life,line_cd=15,if=(dot.siphon_life.remains%dot.siphon_life.duration)<=(dot.agony.remains%dot.agony.duration)&(dot.siphon_life.remains%dot.siphon_life.duration)<=(dot.corruption.remains%dot.corruption.duration)&dot.siphon_life.remains<dot.siphon_life.duration*1.3
 actions.db_refresh+=/agony,line_cd=15,if=(dot.agony.remains%dot.agony.duration)<=(dot.corruption.remains%dot.corruption.duration)&(dot.agony.remains%dot.agony.duration)<=(dot.siphon_life.remains%dot.siphon_life.duration)&dot.agony.remains<dot.agony.duration*1.3

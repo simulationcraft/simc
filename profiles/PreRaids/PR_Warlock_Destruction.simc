@@ -101,14 +101,14 @@ actions.aoe+=/incinerate
 # If both cooldowns are ready, summon the Infernal then activate DSI. If not using DSI, use this on CD
 actions.cds=summon_infernal,if=cooldown.dark_soul_instability.ready|cooldown.memory_of_lucid_dreams.ready|(!talent.dark_soul_instability.enabled&!essence.memory_of_lucid_dreams.major)|cooldown.dark_soul_instability.remains<=10|cooldown.memory_of_lucid_dreams.remains<=10
 actions.cds+=/guardian_of_azeroth,if=cooldown.dark_soul_instability.ready|cooldown.memory_of_lucid_dreams.ready|(!talent.dark_soul_instability.enabled&!essence.memory_of_lucid_dreams.major)|cooldown.dark_soul_instability.remains<=10|cooldown.memory_of_lucid_dreams.remains<=10|pet.infernal.active
-actions.cds+=/dark_soul_instability,if=pet.infernal.active
-actions.cds+=/memory_of_lucid_dreams,if=pet.infernal.active
+actions.cds+=/dark_soul_instability,if=pet.infernal.active&pet.infernal.remains<=20
+actions.cds+=/memory_of_lucid_dreams,if=pet.infernal.active&pet.infernal.remains<=20
 # If DSI is not ready but you can get more than one infernal in before the end of the fight, summon the Infernal now
 actions.cds+=/summon_infernal,if=target.time_to_die>cooldown.summon_infernal.duration
 actions.cds+=/guardian_of_azeroth,if=target.time_to_die>cooldown.guardian_of_azeroth.duration
 # If you can get in more than one more DSI before the end of the fight, use that now
-actions.cds+=/dark_soul_instability,if=target.time_to_die>cooldown.dark_soul_instability.duration+20&!(essence.vision_of_perfection.minor&azerite.crashing_chaos.rank)
-actions.cds+=/memory_of_lucid_dreams,if=target.time_to_die>cooldown.dark_soul_instability.duration+20&!(essence.vision_of_perfection.minor&azerite.crashing_chaos.rank)
+actions.cds+=/dark_soul_instability,if=time>30&target.time_to_die>cooldown.dark_soul_instability.duration+20&!(essence.vision_of_perfection.minor&azerite.crashing_chaos.rank)
+actions.cds+=/memory_of_lucid_dreams,if=time>30&target.time_to_die>cooldown.dark_soul_instability.duration+20&!(essence.vision_of_perfection.minor&azerite.crashing_chaos.rank)
 # If the fight will end before DSI is back up, summon the Infernal
 actions.cds+=/summon_infernal,if=talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains>target.time_to_die
 actions.cds+=/guardian_of_azeroth,if=talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains>target.time_to_die
