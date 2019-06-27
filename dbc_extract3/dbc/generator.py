@@ -1288,6 +1288,8 @@ class SpellDataGenerator(DataGenerator):
          303731,
          # Undulating Tides lockout debuff
          303438,
+         # Exploding Pufferfish
+         305315
         ),
 
         # Warrior:

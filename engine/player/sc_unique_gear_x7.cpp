@@ -161,6 +161,7 @@ namespace items
   void legplates_of_unbound_anguish( special_effect_t& );
   // 8.2.0 - Rise of Azshara Trinkets and Special Items
   void damage_to_aberrations( special_effect_t& );
+  void exploding_pufferfish( special_effect_t& );
   void highborne_compendium_of_sundering( special_effect_t& );
   void highborne_compendium_of_storms( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
@@ -3209,6 +3210,37 @@ void items::damage_to_aberrations( special_effect_t& effect )
   effect.type = SPECIAL_EFFECT_NONE;
 }
 
+// Benthic Armor Exploding Pufferfish =====================================
+
+void items::exploding_pufferfish( special_effect_t& effect )
+{
+  struct pufferfish_cb_t : public dbc_proc_callback_t
+  {
+    const spell_data_t* summon_spell;
+
+    pufferfish_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      summon_spell( effect.player->find_spell( 305314 ) )
+    { }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      make_event<ground_aoe_event_t>( *listener->sim, listener, ground_aoe_params_t()
+        .target( state->target )
+        .pulse_time( summon_spell->duration() )
+        .action( proc_action )
+        .n_pulses( 1u ) );
+    }
+  };
+
+  effect.trigger_spell_id = 305315;
+  effect.execute_action = create_proc_action<proc_spell_t>( "exploding_pufferfish", effect );
+  effect.execute_action->aoe = -1;
+  effect.execute_action->base_dd_min = effect.execute_action->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+
+  new pufferfish_cb_t( effect );
+}
+
 // Highborne Compendium of Storms =========================================
 
 void items::highborne_compendium_of_storms( special_effect_t& effect )
@@ -3610,6 +3642,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 292650, items::trident_of_deep_ocean );
   register_special_effect( 295427, items::legplates_of_unbound_anguish );
   register_special_effect( 302382, items::damage_to_aberrations );
+  register_special_effect( 303133, items::exploding_pufferfish );
   register_special_effect( 300830, items::highborne_compendium_of_sundering );
   register_special_effect( 300913, items::highborne_compendium_of_storms );
 
