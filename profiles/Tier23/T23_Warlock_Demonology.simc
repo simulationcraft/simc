@@ -35,6 +35,8 @@ actions+=/use_items,if=pet.demonic_tyrant.active|target.time_to_die<=15
 actions+=/berserking,if=pet.demonic_tyrant.active|target.time_to_die<=15
 actions+=/blood_fury,if=pet.demonic_tyrant.active|target.time_to_die<=15
 actions+=/fireblood,if=pet.demonic_tyrant.active|target.time_to_die<=15
+actions+=/worldvein_resonance,if=pet.demonic_tyrant.active|target.time_to_die<=15
+actions+=/ripple_in_space,if=pet.demonic_tyrant.active|target.time_to_die<=15
 actions+=/call_action_list,name=dcon_opener,if=talent.demonic_consumption.enabled&time<30&!cooldown.summon_demonic_tyrant.remains
 actions+=/hand_of_guldan,if=azerite.explosive_potential.rank&time<5&soul_shard>2&buff.explosive_potential.down&buff.wild_imps.stack<3&!prev_gcd.1.hand_of_guldan&&!prev_gcd.2.hand_of_guldan
 actions+=/demonbolt,if=soul_shard<=3&buff.demonic_core.up&buff.demonic_core.stack=4
@@ -44,9 +46,11 @@ actions+=/bilescourge_bombers,if=azerite.explosive_potential.rank>0&time<10&spel
 actions+=/demonic_strength,if=(buff.wild_imps.stack<6|buff.demonic_power.up)|spell_targets.implosion<2
 actions+=/call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2
 actions+=/call_action_list,name=implosion,if=spell_targets.implosion>1
+actions+=/guardian_of_azeroth,if=pet.demonic_tyrant.active|target.time_to_die<=30
 actions+=/grimoire_felguard,if=(target.time_to_die>120|target.time_to_die<cooldown.summon_demonic_tyrant.remains+15|cooldown.summon_demonic_tyrant.remains<13)
 actions+=/summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>40|cooldown.summon_demonic_tyrant.remains<12
 actions+=/call_dreadstalkers,if=(cooldown.summon_demonic_tyrant.remains<9&buff.demonic_calling.remains)|(cooldown.summon_demonic_tyrant.remains<11&!buff.demonic_calling.remains)|cooldown.summon_demonic_tyrant.remains>14
+actions+=/the_unbound_force,if=buff.reckless_force.react
 actions+=/bilescourge_bombers
 actions+=/hand_of_guldan,if=(azerite.baleful_invocation.enabled|talent.demonic_consumption.enabled)&prev_gcd.1.hand_of_guldan&cooldown.summon_demonic_tyrant.remains<2
 # 2000%spell_haste is shorthand for the cast time of Demonic Tyrant. The intent is to only begin casting if a certain number of imps will be out by the end of the cast.
@@ -56,9 +60,14 @@ actions+=/doom,if=talent.doom.enabled&refreshable&time_to_die>(dot.doom.remains+
 actions+=/hand_of_guldan,if=soul_shard>=5|(soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(cooldown.summon_demonic_tyrant.remains>20|(cooldown.summon_demonic_tyrant.remains<gcd*2&talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains<gcd*4&!talent.demonic_consumption.enabled))&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>3))
 actions+=/soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2
 actions+=/demonbolt,if=soul_shard<=3&buff.demonic_core.up&((cooldown.summon_demonic_tyrant.remains<6|cooldown.summon_demonic_tyrant.remains>22&!azerite.shadows_bite.enabled)|buff.demonic_core.stack>=3|buff.demonic_core.remains<5|time_to_die<25|buff.shadows_bite.remains)
+actions+=/focused_azerite_beam,if=!pet.demonic_tyrant.active
+actions+=/purifying_blast
+actions+=/blood_of_the_enemy
+actions+=/concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight&!pet.demonic_tyrant.active
 actions+=/call_action_list,name=build_a_shard
 
-actions.build_a_shard=soul_strike,if=!talent.demonic_consumption.enabled|time>15|prev_gcd.1.hand_of_guldan&!buff.bloodlust.remains
+actions.build_a_shard=memory_of_lucid_dreams,if=soul_shard<2
+actions.build_a_shard+=/soul_strike,if=!talent.demonic_consumption.enabled|time>15|prev_gcd.1.hand_of_guldan&!buff.bloodlust.remains
 actions.build_a_shard+=/shadow_bolt
 
 actions.dcon_opener=hand_of_guldan,line_cd=30,if=azerite.explosive_potential.enabled
@@ -87,6 +96,10 @@ actions.implosion+=/hand_of_guldan,if=soul_shard>=3&(((prev_gcd.2.hand_of_guldan
 actions.implosion+=/demonbolt,if=prev_gcd.1.hand_of_guldan&soul_shard>=1&(buff.wild_imps.stack<=3|prev_gcd.3.hand_of_guldan)&soul_shard<4&buff.demonic_core.up
 actions.implosion+=/summon_vilefiend,if=(cooldown.summon_demonic_tyrant.remains>40&spell_targets.implosion<=2)|cooldown.summon_demonic_tyrant.remains<12
 actions.implosion+=/bilescourge_bombers,if=cooldown.summon_demonic_tyrant.remains>9
+actions.implosion+=/focused_azerite_beam
+actions.implosion+=/purifying_blast
+actions.implosion+=/blood_of_the_enemy
+actions.implosion+=/concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight&spell_targets.implosion<5
 actions.implosion+=/soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2
 actions.implosion+=/demonbolt,if=soul_shard<=3&buff.demonic_core.up&(buff.demonic_core.stack>=3|buff.demonic_core.remains<=gcd*5.7)
 actions.implosion+=/doom,cycle_targets=1,max_cycle_targets=7,if=refreshable

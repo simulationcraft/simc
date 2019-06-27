@@ -1095,6 +1095,8 @@ namespace warlock {
     def->add_action( "berserking,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
     def->add_action( "blood_fury,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
     def->add_action( "fireblood,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
+    def->add_action( "worldvein_resonance,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
+    def->add_action( "ripple_in_space,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
     def->add_action( "call_action_list,name=dcon_opener,if=talent.demonic_consumption.enabled&time<30&!cooldown.summon_demonic_tyrant.remains" );
     def->add_action( "hand_of_guldan,if=azerite.explosive_potential.rank&time<5&soul_shard>2&buff.explosive_potential.down&buff.wild_imps.stack<3&!prev_gcd.1.hand_of_guldan&&!prev_gcd.2.hand_of_guldan" );
     def->add_action( "demonbolt,if=soul_shard<=3&buff.demonic_core.up&buff.demonic_core.stack=4" );
@@ -1104,9 +1106,11 @@ namespace warlock {
     def->add_action( "demonic_strength,if=(buff.wild_imps.stack<6|buff.demonic_power.up)|spell_targets.implosion<2");
     def->add_action( "call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2");
     def->add_action( "call_action_list,name=implosion,if=spell_targets.implosion>1" );
+    def->add_action( "guardian_of_azeroth,if=pet.demonic_tyrant.active|target.time_to_die<=30" );
     def->add_action( "grimoire_felguard,if=(target.time_to_die>120|target.time_to_die<cooldown.summon_demonic_tyrant.remains+15|cooldown.summon_demonic_tyrant.remains<13)" );
     def->add_action( "summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>40|cooldown.summon_demonic_tyrant.remains<12" );
     def->add_action( "call_dreadstalkers,if=(cooldown.summon_demonic_tyrant.remains<9&buff.demonic_calling.remains)|(cooldown.summon_demonic_tyrant.remains<11&!buff.demonic_calling.remains)|cooldown.summon_demonic_tyrant.remains>14" );
+    def->add_action( "the_unbound_force,if=buff.reckless_force.react" );
     def->add_action( "bilescourge_bombers" );
     def->add_action( "hand_of_guldan,if=(azerite.baleful_invocation.enabled|talent.demonic_consumption.enabled)&prev_gcd.1.hand_of_guldan&cooldown.summon_demonic_tyrant.remains<2" );
     def->add_action( this, "Summon Demonic Tyrant", "if=soul_shard<3&(!talent.demonic_consumption.enabled|buff.wild_imps.stack+imps_spawned_during.2000%spell_haste>=6&time_to_imps.all.remains<cast_time)|target.time_to_die<20", "2000%spell_haste is shorthand for the cast time of Demonic Tyrant. The intent is to only begin casting if a certain number of imps will be out by the end of the cast." );
@@ -1115,6 +1119,10 @@ namespace warlock {
     def->add_action( "hand_of_guldan,if=soul_shard>=5|(soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(cooldown.summon_demonic_tyrant.remains>20|(cooldown.summon_demonic_tyrant.remains<gcd*2&talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains<gcd*4&!talent.demonic_consumption.enabled))&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>3))" );
     def->add_action( "soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2" );
     def->add_action( "demonbolt,if=soul_shard<=3&buff.demonic_core.up&((cooldown.summon_demonic_tyrant.remains<6|cooldown.summon_demonic_tyrant.remains>22&!azerite.shadows_bite.enabled)|buff.demonic_core.stack>=3|buff.demonic_core.remains<5|time_to_die<25|buff.shadows_bite.remains)" );
+    def->add_action( "focused_azerite_beam,if=!pet.demonic_tyrant.active" );
+    def->add_action( "purifying_blast" );
+    def->add_action( "blood_of_the_enemy" );
+    def->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight&!pet.demonic_tyrant.active" );
     def->add_action( "call_action_list,name=build_a_shard" );
 
     np->add_action("call_action_list,name=nether_portal_building,if=cooldown.nether_portal.remains<20");
@@ -1163,11 +1171,16 @@ namespace warlock {
     imp->add_action( "demonbolt,if=prev_gcd.1.hand_of_guldan&soul_shard>=1&(buff.wild_imps.stack<=3|prev_gcd.3.hand_of_guldan)&soul_shard<4&buff.demonic_core.up" );
     imp->add_action( "summon_vilefiend,if=(cooldown.summon_demonic_tyrant.remains>40&spell_targets.implosion<=2)|cooldown.summon_demonic_tyrant.remains<12" );
     imp->add_action( "bilescourge_bombers,if=cooldown.summon_demonic_tyrant.remains>9" );
+    imp->add_action( "focused_azerite_beam" );
+    imp->add_action( "purifying_blast" );
+    imp->add_action( "blood_of_the_enemy" );
+    imp->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight&spell_targets.implosion<5" );
     imp->add_action( "soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2" );
     imp->add_action( "demonbolt,if=soul_shard<=3&buff.demonic_core.up&(buff.demonic_core.stack>=3|buff.demonic_core.remains<=gcd*5.7)" );
     imp->add_action( "doom,cycle_targets=1,max_cycle_targets=7,if=refreshable" );
     imp->add_action( "call_action_list,name=build_a_shard" );
 
+    bas->add_action( "memory_of_lucid_dreams,if=soul_shard<2" );
     bas->add_action("soul_strike,if=!talent.demonic_consumption.enabled|time>15|prev_gcd.1.hand_of_guldan&!buff.bloodlust.remains");
     bas->add_action("shadow_bolt");
   }
