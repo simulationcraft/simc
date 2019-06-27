@@ -5485,9 +5485,10 @@ void hunter_t::apl_surv()
   action_priority_list_t* default_list   = get_action_priority_list( "default" );
   action_priority_list_t* precombat      = get_action_priority_list( "precombat" );
   action_priority_list_t* cds            = get_action_priority_list( "cds" );
+  action_priority_list_t* apwfi          = get_action_priority_list( "apwfi" );
+  action_priority_list_t* wfi            = get_action_priority_list( "wfi" );
+  action_priority_list_t* apst           = get_action_priority_list( "apst" );
   action_priority_list_t* st             = get_action_priority_list( "st" );
-  action_priority_list_t* wfi_st         = get_action_priority_list( "wfi_st" );
-  action_priority_list_t* mb_ap_wfi_st   = get_action_priority_list( "mb_ap_wfi_st" );
   action_priority_list_t* cleave         = get_action_priority_list( "cleave" );
 
   // Precombat actions
@@ -5498,10 +5499,15 @@ void hunter_t::apl_surv()
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "use_items" );
   default_list -> add_action( "call_action_list,name=cds" );
-  default_list -> add_action( "call_action_list,name=mb_ap_wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled" );
-  default_list -> add_action( "call_action_list,name=wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled");
-  default_list -> add_action( "call_action_list,name=st,if=active_enemies<2|azerite.blur_of_talons.enabled&talent.birds_of_prey.enabled&buff.coordinated_assault.up" );
+  default_list -> add_action( "call_action_list,name=apwfi,if=active_enemies<3&talent.chakrams.enabled&talent.alpha_predator.enabled" );
+  default_list -> add_action( "call_action_list,name=wfi,if=active_enemies<3&talent.chakrams.enabled");
+  default_list -> add_action( "call_action_list,name=st,if=active_enemies<3&!talent.alpha_predator.enabled&!talent.wildfire_infusion.enabled" );
+  default_list -> add_action( "call_action_list,name=apst,if=active_enemies<3&talent.alpha_predator.enabled&!talent.wildfire_infusion.enabled" );
+  default_list -> add_action( "call_action_list,name=apwfi,if=active_enemies<3&talent.alpha_predator.enabled&talent.wildfire_infusion.enabled" );
+  default_list -> add_action( "call_action_list,name=apwfi,if=active_enemies<3&!talent.alpha_predator.enabled&talent.wildfire_infusion.enabled" );
   default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1" );
+  // Basic charge handling for Rank 3 Crucible of Flame (cast on open globals and when chargecapping)
+  default_list -> add_action( "concentrated_flame" );
   // Arcane torrent if nothing else is available
   default_list -> add_action( "arcane_torrent" );
 
@@ -5515,57 +5521,92 @@ void hunter_t::apl_surv()
   cds -> add_action( "potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)|time_to_die<26" );
 
   cds -> add_action( this, "Aspect of the Eagle", "if=target.distance>=6" );
+	
+  // Essences
+  cds->add_action( "focused azerite beam" );
+  cds->add_action( "memory of lucid dreams,if=buff.coordinated_assault.up" );
+  cds->add_action( "blood of the enemy,if=buff.coordinated_assault.up" );
+  cds->add_action( "purifying blast" );
+  cds->add_action( "Guardian of Azeroth" );
+  cds->add_action( "ripple in space" );
+  cds->add_action( "concentrated flame,if=full_recharge_time<1*gcd" );
+  cds->add_action( "the_unbound force,if=buff.reckless_force.up" );
+  cds->add_action( "worldvein resonance" );
 
-  wfi_st -> add_talent( this, "A Murder of Crows" );
-  wfi_st -> add_action( this, "Coordinated Assault" );
-  wfi_st -> add_talent( this, "Mongoose Bite", "if=azerite.wilderness_survival.enabled&next_wi_bomb.volatile&dot.serpent_sting.remains>2.1*gcd&dot.serpent_sting.remains<3.5*gcd&cooldown.wildfire_bomb.remains>2.5*gcd",
-                        "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
-  wfi_st -> add_action( this, "Wildfire Bomb", "if=full_recharge_time<gcd|(focus+cast_regen<focus.max)&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)" );
-  wfi_st -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3&(!talent.alpha_predator.enabled|buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)" );
-  wfi_st -> add_action( this, "Raptor Strike", "if=dot.internal_bleeding.stack<3&dot.shrapnel_bomb.ticking&!talent.mongoose_bite.enabled" );
-  wfi_st -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.shrapnel&buff.mongoose_fury.down&(cooldown.kill_command.remains>gcd|focus>60)&!dot.serpent_sting.refreshable" );
-  wfi_st -> add_talent( this, "Steel Trap" );
-  wfi_st -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
-  wfi_st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.react|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled|buff.mongoose_fury.stack=5)" );
-  wfi_st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
-  wfi_st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking" );
-  wfi_st -> add_action( this, "Raptor Strike" );
-  wfi_st -> add_action( this, "Serpent Sting", "if=refreshable" );
-  wfi_st -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50" );
-
-  mb_ap_wfi_st -> add_action( this, "Serpent Sting", "if=!dot.serpent_sting.ticking" );
-  mb_ap_wfi_st -> add_action( this, "Wildfire Bomb", "if=full_recharge_time<gcd|(focus+cast_regen<focus.max)&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)" );
-  mb_ap_wfi_st -> add_action( this, "Coordinated Assault");
-  mb_ap_wfi_st -> add_talent( this, "A Murder of Crows");
-  mb_ap_wfi_st -> add_talent( this, "Steel Trap" );
-  mb_ap_wfi_st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.remains&next_wi_bomb.pheromone",
-                        "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
-  mb_ap_wfi_st -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)" );
-  mb_ap_wfi_st -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.shrapnel&focus>60&dot.serpent_sting.remains>3*gcd" );
-  mb_ap_wfi_st -> add_action( this, "Serpent Sting", "if=refreshable&(next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)" );
-  mb_ap_wfi_st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking" );
-  mb_ap_wfi_st -> add_action( this, "Serpent Sting", "if=refreshable" );
-  mb_ap_wfi_st -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50" );
-
-  st -> add_talent( this, "A Murder of Crows" );
-  st -> add_talent( this, "Mongoose Bite", "if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)",
-    "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
-  st -> add_action( this, "Raptor Strike", "if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)" );
-  st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.react&buff.vipers_venom.remains<gcd" );
-  st -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&(!talent.alpha_predator.enabled|talent.alpha_predator.enabled&full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-20)" );
-  st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&(full_recharge_time<gcd|!dot.wildfire_bomb.ticking&(buff.mongoose_fury.down|full_recharge_time<4.5*gcd))" );
-  st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.react&dot.serpent_sting.remains<4*gcd|!talent.vipers_venom.enabled&!dot.serpent_sting.ticking&!buff.coordinated_assault.up" );
-  st -> add_action( this, "Serpent Sting", "if=refreshable&(azerite.latent_poison.rank>2|azerite.latent_poison.enabled&azerite.venomous_fangs.enabled|(azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)&(!azerite.blur_of_talons.enabled|!talent.birds_of_prey.enabled|!buff.coordinated_assault.up))" );
-  st -> add_talent( this, "Steel Trap" );
   st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
-  st -> add_action( this, "Coordinated Assault" );
-  st -> add_talent( this, "Chakrams" );
   st -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
-  st -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<4|focus<action.mongoose_bite.cost)" );
-  st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|(focus+cast_regen>focus.max-10|talent.vipers_venom.enabled&focus+cast_regen>focus.max-20)|buff.coordinated_assault.up" );
+  st -> add_action( this, "Raptor Strike", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)" );
+  st -> add_talent( this, "Mongoose Bite", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)",
+                        "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
+  st -> add_action( this, "Serpent_Sting", "if=buff.vipers_venom.up&buff.vipers_venom.remains<1.5*gcd" );
+  st -> add_action( this, "Kill_Command", "if=focus+cast_regen<focus.max" );
+  st -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
+  st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up)" );
+  st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.stack>5&!cooldown.coordinated_assault.remains" );
+  st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|dot.serpent_sting.refreshable&!buff.coordinated_assault.up" );
+  st -> add_talent( this, "A Murder of Crows", "if=!buff.coordinated_assault.up" );
+  st -> add_action( this, "Coordinated Assault" );
+  st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus+cast_regen>focus.max-20&talent.vipers_venom.enabled|focus+cast_regen>focus.max-1&talent.terms_of_engagement.enabled|buff.coordinated_assault.up" );
   st -> add_action( this, "Raptor Strike" );
-  st -> add_action( this, "Serpent Sting", "if=dot.serpent_sting.refreshable&!buff.coordinated_assault.up" );
   st -> add_action( this, "Wildfire Bomb", "if=dot.wildfire_bomb.refreshable" );
+  st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up" );
+
+  // Alpha Predator
+  apst -> add_talent( this, "Mongoose Bite", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)" );
+  apst -> add_action( this, "Raptor Strike", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)" );
+  apst -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
+  apst -> add_action( this, "Kill Command", "if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-10" );
+  apst -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
+  apst -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up)" );
+  apst -> add_action( this, "Serpent Sting", "if=!dot.serpent_sting.ticking&!buff.coordinated_assault.up" );
+  apst -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)" );
+  apst -> add_action( this, "Serpent Sting", "if=refreshable&!buff.coordinated_assault.up&buff.mongoose_fury.stack<5" );
+  apst -> add_talent( this, "A Murder of Crows", "if=!buff.coordinated_assault.up" );
+  apst -> add_action( this, "Coordinated Assault");
+  apst -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus+cast_regen>focus.max-10|buff.coordinated_assault.up" );
+  apst -> add_action( this, "Raptor Strike");
+  apst -> add_action( this, "Wildfire Bomb", "if=!ticking" );
+
+  // Wildfire Infusion
+  wfi -> add_action( this, "Harpoon", "if=focus+cast_regen<focus.max&talent.terms_of_engagement.enabled" );
+  wfi -> add_talent( this, "Mongoose Bite", "if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd" );
+  wfi -> add_action( this, "Raptor Strike", "if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd" );
+  wfi -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&buff.vipers_venom.remains<1.5*gcd|!dot.serpent_sting.ticking" );
+  wfi -> add_action( this, "Wildfire Bomb", "if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max|(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)" );
+  wfi -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max-focus.regen" );
+  wfi -> add_talent( this, "A Murder of Crows" );
+  wfi -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
+  wfi -> add_action( this, "Wildfire Bomb", "if=full_recharge_time<1.5*gcd" );
+  wfi -> add_action( this, "Coordinated Assault");
+  wfi -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd" );
+  wfi -> add_talent( this, "Mongoose Bite", "if=dot.shrapnel_bomb.ticking|buff.mongoose_fury.stack=5" );
+  wfi -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.shrapnel&dot.serpent_sting.remains>5*gcd" );
+  wfi -> add_action( this, "Serpent Sting", "if=refreshable" );
+  wfi -> add_talent( this, "Chakrams", "if=!buff.mongoose_fury.remains" );
+  wfi -> add_talent( this, "Mongoose Bite" );
+  wfi -> add_action( this, "Raptor Strike" );
+  wfi -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up" );
+  wfi -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel" );
+
+  // Alpha Predator + Wildfire Infusion
+  apwfi -> add_talent( this, "Mongoose Bite", "if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd" );
+  apwfi -> add_action( this, "Raptor Strike", "if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd" );
+  apwfi -> add_action( this, "Serpent Sting", "if=!dot.serpent_sting.ticking" );
+  apwfi -> add_talent( this, "A Murder of Crows" );
+  apwfi -> add_action( this, "Wildfire Bomb", "if=full_recharge_time<1.5*gcd|focus+cast_regen<focus.max&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)" );
+  apwfi -> add_action( this, "Coordinated Assault");
+  apwfi -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.remains&next_wi_bomb.pheromone" );
+  apwfi -> add_action( this, "Kill Command", "if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-20" );
+  apwfi -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
+  apwfi -> add_action( this, "Raptor Strike", "if=buff.tip_of_the_spear.stack=3|dot.shrapnel_bomb.ticking" );
+  apwfi -> add_talent( this, "Mongoose Bite", "if=dot.shrapnel_bomb.ticking" );
+  apwfi -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.shrapnel&focus>30&dot.serpent_sting.remains>5*gcd" );
+  apwfi -> add_talent( this, "Chakrams", "if=!buff.mongoose_fury.remains" );
+  apwfi -> add_action( this, "Serpent Sting", "if=refreshable" );
+  apwfi -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)" );
+  apwfi -> add_action( this, "Raptor Strike" );
+  apwfi -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus>40|dot.shrapnel_bomb.ticking" );
+  apwfi -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50" );
 
   cleave -> add_action( "variable,name=carve_cdr,op=setif,value=active_enemies,value_else=5,condition=active_enemies<5" );
   cleave -> add_talent( this, "A Murder of Crows" );
