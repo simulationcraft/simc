@@ -6986,39 +6986,35 @@ struct thorns_t : public druid_spell_t
 {
   struct thorns_proc_t : public druid_spell_t
   {
-    thorns_proc_t(druid_t* player) : druid_spell_t("thorns_hit", player, player->find_spell(305496))
+    thorns_proc_t( druid_t* player ) : druid_spell_t( "thorns_hit", player, player->find_spell( 305496 ) )
     {
       background = true;
-      if (p()->specialization() == DRUID_FERAL)
-      { // a little gnarly, TODO(xan): clean this up
-        attack_power_mod.direct = 1.2 * p()->spec.feral->effectN(10).percent();
+      if ( p()->specialization() == DRUID_FERAL )
+      {  // a little gnarly, TODO(xan): clean this up
+        attack_power_mod.direct = 1.2 * p()->spec.feral->effectN( 10 ).percent();
         spell_power_mod.direct = 0;
       }
-
     }
   };
 
   struct thorns_attack_event_t : public event_t
-   {
+  {
     action_t* thorns;
     player_t* target_actor;
     timespan_t attack_period;
     druid_t* source;
     bool randomize_first;
 
-    thorns_attack_event_t(druid_t* player, action_t* thorns_proc, player_t* source, bool randomize = false) :
-      event_t(*player),
-      thorns(thorns_proc),
-      target_actor(source),
-      attack_period(timespan_t::from_seconds(player->thorns_attack_period)),
-      source(player),
-      randomize_first(randomize)
+    thorns_attack_event_t( druid_t* player, action_t* thorns_proc, player_t* source, bool randomize = false ) :
+      event_t( *player ), thorns( thorns_proc ), target_actor( source ),
+      attack_period( timespan_t::from_seconds( player->thorns_attack_period ) ), source( player ),
+      randomize_first( randomize )
     {
-      //this will delay the first psudo autoattack by a random amount between 0 and a full attack period
-      if (randomize_first)
-        schedule(rng().real() * attack_period);
+      // this will delay the first psudo autoattack by a random amount between 0 and a full attack period
+      if ( randomize_first )
+        schedule( rng().real() * attack_period );
       else
-        schedule(attack_period);
+        schedule( attack_period );
     }
 
     const char* name() const override
@@ -7030,54 +7026,54 @@ struct thorns_t : public druid_spell_t
     {
       // Terminate the rescheduling if the target is dead, or if thorns would run out before next attack
 
-      if (target_actor->is_sleeping())
+      if ( target_actor->is_sleeping() )
         return;
 
       thorns->target = target_actor;
-      if (thorns->ready())
+      if ( thorns->ready() )
         thorns->execute();
 
-      if (source->buff.thorns->remains() >= attack_period)
-        make_event<thorns_attack_event_t>(*source->sim, source, thorns, target_actor, false);
+      if ( source->buff.thorns->remains() >= attack_period )
+        make_event<thorns_attack_event_t>( *source->sim, source, thorns, target_actor, false );
     }
   };
 
   bool available = false;
   thorns_proc_t* thorns_proc = nullptr;
 
-  thorns_t(druid_t* player, const std::string& options_str) :
-    druid_spell_t("thorns", player, player->find_spell(305497), options_str)
-   {
-    available = p()->find_azerite_essence("Conflict and Strife").enabled();
-    //workaround so that we do not need to enable mana regen
+  thorns_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "thorns", player, player->find_spell( 305497 ), options_str )
+  {
+    available = p()->find_azerite_essence( "Conflict and Strife" ).is_major();
+    // workaround so that we do not need to enable mana regen
     base_costs[ RESOURCE_MANA ] = 0.0;
 
-    if (!thorns_proc)
+    if ( !thorns_proc )
     {
-      thorns_proc = new thorns_proc_t(player);
+      thorns_proc = new thorns_proc_t( player );
       thorns_proc->stats = stats;
     }
   }
 
   virtual bool ready() override
   {
-    if (!available)	return false;
+    if ( !available )
+      return false;
 
     return druid_spell_t::ready();
   }
 
   void execute() override
-   {
+  {
     p()->buff.thorns->trigger();
 
-    for (player_t* target : p()->sim->target_non_sleeping_list)
+    for ( player_t* target : p()->sim->target_non_sleeping_list )
     {
-      make_event<thorns_attack_event_t>(*sim, p(), thorns_proc, target, true);
+      make_event<thorns_attack_event_t>( *sim, p(), thorns_proc, target, true );
     }
 
     druid_spell_t::execute();
   }
-
 };
 
 // Warrior of Elune =========================================================
