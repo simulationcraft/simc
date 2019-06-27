@@ -8334,9 +8334,16 @@ void druid_t::apl_feral()
    cooldowns->add_action("berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)");
    cooldowns->add_action("tigers_fury,if=energy.deficit>=60");
    cooldowns->add_action("berserking");
+   cooldowns->add_action("thorns,if=active_enemies>desired_targets|raid_event.adds.in>45");
+   cooldowns->add_action("the_unbound_force,if=buff.reckless_force.up|buff.tigers_fury.up&buff.reckless_force_counter.stacks<17");
+   cooldowns->add_action("memory_of_lucid_dreams,if=buff.tigers_fury.up&buff.berserk.down");
+   cooldowns->add_action("blood_of_the_enemy,if=buff.tigers_fury.up");
    cooldowns->add_action("feral_frenzy,if=combo_points=0");
+   cooldowns->add_action("focused_azerite_beam,if=active_enemies>desired_targets|(raid_event.adds.in>90&energy.deficit>=50)");
+   cooldowns->add_action("purifying_blast,if=active_enemies>desired_targets|raid_event.adds.in>60");
+   cooldowns->add_action("heart_essence,if=buff.tigers_fury.up");
    cooldowns->add_action("incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)");
-   cooldowns->add_action("potion,name=battle_potion_of_agility,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))");
+   cooldowns->add_action("potion,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))");
    cooldowns->add_action("shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up");
    cooldowns->add_action("use_items");
 
@@ -8352,7 +8359,7 @@ void druid_t::apl_feral()
    finisher->add_action("savage_roar,if=buff.savage_roar.remains<12");
    finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("maim,if=buff.iron_jaws.up");
-   finisher->add_action("ferocious_bite,max_energy=1");
+   finisher->add_action("ferocious_bite,max_energy=1,target_if=max:druid.rip.ticks_gained_on_refresh");
 
    generator->add_action("regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4");
    generator->add_action("regrowth,if=talent.bloodtalons.enabled&buff.bloodtalons.down&buff.predatory_swiftness.up&talent.lunar_inspiration.enabled&dot.rake.remains<1");
@@ -8362,7 +8369,7 @@ void druid_t::apl_feral()
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("thrash_cat,if=(talent.scent_of_blood.enabled&buff.scent_of_blood.down)&spell_targets.thrash_cat>3");
    generator->add_action("pool_resource,for_next=1");
-   generator->add_action("swipe_cat,if=buff.scent_of_blood.up");
+   generator->add_action("swipe_cat,if=buff.scent_of_blood.up|(action.swipe_cat.damage*spell_targets.swipe_cat>(action.rake.damage+(action.rake.tick_dmg*5)))");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4");
    generator->add_action("pool_resource,for_next=1");
