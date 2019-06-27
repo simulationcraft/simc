@@ -83,7 +83,7 @@ actions.cds+=/shadowmeld,if=!stealthed.all&variable.ambush_condition
 
 # Essences
 actions.essences=concentrated_flame
-actions.essences+=/blood_of_the_enemy
+actions.essences+=/blood_of_the_enemy,if=variable.blade_flurry_sync
 actions.essences+=/guardian_of_azeroth
 actions.essences+=/focused_azerite_beam
 actions.essences+=/purifying_blast

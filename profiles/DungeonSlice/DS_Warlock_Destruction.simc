@@ -8,9 +8,9 @@ position=ranged_back
 talents=2203023
 
 # Default consumables
-potion=battle_potion_of_intellect
-flask=endless_fathoms
-food=bountiful_captains_feast
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_endless_fathoms
+food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -43,6 +43,10 @@ actions+=/immolate,cycle_targets=1,if=refreshable&(!talent.cataclysm.enabled|coo
 actions+=/immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5
 # The general rule of thumb for talents is to maximize the number of uses of each
 actions+=/call_action_list,name=cds
+actions+=/focused_azerite_beam,if=!pet.infernal.active|!talent.grimoire_of_supremacy.enabled
+actions+=/the_unbound_force,if=buff.reckless_force.react
+actions+=/purifying_blast
+actions+=/concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight
 actions+=/channel_demonfire
 # The if condition here always applies Havoc to something other than the primary target
 actions+=/havoc,cycle_targets=1,if=!(target=self.target)&(dot.immolate.remains>dot.immolate.duration*0.5|!talent.internal_combustion.enabled)&(!cooldown.summon_infernal.ready|!talent.grimoire_of_supremacy.enabled|talent.grimoire_of_supremacy.enabled&pet.infernal.remains<=10)
@@ -55,7 +59,7 @@ actions+=/shadowburn,if=soul_shard<2&(!variable.pool_soul_shards|charges>1)
 # It's worth stocking up on Soul Shards before a major cooldown usage
 actions+=/variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|cooldown.summon_infernal.remains<=20&(talent.grimoire_of_supremacy.enabled|talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=20)|talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=20&(cooldown.summon_infernal.remains>target.time_to_die|cooldown.summon_infernal.remains+cooldown.summon_infernal.duration>target.time_to_die)
 # Chaos Bolt has several possible use conditions. Crashing Chaos, Grimoire of Supremacy, and Dark Soul: Instability all favor casting as many CBs as possible when any of them are active
-actions+=/chaos_bolt,if=(talent.grimoire_of_supremacy.enabled|azerite.crashing_chaos.enabled)&pet.infernal.active|buff.dark_soul_instability.up
+actions+=/chaos_bolt,if=(talent.grimoire_of_supremacy.enabled|azerite.crashing_chaos.enabled)&pet.infernal.active|buff.dark_soul_instability.up|buff.reckless_force.react&buff.reckless_force.remains>cast_time
 # If Soul Shards are not being pooled and Eradication is not talented, just spend CBs as they become available
 actions+=/chaos_bolt,if=!variable.pool_soul_shards&!talent.eradication.enabled
 # With Eradication, it's beneficial to maximize the uptime on the debuff. However, it's still better to use Chaos Bolt immediately if Backdraft is up
@@ -80,6 +84,8 @@ actions.aoe+=/havoc,cycle_targets=1,if=!(target=self.target)&active_enemies<4
 actions.aoe+=/chaos_bolt,if=talent.grimoire_of_supremacy.enabled&pet.infernal.active&(havoc_active|talent.cataclysm.enabled|talent.inferno.enabled&active_enemies<4)
 # Barring any exceptions, Rain of Fire will be used as much as possible, since multiple copies of it can stack
 actions.aoe+=/rain_of_fire
+actions.aoe+=/focused_azerite_beam
+actions.aoe+=/purifying_blast
 # Even if the Havoc priority list won't be used, Havoc is pretty much free damage and resources and should be used almost on cooldown
 actions.aoe+=/havoc,cycle_targets=1,if=!(target=self.target)&(!talent.grimoire_of_supremacy.enabled|!talent.inferno.enabled|talent.grimoire_of_supremacy.enabled&pet.infernal.remains<=10)
 # Use Fire and Brimstone if Backdraft is active, as long as it will not overcap on Soul Shards
@@ -88,28 +94,40 @@ actions.aoe+=/incinerate,if=talent.fire_and_brimstone.enabled&buff.backdraft.up&
 actions.aoe+=/soul_fire
 actions.aoe+=/conflagrate,if=buff.backdraft.down
 actions.aoe+=/shadowburn,if=!talent.fire_and_brimstone.enabled
+actions.aoe+=/concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight&active_enemies<5
 # With Fire and Brimstone, Incinerate will be a strong filler. It's placed here for all talents to prevent accidentally using the single target rotation list
 actions.aoe+=/incinerate
 
 # If both cooldowns are ready, summon the Infernal then activate DSI. If not using DSI, use this on CD
-actions.cds=summon_infernal,if=cooldown.dark_soul_instability.ready|!talent.dark_soul_instability.enabled
+actions.cds=summon_infernal,if=cooldown.dark_soul_instability.ready|cooldown.memory_of_lucid_dreams.ready|(!talent.dark_soul_instability.enabled&!essence.memory_of_lucid_dreams.major)|cooldown.dark_soul_instability.remains<=10|cooldown.memory_of_lucid_dreams.remains<=10
+actions.cds+=/guardian_of_azeroth,if=cooldown.dark_soul_instability.ready|cooldown.memory_of_lucid_dreams.ready|(!talent.dark_soul_instability.enabled&!essence.memory_of_lucid_dreams.major)|cooldown.dark_soul_instability.remains<=10|cooldown.memory_of_lucid_dreams.remains<=10|pet.infernal.active
 actions.cds+=/dark_soul_instability,if=pet.infernal.active
+actions.cds+=/memory_of_lucid_dreams,if=pet.infernal.active
 # If DSI is not ready but you can get more than one infernal in before the end of the fight, summon the Infernal now
 actions.cds+=/summon_infernal,if=target.time_to_die>cooldown.summon_infernal.duration
+actions.cds+=/guardian_of_azeroth,if=target.time_to_die>cooldown.guardian_of_azeroth.duration
 # If you can get in more than one more DSI before the end of the fight, use that now
-actions.cds+=/dark_soul_instability,if=target.time_to_die>cooldown.dark_soul_instability.duration+20
+actions.cds+=/dark_soul_instability,if=target.time_to_die>cooldown.dark_soul_instability.duration+20&!(essence.vision_of_perfection.minor&azerite.crashing_chaos.rank)
+actions.cds+=/memory_of_lucid_dreams,if=target.time_to_die>cooldown.dark_soul_instability.duration+20&!(essence.vision_of_perfection.minor&azerite.crashing_chaos.rank)
 # If the fight will end before DSI is back up, summon the Infernal
 actions.cds+=/summon_infernal,if=talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains>target.time_to_die
+actions.cds+=/guardian_of_azeroth,if=talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains>target.time_to_die
 # If the fight will end before infernal is back up, use DSI
 actions.cds+=/dark_soul_instability,if=cooldown.summon_infernal.remains>target.time_to_die
+actions.cds+=/memory_of_lucid_dreams,if=cooldown.summon_infernal.remains>target.time_to_die
 # If the fight is about to end, use CDs such that they get as much time up as possible
 actions.cds+=/summon_infernal,if=target.time_to_die<30
+actions.cds+=/guardian_of_azeroth,if=target.time_to_die<30
 actions.cds+=/dark_soul_instability,if=target.time_to_die<20
+actions.cds+=/memory_of_lucid_dreams,if=target.time_to_die<20
+actions.cds+=/blood_of_the_enemy
+actions.cds+=/worldvein_resonance
+actions.cds+=/ripple_in_space
 actions.cds+=/potion,if=pet.infernal.active|target.time_to_die<30
-actions.cds+=/berserking
-actions.cds+=/blood_fury
-actions.cds+=/fireblood
-actions.cds+=/use_items
+actions.cds+=/berserking,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30
+actions.cds+=/blood_fury,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30
+actions.cds+=/fireblood,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30
+actions.cds+=/use_items,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30
 
 actions.havoc=conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4
 actions.havoc+=/immolate,if=talent.internal_combustion.enabled&remains<duration*0.5|!talent.internal_combustion.enabled&refreshable

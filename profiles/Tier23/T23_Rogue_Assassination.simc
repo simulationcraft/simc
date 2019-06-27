@@ -52,7 +52,7 @@ actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/fireblood,if=debuff.vendetta.up
 actions.cds+=/ancestral_call,if=debuff.vendetta.up
-actions.cds+=/call_action_list,name=essences,if=dot.rupture.ticking
+actions.cds+=/call_action_list,name=essences,if=!stealthed.all&dot.rupture.ticking&master_assassin_remains=0
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)
 # If no adds will die within the next 30s, use MfD on boss without any CP.
@@ -102,7 +102,8 @@ actions.dot+=/rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplie
 
 # Essences
 actions.essences=concentrated_flame
-actions.essences+=/blood_of_the_enemy
+# Always use Blood with Vendetta up. Also use with TB up (if talented) as long as it runs for 10s during Vendetta.
+actions.essences+=/blood_of_the_enemy,if=debuff.vendetta.up&(!talent.toxic_blade.enabled|debuff.toxic_blade.up|debuff.vendetta.remains<=10)|target.time_to_die<=10
 actions.essences+=/guardian_of_azeroth
 actions.essences+=/focused_azerite_beam
 actions.essences+=/purifying_blast
