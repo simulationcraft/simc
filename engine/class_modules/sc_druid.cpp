@@ -8335,7 +8335,7 @@ void druid_t::apl_feral()
    cooldowns->add_action("tigers_fury,if=energy.deficit>=60");
    cooldowns->add_action("berserking");
    cooldowns->add_action("thorns,if=active_enemies>desired_targets|raid_event.adds.in>45");
-   cooldowns->add_action("the_unbound_force,if=buff.reckless_force.up|buff.tigers_fury.up&buff.reckless_force_counter.stacks<17");
+   cooldowns->add_action("the_unbound_force,if=buff.reckless_force.up|buff.tigers_fury.up");
    cooldowns->add_action("memory_of_lucid_dreams,if=buff.tigers_fury.up&buff.berserk.down");
    cooldowns->add_action("blood_of_the_enemy,if=buff.tigers_fury.up");
    cooldowns->add_action("feral_frenzy,if=combo_points=0");
