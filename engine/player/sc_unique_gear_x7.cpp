@@ -162,6 +162,7 @@ namespace items
   // 8.2.0 - Rise of Azshara Trinkets and Special Items
   void damage_to_aberrations( special_effect_t& );
   void exploding_pufferfish( special_effect_t& );
+  void fathom_hunter( special_effect_t& );
   void highborne_compendium_of_sundering( special_effect_t& );
   void highborne_compendium_of_storms( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
@@ -3202,6 +3203,7 @@ void items::damage_to_aberrations( special_effect_t& effect )
   {
     buff = make_buff( effect.player, "damage_to_aberrations", effect.driver() );
     buff->set_default_value( effect.driver()->effectN( 1 ).percent() );
+    buff->set_quiet( true );
 
     effect.player->buffs.damage_to_aberrations = buff;
     effect.player->register_combat_begin( buff );
@@ -3239,6 +3241,24 @@ void items::exploding_pufferfish( special_effect_t& effect )
   effect.execute_action->base_dd_min = effect.execute_action->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
 
   new pufferfish_cb_t( effect );
+}
+
+// Benthic Armor Fathom Hunter ============================================
+
+void items::fathom_hunter( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "fathom_hunter" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "fathom_hunter", effect.driver() );
+    buff->set_default_value( effect.driver()->effectN( 1 ).percent() );
+    buff->set_quiet( true );
+
+    effect.player->buffs.fathom_hunter = buff;
+    effect.player->register_combat_begin( buff );
+  }
+
+  effect.type = SPECIAL_EFFECT_NONE;
 }
 
 // Highborne Compendium of Storms =========================================
@@ -3643,6 +3663,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295427, items::legplates_of_unbound_anguish );
   register_special_effect( 302382, items::damage_to_aberrations );
   register_special_effect( 303133, items::exploding_pufferfish );
+  register_special_effect( 304637, items::fathom_hunter );
   register_special_effect( 300830, items::highborne_compendium_of_sundering );
   register_special_effect( 300913, items::highborne_compendium_of_storms );
 

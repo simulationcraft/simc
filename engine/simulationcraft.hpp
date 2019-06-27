@@ -3856,7 +3856,8 @@ struct player_t : public actor_t
     buff_t* guardian_of_azeroth; // Condensed Life-Force major - R3 stacking haste on pet cast
 
     // 8.2 misc
-    buff_t* damage_to_aberrations; // In various Benthic Armor
+    buff_t* damage_to_aberrations; // Benthic belt special effect
+    buff_t* fathom_hunter; // Follower themed Benthic boots special effect
   } buffs;
 
   struct debuffs_t
