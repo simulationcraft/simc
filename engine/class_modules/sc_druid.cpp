@@ -7154,26 +7154,25 @@ struct force_of_nature_t : public druid_spell_t
 {
   timespan_t summon_duration;
   force_of_nature_t( druid_t* p, const std::string options ) :
-    druid_spell_t( "force_of_nature", p, p -> talent.force_of_nature ),
-    summon_duration( timespan_t::zero() )
+    druid_spell_t( "force_of_nature", p, p->talent.force_of_nature ), summon_duration( timespan_t::zero() )
   {
     parse_options( options );
     harmful = may_crit = false;
-    summon_duration = p->find_spell(248280)->duration() + timespan_t::from_millis(1);
-    energize_amount = p->talent.force_of_nature->effectN(5).resource(RESOURCE_ASTRAL_POWER);
+    summon_duration = p->find_spell( 248280 )->duration() + timespan_t::from_millis( 1 );
+    energize_amount = p->talent.force_of_nature->effectN( 5 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   virtual void execute() override
   {
     druid_spell_t::execute();
 
-    streaking_stars_trigger(SS_FORCE_OF_NATURE, nullptr);
+    // streaking_stars_trigger(SS_FORCE_OF_NATURE, nullptr); -- Doesn't seem to proc streaking anymore
 
-    for ( size_t i = 0; i < p() -> force_of_nature.size(); i++ )
+    for ( size_t i = 0; i < p()->force_of_nature.size(); i++ )
     {
-      if ( p() -> force_of_nature[i] -> is_sleeping() )
+      if ( p()->force_of_nature[ i ]->is_sleeping() )
       {
-        p() -> force_of_nature[i] -> summon( summon_duration );
+        p()->force_of_nature[ i ]->summon( summon_duration );
         expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, player );
       }
     }
