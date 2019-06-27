@@ -1135,15 +1135,13 @@ namespace warlock {
     def->add_action( this, "Incinerate" );
 
     cds->add_action( this, "Summon Infernal", "if=cooldown.dark_soul_instability.ready|cooldown.memory_of_lucid_dreams.ready|(!talent.dark_soul_instability.enabled&!essence.memory_of_lucid_dreams.major)|cooldown.dark_soul_instability.remains<=10|cooldown.memory_of_lucid_dreams.remains<=10", "If both cooldowns are ready, summon the Infernal then activate DSI. If not using DSI, use this on CD" );
-    cds->add_action( "guardian_of_azeroth,if=cooldown.dark_soul_instability.ready|cooldown.memory_of_lucid_dreams.ready|(!talent.dark_soul_instability.enabled&!essence.memory_of_lucid_dreams.major)|cooldown.dark_soul_instability.remains<=10|cooldown.memory_of_lucid_dreams.remains<=10|pet.infernal.active" );
+    cds->add_action( "guardian_of_azeroth,if=pet.infernal.active" );
     cds->add_talent( this, "Dark Soul: Instability", "if=pet.infernal.active&pet.infernal.remains<=20" );
     cds->add_action(  "memory_of_lucid_dreams,if=pet.infernal.active&pet.infernal.remains<=20" );
-    cds->add_action( this, "Summon Infernal", "if=target.time_to_die>cooldown.summon_infernal.duration", "If DSI is not ready but you can get more than one infernal in before the end of the fight, summon the Infernal now" );
-    cds->add_action( "guardian_of_azeroth,if=target.time_to_die>cooldown.guardian_of_azeroth.duration" );
-    cds->add_talent( this, "Dark Soul: Instability", "if=time>30&target.time_to_die>cooldown.dark_soul_instability.duration+20&!(essence.vision_of_perfection.minor&azerite.crashing_chaos.rank)", "If you can get in more than one more DSI before the end of the fight, use that now" );
-    cds->add_action( "memory_of_lucid_dreams,if=time>30&target.time_to_die>cooldown.dark_soul_instability.duration+20&!(essence.vision_of_perfection.minor&azerite.crashing_chaos.rank)" );
+    cds->add_action( this, "Summon Infernal", "if=target.time_to_die>cooldown.summon_infernal.duration+30", "If DSI is not ready but you can get more than one infernal in before the end of the fight, summon the Infernal now" );
+    cds->add_action( "guardian_of_azeroth,if=time>30&target.time_to_die>cooldown.guardian_of_azeroth.duration+30" );
     cds->add_action( this, "Summon Infernal", "if=talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains>target.time_to_die", "If the fight will end before DSI is back up, summon the Infernal" );
-    cds->add_action( "guardian_of_azeroth,if=talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains>target.time_to_die" );
+    cds->add_action( "guardian_of_azeroth,if=cooldown.summon_infernal.remains>target.time_to_die" );
     cds->add_talent( this, "Dark Soul: Instability", "if=cooldown.summon_infernal.remains>target.time_to_die", "If the fight will end before infernal is back up, use DSI" );
     cds->add_action( "memory_of_lucid_dreams,if=cooldown.summon_infernal.remains>target.time_to_die" );
     cds->add_action( this, "Summon Infernal", "if=target.time_to_die<30", "If the fight is about to end, use CDs such that they get as much time up as possible" );
