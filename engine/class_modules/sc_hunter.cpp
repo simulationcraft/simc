@@ -5523,15 +5523,15 @@ void hunter_t::apl_surv()
   cds -> add_action( this, "Aspect of the Eagle", "if=target.distance>=6" );
 	
   // Essences
-  cds->add_action( "focused azerite beam" );
-  cds->add_action( "memory of lucid dreams,if=buff.coordinated_assault.up" );
-  cds->add_action( "blood of the enemy,if=buff.coordinated_assault.up" );
-  cds->add_action( "purifying blast" );
-  cds->add_action( "Guardian of Azeroth" );
-  cds->add_action( "ripple in space" );
-  cds->add_action( "concentrated flame,if=full_recharge_time<1*gcd" );
-  cds->add_action( "the_unbound force,if=buff.reckless_force.up" );
-  cds->add_action( "worldvein resonance" );
+  cds->add_action( "focused_azerite_beam" );
+  cds->add_action( "memory_of_lucid_dreams,if=buff.coordinated_assault.up" );
+  cds->add_action( "blood_of_the_enemy,if=buff.coordinated_assault.up" );
+  cds->add_action( "purifying_blast" );
+  cds->add_action( "guardian_of_azeroth" );
+  cds->add_action( "ripple_in_space" );
+  cds->add_action( "concentrated_flame,if=full_recharge_time<1*gcd" );
+  cds->add_action( "the_unbound_force,if=buff.reckless_force.up" );
+  cds->add_action( "worldvein_resonance" );
 
   st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
   st -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
