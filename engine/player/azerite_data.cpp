@@ -1112,6 +1112,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 296320, azerite_essences::strive_for_perfection );
   unique_gear::register_special_effect( 294964, azerite_essences::anima_of_life_and_death );
   unique_gear::register_special_effect( 295750, azerite_essences::nullification_dynamo );
+  unique_gear::register_special_effect( 298193, azerite_essences::aegis_of_the_deep );
   // Vision of Perfection major Azerite Essence
   unique_gear::register_special_effect( 296325, azerite_essences::vision_of_perfection );
 }
@@ -4529,7 +4530,7 @@ void nullification_dynamo( special_effect_t& effect )
     buff = make_buff<null_barrier_absorb_buff_t>( effect.player, essence, nbd );
   }
 
-  timespan_t interval = essence.spell( 1u, essence_type::MINOR ) -> effectN( 1 ).period();
+  timespan_t interval = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).period();
   if ( essence.rank() >= 2 )
   {
     interval *= 1.0 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
@@ -4540,6 +4541,67 @@ void nullification_dynamo( special_effect_t& effect )
     make_repeating_event( *buff -> sim, interval, [ buff ]() {
       buff -> trigger();
     } );
+  } );
+}
+
+//Aegis of the Deep
+//Only the passive versatility buff from the Minor effect is implemented
+void aegis_of_the_deep( special_effect_t& effect )
+{
+  auto essence = effect.player -> find_azerite_essence( effect.driver() -> essence_id() );
+  if ( ! essence.enabled() )
+  {
+    return;
+  }
+
+  buff_t* aegis_buff = buff_t::find( effect.player, "stand_your_ground" );
+  if ( !aegis_buff )
+  {
+    double amount = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+
+    aegis_buff = make_buff<stat_buff_t>( effect.player, "stand_your_ground", effect.player -> find_spell( 298197 ) )
+      -> add_stat( STAT_VERSATILITY_RATING, amount );
+  }
+
+  //Spelldata shows a buff trigger every 1s, but in-game observation show an immediate change
+  //Add a callback on arise and demise to each enemy in the simulation
+  range::for_each( effect.player -> sim -> actor_list, [ effect, aegis_buff ]( player_t* target )
+  {
+    // Don't do anything on players
+    if ( !target -> is_enemy() )
+    {
+      return;
+    }
+
+    target -> callbacks_on_arise.push_back( [ effect, aegis_buff ] () 
+    {
+      if ( aegis_buff ) 
+      {
+        effect.player -> sim -> print_debug( "An enemy arises! Stand your Ground is increased by one stack" );
+        aegis_buff -> trigger();
+      }
+    } );
+
+
+    target -> callbacks_on_demise.push_back( [ aegis_buff ] ( player_t* target ) 
+    {
+      // Don't do anything if the sim is ending
+      if ( target -> sim -> event_mgr.canceled )
+      {
+        return;
+      }
+
+      if ( aegis_buff ) 
+      {
+        target -> sim -> print_debug( "Enemy {} demises, stand your ground is reduced by one stack", target -> name_str );
+        aegis_buff -> decrement();
+      }
+    } );
+  } );
+
+  effect.player -> register_combat_begin( [ aegis_buff, effect ]( player_t* )
+  {
+    aegis_buff -> trigger( effect.player -> sim -> desired_targets );
   } );
 }
 
