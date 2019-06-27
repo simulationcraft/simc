@@ -10,6 +10,7 @@
 // - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
 //   and the driver uptime (6s every 45s)
 // - Look into Summon Gargoyle spawn delay
+// - Necrotic Strike for Conflict and Strife
 // Blood
 //
 // Frost
@@ -3553,6 +3554,63 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
   }
 };
 
+// Chill Streak, PVP talent (used with Conflict and Strife)
+struct chill_streak_damage_t : public death_knight_spell_t
+{
+  int hit_count;
+
+  chill_streak_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "chill_streak_damage", p, p -> find_spell( 204167 ) )
+  {
+    background = proc = true;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+    hit_count++;
+
+    for ( const auto target : sim -> target_non_sleeping_list )
+    {
+      if ( target != state -> target )
+      {
+        if ( hit_count < 9 )
+        {
+          this -> set_target( target );
+          this -> schedule_execute();
+        }
+      }
+    }
+  }
+};
+
+struct chill_streak_t : public death_knight_spell_t
+{
+  chill_streak_damage_t* damage;
+  bool essence_equipped;
+
+  chill_streak_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "chill_streak", p, p -> find_spell( 305392 ) ),
+    damage( new chill_streak_damage_t( p ) )
+  {
+    add_child( damage );
+    impact_action = damage;
+    aoe = 0;
+    essence_equipped = p -> find_azerite_essence( "Conflict and Strife" ).is_major();
+  }
+
+  void execute() override
+  {
+    damage -> hit_count = 0;
+    death_knight_spell_t::execute();
+  }
+
+  bool ready() override
+  {
+    return essence_equipped && p() -> specialization() == DEATH_KNIGHT_FROST ? death_knight_spell_t::ready() : false;
+  }
+};
+
 // Chains of Ice ============================================================
 
 // Cold Heart damage
@@ -6946,6 +7004,8 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "obliterate"               ) return new obliterate_t               ( this, options_str );
   if ( name == "pillar_of_frost"          ) return new pillar_of_frost_t          ( this, options_str );
   if ( name == "remorseless_winter"       ) return new remorseless_winter_t       ( this, options_str );
+  // PvP talent from Conflict and Strife
+  if ( name == "chill_streak"             ) return new chill_streak_t             ( this, options_str );
 
   // Unholy Actions
   if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
