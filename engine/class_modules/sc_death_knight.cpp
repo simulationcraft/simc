@@ -7975,7 +7975,11 @@ void death_knight_t::create_buffs()
     -> add_stat( STAT_MASTERY_RATING, azerite.frostwhelps_indignation.value( 2 ) );
 
   buffs.helchains = new helchains_buff_t( this );
-    
+  
+  player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
+  {
+    _runes.update_coefficient(); 
+  } );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -8450,6 +8454,11 @@ inline double death_knight_t::runes_per_second() const
   {
     rps *= 1.0 + spell.runic_corruption -> effectN( 1 ).percent();
   }
+
+  if ( player_t::buffs.memory_of_lucid_dreams -> check() )
+  {
+    rps *= 1.0 + player_t::buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
+  }
   
   return rps;
 }
@@ -8461,6 +8470,11 @@ inline double death_knight_t::rune_regen_coefficient() const
   if ( buffs.runic_corruption -> check() )
   {
     coeff /= 1.0 + spell.runic_corruption -> effectN( 1 ).percent();
+  }
+  
+  if ( player_t::buffs.memory_of_lucid_dreams -> check() )
+  {
+    coeff /= 1.0 + player_t::buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
   }
 
   return coeff;
