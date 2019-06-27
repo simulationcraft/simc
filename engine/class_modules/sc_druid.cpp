@@ -626,6 +626,7 @@ public:
     const spell_data_t* mangle_2; // Rank 2
     const spell_data_t* ironfur_2; // Rank 2
     const spell_data_t* frenzied_regeneration_2; // Rank 2
+    const spell_data_t* bear_form_2; // Rank 2
 
     // Resto
     const spell_data_t* restoration;
@@ -7537,6 +7538,7 @@ void druid_t::init_spells()
   spec.mangle_2                   = find_specialization_spell( 231064 );
   spec.ironfur_2                  = find_specialization_spell( 231070 );
   spec.frenzied_regeneration_2    = find_specialization_spell( 273048 );
+  spec.bear_form_2                = find_specialization_spell( 270100 );
 
   // Restoration
   spec.moonkin_form_affinity      = find_spell(197625);
@@ -9407,7 +9409,7 @@ double druid_t::composite_attribute_multiplier( attribute_e attr ) const
   {
   case ATTR_STAMINA:
     if ( buff.bear_form -> check() )
-      m *= 1.0 + spec.bear_form -> effectN( 2 ).percent();
+      m *= 1.0 + spec.bear_form -> effectN( 2 ).percent() + spec.bear_form_2 -> effectN( 1 ).percent();
     break;
   default:
     break;
