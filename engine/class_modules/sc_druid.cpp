@@ -10170,36 +10170,40 @@ void druid_t::vision_of_perfection_proc()
   buff_t* vp_buff;
   timespan_t vp_dur;
 
-  switch (specialization())
+  switch ( specialization() )
   {
     case DRUID_BALANCE:
-      if (talent.incarnation_moonkin->ok())
+      if ( talent.incarnation_moonkin->ok() )
         vp_buff = buff.incarnation_moonkin;
       else
         vp_buff = buff.celestial_alignment;
 
-      if (!vp_buff->check() && vop_ap_bug) // BUGGGED...?
-        resource_gain(RESOURCE_ASTRAL_POWER, 40, gain.vision_of_perfection);
+      if ( !vp_buff->check() && vop_ap_bug )  // BUGGGED...?
+        resource_gain( RESOURCE_ASTRAL_POWER, 40, gain.vision_of_perfection );
 
-      resource_gain(RESOURCE_ASTRAL_POWER, 40 * vision_of_perfection_dur, gain.vision_of_perfection);
-      if (azerite.streaking_stars.ok())
+      resource_gain( RESOURCE_ASTRAL_POWER, 40 * vision_of_perfection_dur, gain.vision_of_perfection );
+      if ( azerite.streaking_stars.ok() )
         previous_streaking_stars = SS_CELESTIAL_ALIGNMENT;
       break;
 
     case DRUID_GUARDIAN:
       vp_buff = buff.incarnation_bear;
-      cooldown.mangle->reset(false);
-      cooldown.thrash_bear->reset(false);
-      cooldown.growl->reset(false);
-      cooldown.maul->reset(false);
+      cooldown.mangle->reset( false );
+      cooldown.thrash_bear->reset( false );
+      cooldown.growl->reset( false );
+      cooldown.maul->reset( false );
       break;
 
     case DRUID_FERAL:
-      if (talent.incarnation_cat->ok())
+      if ( talent.incarnation_cat->ok() )
+      {
         vp_buff = buff.incarnation_cat;
+        buff.jungle_stalker->trigger();
+      }
       else
+      {
         vp_buff = buff.berserk;
-      buff.jungle_stalker->trigger();
+      }
       break;
 
     default:
@@ -10208,10 +10212,10 @@ void druid_t::vision_of_perfection_proc()
 
   vp_dur = vp_buff->data().duration() * vision_of_perfection_dur;
 
-  if (vp_buff->check())
-    vp_buff->extend_duration(this, vp_dur);
+  if ( vp_buff->check() )
+    vp_buff->extend_duration( this, vp_dur );
   else
-    vp_buff->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, vp_dur);
+    vp_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, vp_dur );
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
