@@ -3435,7 +3435,11 @@ void the_crucible_of_flame( special_effect_t& effect )
     ancient_flame_t( const special_effect_t& effect, const std::string& name, const azerite_essence_t& essence ) :
       proc_spell_t( name, effect.player, effect.player->find_spell( 295367 ), essence.item() )
     {
-      base_td = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() );
+      base_td = item_database::apply_combat_rating_multiplier( effect.player,
+        combat_rating_multiplier_type::CR_MULTIPLIER_JEWLERY,
+        essence.item()->item_level(),
+        essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() ) );
+
       base_td_multiplier *= 1 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
     }
 
