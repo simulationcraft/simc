@@ -4385,6 +4385,7 @@ struct worldvein_resonance_t : public azerite_essence_major_t
     stacks(),
     lifeblood()
   {
+    harmful = false;
     parse_options( options_str );
     stacks = as<int>( data().effectN( 1 ).base_value() +
       essence.spell( 2, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).base_value() );

@@ -5364,32 +5364,35 @@ void hunter_t::apl_bm()
   action_priority_list_t* st           = get_action_priority_list( "st" );
   action_priority_list_t* cleave       = get_action_priority_list( "cleave" );
 
-  // Precombat actions
+  precombat -> add_action( "worldvein_resonance" );
+  precombat -> add_action( "guardian_of_azeroth" );
+  precombat -> add_action( "memory_of_lucid_dreams" );
+
   precombat -> add_action( this, "Aspect of the Wild", "precast_time=1.1,if=!azerite.primal_instincts.enabled",
           "Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s." );
   precombat -> add_action( this, "Bestial Wrath", "precast_time=1.5,if=azerite.primal_instincts.enabled",
           "Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat." );
 
-  // Generic APL
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( "use_items" );
   default_list -> add_action( "call_action_list,name=cds" );
   default_list -> add_action( "call_action_list,name=st,if=active_enemies<2" );
   default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1" );
-  // Arcane torrent if nothing else is available
   default_list -> add_action( this, "Arcane Torrent" );
 
-  // Racials
   for ( std::string racial : { "ancestral_call", "fireblood" } )
     cds -> add_action( racial + ",if=cooldown.bestial_wrath.remains>30");
 
   cds -> add_action("berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<13");
   cds -> add_action("blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16");
   cds -> add_action("lights_judgment,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains>gcd.max|!pet.cat.buff.frenzy.up");
-
-  // In-combat potion
   cds -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&(target.health.pct<35|!talent.killer_instinct.enabled)|target.time_to_die<25" );
-  cds->add_action( "heart_essence" );
+ 
+  // TODO if=buff.lifeblood.stack<2 when buff is made to always exist
+  cds -> add_action( "worldvein_resonance" );
+  cds -> add_action( "guardian_of_azeroth" );
+  cds -> add_action( "ripple_in_space" );
+  cds -> add_action( "memory_of_lucid_dreams" );
 
   st -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max|full_recharge_time<gcd.max&cooldown.bestial_wrath.remains|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd" );
   st -> add_action( this, "Aspect of the Wild" );
@@ -5400,8 +5403,14 @@ void hunter_t::apl_bm()
   st -> add_talent( this, "Chimaera Shot" );
   st -> add_talent( this, "Dire Beast" );
   st -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|azerite.dance_of_death.rank>1&buff.dance_of_death.down&crit_pct_current>40|target.time_to_die<9" );
+  st -> add_action( "focused_azerite_beam" );
+  st -> add_action( "purifying_blast" );
+  st -> add_action( "concentrated_flame" );
+  st -> add_action( "blood_of_the_enemy" );
+  // TODO if=buff.reckless_force.up|buff.reckless_force_counter.stack<10 when buff is made to always exist
+  st -> add_action( "the_unbound_force" );
   st -> add_talent( this, "Barrage" );
-  st -> add_action( this, "Cobra Shot", "if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1" );
+  st -> add_action( this, "Cobra Shot", "if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd|buff.memory_of_lucid_dreams.up)&cooldown.kill_command.remains>1" );
   st -> add_talent( this, "Spitting Cobra" );
   st -> add_action( this, "Barbed Shot", "if=charges_fractional>1.4" );
 
@@ -5417,6 +5426,12 @@ void hunter_t::apl_bm()
   cleave -> add_action( this, "Kill Command", "if=active_enemies<4|!azerite.rapid_reload.enabled" );
   cleave -> add_talent( this, "Dire Beast" );
   cleave -> add_action( this, "Barbed Shot", "target_if=min:dot.barbed_shot.remains,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|charges_fractional>1.4|target.time_to_die<9" );
+  cleave -> add_action( "focused_azerite_beam" );
+  cleave -> add_action( "purifying_blast" );
+  cleave -> add_action( "concentrated_flame" );
+  cleave -> add_action( "blood_of_the_enemy" );
+  // TODO if=buff.reckless_force.up|buff.reckless_force_counter.stack<10 when buff is made to always exist
+  cleave -> add_action( "the_unbound_force" );
   cleave -> add_action( this, "Multi-Shot", "if=azerite.rapid_reload.enabled&active_enemies>2");
   cleave -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload.enabled)" );
   cleave -> add_talent( this, "Spitting Cobra" );
@@ -5432,14 +5447,17 @@ void hunter_t::apl_mm()
   action_priority_list_t* st           = get_action_priority_list( "st" );
   action_priority_list_t* trickshots   = get_action_priority_list( "trickshots" );
 
-  // Precombat actions
   precombat -> add_talent( this, "Hunter's Mark" );
   precombat -> add_talent( this, "Double Tap", "precast_time=10",
         "Precast this as early as possible to potentially gain another cast during the fight." );
+
+  precombat -> add_action( "worldvein_resonance" );
+  precombat -> add_action( "guardian_of_azeroth" );
+  precombat -> add_action( "memory_of_lucid_dreams" );
+
   precombat -> add_action( this, "Trueshot", "precast_time=1.5,if=active_enemies>2" );
   precombat -> add_action( this, "Aimed Shot", "if=active_enemies<3" );
 
-  // Generic APL
   default_list -> add_action( "auto_shot" );
   
   default_list -> add_action( special_use_item_action( "lurkers_insidious_gift", "if=cooldown.trueshot.remains_guess<15|target.time_to_die<30" ) );
@@ -5455,27 +5473,36 @@ void hunter_t::apl_mm()
   cds -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down&!buff.trueshot.up" );
   cds -> add_talent( this, "Double Tap", "if=cooldown.rapid_fire.remains<gcd|cooldown.rapid_fire.remains<cooldown.aimed_shot.remains|target.time_to_die<20" );
 
-  // Racials
   cds -> add_action( "berserking,if=buff.trueshot.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13" );
   cds -> add_action( "blood_fury,if=buff.trueshot.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
   cds -> add_action( "ancestral_call,if=buff.trueshot.up&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
   cds -> add_action( "fireblood,if=buff.trueshot.up&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9" );
   cds -> add_action( "lights_judgment" );
 
-  // In-combat potion
-  cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|target.time_to_die<25" );
+  // TODO if=buff.lifeblood.stack<2 when buff is made to always exist
+  cds -> add_action( "worldvein_resonance" );
+  cds -> add_action( "guardian_of_azeroth,if=cooldown.trueshot.remains<15" );
+  cds -> add_action( "ripple_in_space,if=cooldown.trueshot.remains<7" );
+  cds -> add_action( "memory_of_lucid_dreams" );
 
+  cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|target.time_to_die<25" );
   cds -> add_action( this, "Trueshot", "if=focus>60&(buff.precise_shots.down&cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15" );
-  cds->add_action( "heart_essence" );
 
   st -> add_talent( this, "Explosive Shot" );
   st -> add_talent( this, "Barrage", "if=active_enemies>1" );
   st -> add_talent( this, "A Murder of Crows" );
   st -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
   st -> add_action( this, "Rapid Fire", "if=buff.trueshot.down|focus<70");
-  st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.master_marksman.up");
+  st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.master_marksman.up&!buff.memory_of_lucid_dreams.up");
   st -> add_action( this, "Aimed Shot", "if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time" );
+  st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.master_marksman.up&buff.memory_of_lucid_dreams.up" );
   st -> add_talent( this, "Piercing Shot" );
+  st -> add_action( "focused_azerite_beam" );
+  st -> add_action( "purifying_blast" );
+  st -> add_action( "concentrated_flame" );
+  st -> add_action( "blood_of_the_enemy" );
+  // TODO if=buff.reckless_force.up|buff.reckless_force_counter.stack<10 when buff is made to always exist
+  st -> add_action( "the_unbound_force" );
   st -> add_action( this, "Arcane Shot", "if=buff.trueshot.down&(buff.precise_shots.up&(focus>41|buff.master_marksman.up)|(focus>50&azerite.focused_fire.enabled|focus>75)&(cooldown.trueshot.remains>5|focus>80)|target.time_to_die<5)" );
   st -> add_action( this, "Steady Shot" );
 
@@ -5486,6 +5513,12 @@ void hunter_t::apl_mm()
   trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up)" );
   trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up" );
   trickshots -> add_action( this, "Multi-Shot", "if=buff.trick_shots.down|buff.precise_shots.up&!buff.trueshot.up|focus>70" );
+  trickshots -> add_action( "focused_azerite_beam" );
+  trickshots -> add_action( "purifying_blast" );
+  trickshots -> add_action( "concentrated_flame" );
+  trickshots -> add_action( "blood_of_the_enemy" );
+  // TODO if=buff.reckless_force.up|buff.reckless_force_counter.stack<10 when buff is made to always exist
+  trickshots -> add_action( "the_unbound_force" );
   trickshots -> add_talent( this, "Piercing Shot" );
   trickshots -> add_talent( this, "A Murder of Crows" );
   trickshots -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
@@ -5505,11 +5538,9 @@ void hunter_t::apl_surv()
   action_priority_list_t* st             = get_action_priority_list( "st" );
   action_priority_list_t* cleave         = get_action_priority_list( "cleave" );
 
-  // Precombat actions
   precombat -> add_talent( this, "Steel Trap" );
   precombat -> add_action( this, "Harpoon" );
 
-  // Generic APL
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "use_items" );
   default_list -> add_action( "call_action_list,name=cds" );
@@ -5525,15 +5556,12 @@ void hunter_t::apl_surv()
   // Arcane torrent if nothing else is available
   default_list -> add_action( "arcane_torrent" );
 
-  // Racials
   for ( std::string racial : { "blood_fury", "ancestral_call", "fireblood" } )
     cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
   cds -> add_action( "lights_judgment" );
   cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13");
 
-  // In-combat potion
   cds -> add_action( "potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)|time_to_die<26" );
-
   cds -> add_action( this, "Aspect of the Eagle", "if=target.distance>=6" );
 	
   // Essences
