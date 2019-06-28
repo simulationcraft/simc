@@ -4047,8 +4047,6 @@ struct trueshot_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p()->buffs.unerring_vision_driver->expire();
-    p()->buffs.unerring_vision->expire();
     p()->buffs.trueshot->expire();
 
     trigger_buff( p() -> buffs.trueshot, precast_time );
@@ -4512,7 +4510,8 @@ void hunter_t::vision_of_perfection_proc()
     if ( buffs.trueshot->check() )
     {
       buffs.trueshot->extend_duration( this, ts_dur );
-      buffs.unerring_vision_driver->extend_duration( this, uv_dur );
+      if ( buffs.unerring_vision_driver->check() )
+        buffs.unerring_vision_driver->extend_duration( this, uv_dur );
     }
     else
     {
@@ -5008,10 +5007,15 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms )
       -> set_activated( true );
   buffs.trueshot -> set_default_value( specs.trueshot -> effectN( 4 ).percent() );
-  buffs.trueshot -> set_stack_change_callback( [this]( buff_t*, int, int ) {
-      cooldowns.aimed_shot -> adjust_recharge_multiplier();
-      cooldowns.rapid_fire -> adjust_recharge_multiplier();
-    } );
+  buffs.trueshot -> set_stack_change_callback( [this]( buff_t*, int, int cur ) {
+    cooldowns.aimed_shot -> adjust_recharge_multiplier();
+    cooldowns.rapid_fire -> adjust_recharge_multiplier();
+    if ( cur == 0 )
+    {
+      buffs.unerring_vision_driver->expire();
+      buffs.unerring_vision->expire();
+    }
+  } );
 
   buffs.lock_and_load =
     make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
@@ -5043,9 +5047,9 @@ void hunter_t::create_buffs()
 
   buffs.coordinated_assault_vision =
     make_buff( this, "coordinated_assault_vision", specs.coordinated_assault )
-    -> set_cooldown( 0_ms )
-    -> set_default_value( specs.coordinated_assault -> effectN( 1 ).percent() )
-    -> set_quiet( true );
+      -> set_cooldown( 0_ms )
+      -> set_default_value( specs.coordinated_assault -> effectN( 1 ).percent() )
+      -> set_quiet( true );
 
   buffs.vipers_venom =
     make_buff( this, "vipers_venom", talents.vipers_venom -> effectN( 1 ).trigger() )
@@ -5086,9 +5090,9 @@ void hunter_t::create_buffs()
 
   buffs.blur_of_talons_vision =
     make_buff<stat_buff_t>( this, "blur_of_talons_vision", find_spell( 277969 ) )
-    -> add_stat( STAT_AGILITY, azerite.blur_of_talons.value( 1 ) * azerite_essence.vision_of_perfection_major_mult )
-    -> add_stat( STAT_SPEED_RATING, azerite.blur_of_talons.value( 2 ) * azerite_essence.vision_of_perfection_major_mult )
-    -> set_trigger_spell( azerite.blur_of_talons );
+      -> add_stat( STAT_AGILITY, azerite.blur_of_talons.value( 1 ) * azerite_essence.vision_of_perfection_major_mult )
+      -> add_stat( STAT_SPEED_RATING, azerite.blur_of_talons.value( 2 ) * azerite_essence.vision_of_perfection_major_mult )
+      -> set_trigger_spell( azerite.blur_of_talons );
 
   buffs.dance_of_death =
     make_buff<stat_buff_t>( this, "dance_of_death", find_spell( 274443 ) )
@@ -5117,9 +5121,17 @@ void hunter_t::create_buffs()
   buffs.unerring_vision_driver =
     make_buff( this, "unerring_vision_driver", find_spell( 274446 ) )
       -> set_quiet( true )
+      -> set_tick_zero( true )
       -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buffs.unerring_vision -> trigger(); } )
       -> set_trigger_spell( azerite.unerring_vision );
-
+  buffs.unerring_vision_driver->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
+    if ( cur == 0 )
+    {
+      if ( buffs.unerring_vision->check() <= buffs.unerring_vision->max_stack() )
+        buffs.unerring_vision->trigger();
+    }
+  } );
+  
   buffs.unerring_vision =
     make_buff<stat_buff_t>( this, "unerring_vision", find_spell( 274447 ) )
       -> add_stat( STAT_CRIT_RATING, azerite.unerring_vision.value( 1 ) );
