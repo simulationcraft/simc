@@ -8421,6 +8421,10 @@ void shaman_t::init_action_list_restoration_dps()
   def->add_action( "berserking" );
   def->add_action( "fireblood" );
   def->add_action( "ancestral_call" );
+  // Azerite Essences
+  def->add_action( "concentrated_flame" );
+  def->add_action( "ripple_in_space" );
+  def->add_action( "worldvein_resonance" );
 
   def->add_action( this, "Flame Shock", "target_if=(!ticking|dot.flame_shock.remains<=gcd)|refreshable" );
   def->add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
