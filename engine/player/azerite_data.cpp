@@ -4273,14 +4273,17 @@ struct the_unbound_force_t : public azerite_essence_major_t
 
 // Vision of Perfection
 // Minor Power: Strive for Perfection (Passive)
-void strive_for_perfection(special_effect_t& effect)
+void strive_for_perfection( special_effect_t& effect )
 {
-  auto essence = effect.player->find_azerite_essence(effect.driver()->essence_id());
-  if (!essence.enabled())
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
     return;
 
-  if (essence.rank() >= 3)
-    effect.player->passive.versatility_rating += essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).average(essence.item());
+  if ( essence.rank() >= 3 )
+  {
+    double avg = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
+    effect.player->passive.versatility_rating += item_database::apply_combat_rating_multiplier( *essence.item(), avg );
+  }
 }
 
 // Major Power: Vision of Perfect (Passive)
