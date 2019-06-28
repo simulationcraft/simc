@@ -100,7 +100,7 @@ actions.essences+=/purifying_blast
 actions.essences+=/the_unbound_force
 actions.essences+=/ripple_in_space
 actions.essences+=/worldvein_resonance
-actions.essences+=/memory_of_lucid_dreams,if=energy<40
+actions.essences+=/memory_of_lucid_dreams,if=energy<40&buff.symbols_of_death.up
 
 # Finishers
 # Eviscerate highest priority at 2+ targets with Shadow Focus (5+ with Secret Technique in addition) and Night's Vengeance up.
