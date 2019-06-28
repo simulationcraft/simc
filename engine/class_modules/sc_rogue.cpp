@@ -5927,7 +5927,7 @@ void rogue_t::init_action_list()
     essences->add_action( "the_unbound_force" );
     essences->add_action( "ripple_in_space" );
     essences->add_action( "worldvein_resonance" );
-    essences->add_action( "memory_of_lucid_dreams,if=energy<40" );
+    essences->add_action( "memory_of_lucid_dreams,if=energy<40&buff.symbols_of_death.up" );
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
