@@ -217,8 +217,6 @@ public:
     const spell_data_t* legacy_of_the_void;
     const spell_data_t* dark_ascension;
     const spell_data_t* surrender_to_madness;
-    // PVP
-    const spell_data_t* void_origins;
   } talents;
 
   // Specialization Spells
@@ -410,10 +408,9 @@ public:
   {
     const spell_data_t* lucid_dreams;
     const spell_data_t* memory_of_lucid_dreams;
-    const spell_data_t* conflict;
-    const spell_data_t* strife;
-    const spell_data_t* vision_of_perfection;
     const spell_data_t* strive_for_perfection;
+    const spell_data_t* vision_of_perfection_r1;
+    const spell_data_t* vision_of_perfection_r2;
   } azerite_essence;
 
   struct insanity_end_event_t;

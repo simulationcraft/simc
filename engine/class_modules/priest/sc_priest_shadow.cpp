@@ -1032,18 +1032,6 @@ struct void_eruption_t final : public priest_spell_t
     priest().cooldowns.void_bolt->reset( true );
   }
 
-  timespan_t execute_time() const override
-  {
-    if ( priest().talents.void_origins->ok() && priest().azerite_essence.conflict->ok() )
-    {
-      return timespan_t::zero();
-    }
-
-    timespan_t et = priest_spell_t::execute_time();
-
-    return et;
-  }
-
   bool ready() override
   {
     if ( !priest().buffs.voidform->check() && priest().resources.current[ RESOURCE_INSANITY ] >= insanity_required )
@@ -1872,9 +1860,6 @@ void priest_t::init_spells_shadow()
   talents.dark_ascension       = find_talent_spell( "Dark Ascension" );
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
-  // PvP
-  talents.void_origins = find_talent_spell( "Void Origins" );
-
   // General Spells
   specs.voidform            = find_specialization_spell( "Voidform" );
   specs.void_eruption       = find_specialization_spell( "Void Eruption" );
@@ -2051,8 +2036,7 @@ void priest_t::generate_apl_shadow()
   default_list->add_action( "focused_azerite_beam" );
   default_list->add_action( "purifying_blast" );
   default_list->add_action( "the_unbound_force" );
-  // default_list->add_action( "vision_of_perfection" );
-  // default_list->add_action( "concentrated_flame" );
+  default_list->add_action( "concentrated_flame" );
   default_list->add_action( "ripple_in_space" );
   default_list->add_action( "worldvein_resonance" );
 

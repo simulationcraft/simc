@@ -349,7 +349,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
     summoning_duration = data().duration();
     cooldown           = p.cooldowns.shadowfiend;
     cooldown->duration = data().cooldown();
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.strive_for_perfection );
   }
 };
 
@@ -366,7 +366,7 @@ struct summon_mindbender_t final : public summon_pet_t
     summoning_duration = data().duration();
     cooldown           = p.cooldowns.mindbender;
     cooldown->duration = data().cooldown();
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.strive_for_perfection );
   }
 };
 
@@ -1059,7 +1059,6 @@ void priest_t::init_spells()
   mastery_spells.madness        = find_mastery_spell( PRIEST_SHADOW );
 
   auto memory_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  auto conflict_and_strife = find_azerite_essence( "Conflict and Strife" );
   auto vision_perfection   = find_azerite_essence( "Vision of Perfection" );
 
   // Rank 1: Major - Increased insanity generation rate for 10s, Minor - Chance to refund
@@ -1069,12 +1068,6 @@ void priest_t::init_spells()
   {
     azerite_essence.lucid_dreams           = memory_lucid_dreams.spell( 1u, essence_type::MINOR );
     azerite_essence.memory_of_lucid_dreams = memory_lucid_dreams.spell( 1u, essence_type::MAJOR );
-  }
-
-  if ( conflict_and_strife.enabled() )
-  {
-    azerite_essence.strife   = conflict_and_strife.spell( 1u, essence_type::MINOR );
-    azerite_essence.conflict = conflict_and_strife.spell( 1u, essence_type::MAJOR );
   }
 
   // Rank 1: Major - CD at 25% duration, Minor - CDR
@@ -1114,11 +1107,6 @@ void priest_t::init_rng()
 
 void priest_t::vision_of_perfection_proc()
 {
-  if ( !azerite_essence.vision_of_perfection.is_major() ||
-       !azerite_essence.vision_of_perfection.enabled() )
-  {
-    return;
-  }
 
   double vision_multiplier = azerite_essence.vision_of_perfection_r1 -> effectN( 1 ).percent() +
                              azerite_essence.vision_of_perfection_r2 -> effectN( 1 ).percent();
@@ -1157,11 +1145,11 @@ void priest_t::vision_of_perfection_proc()
     case PRIEST_SHADOW:
       if ( talents.mindbender->ok() )
       {
-        summon_mindbender_t( duration );
+        // summon_mindbender_t( duration );
       }
       else
       {
-        summon_shadowfiend_t( duration );
+        // summon_shadowfiend_t( duration );
       }
       break;
     default:
