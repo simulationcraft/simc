@@ -3219,21 +3219,47 @@ void undulating_tides( special_effect_t& effect )
 {
   struct undulating_tides_t : public unique_gear::proc_spell_t
   {
-    undulating_tides_t( const special_effect_t& e, const azerite_power_t& power ):
-      proc_spell_t( "undulating_tides", e.player, e.player -> find_spell( 303389 ) )
+    undulating_tides_t( const special_effect_t& e, const azerite_power_t& power ) :
+      proc_spell_t( "undulating_tides", e.player, e.player->find_spell( 303389 ) )
     {
       base_dd_min = base_dd_max = power.value( 1 );
     }
   };
 
-  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
   if ( !power.enabled() )
     return;
 
   effect.execute_action = unique_gear::create_proc_action<undulating_tides_t>( "undulating_tides", effect, power );
   effect.spell_id = 303388;
 
-  new dbc_proc_callback_t( effect.player, effect );
+  auto proc = new dbc_proc_callback_t( effect.player, effect );
+
+  auto lockout = buff_t::find( effect.player, "undulating_tides_lockout" );
+  if ( !lockout )
+  {
+    lockout = make_buff( effect.player, "undulating_tides_lockout", effect.player->find_spell( 303438 ) );
+    lockout->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+    lockout->set_stack_change_callback( [proc]( buff_t*, int, int new_ ) {
+      if ( new_ == 1 )
+        proc->deactivate();
+      else
+        proc->activate();
+    } );
+  }
+
+  timespan_t timer = effect.player->sim->bfa_opts.undulating_tides_lockout_timer;
+  double chance = effect.player->sim->bfa_opts.undulating_tides_lockout_chance;
+
+  if ( chance )
+  {
+    effect.player->register_combat_begin( [lockout, timer, chance]( player_t* ) {
+      make_repeating_event( *lockout->sim, timer, [lockout, chance]() {
+        if ( lockout->rng().roll( chance ) )
+          lockout->trigger();
+      } );
+    } );
+  }
 }
 
 void loyal_to_the_end( special_effect_t& effect )

@@ -1176,6 +1176,10 @@ struct sim_t : private sc_thread_t
     double              ripple_in_space_proc_chance = 0.0;
     /// Chance to be in range to hit with Blood of the Enemy major power (12 yd PBAoE)
     double              blood_of_the_enemy_in_range = 1.0;
+    /// Period to check for if Undulating Tides gets locked out
+    timespan_t          undulating_tides_lockout_timer = 60_s;
+    /// Chance on every check to see if Undulating Tides gets locked out
+    double              undulating_tides_lockout_chance = 0.0;
   } bfa_opts;
 
   // Expansion specific data
