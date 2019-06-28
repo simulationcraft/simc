@@ -4660,7 +4660,7 @@ struct maul_t : public bear_attack_t
         p() -> buff.guardians_wrath -> trigger();
       }
 
-      if ( p() -> azerite.conflict_and_strife.enabled() && p() -> talent.sharpened_claws -> ok() )
+      if ( p() -> azerite.conflict_and_strife.is_major() && p() -> talent.sharpened_claws -> ok() )
       {
         p() -> buff.sharpened_claws -> up(); // benefit tracking
         p() -> buff.sharpened_claws -> trigger();
