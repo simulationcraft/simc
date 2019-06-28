@@ -8,9 +8,9 @@ position=ranged_back
 talents=3000231
 
 # Default consumables
-potion=battle_potion_of_intellect
-flask=endless_fathoms
-food=bountiful_captains_feast
+potion=focused_resolve
+flask=greater_flask_of_endless_fathoms
+food=baked_port_tato
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -39,8 +39,7 @@ actions.precombat+=/potion
 actions.precombat+=/solar_wrath
 
 # Executed every time the actor is available.
-actions=potion,if=buff.ca_inc.remains>6&active_enemies=1
-actions+=/potion,name=battle_potion_of_intellect,if=buff.ca_inc.remains>6
+actions=potion,if=buff.ca_inc.remains>6
 actions+=/blood_fury,if=buff.ca_inc.up
 actions+=/berserking,if=buff.ca_inc.up
 actions+=/arcane_torrent,if=buff.ca_inc.up
@@ -109,7 +108,7 @@ main_hand=regurgitated_purifiers_flamestaff,id=160689,bonus_id=4800/1507,enchant
 # gear_stamina=7207
 # gear_intellect=5479
 # gear_crit_rating=919
-# gear_haste_rating=1207
+# gear_haste_rating=1213
 # gear_mastery_rating=584
 # gear_versatility_rating=293
 # gear_armor=1911

@@ -1,5 +1,5 @@
-// Azerite powers, wow build 8.1.5.30706
-static constexpr std::array<azerite_power_entry_t, 366> __azerite_power_data { {
+// Azerite powers, wow build 8.2.0.30918
+static constexpr std::array<azerite_power_entry_t, 376> __azerite_power_data { {
   {  13, 263978,  4775, "Azerite Empowered"                 , 0 },
   {  14, 268594,     0, "Longstrider"                       , 1 },
   {  15, 263962,     0, "Resounding Protection"             , 1 },
@@ -366,4 +366,126 @@ static constexpr std::array<azerite_power_entry_t, 366> __azerite_power_data { {
   { 562, 288953,     0, "Treacherous Covenant"              , 3 },
   { 564, 288973,     0, "Thrive in Chaos"                   , 1 },
   { 566, 289322,     0, "Exit Strategy"                     , 1 },
+  { 568, 300168,     0, "Person-Computer Interface"         , 3 },
+  { 569, 300170,     0, "Clockwork Heart"                   , 3 },
+  { 570, 300573,     0, "Perseverance"                      , 0 },
+  { 571, 300575,     0, "Perseverance"                      , 0 },
+  { 572, 300576,     0, "Perseverance"                      , 0 },
+  { 573, 300577,     0, "Perseverance"                      , 0 },
+  { 574, 300949,     0, "Heart of Azeroth Slot Unlock"      , 0 },
+  { 575, 303008,     0, "Undulating Tides"                  , 3 },
+  { 576, 303007,     0, "Loyal to the End"                  , 3 },
+  { 577, 303006,     0, "Arcane Heart"                      , 3 },
+} };
+// Azerite Essences, wow build 8.2.0.30918
+static constexpr std::array<azerite_essence_entry_t, 21> __azerite_essence_data { {
+  {  2,   1, "Azeroth's Undying Gift"       },
+  {  3,   1, "Sphere of Suppression"        },
+  {  4,   2, "Worldvein Resonance"          },
+  {  5, 160, "Essence of the Focusing Iris" },
+  {  6, 160, "Purification Protocol"        },
+  {  7,   1, "Anima of Life and Death"      },
+  { 12,   2, "The Crucible of Flame"        },
+  { 13,   1, "Nullification Dynamo"         },
+  { 14, 160, "Condensed Life-Force"         },
+  { 15,   2, "Ripple in Space"              },
+  { 17,  49, "The Ever-Rising Tide"         },
+  { 18,  49, "Artifice of Time"             },
+  { 19,  49, "The Well of Existence"        },
+  { 20,  49, "Life-Binder's Invocation"     },
+  { 21,  49, "Vitality Conduit"             },
+  { 22,   2, "Vision of Perfection"         },
+  { 23, 160, "Blood of the Enemy"           },
+  { 25,   1, "Aegis of the Deep"            },
+  { 27,   2, "Memory of Lucid Dreams"       },
+  { 28, 160, "The Unbound Force"            },
+  { 32,   2, "Conflict and Strife"          },
+} };
+
+// Azerite Essence Powers, wow build 8.2.0.30918
+static constexpr std::array<azerite_essence_power_entry_t, 84> __azerite_essence_power_data { {
+  {   5,   2,   1, { 293019, 294668 }, { 293019, 294668 } }, // Azeroth's Undying Gift
+  {   6,   2,   2, { 298080, 298082 }, { 294653, 294687 } }, // Azeroth's Undying Gift
+  {   7,   2,   3, { 298081, 298083 }, { 294650, 294688 } }, // Azeroth's Undying Gift
+  {   8,   2,   4, { 298081, 298083 }, { 294655, 294689 } }, // Azeroth's Undying Gift
+  {   9,   3,   1, { 293031, 294910 }, { 293031, 294910 } }, // Sphere of Suppression
+  {  10,   3,   2, { 300009, 300012 }, { 294906, 294919 } }, // Sphere of Suppression
+  {  11,   3,   3, { 300010, 300013 }, { 294907, 294920 } }, // Sphere of Suppression
+  {  12,   3,   4, { 300010, 300013 }, { 294908, 294922 } }, // Sphere of Suppression
+  {  13,   4,   1, { 295186, 295078 }, { 295186, 295078 } }, // Worldvein Resonance
+  {  14,   4,   2, { 298628, 298627 }, { 295209, 295208 } }, // Worldvein Resonance
+  {  15,   4,   3, { 299334, 299333 }, { 295160, 295165 } }, // Worldvein Resonance
+  {  16,   4,   4, { 299334, 299333 }, { 295210, 295166 } }, // Worldvein Resonance
+  {  17,   5,   1, { 295258, 295246 }, { 295258, 295246 } }, // Essence of the Focusing Iris
+  {  18,   5,   2, { 299336, 299335 }, { 295262, 295251 } }, // Essence of the Focusing Iris
+  {  19,   5,   3, { 299338, 299337 }, { 295263, 295252 } }, // Essence of the Focusing Iris
+  {  20,   5,   4, { 299338, 299337 }, { 295264, 295253 } }, // Essence of the Focusing Iris
+  {  29,   6,   1, { 295337, 295293 }, { 295337, 295293 } }, // Purification Protocol
+  {  30,   6,   2, { 299345, 299343 }, { 295364, 295363 } }, // Purification Protocol
+  {  31,   6,   3, { 299347, 299346 }, { 295352, 295351 } }, // Purification Protocol
+  {  32,   6,   4, { 299347, 299346 }, { 295358, 295333 } }, // Purification Protocol
+  {  21,   7,   1, { 294926, 294964 }, { 294926, 294964 } }, // Anima of Life and Death
+  {  22,   7,   2, { 300002, 300004 }, { 295307, 294970 } }, // Anima of Life and Death
+  {  24,   7,   3, { 300003, 300005 }, { 294945, 294969 } }, // Anima of Life and Death
+  {  23,   7,   4, { 300003, 300005 }, { 295306, 294972 } }, // Anima of Life and Death
+  {  45,  12,   1, { 295373, 295365 }, { 295373, 295365 } }, // The Crucible of Flame
+  {  46,  12,   2, { 299349, 299348 }, { 295377, 295372 } }, // The Crucible of Flame
+  {  47,  12,   3, { 299353, 299350 }, { 295379, 295369 } }, // The Crucible of Flame
+  {  48,  12,   4, { 299353, 299350 }, { 295380, 295381 } }, // The Crucible of Flame
+  {  49,  13,   1, { 295746, 295750 }, { 295746, 295750 } }, // Nullification Dynamo
+  {  50,  13,   2, { 300015, 300018 }, { 295747, 295844 } }, // Nullification Dynamo
+  {  51,  13,   3, { 300016, 300020 }, { 295748, 295846 } }, // Nullification Dynamo
+  {  52,  13,   4, { 300016, 300020 }, { 295749, 295845 } }, // Nullification Dynamo
+  {  53,  14,   1, { 295840, 295834 }, { 295840, 295834 } }, // Condensed Life-Force
+  {  54,  14,   2, { 299355, 299354 }, { 295841, 295836 } }, // Condensed Life-Force
+  {  55,  14,   3, { 299358, 299357 }, { 295843, 295837 } }, // Condensed Life-Force
+  {  56,  14,   4, { 299358, 299357 }, { 295892, 295839 } }, // Condensed Life-Force
+  {  57,  15,   1, { 302731, 302916 }, { 302731, 302916 } }, // Ripple in Space
+  {  58,  15,   2, { 302982, 302984 }, { 302778, 302957 } }, // Ripple in Space
+  {  59,  15,   3, { 302983, 302985 }, { 302780, 302961 } }, // Ripple in Space
+  {  60,  15,   4, { 302983, 302985 }, { 302910, 302962 } }, // Ripple in Space
+  {  64,  17,   1, { 296072, 296050 }, { 296072, 296050 } }, // The Ever-Rising Tide
+  {  65,  17,   2, { 299875, 299878 }, { 296074, 296067 } }, // The Ever-Rising Tide
+  {  66,  17,   3, { 299876, 299879 }, { 296075, 296062 } }, // The Ever-Rising Tide
+  { 112,  17,   4, { 299876, 299879 }, { 299522, 299523 } }, // The Ever-Rising Tide
+  {  67,  18,   1, { 296094, 296081 }, { 296094, 296081 } }, // Artifice of Time
+  {  68,  18,   2, { 299882, 299885 }, { 296102, 296091 } }, // Artifice of Time
+  {  69,  18,   3, { 299883, 299887 }, { 296103, 296089 } }, // Artifice of Time
+  { 110,  18,   4, { 299883, 299887 }, { 299518, 299519 } }, // Artifice of Time
+  {  70,  19,   1, { 296197, 296136 }, { 296197, 296136 } }, // The Well of Existence
+  {  71,  19,   2, { 299932, 299935 }, { 296200, 296192 } }, // The Well of Existence
+  {  72,  19,   3, { 299933, 299936 }, { 296201, 296193 } }, // The Well of Existence
+  { 113,  19,   4, { 299933, 299936 }, { 299529, 299530 } }, // The Well of Existence
+  {  73,  20,   1, { 293032, 296207 }, { 293032, 296207 } }, // Life-Binder's Invocation
+  {  74,  20,   2, { 299943, 299939 }, { 296220, 296213 } }, // Life-Binder's Invocation
+  {  75,  20,   3, { 299944, 299940 }, { 296221, 296214 } }, // Life-Binder's Invocation
+  { 111,  20,   4, { 299944, 299940 }, { 299520, 299521 } }, // Life-Binder's Invocation
+  {  76,  21,   1, { 296230, 303448 }, { 296230, 303448 } }, // Vitality Conduit
+  {  77,  21,   2, { 299958, 303474 }, { 303472, 303463 } }, // Vitality Conduit
+  {  78,  21,   3, { 299959, 303476 }, { 296232, 303460 } }, // Vitality Conduit
+  { 115,  21,   4, { 299959, 303476 }, { 299559, 299560 } }, // Vitality Conduit
+  {  79,  22,   1, { 296325, 296320 }, { 296325, 296320 } }, // Vision of Perfection
+  {  80,  22,   2, { 299368, 299367 }, { 296326, 296321 } }, // Vision of Perfection
+  {  81,  22,   3, { 299370, 299369 }, { 303342, 296322 } }, // Vision of Perfection
+  {  82,  22,   4, { 299370, 299369 }, { 296328, 296324 } }, // Vision of Perfection
+  {  83,  23,   1, { 297108, 297147 }, { 297108, 297147 } }, // Blood of the Enemy
+  {  84,  23,   2, { 298273, 298274 }, { 297120, 297177 } }, // Blood of the Enemy
+  {  85,  23,   3, { 298277, 298275 }, { 297122, 297178 } }, // Blood of the Enemy
+  {  99,  23,   4, { 298277, 298275 }, { 298182, 298183 } }, // Blood of the Enemy
+  {  96,  25,   1, { 298168, 298193 }, { 298168, 298193 } }, // Aegis of the Deep
+  {  97,  25,   2, { 299273, 299274 }, { 298169, 298351 } }, // Aegis of the Deep
+  {  98,  25,   3, { 299275, 299277 }, { 298174, 298352 } }, // Aegis of the Deep
+  { 101,  25,   4, { 299275, 299277 }, { 298186, 298353 } }, // Aegis of the Deep
+  { 102,  27,   1, { 298357, 298268 }, { 298357, 298268 } }, // Memory of Lucid Dreams
+  { 103,  27,   2, { 299372, 299371 }, { 298376, 298337 } }, // Memory of Lucid Dreams
+  { 104,  27,   3, { 299374, 299373 }, { 298377, 298339 } }, // Memory of Lucid Dreams
+  { 105,  27,   4, { 299374, 299373 }, { 298405, 298404 } }, // Memory of Lucid Dreams
+  { 106,  28,   1, { 298452, 298407 }, { 298452, 298407 } }, // The Unbound Force
+  { 107,  28,   2, { 299376, 299375 }, { 298455, 298448 } }, // The Unbound Force
+  { 108,  28,   3, { 299378, 299377 }, { 298456, 298449 } }, // The Unbound Force
+  { 109,  28,   4, { 299378, 299377 }, { 298457, 298450 } }, // The Unbound Force
+  { 121,  32,   1, { 303823, 304081 }, { 303823, 304081 } }, // Conflict and Strife
+  { 122,  32,   2, { 304088, 304089 }, { 304086, 304055 } }, // Conflict and Strife
+  { 123,  32,   3, { 304121, 304123 }, { 303892, 304125 } }, // Conflict and Strife
+  { 124,  32,   4, { 304121, 304123 }, { 303894, 304533 } }, // Conflict and Strife
 } };

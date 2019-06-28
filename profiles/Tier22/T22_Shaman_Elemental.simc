@@ -48,6 +48,15 @@ actions+=/fire_elemental,if=!talent.storm_elemental.enabled
 actions+=/storm_elemental,if=talent.storm_elemental.enabled&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)&(!talent.ascendance.enabled|!cooldown.ascendance.up)
 actions+=/earth_elemental,if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(cooldown.fire_elemental.remains<120&!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120&talent.storm_elemental.enabled)
 actions+=/use_items
+actions+=/concentrated_flame
+actions+=/blood_of_the_enemy
+actions+=/guardian_of_azeroth
+actions+=/focused_azerite_beam
+actions+=/purifying_blast
+actions+=/the_unbound_force
+actions+=/memory_of_lucid_dreams
+actions+=/ripple_in_space
+actions+=/worldvein_resonance
 actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
 actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
@@ -151,8 +160,8 @@ off_hand=vector_deflector,id=160698,bonus_id=4800/1507
 # gear_strength=164
 # gear_stamina=7159
 # gear_intellect=5163
-# gear_crit_rating=1552
-# gear_haste_rating=977
+# gear_crit_rating=1555
+# gear_haste_rating=980
 # gear_mastery_rating=251
 # gear_versatility_rating=372
 # gear_armor=4809

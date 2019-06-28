@@ -66,6 +66,8 @@ namespace warlock
       bool wracking_brilliance;
       double agony_accumulator;
       double memory_of_lucid_dreams_accumulator; // Memory of Lucid Dreams Azerite Essence tracking.
+      double strive_for_perfection_multiplier;
+      double vision_of_perfection_multiplier;
       std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG 
       double flashpoint_threshold; //Flashpoint (Destruction Azerite trait) does not have the 80% in spell data
 
@@ -80,8 +82,10 @@ namespace warlock
         static const int DARKGLARE_LIMIT = 1;
 
         std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
+        spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t> vop_infernals; //Infernal(s) summoned by Vision of Perfection
 
         std::array<pets::affliction::darkglare_t*, DARKGLARE_LIMIT> darkglare;
+        spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> vop_darkglares; //Darkglare(s) summoned by Vision of Perfection
 
         spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
         spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
@@ -332,6 +336,7 @@ namespace warlock
         propagate_const<buff_t*> bursting_flare;
         propagate_const<buff_t*> chaotic_inferno;
         propagate_const<buff_t*> crashing_chaos;
+        propagate_const<buff_t*> crashing_chaos_vop;
         propagate_const<buff_t*> rolling_havoc;
         propagate_const<buff_t*> flashpoint;
         propagate_const<buff_t*> chaos_shards;
@@ -424,6 +429,11 @@ namespace warlock
       timespan_t time_to_imps(int count);
       int       imps_spawned_during( timespan_t period );
       void      trigger_memory_of_lucid_dreams( double gain );
+      void      vision_of_perfection_proc() override;
+      void      vision_of_perfection_proc_destro();
+      void      vision_of_perfection_proc_aff();
+      void      vision_of_perfection_proc_demo();
+      void      darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
       action_t* create_action( const std::string& name, const std::string& options ) override;
       pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
       void      create_pets() override;

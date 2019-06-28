@@ -3860,11 +3860,16 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
   {
     m *= 1.0 + buffs.incensed->check_value();
   }
-
   // Critical hit damage buff from R3 Blood of the Enemy major on-use
-  if (buffs.seething_rage)
+  if ( buffs.seething_rage )
+  {
     m *= 1.0 + buffs.seething_rage->check_value();
-
+  }
+  // Critical hit damage buff from follower themed Benthic boots
+  if ( buffs.fathom_hunter )
+  {
+    m *= 1.0 + buffs.fathom_hunter->check_value();
+  }
   return m;
 }
 
@@ -9612,7 +9617,7 @@ azerite_power_t player_t::find_azerite_spell( const std::string& name, bool toke
 
 azerite_essence_t player_t::find_azerite_essence( unsigned id ) const
 {
-  if ( !azerite_essence || !maybe_ptr( dbc.ptr ) )
+  if ( !azerite_essence )
   {
     return { this };
   }
@@ -9622,7 +9627,7 @@ azerite_essence_t player_t::find_azerite_essence( unsigned id ) const
 
 azerite_essence_t player_t::find_azerite_essence( const std::string& name, bool tokenized ) const
 {
-  if ( !azerite_essence || !maybe_ptr( dbc.ptr ) )
+  if ( !azerite_essence )
   {
     return { this };
   }

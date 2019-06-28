@@ -161,7 +161,14 @@ namespace items
   void legplates_of_unbound_anguish( special_effect_t& );
   // 8.2.0 - Rise of Azshara Trinkets and Special Items
   void damage_to_aberrations( special_effect_t& );
+  void exploding_pufferfish( special_effect_t& );
+  void fathom_hunter( special_effect_t& );
   void highborne_compendium_of_sundering( special_effect_t& );
+  void highborne_compendium_of_storms( special_effect_t& );
+  // 8.2.0 - Rise of Azshara Punchcards
+  void yellow_punchcard( special_effect_t& );
+  void subroutine_overclock( special_effect_t& );
+  void subroutine_recalibration( special_effect_t& );
 }
 
 namespace util
@@ -648,6 +655,10 @@ struct bfa_82_enchant_functor_t
 
   void operator()( buff_t* b, int /* old */, int new_ )
   {
+    crit->expire();
+    haste->expire();
+    mastery->expire();
+
     stat_e highest_rating = ::util::highest_stat( b->source,
       { STAT_CRIT_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING } );
     buff_t* selected_buff = nullptr;
@@ -678,7 +689,9 @@ struct bfa_82_enchant_functor_t
     }
     else
     {
-      selected_buff->expire();
+      crit->expire();
+      haste->expire();
+      mastery->expire();
     }
   }
 };
@@ -3190,12 +3203,92 @@ void items::damage_to_aberrations( special_effect_t& effect )
   {
     buff = make_buff( effect.player, "damage_to_aberrations", effect.driver() );
     buff->set_default_value( effect.driver()->effectN( 1 ).percent() );
+    buff->set_quiet( true );
 
     effect.player->buffs.damage_to_aberrations = buff;
     effect.player->register_combat_begin( buff );
   }
 
   effect.type = SPECIAL_EFFECT_NONE;
+}
+
+// Benthic Armor Exploding Pufferfish =====================================
+
+void items::exploding_pufferfish( special_effect_t& effect )
+{
+  struct pufferfish_cb_t : public dbc_proc_callback_t
+  {
+    const spell_data_t* summon_spell;
+
+    pufferfish_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      summon_spell( effect.player->find_spell( 305314 ) )
+    { }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      make_event<ground_aoe_event_t>( *listener->sim, listener, ground_aoe_params_t()
+        .target( state->target )
+        .pulse_time( summon_spell->duration() )
+        .action( proc_action )
+        .n_pulses( 1u ) );
+    }
+  };
+
+  effect.trigger_spell_id = 305315;
+  effect.execute_action = create_proc_action<proc_spell_t>( "exploding_pufferfish", effect );
+  effect.execute_action->aoe = -1;
+  effect.execute_action->base_dd_min = effect.execute_action->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+
+  new pufferfish_cb_t( effect );
+}
+
+// Benthic Armor Fathom Hunter ============================================
+
+void items::fathom_hunter( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "fathom_hunter" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "fathom_hunter", effect.driver() );
+    buff->set_default_value( effect.driver()->effectN( 1 ).percent() );
+    buff->set_quiet( true );
+
+    effect.player->buffs.fathom_hunter = buff;
+    effect.player->register_combat_begin( buff );
+  }
+
+  effect.type = SPECIAL_EFFECT_NONE;
+}
+
+// Highborne Compendium of Storms =========================================
+
+void items::highborne_compendium_of_storms( special_effect_t& effect )
+{
+  struct hcos_cb_t : public dbc_proc_callback_t
+  {
+    hcos_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect )
+    { }
+
+    void execute( action_t* /* a */, action_state_t* state ) override
+    {
+      proc_action->set_target( target( state ) );
+      proc_action->execute();
+      proc_buff->trigger();
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "highborne_compendium_of_storms" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "highborne_compendium_of_storms",
+      effect.driver()->effectN( 2 ).trigger(), effect.item );
+  }
+
+  effect.custom_buff = buff;
+
+  new hcos_cb_t( effect );
 }
 
 // Highborne Compendium of Sundering ======================================
@@ -3245,6 +3338,195 @@ void items::highborne_compendium_of_sundering( special_effect_t& effect )
   effect.execute_action = create_proc_action<volcanic_pressure_t>( "volcanic_pressure", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Punchcard stuff ========================================================
+
+void items::yellow_punchcard( special_effect_t& effect )
+{
+  std::vector<std::tuple<stat_e, double>> stats;
+
+  // We don't need to do any further initialization so don't perform phase 2 at all
+  effect.type = SPECIAL_EFFECT_NONE;
+
+  if ( !effect.enchant_data )
+  {
+    return;
+  }
+
+  auto item_data = effect.player->dbc.item( effect.enchant_data->id_gem );
+  if ( !item_data )
+  {
+    return;
+  }
+
+  // TODO: Bonus id handling, when we export that information somehow
+  auto budget = item_database::item_budget( effect.player, item_data->level );
+
+  // Collect stats
+  for ( size_t i = 1u; i <= effect.driver()->effect_count(); ++i )
+  {
+    if ( effect.driver()->effectN( i ).subtype() != A_MOD_RATING )
+    {
+      continue;
+    }
+
+    auto effect_stats = ::util::translate_all_rating_mod( effect.driver()->effectN( i ).misc_value1() );
+    double value = effect.driver()->effectN( i ).m_coefficient() * budget;
+    value = item_database::apply_combat_rating_multiplier( effect.player,
+      combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET, item_data->level, value );
+    range::for_each( effect_stats, [ value, &stats ]( stat_e stat ) {
+      stats.emplace_back( stat, value );
+    } );
+  }
+
+  // .. and apply them as passive stats to the actor
+  range::for_each( stats, [&effect, item_data]( const std::tuple<stat_e, double>& stats ) {
+      stat_e stat = std::get<0>( stats );
+      double value = std::get<1>( stats );
+      if ( effect.player->sim->debug )
+      {
+        effect.player->sim->out_debug.print( "{} {}: punchcard={} ({}), stat={}, value={}",
+          effect.player->name(), effect.item->name(), item_data->name, item_data->level,
+            ::util::stat_type_string( stat ), value );
+      }
+      effect.player->passive.add_stat( stat, value );
+  } );
+}
+
+void items::subroutine_overclock( special_effect_t& effect )
+{
+  if ( !effect.enchant_data )
+  {
+    return;
+  }
+
+  auto item_data = effect.player->dbc.item( effect.enchant_data->id_gem );
+  if ( !item_data )
+  {
+    return;
+  }
+
+  // Make a fake punchcard item and apply bonuses to it
+  item_t punchcard( effect.player, "" );
+
+  punchcard.parsed.data = *item_data;
+  punchcard.name_str = item_data -> name;
+  ::util::tokenize( punchcard.name_str );
+
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "subroutine_overclock" ) );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "subroutine_overclock", effect.player->find_spell( 293142 ) );
+    buff->add_stat( STAT_HASTE_RATING,
+        item_database::apply_combat_rating_multiplier( effect.player,
+          combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
+          punchcard.item_level(),
+          effect.player->find_spell( 293142 )->effectN( 1 ).average( &( punchcard ) ) ) );
+  }
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void items::subroutine_recalibration( special_effect_t& effect )
+{
+  struct recalibration_cb_t : public dbc_proc_callback_t
+  {
+    unsigned casts, req_casts;
+
+    recalibration_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      casts( 0 ), req_casts( as<unsigned>( effect.driver()->effectN( 2 ).base_value() ) )
+    { }
+
+    void trigger( action_t* a, void* call_data ) override
+    {
+      if ( a->background )
+      {
+        return;
+      }
+
+      dbc_proc_callback_t::trigger( a, call_data );
+    }
+
+    void activate() override
+    {
+      dbc_proc_callback_t::activate();
+      casts = 0;
+    }
+
+    void execute( action_t* /* a */, action_state_t* /* state */ ) override
+    {
+      if ( ++casts == req_casts )
+      {
+        proc_buff->trigger();
+        casts = 0;
+      }
+    }
+  };
+
+  if ( !effect.enchant_data )
+  {
+    return;
+  }
+
+  auto item_data = effect.player->dbc.item( effect.enchant_data->id_gem );
+  if ( !item_data )
+  {
+    return;
+  }
+
+  // Make a fake punchcard item and apply bonuses to it
+  item_t punchcard( effect.player, "" );
+
+  punchcard.parsed.data = *item_data;
+  punchcard.name_str = item_data -> name;
+  ::util::tokenize( punchcard.name_str );
+
+  stat_buff_t* primary_buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player,
+      "subroutine_recalibration" ) );
+  stat_buff_t* recalibration_buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player,
+      "recalibrating" ) );
+
+  if ( !recalibration_buff )
+  {
+    recalibration_buff = make_buff<stat_buff_t>( effect.player, "recalibrating",
+      effect.player->find_spell( 299065 ), effect.item );
+    recalibration_buff->add_stat( STAT_HASTE_RATING,
+        -item_database::apply_combat_rating_multiplier( effect.player,
+          combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
+          punchcard.item_level(),
+          effect.driver()->effectN( 3 ).average( &( punchcard ) ) ) );
+  }
+
+  if ( !primary_buff )
+  {
+    primary_buff = make_buff<stat_buff_t>( effect.player, "subroutine_recalibration",
+      effect.player->find_spell( 299064 ), effect.item );
+    primary_buff->add_stat( STAT_HASTE_RATING,
+        item_database::apply_combat_rating_multiplier( effect.player,
+          combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
+          punchcard.item_level(),
+          effect.driver()->effectN( 1 ).average( &( punchcard ) ) ) );
+    primary_buff->set_stack_change_callback( [recalibration_buff]( buff_t*, int /* old */, int new_ ) {
+      if ( new_ == 0 )
+      {
+        recalibration_buff->trigger();
+      }
+      else
+      {
+        recalibration_buff->expire();
+      }
+    } );
+  }
+
+  effect.proc_flags_ = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_CAST;
+  effect.custom_buff = primary_buff;
+
+  new recalibration_cb_t( effect );
 }
 
 // Waycrest's Legacy Set Bonus ============================================
@@ -3380,7 +3662,26 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 292650, items::trident_of_deep_ocean );
   register_special_effect( 295427, items::legplates_of_unbound_anguish );
   register_special_effect( 302382, items::damage_to_aberrations );
+  register_special_effect( 303133, items::exploding_pufferfish );
+  register_special_effect( 304637, items::fathom_hunter );
   register_special_effect( 300830, items::highborne_compendium_of_sundering );
+  register_special_effect( 300913, items::highborne_compendium_of_storms );
+
+  // Passive two-stat punchcards
+  register_special_effect( 306402, items::yellow_punchcard );
+  register_special_effect( 306403, items::yellow_punchcard );
+  register_special_effect( 303590, items::yellow_punchcard );
+  register_special_effect( 306406, items::yellow_punchcard );
+  register_special_effect( 303595, items::yellow_punchcard );
+  register_special_effect( 306407, items::yellow_punchcard );
+  register_special_effect( 306405, items::yellow_punchcard );
+  register_special_effect( 306404, items::yellow_punchcard );
+  register_special_effect( 303592, items::yellow_punchcard );
+  register_special_effect( 306410, items::yellow_punchcard );
+  register_special_effect( 303596, items::yellow_punchcard );
+  register_special_effect( 306409, items::yellow_punchcard );
+  register_special_effect( 293136, items::subroutine_overclock );
+  register_special_effect( 299062, items::subroutine_recalibration );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );

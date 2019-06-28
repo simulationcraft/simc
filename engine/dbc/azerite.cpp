@@ -64,14 +64,12 @@ const azerite_essence_entry_t& azerite_essence_entry_t::nil()
 arv::array_view<azerite_essence_entry_t> azerite_essence_entry_t::data( bool ptr )
 {
   ( void ) ptr;
-  // TODO: Not needeed when 8.2.0 lands
-  static azerite_essence_entry_t __default[1] { {} };
 
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<azerite_essence_entry_t>( __ptr_azerite_essence_data )
-                        : arv::array_view<azerite_essence_entry_t>( __default );
+                        : arv::array_view<azerite_essence_entry_t>( __azerite_essence_data );
 #else
-  const auto data = arv::array_view<azerite_essence_entry_t>( __default );
+  const auto data = arv::array_view<azerite_essence_entry_t>( __azerite_essence_data );
 #endif
 
   return data;
@@ -80,14 +78,12 @@ arv::array_view<azerite_essence_entry_t> azerite_essence_entry_t::data( bool ptr
 const azerite_essence_entry_t& azerite_essence_entry_t::find( unsigned id, bool ptr )
 {
   ( void ) ptr;
-  // TODO: Not needeed when 8.2.0 lands
-  static azerite_essence_entry_t __default[1] { {} };
 
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<azerite_essence_entry_t>( __ptr_azerite_essence_data )
-                        : arv::array_view<azerite_essence_entry_t>( __default );
+                        : arv::array_view<azerite_essence_entry_t>( __azerite_essence_data );
 #else
-  const auto data = arv::array_view<azerite_essence_entry_t>( __default );
+  const auto data = arv::array_view<azerite_essence_entry_t>( __azerite_essence_data );
 #endif
 
 
@@ -110,14 +106,12 @@ const azerite_essence_entry_t&
 azerite_essence_entry_t::find( const std::string& name, bool tokenized, bool ptr )
 {
   ( void ) ptr;
-  // TODO: Not needeed when 8.2.0 lands
-  static azerite_essence_entry_t __default[1] { {} };
 
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<azerite_essence_entry_t>( __ptr_azerite_essence_data )
-                        : arv::array_view<azerite_essence_entry_t>( __default );
+                        : arv::array_view<azerite_essence_entry_t>( __azerite_essence_data );
 #else
-  const auto data = arv::array_view<azerite_essence_entry_t>( __default );
+  const auto data = arv::array_view<azerite_essence_entry_t>( __azerite_essence_data );
 #endif
 
   for ( auto it = data.cbegin(); it != data.cend(); ++it )
@@ -154,14 +148,12 @@ const azerite_essence_power_entry_t& azerite_essence_power_entry_t::nil()
 arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data( bool ptr )
 {
   ( void ) ptr;
-  // TODO: Not needeed when 8.2.0 lands
-  static azerite_essence_power_entry_t __default[1] { {} };
 
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<azerite_essence_power_entry_t>( __ptr_azerite_essence_power_data )
-                        : arv::array_view<azerite_essence_power_entry_t>( __default );
+                        : arv::array_view<azerite_essence_power_entry_t>( __azerite_essence_power_data );
 #else
-  const auto data = arv::array_view<azerite_essence_power_entry_t>( __default );
+  const auto data = arv::array_view<azerite_essence_power_entry_t>( __azerite_essence_power_data );
 #endif
 
   return data;
@@ -170,14 +162,12 @@ arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::da
 arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data_by_essence_id( unsigned essence_id, bool ptr )
 {
   ( void ) ptr;
-  // TODO: Not needeed when 8.2.0 lands
-  static azerite_essence_power_entry_t __default[1] { {} };
 
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<azerite_essence_power_entry_t>( __ptr_azerite_essence_power_data )
-                        : arv::array_view<azerite_essence_power_entry_t>( __default );
+                        : arv::array_view<azerite_essence_power_entry_t>( __azerite_essence_power_data );
 #else
-  const auto data = arv::array_view<azerite_essence_power_entry_t>( __default );
+  const auto data = arv::array_view<azerite_essence_power_entry_t>( __azerite_essence_power_data );
 #endif
 
   auto begin = std::lower_bound( data.cbegin(), data.cend(), essence_id,
@@ -196,14 +186,12 @@ arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::da
 const azerite_essence_power_entry_t& azerite_essence_power_entry_t::find( unsigned id, bool ptr )
 {
   ( void ) ptr;
-  // TODO: Not needeed when 8.2.0 lands
-  static azerite_essence_power_entry_t __default[1] { {} };
 
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<azerite_essence_power_entry_t>( __ptr_azerite_essence_power_data )
-                        : arv::array_view<azerite_essence_power_entry_t>( __default );
+                        : arv::array_view<azerite_essence_power_entry_t>( __azerite_essence_power_data );
 #else
-  const auto data = arv::array_view<azerite_essence_power_entry_t>( __default );
+  const auto data = arv::array_view<azerite_essence_power_entry_t>( __azerite_essence_power_data );
 #endif
 
 
@@ -225,14 +213,12 @@ const azerite_essence_power_entry_t& azerite_essence_power_entry_t::find( unsign
 const azerite_essence_power_entry_t& azerite_essence_power_entry_t::find_by_spell_id( unsigned spell_id, bool ptr )
 {
   ( void ) ptr;
-  // TODO: Not needeed when 8.2.0 lands
-  static azerite_essence_power_entry_t __default[1] { {} };
 
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<azerite_essence_power_entry_t>( __ptr_azerite_essence_power_data )
-                        : arv::array_view<azerite_essence_power_entry_t>( __default );
+                        : arv::array_view<azerite_essence_power_entry_t>( __azerite_essence_power_data );
 #else
-  const auto data = arv::array_view<azerite_essence_power_entry_t>( __default );
+  const auto data = arv::array_view<azerite_essence_power_entry_t>( __azerite_essence_power_data );
 #endif
 
   auto it = range::find_if( data, [ spell_id ]( const azerite_essence_power_entry_t& e ) {

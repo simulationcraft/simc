@@ -77,23 +77,25 @@ actions.bm_combustion_phase+=/scorch
 
 # Combustion phase prepares abilities with a delay, then launches into the Combustion sequence
 actions.combustion_phase=lights_judgment,if=buff.combustion.down
-actions.combustion_phase+=/call_action_list,name=bm_combustion_phase,if=azerite.blaster_master.enabled&talent.flame_on.enabled
+actions.combustion_phase+=/call_action_list,name=bm_combustion_phase,if=azerite.blaster_master.enabled&talent.flame_on.enabled&!essence.memory_of_lucid_dreams.enabled
 actions.combustion_phase+=/blood_of_the_enemy
 actions.combustion_phase+=/memory_of_lucid_dreams
 actions.combustion_phase+=/guardian_of_azeroth
 actions.combustion_phase+=/rune_of_power,if=buff.combustion.down
-actions.combustion_phase+=/call_action_list,name=active_talents
-actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((action.meteor.in_flight&action.meteor.in_flight_remains<=0.5)|!talent.meteor.enabled)&(buff.rune_of_power.up|!talent.rune_of_power.enabled)
+actions.combustion_phase+=/call_action_list,name=active_talents,if=(azerite.blaster_master.enabled&buff.blaster_master.stack>=3)|!azerite.blaster_master.enabled
+actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=!essence.memory_of_lucid_dreams.enabled&(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((action.meteor.in_flight&action.meteor.in_flight_remains<=0.5)|!talent.meteor.enabled)&(buff.rune_of_power.up|!talent.rune_of_power.enabled)
+actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=essence.memory_of_lucid_dreams.enabled&(buff.rune_of_power.up|!talent.rune_of_power.enabled)
 actions.combustion_phase+=/potion
 actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
 actions.combustion_phase+=/fireblood
 actions.combustion_phase+=/ancestral_call
 actions.combustion_phase+=/call_action_list,name=trinkets
-actions.combustion_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react
+actions.combustion_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react&!azerite.blaster_master.enabled
 actions.combustion_phase+=/pyroblast,if=buff.pyroclasm.react&buff.combustion.remains>cast_time
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.react
-actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((buff.combustion.up&(buff.heating_up.react&!action.pyroblast.in_flight&!action.scorch.executing)|(action.scorch.execute_remains&buff.heating_up.down&buff.hot_streak.down&!action.pyroblast.in_flight)))
+actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=essence.memory_of_lucid_dreams.enabled&((buff.combustion.up&(buff.heating_up.react&!action.pyroblast.in_flight&!action.scorch.executing)|(action.scorch.execute_remains&buff.heating_up.down&buff.hot_streak.down&!action.pyroblast.in_flight)))
+actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!essence.memory_of_lucid_dreams.enabled&(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((buff.combustion.up&(buff.heating_up.react&!action.pyroblast.in_flight&!action.scorch.executing)|(action.scorch.execute_remains&buff.heating_up.down&buff.hot_streak.down&!action.pyroblast.in_flight)))
 actions.combustion_phase+=/pyroblast,if=prev_gcd.1.scorch&buff.heating_up.up
 actions.combustion_phase+=/phoenix_flames
 actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time&buff.combustion.up|buff.combustion.down
@@ -151,7 +153,6 @@ trinket2=incandescent_sliver,id=165571,bonus_id=4800/1537
 main_hand=desecrated_blade_of_the_disciples,id=165919,bonus_id=4800/1537,enchant=torrent_of_elements
 off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
 
-
 # Gear Summary
 # gear_ilvl=414.94
 # gear_stamina=9906
@@ -159,6 +160,6 @@ off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
 # gear_crit_rating=738
 # gear_haste_rating=1450
 # gear_mastery_rating=855
-# gear_versatility_rating=509
+# gear_versatility_rating=515
 # gear_armor=1442
 # set_bonus=gift_of_the_loa_2pc=1

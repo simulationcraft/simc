@@ -256,6 +256,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     wracking_brilliance(false),
     agony_accumulator( 0.0 ),
     memory_of_lucid_dreams_accumulator( 0.0 ),
+    strive_for_perfection_multiplier(),
+    vision_of_perfection_multiplier(),
     active_pets( 0 ),
     warlock_pet_list( this ),
     active(),
@@ -583,7 +585,12 @@ void warlock_t::init_spells()
   // Azerite Essences
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
   spells.memory_of_lucid_dreams_base = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
+  strive_for_perfection_multiplier = 1.0 + azerite::vision_of_perfection_cdr( azerite_essence.vision_of_perfection );
+  vision_of_perfection_multiplier = 
+    azerite_essence.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent() +
+    azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
 }
 
 void warlock_t::init_rng()
@@ -729,7 +736,7 @@ std::string warlock_t::default_potion() const
 {
   std::string lvl110_potion = "prolonged_power";
 
-  return ( true_level >  110 ) ? "battle_potion_of_intellect" :
+  return ( true_level >  110 ) ? "potion_of_unbridled_fury" :
          ( true_level >= 100 ) ? lvl110_potion :
          ( true_level >=  90 ) ? "draenic_intellect" :
          ( true_level >=  85 ) ? "jade_serpent" :
@@ -739,7 +746,7 @@ std::string warlock_t::default_potion() const
 
 std::string warlock_t::default_flask() const
 {
-  return ( true_level >  110 ) ? "endless_fathoms" :
+  return ( true_level >  110 ) ? "greater_flask_of_endless_fathoms" :
          ( true_level >= 100 ) ? "whispered_pact" :
          ( true_level >=  90 ) ? "greater_draenic_intellect_flask" :
          ( true_level >=  85 ) ? "warm_sun" :
@@ -759,7 +766,7 @@ std::string warlock_t::default_food() const
     (specialization() == WARLOCK_AFFLICTION) ?    "nightborne_delicacy_platter" :
                                                   "azshari_salad";
 
-  return ( true_level > 110 ) ? "bountiful_captains_feast" :
+  return ( true_level > 110 ) ? "famine_evaluator_and_snack_table" :
          ( true_level > 100 ) ? lvl110_food :
          ( true_level >  90 ) ? lvl100_food :
                                 "disabled";
@@ -899,6 +906,26 @@ timespan_t warlock_t::time_to_imps(int count)
   }
 }
 
+void warlock_t::darkglare_extension_helper(warlock_t* p, timespan_t darkglare_extension)
+{
+  for (const auto target : p->sim->target_non_sleeping_list)
+  {
+    warlock_td_t* td = p->get_target_data( target );
+    if (!td)
+    {
+      continue;
+    }
+    td->dots_agony->extend_duration(darkglare_extension);
+    td->dots_corruption->extend_duration(darkglare_extension);
+    td->dots_siphon_life->extend_duration(darkglare_extension);
+    td->dots_phantom_singularity->extend_duration(darkglare_extension);
+    td->dots_vile_taint->extend_duration(darkglare_extension);
+    for (auto& current_ua : td->dots_unstable_affliction)
+    {
+      current_ua->extend_duration(darkglare_extension);
+    }
+  }
+}
 
 //Function for returning the the number of imps that will spawn in a specified time period.
 int warlock_t::imps_spawned_during( timespan_t period )
@@ -959,6 +986,27 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
   case STAT_BONUS_ARMOR:
     return STAT_NONE;
   default: return s;
+  }
+}
+
+void warlock_t::vision_of_perfection_proc()
+{
+  if( vision_of_perfection_multiplier <= 0.0 )
+    return;
+
+  switch ( specialization() )
+  {
+    case WARLOCK_DESTRUCTION:
+      vision_of_perfection_proc_destro();
+      break;
+    case WARLOCK_AFFLICTION:
+      vision_of_perfection_proc_aff();
+      break;
+    case WARLOCK_DEMONOLOGY:
+      vision_of_perfection_proc_demo();
+      break;
+    default:
+      return;
   }
 }
 
@@ -1290,7 +1338,9 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w ) :
   vicious_hellhounds( "vicious_hellhound", w ),
   illidari_satyrs( "illidari_satyr", w ),
   eyes_of_guldan( "eye_of_guldan", w ),
-  prince_malchezaar( "prince_malchezaar", w )
+  prince_malchezaar( "prince_malchezaar", w ),
+  vop_darkglares( "vop_darkglare", w ),
+  vop_infernals( "vop_infernal", w )
 { }
 }
 

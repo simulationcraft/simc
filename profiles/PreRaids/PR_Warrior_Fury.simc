@@ -26,7 +26,10 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
-actions.precombat+=/recklessness,if=!talent.furious_slash.enabled&!talent.reckless_abandon.enabled
+actions.precombat+=/memory_of_lucid_dreams
+actions.precombat+=/guardian_of_azeroth
+actions.precombat+=/focused_azerite_beam
+actions.precombat+=/recklessness,if=!talent.furious_slash.enabled
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -37,7 +40,16 @@ actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in
 actions+=/potion
 actions+=/furious_slash,if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))
 actions+=/rampage,if=cooldown.recklessness.remains<3
-actions+=/recklessness,if=!talent.siegebreaker.enabled|(cooldown.siegebreaker.remains<1|cooldown.siegebreaker.remains>5)
+actions+=/blood_of_the_enemy,if=buff.recklessness.up
+actions+=/purifying_blast,if=!buff.recklessness.up&!buff.siegebreaker.up
+actions+=/ripple_in_space,if=!buff.recklessness.up&!buff.siegebreaker.up
+actions+=/worldvein_resonance,if=!buff.recklessness.up&!buff.siegebreaker.up
+actions+=/focused_azerite_beam,if=!buff.recklessness.up&!buff.siegebreaker.up
+actions+=/concentrated_flame,if=!buff.recklessness.up&!buff.siegebreaker.up&dot.concentrated_flame_burn.remains=0
+actions+=/the_unbound_force,if=buff.reckless_force.up
+actions+=/guardian_of_azeroth,if=!buff.recklessness.up
+actions+=/memory_of_lucid_dreams,if=!buff.recklessness.up
+actions+=/recklessness,if=!essence.condensed_lifeforce.major|cooldown.guardian_of_azeroth.remains>20|buff.guardian_of_azeroth.up
 actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up
 actions+=/blood_fury
 actions+=/berserking
@@ -49,13 +61,13 @@ actions+=/run_action_list,name=single_target
 actions.movement=heroic_leap
 
 actions.single_target=siegebreaker
-actions.single_target+=/rampage,if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
+actions.single_target+=/rampage,if=(buff.recklessness.up|buff.memory_of_lucid_dreams.up)|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
 actions.single_target+=/execute
 actions.single_target+=/bladestorm,if=prev_gcd.1.rampage
 actions.single_target+=/bloodthirst,if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1
+actions.single_target+=/dragon_roar,if=buff.enrage.up
 actions.single_target+=/raging_blow,if=charges=2
 actions.single_target+=/bloodthirst
-actions.single_target+=/dragon_roar,if=buff.enrage.up
 actions.single_target+=/raging_blow,if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)
 actions.single_target+=/furious_slash,if=talent.furious_slash.enabled
 actions.single_target+=/whirlwind
@@ -82,7 +94,7 @@ off_hand=jeweled_sharksplitter,id=159634,bonus_id=4779/1512/4786,enchant=masterf
 # gear_strength=3099
 # gear_stamina=4809
 # gear_crit_rating=468
-# gear_haste_rating=1362
+# gear_haste_rating=1368
 # gear_mastery_rating=554
 # gear_versatility_rating=93
 # gear_armor=3054

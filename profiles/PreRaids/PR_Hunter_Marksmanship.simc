@@ -29,6 +29,9 @@ actions.precombat+=/potion
 actions.precombat+=/hunters_mark
 # Precast this as early as possible to potentially gain another cast during the fight.
 actions.precombat+=/double_tap,precast_time=10
+actions.precombat+=/worldvein_resonance
+actions.precombat+=/guardian_of_azeroth
+actions.precombat+=/memory_of_lucid_dreams
 actions.precombat+=/trueshot,precast_time=1.5,if=active_enemies>2
 actions.precombat+=/aimed_shot,if=active_enemies<3
 
@@ -48,6 +51,10 @@ actions.cds+=/blood_fury,if=buff.trueshot.up&(target.time_to_die>cooldown.blood_
 actions.cds+=/ancestral_call,if=buff.trueshot.up&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16
 actions.cds+=/fireblood,if=buff.trueshot.up&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9
 actions.cds+=/lights_judgment
+actions.cds+=/worldvein_resonance
+actions.cds+=/guardian_of_azeroth,if=cooldown.trueshot.remains<15
+actions.cds+=/ripple_in_space,if=cooldown.trueshot.remains<7
+actions.cds+=/memory_of_lucid_dreams
 actions.cds+=/potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|target.time_to_die<25
 actions.cds+=/trueshot,if=focus>60&(buff.precise_shots.down&cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15
 
@@ -56,9 +63,15 @@ actions.st+=/barrage,if=active_enemies>1
 actions.st+=/a_murder_of_crows
 actions.st+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
 actions.st+=/rapid_fire,if=buff.trueshot.down|focus<70
-actions.st+=/arcane_shot,if=buff.trueshot.up&buff.master_marksman.up
+actions.st+=/arcane_shot,if=buff.trueshot.up&buff.master_marksman.up&!buff.memory_of_lucid_dreams.up
 actions.st+=/aimed_shot,if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time
+actions.st+=/arcane_shot,if=buff.trueshot.up&buff.master_marksman.up&buff.memory_of_lucid_dreams.up
 actions.st+=/piercing_shot
+actions.st+=/focused_azerite_beam
+actions.st+=/purifying_blast
+actions.st+=/concentrated_flame
+actions.st+=/blood_of_the_enemy
+actions.st+=/the_unbound_force
 actions.st+=/arcane_shot,if=buff.trueshot.down&(buff.precise_shots.up&(focus>41|buff.master_marksman.up)|(focus>50&azerite.focused_fire.enabled|focus>75)&(cooldown.trueshot.remains>5|focus>80)|target.time_to_die<5)
 actions.st+=/steady_shot
 
@@ -69,6 +82,11 @@ actions.trickshots+=/rapid_fire,if=buff.trick_shots.up&(azerite.focused_fire.ena
 actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up)
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.up
 actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up&!buff.trueshot.up|focus>70
+actions.trickshots+=/focused_azerite_beam
+actions.trickshots+=/purifying_blast
+actions.trickshots+=/concentrated_flame
+actions.trickshots+=/blood_of_the_enemy
+actions.trickshots+=/the_unbound_force
 actions.trickshots+=/piercing_shot
 actions.trickshots+=/a_murder_of_crows
 actions.trickshots+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
@@ -95,6 +113,6 @@ main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=ince
 # gear_agility=2883
 # gear_stamina=4465
 # gear_crit_rating=456
-# gear_haste_rating=985
+# gear_haste_rating=991
 # gear_mastery_rating=1036
 # gear_armor=2063

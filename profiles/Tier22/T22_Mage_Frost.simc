@@ -59,7 +59,8 @@ actions.aoe+=/frostbolt
 actions.aoe+=/call_action_list,name=movement
 actions.aoe+=/ice_lance
 
-actions.cooldowns=icy_veins
+actions.cooldowns=guardian_of_azeroth
+actions.cooldowns+=/icy_veins
 actions.cooldowns+=/mirror_image
 # Rune of Power is always used with Frozen Orb. Any leftover charges at the end of the fight should be used, ideally if the boss doesn't die in the middle of the Rune buff.
 actions.cooldowns+=/rune_of_power,if=prev_gcd.1.frozen_orb|target.time_to_die>10+cast_time&target.time_to_die<20
@@ -67,7 +68,6 @@ actions.cooldowns+=/rune_of_power,if=prev_gcd.1.frozen_orb|target.time_to_die>10
 actions.cooldowns+=/call_action_list,name=talent_rop,if=talent.rune_of_power.enabled&active_enemies=1&cooldown.rune_of_power.full_recharge_time<cooldown.frozen_orb.remains
 actions.cooldowns+=/potion,if=prev_gcd.1.icy_veins|target.time_to_die<30
 actions.cooldowns+=/use_items
-actions.cooldowns+=/guardian_of_azeroth
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/lights_judgment
@@ -76,10 +76,10 @@ actions.cooldowns+=/ancestral_call
 
 actions.essences=focused_azerite_beam
 actions.essences+=/memory_of_lucid_dreams,if=buff.icicles.stack<2
-actions.essences+=/blood_of_the_enemy,if=buff.icicles.stack=5&buff.brain_freeze.react|active_enemies>4
+actions.essences+=/blood_of_the_enemy,if=buff.icicles.stack=5&buff.brain_freeze.react|!talent.glacial_spike.enabled|active_enemies>4
 actions.essences+=/purifying_blast
 actions.essences+=/ripple_in_space
-actions.essences+=/concentrated_flame
+actions.essences+=/concentrated_flame,line_cd=6
 actions.essences+=/the_unbound_force,if=buff.reckless_force.up
 actions.essences+=/worldvein_resonance
 
@@ -142,5 +142,5 @@ main_hand=regurgitated_purifiers_flamestaff,id=160689,bonus_id=4800/1507,enchant
 # gear_crit_rating=1271
 # gear_haste_rating=853
 # gear_mastery_rating=411
-# gear_versatility_rating=618
+# gear_versatility_rating=624
 # gear_armor=1165

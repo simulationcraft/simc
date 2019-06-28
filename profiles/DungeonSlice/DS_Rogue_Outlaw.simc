@@ -8,9 +8,9 @@ position=back
 talents=2010021
 
 # Default consumables
-potion=battle_potion_of_agility
-flask=currents
-food=bountiful_captains_feast
+potion=potion_of_focused_resolve
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -57,7 +57,7 @@ actions+=/lights_judgment
 
 # Builders
 # Use Pistol Shot if it won't cap combo points and the Oppotunity buff is up. Avoid using when Keep Your Wits stacks are high unless the Deadshot buff is also up.
-actions.build=pistol_shot,if=buff.opportunity.up&(buff.keep_your_wits_about_you.stack<25|buff.deadshot.up|energy<45)
+actions.build=pistol_shot,if=buff.opportunity.up&(buff.keep_your_wits_about_you.stack<10|buff.deadshot.up|energy<45)
 actions.build+=/sinister_strike
 
 # Cooldowns
@@ -68,6 +68,7 @@ actions.cds+=/blood_fury
 actions.cds+=/berserking
 actions.cds+=/fireblood
 actions.cds+=/ancestral_call
+actions.cds+=/call_action_list,name=essences,if=!stealthed.all
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&energy.time_to_max>1
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
@@ -81,6 +82,17 @@ actions.cds+=/blade_rush,if=variable.blade_flurry_sync&energy.time_to_max>1
 # Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell.
 actions.cds+=/vanish,if=!stealthed.all&variable.ambush_condition
 actions.cds+=/shadowmeld,if=!stealthed.all&variable.ambush_condition
+
+# Essences
+actions.essences=concentrated_flame
+actions.essences+=/blood_of_the_enemy,if=variable.blade_flurry_sync
+actions.essences+=/guardian_of_azeroth
+actions.essences+=/focused_azerite_beam
+actions.essences+=/purifying_blast
+actions.essences+=/the_unbound_force
+actions.essences+=/ripple_in_space
+actions.essences+=/worldvein_resonance
+actions.essences+=/memory_of_lucid_dreams,if=energy<45
 
 # Finishers
 # BtE over RtB rerolls with Deadshot/Ace traits or Ruthless Precision.
@@ -115,7 +127,7 @@ off_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=galeforce_strik
 # gear_ilvl=416.81
 # gear_agility=5821
 # gear_stamina=9969
-# gear_crit_rating=728
+# gear_crit_rating=734
 # gear_haste_rating=1039
 # gear_mastery_rating=947
 # gear_versatility_rating=682

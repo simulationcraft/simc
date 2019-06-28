@@ -40,6 +40,7 @@ actions+=/call_action_list,name=single
 # With Freezing Rain, it's better to prioritize using Frozen Orb when both FO and Blizzard are off cooldown. Without Freezing Rain, the converse is true although the difference is miniscule until very high target counts.
 actions.aoe=frozen_orb
 actions.aoe+=/blizzard
+actions.aoe+=/call_action_list,name=essences
 actions.aoe+=/comet_storm
 actions.aoe+=/ice_nova
 # Simplified Flurry conditions from the ST action list. Since the mage is generating far less Brain Freeze charges, the exact condition here isn't all that important.
@@ -56,7 +57,8 @@ actions.aoe+=/frostbolt
 actions.aoe+=/call_action_list,name=movement
 actions.aoe+=/ice_lance
 
-actions.cooldowns=icy_veins
+actions.cooldowns=guardian_of_azeroth
+actions.cooldowns+=/icy_veins
 actions.cooldowns+=/mirror_image
 # Rune of Power is always used with Frozen Orb. Any leftover charges at the end of the fight should be used, ideally if the boss doesn't die in the middle of the Rune buff.
 actions.cooldowns+=/rune_of_power,if=prev_gcd.1.frozen_orb|target.time_to_die>10+cast_time&target.time_to_die<20
@@ -70,6 +72,15 @@ actions.cooldowns+=/lights_judgment
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
 
+actions.essences=focused_azerite_beam
+actions.essences+=/memory_of_lucid_dreams,if=buff.icicles.stack<2
+actions.essences+=/blood_of_the_enemy,if=buff.icicles.stack=5&buff.brain_freeze.react|!talent.glacial_spike.enabled|active_enemies>4
+actions.essences+=/purifying_blast
+actions.essences+=/ripple_in_space
+actions.essences+=/concentrated_flame,line_cd=6
+actions.essences+=/the_unbound_force,if=buff.reckless_force.up
+actions.essences+=/worldvein_resonance
+
 actions.movement=blink_any,if=movement.distance>10
 actions.movement+=/ice_floes,if=buff.ice_floes.down
 
@@ -77,6 +88,7 @@ actions.movement+=/ice_floes,if=buff.ice_floes.down
 actions.single=ice_nova,if=cooldown.ice_nova.ready&debuff.winters_chill.up
 actions.single+=/flurry,if=talent.ebonbolt.enabled&prev_gcd.1.ebonbolt&buff.brain_freeze.react
 actions.single+=/flurry,if=prev_gcd.1.glacial_spike&buff.brain_freeze.react
+actions.single+=/call_action_list,name=essences
 actions.single+=/frozen_orb
 actions.single+=/blizzard,if=active_enemies>2|active_enemies>1&cast_time=0
 actions.single+=/ice_lance,if=buff.fingers_of_frost.react&talent.splitting_ice.enabled&active_enemies>1
@@ -117,7 +129,7 @@ off_hand=fogbreaker_light_of_the_sea,id=165583,bonus_id=4800/1537
 # gear_intellect=7318
 # gear_crit_rating=580
 # gear_haste_rating=1070
-# gear_mastery_rating=1395
+# gear_mastery_rating=1401
 # gear_versatility_rating=348
 # gear_armor=1442
 # set_bonus=gift_of_the_loa_2pc=1

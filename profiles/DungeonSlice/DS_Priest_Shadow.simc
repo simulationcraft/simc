@@ -8,9 +8,9 @@ position=ranged_back
 talents=3131111
 
 # Default consumables
-potion=rising_death
-flask=endless_fathoms
-food=honeyglazed_haunches
+potion=unbridled_fury
+flask=greater_flask_of_endless_fathoms
+food=baked_port_tato
 augmentation=battle_scarred
 
 initial_resource=insanity=25
@@ -110,7 +110,7 @@ off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
 # gear_stamina=9969
 # gear_intellect=7318
 # gear_crit_rating=556
-# gear_haste_rating=1531
+# gear_haste_rating=1537
 # gear_mastery_rating=952
 # gear_versatility_rating=355
 # gear_armor=1442

@@ -949,7 +949,7 @@ struct icy_edge_buff_t : public buff_t
   icy_edge_buff_t( shaman_t* p ) : buff_t( p, "icy_edge", p->find_spell( 224126 ) )
   {
     set_duration( s_data->duration() );
-    set_max_stack( !p->dbc.ptr ? 2 : 10 );
+    set_max_stack( 10 );
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   }
 };
@@ -960,7 +960,7 @@ struct molten_weapon_buff_t : public buff_t
   {
     set_duration( s_data->duration() );
     set_default_value( 1.0 + s_data->effectN( 1 ).percent() );
-    set_max_stack( !p->dbc.ptr ? 2 : 10 );
+    set_max_stack( 10 );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   }
@@ -972,7 +972,7 @@ struct crackling_surge_buff_t : public buff_t
   {
     set_duration( s_data->duration() );
     set_default_value( s_data->effectN( 1 ).percent() );
-    set_max_stack( !p->dbc.ptr ? 2 : 10 );
+    set_max_stack( 10 );
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   }
 };
@@ -1217,7 +1217,7 @@ public:
       }
     }
 
-    if ( p()->dbc.ptr && affected_by_molten_weapon && p()->buff.molten_weapon->check() )
+    if ( affected_by_molten_weapon && p()->buff.molten_weapon->check() )
     {
       m *= std::pow( p()->buff.molten_weapon->check_value(), p()->buff.molten_weapon->check() );
     }
@@ -8735,10 +8735,6 @@ double shaman_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( !dbc.ptr && dbc::is_school( school, SCHOOL_FIRE ) && buff.molten_weapon->up() )
-  {
-    m *= std::pow( buff.molten_weapon->check_value(), buff.molten_weapon->check() );
-  }
   return m;
 }
 

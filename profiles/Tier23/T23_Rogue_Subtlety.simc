@@ -9,9 +9,9 @@ position=back
 talents=2320031
 
 # Default consumables
-potion=battle_potion_of_agility
-flask=currents
-food=bountiful_captains_feast
+potion=potion_of_focused_resolve
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -48,8 +48,8 @@ actions+=/call_action_list,name=stealth_cds,if=variable.use_priority_rotation
 actions+=/variable,name=stealth_threshold,value=25+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+talent.shadow_focus.enabled*20+talent.alacrity.enabled*10+15*(spell_targets.shuriken_storm>=3)
 # Consider using a Stealth CD when reaching the energy threshold
 actions+=/call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold
-# Night's Vengeance: Nightblade before Symbols at low CP to combine early refresh with getting the buff up.
-actions+=/nightblade,if=azerite.nights_vengeance.enabled&spell_targets.shuriken_storm<2&cooldown.symbols_of_death.remains<=3&!buff.nights_vengeance.up&combo_points>=2
+# Night's Vengeance: Nightblade before Symbols at low CP to combine early refresh with getting the buff up. Also low CP during Symbols outside Dance with 3 NV.
+actions+=/nightblade,if=azerite.nights_vengeance.enabled&spell_targets.shuriken_storm<2&(cooldown.symbols_of_death.remains<=3|(buff.symbols_of_death.up&!stealthed.all&azerite.nights_vengeance.rank>=3))&!buff.nights_vengeance.up&combo_points>=2
 # Finish at 4+ without DS, 5+ with DS (outside stealth)
 actions+=/call_action_list,name=finish,if=combo_points.deficit<=1|target.time_to_die<=1&combo_points>=3
 # With DS also finish at 4+ against exactly 4 targets (outside stealth)
@@ -78,6 +78,7 @@ actions.cds+=/ancestral_call,if=buff.symbols_of_death.up
 actions.cds+=/shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
 # (Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in.
 actions.cds+=/symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
+actions.cds+=/call_action_list,name=essences,if=!stealthed.all&dot.nightblade.ticking
 # Use Symbols on cooldown (after first Nightblade) unless we are going to pop Tornado and do not have Shadow Focus.
 actions.cds+=/symbols_of_death,if=dot.nightblade.ticking&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|spell_targets.shuriken_storm<3|!cooldown.shuriken_tornado.up)
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP.
@@ -90,6 +91,17 @@ actions.cds+=/shuriken_tornado,if=spell_targets>=3&!talent.shadow_focus.enabled&
 # At 3+ with Shadow Focus use Tornado with SoD already up.
 actions.cds+=/shuriken_tornado,if=spell_targets>=3&talent.shadow_focus.enabled&dot.nightblade.ticking&buff.symbols_of_death.up
 actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled&!raid_event.adds.up
+
+# Essences
+actions.essences=concentrated_flame
+actions.essences+=/blood_of_the_enemy
+actions.essences+=/guardian_of_azeroth
+actions.essences+=/focused_azerite_beam
+actions.essences+=/purifying_blast
+actions.essences+=/the_unbound_force
+actions.essences+=/ripple_in_space
+actions.essences+=/worldvein_resonance
+actions.essences+=/memory_of_lucid_dreams,if=energy<40&buff.symbols_of_death.up
 
 # Finishers
 # Eviscerate highest priority at 2+ targets with Shadow Focus (5+ with Secret Technique in addition) and Night's Vengeance up.
@@ -118,8 +130,8 @@ actions.stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_
 actions.stealth_cds+=/variable,name=shd_combo_points,value=combo_points.deficit>=4
 # CP requirement: Dance only before finishers if we have amp talents and priority rotation.
 actions.stealth_cds+=/variable,name=shd_combo_points,value=combo_points.deficit<=1+2*azerite.the_first_dance.enabled,if=variable.use_priority_rotation&(talent.nightstalker.enabled|talent.dark_shadow.enabled)
-# With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold.
-actions.stealth_cds+=/shadow_dance,if=variable.shd_combo_points&(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)
+# With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold. Wait for NV buff with 3NV.
+actions.stealth_cds+=/shadow_dance,if=variable.shd_combo_points&(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(azerite.nights_vengeance.rank<3|buff.nights_vengeance.up)
 # Burn remaining Dances before the target dies if SoD won't be ready in time.
 actions.stealth_cds+=/shadow_dance,if=variable.shd_combo_points&target.time_to_die<cooldown.symbols_of_death.remains&!raid_event.adds.up
 
@@ -162,7 +174,7 @@ off_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=masterful_navig
 # gear_stamina=9969
 # gear_crit_rating=772
 # gear_haste_rating=873
-# gear_mastery_rating=648
+# gear_mastery_rating=654
 # gear_versatility_rating=1102
 # gear_armor=2363
 # set_bonus=gift_of_the_loa_2pc=1

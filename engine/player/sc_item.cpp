@@ -671,7 +671,23 @@ void item_t::parse_options()
 
   try
   {
-    opts::parse( sim, option_name_str, options, remainder );
+    opts::parse( sim, option_name_str, options, remainder,
+      [ this ]( opts::parse_status status, const std::string& name, const std::string& value ) {
+        // Fail parsing if strict parsing is used and the option is not found
+        if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
+        {
+          return opts::parse_status::FAILURE;
+        }
+
+        // .. otherwise, just warn that there's an unknown option
+        if ( status == opts::parse_status::NOT_FOUND )
+        {
+          sim->error( "Warning: Unknown item option '{}' with value '{}' for '{}' slot '{}', ignoring",
+            name, value, player->name(), slot_name() );
+        }
+
+        return status;
+      } );
   }
   catch ( const std::exception& )
   {

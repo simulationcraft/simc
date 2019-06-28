@@ -9,8 +9,8 @@ talents=1300031
 
 # Default consumables
 potion=battle_potion_of_intellect
-flask=endless_fathoms
-food=honeyglazed_haunches
+flask=greater_flask_of_endless_fathoms
+food=baked_port_tato
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -71,7 +71,7 @@ off_hand=uldir_subject_manifest,id=160695,bonus_id=4800/1507
 # gear_stamina=7030
 # gear_intellect=5138
 # gear_crit_rating=1517
-# gear_haste_rating=1183
+# gear_haste_rating=1189
 # gear_mastery_rating=251
 # gear_versatility_rating=177
 # gear_armor=1143

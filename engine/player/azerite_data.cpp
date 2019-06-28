@@ -1112,6 +1112,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 296320, azerite_essences::strive_for_perfection );
   unique_gear::register_special_effect( 294964, azerite_essences::anima_of_life_and_death );
   unique_gear::register_special_effect( 295750, azerite_essences::nullification_dynamo );
+  unique_gear::register_special_effect( 298193, azerite_essences::aegis_of_the_deep );
   // Vision of Perfection major Azerite Essence
   unique_gear::register_special_effect( 296325, azerite_essences::vision_of_perfection );
 }
@@ -3218,21 +3219,47 @@ void undulating_tides( special_effect_t& effect )
 {
   struct undulating_tides_t : public unique_gear::proc_spell_t
   {
-    undulating_tides_t( const special_effect_t& e, const azerite_power_t& power ):
-      proc_spell_t( "undulating_tides", e.player, e.player -> find_spell( 303389 ) )
+    undulating_tides_t( const special_effect_t& e, const azerite_power_t& power ) :
+      proc_spell_t( "undulating_tides", e.player, e.player->find_spell( 303389 ) )
     {
       base_dd_min = base_dd_max = power.value( 1 );
     }
   };
 
-  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
   if ( !power.enabled() )
     return;
 
   effect.execute_action = unique_gear::create_proc_action<undulating_tides_t>( "undulating_tides", effect, power );
   effect.spell_id = 303388;
 
-  new dbc_proc_callback_t( effect.player, effect );
+  auto proc = new dbc_proc_callback_t( effect.player, effect );
+
+  auto lockout = buff_t::find( effect.player, "undulating_tides_lockout" );
+  if ( !lockout )
+  {
+    lockout = make_buff( effect.player, "undulating_tides_lockout", effect.player->find_spell( 303438 ) );
+    lockout->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+    lockout->set_stack_change_callback( [proc]( buff_t*, int, int new_ ) {
+      if ( new_ == 1 )
+        proc->deactivate();
+      else
+        proc->activate();
+    } );
+  }
+
+  timespan_t timer = effect.player->sim->bfa_opts.undulating_tides_lockout_timer;
+  double chance = effect.player->sim->bfa_opts.undulating_tides_lockout_chance;
+
+  if ( chance )
+  {
+    effect.player->register_combat_begin( [lockout, timer, chance]( player_t* ) {
+      make_repeating_event( *lockout->sim, timer, [lockout, chance]() {
+        if ( lockout->rng().roll( chance ) )
+          lockout->trigger();
+      } );
+    } );
+  }
 }
 
 void loyal_to_the_end( special_effect_t& effect )
@@ -3681,47 +3708,54 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
 
   struct focused_energy_driver_t : dbc_proc_callback_t
   {
-    player_t* primary;
-    buff_t* focus_buff;
+    player_t* trigger_target;
     int init_stacks;
 
-    focused_energy_driver_t(const special_effect_t& effect, buff_t* b, int is) :
-      dbc_proc_callback_t(effect.player, effect), primary(nullptr), focus_buff(b), init_stacks(is)
-    {}
+    focused_energy_driver_t( const special_effect_t& effect, int is ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      trigger_target(),
+      init_stacks( is )
+    { }
 
-    void execute(action_t* a, action_state_t*) override
+    void execute( action_t* a, action_state_t* s ) override
     {
-      //Focused energy appears to not immediately disappear if another target is hit with a spell
-      //Instead, it will simply not increment/refresh stacks unless the original target is hit again
-      //TODO: Some aoe effects may not proc this and should be checked more rigorously. Proc flags include ticks etc
-      if (!primary)
-        primary = a->target;
+      // The effect remembers which target was hit while no buff was active and then only triggers when
+      // that target is hit again.
+      // TODO: Some aoe effects may not proc this and should be checked more rigorously. Proc flags include ticks etc
 
-      if (primary && a->target == primary && focus_buff->up())
+      if ( !proc_buff->check() )
       {
-        focus_buff->trigger();
+        trigger_target = s->target;
+        proc_buff->trigger( init_stacks );
       }
-      else if (!focus_buff->up())
+      else if ( trigger_target == s->target )
       {
-        primary = a->target;
-        focus_buff->trigger(init_stacks);
+        proc_buff->trigger();
       }
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      trigger_target = nullptr;
     }
   };
 
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
   int is = 1;
-  if (essence.rank() >=3)
-    is = essence.spell_ref(3u, essence_type::MINOR).effectN(1).base_value();
+  if ( essence.rank() >= 3 )
+    is = essence.spell_ref( 3u, essence_type::MINOR ).effectN( 1 ).base_value();
 
-  double haste = essence.spell_ref(1u, essence_type::MINOR).effectN(2).average(essence.item());
-  if (essence.rank() >=2)
-    haste *= 1 + effect.player->find_spell(295251)->effectN(1).percent();
+  double haste = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+  if ( essence.rank() >= 2 )
+    haste *= 1.0 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
 
-  auto haste_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "focused_energy",
+  effect.custom_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "focused_energy",
       effect.player->find_spell( 295248 ) )
     ->add_stat( STAT_HASTE_RATING, haste );
 
-  new focused_energy_driver_t(effect, haste_buff, is);
+  new focused_energy_driver_t( effect, is );
 }
 
 struct focused_azerite_beam_tick_t : public spell_t
@@ -4108,7 +4142,7 @@ struct ripple_in_space_t : public azerite_essence_major_t
     azerite_essence_major_t(p, "ripple_in_space", p->find_spell(302731))
   {
     parse_options( options_str );
-
+    may_crit = true;
     aoe = -1;
 
     base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 2 ).average( essence.item() );
@@ -4261,16 +4295,36 @@ void vision_of_perfection(special_effect_t& effect)
     void execute(action_t* a, action_state_t* s) override
     {
       dbc_proc_callback_t::execute(a, s);
-      listener->vision_of_perfection_proc();
+      make_event( *listener->sim, [ this ] { listener->vision_of_perfection_proc(); } );
     }
   };
 
-  // There appear to be 3 RPPM spells for Vision of Perfection
-  //   1) id=297866 0.85 rppm, 0.1s icd, yellow hits + dot -- dps or tank specs?
-  //   2) id=297868 0.85 rppm, 0.1s icd, heals only -- healer specs
-  //   3) id=297869 0.85 rppm, 3.5s icd, yellow hits + dot -- dps or tank specs?
-  // Using option 3 for now.
-  effect.spell_id = 297869;
+  // There are 3 RPPM spells for Vision of Perfection
+  //   1) id=297866 0.85 rppm, 0.1s icd, yellow hits + dot -- tank spec: logs show tank spec procing with 2.4s interval
+  //   2) id=297868 0.85 rppm, 0.1s icd, heals only      -- healer spec: hotfix on this spell for holy paladins
+  //   3) id=297869 0.85 rppm, 3.5s icd, yellow hits + dot -- dps spec?: by process of elimination?
+  switch (effect.player->specialization())
+  {
+    case DEATH_KNIGHT_BLOOD:
+    case DEMON_HUNTER_HAVOC:
+    case DRUID_GUARDIAN:
+    case MONK_BREWMASTER:
+    case PALADIN_PROTECTION:
+    case WARRIOR_PROTECTION:
+      effect.spell_id = 297866;
+      break;
+    case DRUID_RESTORATION:
+    case MONK_MISTWEAVER:
+    case PALADIN_HOLY:
+    case PRIEST_DISCIPLINE:
+    case PRIEST_HOLY:
+    case SHAMAN_RESTORATION:
+      effect.spell_id = 297868;
+      break;
+    default:
+      effect.spell_id = 297869;
+      break;
+  }
 
   if (essence.rank() >= 3)
   {
@@ -4357,6 +4411,7 @@ struct worldvein_resonance_t : public azerite_essence_major_t
     stacks(),
     lifeblood()
   {
+    harmful = false;
     parse_options( options_str );
     stacks = as<int>( data().effectN( 1 ).base_value() +
       essence.spell( 2, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).base_value() );
@@ -4502,7 +4557,7 @@ void nullification_dynamo( special_effect_t& effect )
     buff = make_buff<null_barrier_absorb_buff_t>( effect.player, essence, nbd );
   }
 
-  timespan_t interval = essence.spell( 1u, essence_type::MINOR ) -> effectN( 1 ).period();
+  timespan_t interval = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).period();
   if ( essence.rank() >= 2 )
   {
     interval *= 1.0 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
@@ -4513,6 +4568,70 @@ void nullification_dynamo( special_effect_t& effect )
     make_repeating_event( *buff -> sim, interval, [ buff ]() {
       buff -> trigger();
     } );
+  } );
+}
+
+//Aegis of the Deep
+//Only the passive versatility buff from the Minor effect is implemented
+void aegis_of_the_deep( special_effect_t& effect )
+{
+  auto essence = effect.player -> find_azerite_essence( effect.driver() -> essence_id() );
+  if ( ! essence.enabled() )
+  {
+    return;
+  }
+
+  buff_t* aegis_buff = buff_t::find( effect.player, "stand_your_ground" );
+  if ( !aegis_buff )
+  {
+    double amount = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+
+    aegis_buff = make_buff<stat_buff_t>( effect.player, "stand_your_ground", effect.player -> find_spell( 298197 ) )
+      -> add_stat( STAT_VERSATILITY_RATING, amount );
+  }
+
+  //Spelldata shows a buff trigger every 1s, but in-game observation show an immediate change
+  //Add a callback on arise and demise to each enemy in the simulation
+  range::for_each( effect.player -> sim -> actor_list, [ effect, aegis_buff ]( player_t* target )
+  {
+    // Don't do anything on players
+    if ( !target -> is_enemy() )
+    {
+      return;
+    }
+
+    target -> callbacks_on_arise.push_back( [ effect, aegis_buff ] () 
+    {
+      if ( aegis_buff ) 
+      {
+        effect.player -> sim -> print_debug( "An enemy arises! Stand your Ground on player {} is increased by one stack",
+                                             effect.player -> name_str );
+        aegis_buff -> trigger();
+      }
+    } );
+
+
+    target -> callbacks_on_demise.push_back( [ effect, aegis_buff ] ( player_t* target ) 
+    {
+      // Don't do anything if the sim is ending
+      if ( target -> sim -> event_mgr.canceled )
+      {
+        return;
+      }
+
+      if ( aegis_buff ) 
+      {
+        target -> sim -> print_debug( "Enemy {} demises! Stand your Ground on player {} is reduced by one stack",
+                                      target -> name_str, effect.player -> name_str );
+        aegis_buff -> decrement();
+      }
+    } );
+  } );
+
+  // Required because players spawn after the enemies
+  effect.player -> register_combat_begin( [ aegis_buff, effect ]( player_t* )
+  {
+    aegis_buff -> trigger( effect.player -> sim -> desired_targets );
   } );
 }
 
@@ -4559,6 +4678,78 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
   else if ( util::str_compare_ci( name, "anima_of_death" ) )
   {
     return new azerite_essences::anima_of_death_t( player, options );
+  }
+  // "Heart Essence" is a proxy action, generating whatever the user has for the major action
+  // selected
+  else if ( util::str_compare_ci( name, "heart_essence" ) )
+  {
+    azerite_essence_t focused_azerite_beam   = player->find_azerite_essence( "Essence of the Focusing Iris" );
+    azerite_essence_t memory_of_lucid_dreams = player->find_azerite_essence( "Memory of Lucid Dreams" );
+    azerite_essence_t blood_of_the_enemy     = player->find_azerite_essence( "Blood of the Enemy" );
+    azerite_essence_t guardian_of_azeroth    = player->find_azerite_essence( "Condensed Life-Force" );
+    azerite_essence_t purifying_blast        = player->find_azerite_essence( "Purification Protocol" );
+    azerite_essence_t ripple_in_space        = player->find_azerite_essence( "Ripple in Space" );
+    azerite_essence_t concentrated_flame     = player->find_azerite_essence( "The Crucible of Flame" );
+    azerite_essence_t the_unbound_force      = player->find_azerite_essence( "The Unbound Force" );
+    azerite_essence_t worldvein_resonance    = player->find_azerite_essence( "Worldvein Resonance" );
+    azerite_essence_t anima_of_death         = player->find_azerite_essence( "Anima of Life and Death" );
+
+    if ( focused_azerite_beam.is_major() )
+    {
+      return new azerite_essences::focused_azerite_beam_t( player, options );
+    }
+    else if ( memory_of_lucid_dreams.is_major() )
+    {
+      return new  azerite_essences::memory_of_lucid_dreams_t( player, options );
+    }
+    else if ( blood_of_the_enemy.is_major() )
+    {
+      return new azerite_essences::blood_of_the_enemy_t( player, options );
+    }
+    else if ( guardian_of_azeroth.is_major() )
+    {
+      return new azerite_essences::guardian_of_azeroth_t( player, options );
+    }
+    else if ( purifying_blast.is_major() )
+    {
+      return new azerite_essences::purifying_blast_t( player, options );
+    }
+    else if ( ripple_in_space.is_major() )
+    {
+      return new azerite_essences::ripple_in_space_t( player, options );
+    }
+    else if ( concentrated_flame.is_major() )
+    {
+      return new azerite_essences::concentrated_flame_t( player, options );
+    }
+    else if ( the_unbound_force.is_major() )
+    {
+      return new azerite_essences::the_unbound_force_t( player, options );
+    }
+    else if ( worldvein_resonance.is_major() )
+    {
+      return new azerite_essences::worldvein_resonance_t( player, options );
+    }
+    else if ( anima_of_death.is_major() )
+    {
+      return new azerite_essences::anima_of_death_t( player, options );
+    }
+    // Construct a dummy action so that "heart_essence" still works in the APL even without a major
+    // essence
+    else
+    {
+      struct heart_essence_dummy_t : public action_t
+      {
+        heart_essence_dummy_t( player_t* p ) :
+          action_t( ACTION_OTHER, "heart_essence", p )
+        {
+          background = quiet = true;
+          callbacks = false;
+        }
+      };
+
+      return new heart_essence_dummy_t( player );
+    }
   }
 
   return nullptr;

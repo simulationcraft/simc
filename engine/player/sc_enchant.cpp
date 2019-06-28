@@ -258,6 +258,7 @@ void enchant::initialize_item_enchant( item_t& item,
   {
     special_effect_t effect( &item );
     effect.source = source;
+    effect.enchant_data = &( enchant );
     switch ( enchant.ench_type[ i ] )
     {
       // "Chance on Hit", we need to help simc a bit with proc flags
@@ -345,6 +346,12 @@ bool enchant::passive_enchant( item_t& item, unsigned spell_id )
   const spell_data_t* spell = item.player -> find_spell( spell_id );
   if ( ! spell -> ok() )
     return ret;
+
+  // Don't support ilevel-based calculations
+  if ( spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
+  {
+    return ret;
+  }
 
   if ( ! spell -> flags( spell_attribute::SX_PASSIVE ) &&
        spell -> duration() >= timespan_t::zero() )

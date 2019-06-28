@@ -89,15 +89,28 @@ namespace warlock {
 
         if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat)
         {
+          bool active_infernal = false;
+
           if (p()->talents.grimoire_of_supremacy->ok())
           {
             for (auto& infernal : p()->warlock_pet_list.infernals)
             {
               if (!infernal->is_sleeping())
               {
-                p()->buffs.grimoire_of_supremacy->trigger(as<int>(last_resource_cost));
+                active_infernal = true;
               }
             }
+
+            for (auto& infernal : p()->warlock_pet_list.vop_infernals)
+            {
+              if (!infernal->is_sleeping())
+              {
+                active_infernal = true;
+              }
+            }
+
+            if(active_infernal)
+              p()->buffs.grimoire_of_supremacy->trigger(as<int>(last_resource_cost));
           }
 
           if (p()->talents.soul_fire->ok())
@@ -651,6 +664,7 @@ namespace warlock {
           p()->buffs.chaotic_inferno->trigger();
 
         p()->buffs.crashing_chaos->decrement();
+        p()->buffs.crashing_chaos_vop->decrement();
         p()->buffs.backdraft->decrement();
       }
 
@@ -665,6 +679,7 @@ namespace warlock {
         double da = destruction_spell_t::bonus_da(s);
         da += p()->azerite.chaotic_inferno.value(2);
         da += p()->buffs.crashing_chaos->check_value();
+        da += p()->buffs.crashing_chaos_vop->check_value();
         return da;
       }
 
@@ -816,8 +831,7 @@ namespace warlock {
         infernal_awakening = new infernal_awakening_t(p);
         infernal_awakening->stats = stats;
         radius = infernal_awakening->radius;
-        if ( p->dbc.ptr && p->azerite.crashing_chaos.ok() )
-          cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
+        cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
         cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
       }
 
@@ -837,7 +851,11 @@ namespace warlock {
         }
 
         if (p()->azerite.crashing_chaos.ok())
+        {
+          //Cancel the Vision of Perfection version if necessary
+          p()->buffs.crashing_chaos_vop->expire();
           p()->buffs.crashing_chaos->trigger(p()->buffs.crashing_chaos->max_stack());
+        }
       }
     };
 
@@ -991,6 +1009,8 @@ namespace warlock {
       ->set_chance( find_spell( 279672 )->proc_chance() );
     buffs.crashing_chaos = make_buff( this, "crashing_chaos", find_spell( 277706 ) )
       ->set_default_value( azerite.crashing_chaos.value() );
+    buffs.crashing_chaos_vop = make_buff( this, "crashing_chaos_vop", find_spell( 277706 ) )
+      ->set_default_value( azerite.crashing_chaos.value() * vision_of_perfection_multiplier );
     buffs.rolling_havoc = make_buff<stat_buff_t>( this, "rolling_havoc", find_spell( 278931 ) )
       ->add_stat( STAT_INTELLECT, azerite.rolling_havoc.value() );
     buffs.flashpoint = make_buff<stat_buff_t>( this, "flashpoint", find_spell( 275429 ) )
@@ -1002,6 +1022,24 @@ namespace warlock {
       ->set_tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
       resource_gain( RESOURCE_SOUL_SHARD, b->data().effectN( 1 ).base_value() / 10.0, gains.chaos_shards );
     } );
+  }
+
+  void warlock_t::vision_of_perfection_proc_destro()
+  {
+    //TODO: Does the proc trigger infernal awakening?
+
+    //Summoning an Infernal overwrites the previous buff with the new one
+    buffs.crashing_chaos->expire();
+
+    timespan_t summon_duration = find_spell(111685)->duration() * vision_of_perfection_multiplier;
+
+    warlock_pet_list.vop_infernals.spawn( summon_duration, 1u );
+
+    if ( azerite.crashing_chaos.ok() )
+    {
+      buffs.crashing_chaos->expire();
+      buffs.crashing_chaos_vop->trigger( buffs.crashing_chaos_vop->max_stack() );
+    }
   }
 
   void warlock_t::init_spells_destruction() {
@@ -1068,63 +1106,79 @@ namespace warlock {
   }
 
   void warlock_t::create_apl_destruction() {
-    action_priority_list_t* def = get_action_priority_list("default");
+    action_priority_list_t* def = get_action_priority_list( "default" );
     action_priority_list_t* cds = get_action_priority_list( "cds" );
     action_priority_list_t* havoc = get_action_priority_list( "havoc" );
     action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
-    def->add_action("call_action_list,name=havoc,if=havoc_active&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)", "Havoc uses a special priority list on most multitarget scenarios, but the target threshold can vary depending on talents");
-    def->add_talent(this, "Cataclysm", "", "Cataclysm should be used on cooldown as soon as possible");
-    def->add_action("call_action_list,name=aoe,if=active_enemies>2", "Two target scenarios are handled like single target with Havoc weaved in. Starting with three targets, a specialized AoE priority is required");
-    def->add_action(this, "Immolate", "cycle_targets=1,if=refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)", "Immolate should never fall off the primary target. If Cataclysm will refresh Immolate before it expires, there's no reason to waste time casting it");
-    def->add_action(this, "Immolate", "if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5", "#With Internal Combustion talented, it's possible Immolate will need to be refreshed sooner than the remaining duration says, if there's already a Chaos Bolt on the way to the target.");
-    def->add_action("call_action_list,name=cds", "The general rule of thumb for talents is to maximize the number of uses of each");
-    def->add_talent(this, "Channel Demonfire");
-    def->add_action(this, "Havoc", "cycle_targets=1,if=!(target=self.target)&(dot.immolate.remains>dot.immolate.duration*0.5|!talent.internal_combustion.enabled)&(!cooldown.summon_infernal.ready|!talent.grimoire_of_supremacy.enabled|talent.grimoire_of_supremacy.enabled&pet.infernal.remains<=10)", "The if condition here always applies Havoc to something other than the primary target");
-    def->add_talent(this, "Soul Fire", "", "Soul Fire should be used on cooldown, it does not appear worth saving for generating Soul Shards during cooldowns");
-    def->add_action(this, "Conflagrate", "if=buff.backdraft.down&soul_shard>=1.5-0.3*talent.flashover.enabled&!variable.pool_soul_shards", "Conflagrate should only be used to set up Chaos Bolts. Flashover lets Conflagrate be used earlier to set up an Incinerate before CB. If a major cooldown is coming up, save charges for it");
-    def->add_talent(this, "Shadowburn", "if=soul_shard<2&(!variable.pool_soul_shards|charges>1)", "Shadowburn is used as a discount Conflagrate to generate shards if you don't have enough for a Chaos Bolt. The same rules about saving it for major cooldowns applies");
-    def->add_action("variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|cooldown.summon_infernal.remains<=20&(talent.grimoire_of_supremacy.enabled|talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=20)|talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=20&(cooldown.summon_infernal.remains>target.time_to_die|cooldown.summon_infernal.remains+cooldown.summon_infernal.duration>target.time_to_die)", "It's worth stocking up on Soul Shards before a major cooldown usage");
-    def->add_action(this, "Chaos Bolt", "if=(talent.grimoire_of_supremacy.enabled|azerite.crashing_chaos.enabled)&pet.infernal.active|buff.dark_soul_instability.up", "Chaos Bolt has several possible use conditions. Crashing Chaos, Grimoire of Supremacy, and Dark Soul: Instability all favor casting as many CBs as possible when any of them are active");
-    def->add_action(this, "Chaos Bolt", "if=!variable.pool_soul_shards&!talent.eradication.enabled", "If Soul Shards are not being pooled and Eradication is not talented, just spend CBs as they become available");
-    def->add_action(this, "Chaos Bolt", "if=!variable.pool_soul_shards&talent.eradication.enabled&(debuff.eradication.remains<cast_time|buff.backdraft.up)", "With Eradication, it's beneficial to maximize the uptime on the debuff. However, it's still better to use Chaos Bolt immediately if Backdraft is up");
-    def->add_action(this, "Chaos Bolt", "if=(soul_shard>=4.5-0.2*active_enemies)", "Even when saving, do not overcap on Soul Shards");
-    def->add_action(this, "Conflagrate", "if=charges>1", "Don't overcap on charges of Conflagrate");
-    def->add_action(this, "Incinerate");
+    def->add_action( "call_action_list,name=havoc,if=havoc_active&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)", "Havoc uses a special priority list on most multitarget scenarios, but the target threshold can vary depending on talents" );
+    def->add_talent( this, "Cataclysm", "", "Cataclysm should be used on cooldown as soon as possible" );
+    def->add_action( "call_action_list,name=aoe,if=active_enemies>2", "Two target scenarios are handled like single target with Havoc weaved in. Starting with three targets, a specialized AoE priority is required" );
+    def->add_action( this, "Immolate", "cycle_targets=1,if=refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)", "Immolate should never fall off the primary target. If Cataclysm will refresh Immolate before it expires, there's no reason to waste time casting it" );
+    def->add_action( this, "Immolate", "if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5", "#With Internal Combustion talented, it's possible Immolate will need to be refreshed sooner than the remaining duration says, if there's already a Chaos Bolt on the way to the target." );
+    def->add_action( "call_action_list,name=cds", "The general rule of thumb for talents is to maximize the number of uses of each" );
+    def->add_action( "focused_azerite_beam,if=!pet.infernal.active|!talent.grimoire_of_supremacy.enabled" );
+    def->add_action( "the_unbound_force,if=buff.reckless_force.react" );
+    def->add_action( "purifying_blast" );
+    def->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight" );
+    def->add_talent( this, "Channel Demonfire" );
+    def->add_action( this, "Havoc", "cycle_targets=1,if=!(target=self.target)&(dot.immolate.remains>dot.immolate.duration*0.5|!talent.internal_combustion.enabled)&(!cooldown.summon_infernal.ready|!talent.grimoire_of_supremacy.enabled|talent.grimoire_of_supremacy.enabled&pet.infernal.remains<=10)", "The if condition here always applies Havoc to something other than the primary target" );
+    def->add_talent( this, "Soul Fire", "", "Soul Fire should be used on cooldown, it does not appear worth saving for generating Soul Shards during cooldowns" );
+    def->add_action( this, "Conflagrate", "if=buff.backdraft.down&soul_shard>=1.5-0.3*talent.flashover.enabled&!variable.pool_soul_shards", "Conflagrate should only be used to set up Chaos Bolts. Flashover lets Conflagrate be used earlier to set up an Incinerate before CB. If a major cooldown is coming up, save charges for it" );
+    def->add_talent( this, "Shadowburn", "if=soul_shard<2&(!variable.pool_soul_shards|charges>1)", "Shadowburn is used as a discount Conflagrate to generate shards if you don't have enough for a Chaos Bolt. The same rules about saving it for major cooldowns applies" );
+    def->add_action( "variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|cooldown.summon_infernal.remains<=20&(talent.grimoire_of_supremacy.enabled|talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=20)|talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=20&(cooldown.summon_infernal.remains>target.time_to_die|cooldown.summon_infernal.remains+cooldown.summon_infernal.duration>target.time_to_die)", "It's worth stocking up on Soul Shards before a major cooldown usage" );
+    def->add_action( this, "Chaos Bolt", "if=(talent.grimoire_of_supremacy.enabled|azerite.crashing_chaos.enabled)&pet.infernal.active|buff.dark_soul_instability.up|buff.reckless_force.react&buff.reckless_force.remains>cast_time", "Chaos Bolt has several possible use conditions. Crashing Chaos, Grimoire of Supremacy, and Dark Soul: Instability all favor casting as many CBs as possible when any of them are active" );
+    def->add_action( this, "Chaos Bolt", "if=!variable.pool_soul_shards&!talent.eradication.enabled", "If Soul Shards are not being pooled and Eradication is not talented, just spend CBs as they become available" );
+    def->add_action( this, "Chaos Bolt", "if=!variable.pool_soul_shards&talent.eradication.enabled&(debuff.eradication.remains<cast_time|buff.backdraft.up)", "With Eradication, it's beneficial to maximize the uptime on the debuff. However, it's still better to use Chaos Bolt immediately if Backdraft is up" );
+    def->add_action( this, "Chaos Bolt", "if=(soul_shard>=4.5-0.2*active_enemies)", "Even when saving, do not overcap on Soul Shards" );
+    def->add_action( this, "Conflagrate", "if=charges>1", "Don't overcap on charges of Conflagrate" );
+    def->add_action( this, "Incinerate" );
 
-    cds->add_action(this, "Summon Infernal", "if=cooldown.dark_soul_instability.ready|!talent.dark_soul_instability.enabled", "If both cooldowns are ready, summon the Infernal then activate DSI. If not using DSI, use this on CD");
-    cds->add_talent(this, "Dark Soul: Instability", "if=pet.infernal.active");
-    cds->add_action(this, "Summon Infernal", "if=target.time_to_die>cooldown.summon_infernal.duration", "If DSI is not ready but you can get more than one infernal in before the end of the fight, summon the Infernal now");
-    cds->add_talent(this, "Dark Soul: Instability", "if=target.time_to_die>cooldown.dark_soul_instability.duration+20", "If you can get in more than one more DSI before the end of the fight, use that now");
-    cds->add_action(this, "Summon Infernal", "if=talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains>target.time_to_die", "If the fight will end before DSI is back up, summon the Infernal");
-    cds->add_talent(this, "Dark Soul: Instability", "if=cooldown.summon_infernal.remains>target.time_to_die", "If the fight will end before infernal is back up, use DSI");
-    cds->add_action(this, "Summon Infernal", "if=target.time_to_die<30", "If the fight is about to end, use CDs such that they get as much time up as possible");
-    cds->add_talent(this, "Dark Soul: Instability", "if=target.time_to_die<20");
+    cds->add_action( this, "Summon Infernal", "if=cooldown.dark_soul_instability.ready|cooldown.memory_of_lucid_dreams.ready|(!talent.dark_soul_instability.enabled&!essence.memory_of_lucid_dreams.major)|cooldown.dark_soul_instability.remains<=10|cooldown.memory_of_lucid_dreams.remains<=10", "If both cooldowns are ready, summon the Infernal then activate DSI. If not using DSI, use this on CD" );
+    cds->add_action( "guardian_of_azeroth,if=pet.infernal.active" );
+    cds->add_talent( this, "Dark Soul: Instability", "if=pet.infernal.active&pet.infernal.remains<=20" );
+    cds->add_action(  "memory_of_lucid_dreams,if=pet.infernal.active&pet.infernal.remains<=20" );
+    cds->add_action( this, "Summon Infernal", "if=target.time_to_die>cooldown.summon_infernal.duration+30", "If DSI is not ready but you can get more than one infernal in before the end of the fight, summon the Infernal now" );
+    cds->add_action( "guardian_of_azeroth,if=time>30&target.time_to_die>cooldown.guardian_of_azeroth.duration+30" );
+    cds->add_action( this, "Summon Infernal", "if=talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains>target.time_to_die", "If the fight will end before DSI is back up, summon the Infernal" );
+    cds->add_action( "guardian_of_azeroth,if=cooldown.summon_infernal.remains>target.time_to_die" );
+    cds->add_talent( this, "Dark Soul: Instability", "if=cooldown.summon_infernal.remains>target.time_to_die", "If the fight will end before infernal is back up, use DSI" );
+    cds->add_action( "memory_of_lucid_dreams,if=cooldown.summon_infernal.remains>target.time_to_die" );
+    cds->add_action( this, "Summon Infernal", "if=target.time_to_die<30", "If the fight is about to end, use CDs such that they get as much time up as possible" );
+    cds->add_action( "guardian_of_azeroth,if=target.time_to_die<30" );
+    cds->add_talent( this, "Dark Soul: Instability", "if=target.time_to_die<20" );
+    cds->add_action( "memory_of_lucid_dreams,if=target.time_to_die<20" );
+    cds->add_action( "blood_of_the_enemy" );
+    cds->add_action( "worldvein_resonance" );
+    cds->add_action( "ripple_in_space" );
     cds->add_action( "potion,if=pet.infernal.active|target.time_to_die<30" );
-    cds->add_action( "berserking" );
-    cds->add_action( "blood_fury" );
-    cds->add_action( "fireblood" );
-    cds->add_action( "use_items" );
+    cds->add_action( "berserking,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30" );
+    cds->add_action( "blood_fury,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30" );
+    cds->add_action( "fireblood,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30" );
+    cds->add_action( "use_items,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30" );
 
-    havoc->add_action(this, "Conflagrate", "if=buff.backdraft.down&soul_shard>=1&soul_shard<=4");
-    havoc->add_action(this, "Immolate", "if=talent.internal_combustion.enabled&remains<duration*0.5|!talent.internal_combustion.enabled&refreshable");
-    havoc->add_action(this, "Chaos Bolt", "if=cast_time<havoc_remains");
-    havoc->add_talent(this, "Soul Fire");
-    havoc->add_talent(this, "Shadowburn", "if=active_enemies<3|!talent.fire_and_brimstone.enabled");
-    havoc->add_action(this, "Incinerate", "if=cast_time<havoc_remains");
+    havoc->add_action( this, "Conflagrate", "if=buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
+    havoc->add_action( this, "Immolate", "if=talent.internal_combustion.enabled&remains<duration*0.5|!talent.internal_combustion.enabled&refreshable" );
+    havoc->add_action( this, "Chaos Bolt", "if=cast_time<havoc_remains" );
+    havoc->add_talent( this, "Soul Fire" );
+    havoc->add_talent( this, "Shadowburn", "if=active_enemies<3|!talent.fire_and_brimstone.enabled" );
+    havoc->add_action( this, "Incinerate", "if=cast_time<havoc_remains" );
 
-    aoe->add_action(this, "Rain of Fire", "if=pet.infernal.active&(buff.crashing_chaos.down|!talent.grimoire_of_supremacy.enabled)&(!cooldown.havoc.ready|active_enemies>3)", "Rain of Fire is typically the highest priority action, but certain situations favor using Chaos Bolt instead");
-    aoe->add_talent(this, "Channel Demonfire", "if=dot.immolate.remains>cast_time", "Channel Demonfire only needs one Immolate active during its cast for AoE. Primary target is used here for simplicity");
-    aoe->add_action(this, "Immolate", "cycle_targets=1,if=remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)", "Similar to single target, there is no need to refresh Immolates if Cataclysm can do it instead");
-    aoe->add_action("call_action_list,name=cds", "Rules for cooldowns do not change for AoE, so call the same list as on single target");
-    aoe->add_action(this, "Havoc", "cycle_targets=1,if=!(target=self.target)&active_enemies<4", "Three targets is an in-between case that gives a slight benefit to higher priority Havoc");
-    aoe->add_action(this, "Chaos Bolt", "if=talent.grimoire_of_supremacy.enabled&pet.infernal.active&(havoc_active|talent.cataclysm.enabled|talent.inferno.enabled&active_enemies<4)", "Rain of Fire will start to dominate on heavy AoE, but some significant Chaos Bolt buffs will still give higher damage output on occasion");
-    aoe->add_action(this, "Rain of Fire", "", "Barring any exceptions, Rain of Fire will be used as much as possible, since multiple copies of it can stack");
-    aoe->add_action(this, "Havoc", "cycle_targets=1,if=!(target=self.target)&(!talent.grimoire_of_supremacy.enabled|!talent.inferno.enabled|talent.grimoire_of_supremacy.enabled&pet.infernal.remains<=10)", "Even if the Havoc priority list won't be used, Havoc is pretty much free damage and resources and should be used almost on cooldown");
-    aoe->add_action(this, "Incinerate", "if=talent.fire_and_brimstone.enabled&buff.backdraft.up&soul_shard<5-0.2*active_enemies", "Use Fire and Brimstone if Backdraft is active, as long as it will not overcap on Soul Shards");
-    aoe->add_talent(this, "Soul Fire", "", "Other Soul Shard generating abilities are good filler if not using Fire and Brimstone");
-    aoe->add_action(this, "Conflagrate", "if=buff.backdraft.down");
-    aoe->add_talent(this, "Shadowburn", "if=!talent.fire_and_brimstone.enabled");
-    aoe->add_action(this, "Incinerate", "", "With Fire and Brimstone, Incinerate will be a strong filler. It's placed here for all talents to prevent accidentally using the single target rotation list");
+    aoe->add_action( this, "Rain of Fire", "if=pet.infernal.active&(buff.crashing_chaos.down|!talent.grimoire_of_supremacy.enabled)&(!cooldown.havoc.ready|active_enemies>3)", "Rain of Fire is typically the highest priority action, but certain situations favor using Chaos Bolt instead" );
+    aoe->add_talent( this, "Channel Demonfire", "if=dot.immolate.remains>cast_time", "Channel Demonfire only needs one Immolate active during its cast for AoE. Primary target is used here for simplicity" );
+    aoe->add_action( this, "Immolate", "cycle_targets=1,if=remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)", "Similar to single target, there is no need to refresh Immolates if Cataclysm can do it instead" );
+    aoe->add_action( "call_action_list,name=cds", "Rules for cooldowns do not change for AoE, so call the same list as on single target" );
+    aoe->add_action( this, "Havoc", "cycle_targets=1,if=!(target=self.target)&active_enemies<4", "Three targets is an in-between case that gives a slight benefit to higher priority Havoc" );
+    aoe->add_action( this, "Chaos Bolt", "if=talent.grimoire_of_supremacy.enabled&pet.infernal.active&(havoc_active|talent.cataclysm.enabled|talent.inferno.enabled&active_enemies<4)", "Rain of Fire will start to dominate on heavy AoE, but some significant Chaos Bolt buffs will still give higher damage output on occasion" );
+    aoe->add_action( this, "Rain of Fire", "", "Barring any exceptions, Rain of Fire will be used as much as possible, since multiple copies of it can stack" );
+    aoe->add_action( "focused_azerite_beam" );
+    aoe->add_action( "purifying_blast" );
+    aoe->add_action( this, "Havoc", "cycle_targets=1,if=!(target=self.target)&(!talent.grimoire_of_supremacy.enabled|!talent.inferno.enabled|talent.grimoire_of_supremacy.enabled&pet.infernal.remains<=10)", "Even if the Havoc priority list won't be used, Havoc is pretty much free damage and resources and should be used almost on cooldown" );
+    aoe->add_action( this, "Incinerate", "if=talent.fire_and_brimstone.enabled&buff.backdraft.up&soul_shard<5-0.2*active_enemies", "Use Fire and Brimstone if Backdraft is active, as long as it will not overcap on Soul Shards" );
+    aoe->add_talent( this, "Soul Fire", "", "Other Soul Shard generating abilities are good filler if not using Fire and Brimstone" );
+    aoe->add_action( this, "Conflagrate", "if=buff.backdraft.down" );
+    aoe->add_talent( this, "Shadowburn", "if=!talent.fire_and_brimstone.enabled" );
+    aoe->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight&active_enemies<5" );
+    aoe->add_action( this, "Incinerate", "", "With Fire and Brimstone, Incinerate will be a strong filler. It's placed here for all talents to prevent accidentally using the single target rotation list" );
   }
 }

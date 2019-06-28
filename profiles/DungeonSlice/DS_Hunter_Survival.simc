@@ -34,11 +34,49 @@ actions.precombat+=/harpoon
 actions=auto_attack
 actions+=/use_items
 actions+=/call_action_list,name=cds
-actions+=/call_action_list,name=mb_ap_wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled
-actions+=/call_action_list,name=wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled
-actions+=/call_action_list,name=st,if=active_enemies<2|azerite.blur_of_talons.enabled&talent.birds_of_prey.enabled&buff.coordinated_assault.up
+actions+=/call_action_list,name=apwfi,if=active_enemies<3&talent.chakrams.enabled&talent.alpha_predator.enabled
+actions+=/call_action_list,name=wfi,if=active_enemies<3&talent.chakrams.enabled
+actions+=/call_action_list,name=st,if=active_enemies<3&!talent.alpha_predator.enabled&!talent.wildfire_infusion.enabled
+actions+=/call_action_list,name=apst,if=active_enemies<3&talent.alpha_predator.enabled&!talent.wildfire_infusion.enabled
+actions+=/call_action_list,name=apwfi,if=active_enemies<3&talent.alpha_predator.enabled&talent.wildfire_infusion.enabled
+actions+=/call_action_list,name=apwfi,if=active_enemies<3&!talent.alpha_predator.enabled&talent.wildfire_infusion.enabled
 actions+=/call_action_list,name=cleave,if=active_enemies>1
+actions+=/concentrated_flame
 actions+=/arcane_torrent
+
+actions.apst=mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
+actions.apst+=/raptor_strike,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
+actions.apst+=/flanking_strike,if=focus+cast_regen<focus.max
+actions.apst+=/kill_command,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-10
+actions.apst+=/steel_trap,if=focus+cast_regen<focus.max
+actions.apst+=/wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up)
+actions.apst+=/serpent_sting,if=!dot.serpent_sting.ticking&!buff.coordinated_assault.up
+actions.apst+=/kill_command,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
+actions.apst+=/serpent_sting,if=refreshable&!buff.coordinated_assault.up&buff.mongoose_fury.stack<5
+actions.apst+=/a_murder_of_crows,if=!buff.coordinated_assault.up
+actions.apst+=/coordinated_assault
+actions.apst+=/mongoose_bite,if=buff.mongoose_fury.up|focus+cast_regen>focus.max-10|buff.coordinated_assault.up
+actions.apst+=/raptor_strike
+actions.apst+=/wildfire_bomb,if=!ticking
+
+actions.apwfi=mongoose_bite,if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd
+actions.apwfi+=/raptor_strike,if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd
+actions.apwfi+=/serpent_sting,if=!dot.serpent_sting.ticking
+actions.apwfi+=/a_murder_of_crows
+actions.apwfi+=/wildfire_bomb,if=full_recharge_time<1.5*gcd|focus+cast_regen<focus.max&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
+actions.apwfi+=/coordinated_assault
+actions.apwfi+=/mongoose_bite,if=buff.mongoose_fury.remains&next_wi_bomb.pheromone
+actions.apwfi+=/kill_command,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-20
+actions.apwfi+=/steel_trap,if=focus+cast_regen<focus.max
+actions.apwfi+=/raptor_strike,if=buff.tip_of_the_spear.stack=3|dot.shrapnel_bomb.ticking
+actions.apwfi+=/mongoose_bite,if=dot.shrapnel_bomb.ticking
+actions.apwfi+=/wildfire_bomb,if=next_wi_bomb.shrapnel&focus>30&dot.serpent_sting.remains>5*gcd
+actions.apwfi+=/chakrams,if=!buff.mongoose_fury.remains
+actions.apwfi+=/serpent_sting,if=refreshable
+actions.apwfi+=/kill_command,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
+actions.apwfi+=/raptor_strike
+actions.apwfi+=/mongoose_bite,if=buff.mongoose_fury.up|focus>40|dot.shrapnel_bomb.ticking
+actions.apwfi+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
 
 actions.cds=blood_fury,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/ancestral_call,if=cooldown.coordinated_assault.remains>30
@@ -47,6 +85,15 @@ actions.cds+=/lights_judgment
 actions.cds+=/berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13
 actions.cds+=/potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)|time_to_die<26
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
+actions.cds+=/focused_azerite_beam
+actions.cds+=/memory_of_lucid_dreams,if=buff.coordinated_assault.up
+actions.cds+=/blood_of_the_enemy,if=buff.coordinated_assault.up
+actions.cds+=/purifying_blast
+actions.cds+=/guardian_of_azeroth
+actions.cds+=/ripple_in_space
+actions.cds+=/concentrated_flame,if=full_recharge_time<1*gcd
+actions.cds+=/the_unbound_force,if=buff.reckless_force.up
+actions.cds+=/worldvein_resonance
 
 actions.cleave=variable,name=carve_cdr,op=setif,value=active_enemies,value_else=5,condition=active_enemies<5
 actions.cleave+=/a_murder_of_crows
@@ -69,56 +116,41 @@ actions.cleave+=/serpent_sting,target_if=min:remains,if=refreshable&buff.tip_of_
 actions.cleave+=/mongoose_bite,target_if=max:debuff.latent_poison.stack
 actions.cleave+=/raptor_strike,target_if=max:debuff.latent_poison.stack
 
-actions.mb_ap_wfi_st=serpent_sting,if=!dot.serpent_sting.ticking
-actions.mb_ap_wfi_st+=/wildfire_bomb,if=full_recharge_time<gcd|(focus+cast_regen<focus.max)&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
-actions.mb_ap_wfi_st+=/coordinated_assault
-actions.mb_ap_wfi_st+=/a_murder_of_crows
-actions.mb_ap_wfi_st+=/steel_trap
-# To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name.
-actions.mb_ap_wfi_st+=/mongoose_bite,if=buff.mongoose_fury.remains&next_wi_bomb.pheromone
-actions.mb_ap_wfi_st+=/kill_command,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
-actions.mb_ap_wfi_st+=/wildfire_bomb,if=next_wi_bomb.shrapnel&focus>60&dot.serpent_sting.remains>3*gcd
-actions.mb_ap_wfi_st+=/serpent_sting,if=refreshable&(next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)
-actions.mb_ap_wfi_st+=/mongoose_bite,if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking
-actions.mb_ap_wfi_st+=/serpent_sting,if=refreshable
-actions.mb_ap_wfi_st+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
-
-actions.st=a_murder_of_crows
-# To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name.
-actions.st+=/mongoose_bite,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)
-actions.st+=/raptor_strike,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)
-actions.st+=/serpent_sting,if=buff.vipers_venom.react&buff.vipers_venom.remains<gcd
-actions.st+=/kill_command,if=focus+cast_regen<focus.max&(!talent.alpha_predator.enabled|talent.alpha_predator.enabled&full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-20)
-actions.st+=/wildfire_bomb,if=focus+cast_regen<focus.max&(full_recharge_time<gcd|!dot.wildfire_bomb.ticking&(buff.mongoose_fury.down|full_recharge_time<4.5*gcd))
-actions.st+=/serpent_sting,if=buff.vipers_venom.react&dot.serpent_sting.remains<4*gcd|!talent.vipers_venom.enabled&!dot.serpent_sting.ticking&!buff.coordinated_assault.up
-actions.st+=/serpent_sting,if=refreshable&(azerite.latent_poison.rank>2|azerite.latent_poison.enabled&azerite.venomous_fangs.enabled|(azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)&(!azerite.blur_of_talons.enabled|!talent.birds_of_prey.enabled|!buff.coordinated_assault.up))
-actions.st+=/steel_trap
-actions.st+=/harpoon,if=talent.terms_of_engagement.enabled
-actions.st+=/coordinated_assault
-actions.st+=/chakrams
+actions.st=harpoon,if=talent.terms_of_engagement.enabled
 actions.st+=/flanking_strike,if=focus+cast_regen<focus.max
-actions.st+=/kill_command,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<4|focus<action.mongoose_bite.cost)
-actions.st+=/mongoose_bite,if=buff.mongoose_fury.up|(focus+cast_regen>focus.max-10|talent.vipers_venom.enabled&focus+cast_regen>focus.max-20)|buff.coordinated_assault.up
-actions.st+=/raptor_strike
-actions.st+=/serpent_sting,if=dot.serpent_sting.refreshable&!buff.coordinated_assault.up
-actions.st+=/wildfire_bomb,if=dot.wildfire_bomb.refreshable
-
-actions.wfi_st=a_murder_of_crows
-actions.wfi_st+=/coordinated_assault
+actions.st+=/raptor_strike,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
 # To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name.
-actions.wfi_st+=/mongoose_bite,if=azerite.wilderness_survival.enabled&next_wi_bomb.volatile&dot.serpent_sting.remains>2.1*gcd&dot.serpent_sting.remains<3.5*gcd&cooldown.wildfire_bomb.remains>2.5*gcd
-actions.wfi_st+=/wildfire_bomb,if=full_recharge_time<gcd|(focus+cast_regen<focus.max)&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
-actions.wfi_st+=/kill_command,if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3&(!talent.alpha_predator.enabled|buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
-actions.wfi_st+=/raptor_strike,if=dot.internal_bleeding.stack<3&dot.shrapnel_bomb.ticking&!talent.mongoose_bite.enabled
-actions.wfi_st+=/wildfire_bomb,if=next_wi_bomb.shrapnel&buff.mongoose_fury.down&(cooldown.kill_command.remains>gcd|focus>60)&!dot.serpent_sting.refreshable
-actions.wfi_st+=/steel_trap
-actions.wfi_st+=/flanking_strike,if=focus+cast_regen<focus.max
-actions.wfi_st+=/serpent_sting,if=buff.vipers_venom.react|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled|buff.mongoose_fury.stack=5)
-actions.wfi_st+=/harpoon,if=talent.terms_of_engagement.enabled
-actions.wfi_st+=/mongoose_bite,if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking
-actions.wfi_st+=/raptor_strike
-actions.wfi_st+=/serpent_sting,if=refreshable
-actions.wfi_st+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
+actions.st+=/mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
+actions.st+=/steel_trap,if=focus+cast_regen<focus.max
+actions.st+=/wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up)
+actions.st+=/mongoose_bite,if=buff.mongoose_fury.stack>5&!cooldown.coordinated_assault.remains
+actions.st+=/serpent_sting,if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|dot.serpent_sting.refreshable&!buff.coordinated_assault.up
+actions.st+=/a_murder_of_crows,if=!buff.coordinated_assault.up
+actions.st+=/coordinated_assault
+actions.st+=/mongoose_bite,if=buff.mongoose_fury.up|focus+cast_regen>focus.max-20&talent.vipers_venom.enabled|focus+cast_regen>focus.max-1&talent.terms_of_engagement.enabled|buff.coordinated_assault.up
+actions.st+=/raptor_strike
+actions.st+=/wildfire_bomb,if=dot.wildfire_bomb.refreshable
+actions.st+=/serpent_sting,if=buff.vipers_venom.up
+
+actions.wfi=harpoon,if=focus+cast_regen<focus.max&talent.terms_of_engagement.enabled
+actions.wfi+=/mongoose_bite,if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd
+actions.wfi+=/raptor_strike,if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd
+actions.wfi+=/serpent_sting,if=buff.vipers_venom.up&buff.vipers_venom.remains<1.5*gcd|!dot.serpent_sting.ticking
+actions.wfi+=/wildfire_bomb,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max|(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
+actions.wfi+=/kill_command,if=focus+cast_regen<focus.max-focus.regen
+actions.wfi+=/a_murder_of_crows
+actions.wfi+=/steel_trap,if=focus+cast_regen<focus.max
+actions.wfi+=/wildfire_bomb,if=full_recharge_time<1.5*gcd
+actions.wfi+=/coordinated_assault
+actions.wfi+=/serpent_sting,if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd
+actions.wfi+=/mongoose_bite,if=dot.shrapnel_bomb.ticking|buff.mongoose_fury.stack=5
+actions.wfi+=/wildfire_bomb,if=next_wi_bomb.shrapnel&dot.serpent_sting.remains>5*gcd
+actions.wfi+=/serpent_sting,if=refreshable
+actions.wfi+=/chakrams,if=!buff.mongoose_fury.remains
+actions.wfi+=/mongoose_bite
+actions.wfi+=/raptor_strike
+actions.wfi+=/serpent_sting,if=buff.vipers_venom.up
+actions.wfi+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel
 
 head=visage_of_bloody_horrors,id=159381,bonus_id=1587/5440/4775,azerite_powers=371/372/30/83/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
@@ -141,7 +173,7 @@ main_hand=hornridged_crusher,id=165589,bonus_id=4800/1537,enchant=quick_navigati
 # gear_agility=5767
 # gear_stamina=9907
 # gear_crit_rating=917
-# gear_haste_rating=1505
+# gear_haste_rating=1511
 # gear_mastery_rating=538
 # gear_versatility_rating=407
 # gear_armor=3410

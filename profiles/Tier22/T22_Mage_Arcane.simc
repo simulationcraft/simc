@@ -33,8 +33,8 @@ actions.precombat+=/potion
 actions.precombat+=/arcane_blast
 
 # Executed every time the actor is available.
-# Interrupt the boss when possible.
-actions=counterspell,if=target.debuff.casting.react
+actions=counterspell
+actions+=/call_action_list,name=essences
 # Go to Burn Phase when already burning, or when boss will die soon.
 actions+=/call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length
 # Start Burn Phase when Arcane Power is ready and Evocation will be ready (on average) before the burn phase is over. Also make sure we got 4 Arcane Charges, or can get 4 Arcane Charges with Charged Up.
@@ -93,6 +93,16 @@ actions.conserve+=/arcane_explosion,if=active_enemies>=3&(mana.pct>=variable.con
 actions.conserve+=/arcane_blast
 actions.conserve+=/arcane_barrage
 
+actions.essences=blood_of_the_enemy,if=burn_phase&buff.arcane_power.down&buff.rune_of_power.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack|time_to_die<cooldown.arcane_power.remains
+actions.essences+=/concentrated_flame,line_cd=6,if=buff.rune_of_power.down&buff.arcane_power.down&(!burn_phase|time_to_die<cooldown.arcane_power.remains)&mana.time_to_max>=execute_time
+actions.essences+=/focused_azerite_beam,if=buff.rune_of_power.down&buff.arcane_power.down
+actions.essences+=/guardian_of_azeroth,if=buff.rune_of_power.down&buff.arcane_power.down
+actions.essences+=/purifying_blast,if=buff.rune_of_power.down&buff.arcane_power.down
+actions.essences+=/ripple_in_space,if=buff.rune_of_power.down&buff.arcane_power.down
+actions.essences+=/the_unbound_force,if=buff.rune_of_power.down&buff.arcane_power.down
+actions.essences+=/memory_of_lucid_dreams,if=!burn_phase&buff.arcane_power.down&cooldown.arcane_power.remains&buff.arcane_charge.stack=buff.arcane_charge.max_stack&(!talent.rune_of_power.enabled|action.rune_of_power.charges)|time_to_die<cooldown.arcane_power.remains
+actions.essences+=/worldvein_resonance,if=burn_phase&buff.arcane_power.down&buff.rune_of_power.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack|time_to_die<cooldown.arcane_power.remains
+
 actions.movement=blink_any,if=movement.distance>=10
 actions.movement+=/presence_of_mind
 actions.movement+=/arcane_missiles
@@ -119,7 +129,7 @@ main_hand=regurgitated_purifiers_flamestaff,id=160689,bonus_id=4800/1507,enchant
 # gear_ilvl=385.27
 # gear_stamina=7207
 # gear_intellect=5208
-# gear_crit_rating=1249
+# gear_crit_rating=1255
 # gear_haste_rating=624
 # gear_mastery_rating=887
 # gear_versatility_rating=407

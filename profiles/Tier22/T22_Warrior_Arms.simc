@@ -26,6 +26,9 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
+actions.precombat+=/memory_of_lucid_dreams
+actions.precombat+=/guardian_of_azeroth
+actions.precombat+=/focused_azerite_beam
 
 # Executed every time the actor is available.
 actions=charge
@@ -39,21 +42,30 @@ actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
 actions+=/avatar,if=cooldown.colossus_smash.remains<8|(talent.warbreaker.enabled&cooldown.warbreaker.remains<8)
 actions+=/sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>10|cooldown.colossus_smash.remains>8|azerite.test_of_might.enabled)
+actions+=/blood_of_the_enemy,if=buff.test_of_might.up|(debuff.colossus_smash.up&!azerite.test_of_might.enabled)
+actions+=/purifying_blast,if=!debuff.colossus_smash.up&!buff.test_of_might.up
+actions+=/ripple_in_space,if=!debuff.colossus_smash.up&!buff.test_of_might.up
+actions+=/worldvein_resonance,if=!debuff.colossus_smash.up&!buff.test_of_might.up
+actions+=/focused_azerite_beam,if=!debuff.colossus_smash.up&!buff.test_of_might.up
+actions+=/concentrated_flame,if=!debuff.colossus_smash.up&!buff.test_of_might.up&dot.concentrated_flame_burn.remains=0
+actions+=/the_unbound_force,if=buff.reckless_force.up
+actions+=/guardian_of_azeroth,if=cooldown.colossus_smash.remains<10
+actions+=/memory_of_lucid_dreams,if=cooldown.colossus_smash.remains<3
 actions+=/run_action_list,name=hac,if=raid_event.adds.exists
 actions+=/run_action_list,name=five_target,if=spell_targets.whirlwind>4
 actions+=/run_action_list,name=execute,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
 actions+=/run_action_list,name=single_target
 
-actions.execute=skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
+actions.execute=skullsplitter,if=rage<60&buff.deadly_calm.down&buff.memory_of_lucid_dreams.down
 actions.execute+=/ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
-actions.execute+=/colossus_smash,if=debuff.colossus_smash.down
-actions.execute+=/warbreaker,if=debuff.colossus_smash.down
+actions.execute+=/colossus_smash,if=!essence.memory_of_lucid_dreams.major|(buff.memory_of_lucid_dreams.up|cooldown.memory_of_lucid_dreams.remains>10)
+actions.execute+=/warbreaker,if=!essence.memory_of_lucid_dreams.major|(buff.memory_of_lucid_dreams.up|cooldown.memory_of_lucid_dreams.remains>10)
 actions.execute+=/deadly_calm
-actions.execute+=/bladestorm,if=rage<30&!buff.deadly_calm.up
+actions.execute+=/bladestorm,if=!buff.memory_of_lucid_dreams.up&buff.test_of_might.up&rage<30&!buff.deadly_calm.up
 actions.execute+=/cleave,if=spell_targets.whirlwind>2
-actions.execute+=/slam,if=buff.crushing_assault.up
+actions.execute+=/slam,if=buff.crushing_assault.up&buff.memory_of_lucid_dreams.down
 actions.execute+=/mortal_strike,if=buff.overpower.stack=2&talent.dreadnaught.enabled|buff.executioners_precision.stack=2
-actions.execute+=/execute,if=buff.deadly_calm.up
+actions.execute+=/execute,if=buff.memory_of_lucid_dreams.up|buff.deadly_calm.up
 actions.execute+=/overpower
 actions.execute+=/execute
 
@@ -88,20 +100,20 @@ actions.hac+=/whirlwind,if=talent.fervor_of_battle.enabled
 actions.hac+=/slam,if=!talent.fervor_of_battle.enabled&!raid_event.adds.up
 
 actions.single_target=rend,if=remains<=duration*0.3&debuff.colossus_smash.down
-actions.single_target+=/skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
+actions.single_target+=/skullsplitter,if=rage<60&buff.deadly_calm.down&buff.memory_of_lucid_dreams.down
 actions.single_target+=/ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
-actions.single_target+=/colossus_smash,if=debuff.colossus_smash.down
-actions.single_target+=/warbreaker,if=debuff.colossus_smash.down
+actions.single_target+=/colossus_smash,if=!essence.memory_of_lucid_dreams.major|(buff.memory_of_lucid_dreams.up|cooldown.memory_of_lucid_dreams.remains>10)
+actions.single_target+=/warbreaker,if=!essence.memory_of_lucid_dreams.major|(buff.memory_of_lucid_dreams.up|cooldown.memory_of_lucid_dreams.remains>10)
 actions.single_target+=/deadly_calm
 actions.single_target+=/execute,if=buff.sudden_death.react
-actions.single_target+=/bladestorm,if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)
+actions.single_target+=/bladestorm,if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)&buff.memory_of_lucid_dreams.down
 actions.single_target+=/cleave,if=spell_targets.whirlwind>2
-actions.single_target+=/overpower,if=azerite.seismic_wave.rank=3
+actions.single_target+=/overpower,if=rage<30&buff.memory_of_lucid_dreams.up&debuff.colossus_smash.up
 actions.single_target+=/mortal_strike
-actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(buff.deadly_calm.up|rage>=60)
+actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(buff.memory_of_lucid_dreams.up|buff.deadly_calm.up)
 actions.single_target+=/overpower
-actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|debuff.colossus_smash.up)
-actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|debuff.colossus_smash.up|buff.deadly_calm.up|rage>=60)
+actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled
+actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled
 
 head=helm_of_the_defiled_laboratorium,id=160732,bonus_id=4800/1507/4775,azerite_powers=226/22/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
@@ -124,7 +136,7 @@ main_hand=khor_hammer_of_the_corrupted,id=160679,bonus_id=4800/1507,enchant=gale
 # gear_strength=4388
 # gear_stamina=7207
 # gear_crit_rating=953
-# gear_haste_rating=1121
+# gear_haste_rating=1127
 # gear_mastery_rating=652
 # gear_versatility_rating=277
 # gear_armor=4082

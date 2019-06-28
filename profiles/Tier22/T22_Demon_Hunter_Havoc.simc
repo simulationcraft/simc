@@ -9,9 +9,9 @@ position=back
 talents=3210222
 
 # Default consumables
-potion=battle_potion_of_agility
-flask=currents
-food=bountiful_captains_feast
+potion=potion_of_focused_resolve
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -50,6 +50,7 @@ actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&(!azerite.chaotic_tra
 actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
+actions.cooldown+=/call_action_list,name=essences
 
 actions.dark_slash=dark_slash,if=fury>=80&(!variable.blade_dance|!cooldown.blade_dance.ready)
 actions.dark_slash+=/annihilation,if=debuff.dark_slash.up
@@ -69,6 +70,16 @@ actions.demonic+=/throw_glaive,if=buff.out_of_range.up
 actions.demonic+=/fel_rush,if=movement.distance>15|buff.out_of_range.up
 actions.demonic+=/vengeful_retreat,if=movement.distance>15
 actions.demonic+=/throw_glaive,if=talent.demon_blades.enabled
+
+actions.essences=concentrated_flame
+actions.essences+=/blood_of_the_enemy
+actions.essences+=/guardian_of_azeroth
+actions.essences+=/focused_azerite_beam
+actions.essences+=/purifying_blast
+actions.essences+=/the_unbound_force
+actions.essences+=/ripple_in_space
+actions.essences+=/worldvein_resonance
+actions.essences+=/memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up
 
 actions.normal=vengeful_retreat,if=talent.momentum.enabled&buff.prepared.down&time>1
 actions.normal+=/fel_rush,if=(variable.waiting_for_momentum|talent.fel_mastery.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
@@ -111,7 +122,7 @@ off_hand=glaive_of_the_keepers,id=160681,bonus_id=4800/1507,enchant=quick_naviga
 # gear_agility=4345
 # gear_stamina=7205
 # gear_crit_rating=872
-# gear_haste_rating=1351
+# gear_haste_rating=1357
 # gear_mastery_rating=584
 # gear_versatility_rating=195
 # gear_armor=1911

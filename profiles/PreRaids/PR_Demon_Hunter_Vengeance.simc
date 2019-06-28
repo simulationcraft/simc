@@ -10,8 +10,8 @@ talents=1213121
 
 # Default consumables
 potion=steelskin_potion
-flask=currents
-food=bountiful_captains_feast
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -88,7 +88,7 @@ off_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=q
 # gear_agility=2883
 # gear_stamina=4465
 # gear_crit_rating=255
-# gear_haste_rating=1194
+# gear_haste_rating=1200
 # gear_mastery_rating=209
 # gear_versatility_rating=822
 # gear_armor=1430

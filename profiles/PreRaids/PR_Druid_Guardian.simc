@@ -8,9 +8,9 @@ position=front
 talents=1111123
 
 # Default consumables
-potion=potion_of_bursting_blood
-flask=flask_of_the_currents
-food=bountiful_captains_feast
+potion=focused_resolve
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -23,6 +23,7 @@ augmentation=battle_scarred
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
+actions.precombat+=/memory_of_lucid_dreams
 actions.precombat+=/bear_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -32,21 +33,20 @@ actions.precombat+=/potion
 actions=auto_attack
 actions+=/call_action_list,name=cooldowns
 actions+=/maul,if=rage.deficit<10&active_enemies<4
+actions+=/maul,if=essence.conflict_and_strife.major&!buff.sharpened_claws.up
 actions+=/ironfur,if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)
 actions+=/pulverize,target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks
 actions+=/moonfire,target_if=dot.moonfire.refreshable&active_enemies<2
-actions+=/incarnation
 actions+=/thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)
 actions+=/swipe,if=buff.incarnation.down&active_enemies>4
 actions+=/mangle,if=dot.thrash_bear.ticking
 actions+=/moonfire,target_if=buff.galactic_guardian.up&active_enemies<2
 actions+=/thrash
 actions+=/maul
-# Fill with Moonfire with PotMx2
-actions+=/moonfire,if=azerite.power_of_the_moon.rank>1&active_enemies=1
 actions+=/swipe
 
 actions.cooldowns=potion
+actions.cooldowns+=/heart_essence
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
@@ -56,6 +56,7 @@ actions.cooldowns+=/ancestral_call
 actions.cooldowns+=/barkskin,if=buff.bear_form.up
 actions.cooldowns+=/lunar_beam,if=buff.bear_form.up
 actions.cooldowns+=/bristling_fur,if=buff.bear_form.up
+actions.cooldowns+=/incarnation,if=(dot.moonfire.ticking|active_enemies>1)&dot.thrash_bear.ticking
 actions.cooldowns+=/use_items
 
 head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/85/13
@@ -79,6 +80,6 @@ main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_nav
 # gear_agility=2883
 # gear_stamina=4465
 # gear_crit_rating=964
-# gear_haste_rating=1305
+# gear_haste_rating=1311
 # gear_mastery_rating=209
 # gear_armor=1430

@@ -10,8 +10,8 @@ talents=1213121
 
 # Default consumables
 potion=steelskin_potion
-flask=currents
-food=bountiful_captains_feast
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -86,5 +86,5 @@ off_hand=glaive_of_the_keepers,id=160681,bonus_id=4800/1507,enchant=quick_naviga
 # gear_crit_rating=872
 # gear_haste_rating=1277
 # gear_mastery_rating=584
-# gear_versatility_rating=269
+# gear_versatility_rating=275
 # gear_armor=1911

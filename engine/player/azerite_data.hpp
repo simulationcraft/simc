@@ -364,6 +364,7 @@ void strive_for_perfection( special_effect_t& effect );
 void vision_of_perfection( special_effect_t& effect );
 void anima_of_life_and_death( special_effect_t& effect );
 void nullification_dynamo( special_effect_t& effect );
+void aegis_of_the_deep( special_effect_t& effect );
 } // Namepsace azerite_essences ends
 
 // Vision of Perfection CDR helper

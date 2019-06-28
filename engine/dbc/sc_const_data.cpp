@@ -221,11 +221,11 @@ const std::vector<class_passives_entry_t> _class_passives {
 
 int dbc::build_level( bool ptr )
 {
-  return maybe_ptr( ptr ) ? 30329 : 29981;
+  return maybe_ptr( ptr ) ? 30329 : 30918;
 }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "8.2.0" : "8.1.5"; }
+{ return maybe_ptr( ptr ) ? "8.2.0" : "8.2.0"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 #if SC_BETA
@@ -1731,7 +1731,7 @@ double spelleffect_data_t::average( const item_t* item ) const
     const auto& props = item -> player -> dbc.random_property( item -> item_level() );
     budget = props.damage_replace_stat;
   }
-  else if ( item->player->dbc.ptr && _spell->scaling_class() == PLAYER_NONE &&
+  else if ( _spell->scaling_class() == PLAYER_NONE &&
             _spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
   {
     const auto& props = item -> player -> dbc.random_property( item -> item_level() );

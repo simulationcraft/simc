@@ -5649,13 +5649,25 @@ void mage_t::apl_arcane()
   action_priority_list_t* conserve     = get_action_priority_list( "conserve" );
   action_priority_list_t* burn         = get_action_priority_list( "burn" );
   action_priority_list_t* movement     = get_action_priority_list( "movement" );
+  action_priority_list_t* essences     = get_action_priority_list( "essences" );
 
 
-  default_list->add_action( this, "Counterspell", "if=target.debuff.casting.react", "Interrupt the boss when possible." );
+  default_list->add_action( this, "Counterspell" );
+  default_list->add_action( "call_action_list,name=essences" );
   default_list->add_action( "call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length", "Go to Burn Phase when already burning, or when boss will die soon." );
   default_list->add_action( "call_action_list,name=burn,if=(cooldown.arcane_power.remains=0&cooldown.evocation.remains<=variable.average_burn_length&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0&buff.arcane_charge.stack<=1)))", "Start Burn Phase when Arcane Power is ready and Evocation will be ready (on average) before the burn phase is over. Also make sure we got 4 Arcane Charges, or can get 4 Arcane Charges with Charged Up." );
   default_list->add_action( "call_action_list,name=conserve,if=!burn_phase" );
   default_list->add_action( "call_action_list,name=movement" );
+
+  essences->add_action( "blood_of_the_enemy,if=burn_phase&buff.arcane_power.down&buff.rune_of_power.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack|time_to_die<cooldown.arcane_power.remains" );
+  essences->add_action( "concentrated_flame,line_cd=6,if=buff.rune_of_power.down&buff.arcane_power.down&(!burn_phase|time_to_die<cooldown.arcane_power.remains)&mana.time_to_max>=execute_time" );
+  essences->add_action( "focused_azerite_beam,if=buff.rune_of_power.down&buff.arcane_power.down" );
+  essences->add_action( "guardian_of_azeroth,if=buff.rune_of_power.down&buff.arcane_power.down" );
+  essences->add_action( "purifying_blast,if=buff.rune_of_power.down&buff.arcane_power.down" );
+  essences->add_action( "ripple_in_space,if=buff.rune_of_power.down&buff.arcane_power.down" );
+  essences->add_action( "the_unbound_force,if=buff.rune_of_power.down&buff.arcane_power.down" );
+  essences->add_action( "memory_of_lucid_dreams,if=!burn_phase&buff.arcane_power.down&cooldown.arcane_power.remains&buff.arcane_charge.stack=buff.arcane_charge.max_stack&(!talent.rune_of_power.enabled|action.rune_of_power.charges)|time_to_die<cooldown.arcane_power.remains" );
+  essences->add_action( "worldvein_resonance,if=burn_phase&buff.arcane_power.down&buff.rune_of_power.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack|time_to_die<cooldown.arcane_power.remains" );
 
   burn->add_action( "variable,name=total_burns,op=add,value=1,if=!burn_phase", "Increment our burn phase counter. Whenever we enter the `burn` actions without being in a burn phase, it means that we are about to start one." );
   burn->add_action( "start_burn_phase,if=!burn_phase" );
@@ -5737,20 +5749,21 @@ void mage_t::apl_fire()
   default_list->add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
   default_list->add_action( "variable,name=fire_blast_pooling,value=talent.rune_of_power.enabled&cooldown.rune_of_power.remains<cooldown.fire_blast.full_recharge_time&(cooldown.combustion.remains>variable.combustion_rop_cutoff|firestarter.active)&(cooldown.rune_of_power.remains<target.time_to_die|action.rune_of_power.charges>0)|cooldown.combustion.remains<action.fire_blast.full_recharge_time+cooldown.fire_blast.duration*azerite.blaster_master.enabled&!firestarter.active&cooldown.combustion.remains<target.time_to_die|talent.firestarter.enabled&firestarter.active&firestarter.remains<cooldown.fire_blast.full_recharge_time+cooldown.fire_blast.duration*azerite.blaster_master.enabled" );
   default_list->add_action( "variable,name=phoenix_pooling,value=talent.rune_of_power.enabled&cooldown.rune_of_power.remains<cooldown.phoenix_flames.full_recharge_time&cooldown.combustion.remains>variable.combustion_rop_cutoff&(cooldown.rune_of_power.remains<target.time_to_die|action.rune_of_power.charges>0)|cooldown.combustion.remains<action.phoenix_flames.full_recharge_time&cooldown.combustion.remains<target.time_to_die" );
-  default_list->add_action( "call_action_list,name=standard_rotation" );
 
+  default_list->add_action( "call_action_list,name=standard_rotation" );
   active_talents->add_talent( this, "Living Bomb", "if=active_enemies>1&buff.combustion.down&(cooldown.combustion.remains>cooldown.living_bomb.duration|cooldown.combustion.ready)" );
   active_talents->add_talent( this, "Meteor", "if=buff.rune_of_power.up&(firestarter.remains>cooldown.meteor.duration|!firestarter.active)|cooldown.rune_of_power.remains>target.time_to_die&action.rune_of_power.charges<1|(cooldown.meteor.duration<cooldown.combustion.remains|cooldown.combustion.ready)&!talent.rune_of_power.enabled&(cooldown.meteor.duration<firestarter.remains|!talent.firestarter.enabled|!firestarter.active)" );
   active_talents->add_talent( this, "Dragon's Breath", "if=talent.alexstraszas_fury.enabled&(buff.combustion.down&!buff.hot_streak.react|buff.combustion.up&action.fire_blast.charges<action.fire_blast.max_charges&!buff.hot_streak.react)" );
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down", "Combustion phase prepares abilities with a delay, then launches into the Combustion sequence" );
-  combustion_phase->add_action( "call_action_list,name=bm_combustion_phase,if=azerite.blaster_master.enabled&talent.flame_on.enabled" );
+  combustion_phase->add_action( "call_action_list,name=bm_combustion_phase,if=azerite.blaster_master.enabled&talent.flame_on.enabled&!essence.memory_of_lucid_dreams.enabled" );
   combustion_phase->add_action( "blood_of_the_enemy" );
   combustion_phase->add_action( "memory_of_lucid_dreams" );
   combustion_phase->add_action( "guardian_of_azeroth" );
   combustion_phase->add_talent( this, "Rune of Power", "if=buff.combustion.down" );
-  combustion_phase->add_action( "call_action_list,name=active_talents" );
-  combustion_phase->add_action( this, "Combustion", "use_off_gcd=1,use_while_casting=1,if=(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((action.meteor.in_flight&action.meteor.in_flight_remains<=0.5)|!talent.meteor.enabled)&(buff.rune_of_power.up|!talent.rune_of_power.enabled)" );
+  combustion_phase->add_action( "call_action_list,name=active_talents,if=(azerite.blaster_master.enabled&buff.blaster_master.stack>=3)|!azerite.blaster_master.enabled" );
+  combustion_phase->add_action( this, "Combustion", "use_off_gcd=1,use_while_casting=1,if=!essence.memory_of_lucid_dreams.enabled&(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((action.meteor.in_flight&action.meteor.in_flight_remains<=0.5)|!talent.meteor.enabled)&(buff.rune_of_power.up|!talent.rune_of_power.enabled)" );
+  combustion_phase->add_action( this, "Combustion", "use_off_gcd=1,use_while_casting=1,if=essence.memory_of_lucid_dreams.enabled&(buff.rune_of_power.up|!talent.rune_of_power.enabled)" );
   combustion_phase->add_action( "potion" );
   for ( const auto& ra : racial_actions )
   {
@@ -5760,10 +5773,11 @@ void mage_t::apl_fire()
     combustion_phase->add_action( ra );
   }
   combustion_phase->add_action( "call_action_list,name=trinkets" );
-  combustion_phase->add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react" );
+  combustion_phase->add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react&!azerite.blaster_master.enabled" );
   combustion_phase->add_action( this, "Pyroblast", "if=buff.pyroclasm.react&buff.combustion.remains>cast_time" );
   combustion_phase->add_action( this, "Pyroblast", "if=buff.hot_streak.react" );
-  combustion_phase->add_action( this, "Fire Blast", "use_off_gcd=1,use_while_casting=1,if=(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((buff.combustion.up&(buff.heating_up.react&!action.pyroblast.in_flight&!action.scorch.executing)|(action.scorch.execute_remains&buff.heating_up.down&buff.hot_streak.down&!action.pyroblast.in_flight)))" );
+  combustion_phase->add_action( this, "Fire Blast", "use_off_gcd=1,use_while_casting=1,if=essence.memory_of_lucid_dreams.enabled&((buff.combustion.up&(buff.heating_up.react&!action.pyroblast.in_flight&!action.scorch.executing)|(action.scorch.execute_remains&buff.heating_up.down&buff.hot_streak.down&!action.pyroblast.in_flight)))" );
+  combustion_phase->add_action( this, "Fire Blast", "use_off_gcd=1,use_while_casting=1,if=!essence.memory_of_lucid_dreams.enabled&(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((buff.combustion.up&(buff.heating_up.react&!action.pyroblast.in_flight&!action.scorch.executing)|(action.scorch.execute_remains&buff.heating_up.down&buff.hot_streak.down&!action.pyroblast.in_flight)))" );
   combustion_phase->add_action( this, "Pyroblast", "if=prev_gcd.1.scorch&buff.heating_up.up" );
   combustion_phase->add_talent( this, "Phoenix Flames" );
   combustion_phase->add_action( this, "Scorch", "if=buff.combustion.remains>cast_time&buff.combustion.up|buff.combustion.down" );
@@ -5953,6 +5967,7 @@ void mage_t::apl_frost()
   aoe->add_action( "call_action_list,name=movement" );
   aoe->add_action( this, "Ice Lance" );
 
+  cooldowns->add_action( options.rotation == ROTATION_FROZEN_ORB ? "guardian_of_azeroth,if=cooldown.frozen_orb.remains<5" : "guardian_of_azeroth" );
   cooldowns->add_action( this, "Icy Veins", options.rotation == ROTATION_FROZEN_ORB ? "if=cooldown.frozen_orb.remains<5" : "" );
   cooldowns->add_talent( this, "Mirror Image" );
   cooldowns->add_talent( this, "Rune of Power", "if=prev_gcd.1.frozen_orb|target.time_to_die>10+cast_time&target.time_to_die<20",
@@ -5964,7 +5979,6 @@ void mage_t::apl_frost()
     "extra Rune of Power charges that should be used with active talents, if possible." );
   cooldowns->add_action( "potion,if=prev_gcd.1.icy_veins|target.time_to_die<30" );
   cooldowns->add_action( "use_items" );
-  cooldowns->add_action( options.rotation == ROTATION_FROZEN_ORB ? "guardian_of_azeroth,if=cooldown.frozen_orb.remains<5" : "guardian_of_azeroth" );
   for ( const auto& ra : racial_actions )
   {
     if ( ra == "arcane_torrent" )
@@ -5979,10 +5993,10 @@ void mage_t::apl_frost()
     case ROTATION_NO_ICE_LANCE:
       essences->add_action( "focused_azerite_beam" );
       essences->add_action( "memory_of_lucid_dreams,if=buff.icicles.stack<2" );
-      essences->add_action( "blood_of_the_enemy,if=buff.icicles.stack=5&buff.brain_freeze.react|active_enemies>4" );
+      essences->add_action( "blood_of_the_enemy,if=buff.icicles.stack=5&buff.brain_freeze.react|!talent.glacial_spike.enabled|active_enemies>4" );
       essences->add_action( "purifying_blast" );
       essences->add_action( "ripple_in_space" );
-      essences->add_action( "concentrated_flame" );
+      essences->add_action( "concentrated_flame,line_cd=6" );
       essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
       essences->add_action( "worldvein_resonance" );
       break;
@@ -5992,7 +6006,7 @@ void mage_t::apl_frost()
       essences->add_action( "blood_of_the_enemy,if=prev_gcd.1.rune_of_power&prev_gcd.2.frozen_orb" );
       essences->add_action( "purifying_blast,if=debuff.packed_ice.down" );
       essences->add_action( "ripple_in_space,if=debuff.packed_ice.down" );
-      essences->add_action( "concentrated_flame,if=debuff.packed_ice.down" );
+      essences->add_action( "concentrated_flame,if=debuff.packed_ice.down,line_cd=6" );
       essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
       essences->add_action( "worldvein_resonance,if=debuff.packed_ice.down" );
       break;
@@ -6424,11 +6438,7 @@ void mage_t::vision_of_perfection_proc()
       // TODO: This might be a bug.
       if ( specialization() == MAGE_FROST )
       {
-        // When Vision of Perfection is triggered by Ice Lance, the
-        // Fingers of Frost from Frigid Grasp can be consumed by the
-        // Ice Lance without any effect. Apply the buff after the
-        // spell has finished executing.
-        make_event( *sim, [ secondary ] { secondary->trigger(); } );
+        secondary->trigger();
       }
       else
       {
@@ -6862,7 +6872,7 @@ public:
           "<div class=\"toggle-content\">\n";
 
     auto& d = *p.sample_data.icy_veins_duration;
-    int num_buckets = as<int>( d.max() - d.min() ) + 1;
+    int num_buckets = std::min( 70, as<int>( d.max() - d.min() ) + 1 );
     d.create_histogram( num_buckets );
 
     highchart::histogram_chart_t chart( highchart::build_id( p, "icy_veins_duration" ), *p.sim );

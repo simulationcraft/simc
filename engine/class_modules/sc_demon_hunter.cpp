@@ -1363,11 +1363,11 @@ public:
           // Gains are rounded up to the nearest whole value, which can be seen with the Lucid Dreams active up
           const double amount = ceil( ab::last_resource_cost * p()->azerite_spells.memory_of_lucid_dreams->effectN( 1 ).percent() );
           p()->resource_gain( cr, amount, p()->gain.memory_of_lucid_dreams );
-        }
 
-        if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
-        {
-          p()->buffs.lucid_dreams->trigger();
+          if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
+          {
+            p()->buffs.lucid_dreams->trigger();
+          }
         }
       }
     }
@@ -4993,7 +4993,7 @@ void demon_hunter_t::vision_of_perfection_proc()
 
 std::string demon_hunter_t::default_flask() const
 {
-  return (true_level >  110) ? "currents" :
+  return (true_level >  110) ? "greater_flask_of_the_currents" :
          (true_level >  100) ? "seventh_demon" :
          (true_level >= 90) ? "greater_draenic_agility_flask" :
          (true_level >= 85) ? "spring_blossoms" :
@@ -5004,7 +5004,7 @@ std::string demon_hunter_t::default_flask() const
 
 std::string demon_hunter_t::default_potion() const
 {
-  return (true_level > 110) ? (specialization() == DEMON_HUNTER_HAVOC ? "battle_potion_of_agility" : "steelskin_potion") :
+  return (true_level > 110) ? (specialization() == DEMON_HUNTER_HAVOC ? "potion_of_focused_resolve" : "steelskin_potion") :
          (true_level > 100) ? (specialization() == DEMON_HUNTER_HAVOC ? "prolonged_power" : "unbending_potion") :
          (true_level >= 90) ? (specialization() == DEMON_HUNTER_HAVOC ? "draenic_agility" : "draenic_versatility") :
          (true_level >= 85) ? "virmens_bite" :
@@ -5015,7 +5015,7 @@ std::string demon_hunter_t::default_potion() const
 
 std::string demon_hunter_t::default_food() const
 {
-  return (true_level >  110) ? "bountiful_captains_feast" :
+  return (true_level >  110) ? "famine_evaluator_and_snack_table" :
          (true_level >  100) ? "lavish_suramar_feast" :
          (true_level >  90) ? "pickled_eel" :
          (true_level >= 90) ? "sea_mist_rice_noodles" :
@@ -5115,9 +5115,19 @@ void demon_hunter_t::apl_havoc()
   apl_cooldown->add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)" );
   apl_cooldown->add_talent( this, "Nemesis", "if=!raid_event.adds.exists" );
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|target.time_to_die<60" );
-  if ( maybe_ptr( dbc.ptr ) )
-    apl_cooldown->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );
-  add_havoc_use_items(this, apl_cooldown);
+  add_havoc_use_items( this, apl_cooldown );
+
+  action_priority_list_t* essences = get_action_priority_list( "essences" );
+  essences->add_action( "concentrated_flame" );
+  essences->add_action( "blood_of_the_enemy" );
+  essences->add_action( "guardian_of_azeroth" );
+  essences->add_action( "focused_azerite_beam" );
+  essences->add_action( "purifying_blast" );
+  essences->add_action( "the_unbound_force" );
+  essences->add_action( "ripple_in_space" );
+  essences->add_action( "worldvein_resonance" );
+  essences->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );
+  apl_cooldown->add_action( "call_action_list,name=essences" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
   apl_normal->add_action( this, "Vengeful Retreat", "if=talent.momentum.enabled&buff.prepared.down&time>1" );

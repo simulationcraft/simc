@@ -1270,6 +1270,26 @@ class SpellDataGenerator(DataGenerator):
          300907,
          # Nullification Dynamo Essence damage spell
          296061,
+         # Shiver Venom Relic
+         305290,
+         # Leviathan's Lure
+         302763,
+         # Za'qul's Portal key
+         302960,
+         # Ashvane's Razor Coral
+         303568, 303572,
+         # Dribbling Inkpod
+         302491,
+         # Remote Guidance Device
+         302311, 302312,
+         # Diver's Folly
+         303583, 303621,
+         # Storm of the Eternal (Eternal Palace 2min cycle buff)
+         303731,
+         # Undulating Tides lockout debuff
+         303438,
+         # Exploding Pufferfish
+         305315
         ),
 
         # Warrior:
@@ -1424,6 +1444,7 @@ class SpellDataGenerator(DataGenerator):
           ( 286836, 0 ), ( 286954, 0 ), ( 290814, 0 ), # Helchains damage (azerite trait)
           ( 287320, 0 ),    # Frostwhelp's Indignation (azerite)
           ( 283499, 0 ), ( 292493, 0 ), # Frost Fever's RP generation spells
+          ( 302656, 0 ), # Vision of Perfection's resource generation for Frost DK
 
         ),
 

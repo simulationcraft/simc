@@ -20,6 +20,19 @@
 
 struct sim_t;
 
+namespace opts
+{
+// Status of the parsing operation for each option_t object
+enum class parse_status : unsigned
+{
+  FAILURE = 0u, /// Parse failure, the user gave invalid input
+  OK,           /// Parsing succeeded
+  NOT_FOUND,    /// Option with specific name not found in the option database
+  CONTINUE,     /// Parsing should continue (e.g. name, value pair not meant for this option_t object)
+  DEPRECATED    /// Option is deprecated, parsing failure (use non-deprecated option instead)
+};
+} // Namespace opts ends
+
 // Options ==================================================================
 
 struct option_t
@@ -29,7 +42,7 @@ public:
     _name( name )
 { }
   virtual ~option_t() { }
-  bool parse_option( sim_t* sim , const std::string& n, const std::string& value ) const
+  opts::parse_status parse_option( sim_t* sim , const std::string& n, const std::string& value ) const
   {
     try {
       return parse( sim, n, value );
@@ -43,7 +56,7 @@ public:
   std::ostream& print_option( std::ostream& stream ) const
   { return print( stream ); }
 protected:
-  virtual bool parse( sim_t*, const std::string& name, const std::string& value ) const = 0;
+  virtual opts::parse_status parse( sim_t*, const std::string& name, const std::string& value ) const = 0;
   virtual std::ostream& print( std::ostream& stream ) const = 0;
 private:
   std::string _name;
@@ -52,13 +65,15 @@ private:
 
 namespace opts {
 
+typedef std::function<parse_status(parse_status, const std::string&, const std::string&)> parse_status_fn_t;
 typedef std::unordered_map<std::string, std::string> map_t;
 typedef std::unordered_map<std::string, std::vector<std::string>> map_list_t;
 typedef std::function<bool(sim_t*,const std::string&, const std::string&)> function_t;
 typedef std::vector<std::string> list_t;
-bool parse( sim_t*, const std::vector<std::unique_ptr<option_t>>&, const std::string& name, const std::string& value );
-void parse( sim_t*, const std::string& context, const std::vector<std::unique_ptr<option_t>>&, const std::string& options_str );
-void parse( sim_t*, const std::string& context, const std::vector<std::unique_ptr<option_t>>&, const std::vector<std::string>& strings );
+
+parse_status parse( sim_t*, const std::vector<std::unique_ptr<option_t>>&, const std::string& name, const std::string& value, const parse_status_fn_t& fn = nullptr );
+void parse( sim_t*, const std::string& context, const std::vector<std::unique_ptr<option_t>>&, const std::string& options_str, const parse_status_fn_t& fn = nullptr );
+void parse( sim_t*, const std::string& context, const std::vector<std::unique_ptr<option_t>>&, const std::vector<std::string>& strings, const parse_status_fn_t& fn = nullptr );
 }
 inline std::ostream& operator<<( std::ostream& stream, const std::unique_ptr<option_t>& opt )
 { return opt -> print_option( stream ); }

@@ -5,8 +5,8 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "815"
-#define SC_MINOR_VERSION "02"
+#define SC_MAJOR_VERSION "820"
+#define SC_MINOR_VERSION "01"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
 #if SC_BETA
@@ -948,6 +948,15 @@ struct sim_t : private sc_thread_t
   sim_ostream_t out_debug;
   bool debug;
 
+  /**
+   * Error on unknown options (default=false)
+   *
+   * By default Simulationcraft will ignore unknown sim, player, item, or action-scope options.
+   * Enable this to hard-fail the simulator option parsing if an unknown option name is used for a
+   * given scope.
+   **/
+  bool strict_parsing;
+
   // Iteration Controls
   timespan_t max_time, expected_iteration_time;
   double vary_combat_length;
@@ -1176,6 +1185,10 @@ struct sim_t : private sc_thread_t
     double              ripple_in_space_proc_chance = 0.0;
     /// Chance to be in range to hit with Blood of the Enemy major power (12 yd PBAoE)
     double              blood_of_the_enemy_in_range = 1.0;
+    /// Period to check for if Undulating Tides gets locked out
+    timespan_t          undulating_tides_lockout_timer = 60_s;
+    /// Chance on every check to see if Undulating Tides gets locked out
+    double              undulating_tides_lockout_chance = 0.0;
   } bfa_opts;
 
   // Expansion specific data
@@ -2180,6 +2193,9 @@ struct special_effect_t
   std::vector<scoped_callback_t*> custom_init_object;
   // Activation callback, if set, called when an actor becomes active
   std::function<void(void)> activation_cb;
+  // Link to an SpellItemEnchantment entry, set for various "enchant"-based special effects
+  // (Enchants, Gems, Addons)
+  const item_enchantment_data_t* enchant_data;
 
   special_effect_t( player_t* p ) :
     item( nullptr ), player( p ),
@@ -3853,7 +3869,8 @@ struct player_t : public actor_t
     buff_t* guardian_of_azeroth; // Condensed Life-Force major - R3 stacking haste on pet cast
 
     // 8.2 misc
-    buff_t* damage_to_aberrations; // In various Benthic Armor
+    buff_t* damage_to_aberrations; // Benthic belt special effect
+    buff_t* fathom_hunter; // Follower themed Benthic boots special effect
   } buffs;
 
   struct debuffs_t
@@ -6707,10 +6724,12 @@ struct dbc_proc_callback_t : public action_callback_t
                                  a -> name(), triggered );
     if ( triggered )
     {
-      execute( a, state );
+      make_event( *listener->sim, [ this, a, state ]() {
+        execute( a, state );
 
-      if ( cooldown )
-        cooldown -> start();
+        if ( cooldown )
+          cooldown -> start();
+      } );
     }
   }
 

@@ -27,6 +27,9 @@ actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
+actions.precombat+=/worldvein_resonance
+actions.precombat+=/guardian_of_azeroth
+actions.precombat+=/memory_of_lucid_dreams
 # Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s.
 actions.precombat+=/aspect_of_the_wild,precast_time=1.1,if=!azerite.primal_instincts.enabled
 # Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat.
@@ -45,6 +48,10 @@ actions.cds+=/berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>coold
 actions.cds+=/blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16
 actions.cds+=/lights_judgment,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains>gcd.max|!pet.cat.buff.frenzy.up
 actions.cds+=/potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&(target.health.pct<35|!talent.killer_instinct.enabled)|target.time_to_die<25
+actions.cds+=/worldvein_resonance
+actions.cds+=/guardian_of_azeroth
+actions.cds+=/ripple_in_space
+actions.cds+=/memory_of_lucid_dreams
 
 actions.cleave=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max
 actions.cleave+=/multishot,if=gcd.max-pet.cat.buff.beast_cleave.remains>0.25
@@ -58,6 +65,11 @@ actions.cleave+=/barrage
 actions.cleave+=/kill_command,if=active_enemies<4|!azerite.rapid_reload.enabled
 actions.cleave+=/dire_beast
 actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|charges_fractional>1.4|target.time_to_die<9
+actions.cleave+=/focused_azerite_beam
+actions.cleave+=/purifying_blast
+actions.cleave+=/concentrated_flame
+actions.cleave+=/blood_of_the_enemy
+actions.cleave+=/the_unbound_force
 actions.cleave+=/multishot,if=azerite.rapid_reload.enabled&active_enemies>2
 actions.cleave+=/cobra_shot,if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload.enabled)
 actions.cleave+=/spitting_cobra
@@ -71,8 +83,13 @@ actions.st+=/kill_command
 actions.st+=/chimaera_shot
 actions.st+=/dire_beast
 actions.st+=/barbed_shot,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|azerite.dance_of_death.rank>1&buff.dance_of_death.down&crit_pct_current>40|target.time_to_die<9
+actions.st+=/focused_azerite_beam
+actions.st+=/purifying_blast
+actions.st+=/concentrated_flame
+actions.st+=/blood_of_the_enemy
+actions.st+=/the_unbound_force
 actions.st+=/barrage
-actions.st+=/cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1
+actions.st+=/cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd|buff.memory_of_lucid_dreams.up)&cooldown.kill_command.remains>1
 actions.st+=/spitting_cobra
 actions.st+=/barbed_shot,if=charges_fractional>1.4
 
@@ -96,7 +113,7 @@ main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=ince
 # gear_ilvl=341.47
 # gear_agility=2883
 # gear_stamina=4465
-# gear_crit_rating=1078
+# gear_crit_rating=1084
 # gear_haste_rating=253
 # gear_mastery_rating=1150
 # gear_armor=2063
