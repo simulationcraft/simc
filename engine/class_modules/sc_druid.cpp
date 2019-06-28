@@ -8579,7 +8579,7 @@ void druid_t::apl_balance()
   default_list->add_action("use_item,name=tidestorm_codex,if=equipped.165576");
   default_list->add_action("use_items,if=cooldown.ca_inc.remains>30");
   default_list->add_action( "blood_of_the_enemy,if=cooldown.ca_inc.remains>30" );
-  default_list->add_action( "memory_of_lucid_dreams,if=dot.sunfire.remains>10&dot.moonfire.remains>10&(!talent.stellar_flare.enabled|dot.stellar_flare.remains>10)&(astral_power<40|cooldown.ca_inc.remains>30)&!buff.ca_inc.up" );
+  default_list->add_action( "memory_of_lucid_dreams,if=dot.sunfire.remains>10&dot.moonfire.remains>10&(!talent.stellar_flare.enabled|dot.stellar_flare.remains>10)&!buff.ca_inc.up" );
   default_list->add_action( "purifying_blast" );
   default_list->add_action( "ripple_in_space" );
   default_list->add_action( "concentrated_flame" );
