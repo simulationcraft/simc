@@ -1301,6 +1301,7 @@ sim_t::sim_t() :
   out_log( *this, &std::cout, sim_ostream_t::no_close() ),
   out_debug(*this, &std::cout, sim_ostream_t::no_close() ),
   debug( false ),
+  strict_parsing( false ),
   max_time( timespan_t::zero() ),
   expected_iteration_time( timespan_t::zero() ),
   vary_combat_length( 0.0 ),
@@ -3366,6 +3367,7 @@ void sim_t::create_options()
   add_option( opt_bool( "save_profile_with_actions", save_profile_with_actions ) );
   add_option( opt_bool( "default_actions", default_actions ) );
   add_option( opt_bool( "debug", debug ) );
+  add_option( opt_bool( "strict_parsing", strict_parsing ) );
   add_option( opt_bool( "debug_each", debug_each ) );
   add_option( opt_func( "debug_seed", parse_debug_seed ) );
   add_option( opt_string( "html", html_file_str ) );
@@ -3638,13 +3640,37 @@ bool sim_t::parse_option( const std::string& name,
                           const std::string& value )
 {
   if ( active_player )
-    if ( opts::parse( this, active_player -> options, name, value ) )
-      return true;
+  {
+    auto ret = opts::parse( this, active_player->options, name, value );
 
-  if ( opts::parse( this, options, name, value ) )
-    return true;
+    // Bail out early on player-specific option error states
+    switch ( ret )
+    {
+      case opts::parse_status::DEPRECATED:
+      case opts::parse_status::FAILURE:
+        return false;
+      case opts::parse_status::OK:
+        return true;
+      default:
+        break;
+    }
+  }
 
-  return false;
+  auto ret = opts::parse( this, options, name, value );
+  // With strict_parsing enabled, anything else than "ok" parse status will result in hard failure
+  if ( strict_parsing && ret != opts::parse_status::OK )
+  {
+    return false;
+  }
+
+  // Can't find a player- or sim scope option with name, warn the user
+  if ( ret == opts::parse_status::NOT_FOUND )
+  {
+    error( "Warning: Unknown option '{}' with value '{}', ignoring",
+      name, value );
+  }
+
+  return ret != opts::parse_status::FAILURE;
 }
 
 // sim_t::setup =============================================================
@@ -3691,12 +3717,13 @@ void sim_t::setup( sim_control_t* c )
                 fmt::format("Unable to locate player '{}' for option '{}' with value '{}'.",
                     o.scope, o.name, o.value));
     }
-    if ( ! opts::parse(this, p->options, o.name, o.value))
+
+    auto ret = opts::parse( this, p->options, o.name, o.value );
+    if ( ret == opts::parse_status::FAILURE )
     {
       throw std::invalid_argument(fmt::format("Unable to parse option '{}' with value '{}' for player '{}'.",
           o.name, o.value, p->name()));
     }
-
   }
 
   if ( player_list.empty() && spell_query == nullptr && ! display_bonus_ids )

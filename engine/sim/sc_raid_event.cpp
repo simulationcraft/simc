@@ -1482,7 +1482,24 @@ void raid_event_t::parse_options( const std::string& options_str )
   if ( options_str.empty() )
     return;
 
-  opts::parse( sim, type, options, options_str );
+  opts::parse( sim, type, options, options_str,
+    [ this ]( opts::parse_status status, const std::string& name, const std::string& value ) {
+      // Fail parsing if strict parsing is used and the option is not found
+      if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
+      {
+        return opts::parse_status::FAILURE;
+      }
+
+      // .. otherwise, just warn that there's an unknown option
+      if ( status == opts::parse_status::NOT_FOUND )
+      {
+        sim->error( "Warning: Unknown raid event '{}' option '{}' with value '{}', ignoring",
+          name, name, value );
+      }
+
+      return status;
+    } );
+  
 
   if ( !affected_role_str.empty() )
   {

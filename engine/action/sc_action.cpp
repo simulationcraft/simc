@@ -809,7 +809,24 @@ void action_t::parse_options( const std::string& options_str )
 {
   try
   {
-    opts::parse( sim, name(), options, options_str );
+    opts::parse( sim, name(), options, options_str,
+      [ this ]( opts::parse_status status, const std::string& name, const std::string& value ) {
+        // Fail parsing if strict parsing is used and the option is not found
+        if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
+        {
+          return opts::parse_status::FAILURE;
+        }
+
+        // .. otherwise, just warn that there's an unknown option
+        if ( status == opts::parse_status::NOT_FOUND )
+        {
+          sim->error( "Warning: Unknown '{}' option '{}' with value '{}' for {}, ignoring",
+            this->name(), name, value, player->name() );
+        }
+
+        return status;
+      } );
+
     parse_target_str();
   }
   catch ( const std::exception& e )

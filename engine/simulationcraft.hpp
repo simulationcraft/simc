@@ -948,6 +948,15 @@ struct sim_t : private sc_thread_t
   sim_ostream_t out_debug;
   bool debug;
 
+  /**
+   * Error on unknown options (default=false)
+   *
+   * By default Simulationcraft will ignore unknown sim, player, item, or action-scope options.
+   * Enable this to hard-fail the simulator option parsing if an unknown option name is used for a
+   * given scope.
+   **/
+  bool strict_parsing;
+
   // Iteration Controls
   timespan_t max_time, expected_iteration_time;
   double vary_combat_length;

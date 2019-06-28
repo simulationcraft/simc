@@ -181,13 +181,13 @@ struct opt_string_t : public option_t
     _ref( addr )
   { }
 protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
-      return false;
+      return opts::parse_status::CONTINUE;
 
     _ref = v;
-    return true;
+    return opts::parse_status::OK;
   }
 
   std::ostream& print( std::ostream& stream ) const override
@@ -207,13 +207,13 @@ struct opt_append_t : public option_t
   { }
 
 protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
-      return false;
+      return opts::parse_status::CONTINUE;
 
     _ref += v;
-    return true;
+    return opts::parse_status::OK;
   }
 
   std::ostream& print( std::ostream& stream ) const override
@@ -238,17 +238,17 @@ struct opt_numeric_t : public option_t
     _ref( addr )
   { }
 protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
-      return false;
+      return opts::parse_status::CONTINUE;
 
     if ( v.empty() )
       _ref = {};
     else
       _ref = Converter::convert( v );
 
-    return true;
+    return opts::parse_status::OK;
   }
 
   std::ostream& print( std::ostream& stream ) const override
@@ -278,10 +278,10 @@ struct opt_numeric_mm_t : public option_t
   { }
 
 protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
-      return false;
+      return opts::parse_status::CONTINUE;
 
     T tmp;
     if ( v.empty() )
@@ -297,7 +297,7 @@ protected:
       throw std::invalid_argument(s.str());
     }
     _ref = tmp;
-    return true;
+    return opts::parse_status::OK;
   }
 
   std::ostream& print( std::ostream& stream ) const override
@@ -317,10 +317,10 @@ struct opt_bool_t : public option_t
     _ref( addr )
   { }
 protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
-      return false;
+      return opts::parse_status::CONTINUE;
 
     if ( v != "0" && v != "1" )
     {
@@ -330,7 +330,7 @@ protected:
     }
 
     _ref = std::stoi( v ) != 0;
-    return true;
+    return opts::parse_status::OK;
   }
   std::ostream& print( std::ostream& stream ) const override
   {
@@ -348,10 +348,10 @@ struct opt_bool_int_t : public option_t
     _ref( addr )
   { }
 protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
-      return false;
+      return opts::parse_status::CONTINUE;
 
     if ( v != "0" && v != "1" )
     {
@@ -361,7 +361,7 @@ protected:
     }
 
     _ref = std::stoi( v );
-    return true;
+    return opts::parse_status::OK;
   }
   std::ostream& print( std::ostream& stream ) const override
   {
@@ -379,12 +379,12 @@ struct opts_sim_func_t : public option_t
     _fun( ref )
   { }
 protected:
-  bool parse( sim_t* sim, const std::string& n, const std::string& value ) const override
+  opts::parse_status parse( sim_t* sim, const std::string& n, const std::string& value ) const override
   {
     if ( name() != n )
-      return false;
+      return opts::parse_status::CONTINUE;
 
-     return _fun( sim, n, value );
+     return _fun( sim, n, value ) == true ? opts::parse_status::OK : opts::parse_status::FAILURE;
   }
   std::ostream& print( std::ostream& stream ) const override
   { return stream << "function option: " << name() << "\n"; }
@@ -399,7 +399,7 @@ struct opts_map_t : public option_t
     _ref( ref )
   { }
 protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     std::string::size_type last = n.size() - 1;
     bool append = false;
@@ -413,12 +413,20 @@ protected:
     {
       if ( name() == n.substr( 0, dot + 1 ) )
       {
-        std::string& value = _ref[ n.substr( dot + 1, last - dot ) ];
+        std::string key = n.substr( dot + 1, last - dot );
+        if ( key.empty() )
+        {
+          return opts::parse_status::FAILURE;
+        }
+
+        std::string& value = _ref[ key ];
+
         value = append ? ( value + v ) : v;
-        return true;
+        return opts::parse_status::OK;
       }
     }
-    return false;
+
+    return opts::parse_status::CONTINUE;
   }
   std::ostream& print( std::ostream& stream ) const override
   {
@@ -436,11 +444,11 @@ struct opts_map_list_t : public option_t
   { }
 
 protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( v.empty() )
     {
-      return false;
+      return opts::parse_status::FAILURE;
     }
 
     std::string::size_type last = n.size() - 1;
@@ -456,6 +464,11 @@ protected:
       if ( name() == n.substr( 0, dot + 1 ) )
       {
         auto listname = n.substr( dot + 1, last - dot );
+        if ( listname.empty() )
+        {
+          return opts::parse_status::FAILURE;
+        }
+
         auto& vec = _ref[ listname ];
         if ( ! append )
         {
@@ -463,10 +476,10 @@ protected:
         }
 
         vec.push_back( v );
-        return true;
+        return opts::parse_status::OK;
       }
     }
-    return false;
+    return opts::parse_status::CONTINUE;
   }
 
   std::ostream& print( std::ostream& stream ) const override
@@ -502,14 +515,14 @@ struct opts_list_t : public option_t
     _ref( ref )
   { }
 protected:
-  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( name() != n )
-      return false;
+      return opts::parse_status::CONTINUE;
 
     _ref.push_back( v );
 
-    return false;
+    return opts::parse_status::OK;
   }
   std::ostream& print( std::ostream& stream ) const override
   {
@@ -532,15 +545,15 @@ struct opts_deperecated_t : public option_t
     _new_option( new_option )
   { }
 protected:
-  bool parse( sim_t*, const std::string& name, const std::string& ) const override
+  opts::parse_status parse( sim_t*, const std::string& name, const std::string& ) const override
   {
     if ( name != this -> name() )
-      return false;
+      return opts::parse_status::CONTINUE;
     std::stringstream s;
     s << "Option '" << name << "' has been deprecated.";
     s << " Please use option '" << _new_option << "' instead.";
     throw std::invalid_argument( s.str() );
-    return false;
+    return opts::parse_status::DEPRECATED;
   }
   std::ostream& print( std::ostream& stream ) const override
   {
@@ -557,13 +570,13 @@ struct opts_obsoleted_t : public option_t
     option_t( name )
   { }
 protected:
-  bool parse( sim_t*, const std::string& name, const std::string& ) const override
+  opts::parse_status parse( sim_t*, const std::string& name, const std::string& ) const override
   {
     if ( name != this -> name() )
-      return false;
+      return opts::parse_status::CONTINUE;
 
     std::cerr << "Option '" << name << "' has been obsoleted and will be removed in the future." << std::endl;
-    return true;
+    return opts::parse_status::OK;
   }
   std::ostream& print( std::ostream& stream ) const override
   { return stream; }
@@ -573,57 +586,72 @@ protected:
 
 // option_t::parse ==========================================================
 
-bool opts::parse( sim_t*                 sim,
-                  const std::vector<std::unique_ptr<option_t>>& options,
-                      const std::string&     name,
-                      const std::string&     value )
+opts::parse_status opts::parse( sim_t*                                        sim,
+                                const std::vector<std::unique_ptr<option_t>>& options,
+                                const std::string&                            name,
+                                const std::string&                            value,
+                                const parse_status_fn_t&                      status_fn )
 {
   for ( auto& option : options )
   {
-    if ( option -> parse_option( sim, name, value ) )
+    auto ret = option->parse_option( sim, name, value );
+    if ( ret != parse_status::CONTINUE )
     {
-      return true;
+      if ( status_fn )
+      {
+        ret = status_fn( ret, name, value );
+      }
+      return ret;
     }
   }
 
-  return false;
+  auto ret = parse_status::NOT_FOUND;
+  if ( status_fn )
+  {
+    ret = status_fn( parse_status::NOT_FOUND, name, value );
+  }
+
+  return ret;
 }
 
 // option_t::parse ==========================================================
 
-void opts::parse( sim_t*                 sim,
-    const std::string&            /*context*/,
-    const std::vector<std::unique_ptr<option_t>>& options,
-                      const std::vector<std::string>& splits )
+void opts::parse( sim_t*                                        sim,
+                  const std::string&                            /* context */,
+                  const std::vector<std::unique_ptr<option_t>>& options,
+                  const std::vector<std::string>&               splits,
+                  const parse_status_fn_t&                      status_fn )
 {
-  for (auto & s : splits)
+  for ( auto& s : splits )
   {
-
     auto index = s.find_first_of( '=' );
 
     if ( index == std::string::npos )
     {
-        throw std::invalid_argument( fmt::format("Unexpected parameter '{}'. Expected format: name=value", s) );
+      throw std::invalid_argument( fmt::format( "Unexpected parameter '{}'. Expected format: name=value", s ) );
     }
 
     std::string n = s.substr( 0, index );
     std::string v = s.substr( index + 1 );
 
-    if ( ! opts::parse( sim, options, n, v ) )
+    auto status = opts::parse( sim, options, n, v, status_fn );
+
+    if ( status == parse_status::FAILURE )
     {
-      throw std::invalid_argument( fmt::format("Unexpected parameter '{}'.", n) );
+      throw std::invalid_argument( fmt::format( "Unexpected parameter '{}'.", n ) );
     }
   }
 }
 
 // option_t::parse ==========================================================
 
-void opts::parse( sim_t*                 sim,
-    const std::string&            context,
-    const std::vector<std::unique_ptr<option_t>>& options,
-                      const std::string&     options_str )
+void opts::parse( sim_t*                                        sim,
+                  const std::string&                            context,
+                  const std::vector<std::unique_ptr<option_t>>& options,
+                  const std::string&                            options_str,
+                  const parse_status_fn_t&                      status_fn )
 {
-  opts::parse( sim, context, options, util::string_split( options_str, "," ) );
+  opts::parse( sim, context, options, util::string_split( options_str, "," ), status_fn );
 }
 
 
