@@ -349,7 +349,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
     summoning_duration = data().duration();
     cooldown           = p.cooldowns.shadowfiend;
     cooldown->duration = data().cooldown();
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.strive_for_perfection );
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
   }
 };
 
@@ -366,7 +366,7 @@ struct summon_mindbender_t final : public summon_pet_t
     summoning_duration = data().duration();
     cooldown           = p.cooldowns.mindbender;
     cooldown->duration = data().cooldown();
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.strive_for_perfection );
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
   }
 };
 
@@ -1075,7 +1075,7 @@ void priest_t::init_spells()
   // Rank 3: Major - CD at 35% duration + Haste on Proc, Minor - Vers on Proc
   if ( vision_perfection.enabled() )
   {
-    azerite_essence.strive_for_perfection    = vision_perfection.spell( 1u, essence_type::MINOR );
+    azerite_essence.vision_of_perfection     = vision_perfection;
     azerite_essence.vision_of_perfection_r1  = vision_perfection.spell( 1u, essence_type::MAJOR );
     azerite_essence.vision_of_perfection_r2  = vision_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
   }

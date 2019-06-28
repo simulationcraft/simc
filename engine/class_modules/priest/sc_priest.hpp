@@ -404,11 +404,11 @@ public:
     azerite_power_t whispers_of_the_damned;
   } azerite;
 
-  struct azerite_essence_t
+  struct 
   {
     const spell_data_t* lucid_dreams;
     const spell_data_t* memory_of_lucid_dreams;
-    const spell_data_t* strive_for_perfection;
+    azerite_essence_t vision_of_perfection;
     const spell_data_t* vision_of_perfection_r1;
     const spell_data_t* vision_of_perfection_r2;
   } azerite_essence;
