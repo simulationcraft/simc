@@ -320,7 +320,16 @@ public:
 
   void execute() override
   {
-    pet->summon( summoning_duration );
+    if ( pet->is_sleeping() )
+    {
+      pet->summon( summoning_duration );
+    }
+    else
+    {
+      auto new_duration = pet->expiration->remains();
+      new_duration += summoning_duration;
+      pet->expiration->reschedule( new_duration );
+    }    
 
     priest_spell_t::execute();
   }
@@ -1058,8 +1067,7 @@ void priest_t::init_spells()
   mastery_spells.echo_of_light  = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.madness        = find_mastery_spell( PRIEST_SHADOW );
 
-  auto memory_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  auto vision_perfection   = find_azerite_essence( "Vision of Perfection" );
+  auto memory_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );  
 
   // Rank 1: Major - Increased insanity generation rate for 10s, Minor - Chance to refund
   // Rank 2: Major - Increased insanity generation rate for 12s, Minor - Chance to refund
@@ -1073,12 +1081,11 @@ void priest_t::init_spells()
   // Rank 1: Major - CD at 25% duration, Minor - CDR
   // Rank 2: Major - CD at 35% duration, Minor - CDR
   // Rank 3: Major - CD at 35% duration + Haste on Proc, Minor - Vers on Proc
-  if ( vision_perfection.enabled() )
-  {
-    azerite_essence.vision_of_perfection     = vision_perfection;
-    azerite_essence.vision_of_perfection_r1  = vision_perfection.spell( 1u, essence_type::MAJOR );
-    azerite_essence.vision_of_perfection_r2  = vision_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
-  }
+  azerite_essence.vision_of_perfection     = find_azerite_essence( "Vision of Perfection" );
+  azerite_essence.vision_of_perfection_r1  = azerite_essence.vision_of_perfection.spell( 1u, essence_type::MAJOR );
+  azerite_essence.vision_of_perfection_r2  =
+      azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
+
 
 }
 
@@ -1108,7 +1115,7 @@ void priest_t::init_rng()
 void priest_t::vision_of_perfection_proc()
 {
   // Leaving this method broken until it actually works
-  return;
+  //return;
 
   if ( !azerite_essence.vision_of_perfection.is_major() || !azerite_essence.vision_of_perfection.enabled() )
   {
