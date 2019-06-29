@@ -446,11 +446,6 @@ struct opts_map_list_t : public option_t
 protected:
   opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
-    if ( v.empty() )
-    {
-      return opts::parse_status::FAILURE;
-    }
-
     std::string::size_type last = n.size() - 1;
     bool append = false;
     if ( n[ last ] == '+' )
@@ -463,6 +458,11 @@ protected:
     {
       if ( name() == n.substr( 0, dot + 1 ) )
       {
+        if ( v.empty() )
+        {
+          return opts::parse_status::FAILURE;
+        }
+
         auto listname = n.substr( dot + 1, last - dot );
         if ( listname.empty() )
         {
