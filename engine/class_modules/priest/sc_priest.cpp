@@ -329,7 +329,7 @@ public:
       auto new_duration = pet->expiration->remains();
       new_duration += summoning_duration;
       pet->expiration->reschedule( new_duration );
-    }    
+    }
 
     priest_spell_t::execute();
   }
@@ -1067,7 +1067,7 @@ void priest_t::init_spells()
   mastery_spells.echo_of_light  = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.madness        = find_mastery_spell( PRIEST_SHADOW );
 
-  auto memory_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );  
+  auto memory_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
 
   // Rank 1: Major - Increased insanity generation rate for 10s, Minor - Chance to refund
   // Rank 2: Major - Increased insanity generation rate for 12s, Minor - Chance to refund
@@ -1115,7 +1115,7 @@ void priest_t::init_rng()
 void priest_t::vision_of_perfection_proc()
 {
   // Leaving this method broken until it actually works
-  //return;
+  return;
 
   if ( !azerite_essence.vision_of_perfection.is_major() || !azerite_essence.vision_of_perfection.enabled() )
   {
