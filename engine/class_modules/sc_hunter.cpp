@@ -5581,7 +5581,7 @@ void hunter_t::apl_surv()
   st -> add_talent( this, "Mongoose Bite", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)",
                         "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
   st -> add_action( this, "Serpent_Sting", "if=buff.vipers_venom.up&buff.vipers_venom.remains<1.5*gcd" );
-  st -> add_action( this, "Kill_Command", "if=focus+cast_regen<focus.max" );
+  st -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max" );
   st -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
   st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up)" );
   st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.stack>5&!cooldown.coordinated_assault.remains" );
