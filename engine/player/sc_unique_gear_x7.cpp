@@ -165,6 +165,7 @@ namespace items
   void fathom_hunter( special_effect_t& );
   void highborne_compendium_of_sundering( special_effect_t& );
   void highborne_compendium_of_storms( special_effect_t& );
+  void shiver_venom_relic( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3340,6 +3341,52 @@ void items::highborne_compendium_of_sundering( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+/**Shiver Venom Relic
+ * Equip: Shiver Venom (id=301576)
+ * - Applies a stacking dot (effect#1->trigger id=301624), 0tick, hasted, can crit
+ * - Automagic picked up by simc
+ * On-use: Venomous Shiver (id=301834)
+ * - Consume dots to do damage (id=305290), damage value in Equip driver->effect#1
+ * TODO: 1) Does the on-use crit? Assuming it doesn't for now.
+ *       2) If it crits, does each target crit separately or is it all-or-nothing?
+ *       3) Does it do nothing if you have no stacks? Assuming 0 stacks = 0 damage.
+ */
+void items::shiver_venom_relic( special_effect_t& effect )
+{
+  struct venomous_shivers_freeze_t : public proc_t
+  {
+    dot_t* sv_dot;
+
+    venomous_shivers_freeze_t( const special_effect_t& e ) :
+      proc_t( e, "venomous_shivers", e.player->find_spell( 305290 ) )
+    {
+      base_dd_max = base_dd_min = e.player->find_spell( 301576 )->effectN( 1 ).average( e.item );
+    }
+
+    double action_multiplier() const override
+    {
+      double num_dots = 0;
+
+      if ( sv_dot )
+        num_dots = sv_dot->current_stack();
+
+      return proc_t::action_multiplier() * num_dots;
+    }
+
+    void execute() override
+    {
+      sv_dot = target->find_dot( "shiver_venom", player );
+
+      proc_t::execute();
+
+      if ( sv_dot )
+        sv_dot->cancel();
+    }
+  };
+
+  effect.execute_action = new venomous_shivers_freeze_t( effect );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -3682,6 +3729,8 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 304637, items::fathom_hunter );
   register_special_effect( 300830, items::highborne_compendium_of_sundering );
   register_special_effect( 300913, items::highborne_compendium_of_storms );
+  register_special_effect( 301834, items::shiver_venom_relic );
+
 
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );
