@@ -1128,8 +1128,8 @@ void priest_t::vision_of_perfection_proc()
   switch ( specialization() )
   {
     case PRIEST_SHADOW:
-      auto current_pet = talents.mindbender->ok() ?  cooldowns.mindbender :  cooldowns.shadowfiend;
-      base_duration = current_pet->duration;
+      auto pet_cooldown = talents.mindbender->ok() ?  cooldowns.mindbender :  cooldowns.shadowfiend;
+      base_duration = pet_cooldown->duration;
       break;
     default:
       break;
