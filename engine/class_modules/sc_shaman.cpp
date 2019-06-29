@@ -571,6 +571,8 @@ public:
   {
     azerite_essence_t memory_of_lucid_dreams;  // Memory of Lucid Dreams minor
     azerite_essence_t vision_of_perfection;
+
+    azerite_essence_t conflict_and_strife;
   } azerite_essence;
 
   // Misc Spells
@@ -6263,6 +6265,42 @@ struct capacitor_totem_t : public shaman_totem_pet_t
 };
 
 // ==========================================================================
+// PvP talents/abilities
+// ==========================================================================
+
+struct lightning_lasso_t : public shaman_spell_t
+{
+  lightning_lasso_t( shaman_t* player, const std::string& options_str )
+    : shaman_spell_t( "lightning_lasso", player, player->find_spell( 305485 ), options_str )
+  {
+    affected_by_master_of_the_elements = false;
+    available                          = p()->azerite_essence.conflict_and_strife.is_major();
+    cooldown->duration                 = p()->find_spell( 305483 )->cooldown();
+    channeled                          = true;
+    tick_may_crit                      = true;
+    may_crit                           = false;
+    hasted_ticks                       = false;
+  }
+
+  bool available = false;
+
+  virtual bool ready() override
+  {
+    if ( !available )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
+  }
+
+  virtual void execute() override
+  {
+    shaman_spell_t::execute();
+  }
+};
+
+// ==========================================================================
 // Shaman Custom Buff implementation
 // ==========================================================================
 
@@ -6485,6 +6523,8 @@ action_t* shaman_t::create_action( const std::string& name, const std::string& o
     return new thunderstorm_t( this, options_str );
   if ( name == "totem_mastery" )
     return new totem_mastery_t( this, options_str );
+  if ( name == "lightning_lasso" )
+    return new lightning_lasso_t( this, options_str );
 
   // enhancement
   if ( name == "crash_lightning" )
@@ -6901,6 +6941,7 @@ void shaman_t::init_spells()
   spell.vision_of_perfection_base        = azerite_essence.vision_of_perfection.spell( 1u, essence_type::MAJOR );
   spell.vision_of_perfection_r2 =
       azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
+  azerite_essence.conflict_and_strife = find_azerite_essence( "Conflict and Strife" );
 
   player_t::init_spells();
 }
@@ -8111,7 +8152,7 @@ void shaman_t::init_action_list_elemental()
       "elemental.remains>120))",
       "Use Earth Shock if Surge of Power is talented, but neither it nor a DPS Elemental is active "
       "at the moment, and Lava Burst is ready or will be ready within the next GCD." );
-
+  single_target->add_action( "lightning_lasso" );
   single_target->add_action(
       this, "Lightning Bolt",
       "if=cooldown.storm_elemental.remains>120&talent.storm_elemental.enabled&(azerite.igneous_potential.rank<2|!buff."
