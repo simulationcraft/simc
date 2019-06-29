@@ -1143,13 +1143,18 @@ void priest_t::vision_of_perfection_proc()
   switch ( specialization() )
   {
     case PRIEST_SHADOW:
-      if ( talents.mindbender->ok() )
+      auto current_pet = talents.mindbender->ok() ?  pets.mindbender :  pets.shadowfiend;
+      // check if the pet is active or not
+      if ( current_pet->is_sleeping() )
       {
-        // summon_mindbender_t( duration );
+        current_pet->summon( duration );
       }
       else
       {
-        // summon_shadowfiend_t( duration );
+        // if the pet is currently active, just add to the existing duration
+        auto new_duration = current_pet->expiration->remains();
+        new_duration += duration;
+        current_pet->expiration->reschedule( new_duration );
       }
       break;
     default:
