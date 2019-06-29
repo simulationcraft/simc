@@ -1114,9 +1114,6 @@ void priest_t::init_rng()
 
 void priest_t::vision_of_perfection_proc()
 {
-  // Leaving this method broken until it actually works
-  return;
-
   if ( !azerite_essence.vision_of_perfection.is_major() || !azerite_essence.vision_of_perfection.enabled() )
   {
     return;
@@ -1132,8 +1129,7 @@ void priest_t::vision_of_perfection_proc()
 
   if ( specialization() == PRIEST_SHADOW )
   {
-    auto pet_cooldown = talents.mindbender->ok() ?  cooldowns.mindbender :  cooldowns.shadowfiend;
-    base_duration = pet_cooldown->duration;
+    base_duration = talents.mindbender->ok() ?  find_talent_spell( "Mindbender" )->duration() :  find_class_spell( "Shadowfiend" )->duration();
   }
 
   if ( base_duration == timespan_t::zero() )
