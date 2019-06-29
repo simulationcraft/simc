@@ -9602,6 +9602,8 @@ expr_t* druid_t::create_expression( const std::string& name_str )
 
         potential_ticks = std::min( duration, ttd ) / ( action->tick_time(state) );
         potential_ticks *= pmult_adjusted ? pmult : 1.0;
+
+		action_state_t::release(state);
         return potential_ticks - remaining_ticks;
       } );
     throw std::invalid_argument( "invalid action" );
