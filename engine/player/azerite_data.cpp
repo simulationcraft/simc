@@ -4004,23 +4004,57 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
  * stacking vers buff from driver->effect#1->trigger id=304056
  * R2 duration inc from R2:MINOR:UPGRADE id=304055
  * R3 maxstack inc from R3:MINOR:UPGRADE id=304125
+ * R3 major power doubling of vers from R3:MAJOR:UPGRADE->effect#3->trigger id=304720
  */
-void conflict_and_strife(special_effect_t& effect)
+void conflict_and_strife( special_effect_t& effect )
 {
-  auto essence = effect.player->find_azerite_essence(effect.driver()->essence_id());
-  if (!essence.enabled())
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
     return;
 
   effect.spell_id = 305148;
 
-  const spell_data_t* strife = effect.player->find_spell(effect.spell_id)->effectN(1).trigger();
+  auto strife = effect.player->find_spell( effect.spell_id )->effectN( 1 ).trigger();
 
-  effect.stat = STAT_VERSATILITY_RATING;
-  effect.stat_amount = strife->effectN(1).average(essence.item());
-  effect.duration_ = strife->duration() + essence.spell_ref(2u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).time_value();
-  effect.max_stacks = strife->max_stacks() + essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).base_value();
+  auto buff = buff_t::find( effect.player, "strife" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "strife", strife )
+      ->add_stat( STAT_VERSATILITY_RATING, strife->effectN( 1 ).average( essence.item() ) )
+      ->set_max_stack( strife->max_stacks()
+        + essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() )
+      ->set_duration( strife->duration()
+        + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).time_value() );
+  }
 
-  new dbc_proc_callback_t(effect.player, effect);
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  auto r3_spell = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 3 ).trigger();
+  double r3_mul = 1.0 + r3_spell->effectN( 1 ).percent();
+
+  // As this happens here during essence registeration, earlier initialization processes in class modules will not be
+  // able to find the buff. Currently can use a workaround by finding the buff in a later process and checking to see it
+  // exists before triggering within the various CC/interrupt actions. May be prudent to move to player_t if implemented
+  // by more class modules.
+  auto r3_buff = buff_t::find( effect.player, "conflict_vers" );
+  if ( !r3_buff )
+  {
+    r3_buff = make_buff( effect.player, "conflict_vers", r3_spell );
+    r3_buff->set_stack_change_callback( [buff, r3_mul]( buff_t*, int, int new_ ) {
+      if ( new_ )
+      {
+        static_cast<stat_buff_t*>( buff )->stats.front().amount *= r3_mul;
+        buff->trigger();
+      }
+      else
+      {
+        static_cast<stat_buff_t*>( buff )->stats.front().amount /= r3_mul;
+        buff->bump( 0 );
+      }
+    } );
+  }
 }
 
 struct conflict_t : public azerite_essence_major_t
