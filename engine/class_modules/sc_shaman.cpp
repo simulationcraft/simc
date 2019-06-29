@@ -6274,29 +6274,18 @@ struct lightning_lasso_t : public shaman_spell_t
     : shaman_spell_t( "lightning_lasso", player, player->find_spell( 305485 ), options_str )
   {
     affected_by_master_of_the_elements = false;
-    available                          = p()->azerite_essence.conflict_and_strife.is_major();
-    cooldown->duration                 = p()->find_spell( 305483 )->cooldown();
-    channeled                          = true;
-    tick_may_crit                      = true;
-    may_crit                           = false;
-    hasted_ticks                       = false;
+    // if the major effect is not available the action is a background action, thus can't be used in the apl
+    background         = !p()->azerite_essence.conflict_and_strife.is_major();
+    cooldown->duration = p()->find_spell( 305483 )->cooldown();
+    channeled          = true;
+    tick_may_crit      = true;
+    may_crit           = false;
+    trigger_gcd        = p()->find_spell( 305483 )->gcd();
   }
 
-  bool available = false;
-
-  virtual bool ready() override
+  timespan_t tick_time( const action_state_t* s ) const override
   {
-    if ( !available )
-    {
-      return false;
-    }
-
-    return shaman_spell_t::ready();
-  }
-
-  virtual void execute() override
-  {
-    shaman_spell_t::execute();
+    return base_tick_time;
   }
 };
 
