@@ -5963,6 +5963,8 @@ struct entangling_roots_t : public druid_spell_t
     druid_spell_t( "entangling_roots", p, p->spec.entangling_roots, options_str )
   {
     harmful = false;
+    // workaround so that we do not need to enable mana regen
+    base_costs[ RESOURCE_MANA ] = 0.0;
   }
 
   virtual void execute() override
