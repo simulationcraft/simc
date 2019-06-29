@@ -1110,7 +1110,6 @@ void priest_t::vision_of_perfection_proc()
   // Leaving this method broken until it actually works
   return;
 
-
   if ( !azerite_essence.vision_of_perfection.is_major() || !azerite_essence.vision_of_perfection.enabled() )
   {
     return;
@@ -1124,15 +1123,10 @@ void priest_t::vision_of_perfection_proc()
 
   timespan_t base_duration = timespan_t::zero();
 
-  // TODO: Add Holy and Discipline
-  switch ( specialization() )
+  if ( specialization() == PRIEST_SHADOW )
   {
-    case PRIEST_SHADOW:
-      auto pet_cooldown = talents.mindbender->ok() ?  cooldowns.mindbender :  cooldowns.shadowfiend;
-      base_duration = pet_cooldown->duration;
-      break;
-    default:
-      break;
+    auto pet_cooldown = talents.mindbender->ok() ?  cooldowns.mindbender :  cooldowns.shadowfiend;
+    base_duration = pet_cooldown->duration;
   }
 
   if ( base_duration == timespan_t::zero() )
@@ -1142,26 +1136,21 @@ void priest_t::vision_of_perfection_proc()
 
   timespan_t duration = vision_multiplier * base_duration;
 
-  switch ( specialization() )
+  if ( specialization() == PRIEST_SHADOW )
   {
-    case PRIEST_SHADOW: {
-      auto current_pet = talents.mindbender->ok() ?  pets.mindbender :  pets.shadowfiend;
-      // check if the pet is active or not
-      if ( current_pet->is_sleeping() )
-      {
-        current_pet->summon( duration );
-      }
-      else
-      {
-        // if the pet is currently active, just add to the existing duration
-        auto new_duration = current_pet->expiration->remains();
-        new_duration += duration;
-        current_pet->expiration->reschedule( new_duration );
-      }
-    }break;
-    default: {
-      assert(0);
-    }break;
+    auto current_pet = talents.mindbender->ok() ?  pets.mindbender :  pets.shadowfiend;
+    // check if the pet is active or not
+    if ( current_pet->is_sleeping() )
+    {
+      current_pet->summon( duration );
+    }
+    else
+    {
+      // if the pet is currently active, just add to the existing duration
+      auto new_duration = current_pet->expiration->remains();
+      new_duration += duration;
+      current_pet->expiration->reschedule( new_duration );
+    }
   }
 }
 
