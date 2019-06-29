@@ -1107,6 +1107,10 @@ void priest_t::init_rng()
 
 void priest_t::vision_of_perfection_proc()
 {
+  if ( !azerite_essence.vision_of_perfection.is_major() || !azerite_essence.vision_of_perfection.enabled() )
+  {
+    return;
+  }
 
   double vision_multiplier = azerite_essence.vision_of_perfection_r1 -> effectN( 1 ).percent() +
                              azerite_essence.vision_of_perfection_r2 -> effectN( 1 ).percent();
@@ -1120,14 +1124,8 @@ void priest_t::vision_of_perfection_proc()
   switch ( specialization() )
   {
     case PRIEST_SHADOW:
-      if ( talents.mindbender->ok() )
-      {
-        base_duration = cooldowns.mindbender->duration;
-      }
-      else
-      {
-        base_duration = cooldowns.shadowfiend->duration;
-      }
+      auto current_pet = talents.mindbender->ok() ?  cooldowns.mindbender :  cooldowns.shadowfiend;
+      base_duration = current_pet->duration;
       break;
     default:
       break;
