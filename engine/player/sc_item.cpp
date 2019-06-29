@@ -658,6 +658,7 @@ void item_t::parse_options()
   options.push_back(opt_string("quality", option_quality_str));
   options.push_back(opt_string("source", option_data_source_str));
   options.push_back(opt_string("gem_id", option_gem_id_str));
+  options.push_back(opt_string("gem_bonus_id", option_gem_bonus_id_str));
   options.push_back(opt_string("enchant_id", option_enchant_id_str));
   options.push_back(opt_string("addon_id", option_addon_id_str));
   options.push_back(opt_string("bonus_id", option_bonus_id_str));
@@ -722,6 +723,28 @@ void item_t::parse_options()
     }
   }
 
+  if ( ! option_gem_bonus_id_str.empty() )
+  {
+    std::vector<std::string> gem_bonus_split = util::string_split( option_gem_bonus_id_str, "/" );
+    size_t gem_slot = 0;
+    for ( const auto& gem_bonus_id_str : gem_bonus_split )
+    {
+      if ( gem_bonus_id_str == "0" )
+      {
+        gem_slot++;
+        continue;
+      }
+
+      std::vector<std::string> bonus_id_split = util::string_split( gem_bonus_id_str, ":" );
+      for ( const auto& bonus_id_str : bonus_id_split )
+      {
+        parsed.gem_bonus_id[ gem_slot ].push_back( util::to_unsigned( bonus_id_str ) );
+      }
+
+      gem_slot++;
+    }
+
+  }
   if ( ! option_relic_id_str.empty() )
   {
     std::vector<std::string> relic_split = util::string_split( option_relic_id_str, "/" );
@@ -912,6 +935,12 @@ std::string item_t::encoded_item() const
 
   if ( ! option_gem_id_str.empty() )
     s << ",gem_id=" << option_gem_id_str;
+
+  if ( !option_gem_bonus_id_str.empty() )
+  {
+    s << ",gem_bonus_id=" << option_gem_bonus_id_str;
+  }
+  // TODO: Will Blizzard API give us this information? Nobody knows!
 
   // Figure out if any relics have "relic data" (relic bonus ids)
   auto relic_data_it = range::find_if( parsed.relic_data, []( const std::vector<unsigned> v ) {

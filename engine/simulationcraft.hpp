@@ -2302,6 +2302,7 @@ struct item_t
     unsigned                                         azerite_level;
     std::array<int, MAX_ITEM_STAT>                   stat_val;
     std::array<int, MAX_GEM_SLOTS>                   gem_id;
+    std::array<std::vector<unsigned>, MAX_GEM_SLOTS> gem_bonus_id;
     std::array<int, MAX_GEM_SLOTS>                   gem_color;
     std::vector<int>                                 bonus_id;
     std::vector<stat_pair_t>                         gem_stats, meta_gem_stats, socket_bonus_stats;
@@ -2362,6 +2363,7 @@ struct item_t
   std::string option_enchant_id_str;
   std::string option_addon_id_str;
   std::string option_gem_id_str;
+  std::string option_gem_bonus_id_str;
   std::string option_bonus_id_str;
   std::string option_initial_cd_str;
   std::string option_drop_level_str;

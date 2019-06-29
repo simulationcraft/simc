@@ -3342,6 +3342,52 @@ void items::highborne_compendium_of_sundering( special_effect_t& effect )
 
 // Punchcard stuff ========================================================
 
+item_t init_punchcard( const special_effect_t& effect )
+{
+  if ( !effect.enchant_data )
+  {
+    return {};
+  }
+
+  auto item_data = effect.player->dbc.item( effect.enchant_data->id_gem );
+  if ( !item_data )
+  {
+    return {};
+  }
+
+  // Figure out the gem slot
+  auto it = range::find( effect.item->parsed.gem_id, effect.enchant_data->id_gem );
+  if ( it == effect.item->parsed.gem_id.end() )
+  {
+    return {};
+  }
+
+  auto gem_slot = std::distance( effect.item->parsed.gem_id.begin(), it );
+
+  item_t punchcard( effect.player, "" );
+  punchcard.parsed.data = *item_data;
+  punchcard.name_str = item_data->name;
+  ::util::tokenize( punchcard.name_str );
+
+  // Apply bonus ids to punchcard item
+  range::for_each( effect.item->parsed.gem_bonus_id[ gem_slot ],
+    [ &punchcard ]( unsigned bonus_id ) {
+      auto bonuses = punchcard.player -> dbc.item_bonus( bonus_id );
+      range::for_each( bonuses, [ &punchcard ]( const item_bonus_entry_t* entry ) {
+        item_database::apply_item_bonus( punchcard, *entry );
+      } );
+  } );
+
+  if ( effect.player->sim->debug )
+  {
+    effect.player->sim->out_debug.print( "{} initializing punchcard: {}",
+      effect.player->name(), punchcard.to_string() );
+  }
+
+  return punchcard;
+}
+
+
 void items::yellow_punchcard( special_effect_t& effect )
 {
   std::vector<std::tuple<stat_e, double>> stats;
@@ -3349,19 +3395,13 @@ void items::yellow_punchcard( special_effect_t& effect )
   // We don't need to do any further initialization so don't perform phase 2 at all
   effect.type = SPECIAL_EFFECT_NONE;
 
-  if ( !effect.enchant_data )
+  auto punchcard = init_punchcard( effect );
+  if ( punchcard.parsed.data.id == 0 )
   {
     return;
   }
 
-  auto item_data = effect.player->dbc.item( effect.enchant_data->id_gem );
-  if ( !item_data )
-  {
-    return;
-  }
-
-  // TODO: Bonus id handling, when we export that information somehow
-  auto budget = item_database::item_budget( effect.player, item_data->level );
+  auto budget = item_database::item_budget( effect.player, punchcard.item_level() );
 
   // Collect stats
   for ( size_t i = 1u; i <= effect.driver()->effect_count(); ++i )
@@ -3374,20 +3414,20 @@ void items::yellow_punchcard( special_effect_t& effect )
     auto effect_stats = ::util::translate_all_rating_mod( effect.driver()->effectN( i ).misc_value1() );
     double value = effect.driver()->effectN( i ).m_coefficient() * budget;
     value = item_database::apply_combat_rating_multiplier( effect.player,
-      combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET, item_data->level, value );
+      combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET, punchcard.item_level(), value );
     range::for_each( effect_stats, [ value, &stats ]( stat_e stat ) {
       stats.emplace_back( stat, value );
     } );
   }
 
   // .. and apply them as passive stats to the actor
-  range::for_each( stats, [&effect, item_data]( const std::tuple<stat_e, double>& stats ) {
+  range::for_each( stats, [&effect, &punchcard]( const std::tuple<stat_e, double>& stats ) {
       stat_e stat = std::get<0>( stats );
       double value = std::get<1>( stats );
       if ( effect.player->sim->debug )
       {
         effect.player->sim->out_debug.print( "{} {}: punchcard={} ({}), stat={}, value={}",
-          effect.player->name(), effect.item->name(), item_data->name, item_data->level,
+          effect.player->name(), effect.item->name(), punchcard.name(), punchcard.item_level(),
             ::util::stat_type_string( stat ), value );
       }
       effect.player->passive.add_stat( stat, value );
@@ -3396,23 +3436,11 @@ void items::yellow_punchcard( special_effect_t& effect )
 
 void items::subroutine_overclock( special_effect_t& effect )
 {
-  if ( !effect.enchant_data )
+  auto punchcard = init_punchcard( effect );
+  if ( punchcard.parsed.data.id == 0 )
   {
     return;
   }
-
-  auto item_data = effect.player->dbc.item( effect.enchant_data->id_gem );
-  if ( !item_data )
-  {
-    return;
-  }
-
-  // Make a fake punchcard item and apply bonuses to it
-  item_t punchcard( effect.player, "" );
-
-  punchcard.parsed.data = *item_data;
-  punchcard.name_str = item_data -> name;
-  ::util::tokenize( punchcard.name_str );
 
   stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "subroutine_overclock" ) );
   if ( !buff )
@@ -3467,23 +3495,11 @@ void items::subroutine_recalibration( special_effect_t& effect )
     }
   };
 
-  if ( !effect.enchant_data )
+  auto punchcard = init_punchcard( effect );
+  if ( punchcard.parsed.data.id == 0 )
   {
     return;
   }
-
-  auto item_data = effect.player->dbc.item( effect.enchant_data->id_gem );
-  if ( !item_data )
-  {
-    return;
-  }
-
-  // Make a fake punchcard item and apply bonuses to it
-  item_t punchcard( effect.player, "" );
-
-  punchcard.parsed.data = *item_data;
-  punchcard.name_str = item_data -> name;
-  ::util::tokenize( punchcard.name_str );
 
   stat_buff_t* primary_buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player,
       "subroutine_recalibration" ) );
