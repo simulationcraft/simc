@@ -1107,6 +1107,10 @@ void priest_t::init_rng()
 
 void priest_t::vision_of_perfection_proc()
 {
+  // Leaving this method broken until it actually works
+  return;
+
+
   if ( !azerite_essence.vision_of_perfection.is_major() || !azerite_essence.vision_of_perfection.enabled() )
   {
     return;
