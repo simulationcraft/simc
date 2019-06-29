@@ -217,8 +217,6 @@ public:
     const spell_data_t* legacy_of_the_void;
     const spell_data_t* dark_ascension;
     const spell_data_t* surrender_to_madness;
-    // PVP
-    const spell_data_t* void_origins;
   } talents;
 
   // Specialization Spells
@@ -406,12 +404,13 @@ public:
     azerite_power_t whispers_of_the_damned;
   } azerite;
 
-  struct azerite_essence_t
+  struct 
   {
     const spell_data_t* lucid_dreams;
     const spell_data_t* memory_of_lucid_dreams;
-    const spell_data_t* conflict;
-    const spell_data_t* strife;
+    azerite_essence_t vision_of_perfection;
+    const spell_data_t* vision_of_perfection_r1;
+    const spell_data_t* vision_of_perfection_r2;
   } azerite_essence;
 
   struct insanity_end_event_t;
@@ -505,6 +504,7 @@ private:
 public:
   void generate_insanity( double num_amount, gain_t* g, action_t* action );
   void trigger_lucid_dreams( double cost );
+  void vision_of_perfection_proc() override;
 
   /**
    * Insanity tracking

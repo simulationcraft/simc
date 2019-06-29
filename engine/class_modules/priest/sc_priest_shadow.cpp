@@ -1032,18 +1032,6 @@ struct void_eruption_t final : public priest_spell_t
     priest().cooldowns.void_bolt->reset( true );
   }
 
-  timespan_t execute_time() const override
-  {
-    if ( priest().talents.void_origins->ok() && priest().azerite_essence.conflict->ok() )
-    {
-      return timespan_t::zero();
-    }
-
-    timespan_t et = priest_spell_t::execute_time();
-
-    return et;
-  }
-
   bool ready() override
   {
     if ( !priest().buffs.voidform->check() && priest().resources.current[ RESOURCE_INSANITY ] >= insanity_required )
@@ -1872,9 +1860,6 @@ void priest_t::init_spells_shadow()
   talents.dark_ascension       = find_talent_spell( "Dark Ascension" );
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
-  // PvP
-  talents.void_origins = find_talent_spell( "Void Origins" );
-
   // General Spells
   specs.voidform            = find_specialization_spell( "Voidform" );
   specs.void_eruption       = find_specialization_spell( "Void Eruption" );
@@ -2044,18 +2029,6 @@ void priest_t::generate_apl_shadow()
   if ( race == RACE_MAGHAR_ORC )
     default_list->add_action( "ancestral_call,if=buff.voidform.up" );
 
-  // Azerite Essences
-  // Putting them here until we identify how to put them in the APL properly
-  default_list->add_action( "blood_of_the_enemy" );
-  default_list->add_action( "guardian_of_azeroth" );
-  default_list->add_action( "focused_azerite_beam" );
-  default_list->add_action( "purifying_blast" );
-  default_list->add_action( "the_unbound_force" );
-  // default_list->add_action( "vision_of_perfection" );
-  // default_list->add_action( "concentrated_flame" );
-  default_list->add_action( "ripple_in_space" );
-  default_list->add_action( "worldvein_resonance" );
-
   // Choose which APL to use based on talents and fight conditions.
   default_list->add_action( "run_action_list,name=cleave,if=active_enemies>1" );
   default_list->add_action( "run_action_list,name=single,if=active_enemies=1" );
@@ -2065,6 +2038,14 @@ void priest_t::generate_apl_shadow()
   single->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
   single->add_action( "memory_of_lucid_dreams,if=buff.voidform.stack>(20+5*buff.bloodlust.up)&insanity<=50");
+  single->add_action( "blood_of_the_enemy" );
+  single->add_action( "guardian_of_azeroth" );
+  single->add_action( "focused_azerite_beam" );
+  single->add_action( "purifying_blast" );
+  single->add_action( "the_unbound_force" );
+  single->add_action( "concentrated_flame" );
+  single->add_action( "ripple_in_space" );
+  single->add_action( "worldvein_resonance" );
   single->add_action( this, "Mind Sear",
                       "if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&"
                       "azerite.searing_dialogue.rank>=1" );
@@ -2110,6 +2091,14 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
   cleave->add_action( this, "Void Bolt" );
   cleave->add_action( "memory_of_lucid_dreams,if=buff.voidform.stack>(20+5*buff.bloodlust.up)&insanity<=50");
+  cleave->add_action( "blood_of_the_enemy" );
+  cleave->add_action( "guardian_of_azeroth" );
+  cleave->add_action( "focused_azerite_beam" );
+  cleave->add_action( "purifying_blast" );
+  cleave->add_action( "the_unbound_force" );
+  cleave->add_action( "concentrated_flame" );
+  cleave->add_action( "ripple_in_space" );
+  cleave->add_action( "worldvein_resonance" );
   cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   cleave->add_talent( this, "Dark Void",

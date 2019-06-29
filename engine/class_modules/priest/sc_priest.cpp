@@ -349,7 +349,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
     summoning_duration = data().duration();
     cooldown           = p.cooldowns.shadowfiend;
     cooldown->duration = data().cooldown();
-    cooldown->duration += priest().sets->set( PRIEST_SHADOW, T18, B2 )->effectN( 1 ).time_value();
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
   }
 };
 
@@ -366,7 +366,7 @@ struct summon_mindbender_t final : public summon_pet_t
     summoning_duration = data().duration();
     cooldown           = p.cooldowns.mindbender;
     cooldown->duration = data().cooldown();
-    cooldown->duration += priest().sets->set( PRIEST_SHADOW, T18, B2 )->effectN( 2 ).time_value();
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
   }
 };
 
@@ -1059,18 +1059,25 @@ void priest_t::init_spells()
   mastery_spells.madness        = find_mastery_spell( PRIEST_SHADOW );
 
   auto memory_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  auto conflict_and_strife = find_azerite_essence( "Conflict and Strife" );
+  auto vision_perfection   = find_azerite_essence( "Vision of Perfection" );
 
+  // Rank 1: Major - Increased insanity generation rate for 10s, Minor - Chance to refund
+  // Rank 2: Major - Increased insanity generation rate for 12s, Minor - Chance to refund
+  // Rank 3: Major - Increased insanity generation rate for 12s, Minor - Chance to refund and Vers on Proc
   if ( memory_lucid_dreams.enabled() )
   {
     azerite_essence.lucid_dreams           = memory_lucid_dreams.spell( 1u, essence_type::MINOR );
     azerite_essence.memory_of_lucid_dreams = memory_lucid_dreams.spell( 1u, essence_type::MAJOR );
   }
 
-  if ( conflict_and_strife.enabled() )
+  // Rank 1: Major - CD at 25% duration, Minor - CDR
+  // Rank 2: Major - CD at 35% duration, Minor - CDR
+  // Rank 3: Major - CD at 35% duration + Haste on Proc, Minor - Vers on Proc
+  if ( vision_perfection.enabled() )
   {
-    azerite_essence.strife = conflict_and_strife.spell( 1u, essence_type::MINOR );
-    azerite_essence.conflict = conflict_and_strife.spell( 1u, essence_type::MAJOR );
+    azerite_essence.vision_of_perfection     = vision_perfection;
+    azerite_essence.vision_of_perfection_r1  = vision_perfection.spell( 1u, essence_type::MAJOR );
+    azerite_essence.vision_of_perfection_r2  = vision_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
   }
 
 }
@@ -1096,6 +1103,55 @@ void priest_t::init_rng()
   init_rng_holy();
 
   player_t::init_rng();
+}
+
+void priest_t::vision_of_perfection_proc()
+{
+  // Leaving this method broken until it actually works
+  return;
+
+  if ( !azerite_essence.vision_of_perfection.is_major() || !azerite_essence.vision_of_perfection.enabled() )
+  {
+    return;
+  }
+
+  double vision_multiplier = azerite_essence.vision_of_perfection_r1 -> effectN( 1 ).percent() +
+                             azerite_essence.vision_of_perfection_r2 -> effectN( 1 ).percent();
+
+  if ( vision_multiplier <= 0 )
+    return;
+
+  timespan_t base_duration = timespan_t::zero();
+
+  if ( specialization() == PRIEST_SHADOW )
+  {
+    auto pet_cooldown = talents.mindbender->ok() ?  cooldowns.mindbender :  cooldowns.shadowfiend;
+    base_duration = pet_cooldown->duration;
+  }
+
+  if ( base_duration == timespan_t::zero() )
+  {
+    return;
+  }
+
+  timespan_t duration = vision_multiplier * base_duration;
+
+  if ( specialization() == PRIEST_SHADOW )
+  {
+    auto current_pet = talents.mindbender->ok() ?  pets.mindbender :  pets.shadowfiend;
+    // check if the pet is active or not
+    if ( current_pet->is_sleeping() )
+    {
+      current_pet->summon( duration );
+    }
+    else
+    {
+      // if the pet is currently active, just add to the existing duration
+      auto new_duration = current_pet->expiration->remains();
+      new_duration += duration;
+      current_pet->expiration->reschedule( new_duration );
+    }
+  }
 }
 
 /// ALL Spec Pre-Combat Action Priority List
