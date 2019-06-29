@@ -5962,9 +5962,18 @@ struct entangling_roots_t : public druid_spell_t
   entangling_roots_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "entangling_roots", p, p->spec.entangling_roots, options_str )
   {
+    form_mask = NO_FORM | MOONKIN_FORM;
     harmful = false;
     // workaround so that we do not need to enable mana regen
     base_costs[ RESOURCE_MANA ] = 0.0;
+  }
+
+  bool check_form_restriction() override
+  {
+    if ( p()->buff.predatory_swiftness->check() )
+      return true;
+
+    return druid_spell_t::check_form_restriction();
   }
 
   virtual void execute() override
@@ -6517,16 +6526,13 @@ struct solar_empowerment_t : public druid_spell_t
 struct solar_wrath_t : public druid_spell_t
 {
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "solar_wrath", player, player -> find_affinity_spell( "Solar Wrath" ), options_str )
+    druid_spell_t( "solar_wrath", player, player->find_affinity_spell( "Solar Wrath" ), options_str )
   {
-    form_mask = MOONKIN_FORM;
+    form_mask = NO_FORM | MOONKIN_FORM;
 
-    if (player->specialization() == DRUID_RESTORATION)
-      form_mask = NO_FORM | MOONKIN_FORM;
+    add_child( player->active.solar_empowerment );
 
-    add_child (player->active.solar_empowerment);
-
-    energize_amount = player -> spec.astral_power -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    energize_amount = player->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   double composite_crit_chance() const override
