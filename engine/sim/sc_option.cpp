@@ -458,11 +458,6 @@ protected:
     {
       if ( name() == n.substr( 0, dot + 1 ) )
       {
-        if ( v.empty() )
-        {
-          return opts::parse_status::FAILURE;
-        }
-
         auto listname = n.substr( dot + 1, last - dot );
         if ( listname.empty() )
         {
@@ -475,7 +470,11 @@ protected:
           vec.clear();
         }
 
-        vec.push_back( v );
+        if ( !v.empty() )
+        {
+          vec.push_back( v );
+        }
+
         return opts::parse_status::OK;
       }
     }
