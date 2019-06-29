@@ -350,8 +350,8 @@ public:
     azerite_power_t twisted_claws;
     azerite_power_t burst_of_savagery;
 
+    // essences
     azerite_essence_t conflict_and_strife;
-
   } azerite;
 
   // azerite essence
@@ -444,7 +444,7 @@ public:
     buff_t* raking_ferocity;
     buff_t* arcanic_pulsar;
     buff_t* jungle_fury;
-
+    buff_t* strife_doubled;
   } buff;
 
   // Cooldowns
@@ -566,6 +566,7 @@ public:
     const spell_data_t* leather_specialization; // All Specializations
     const spell_data_t* omen_of_clarity;        // Feral & Restoration
     const spell_data_t* innervate;              // Balance & Restoration
+    const spell_data_t* entangling_roots;
 
     // Feral
     const spell_data_t* feral;
@@ -5955,14 +5956,33 @@ struct incarnation_t : public druid_spell_t
   }
 };
 
+// Entangling Roots =========================================================
+struct entangling_roots_t : public druid_spell_t
+{
+  entangling_roots_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "entangling_roots", p, p->spec.entangling_roots, options_str )
+  {
+    harmful = false;
+  }
+
+  virtual void execute() override
+  {
+    druid_spell_t::execute();
+
+    if ( p()->buff.strife_doubled )  // Check for essence happens in arise(). If null here means we don't have it.
+      p()->buff.strife_doubled->trigger();
+  }
+};
+
 // Innervate ================================================================
 struct innervate_t : public druid_spell_t
 {
   innervate_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "innervate", p, p -> find_specialization_spell( "Innervate" ), options_str )
+    druid_spell_t( "innervate", p, p->spec.innervate, options_str )
   {
     harmful = false;
   }
+
   virtual void execute() override
   {
     druid_spell_t::execute();
@@ -7044,7 +7064,7 @@ struct thorns_t : public druid_spell_t
   thorns_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "thorns", player, player->find_spell( 305497 ), options_str )
   {
-    available = p()->find_azerite_essence( "Conflict and Strife" ).is_major();
+    available = p()->azerite.conflict_and_strife.is_major();
     // workaround so that we do not need to enable mana regen
     base_costs[ RESOURCE_MANA ] = 0.0;
 
@@ -7374,6 +7394,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
   if ( name == "dash"                   ) return new                   dash_t( this, options_str );
   if ( name == "tiger_dash"             ) return new             tiger_dash_t( this, options_str );
+  if ( name == "entangling_roots"       ) return new       entangling_roots_t( this, options_str );
   if ( name == "feral_frenzy"           ) return new    feral_frenzy_driver_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "force_of_nature"        ) return new        force_of_nature_t( this, options_str );
@@ -7474,6 +7495,7 @@ void druid_t::init_spells()
   spec.druid                      = find_spell( 137009 );
   spec.leather_specialization     = find_specialization_spell( "Leather Specialization" );
   spec.omen_of_clarity            = find_specialization_spell( "Omen of Clarity" );
+  spec.entangling_roots           = find_spell( 339 );
 
   // Balance
   spec.astral_power               = find_specialization_spell( "Astral Power" );
@@ -9051,30 +9073,33 @@ void druid_t::arise()
 {
   player_t::arise();
 
-  if ( talent.earthwarden -> ok() )
-    buff.earthwarden -> trigger( buff.earthwarden -> max_stack() );
+  if ( talent.earthwarden->ok() )
+    buff.earthwarden->trigger( buff.earthwarden->max_stack() );
 
-  if (talent.natures_balance->ok())
+  if ( talent.natures_balance->ok() )
     buff.natures_balance->trigger();
 
   // Trigger persistent buffs
   if ( buff.yseras_gift )
     persistent_buff_delay.push_back( make_event<persistent_buff_delay_event_t>( *sim, this, buff.yseras_gift ) );
 
-  if ( talent.earthwarden -> ok() )
+  if ( talent.earthwarden->ok() )
     persistent_buff_delay.push_back( make_event<persistent_buff_delay_event_t>( *sim, this, buff.earthwarden_driver ) );
 
   if ( legendary.ailuro_pouncers > timespan_t::zero() )
   {
     timespan_t preproc = legendary.ailuro_pouncers * rng().real();
-    if ( preproc < buff.predatory_swiftness -> buff_duration )
+    if ( preproc < buff.predatory_swiftness->buff_duration )
     {
-      buff.predatory_swiftness -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
-        buff.predatory_swiftness -> buff_duration - preproc );
+      buff.predatory_swiftness->trigger(
+        1, buff_t::DEFAULT_VALUE(), -1.0, buff.predatory_swiftness->buff_duration - preproc );
     }
-
     make_event<ailuro_pouncers_event_t>( *sim, this, timespan_t::from_seconds( 15 ) - preproc );
   }
+
+  // Conflict major rank 3 buff to double the minor vers buff
+  if ( azerite.conflict_and_strife.is_major() && azerite.conflict_and_strife.rank() >= 3 )
+    buff.strife_doubled = buff_t::find( this, "conflict_vers" );
 }
 
 // druid_t::recalculate_resource_max ========================================
