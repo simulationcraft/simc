@@ -3601,6 +3601,7 @@ void items::vision_of_demise( special_effect_t& effect )
   }
 
   effect.execute_action = create_proc_action<vision_of_demise_t>( "vision_of_demise", effect, buff );
+}
 
 /**Azshara's Font of Power
  * driver id=296971, 4s duration channel, periodic triggers latent arcana (driver->trigger id=296962) every 1s
