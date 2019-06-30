@@ -6659,6 +6659,28 @@ struct action_callback_t : private noncopyable
  */
 struct dbc_proc_callback_t : public action_callback_t
 {
+  struct proc_event_t : public event_t
+  {
+    dbc_proc_callback_t* cb;
+    action_t*            source_action;
+    action_state_t*      source_state;
+
+    proc_event_t( dbc_proc_callback_t* c, action_t* a, action_state_t* s ) :
+      event_t( *a->sim ), cb( c ), source_action( a ),
+      // Note, state has to be cloned as it's about to get recycled back into the action state cache
+      source_state( s->action->get_state( s ) )
+    { }
+
+    ~proc_event_t()
+    { action_state_t::release( source_state ); }
+
+    const char* name() const override
+    { return "dbc_proc_event"; }
+
+    void execute() override
+    { cb->execute( source_action, source_state ); }
+  };
+
   static const item_t default_item_;
 
   const item_t& item;
@@ -6728,12 +6750,11 @@ struct dbc_proc_callback_t : public action_callback_t
                                  a -> name(), triggered );
     if ( triggered )
     {
-      make_event( *listener->sim, [ this, a, state ]() {
-        execute( a, state );
+      // Detach proc execution from proc triggering
+      make_event<proc_event_t>( *listener->sim, this, a, state );
 
-        if ( cooldown )
-          cooldown -> start();
-      } );
+      if ( cooldown )
+        cooldown -> start();
     }
   }
 
@@ -6801,6 +6822,11 @@ protected:
    */
   virtual void execute( action_t* /* a */, action_state_t* state )
   {
+    if ( state->target->is_sleeping() )
+    {
+      return;
+    }
+
     bool triggered = proc_buff == nullptr;
     if ( proc_buff )
       triggered = proc_buff -> trigger();
