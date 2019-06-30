@@ -8551,7 +8551,8 @@ struct use_items_t : public action_t
     range::for_each( slot_order, [this]( slot_e slot ) {
       const auto& item     = player->items[ slot ];
       const auto effect_it = range::find_if( item.parsed.special_effects, []( const special_effect_t* e ) {
-        return e->source == SPECIAL_EFFECT_SOURCE_ITEM && e->type == SPECIAL_EFFECT_USE;
+        return (e->source == SPECIAL_EFFECT_SOURCE_ITEM || e->source == SPECIAL_EFFECT_SOURCE_GEM ||
+                e->source == SPECIAL_EFFECT_SOURCE_ENCHANT) && e->type == SPECIAL_EFFECT_USE;
       } );
 
       // No item-based on-use effect in the slot, skip
