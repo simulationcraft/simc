@@ -6001,14 +6001,14 @@ void mage_t::apl_frost()
       essences->add_action( "worldvein_resonance" );
       break;
     case ROTATION_FROZEN_ORB:
-      essences->add_action( "focused_azerite_beam,if=debuff.packed_ice.down" );
+      essences->add_action( "focused_azerite_beam,if=debuff.packed_ice.down|active_enemies>3" );
       essences->add_action( "memory_of_lucid_dreams,if=debuff.packed_ice.down" );
-      essences->add_action( "blood_of_the_enemy,if=prev_gcd.1.rune_of_power&prev_gcd.2.frozen_orb" );
-      essences->add_action( "purifying_blast,if=debuff.packed_ice.down" );
-      essences->add_action( "ripple_in_space,if=debuff.packed_ice.down" );
+      essences->add_action( "blood_of_the_enemy,if=prev_gcd.1.rune_of_power&prev_gcd.2.frozen_orb|active_enemies>3" );
+      essences->add_action( "purifying_blast,if=debuff.packed_ice.down|active_enemies>3" );
+      essences->add_action( "ripple_in_space,if=debuff.packed_ice.down|active_enemies>3" );
       essences->add_action( "concentrated_flame,if=debuff.packed_ice.down,line_cd=6" );
       essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
-      essences->add_action( "worldvein_resonance,if=debuff.packed_ice.down" );
+      essences->add_action( "worldvein_resonance,if=debuff.packed_ice.down|active_enemies>4" );
       break;
     default:
       break;
