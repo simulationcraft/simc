@@ -168,6 +168,7 @@ namespace items
   void shiver_venom_relic( special_effect_t& );
   void leviathans_lure( special_effect_t& );
   void aquipotent_nautilus( special_effect_t& );
+  void zaquls_portal_key( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3497,6 +3498,66 @@ void items::aquipotent_nautilus( special_effect_t& effect )
   effect.execute_action = create_proc_action<surging_flood_dot_t>( "surging_flood", effect );
 }
 
+/**Za'qul's Portal Key
+ * driver id=302696, 1.5rppm to create void tear (driver->trigger id=303104)
+ * void tear id=303104, lasts 30s, move within 4yd to create portal
+ * portal id=302702, lasts 10s, while open gives int buff
+ * int buff id=302960, stat amount held in driver->effect#1, 10 MAX STACKS?
+ * TODO:
+ * Determine if multiple tear/portals can exist at the same time via frequent procs
+ * Why is there 10 max stacks on the int buff?
+ * Can you get multiple stacks via multiple portals (either your own or from others)
+ * Determine various timings (how long for tear/portal to appear, how far do you move, etc.)
+ */
+void items::zaquls_portal_key( special_effect_t& effect )
+{
+  // How long void tear is up for. Seems unncessary atm so commented out. May come into play if better implementation is
+  // made for total delay time rather than current hardcoding.
+
+  // timespan_t tear_duration = effect.driver()->effectN( 1 ).trigger()->duration();
+
+  struct void_negotiation_cb_t : public dbc_proc_callback_t
+  {
+    // How long it takes for a) tear to spawn, b) you to move to the tear, c) portal to spawn
+    timespan_t total_delay = 5_s;
+    buff_t* buff;
+
+    void_negotiation_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      // TODO: determine when the appropriate time to force moving() is (or if trigger_movement() with a distance is
+      // more appropriate). For now implemented to force you to move immeidately as the void tear spawns (assuming you
+      // set the option to move).
+      if ( rng().real() < listener->sim->bfa_opts.zaquls_portal_key_move_chance )
+      {
+        listener->moving();
+      }
+
+      listener->sim->print_debug( "za'qul's portal key portal spawned, void_negotiation scheduled in {} at {}",
+        total_delay, listener->sim->current_time() );
+      make_event( listener->sim, total_delay, [this] { buff->trigger(); } );
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "void_negotiation" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "void_negotiation", effect.player->find_spell( 302960 ) )
+      ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
+    // TODO: determine difficulty in staying inside the portal for the buff. If it's an issue, may need to create an
+    // option to set the buff uptime. For now assuming this is a non-issue and you can maintain the buff for the full
+    // 10s.
+    buff->set_duration( effect.player->find_spell( 302702 )->duration() );
+    // TODO: determine if buff from multiple portals can stack. For now assume they do and thus exhibit asynchronous
+    // stacking behavior
+    buff->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  }
+
+  new void_negotiation_cb_t( effect, buff );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -4089,6 +4150,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 301834, items::shiver_venom_relic );
   register_special_effect( 302773, items::leviathans_lure );
   register_special_effect( 306146, items::aquipotent_nautilus );
+  register_special_effect( 302696, items::zaquls_portal_key );
 
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );

@@ -1193,6 +1193,8 @@ struct sim_t : private sc_thread_t
     double              leviathans_lure_base_rppm = 0.5;
     /// Chance to catch returning wave of Aquipotent Nautilus
     double              aquipotent_nautilus_catch_chance = 1.0;
+    /// Chance of having to interrupt casting by moving to void tear from Za'qul's Portal Key
+    double              zaquls_portal_key_move_chance = 0.0;
   } bfa_opts;
 
   // Expansion specific data

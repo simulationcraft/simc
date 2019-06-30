@@ -3633,6 +3633,8 @@ void sim_t::create_options()
         bfa_opts.leviathans_lure_base_rppm, 0.0, 2.0 ) );
   add_option( opt_float( "bfa.aquipotent_nautilus_catch_chance",
         bfa_opts.aquipotent_nautilus_catch_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.zaquls_portal_key_move_chance",
+        bfa_opts.zaquls_portal_key_move_chance, 0.0, 1.0 ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
