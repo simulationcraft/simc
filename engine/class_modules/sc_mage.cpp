@@ -2295,7 +2295,6 @@ struct arcane_intellect_t : public mage_spell_t
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
-
     background = sim->overrides.arcane_intellect != 0;
   }
 
@@ -2534,8 +2533,7 @@ struct blink_t : public mage_spell_t
     base_teleport_distance = data().effectN( 1 ).radius_max();
     movement_directionality = MOVEMENT_OMNI;
 
-    if ( p->talents.shimmer->ok() )
-      background = true;
+    background = p->talents.shimmer->ok();
   }
 };
 
@@ -4302,6 +4300,7 @@ struct summon_water_elemental_t : public frost_mage_spell_t
     parse_options( options_str );
     harmful = track_cd_waste = false;
     ignore_false_positive = true;
+    background = p->talents.lonely_winter->ok();
   }
 
   void execute() override
@@ -4312,13 +4311,7 @@ struct summon_water_elemental_t : public frost_mage_spell_t
 
   bool ready() override
   {
-    if ( !p()->pets.water_elemental )
-      return false;
-
-    if ( !p()->pets.water_elemental->is_sleeping() )
-      return false;
-
-    if ( p()->talents.lonely_winter->ok() )
+    if ( !p()->pets.water_elemental || !p()->pets.water_elemental->is_sleeping() )
       return false;
 
     return frost_mage_spell_t::ready();
@@ -4334,6 +4327,7 @@ struct time_warp_t : public mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    background = sim->overrides.bloodlust != 0;
   }
 
   void execute() override
@@ -4352,9 +4346,6 @@ struct time_warp_t : public mage_spell_t
 
   bool ready() override
   {
-    if ( sim->overrides.bloodlust )
-      return false;
-
     if ( player->buffs.exhaustion->check() )
       return false;
 
@@ -4485,9 +4476,7 @@ struct freeze_t : public action_t
     parse_options( options_str );
     may_miss = may_crit = callbacks = false;
     dual = usable_while_casting = ignore_false_positive = true;
-
-    if ( p->talents.lonely_winter->ok() )
-      background = true;
+    background = p->talents.lonely_winter->ok();
   }
 
   void execute() override
@@ -4501,10 +4490,7 @@ struct freeze_t : public action_t
   {
     mage_t* m = debug_cast<mage_t*>( player );
 
-    if ( !m->pets.water_elemental )
-      return false;
-
-    if ( m->pets.water_elemental->is_sleeping() )
+    if ( !m->pets.water_elemental || m->pets.water_elemental->is_sleeping() )
       return false;
 
     if ( !m->pets.water_elemental->action.freeze->ready() )
