@@ -8416,6 +8416,7 @@ struct use_items_t : public action_t
     {
       if ( action->ready() )
       {
+        action->set_target( target );
         action->execute();
         break;
       }
