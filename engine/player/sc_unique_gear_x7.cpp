@@ -170,6 +170,7 @@ namespace items
   void aquipotent_nautilus( special_effect_t& );
   void zaquls_portal_key( special_effect_t& );
   void vision_of_demise( special_effect_t& );
+  void azsharas_font_of_power( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3600,6 +3601,62 @@ void items::vision_of_demise( special_effect_t& effect )
   }
 
   effect.execute_action = create_proc_action<vision_of_demise_t>( "vision_of_demise", effect, buff );
+
+/**Azshara's Font of Power
+ * driver id=296971, 4s duration channel, periodic triggers latent arcana (driver->trigger id=296962) every 1s
+ * latent arcana id=296962, 6s fully extending duration stat buff.
+ * unknown id=305190, maybe used to hold # of channel tics?
+ *
+ * Spell data shows channel (34) rather than channel (38) like codex, suggesting standard channeling behavior of being
+ * unable to cast while channeling. Base buff duration is 6s, max duration is 30s, and channel time is 4s with 1s tics.
+ * Currently implemented with buff being applied immediately on channel start.
+ *
+ * TODO: Check channel related behavior such as interrupt auto, etc. Confirm buff is applied (and begins to expire)
+ * immediately upon channel start rather than after channel end.
+ */
+void items::azsharas_font_of_power( special_effect_t& effect )
+{
+  struct latent_arcana_channel_t : public proc_t
+  {
+    buff_t* buff;
+
+    latent_arcana_channel_t( const special_effect_t& e, buff_t* b ) :
+      proc_t( e, "latent_arcana", e.driver() ), buff( b )
+    {
+      harmful = false;
+    }
+
+    void execute() override
+    {
+      proc_t::execute();
+      event_t::cancel( player->readying );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_t::tick( d );
+      buff->trigger();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_t::last_tick( d );
+      if ( !player->readying )
+        player->schedule_ready();
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "latent_arcana" );
+  if ( !buff )
+  {
+    auto buff_s = effect.player->find_spell( 296962 );
+
+    buff = make_buff<stat_buff_t>( effect.player, "latent_arcana", buff_s )
+      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), buff_s->effectN( 1 ).average( effect.item ) );
+    buff->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+  }
+
+  effect.execute_action = create_proc_action<latent_arcana_channel_t>( "latent_arcana_channel", effect, buff );
 }
 
 // Punchcard stuff ========================================================
@@ -4196,6 +4253,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 306146, items::aquipotent_nautilus );
   register_special_effect( 302696, items::zaquls_portal_key );
   register_special_effect( 303277, items::vision_of_demise );
+  register_special_effect( 296971, items::azsharas_font_of_power );
 
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );
