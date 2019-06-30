@@ -171,6 +171,7 @@ namespace items
   void zaquls_portal_key( special_effect_t& );
   void vision_of_demise( special_effect_t& );
   void azsharas_font_of_power( special_effect_t& );
+  void arcane_tempest( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3578,7 +3579,7 @@ void items::vision_of_demise( special_effect_t& effect )
 
     void execute() override
     {
-      action_t::execute();
+      proc_spell_t::execute();
 
       double pct = 100 - target->health_percentage();
       unsigned multiplier = static_cast<unsigned>( pct / divisor );
@@ -3658,6 +3659,69 @@ void items::azsharas_font_of_power( special_effect_t& effect )
   }
 
   effect.execute_action = create_proc_action<latent_arcana_channel_t>( "latent_arcana_channel", effect, buff );
+}
+
+// Arcane Tempest =========================================================
+
+void items::arcane_tempest( special_effect_t& effect )
+{
+  struct arcane_tempest_t : public proc_spell_t
+  {
+    buff_t* buff;
+
+    arcane_tempest_t( const special_effect_t& effect, buff_t* b ) :
+      proc_spell_t( "arcane_tempest", effect.player, effect.player->find_spell( 302774 ),
+        effect.item ), buff( b )
+    { }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( num_targets_hit == 1 )
+      {
+        buff->trigger();
+      }
+    }
+  };
+
+  struct arcane_tempest_buff_t : public buff_t
+  {
+    arcane_tempest_buff_t( const special_effect_t& e ) :
+      buff_t( e.player, "arcane_tempest", e.trigger(), e.item )
+    {
+      set_refresh_behavior( buff_refresh_behavior::DISABLED );
+      set_tick_time_callback( []( const buff_t* b, unsigned /* current_tick */ ) {
+        timespan_t amplitude = b->data().effectN( 1 ).period();
+
+        // TODO: What's the speedup multiplier?
+        return amplitude * ( 1.0 / ( 1.0 + ( b->current_stack - 1 ) * 0.1 ) );
+      } );
+    }
+
+    // Custom stacking logic, ticks are not going to increase stacks
+    bool freeze_stacks() override
+    { return true; }
+  };
+
+  auto buff = buff_t::find( effect.player, "arcane_tempest" );
+  if ( !buff )
+  {
+    buff = make_buff<arcane_tempest_buff_t>( effect );
+  }
+
+  auto action = create_proc_action<arcane_tempest_t>( "arcane_tempest", effect, buff );
+
+  buff->set_tick_callback(
+    [ action ]( buff_t* buff, int /* current_tick */, const timespan_t& /* tick_time */ ) {
+      action->set_target( buff->source->target );
+      action->execute();
+    }
+  );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Punchcard stuff ========================================================
@@ -4255,6 +4319,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 302696, items::zaquls_portal_key );
   register_special_effect( 303277, items::vision_of_demise );
   register_special_effect( 296971, items::azsharas_font_of_power );
+  register_special_effect( 304471, items::arcane_tempest );
 
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );
