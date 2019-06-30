@@ -46,6 +46,7 @@ actions+=/use_item,name=grongs_primal_rage,if=rune<=3&(time>20|!equipped.ramping
 actions+=/potion,if=cooldown.army_of_the_dead.ready|pet.gargoyle.active|buff.unholy_frenzy.up
 # Maintaining Virulent Plague is a priority
 actions+=/outbreak,target_if=dot.virulent_plague.remains<=gcd
+actions+=/call_action_list,name=essences
 actions+=/call_action_list,name=cooldowns
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/call_action_list,name=generic
@@ -79,6 +80,15 @@ actions.cooldowns+=/unholy_frenzy,if=active_enemies>=2&((cooldown.death_and_deca
 actions.cooldowns+=/soul_reaper,target_if=target.time_to_die<8&target.time_to_die>4
 actions.cooldowns+=/soul_reaper,if=(!raid_event.adds.exists|raid_event.adds.in>20)&rune<=(1-buff.unholy_frenzy.up)
 actions.cooldowns+=/unholy_blight
+
+actions.essences=memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40
+actions.essences+=/blood_of_the_enemy,if=(cooldown.death_and_decay.remains&spell_targets.death_and_decay>1)|(cooldown.defile.remains&spell_targets.defile>1)|(cooldown.apocalypse.remains&cooldown.death_and_decay.ready)
+actions.essences+=/guardian_of_azeroth,if=cooldown.apocalypse.ready
+actions.essences+=/focused_azerite_beam,if=!death_and_decay.ticking
+actions.essences+=/concentrated_flame,if=dot.concentrated_flame_burn.remains=0
+actions.essences+=/purifying_blast,if=!death_and_decay.ticking
+actions.essences+=/worldvein_resonance,if=!death_and_decay.ticking
+actions.essences+=/ripple_in_space,if=!death_and_decay.ticking
 
 actions.generic=death_coil,if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active
 actions.generic+=/death_coil,if=runic_power.deficit<14&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&!variable.pooling_for_gargoyle
