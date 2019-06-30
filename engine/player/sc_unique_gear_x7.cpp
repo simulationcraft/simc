@@ -169,6 +169,7 @@ namespace items
   void leviathans_lure( special_effect_t& );
   void aquipotent_nautilus( special_effect_t& );
   void zaquls_portal_key( special_effect_t& );
+  void vision_of_demise( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3558,6 +3559,49 @@ void items::zaquls_portal_key( special_effect_t& effect )
   new void_negotiation_cb_t( effect, buff );
 }
 
+// Vision of Demise =======================================================
+
+void items::vision_of_demise( special_effect_t& effect )
+{
+  struct vision_of_demise_t : public proc_spell_t
+  {
+    int divisor;
+    stat_buff_t* buff;
+    double bonus;
+
+    vision_of_demise_t( const special_effect_t& effect, stat_buff_t* b ) :
+      proc_spell_t( "vision_of_demise", effect.player, effect.driver() ),
+      divisor( effect.driver()->effectN( 1 ).base_value() ), buff( b ),
+      bonus( effect.player->find_spell( 303455 )->effectN( 2 ).average( effect.item ) )
+    { }
+
+    void execute() override
+    {
+      action_t::execute();
+
+      double pct = 100 - target->health_percentage();
+      unsigned multiplier = static_cast<unsigned>( pct / divisor );
+
+      buff->stats.back().amount = multiplier * bonus;
+
+      buff->trigger();
+    }
+  };
+
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "vision_of_demise" ) );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "vision_of_demise",
+      effect.player->find_spell( 303431 ) );
+    // Add the bonus haste as another haste rating buff, set to 0. Action will adjust
+    buff->add_stat( STAT_HASTE_RATING,
+          effect.player->find_spell( 303455 )->effectN( 1 ).average( effect.item ) );
+    buff->add_stat( STAT_HASTE_RATING, 0 );
+  }
+
+  effect.execute_action = create_proc_action<vision_of_demise_t>( "vision_of_demise", effect, buff );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -4151,6 +4195,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 302773, items::leviathans_lure );
   register_special_effect( 306146, items::aquipotent_nautilus );
   register_special_effect( 302696, items::zaquls_portal_key );
+  register_special_effect( 303277, items::vision_of_demise );
 
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );
