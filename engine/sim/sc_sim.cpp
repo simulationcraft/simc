@@ -3629,6 +3629,8 @@ void sim_t::create_options()
         bfa_opts.undulating_tides_lockout_timer, 1_s, timespan_t::max() ) );
   add_option( opt_float( "bfa.undulating_tides_lockout_chance",
         bfa_opts.undulating_tides_lockout_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.leviathans_lure_base_rppm",
+        bfa_opts.leviathans_lure_base_rppm, 0.0, 2.0 ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

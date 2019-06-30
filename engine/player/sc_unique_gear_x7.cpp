@@ -166,6 +166,7 @@ namespace items
   void highborne_compendium_of_sundering( special_effect_t& );
   void highborne_compendium_of_storms( special_effect_t& );
   void shiver_venom_relic( special_effect_t& );
+  void leviathans_lure( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3387,6 +3388,64 @@ void items::shiver_venom_relic( special_effect_t& effect )
   effect.execute_action = new venomous_shivers_freeze_t( effect );
 }
 
+/**Leviathan's Lure
+ * driver id=302773, unknown initial rppm (20 in data may be the MAX rppm)
+ * damage id=302763
+ * tooltip refers to driver->effect#2 for damage value, but effect doesn't exist and instead effect#1 is displayed
+ *
+ * Luminous Algae secondary proc driver id=302776
+ * buff is driver->trigger id=302775
+ * presumably increases main driver rppm by buff->effect#1
+ */
+void items::leviathans_lure( special_effect_t& effect )
+{
+  struct leviathan_chomp_t : public unique_gear::proc_spell_t
+  {
+    buff_t* algae;
+
+    leviathan_chomp_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "leviathan_chomp", e.player, e.player->find_spell( 302763 ) ), algae( b )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( algae )
+        algae->expire();
+    }
+  };
+
+  effect.ppm_ = -( effect.player->sim->bfa_opts.leviathans_lure_base_rppm );
+
+  // secondary proc buff
+  auto algae = make_buff( effect.player, "luminous_algae", effect.player->find_spell( 302775 ) );
+
+  auto chomp            = create_proc_action<leviathan_chomp_t>( "leviathan_chomp", effect, algae );
+  effect.execute_action = chomp;
+  auto main             = new dbc_proc_callback_t( effect.player, effect );
+
+  // secondary (luminous algae) proc effect
+  auto second      = new special_effect_t( effect.player );
+  second->type     = effect.type;
+  second->source   = effect.source;
+  second->spell_id = 302776;
+
+  algae->set_default_value( algae->data().effectN( 1 ).percent() );
+  algae->set_stack_change_callback( [main, algae]( buff_t*, int, int new_ ) {
+    if ( new_ )
+      main->rppm->set_modifier( 1.0 + algae->check_stack_value() );
+    else
+      main->rppm->set_modifier( 1.0 );
+  } );
+
+  second->custom_buff = algae;
+  effect.player->special_effects.push_back( second );
+  new dbc_proc_callback_t( effect.player, *second );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -3730,7 +3789,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 300830, items::highborne_compendium_of_sundering );
   register_special_effect( 300913, items::highborne_compendium_of_storms );
   register_special_effect( 301834, items::shiver_venom_relic );
-
+  register_special_effect( 302773, items::leviathans_lure );
 
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );

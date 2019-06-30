@@ -1189,6 +1189,8 @@ struct sim_t : private sc_thread_t
     timespan_t          undulating_tides_lockout_timer = 60_s;
     /// Chance on every check to see if Undulating Tides gets locked out
     double              undulating_tides_lockout_chance = 0.0;
+    /// Base RPPM for Leviathan's Lure
+    double              leviathans_lure_base_rppm = 0.5;
   } bfa_opts;
 
   // Expansion specific data
