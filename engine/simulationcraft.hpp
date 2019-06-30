@@ -6669,7 +6669,9 @@ struct dbc_proc_callback_t : public action_callback_t
       event_t( *a->sim ), cb( c ), source_action( a ),
       // Note, state has to be cloned as it's about to get recycled back into the action state cache
       source_state( s->action->get_state( s ) )
-    { }
+    {
+      schedule( timespan_t::zero() );
+    }
 
     ~proc_event_t()
     { action_state_t::release( source_state ); }
