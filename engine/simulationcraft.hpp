@@ -1191,6 +1191,8 @@ struct sim_t : private sc_thread_t
     double              undulating_tides_lockout_chance = 0.0;
     /// Base RPPM for Leviathan's Lure
     double              leviathans_lure_base_rppm = 0.5;
+    /// Chance to catch returning wave of Aquipotent Nautilus
+    double              aquipotent_nautilus_catch_chance = 1.0;
   } bfa_opts;
 
   // Expansion specific data

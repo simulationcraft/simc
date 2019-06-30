@@ -167,6 +167,7 @@ namespace items
   void highborne_compendium_of_storms( special_effect_t& );
   void shiver_venom_relic( special_effect_t& );
   void leviathans_lure( special_effect_t& );
+  void aquipotent_nautilus( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3401,19 +3402,19 @@ void items::shiver_venom_relic( special_effect_t& effect )
  */
 void items::leviathans_lure( special_effect_t& effect )
 {
-  struct leviathan_chomp_t : public unique_gear::proc_spell_t
+  struct leviathan_chomp_t : public proc_t
   {
     buff_t* algae;
 
     leviathan_chomp_t( const special_effect_t& e, buff_t* b ) :
-      proc_spell_t( "leviathan_chomp", e.player, e.player->find_spell( 302763 ) ), algae( b )
+      proc_t( e, "leviathan_chomp", e.player->find_spell( 302763 ) ), algae( b )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
 
     void execute() override
     {
-      proc_spell_t::execute();
+      proc_t::execute();
 
       if ( algae )
         algae->expire();
@@ -3423,7 +3424,9 @@ void items::leviathans_lure( special_effect_t& effect )
   effect.ppm_ = -( effect.player->sim->bfa_opts.leviathans_lure_base_rppm );
 
   // secondary proc buff
-  auto algae = make_buff( effect.player, "luminous_algae", effect.player->find_spell( 302775 ) );
+  auto algae = buff_t::find( effect.player, "luminous algae" );
+  if ( !algae )
+    algae = make_buff( effect.player, "luminous_algae", effect.player->find_spell( 302775 ) );
 
   auto chomp            = create_proc_action<leviathan_chomp_t>( "leviathan_chomp", effect, algae );
   effect.execute_action = chomp;
@@ -3446,6 +3449,52 @@ void items::leviathans_lure( special_effect_t& effect )
   second->custom_buff = algae;
   effect.player->special_effects.push_back( second );
   new dbc_proc_callback_t( effect.player, *second );
+}
+
+/**Aquipotent Nautilus
+ * driver id=306146
+ * driver->trigger id=302550 does not contain typical projectile or damage related info.
+ * has 12s duration of unknown function. possibly time limit to 'catch' returning wave? 
+ * frontal wave applies dot id=302580, tick damage value in id=302579->effect#1
+ * id=302579->effect#2 contains cd reduction (in seconds) for catching the returning wave.
+ *
+ * TODO: determine speed of outgoing & incoming wave (if any) and find out if id=302550 12s duration has any meaning
+ */
+void items::aquipotent_nautilus( special_effect_t& effect )
+{
+  struct surging_flood_dot_t : public proc_t
+  {
+    cooldown_t* cd;
+    timespan_t  reduction;
+
+    surging_flood_dot_t( const special_effect_t& e ) :
+      proc_t( e, "surging_flood", e.player->find_spell( 302580 ) ), cd( e.player->get_cooldown( e.cooldown_name() ) ),
+      reduction( timespan_t::from_seconds( e.player->find_spell( 302579 )->effectN( 2 ).base_value() ) )
+    {
+      aoe     = -1;
+      base_td = e.player->find_spell( 302579 )->effectN( 1 ).average( e.item );
+
+      // TODO: replace this HARDCODED travel speed with actual speed
+      travel_speed = 10.0;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_t::impact( s );
+
+      // TODO: replace this HARDCODED event with actual travel time of returning wave
+      make_event( player->sim, time_to_travel, [this] {
+        if ( rng().real() < sim->bfa_opts.aquipotent_nautilus_catch_chance )
+        {
+          sim->print_debug( "surging_flood return wave caught, adjusting cooldown from {} to {}", cd->remains(),
+            cd->remains() + reduction );
+          cd->adjust( reduction );
+        }
+      } );
+    }
+  };
+
+  effect.execute_action = create_proc_action<surging_flood_dot_t>( "surging_flood", effect );
 }
 
 // Punchcard stuff ========================================================
@@ -4039,6 +4088,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 300913, items::highborne_compendium_of_storms );
   register_special_effect( 301834, items::shiver_venom_relic );
   register_special_effect( 302773, items::leviathans_lure );
+  register_special_effect( 306146, items::aquipotent_nautilus );
 
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );
