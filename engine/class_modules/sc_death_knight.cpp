@@ -7641,6 +7641,7 @@ void death_knight_t::default_apl_frost()
   action_priority_list_t* bos_pooling  = get_action_priority_list( "bos_pooling" );
   action_priority_list_t* bos_ticking  = get_action_priority_list( "bos_ticking" );
   action_priority_list_t* aoe          = get_action_priority_list( "aoe" );
+  action_priority_list_t* essences     = get_action_priority_list( "essences" );
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
@@ -7797,6 +7798,7 @@ void death_knight_t::default_apl_unholy()
   action_priority_list_t* generic   = get_action_priority_list( "generic" );
   action_priority_list_t* aoe       = get_action_priority_list( "aoe" );
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+  action_priority_list_t* essences  = get_action_priority_list( "essences" );
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
