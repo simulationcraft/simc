@@ -766,7 +766,7 @@ public:
   void      trigger_arcane_charge( int stacks = 1 );
   void      trigger_leyshock( unsigned id, const action_state_t* s, leyshock_trigger_e trigger_type );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type );
-  void      trigger_lucid_dreams( double cost );
+  void      trigger_lucid_dreams( player_t* trigger_target, double cost );
 
   void apl_precombat();
   void apl_arcane();
@@ -1495,7 +1495,7 @@ public:
     spell_t::consume_resource();
 
     if ( current_resource() == RESOURCE_MANA )
-      p()->trigger_lucid_dreams( last_resource_cost );
+      p()->trigger_lucid_dreams( target, last_resource_cost );
   }
 };
 
@@ -6694,7 +6694,7 @@ void mage_t::trigger_leyshock( unsigned id, const action_state_t*, leyshock_trig
   expansion::bfa::trigger_leyshocks_grand_compilation( buff, this );
 }
 
-void mage_t::trigger_lucid_dreams( double cost )
+void mage_t::trigger_lucid_dreams( player_t* trigger_target, double cost )
 {
   if ( lucid_dreams_refund <= 0.0 )
     return;
@@ -6718,7 +6718,7 @@ void mage_t::trigger_lucid_dreams( double cost )
         cooldowns.fire_blast->adjust( -lucid_dreams_refund * cooldown_t::cooldown_duration( cooldowns.fire_blast ) );
         break;
       case MAGE_FROST:
-        trigger_icicle_gain( target, icicle.lucid_dreams );
+        trigger_icicle_gain( trigger_target, icicle.lucid_dreams );
         break;
       default:
         break;
