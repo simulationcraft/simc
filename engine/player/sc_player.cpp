@@ -5891,6 +5891,11 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
     default:
       break;
   }
+
+  if ( sim->debug )
+  {
+    sim->out_debug.print( "{} stats: {}", name(), current.stats.to_string() );
+  }
 }
 
 void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* action, bool temporary_buff )
@@ -6024,6 +6029,11 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
     }
     default:
       break;
+  }
+
+  if ( sim->debug )
+  {
+    sim->out_debug.print( "{} stats: {}", name(), current.stats.to_string() );
   }
 }
 
