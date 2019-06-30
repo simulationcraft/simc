@@ -171,6 +171,7 @@ namespace items
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
   void subroutine_recalibration( special_effect_t& );
+  void subroutine_optimization( special_effect_t& );
 }
 
 namespace util
@@ -3651,6 +3652,203 @@ void items::subroutine_recalibration( special_effect_t& effect )
   new recalibration_cb_t( effect );
 }
 
+void items::subroutine_optimization( special_effect_t& effect )
+{
+  struct subroutine_optimization_buff_t : public buff_t
+  {
+    std::vector<std::tuple<stat_e, double>> dist;
+    std::array<double, STAT_MAX> stats;
+    item_t punchcard;
+    double raw_bonus;
+
+    subroutine_optimization_buff_t( const special_effect_t& effect ) :
+      buff_t( effect.player, "subroutine_optimization", effect.trigger() ),
+      punchcard( init_punchcard( effect ) ),
+      raw_bonus( item_database::apply_combat_rating_multiplier( effect.player,
+          combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
+          punchcard.item_level(),
+          effect.driver()->effectN( 2 ).average( &( punchcard ) ) ) )
+    {
+      // Collect the stat distribution to the vector
+      auto stat_spell = yellow_punchcard( effect );
+      for ( size_t i = 1u; i <= stat_spell->effect_count(); ++i )
+      {
+        if ( stat_spell->effectN( i ).subtype() != A_MOD_RATING )
+        {
+          continue;
+        }
+
+        auto stats = ::util::translate_all_rating_mod( stat_spell->effectN( i ).misc_value1() );
+        double value = stat_spell->effectN( i ).m_coefficient();
+
+        dist.emplace_back( stats.front(), value );
+      }
+    }
+
+    const spell_data_t* yellow_punchcard( const special_effect_t& effect ) const
+    {
+      const gem_property_data_t* data = nullptr;
+
+      auto it = range::find_if( effect.item->parsed.gem_id, [ this, &data ]( unsigned gem_id ) {
+        auto item_data = source->dbc.item( gem_id );
+        if ( !item_data )
+        {
+          return false;
+        }
+
+        auto gem_props = source->dbc.gem_property( item_data->gem_properties );
+        if ( gem_props.id == 0 )
+        {
+          return false;
+        }
+
+        if ( gem_props.color & SOCKET_COLOR_YELLOW_PUNCHCARD )
+        {
+          data = &( gem_props );
+          return true;
+        }
+        return false;
+      } );
+
+      if ( it == effect.item->parsed.gem_id.end() )
+      {
+        return spell_data_t::not_found();
+      }
+
+      // Find the item enchantment associated with the gem
+      auto enchantment_data = source->dbc.item_enchantment( data->enchant_id );
+
+      for ( size_t i = 0u; i < sizeof_array( enchantment_data.ench_type ); ++i )
+      {
+        if ( enchantment_data.ench_type[ i ] == ITEM_ENCHANTMENT_EQUIP_SPELL )
+        {
+          return source->find_spell( enchantment_data.ench_prop[ i ] );
+        }
+      }
+
+      return spell_data_t::not_found();
+    }
+
+    void adjust_stat( stat_e stat, double current, double new_ )
+    {
+      double diff = new_ - current;
+      if ( diff < 0 )
+      {
+        source->stat_loss( stat, std::fabs( diff ), nullptr, nullptr, true );
+      }
+      else if ( diff > 0 )
+      {
+        source->stat_gain( stat, diff, nullptr, nullptr, true );
+      }
+
+      if ( diff != 0 )
+      {
+        stats[ stat ] += diff;
+      }
+    }
+
+    void restore_stat( stat_e stat, double delta )
+    {
+      if ( delta < 0 )
+      {
+        source->stat_gain( stat, std::fabs( delta ), nullptr, nullptr, true );
+      }
+      else if ( delta > 0 )
+      {
+        source->stat_loss( stat, delta, nullptr, nullptr, true );
+      }
+
+    }
+
+    void adjust_stats( bool up )
+    {
+      if ( !up )
+      {
+        range::fill( stats, 0.0 );
+      }
+
+      // TODO: scale factor behavior?
+      double haste = source->current.stats.haste_rating;
+      double new_haste = 0, bonus_haste = 0;
+      double mastery = source->current.stats.mastery_rating;
+      double new_mastery = 0, bonus_mastery = 0;
+      double crit = source->current.stats.crit_rating;
+      double new_crit = 0, bonus_crit = 0;
+      double versatility = source->current.stats.versatility_rating;
+      double new_versatility = 0, bonus_versatility;
+      double total = haste + mastery + crit + versatility;
+
+      range::for_each( dist, [&]( const std::tuple<stat_e, double>& distribution ) {
+          auto stat = std::get<0>( distribution );
+          switch ( stat )
+          {
+            case STAT_HASTE_RATING:
+              new_haste   = total * std::get<1>( distribution );
+              bonus_haste = as<double>( !up * raw_bonus * std::get<1>( distribution ) );
+              break;
+            case STAT_CRIT_RATING:
+              new_crit   = total * std::get<1>( distribution );
+              bonus_crit = as<double>( !up * raw_bonus * std::get<1>( distribution ) );
+              break;
+            case STAT_MASTERY_RATING:
+              new_mastery   = total * std::get<1>( distribution );
+              bonus_mastery = as<double>( !up * raw_bonus * std::get<1>( distribution ) );
+              break;
+            case STAT_VERSATILITY_RATING:
+              new_versatility    = total * std::get<1>( distribution );
+              bonus_versatility = as<double>( !up * raw_bonus * std::get<1>( distribution ) );
+              break;
+            default:
+              break;
+          }
+      } );
+
+      if ( sim->debug )
+      {
+        sim->out_debug.print(
+          "{} subroutine_optimization total={}, haste={}->{} (+{}), crit={}->{} (+{}), "
+          "mastery={}->{} (+{}), versatility={}->{} (+{})",
+          source->name(), total, haste, new_haste, bonus_haste, crit, new_crit, bonus_crit,
+          mastery, new_mastery, bonus_mastery, versatility, new_versatility, bonus_versatility );
+      }
+
+      adjust_stat( STAT_HASTE_RATING, haste, new_haste + bonus_haste );
+      adjust_stat( STAT_CRIT_RATING, crit, new_crit + bonus_crit );
+      adjust_stat( STAT_MASTERY_RATING, mastery, new_mastery + bonus_mastery );
+      adjust_stat( STAT_VERSATILITY_RATING, versatility, new_versatility + bonus_versatility );
+    }
+
+    void bump( int stacks, double value ) override
+    {
+      auto is_up = current_stack != 0;
+
+      buff_t::bump( stacks, value );
+
+      adjust_stats( is_up );
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+
+      restore_stat( STAT_HASTE_RATING, stats[ STAT_HASTE_RATING ] );
+      restore_stat( STAT_CRIT_RATING, stats[ STAT_CRIT_RATING ] );
+      restore_stat( STAT_MASTERY_RATING, stats[ STAT_MASTERY_RATING ] );
+      restore_stat( STAT_VERSATILITY_RATING, stats[ STAT_VERSATILITY_RATING ] );
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "subroutine_optimization" );
+  if ( !buff )
+  {
+    buff = make_buff<subroutine_optimization_buff_t>( effect );
+  }
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -3806,6 +4004,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 306409, items::yellow_punchcard );
   register_special_effect( 293136, items::subroutine_overclock );
   register_special_effect( 299062, items::subroutine_recalibration );
+  register_special_effect( 299464, items::subroutine_optimization );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
