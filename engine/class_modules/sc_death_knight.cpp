@@ -7658,12 +7658,23 @@ void death_knight_t::default_apl_frost()
   def -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)" );
 
   // Choose APL
+  def -> add_action( "call_action_list,name=essences" );
   def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&((cooldown.breath_of_sindragosa.remains=0&cooldown.pillar_of_frost.remains<10)|(cooldown.breath_of_sindragosa.remains<20&target.1.time_to_die<35))" );
   def -> add_action( "run_action_list,name=bos_ticking,if=buff.breath_of_sindragosa.up" );
   def -> add_action( "run_action_list,name=obliteration,if=buff.pillar_of_frost.up&talent.obliteration.enabled" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   def -> add_action( "call_action_list,name=standard" );
+  
+  // Hearth of Azeroth Essences
+  essences -> add_action( "blood_of_the_enemy, if=buff.pillar_of_frost.remains<10&cooldown.breath_of_sindragosa.remains|buff.pillar_of_frost.remains<10&!talent.breath_of_sindragosa.enabled" );
+  essences -> add_action( "guardian_of_azeroth" );
+  essences -> add_action( "focused_azerite_beam,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
+  essences -> add_action( "concentrated_flame,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&dot.concentrated_flame_burn.remains=0" );
+  essences -> add_action( "purifying_blast,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
+  essences -> add_action( "worldvein_resonance,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
+  essences -> add_action( "ripple_in_space,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
+  essences -> add_action( "memory_of_lucid_dreams,if=buff.empower_rune_weapon.remains<5&buff.breath_of_sindragosa.up|(rune.time_to_2>gcd&runic_power<50)" );
 
   // On-use items
   cooldowns -> add_action( "use_item,name=lurkers_insidious_gift,if=talent.breath_of_sindragosa.enabled&((cooldown.pillar_of_frost.remains<=10&variable.other_on_use_equipped)|(buff.pillar_of_frost.up&!variable.other_on_use_equipped))|(buff.pillar_of_frost.up&!talent.breath_of_sindragosa.enabled)" );
@@ -7814,9 +7825,20 @@ void death_knight_t::default_apl_unholy()
   // Maintain Virulent Plague
   def -> add_action( this, "Outbreak", "target_if=dot.virulent_plague.remains<=gcd", "Maintaining Virulent Plague is a priority" );
   // Action Lists
+  def -> add_action( "call_action_list,name=essences" );
   def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   def -> add_action( "call_action_list,name=generic" );
+  
+  // Heart of Azeroth Essences
+  essences -> add_action( "memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40" );
+  essences -> add-action( "blood_of_the_enemy,if=(cooldown.death_and_decay.remains&spell_targets.death_and_decay>1)|(cooldown.defile.remains&spell_targets.defile>1)|(cooldown.apocalypse.remains&cooldown.death_and_decay.ready)" );
+  essences -> add_action( "guardian_of_azeroth,if=cooldown.apocalypse.ready" );
+  essences -> add_action( "focused_azerite_beam,if=!death_and_decay.ticking" );
+  essences -> add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains=0" );
+  essences -> add_action( "purifying_blast,if=!death_and_decay.ticking" );
+  essences -> add_action( "worldvein_resonance,if=!death_and_decay.ticking" );
+  essences -> add_action( "ripple_in_space,if=!death_and_decay.ticking" );
 
   cooldowns -> add_action( this, "Army of the Dead" );
   cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4" );
