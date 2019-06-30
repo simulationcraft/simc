@@ -172,6 +172,7 @@ namespace items
   void subroutine_overclock( special_effect_t& );
   void subroutine_recalibration( special_effect_t& );
   void subroutine_optimization( special_effect_t& );
+  void harmonic_dematerializer( special_effect_t& );
 }
 
 namespace util
@@ -3849,6 +3850,56 @@ void items::subroutine_optimization( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void items::harmonic_dematerializer( special_effect_t& effect )
+{
+  struct harmonic_dematerializer_t : public proc_spell_t
+  {
+    buff_t* buff;
+    std::string target_name;
+
+    harmonic_dematerializer_t( const special_effect_t& effect, buff_t* b ) :
+      proc_spell_t( effect ), buff( b )
+    {
+      cooldown->duration = timespan_t::zero();
+    }
+
+    double action_multiplier() const override
+    {
+      double m = proc_spell_t::action_multiplier();
+
+      m *= 1.0 + buff->stack_value();
+
+      return m;
+    }
+
+    void execute() override
+    {
+      if ( !::util::str_compare_ci( target_name, target->name() ) )
+      {
+        buff->expire();
+      }
+
+      proc_spell_t::execute();
+
+      buff->trigger();
+      target_name = target->name();
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "harmonic_dematerializer" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "harmonic_dematerializer", effect.driver() );
+    buff->set_cooldown( timespan_t::zero() );
+    buff->set_default_value( effect.driver()->effectN( 2 ).percent() );
+    // TODO: How does the buff work when you refresh it?
+    buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  }
+
+  effect.execute_action = create_proc_action<harmonic_dematerializer_t>( "harmonic_dematerializer",
+    effect, buff );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -4005,6 +4056,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 293136, items::subroutine_overclock );
   register_special_effect( 299062, items::subroutine_recalibration );
   register_special_effect( 299464, items::subroutine_optimization );
+  register_special_effect( 293512, items::harmonic_dematerializer );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
