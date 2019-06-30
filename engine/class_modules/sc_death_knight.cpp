@@ -7834,7 +7834,7 @@ void death_knight_t::default_apl_unholy()
   
   // Heart of Azeroth Essences
   essences -> add_action( "memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40" );
-  essences -> add-action( "blood_of_the_enemy,if=(cooldown.death_and_decay.remains&spell_targets.death_and_decay>1)|(cooldown.defile.remains&spell_targets.defile>1)|(cooldown.apocalypse.remains&cooldown.death_and_decay.ready)" );
+  essences -> add_action( "blood_of_the_enemy,if=(cooldown.death_and_decay.remains&spell_targets.death_and_decay>1)|(cooldown.defile.remains&spell_targets.defile>1)|(cooldown.apocalypse.remains&cooldown.death_and_decay.ready)" );
   essences -> add_action( "guardian_of_azeroth,if=cooldown.apocalypse.ready" );
   essences -> add_action( "focused_azerite_beam,if=!death_and_decay.ticking" );
   essences -> add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains=0" );
