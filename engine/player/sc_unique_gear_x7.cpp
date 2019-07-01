@@ -2677,46 +2677,13 @@ void items::everchill_anchor( special_effect_t& effect )
     { }
   };
 
-  struct everchill_anchor_cb_t : public dbc_proc_callback_t
-  {
-    everchill_t* damage;
-    everchill_anchor_cb_t( const special_effect_t& effect ) :
-      dbc_proc_callback_t( effect.item, effect ),
-      damage( new everchill_t( effect ) )
-    {}
-
-    void execute( action_t* /* a */, action_state_t* state ) override
-    {
-      actor_target_data_t* td = listener -> get_target_data( state -> target );
-      assert( td );
-
-      if ( td -> debuff.everchill -> trigger() )
-      {
-        // The dot doesn't tick when it's refreshed but ticks when it's applied
-        // So we set tick_zero to false if it's a refresh, execute the dot, then set it back to true
-        // Hacky but at least it works
-        dot_t* current_dot = damage -> find_dot( state -> target );
-        bool already_ticking = current_dot ? current_dot -> is_ticking() : false;
-        if ( already_ticking )
-        {
-          damage -> tick_zero = false;
-        }
-        damage -> set_target( state -> target );
-        damage -> execute();
-        if ( already_ticking )
-        {
-          damage -> tick_zero = true;
-        }
-      }
-    }
-  };
-
   // An aoe ability will apply the dot on every target hit
   effect.proc_flags2_ = PF2_ALL_HIT;
   // Internal cd is handled on the debuff
   effect.cooldown_ = timespan_t::zero();
+  effect.execute_action = create_proc_action<everchill_t>( "everchill", effect );
 
-  new everchill_anchor_cb_t( effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Ramping Amplitude Gigavolt Engine ======================================
