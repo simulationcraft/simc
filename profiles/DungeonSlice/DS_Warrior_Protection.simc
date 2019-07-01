@@ -71,7 +71,7 @@ actions.st+=/ravager
 actions.st+=/devastate
 
 head=helm_of_tempered_jade,id=165548,bonus_id=4824/1537/5481/4775,azerite_powers=237/440/21/83/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=dynosprocket_spaulders,id=165825,bonus_id=4824/1537/5480/4775,azerite_powers=118/450/22/476/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=breastplate_of_divine_purification,id=165550,bonus_id=1537/5482/4824/4775,azerite_powers=441/450/31/14/13
@@ -88,13 +88,13 @@ main_hand=servoclaw_smasher,id=165598,bonus_id=4800/1537,enchant=quick_navigatio
 off_hand=sunburst_crest,id=165584,bonus_id=4800/1537
 
 # Gear Summary
-# gear_ilvl=416.81
-# gear_strength=5821
-# gear_stamina=10897
+# gear_ilvl=418.94
+# gear_strength=5925
+# gear_stamina=11118
 # gear_intellect=666
-# gear_crit_rating=921
-# gear_haste_rating=1338
-# gear_mastery_rating=927
+# gear_crit_rating=955
+# gear_haste_rating=1372
+# gear_mastery_rating=961
 # gear_versatility_rating=214
 # gear_armor=7588
 # set_bonus=gift_of_the_loa_2pc=1

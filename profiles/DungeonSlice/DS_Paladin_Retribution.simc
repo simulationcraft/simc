@@ -71,7 +71,7 @@ actions.generators+=/crusader_strike,if=holy_power<=4
 actions.generators+=/arcane_torrent,if=holy_power<=4
 
 head=glaciercrest_helm,id=165823,bonus_id=4824/1537/4775,azerite_powers=396/453/459/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=lockjaw_shoulderplate,id=159407,bonus_id=1587/4819/4775,azerite_powers=125/396/21/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=1587/4819/4775,azerite_powers=154/396/22/13
@@ -87,12 +87,12 @@ trinket2=everchill_anchor,id=165570,bonus_id=4800/1537
 main_hand=dawnbreaker,id=165586,bonus_id=4800/1537,enchant=masterful_navigation
 
 # Gear Summary
-# gear_ilvl=416.93
-# gear_strength=5821
-# gear_stamina=9970
-# gear_crit_rating=711
-# gear_haste_rating=1368
-# gear_mastery_rating=973
+# gear_ilvl=419.20
+# gear_strength=5925
+# gear_stamina=10191
+# gear_crit_rating=745
+# gear_haste_rating=1402
+# gear_mastery_rating=1007
 # gear_versatility_rating=348
 # gear_armor=5052
 # set_bonus=gift_of_the_loa_2pc=1

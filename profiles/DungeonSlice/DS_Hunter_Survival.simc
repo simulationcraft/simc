@@ -154,7 +154,7 @@ actions.wfi+=/serpent_sting,if=buff.vipers_venom.up
 actions.wfi+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel
 
 head=visage_of_bloody_horrors,id=159381,bonus_id=1587/5440/4775,azerite_powers=371/372/30/83/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=mantle_of_the_soulbinders_caress,id=165537,bonus_id=4824/1537/4775,azerite_powers=371/163/30/15/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440/4775,azerite_powers=163/371/30/14/13
@@ -170,12 +170,12 @@ trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
 main_hand=hornridged_crusher,id=165589,bonus_id=4800/1537,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=414.93
-# gear_agility=5767
-# gear_stamina=9907
-# gear_crit_rating=917
-# gear_haste_rating=1511
-# gear_mastery_rating=538
+# gear_ilvl=417.20
+# gear_agility=5871
+# gear_stamina=10128
+# gear_crit_rating=951
+# gear_haste_rating=1545
+# gear_mastery_rating=572
 # gear_versatility_rating=407
 # gear_armor=3410
 # set_bonus=gift_of_the_loa_2pc=1

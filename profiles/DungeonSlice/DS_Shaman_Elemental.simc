@@ -140,7 +140,7 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 actions.single_target+=/frost_shock,moving=1
 
 head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=447/562/459/539/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537/4775,azerite_powers=457/562/461/87/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=mistfire_raiment,id=165540,bonus_id=4824/1537/4775,azerite_powers=457/562/31/474/13
@@ -157,13 +157,13 @@ main_hand=akundas_shocksplitter,id=165594,bonus_id=4800/1537,enchant=deadly_navi
 off_hand=sunburst_crest,id=165584,bonus_id=4800/1537
 
 # Gear Summary
-# gear_ilvl=415.88
+# gear_ilvl=418.00
 # gear_strength=217
-# gear_stamina=9969
-# gear_intellect=7264
-# gear_crit_rating=992
-# gear_haste_rating=1063
-# gear_mastery_rating=538
+# gear_stamina=10190
+# gear_intellect=7368
+# gear_crit_rating=1026
+# gear_haste_rating=1097
+# gear_mastery_rating=572
 # gear_versatility_rating=807
 # gear_armor=5946
 # set_bonus=gift_of_the_loa_2pc=1

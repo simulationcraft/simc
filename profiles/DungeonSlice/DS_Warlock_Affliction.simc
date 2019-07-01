@@ -107,7 +107,7 @@ actions.spenders+=/unstable_affliction,if=!variable.use_seed&contagion<=cast_tim
 actions.spenders+=/unstable_affliction,cycle_targets=1,if=!variable.use_seed&(!talent.deathbolt.enabled|cooldown.deathbolt.remains>time_to_shard|soul_shard>1)&(!talent.vile_taint.enabled|soul_shard>1)&contagion<=cast_time+variable.padding&(!azerite.cascading_calamity.enabled|buff.cascading_calamity.remains>time_to_shard)
 
 head=grasping_crown_of_the_deep,id=159252,bonus_id=5062/1587/4786/4775,azerite_powers=183/123/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=amice_of_the_returned,id=159273,bonus_id=5062/1587/4786/4775,azerite_powers=123/230/30/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=divine_fury_raiment,id=165834,bonus_id=4824/1537/4775,azerite_powers=123/230/30/13
@@ -124,12 +124,12 @@ main_hand=sirens_song,id=165603,bonus_id=4800/1537,enchant=masterful_navigation
 off_hand=fogbreaker_light_of_the_sea,id=165583,bonus_id=4800/1537
 
 # Gear Summary
-# gear_ilvl=415.88
-# gear_stamina=9969
-# gear_intellect=6905
-# gear_crit_rating=613
-# gear_haste_rating=1380
-# gear_mastery_rating=1315
+# gear_ilvl=418.00
+# gear_stamina=10190
+# gear_intellect=7009
+# gear_crit_rating=647
+# gear_haste_rating=1414
+# gear_mastery_rating=1349
 # gear_versatility_rating=278
 # gear_armor=1442
 # set_bonus=gift_of_the_loa_2pc=1
