@@ -37,6 +37,9 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/fireblood
 actions+=/ancestral_call
+actions+=/concentrated_flame
+actions+=/ripple_in_space
+actions+=/worldvein_resonance
 actions+=/flame_shock,target_if=(!ticking|dot.flame_shock.remains<=gcd)|refreshable
 actions+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
 actions+=/earth_elemental

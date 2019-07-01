@@ -8,9 +8,9 @@ position=ranged_back
 talents=1013033
 
 # Default consumables
-potion=rising_death
-flask=endless_fathoms
-food=fancy_darkmoon_feast
+potion=unbridled_fury
+flask=greater_flask_of_endless_fathoms
+food=biltong
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -75,7 +75,7 @@ actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
 
 actions.essences=focused_azerite_beam
-actions.essences+=/memory_of_lucid_dreams,if=buff.icicles.stack<2
+actions.essences+=/memory_of_lucid_dreams,if=buff.icicles.stack<2&cooldown.frozen_orb.remains>execute_time&!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0
 actions.essences+=/blood_of_the_enemy,if=buff.icicles.stack=5&buff.brain_freeze.react|!talent.glacial_spike.enabled|active_enemies>4
 actions.essences+=/purifying_blast
 actions.essences+=/ripple_in_space

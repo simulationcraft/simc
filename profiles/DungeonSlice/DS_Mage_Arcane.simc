@@ -8,9 +8,9 @@ position=ranged_back
 talents=2032021
 
 # Default consumables
-potion=battle_potion_of_intellect
-flask=endless_fathoms
-food=fancy_darkmoon_feast
+potion=focused_resolve
+flask=greater_flask_of_endless_fathoms
+food=biltong
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
