@@ -829,6 +829,12 @@ void azerite_essence_state_t::copy_state( const std::unique_ptr<azerite_essence_
   m_state = other->m_state;
 }
 
+// TODO: Once armory import works with essences, adjust
+std::string azerite_essence_state_t::option_str() const
+{
+  return m_option_str;
+}
+
 // Formats:
 // token/token/token/...
 // Where token:
@@ -986,6 +992,8 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
 
     n_parsed_powers++;
   }
+
+  m_option_str = value;
 
   return true;
 }

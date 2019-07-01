@@ -10644,6 +10644,15 @@ std::string player_t::create_profile( save_e stype )
         profile_str += "azerite_override=" + azerite_overrides + term;
       }
     }
+
+    if ( azerite_essence )
+    {
+      std::string azerite_essence_str = azerite_essence->option_str();
+      if ( !azerite_essence_str.empty() )
+      {
+        profile_str += "azerite_essences=" + azerite_essence_str + term;
+      }
+    }
   }
 
   if ( stype & SAVE_PLAYER )

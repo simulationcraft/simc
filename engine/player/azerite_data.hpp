@@ -256,6 +256,7 @@ class azerite_essence_state_t
 
   const player_t*           m_player;
   std::vector<slot_state_t> m_state;
+  std::string               m_option_str;
 
 public:
   azerite_essence_state_t( const player_t* player );
@@ -272,6 +273,8 @@ public:
   expr_t* create_expression( const std::vector<std::string>& expr_str ) const;
 
   std::vector<unsigned> enabled_essences() const;
+
+  std::string option_str() const;
 };
 
 /// Creates an azerite state object for the actor
