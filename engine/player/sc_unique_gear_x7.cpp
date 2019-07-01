@@ -1175,7 +1175,7 @@ void items::merekthas_fang( special_effect_t& effect )
       driver( new noxious_venom_gland_aoe_driver_t( effect ) )
     {
       channeled = hasted_ticks = true;
-      tick_may_crit = tick_zero = false;
+      tick_may_crit = tick_zero = tick_on_application = false;
     }
 
     void execute() override
@@ -2777,7 +2777,7 @@ void items::grongs_primal_rage( special_effect_t& effect )
       proc_spell_t( "primal_rage", effect.player, effect.player -> find_spell( 288267 ), effect.item )
     { 
       channeled = hasted_ticks = true;
-      interrupt_auto_attack = tick_zero = false;
+      interrupt_auto_attack = tick_zero = tick_on_application = false;
 
       tick_action = create_proc_action<aoe_proc_t>( "primal_rage_damage", effect,
                                                "primal_rage_damage", effect.player -> find_spell( 288269 ), true );

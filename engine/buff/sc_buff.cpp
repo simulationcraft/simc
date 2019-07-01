@@ -479,6 +479,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, const std::strin
     tick_behavior( buff_tick_behavior::NONE ),
     tick_event( nullptr ),
     tick_zero( false ),
+    tick_on_application( false ),
     last_start(),
     last_trigger(),
     iteration_uptime_sum(),
@@ -1426,7 +1427,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
     assert( !tick_event );
     tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? reverse_stack_reduction : stacks );
 
-    if ( tick_zero && tick_callback )
+    if ( ( tick_zero || ( tick_on_application && before_stacks == 0 ) ) && tick_callback )
     {
       tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / period ), timespan_t::zero() );
     }

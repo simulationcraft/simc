@@ -5092,6 +5092,9 @@ public:
   /// Whether or not the ability/dot ticks immediately on usage.
   bool tick_zero;
 
+  /// Whether or not the ability/dot ticks when it is first applied, but not on refresh applications
+  bool tick_on_application;
+
   /**
    * @brief Whether or not ticks scale with haste.
    *
@@ -6505,7 +6508,7 @@ private:
   void schedule_tick();
   void start( timespan_t duration );
   void refresh( timespan_t duration );
-  void check_tick_zero();
+  void check_tick_zero( bool start );
   bool is_higher_priority_action_available() const;
   void recalculate_num_ticks();
 
@@ -7401,7 +7404,7 @@ struct proc_action_t : public T_ACTION
     }
 
     this->hasted_ticks = this -> data().flags( spell_attribute::SX_DOT_HASTED );
-    this->tick_zero = this->data().flags( spell_attribute::SX_TICK_ON_APPLICATION );
+    this->tick_on_application = this->data().flags( spell_attribute::SX_TICK_ON_APPLICATION );
 
     unique_gear::apply_label_modifiers( this );
   }

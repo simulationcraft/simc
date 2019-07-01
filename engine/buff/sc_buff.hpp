@@ -101,6 +101,7 @@ public:
   buff_tick_callback_t tick_callback;
   buff_tick_time_callback_t tick_time_callback;
   bool tick_zero;
+  bool tick_on_application; // Immediately tick when the buff first goes up, but not on refreshes
 
   // tmp data collection
 protected:
@@ -295,6 +296,8 @@ public:
   buff_t* set_refresh_duration_callback( buff_refresh_duration_callback_t );
   buff_t* set_tick_zero( bool v )
   { tick_zero = v; return this; }
+  buff_t* set_tick_on_application( bool v )
+  { tick_on_application = v; return this; }
   buff_t* set_tick_time_behavior( buff_tick_time_behavior b )
   { tick_time_behavior = b; return this; }
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);

@@ -1159,7 +1159,7 @@ void dot_t::start( timespan_t duration )
   state->original_x = target->x_position;
   state->original_y = target->y_position;
 
-  check_tick_zero();
+  check_tick_zero( true );
 
   schedule_tick();
 
@@ -1194,7 +1194,7 @@ void dot_t::refresh( timespan_t duration )
   event_t::cancel( end_event );
   end_event = make_event<dot_end_event_t>( sim, this, current_duration );
 
-  check_tick_zero();
+  check_tick_zero( false );
 
   recalculate_num_ticks();
 
@@ -1241,7 +1241,8 @@ void dot_t::recalculate_num_ticks()
       current_tick +
       as<int>( std::ceil( remains() / current_action->tick_time( state ) ) );
 }
-void dot_t::check_tick_zero()
+
+void dot_t::check_tick_zero( bool start )
 {
   // If we're precasting a helpful dot and we're not in combat, fake precasting
   // by using a first tick.
@@ -1250,7 +1251,8 @@ void dot_t::check_tick_zero()
   bool fake_first_tick =
       !current_action->harmful && !current_action->player->in_combat;
 
-  if ( current_action->tick_zero || fake_first_tick )
+  if ( ( current_action->tick_zero || ( current_action->tick_on_application && start ) ) ||
+       fake_first_tick )
   {
     timespan_t previous_ttt = time_to_tick;
     time_to_tick            = timespan_t::zero();
