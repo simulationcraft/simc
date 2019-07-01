@@ -1195,6 +1195,8 @@ struct sim_t : private sc_thread_t
     double              aquipotent_nautilus_catch_chance = 1.0;
     /// Chance of having to interrupt casting by moving to void tear from Za'qul's Portal Key
     double              zaquls_portal_key_move_chance = 0.0;
+    /// Unleash stacked potency from Anu-Azshara, Staff of the Eternal every X seconds
+    timespan_t          anuazshara_unleash_timer = 0_ms;
   } bfa_opts;
 
   // Expansion specific data

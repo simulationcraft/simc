@@ -172,6 +172,7 @@ namespace items
   void vision_of_demise( special_effect_t& );
   void azsharas_font_of_power( special_effect_t& );
   void arcane_tempest( special_effect_t& );
+  void anuazshara_staff_of_the_eternal( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3724,6 +3725,60 @@ void items::arcane_tempest( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+/**Anu-Azshara, Staff of the Eternal
+ * id=302986: driver, effect#1=damage, effect#2=hp/mana %threshold to trigger damage
+ * id=303017: driver->trigger#1, counter aura
+ * id=302988: unknown, possibly driver for the damage triggered when below %threshold
+ * id=302995: damage aoe projectile, damage = driver->trigger#1->stack * driver->effect#1
+ *
+ * TODO: Implement method to trigger the damage via APL
+ */
+void items::anuazshara_staff_of_the_eternal( special_effect_t& effect )
+{
+  struct prodigys_potency_unleash_t : public proc_t
+  {
+    buff_t* buff;
+
+    prodigys_potency_unleash_t( const special_effect_t& e, buff_t* b ) :
+      proc_t( e, "prodigys_potency", e.player->find_spell( 302995 ) ), buff( b )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    double action_multiplier() const override
+    {
+      return proc_t::action_multiplier() * buff->stack();
+    }
+
+    void execute() override
+    {
+      proc_t::execute();
+      sim->print_debug( "anu-azshara potency unleashed at {} stacks!", buff->stack() );
+      buff->expire();
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "prodigys_potency" );
+  if ( !buff )
+    buff = make_buff( effect.player, "prodigys_potency", effect.trigger() );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  auto action = create_proc_action<prodigys_potency_unleash_t>( "prodigys_potency", effect, buff );
+  auto timer  = effect.player->sim->bfa_opts.anuazshara_unleash_timer;
+
+  if ( timer > 0_ms )
+  {
+    effect.player->register_combat_begin( [action, timer]( player_t* ) {
+      make_repeating_event( *action->sim, timer, [action]() {
+        action->execute();
+      } );
+    } );
+  }
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -4320,6 +4375,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 303277, items::vision_of_demise );
   register_special_effect( 296971, items::azsharas_font_of_power );
   register_special_effect( 304471, items::arcane_tempest );
+  register_special_effect( 302986, items::anuazshara_staff_of_the_eternal );
 
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );
