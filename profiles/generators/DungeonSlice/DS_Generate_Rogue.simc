@@ -7,7 +7,7 @@ position=back
 talents=2210032
 
 head=cowl_of_fluid_machinations,id=159302,bonus_id=1587/4819,azerite_powers=407/408/22/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulder=goldtasseled_epaulets,id=159299,bonus_id=1587/4819,azerite_powers=407/408/22/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1587/4819,azerite_powers=408/407/31/13
@@ -35,7 +35,7 @@ position=back
 talents=2010021
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=129/562/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulder=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537,azerite_powers=129/562/31/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=vest_of_reverent_adoration,id=159303,bonus_id=1587/4819,azerite_powers=180/129/31/13
@@ -63,7 +63,7 @@ position=back
 talents=2320012
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=414/562/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulder=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537,azerite_powers=124/562/31/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=spymasters_wrap,id=155860,bonus_id=1587/4819,azerite_powers=413/481/21/13
