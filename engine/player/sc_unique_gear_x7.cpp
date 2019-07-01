@@ -3785,14 +3785,21 @@ item_t init_punchcard( const special_effect_t& effect )
   punchcard.name_str = item_data->name;
   ::util::tokenize( punchcard.name_str );
 
-  // Apply bonus ids to punchcard item
-  range::for_each( effect.item->parsed.gem_bonus_id[ gem_slot ],
-    [ &punchcard ]( unsigned bonus_id ) {
-      auto bonuses = punchcard.player -> dbc.item_bonus( bonus_id );
-      range::for_each( bonuses, [ &punchcard ]( const item_bonus_entry_t* entry ) {
-        item_database::apply_item_bonus( punchcard, *entry );
-      } );
-  } );
+  if ( effect.item->parsed.gem_ilevel[ gem_slot ] > 0 )
+  {
+    punchcard.parsed.data.level = effect.item->parsed.gem_ilevel[ gem_slot ];
+  }
+  else
+  {
+    // Apply bonus ids to punchcard item
+    range::for_each( effect.item->parsed.gem_bonus_id[ gem_slot ],
+      [ &punchcard ]( unsigned bonus_id ) {
+        auto bonuses = punchcard.player -> dbc.item_bonus( bonus_id );
+        range::for_each( bonuses, [ &punchcard ]( const item_bonus_entry_t* entry ) {
+          item_database::apply_item_bonus( punchcard, *entry );
+        } );
+    } );
+  }
 
   if ( effect.player->sim->debug )
   {
@@ -4168,6 +4175,8 @@ void items::harmonic_dematerializer( special_effect_t& effect )
     harmonic_dematerializer_t( const special_effect_t& effect, buff_t* b ) :
       proc_spell_t( effect ), buff( b )
     {
+      auto punchcard = init_punchcard( effect );
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( &( punchcard ) );
       cooldown->duration = timespan_t::zero();
     }
 
