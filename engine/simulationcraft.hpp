@@ -2311,6 +2311,7 @@ struct item_t
     std::array<int, MAX_ITEM_STAT>                   stat_val;
     std::array<int, MAX_GEM_SLOTS>                   gem_id;
     std::array<std::vector<unsigned>, MAX_GEM_SLOTS> gem_bonus_id;
+    std::array<unsigned, MAX_GEM_SLOTS>              gem_ilevel;
     std::array<int, MAX_GEM_SLOTS>                   gem_color;
     std::vector<int>                                 bonus_id;
     std::vector<stat_pair_t>                         gem_stats, meta_gem_stats, socket_bonus_stats;
@@ -2340,6 +2341,7 @@ struct item_t
       range::fill( gem_color, SOCKET_COLOR_NONE );
       range::fill( relic_bonus_ilevel, 0 );
       range::fill( relic_ilevel, 0 );
+      range::fill( gem_ilevel, 0 );
     }
   } parsed;
 
@@ -2372,6 +2374,7 @@ struct item_t
   std::string option_addon_id_str;
   std::string option_gem_id_str;
   std::string option_gem_bonus_id_str;
+  std::string option_gem_ilevel_str;
   std::string option_bonus_id_str;
   std::string option_initial_cd_str;
   std::string option_drop_level_str;

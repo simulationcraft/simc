@@ -659,6 +659,7 @@ void item_t::parse_options()
   options.push_back(opt_string("source", option_data_source_str));
   options.push_back(opt_string("gem_id", option_gem_id_str));
   options.push_back(opt_string("gem_bonus_id", option_gem_bonus_id_str));
+  options.push_back(opt_string("gem_ilevel", option_gem_ilevel_str));
   options.push_back(opt_string("enchant_id", option_enchant_id_str));
   options.push_back(opt_string("addon_id", option_addon_id_str));
   options.push_back(opt_string("bonus_id", option_bonus_id_str));
@@ -745,6 +746,23 @@ void item_t::parse_options()
     }
 
   }
+
+  if ( ! option_gem_ilevel_str.empty() )
+  {
+    auto split = util::string_split( option_gem_ilevel_str, "/:" );
+    auto gem_idx = 0U;
+    for ( const auto& ilevel_str : split )
+    {
+      auto ilevel = std::stoi( ilevel_str );
+      if ( ilevel >= 0 && ilevel < MAX_ILEVEL )
+      {
+        parsed.gem_ilevel[ gem_idx ] = ilevel;
+      }
+
+      ++gem_idx;
+    }
+  }
+
   if ( ! option_relic_id_str.empty() )
   {
     std::vector<std::string> relic_split = util::string_split( option_relic_id_str, "/" );
@@ -941,6 +959,11 @@ std::string item_t::encoded_item() const
     s << ",gem_bonus_id=" << option_gem_bonus_id_str;
   }
   // TODO: Will Blizzard API give us this information? Nobody knows!
+
+  if ( !option_gem_ilevel_str.empty() )
+  {
+    s << ",gem_ilevel=" << option_gem_ilevel_str;
+  }
 
   // Figure out if any relics have "relic data" (relic bonus ids)
   auto relic_data_it = range::find_if( parsed.relic_data, []( const std::vector<unsigned> v ) {
