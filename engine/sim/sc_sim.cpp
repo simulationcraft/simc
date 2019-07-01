@@ -3619,6 +3619,10 @@ void sim_t::create_options()
         bfa_opts.legplates_of_unbound_anguish_chance, 0.0, 1.0 ) );
   add_option( opt_int( "bfa.loyal_to_the_end_allies",
         bfa_opts.loyal_to_the_end_allies, 0, 4 ) );
+  add_option( opt_timespan( "bfa.loyal_to_the_end_ally_death_timer",
+        bfa_opts.loyal_to_the_end_ally_death_timer, 1_s, timespan_t::max() ) );
+  add_option( opt_float( "bfa.loyal_to_the_end_ally_death_chance",
+        bfa_opts.loyal_to_the_end_ally_death_chance, 0.0, 1.0 ) );
   add_option( opt_int( "bfa.worldvein_allies",
         bfa_opts.worldvein_allies, 0, 10 ) );
   add_option( opt_float( "bfa.ripple_in_space_proc_chance",
