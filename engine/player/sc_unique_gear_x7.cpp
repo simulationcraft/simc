@@ -3340,8 +3340,10 @@ void items::highborne_compendium_of_sundering( special_effect_t& effect )
         eruption->execute();
         dot->cancel();
       }
-
-      proc_spell_t::impact( s );
+      else
+      {
+        proc_spell_t::impact( s );
+      }
     }
   };
 
