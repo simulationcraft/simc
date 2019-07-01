@@ -5579,8 +5579,8 @@ void mage_t::apl_precombat()
 std::string mage_t::default_potion() const
 {
   std::string lvl120_potion =
-    ( specialization() == MAGE_FROST ) ? "rising_death" :
-                                         "battle_potion_of_intellect";
+    ( specialization() == MAGE_ARCANE ) ? "focused_resolve" :
+                                          "unbridled_fury";
 
   std::string lvl110_potion =
     ( specialization() == MAGE_ARCANE ) ? "deadly_grace" :
@@ -5596,7 +5596,7 @@ std::string mage_t::default_potion() const
 
 std::string mage_t::default_flask() const
 {
-  return ( true_level > 110 ) ? "endless_fathoms" :
+  return ( true_level > 110 ) ? "greater_flask_of_endless_fathoms" :
          ( true_level > 100 ) ? "whispered_pact" :
          ( true_level >  90 ) ? "greater_draenic_intellect_flask" :
          ( true_level >  85 ) ? "warm_sun" :
@@ -5611,7 +5611,8 @@ std::string mage_t::default_food() const
     ( specialization() == MAGE_FIRE   ) ? "pickled_eel" :
                                           "salty_squid_roll";
 
-  return ( true_level > 110 ) ? "fancy_darkmoon_feast" :
+  // TODO: Figure out optimal food based on T24 profiles.
+  return ( true_level > 110 ) ? "biltong" :
          ( true_level > 100 ) ? "fancy_darkmoon_feast" :
          ( true_level >  90 ) ? lvl100_food :
          ( true_level >  89 ) ? "mogu_fish_stew" :
