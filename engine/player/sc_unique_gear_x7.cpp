@@ -165,6 +165,7 @@ namespace items
   void fathom_hunter( special_effect_t& );
   void highborne_compendium_of_sundering( special_effect_t& );
   void highborne_compendium_of_storms( special_effect_t& );
+  void neural_synapse_enhancer( special_effect_t& );
   void shiver_venom_relic( special_effect_t& );
   void leviathans_lure( special_effect_t& );
   void aquipotent_nautilus( special_effect_t& );
@@ -3352,6 +3353,13 @@ void items::highborne_compendium_of_sundering( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Neural Synapse Enhancer
+
+void items::neural_synapse_enhancer( special_effect_t& effect )
+{
+  effect.disable_action();
+}
+
 /**Shiver Venom Relic
  * Equip: Shiver Venom (id=301576)
  * - Applies a stacking dot (effect#1->trigger id=301624), 0tick, hasted, can crit
@@ -4370,6 +4378,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 304637, items::fathom_hunter );
   register_special_effect( 300830, items::highborne_compendium_of_sundering );
   register_special_effect( 300913, items::highborne_compendium_of_storms );
+  register_special_effect( 300612, items::neural_synapse_enhancer );
   register_special_effect( 301834, items::shiver_venom_relic );
   register_special_effect( 302773, items::leviathans_lure );
   register_special_effect( 306146, items::aquipotent_nautilus );
