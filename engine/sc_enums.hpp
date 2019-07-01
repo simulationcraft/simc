@@ -770,8 +770,8 @@ enum slot_e  // these enum values match armory settings
   SLOT_MIN       = 0
 };
 
-// Tiers 14..22 + PVP
-const unsigned N_TIER   = 10;
+// Tiers 14..27 + PVP
+const unsigned N_TIER   = 15;
 const unsigned MIN_TIER = 14;
 
 // Set bonus .. bonus. They map to a vector internally, so each enum value is just the vector

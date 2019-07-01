@@ -37,4 +37,3 @@ do
   cd ../
 done
 echo 'done'
-$SHELL

@@ -1,0 +1,120 @@
+hunter="T24_Hunter_Marksmanship"
+source=default
+spec=marksmanship
+level=120
+race=human
+role=attack
+position=ranged_back
+talents=1103031
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/hunters_mark
+# Precast this as early as possible to potentially gain another cast during the fight.
+actions.precombat+=/double_tap,precast_time=10
+actions.precombat+=/worldvein_resonance
+actions.precombat+=/guardian_of_azeroth
+actions.precombat+=/memory_of_lucid_dreams
+actions.precombat+=/trueshot,precast_time=1.5,if=active_enemies>2
+actions.precombat+=/aimed_shot,if=active_enemies<3
+
+# Executed every time the actor is available.
+actions=auto_shot
+actions+=/use_item,name=galecallers_boon,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<10
+# Try to line up activated trinkets with Trueshot
+actions+=/use_items,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<20
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=st,if=active_enemies<3
+actions+=/call_action_list,name=trickshots,if=active_enemies>2
+
+actions.cds=hunters_mark,if=debuff.hunters_mark.down&!buff.trueshot.up
+actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd|cooldown.rapid_fire.remains<cooldown.aimed_shot.remains|target.time_to_die<20
+actions.cds+=/berserking,if=buff.trueshot.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13
+actions.cds+=/blood_fury,if=buff.trueshot.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16
+actions.cds+=/ancestral_call,if=buff.trueshot.up&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16
+actions.cds+=/fireblood,if=buff.trueshot.up&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9
+actions.cds+=/lights_judgment
+actions.cds+=/worldvein_resonance
+actions.cds+=/guardian_of_azeroth,if=cooldown.trueshot.remains<15
+actions.cds+=/ripple_in_space,if=cooldown.trueshot.remains<7
+actions.cds+=/memory_of_lucid_dreams
+actions.cds+=/potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|target.time_to_die<25
+actions.cds+=/trueshot,if=focus>60&(buff.precise_shots.down&cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15
+
+actions.st=explosive_shot
+actions.st+=/barrage,if=active_enemies>1
+actions.st+=/a_murder_of_crows
+actions.st+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
+actions.st+=/rapid_fire,if=buff.trueshot.down|focus<70
+actions.st+=/arcane_shot,if=buff.trueshot.up&buff.master_marksman.up&!buff.memory_of_lucid_dreams.up
+actions.st+=/aimed_shot,if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time
+actions.st+=/arcane_shot,if=buff.trueshot.up&buff.master_marksman.up&buff.memory_of_lucid_dreams.up
+actions.st+=/piercing_shot
+actions.st+=/focused_azerite_beam
+actions.st+=/purifying_blast
+actions.st+=/concentrated_flame
+actions.st+=/blood_of_the_enemy
+actions.st+=/the_unbound_force
+actions.st+=/arcane_shot,if=buff.trueshot.down&(buff.precise_shots.up&(focus>41|buff.master_marksman.up)|(focus>50&azerite.focused_fire.enabled|focus>75)&(cooldown.trueshot.remains>5|focus>80)|target.time_to_die<5)
+actions.st+=/steady_shot
+
+actions.trickshots=barrage
+actions.trickshots+=/explosive_shot
+actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&ca_execute&buff.double_tap.up
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled)
+actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up)
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.up
+actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up&!buff.trueshot.up|focus>70
+actions.trickshots+=/focused_azerite_beam
+actions.trickshots+=/purifying_blast
+actions.trickshots+=/concentrated_flame
+actions.trickshots+=/blood_of_the_enemy
+actions.trickshots+=/the_unbound_force
+actions.trickshots+=/piercing_shot
+actions.trickshots+=/a_murder_of_crows
+actions.trickshots+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
+actions.trickshots+=/steady_shot
+
+head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=212/36/22/14/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
+shoulders=tidal_shroud_spaulders,id=165923,bonus_id=4824/1537/4775,azerite_powers=212/36/30/15/13
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440/4775,azerite_powers=36/370/30/14/13
+wrists=ape_wranglers_wristguards,id=165534,bonus_id=4800/1537
+hands=slimy_kelpweavers,id=165546,bonus_id=4800/1537
+waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
+legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
+feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_mastery
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
+trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
+trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
+main_hand=twinpipe_buster_cannon,id=165600,bonus_id=4800/1537,enchant=masterful_navigation
+
+# Gear Summary
+# gear_ilvl=418.20
+# gear_agility=5871
+# gear_stamina=10191
+# gear_crit_rating=629
+# gear_haste_rating=941
+# gear_mastery_rating=1177
+# gear_versatility_rating=481
+# gear_armor=3410
+# set_bonus=gift_of_the_loa_2pc=1

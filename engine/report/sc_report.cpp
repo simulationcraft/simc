@@ -379,6 +379,14 @@ bool report::check_gear( player_t& p, sim_t& sim )
     tier_name                  = "PR";
     third_ring_traits          = 1;
   }
+  else if (p.report_information.save_str.find( "DS" ) != std::string::npos )
+  {
+    max_ilevel_allowed         = 445;
+    max_azerite_ilevel_allowed = max_ilevel_allowed + 5;
+    hoa_ilevel                 = 463;
+    hoa_level                  = 65;
+    tier_name                  = "DS";
+  }
   else if ( p.report_information.save_str.find( "T22" ) != std::string::npos )
   {
     max_ilevel_allowed         = 385;
@@ -395,6 +403,14 @@ bool report::check_gear( player_t& p, sim_t& sim )
     hoa_ilevel                 = 429;
     hoa_level                  = 48;
     tier_name                  = "T23";
+  }
+  else if (p.report_information.save_str.find( "T24" ) != std::string::npos )
+  {
+    max_ilevel_allowed         = 445;
+    max_azerite_ilevel_allowed = max_ilevel_allowed + 5;
+    hoa_ilevel                 = 463;
+    hoa_level                  = 65;
+    tier_name                  = "T24";
   }
   else
   {
