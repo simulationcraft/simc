@@ -4091,7 +4091,7 @@ void items::subroutine_optimization( special_effect_t& effect )
       double crit = source->current.stats.crit_rating;
       double new_crit = 0, bonus_crit = 0;
       double versatility = source->current.stats.versatility_rating;
-      double new_versatility = 0, bonus_versatility;
+      double new_versatility = 0, bonus_versatility = 0;
       double total = haste + mastery + crit + versatility;
 
       range::for_each( dist, [&]( const std::tuple<stat_e, double>& distribution ) {
