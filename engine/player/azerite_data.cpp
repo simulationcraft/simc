@@ -3285,59 +3285,41 @@ void loyal_to_the_end( special_effect_t& effect )
 
 void arcane_heart( special_effect_t& effect )
 {
-  struct omnipotence_t : public stat_buff_t
-  {
-    stat_e current_stat = STAT_NONE;
-
-    omnipotence_t( player_t* p, const std::string& name, const spell_data_t* b ) :
-      stat_buff_t( p, name, b )
-    { }
-
-    void execute( int stacks, double value, timespan_t duration ) override
-    {
-      buff_t::execute( stacks, value, duration );
-
-      current_stat = util::highest_stat(player,
-        { STAT_CRIT_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_VERSATILITY_RATING } );
-
-      source->stat_gain( current_stat, this->default_value );
-    }
-
-    void expire_override( int stacks, timespan_t duration ) override
-    {
-      buff_t::expire_override( stacks, duration );
-
-      if ( current_stat == STAT_NONE )
-        return;
-      
-      source->stat_loss( current_stat, this->default_value );
-
-      current_stat = STAT_NONE;
-    }
-  };
-
   azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
   if ( !power.enabled() )
     return;
-  
-  const spell_data_t* counter = effect.driver()->effectN( 1 ).trigger();
-  const spell_data_t* buff_data = counter->effectN( 1 ).trigger();
 
-  buff_t* buff = buff_t::find( effect.player, "arcane_heart" );
+  auto buff = buff_t::find( effect.player, "arcane_heart" );
   if ( !buff )
   {
-    buff = make_buff( effect.player, "arcane_heart", counter )
+    buff = make_buff( effect.player, "arcane_heart", effect.trigger() )
       // Damage/heal threshold (currently at 1.5million) stored in default_value of the "arcane_heart" buff
-      ->set_default_value( power.spell_ref().effectN( 1 ).base_value() ); 
+      ->set_default_value( power.spell_ref().effectN( 1 ).base_value() );
   }
 
-  buff_t* omni = buff_t::find( effect.player, "omnipotence" );
+  double value = power.value( 2 );
+  auto omni    = static_cast<stat_buff_t*>( buff_t::find( effect.player, "omnipotence" ) );
   if ( !omni )
   {
-    omni = make_buff<omnipotence_t>( effect.player, "omnipotence", buff_data )
-      ->set_default_value( power.value( 2 ) )
-      // Unknown what refresh behavior Omnipotence has. Adjust if situation arises where 100k+ dps is possible
-      ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+    omni = make_buff<stat_buff_t>( effect.player, "omnipotence", effect.trigger()->effectN( 1 ).trigger() )
+      ->add_stat( STAT_CRIT_RATING, 0 )
+      ->add_stat( STAT_HASTE_RATING, 0 )
+      ->add_stat( STAT_MASTERY_RATING, 0 )
+      ->add_stat( STAT_VERSATILITY_RATING, 0 );
+    omni->set_stack_change_callback( [omni, value]( buff_t*, int, int new_ ) {
+      stat_e highest = util::highest_stat( omni->player,
+        {STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING} );
+
+      omni->sim->print_debug( "arcane_heart omnipotence stack change: highest stat {} {} by {}",
+        util::stat_type_string( highest ), new_ ? "increased" : "decreased", value );
+
+      range::for_each( omni->stats, [value, new_, highest]( stat_buff_t::buff_stat_t& s ) {
+        if ( new_ && s.stat == highest )
+          s.amount = value;
+        else
+          s.amount = 0;
+      } );
+    } );
   }
 
   // TODO?: Implement healing contribution to Arcane Heart threshold. Not all healing counts:
@@ -3348,15 +3330,14 @@ void arcane_heart( special_effect_t& effect )
   // * Passive absorb effects & 'absorb-like' effects such has the Guardian Druid talent Earthwarden
   //    do not seem to count. Unknown if active shields do.
   // * Leech does not seem to count.
-  effect.player->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ buff, omni ]( dmg_e, action_state_t* state )
-  {
+  effect.player->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [buff, omni]( dmg_e, action_state_t* state ) {
     if ( state->result_amount <= 0 )
       return assessor::CONTINUE;
 
     buff->current_value -= state->result_amount;
 
-    buff->sim->print_debug( "arcane_heart_counter ability:{} damage:{} counter now at:{}",
-      state->action->name(), state->result_amount, buff->current_value);
+    buff->sim->print_debug( "arcane_heart_counter ability:{} damage:{} counter now at:{}", state->action->name(),
+      state->result_amount, buff->current_value );
 
     if ( buff->current_value <= 0 )
     {
@@ -3366,9 +3347,8 @@ void arcane_heart( special_effect_t& effect )
 
     return assessor::CONTINUE;
   } );
-  
-  effect.player->register_combat_begin( [ buff ] ( player_t* )
-  {
+
+  effect.player->register_combat_begin( [buff]( player_t* ) {
     buff->trigger();
   } );
 }
