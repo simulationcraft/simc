@@ -3278,32 +3278,9 @@ void loyal_to_the_end( special_effect_t& effect )
 
   // total rating capped at value(3), which is currently equal to value(1) + 4 * value(2)
   // may need to reference value(3) if for whatever reason it becomes capped at non-integer multiple of value(2)
-  double value = power.value( 1 ) + power.value( 2 ) * effect.player->sim->bfa_opts.loyal_to_the_end_allies;
-  effect.player->passive.mastery_rating += value;
+  effect.player->passive.mastery_rating += power.value( 1 ) + power.value( 2 ) * effect.player->sim->bfa_opts.loyal_to_the_end_allies;
 
-  // Crude event based triggering of ally death bonus.
-  // TODO: Develop something that can be better controlled via APL
-  timespan_t timer = effect.player->sim->bfa_opts.loyal_to_the_end_ally_death_timer;
-  double chance    = effect.player->sim->bfa_opts.loyal_to_the_end_ally_death_chance;
-
-  auto buff = buff_t::find( effect.player, "loyal_to_the_end" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "loyal_to_the_end", effect.trigger()->effectN( 1 ).trigger() )
-      ->add_stat( STAT_CRIT_RATING, value )
-      ->add_stat( STAT_HASTE_RATING, value )
-      ->add_stat( STAT_VERSATILITY_RATING, value );
-  }
-
-  if ( chance )
-  {
-    effect.player->register_combat_begin( [buff, timer, chance]( player_t* ) {
-      make_repeating_event( *buff->sim, timer, [buff, chance]() {
-        if ( buff->rng().roll( chance ) )
-          buff->trigger();
-      } );
-    } );
-  }
+  // TODO?: implement ally death bonus if a suitable mechanism can be developed to utilize it in .simc scripts
 }
 
 void arcane_heart( special_effect_t& effect )
