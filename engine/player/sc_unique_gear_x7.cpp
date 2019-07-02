@@ -180,6 +180,7 @@ namespace items
   void subroutine_recalibration( special_effect_t& );
   void subroutine_optimization( special_effect_t& );
   void harmonic_dematerializer( special_effect_t& );
+  void cyclotronic_blast( special_effect_t& );
 }
 
 namespace util
@@ -4217,6 +4218,33 @@ void items::harmonic_dematerializer( special_effect_t& effect )
     effect, buff );
 }
 
+// Cyclotronic Blast ======================================================
+
+void items::cyclotronic_blast( special_effect_t& effect )
+{
+  struct cyclotronic_blast_t : public proc_t
+  {
+    cyclotronic_blast_t( const special_effect_t& e ) : proc_t( e, "cyclotronic_blast", e.driver() )
+    {
+      background  = false;
+      trigger_gcd = base_execute_time;
+    }
+
+    bool usable_moving() const override
+    {
+      return true;
+    }
+
+    void execute() override
+    {
+      proc_t::execute();
+      event_t::cancel( player->readying );
+    }
+  };
+
+  effect.execute_action = create_proc_action<cyclotronic_blast_t>( "cyclotronic_blast", effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -4381,6 +4409,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 299062, items::subroutine_recalibration );
   register_special_effect( 299464, items::subroutine_optimization );
   register_special_effect( 293512, items::harmonic_dematerializer );
+  register_special_effect( 293491, items::cyclotronic_blast );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
