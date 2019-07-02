@@ -1178,7 +1178,7 @@ struct sim_t : private sc_thread_t
     /// Chance that the player has a higher health percentage than the target for Legplates of Unbound Anguish proc
     double              legplates_of_unbound_anguish_chance = 1.0;
     /// Number of allies with the Loyal to the End azerite trait, default = 4 (max)
-    int                 loyal_to_the_end_allies = 4;
+    int                 loyal_to_the_end_allies = 0;
     /// Number of allies also using the Worldvein Resonance minor
     int                 worldvein_allies = 0;
     /// Chance to proc Reality Shift (normally triggers on moving specific distance)
