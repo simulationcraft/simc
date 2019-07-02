@@ -3442,6 +3442,7 @@ void the_crucible_of_flame( special_effect_t& effect )
   action->dot_max_stack +=
     essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value();
 
+  effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_SPELL | PF_MAGIC_SPELL | PF_PERIODIC;
   effect.type = SPECIAL_EFFECT_EQUIP;
   effect.execute_action = action;
 
