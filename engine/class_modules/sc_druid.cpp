@@ -6677,7 +6677,6 @@ struct starfall_t : public druid_spell_t
     {
       aoe = -1;
       background = dual = direct_tick = true;
-      callbacks = false;
       radius = p->spec.starfall->effectN(1).radius();
       radius *= 1.0 + p->talent.stellar_drift->effectN(1).percent();
 
