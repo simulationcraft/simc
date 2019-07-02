@@ -1172,18 +1172,18 @@ void register_azerite_target_data_initializers( sim_t* sim )
   } );
 
   // Blood of the Enemy
-  sim->register_target_data_initializer( [] ( actor_target_data_t* td ) {
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
     auto essence = td->source->find_azerite_essence( "Blood of the Enemy" );
     if ( essence.enabled() )
     {
       td->debuff.blood_of_the_enemy = make_buff( *td, "blood_of_the_enemy", td->source->find_spell( 297108 ) )
-        ->set_default_value( td->source->find_spell( 297108 )->effectN( 2 ).percent() );
+        ->set_default_value( td->source->find_spell( 297108 )->effectN( 2 ).percent() )
+        ->set_cooldown( 0_ms );
       td->debuff.blood_of_the_enemy->reset();
     }
     else
     {
-      td->debuff.blood_of_the_enemy = make_buff( *td, "blood_of_the_enemy" )
-        ->set_quiet( true );
+      td->debuff.blood_of_the_enemy = make_buff( *td, "blood_of_the_enemy" )->set_quiet( true );
     }
   } );
 
