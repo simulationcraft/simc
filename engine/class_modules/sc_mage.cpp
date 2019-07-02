@@ -466,7 +466,7 @@ public:
     bool allow_shimmer_lance = false;
     rotation_type_e rotation = ROTATION_STANDARD;
     double lucid_dreams_proc_chance_arcane = 0.15;
-    double lucid_dreams_proc_chance_fire = 0.15;
+    double lucid_dreams_proc_chance_fire = 0.1;
     double lucid_dreams_proc_chance_frost = 0.075;
   } options;
 
