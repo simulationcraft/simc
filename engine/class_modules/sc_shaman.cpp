@@ -2838,7 +2838,6 @@ struct crash_lightning_attack_t : public shaman_attack_t
   {
     weapon     = &( p->main_hand_weapon );
     background = true;
-    callbacks  = false;
     aoe        = -1;
     base_multiplier *= 1.0;
     may_proc_ability_procs = false;
@@ -2900,7 +2899,6 @@ struct hailstorm_attack_t : public shaman_attack_t
   {
     weapon                 = w;
     background             = true;
-    callbacks              = false;
     may_proc_ability_procs = false;
   }
 
@@ -2919,7 +2917,6 @@ struct icy_edge_attack_t : public shaman_attack_t
   {
     weapon                 = w;
     background             = true;
-    callbacks              = false;
     may_proc_ability_procs = false;
   }
 
@@ -2943,7 +2940,6 @@ struct lightning_conduit_zap_t : public shaman_spell_t
     // base_td    = player->azerite.lightning_conduit.value(); --maybe not needed? spell isnt white listed atm.
     background = true;
     may_crit   = true;
-    callbacks  = false;
   }
 };
 
@@ -2957,7 +2953,6 @@ struct strength_of_earth_t : public shaman_spell_t
     base_dd_min = base_dd_max = damage;
     background                = true;
     may_crit                  = true;
-    callbacks                 = false;
   }
 };
 
@@ -3177,7 +3172,6 @@ struct earthen_rage_spell_t : public shaman_spell_t
   earthen_rage_spell_t( shaman_t* p ) : shaman_spell_t( "earthen_rage", p, p->find_spell( 170379 ) )
   {
     background = proc = true;
-    callbacks         = false;
   }
 };
 
