@@ -6914,7 +6914,7 @@ void shaman_t::init_spells()
   spell.resurgence           = find_spell( 101033 );
   spell.maelstrom_melee_gain = find_spell( 187890 );
   spell.feral_spirit         = find_spell( 228562 );
-  spell.fire_elemental       = find_spell( 228562 );
+  spell.fire_elemental       = find_spell( 188592 );
   spell.storm_elemental      = find_spell( 157299 );
 
   // Azerite essences
