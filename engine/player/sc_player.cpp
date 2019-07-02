@@ -4333,6 +4333,11 @@ void player_t::combat_begin()
             }
             action->execute();
             first_cast = false;
+
+            if ( action->channeled )
+            {
+              break;
+            }
           }
           else
           {
@@ -4346,14 +4351,23 @@ void player_t::combat_begin()
             sequence_add( action, action->target, sim->current_time() );
           }
           action->execute();
+
+          if ( action->channeled )
+          {
+            break;
+          }
         }
       }
     }
   }
+
   first_cast = false;
 
   if ( !precombat_action_list.empty() )
     in_combat = true;
+
+  if ( !channeling && has_foreground_actions( *this ) )
+    schedule_ready();
 
   // re-initialize collected_data.health_changes.previous_*_level
   // necessary because food/flask are counted as resource gains, and thus provide phantom
@@ -5243,9 +5257,6 @@ void player_t::arise()
     // they need to figure out a (more valid) target to shoot spells on.
     acquire_target( SELF_ARISE );
   }
-
-  if ( has_foreground_actions( *this ) )
-    schedule_ready();
 
   active_during_iteration = true;
 
