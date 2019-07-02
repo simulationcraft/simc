@@ -4366,7 +4366,7 @@ void player_t::combat_begin()
   if ( !precombat_action_list.empty() )
     in_combat = true;
 
-  if ( !channeling && has_foreground_actions( *this ) )
+  if ( !readying && !channeling && has_foreground_actions( *this ) )
     schedule_ready();
 
   // re-initialize collected_data.health_changes.previous_*_level
