@@ -5107,8 +5107,6 @@ void warrior_t::default_apl_dps_precombat()
 
   precombat->add_action( "guardian_of_azeroth" );
 
-  precombat->add_action( "focused_azerite_beam" );
-  
   if ( specialization() == WARRIOR_FURY )
   {
     precombat->add_action( this, "Recklessness", "if=!talent.furious_slash.enabled" );
