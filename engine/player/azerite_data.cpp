@@ -1121,6 +1121,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 294964, azerite_essences::anima_of_life_and_death );
   unique_gear::register_special_effect( 295750, azerite_essences::nullification_dynamo );
   unique_gear::register_special_effect( 298193, azerite_essences::aegis_of_the_deep );
+  unique_gear::register_special_effect( 294910, azerite_essences::sphere_of_suppression );
   // Vision of Perfection major Azerite Essence
   unique_gear::register_special_effect( 296325, azerite_essences::vision_of_perfection );
 }
@@ -3016,7 +3017,7 @@ void apothecarys_concoctions( special_effect_t& effect )
   azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
   if ( !power.enabled() )
     return;
-  
+
   effect.execute_action = unique_gear::create_proc_action<apothecarys_blight_t>( "apothecarys_concoctions", effect, power );
   effect.spell_id = 287633;
 
@@ -4175,7 +4176,7 @@ struct ripple_in_space_t : public azerite_essence_major_t
     base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 2 ).average( essence.item() );
     school = SCHOOL_FIRE;
 
-    delay = essence.spell_ref( 1u, essence_type::MAJOR ).duration() 
+    delay = essence.spell_ref( 1u, essence_type::MAJOR ).duration()
       + timespan_t::from_seconds( essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value() / 1000 );
   }
 
@@ -4479,7 +4480,7 @@ void anima_of_life_and_death( special_effect_t& effect )
 
   const spell_data_t* base_spell = essence.spell( 1u, essence_type::MINOR );
   const spell_data_t* buff_spell = effect.player -> find_spell( 294966 );
-  
+
   buff_t* buff = buff_t::find( effect.player, "anima_of_life" ) ;
   if ( !buff )
   {
@@ -4533,7 +4534,7 @@ void nullification_dynamo( special_effect_t& effect )
   struct null_barrier_damage_t : public unique_gear::proc_spell_t
   {
     null_barrier_damage_t( const special_effect_t& effect, const azerite_essence_t& essence ) :
-      proc_spell_t( "null_barrier_damage", effect.player, 
+      proc_spell_t( "null_barrier_damage", effect.player,
                     // Waiting for whitelising
                     effect.player -> find_spell( 296061 ) == spell_data_t::not_found() ? spell_data_t::nil() : effect.player -> find_spell( 296061 ),
                     essence.item() )
@@ -4630,9 +4631,9 @@ void aegis_of_the_deep( special_effect_t& effect )
       return;
     }
 
-    target -> callbacks_on_arise.push_back( [ effect, aegis_buff ] () 
+    target -> callbacks_on_arise.push_back( [ effect, aegis_buff ] ()
     {
-      if ( aegis_buff ) 
+      if ( aegis_buff )
       {
         effect.player -> sim -> print_debug( "An enemy arises! Stand your Ground on player {} is increased by one stack",
                                              effect.player -> name_str );
@@ -4641,7 +4642,7 @@ void aegis_of_the_deep( special_effect_t& effect )
     } );
 
 
-    target -> callbacks_on_demise.push_back( [ effect, aegis_buff ] ( player_t* target ) 
+    target -> callbacks_on_demise.push_back( [ effect, aegis_buff ] ( player_t* target )
     {
       // Don't do anything if the sim is ending
       if ( target -> sim -> event_mgr.canceled )
@@ -4649,7 +4650,7 @@ void aegis_of_the_deep( special_effect_t& effect )
         return;
       }
 
-      if ( aegis_buff ) 
+      if ( aegis_buff )
       {
         target -> sim -> print_debug( "Enemy {} demises! Stand your Ground on player {} is reduced by one stack",
                                       target -> name_str, effect.player -> name_str );
@@ -4663,6 +4664,47 @@ void aegis_of_the_deep( special_effect_t& effect )
   {
     aegis_buff -> trigger( effect.player -> sim -> desired_targets );
   } );
+}
+
+//Sphere of Suppresion
+//Only the haste buff triggering on melee damage taken from minor is implemented
+void sphere_of_suppression( special_effect_t& effect )
+{
+  auto essence = effect.player -> find_azerite_essence( effect.driver() -> essence_id() );
+  if ( ! essence.enabled() )
+  {
+    return;
+  }
+
+  buff_t* sphere_buff = buff_t::find( effect.player, "sphere_of_suppresion" );
+  if ( !sphere_buff )
+  {
+    double amount = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+
+    sphere_buff = make_buff<stat_buff_t>( effect.player, "sphere_of_suppresion", effect.player -> find_spell( 294912 ) )
+      -> add_stat( STAT_HASTE_RATING, amount );
+  }
+
+  effect.custom_buff = sphere_buff;
+
+
+  /*effect.spell_id = 297866;
+
+  if (essence.rank() >= 3)
+  {
+    // buff id=303344, not referenced in spell data
+    // amount from R3 major/upgrade
+    effect.custom_buff = buff_t::find(effect.player, "vision_of_perfection");
+    if (!effect.custom_buff)
+    {
+      effect.custom_buff = make_buff<stat_buff_t>(effect.player, "vision_of_perfection", effect.player->find_spell(303344))
+        ->add_stat(STAT_HASTE_RATING, essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(2).average(essence.item()));
+    }
+  }
+
+  new vision_of_perfection_callback_t(effect.player, effect);*/
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 } // Namespace azerite essences ends
