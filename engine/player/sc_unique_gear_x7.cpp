@@ -1670,16 +1670,16 @@ void items::briny_barnacle( special_effect_t& effect )
       return;
     }
 
-    auto td = effect.player -> get_target_data( target );
-
-    target -> callbacks_on_demise.push_back( [ effect, explosion, td ] ( player_t* target ) 
+    target -> callbacks_on_demise.push_back( [ effect, explosion ] ( player_t* target )
     {
       // Don't do anything if the sim is ending
       if ( target -> sim -> event_mgr.canceled )
       {
         return;
       }
-      
+
+      auto td = effect.player -> get_target_data( target );
+
       if ( td -> debuff.choking_brine -> up() )
       {
         target -> sim -> print_log( "Enemy {} dies while afflicted by Choking Brine, applying debuff on all neaby enemies", target -> name_str );
