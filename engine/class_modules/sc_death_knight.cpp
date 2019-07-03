@@ -917,7 +917,7 @@ public:
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
-  void      trigger_runic_empowerment( double rpcost, action_t* a );
+  void      trigger_runic_empowerment( double rpcost );
   void      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( const action_state_t* state, unsigned n = 1 );
@@ -3593,6 +3593,7 @@ struct chill_streak_t : public death_knight_spell_t
     death_knight_spell_t( "chill_streak", p, p -> find_spell( 305392 ) ),
     damage( new chill_streak_damage_t( p ) )
   {
+    parse_options( options_str );
     add_child( damage );
     impact_action = damage;
     aoe = 0;
@@ -4426,7 +4427,7 @@ struct empower_rune_weapon_buff_t : public buff_t
     //Vision of Perfection proc'd ERW is refreshed by a manual ERW cast
     //A partial RP gain at the end of ERW was observed
 
-    set_tick_callback( [ p ]( buff_t* b, int, const timespan_t& time )
+    set_tick_callback( [ p ]( buff_t* b, int, const timespan_t& )
     {
       p -> replenish_rune( as<unsigned int>( b -> data().effectN( 1 ).base_value() ),
                            p -> gains.empower_rune_weapon );
@@ -6415,7 +6416,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     if ( action && action -> name_str != "breath_of_sindragosa_tick" )
       base_rp_cost = action -> base_costs[ RESOURCE_RUNIC_POWER ];
 
-    trigger_runic_empowerment( base_rp_cost, action );
+    trigger_runic_empowerment( base_rp_cost );
     trigger_runic_corruption( base_rp_cost, -1.0, procs.rp_runic_corruption );
 
     if ( talent.summon_gargoyle -> ok() && pets.gargoyle )
@@ -6661,7 +6662,7 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   }
 }
 
-void death_knight_t::trigger_runic_empowerment( double rpcost, action_t* action )
+void death_knight_t::trigger_runic_empowerment( double rpcost )
 {
   if ( ! spec.runic_empowerment -> ok() )
     return;
@@ -6888,7 +6889,7 @@ void death_knight_t::vision_of_perfection_proc()
   {
     timespan_t trigger_duration = trigger_buff -> buff_duration * vision_of_perfection_major_coeff;
 
-    if ( trigger_buff -> up() )
+    if ( trigger_buff -> check() )
       trigger_buff -> extend_duration( this, trigger_duration );
     else
       trigger_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
