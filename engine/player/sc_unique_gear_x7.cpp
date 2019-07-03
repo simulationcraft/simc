@@ -163,6 +163,7 @@ namespace items
   void damage_to_aberrations( special_effect_t& );
   void exploding_pufferfish( special_effect_t& );
   void fathom_hunter( special_effect_t& );
+  void nazjatar_proc_check( special_effect_t& );
   void highborne_compendium_of_sundering( special_effect_t& );
   void highborne_compendium_of_storms( special_effect_t& );
   void neural_synapse_enhancer( special_effect_t& );
@@ -3172,6 +3173,9 @@ void items::legplates_of_unbound_anguish( special_effect_t& effect )
 
 void items::damage_to_aberrations( special_effect_t& effect )
 {
+  if ( !effect.player->sim->bfa_opts.nazjatar )
+    return;
+
   auto buff = buff_t::find( effect.player, "damage_to_aberrations" );
   // TODO: Multiple items stack or not?
   if ( buff )
@@ -3195,6 +3199,9 @@ void items::damage_to_aberrations( special_effect_t& effect )
 
 void items::exploding_pufferfish( special_effect_t& effect )
 {
+  if ( !effect.player->sim->bfa_opts.nazjatar )
+    return;
+
   struct pufferfish_cb_t : public dbc_proc_callback_t
   {
     const spell_data_t* summon_spell;
@@ -3226,6 +3233,9 @@ void items::exploding_pufferfish( special_effect_t& effect )
 
 void items::fathom_hunter( special_effect_t& effect )
 {
+  if ( !effect.player->sim->bfa_opts.nazjatar )
+    return;
+
   auto buff = buff_t::find( effect.player, "fathom_hunter" );
   if ( !buff )
   {
@@ -3238,6 +3248,16 @@ void items::fathom_hunter( special_effect_t& effect )
   }
 
   effect.type = SPECIAL_EFFECT_NONE;
+}
+
+// Nazjatar/Eternal Palace check ==========================================
+
+void items::nazjatar_proc_check( special_effect_t& effect )
+{
+  if ( !effect.player->sim->bfa_opts.nazjatar )
+    return;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Highborne Compendium of Storms =========================================
@@ -4377,9 +4397,15 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295430, items::abyssal_speakers_gauntlets );
   register_special_effect( 292650, items::trident_of_deep_ocean );
   register_special_effect( 295427, items::legplates_of_unbound_anguish );
+  // Nazjatar & Eternal Palace only effects
   register_special_effect( 302382, items::damage_to_aberrations );
   register_special_effect( 303133, items::exploding_pufferfish );
   register_special_effect( 304637, items::fathom_hunter );
+  register_special_effect( 304697, items::nazjatar_proc_check ); // Conch Strike
+  register_special_effect( 304640, items::nazjatar_proc_check ); // Frost Blast
+  register_special_effect( 304711, items::nazjatar_proc_check ); // Sharp Fins
+  register_special_effect( 304715, items::nazjatar_proc_check ); // Tidal Droplet
+  // 8.2 Special Effects
   register_special_effect( 300830, items::highborne_compendium_of_sundering );
   register_special_effect( 300913, items::highborne_compendium_of_storms );
   register_special_effect( 300612, items::neural_synapse_enhancer );

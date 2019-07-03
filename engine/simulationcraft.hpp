@@ -1197,6 +1197,8 @@ struct sim_t : private sc_thread_t
     double              zaquls_portal_key_move_chance = 0.0;
     /// Unleash stacked potency from Anu-Azshara, Staff of the Eternal every X seconds
     timespan_t          anuazshara_unleash_timer = 0_ms;
+    /// Whether the player is in Nazjatar/Eternal Palace for various effects
+    bool                nazjatar = true;
   } bfa_opts;
 
   // Expansion specific data
