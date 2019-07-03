@@ -8,9 +8,9 @@ position=back
 talents=3112211
 
 # Default consumables
-potion=bursting_blood
-flask=undertow
-food=bountiful_captains_feast
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_the_undertow
+food=baked_port_tato
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -28,7 +28,6 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/memory_of_lucid_dreams
 actions.precombat+=/guardian_of_azeroth
-actions.precombat+=/focused_azerite_beam
 
 # Executed every time the actor is available.
 actions=charge

@@ -8,8 +8,8 @@ position=front
 talents=1223211
 
 # Default consumables
-potion=battle_potion_of_strength
-flask=undertow
+potion=superior_battle_potion_of_strength
+flask=greater_flask_of_the_undertow
 food=bountiful_captains_feast
 augmentation=battle_scarred
 
@@ -28,7 +28,6 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/memory_of_lucid_dreams
 actions.precombat+=/guardian_of_azeroth
-actions.precombat+=/focused_azerite_beam
 
 # Executed every time the actor is available.
 actions=auto_attack

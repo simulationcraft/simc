@@ -60,7 +60,7 @@ actions+=/concentrated_flame
 actions+=/the_unbound_force,if=buff.reckless_force.up|time<5
 actions+=/worldvein_resonance
 actions+=/focused_azerite_beam
-actions+=/guardian_of_azeroth
+actions+=/guardian_of_azeroth,if=!talent.starlord.enabled|buff.starlord.up
 actions+=/thorns
 actions+=/warrior_of_elune
 actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)
