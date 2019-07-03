@@ -5496,15 +5496,14 @@ struct celestial_alignment_t : public druid_spell_t
 
 struct streaking_stars_t : public druid_spell_t
 {
-  streaking_stars_t(druid_t* p) :
-    //druid_spell_t("streaking_stars", p, p->azerite.streaking_stars.spell()->effectN(1).trigger()->effectN(1).trigger())
-    druid_spell_t("streaking_stars", p, p->find_spell(272873)) // blizz decided to remove all references to this spell, so hardcoded by ID now
+  streaking_stars_t( druid_t* p ) :
+    druid_spell_t( "streaking_star", p, p->find_spell( 272873 ) )
   {
-    background = 1;
-    base_dd_min = base_dd_max = p->azerite.streaking_stars.value(1);
-    if (p->talent.incarnation_moonkin->ok())
+    background  = 1;
+    base_dd_min = base_dd_max = p->azerite.streaking_stars.value( 1 );
+    if ( p->talent.incarnation_moonkin->ok() )
     {
-      //This spell deals less damage when incarnation is talented which is not found in the spelldata 8/10/18
+      // This spell deals less damage when incarnation is talented which is not found in the spelldata 8/10/18
       base_dd_min *= 0.6667;
       base_dd_max *= 0.6667;
     }
