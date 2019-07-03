@@ -71,7 +71,7 @@ public:
     action_t* deep_wounds_PROT;
     action_t* charge;
     action_t* slaughter;  // Fury T21 2PC
-    action_t* iron_fortress; // Prot azerite trait                             
+    action_t* iron_fortress; // Prot azerite trait
     action_t* bastion_of_might_ip; // 0 rage IP from Bastion of Might azerite trait
   } active;
 
@@ -330,7 +330,7 @@ public:
     // const spell_data_t* war_machine; see arms
     const spell_data_t* endless_rage;
     const spell_data_t* fresh_meat;
-    
+
     // skipping t30 identital to arms
 
     const spell_data_t* inner_rage;
@@ -357,7 +357,7 @@ public:
     const spell_data_t* into_the_fray;
     const spell_data_t* punish;
     // const spell_data_t* impending_victory; see arms
-    
+
     const spell_data_t* crackling_thunder;
     // const spell_data_t* bounding_stride; see arms
     const spell_data_t* safeguard; // NYI
@@ -413,7 +413,7 @@ public:
     }
 
   } legendary;
-  
+
   // Azerite traits
   struct
   {
@@ -793,7 +793,7 @@ public:
     }
 
     if ( td -> debuffs_demoralizing_shout -> up() &&
-         p() -> talents.booming_voice -> ok() && 
+         p() -> talents.booming_voice -> ok() &&
          affected_by.booming_voice )
     {
       m *= 1.0 + p() -> talents.booming_voice->effectN( 2 ).percent();
@@ -943,7 +943,7 @@ public:
     {
       tactician();
     }
-   
+
     ab::consume_resource();
 
     double rage = ab::last_resource_cost;
@@ -1334,7 +1334,7 @@ struct melee_t : public warrior_attack_t
       }
       rage_gain *= 1.0 + p()->talents.war_machine->effectN( 2 ).percent();
     }
-    else 
+    else
     {
       // Protection generates a static 2 rage per successful auto attack landed
       rage_gain = 2.0;
@@ -2075,7 +2075,7 @@ struct demoralizing_shout : public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    td( s->target ) -> debuffs_demoralizing_shout -> trigger( 
+    td( s->target ) -> debuffs_demoralizing_shout -> trigger(
       1, data().effectN( 1 ).percent(), 1.0, p()->spec.demoralizing_shout->duration()  );
   }
 };
@@ -2244,7 +2244,7 @@ struct execute_main_hand_t : public warrior_attack_t
 struct execute_off_hand_t : public warrior_attack_t
 {
   int aoe_targets;
-  execute_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) 
+  execute_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s )
     : warrior_attack_t( name, p, s ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
@@ -2945,7 +2945,7 @@ struct overpower_t : public warrior_attack_t
     }
     if ( p()->buff.striking_the_anvil->check() )
     {
-      p()->cooldown.mortal_strike->adjust( - timespan_t::from_millis( 
+      p()->cooldown.mortal_strike->adjust( - timespan_t::from_millis(
       p()->azerite.striking_the_anvil.spell()->effectN( 2 ).base_value() ) );
     }
   }
@@ -3465,10 +3465,10 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( p()->buff.shield_block->up() && p()->talents.heavy_repercussions->ok() )
     {
-      p () -> buff.shield_block -> extend_duration( p(), 
+      p () -> buff.shield_block -> extend_duration( p(),
           timespan_t::from_seconds( p() -> talents.heavy_repercussions -> effectN( 1 ).percent() ) );
     }
-    
+
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_slam );
 
     if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, T20, B4 ) )
@@ -3599,7 +3599,7 @@ struct shockwave_t : public warrior_attack_t
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
     aoe                               = -1;
-    
+
     base_multiplier *= 1.0 + p -> spec.prot_warrior -> effectN( 9 ).percent();
   }
 
@@ -3687,7 +3687,7 @@ struct thunder_clap_t : public warrior_attack_t
       p()->cooldown.shield_slam->reset( true );
     }
 
-    p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thunder_clap );    
+    p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thunder_clap );
   }
 
   double recharge_multiplier() const override
@@ -4041,6 +4041,11 @@ struct avatar_t : public warrior_spell_t
   {
     parse_options( options_str );
     callbacks = false;
+
+    if ( p -> azerite.vision_of_perfection.enabled() )
+    {
+      cooldown -> duration *= 1.0 + azerite::vision_of_perfection_cdr( p -> azerite.vision_of_perfection );
+    }
   }
 
   void execute() override
@@ -4411,7 +4416,7 @@ struct ignore_pain_t : public warrior_spell_t
     double new_ip = s -> result_amount;
 
     if ( p() -> talents.never_surrender -> ok() )
-    { 
+    {
       double percent_health;
       if ( p() -> never_surrender_percentage < 0 )
       {
@@ -5398,7 +5403,7 @@ void warrior_t::apl_prot()
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Intercept", "if=time=0" );
   default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
-  
+
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] );
 
@@ -5549,7 +5554,7 @@ struct debuff_demo_shout_t : public warrior_buff_t<buff_t>
     extended = 0; // counts extra seconds gained on each debuff past the initial trigger
     return base_t::trigger( stacks, value, chance, duration );
   }
- 
+
   // TODO? Change how the extension is coded with deafening crash cap
   // if another mechanic extends demo shout duration after the initial trigger
   void extend_duration( player_t* p, timespan_t extra_seconds ) override
@@ -5700,7 +5705,7 @@ void warrior_t::create_buffs()
   buff.defensive_stance = make_buff( this, "defensive_stance", talents.defensive_stance )
     ->set_activated( true )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  
+
   buff.die_by_the_sword = make_buff( this, "die_by_the_sword", spec.die_by_the_sword )
     ->set_default_value( spec.die_by_the_sword->effectN( 2 ).percent() )
     ->set_cooldown( timespan_t::zero() )
@@ -6402,7 +6407,7 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
   {
     br += azerite.iron_fortress.value( 2 );
   }
-  
+
   return br;
 }
 
@@ -6661,6 +6666,30 @@ void warrior_t::vision_of_perfection_proc()
       }
       break;
     }
+
+    case WARRIOR_PROTECTION:
+    {
+      timespan_t trigger_duration = this -> buff.avatar -> data().duration() * azerite.vision_of_perfection_percentage;
+      if ( this -> buff.avatar -> check() )
+      {
+        this -> buff.avatar -> extend_duration( this, trigger_duration );
+        if ( azerite.bastion_of_might.enabled() )
+        {
+          this -> buff.bastion_of_might -> extend_duration( this, trigger_duration );
+        }
+      }
+      else
+      {
+        this -> buff.avatar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
+        if ( azerite.bastion_of_might.enabled() )
+        {
+          this -> buff.bastion_of_might -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
+        }
+      }
+      break;
+    }
+    default:
+      break;
   }
 }
 
@@ -6708,7 +6737,7 @@ void warrior_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
     }
   }
 
-  // Generate 3 Rage on auto-attack taken. 
+  // Generate 3 Rage on auto-attack taken.
   // TODO: Update with spelldata once it actually exists
   else if ( ! s -> action -> special && cooldown.rage_from_auto_attack->up() )
   {
