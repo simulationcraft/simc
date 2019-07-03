@@ -3625,6 +3625,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     latent_arcana_channel_t( const special_effect_t& e, buff_t* b ) :
       proc_t( e, "latent_arcana", e.driver() ), buff( b )
     {
+      channeled = true;
       harmful = false;
     }
 
