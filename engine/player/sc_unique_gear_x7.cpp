@@ -175,6 +175,7 @@ namespace items
   void azsharas_font_of_power( special_effect_t& );
   void arcane_tempest( special_effect_t& );
   void anuazshara_staff_of_the_eternal( special_effect_t& );
+  void shiver_venom_crossbow( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3777,6 +3778,50 @@ void items::anuazshara_staff_of_the_eternal( special_effect_t& effect )
   }
 }
 
+// Shiver Venom Crossbow ==================================================
+
+void items::shiver_venom_crossbow( special_effect_t& effect )
+{
+
+  struct venomous_bolt_frost_t : public proc_spell_t
+  {
+    venomous_bolt_frost_t( const special_effect_t& effect ) :
+      proc_spell_t( "venomous_bolt_frost", effect.player, effect.player -> find_spell( 303558 ), effect.item )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
+      school = SCHOOL_FROST;
+    }
+  };
+
+  struct venomous_bolt_t : public proc_spell_t
+  {
+    action_t* frost;
+
+    venomous_bolt_t( const special_effect_t& effect ) :
+      proc_spell_t( "venomous_bolt", effect.player, effect.player -> find_spell( 303558 ), effect.item ),
+      frost( create_proc_action<venomous_bolt_frost_t>( "venomous_bolt_frost", effect ) )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+      add_child( frost );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( sim->bfa_opts.shiver_venom )
+      {
+        frost->set_target( get_state()->target );
+        frost->execute();
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<venomous_bolt_t>( "venomous_bolt", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -4417,6 +4462,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 296971, items::azsharas_font_of_power );
   register_special_effect( 304471, items::arcane_tempest );
   register_special_effect( 302986, items::anuazshara_staff_of_the_eternal );
+  register_special_effect( 303358, items::shiver_venom_crossbow );
 
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );

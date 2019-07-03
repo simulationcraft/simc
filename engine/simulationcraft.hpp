@@ -1199,6 +1199,8 @@ struct sim_t : private sc_thread_t
     timespan_t          anuazshara_unleash_timer = 0_ms;
     /// Whether the player is in Nazjatar/Eternal Palace for various effects
     bool                nazjatar = true;
+    /// Whether the Shiver Venom Crossbow/Lance should assume the target has the Shiver Venom debuff
+    bool                shiver_venom = false;
   } bfa_opts;
 
   // Expansion specific data

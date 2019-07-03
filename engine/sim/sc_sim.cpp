@@ -3639,6 +3639,8 @@ void sim_t::create_options()
         bfa_opts.anuazshara_unleash_timer, 10_s, timespan_t::max() ) );
   add_option( opt_bool( "bfa.nazjatar",
         bfa_opts.nazjatar ) );
+  add_option( opt_bool( "bfa.shiver_venom",
+        bfa_opts.shiver_venom ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
