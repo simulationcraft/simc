@@ -264,6 +264,9 @@ public:
   azerite_essence_t get_essence( unsigned id ) const;
   azerite_essence_t get_essence( const std::string& name, bool tokenized = false ) const;
 
+  /// Add an azerite essence
+  bool add_essence( essence_type type, unsigned id, unsigned rank );
+
   /// Clone state from another actor
   void copy_state( const std::unique_ptr<azerite_essence_state_t>& other );
 
