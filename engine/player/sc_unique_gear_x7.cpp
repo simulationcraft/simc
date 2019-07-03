@@ -4292,8 +4292,7 @@ void items::cyclotronic_blast( special_effect_t& effect )
   {
     cyclotronic_blast_t( const special_effect_t& e ) : proc_t( e, "cyclotronic_blast", e.driver() )
     {
-      background  = false;
-      trigger_gcd = base_execute_time;
+      hasted_ticks = false;
     }
 
     bool usable_moving() const override
@@ -4304,11 +4303,45 @@ void items::cyclotronic_blast( special_effect_t& effect )
     void execute() override
     {
       proc_t::execute();
+
+      // Awaken player again. Readying was canceled in cb_driver_t.
+      if ( !player->readying )
+        player->schedule_ready();
+    }
+  };
+
+  struct cyclotronic_cast_t : public proc_t
+  {
+    action_t* blast;
+
+    cyclotronic_cast_t( const special_effect_t& e, action_t* a ) :
+      proc_t( e, "cyclotronic_blast_cast", e.driver() ), blast( a )
+    {
+      // This is a cast, but as use_items is a background action, make this a channel to simulate casting
+      channeled = true;
+      // Set base_execute_time to 0 so the 'cast-time' immediately starts
+      trigger_gcd = base_execute_time = 0_ms;
+    }
+
+    bool usable_moving() const override
+    {
+      return true;
+    }
+
+    void execute() override
+    {
+      // blast action will pull the 1.5s cast time from spell data, and thus will execute after the proper cast time.
+      blast->schedule_execute();
+      // Cancel readying so the 'background cast' isn't interrupted. Player will awaken again in cyclotronic_blast_t.
       event_t::cancel( player->readying );
     }
   };
 
-  effect.execute_action = create_proc_action<cyclotronic_blast_t>( "cyclotronic_blast", effect );
+  // Separate the base cast action from the damage action. Set the base cast action as a channel to simulate cast-time,
+  // but we don't want the channeled behavior to also apply to the damage action.
+  auto blast = create_proc_action<cyclotronic_blast_t>( "cyclotronic_blast", effect );
+
+  effect.execute_action = create_proc_action<cyclotronic_cast_t>( "cyclotronic_blast_cast", effect, blast );
 }
 
 // Waycrest's Legacy Set Bonus ============================================
