@@ -5962,7 +5962,7 @@ std::string warrior_t::default_potion() const
 {
   std::string fury_pot =
       ( true_level > 110 )
-          ? "bursting_blood"
+          ? "potion_of_unbridled_fury"
           : ( true_level > 100 )
                 ? "old_war"
                 : ( true_level >= 90 )
@@ -5971,7 +5971,7 @@ std::string warrior_t::default_potion() const
 
   std::string arms_pot =
       ( true_level > 110 )
-          ? "bursting_blood"
+          ? "potion_of_unbridled_fury"
           : ( true_level > 100 )
                 ? "old_war"
                 : ( true_level >= 90 )
@@ -5980,7 +5980,7 @@ std::string warrior_t::default_potion() const
 
   std::string protection_pot =
       ( true_level > 110 )
-          ? "battle_potion_of_strength"
+          ? "superior_battle_potion_of_strength"
           : ( true_level > 100 )
                 ? "old_war"
                 : ( true_level >= 90 )
@@ -6005,7 +6005,7 @@ std::string warrior_t::default_potion() const
 std::string warrior_t::default_flask() const
 {
   return ( true_level > 110 )
-             ? "undertow"
+             ? "greater_flask_of_the_undertow"
              : ( true_level > 100 )
                    ? "flask_of_the_countless_armies"
                    : ( true_level >= 90 )
@@ -6019,7 +6019,7 @@ std::string warrior_t::default_flask() const
 std::string warrior_t::default_food() const
 {
   std::string fury_food = ( true_level > 110 )
-                              ? "bountiful_captains_feast"
+                              ? "mechdowels_big_mech"
                               : ( true_level > 100 )
                                     ? "the_hungry_magister"
                                     : ( true_level > 90 )
@@ -6029,7 +6029,7 @@ std::string warrior_t::default_food() const
                                                 : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   std::string arms_food = ( true_level > 110 )
-                              ? "bountiful_captains_feast"
+                              ? "baked_port_tato"
                               : ( true_level > 100 )
                                     ? "the_hungry_magister"
                                     : ( true_level > 90 )
