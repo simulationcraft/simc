@@ -5168,6 +5168,11 @@ void warrior_t::apl_fury()
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
                                 ",if=equipped.grongs_primal_rage&buff.enrage.up&!buff.recklessness.up" );
     }
+    if ( items[ i ].name_str == "pocketsized_computation_device" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=!buff.recklessness.up&!debuff.siegebreaker.up" );
+    }
     else if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       if ( items[ i ].slot != SLOT_WAIST )
@@ -5259,6 +5264,11 @@ void warrior_t::apl_arms()
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
                                 ",if=equipped.grongs_primal_rage&!debuff.colossus_smash.up&!buff.test_of_might.up" );
+    }
+    if ( items[ i ].name_str == "pocketsized_computation_device" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=!buff.recklessness.up&!debuff.siegebreaker.up" );
     }
     else if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
