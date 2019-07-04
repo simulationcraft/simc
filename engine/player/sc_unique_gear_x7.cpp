@@ -164,6 +164,7 @@ namespace items
   void exploding_pufferfish( special_effect_t& );
   void fathom_hunter( special_effect_t& );
   void nazjatar_proc_check( special_effect_t& );
+  void storm_of_the_eternal_arcane_damage( special_effect_t& );
   void highborne_compendium_of_sundering( special_effect_t& );
   void highborne_compendium_of_storms( special_effect_t& );
   void neural_synapse_enhancer( special_effect_t& );
@@ -3261,6 +3262,47 @@ void items::nazjatar_proc_check( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Storm of the Eternal ===================================================
+void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
+{
+  if ( !effect.player->sim->bfa_opts.nazjatar )
+    return;
+
+  struct sote_arcane_damage_t : public proc_t
+  {
+    sote_arcane_damage_t( const special_effect_t& e )
+      : proc_t( e, "storm_of_the_eternal", e.player->find_spell( 303725 ) )
+    {
+      aoe         = 0;
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      size_t index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
+      set_target( target_list()[ index ] );
+
+      proc_t::execute();
+    }
+  };
+
+  auto action = effect.player->find_action( "storm_of_the_eternal" );
+  if ( !action )
+    action = create_proc_action<sote_arcane_damage_t>( "storm_of_the_eternal", effect );
+
+  timespan_t storm_period = effect.player->find_spell( 303722 )->duration();
+  unsigned storm_hits     = effect.player->find_spell( 303724 )->max_stacks();
+
+  effect.player->register_combat_begin( [action, storm_period, storm_hits]( player_t* ) {
+    make_repeating_event( action->sim, storm_period, [action, storm_hits] {
+      for ( unsigned i = 0u; i < storm_hits; i++ )
+      {
+        action->schedule_execute();
+      }
+    } );
+  } );
+}
+
 // Highborne Compendium of Storms =========================================
 
 void items::highborne_compendium_of_storms( special_effect_t& effect )
@@ -4484,6 +4526,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 304640, items::nazjatar_proc_check ); // Frost Blast
   register_special_effect( 304711, items::nazjatar_proc_check ); // Sharp Fins
   register_special_effect( 304715, items::nazjatar_proc_check ); // Tidal Droplet
+  register_special_effect( 303733, items::storm_of_the_eternal_arcane_damage );
   // 8.2 Special Effects
   register_special_effect( 300830, items::highborne_compendium_of_sundering );
   register_special_effect( 300913, items::highborne_compendium_of_storms );
