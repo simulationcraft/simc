@@ -4334,19 +4334,13 @@ void items::cyclotronic_blast( special_effect_t& effect )
   {
     cyclotronic_blast_t( const special_effect_t& e ) : proc_t( e, "cyclotronic_blast", e.driver() )
     {
-      background  = false;
       trigger_gcd = base_execute_time;
+      hasted_ticks = false;
     }
 
     bool usable_moving() const override
     {
       return true;
-    }
-
-    void execute() override
-    {
-      proc_t::execute();
-      event_t::cancel( player->readying );
     }
   };
 
