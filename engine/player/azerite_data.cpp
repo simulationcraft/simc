@@ -4667,7 +4667,8 @@ void aegis_of_the_deep( special_effect_t& effect )
 }
 
 //Sphere of Suppresion
-//Only the haste buff triggering on melee damage taken from minor is implemented
+//Minor: Proc callback on melee damage taken, triggers a haste buff
+//The other effects are strictly defensive and NYI
 void sphere_of_suppression( special_effect_t& effect )
 {
   auto essence = effect.player -> find_azerite_essence( effect.driver() -> essence_id() );
@@ -4686,23 +4687,6 @@ void sphere_of_suppression( special_effect_t& effect )
   }
 
   effect.custom_buff = sphere_buff;
-
-
-  /*effect.spell_id = 297866;
-
-  if (essence.rank() >= 3)
-  {
-    // buff id=303344, not referenced in spell data
-    // amount from R3 major/upgrade
-    effect.custom_buff = buff_t::find(effect.player, "vision_of_perfection");
-    if (!effect.custom_buff)
-    {
-      effect.custom_buff = make_buff<stat_buff_t>(effect.player, "vision_of_perfection", effect.player->find_spell(303344))
-        ->add_stat(STAT_HASTE_RATING, essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(2).average(essence.item()));
-    }
-  }
-
-  new vision_of_perfection_callback_t(effect.player, effect);*/
 
   new dbc_proc_callback_t( effect.player, effect );
 }
