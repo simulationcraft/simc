@@ -3648,34 +3648,35 @@ void blood_of_the_enemy(special_effect_t& effect)
 //Major Power: Blood of the Enemy
 struct blood_of_the_enemy_t : public azerite_essence_major_t
 {
-  blood_of_the_enemy_t(player_t* p, const std::string& options_str) :
-    azerite_essence_major_t(p, "blood_of_the_enemy", p->find_spell(297108))
+  blood_of_the_enemy_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "blood_of_the_enemy", p->find_spell( 297108 ) )
   {
-    parse_options(options_str);
-    aoe = -1;
-    may_crit = 1;
-    base_dd_min = base_dd_max = essence.spell_ref(1u).effectN(1).average(essence.item());
+    parse_options( options_str );
+    aoe         = -1;
+    may_crit    = 1;
+    base_dd_min = base_dd_max = essence.spell_ref( 1u ).effectN( 1 ).average( essence.item() );
 
-    if (essence.rank() >= 2)
-      cooldown->duration *= 1.0 + essence.spell_ref(2u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(1).percent();
+    if ( essence.rank() >= 2 )
+      cooldown->duration *=
+        1.0 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
   }
 
-  result_e calculate_result( action_state_t* s) const override
+  result_e calculate_result( action_state_t* s ) const override
   {
-    if (player->rng().roll(1.0 - sim->bfa_opts.blood_of_the_enemy_in_range))
+    if ( player->rng().roll( 1.0 - sim->bfa_opts.blood_of_the_enemy_in_range ) )
       return RESULT_MISS;
 
-    return azerite_essence_major_t::calculate_result(s);
+    return azerite_essence_major_t::calculate_result( s );
   }
 
-  void impact(action_state_t* s) override
+  void impact( action_state_t* s ) override
   {
-    azerite_essence_major_t::impact(s);
+    azerite_essence_major_t::impact( s );
 
-    if (result_is_hit(s->result))
+    if ( result_is_hit( s->result ) )
     {
       // 25% increased chance to be hit debuff
-      auto td = player->get_target_data(s->target);
+      auto td = player->get_target_data( s->target );
       td->debuff.blood_of_the_enemy->trigger();
     }
   }
@@ -3683,12 +3684,18 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
   void execute() override
   {
     // R3 25% critical hit damage buff
-    if (essence.rank() >= 3)
-      player->buffs.seething_rage->trigger();
+    if ( essence.rank() >= 3 )
+    {
+      player->buffs.seething_rage->trigger();  // First buff the player
+      range::for_each( player->pet_list, [this]( pet_t* pet ) {
+        if ( !pet->is_sleeping() )
+          pet->buffs.seething_rage->trigger();
+      } );
+    }
 
     azerite_essence_major_t::execute();
   }
-}; //End of Blood of the Enemy
+};  // End of Blood of the Enemy
 
 //Essence of the Focusing Iris
 //Major Power: Focused Azerite Beam

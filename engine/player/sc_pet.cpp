@@ -224,15 +224,19 @@ void pet_t::create_buffs()
   }
   else
   {
-    sim -> print_debug( "Creating Auras, Buffs, and Debuffs for pet '{}'.", name() );
+    sim->print_debug( "Creating Auras, Buffs, and Debuffs for pet '{}'.", name() );
 
-    buffs.stunned = make_buff( this, "stunned" )
-        ->set_max_stack( 1 );
+    buffs.stunned  = make_buff( this, "stunned" )
+      ->set_max_stack( 1 );
     buffs.movement = new movement_buff_t( this );
 
+    // Blood of the Enemy Essence Major R3 increase crit damage buff
+    buffs.seething_rage = make_buff( this, "seething_rage", find_spell( 297126 ) )
+      ->set_default_value( find_spell( 297126 )->effectN( 1 ).percent() );
+
     debuffs.casting = make_buff( this, "casting" )
-        ->set_max_stack( 1 )
-        ->set_quiet( 1 );
+      ->set_max_stack( 1 )
+      ->set_quiet( 1 );
   }
 }
 
