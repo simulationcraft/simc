@@ -81,7 +81,8 @@ public:
     buff_t* avatar;
     buff_t* ayalas_stone_heart;
     buff_t* deadly_calm;
-    buff_t* bastion_of_might;     // the mastery buff
+    buff_t* bastion_of_might; // the mastery buff
+    buff_t* bastion_of_might_vop; // bastion of might proc from VoP
     buff_t* berserker_rage;
     buff_t* bladestorm;
     buff_t* bounding_stride;
@@ -4058,9 +4059,8 @@ struct avatar_t : public warrior_spell_t
     {
       p()->buff.bastion_of_might->trigger();
 
-      // TODO: check if Arms warriors get an ignore pain too
       if ( p() -> specialization() == WARRIOR_PROTECTION )
-        p() -> active.bastion_of_might_ip -> execute( );
+        p() -> active.bastion_of_might_ip -> execute();
     }
   }
 
@@ -5876,6 +5876,10 @@ void warrior_t::create_buffs()
   buff.bastion_of_might = make_buff<stat_buff_t>( this, "bastion_of_might", bastion_of_might_buff)
                                ->add_stat( STAT_MASTERY_RATING, azerite.bastion_of_might.value( 1 ) )
                                ->set_trigger_spell( bastion_of_might_trigger );
+  // Vision of Perfection procs a smaller mastery buff with a shorter duration
+  buff.bastion_of_might_vop = make_buff<stat_buff_t>( this, "bastion_of_might_vop", bastion_of_might_buff )
+    -> add_stat( STAT_MASTERY_RATING, azerite.bastion_of_might.value( 1 ) * azerite.vision_of_perfection_percentage )
+    -> set_duration( bastion_of_might_buff -> duration() * azerite.vision_of_perfection_percentage );
 
 }
 
@@ -6667,9 +6671,11 @@ void warrior_t::vision_of_perfection_proc()
       break;
     }
 
+    // TODO: defensive only also proc a limited effectiveness free Ignore Pain
     case WARRIOR_PROTECTION:
     {
       timespan_t trigger_duration = this -> buff.avatar -> data().duration() * azerite.vision_of_perfection_percentage;
+      // If Avatar is already active, just extend the buff(s)' durations
       if ( this -> buff.avatar -> check() )
       {
         this -> buff.avatar -> extend_duration( this, trigger_duration );
@@ -6678,12 +6684,13 @@ void warrior_t::vision_of_perfection_proc()
           this -> buff.bastion_of_might -> extend_duration( this, trigger_duration );
         }
       }
+      // Otherwise, activate avatar and trigger a bad BoM
       else
       {
         this -> buff.avatar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
         if ( azerite.bastion_of_might.enabled() )
         {
-          this -> buff.bastion_of_might -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
+          this -> buff.bastion_of_might_vop -> trigger();
         }
       }
       break;
