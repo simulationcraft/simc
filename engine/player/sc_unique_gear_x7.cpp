@@ -177,6 +177,7 @@ namespace items
   void arcane_tempest( special_effect_t& );
   void anuazshara_staff_of_the_eternal( special_effect_t& );
   void shiver_venom_crossbow( special_effect_t& );
+  void shiver_venom_lance( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3865,6 +3866,51 @@ void items::shiver_venom_crossbow( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Shiver Venom Lance ==================================================
+
+void items::shiver_venom_lance( special_effect_t& effect )
+{
+
+  struct shivering_lance_nature_t : public proc_spell_t
+  {
+    shivering_lance_nature_t( const special_effect_t& effect ) :
+      proc_spell_t( "shivering_lance_nature", effect.player, effect.player -> find_spell( 303560 ), effect.item )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
+      aoe = -1;
+      school = SCHOOL_NATURE;
+    }
+  };
+
+  struct shivering_lance_t : public proc_spell_t
+  {
+    action_t* nature;
+
+    shivering_lance_t( const special_effect_t& effect ) :
+      proc_spell_t( "shivering_lance", effect.player, effect.player -> find_spell( 303560 ), effect.item ),
+      nature( create_proc_action<shivering_lance_nature_t>( "shivering_lance_nature", effect ) )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+      add_child( nature );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( sim->bfa_opts.shiver_venom )
+      {
+        nature->set_target( get_state()->target );
+        nature->execute();
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<shivering_lance_t>( "shivering_lance", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -4501,6 +4547,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 304471, items::arcane_tempest );
   register_special_effect( 302986, items::anuazshara_staff_of_the_eternal );
   register_special_effect( 303358, items::shiver_venom_crossbow );
+  register_special_effect( 303361, items::shiver_venom_lance );
 
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );
