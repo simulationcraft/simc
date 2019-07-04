@@ -1,4 +1,4 @@
-SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
+SimulationCraft 820-01 for World of Warcraft 8.2.0 Live (wow build 30918)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -92,7 +92,7 @@ Name             : Dispel Magic (id=528) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 1.6% Base Mana (0) (id=57) [Hotfixed: Percent Cost (4 -> 1.6)]
+Resource         : 1.6% Base Mana (0) (id=57)
 Spell Level      : 56
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -168,7 +168,7 @@ GCD              : 1.5 seconds
 Duration         : 16 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effect#4), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Torment of Torments (269555 effect#1), Death Throes (278659 effect#1), Sins of the Many (280398 effect#1), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effect#5), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Torment of Torments (269555 effect#1), Death Throes (278659 effect#1), Sins of the Many (280398 effect#1), 
 Family Flags     : 15, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -180,9 +180,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=242)      : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
@@ -222,7 +222,7 @@ Name             : Mind Control (id=605) [Spell Family (6)]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
-Resource         : 2% Base Mana (0) (id=69) [Hotfixed: Percent Cost (0.5 -> 2)]
+Resource         : 2% Base Mana (0) (id=69)
 Spell Level      : 42
 Range            : 30 yards
 Cast Time        : 1.8 seconds
@@ -458,7 +458,7 @@ Name             : Psychic Scream (id=8122) [Spell Family (6)]
 Class            : Discipline Holy Shadow Priest
 School           : Shadow
 Spell Type       : Magic
-Resource         : 1.2% Base Mana (0) (id=328) [Hotfixed: Percent Cost (3 -> 1.2)]
+Resource         : 1.2% Base Mana (0) (id=328)
 Spell Level      : 18
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -491,7 +491,7 @@ Name             : Shackle Undead (id=9484) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 1.2% Base Mana (0) (id=380) [Hotfixed: Percent Cost (4 -> 1.2)]
+Resource         : 1.2% Base Mana (0) (id=380)
 Spell Level      : 34
 Range            : 30 yards
 Cast Time        : 1.5 seconds
@@ -681,7 +681,6 @@ Effects          :
 Description      : Maximum mana increased by $s1%.
 
 Name             : Spirit of Redemption (id=20711) [Spell Family (6), Passive] 
-Hotfixed         : Attributes
 Class            : Holy Priest
 School           : Physical
 Spell Type       : None
@@ -1025,6 +1024,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1417
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
 Stance Mask      : 0x08000000
 Affecting spells : Glyph of the Sha (147776 effect#1), Item - Priest T18 Shadow 2P Bonus (186980 effect#1), Surrender to Madness (193223 effect#2)
@@ -1393,7 +1393,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 100 | Trigger Spell: 47666 | Target: Enemy (6)
 
 Name             : Guardian Spirit (id=47788) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Holy Priest
 School           : Holy
 Spell Type       : None
@@ -1684,6 +1683,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Stance Mask      : 0x80000000
 Affecting spells : Surrender to Madness (193223 effect#2), Kam Xi'raff (281457 effect#1)
 Family Flags     : 54
@@ -2607,7 +2607,7 @@ Effects          :
 Description      : $@spelldesc110744
 
 Name             : Mindbender (id=123040) [Spell Family (6)] 
-Class            : Priest
+Class            : Priest, Death Knight
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
@@ -2635,7 +2635,7 @@ Effects          :
 Description      : Summons a Mindbender to attack the target for $d. You regenerate ${$123051m1/100}.1% of maximum mana each time the Mindbender attacks.
 
 Name             : Mana Leech (id=123051) 
-Class            : Priest
+Class            : Priest, Death Knight
 School           : Shadow
 Spell Type       : None
 Spell Level      : 1
@@ -2669,11 +2669,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=155428)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Shadow Covenant (204065), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Dark Ascension (280800), Holy Nova (281265)
+                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Shadow Covenant (204065), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Premonition (209780), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Dark Ascension (280800), Holy Nova (281265), Premonition (305498)
                    Family Flags: 72, 126
 #2 (id=155429)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Shadow Covenant (204065), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Dark Ascension (280800), Holy Nova (281265)
+                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Shadow Covenant (204065), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Premonition (209780), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Dark Ascension (280800), Holy Nova (281265), Premonition (305498)
                    Family Flags: 72, 126
 Description      : $@spelldesc109142
 Tooltip          : Increases damage and healing by $s1%.
@@ -2858,9 +2858,11 @@ Effects          :
                    Affected Spells (Category): Mind Blast (8092)
 #3 (id=191081)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -36 | Scaled Value: -36 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=777113)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Holy Priest (id=137031) [Spell Family (6), Passive, Hidden] 
-Class            : Holy Priest
+Class            : Holy Priest, Death Knight
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2874,11 +2876,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179715)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Covenant (204065), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Covenant (204065), Circle of Healing (204883), Premonition (209780), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265), Premonition (305498)
                    Family Flags: 126
 #2 (id=191076)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Covenant (204065), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Covenant (204065), Circle of Healing (204883), Premonition (209780), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265), Premonition (305498)
                    Family Flags: 126
 #3 (id=191077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2893,7 +2895,7 @@ Effects          :
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
-Class            : Discipline Priest
+Class            : Discipline Priest, Death Knight
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2907,20 +2909,20 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179716)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Covenant (204065), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Covenant (204065), Circle of Healing (204883), Premonition (209780), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265), Premonition (305498)
                    Family Flags: 126
 #2 (id=191072)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Covenant (204065), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Covenant (204065), Circle of Healing (204883), Premonition (209780), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265), Premonition (305498)
                    Family Flags: 126
 #3 (id=191073)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191074)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -19 | Scaled Value: -19 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Smite (585), Shadow Word: Pain (589)
-                   Family Flags: 7, 15
+                   Affected Spells: Smite (585)
+                   Family Flags: 7
 #5 (id=733880)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -19 | Scaled Value: -19 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
 #6 (id=733881)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
@@ -2930,12 +2932,12 @@ Effects          :
 #7 (id=743448)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -23 | Scaled Value: -23 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=744373)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 580 (Label) | Target: Self (1)
+                   Base Value: -67 | Scaled Value: -67 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 580 (Label) | Target: Self (1)
                    Affected Spells (Label): Death Throes (278659)
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
-Class            : Shadow Priest
+Class            : Shadow Priest, Death Knight
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
@@ -3093,10 +3095,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=215755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadowy Apparition (148859)
                    Family Flags: 90
-                   Hotfixed: Base Value (100 -> 70)
 #2 (id=315218)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shadowy Apparition (148859)
@@ -3496,7 +3497,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 13 | Target: Self (1)
 #2 (id=283479)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Power Word: Shield (17), Renew (139), Purify (527), Dispel Magic (528), Smite (585), Fade (586), Shadow Word: Pain (589), Prayer of Healing (596), Mind Control (605), Levitate (1706), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Vision (2096), Mind Blast (8092), Psychic Scream (8122), Shackle Undead (9484), Holy Fire (14914), Vampiric Embrace (15286), Mind Flay (15407), Silence (15487), Desperate Prayer (19236), Spirit of Redemption (20711), Power Word: Fortitude (21562), Spirit of Redemption (27827), Mass Dispel (32375), Shadow Word: Death (32379), Binding Heal (32546), Mass Dispel (32592), Prayer of Mending (33076), Prayer of Mending (33110), Pain Suppression (33206), Shadowfiend (34433), Holy Word: Sanctify (34861), Vampiric Touch (34914), Prayer of Mending (41635), Focused Will (45242), Rapture (47536), Penance (47540), Dispersion (47585), Penance (47666), Penance (47750), Penance (47758), Guardian Spirit (47788), Mind Sear (48045), Mind Sear (49821), Power Word: Barrier (62618), Holy Words (63733), Psychic Horror (64044), Body and Soul (64129), Divine Hymn (64843), Divine Hymn (64844), Symbol of Hope (64901), Leap of Faith (73325), Mind Spike (73510), Echo of Light (77489), Atonement (81749), Power Word: Barrier (81782), Holy Word: Chastise (88625), Atonement (94472), Spirit Shell (109964), Divine Star (110744), Divine Star (110745), Levitate (111759), Halo (120517), Halo (120692), Halo (120696), Divine Star (122128), Mindbender (123040), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Prayer of Mending (155793), Shadowy Insight (162452), Voidform (185916), Shadow Mend (186263), Shadow Mend (187464), Shadow Word: Death (190714), Voidform (194249), Atonement (194384), Power Word: Radiance (194509), Shadow Word: Death (199911), Mindbender (200174), Holy Word: Chastise (200196), Holy Word: Chastise (200200), Shadow Covenant (204065), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Shadow Word: Void (205351), Mind Control (205364), Shadow Crash (205385), Shadow Crash (205386), Void Bolt (205448), Mass Resurrection (212036), Purify Disease (213634), Schism (214621), Spirit of Redemption (215769), Mind Spike Detonation (217676), Void Eruption (228260), Void Eruption (228360), Smite (231682), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Symbol of Hope (265144), Holy Word: Salvation (265202), Contrition (270501), Luminous Barrier (271466), Twist Magic (280198), Dark Ascension (280800), Holy Nova (281265)
+                   Affected Spells: Power Word: Shield (17), Renew (139), Purify (527), Dispel Magic (528), Smite (585), Fade (586), Shadow Word: Pain (589), Prayer of Healing (596), Mind Control (605), Levitate (1706), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Vision (2096), Mind Blast (8092), Psychic Scream (8122), Shackle Undead (9484), Holy Fire (14914), Vampiric Embrace (15286), Mind Flay (15407), Silence (15487), Desperate Prayer (19236), Spirit of Redemption (20711), Power Word: Fortitude (21562), Spirit of Redemption (27827), Mass Dispel (32375), Shadow Word: Death (32379), Binding Heal (32546), Mass Dispel (32592), Prayer of Mending (33076), Prayer of Mending (33110), Pain Suppression (33206), Shadowfiend (34433), Holy Word: Sanctify (34861), Vampiric Touch (34914), Prayer of Mending (41635), Focused Will (45242), Rapture (47536), Penance (47540), Dispersion (47585), Penance (47666), Penance (47750), Penance (47758), Guardian Spirit (47788), Mind Sear (48045), Mind Sear (49821), Power Word: Barrier (62618), Holy Words (63733), Psychic Horror (64044), Body and Soul (64129), Divine Hymn (64843), Divine Hymn (64844), Symbol of Hope (64901), Leap of Faith (73325), Mind Spike (73510), Echo of Light (77489), Atonement (81749), Power Word: Barrier (81782), Holy Word: Chastise (88625), Atonement (94472), Void Shift (108968), Spirit Shell (109964), Divine Star (110744), Divine Star (110745), Levitate (111759), Halo (120517), Halo (120692), Halo (120696), Divine Star (122128), Mindbender (123040), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Prayer of Mending (155793), Shadowy Insight (162452), Voidform (185916), Shadow Mend (186263), Shadow Mend (187464), Shadow Word: Death (190714), Voidform (194249), Atonement (194384), Power Word: Radiance (194509), Shadow Word: Death (199911), Mindbender (200174), Holy Word: Chastise (200196), Holy Word: Chastise (200200), Shadow Covenant (204065), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Shadow Word: Void (205351), Mind Control (205364), Shadow Crash (205385), Shadow Crash (205386), Void Bolt (205448), Premonition (209780), Mass Resurrection (212036), Purify Disease (213634), Schism (214621), Spirit of Redemption (215769), Mind Spike Detonation (217676), Void Eruption (228260), Void Eruption (228360), Smite (231682), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Symbol of Hope (265144), Holy Word: Salvation (265202), Contrition (270501), Luminous Barrier (271466), Twist Magic (280198), Dark Ascension (280800), Holy Nova (281265), Premonition (305498)
                    Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127
 #3 (id=706293)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3883,15 +3884,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=290316)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -45 | Scaled Value: -45 | PvP Coefficient: 1.00000 | Misc Value: 12
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 12
                    Affected Spells: Power Word: Barrier (62618), Power Word: Barrier (81782)
                    Family Flags: 88
 #2 (id=313656)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -90000 | Scaled Value: -90000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Power Word: Barrier (62618), Power Word: Barrier (81782), Luminous Barrier (271466)
                    Family Flags: 88, 99
 #3 (id=735853)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value: 3
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3
 Description      : Reduces the cooldown of $?s271466[Luminous Barrier][Power Word: Barrier] by ${($m2/1000)*-1)} sec.
 $?s271466[Luminous Barrier absorbs an additional $s3% damage.][Power Word: Barrier reduces damage taken by an additional $s1%.]
 
@@ -4051,7 +4052,7 @@ Description      : A word of dark binding that inflicts $s1 Shadow damage to the
 |cFFFFFFFFGenerates $/100;190714s1 Insanity.|r
 
 Name             : Power Leech (id=200010) 
-Class            : Priest
+Class            : Priest, Death Knight
 School           : Shadow
 Spell Type       : None
 Spell Level      : 1
@@ -4108,7 +4109,7 @@ Effects          :
 Description      : Your single-target healing spells refresh the duration of your Renew on the target.
 
 Name             : Mindbender (id=200174) [Spell Family (6)] 
-Class            : Priest
+Class            : Priest, Death Knight
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
@@ -4117,6 +4118,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
 Category         : 1417
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
 Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980 effect#2), Surrender to Madness (193223 effect#2)
@@ -5862,11 +5864,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=709293)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Shadow Covenant (204065), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Dark Ascension (280800), Holy Nova (281265)
+                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Shadow Covenant (204065), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Premonition (209780), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Dark Ascension (280800), Holy Nova (281265), Premonition (305498)
                    Family Flags: 72, 126
 #2 (id=709294)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Shadow Covenant (204065), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Dark Ascension (280800), Holy Nova (281265)
+                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Shadow Covenant (204065), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Premonition (209780), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Dark Ascension (280800), Holy Nova (281265), Premonition (305498)
                    Family Flags: 72, 126
 Description      : $@spelldesc265259
 Tooltip          : Increases damage and healing by $s1%.
@@ -5954,8 +5956,70 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
 
+Name             : Lifespeed (id=267665) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 20
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714501)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 69.30822 (coefficient=0.222856) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
+#2 (id=714502)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 34.65411 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Misc Value: 1048576 | Target: Self (1)
+Description      : Increases your Haste by $s1 and your Avoidance by $s2.
+Tooltip          : Increases your Haste by $s1 and your Avoidance by $s2.
+
+Name             : Winds of War (id=267671) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Azerite Power Id : 43
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Triggered by     : Winds of War (269214)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714511)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Trigger Spell: 270675 | Target: Self (1)
+Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
+
+Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 89
+Triggered by     : Azerite Veins (270674)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714531)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 3887.5 (coefficient=50) | PvP Coefficient: 0.50000 | Trigger Spell: 270673 | Target: Self (1)
+Description      : Taking damage has a chance to grant you Azerite Veins, healing you for $s1 every $270674t1 sec. Lasts $270674d or until you are fully healed.
+
 Name             : On My Way (id=267879) [Scaling Spell (-1), Passive] 
-Class            : Paladin, Priest, Shaman, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 38
@@ -5976,7 +6040,7 @@ Description      : Increases your Versatility by $s1 and your Speed by $s2.
 Tooltip          : Increases your Versatility by $s1 and your Speed by $s2.
 
 Name             : Woundbinder (id=267880) [Scaling Spell (-7), Passive] 
-Class            : Paladin, Priest, Shaman, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 19
@@ -5994,7 +6058,7 @@ Effects          :
 Description      : Your healing effects have a chance to increase your Haste by up to $s1 for $269085d. Healing lower health targets will grant you more Haste.
 
 Name             : Concentrated Mending (id=267882) [Scaling Spell (-8), Passive] 
-Class            : Paladin, Priest, Shaman, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 103
@@ -6013,7 +6077,7 @@ Effects          :
 Description      : Your healing effects have a chance to grant the target ${$s1*2} additional healing every $272260t1 sec for $272260d. This effect doubles every $272260t1 sec. 
 
 Name             : Savior (id=267883) [Scaling Spell (-8), Passive] 
-Class            : Paladin, Priest, Shaman, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 42
@@ -6034,7 +6098,7 @@ Effects          :
 Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
 
 Name             : Bracing Chill (id=267884) [Scaling Spell (-8), Passive] 
-Class            : Paladin, Priest, Shaman, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 104
@@ -6052,7 +6116,7 @@ Effects          :
 Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
 
 Name             : Ephemeral Recovery (id=267886) [Scaling Spell (-7), Passive] 
-Class            : Paladin, Priest, Shaman, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 105
@@ -6070,7 +6134,7 @@ Effects          :
 Description      : When you go below $272570s1% mana, you gain $s1 mana. Can occur once every $289362d.
 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
-Class            : Paladin, Priest, Shaman, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 463
@@ -6090,7 +6154,7 @@ Effects          :
 Description      : Your healing spells have a chance to apply Blessed Portents for $271843d. When the ally falls below $s2% health, Blessed Portents is consumed and instantly restores $s1 health.
 
 Name             : Synergistic Growth (id=267892) [Scaling Spell (-7), Passive] 
-Class            : Paladin, Priest, Shaman, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 102
@@ -6352,6 +6416,86 @@ Effects          :
 #1 (id=721830)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
 Description      : Your healing and absorption is increased by ${$s1}.1% on targets with Atonement.
+
+Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 98
+Triggered by     : Crystalline Carapace (271539), Crystalline Carapace (271538)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=721833)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 71.22149 (coefficient=0.229008) | PvP Coefficient: 0.50000 | Trigger Spell: 271537 | Target: Self (1)
+#2 (id=721834)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 61.7251 (coefficient=0.198473) | PvP Coefficient: 0.50000 | Target: Self (1)
+#3 (id=721835)   : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
+Description      : When dealt damage greater than $s3% of your maximum health, gain $s2 Armor and cause melee attackers to suffer $s1 Physical damage. Lasts $271538d.
+
+Name             : Ablative Shielding (id=271540) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 99
+Triggered by     : Ablative Shielding (271543)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=721842)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 622 (coefficient=2) | PvP Coefficient: 0.50000 | Trigger Spell: 271542 | Target: Self (1)
+Description      : Falling below $271542s1% health grants you $s1 Armor for $271543d. Taking further Physical damage reduces the Armor granted. May only occur every $271544d.
+
+Name             : Strength in Numbers (id=271546) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 100
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=721853)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 4415.532 (coefficient=56.79141) | PvP Coefficient: 0.50000 | Trigger Spell: 271547 | Target: Self (1)
+Description      : Taking damage has a chance to increase your maximum health by $s1 for each enemy within $271548A1 yds, up to $271550u enemies. Lasts $271550d.
+
+Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 101
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=721867)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 7692.414 (coefficient=24.73445) | PvP Coefficient: 0.50000 | Trigger Spell: 271558 | Target: Self (1)
+#2 (id=721868)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 217.7 (coefficient=0.7) | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Taking damage has a chance to create an upwelling of Azerite beneath your feet, increasing your Health by $s1 and your Armor by $s2 while you stand within it. Lasts $271560d.
 
 Name             : Moment of Repose (id=272775) [Scaling Spell (-8), Spell Family (6), Passive] 
 Class            : Priest
@@ -6887,7 +7031,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737275)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1041.989 (coefficient=13.40179) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1041.989 (coefficient=13.40179) | PvP Coefficient: 0.25000 | Target: Self (1)
 #2 (id=737276)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you successfully Dispel Magic, heal yourself and $s2 injured allies within $280198A1 yds for $s1.
@@ -7007,7 +7151,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 722.6457 (coefficient=9.294479) | PvP Coefficient: 0.50000
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $280847s2 yards of the Spark Coil take $s3 damage every 2 seconds and deal $280847s1% reduced damage to you.
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $s3 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
@@ -8035,5 +8179,130 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc263165
 Tooltip          : |cFFFFFFFFGenerates ${$s1*$s2/100} Insanity over $d.|r
+
+Name             : Person-Computer Interface (id=300168) [Scaling Spell (-1), Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 568
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
+                 : Passive (6), Hidden (7), Scales with item level (354)
+Effects          :
+#1 (id=773466)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1792 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
+#2 (id=779235)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
+#3 (id=779236)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 33554432 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
+#4 (id=779237)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
+Description      : $?$a303590[Critical Strike increased by $s1.]?$a303592[Haste increased by $s2.]?$a303595[Mastery increased by $s3.]?$a303596[Versatility increased by $s4.][A secondary stat of your choice is increased by $s1 while using the Pocket-Sized Computation Device.] Stat is chosen based on equipped Logic Board.
+
+Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 569
+Triggered by     : Clockwork Heart (300174)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=773468)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.83571) | PvP Coefficient: 1.00000 | Trigger Spell: 300173 | Target: Self (1)
+Description      : Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.
+
+Name             : Arcane Heart (id=303006) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Azerite Power Id : 577
+Proc Flags       : ........ ........ ........ ....x... 
+                 
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=778205)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
+#2 (id=778206)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 500 | Scaled Value: 0 (coefficient=1.39285) | PvP Coefficient: 0.50000 | Target: Self (1)
+#3 (id=778207)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 303209 | Target: Self (1)
+Description      : Every $s1 damage and healing done you gain Omnipotence, increasing your highest stat by $s2 for $303212d. You heal for $s3% of all Arcane damage taken.
+
+Name             : Loyal to the End (id=303007) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 576
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=778208)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
+#2 (id=778209)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
+#3 (id=778210)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Your Mastery is increased by $s1, plus an additional $s2 for each ally also affected by Loyal to the End, up to $s3.
+
+When you die, your allies gain Critical Strike, Haste, and Versatility equal to their Mastery bonus from this trait.
+
+
+Name             : Undulating Tides (id=303008) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 575
+Triggered by     : Undulating Tides (303389), Undulating Tides (303390)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=778211)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
+#2 (id=778212)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=778215)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (0.5 -> 0.25)
+#4 (id=778216)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.
+
+When your health drops below $s2%, gain a shield absorbing $s3 damage within $303390d. When this occurs, Undulating Tides cannot trigger again for $s4 sec.
 
 

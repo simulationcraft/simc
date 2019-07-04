@@ -1,4 +1,4 @@
-SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
+SimulationCraft 820-01 for World of Warcraft 8.2.0 Live (wow build 30918)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -323,7 +323,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1072)     : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Enemy (6)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 106
 Description      : $@spelldesc187650
 Tooltip          : Incapacitated.
@@ -601,7 +601,7 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
 Effects          :
 #1 (id=10779)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Target: Self (1)
-                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 0, 106
 #2 (id=10780)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
@@ -609,7 +609,7 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=479792)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 0, 106
 Description      : Sends you and your pet into a rage, increasing all damage you both deal by $s1% for $d. $?s231548&s217200[
 
@@ -2676,7 +2676,7 @@ Effects          :
                    Family Flags: 2
 #3 (id=191143)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Steady Shot (56641), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Piercing Shot (198670), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Raptor Strike (265189), Mongoose Bite (265888), Coordinated Assault (266779), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Steady Shot (56641), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Piercing Shot (198670), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), Hi-Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Raptor Strike (265189), Mongoose Bite (265888), Coordinated Assault (266779), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613)
                    Family Flags: 1
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1628 | Target: Self (1)
@@ -2702,8 +2702,8 @@ Effects          :
 #11 (id=260642)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1171 | Target: Self (1)
                    Affected Spells (Category): Kill Command (259489)
-#12 (id=260643)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#12 (id=260643)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 #13 (id=260644)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=260645)   : Apply Aura (6) | Dummy (4)
@@ -2724,7 +2724,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Beast Mastery Hunter (id=137015) [Spell Family (9), Passive, Hidden] 
-Class            : Beast Mastery Hunter
+Class            : Beast Mastery Hunter, Death Knight
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2738,11 +2738,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 106
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 106
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2756,7 +2756,7 @@ Effects          :
                    Family Flags: 34
 
 Name             : Marksmanship Hunter (id=137016) [Spell Family (9), Passive, Hidden] 
-Class            : Marksmanship Hunter
+Class            : Marksmanship Hunter, Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
@@ -2773,17 +2773,14 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179699)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 106
-                   Hotfixed: Base Value (-9 -> -6)
 #2 (id=191134)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 106
-                   Hotfixed: Base Value (-9 -> -6)
 #3 (id=191135)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Hotfixed: Base Value (-9 -> -6)
 #4 (id=191136)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #5 (id=191137)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
@@ -2807,7 +2804,7 @@ Effects          :
                    Affected Spells (Category): Aimed Shot (19434)
 
 Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidden] 
-Class            : Survival Hunter
+Class            : Survival Hunter, Death Knight
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2821,11 +2818,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179700)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 106
 #2 (id=191130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 106
 #3 (id=191131)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2938,11 +2935,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215686)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 0, 106
 #2 (id=479794)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 0, 106
 #3 (id=484729)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
@@ -4007,7 +4004,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=283802)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.34500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (0.275808 -> 0.345)
 #3 (id=481423)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : A quick shot causing ${$s2*$<mult>} Physical damage.
@@ -4058,6 +4054,7 @@ Range            : 100 yards
 GCD              : 1.3 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Hunter (137014 effect#3), Call of the Wild (206332 effect#1), Embrace of the Aspects (225092 effect#1), Ride the Lightning (263821 effect#1), Aspect of the Cheetah (263829 effect#1)
 Family Flags     : 1, 77
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
@@ -4071,13 +4068,13 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=283921)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 0, 106
 #2 (id=283922)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #3 (id=375957)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Steady Shot (56641), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Piercing Shot (198670), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Raptor Strike (265189), Mongoose Bite (265888), Coordinated Assault (266779), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Steady Shot (56641), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Piercing Shot (198670), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), Hi-Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Raptor Strike (265189), Mongoose Bite (265888), Coordinated Assault (266779), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613)
                    Family Flags: 1
 #4 (id=739549)   : Apply Aura (6) | Modify Crit% (52)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Active Pet (5)
@@ -4893,8 +4890,8 @@ Requires weapon  : Bow, Gun, Crossbow
 Charges          : 2 (12 seconds cooldown)
 Category         : 1675: Hunter (137014 effect#9)
 Mechanic         : Bleed
-Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Feeding Frenzy (278529 effect#2)
-Family Flags     : 1, 78
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Feeding Frenzy (278529 effect#2)
+Family Flags     : 1, 78, 106
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4905,8 +4902,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Tick on application (169)
 Effects          :
 #1 (id=323302)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (0.1 -> 0.225)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=323303)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fire a shot that tears through your enemy, causing them to bleed for ${$s1*$s2} damage over $d.
@@ -5509,7 +5505,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=481558)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 0, 106
 Description      : $@spelldesc257944
 Tooltip          : Critical strike chance increased by $s1%.
@@ -6318,11 +6314,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=651809)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65000 | PvP Coefficient: 1.00000 | Target: Unknown(120)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Unknown(120)
                    Affected Spells: Claw (16827), Bite (17253), Smack (49966), A Murder of Crows (131900), Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Serpent Sting (259491), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666)
                    Family Flags: 19, 55
 #2 (id=651810)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Unknown(120)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Unknown(120)
                    Affected Spells: Claw (16827), Bite (17253), Smack (49966), A Murder of Crows (131900), Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Serpent Sting (259491), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666)
                    Family Flags: 19, 55
 #3 (id=651811)   : Apply Aura (6) | Periodic Trigger Spell (23): Spirit Bond every 5 seconds
@@ -7537,6 +7533,7 @@ Range            : 100 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
@@ -7550,11 +7547,11 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=712710)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 106
 #2 (id=712711)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
+                   Affected Spells: Multi-Shot (2643), Explosive Trap (13812), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 106
 #3 (id=712712)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Active Pet (5)
@@ -7677,6 +7674,27 @@ Description      : Throw a pair of chakrams at your target, slicing all enemies 
 
 Your primary target takes $259398s2% increased damage.
 
+Name             : Lifespeed (id=267665) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 20
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714501)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 69.30822 (coefficient=0.222856) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
+#2 (id=714502)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 34.65411 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Misc Value: 1048576 | Target: Self (1)
+Description      : Increases your Haste by $s1 and your Avoidance by $s2.
+Tooltip          : Increases your Haste by $s1 and your Avoidance by $s2.
+
 Name             : Chakrams (id=267666) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -7696,6 +7714,201 @@ Effects          :
 #1 (id=714505)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc259381
+
+Name             : Winds of War (id=267671) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Azerite Power Id : 43
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Triggered by     : Winds of War (269214)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714511)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Trigger Spell: 270675 | Target: Self (1)
+Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
+
+Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 89
+Triggered by     : Azerite Veins (270674)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714531)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 3887.5 (coefficient=50) | PvP Coefficient: 0.50000 | Trigger Spell: 270673 | Target: Self (1)
+Description      : Taking damage has a chance to grant you Azerite Veins, healing you for $s1 every $270674t1 sec. Lasts $270674d or until you are fully healed.
+
+Name             : On My Way (id=267879) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 38
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714790)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 69.30822 (coefficient=0.222856) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
+#2 (id=714791)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 34.65411 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Misc Value: 8192 | Target: Self (1)
+Description      : Increases your Versatility by $s1 and your Speed by $s2.
+Tooltip          : Increases your Versatility by $s1 and your Speed by $s2.
+
+Name             : Woundbinder (id=267880) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 19
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714792)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=1.894276) | PvP Coefficient: 0.50000 | Trigger Spell: 270677 | Target: Self (1)
+Description      : Your healing effects have a chance to increase your Haste by up to $s1 for $269085d. Healing lower health targets will grant you more Haste.
+
+Name             : Concentrated Mending (id=267882) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 103
+Triggered by     : Concentrated Mending (272260)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714798)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 23.325 (coefficient=0.3) | PvP Coefficient: 0.50000 | Trigger Spell: 272258 | Target: Self (1)
+Description      : Your healing effects have a chance to grant the target ${$s1*2} additional healing every $272260t1 sec for $272260d. This effect doubles every $272260t1 sec. 
+
+Name             : Savior (id=267883) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 42
+Triggered by     : Savior (270679)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714801)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 2332.5 (coefficient=30) | PvP Coefficient: 0.50000 | Trigger Spell: 270679 | Target: Self (1)
+#2 (id=720348)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
+
+Name             : Bracing Chill (id=267884) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 104
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714803)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 1283.113 (coefficient=16.50307) | PvP Coefficient: 0.50000 | Trigger Spell: 272275 | Target: Self (1)
+Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
+
+Name             : Ephemeral Recovery (id=267886) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 105
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714807)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=22) | PvP Coefficient: 0.50000 | Trigger Spell: 272570 | Target: Self (1)
+Description      : When you go below $272570s1% mana, you gain $s1 mana. Can occur once every $289362d.
+
+Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 463
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714812)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 3421 (coefficient=11) | PvP Coefficient: 0.50000 | Trigger Spell: 271818 | Target: Self (1)
+#2 (id=737331)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+Description      : Your healing spells have a chance to apply Blessed Portents for $271843d. When the ally falls below $s2% health, Blessed Portents is consumed and instantly restores $s1 health.
+
+Name             : Synergistic Growth (id=267892) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 102
+Triggered by     : Synergistic Growth (272090)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714818)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.72) | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Casting $?a137009[Wild Growth]?a137022[Essence Font]?a137030[Prayer of Healing or Power Word: Radiance]?a137026[Light of Dawn]?a137038[Chain Heal][your multi-target healing spell] grants you $s1 Mastery for $272090d. This cannot occur more than once every $272089proccooldown sec.
 
 Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7997,7 +8210,6 @@ $hunterDamage=${$269752s1}
 $damage=${$<petDamage>+$<hunterDamage>}
 
 Name             : Flanking Strike (id=269752) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -8445,6 +8657,86 @@ Effects          :
 Description      : H T1 N-Zero
 Points: $s1
 Different Powerset
+
+Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 98
+Triggered by     : Crystalline Carapace (271539), Crystalline Carapace (271538)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=721833)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 71.22149 (coefficient=0.229008) | PvP Coefficient: 0.50000 | Trigger Spell: 271537 | Target: Self (1)
+#2 (id=721834)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 61.7251 (coefficient=0.198473) | PvP Coefficient: 0.50000 | Target: Self (1)
+#3 (id=721835)   : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
+Description      : When dealt damage greater than $s3% of your maximum health, gain $s2 Armor and cause melee attackers to suffer $s1 Physical damage. Lasts $271538d.
+
+Name             : Ablative Shielding (id=271540) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 99
+Triggered by     : Ablative Shielding (271543)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=721842)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 622 (coefficient=2) | PvP Coefficient: 0.50000 | Trigger Spell: 271542 | Target: Self (1)
+Description      : Falling below $271542s1% health grants you $s1 Armor for $271543d. Taking further Physical damage reduces the Armor granted. May only occur every $271544d.
+
+Name             : Strength in Numbers (id=271546) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 100
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=721853)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 4415.532 (coefficient=56.79141) | PvP Coefficient: 0.50000 | Trigger Spell: 271547 | Target: Self (1)
+Description      : Taking damage has a chance to increase your maximum health by $s1 for each enemy within $271548A1 yds, up to $271550u enemies. Lasts $271550d.
+
+Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 101
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=721867)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 7692.414 (coefficient=24.73445) | PvP Coefficient: 0.50000 | Trigger Spell: 271558 | Target: Self (1)
+#2 (id=721868)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 217.7 (coefficient=0.7) | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Taking damage has a chance to create an upwelling of Azerite beneath your feet, increasing your Health by $s1 and your Armor by $s2 while you stand within it. Lasts $271560d.
 
 Name             : Harpoon (id=271625) [Spell Family (9)] 
 Class            : Hunter
@@ -9371,7 +9663,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 722.6457 (coefficient=9.294479) | PvP Coefficient: 0.50000
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $280847s2 yards of the Spark Coil take $s3 damage every 2 seconds and deal $280847s1% reduced damage to you.
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $s3 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
@@ -10125,6 +10417,7 @@ Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 53
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -10233,5 +10526,130 @@ Effects          :
 #1 (id=762256)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Carve reduces the remaining cooldown on Wildfire Bomb by ${$187708s2/1000} sec for each target hit, up to $187708s3.
+
+Name             : Person-Computer Interface (id=300168) [Scaling Spell (-1), Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 568
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
+                 : Passive (6), Hidden (7), Scales with item level (354)
+Effects          :
+#1 (id=773466)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1792 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
+#2 (id=779235)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
+#3 (id=779236)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 33554432 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
+#4 (id=779237)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
+Description      : $?$a303590[Critical Strike increased by $s1.]?$a303592[Haste increased by $s2.]?$a303595[Mastery increased by $s3.]?$a303596[Versatility increased by $s4.][A secondary stat of your choice is increased by $s1 while using the Pocket-Sized Computation Device.] Stat is chosen based on equipped Logic Board.
+
+Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 569
+Triggered by     : Clockwork Heart (300174)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=773468)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.83571) | PvP Coefficient: 1.00000 | Trigger Spell: 300173 | Target: Self (1)
+Description      : Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.
+
+Name             : Arcane Heart (id=303006) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Azerite Power Id : 577
+Proc Flags       : ........ ........ ........ ....x... 
+                 
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=778205)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
+#2 (id=778206)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 500 | Scaled Value: 0 (coefficient=1.39285) | PvP Coefficient: 0.50000 | Target: Self (1)
+#3 (id=778207)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 303209 | Target: Self (1)
+Description      : Every $s1 damage and healing done you gain Omnipotence, increasing your highest stat by $s2 for $303212d. You heal for $s3% of all Arcane damage taken.
+
+Name             : Loyal to the End (id=303007) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 576
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=778208)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
+#2 (id=778209)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
+#3 (id=778210)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Your Mastery is increased by $s1, plus an additional $s2 for each ally also affected by Loyal to the End, up to $s3.
+
+When you die, your allies gain Critical Strike, Haste, and Versatility equal to their Mastery bonus from this trait.
+
+
+Name             : Undulating Tides (id=303008) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 575
+Triggered by     : Undulating Tides (303389), Undulating Tides (303390)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=778211)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
+#2 (id=778212)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=778215)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (0.5 -> 0.25)
+#4 (id=778216)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.
+
+When your health drops below $s2%, gain a shield absorbing $s3 damage within $303390d. When this occurs, Undulating Tides cannot trigger again for $s4 sec.
 
 

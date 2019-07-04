@@ -1,4 +1,4 @@
-SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
+SimulationCraft 820-01 for World of Warcraft 8.2.0 Live (wow build 30918)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -188,7 +188,7 @@ Spell Type       : None
 Duration         : 30 seconds
 Proc Flags       : ..x.x... x...x... x....... ........ 
                  : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Affecting spells : Soul Rending (204909 effect#2)
+Affecting spells : Soul Rending (204909 effect#2), Demonic Origins (235893 effect#2)
 Triggered by     : Metamorphosis (191427)
 Family Flags     : 15
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -548,13 +548,13 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=268563)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Trail of Ruin (258883), Fel Barrage (258926), Unbound Chaos (275148)
                    Family Flags: 43
 #2 (id=294810)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=741691)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Trail of Ruin (258883), Fel Barrage (258926), Unbound Chaos (275148)
                    Family Flags: 43
 Description      : Increases your Chaos damage by ${$s1}.1% and your movement speed by ${$s2}.1%.
@@ -632,6 +632,7 @@ Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1251
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 20 seconds
 Affecting spells : Soul Rending (217996 effect#2)
 Family Flags     : 28
@@ -646,23 +647,31 @@ Effects          :
 #1 (id=273949)   : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 104712 | Misc Value 2: 0x6 | Target: Self (1)
 #2 (id=273950)   : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=283617)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=307168)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
-                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
+#4 (id=307168)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Shear (203782)
+                   Family Flags: 22
 #5 (id=314452)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 536 | Target: Self (1)
 #6 (id=329389)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 #7 (id=356685)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Transform to demon form for $d, increasing current and maximum health by $s2% and Armor by $s7%.
-
-|cFFFFFFFFGenerates ${$s4/10} Pain every $t4 sec.|r
-Tooltip          : Maximum health increased by $s2%. Armor increased by $s7%.
-
-Generating ${$s4/10} Pain every $t4 sec.
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+#8 (id=775930)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Fracture (263642)
+                   Family Flags: 73
+#9 (id=775931)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Affected Spells: Fracture (263642)
+                   Family Flags: 73
+Description      : Transform to demon form for $d, increasing current and maximum health by $s2% and Armor by $s7%.  While transformed, $?s263642[Fracture][Shear] generates ${$s4/10} additional Pain and one additional Lesser Soul Fragment.
+Tooltip          : Maximum health increased by $w2%.
+Armor increased by $w7%.
+$?s263642[Fracture][Shear] generates ${$w4/10} additional Pain and one additional Lesser Soul Fragment.
 
 Name             : Blade Dance (id=188499) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -714,6 +723,8 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
+Affecting spells : Eye of Theras (297061 effect#1)
+Family Flags     : 74
 Attributes       : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -808,8 +819,9 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 240 seconds
 Category         : 1577
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 240 seconds
-Affecting spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), Demonic Origins (235893 effect#2)
 Family Flags     : 15, 32
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1164,7 +1176,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=293648)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.57564 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.55000 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc162794
 
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
@@ -1191,7 +1203,6 @@ Effects          :
 Description      : $@spelldesc188499
 
 Name             : Metamorphosis (id=200166) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
@@ -1305,7 +1316,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=296759)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75114 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.71500 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc201427
 
 Name             : Metamorphosis (id=201453) [Spell Family (107), Hidden] 
@@ -1589,7 +1600,7 @@ Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
 #1 (id=300162)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
 #2 (id=300191)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=300192)   : Apply Aura (6) | Modify Expertise% (240)
@@ -1597,7 +1608,7 @@ Effects          :
 #4 (id=306421)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #5 (id=306893)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : Your tattoos reduce all damage taken by $s1%, and increase your Stamina by $s4% and your Armor by $s5%.
 
 Name             : Blind Fury (id=203550) [Spell Family (107), Passive] 
@@ -1716,6 +1727,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
+Labels           : 719: Memory of Lucid Dreams (298357 effect#17), Memory of Lucid Dreams (299372 effect#17), Memory of Lucid Dreams (299374 effect#17)
 Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#2)
 Triggered by     : Prepared (203551)
 Family Flags     : 40
@@ -1805,7 +1817,7 @@ Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#2), 
+Affecting spells : Metamorphosis (187827 effect#4), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#2), 
 Family Flags     : 22, 32, 70, 85
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1816,15 +1828,13 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Requires main-hand weapon (106)
 Effects          :
-#1 (id=300625)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=300626)   : School Damage (2): physical
+#1 (id=300625)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40365 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#3 (id=310130)   : Energize Power (30)
+#2 (id=300626)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: pain | Target: Self (1)
-Description      : Shears an enemy for $s2 Physical damage, and shatters a Lesser Soul Fragment from your target.
+Description      : Shears an enemy for $s1 Physical damage, and shatters $?a187827[two Lesser Soul Fragments][a Lesser Soul Fragment] from your target.
 
-|cFFFFFFFFGenerates ${$m3/10} Pain.|r
+|cFFFFFFFFGenerates ${$m2/10} Pain.|r
 
 Name             : Shear (id=203783) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
@@ -1943,7 +1953,7 @@ Effects          :
 #1 (id=300687)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=300915)   : Apply Aura (6) | Modify Armor by Primary Stat% (268)
-                   Base Value: 85 | Scaled Value: 85 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #3 (id=341634)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
@@ -2356,7 +2366,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
 Effects          :
 #1 (id=305378)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
@@ -2760,7 +2770,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 
 Name             : Last Resort (id=209258) [Spell Family (107), Passive] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -3188,7 +3197,7 @@ Effects          :
 Description      : $@spelldesc212084
 
 Name             : Demon Hunter (id=212611) [Spell Family (107), Passive, Hidden] 
-Class            : Demon Hunter
+Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3202,9 +3211,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315220)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=777115)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Havoc Demon Hunter (id=212612) [Spell Family (107), Passive, Hidden] 
-Class            : Havoc Demon Hunter
+Class            : Havoc Death Knight, Demon Hunter
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3241,7 +3252,7 @@ Effects          :
                    Affected Spells (Category): Throw Glaive (185123)
 
 Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passive, Hidden] 
-Class            : Vengeance Demon Hunter
+Class            : Vengeance Death Knight, Demon Hunter
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3663,7 +3674,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=331359)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.36153 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc162794
 
 Name             : Fel Barrage (rank=Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
@@ -3823,7 +3834,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=342015)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.47034 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45500 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc201427
 
 Name             : Soul Cleave (id=228477) [Spell Family (107)] 
@@ -3880,7 +3891,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=344032)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.41850 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.58500 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 Description      : $@spelldesc228477
 
 Name             : Vengeful Retreat (id=232709) [Hidden] 
@@ -4349,7 +4360,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect can crit (265)
 Effects          :
 #1 (id=483108)   : Apply Aura (6) | Periodic Damage (3): chromatic every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc258881
 Tooltip          : Suffering $w1 Chaos damage every $t1 sec.
 
@@ -4510,8 +4521,8 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Charges          : 2 (4.5 seconds cooldown)
 Category         : 1552: Vengeance Demon Hunter (212613 effect#7)
-Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
-Family Flags     : 32
+Affecting spells : Metamorphosis (187827 effect#8), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Family Flags     : 32, 73
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4761,7 +4772,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
 
 Name             : Lifespeed (id=267665) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 20
@@ -4782,7 +4793,7 @@ Description      : Increases your Haste by $s1 and your Avoidance by $s2.
 Tooltip          : Increases your Haste by $s1 and your Avoidance by $s2.
 
 Name             : Winds of War (id=267671) [Scaling Spell (-7), Passive] 
-Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
@@ -4804,7 +4815,7 @@ Effects          :
 Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
 
 Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive] 
-Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 89
@@ -4821,6 +4832,160 @@ Effects          :
 #1 (id=714531)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 3887.5 (coefficient=50) | PvP Coefficient: 0.50000 | Trigger Spell: 270673 | Target: Self (1)
 Description      : Taking damage has a chance to grant you Azerite Veins, healing you for $s1 every $270674t1 sec. Lasts $270674d or until you are fully healed.
+
+Name             : On My Way (id=267879) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 38
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714790)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 69.30822 (coefficient=0.222856) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
+#2 (id=714791)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 34.65411 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Misc Value: 8192 | Target: Self (1)
+Description      : Increases your Versatility by $s1 and your Speed by $s2.
+Tooltip          : Increases your Versatility by $s1 and your Speed by $s2.
+
+Name             : Woundbinder (id=267880) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 19
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714792)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=1.894276) | PvP Coefficient: 0.50000 | Trigger Spell: 270677 | Target: Self (1)
+Description      : Your healing effects have a chance to increase your Haste by up to $s1 for $269085d. Healing lower health targets will grant you more Haste.
+
+Name             : Concentrated Mending (id=267882) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 103
+Triggered by     : Concentrated Mending (272260)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714798)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 23.325 (coefficient=0.3) | PvP Coefficient: 0.50000 | Trigger Spell: 272258 | Target: Self (1)
+Description      : Your healing effects have a chance to grant the target ${$s1*2} additional healing every $272260t1 sec for $272260d. This effect doubles every $272260t1 sec. 
+
+Name             : Savior (id=267883) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 42
+Triggered by     : Savior (270679)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714801)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 2332.5 (coefficient=30) | PvP Coefficient: 0.50000 | Trigger Spell: 270679 | Target: Self (1)
+#2 (id=720348)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
+
+Name             : Bracing Chill (id=267884) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 104
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714803)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 1283.113 (coefficient=16.50307) | PvP Coefficient: 0.50000 | Trigger Spell: 272275 | Target: Self (1)
+Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
+
+Name             : Ephemeral Recovery (id=267886) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 105
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714807)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=22) | PvP Coefficient: 0.50000 | Trigger Spell: 272570 | Target: Self (1)
+Description      : When you go below $272570s1% mana, you gain $s1 mana. Can occur once every $289362d.
+
+Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 463
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714812)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 3421 (coefficient=11) | PvP Coefficient: 0.50000 | Trigger Spell: 271818 | Target: Self (1)
+#2 (id=737331)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+Description      : Your healing spells have a chance to apply Blessed Portents for $271843d. When the ally falls below $s2% health, Blessed Portents is consumed and instantly restores $s1 health.
+
+Name             : Synergistic Growth (id=267892) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 102
+Triggered by     : Synergistic Growth (272090)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714818)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.72) | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Casting $?a137009[Wild Growth]?a137022[Essence Font]?a137030[Prayer of Healing or Power Word: Radiance]?a137026[Light of Dawn]?a137038[Chain Heal][your multi-target healing spell] grants you $s1 Mastery for $272090d. This cannot occur more than once every $272089proccooldown sec.
 
 Name             : Void Reaver (id=268175) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
@@ -5016,7 +5181,7 @@ Description      : While no enemies are within $s2 yds, you heal for $s1 every $
 Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $270661t1 sec.
 
 Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 98
@@ -5039,7 +5204,7 @@ Effects          :
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s2 Armor and cause melee attackers to suffer $s1 Physical damage. Lasts $271538d.
 
 Name             : Ablative Shielding (id=271540) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 99
@@ -5058,7 +5223,7 @@ Effects          :
 Description      : Falling below $271542s1% health grants you $s1 Armor for $271543d. Taking further Physical damage reduces the Armor granted. May only occur every $271544d.
 
 Name             : Strength in Numbers (id=271546) [Scaling Spell (-8), Passive] 
-Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 100
@@ -5076,7 +5241,7 @@ Effects          :
 Description      : Taking damage has a chance to increase your maximum health by $s1 for each enemy within $271548A1 yds, up to $271550u enemies. Lasts $271550d.
 
 Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 101
@@ -5573,7 +5738,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737265)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.25000 | Target: Self (1)
 Description      : When your Consume Magic consumes a beneficial Magic effect from the target, gain $s1 Absorb for $274289d and shatter a Soul Fragment from the target.
 
 Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passive] 
@@ -5691,7 +5856,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 722.6457 (coefficient=9.294479) | PvP Coefficient: 0.50000
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $280847s2 yards of the Spark Coil take $s3 damage every 2 seconds and deal $280847s1% reduced damage to you.
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $s3 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
@@ -6512,5 +6677,130 @@ Effects          :
 #3 (id=753016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 24.80365 (coefficient=0.319018) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Each $?s185164[Fury][Pain] spent heals you for $?s185164[$s2][$s3] Health.
+
+Name             : Person-Computer Interface (id=300168) [Scaling Spell (-1), Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 568
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
+                 : Passive (6), Hidden (7), Scales with item level (354)
+Effects          :
+#1 (id=773466)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1792 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
+#2 (id=779235)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
+#3 (id=779236)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 33554432 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
+#4 (id=779237)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
+Description      : $?$a303590[Critical Strike increased by $s1.]?$a303592[Haste increased by $s2.]?$a303595[Mastery increased by $s3.]?$a303596[Versatility increased by $s4.][A secondary stat of your choice is increased by $s1 while using the Pocket-Sized Computation Device.] Stat is chosen based on equipped Logic Board.
+
+Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 569
+Triggered by     : Clockwork Heart (300174)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=773468)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.83571) | PvP Coefficient: 1.00000 | Trigger Spell: 300173 | Target: Self (1)
+Description      : Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.
+
+Name             : Arcane Heart (id=303006) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Azerite Power Id : 577
+Proc Flags       : ........ ........ ........ ....x... 
+                 
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=778205)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
+#2 (id=778206)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 500 | Scaled Value: 0 (coefficient=1.39285) | PvP Coefficient: 0.50000 | Target: Self (1)
+#3 (id=778207)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 303209 | Target: Self (1)
+Description      : Every $s1 damage and healing done you gain Omnipotence, increasing your highest stat by $s2 for $303212d. You heal for $s3% of all Arcane damage taken.
+
+Name             : Loyal to the End (id=303007) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 576
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=778208)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
+#2 (id=778209)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
+#3 (id=778210)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Your Mastery is increased by $s1, plus an additional $s2 for each ally also affected by Loyal to the End, up to $s3.
+
+When you die, your allies gain Critical Strike, Haste, and Versatility equal to their Mastery bonus from this trait.
+
+
+Name             : Undulating Tides (id=303008) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 575
+Triggered by     : Undulating Tides (303389), Undulating Tides (303390)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=778211)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
+#2 (id=778212)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=778215)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (0.5 -> 0.25)
+#4 (id=778216)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.
+
+When your health drops below $s2%, gain a shield absorbing $s3 damage within $303390d. When this occurs, Undulating Tides cannot trigger again for $s4 sec.
 
 
