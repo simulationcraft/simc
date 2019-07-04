@@ -1256,14 +1256,8 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
   double resource_regen_per_second( resource_e r ) const override
   {
     if ( r == RESOURCE_FOCUS )
-    {
-      double amount = owner -> resource_regen_per_second( RESOURCE_FOCUS );
+      return owner -> resource_regen_per_second( RESOURCE_FOCUS ) * 1.25;
 
-      if ( owner -> buffs.memory_of_lucid_dreams -> check() )
-        amount *= 1.0 + o() -> azerite_essence.memory_of_lucid_dreams_major_mult;
-
-      return amount * 1.25;
-    }
     return hunter_main_pet_base_t::resource_regen_per_second( r );
   }
 
