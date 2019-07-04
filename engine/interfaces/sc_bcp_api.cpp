@@ -21,7 +21,12 @@ namespace { // UNNAMED NAMESPACE
 
 struct player_spec_t
 {
-  std::string region, server, name, url, local_json, origin, talent_spec;
+  std::string region, server, name, url, origin, talent_spec;
+
+  std::string local_json;
+  std::string local_json_spec;
+  std::string local_json_equipment;
+  std::string local_json_media;
 };
 
 static const std::string GLOBAL_OAUTH_ENDPOINT_URI = "https://{}.battle.net/oauth/token";
@@ -568,6 +573,11 @@ void parse_items( player_t* p, const std::string& url, cache::behavior_e caching
 
     item.parsed.data.id = slot_data[ "item" ][ "id" ].GetUint();
 
+    if ( slot_data.HasMember( "timewalker_level" ) )
+    {
+      item.parsed.drop_level = slot_data[ "timewalker_level" ].GetUint();
+    }
+
     if ( slot_data.HasMember( "bonus_list" ) )
     {
       for ( auto bonus_idx = 0u, end = slot_data[ "bonus_list" ].Size(); bonus_idx < end; ++bonus_idx )
@@ -607,15 +617,26 @@ void parse_items( player_t* p, const std::string& url, cache::behavior_e caching
   }
 }
 
-void parse_media( player_t* p, const std::string& url, cache::behavior_e caching )
+void parse_media( player_t*            p,
+                  const player_spec_t& spec,
+                  const std::string&   url,
+                  cache::behavior_e    caching )
 {
   rapidjson::Document media_data;
   std::string result;
 
-  if ( ! download( p->sim, media_data, result, p->region_str, url + "&locale=en_US", caching ) )
+  if ( spec.local_json_media.empty() )
   {
-    throw std::runtime_error(fmt::format("Unable to download media JSON from '{}'.",
-        url ));
+    if ( !download( p->sim, media_data, result, p->region_str, url + "&locale=en_US", caching ) )
+    {
+      throw std::runtime_error(fmt::format("Unable to download media JSON from '{}'.", url ));
+    }
+  }
+  else
+  {
+    io::ifstream ifs;
+    ifs.open( spec.local_json_media );
+    result.assign( std::istreambuf_iterator<char>( ifs ), std::istreambuf_iterator<char>() );
   }
 
   if ( p->sim->debug )
@@ -635,9 +656,9 @@ void parse_media( player_t* p, const std::string& url, cache::behavior_e caching
 
 // parse_player =============================================================
 
-player_t* parse_player( sim_t*             sim,
-                        player_spec_t&     player,
-                        cache::behavior_e  caching )
+player_t* parse_player( sim_t*               sim,
+                        player_spec_t& player,
+                        cache::behavior_e    caching )
 {
   sim -> current_slot = 0;
 
@@ -657,8 +678,7 @@ player_t* parse_player( sim_t*             sim,
   {
     io::ifstream ifs;
     ifs.open( player.local_json );
-    result.assign( ( std::istreambuf_iterator<char>( ifs ) ),
-                   ( std::istreambuf_iterator<char>()    ) );
+    result.assign( std::istreambuf_iterator<char>( ifs ), std::istreambuf_iterator<char>() );
   }
 
   profile.Parse< 0 >(result.c_str());
@@ -752,7 +772,7 @@ player_t* parse_player( sim_t*             sim,
 
   if ( profile.HasMember( "media" ) && profile[ "media" ].HasMember( "href" ) )
   {
-    parse_media( p, profile[ "media" ][ "href" ].GetString(), caching );
+    parse_media( p, player, profile[ "media" ][ "href" ].GetString(), caching );
   }
 
   // TODO: Professions
@@ -1118,21 +1138,63 @@ player_t* bcp_api::download_player( sim_t*             sim,
 
 player_t* bcp_api::from_local_json( sim_t*             sim,
                                     const std::string& name,
-                                    const std::string& file_path,
+                                    const std::string& value,
                                     const std::string& talents
                                   )
 {
-  sim -> current_name = name;
+  player_spec_t player_spec;
 
-  player_spec_t player;
+  player_spec.origin = value;
 
-  player.local_json = file_path;
-  player.origin = file_path;
+  std::vector<std::unique_ptr<option_t>> options;
+  options.push_back( opt_string( "spec", player_spec.local_json_spec ) );
+  options.push_back( opt_string( "equipment", player_spec.local_json_equipment ) );
+  options.push_back( opt_string( "media", player_spec.local_json_media ) );
 
-  player.name = name;
-  player.talent_spec = talents;
+  std::string options_str;
+  auto first_comma = value.find( ',' );
+  if ( first_comma != std::string::npos )
+  {
+    player_spec.local_json = value.substr( 0, first_comma );
+    options_str = value.substr( first_comma + 1 );
+  }
+  else
+  {
+    player_spec.local_json = value;
+  }
 
-  return parse_player( sim, player, cache::ANY );
+  try
+  {
+    opts::parse( sim, "local_json", options, options_str,
+      [ sim ]( opts::parse_status status, const std::string& name, const std::string& value ) {
+        // Fail parsing if strict parsing is used and the option is not found
+        if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
+        {
+          return opts::parse_status::FAILURE;
+        }
+
+        // .. otherwise, just warn that there's an unknown option
+        if ( status == opts::parse_status::NOT_FOUND )
+        {
+          sim->error( "Warning: Unknown local_json option '{}' with value '{}', ignoring",
+            name, value );
+        }
+
+        return status;
+      } );
+  }
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( std::invalid_argument(
+      fmt::format( "Cannot parse option from '{}'", options_str ) ) );
+  }
+
+  player_spec.name = name;
+  player_spec.talent_spec = talents;
+
+  sim->current_name = name;
+
+  return parse_player( sim, player_spec, cache::ANY );
 }
 
 // bcp_api::download_item() =================================================
