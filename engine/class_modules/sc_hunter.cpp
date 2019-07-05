@@ -5382,8 +5382,7 @@ void hunter_t::apl_bm()
   cds -> add_action("lights_judgment,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains>gcd.max|!pet.cat.buff.frenzy.up");
   cds -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&(target.health.pct<35|!talent.killer_instinct.enabled)|target.time_to_die<25" );
  
-  // TODO if=buff.lifeblood.stack<2 when buff is made to always exist
-  cds -> add_action( "worldvein_resonance" );
+  cds -> add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
   cds -> add_action( "guardian_of_azeroth" );
   cds -> add_action( "ripple_in_space" );
   cds -> add_action( "memory_of_lucid_dreams" );
@@ -5401,8 +5400,7 @@ void hunter_t::apl_bm()
   st -> add_action( "purifying_blast" );
   st -> add_action( "concentrated_flame" );
   st -> add_action( "blood_of_the_enemy" );
-  // TODO if=buff.reckless_force.up|buff.reckless_force_counter.stack<10 when buff is made to always exist
-  st -> add_action( "the_unbound_force" );
+  st -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   st -> add_talent( this, "Barrage" );
   st -> add_action( this, "Cobra Shot", "if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd|buff.memory_of_lucid_dreams.up)&cooldown.kill_command.remains>1" );
   st -> add_talent( this, "Spitting Cobra" );
@@ -5424,8 +5422,7 @@ void hunter_t::apl_bm()
   cleave -> add_action( "purifying_blast" );
   cleave -> add_action( "concentrated_flame" );
   cleave -> add_action( "blood_of_the_enemy" );
-  // TODO if=buff.reckless_force.up|buff.reckless_force_counter.stack<10 when buff is made to always exist
-  cleave -> add_action( "the_unbound_force" );
+  cleave -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   cleave -> add_action( this, "Multi-Shot", "if=azerite.rapid_reload.enabled&active_enemies>2");
   cleave -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload.enabled)" );
   cleave -> add_talent( this, "Spitting Cobra" );
@@ -5473,8 +5470,7 @@ void hunter_t::apl_mm()
   cds -> add_action( "fireblood,if=buff.trueshot.up&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9" );
   cds -> add_action( "lights_judgment" );
 
-  // TODO if=buff.lifeblood.stack<2 when buff is made to always exist
-  cds -> add_action( "worldvein_resonance" );
+  cds -> add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
   cds -> add_action( "guardian_of_azeroth,if=cooldown.trueshot.remains<15" );
   cds -> add_action( "ripple_in_space,if=cooldown.trueshot.remains<7" );
   cds -> add_action( "memory_of_lucid_dreams" );
@@ -5495,8 +5491,7 @@ void hunter_t::apl_mm()
   st -> add_action( "purifying_blast" );
   st -> add_action( "concentrated_flame" );
   st -> add_action( "blood_of_the_enemy" );
-  // TODO if=buff.reckless_force.up|buff.reckless_force_counter.stack<10 when buff is made to always exist
-  st -> add_action( "the_unbound_force" );
+  st -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   st -> add_action( this, "Arcane Shot", "if=buff.trueshot.down&(buff.precise_shots.up&(focus>41|buff.master_marksman.up)|(focus>50&azerite.focused_fire.enabled|focus>75)&(cooldown.trueshot.remains>5|focus>80)|target.time_to_die<5)" );
   st -> add_action( this, "Steady Shot" );
 
@@ -5511,8 +5506,7 @@ void hunter_t::apl_mm()
   trickshots -> add_action( "purifying_blast" );
   trickshots -> add_action( "concentrated_flame" );
   trickshots -> add_action( "blood_of_the_enemy" );
-  // TODO if=buff.reckless_force.up|buff.reckless_force_counter.stack<10 when buff is made to always exist
-  trickshots -> add_action( "the_unbound_force" );
+  trickshots -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   trickshots -> add_talent( this, "Piercing Shot" );
   trickshots -> add_talent( this, "A Murder of Crows" );
   trickshots -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
