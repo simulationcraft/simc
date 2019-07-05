@@ -2007,6 +2007,10 @@ void priest_t::generate_apl_shadow()
     default_list->add_action( profession_action );
   }
 
+  // Pocket-Sized Computational Device
+  // TODO: For some reason this needs to be hardcoded
+  default_list->add_action( "use_item,name=pocketsized_computation_device,if=equipped.167555" );
+
   // Potions
   default_list->add_action(
       "potion,if=buff.bloodlust.react|target.time_to_die<=80|"

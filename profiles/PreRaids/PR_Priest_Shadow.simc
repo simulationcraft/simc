@@ -37,6 +37,7 @@ actions.precombat+=/vampiric_touch
 
 # Executed every time the actor is available.
 actions=use_item,slot=trinket2
+actions+=/use_item,name=pocketsized_computation_device,if=equipped.167555
 actions+=/potion,if=buff.bloodlust.react|target.time_to_die<=80|target.health.pct<35
 actions+=/variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
 actions+=/berserking
