@@ -8291,7 +8291,7 @@ struct use_item_t : public action_t
     if ( triggered && action && ( !buff || buff->check() == buff->max_stack() ) )
     {
       action->target = target;
-      action->schedule_execute();
+      action->execute();
 
       // Decide whether to expire the buff even with 1 max stack
       if ( buff && buff->max_stack() > 1 )
@@ -8425,7 +8425,7 @@ struct use_items_t : public action_t
     {
       if ( action->ready() && action->action )
       {
-        et += action->action->base_execute_time * action->action->composite_haste();
+        et += action->action->execute_time();
         break;
       }
     }
