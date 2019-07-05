@@ -3787,6 +3787,7 @@ struct focused_azerite_beam_t : public azerite_essence_major_t
     harmful = true;
     channeled = true;
     tick_zero = true;
+    interrupt_auto_attack = true;
 
     double tick = essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 1 ).average( essence.item() );
     double mult = 1 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
