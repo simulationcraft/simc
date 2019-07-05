@@ -8424,18 +8424,15 @@ struct use_items_t : public action_t
 
   timespan_t execute_time() const override
   {
-    timespan_t et = action_t::execute_time();
-
     for ( auto action : use_actions )
     {
       if ( action->ready() && action->action )
       {
-        et += action->action->execute_time();
-        break;
+        return action->action->execute_time();
       }
     }
 
-    return et;
+    return action_t::execute_time();
   }
 
   void execute() override
