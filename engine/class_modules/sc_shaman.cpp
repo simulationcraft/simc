@@ -8397,7 +8397,8 @@ void shaman_t::init_action_list_enhancement()
   default_core->add_action( this, "Stormstrike", "if=variable.OCPool_SS&variable.furyCheck_SS" );
 
   filler->add_talent( this, "Sundering", "if=active_enemies<3" );
-  filler->add_action( "focused_azerite_beam,if=!buff.ascendance.up" );
+  filler->add_action( "focused_azerite_beam,if=!buff.ascendance.up&!buff.molten_weapon.up&!buff.icy_edge.up"
+      "&!buff.crackling_surge.up&!debuff.earthen_spike.up" );
   filler->add_action( "purifying_blast" );
   filler->add_action( "concentrated_flame" );
   filler->add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
