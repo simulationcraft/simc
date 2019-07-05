@@ -5,12 +5,13 @@ level=120
 race=troll
 role=spell
 position=ranged_back
-talents=2103032
+talents=3102012
+azerite_essences=22:3:1/4:3:0/27:3:0
 
 # Default consumables
-potion=potion_of_unbridled_fury
+potion=unbridled_fury
 flask=greater_flask_of_endless_fathoms
-food=famine_evaluator_and_snack_table
+food=baked_port_tato
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -126,30 +127,29 @@ actions.nether_portal_building+=/power_siphon,if=buff.wild_imps.stack>=2&buff.de
 actions.nether_portal_building+=/hand_of_guldan,if=soul_shard>=5
 actions.nether_portal_building+=/call_action_list,name=build_a_shard
 
-head=headdress_of_the_first_empire,id=159236,bonus_id=5062/1587/4786/4775,azerite_powers=428/429/30/13
+head=stormlurkers_cowl,id=159244,bonus_id=5062/1617/4786/4775,azerite_powers=429/428/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=amice_of_the_returned,id=159273,bonus_id=5062/1587/4786/4775,azerite_powers=429/458/30/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=divine_fury_raiment,id=165834,bonus_id=4824/1537/4775,azerite_powers=429/562/30/13
-wrists=lever_stabilizing_wristwraps,id=165508,bonus_id=4800/1537
-hands=manceroys_flamefists,id=165503,bonus_id=4800/1537
-waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
-legs=wavecaller_leggings,id=165506,bonus_id=4800/1537
-feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
-trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=balefire_branch,id=159630,bonus_id=1572/4780
-main_hand=phoenixfire_staff,id=165587,bonus_id=4800/1537,enchant=quick_navigation
+shoulders=amice_of_the_returned,id=159273,bonus_id=5062/1617/4786/4775,azerite_powers=429/458/30/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=vestments_of_creeping_terror,id=168337,bonus_id=4824/1517/4775,azerite_powers=429/576/30/13
+wrists=waveblade_farseers_bindings,id=170306,bonus_id=1512
+hands=poens_deepsea_gloves,id=170333,bonus_id=1512
+waist=cephalopods_sash,id=168872,bonus_id=4800/1517
+legs=seawrath_legwraps,id=168371,bonus_id=4800/1517
+feet=eelskin_flippers,id=168373,bonus_id=4800/1517
+finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_haste
+finger2=boralus_nobles_seal,id=168889,bonus_id=4800/1517,enchant=accord_of_haste
+trinket1=leviathans_lure,id=169304,bonus_id=4800/1517
+trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+main_hand=anuazshara_staff_of_the_eternal,id=168275,bonus_id=4800/1517,enchant=machinists_brilliance
 
 # Gear Summary
-# gear_ilvl=418.20
-# gear_stamina=10191
-# gear_intellect=7009
-# gear_crit_rating=799
-# gear_haste_rating=1346
-# gear_mastery_rating=1330
-# gear_versatility_rating=214
-# gear_armor=1442
-# set_bonus=gift_of_the_loa_2pc=1
+# gear_ilvl=444.53
+# gear_stamina=13495
+# gear_intellect=9019
+# gear_crit_rating=1329
+# gear_haste_rating=1361
+# gear_mastery_rating=921
+# gear_versatility_rating=413
+# gear_armor=1765
 default_pet=felguard

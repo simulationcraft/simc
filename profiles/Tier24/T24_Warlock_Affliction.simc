@@ -6,11 +6,12 @@ race=troll
 role=spell
 position=ranged_back
 talents=3302023
+azerite_essences=14:3:1/12:3:0/4:3:0
 
 # Default consumables
-potion=potion_of_unbridled_fury
+potion=focused_resolve
 flask=greater_flask_of_endless_fathoms
-food=famine_evaluator_and_snack_table
+food=baked_port_tato
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -40,18 +41,21 @@ actions+=/call_action_list,name=cooldowns
 actions+=/drain_soul,interrupt_global=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd&soul_shard<5
 actions+=/haunt,if=spell_targets.seed_of_corruption_aoe<=2+raid_event.invulnerable.up
 actions+=/summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&(buff.active_uas.stack=5|soul_shard=0)&(!talent.phantom_singularity.enabled|dot.phantom_singularity.remains)&(!talent.deathbolt.enabled|cooldown.deathbolt.remains<=gcd|!cooldown.deathbolt.remains|spell_targets.seed_of_corruption_aoe>1+raid_event.invulnerable.up)
-actions+=/deathbolt,if=cooldown.summon_darkglare.remains&spell_targets.seed_of_corruption_aoe=1+raid_event.invulnerable.up&(!essence.vision_of_perfection.minor|!azerite.dreadful_calling.rank|cooldown.summon_darkglare.remains>30)
+actions+=/deathbolt,if=cooldown.summon_darkglare.remains&spell_targets.seed_of_corruption_aoe=1+raid_event.invulnerable.up&(!essence.vision_of_perfection.minor&!azerite.dreadful_calling.rank|cooldown.summon_darkglare.remains>30)
 actions+=/guardian_of_azeroth,if=pet.darkglare.active
 actions+=/the_unbound_force,if=buff.reckless_force.remains
 actions+=/agony,target_if=min:dot.agony.remains,if=remains<=gcd+action.shadow_bolt.execute_time&target.time_to_die>8
+actions+=/memory_of_lucid_dreams,if=time<30
+actions+=/use_item,name=azsharas_font_of_power,if=cooldown.summon_darkglare.remains<10
 actions+=/unstable_affliction,target_if=!contagion&target.time_to_die<=8
 actions+=/drain_soul,target_if=min:debuff.shadow_embrace.remains,cancel_if=ticks_remain<5,if=talent.shadow_embrace.enabled&variable.maintain_se&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=gcd*2
 actions+=/shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace.enabled&variable.maintain_se&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=execute_time*2+travel_time&!action.shadow_bolt.in_flight
-actions+=/phantom_singularity,target_if=max:target.time_to_die,if=time>35&target.time_to_die>16*spell_haste&(!essence.vision_of_perfection.minor|!azerite.dreadful_calling.rank|cooldown.summon_darkglare.remains>45|cooldown.summon_darkglare.remains<15*spell_haste)
+actions+=/phantom_singularity,target_if=max:target.time_to_die,if=time>35&target.time_to_die>16*spell_haste&(!essence.vision_of_perfection.minor&!azerite.dreadful_calling.rank|cooldown.summon_darkglare.remains>45|cooldown.summon_darkglare.remains<15*spell_haste)
 actions+=/vile_taint,target_if=max:target.time_to_die,if=time>15&target.time_to_die>=10
 actions+=/unstable_affliction,target_if=min:contagion,if=!variable.use_seed&soul_shard=5
 actions+=/seed_of_corruption,if=variable.use_seed&soul_shard=5
 actions+=/call_action_list,name=dots
+actions+=/use_item,name=azsharas_font_of_power,if=time<=3
 actions+=/phantom_singularity,if=time<=35
 actions+=/vile_taint,if=time<15
 actions+=/dark_soul,if=cooldown.summon_darkglare.remains<10&dot.phantom_singularity.remains|target.time_to_die<20+gcd|spell_targets.seed_of_corruption_aoe>1+raid_event.invulnerable.up
@@ -59,14 +63,15 @@ actions+=/berserking
 actions+=/call_action_list,name=spenders
 actions+=/call_action_list,name=fillers
 
-actions.cooldowns=potion,if=(talent.dark_soul_misery.enabled&cooldown.summon_darkglare.up&cooldown.dark_soul.up)|cooldown.summon_darkglare.up|target.time_to_die<30
+actions.cooldowns=use_item,name=azsharas_font_of_power,if=(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains<4*spell_haste|!cooldown.phantom_singularity.remains)&cooldown.summon_darkglare.remains<15*spell_haste
+actions.cooldowns+=/potion,if=(talent.dark_soul_misery.enabled&cooldown.summon_darkglare.up&cooldown.dark_soul.up)|cooldown.summon_darkglare.up|target.time_to_die<30
 actions.cooldowns+=/use_items,if=cooldown.summon_darkglare.remains>70|time_to_die<20|((buff.active_uas.stack=5|soul_shard=0)&(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains)&(!talent.deathbolt.enabled|cooldown.deathbolt.remains<=gcd|!cooldown.deathbolt.remains)&!cooldown.summon_darkglare.remains)
 actions.cooldowns+=/fireblood,if=!cooldown.summon_darkglare.up
 actions.cooldowns+=/blood_fury,if=!cooldown.summon_darkglare.up
-actions.cooldowns+=/memory_of_lucid_dreams
-actions.cooldowns+=/blood_of_the_enemy,if=pet.darkglare.active|cooldown.summon_darkglare.remains>30
-actions.cooldowns+=/worldvein_resonance,if=pet.darkglare.active|cooldown.summon_darkglare.remains>30
-actions.cooldowns+=/ripple_in_space,if=pet.darkglare.active|cooldown.summon_darkglare.remains>30
+actions.cooldowns+=/memory_of_lucid_dreams,if=time>30
+actions.cooldowns+=/blood_of_the_enemy
+actions.cooldowns+=/worldvein_resonance,if=buff.lifeblood.stack<3
+actions.cooldowns+=/ripple_in_space
 
 actions.db_refresh=siphon_life,line_cd=15,if=(dot.siphon_life.remains%dot.siphon_life.duration)<=(dot.agony.remains%dot.agony.duration)&(dot.siphon_life.remains%dot.siphon_life.duration)<=(dot.corruption.remains%dot.corruption.duration)&dot.siphon_life.remains<dot.siphon_life.duration*1.3
 actions.db_refresh+=/agony,line_cd=15,if=(dot.agony.remains%dot.agony.duration)<=(dot.corruption.remains%dot.corruption.duration)&(dot.agony.remains%dot.agony.duration)<=(dot.siphon_life.remains%dot.siphon_life.duration)&dot.agony.remains<dot.agony.duration*1.3
@@ -106,31 +111,30 @@ actions.spenders+=/unstable_affliction,if=!variable.use_seed&!prev_gcd.1.summon_
 actions.spenders+=/unstable_affliction,if=!variable.use_seed&contagion<=cast_time+variable.padding
 actions.spenders+=/unstable_affliction,cycle_targets=1,if=!variable.use_seed&(!talent.deathbolt.enabled|cooldown.deathbolt.remains>time_to_shard|soul_shard>1)&(!talent.vile_taint.enabled|soul_shard>1)&contagion<=cast_time+variable.padding&(!azerite.cascading_calamity.enabled|buff.cascading_calamity.remains>time_to_shard)
 
-head=grasping_crown_of_the_deep,id=159252,bonus_id=5062/1587/4786/4775,azerite_powers=183/123/30/13
+head=headdress_of_the_first_empire,id=159236,bonus_id=5062/1617/4786/4775,azerite_powers=123/230/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=amice_of_the_returned,id=159273,bonus_id=5062/1587/4786/4775,azerite_powers=123/230/30/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=divine_fury_raiment,id=165834,bonus_id=4824/1537/4775,azerite_powers=123/230/30/13
-wrists=bracers_of_zealous_calling,id=165501,bonus_id=4800/1537
-hands=manceroys_flamefists,id=165503,bonus_id=4800/1537
-waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
-legs=wavecaller_leggings,id=165506,bonus_id=4800/1537
-feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_mastery
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
-trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=balefire_branch,id=159630,bonus_id=1572/4780
-main_hand=sirens_song,id=165603,bonus_id=4800/1537,enchant=masterful_navigation
-off_hand=fogbreaker_light_of_the_sea,id=165583,bonus_id=4800/1537
+shoulders=amice_of_the_returned,id=159273,bonus_id=5062/1617/4786/4775,azerite_powers=123/230/30/13
+back=cloak_of_ill_tidings,id=168391,bonus_id=4800/1517
+chest=vestments_of_creeping_terror,id=168337,bonus_id=4824/1517/4775,azerite_powers=123/230/30/13
+wrists=waveblade_farseers_bindings,id=170306,bonus_id=1512
+hands=poens_deepsea_gloves,id=170333,bonus_id=1512
+waist=belt_of_blind_devotion,id=168374,bonus_id=4800/1517
+legs=seawrath_legwraps,id=168371,bonus_id=4800/1517
+feet=akanas_reefstrider_soles,id=170140,bonus_id=1512
+finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_mastery
+finger2=boralus_nobles_seal,id=168889,bonus_id=4800/1517,enchant=accord_of_mastery
+trinket1=leviathans_lure,id=169304,bonus_id=4800/1517
+trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+main_hand=pashmars_finial,id=168898,bonus_id=4800/1517,enchant=machinists_brilliance
+off_hand=stormtamers_orb,id=168896,bonus_id=4800/1517
 
 # Gear Summary
-# gear_ilvl=418.00
-# gear_stamina=10190
-# gear_intellect=7009
-# gear_crit_rating=647
-# gear_haste_rating=1414
-# gear_mastery_rating=1349
-# gear_versatility_rating=278
-# gear_armor=1442
-# set_bonus=gift_of_the_loa_2pc=1
+# gear_ilvl=443.31
+# gear_stamina=13342
+# gear_intellect=8943
+# gear_crit_rating=913
+# gear_haste_rating=1383
+# gear_mastery_rating=1140
+# gear_versatility_rating=549
+# gear_armor=1737
 default_pet=imp
