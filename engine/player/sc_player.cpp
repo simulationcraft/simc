@@ -8385,12 +8385,14 @@ struct use_items_t : public action_t
   std::vector<use_item_t*> use_actions;  // List of proxy use_item_t actions to execute
   std::vector<slot_e> priority_slots;    // Slot priority, or custom slots to check
   bool custom_slots;                     // Custom slots= parameter passed. Only check priority_slots.
+  timespan_t cast_time;                  // Cast time brought up from sublevel actions
 
   use_items_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_USE, "use_items", player ),
     // Ensure trinkets are checked before all other items by default
     priority_slots( {SLOT_TRINKET_1, SLOT_TRINKET_2} ),
-    custom_slots( false )
+    custom_slots( false ),
+    cast_time( 0_ms )
   {
     callbacks = may_miss = may_crit = may_block = may_parry = false;
 
@@ -8405,6 +8407,11 @@ struct use_items_t : public action_t
   result_e calculate_result( action_state_t* ) const override
   {
     return RESULT_HIT;
+  }
+
+  timespan_t execute_time() const
+  {
+    return action_t::execute_time() + cast_time;
   }
 
   void execute() override
@@ -8455,6 +8462,9 @@ struct use_items_t : public action_t
     {
       if ( action->ready() )
       {
+        // Grab the base_execute_time of the special_effect_t execute_action from the use_item_t action, and apply its
+        // composite_haste() to adjust for player haste & any overrides
+        cast_time = action->action ? action->action->base_execute_time * action->action->composite_haste() : 0_ms;
         return true;
       }
     }
