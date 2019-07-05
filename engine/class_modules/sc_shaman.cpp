@@ -8325,7 +8325,8 @@ void shaman_t::init_action_list_enhancement()
   priority->add_talent( this, "Fury of Air",
                         "if=buff.fury_of_air.up&&spell_targets.fury_of_air_damage<(1+variable.freezerburn_enabled)" );
   priority->add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<=2*gcd" );
-  priority->add_talent( this, "Sundering", "if=active_enemies>=3" );
+  priority->add_talent( this, "Sundering", "if=active_enemies>=3&(!essence.blood_of_the_enemy.major"
+      "|(essence.blood_of_the_enemy.major&(buff.seething_rage.up|cooldown.blood_of_the_enemy.remains>40)))" );
   priority->add_action( "focused_azerite_beam,if=active_enemies>=3" );
   priority->add_action( "purifying_blast,if=active_enemies>=3" );
   priority->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
@@ -8395,11 +8396,11 @@ void shaman_t::init_action_list_enhancement()
                             "&variable.furyCheck_LB&maelstrom>=40" );
   default_core->add_action( this, "Stormstrike", "if=variable.OCPool_SS&variable.furyCheck_SS" );
 
-  filler->add_talent( this, "Sundering" );
+  filler->add_talent( this, "Sundering", "if=active_enemies<3" );
   filler->add_action( "focused_azerite_beam" );
   filler->add_action( "purifying_blast" );
   filler->add_action( "concentrated_flame" );
-  filler->add_action( "worldvein_resonance" );
+  filler->add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
   filler->add_action( this, "Crash Lightning",
                       "if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL" );
   filler->add_action( this, "Flametongue", "if=talent.searing_assault.enabled" );
