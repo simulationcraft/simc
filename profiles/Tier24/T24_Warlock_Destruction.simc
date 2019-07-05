@@ -5,7 +5,7 @@ level=120
 race=troll
 role=spell
 position=ranged_back
-talents=1103023
+talents=2103023
 azerite_essences=14:3:1/12:3:0/4:3:0
 
 # Default consumables
