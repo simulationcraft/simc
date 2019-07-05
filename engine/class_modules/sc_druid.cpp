@@ -6507,7 +6507,7 @@ struct solar_wrath_state_t :public action_state_t
 struct solar_empowerment_t : public druid_spell_t
 {
   solar_empowerment_t (druid_t* p) :
-    druid_spell_t("solar_empowerment", p, p->spec.solar_wrath_empowerment)
+    druid_spell_t("solar_wrath_empowered", p, p->spec.solar_wrath_empowerment)
   {
     background = true;
     may_crit = false;
@@ -8590,7 +8590,6 @@ void druid_t::apl_feral()
 void druid_t::apl_balance()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
-  std::vector<std::string> item_actions = get_item_actions();
 
   action_priority_list_t* default_list = get_action_priority_list("default");
 
@@ -8677,7 +8676,6 @@ void druid_t::apl_guardian()
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
   action_priority_list_t* cooldowns       = get_action_priority_list( "cooldowns" );
 
-  std::vector<std::string> item_actions   = get_item_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
 
   if ( sim -> allow_potions )
