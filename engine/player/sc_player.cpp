@@ -8417,6 +8417,22 @@ struct use_items_t : public action_t
     return RESULT_HIT;
   }
 
+  timespan_t execute_time() const override
+  {
+    timespan_t et = action_t::execute_time();
+
+    for ( auto action : use_actions )
+    {
+      if ( action->ready() && action->action )
+      {
+        et += action->action->base_execute_time * action->action->composite_haste();
+        break;
+      }
+    }
+
+    return et;
+  }
+
   void execute() override
   {
     // Execute first ready sub-action. Note that technically an on-use action can go "unavailable"
