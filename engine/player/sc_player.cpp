@@ -8282,6 +8282,11 @@ struct use_item_t : public action_t
     }
   }
 
+  timespan_t execute_time() const override
+  {
+    return action ? action->execute_time() : action_t::execute_time();
+  }
+
   void execute() override
   {
     bool triggered = buff == 0;
