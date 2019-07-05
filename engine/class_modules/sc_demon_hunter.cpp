@@ -469,6 +469,7 @@ public:
     proc_t* soul_fragment_from_shear;
     proc_t* soul_fragment_from_fracture;
     proc_t* soul_fragment_from_fallout;
+    proc_t* soul_fragment_from_meta;
   } proc;
 
   // RPPM objects
@@ -3635,7 +3636,25 @@ struct fracture_t : public demon_hunter_attack_t
       p()->spawn_soul_fragment( soul_fragment::LESSER, 2 );
       p()->proc.soul_fragment_from_fracture->occur();
       p()->proc.soul_fragment_from_fracture->occur();
+
+      if ( p()->buff.metamorphosis->check() )
+      {
+        p()->spawn_soul_fragment( soul_fragment::LESSER );
+        p()->proc.soul_fragment_from_meta->occur();
+      }
     }
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double ea = demon_hunter_attack_t::composite_energize_amount( s );
+
+    if ( p()->buff.metamorphosis->check() )
+    {
+      ea += p()->spec.metamorphosis_buff->effectN( 9 ).resource( RESOURCE_PAIN );
+    }
+
+    return ea;
   }
 };
 
@@ -3651,13 +3670,31 @@ struct shear_t : public demon_hunter_attack_t
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
-    trigger_felblade(s);
+    trigger_felblade( s );
 
     if ( result_is_hit( s->result ) )
     {
       p()->spawn_soul_fragment( soul_fragment::LESSER );
       p()->proc.soul_fragment_from_shear->occur();
+
+      if ( p()->buff.metamorphosis->check() )
+      {
+        p()->spawn_soul_fragment( soul_fragment::LESSER );
+        p()->proc.soul_fragment_from_meta->occur();
+      }
     }
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double ea = demon_hunter_attack_t::composite_energize_amount( s );
+
+    if ( p()->buff.metamorphosis->check() )
+    {
+      ea += p()->spec.metamorphosis_buff->effectN( 4 ).resource( RESOURCE_PAIN );
+    }
+
+    return ea;
   }
 
   bool ready() override
@@ -3857,23 +3894,16 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 {
   bool extended_by_demonic = false;
 
-  static void vengeance_callback(buff_t* b, int, const timespan_t&)
-  {
-    demon_hunter_t* p = debug_cast<demon_hunter_t*>( b->player );
-    double energize = p->spec.metamorphosis_buff->effectN( 4 ).resource( RESOURCE_PAIN );
-
-    p->resource_gain(RESOURCE_PAIN, energize, p->gain.metamorphosis);
-  }
-
   metamorphosis_buff_t(demon_hunter_t* p)
     : base_t(*p, "metamorphosis", p->spec.metamorphosis_buff)
   {
-    set_cooldown(timespan_t::zero());
+    set_cooldown( timespan_t::zero() );
+    buff_period = timespan_t::zero();
+    tick_behavior = buff_tick_behavior::NONE;
+
     if (p->specialization() == DEMON_HUNTER_HAVOC)
     {
       default_value = p->spec.metamorphosis_buff->effectN( 6 ).percent();
-      buff_period = timespan_t::zero();
-      tick_behavior = buff_tick_behavior::NONE;
       add_invalidate( CACHE_HASTE );
       add_invalidate( CACHE_LEECH );
 
@@ -3886,8 +3916,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     else // DEMON_HUNTER_VENGEANCE
     {
       default_value = p->spec.metamorphosis_buff->effectN( 2 ).percent();
-      buff_period = p->spec.metamorphosis_buff->effectN( 4 ).period();
-      tick_callback = vengeance_callback;
       add_invalidate( CACHE_ARMOR );
       if ( p->talent.soul_rending->ok() )
       {
@@ -4687,6 +4715,7 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_shear     = get_proc( "soul_fragment_from_shear" );
   proc.soul_fragment_from_fracture  = get_proc( "soul_fragment_from_fracture" );
   proc.soul_fragment_from_fallout   = get_proc( "soul_fragment_from_fallout" );
+  proc.soul_fragment_from_meta      = get_proc( "soul_fragment_from_meta" );
 }
 
 // demon_hunter_t::init_resources ===========================================
