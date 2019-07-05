@@ -111,9 +111,9 @@ actions.spenders+=/unstable_affliction,if=!variable.use_seed&!prev_gcd.1.summon_
 actions.spenders+=/unstable_affliction,if=!variable.use_seed&contagion<=cast_time+variable.padding
 actions.spenders+=/unstable_affliction,cycle_targets=1,if=!variable.use_seed&(!talent.deathbolt.enabled|cooldown.deathbolt.remains>time_to_shard|soul_shard>1)&(!talent.vile_taint.enabled|soul_shard>1)&contagion<=cast_time+variable.padding&(!azerite.cascading_calamity.enabled|buff.cascading_calamity.remains>time_to_shard)
 
-head=headdress_of_the_first_empire,id=159236,bonus_id=5062/1617/4786/4775,azerite_powers=123/230/30/13
+head=headdress_of_the_first_empire,id=159236,bonus_id=1612/4786/5448/4775,azerite_powers=123/230/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=amice_of_the_returned,id=159273,bonus_id=5062/1617/4786/4775,azerite_powers=123/230/30/13
+shoulders=amice_of_the_returned,id=159273,bonus_id=1612/4786/5448/4775,azerite_powers=123/230/30/13
 back=cloak_of_ill_tidings,id=168391,bonus_id=4800/1517
 chest=vestments_of_creeping_terror,id=168337,bonus_id=4824/1517/4775,azerite_powers=123/230/30/13
 wrists=waveblade_farseers_bindings,id=170306,bonus_id=1512
@@ -129,12 +129,12 @@ main_hand=pashmars_finial,id=168898,bonus_id=4800/1517,enchant=machinists_brilli
 off_hand=stormtamers_orb,id=168896,bonus_id=4800/1517
 
 # Gear Summary
-# gear_ilvl=443.31
-# gear_stamina=13342
-# gear_intellect=8943
+# gear_ilvl=442.69
+# gear_stamina=13135
+# gear_intellect=8851
 # gear_crit_rating=913
 # gear_haste_rating=1383
 # gear_mastery_rating=1140
 # gear_versatility_rating=549
-# gear_armor=1737
+# gear_armor=1719
 default_pet=imp
