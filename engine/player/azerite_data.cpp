@@ -4233,9 +4233,7 @@ void the_unbound_force(special_effect_t& effect)
   };
 
   // buff id=302917, not referenced in spell data
-  effect.custom_buff = buff_t::find(effect.player, "reckless_force_counter");
-  if (!effect.custom_buff)
-    effect.custom_buff = make_buff(effect.player, "reckless_force_counter", effect.player->find_spell(302917));
+  effect.custom_buff = effect.player->buffs.reckless_force_counter;
 
   buff_t* crit_buff = effect.player->buffs.reckless_force; // id=302932
 
@@ -4389,18 +4387,10 @@ void worldvein_resonance( special_effect_t& effect )
 
   auto base_spell = essence.spell( 1, essence_type::MINOR );
 
-  auto lifeblood = make_buff<stat_buff_t>( effect.player, "lifeblood", effect.player->find_spell( 295137 ) );
-  lifeblood->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  lifeblood->set_duration(
-    effect.player->find_spell( 295114 )->duration() *
-    ( 1.0 + essence.spell( 2, essence_spell::UPGRADE, essence_type::MINOR )->effectN( 1 ).percent() ) );
-  lifeblood->add_stat(
-    effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-    base_spell->effectN( 5 ).average( essence.item() ) );
-
   int period_min = as<int>( base_spell->effectN( 4 ).base_value() +
     essence.spell( 3, essence_spell::UPGRADE, essence_type::MINOR )->effectN( 1 ).base_value() );
   int period_max = as<int>( base_spell->effectN( 1 ).base_value() );
+  auto lifeblood = effect.player->buffs.lifeblood;
 
   struct lifeblood_event_t : public event_t
   {
@@ -4431,7 +4421,7 @@ void worldvein_resonance( special_effect_t& effect )
     }
   };
 
-  for ( int i = 0; i < effect.player->sim->bfa_opts.worldvein_allies+1; i++ )
+  for ( int i = 0; i < effect.player->sim->bfa_opts.worldvein_allies + 1; i++ )
   {
     effect.player->register_combat_begin( [period_min, period_max, lifeblood]( player_t* /* p */ ) {
       make_event<lifeblood_event_t>( *lifeblood->sim, period_min, period_max, lifeblood );
@@ -4447,7 +4437,7 @@ struct worldvein_resonance_t : public azerite_essence_major_t
   worldvein_resonance_t( player_t* p, const std::string& options_str ) :
     azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) ),
     stacks(),
-    lifeblood()
+    lifeblood( p->buffs.lifeblood )
   {
     harmful = false;
     parse_options( options_str );
@@ -4455,17 +4445,10 @@ struct worldvein_resonance_t : public azerite_essence_major_t
       essence.spell( 2, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).base_value() );
   }
 
-  void init_finished() override
-  {
-    azerite_essence_major_t::init_finished();
-    lifeblood = buff_t::find( player, "lifeblood" );
-  }
-
   void execute() override
   {
     azerite_essence_major_t::execute();
-    if ( lifeblood )
-      lifeblood->trigger( stacks );
+    lifeblood->trigger( stacks );
   }
 
   //Minor and major power both summon Lifeblood shards that grant primary stat (max benefit of 4 shards)

@@ -51,7 +51,7 @@ actions.cds+=/blood_fury,if=buff.trueshot.up&(target.time_to_die>cooldown.blood_
 actions.cds+=/ancestral_call,if=buff.trueshot.up&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16
 actions.cds+=/fireblood,if=buff.trueshot.up&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9
 actions.cds+=/lights_judgment
-actions.cds+=/worldvein_resonance
+actions.cds+=/worldvein_resonance,if=buff.lifeblood.stack<4
 actions.cds+=/guardian_of_azeroth,if=cooldown.trueshot.remains<15
 actions.cds+=/ripple_in_space,if=cooldown.trueshot.remains<7
 actions.cds+=/memory_of_lucid_dreams
@@ -71,7 +71,7 @@ actions.st+=/focused_azerite_beam
 actions.st+=/purifying_blast
 actions.st+=/concentrated_flame
 actions.st+=/blood_of_the_enemy
-actions.st+=/the_unbound_force
+actions.st+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10
 actions.st+=/arcane_shot,if=buff.trueshot.down&(buff.precise_shots.up&(focus>41|buff.master_marksman.up)|(focus>50&azerite.focused_fire.enabled|focus>75)&(cooldown.trueshot.remains>5|focus>80)|target.time_to_die<5)
 actions.st+=/steady_shot
 
@@ -86,7 +86,7 @@ actions.trickshots+=/focused_azerite_beam
 actions.trickshots+=/purifying_blast
 actions.trickshots+=/concentrated_flame
 actions.trickshots+=/blood_of_the_enemy
-actions.trickshots+=/the_unbound_force
+actions.trickshots+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10
 actions.trickshots+=/piercing_shot
 actions.trickshots+=/a_murder_of_crows
 actions.trickshots+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight

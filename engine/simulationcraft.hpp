@@ -3880,7 +3880,9 @@ struct player_t : public actor_t
     /// 8.2 Azerite Essences
     stat_buff_t* memory_of_lucid_dreams;
     stat_buff_t* lucid_dreams; // Versatility Buff from Rank 3
-    buff_t* reckless_force; // The Unbound Force minor - crit proc when counter hits 20
+    buff_t* reckless_force; // The Unbound Force minor - crit chance
+    buff_t* reckless_force_counter; // The Unbound Force minor - max 20 stack counter
+    stat_buff_t* lifeblood; // Worldvein Resonance - grant primary stat per shard, max 4
     buff_t* seething_rage; // Blood of the Enemy major - 25% crit dam
     stat_buff_t* reality_shift; // Ripple in Space minor - primary stat on moving 25yds
     buff_t* guardian_of_azeroth; // Condensed Life-Force major - R3 stacking haste on pet cast
