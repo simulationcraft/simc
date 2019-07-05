@@ -127,9 +127,9 @@ actions.nether_portal_building+=/power_siphon,if=buff.wild_imps.stack>=2&buff.de
 actions.nether_portal_building+=/hand_of_guldan,if=soul_shard>=5
 actions.nether_portal_building+=/call_action_list,name=build_a_shard
 
-head=stormlurkers_cowl,id=159244,bonus_id=1612/4786/5448/4775,azerite_powers=429/428/30/13
+head=stormlurkers_cowl,id=159244,bonus_id=5062/1617/4786/4775,azerite_powers=429/428/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=amice_of_the_returned,id=159273,bonus_id=1612/4786/5448/4775,azerite_powers=429/458/30/13
+shoulders=amice_of_the_returned,id=159273,bonus_id=5062/1617/4786/4775,azerite_powers=429/458/30/13
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
 chest=vestments_of_creeping_terror,id=168337,bonus_id=4824/1517/4775,azerite_powers=429/576/30/13
 wrists=waveblade_farseers_bindings,id=170306,bonus_id=1512
@@ -144,12 +144,12 @@ trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 main_hand=anuazshara_staff_of_the_eternal,id=168275,bonus_id=4800/1517,enchant=machinists_brilliance
 
 # Gear Summary
-# gear_ilvl=443.87
-# gear_stamina=13288
-# gear_intellect=8927
+# gear_ilvl=444.53
+# gear_stamina=13495
+# gear_intellect=9019
 # gear_crit_rating=1329
 # gear_haste_rating=1361
 # gear_mastery_rating=921
 # gear_versatility_rating=413
-# gear_armor=1747
+# gear_armor=1765
 default_pet=felguard
