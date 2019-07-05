@@ -734,9 +734,15 @@ void warlock_t::apl_precombat()
 
 std::string warlock_t::default_potion() const
 {
+  std::string lvl120_potion = 
+    ( specialization() == WARLOCK_DESTRUCTION ) ? "unbridled_fury" :
+    ( specialization() == WARLOCK_DEMONOLOGY ) ?  "unbridled_fury" :
+    ( specialization() == WARLOCK_AFFLICTION ) ?  "focused_resolve" :
+                                                  "unbridled_fury";
+
   std::string lvl110_potion = "prolonged_power";
 
-  return ( true_level >  110 ) ? "potion_of_unbridled_fury" :
+  return ( true_level >  110 ) ? lvl120_potion :
          ( true_level >= 100 ) ? lvl110_potion :
          ( true_level >=  90 ) ? "draenic_intellect" :
          ( true_level >=  85 ) ? "jade_serpent" :
@@ -766,7 +772,7 @@ std::string warlock_t::default_food() const
     (specialization() == WARLOCK_AFFLICTION) ?    "nightborne_delicacy_platter" :
                                                   "azshari_salad";
 
-  return ( true_level > 110 ) ? "famine_evaluator_and_snack_table" :
+  return ( true_level > 110 ) ? "baked_port_tato" :
          ( true_level > 100 ) ? lvl110_food :
          ( true_level >  90 ) ? lvl100_food :
                                 "disabled";

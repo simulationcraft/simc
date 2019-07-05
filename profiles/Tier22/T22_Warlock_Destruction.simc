@@ -98,8 +98,9 @@ actions.aoe+=/concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action
 # With Fire and Brimstone, Incinerate will be a strong filler. It's placed here for all talents to prevent accidentally using the single target rotation list
 actions.aoe+=/incinerate
 
+actions.cds=use_item,name=azsharas_font_of_power,if=cooldown.summon_infernal.up|cooldown.summon_infernal.remains<5
 # If both cooldowns are ready, summon the Infernal then activate DSI. If not using DSI, use this on CD
-actions.cds=summon_infernal,if=cooldown.dark_soul_instability.ready|cooldown.memory_of_lucid_dreams.ready|(!talent.dark_soul_instability.enabled&!essence.memory_of_lucid_dreams.major)|cooldown.dark_soul_instability.remains<=10|cooldown.memory_of_lucid_dreams.remains<=10
+actions.cds+=/summon_infernal,if=cooldown.dark_soul_instability.ready|cooldown.memory_of_lucid_dreams.ready|(!talent.dark_soul_instability.enabled&!essence.memory_of_lucid_dreams.major)|cooldown.dark_soul_instability.remains<=10|cooldown.memory_of_lucid_dreams.remains<=10
 actions.cds+=/guardian_of_azeroth,if=pet.infernal.active
 actions.cds+=/dark_soul_instability,if=pet.infernal.active&pet.infernal.remains<=20
 actions.cds+=/memory_of_lucid_dreams,if=pet.infernal.active&pet.infernal.remains<=20
