@@ -6,7 +6,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=2320012
+talents=2120012
 azerite_essences=5:3:1/27:3:0/6:3:0
 
 # Default consumables

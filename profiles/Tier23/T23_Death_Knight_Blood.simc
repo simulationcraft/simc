@@ -42,6 +42,7 @@ actions+=/call_action_list,name=standard
 actions.standard=death_strike,if=runic_power.deficit<=10
 actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up
 actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
+actions.standard+=/heart_essence,if=!buff.dancing_rune_weapon.up
 actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
 actions.standard+=/marrowrend,if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15
 actions.standard+=/bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up
