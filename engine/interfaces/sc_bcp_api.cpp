@@ -341,85 +341,6 @@ bool parse_file( sim_t* sim, const std::string& path, rapidjson::Document& d )
   return true;
 }
 
-// parse_professions ========================================================
-
-void parse_professions( player_t* p, const std::string& url, cache::behavior_e caching )
-{
-  rapidjson::Document collections_data;
-
-  if ( ! download( p->sim, collections_data, p->region_str, url + "&locale=en_US", caching ) )
-  {
-    throw std::runtime_error( fmt::format("Unable to download collections data JSON from '{}'.",
-        url ) );
-  }
-
-  /*
-  if ( ! profile.HasMember( "primary" ) )
-    return;
-
-  const rapidjson::Value& professions = profile[ "primary" ];
-
-  std::vector<profession_e> base_professions;
-
-  // First, find the two base professions
-  for ( auto idx = 0u, end = professions.Size(); idx < end && base_professions.size() < 2; ++idx )
-  {
-    const rapidjson::Value& profession = professions[ idx ];
-    if ( ! profession.HasMember( "id" ) )
-    {
-      continue;
-    }
-
-    auto internal_profession = util::translate_profession_id( profession[ "id" ].GetUint() );
-    if ( internal_profession == PROFESSION_NONE )
-    {
-      continue;
-    }
-
-    base_professions.push_back( internal_profession );
-  }
-
-  // Grab the rank from the first non-base profession entry, hoping that blizzard orders them
-  // sensibly
-  for ( auto profession_id : base_professions )
-  {
-    auto profession_token = util::profession_type_string( profession_id );
-
-    for ( auto idx = 0u, end = professions.Size(); idx < end; ++idx )
-    {
-      const rapidjson::Value& profession = professions[ idx ];
-      if ( ! profession.HasMember( "id" ) || ! profession.HasMember( "rank" ) || ! profession.HasMember( "name" ) )
-      {
-        continue;
-      }
-
-      // Skip the base profession
-      auto internal_profession = util::translate_profession_id( profession[ "id" ].GetUint() );
-      if ( internal_profession != PROFESSION_NONE )
-      {
-        continue;
-      }
-
-      std::string profession_name = profession[ "name" ].GetString();
-      util::tokenize( profession_name );
-
-      if ( ! util::str_in_str_ci( profession_name, profession_token ) )
-      {
-        continue;
-      }
-
-      if ( professions_str.length() > 0 )
-        professions_str += '/';
-
-      professions_str += util::profession_type_string( profession_id );
-      professions_str += "=";
-      professions_str += util::to_string( profession[ "rank" ].GetUint() );
-      break;
-    }
-  }
-  */
-}
-
 // parse_talents ============================================================
 
 void parse_talents( player_t* p, const player_spec_t& spec_info, const std::string& url, cache::behavior_e caching )
@@ -782,12 +703,6 @@ player_t* parse_player( sim_t*               sim,
   if ( profile.HasMember( "media" ) && profile[ "media" ].HasMember( "href" ) )
   {
     parse_media( p, player, profile[ "media" ][ "href" ].GetString(), caching );
-  }
-
-  // TODO: Professions
-  if ( profile.HasMember( "collections" ) )
-  {
-    //parse_professions( p, profile[ "collections" ][ "href" ].GetString(), caching );
   }
 
   if ( profile.HasMember( "specializations" ) )
