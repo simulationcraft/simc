@@ -4117,7 +4117,7 @@ void items::subroutine_recalibration( special_effect_t& effect )
   }
 
   effect.proc_flags_ = PF_ALL_DAMAGE;
-  effect.proc_flags2_ = PF2_CAST;
+  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
   effect.custom_buff = primary_buff;
 
   new recalibration_cb_t( effect );
