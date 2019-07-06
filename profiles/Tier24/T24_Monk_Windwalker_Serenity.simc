@@ -8,8 +8,8 @@ position=back
 talents=2022033
 
 # Default consumables
-potion=bursting_blood
-flask=currents
+potion=unbridled_fury
+flask=greater_flask_of_the_currents
 food=bountiful_captains_feast
 augmentation=battle_scarred
 
@@ -72,6 +72,17 @@ actions.cd+=/ancestral_call
 actions.cd+=/touch_of_death,if=target.time_to_die>9
 actions.cd+=/storm_earth_and_fire,if=cooldown.storm_earth_and_fire.charges=2|(cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=15
 actions.cd+=/serenity,if=cooldown.rising_sun_kick.remains<=2|target.time_to_die<=12
+actions.cd+=/call_action_list,name=essences
+
+actions.essences=concentrated_flame
+actions.essences+=/blood_of_the_enemy
+actions.essences+=/guardian_of_azeroth
+actions.essences+=/focused_azerite_beam
+actions.essences+=/purifying_blast
+actions.essences+=/the_unbound_force
+actions.essences+=/ripple_in_space
+actions.essences+=/worldvein_resonance
+actions.essences+=/memory_of_lucid_dreams,if=energy<40&buff.storm_earth_and_fire.up
 
 # Serenity priority
 actions.serenity=rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3|prev_gcd.1.spinning_crane_kick
