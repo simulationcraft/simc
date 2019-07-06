@@ -191,12 +191,12 @@ bool authorize( sim_t*, const std::string& )
 
 bool download( sim_t*               sim,
                rapidjson::Document& d,
-               std::string&         result,
                const std::string&   region,
                const std::string&   url,
                cache::behavior_e    caching )
 {
   std::vector<std::string> headers;
+  std::string result;
 
   if ( !authorize( sim, region ) )
   {
@@ -270,6 +270,15 @@ bool download( sim_t*               sim,
     return false;
   }
 
+  if ( sim->debug )
+  {
+    rapidjson::StringBuffer b;
+    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
+
+    d.Accept( writer );
+    sim->out_debug.raw() << b.GetString();
+  }
+
   // Download is successful only with 200 OK response code
   return response_code == 200;
 }
@@ -296,10 +305,38 @@ bool download_id( sim_t* sim,
     url = fmt::format( CHINA_ITEM_ENDPOINT_URI, item_id );
   }
 
-  std::string result;
-
-  if ( ! download( sim, d, result, region, url, caching ) )
+  if ( ! download( sim, d, region, url, caching ) )
     return false;
+
+  return true;
+}
+
+
+bool parse_file( sim_t* sim, const std::string& path, rapidjson::Document& d )
+{
+  std::string result;
+  io::ifstream ifs;
+
+  ifs.open( path );
+  result.assign( std::istreambuf_iterator<char>( ifs ), std::istreambuf_iterator<char>() );
+
+  d.Parse<0>( result.c_str() );
+
+  // Corrupt data
+  if ( ! result.empty() && d.HasParseError() )
+  {
+    sim->error( "Malformed data in '{}'", path );
+    return false;
+  }
+
+  if ( sim->debug )
+  {
+    rapidjson::StringBuffer b;
+    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
+
+    d.Accept( writer );
+    sim->out_debug.raw() << b.GetString();
+  }
 
   return true;
 }
@@ -309,21 +346,11 @@ bool download_id( sim_t* sim,
 void parse_professions( player_t* p, const std::string& url, cache::behavior_e caching )
 {
   rapidjson::Document collections_data;
-  std::string result;
 
-  if ( ! download( p->sim, collections_data, result, p->region_str, url + "&locale=en_US", caching ) )
+  if ( ! download( p->sim, collections_data, p->region_str, url + "&locale=en_US", caching ) )
   {
     throw std::runtime_error( fmt::format("Unable to download collections data JSON from '{}'.",
         url ) );
-  }
-
-  if ( p->sim->debug )
-  {
-    rapidjson::StringBuffer b;
-    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
-
-    collections_data.Accept( writer );
-    p->sim->out_debug.raw() << b.GetString();
   }
 
   /*
@@ -395,24 +422,30 @@ void parse_professions( player_t* p, const std::string& url, cache::behavior_e c
 
 // parse_talents ============================================================
 
-void parse_talents( player_t* p, const std::string& url, cache::behavior_e caching )
+void parse_talents( player_t* p, const player_spec_t& spec_info, const std::string& url, cache::behavior_e caching )
 {
   rapidjson::Document spec;
-  std::string result;
 
-  if ( ! download( p->sim, spec, result, p->region_str, url + "&locale=en_US", caching ) )
+  if ( spec_info.local_json.empty() && spec_info.local_json_spec.empty() )
   {
-    throw std::runtime_error(fmt::format("Unable to download talent JSON from '{}'.",
-        url ));
+    if ( !download( p->sim, spec, p->region_str, url + "&locale=en_US", caching ) )
+    {
+      throw std::runtime_error(fmt::format("Unable to download talent JSON from '{}'.",
+          url ));
+    }
+  }
+  else if ( !spec_info.local_json_spec.empty() )
+  {
+    if ( !parse_file( p->sim, spec_info.local_json_spec, spec ) )
+    {
+      throw std::runtime_error( fmt::format( "Unable to parse local JSON from '{}'.",
+        spec_info.local_json_spec ) );
+    }
   }
 
-  if ( p->sim->debug )
+  if ( !spec.IsObject() )
   {
-    rapidjson::StringBuffer b;
-    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
-
-    spec.Accept( writer );
-    p->sim->out_debug.raw() << b.GetString();
+    return;
   }
 
   if ( !spec.HasMember( "active_specialization" ) ||
@@ -523,27 +556,28 @@ bool parse_artifact( item_t& item, const rapidjson::Value& artifact )
   return true;
 }
 
-void parse_items( player_t* p, const std::string& url, cache::behavior_e caching )
+void parse_items( player_t* p, const player_spec_t& spec, const std::string& url, cache::behavior_e caching )
 {
   rapidjson::Document equipment_data;
-  std::string result;
 
-  if ( ! download( p->sim, equipment_data, result, p->region_str, url + "&locale=en_US", caching ) )
+  if ( spec.local_json.empty() && spec.local_json_equipment.empty() )
   {
-    throw std::runtime_error(fmt::format("Unable to download equipment JSON from '{}'.",
-        url ));
+    if ( !download( p->sim, equipment_data, p->region_str, url + "&locale=en_US", caching ) )
+    {
+      throw std::runtime_error(fmt::format("Unable to download equipment JSON from '{}'.",
+          url ));
+    }
+  }
+  else if ( !spec.local_json_equipment.empty() )
+  {
+    if ( !parse_file( p->sim, spec.local_json_equipment, equipment_data ) )
+    {
+      throw std::runtime_error( fmt::format( "Unable to parse equipment JSON from '{}'.",
+          spec.local_json_equipment ));
+    }
   }
 
-  if ( p->sim->debug )
-  {
-    rapidjson::StringBuffer b;
-    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
-
-    equipment_data.Accept( writer );
-    p->sim->out_debug.raw() << b.GetString();
-  }
-
-  if ( !equipment_data.HasMember( "equipped_items" ) )
+  if ( !equipment_data.IsObject() || !equipment_data.HasMember( "equipped_items" ) )
   {
     return;
   }
@@ -623,29 +657,26 @@ void parse_media( player_t*            p,
                   cache::behavior_e    caching )
 {
   rapidjson::Document media_data;
-  std::string result;
 
-  if ( spec.local_json_media.empty() )
+  if ( spec.local_json.empty() && spec.local_json_media.empty() )
   {
-    if ( !download( p->sim, media_data, result, p->region_str, url + "&locale=en_US", caching ) )
+    if ( !download( p->sim, media_data, p->region_str, url + "&locale=en_US", caching ) )
     {
       throw std::runtime_error(fmt::format("Unable to download media JSON from '{}'.", url ));
     }
   }
-  else
+  else if ( !spec.local_json_media.empty() )
   {
-    io::ifstream ifs;
-    ifs.open( spec.local_json_media );
-    result.assign( std::istreambuf_iterator<char>( ifs ), std::istreambuf_iterator<char>() );
+    if ( !parse_file( p->sim, spec.local_json_media, media_data ) )
+    {
+      throw std::runtime_error( fmt::format( "Unable to parse media information JSON from '{}'.",
+        spec.local_json_media ) );
+    }
   }
 
-  if ( p->sim->debug )
+  if ( !media_data.IsObject() )
   {
-    rapidjson::StringBuffer b;
-    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
-
-    media_data.Accept( writer );
-    p->sim->out_debug.raw() << b.GetString();
+    return;
   }
 
   if ( media_data.HasMember( "bust_url" ) )
@@ -662,13 +693,12 @@ player_t* parse_player( sim_t*               sim,
 {
   sim -> current_slot = 0;
 
-  std::string result;
   rapidjson::Document profile;
 
   // China does not have mashery endpoints, so no point in even trying to get anything here
   if ( player.local_json.empty() )
   {
-    if ( ! download( sim, profile, result, player.region, player.url, caching ) )
+    if ( !download( sim, profile, player.region, player.url + "&locale=en_US", caching ) )
     {
       throw std::runtime_error(fmt::format("Unable to download JSON from '{}'.",
           player.url ));
@@ -676,32 +706,11 @@ player_t* parse_player( sim_t*               sim,
   }
   else
   {
-    io::ifstream ifs;
-    ifs.open( player.local_json );
-    result.assign( std::istreambuf_iterator<char>( ifs ), std::istreambuf_iterator<char>() );
-  }
-
-  profile.Parse< 0 >(result.c_str());
-
-  if ( profile.HasParseError() )
-  {
-    throw std::runtime_error("Unable to parse JSON." );
-
-  }
-
-  if ( sim -> debug )
-  {
-    rapidjson::StringBuffer b;
-    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
-
-    profile.Accept( writer );
-    sim -> out_debug.raw() << b.GetString();
-  }
-
-  if ( profile.HasMember( "status" ) && util::str_compare_ci( profile[ "status" ].GetString(), "nok" ) )
-  {
-    throw std::runtime_error(fmt::format("Unavailable/Not-OK status: {}",
-                   profile[ "reason" ].GetString() ));
+    if ( !parse_file( sim, player.local_json, profile ) )
+    {
+      throw std::runtime_error( fmt::format( "Unable to parse JSON from '{}'.",
+        player.local_json ) );
+    }
   }
 
   if ( profile.HasMember( "name" ) )
@@ -783,12 +792,12 @@ player_t* parse_player( sim_t*               sim,
 
   if ( profile.HasMember( "specializations" ) )
   {
-    parse_talents( p, profile[ "specializations" ][ "href" ].GetString(), caching );
+    parse_talents( p, player, profile[ "specializations" ][ "href" ].GetString(), caching );
   }
 
   if ( profile.HasMember( "equipment" ) )
   {
-    parse_items( p, profile[ "equipment" ][ "href" ].GetString(), caching );
+    parse_items( p, player, profile[ "equipment" ][ "href" ].GetString(), caching );
   }
 
   if ( ! p -> server_str.empty() )
@@ -1024,8 +1033,7 @@ bool download_roster( rapidjson::Document& d,
     url = fmt::format( CHINA_GUILD_ENDPOINT_URI, server, name );
   }
 
-  std::string result;
-  if ( ! download( sim, d, result, region, url, caching ) )
+  if ( ! download( sim, d, region, url, caching ) )
   {
     return false;
   }

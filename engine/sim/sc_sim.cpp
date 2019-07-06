@@ -471,17 +471,17 @@ bool parse_armory( sim_t*             sim,
 
       player_t* p;
       try
-        {
+      {
         if ( name == "local_json" )
-          p = bcp_api::from_local_json( sim, player_name, stuff.server, description );
+          p = bcp_api::from_local_json( sim, player_name, value, description );
         else
           p = bcp_api::download_player( sim, stuff.region, stuff.server,
-                                        player_name, description, stuff.cache );
+              player_name, description, stuff.cache );
 
         sim -> active_player = p;
         if ( ! p )
           throw std::runtime_error("Could not download player.");
-        }
+      }
       catch (const std::exception& )
       {
         std::throw_with_nested(std::runtime_error("BCP API"));
