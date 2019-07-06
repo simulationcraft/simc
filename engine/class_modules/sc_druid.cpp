@@ -273,7 +273,6 @@ public:
   bool catweave_bear;
   bool t21_2pc;
   bool t21_4pc;
-  bool vop_ap_bug; // BUGGGED
 
   struct active_actions_t
   {
@@ -761,7 +760,6 @@ public:
     initial_moon_stage( NEW_MOON ),
     lively_spirit_stacks(9),  //set a usually fitting default value
     ahhhhh_the_great_outdoors( false ),
-    vop_ap_bug(true),
     catweave_bear( false ),
     t21_2pc(false),
     t21_4pc(false),
@@ -9753,7 +9751,6 @@ void druid_t::create_options()
   add_option( opt_int   ( "initial_moon_stage", initial_moon_stage ) );
   add_option( opt_int   ( "lively_spirit_stacks", lively_spirit_stacks));
   add_option( opt_bool  ( "outside", ahhhhh_the_great_outdoors ) );
-  add_option( opt_bool  ( "vop_ap_bug", vop_ap_bug ) );
   add_option( opt_bool  ( "catweave_bear", catweave_bear ) );
   add_option( opt_float ( "thorns_attack_period", thorns_attack_period ) );
 }
@@ -10218,10 +10215,8 @@ void druid_t::vision_of_perfection_proc()
       else
         vp_buff = buff.celestial_alignment;
 
-      if ( !vp_buff->check() && vop_ap_bug )  // BUGGGED...?
-        resource_gain( RESOURCE_ASTRAL_POWER, 40, gain.vision_of_perfection );
-
       resource_gain( RESOURCE_ASTRAL_POWER, 40 * vision_of_perfection_dur, gain.vision_of_perfection );
+
       if ( azerite.streaking_stars.ok() )
         previous_streaking_stars = SS_CELESTIAL_ALIGNMENT;
       break;
@@ -10309,7 +10304,6 @@ void druid_t::copy_from( player_t* source )
   t21_2pc = p -> t21_2pc;
   t21_4pc = p -> t21_4pc;
   ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
-  vop_ap_bug = p->vop_ap_bug;
   thorns_attack_period      = p->thorns_attack_period;
 }
 void druid_t::output_json_report(js::JsonOutput& /*root*/) const
