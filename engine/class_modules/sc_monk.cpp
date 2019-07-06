@@ -651,7 +651,7 @@ public:
     // Windwalker
     // Fists of Fury grants you 0 Critical Strike for 6 sec when it hits at least 4 enemies.
     azerite_power_t iron_fists;
-    // Your Combo Strikes grant you the Fury of Xuen, giving your next Fists of Fury a 3 % chance to grant 384 Haste 
+    // Your Combo Strikes grant you the Fury of Xuen, giving your next Fists of Fury a 3 % chance to grant 384 Haste
     // and invoke Xuen, The White Tiger for 8 sec.Stacks up to 33 times.
     azerite_power_t fury_of_xuen;
     // When you Combo Strike, the cooldown of Touch of Death is reduced by 0.1 sec. Touch of Death deals an additional
@@ -3088,7 +3088,7 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
 };
 
 namespace pet_summon {
-  
+
 struct summon_pet_t : public monk_spell_t
 {
   timespan_t summoning_duration;
@@ -3777,7 +3777,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     if ( p()->specialization() == MONK_WINDWALKER )
       ap_type = AP_WEAPON_BOTH;
   }
-  
+
   virtual void execute() override
   {
     monk_melee_attack_t::execute();
@@ -3832,7 +3832,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       {
         p()->buff.sunrise_technique->trigger();
         td( s->target )->debuff.sunrise_technique->trigger();
-      }  
+      }
 
       if (p()->buff.swift_roundhouse->up())
         p()->buff.swift_roundhouse->expire();
@@ -3905,7 +3905,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     if ( p()->azerite.glory_of_the_dawn.ok() )
     {
-      if ( rng().roll( p()->azerite.glory_of_the_dawn.spell_ref().effectN( 3 ).percent() ) ) 
+      if ( rng().roll( p()->azerite.glory_of_the_dawn.spell_ref().effectN( 3 ).percent() ) )
       {
         double raw = p()->azerite.glory_of_the_dawn.value();
         gotd -> target = p() -> target;
@@ -4468,7 +4468,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
     return 1.0;
   }
-  
+
   void execute() override
   {
     monk_melee_attack_t::execute();
@@ -6464,7 +6464,7 @@ struct gift_of_the_ox_t : public monk_heal_t
 
 struct gift_of_the_ox_trigger_t : public monk_heal_t
 {
-  gift_of_the_ox_trigger_t( monk_t& p ) 
+  gift_of_the_ox_trigger_t( monk_t& p )
     : monk_heal_t( "gift_of_the_ox_trigger", p, p.find_spell( 124507 ) )
   {
     background  = true;
@@ -6483,7 +6483,7 @@ struct gift_of_the_ox_trigger_t : public monk_heal_t
 
 struct gift_of_the_ox_expire_t : public monk_heal_t
 {
-  gift_of_the_ox_expire_t( monk_t& p ) 
+  gift_of_the_ox_expire_t( monk_t& p )
     : monk_heal_t( "gift_of_the_ox_expire", p, p.find_spell( 178173 ) )
   {
     background  = true;
@@ -6506,7 +6506,7 @@ struct gift_of_the_ox_expire_t : public monk_heal_t
 
 struct niuzaos_blessing_t : public monk_heal_t
 {
-  niuzaos_blessing_t( monk_t& p ) : 
+  niuzaos_blessing_t( monk_t& p ) :
     monk_heal_t( "niuzaos_blessing", p, p.find_spell( 278535 ) )
   {
     background = true;
@@ -6517,7 +6517,7 @@ struct niuzaos_blessing_t : public monk_heal_t
 
 struct expel_harm_dmg_t : public monk_spell_t
 {
-  expel_harm_dmg_t( monk_t* player ) : 
+  expel_harm_dmg_t( monk_t* player ) :
     monk_spell_t( "expel_harm_damage", player, player->find_spell( 115129 ) )
   {
     background = true;
@@ -6559,7 +6559,7 @@ struct expel_harm_t : public monk_spell_t
 
     for ( int i=0; i < p() ->buff.gift_of_the_ox->stack(); i++ )
       p()->buff.gift_of_the_ox->decrement();
-    
+
   }
 };
 
@@ -9382,7 +9382,7 @@ std::string monk_t::default_flask() const
       break;
     case MONK_WINDWALKER:
       if ( true_level > 110 )
-        return "currents";
+        return "greater_flask_of_the_currents";
       else if ( true_level > 100 )
         return "seventh_demon";
       else if ( true_level > 90 )
@@ -9447,7 +9447,7 @@ std::string monk_t::default_potion() const
       break;
     case MONK_WINDWALKER:
       if ( true_level > 110 )
-        return "bursting_blood";
+        return "unbridled_fury";
       else if ( true_level > 100 )
         return "prolonged_power";
       else if ( true_level > 90 )
@@ -9644,7 +9644,7 @@ void monk_t::apl_combat_brewmaster()
   def->add_action( this, "Ironskin Brew", "if=cooldown.brews.charges_fractional>1&cooldown.black_ox_brew.remains<3" );
 
   // Purifying Brew
-  def->add_action( this, "Purifying Brew", "if=stagger.pct>(6*(3-(cooldown.brews.charges_fractional)))&(stagger.last_tick_damage_1>((0.02+0.001*(3-cooldown.brews.charges_fractional))*stagger.last_tick_damage_30))", 
+  def->add_action( this, "Purifying Brew", "if=stagger.pct>(6*(3-(cooldown.brews.charges_fractional)))&(stagger.last_tick_damage_1>((0.02+0.001*(3-cooldown.brews.charges_fractional))*stagger.last_tick_damage_30))",
                   "Purifying behaviour is based on normalization (iE the late expression triggers if stagger size increased over the last 30 ticks or 15 seconds)." );
 
   // Black Ox Brew
@@ -9682,6 +9682,7 @@ void monk_t::apl_combat_windwalker()
   action_priority_list_t* serenity          = get_action_priority_list( "serenity" );
   action_priority_list_t* aoe               = get_action_priority_list( "aoe" );
   action_priority_list_t* st                = get_action_priority_list( "st" );
+  action_priority_list_t* essences          = get_action_priority_list( "essences" );
 
   def->add_action( "auto_attack" );
   def->add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
@@ -9709,6 +9710,17 @@ void monk_t::apl_combat_windwalker()
                    "Call the ST action list if there are 2 or less enemies" );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>=3",
                    "Call the AoE action list if there are 3 or more enemies" );
+
+  // Essences
+  essences->add_action( "concentrated_flame" );
+  essences->add_action( "blood_of_the_enemy" );
+  essences->add_action( "guardian_of_azeroth" );
+  essences->add_action( "focused_azerite_beam" );
+  essences->add_action( "purifying_blast" );
+  essences->add_action( "the_unbound_force" );
+  essences->add_action( "ripple_in_space" );
+  essences->add_action( "worldvein_resonance" );
+  essences->add_action( "memory_of_lucid_dreams,if=energy<40&buff.storm_earth_and_fire.up" );
 
   // Cooldowns
   cd->add_talent( this, "Invoke Xuen, the White Tiger", "", "Cooldowns" );
@@ -9755,6 +9767,7 @@ void monk_t::apl_combat_windwalker()
   cd->add_action( this, "Touch of Death", "if=target.time_to_die>9" );
   cd->add_action( this, "Storm, Earth, and Fire", "if=cooldown.storm_earth_and_fire.charges=2|(cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=15" );
   cd->add_talent( this, "Serenity", "if=cooldown.rising_sun_kick.remains<=2|target.time_to_die<=12" );
+  cd->add_action( "call_action_list,name=essences" );
 
   // Serenity
   serenity->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3|prev_gcd.1.spinning_crane_kick", "Serenity priority" );
