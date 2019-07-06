@@ -1062,7 +1062,6 @@ namespace warlock
     def->add_action( "haunt,if=spell_targets.seed_of_corruption_aoe<=2+raid_event.invulnerable.up" );
     def->add_action( "summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&(buff.active_uas.stack=5|soul_shard=0)&(!talent.phantom_singularity.enabled|dot.phantom_singularity.remains)&(!talent.deathbolt.enabled|cooldown.deathbolt.remains<=gcd|!cooldown.deathbolt.remains|spell_targets.seed_of_corruption_aoe>1+raid_event.invulnerable.up)" );
     def->add_action( "deathbolt,if=cooldown.summon_darkglare.remains&spell_targets.seed_of_corruption_aoe=1+raid_event.invulnerable.up&(!essence.vision_of_perfection.minor&!azerite.dreadful_calling.rank|cooldown.summon_darkglare.remains>30)" );
-    def->add_action( "guardian_of_azeroth,if=pet.darkglare.active" );
     def->add_action( "the_unbound_force,if=buff.reckless_force.remains" );
     def->add_action( "agony,target_if=min:dot.agony.remains,if=remains<=gcd+action.shadow_bolt.execute_time&target.time_to_die>8" );
     def->add_action( "memory_of_lucid_dreams,if=time<30" );
@@ -1071,14 +1070,15 @@ namespace warlock
     def->add_action( "drain_soul,target_if=min:debuff.shadow_embrace.remains,cancel_if=ticks_remain<5,if=talent.shadow_embrace.enabled&variable.maintain_se&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=gcd*2" );
     def->add_action( "shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace.enabled&variable.maintain_se&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=execute_time*2+travel_time&!action.shadow_bolt.in_flight" );
     def->add_action( "phantom_singularity,target_if=max:target.time_to_die,if=time>35&target.time_to_die>16*spell_haste&(!essence.vision_of_perfection.minor&!azerite.dreadful_calling.rank|cooldown.summon_darkglare.remains>45|cooldown.summon_darkglare.remains<15*spell_haste)" );
-    def->add_action( "vile_taint,target_if=max:target.time_to_die,if=time>15&target.time_to_die>=10" );
     def->add_action( "unstable_affliction,target_if=min:contagion,if=!variable.use_seed&soul_shard=5" );
     def->add_action( "seed_of_corruption,if=variable.use_seed&soul_shard=5" );
     def->add_action( "call_action_list,name=dots" );
+    def->add_action( "vile_taint,target_if=max:target.time_to_die,if=time>15&target.time_to_die>=10&(cooldown.summon_darkglare.remains>30|cooldown.summon_darkglare.remains<10&dot.agony.remains>=10&dot.corruption.remains>=10&(dot.siphon_life.remains>=10|!talent.siphon_life.enabled))" );
     def->add_action( "use_item,name=azsharas_font_of_power,if=time<=3" );
     def->add_action( "phantom_singularity,if=time<=35" );
     def->add_action( "vile_taint,if=time<15" );
-    def->add_action( "dark_soul,if=cooldown.summon_darkglare.remains<10&dot.phantom_singularity.remains|target.time_to_die<20+gcd|spell_targets.seed_of_corruption_aoe>1+raid_event.invulnerable.up" );
+    def->add_action( "guardian_of_azeroth,if=cooldown.summon_darkglare.remains<15&(dot.phantom_singularity.remains|dot.vile_taint.remains|!talent.phantom_singularity.enabled&!talent.vile_taint.enabled)|target.time_to_die<30+gcd" );
+    def->add_action( "dark_soul,if=cooldown.summon_darkglare.remains<10&(dot.phantom_singularity.remains|dot.vile_taint.remains|!talent.phantom_singularity.enabled&!talent.vile_taint.enabled)|target.time_to_die<20+gcd|spell_targets.seed_of_corruption_aoe>1+raid_event.invulnerable.up" );
     def->add_action( "berserking" );
     def->add_action( "call_action_list,name=spenders" );
     def->add_action( "call_action_list,name=fillers" );
