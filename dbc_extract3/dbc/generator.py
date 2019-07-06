@@ -1291,7 +1291,9 @@ class SpellDataGenerator(DataGenerator):
          # Exploding Pufferfish
          305315,
          # Harbinger's Inscrutable Will
-         295395
+         295395,
+         # Mechagon combo rings
+         306474, 301886, 301887
         ),
 
         # Warrior:

@@ -5,12 +5,13 @@ level=120
 race=troll
 role=spell
 position=ranged_back
-talents=2203023
+talents=2103023
+azerite_essences=14:3:1/12:3:0/4:3:0
 
 # Default consumables
-potion=potion_of_unbridled_fury
+potion=unbridled_fury
 flask=greater_flask_of_endless_fathoms
-food=famine_evaluator_and_snack_table
+food=baked_port_tato
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -98,8 +99,9 @@ actions.aoe+=/concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action
 # With Fire and Brimstone, Incinerate will be a strong filler. It's placed here for all talents to prevent accidentally using the single target rotation list
 actions.aoe+=/incinerate
 
+actions.cds=use_item,name=azsharas_font_of_power,if=cooldown.summon_infernal.up|cooldown.summon_infernal.remains<5
 # If both cooldowns are ready, summon the Infernal then activate DSI. If not using DSI, use this on CD
-actions.cds=summon_infernal,if=cooldown.dark_soul_instability.ready|cooldown.memory_of_lucid_dreams.ready|(!talent.dark_soul_instability.enabled&!essence.memory_of_lucid_dreams.major)|cooldown.dark_soul_instability.remains<=10|cooldown.memory_of_lucid_dreams.remains<=10
+actions.cds+=/summon_infernal,if=cooldown.dark_soul_instability.ready|cooldown.memory_of_lucid_dreams.ready|(!talent.dark_soul_instability.enabled&!essence.memory_of_lucid_dreams.major)|cooldown.dark_soul_instability.remains<=10|cooldown.memory_of_lucid_dreams.remains<=10
 actions.cds+=/guardian_of_azeroth,if=pet.infernal.active
 actions.cds+=/dark_soul_instability,if=pet.infernal.active&pet.infernal.remains<=20
 actions.cds+=/memory_of_lucid_dreams,if=pet.infernal.active&pet.infernal.remains<=20
@@ -133,31 +135,29 @@ actions.havoc+=/soul_fire
 actions.havoc+=/shadowburn,if=active_enemies<3|!talent.fire_and_brimstone.enabled
 actions.havoc+=/incinerate,if=cast_time<havoc_remains
 
-head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=131/562/31/13
+head=handmaidens_cowl_of_sacrifice,id=168336,bonus_id=4824/1517/4775,azerite_powers=460/576/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537/4775,azerite_powers=444/562/459/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=divine_fury_raiment,id=165834,bonus_id=4824/1537/4775,azerite_powers=432/562/30/13
-wrists=lever_stabilizing_wristwraps,id=165508,bonus_id=4800/1537
-hands=manceroys_flamefists,id=165503,bonus_id=4800/1537
-waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
-legs=wavecaller_leggings,id=165506,bonus_id=4800/1537
-feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_mastery
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
-trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=ignition_mages_fuse,id=159615,bonus_id=1572/4780
-main_hand=sirens_song,id=165603,bonus_id=4800/1537,enchant=masterful_navigation
-off_hand=fogbreaker_light_of_the_sea,id=165583,bonus_id=4800/1537
+shoulders=amice_of_the_reef_witch,id=168338,bonus_id=4824/1517/4775,azerite_powers=432/460/30/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=vestments_of_creeping_terror,id=168337,bonus_id=4824/1517/4775,azerite_powers=131/576/30/13
+wrists=waveblade_farseers_bindings,id=170306,bonus_id=1512
+hands=poens_deepsea_gloves,id=170333,bonus_id=1512
+waist=cephalopods_sash,id=168872,bonus_id=4800/1517
+legs=seawrath_legwraps,id=168371,bonus_id=4800/1517
+feet=akanas_reefstrider_soles,id=170140,bonus_id=1512
+finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_haste
+finger2=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_haste
+trinket1=leviathans_lure,id=169304,bonus_id=4800/1517
+trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+main_hand=anuazshara_staff_of_the_eternal,id=168275,bonus_id=4800/1517,enchant=machinists_brilliance
 
 # Gear Summary
-# gear_ilvl=418.00
-# gear_stamina=10190
-# gear_intellect=7368
-# gear_crit_rating=701
-# gear_haste_rating=1323
-# gear_mastery_rating=1264
-# gear_versatility_rating=214
-# gear_armor=1442
-# set_bonus=gift_of_the_loa_2pc=1
+# gear_ilvl=443.20
+# gear_stamina=13343
+# gear_intellect=8946
+# gear_crit_rating=1533
+# gear_haste_rating=1303
+# gear_mastery_rating=752
+# gear_versatility_rating=420
+# gear_armor=1737
 default_pet=imp

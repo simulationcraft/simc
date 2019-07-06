@@ -1134,6 +1134,7 @@ namespace warlock {
     def->add_action( this, "Conflagrate", "if=charges>1", "Don't overcap on charges of Conflagrate" );
     def->add_action( this, "Incinerate" );
 
+    cds->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.summon_infernal.up|cooldown.summon_infernal.remains<5" );
     cds->add_action( this, "Summon Infernal", "if=cooldown.dark_soul_instability.ready|cooldown.memory_of_lucid_dreams.ready|(!talent.dark_soul_instability.enabled&!essence.memory_of_lucid_dreams.major)|cooldown.dark_soul_instability.remains<=10|cooldown.memory_of_lucid_dreams.remains<=10", "If both cooldowns are ready, summon the Infernal then activate DSI. If not using DSI, use this on CD" );
     cds->add_action( "guardian_of_azeroth,if=pet.infernal.active" );
     cds->add_talent( this, "Dark Soul: Instability", "if=pet.infernal.active&pet.infernal.remains<=20" );

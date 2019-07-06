@@ -273,7 +273,6 @@ public:
   bool catweave_bear;
   bool t21_2pc;
   bool t21_4pc;
-  bool vop_ap_bug; // BUGGGED
 
   struct active_actions_t
   {
@@ -552,6 +551,10 @@ public:
     // Balance
     proc_t* starshards;
     proc_t* power_of_the_moon;
+    proc_t* unempowered_solar_wrath;
+    proc_t* unempowered_lunar_strike;
+    proc_t* wasted_streaking_star;
+    proc_t* arcanic_pulsar_proc;
 
     // Guardian
     proc_t* gore;
@@ -757,7 +760,6 @@ public:
     initial_moon_stage( NEW_MOON ),
     lively_spirit_stacks(9),  //set a usually fitting default value
     ahhhhh_the_great_outdoors( false ),
-    vop_ap_bug(true),
     catweave_bear( false ),
     t21_2pc(false),
     t21_4pc(false),
@@ -1684,19 +1686,22 @@ public:
     }
   }
 
-  virtual bool compare_previous_streaking_stars(streaking_stars_e new_ability)
+  virtual bool compare_previous_streaking_stars( streaking_stars_e new_ability )
   {
-    return p()->previous_streaking_stars == new_ability || new_ability == SS_CELESTIAL_ALIGNMENT;
+    if ( p()->previous_streaking_stars == new_ability )
+    {
+      p()->proc.wasted_streaking_star->occur();
+      return true;
+    }
+    return new_ability == SS_CELESTIAL_ALIGNMENT;
   }
 
-  // cast = true: only checked against previous_streaking_stars_cast, doesn't schedule damage
-  // damage = true: checked against previous_streaking_star, also schedules damage
   virtual void streaking_stars_trigger( streaking_stars_e new_ability, action_state_t* s )
   {
-    if (p()->azerite.streaking_stars.ok())
+    if ( p()->azerite.streaking_stars.ok()
+         && ( p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check() ) )
     {
-      if ( !compare_previous_streaking_stars( new_ability ) &&
-           ( p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check() ) )
+      if ( !compare_previous_streaking_stars( new_ability ) )
       {
         action_state_t* ss_s = p()->active.streaking_stars->get_state();
         if ( s != nullptr )
@@ -6128,18 +6133,20 @@ struct lunar_strike_t : public druid_spell_t
 {
   lunar_strike_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "lunar_strike", player,
-      player -> talent.balance_affinity -> ok() ? player->find_spell(197628) : player -> find_affinity_spell("Lunar Strike"), options_str )
+      player->talent.balance_affinity->ok() ? player->find_spell( 197628 ) : player->find_affinity_spell( "Lunar Strike" ),
+      options_str )
   {
     aoe = -1;
-    base_aoe_multiplier = player->talent.balance_affinity->ok() ? data().effectN(2).percent() : data().effectN(3).percent();
+    base_aoe_multiplier =
+      player->talent.balance_affinity->ok() ? data().effectN( 2 ).percent() : data().effectN( 3 ).percent();
   }
 
   double composite_crit_chance() const override
   {
     double cc = druid_spell_t::composite_crit_chance();
 
-    if ( p() -> buff.lunar_empowerment -> check() )
-      cc += p() -> spec.balance_tier19_2pc -> effectN( 1 ).percent();
+    if ( p()->buff.lunar_empowerment->check() )
+      cc += p()->spec.balance_tier19_2pc->effectN( 1 ).percent();
 
     return cc;
   }
@@ -6148,7 +6155,7 @@ struct lunar_strike_t : public druid_spell_t
   {
     double am = druid_spell_t::action_multiplier();
 
-    if ( p() -> buff.lunar_empowerment -> check() )
+    if ( p()->buff.lunar_empowerment->check() )
       am *= 1.0 + composite_lunar_empowerment();
 
     return am;
@@ -6158,8 +6165,8 @@ struct lunar_strike_t : public druid_spell_t
   {
     timespan_t g = druid_spell_t::gcd();
 
-    if (p() -> buff.lunar_empowerment -> check())
-      g *= 1 + p()->buff.lunar_empowerment->data().effectN(3).percent();
+    if ( p()->buff.lunar_empowerment->check() )
+      g *= 1 + p()->buff.lunar_empowerment->data().effectN( 3 ).percent();
 
     g = std::max( min_gcd, g );
 
@@ -6170,41 +6177,41 @@ struct lunar_strike_t : public druid_spell_t
   {
     timespan_t et = druid_spell_t::execute_time();
 
-    if (p() -> buff.lunar_empowerment -> check() )
-      et *= 1 + p()->buff.lunar_empowerment->data().effectN(2).percent();
+    if ( p()->buff.lunar_empowerment->check() )
+      et *= 1 + p()->buff.lunar_empowerment->data().effectN( 2 ).percent();
 
     return et;
   }
 
-  void impact(action_state_t* s) override
+  void impact( action_state_t* s ) override
   {
-    druid_spell_t::impact(s);
-    streaking_stars_trigger(SS_LUNAR_STRIKE, s);
+    druid_spell_t::impact( s );
+    streaking_stars_trigger( SS_LUNAR_STRIKE, s );
   }
 
   void execute() override
   {
-    p() -> buff.lunar_empowerment -> up();
+    if ( !p()->buff.lunar_empowerment->up() )
+      p()->proc.unempowered_lunar_strike->occur();
 
     druid_spell_t::execute();
 
-    p() -> buff.lunar_empowerment -> decrement();
+    p()->buff.lunar_empowerment->decrement();
 
-    if (player->specialization() == DRUID_BALANCE)
+    if ( player->specialization() == DRUID_BALANCE )
     {
-        if (rng().roll(p()->spec.eclipse->effectN(1).percent()))
-        {
-            p()->buff.solar_empowerment->trigger();
-        }
+      if ( rng().roll( p()->spec.eclipse->effectN( 1 ).percent() ) )
+      {
+        p()->buff.solar_empowerment->trigger();
+      }
     }
 
-    p() -> buff.power_of_elune -> trigger();
+    p()->buff.power_of_elune->trigger();
 
-    if (p()->azerite.dawning_sun.ok())
+    if ( p()->azerite.dawning_sun.ok() )
     {
-      p()->buff.dawning_sun->trigger(1, p()->azerite.dawning_sun.value());
+      p()->buff.dawning_sun->trigger( 1, p()->azerite.dawning_sun.value() );
     }
-
   }
 };
 
@@ -6507,7 +6514,7 @@ struct solar_wrath_state_t :public action_state_t
 struct solar_empowerment_t : public druid_spell_t
 {
   solar_empowerment_t (druid_t* p) :
-    druid_spell_t("solar_empowerment", p, p->spec.solar_wrath_empowerment)
+    druid_spell_t("solar_wrath_empowered", p, p->spec.solar_wrath_empowerment)
   {
     background = true;
     may_crit = false;
@@ -6538,35 +6545,35 @@ struct solar_wrath_t : public druid_spell_t
   {
     double cc = druid_spell_t::composite_crit_chance();
 
-    if ( p() -> buff.solar_empowerment -> check() )
-      cc += p() -> spec.balance_tier19_2pc -> effectN( 1 ).percent();
+    if ( p()->buff.solar_empowerment->check() )
+      cc += p()->spec.balance_tier19_2pc->effectN( 1 ).percent();
 
     return cc;
   }
 
-  action_state_t* new_state () override
+  action_state_t* new_state() override
   {
-    return new solar_wrath_state_t (this, target);
+    return new solar_wrath_state_t( this, target );
   }
 
-  void snapshot_state (action_state_t* state, dmg_e type) override
+  void snapshot_state( action_state_t* state, dmg_e type ) override
   {
-    druid_spell_t::snapshot_state (state, type);
+    druid_spell_t::snapshot_state( state, type );
 
     if ( p()->buff.solar_empowerment->check() && player->specialization() == DRUID_BALANCE )
     {
-      debug_cast<solar_wrath_state_t*>(state)->empowered = true;
+      debug_cast<solar_wrath_state_t*>( state )->empowered = true;
     }
   }
 
-  void impact (action_state_t* s) override
+  void impact( action_state_t* s ) override
   {
-    druid_spell_t::impact (s);
+    druid_spell_t::impact( s );
 
-    solar_wrath_state_t* st = debug_cast<solar_wrath_state_t*>(s);
-    if (st->empowered)
+    solar_wrath_state_t* st = debug_cast<solar_wrath_state_t*>( s );
+    if ( st->empowered )
     {
-      p ()->trigger_solar_empowerment (s);
+      p()->trigger_solar_empowerment( s );
     }
   }
 
@@ -6574,8 +6581,8 @@ struct solar_wrath_t : public druid_spell_t
   {
     timespan_t g = druid_spell_t::gcd();
 
-    if ( p() -> buff.solar_empowerment -> check() )
-      g *= 1 + p()->buff.solar_empowerment->data().effectN(3).percent();
+    if ( p()->buff.solar_empowerment->check() )
+      g *= 1 + p()->buff.solar_empowerment->data().effectN( 3 ).percent();
 
     g = std::max( min_gcd, g );
 
@@ -6586,37 +6593,38 @@ struct solar_wrath_t : public druid_spell_t
   {
     timespan_t et = druid_spell_t::execute_time();
 
-    if (p() -> buff.solar_empowerment -> check() )
-      et *= 1 + p()->buff.solar_empowerment->data().effectN(2).percent();
+    if ( p()->buff.solar_empowerment->check() )
+      et *= 1 + p()->buff.solar_empowerment->data().effectN( 2 ).percent();
 
     return et;
   }
 
   void execute() override
   {
-    p() -> buff.solar_empowerment -> up();
+    if ( !p()->buff.solar_empowerment->up() )
+      p()->proc.unempowered_solar_wrath->occur();
 
     druid_spell_t::execute();
 
     streaking_stars_trigger( SS_SOLAR_WRATH, execute_state );
 
-    p() -> buff.solar_empowerment -> decrement();
+    p()->buff.solar_empowerment->decrement();
 
-    if (player->specialization() == DRUID_BALANCE)
+    if ( player->specialization() == DRUID_BALANCE )
     {
-        if (rng().roll(p()->spec.eclipse->effectN(1).percent()))
-        {
-            p()->buff.lunar_empowerment->trigger();
-            expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
-        }
+      if ( rng().roll( p()->spec.eclipse->effectN( 1 ).percent() ) )
+      {
+        p()->buff.lunar_empowerment->trigger();
+        expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
+      }
     }
 
-    p() -> buff.power_of_elune -> trigger();
+    p()->buff.power_of_elune->trigger();
   }
 
-  virtual double bonus_da(const action_state_t* s) const override
+  virtual double bonus_da( const action_state_t* s ) const override
   {
-    double da = druid_spell_t::bonus_da(s);
+    double da = druid_spell_t::bonus_da( s );
 
     da += p()->buff.dawning_sun->value();
 
@@ -6802,20 +6810,20 @@ struct starshards_t : public starfall_t
 
 struct starsurge_t : public druid_spell_t
 {
-
   starsurge_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "starsurge", p, p->specialization() == DRUID_BALANCE ? p -> find_affinity_spell( "Starsurge" ) : p->find_spell(197626) , options_str )
-  {
-  }
+    druid_spell_t( "starsurge", p,
+      p->specialization() == DRUID_BALANCE ? p->find_affinity_spell( "Starsurge" ) : p->find_spell( 197626 ),
+      options_str )
+  {}
 
   double cost() const override
   {
-    if ( p() -> buff.oneths_intuition -> check() )
+    if ( p()->buff.oneths_intuition->check() )
       return 0;
 
     double c = druid_spell_t::cost();
 
-    c += p() -> buff.the_emerald_dreamcatcher -> check_stack_value();
+    c += p()->buff.the_emerald_dreamcatcher->check_stack_value();
 
     return c;
   }
@@ -6824,37 +6832,35 @@ struct starsurge_t : public druid_spell_t
   {
     double am = druid_spell_t::action_multiplier();
 
-    if ( p() -> mastery.starlight -> ok() )
-      am *= 1.0 + p() -> cache.mastery_value();
+    if ( p()->mastery.starlight->ok() )
+      am *= 1.0 + p()->cache.mastery_value();
 
-    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
-      am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(2).percent();
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T21, B2 ) )
+      am *= 1.0 + p()->sets->set( DRUID_BALANCE, T21, B2 )->effectN( 2 ).percent();
 
     return am;
   }
 
   double composite_crit_damage_bonus_multiplier() const override
   {
-     double cdbm = druid_spell_t::composite_crit_damage_bonus_multiplier();
+    double cdbm = druid_spell_t::composite_crit_damage_bonus_multiplier();
 
-     if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T20, B2 ))
-     {
-        cdbm += p() -> sets -> set( DRUID_BALANCE, T20, B2 ) -> effectN(2).percent();
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T20, B2 ) )
+    {
+      cdbm += p()->sets->set( DRUID_BALANCE, T20, B2 )->effectN( 2 ).percent();
+    }
 
-     }
-
-
-     return cdbm;
+    return cdbm;
   }
 
   double composite_target_multiplier( player_t* target ) const override
   {
     double tm = druid_spell_t::composite_target_multiplier( target );
-    if ( p()->sets -> has_set_bonus( DRUID_BALANCE, T19, B4 ) )
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T19, B4 ) )
     {
-      bool apply = td( target )->dots.moonfire->is_ticking() & td(target)->dots.sunfire->is_ticking();
+      bool apply = td( target )->dots.moonfire->is_ticking() & td( target )->dots.sunfire->is_ticking();
       if ( apply )
-        tm *= 1.0 + p()->sets -> set( DRUID_BALANCE, T19, B4 )->effectN( 1 ).percent();
+        tm *= 1.0 + p()->sets->set( DRUID_BALANCE, T19, B4 )->effectN( 1 ).percent();
     }
     return tm;
   }
@@ -6863,78 +6869,75 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T20, B4 ))
-       p() -> buff.astral_acceleration -> trigger();
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T20, B4 ) )
+      p()->buff.astral_acceleration->trigger();
 
-    if (p()->talent.starlord->ok())
-        p()->buff.starlord->trigger();
+    if ( p()->talent.starlord->ok() )
+      p()->buff.starlord->trigger();
 
-    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B4))
-        p()->buff.solar_solstice->trigger();
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T21, B4 ) )
+      p()->buff.solar_solstice->trigger();
 
     if ( hit_any_target )
     {
       // Dec 3 2015: Starsurge must hit to grant empowerments, but grants them on cast not impact.
-      p() -> buff.solar_empowerment -> trigger();
-      p() -> buff.lunar_empowerment -> trigger();
+      p()->buff.solar_empowerment->trigger();
+      p()->buff.lunar_empowerment->trigger();
     }
 
-    if ( rng().roll( p() -> starshards ) )
+    if ( rng().roll( p()->starshards ) )
     {
-      p() -> proc.starshards -> occur();
-      p() -> active.starshards -> execute();
+      p()->proc.starshards->occur();
+      p()->active.starshards->execute();
     }
 
-    p() -> buff.the_emerald_dreamcatcher -> up(); // benefit tracking
-    p() -> buff.the_emerald_dreamcatcher -> trigger();
+    p()->buff.the_emerald_dreamcatcher->up();  // benefit tracking
+    p()->buff.the_emerald_dreamcatcher->trigger();
 
-    if ( p() -> buff.oneths_intuition -> up() ) // benefit tracking
-      p() -> buff.oneths_intuition -> decrement();
+    if ( p()->buff.oneths_intuition->up() )  // benefit tracking
+      p()->buff.oneths_intuition->decrement();
 
-    p() -> buff.oneths_overconfidence -> trigger();
+    p()->buff.oneths_overconfidence->trigger();
   }
 
-  virtual double bonus_da(const action_state_t* s) const override
+  virtual double bonus_da( const action_state_t* s ) const override
   {
-    double da = druid_spell_t::bonus_da(s);
+    double da = druid_spell_t::bonus_da( s );
 
-    if (p()->azerite.arcanic_pulsar.ok())
-      da += p()->azerite.arcanic_pulsar.value(2);
+    if ( p()->azerite.arcanic_pulsar.ok() )
+      da += p()->azerite.arcanic_pulsar.value( 2 );
 
     return da;
   }
 
-
-  void impact(action_state_t* s) override
+  void impact( action_state_t* s ) override
   {
-    druid_spell_t::impact(s);
+    druid_spell_t::impact( s );
 
-    if (p()->azerite.arcanic_pulsar.ok())
+    if ( p()->azerite.arcanic_pulsar.ok() )
     {
       p()->buff.arcanic_pulsar->trigger();
 
-      if (p()->buff.arcanic_pulsar->check() == p()->buff.arcanic_pulsar->max_stack())
+      if ( p()->buff.arcanic_pulsar->check() == p()->buff.arcanic_pulsar->max_stack() )
       {
-        timespan_t pulsar_dur = timespan_t::from_seconds(p()->azerite.arcanic_pulsar.spell()->effectN(3).base_value());
-        buff_t* proc_buff = p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
+        timespan_t pulsar_dur =
+          timespan_t::from_seconds( p()->azerite.arcanic_pulsar.spell()->effectN( 3 ).base_value() );
+        buff_t* proc_buff =
+          p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
-        if (proc_buff->check())
-        {
-          proc_buff->extend_duration(p(), pulsar_dur);
-          p()->resource_gain(RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar); // hardcoded 12AP because 6s / 20s * 40AP = 12AP
-        }
+        if ( proc_buff->check() )
+          proc_buff->extend_duration( p(), pulsar_dur );
         else
-        {
           proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
-          p()->resource_gain(RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar); // hardcoded 12AP because 6s / 20s * 40AP = 12AP
-        }
 
+        p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );  // hardcoded 12AP because 6s / 20s * 40AP = 12AP
         p()->buff.arcanic_pulsar->expire();
-        streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
+        p()->proc.arcanic_pulsar_proc->occur();
+        streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
       }
     }
 
-    streaking_stars_trigger(SS_STARSURGE, s);
+    streaking_stars_trigger( SS_STARSURGE, s );
   }
 };
 
@@ -8590,7 +8593,6 @@ void druid_t::apl_feral()
 void druid_t::apl_balance()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
-  std::vector<std::string> item_actions = get_item_actions();
 
   action_priority_list_t* default_list = get_action_priority_list("default");
 
@@ -8677,7 +8679,6 @@ void druid_t::apl_guardian()
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
   action_priority_list_t* cooldowns       = get_action_priority_list( "cooldowns" );
 
-  std::vector<std::string> item_actions   = get_item_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
 
   if ( sim -> allow_potions )
@@ -8896,18 +8897,22 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.clearcasting             = get_proc( "clearcasting"           );
-  proc.clearcasting_wasted      = get_proc( "clearcasting_wasted"    );
-  proc.gore                     = get_proc( "gore"                   );
-  proc.gushing_lacerations      = get_proc( "gushing_lacerations"    );
-  proc.blood_mist = get_proc("blood_mist");
+  proc.clearcasting             = get_proc( "clearcasting" );
+  proc.clearcasting_wasted      = get_proc( "clearcasting_wasted" );
+  proc.gore                     = get_proc( "gore" );
+  proc.gushing_lacerations      = get_proc( "gushing_lacerations" );
+  proc.blood_mist               = get_proc( "blood_mist" );
   proc.the_wildshapers_clutch   = get_proc( "the_wildshapers_clutch" );
-  proc.predator                 = get_proc( "predator"               );
-  proc.predator_wasted          = get_proc( "predator_wasted"        );
-  proc.primal_fury              = get_proc( "primal_fury"            );
-  proc.starshards               = get_proc( "Starshards"             );
-  proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"       );
-  proc.power_of_the_moon = get_proc("power_of_the_moon");
+  proc.predator                 = get_proc( "predator" );
+  proc.predator_wasted          = get_proc( "predator_wasted" );
+  proc.primal_fury              = get_proc( "primal_fury" );
+  proc.starshards               = get_proc( "Starshards" );
+  proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee" );
+  proc.power_of_the_moon        = get_proc( "power_of_the_moon" );
+  proc.unempowered_solar_wrath  = get_proc( "unempowered_solar_wrath" );
+  proc.unempowered_lunar_strike = get_proc( "unempowered_lunar_strike" );
+  proc.wasted_streaking_star    = get_proc( "wasted_streaking_star" );
+  proc.arcanic_pulsar_proc      = get_proc( "arcanic_pulsar_proc" );
 }
 
 // druid_t::init_resources ==================================================
@@ -9746,7 +9751,6 @@ void druid_t::create_options()
   add_option( opt_int   ( "initial_moon_stage", initial_moon_stage ) );
   add_option( opt_int   ( "lively_spirit_stacks", lively_spirit_stacks));
   add_option( opt_bool  ( "outside", ahhhhh_the_great_outdoors ) );
-  add_option( opt_bool  ( "vop_ap_bug", vop_ap_bug ) );
   add_option( opt_bool  ( "catweave_bear", catweave_bear ) );
   add_option( opt_float ( "thorns_attack_period", thorns_attack_period ) );
 }
@@ -10211,10 +10215,8 @@ void druid_t::vision_of_perfection_proc()
       else
         vp_buff = buff.celestial_alignment;
 
-      if ( !vp_buff->check() && vop_ap_bug )  // BUGGGED...?
-        resource_gain( RESOURCE_ASTRAL_POWER, 40, gain.vision_of_perfection );
-
       resource_gain( RESOURCE_ASTRAL_POWER, 40 * vision_of_perfection_dur, gain.vision_of_perfection );
+
       if ( azerite.streaking_stars.ok() )
         previous_streaking_stars = SS_CELESTIAL_ALIGNMENT;
       break;
@@ -10302,7 +10304,6 @@ void druid_t::copy_from( player_t* source )
   t21_2pc = p -> t21_2pc;
   t21_4pc = p -> t21_4pc;
   ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
-  vop_ap_bug = p->vop_ap_bug;
   thorns_attack_period      = p->thorns_attack_period;
 }
 void druid_t::output_json_report(js::JsonOutput& /*root*/) const

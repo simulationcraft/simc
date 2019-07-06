@@ -5705,14 +5705,16 @@ void rogue_t::init_action_list()
     cds -> add_action( potion_action );
     for ( size_t i = 0; i < items.size(); i++ )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) || items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_GEM, SPECIAL_EFFECT_USE ) )
       {
-        auto use_effect_id = items[i].special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) -> spell_id;
+        auto use_effect_id = items[i].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) -> spell_id;
         if ( items[i].name_str == "galecallers_boon" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=cooldown.vendetta.remains>45" );
         else if ( use_effect_id == 271107 || use_effect_id == 277179 || use_effect_id == 277185 || // Golden Luster, Gladiator's Medallion, Gladiator's Badge
                   items[i].name_str == "lurkers_insidious_gift" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.vendetta.up" );
+        else if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=master_assassin_remains=0&dot.rupture.ticking" );
         else // Default: Use on CD
           cds -> add_action( "use_item,name=" + items[i].name_str, "Default Trinket usage: Use on cooldown." );
       }
@@ -5809,9 +5811,13 @@ void rogue_t::init_action_list()
     cds -> add_action( potion_action );
     for ( size_t i = 0; i < items.size(); i++ )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) || items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_GEM, SPECIAL_EFFECT_USE ) )
       {
-        cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2", "Falling back to default item usage" );
+        auto use_effect_id = items[i].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) -> spell_id;
+        if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.all" );
+        else // Default
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2", "Falling back to default item usage" );
       }
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -5890,11 +5896,14 @@ void rogue_t::init_action_list()
     cds -> add_action( potion_action );
     for ( size_t i = 0; i < items.size(); i++ )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) || items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_GEM, SPECIAL_EFFECT_USE ) )
       {
+        auto use_effect_id = items[i].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) -> spell_id;
         // Use on-cd exceptions
         if ( items[i].name_str == "mydas_talisman" )
           cds -> add_action( "use_item,name=" + items[i].name_str, "Use on cooldown." );
+        else if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.all&dot.nightblade.ticking" );
         else // Use with Symbols default
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.symbols_of_death.up|target.time_to_die<20", "Falling back to default item usage: Use with Symbols of Death." );
       }

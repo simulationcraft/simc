@@ -38,7 +38,8 @@ actions.precombat+=/mind_blast,if=spell_targets.mind_sear<2|azerite.thought_harv
 actions.precombat+=/vampiric_touch
 
 # Executed every time the actor is available.
-actions=potion,if=buff.bloodlust.react|target.time_to_die<=80|target.health.pct<35
+actions=use_item,name=pocketsized_computation_device,if=equipped.167555
+actions+=/potion,if=buff.bloodlust.react|target.time_to_die<=80|target.health.pct<35
 actions+=/variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
 actions+=/run_action_list,name=cleave,if=active_enemies>1
 actions+=/run_action_list,name=single,if=active_enemies=1
