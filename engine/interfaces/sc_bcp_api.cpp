@@ -541,6 +541,37 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
       }
     }
 
+    if ( slot_data.HasMember( "enchantments" ) )
+    {
+      for ( auto ench_idx = 0u, end = slot_data[ "enchantments" ].Size(); ench_idx < end; ++ench_idx )
+      {
+        const auto& ench_data = slot_data[ "enchantments" ][ ench_idx ];
+
+        if ( !ench_data.HasMember( "enchantment_id" ) )
+        {
+          throw std::runtime_error( "Unable to parse enchant data: Missing enchantment ID" );
+        }
+        if ( !ench_data.HasMember( "enchantment_slot" ) )
+        {
+          throw std::runtime_error( "Unable to parse enchant data: Missing enchantment slot data" );
+        }
+
+        switch (ench_data[ "enchantment_slot" ][ "id" ].GetInt()) {
+          // PERMANENT
+          case 0:
+            item.parsed.enchant_id = ench_data[ "enchantment_id" ].GetInt();
+            break;
+          // BONUS_SOCKETS
+          case 6:
+            break;
+          // ON_USE_SPELL
+          case 7:
+            item.parsed.addon_id = ench_data[ "enchantment_id" ].GetInt();
+            break;
+        }
+      }
+    }
+
     if ( slot_data.HasMember( "sockets" ) )
     {
       for ( auto gem_idx = 0u, end = slot_data[ "sockets" ].Size(); gem_idx < end; ++gem_idx )
