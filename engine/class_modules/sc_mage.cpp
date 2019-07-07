@@ -5606,13 +5606,39 @@ std::string mage_t::default_flask() const
 
 std::string mage_t::default_food() const
 {
-  std::string lvl100_food =
-    ( specialization() == MAGE_ARCANE ) ? "sleeper_sushi" :
-    ( specialization() == MAGE_FIRE   ) ? "pickled_eel" :
-                                          "salty_squid_roll";
+  std::string lvl100_food;
+  std::string lvl120_food;
 
-  // TODO: Figure out optimal food based on T24 profiles.
-  return ( true_level > 110 ) ? "biltong" :
+  switch ( specialization() )
+  {
+    case MAGE_ARCANE:
+      lvl100_food = "sleeper_sushi";
+      lvl120_food = "mechdowels_big_mech";
+      break;
+    case MAGE_FIRE:
+      lvl100_food = "pickled_eel";
+      lvl120_food = "baked_port_tato";
+      break;
+    case MAGE_FROST:
+      lvl100_food = "salty_squid_roll";
+      switch ( options.rotation )
+      {
+        case ROTATION_STANDARD:
+        case ROTATION_NO_ICE_LANCE:
+          lvl120_food = "abyssalfried_rissole";
+          break;
+        case ROTATION_FROZEN_ORB:
+          lvl120_food = "mechdowels_big_mech";
+          break;
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+
+  return ( true_level > 110 ) ? lvl120_food :
          ( true_level > 100 ) ? "fancy_darkmoon_feast" :
          ( true_level >  90 ) ? lvl100_food :
          ( true_level >  89 ) ? "mogu_fish_stew" :
@@ -5978,24 +6004,27 @@ void mage_t::apl_frost()
   {
     case ROTATION_STANDARD:
     case ROTATION_NO_ICE_LANCE:
-      essences->add_action( "focused_azerite_beam" );
-      essences->add_action( "memory_of_lucid_dreams,if=buff.icicles.stack<2&cooldown.frozen_orb.remains>execute_time" + std::string( options.rotation == ROTATION_STANDARD ? "&!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0" : "" ) );
-      essences->add_action( "blood_of_the_enemy,if=buff.icicles.stack=5&buff.brain_freeze.react|!talent.glacial_spike.enabled|active_enemies>4" );
-      essences->add_action( "purifying_blast" );
-      essences->add_action( "ripple_in_space" );
-      essences->add_action( "concentrated_flame,line_cd=6" );
+      essences->add_action( "focused_azerite_beam,if=buff.rune_of_power.down|active_enemies>3" );
+      essences->add_action( "memory_of_lucid_dreams,if=active_enemies<5&(buff.icicles.stack<=1|!talent.glacial_spike.enabled)&cooldown.frozen_orb.remains>10"
+        + std::string( options.rotation == ROTATION_STANDARD ? "&!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0" : "" ) );
+      essences->add_action( "blood_of_the_enemy,if=(talent.glacial_spike.enabled&buff.icicles.stack=5&(buff.brain_freeze.react|prev_gcd.1.ebonbolt))"
+        "|((active_enemies>3|!talent.glacial_spike.enabled)&(prev_gcd.1.frozen_orb|ground_aoe.frozen_orb.remains>5))" );
+      essences->add_action( "purifying_blast,if=buff.rune_of_power.down|active_enemies>3" );
+      essences->add_action( "ripple_in_space,if=buff.rune_of_power.down|active_enemies>3" );
+      essences->add_action( "concentrated_flame,line_cd=6,if=buff.rune_of_power.down" );
       essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
-      essences->add_action( "worldvein_resonance" );
+      essences->add_action( "worldvein_resonance,if=buff.rune_of_power.down|active_enemies>3" );
       break;
     case ROTATION_FROZEN_ORB:
-      essences->add_action( "focused_azerite_beam,if=debuff.packed_ice.down|active_enemies>3" );
-      essences->add_action( "memory_of_lucid_dreams,if=debuff.packed_ice.down&cooldown.frozen_orb.remains>execute_time&!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0" );
-      essences->add_action( "blood_of_the_enemy,if=prev_gcd.1.rune_of_power&prev_gcd.2.frozen_orb|active_enemies>3" );
-      essences->add_action( "purifying_blast,if=debuff.packed_ice.down|active_enemies>3" );
-      essences->add_action( "ripple_in_space,if=debuff.packed_ice.down|active_enemies>3" );
-      essences->add_action( "concentrated_flame,if=debuff.packed_ice.down,line_cd=6" );
+      essences->add_action( "focused_azerite_beam,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3" );
+      essences->add_action( "memory_of_lucid_dreams,if=active_enemies<5&debuff.packed_ice.down&cooldown.frozen_orb.remains>5"
+        "&!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0" );
+      essences->add_action( "blood_of_the_enemy,if=prev_gcd.1.frozen_orb|ground_aoe.frozen_orb.remains>5" );
+      essences->add_action( "purifying_blast,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3" );
+      essences->add_action( "ripple_in_space,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3" );
+      essences->add_action( "concentrated_flame,line_cd=6,if=buff.rune_of_power.down&debuff.packed_ice.down" );
       essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
-      essences->add_action( "worldvein_resonance,if=debuff.packed_ice.down|active_enemies>4" );
+      essences->add_action( "worldvein_resonance,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3" );
       break;
     default:
       break;

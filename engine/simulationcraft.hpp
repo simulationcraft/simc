@@ -505,12 +505,16 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* volatile_magic;
     buff_t* maddening_whispers;
     buff_t* shadow_blades;
+    // BFA - Azerite
     buff_t* azerite_globules;
     buff_t* dead_ahead;
     buff_t* battlefield_debuff;
+    // BFA - Trinkets
     buff_t* wasting_infection;
     buff_t* everchill;
     buff_t* choking_brine;
+    buff_t* razor_coral;
+    // BFA - Essences
     buff_t* blood_of_the_enemy;
     buff_t* condensed_lifeforce;
     buff_t* focused_resolve;
