@@ -4400,7 +4400,7 @@ void items::cyclotronic_blast( special_effect_t& effect )
 }
 
 // Mechagon Logic Loop - Bit Band combo rings
-const unsigned logic_loop_drivers[] = {300124, 300125};
+const unsigned logic_loop_drivers[] = { 299909, 300124, 300125 };
 
 const special_effect_t* find_logic_loop_effect( player_t* player )
 {
