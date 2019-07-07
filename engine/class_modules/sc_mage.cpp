@@ -5606,13 +5606,39 @@ std::string mage_t::default_flask() const
 
 std::string mage_t::default_food() const
 {
-  std::string lvl100_food =
-    ( specialization() == MAGE_ARCANE ) ? "sleeper_sushi" :
-    ( specialization() == MAGE_FIRE   ) ? "pickled_eel" :
-                                          "salty_squid_roll";
+  std::string lvl100_food;
+  std::string lvl120_food;
 
-  // TODO: Figure out optimal food based on T24 profiles.
-  return ( true_level > 110 ) ? "biltong" :
+  switch ( specialization() )
+  {
+    case MAGE_ARCANE:
+      lvl100_food = "sleeper_sushi";
+      lvl120_food = "mechdowels_big_mech";
+      break;
+    case MAGE_FIRE:
+      lvl100_food = "pickled_eel";
+      lvl120_food = "baked_port_tato";
+      break;
+    case MAGE_FROST:
+      lvl100_food = "salty_squid_roll";
+      switch ( options.rotation )
+      {
+        case ROTATION_STANDARD:
+        case ROTATION_NO_ICE_LANCE:
+          lvl120_food = "abyssalfried_rissole";
+          break;
+        case ROTATION_FROZEN_ORB:
+          lvl120_food = "mechdowels_big_mech";
+          break;
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+
+  return ( true_level > 110 ) ? lvl120_food :
          ( true_level > 100 ) ? "fancy_darkmoon_feast" :
          ( true_level >  90 ) ? lvl100_food :
          ( true_level >  89 ) ? "mogu_fish_stew" :
