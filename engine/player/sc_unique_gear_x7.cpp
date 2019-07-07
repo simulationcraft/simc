@@ -178,6 +178,8 @@ namespace items
   void anuazshara_staff_of_the_eternal( special_effect_t& );
   void shiver_venom_crossbow( special_effect_t& );
   void shiver_venom_lance( special_effect_t& );
+  void ashvanes_razor_coral( special_effect_t& );
+  void dribbling_inkpod( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3287,9 +3289,7 @@ void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
     }
   };
 
-  auto action = effect.player->find_action( "storm_of_the_eternal" );
-  if ( !action )
-    action = create_proc_action<sote_arcane_damage_t>( "storm_of_the_eternal", effect );
+  auto action = create_proc_action<sote_arcane_damage_t>( "storm_of_the_eternal", effect );
 
   timespan_t storm_period = effect.player->find_spell( 303722 )->duration();
   unsigned storm_hits     = effect.player->find_spell( 303724 )->max_stacks();
@@ -3909,6 +3909,153 @@ void items::shiver_venom_lance( special_effect_t& effect )
   effect.execute_action = create_proc_action<shivering_lance_t>( "shivering_lance", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+/**Ashvane's Razor Coral
+ * On-use deals damage and gives you ability proc damage & apply debuff. Use again to gain crit per debuff.
+ * id=303564 driver for on-use, deals damage + gives you damage & debuff proc on rppm
+ * id=303565 damage & debuff proc rppm driver
+ * id=303568 stacking debuff
+ * id=303570 crit buff
+ * id=303572 damage spell
+ * id=303573 crit buff value in effect#1
+ * id=304877 damage spell value in effect #1
+ */
+struct razor_coral_constructor_t : public item_targetdata_initializer_t
+{
+  razor_coral_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
+  {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td->source );
+    if ( !effect )
+    {
+      td->debuff.razor_coral = make_buff( *td, "razor_coral" );
+      return;
+    }
+    assert( !td->debuff.razor_coral );
+
+    td->debuff.razor_coral =
+      make_buff( *td, "razor_coral_debuff", td->source->find_spell( 303568 ) )->set_activated( false );
+    td->debuff.razor_coral->reset();
+  }
+};
+
+void items::ashvanes_razor_coral( special_effect_t& effect )
+{
+  struct razor_coral_t : public proc_t
+  {
+    razor_coral_t( const special_effect_t& e ) : proc_t( e, "razor_coral", e.player->find_spell( 303572 ) )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 304877 )->effectN( 1 ).average( e.item );
+    }
+  };
+
+  struct ashvanes_razor_coral_t : public proc_t
+  {
+    buff_t* buff;
+    dbc_proc_callback_t* proc;
+    action_t* action;
+
+    ashvanes_razor_coral_t( const special_effect_t& e, buff_t* b, dbc_proc_callback_t* cb, action_t* a ) :
+      proc_t( e, "ashvanes_razor_coral", e.driver() ), buff( b ), proc( cb ), action( a )
+    {}
+
+    void execute() override
+    {
+      proc_t::execute();  // no damage, but sets up execute_state
+      auto td = player->get_target_data( execute_state->target );
+      assert( td );
+      assert( td->debuff.razor_coral );
+
+      if ( !td->debuff.razor_coral->check() )  // first time
+      {
+        action->set_target( execute_state->target );
+        action->execute();  // do the damage here
+
+        for ( auto t : sim->target_non_sleeping_list )  // clear everyone
+        {
+          auto td2 = player->get_target_data( t );
+          assert( td2 );
+          assert( td2->debuff.razor_coral );
+          td2->debuff.razor_coral->expire();
+        }
+
+        td->debuff.razor_coral->trigger();  // apply to new target
+        proc->activate();
+      }
+      else  // second time
+      {
+        buff->trigger( td->debuff.razor_coral->stack() );
+        td->debuff.razor_coral->expire();
+        proc->deactivate();
+      }
+    }
+  };
+
+  struct razor_coral_cb_t : public dbc_proc_callback_t
+  {
+    razor_coral_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {}
+
+    void trigger( action_t* a, void* cd ) override
+    {
+      auto state = static_cast<action_state_t*>( cd );
+      auto td    = listener->get_target_data( state->target );
+      if ( td->debuff.razor_coral->check() )  // Only trigger against the debuffed target
+      {
+        dbc_proc_callback_t::trigger( a, cd );
+      }
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+      auto td = listener->get_target_data( s->target );
+      td->debuff.razor_coral->trigger();
+    }
+  };
+
+  // razor coral damage action used by both on-use and rppm proc
+  auto action = create_proc_action<razor_coral_t>( "razor_coral", effect );
+
+  // crit buff from 2nd on-use activation
+  auto buff = buff_t::find( effect.player, "razor_coral" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "razor_coral", effect.player->find_spell( 303570 ) )
+             ->add_stat( STAT_CRIT_RATING, effect.player->find_spell( 303573 )->effectN( 1 ).average( effect.item ) );
+  }
+
+  // secondary rppm effect for when debuff is applied
+  auto second            = new special_effect_t( effect.player );
+  second->type           = SPECIAL_EFFECT_EQUIP;
+  second->source         = effect.source;
+  second->spell_id       = 303565;
+  second->execute_action = action;
+  effect.player->special_effects.push_back( second );
+
+  auto proc = new razor_coral_cb_t( *second );
+  proc->deactivate();
+  proc->initialize();
+
+  // the primary on-use
+  effect.execute_action =
+    create_proc_action<ashvanes_razor_coral_t>( "ashvanes_razor_coral", effect, buff, proc, action );
+}
+
+/**Dribbling Inkpod
+ * Apply debuff to enemy over 30% hp, when enemy falls below deal damage per debuff
+ * id=296963 driver, effect#3 is hp threshold, effect#1 is damage value
+ * id=296964 unknown, possibly to trigger damage
+ * id=302491 damage spell
+ * id=302565 stacking debuff
+ * id=302597 unknown
+ */
+void items::dribbling_inkpod( special_effect_t& effect )
+{
+
 }
 
 // Punchcard stuff ========================================================
@@ -4548,6 +4695,8 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 302986, items::anuazshara_staff_of_the_eternal );
   register_special_effect( 303358, items::shiver_venom_crossbow );
   register_special_effect( 303361, items::shiver_venom_lance );
+  register_special_effect( 303564, items::ashvanes_razor_coral );
+  register_special_effect( 296963, items::dribbling_inkpod );
 
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );
@@ -4586,11 +4735,12 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
   using namespace bfa;
   const std::vector<slot_e> items = { SLOT_TRINKET_1, SLOT_TRINKET_2 };
 
-  sim -> register_target_data_initializer( deadeye_spyglass_constructor_t( 159623, items ) );
-  sim -> register_target_data_initializer( syringe_of_bloodborne_infirmity_constructor_t( 160655, items ) );
-  sim -> register_target_data_initializer( everchill_anchor_constructor_t( 165570, items ) );
-  sim -> register_target_data_initializer( briny_barnacle_constructor_t( 159619, items ) );
+  sim->register_target_data_initializer( deadeye_spyglass_constructor_t( 159623, items ) );
+  sim->register_target_data_initializer( syringe_of_bloodborne_infirmity_constructor_t( 160655, items ) );
+  sim->register_target_data_initializer( everchill_anchor_constructor_t( 165570, items ) );
+  sim->register_target_data_initializer( briny_barnacle_constructor_t( 159619, items ) );
   sim->register_target_data_initializer( potion_of_focused_resolve_t() );
+  sim->register_target_data_initializer( razor_coral_constructor_t( 169311, items ) );
 }
 
 void unique_gear::register_hotfixes_bfa()
