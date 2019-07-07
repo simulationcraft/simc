@@ -188,6 +188,7 @@ namespace items
   // 8.2.0 - Mechagon combo rings
   void logic_loop_of_division( special_effect_t& );
   void logic_loop_of_recursion( special_effect_t& );
+  void logic_loop_of_maintenance( special_effect_t& );
   void overclocking_bit_band( special_effect_t& );
   void shorting_bit_band( special_effect_t& );
 }
@@ -4533,6 +4534,31 @@ void items::logic_loop_of_recursion( special_effect_t& effect )
   new loop_of_recursion_cb_t( effect );
 }
 
+// Logic Loop of Maintenance ( proc on cast while below 50% hp )
+
+void items::logic_loop_of_maintenance( special_effect_t& effect )
+{
+  struct loop_of_maintenance_cb_t : public logic_loop_callback_t
+  {
+    loop_of_maintenance_cb_t( const special_effect_t& e ) : logic_loop_callback_t( e )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( listener->resources.current[ RESOURCE_HEALTH ] / listener->resources.max[ RESOURCE_HEALTH ] < 0.5 )
+      {
+        logic_loop_callback_t::execute( a, s );
+      }
+    }
+  };
+
+  effect.proc_flags_  = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_CAST;
+  effect.proc_chance_ = 1.0;
+
+  new loop_of_maintenance_cb_t( effect );
+}
+
 // Overclocking Bit Band ( haste proc )
 
 void items::overclocking_bit_band( special_effect_t& effect )
@@ -4752,6 +4778,7 @@ void unique_gear::register_special_effects_bfa()
   // 8.2 Mechagon combo rings
   register_special_effect( 300124, items::logic_loop_of_division );
   register_special_effect( 300125, items::logic_loop_of_recursion );
+  register_special_effect( 299909, items::logic_loop_of_maintenance );
   register_special_effect( 300126, items::overclocking_bit_band );
   register_special_effect( 300127, items::shorting_bit_band );
 
