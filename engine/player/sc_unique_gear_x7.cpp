@@ -187,6 +187,12 @@ namespace items
   void subroutine_optimization( special_effect_t& );
   void harmonic_dematerializer( special_effect_t& );
   void cyclotronic_blast( special_effect_t& );
+  // 8.2.0 - Mechagon combo rings
+  void logic_loop_of_division( special_effect_t& );
+  void logic_loop_of_recursion( special_effect_t& );
+  void logic_loop_of_maintenance( special_effect_t& );
+  void overclocking_bit_band( special_effect_t& );
+  void shorting_bit_band( special_effect_t& );
 }
 
 namespace util
@@ -4540,6 +4546,227 @@ void items::cyclotronic_blast( special_effect_t& effect )
   effect.execute_action = create_proc_action<cyclotronic_blast_t>( "cyclotronic_blast", effect );
 }
 
+// Mechagon Logic Loop - Bit Band combo rings
+const unsigned logic_loop_drivers[] = { 299909, 300124, 300125 };
+
+const special_effect_t* find_logic_loop_effect( player_t* player )
+{
+  for ( unsigned id : logic_loop_drivers )
+  {
+    auto it = unique_gear::find_special_effect( player, id, SPECIAL_EFFECT_EQUIP );
+    if ( it )
+    {
+      player->sim->print_debug( "Logic Loop found! Pairing to {}...", it->item->full_name() );
+      return it;
+    }
+  }
+  player->sim->print_debug( "404 NOT FOUND. Powering down..." );
+  return nullptr;
+}
+
+struct logic_loop_callback_t : public dbc_proc_callback_t
+{
+  buff_t* recharging;
+
+  logic_loop_callback_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+  {
+    recharging = buff_t::find( e.player, "recharging" );
+    if ( !recharging )
+    {
+      recharging = make_buff( e.player, "recharging", e.player->find_spell( 306474 ) );
+      recharging->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
+        if ( new_ )
+          this->deactivate();
+        else
+          this->activate();
+      } );
+    }
+  }
+
+  void initialize() override
+  {
+    dbc_proc_callback_t::initialize();
+    if ( !proc_buff && !proc_action )
+    {
+      deactivate();
+      listener->sim->print_debug( "Logic Loop pairing failure. Deactivating..." );
+    }
+  }
+
+  virtual void execute( action_t* a, action_state_t* s ) override
+  {
+    dbc_proc_callback_t::execute( a, s );
+    recharging->trigger();
+  }
+};
+
+// Logic Loop of Division ( proc when you attack from behind )
+
+void items::logic_loop_of_division( special_effect_t& effect )
+{
+  struct loop_of_division_cb_t : public logic_loop_callback_t
+  {
+    loop_of_division_cb_t( const special_effect_t& e ) : logic_loop_callback_t( e )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( listener->position() == POSITION_BACK || listener->position() == POSITION_RANGED_BACK )
+      {
+        logic_loop_callback_t::execute( a, s );
+      }
+    }
+  };
+
+  effect.proc_flags_  = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  effect.proc_chance_ = 1.0;
+
+  new loop_of_division_cb_t( effect );
+}
+
+// Logic Loop of Recursion ( proc when you use 3 different abilities on a target )
+
+void items::logic_loop_of_recursion( special_effect_t& effect )
+{
+  struct lor_target_t
+  {
+    player_t* target;
+    std::vector<action_t*> actions;
+  };
+
+  struct loop_of_recursion_cb_t : public logic_loop_callback_t
+  {
+    std::vector<lor_target_t> lor_list;
+    unsigned max;
+
+    loop_of_recursion_cb_t( const special_effect_t& e ) :
+      logic_loop_callback_t( e ), max( static_cast<unsigned>( e.driver()->effectN( 1 ).base_value() ) )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      auto it = range::find_if( lor_list, [a]( const lor_target_t& lor ) {
+        return lor.target == a->target;
+      } );
+      if ( it == lor_list.end() )  // new target
+      {
+        lor_target_t tmp;
+        tmp.target = a->target;
+        tmp.actions.emplace_back( a );
+        lor_list.push_back( tmp );  // create new entry for target
+        return;
+      }
+
+      auto it2 = range::find( it->actions, a );
+      if ( it2 == it->actions.end() )  // new action
+      {
+        if ( it->actions.size() < max - 1 )  // not full
+        {
+          it->actions.push_back( a );  // create new entry for action
+        }
+        else  // full, execute
+        {
+          logic_loop_callback_t::execute( a, s );
+          lor_list.clear();
+        }
+      }
+    }
+  };
+
+  effect.proc_flags_  = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_CAST;
+  effect.proc_chance_ = 1.0;
+
+  new loop_of_recursion_cb_t( effect );
+}
+
+// Logic Loop of Maintenance ( proc on cast while below 50% hp )
+
+void items::logic_loop_of_maintenance( special_effect_t& effect )
+{
+  struct loop_of_maintenance_cb_t : public logic_loop_callback_t
+  {
+    loop_of_maintenance_cb_t( const special_effect_t& e ) : logic_loop_callback_t( e )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( listener->resources.current[ RESOURCE_HEALTH ] / listener->resources.max[ RESOURCE_HEALTH ] < 0.5 )
+      {
+        logic_loop_callback_t::execute( a, s );
+      }
+    }
+  };
+
+  effect.proc_flags_  = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_CAST;
+  effect.proc_chance_ = 1.0;
+
+  new loop_of_maintenance_cb_t( effect );
+}
+
+// Overclocking Bit Band ( haste proc )
+
+void items::overclocking_bit_band( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "overclocking_bit_band" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "overclocking_bit_band", effect.player->find_spell( 301886 ) )
+             ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  effect.player->sim->print_debug( "{} looking for Logic Loop to pair with...", effect.item->full_name() );
+  auto loop_driver = find_logic_loop_effect( effect.player );
+  if ( loop_driver )
+  {
+    const_cast<special_effect_t*>( loop_driver )->custom_buff = buff;
+    effect.player->sim->print_debug(
+      "Success! {} paired with {}.", effect.item->full_name(), loop_driver->item->full_name() );
+  }
+
+  effect.type = SPECIAL_EFFECT_NONE;
+}
+
+// Shorting Bit Band ( deal damage to random enemy within 8 yd )
+
+void items::shorting_bit_band( special_effect_t& effect )
+{
+  struct shorting_bit_band_t : public proc_t
+  {
+    shorting_bit_band_t( const special_effect_t& e ) : proc_t( e, "shorting_bit_band", e.player->find_spell( 301887 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      size_t index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
+      set_target( target_list()[ index ] );
+
+      proc_t::execute();
+    }
+  };
+
+  auto action = effect.player->find_action( "shorting_bit_band" );
+  if ( !action )
+  {
+    action = create_proc_action<shorting_bit_band_t>( "shorting_bit_band", effect );
+  }
+
+  effect.player->sim->print_debug( "{} looking for Logic Loop to pair with...", effect.item->full_name() );
+  auto loop_driver = find_logic_loop_effect( effect.player );
+  if ( loop_driver )
+  {
+    const_cast<special_effect_t*>( loop_driver )->execute_action = action;
+    effect.player->sim->print_debug(
+      "Success! {} paired with {}.", effect.item->full_name(), loop_driver->item->full_name() );
+  }
+
+  effect.type = SPECIAL_EFFECT_NONE;
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -4697,7 +4924,12 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 303361, items::shiver_venom_lance );
   register_special_effect( 303564, items::ashvanes_razor_coral );
   register_special_effect( 296963, items::dribbling_inkpod );
-
+  // 8.2 Mechagon combo rings
+  register_special_effect( 300124, items::logic_loop_of_division );
+  register_special_effect( 300125, items::logic_loop_of_recursion );
+  register_special_effect( 299909, items::logic_loop_of_maintenance );
+  register_special_effect( 300126, items::overclocking_bit_band );
+  register_special_effect( 300127, items::shorting_bit_band );
   // Passive two-stat punchcards
   register_special_effect( 306402, items::yellow_punchcard );
   register_special_effect( 306403, items::yellow_punchcard );
