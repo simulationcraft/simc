@@ -4632,7 +4632,7 @@ void items::logic_loop_of_recursion( special_effect_t& effect )
   struct lor_target_t
   {
     player_t* target;
-    std::vector<action_t*> actions;
+    std::vector<int> iid;
   };
 
   struct loop_of_recursion_cb_t : public logic_loop_callback_t
@@ -4646,24 +4646,25 @@ void items::logic_loop_of_recursion( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* s ) override
     {
-      auto it = range::find_if( lor_list, [a]( const lor_target_t& lor ) {
+      int a_id = a->internal_id;
+      auto it  = range::find_if( lor_list, [a]( const lor_target_t& lor ) {
         return lor.target == a->target;
       } );
       if ( it == lor_list.end() )  // new target
       {
         lor_target_t tmp;
         tmp.target = a->target;
-        tmp.actions.emplace_back( a );
+        tmp.iid.push_back( a_id );
         lor_list.push_back( tmp );  // create new entry for target
         return;
       }
 
-      auto it2 = range::find( it->actions, a );
-      if ( it2 == it->actions.end() )  // new action
+      auto it2 = range::find( it->iid, a_id );
+      if ( it2 == it->iid.end() )  // new action
       {
-        if ( it->actions.size() < max - 1 )  // not full
+        if ( it->iid.size() < max - 1 )  // not full
         {
-          it->actions.push_back( a );  // create new entry for action
+          it->iid.push_back( a_id );  // create new entry for action
         }
         else  // full, execute
         {
