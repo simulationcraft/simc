@@ -1,5 +1,7 @@
 optimal_raid=1
 default_actions=1
+bfa.nazjatar=1
+bfa.worldvein_allies=5
 
 T24_Death_Knight_Blood.simc
 T24_Death_Knight_Frost.simc
@@ -18,8 +20,6 @@ T24_Hunter_Survival.simc
 
 T24_Mage_Fire.simc
 T24_Mage_Frost.simc
-T24_Mage_Frost_NoIceLance.simc
-T24_Mage_Frost_FrozenOrb.simc
 T24_Mage_Arcane.simc
 
 T24_Monk_Brewmaster.simc
