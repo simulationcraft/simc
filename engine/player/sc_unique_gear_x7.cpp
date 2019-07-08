@@ -181,6 +181,7 @@ namespace items
   void shiver_venom_lance( special_effect_t& );
   void ashvanes_razor_coral( special_effect_t& );
   void dribbling_inkpod( special_effect_t& );
+  void reclaimed_shock_coil( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -3278,8 +3279,6 @@ void items::nazjatar_proc_check( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-
-
 // Storm of the Eternal ===================================================
 void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 {
@@ -4080,7 +4079,7 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff<stat_buff_t>( effect.player, "razor_coral", effect.player->find_spell( 303570 ) )
-             ->add_stat( STAT_CRIT_RATING, effect.player->find_spell( 303573 )->effectN( 1 ).average( effect.item ) );
+      ->add_stat( STAT_CRIT_RATING, effect.player->find_spell( 303573 )->effectN( 1 ).average( effect.item ) );
   }
 
   // secondary rppm effect for when debuff is applied
@@ -4181,6 +4180,15 @@ void items::dribbling_inkpod( special_effect_t& effect )
   auto action = create_proc_action<conductive_ink_t>( "conductive_ink", effect );
 
   new conductive_ink_cb_t( effect, action );
+}
+
+// Reclaimed Shock Coil ===================================================
+
+void items::reclaimed_shock_coil( special_effect_t& effect )
+{
+  effect.proc_flags2_ = PF2_CRIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Punchcard stuff ========================================================
@@ -5106,6 +5114,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 303564, items::ashvanes_razor_coral );
   register_special_effect( 296963, items::dribbling_inkpod );
   register_special_effect( 300142, items::hyperthread_wristwraps );
+  register_special_effect( 301753, items::reclaimed_shock_coil );
   // 8.2 Mechagon combo rings
   register_special_effect( 300124, items::logic_loop_of_division );
   register_special_effect( 300125, items::logic_loop_of_recursion );
