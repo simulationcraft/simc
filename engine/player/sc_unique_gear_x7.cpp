@@ -165,6 +165,7 @@ namespace items
   void fathom_hunter( special_effect_t& );
   void nazjatar_proc_check( special_effect_t& );
   void storm_of_the_eternal_arcane_damage( special_effect_t& );
+  void storm_of_the_eternal_haste( special_effect_t& );
   void highborne_compendium_of_sundering( special_effect_t& );
   void highborne_compendium_of_storms( special_effect_t& );
   void neural_synapse_enhancer( special_effect_t& );
@@ -3316,6 +3317,25 @@ void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
   } );
 }
 
+void items::storm_of_the_eternal_haste( special_effect_t& effect )
+{
+  if ( !effect.player->sim->bfa_opts.nazjatar )
+    return;
+
+  if ( buff_t::find( effect.player, "storm_of_the_eternal" ) )
+    return;
+
+  auto haste = make_buff<stat_buff_t>( effect.player, "storm_of_the_eternal", effect.player->find_spell( 303723 ) );
+  haste->add_stat( STAT_HASTE_RATING,
+    effect.driver()->effectN( 1 ).average( effect.item ) * effect.player->sim->bfa_opts.storm_of_the_eternal_haste_ratio );
+
+  timespan_t period = effect.player->find_spell( 303722 )->duration();
+  effect.player->register_combat_begin( [ haste, period ] ( player_t* )
+  {
+    make_repeating_event( haste->sim, period, [ haste ] { haste->trigger(); } );
+  } );
+}
+
 // Highborne Compendium of Storms =========================================
 
 void items::highborne_compendium_of_storms( special_effect_t& effect )
@@ -4968,6 +4988,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 304711, items::nazjatar_proc_check ); // Sharp Fins
   register_special_effect( 304715, items::nazjatar_proc_check ); // Tidal Droplet
   register_special_effect( 303733, items::storm_of_the_eternal_arcane_damage );
+  register_special_effect( 303734, items::storm_of_the_eternal_haste );
   // 8.2 Special Effects
   register_special_effect( 300830, items::highborne_compendium_of_sundering );
   register_special_effect( 300913, items::highborne_compendium_of_storms );
