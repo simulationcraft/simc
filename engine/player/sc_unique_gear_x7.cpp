@@ -4644,21 +4644,10 @@ const special_effect_t* find_logic_loop_effect( player_t* player )
 
 struct logic_loop_callback_t : public dbc_proc_callback_t
 {
-  buff_t* recharging;
-
   logic_loop_callback_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
   {
-    recharging = buff_t::find( e.player, "recharging" );
-    if ( !recharging )
-    {
-      recharging = make_buff( e.player, "recharging", e.player->find_spell( 306474 ) );
-      recharging->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-        if ( new_ )
-          this->deactivate();
-        else
-          this->activate();
-      } );
-    }
+    cooldown = e.player->get_cooldown( "logic_loop_recharging" );
+    cooldown->duration = e.player->find_spell( 306474 )->duration();
   }
 
   void initialize() override
@@ -4669,12 +4658,6 @@ struct logic_loop_callback_t : public dbc_proc_callback_t
       deactivate();
       listener->sim->print_debug( "Logic Loop pairing failure. Deactivating..." );
     }
-  }
-
-  virtual void execute( action_t* a, action_state_t* s ) override
-  {
-    dbc_proc_callback_t::execute( a, s );
-    recharging->trigger();
   }
 };
 
