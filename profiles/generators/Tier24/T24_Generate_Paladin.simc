@@ -26,29 +26,29 @@ save=T24_Paladin_Retribution.simc
 
 
 paladin="T24_Paladin_Protection"
-source=default
 level=120
 race=lightforged_draenei
+spec=protection
 role=tank
 position=front
 talents=3200003
-spec=protection
+azerite_essences=12:3/300573/13:3/4:3
 
-head=glaciercrest_helm,id=165823,bonus_id=4824/1537/4775,azerite_powers=235/562/31/13
+head=soulspun_casque,id=155866,ilevel=450,azerite_powers=395/157/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulder=dynosprocket_spaulders,id=165825,bonus_id=4824/1537/4775,azerite_powers=235/562/22/13
-back=loa_exultants_shroud,id=165512,bonus_id=4824/1537
-chest=breastplate_of_divine_purification,id=165550,bonus_id=4824/1537/4775,azerite_powers=395/562/461/13
-wrist=splinterbone_vambraces,id=165551,bonus_id=4824/1537
-hands=crusade_pummelers,id=165549,bonus_id=4824/1537
-waist=hullplate_girdle,id=165559,bonus_id=4824/1537
-legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4824/1537
-feet=coinage_stampers,id=165561,bonus_id=4824/1537
-finger1=lord_admirals_signet,id=165566,bonus_id=4824/1537,enchant=pact_of_haste
-finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4824/1537,enchant=pact_of_haste
-trinket1=grongs_primal_rage,id=165574,bonus_id=4824/1537
-trinket2=everchill_anchor,id=165570,bonus_id=4824/1537
-main_hand=servoclaw_smasher,id=165598,bonus_id=4824/1537,enchant=quick_navigation
-off_hand=sunburst_crest,id=165584,bonus_id=4824/1537
+shoulders=pauldrons_of_fanatical_might,id=168364,bonus_id=4800/1517/4775,azerite_powers=235/575/31/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=naga_centaurs_shellplate,id=168361,bonus_id=4800/1517/4775,azerite_powers=150/575/20/13
+wrists=waveblade_farseers_armguards,id=170303,bonus_id=1512
+hands=gauntlets_of_overflowing_chill,id=168386,bonus_id=4800/1517
+waist=eternity_keepers_greatbelt,id=168869,bonus_id=4800/1517
+legs=legplates_of_unbound_anguish,id=167217,ilevel=425
+feet=akanas_reefstrider_boots,id=170143,bonus_id=1512
+finger1=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_versatility
+finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_versatility
+trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+trinket2=vision_of_demise,id=169307,bonus_id=4800/1517
+main_hand=dreams_end,id=168902,bonus_id=4800/1517,enchant=versatile_navigation
+off_hand=great_reef_barrier,id=168476,bonus_id=4800/1517
 
 save=T24_Paladin_Protection.simc
