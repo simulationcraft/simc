@@ -4683,7 +4683,7 @@ void items::cyclotronic_blast( special_effect_t& effect )
 
       if ( !player->readying )
       {
-        player->schedule_ready();
+        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
       }
     }
   };
