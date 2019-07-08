@@ -8601,13 +8601,13 @@ void druid_t::apl_balance()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  action_priority_list_t* default_list = get_action_priority_list("default");
+  action_priority_list_t* default_list = get_action_priority_list( "default" );
 
-  if (sim->allow_potions && true_level >= 80)
-    default_list->add_action("potion,if=buff.ca_inc.remains>6");
+  if ( sim->allow_potions && true_level >= 80 )
+    default_list->add_action( "potion,if=buff.ca_inc.remains>6" );
 
-  for (size_t i = 0; i < racial_actions.size(); i++)
-    default_list->add_action(racial_actions[i] + ",if=buff.ca_inc.up");
+  if ( race == RACE_TROLL )
+    default_list->add_action( "berserking,if=buff.ca_inc.up" );
 
   // CDs
   default_list->add_action( "use_item,name=azsharas_font_of_power,if=equipped.169314"
@@ -8617,6 +8617,7 @@ void druid_t::apl_balance()
   default_list->add_action( "use_item,name=tidestorm_codex,if=equipped.165576" );
   default_list->add_action( "use_item,name=pocketsized_computation_device,if=equipped.167555"
                               "&dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
+  default_list->add_action( "use_item,name=shiver_venom_relic,if=equipped.168905&cooldown.ca_inc.remains>30&!buff.ca_inc.up" );
   default_list->add_action( "use_items,if=cooldown.ca_inc.remains>30" );
   default_list->add_action( "blood_of_the_enemy,if=cooldown.ca_inc.remains>30" );
   default_list->add_action( "memory_of_lucid_dreams,if=dot.sunfire.remains>10&dot.moonfire.remains>10"
