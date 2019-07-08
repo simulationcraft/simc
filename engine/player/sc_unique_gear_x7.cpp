@@ -4814,6 +4814,7 @@ void items::shorting_bit_band( special_effect_t& effect )
   {
     shorting_bit_band_t( const special_effect_t& e ) : proc_t( e, "shorting_bit_band", e.player->find_spell( 301887 ) )
     {
+      aoe = 0;
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
 
