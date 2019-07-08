@@ -195,6 +195,7 @@ struct crusade_t : public paladin_spell_t
 
   bool ready() override
   {
+    // Crusade can not be used if the buff is already active (eg. with Vision of Perfection)
     if ( p() -> buffs.crusade -> check() )
       return false;
     else
