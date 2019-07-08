@@ -175,6 +175,7 @@ public:
     cooldown_t* siegebreaker;
     cooldown_t* skullsplitter;
     cooldown_t* storm_bolt;
+    cooldown_t* thunder_clap;
     cooldown_t* warbreaker;
   } cooldown;
 
@@ -4974,6 +4975,7 @@ void warrior_t::init_spells()
   cooldown.skullsplitter                    = get_cooldown( "skullsplitter" );
   cooldown.shockwave                        = get_cooldown( "shockwave" );
   cooldown.storm_bolt                       = get_cooldown( "storm_bolt" );
+  cooldown.thunder_clap                     = get_cooldown( "thunder_clap" );
   cooldown.warbreaker                       = get_cooldown( "warbreaker" );
 }
 
@@ -5729,6 +5731,9 @@ void warrior_t::create_buffs()
   buff.avatar = make_buff( this, "avatar", specialization() == WARRIOR_PROTECTION ? spec.avatar : talents.avatar )
       ->set_cooldown( timespan_t::zero() );
 
+  if ( talents.unstoppable_force -> ok() )
+    buff.avatar -> set_stack_change_callback( [ this ] ( buff_t*, int, int )
+    { cooldown.thunder_clap -> adjust_recharge_multiplier(); } );
 
   buff.berserker_rage = make_buff( this, "berserker_rage", spec.berserker_rage )
       ->set_cooldown( timespan_t::zero() );
