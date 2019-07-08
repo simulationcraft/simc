@@ -267,6 +267,7 @@ public:
   double predator_rppm_rate;
   double initial_astral_power;
   double thorns_attack_period;
+  double thorns_hit_chance;
   int    initial_moon_stage;
   int    lively_spirit_stacks; //to set how many spells a healer will cast during Innervate
   bool ahhhhh_the_great_outdoors;
@@ -753,6 +754,7 @@ public:
     lucid_dreams_proc_chance_feral( 0.15 ),
     lucid_dreams_proc_chance_guardian( 0.15 ),
     thorns_attack_period( 2.0 ),
+    thorns_hit_chance( 1.0 ),
     starshards( 0.0 ),
     previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
@@ -7033,11 +7035,16 @@ struct thorns_t : public druid_spell_t
     timespan_t attack_period;
     druid_t* source;
     bool randomize_first;
+    double hit_chance;
 
-    thorns_attack_event_t( druid_t* player, action_t* thorns_proc, player_t* source, bool randomize = false ) :
-      event_t( *player ), thorns( thorns_proc ), target_actor( source ),
-      attack_period( timespan_t::from_seconds( player->thorns_attack_period ) ), source( player ),
-      randomize_first( randomize )
+    thorns_attack_event_t( druid_t* player, action_t* thorns_proc, player_t* source, bool randomize = false )
+      : event_t( *player ),
+        thorns( thorns_proc ),
+        target_actor( source ),
+        attack_period( timespan_t::from_seconds( player->thorns_attack_period ) ),
+        source( player ),
+        randomize_first( randomize ),
+        hit_chance( player->thorns_hit_chance )
     {
       // this will delay the first psudo autoattack by a random amount between 0 and a full attack period
       if ( randomize_first )
@@ -7059,7 +7066,7 @@ struct thorns_t : public druid_spell_t
         return;
 
       thorns->target = target_actor;
-      if ( thorns->ready() )
+      if ( thorns->ready() && thorns->cooldown->up() && rng().roll( hit_chance ) )
         thorns->execute();
 
       if ( source->buff.thorns->remains() >= attack_period )
@@ -9753,6 +9760,7 @@ void druid_t::create_options()
   add_option( opt_bool  ( "outside", ahhhhh_the_great_outdoors ) );
   add_option( opt_bool  ( "catweave_bear", catweave_bear ) );
   add_option( opt_float ( "thorns_attack_period", thorns_attack_period ) );
+  add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10305,6 +10313,7 @@ void druid_t::copy_from( player_t* source )
   t21_4pc = p -> t21_4pc;
   ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
   thorns_attack_period      = p->thorns_attack_period;
+  thorns_hit_chance         = p->thorns_hit_chance;
 }
 void druid_t::output_json_report(js::JsonOutput& /*root*/) const
 {
