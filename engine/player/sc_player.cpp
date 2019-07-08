@@ -8281,6 +8281,11 @@ struct use_item_t : public action_t
     }
   }
 
+  timespan_t execute_time() const override
+  {
+    return action ? action->execute_time() : action_t::execute_time();
+  }
+
   void execute() override
   {
     bool triggered = buff == 0;
@@ -8290,7 +8295,7 @@ struct use_item_t : public action_t
     if ( triggered && action && ( !buff || buff->check() == buff->max_stack() ) )
     {
       action->target = target;
-      action->schedule_execute();
+      action->execute();
 
       // Decide whether to expire the buff even with 1 max stack
       if ( buff && buff->max_stack() > 1 )
@@ -8414,6 +8419,19 @@ struct use_items_t : public action_t
   result_e calculate_result( action_state_t* ) const override
   {
     return RESULT_HIT;
+  }
+
+  timespan_t execute_time() const override
+  {
+    for ( auto action : use_actions )
+    {
+      if ( action->ready() && action->action )
+      {
+        return action->action->execute_time();
+      }
+    }
+
+    return action_t::execute_time();
   }
 
   void execute() override
