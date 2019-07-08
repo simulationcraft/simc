@@ -164,6 +164,12 @@ struct avenging_wrath_t : public paladin_spell_t
 
     p() -> buffs.avenging_wrath_autocrit -> trigger();
   }
+
+  bool ready() override
+  {
+    // Avenging Wrath can not be used if the buff is already active (eg. with Vision of Perfection)
+    return p() -> buffs.avenging_wrath -> check() ? false : paladin_spell_t::ready();
+  }
 };
 
 // Consecration =============================================================
@@ -983,6 +989,7 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
     player_t::buffs.lucid_dreams -> trigger();
 }
 
+// TODO?: holy specifics
 void paladin_t::vision_of_perfection_proc()
 {
   auto vision = azerite_essence.vision_of_perfection;
@@ -991,42 +998,33 @@ void paladin_t::vision_of_perfection_proc()
   if ( vision_multiplier <= 0 )
     return;
 
-  // TODO: other 2 specs
-  if ( specialization() == PALADIN_RETRIBUTION )
+  buff_t* main_buff = talents.crusade -> ok() ? as<buff_t*>( buffs.crusade ) : as<buff_t*>( buffs.avenging_wrath );
+  buff_t* autocrit_buff = talents.crusade -> ok() ? nullptr : buffs.avenging_wrath_autocrit;
+
+  // Light's Decree's duration increase to AW doesn't affect the VoP proc
+  // We use the duration from spelldata rather than buff -> buff_duration
+  timespan_t trigger_duration = vision_multiplier * main_buff -> data().duration();
+
+  if ( main_buff -> check() )
   {
-    buff_t* primary = buffs.avenging_wrath;
-    buff_t* secondary = nullptr;
-    buff_t* tertiary = buffs.avenging_wrath_autocrit;
+    main_buff -> extend_duration( this, trigger_duration );
 
-    if ( talents.crusade -> ok() )
-    {
-      primary = buffs.crusade;
-      tertiary = nullptr;
-    }
+    // Bug? the autocrit buff isn't triggered if AW is already active
+    if ( autocrit_buff && autocrit_buff -> check() )
+      autocrit_buff -> extend_duration( this, trigger_duration );
 
-    if ( azerite.avengers_might.ok() )
-      secondary = buffs.avengers_might;
+    if ( azerite.avengers_might.enabled() )
+      buffs.avengers_might -> extend_duration( this, trigger_duration );
+  }
+  else
+  {
+    main_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
 
-    timespan_t primary_duration = vision_multiplier * primary -> data().duration();
-    timespan_t secondary_duration = secondary ? (vision_multiplier * secondary -> data().duration()) : 0_ms;
-    timespan_t tertiary_duration = tertiary ? (vision_multiplier * tertiary -> data().duration()) : 0_ms;
+    if ( autocrit_buff )
+      autocrit_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
 
-    if ( primary -> check() )
-    {
-      primary -> extend_duration( this, primary_duration );
-      if ( secondary )
-        secondary -> extend_duration( this, secondary_duration );
-      if ( tertiary && tertiary -> check() )
-        tertiary -> extend_duration( this, tertiary_duration );
-    }
-    else
-    {
-      primary -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, primary_duration );
-      if ( secondary )
-        secondary -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, secondary_duration );
-      if ( tertiary )
-        tertiary -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, tertiary_duration );
-    }
+    if ( azerite.avengers_might.enabled() )
+      buffs.avengers_might -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
   }
 }
 
