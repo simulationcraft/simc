@@ -4711,11 +4711,11 @@ void items::logic_loop_of_division( special_effect_t& effect )
     loop_of_division_cb_t( const special_effect_t& e ) : logic_loop_callback_t( e )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void trigger( action_t* a, void* s ) override
     {
       if ( listener->position() == POSITION_BACK || listener->position() == POSITION_RANGED_BACK )
       {
-        logic_loop_callback_t::execute( a, s );
+        logic_loop_callback_t::trigger( a, s );
       }
     }
   };
@@ -4747,7 +4747,7 @@ void items::logic_loop_of_recursion( special_effect_t& effect )
       logic_loop_callback_t( e ), max( static_cast<unsigned>( e.driver()->effectN( 1 ).base_value() ) )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void trigger( action_t* a, void* s ) override
     {
       int this_id = a->internal_id;
       auto it  = range::find_if( list, [a]( const llor_tracker_t& entry ) {
@@ -4771,7 +4771,7 @@ void items::logic_loop_of_recursion( special_effect_t& effect )
         }
         else  // full, execute
         {
-          logic_loop_callback_t::execute( a, s );
+          logic_loop_callback_t::trigger( a, s );
           list.clear();
         }
       }
@@ -4794,11 +4794,11 @@ void items::logic_loop_of_maintenance( special_effect_t& effect )
     loop_of_maintenance_cb_t( const special_effect_t& e ) : logic_loop_callback_t( e )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void trigger( action_t* a, void* s ) override
     {
       if ( listener->health_percentage() < 50 )
       {
-        logic_loop_callback_t::execute( a, s );
+        logic_loop_callback_t::trigger( a, s );
       }
     }
   };
