@@ -1210,8 +1210,8 @@ struct sim_t : private sc_thread_t
     bool                nazjatar = true;
     /// Whether the Shiver Venom Crossbow/Lance should assume the target has the Shiver Venom debuff
     bool                shiver_venom = false;
-    /// Ratio of Storm of the Eternal players that have the haste effect.
-    double              storm_of_the_eternal_haste_ratio = 1.0;
+    /// Ratio of Storm of the Eternal players that have the same effect as the player.
+    double              storm_of_the_eternal_ratio = 1.0;
   } bfa_opts;
 
   // Expansion specific data
