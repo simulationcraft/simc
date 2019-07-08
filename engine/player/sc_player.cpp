@@ -3135,7 +3135,6 @@ void player_t::create_buffs()
       buffs.seething_rage = make_buff( this, "seething_rage", find_spell( 297126 ) )
         ->set_default_value( find_spell( 297126 )->effectN( 1 ).percent() );
 
-      auto condensed_lifeforce = find_azerite_essence( "Condensed Life-Force" );
       buffs.guardian_of_azeroth = make_buff( this, "guardian_of_azeroth", find_spell( 295855 ) )
         ->set_default_value( find_spell( 295855 )->effectN( 1 ).percent() )
         ->add_invalidate( CACHE_HASTE );

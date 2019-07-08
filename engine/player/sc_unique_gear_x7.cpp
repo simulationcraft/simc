@@ -3275,6 +3275,8 @@ void items::nazjatar_proc_check( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+
+
 // Storm of the Eternal ===================================================
 void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 {
@@ -4609,7 +4611,7 @@ void items::cyclotronic_blast( special_effect_t& effect )
   {
     cyclotronic_blast_t( const special_effect_t& e ) : proc_t( e, "cyclotronic_blast", e.driver() )
     {
-      trigger_gcd = base_execute_time;
+      trigger_gcd = 0_ms;
       hasted_ticks = false;
     }
 
@@ -4705,15 +4707,15 @@ void items::logic_loop_of_division( special_effect_t& effect )
 
 void items::logic_loop_of_recursion( special_effect_t& effect )
 {
-  struct lor_target_t
+  struct llor_tracker_t
   {
     player_t* target;
-    std::vector<int> iid;
+    std::vector<int> action_ids;
   };
 
   struct loop_of_recursion_cb_t : public logic_loop_callback_t
   {
-    std::vector<lor_target_t> lor_list;
+    std::vector<llor_tracker_t> list;
     unsigned max;
 
     loop_of_recursion_cb_t( const special_effect_t& e ) :
@@ -4722,30 +4724,30 @@ void items::logic_loop_of_recursion( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* s ) override
     {
-      int a_id = a->internal_id;
-      auto it  = range::find_if( lor_list, [a]( const lor_target_t& lor ) {
-        return lor.target == a->target;
+      int this_id = a->internal_id;
+      auto it  = range::find_if( list, [a]( const llor_tracker_t& entry ) {
+        return entry.target == a->target;
       } );
-      if ( it == lor_list.end() )  // new target
+      if ( it == list.end() )  // new target
       {
-        lor_target_t tmp;
+        llor_tracker_t tmp;
         tmp.target = a->target;
-        tmp.iid.push_back( a_id );
-        lor_list.push_back( tmp );  // create new entry for target
+        tmp.action_ids.push_back( this_id );
+        list.push_back( tmp );  // create new entry for target
         return;
       }
 
-      auto it2 = range::find( it->iid, a_id );
-      if ( it2 == it->iid.end() )  // new action
+      auto it2 = range::find( it->action_ids, this_id );
+      if ( it2 == it->action_ids.end() )  // new action
       {
-        if ( it->iid.size() < max - 1 )  // not full
+        if ( it->action_ids.size() < max - 1 )  // not full
         {
-          it->iid.push_back( a_id );  // create new entry for action
+          it->action_ids.push_back( this_id );  // create new entry for action
         }
         else  // full, execute
         {
           logic_loop_callback_t::execute( a, s );
-          lor_list.clear();
+          list.clear();
         }
       }
     }
@@ -4791,7 +4793,7 @@ void items::overclocking_bit_band( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff<stat_buff_t>( effect.player, "overclocking_bit_band", effect.player->find_spell( 301886 ) )
-             ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+      ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
   }
 
   effect.player->sim->print_debug( "{} looking for Logic Loop to pair with...", effect.item->full_name() );
@@ -4827,11 +4829,7 @@ void items::shorting_bit_band( special_effect_t& effect )
     }
   };
 
-  auto action = effect.player->find_action( "shorting_bit_band" );
-  if ( !action )
-  {
-    action = create_proc_action<shorting_bit_band_t>( "shorting_bit_band", effect );
-  }
+  auto action = create_proc_action<shorting_bit_band_t>( "shorting_bit_band", effect );
 
   effect.player->sim->print_debug( "{} looking for Logic Loop to pair with...", effect.item->full_name() );
   auto loop_driver = find_logic_loop_effect( effect.player );
