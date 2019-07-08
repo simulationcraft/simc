@@ -4679,6 +4679,7 @@ void items::logic_loop_of_division( special_effect_t& effect )
     }
   };
 
+  // TODO: Does this trigger from periodic damage?
   effect.proc_flags_  = PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.proc_chance_ = 1.0;
