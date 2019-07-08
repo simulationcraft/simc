@@ -194,6 +194,8 @@ namespace items
   void logic_loop_of_maintenance( special_effect_t& );
   void overclocking_bit_band( special_effect_t& );
   void shorting_bit_band( special_effect_t& );
+  // 8.2.0 - Mechagon trinkets and special items
+  void hyperthread_wristwraps( special_effect_t& );
 }
 
 namespace util
@@ -4866,6 +4868,84 @@ void items::shorting_bit_band( special_effect_t& effect )
   effect.type = SPECIAL_EFFECT_NONE;
 }
 
+// Hyperthread Wristwraps
+
+void items::hyperthread_wristwraps( special_effect_t& effect )
+{
+  auto spell_tracker = new special_effect_t( effect.player );
+  spell_tracker->name_str = "hyperthread_wristwraps_spell_tracker";
+  spell_tracker->type = SPECIAL_EFFECT_EQUIP;
+  spell_tracker->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  spell_tracker->proc_chance_ = 1.0;
+  spell_tracker->proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL;
+  spell_tracker->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  effect.player->special_effects.push_back( spell_tracker );
+
+  struct spell_tracker_cb_t : public dbc_proc_callback_t
+  {
+    size_t max_size;
+    std::vector<action_t*> last_used;
+
+    spell_tracker_cb_t( const special_effect_t& effect, size_t size ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      max_size( size )
+    { }
+
+    void execute( action_t* a, action_state_t* ) override
+    {
+      listener->sim->print_debug( "Adding {} to Hyperthread Wristwraps tracked spells.", a->name_str );
+      last_used.push_back( a );
+      while ( last_used.size() > max_size )
+        last_used.erase( last_used.begin() );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      last_used.clear();
+    }
+  };
+
+  struct hyperthread_reduction_t : public proc_spell_t
+  {
+    timespan_t reduction;
+    spell_tracker_cb_t* tracker;
+
+    hyperthread_reduction_t( const special_effect_t& effect, spell_tracker_cb_t* cb ) :
+      proc_spell_t( effect ),
+      reduction( 1000 * effect.driver()->effectN( 2 ).time_value() ),
+      tracker( cb )
+    {
+      callbacks = false;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // Track which cooldowns have been reduces so far so that we don't
+      // apply the reduction to the same cooldown twice.
+      // TODO: Is that how this works?
+      std::vector<cooldown_t*> reduced_cds;
+      for ( auto a : tracker->last_used )
+      {
+        if ( range::find( reduced_cds, a->cooldown ) != reduced_cds.end() )
+        {
+          sim->print_debug( "Cooldown of action {} already reduced, skipping.", a->name_str );
+          continue;
+        }
+
+        sim->print_debug( "Reducing cooldown of action {} by {} s.", a->name_str, reduction.total_seconds() );
+        a->cooldown->adjust( -reduction );
+        reduced_cds.push_back( a->cooldown );
+      }
+    }
+  };
+
+  auto cb = new spell_tracker_cb_t( *spell_tracker, as<size_t>( effect.driver()->effectN( 1 ).base_value() ) );
+  effect.execute_action = create_proc_action<hyperthread_reduction_t>( "hyperthread_wristwraps", effect, cb );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -5025,6 +5105,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 303361, items::shiver_venom_lance );
   register_special_effect( 303564, items::ashvanes_razor_coral );
   register_special_effect( 296963, items::dribbling_inkpod );
+  register_special_effect( 300142, items::hyperthread_wristwraps );
   // 8.2 Mechagon combo rings
   register_special_effect( 300124, items::logic_loop_of_division );
   register_special_effect( 300125, items::logic_loop_of_recursion );
