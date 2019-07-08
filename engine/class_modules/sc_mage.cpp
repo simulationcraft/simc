@@ -373,6 +373,12 @@ public:
       std::unique_ptr<buff_stack_benefit_t> arcane_blast;
       std::unique_ptr<buff_stack_benefit_t> nether_tempest;
     } arcane_charge;
+
+    struct blaster_master_benefits_t
+    {
+      std::unique_ptr<buff_stack_benefit_t> combustion;
+      std::unique_ptr<buff_stack_benefit_t> rune_of_power;
+    } blaster_master;
   } benefits;
 
   // Buffs
@@ -1715,6 +1721,11 @@ struct fire_mage_spell_t : public mage_spell_t
       p()->procs.ignite_applied->occur();
 
     residual_action::trigger( p()->ignite, s->target, amount );
+
+    if ( p()->benefits.blaster_master.combustion && p()->buffs.combustion->check() )
+      p()->benefits.blaster_master.combustion->update();
+    if ( p()->benefits.blaster_master.rune_of_power && p()->buffs.rune_of_power->check() )
+      p()->benefits.blaster_master.rune_of_power->update();
   }
 
   bool firestarter_active( player_t* target ) const
@@ -5428,12 +5439,23 @@ void mage_t::init_benefits()
 {
   player_t::init_benefits();
 
-  if ( specialization() == MAGE_ARCANE )
+  switch ( specialization() )
   {
-    benefits.arcane_charge.arcane_barrage = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Arcane Barrage" );
-    benefits.arcane_charge.arcane_blast   = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Arcane Blast" );
-    if ( talents.nether_tempest->ok() )
-      benefits.arcane_charge.nether_tempest = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Nether Tempest" );
+    case MAGE_ARCANE:
+      benefits.arcane_charge.arcane_barrage = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Arcane Barrage" );
+      benefits.arcane_charge.arcane_blast   = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Arcane Blast" );
+      if ( talents.nether_tempest->ok() )
+        benefits.arcane_charge.nether_tempest = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Nether Tempest" );
+      break;
+    case MAGE_FIRE:
+      if ( azerite.blaster_master.enabled() )
+      {
+        benefits.blaster_master.combustion    = std::make_unique<buff_stack_benefit_t>( buffs.blaster_master, "Combustion" );
+        benefits.blaster_master.rune_of_power = std::make_unique<buff_stack_benefit_t>( buffs.blaster_master, "Rune of Power" );
+      }
+      break;
+    default:
+      break;
   }
 }
 
