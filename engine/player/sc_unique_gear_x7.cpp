@@ -731,10 +731,12 @@ void enchants::machinists_brilliance( special_effect_t& effect )
     crit = make_buff<stat_buff_t>( effect.player, "machinists_brilliance_crit", effect.player->find_spell( 298431 ) );
   }
   auto haste = buff_t::find( effect.player, "machinists_brilliance_haste" );
+  if ( !haste )
   {
     haste = make_buff<stat_buff_t>( effect.player, "machinists_brilliance_haste", effect.player->find_spell( 300761 ) );
   }
   auto mastery = buff_t::find( effect.player, "machinists_brilliance_mastery" );
+  if ( !mastery )
   {
     mastery = make_buff<stat_buff_t>( effect.player, "machinists_brilliance_mastery", effect.player->find_spell( 300762 ) );
   }
@@ -761,10 +763,12 @@ void enchants::force_multiplier( special_effect_t& effect )
     crit = make_buff<stat_buff_t>( effect.player, "force_multiplier_crit", effect.player->find_spell( 300801 ) );
   }
   auto haste = buff_t::find( effect.player, "force_multiplier_haste" );
+  if ( !haste )
   {
     haste = make_buff<stat_buff_t>( effect.player, "force_multiplier_haste", effect.player->find_spell( 300802 ) );
   }
   auto mastery = buff_t::find( effect.player, "force_multiplier_mastery" );
+  if ( !mastery )
   {
     mastery = make_buff<stat_buff_t>( effect.player, "force_multiplier_mastery", effect.player->find_spell( 300809 ) );
   }
@@ -3577,7 +3581,7 @@ void items::zaquls_portal_key( special_effect_t& effect )
     void_negotiation_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* ) override
     {
       // TODO: determine when the appropriate time to force moving() is (or if trigger_movement() with a distance is
       // more appropriate). For now implemented to force you to move immeidately as the void tear spawns (assuming you
@@ -3589,7 +3593,9 @@ void items::zaquls_portal_key( special_effect_t& effect )
 
       listener->sim->print_debug( "za'qul's portal key portal spawned, void_negotiation scheduled in {} at {}",
         total_delay, listener->sim->current_time() );
-      make_event( listener->sim, total_delay, [this] { buff->trigger(); } );
+      make_event( listener->sim, total_delay, [this] {
+        buff->trigger();
+      } );
     }
   };
 
@@ -3993,9 +3999,9 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
       }
       else  // second time
       {
+        proc->deactivate();
         buff->trigger( td->debuff.razor_coral->stack() );
         td->debuff.razor_coral->expire();
-        proc->deactivate();
       }
     }
   };
@@ -4058,10 +4064,80 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
  * id=302491 damage spell
  * id=302565 stacking debuff
  * id=302597 unknown
+ * TODO: Change damage handling to trigger as soon as target reaches 30% hp, not waiting for the next rppm proc.
  */
+struct conductive_ink_constructor_t : public item_targetdata_initializer_t
+{
+  conductive_ink_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
+  {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td->source );
+    if ( !effect )
+    {
+      td->debuff.conductive_ink = make_buff( *td, "conductive_ink" );
+      return;
+    }
+    assert( !td->debuff.conductive_ink );
+
+    td->debuff.conductive_ink =
+      make_buff( *td, "conductive_ink_debuff", td->source->find_spell( 302565 ) )->set_activated( false );
+    td->debuff.conductive_ink->reset();
+  }
+};
+
 void items::dribbling_inkpod( special_effect_t& effect )
 {
+  struct conductive_ink_cb_t : public dbc_proc_callback_t
+  {
+    double hp_pct;
+    action_t* action;
 
+    conductive_ink_cb_t( const special_effect_t& e, action_t* a ) :
+      dbc_proc_callback_t( e.player, e ), hp_pct( e.driver()->effectN( 3 ).base_value() ), action( a )
+    {}
+
+    void execute( action_t* a, action_state_t* s )
+    {
+      auto td = listener->get_target_data( s->target );
+      assert( td );
+      assert( td->debuff.conductive_ink );
+
+      if ( s->target->health_percentage() >= hp_pct )  // over %, stack debuff
+      {
+        td->debuff.conductive_ink->trigger();
+      }
+      // BOOM. But should happen as soon as target reaches 30%, not waiting until the next rppm proc we do like here.
+      else if ( td->debuff.conductive_ink->check() )
+      {
+        action->set_target( s->target );
+        action->execute();
+        td->debuff.conductive_ink->expire();
+      }
+    }
+  };
+
+  struct conductive_ink_t : public proc_t
+  {
+    conductive_ink_t( const special_effect_t& e ) : proc_t( e, "conductive_ink", e.player->find_spell( 302491 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    double action_multiplier() const override
+    {
+      auto td = player->get_target_data( target );
+      assert( td );
+      assert( td->debuff.conductive_ink );
+
+      return proc_t::action_multiplier() * td->debuff.conductive_ink->stack();
+    }
+  };
+
+  auto action = create_proc_action<conductive_ink_t>( "conductive_ink", effect );
+
+  new conductive_ink_cb_t( effect, action );
 }
 
 // Punchcard stuff ========================================================
@@ -4693,7 +4769,7 @@ void items::logic_loop_of_maintenance( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* s ) override
     {
-      if ( listener->resources.current[ RESOURCE_HEALTH ] / listener->resources.max[ RESOURCE_HEALTH ] < 0.5 )
+      if ( listener->health_percentage() < 50 )
       {
         logic_loop_callback_t::execute( a, s );
       }
@@ -4974,6 +5050,7 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
   sim->register_target_data_initializer( briny_barnacle_constructor_t( 159619, items ) );
   sim->register_target_data_initializer( potion_of_focused_resolve_t() );
   sim->register_target_data_initializer( razor_coral_constructor_t( 169311, items ) );
+  sim->register_target_data_initializer( conductive_ink_constructor_t( 169319, items ) );
 }
 
 void unique_gear::register_hotfixes_bfa()
