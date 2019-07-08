@@ -378,6 +378,7 @@ public:
     {
       std::unique_ptr<buff_stack_benefit_t> combustion;
       std::unique_ptr<buff_stack_benefit_t> rune_of_power;
+      std::unique_ptr<buff_stack_benefit_t> searing_touch;
     } blaster_master;
   } benefits;
 
@@ -1722,10 +1723,16 @@ struct fire_mage_spell_t : public mage_spell_t
 
     residual_action::trigger( p()->ignite, s->target, amount );
 
-    if ( p()->benefits.blaster_master.combustion && p()->buffs.combustion->check() )
-      p()->benefits.blaster_master.combustion->update();
-    if ( p()->benefits.blaster_master.rune_of_power && p()->buffs.rune_of_power->check() )
-      p()->benefits.blaster_master.rune_of_power->update();
+    if ( s->chain_target > 0 )
+      return;
+
+    auto& bm = p()->benefits.blaster_master;
+    if ( bm.combustion && p()->buffs.combustion->check() )
+      bm.combustion->update();
+    if ( bm.rune_of_power && p()->buffs.rune_of_power->check() )
+      bm.rune_of_power->update();
+    if ( bm.searing_touch && s->target->health_percentage() < p()->talents.searing_touch->effectN( 1 ).base_value() )
+      bm.searing_touch->update();
   }
 
   bool firestarter_active( player_t* target ) const
@@ -5452,6 +5459,8 @@ void mage_t::init_benefits()
       {
         benefits.blaster_master.combustion    = std::make_unique<buff_stack_benefit_t>( buffs.blaster_master, "Combustion" );
         benefits.blaster_master.rune_of_power = std::make_unique<buff_stack_benefit_t>( buffs.blaster_master, "Rune of Power" );
+        if ( talents.searing_touch->ok() )
+          benefits.blaster_master.searing_touch = std::make_unique<buff_stack_benefit_t>( buffs.blaster_master, "Searing Touch" );
       }
       break;
     default:
