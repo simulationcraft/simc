@@ -819,6 +819,14 @@ azerite_essence_t azerite_essence_state_t::get_essence( unsigned id ) const
   return { m_player, it->type(), it->rank(), &essence };
 }
 
+// TODO: Validation
+bool azerite_essence_state_t::add_essence( essence_type type, unsigned id, unsigned rank )
+{
+  m_state.emplace_back( type, id, rank );
+  return true;
+}
+
+
 void azerite_essence_state_t::copy_state( const std::unique_ptr<azerite_essence_state_t>& other )
 {
   if ( other.get() == this )
@@ -1227,44 +1235,58 @@ std::tuple<int, int, int > compute_value( const azerite_power_t& power, const sp
 
 void parse_blizzard_azerite_information( item_t& item, const rapidjson::Value& data )
 {
-  if ( data.HasMember( "azeriteEmpoweredItem" ) && data[ "azeriteEmpoweredItem" ].IsObject() )
+  if ( !data.HasMember( "azerite_details" ) )
   {
-    const auto& azerite_data = data[ "azeriteEmpoweredItem" ];
+    return;
+  }
 
-    if ( azerite_data.HasMember( "azeritePowers" ) && azerite_data[ "azeritePowers" ].IsArray() )
+  if ( data[ "azerite_details" ].HasMember( "selected_powers" ) )
+  {
+    for ( auto idx = 0u, end = data[ "azerite_details" ][ "selected_powers" ].Size(); idx < end; ++idx )
     {
-      for ( rapidjson::SizeType i = 0, end = azerite_data[ "azeritePowers" ].Size(); i < end; i++ )
+      const auto& power_data = data[ "azerite_details" ][ "selected_powers" ][ idx ];
+
+      if ( !power_data.HasMember( "id" ) )
       {
-        const auto& power = azerite_data[ "azeritePowers" ][ i ];
-        if ( !power.IsObject() || !power.HasMember( "id" ) )
-        {
-          continue;
-        }
-
-        auto id = power[ "id" ].GetUint();
-        if ( id == 0 )
-        {
-          continue;
-        }
-
-        item.parsed.azerite_ids.push_back( id );
-
-        if ( power.HasMember( "bonusListId" ) && power[ "bonusListId" ].GetInt() > 0 )
-        {
-          item.sim->error( "Player {} has non-zero bonusListId {} for item {}",
-              item.player->name(), power[ "bonusListId" ].GetInt(), item.name() );
-        }
+        throw std::runtime_error( "Unable to parse Azerite power" );
       }
+
+      item.parsed.azerite_ids.push_back( power_data[ "id" ].GetUint() );
     }
   }
 
-  if ( data.HasMember( "azeriteItem" ) )
+  if ( data[ "azerite_details" ].HasMember( "selected_essences" ) )
   {
-    const auto& azerite_data = data[ "azeriteItem" ];
-    if ( azerite_data.HasMember( "azeriteLevel" ) )
+    for ( auto idx = 0u, end = data[ "azerite_details" ][ "selected_essences" ].Size(); idx < end; ++idx )
     {
-      item.parsed.azerite_level = azerite_data[ "azeriteLevel" ].GetUint();
+      const auto& essence_data = data[ "azerite_details" ][ "selected_essences" ][ idx ];
+
+      if ( !essence_data.HasMember( "slot" ) )
+      {
+        throw std::runtime_error( "Unable to parse Azerite essence basic information" );
+      }
+
+      if ( !essence_data.HasMember( "essence" ) )
+      {
+        continue;
+      }
+
+      if ( !essence_data[ "essence" ].HasMember( "id" ) || !essence_data.HasMember( "rank" ) )
+      {
+        throw std::runtime_error( "Unable to parse Azerite essence" );
+      }
+
+      item.player->azerite_essence->add_essence(
+        essence_data[ "slot" ].GetInt() == 0 ? essence_type::MAJOR : essence_type::MINOR,
+        essence_data[ "essence" ][ "id" ].GetUint(),
+        essence_data[ "rank" ].GetUint() );
     }
+  }
+
+  if ( data[ "azerite_details" ].HasMember( "level" ) &&
+       data[ "azerite_details" ][ "level" ].HasMember( "value" ) )
+  {
+    item.parsed.azerite_level = data[ "azerite_details" ][ "level" ][ "value" ].GetUint();
   }
 }
 

@@ -7667,6 +7667,8 @@ player_t* from_local_json( sim_t*,
 bool download_item( item_t&, cache::behavior_e b = cache::items() );
 void token_load();
 void token_save();
+
+slot_e translate_api_slot( const std::string& slot_str );
 }
 
 // HTTP Download  ===========================================================

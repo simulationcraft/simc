@@ -1048,6 +1048,10 @@ std::string item_t::encoded_item() const
 
   if ( ! option_drop_level_str.empty() )
     s << ",drop_level=" << option_drop_level_str;
+  else if ( parsed.drop_level > 0 )
+  {
+    s << ",drop_level=" << parsed.drop_level;
+  }
 
   return s.str();
 }
