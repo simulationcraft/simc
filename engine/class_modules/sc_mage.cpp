@@ -4493,7 +4493,9 @@ struct freeze_t : public action_t
     if ( !m->pets.water_elemental || m->pets.water_elemental->is_sleeping() )
       return false;
 
-    if ( !m->pets.water_elemental->action.freeze->ready() )
+    // Make sure the cooldown is actually ready and not just within cooldown tolerance.
+    auto freeze = m->pets.water_elemental->action.freeze;
+    if ( !freeze->cooldown->up() || !freeze->ready() )
       return false;
 
     return action_t::ready();
