@@ -79,17 +79,19 @@ actions.cds+=/shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_
 # (Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in.
 actions.cds+=/symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
 actions.cds+=/call_action_list,name=essences,if=!stealthed.all&dot.nightblade.ticking
+# Pool for Tornado pre-SoD with ShD ready when not running SF.
+actions.cds+=/pool_resource,for_next=1,if=!talent.shadow_focus.enabled
+# Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally.
+actions.cds+=/shuriken_tornado,if=energy>=60&dot.nightblade.ticking&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1
 # Use Symbols on cooldown (after first Nightblade) unless we are going to pop Tornado and do not have Shadow Focus.
-actions.cds+=/symbols_of_death,if=dot.nightblade.ticking&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|spell_targets.shuriken_storm<3|!cooldown.shuriken_tornado.up)
+actions.cds+=/symbols_of_death,if=dot.nightblade.ticking&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP.
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)
 # If no adds will die within the next 30s, use MfD on boss without any CP and no stealth.
 actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.all&combo_points.deficit>=cp_max_spend
 actions.cds+=/shadow_blades,if=combo_points.deficit>=2+stealthed.all
-# At 3+ without Shadow Focus use Tornado with SoD and Dance ready. We will pop those before the first storm comes in.
-actions.cds+=/shuriken_tornado,if=spell_targets>=3&!talent.shadow_focus.enabled&dot.nightblade.ticking&!stealthed.all&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1
-# At 3+ with Shadow Focus use Tornado with SoD already up.
-actions.cds+=/shuriken_tornado,if=spell_targets>=3&talent.shadow_focus.enabled&dot.nightblade.ticking&buff.symbols_of_death.up
+# With SF, if not already done, use Tornado with SoD up.
+actions.cds+=/shuriken_tornado,if=talent.shadow_focus.enabled&dot.nightblade.ticking&buff.symbols_of_death.up
 actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled&!raid_event.adds.up
 
 # Essences

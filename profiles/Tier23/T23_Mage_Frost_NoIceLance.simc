@@ -10,7 +10,7 @@ talents=1013023
 # Default consumables
 potion=unbridled_fury
 flask=greater_flask_of_endless_fathoms
-food=biltong
+food=abyssalfried_rissole
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -72,14 +72,14 @@ actions.cooldowns+=/lights_judgment
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
 
-actions.essences=focused_azerite_beam
-actions.essences+=/memory_of_lucid_dreams,if=buff.icicles.stack<2&cooldown.frozen_orb.remains>execute_time
-actions.essences+=/blood_of_the_enemy,if=buff.icicles.stack=5&buff.brain_freeze.react|!talent.glacial_spike.enabled|active_enemies>4
-actions.essences+=/purifying_blast
-actions.essences+=/ripple_in_space
-actions.essences+=/concentrated_flame,line_cd=6
+actions.essences=focused_azerite_beam,if=buff.rune_of_power.down|active_enemies>3
+actions.essences+=/memory_of_lucid_dreams,if=active_enemies<5&(buff.icicles.stack<=1|!talent.glacial_spike.enabled)&cooldown.frozen_orb.remains>10
+actions.essences+=/blood_of_the_enemy,if=(talent.glacial_spike.enabled&buff.icicles.stack=5&(buff.brain_freeze.react|prev_gcd.1.ebonbolt))|((active_enemies>3|!talent.glacial_spike.enabled)&(prev_gcd.1.frozen_orb|ground_aoe.frozen_orb.remains>5))
+actions.essences+=/purifying_blast,if=buff.rune_of_power.down|active_enemies>3
+actions.essences+=/ripple_in_space,if=buff.rune_of_power.down|active_enemies>3
+actions.essences+=/concentrated_flame,line_cd=6,if=buff.rune_of_power.down
 actions.essences+=/the_unbound_force,if=buff.reckless_force.up
-actions.essences+=/worldvein_resonance
+actions.essences+=/worldvein_resonance,if=buff.rune_of_power.down|active_enemies>3
 
 actions.movement=blink_any,if=movement.distance>10
 actions.movement+=/ice_floes,if=buff.ice_floes.down
