@@ -7885,7 +7885,7 @@ std::string shaman_t::default_flask() const
 {
   std::string elemental_flask =
       ( true_level > 110 )
-          ? "flask_of_endless_fathoms"
+          ? "greater_flask_of_endless_fathoms"
           : ( true_level > 100 )
                 ? "whispered_pact"
                 : ( true_level >= 90 )
@@ -7894,7 +7894,7 @@ std::string shaman_t::default_flask() const
 
   std::string enhance_flask =
       ( true_level > 110 )
-          ? "currents"
+          ? "greater_flask_of_the_currents"
           : ( true_level > 100 )
                 ? "seventh_demon"
                 : ( true_level >= 90 )
@@ -7909,7 +7909,7 @@ std::string shaman_t::default_flask() const
 std::string shaman_t::default_food() const
 {
   std::string elemental_food = ( true_level > 110 )
-                                   ? "bountiful_captains_feast"
+                                   ? "famine_evaluator_and_snack_table"
                                    : ( true_level > 100 )
                                          ? "lemon_herb_filet"
                                          : ( true_level > 90 )
@@ -7919,7 +7919,7 @@ std::string shaman_t::default_food() const
                                                      : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   std::string enhance_food = ( true_level > 110 )
-                                 ? "bountiful_captains_feast"
+                                 ? "famine_evaluator_and_snack_table"
                                  : ( true_level > 100 )
                                        ? "lemon_herb_filet"
                                        : ( true_level > 90 )

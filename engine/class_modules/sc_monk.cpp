@@ -9348,7 +9348,7 @@ std::string monk_t::default_flask() const
   {
     case MONK_BREWMASTER:
       if ( true_level > 110 )
-        return "currents";
+        return "greater_flask_of_the_currents";
       else if ( true_level > 100 )
         return "seventh_demon";
       else if ( true_level > 90 )
@@ -9366,7 +9366,7 @@ std::string monk_t::default_flask() const
       break;
     case MONK_MISTWEAVER:
       if ( true_level > 110 )
-        return "endless_fathoms";
+        return "greater_flask_of_endless_fathoms";
       else if ( true_level > 100 )
         return "whispered_pact";
       else if ( true_level > 90 )
@@ -9476,7 +9476,7 @@ std::string monk_t::default_food() const
   {
     case MONK_BREWMASTER:
       if ( true_level > 110 )
-        return "bountiful_captains_feast";
+        return "famine_evaluator_and_snack_table";
       else if ( true_level > 100 )
         return "fishbrul_special";
       else if ( true_level > 90 )
@@ -9494,7 +9494,7 @@ std::string monk_t::default_food() const
       break;
     case MONK_MISTWEAVER:
       if ( true_level > 110 )
-        return "bountiful_captains_feast";
+        return "famine_evaluator_and_snack_table";
       else if ( true_level > 100 )
         return "lavish_suramar_feast";
       else if ( true_level > 90 )
@@ -9512,7 +9512,7 @@ std::string monk_t::default_food() const
       break;
     case MONK_WINDWALKER:
       if ( true_level > 110 )
-        return "bountiful_captains_feast";
+        return "famine_evaluator_and_snack_table";
       else if ( true_level > 100 )
         return "lavish_suramar_feast";
       else if ( true_level > 90 )
