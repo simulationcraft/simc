@@ -5919,7 +5919,7 @@ void rogue_t::init_action_list()
         if ( items[i].name_str == "mydas_talisman" )
           cds -> add_action( "use_item,name=" + items[i].name_str, "Use on cooldown." );
         else if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.all&dot.nightblade.ticking" );
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.all&dot.nightblade.ticking&!buff.symbols_of_death.up&energy.deficit>=30" );
         else // Use with Symbols default
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.symbols_of_death.up|target.time_to_die<20", "Falling back to default item usage: Use with Symbols of Death." );
       }
