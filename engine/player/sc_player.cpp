@@ -8409,6 +8409,7 @@ struct use_items_t : public action_t
     custom_slots( false )
   {
     callbacks = may_miss = may_crit = may_block = may_parry = false;
+    special = true;
 
     trigger_gcd = timespan_t::zero();
 
