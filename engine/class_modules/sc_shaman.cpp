@@ -262,6 +262,8 @@ public:
   // Misc
   bool lava_surge_during_lvb;
   std::vector<counter_t*> counters;
+  /// Shaman ability cooldowns
+  std::vector<cooldown_t*> ability_cooldowns;
   player_t* recent_target =
       nullptr;  // required for Earthen Rage, whichs' ticks damage the most recently attacked target
 
@@ -388,6 +390,9 @@ public:
     buff_t* strength_of_earth;
     buff_t* tectonic_thunder;
     buff_t* thunderaans_fury;
+
+    // Essences
+    buff_t* thundercharge;
   } buff;
 
   // Cooldowns
@@ -1193,9 +1198,31 @@ public:
     }
   }
 
+  void init_finished() override
+  {
+    ab::init_finished();
+
+    if ( this->cooldown->duration > timespan_t::zero() )
+    {
+      p()->ability_cooldowns.push_back( this->cooldown );
+    }
+  }
+
   double composite_attack_power() const override
   {
     double m = ab::composite_attack_power();
+
+    return m;
+  }
+
+  double recharge_multiplier() const override
+  {
+    double m = ab::recharge_multiplier();
+
+    m *= 1.0 / ( 1.0 + p()->buff.thundercharge->stack_value() );
+
+    // TODO: Current presumption is self-cast, giving multiplicative effect
+    m *= 1.0 / ( 1.0 + p()->buff.thundercharge->stack_value() );
 
     return m;
   }
@@ -1225,11 +1252,6 @@ public:
     }
 
     return m;
-  }
-
-  void init_finished() override
-  {
-    ab::init_finished();
   }
 
   shaman_t* p()
@@ -6277,9 +6299,24 @@ struct lightning_lasso_t : public shaman_spell_t
     trigger_gcd        = p()->find_spell( 305483 )->gcd();
   }
 
-  timespan_t tick_time( const action_state_t* s ) const override
+  timespan_t tick_time( const action_state_t* /* s */ ) const override
+  { return base_tick_time; }
+};
+
+struct thundercharge_t : public shaman_spell_t
+{
+  thundercharge_t( shaman_t* player, const std::string& options_str )
+    : shaman_spell_t( "thundercharge", player, player->find_spell( 204366 ), options_str )
   {
-    return base_tick_time;
+    background = !p()->azerite_essence.conflict_and_strife.is_major();
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p()->buff.thundercharge->trigger();
   }
 };
 
@@ -6538,6 +6575,8 @@ action_t* shaman_t::create_action( const std::string& name, const std::string& o
     return new sundering_t( this, options_str );
   if ( name == "windstrike" )
     return new windstrike_t( this, options_str );
+  if ( util::str_compare_ci( name, "thundercharge" ) )
+    return new thundercharge_t( this, options_str );
 
   // restoration
   if ( name == "spiritwalkers_grace" )
@@ -6554,6 +6593,21 @@ action_t* shaman_t::create_action( const std::string& name, const std::string& o
     return new healing_wave_t( this, options_str );
   if ( name == "riptide" )
     return new riptide_t( this, options_str );
+
+  // Generic essence handling
+  if ( ( util::str_compare_ci( name, "conflict_and_strife" ) ||
+         util::str_compare_ci( name, "heart_essence" ) ) &&
+       azerite_essence.conflict_and_strife.is_major() )
+  {
+    if ( specialization() == SHAMAN_ENHANCEMENT )
+    {
+      return new thundercharge_t( this, options_str );
+    }
+    else if ( specialization() == SHAMAN_ELEMENTAL )
+    {
+      return new lightning_lasso_t( this, options_str );
+    }
+  }
 
   return player_t::create_action( name, options_str );
 }
@@ -7725,6 +7779,19 @@ void shaman_t::create_buffs()
   buff.roiling_storm_buff_driver = new roiling_storm_buff_driver_t( this );
   buff.strength_of_earth         = new strength_of_earth_buff_t( this );
   buff.thunderaans_fury          = new thunderaans_fury_buff_t( this );
+
+  // Azerite Essences
+  buff.thundercharge             = make_buff( this, "thundercharge", find_spell( 204366 ) )
+                                   ->set_cooldown( timespan_t::zero() )
+                                   ->set_default_value( find_spell( 204366 )->effectN( 1 ).percent() )
+                                   ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+                                     range::for_each( ability_cooldowns, []( cooldown_t* cd ) {
+                                         if ( cd->down() )
+                                         {
+                                           cd->adjust_recharge_multiplier();
+                                         }
+                                     } );
+                                   } );
 
   //
   // Enhancement
