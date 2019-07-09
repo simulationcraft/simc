@@ -2327,6 +2327,7 @@ struct item_t
     std::array<int, MAX_GEM_SLOTS>                   gem_id;
     std::array<std::vector<unsigned>, MAX_GEM_SLOTS> gem_bonus_id;
     std::array<unsigned, MAX_GEM_SLOTS>              gem_ilevel;
+    std::array<int, MAX_GEM_SLOTS>                   gem_actual_ilevel;
     std::array<int, MAX_GEM_SLOTS>                   gem_color;
     std::vector<int>                                 bonus_id;
     std::vector<stat_pair_t>                         gem_stats, meta_gem_stats, socket_bonus_stats;
@@ -2339,9 +2340,6 @@ struct item_t
     std::vector<std::string>                         source_list;
     timespan_t                                       initial_cd;
     unsigned                                         drop_level;
-    std::array<std::vector<unsigned>, MAX_GEM_SLOTS> relic_data;
-    std::array<unsigned, MAX_GEM_SLOTS>              relic_ilevel;
-    std::array<unsigned, MAX_GEM_SLOTS>              relic_bonus_ilevel;
     std::vector<unsigned>                            azerite_ids;
 
     parsed_input_t() :
@@ -2354,9 +2352,8 @@ struct item_t
       range::fill( gem_id, 0 );
       range::fill( bonus_id, 0 );
       range::fill( gem_color, SOCKET_COLOR_NONE );
-      range::fill( relic_bonus_ilevel, 0 );
-      range::fill( relic_ilevel, 0 );
       range::fill( gem_ilevel, 0 );
+      range::fill( gem_actual_ilevel, 0 );
     }
   } parsed;
 
@@ -2393,8 +2390,6 @@ struct item_t
   std::string option_bonus_id_str;
   std::string option_initial_cd_str;
   std::string option_drop_level_str;
-  std::string option_relic_id_str;
-  std::string option_relic_ilevel_str;
   std::string option_azerite_powers_str;
   std::string option_azerite_level_str;
   double option_initial_cd;
