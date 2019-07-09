@@ -9,7 +9,7 @@ talents=2020022
 azerite_essences=14:3:1/27:3:0/12:3:0
 
 # Default consumables
-potion=potion_of_focused_resolve
+potion=potion_of_unbridled_fury
 flask=greater_flask_of_the_currents
 food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
