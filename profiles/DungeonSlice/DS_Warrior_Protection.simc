@@ -6,6 +6,7 @@ race=tauren
 role=tank
 position=front
 talents=1223211
+azerite_essences=300573:1:0/300575:1:0/300576:1:0
 
 # Default consumables
 potion=superior_battle_potion_of_strength
