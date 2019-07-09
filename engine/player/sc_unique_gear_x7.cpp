@@ -183,6 +183,7 @@ namespace items
   void dribbling_inkpod( special_effect_t& );
   void reclaimed_shock_coil( special_effect_t& );
   void dreams_end( special_effect_t& );
+  void divers_folly( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -4227,6 +4228,118 @@ void items::dreams_end( special_effect_t& effect )
   new delirious_frenzy_cb_t( effect );
 }
 
+/**Diver's Folly
+ * Auto attack has a chance to proc a buff. When buff is up, store damage. When buff ends, the next auto attack will
+ * discharge the stored damage.
+ * id=303353 driver, e#1 is % of damage stored by buff, e#2 is targets hit by discharge
+ * id=303580 buff spell (driver->trigger), stores damage
+ * id=303583 discharge damage spell
+ * id=303621 driver for discharge
+ * TODO: What happens when the main buff stacks? Can you proc the main buff again from the AA that procs the discharge?
+ */
+
+void items::divers_folly( special_effect_t& effect )
+{
+  // Primary driver callback. Procs buff on AA.
+  struct divers_folly_cb_t : public dbc_proc_callback_t
+  {
+    divers_folly_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {}
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      listener->buffs.bioelectric_charge->trigger();
+    }
+  };
+
+  // Buff to store damage. Activates secondary driver on expiration.
+  struct bioelectric_charge_buff_t : public buff_t
+  {
+    dbc_proc_callback_t* proc2;
+
+    bioelectric_charge_buff_t( const special_effect_t& e, dbc_proc_callback_t* cb ) :
+      buff_t( e.player, "bioelectric_charge", e.trigger(), e.item ), proc2( cb )
+    {}
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      proc2->proc_action->base_dd_min = value();
+      proc2->proc_action->base_dd_max = value();
+      proc2->activate();
+      buff_t::expire_override( s, d );
+    }
+  };
+
+  // Secondary driver callback. Executes discharge action on next AA.
+  struct bioelectric_charge_cb_t : public dbc_proc_callback_t
+  {
+    timespan_t duration;
+    event_t* end_cb;
+
+    bioelectric_charge_cb_t( const special_effect_t& e ) :
+      dbc_proc_callback_t( e.player, e ), duration( e.driver()->duration() )
+    {}
+
+    void activate() override
+    {
+      dbc_proc_callback_t::activate();
+      // Spell data suggests you have 15s to perform the AA to discharge
+      end_cb = make_event( listener->sim, duration, [this] {
+        listener->sim->print_debug("Bioelectric Charge (Diver's Folly) discharge expired without auto-attack...");
+        deactivate();
+      } );
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      listener->sim->print_debug(
+        "Bioelectric Charge (Diver's Folly) discharged for {} damage!", proc_action->base_dd_min );
+      dbc_proc_callback_t::execute( a, s );
+      event_t::cancel( end_cb );
+      deactivate();
+    }
+  };
+
+  // effect for secondary proc that activates after buff expires, triggers on next melee hit to discharge
+  auto second      = new special_effect_t( effect.player );
+  second->type     = effect.type;
+  second->source   = effect.source;
+  second->spell_id = 303621;
+
+  // discharge action, executed by secondary proc
+  auto action2 = create_proc_action<proc_t>( "bioelectric_charge", effect, "bioelectric_charge", 303583 );
+  action2->aoe = effect.driver()->effectN( 2 ).base_value();
+
+  second->execute_action = action2;
+  effect.player->special_effects.push_back( second );
+
+  // secondary proc callback
+  auto proc2 = new bioelectric_charge_cb_t( *second );
+  proc2->deactivate();
+  proc2->initialize();
+
+  if ( !effect.player->buffs.bioelectric_charge )
+  {
+    double pct = effect.driver()->effectN( 1 ).percent();
+    auto buff  = make_buff<bioelectric_charge_buff_t>( effect, proc2 );
+
+    effect.player->buffs.bioelectric_charge = buff;
+    effect.player->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [buff, pct]( dmg_e, action_state_t* s ) {
+      if ( !buff->check() )
+        return assessor::CONTINUE;
+
+      double old_  = buff->current_value;
+      double this_ = s->result_amount * pct;
+      buff->sim->print_debug( "Bioelectric Charge (Diver's Folly) storing {}({}% of {}) damage from {}: {} -> {}",
+        this_, pct, s->result_amount, s->action->name(), old_, old_ + this_ );
+      buff->current_value += this_;
+      return assessor::CONTINUE;
+    } );
+  }
+
+  new divers_folly_cb_t( effect );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -5187,6 +5300,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 300142, items::hyperthread_wristwraps );
   register_special_effect( 301753, items::reclaimed_shock_coil );
   register_special_effect( 303356, items::dreams_end );
+  register_special_effect( 303353, items::divers_folly );
   // 8.2 Mechagon combo rings
   register_special_effect( 300124, items::logic_loop_of_division );
   register_special_effect( 300125, items::logic_loop_of_recursion );
