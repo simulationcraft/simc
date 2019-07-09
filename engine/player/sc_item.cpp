@@ -665,8 +665,8 @@ void item_t::parse_options()
   options.push_back(opt_string("bonus_id", option_bonus_id_str));
   options.push_back(opt_string("initial_cd", option_initial_cd_str));
   options.push_back(opt_string("drop_level", option_drop_level_str));
-  options.push_back(opt_string("relic_id", option_relic_id_str));
-  options.push_back(opt_string("relic_ilevel", option_relic_ilevel_str));
+  options.push_back(opt_string("relic_id", option_gem_bonus_id_str));
+  options.push_back(opt_string("relic_ilevel", option_gem_ilevel_str));
   options.push_back(opt_string("azerite_powers", option_azerite_powers_str));
   options.push_back(opt_string("azerite_level", option_azerite_level_str));
   options.push_back(opt_string("context", DUMMY_CONTEXT));
@@ -760,45 +760,6 @@ void item_t::parse_options()
       }
 
       ++gem_idx;
-    }
-  }
-
-  if ( ! option_relic_id_str.empty() )
-  {
-    std::vector<std::string> relic_split = util::string_split( option_relic_id_str, "/" );
-    size_t relic_slot = 0;
-    for ( const auto& relic_str : relic_split )
-    {
-      if ( relic_str == "0" )
-      {
-        relic_slot++;
-        continue;
-      }
-
-      std::vector<std::string> bonus_id_split = util::string_split( relic_str, ":" );
-      for ( const auto& bonus_id_str : bonus_id_split )
-      {
-        parsed.relic_data[ relic_slot ].push_back( util::to_unsigned( bonus_id_str ) );
-      }
-
-      relic_slot++;
-    }
-
-  }
-
-  if ( ! option_relic_ilevel_str.empty() )
-  {
-    auto split = util::string_split( option_relic_ilevel_str, "/:" );
-    auto relic_idx = 0U;
-    for ( const auto& ilevel_str : split )
-    {
-      auto ilevel = std::stoi( ilevel_str );
-      if ( ilevel >= 0 && ilevel < MAX_ILEVEL )
-      {
-        parsed.relic_ilevel[ relic_idx ] = ilevel;
-      }
-
-      ++relic_idx;
     }
   }
 
@@ -954,57 +915,47 @@ std::string item_t::encoded_item() const
   if ( ! option_gem_id_str.empty() )
     s << ",gem_id=" << option_gem_id_str;
 
+  auto gem_bonus_it = range::find_if( parsed.gem_bonus_id, []( const std::vector<unsigned> v ) {
+    return v.size() > 0;
+  } );
+
   if ( !option_gem_bonus_id_str.empty() )
   {
     s << ",gem_bonus_id=" << option_gem_bonus_id_str;
   }
-  // TODO: Will Blizzard API give us this information? Nobody knows!
-
-  if ( !option_gem_ilevel_str.empty() )
+  else if ( gem_bonus_it != parsed.gem_bonus_id.end() )
   {
-    s << ",gem_ilevel=" << option_gem_ilevel_str;
-  }
-
-  // Figure out if any relics have "relic data" (relic bonus ids)
-  auto relic_data_it = range::find_if( parsed.relic_data, []( const std::vector<unsigned> v ) {
-    return v.size() > 0;
-  } );
-
-  if ( ! option_relic_id_str.empty() )
-    s << ",relic_id=" << option_relic_id_str;
-  else if ( relic_data_it != parsed.relic_data.end() )
-  {
-    s << ",relic_id=";
-    for ( size_t relic_idx = 0; relic_idx < parsed.relic_data.size(); ++relic_idx )
+    s << ",gem_bonus_id=";
+    for ( size_t gem_idx = 0; gem_idx < parsed.gem_bonus_id.size(); ++gem_idx )
     {
-      const auto& relic_data = parsed.relic_data[ relic_idx ];
-      if ( relic_data.size() == 0 )
+      const auto& gem_data = parsed.gem_bonus_id[ gem_idx ];
+      if ( gem_data.size() == 0 )
       {
         s << "0";
       }
       else
       {
-        for ( size_t relic_bonus_idx = 0; relic_bonus_idx < relic_data.size(); ++relic_bonus_idx )
+        for ( size_t gem_bonus_idx = 0; gem_bonus_idx < gem_data.size(); ++gem_bonus_idx )
         {
-          s << relic_data[ relic_bonus_idx ];
+          s << gem_data[ gem_bonus_idx ];
 
-          if ( relic_bonus_idx < relic_data.size() - 1 )
+          if ( gem_bonus_idx < gem_data.size() - 1 )
           {
             s << ":";
           }
         }
       }
 
-      if ( relic_idx < parsed.relic_data.size() - 1 )
+      if ( gem_idx < parsed.gem_bonus_id.size() - 1 )
       {
         s << "/";
       }
     }
   }
 
-  if ( ! option_relic_ilevel_str.empty() )
+  if ( !option_gem_ilevel_str.empty() )
   {
-    s << ",relic_ilevel=" << option_relic_ilevel_str;
+    s << ",gem_ilevel=" << option_gem_ilevel_str;
   }
 
   if ( ! option_azerite_powers_str.empty() )

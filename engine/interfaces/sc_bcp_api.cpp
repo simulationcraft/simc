@@ -426,59 +426,6 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
 
 // parse_items ==============================================================
 
-bool parse_artifact( item_t& item, const rapidjson::Value& artifact )
-{
-  if ( ! artifact.HasMember( "artifactId" ) || ! artifact.HasMember( "artifactTraits" ) )
-  {
-    return true;
-  }
-
-  auto artifact_id = artifact[ "artifactId" ].GetUint();
-  if ( artifact_id == 0 )
-  {
-    return true;
-  }
-
-  // If no relics inserted, bail out early
-  if ( ! artifact.HasMember( "relics" ) || artifact[ "relics" ].Size() == 0 )
-  {
-    return true;
-  }
-
-  for ( auto relic_idx = 0U, end = artifact[ "relics" ].Size(); relic_idx < end; ++relic_idx )
-  {
-    const auto& relic = artifact[ "relics" ][ relic_idx ];
-    if ( ! relic.HasMember( "socket" ) )
-    {
-      continue;
-    }
-
-    auto relic_socket = relic[ "socket" ].GetUint();
-    if ( relic.HasMember( "bonusLists" ) )
-    {
-      const auto& bonuses = relic[ "bonusLists" ];
-      for ( auto bonus_idx = 0U, end = bonuses.Size(); bonus_idx < end; ++bonus_idx )
-      {
-        item.parsed.relic_data[ relic_socket ].push_back( bonuses[ bonus_idx ].GetUint() );
-      }
-    }
-
-    // Blizzard includes both purchased and relic ranks in the same data, so we need to separate
-    // the data so our artifact data is correct.
-    auto relic_id = relic[ "itemId" ].GetUint();
-    auto relic_trait_data = item.player -> dbc.artifact_relic_rank_index( artifact_id, relic_id );
-
-    if ( relic_trait_data.first > 0 && relic_trait_data.second > 0 )
-    {
-      item.player -> artifact -> move_purchased_rank( relic_idx,
-                                                      relic_trait_data.first,
-                                                      relic_trait_data.second );
-    }
-  }
-
-  return true;
-}
-
 void parse_items( player_t* p, const player_spec_t& spec, const std::string& url, cache::behavior_e caching )
 {
   rapidjson::Document equipment_data;

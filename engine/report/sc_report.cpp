@@ -1482,9 +1482,9 @@ std::vector<std::string> report::item_decorator_t::parms() const
     gem_str << util::to_string( m_item->parsed.gem_id[ i ] );
 
     // Include relic bonus ids
-    if ( i < m_item->parsed.relic_data.size() )
+    if ( i < m_item->parsed.gem_bonus_id.size() )
     {
-      range::for_each( m_item->parsed.relic_data[ i ],
+      range::for_each( m_item->parsed.gem_bonus_id[ i ],
                        [&gem_str]( unsigned bonus_id ) { gem_str << ":" << bonus_id; } );
     }
   }
