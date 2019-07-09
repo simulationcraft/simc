@@ -4457,6 +4457,7 @@ void items::subroutine_optimization( special_effect_t& effect )
     {
       // Collect the stat distribution to the vector
       auto stat_spell = yellow_punchcard( effect );
+      double total_coefficient = 0.0;
       for ( size_t i = 1u; i <= stat_spell->effect_count(); ++i )
       {
         if ( stat_spell->effectN( i ).subtype() != A_MOD_RATING )
@@ -4466,9 +4467,14 @@ void items::subroutine_optimization( special_effect_t& effect )
 
         auto stats = ::util::translate_all_rating_mod( stat_spell->effectN( i ).misc_value1() );
         double value = stat_spell->effectN( i ).m_coefficient();
+        total_coefficient += value;
 
         dist.emplace_back( stats.front(), value );
       }
+
+      range::for_each( dist, [total_coefficient]( std::tuple<stat_e, double>& entry ) {
+        std::get<1>( entry ) = std::get<1>( entry ) / total_coefficient;
+      } );
     }
 
     const spell_data_t* yellow_punchcard( const special_effect_t& effect ) const
@@ -4482,7 +4488,7 @@ void items::subroutine_optimization( special_effect_t& effect )
           return false;
         }
 
-        auto gem_props = source->dbc.gem_property( item_data->gem_properties );
+        const auto& gem_props = source->dbc.gem_property( item_data->gem_properties );
         if ( gem_props.id == 0 )
         {
           return false;
@@ -4502,7 +4508,7 @@ void items::subroutine_optimization( special_effect_t& effect )
       }
 
       // Find the item enchantment associated with the gem
-      auto enchantment_data = source->dbc.item_enchantment( data->enchant_id );
+      const auto& enchantment_data = source->dbc.item_enchantment( data->enchant_id );
 
       for ( size_t i = 0u; i < sizeof_array( enchantment_data.ench_type ); ++i )
       {
