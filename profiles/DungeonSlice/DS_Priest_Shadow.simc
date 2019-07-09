@@ -6,6 +6,7 @@ race=human
 role=spell
 position=ranged_back
 talents=3131111
+azerite_essences=300573:1:0/300575:1:0/300576:1:0
 
 # Default consumables
 potion=unbridled_fury

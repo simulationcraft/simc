@@ -6,6 +6,7 @@ race=undead
 role=tank
 position=front
 talents=2220023
+azerite_essences=300573:1:0/300575:1:0/300576:1:0
 
 # Default consumables
 potion=battle_potion_of_strength

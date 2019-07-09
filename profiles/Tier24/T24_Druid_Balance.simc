@@ -6,6 +6,7 @@ race=troll
 role=spell
 position=ranged_back
 talents=1000231
+azerite_essences=300573:1:0/300575:1:0/300576:1:0
 
 # Default consumables
 potion=focused_resolve

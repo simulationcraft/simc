@@ -6,6 +6,7 @@ race=blood_elf
 role=attack
 position=back
 talents=3102013
+azerite_essences=300573:1:0/300575:1:0/300576:1:0
 
 # Default consumables
 potion=battle_potion_of_strength
