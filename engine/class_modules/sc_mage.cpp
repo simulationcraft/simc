@@ -5730,6 +5730,7 @@ void mage_t::apl_arcane()
   burn->add_action( "berserking" );
   burn->add_action( this, "Arcane Power" );
   burn->add_action( "use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains" );
+  burn->add_action( "use_item,name=pocketsized_computation_device,if=!cooldown.cyclotronic_blast.duration&(buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains)" );
   for ( const auto& ra : racial_actions )
   {
     if ( ra == "lights_judgment" || ra == "arcane_torrent" || ra == "berserking" )
@@ -5754,6 +5755,7 @@ void mage_t::apl_arcane()
   conserve->add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=2&(cooldown.arcane_power.remains>10|active_enemies<=2)" );
   conserve->add_action( this, "Arcane Blast", "if=buff.rule_of_threes.up&buff.arcane_charge.stack>3", "Arcane Blast shifts up in priority when running rule of threes." );
   conserve->add_action( "use_item,name=tidestorm_codex,if=buff.rune_of_power.down&!buff.arcane_power.react&cooldown.arcane_power.remains>20" );
+  conserve->add_action( "use_item,name=pocketsized_computation_device,if=cooldown.cyclotronic_blast.duration&buff.rune_of_power.down&!buff.arcane_power.react&cooldown.arcane_power.remains>20" );
   conserve->add_talent( this, "Rune of Power", "if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|full_recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)" );
   conserve->add_action( this, "Arcane Missiles", "if=mana.pct<=95&buff.clearcasting.react&active_enemies<3,chain=1" );
   conserve->add_action( this, "Arcane Barrage", "if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&((mana.pct<=variable.conserve_mana)|(talent.rune_of_power.enabled&cooldown.arcane_power.remains>cooldown.rune_of_power.full_recharge_time&mana.pct<=variable.conserve_mana+25))|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)", "During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible (aka conserve_mana threshhold) and then swap to a 4x AB->Abarr conserve rotation. If we do not have 4 AC, we can dip slightly lower to get a 4th AC. We also sustain at a higher mana percentage when we plan to use a Rune of Power during conserve phase, so we can burn during the Rune of Power." );
@@ -5858,7 +5860,8 @@ void mage_t::apl_fire()
   standard->add_talent( this, "Phoenix Flames", "if=(buff.heating_up.react|(!buff.hot_streak.react&(action.fire_blast.charges>0|talent.searing_touch.enabled&target.health.pct<=30)))&!variable.phoenix_pooling" );
   standard->add_action( "call_action_list,name=active_talents" );
   standard->add_action( this, "Dragon's Breath", "if=active_enemies>1" );
-  standard->add_action( "use_item,name=tidestorm_codex,if=cooldown.combustion.remains>20|talent.firestarter.enabled&firestarter.remains>20");
+  standard->add_action( "use_item,name=tidestorm_codex,if=cooldown.combustion.remains>20|talent.firestarter.enabled&firestarter.remains>20" );
+  standard->add_action( "use_item,name=pocketsized_computation_device,if=cooldown.cyclotronic_blast.duration&(cooldown.combustion.remains>20|talent.firestarter.enabled&firestarter.remains>20)" );
   standard->add_action( this, "Scorch", "if=target.health.pct<=30&talent.searing_touch.enabled" );
   standard->add_action( this, "Fireball" );
   standard->add_action( this, "Scorch" );
@@ -5891,6 +5894,7 @@ void mage_t::apl_fire()
   bm_combustion_phase->add_action( this, "Scorch" );
 
   trinkets->add_action( "use_items" );
+  trinkets->add_action( "use_item,name=pocketsized_computation_device,if=!cooldown.cyclotronic_blast.duration" );
 }
 
 void mage_t::apl_frost()
@@ -5986,6 +5990,7 @@ void mage_t::apl_frost()
   }
   single->add_talent( this, "Ice Nova" );
   single->add_action( "use_item,name=tidestorm_codex,if=buff.icy_veins.down&buff.rune_of_power.down" );
+  single->add_action( "use_item,name=pocketsized_computation_device,if=cooldown.cyclotronic_blast.duration&buff.icy_veins.down&buff.rune_of_power.down" );
   single->add_action( this, "Frostbolt" );
   single->add_action( "call_action_list,name=movement" );
   single->add_action( this, "Ice Lance" );
@@ -6009,6 +6014,7 @@ void mage_t::apl_frost()
   aoe->add_action( this, "Cone of Cold", "",
     "Using Cone of Cold is mostly DPS neutral with the AoE target thresholds. It only becomes decent gain with roughly 7 or more targets." );
   aoe->add_action( "use_item,name=tidestorm_codex,if=buff.icy_veins.down&buff.rune_of_power.down" );
+  aoe->add_action( "use_item,name=pocketsized_computation_device,if=cooldown.cyclotronic_blast.duration&buff.icy_veins.down&buff.rune_of_power.down" );
   aoe->add_action( this, "Frostbolt" );
   aoe->add_action( "call_action_list,name=movement" );
   aoe->add_action( this, "Ice Lance" );
@@ -6025,6 +6031,7 @@ void mage_t::apl_frost()
     "extra Rune of Power charges that should be used with active talents, if possible." );
   cooldowns->add_action( "potion,if=prev_gcd.1.icy_veins|target.time_to_die<30" );
   cooldowns->add_action( "use_items" );
+  cooldowns->add_action( "use_item,name=pocketsized_computation_device,if=!cooldown.cyclotronic_blast.duration" );
   for ( const auto& ra : racial_actions )
   {
     if ( ra == "arcane_torrent" )
