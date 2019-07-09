@@ -5163,6 +5163,17 @@ void warrior_t::apl_fury()
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
+    if ( items[ i ].name_str == "ashvanes_razor_coral" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=!debuff.razor_coral_debuff.up|prev_gcd.1.memory_of_lucid_dreams|"
+                                "(prev_gcd.1.recklessness&!essence.memory_of_lucid_dreams.major)" );
+    }
+    if ( items[ i ].name_str == "azsharas_font_of_power" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=!buff.recklessness.up&!buff.memory_of_lucid_dreams.up" );
+    }
     if ( items[ i ].name_str == "grongs_primal_rage" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
@@ -5260,6 +5271,17 @@ void warrior_t::apl_arms()
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
+    if ( items[ i ].name_str == "ashvanes_razor_coral" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=!debuff.razor_coral_debuff.up|prev_gcd.1.memory_of_lucid_dreams|"
+                                "(prev_gcd.1.colossus_smash&!essence.memory_of_lucid_dreams.major)" );
+    }
+    if ( items[ i ].name_str == "azsharas_font_of_power" )
+    {
+      default_list->add_action( "use_item,name=" + items[ i ].name_str +
+                                ",if=!debuff.colossus_smash.up&!buff.test_of_might.up&!buff.memory_of_lucid_dreams.up" );
+    }
     if ( items[ i ].name_str == "grongs_primal_rage" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
@@ -5268,7 +5290,7 @@ void warrior_t::apl_arms()
     if ( items[ i ].name_str == "pocketsized_computation_device" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
-                                ",if=!buff.recklessness.up&!debuff.siegebreaker.up" );
+                                ",if=!debuff.colossus_smash.up&!buff.test_of_might.up&!buff.memory_of_lucid_dreams.up" );
     }
     else if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
