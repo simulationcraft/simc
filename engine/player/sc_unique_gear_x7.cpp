@@ -4662,7 +4662,11 @@ void items::cyclotronic_blast( special_effect_t& effect )
     {
       trigger_gcd  = 0_ms;
       channeled    = true;
-      hasted_ticks = false;
+    }
+
+    timespan_t tick_time( const action_state_t* s ) const override
+    {
+      return data().effectN( 1 ).period();
     }
 
     bool usable_moving() const override
@@ -4679,9 +4683,10 @@ void items::cyclotronic_blast( special_effect_t& effect )
 
     void last_tick( dot_t* d ) override
     {
+      bool was_channeling = player->channeling == this;
       proc_t::last_tick( d );
 
-      if ( !player->readying )
+      if ( was_channeling && !player->readying )
       {
         player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
       }
