@@ -420,6 +420,8 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
       p->talent_points.select_row_col( talent->row(), talent->col() );
     }
   }
+
+  p->recreate_talent_str( TALENT_FORMAT_ARMORY );
 }
 
 // parse_items ==============================================================
