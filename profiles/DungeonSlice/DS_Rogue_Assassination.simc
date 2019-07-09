@@ -49,7 +49,7 @@ actions.cds=potion,if=buff.bloodlust.react|debuff.vendetta.up
 # Default Trinket usage: Use on cooldown.
 actions.cds+=/use_item,name=azsharas_font_of_power
 # Default Trinket usage: Use on cooldown.
-actions.cds+=/use_item,name=vision_of_demise
+actions.cds+=/use_item,name=ashvanes_razor_coral
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/fireblood,if=debuff.vendetta.up
@@ -154,7 +154,7 @@ feet=ancient_tempest_striders,id=168380,bonus_id=4800/1517
 finger1=boralus_nobles_seal,id=168889,bonus_id=4800/1517,enchant=accord_of_haste
 finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_haste
 trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
-trinket2=vision_of_demise,id=169307,bonus_id=4800/1517
+trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=sivaras_slitherblade,id=168818,bonus_id=4800/1517,enchant=force_multiplier
 off_hand=sivaras_slitherblade,id=168818,bonus_id=4800/1517,enchant=quick_navigation
 

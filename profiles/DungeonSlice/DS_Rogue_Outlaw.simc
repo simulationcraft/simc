@@ -64,9 +64,7 @@ actions.build+=/sinister_strike
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|buff.adrenaline_rush.up
 # Falling back to default item usage
-actions.cds+=/use_item,name=azsharas_font_of_power,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
-# Falling back to default item usage
-actions.cds+=/use_item,name=vision_of_demise,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
 actions.cds+=/blood_fury
 actions.cds+=/berserking
 actions.cds+=/fireblood
@@ -115,23 +113,23 @@ shoulders=shoulderpads_of_frothing_rage,id=168348,bonus_id=4824/1517/4775,azerit
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
 chest=vest_of_reverent_adoration,id=159303,bonus_id=1617/4819/4775,azerite_powers=180/129/31/13
 wrists=tideblood_bracers,id=168377,bonus_id=4800/1517
-hands=anglerfish_feelers,id=168376,bonus_id=4800/1517
-waist=ship_swallowers_belt,id=168379,bonus_id=4800/1517
+hands=gloves_of_incomparable_beauty,id=168887,bonus_id=4800/1517
+waist=beloved_monarchs_waistwrap,id=168871,bonus_id=4800/1517
 legs=leggings_of_the_stormborn,id=168378,bonus_id=4800/1517
 feet=ardent_worshippers_boots,id=168879,bonus_id=4800/1517
 finger1=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_critical_strike
 finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_critical_strike
-trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
-trinket2=vision_of_demise,id=169307,bonus_id=4800/1517
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
 main_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=force_multiplier
 off_hand=court_dagger_of_sentencing,id=168892,bonus_id=4800/1517,enchant=deadly_navigation
 
 # Gear Summary
 # gear_ilvl=447.06
-# gear_agility=7165
+# gear_agility=7711
 # gear_stamina=13760
-# gear_crit_rating=1529
-# gear_haste_rating=903
-# gear_mastery_rating=626
-# gear_versatility_rating=966
+# gear_crit_rating=1393
+# gear_haste_rating=942
+# gear_mastery_rating=767
+# gear_versatility_rating=705
 # gear_armor=2962

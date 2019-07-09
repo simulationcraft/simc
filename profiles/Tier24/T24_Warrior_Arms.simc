@@ -6,6 +6,7 @@ race=pandaren
 role=attack
 position=back
 talents=3322211
+azerite_essences=27:3/12:3/5:3
 
 # Default consumables
 potion=potion_of_unbridled_fury
@@ -39,7 +40,7 @@ actions+=/arcane_torrent,if=debuff.colossus_smash.down&cooldown.mortal_strike.re
 actions+=/lights_judgment,if=debuff.colossus_smash.down
 actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
-actions+=/use_item,name=ramping_amplitude_gigavolt_engine
+actions+=/use_item,name=vision_of_demise
 actions+=/avatar,if=cooldown.colossus_smash.remains<8|(talent.warbreaker.enabled&cooldown.warbreaker.remains<8)
 actions+=/sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>10|cooldown.colossus_smash.remains>8|azerite.test_of_might.enabled)
 actions+=/blood_of_the_enemy,if=buff.test_of_might.up|(debuff.colossus_smash.up&!azerite.test_of_might.enabled)
@@ -115,29 +116,28 @@ actions.single_target+=/overpower
 actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled
 actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled
 
-head=helm_of_tempered_jade,id=165548,bonus_id=4824/1537/4775,azerite_powers=226/434/31/85/13
+head=greathelm_of_the_putrid_path,id=159446,bonus_id=1617/4819/4775,azerite_powers=15/22/434/226/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=pauldrons_of_the_horned_horror,id=159455,bonus_id=5062/1587/4786/4775,azerite_powers=435/226/459/83/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=harpooners_plate_cuirass,id=159416,bonus_id=5062/1587/4786/4775,azerite_powers=434/226/31/14/13
-wrists=splinterbone_vambraces,id=165551,bonus_id=4800/1537
-hands=crusade_pummelers,id=165549,bonus_id=4800/1537
-waist=hullplate_girdle,id=165559,bonus_id=4800/1537
-legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4800/1537
-feet=coinage_stampers,id=165561,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
-finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_haste
-trinket1=ramping_amplitude_gigavolt_engine,id=165580,bonus_id=4800/1537
-trinket2=everchill_anchor,id=165570,bonus_id=4800/1537
-main_hand=dawnbreaker,id=165586,bonus_id=4800/1537,enchant=galeforce_striking
+shoulders=kraken_shell_pauldrons,id=159431,bonus_id=1617/4819/4775,azerite_powers=84/459/192/226/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=ashvane_wardens_cuirass,id=159440,bonus_id=1617/4819/4775,azerite_powers=84/30/192/226/13
+wrists=waveblade_farseers_armguards,id=170303,bonus_id=1512
+hands=poens_deepsea_handguards,id=170336,bonus_id=1512
+waist=eternity_keepers_greatbelt,id=168869,bonus_id=4800/1517
+legs=legplates_of_unbound_anguish,id=167217,bonus_id=4800/1547
+feet=akanas_reefstrider_boots,id=170143,bonus_id=1512
+finger1=logic_loop_of_division,id=169157,bonus_id=4779/1472,enchant=accord_of_haste
+finger2=shorting_bit_band,id=169160,bonus_id=4779/1472,enchant=accord_of_haste
+trinket1=vision_of_demise,id=169307,bonus_id=4800/1517
+trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
+main_hand=tentacle_crusher,id=168897,bonus_id=4800/1517,enchant=galeforce_striking
 
 # Gear Summary
-# gear_ilvl=419.20
-# gear_strength=5925
-# gear_stamina=10191
-# gear_crit_rating=956
-# gear_haste_rating=1236
-# gear_mastery_rating=756
-# gear_versatility_rating=554
-# gear_armor=5052
-# set_bonus=gift_of_the_loa_2pc=1
+# gear_ilvl=437.87
+# gear_strength=7413
+# gear_stamina=12817
+# gear_crit_rating=1151
+# gear_haste_rating=1624
+# gear_mastery_rating=639
+# gear_versatility_rating=85
+# gear_armor=5939

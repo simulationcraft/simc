@@ -6,7 +6,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=2120012
+talents=2120013
 azerite_essences=5:3:1/27:3:0/6:3:0
 
 # Default consumables
@@ -70,9 +70,7 @@ actions.build+=/backstab
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
 # Falling back to default item usage: Use with Symbols of Death.
-actions.cds+=/use_item,name=azsharas_font_of_power,if=buff.symbols_of_death.up|target.time_to_die<20
-# Falling back to default item usage: Use with Symbols of Death.
-actions.cds+=/use_item,name=vision_of_demise,if=buff.symbols_of_death.up|target.time_to_die<20
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=buff.symbols_of_death.up|target.time_to_die<20
 actions.cds+=/blood_fury,if=buff.symbols_of_death.up
 actions.cds+=/berserking,if=buff.symbols_of_death.up
 actions.cds+=/fireblood,if=buff.symbols_of_death.up
@@ -163,22 +161,22 @@ back=cloak_of_ill_tidings,id=168391,bonus_id=4800/1517
 chest=goresplattered_vest,id=159330,bonus_id=1617/4819/4775,azerite_powers=124/175/21/13
 wrists=cultured_pearl_armbands,id=168883,bonus_id=4800/1517
 hands=gloves_of_incomparable_beauty,id=168887,bonus_id=4800/1517
-waist=ship_swallowers_belt,id=168379,bonus_id=4800/1517
+waist=beloved_monarchs_waistwrap,id=168871,bonus_id=4800/1517
 legs=formcrafters_pants,id=168875,bonus_id=4800/1517
 feet=ardent_worshippers_boots,id=168879,bonus_id=4800/1517
 finger1=boralus_nobles_seal,id=168889,bonus_id=4800/1517,enchant=accord_of_versatility
 finger2=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_versatility
-trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
-trinket2=vision_of_demise,id=169307,bonus_id=4800/1517
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
 main_hand=court_dagger_of_sentencing,id=168892,bonus_id=4800/1517,enchant=force_multiplier
 off_hand=court_dagger_of_sentencing,id=168892,bonus_id=4800/1517,enchant=versatile_navigation
 
 # Gear Summary
 # gear_ilvl=447.06
-# gear_agility=7165
+# gear_agility=7711
 # gear_stamina=13760
-# gear_crit_rating=1436
+# gear_crit_rating=1300
 # gear_haste_rating=628
-# gear_mastery_rating=1379
-# gear_versatility_rating=583
+# gear_mastery_rating=1425
+# gear_versatility_rating=456
 # gear_armor=2962
