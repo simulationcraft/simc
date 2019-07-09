@@ -4442,7 +4442,7 @@ void items::subroutine_optimization( special_effect_t& effect )
 {
   struct subroutine_optimization_buff_t : public buff_t
   {
-    std::vector<std::tuple<stat_e, double>> dist;
+    std::vector<std::tuple<stat_e, double, double>> dist;
     std::array<double, STAT_MAX> stats;
     item_t punchcard;
     double raw_bonus;
@@ -4469,10 +4469,10 @@ void items::subroutine_optimization( special_effect_t& effect )
         double value = stat_spell->effectN( i ).m_coefficient();
         total_coefficient += value;
 
-        dist.emplace_back( stats.front(), value );
+        dist.emplace_back( stats.front(), value, value );
       }
 
-      range::for_each( dist, [total_coefficient]( std::tuple<stat_e, double>& entry ) {
+      range::for_each( dist, [total_coefficient]( std::tuple<stat_e, double, double>& entry ) {
         std::get<1>( entry ) = std::get<1>( entry ) / total_coefficient;
       } );
     }
@@ -4570,25 +4570,25 @@ void items::subroutine_optimization( special_effect_t& effect )
       double new_versatility = 0, bonus_versatility = 0;
       double total = haste + mastery + crit + versatility;
 
-      range::for_each( dist, [&]( const std::tuple<stat_e, double>& distribution ) {
+      range::for_each( dist, [&]( const std::tuple<stat_e, double, double>& distribution ) {
           auto stat = std::get<0>( distribution );
           switch ( stat )
           {
             case STAT_HASTE_RATING:
               new_haste   = total * std::get<1>( distribution );
-              bonus_haste = as<double>( !up * raw_bonus * std::get<1>( distribution ) );
+              bonus_haste = as<double>( !up * raw_bonus * std::get<2>( distribution ) );
               break;
             case STAT_CRIT_RATING:
               new_crit   = total * std::get<1>( distribution );
-              bonus_crit = as<double>( !up * raw_bonus * std::get<1>( distribution ) );
+              bonus_crit = as<double>( !up * raw_bonus * std::get<2>( distribution ) );
               break;
             case STAT_MASTERY_RATING:
               new_mastery   = total * std::get<1>( distribution );
-              bonus_mastery = as<double>( !up * raw_bonus * std::get<1>( distribution ) );
+              bonus_mastery = as<double>( !up * raw_bonus * std::get<2>( distribution ) );
               break;
             case STAT_VERSATILITY_RATING:
               new_versatility    = total * std::get<1>( distribution );
-              bonus_versatility = as<double>( !up * raw_bonus * std::get<1>( distribution ) );
+              bonus_versatility = as<double>( !up * raw_bonus * std::get<2>( distribution ) );
               break;
             default:
               break;
