@@ -130,11 +130,13 @@ actions.standard_rotation+=/phoenix_flames,if=(buff.heating_up.react|(!buff.hot_
 actions.standard_rotation+=/call_action_list,name=active_talents
 actions.standard_rotation+=/dragons_breath,if=active_enemies>1
 actions.standard_rotation+=/use_item,name=tidestorm_codex,if=cooldown.combustion.remains>20|talent.firestarter.enabled&firestarter.remains>20
+actions.standard_rotation+=/use_item,name=pocketsized_computation_device,if=cooldown.cyclotronic_blast.duration&(cooldown.combustion.remains>20|talent.firestarter.enabled&firestarter.remains>20)
 actions.standard_rotation+=/scorch,if=target.health.pct<=30&talent.searing_touch.enabled
 actions.standard_rotation+=/fireball
 actions.standard_rotation+=/scorch
 
 actions.trinkets=use_items
+actions.trinkets+=/use_item,name=pocketsized_computation_device,if=!cooldown.cyclotronic_blast.duration
 
 head=soulfuel_headdress,id=159279,bonus_id=1587/4819/4775,azerite_powers=168/193/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65

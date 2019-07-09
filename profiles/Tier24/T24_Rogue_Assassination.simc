@@ -6,7 +6,7 @@ race=troll
 role=attack
 position=back
 talents=2210021
-azerite_essences=14:3:1/27:3:0/12:3:0
+azerite_essences=14:3:1/27:3:0/4:3:0
 
 # Default consumables
 potion=potion_of_focused_resolve
@@ -49,7 +49,7 @@ actions.cds=potion,if=buff.bloodlust.react|debuff.vendetta.up
 # Default Trinket usage: Use on cooldown.
 actions.cds+=/use_item,name=azsharas_font_of_power
 # Default Trinket usage: Use on cooldown.
-actions.cds+=/use_item,name=vision_of_demise
+actions.cds+=/use_item,name=ashvanes_razor_coral
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/fireblood,if=debuff.vendetta.up
@@ -146,24 +146,24 @@ neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=gorak_tuls_mantle,id=159339,bonus_id=1617/4819/4775,azerite_powers=136/193/30/13
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
 chest=cephalohide_jacket,id=159314,bonus_id=1617/4819/4775,azerite_powers=136/181/30/13
-wrists=tideblood_bracers,id=168377,bonus_id=4800/1517
+wrists=oris_tidal_wristwraps,id=170305,bonus_id=1512
 hands=gloves_of_incomparable_beauty,id=168887,bonus_id=4800/1517
 waist=beloved_monarchs_waistwrap,id=168871,bonus_id=4800/1517
 legs=formcrafters_pants,id=168875,bonus_id=4800/1517
-feet=ancient_tempest_striders,id=168380,bonus_id=4800/1517
+feet=akanas_reefstrider_footwraps,id=170141,bonus_id=1512
 finger1=boralus_nobles_seal,id=168889,bonus_id=4800/1517,enchant=accord_of_haste
 finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_haste
 trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
-trinket2=vision_of_demise,id=169307,bonus_id=4800/1517
+trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=sivaras_slitherblade,id=168818,bonus_id=4800/1517,enchant=force_multiplier
 off_hand=sivaras_slitherblade,id=168818,bonus_id=4800/1517,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=447.06
-# gear_agility=7165
-# gear_stamina=13760
-# gear_crit_rating=1087
-# gear_haste_rating=1522
-# gear_mastery_rating=1188
-# gear_versatility_rating=230
-# gear_armor=2962
+# gear_ilvl=444.56
+# gear_agility=7037
+# gear_stamina=13494
+# gear_crit_rating=1021
+# gear_haste_rating=1506
+# gear_mastery_rating=1156
+# gear_versatility_rating=317
+# gear_armor=2886
