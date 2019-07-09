@@ -5104,14 +5104,14 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
     {
       if ( util::str_compare_ci( item.name_str, "galecallers_boon" ) )
       {
-        std::string line1 = std::string( "use_item,name=" ) + item.name_str + std::string( ",sync=fel_barrage" );
-        std::string line2 =
-            std::string( "use_item,name=" ) + item.name_str + std::string( ",if=!talent.fel_barrage.enabled" );
-
-        apl->add_action( line1 );
-        apl->add_action( line2 );
+        apl->add_action( "use_item,name=galecallers_boon,sync=fel_barrage" );
+        apl->add_action( "use_item,name=galecallers_boon,if=!talent.fel_barrage.enabled" );
       }
-      else 
+      else if ( util::str_compare_ci( item.name_str, "pocketsized_computation_device" ) )
+      {
+        apl->add_action( "use_item,name=pocketsized_computation_device,if=buff.metamorphosis.down&buff.memory_of_lucid_dreams.down&(!talent.demon_blades.enabled|fury<60)" );
+      }
+      else
       {
         std::string line = std::string( "use_item,name=" ) + item.name_str;
         apl->add_action( line );

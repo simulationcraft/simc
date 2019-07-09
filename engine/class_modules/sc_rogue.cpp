@@ -1825,7 +1825,7 @@ void rogue_attack_t::schedule_travel( action_state_t* state )
   melee_attack_t::schedule_travel( state );
 
   if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
-    p() -> trigger_seal_fate( state );
+    p()->trigger_seal_fate( state );
 }
 
 // rogue_attack_t::ready() ==================================================
@@ -1833,11 +1833,11 @@ void rogue_attack_t::schedule_travel( action_state_t* state )
 inline bool rogue_attack_t::ready()
 {
 
-  if ( ! melee_attack_t::ready() )
+  if ( !melee_attack_t::ready() )
     return false;
 
   if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 &&
-       player -> resources.current[ RESOURCE_COMBO_POINT ] < base_costs[ RESOURCE_COMBO_POINT ] )
+       player->resources.current[ RESOURCE_COMBO_POINT ] < base_costs[ RESOURCE_COMBO_POINT ] )
     return false;
 
   if ( requires_stealth && !p()->stealthed() )
@@ -1846,7 +1846,7 @@ inline bool rogue_attack_t::ready()
   }
 
   if ( requires_position != POSITION_NONE )
-    if ( p() -> position() != requires_position )
+    if ( p()->position() != requires_position )
       return false;
 
   if ( requires_weapon_type != WEAPON_NONE )
@@ -1880,15 +1880,15 @@ struct melee_t : public rogue_attack_t
     rogue_attack_t( name, p ), sync_weapons( sw ), first( true )
   {
     background = repeating = may_glance = true;
-    special           = false;
-    school            = SCHOOL_PHYSICAL;
-    trigger_gcd       = timespan_t::zero();
+    special = false;
+    school = SCHOOL_PHYSICAL;
+    trigger_gcd = timespan_t::zero();
     weapon_multiplier = 1.0;
 
-    if ( p -> dual_wield() )
+    if ( p->dual_wield() )
       base_hit -= 0.19;
 
-    p -> auto_attack = this;
+    p->auto_attack = this;
   }
 
   void reset() override
@@ -1903,7 +1903,7 @@ struct melee_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::execute_time();
     if ( first )
     {
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
+      return ( weapon->slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
     }
     return t;
   }
@@ -1913,6 +1913,13 @@ struct melee_t : public rogue_attack_t
     if ( first )
     {
       first = false;
+    }
+
+    // If we are channeling (e.g. Cyclotronic Blast) cancel the attack
+    if ( p()->channeling && p()->channeling->interrupt_auto_attack )
+    {
+      this->cancel();
+      return;
     }
 
     rogue_attack_t::execute();
@@ -5595,6 +5602,9 @@ std::string rogue_t::default_flask() const
 
 std::string rogue_t::default_potion() const
 {
+  if ( specialization() == ROGUE_OUTLAW && true_level > 110 )
+    return "potion_of_unbridled_fury";
+
   return ( true_level > 110 ) ? "potion_of_focused_resolve" :
          ( true_level > 100 ) ? "prolonged_power" :
          ( true_level >= 90 ) ? "draenic_agility" :
@@ -5714,7 +5724,7 @@ void rogue_t::init_action_list()
                   items[i].name_str == "lurkers_insidious_gift" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.vendetta.up" );
         else if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=master_assassin_remains=0&dot.rupture.ticking" );
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.toxic_blade.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4" );
         else // Default: Use on CD
           cds -> add_action( "use_item,name=" + items[i].name_str, "Default Trinket usage: Use on cooldown." );
       }
@@ -5821,7 +5831,7 @@ void rogue_t::init_action_list()
       {
         auto use_effect_id = items[i].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) -> spell_id;
         if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.all" );
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.all&buff.adrenaline_rush.down&buff.memory_of_lucid_dreams.down&energy.time_to_max>4&rtb_buffs<5" );
         else // Default
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2", "Falling back to default item usage" );
       }
