@@ -25,10 +25,8 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   procs( procs_t() ),
   spells( spells_t() ),
   talents( talents_t() ),
+  options( options_t() ),
   beacon_target( nullptr ),
-  fake_sov( true ),
-  indomitable_justice_pct( 0 ),
-  proc_chance_ret_memory_of_lucid_dreams( 0.15 ),
   lucid_dreams_accumulator( 0.0 )
 {
   active_consecration = nullptr;
@@ -675,14 +673,14 @@ judgment_t::judgment_t( paladin_t* p, const std::string& options_str ) :
   if ( p -> azerite.indomitable_justice.enabled() )
   {
     // If using the default setting, set to 80% hp for protection, 100% hp for other specs
-    if ( p -> indomitable_justice_pct == 0 )
+    if ( p -> options.indomitable_justice_pct == 0 )
     {
       indomitable_justice_pct = p -> specialization() == PALADIN_PROTECTION ? 80 : 100;
     }
     // Else, clamp the value between -1 ("real" usage) and 100
     else
     {
-      indomitable_justice_pct = clamp<int>( p -> indomitable_justice_pct, -1, 100 );
+      indomitable_justice_pct = clamp<int>( p -> options.indomitable_justice_pct, -1, 100 );
     }
   }
 }
@@ -962,11 +960,10 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
     return;
 
   if ( specialization() == PALADIN_RETRIBUTION ) {
-    // TODO(mserrano): make this into an option
-    if ( ! rng().roll( proc_chance_ret_memory_of_lucid_dreams ) )
+    if ( ! rng().roll( options.proc_chance_ret_memory_of_lucid_dreams ) )
       return;
 
-    double total_gain = lucid_dreams_accumulator + cost * spells.memory_of_lucid_dreams_base -> effectN( 1 ).percent();
+    double total_gain = lucid_dreams_accumulator + cost * lucid_dreams_minor_refund_coeff;
 
     // mserrano note: apparently when you get a proc on a 1-holy-power spender, if it did proc,
     // you always get 1 holy power instead of alternating between 0 and 1. This is based on
@@ -980,9 +977,16 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
     lucid_dreams_accumulator = total_gain - real_gain;
 
     resource_gain( RESOURCE_HOLY_POWER, real_gain, gains.hp_memory_of_lucid_dreams );
-  } else {
-    // TODO: implement holy/prot
-    return;
+  }
+
+  else if ( specialization() == PALADIN_PROTECTION )
+  {
+    if ( ! rng().roll( options.proc_chance_prot_memory_of_lucid_dreams ) )
+      return;
+
+    cooldowns.shield_of_the_righteous -> adjust( -1.0 * cooldown_t::cooldown_duration( cooldowns.shield_of_the_righteous ) * lucid_dreams_minor_refund_coeff );
+
+    procs.prot_lucid_dreams -> occur();
   }
 
   if ( azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
@@ -1120,6 +1124,7 @@ void paladin_t::init_procs()
   procs.divine_purpose            = get_proc( "Divine Purpose"   );
   procs.fires_of_justice          = get_proc( "Fires of Justice" );
   procs.grand_crusader            = get_proc( "Grand Crusader"   );
+  procs.prot_lucid_dreams         = get_proc( "Lucid Dreams SotR");
 }
 
 // paladin_t::init_scaling ==================================================
@@ -1399,7 +1404,7 @@ void paladin_t::init_spells()
 
   // Essences
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  spells.memory_of_lucid_dreams_base = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  lucid_dreams_minor_refund_coeff = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR ) -> effectN( 1 ).percent();
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
 }
 
@@ -1860,9 +1865,10 @@ void paladin_t::assess_damage( school_e school,
 void paladin_t::create_options()
 {
   // TODO: figure out a better solution for this.
-  add_option( opt_bool( "paladin_fake_sov", fake_sov ) );
-  add_option( opt_int( "indomitable_justice_pct", indomitable_justice_pct ) );
-  add_option( opt_float( "proc_chance_ret_memory_of_lucid_dreams", proc_chance_ret_memory_of_lucid_dreams, 0.0, 1.0 ) );
+  add_option( opt_bool( "paladin_fake_sov", options.fake_sov ) );
+  add_option( opt_int( "indomitable_justice_pct", options.indomitable_justice_pct ) );
+  add_option( opt_float( "proc_chance_ret_memory_of_lucid_dreams", options.proc_chance_ret_memory_of_lucid_dreams, 0.0, 1.0 ) );
+  add_option( opt_float( "proc_chance_prot_memory_of_lucid_dreams", options.proc_chance_prot_memory_of_lucid_dreams, 0.0, 1.0 ) );
 
   player_t::create_options();
 }
@@ -1873,10 +1879,7 @@ void paladin_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  paladin_t* p = debug_cast<paladin_t*>( source );
-
-  fake_sov = p -> fake_sov;
-  indomitable_justice_pct = p -> indomitable_justice_pct;
+  options = debug_cast<paladin_t*>( source ) -> options;
 }
 
 // paladin_t::combat_begin ==================================================

@@ -336,9 +336,9 @@ struct judgment_prot_t : public judgment_t
   {
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
     cooldown -> duration *= 1.0 + p -> spec.protection_paladin -> effectN( 4 ).percent();
-  
+
     base_multiplier *= 1.0 + p -> spec.protection_paladin -> effectN( 12 ).percent();
-    
+
     sotr_cdr = -1.0 * timespan_t::from_seconds( p -> spec.judgment_2 -> effectN( 1 ).base_value() );
   }
 
@@ -467,26 +467,31 @@ struct seraphim_t : public paladin_spell_t
     // duration depends on sotr charges, need to do some math
     timespan_t duration = 0_ms;
     int available_charges = p() -> cooldowns.shield_of_the_righteous -> current_charge;
-    int full_charges_used = 0;
+    double charges_used = 0;
     timespan_t remains = p() -> cooldowns.shield_of_the_righteous -> current_charge_remains();
 
     if ( available_charges >= 1 )
     {
-      full_charges_used = std::min( available_charges, 2 );
-      duration = full_charges_used * p() -> talents.seraphim -> duration();
-      for ( int i = 0; i < full_charges_used; i++ )
+      charges_used += std::min( available_charges, 2 );
+      for ( int i = 0; i < charges_used; i++ )
         p() -> cooldowns.shield_of_the_righteous -> start( p() -> active.sotr );
     }
-    if ( full_charges_used < 2 )
+
+    if ( charges_used < 2 )
     {
-      double partial_charges_used = 0.0;
-      partial_charges_used = ( p() -> cooldowns.shield_of_the_righteous -> duration.total_seconds() - remains.total_seconds() ) / p() -> cooldowns.shield_of_the_righteous -> duration.total_seconds();
-      duration += partial_charges_used * p() -> talents.seraphim -> duration();
+      charges_used += ( p() -> cooldowns.shield_of_the_righteous -> duration.total_seconds() - remains.total_seconds() ) / p() -> cooldowns.shield_of_the_righteous -> duration.total_seconds();
       p() -> cooldowns.shield_of_the_righteous -> adjust( p() -> cooldowns.shield_of_the_righteous -> duration - remains );
     }
 
+    duration = charges_used * p() -> talents.seraphim -> duration();
+
     if ( duration > 0_ms )
       p() -> buffs.seraphim -> trigger( 1, -1.0, -1.0, duration );
+
+    if ( p() -> azerite_essence.memory_of_lucid_dreams.enabled() && duration > 0_ms )
+    {
+      p() -> trigger_memory_of_lucid_dreams( charges_used );
+    }
   }
 };
 
@@ -522,10 +527,10 @@ bool shield_of_the_righteous_buff_t::trigger( int stacks, double value, double c
   paladin_t* p = debug_cast< paladin_t* >( player );
 
   double new_avengers_valor = p -> buffs.avengers_valor -> up() ? default_av_increase : 0;
-  
+
   if ( this -> up() && new_avengers_valor != avengers_valor_increase )
   {
-    avengers_valor_increase = avengers_valor_increase * remains().total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() ) 
+    avengers_valor_increase = avengers_valor_increase * remains().total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() )
       + new_avengers_valor * buff_duration.total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() );
   }
   else
@@ -598,6 +603,23 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     }
 
     p() -> buffs.avengers_valor -> expire();
+
+    if ( p() -> azerite_essence.memory_of_lucid_dreams.enabled() )
+    {
+      p() -> trigger_memory_of_lucid_dreams( 1.0 );
+    }
+  }
+
+  double recharge_multiplier() const override
+  {
+    double rm = paladin_melee_attack_t::recharge_multiplier();
+
+    if ( p() -> player_t::buffs.memory_of_lucid_dreams -> check() )
+    {
+      rm /= 1.0 + p() -> player_t::buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
+    }
+
+    return rm;
   }
 };
 
@@ -840,7 +862,7 @@ void paladin_t::create_buffs_protection()
   buffs.seraphim -> set_cooldown( 0_ms ); // let the ability handle the cooldown
 
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
-  
+
   // Azerite traits
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )
                     -> set_default_value( azerite.inner_light.value( 1 ) );
@@ -848,6 +870,10 @@ void paladin_t::create_buffs_protection()
                            -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) );
   buffs.soaring_shield = make_buff<stat_buff_t>( this, "soaring_shield", azerite.soaring_shield.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
                        -> add_stat( STAT_MASTERY_RATING, azerite.soaring_shield.value( 1 ) );
+
+  if ( specialization() == PALADIN_PROTECTION )
+    player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
+    { this -> cooldowns.shield_of_the_righteous -> adjust_recharge_multiplier(); } );
 }
 
 void paladin_t::init_spells_protection()

@@ -40,7 +40,7 @@ namespace buffs {
 
       paladin_t* p = static_cast<paladin_t*>( player );
       // do thing
-      if ( p -> fake_sov )
+      if ( p -> options.fake_sov )
       {
         // TODO(mserrano): This is a horrible hack
         p -> active.shield_of_vengeance_damage -> base_dd_max = p -> active.shield_of_vengeance_damage -> base_dd_min = current_value;

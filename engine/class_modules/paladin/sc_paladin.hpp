@@ -259,6 +259,7 @@ public:
     proc_t* divine_purpose;
     proc_t* fires_of_justice;
     proc_t* grand_crusader;
+    proc_t* prot_lucid_dreams;
   } procs;
 
   // Spells
@@ -273,8 +274,6 @@ public:
 
     const spell_data_t* execution_sentence_debuff;
     const spell_data_t* lights_decree;
-
-    const spell_data_t* memory_of_lucid_dreams_base;
   } spells;
 
   // Talents
@@ -394,12 +393,19 @@ public:
     azerite_essence_t vision_of_perfection;
   } azerite_essence;
 
+  // Paladin options
+  struct options_t
+  {
+    double proc_chance_ret_memory_of_lucid_dreams = 0.15;
+    double proc_chance_prot_memory_of_lucid_dreams = 0.15;
+    bool fake_sov = true;
+    int indomitable_justice_pct = 0;
+  } options;
+
   player_t* beacon_target;
 
-  bool fake_sov;
-  int indomitable_justice_pct;
-  double proc_chance_ret_memory_of_lucid_dreams;
   double lucid_dreams_accumulator;
+  double lucid_dreams_minor_refund_coeff;
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN );
 
