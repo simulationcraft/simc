@@ -349,6 +349,10 @@ void initialize_azerite_powers( player_t* actor )
     actor -> special_effects.push_back( new special_effect_t( effect ) );
   }
 
+  // Update the traversal nodes if they were not defined, based on the azerite level of the neck
+  // item
+  actor->azerite_essence->update_traversal_nodes();
+
   for ( auto azerite_essence : actor->azerite_essence->enabled_essences() )
   {
     const auto spell = actor->find_spell( azerite_essence );
@@ -740,6 +744,44 @@ std::vector<unsigned> azerite_state_t::enabled_spells() const
 std::unique_ptr<azerite_essence_state_t> create_essence_state( player_t* p )
 {
   return std::unique_ptr<azerite_essence_state_t>( new azerite_essence_state_t( p ) );
+}
+
+// These are hardcoded, based on AzeriteItemMilestonePower.db2
+void azerite_essence_state_t::update_traversal_nodes()
+{
+  std::vector<unsigned> passives;
+  const auto& neck = m_player->items[ SLOT_NECK ];
+
+  if ( neck.parsed.azerite_level >= 52 )
+  {
+    passives.push_back( 300573u );
+  }
+
+  if ( neck.parsed.azerite_level >= 57 )
+  {
+    passives.push_back( 300575u );
+  }
+
+  if ( neck.parsed.azerite_level >= 62 )
+  {
+    passives.push_back( 300576u );
+  }
+
+  if ( neck.parsed.azerite_level >= 67 )
+  {
+    passives.push_back( 300577u );
+  }
+
+  range::for_each( passives, [ this ]( unsigned id ) {
+    auto it = range::find_if( m_state, [id]( const slot_state_t& slot ) {
+      return id == slot.id() && slot.type() == essence_type::PASSIVE;
+    } );
+
+    if ( it == m_state.end() )
+    {
+      add_essence( essence_type::PASSIVE, id, 1u );
+    }
+  } );
 }
 
 azerite_essence_state_t::azerite_essence_state_t( const player_t* player ) : m_player( player )
