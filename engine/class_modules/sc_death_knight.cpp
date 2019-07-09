@@ -887,6 +887,7 @@ public:
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const override;
   double    composite_crit_avoidance() const override;
   void      combat_begin() override;
+  void      activate() override;
   void      reset() override;
   void      arise() override;
   void      adjust_dynamic_cooldowns() override;
@@ -986,23 +987,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_cooldown( 0_ms ); // Handled by trigger_festering_wound
 
   debuff.deep_cuts         = make_buff( *this, "deep_cuts", p -> find_spell( 272685 ) );
-
-  // On target death triggers
-  if ( p -> specialization() == DEATH_KNIGHT_UNHOLY )
-  {
-    if ( p -> talent.soul_reaper -> ok() )
-    {
-      target -> callbacks_on_demise.push_back( std::bind( &death_knight_t::trigger_soul_reaper_death, p, std::placeholders::_1 ) );
-    }
-    if ( p -> spec.festering_wound -> ok() )
-    {
-      target -> callbacks_on_demise.push_back( std::bind( &death_knight_t::trigger_festering_wound_death, p, std::placeholders::_1 ) );
-    }
-    if ( p -> spec.outbreak -> ok() )
-    {
-      target -> callbacks_on_demise.push_back( std::bind( &death_knight_t::trigger_virulent_plague_death, p, std::placeholders::_1 ) );
-    }
-  }
 }
 
 // ==========================================================================
@@ -8186,6 +8170,42 @@ void death_knight_t::init_finished()
   }
 }
 
+// death_knight_t::activate =================================================
+
+void death_knight_t::activate()
+{
+  player_t::activate();
+
+  range::for_each( sim->actor_list, [ this ]( player_t* target ) {
+    if ( !target->is_enemy() )
+    {
+      return;
+    }
+
+    // On target death triggers
+    if ( specialization() == DEATH_KNIGHT_UNHOLY )
+    {
+      if ( talent.soul_reaper->ok() )
+      {
+        target->callbacks_on_demise.push_back(
+          [this]( player_t* t ) { trigger_soul_reaper_death( t ); } );
+      }
+
+      if ( spec.festering_wound->ok() )
+      {
+        target->callbacks_on_demise.push_back(
+          [this]( player_t* t ) { trigger_festering_wound_death( t ); } );
+      }
+
+      if ( spec.outbreak->ok() )
+      {
+        target->callbacks_on_demise.push_back(
+          [this]( player_t* t ) { trigger_virulent_plague_death( t ); } );
+      }
+    }
+  } );
+}
+
 // death_knight_t::reset ====================================================
 
 void death_knight_t::reset()
@@ -8358,9 +8378,11 @@ double death_knight_t::matching_gear_multiplier( attribute_e attr ) const
     case DEATH_KNIGHT_UNHOLY:
       if ( attr == ATTR_STRENGTH )
         return spec.plate_specialization -> effectN( 1 ).percent();
+      break;
     case DEATH_KNIGHT_BLOOD:
       if ( attr == ATTR_STAMINA )
         return spec.plate_specialization -> effectN( 1 ).percent();
+      break;
     default:
       break;
   }
