@@ -4,24 +4,26 @@ race=tauren
 spec=elemental
 role=spell
 position=ranged_back
-talents=2301032
+talents=2311132
 
-head=hood_of_the_dark_reaper,id=159391,bonus_id=1587/4819,azerite_powers=457/416/30/83/13
+head=hood_of_the_dark_reaper,id=159391,bonus_id=1617/4819/4775,azerite_powers=457/416/30/83/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulder=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_powers=457/562/461/87/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=mistfire_raiment,id=165540,bonus_id=4824/1537,azerite_powers=457/562/31/474/13
-wrist=icebinders_bracers,id=165542,bonus_id=4800/1537
-hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
-waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
-legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
-feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,enchant=pact_of_critical_strike,bonus_id=4800/1537
-finger2=band_of_multisided_strikes,id=165565,enchant=pact_of_critical_strike,bonus_id=4800/1537
-trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=crest_of_paku,id=166418,bonus_id=4800/1537
-main_hand=akundas_shocksplitter,id=165594,enchant=torrent_of_elements,bonus_id=4800/1537
-off_hand=sunburst_crest,id=165584,bonus_id=4800/1537
+shoulders=hookbarbed_spaulders,id=159376,bonus_id=1617/4819/4775,azerite_powers=416/457/21/474/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=loablessed_chestguard,id=158355,bonus_id=1617/4819/4775,azerite_powers=416/457/21/15/13
+wrists=oris_tidal_bracers,id=170304,bonus_id=1512
+hands=poens_deepsea_handgrips,id=170335,bonus_id=1512
+waist=tanglekelp_waistwrap,id=168870,bonus_id=4800/1517
+legs=cherished_empresss_leggings,id=168874,bonus_id=4800/1517
+feet=akanas_reefstrider_treads,id=170142,bonus_id=1512
+finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_versatility
+finger2=lord_waycrests_signet,id=158362,bonus_id=1602/4779,enchant=accord_of_versatility
+trinket1=shiver_venom_relic,id=168905,bonus_id=4800/1517
+trinket2=leviathans_lure,id=169304,bonus_id=4800/1517
+main_hand=scepter_of_the_azshari,id=168903,bonus_id=4800/1517,enchant=versatile_navigation
+off_hand=great_reef_barrier,id=168476,bonus_id=4800/1517
+
+azerite_essences=14:3/32:3/4:3
 
 save=T24_Shaman_Elemental.simc
 
