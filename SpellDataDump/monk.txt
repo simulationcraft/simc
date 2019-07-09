@@ -8631,6 +8631,34 @@ Effects          :
                    Base Value: 0 | Scaled Value: 242.6276 (coefficient=0.780153) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
 Description      : Your Versatility is increased by $s2. Moving near an enemy's corpse consumes their essence, restoring $s1 health.
 
+Name             : Reverse Harm (id=287771) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Type       : Magic
+Resource         : 40 Energy (3) (id=192020)
+Spell Level      : 1
+Range            : 10 yards
+GCD              : 1 seconds
+Cooldown         : 10 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Cannot crit (93)
+Effects          :
+#1 (id=750964)   : Direct Heal% (136)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Friend (21)
+#2 (id=750965)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Friend (21)
+#3 (id=750966)   : Energize Power (30)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: chi | Target: Self (1)
+Description      : Heals a friendly target for $m1% of their maximum health, and causes $m2% of the amount healed to instantly be dealt to the nearest enemy as Nature damage within 5 yards. 
+
+|cFFFFFFFFGenerates $s3 Chi.
+
 Name             : Fight or Flight (id=287818) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
@@ -8803,6 +8831,25 @@ Effects          :
 #1 (id=753617)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.935995) | PvP Coefficient: 0.50000 | Trigger Spell: 289323 | Target: Self (1)
 Description      : Rolling grants you $s1 Avoidance for $289324d. Taking non-periodic damage in this time reduces the cooldown of Roll by $289324s3 sec.
+
+Name             : Reverse Harm (id=290461) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Cannot crit (93), Disable player multipliers (221)
+Effects          :
+#1 (id=755791)   : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: Unknown(132) -> AOE enemy (instant) (16)
+Description      : $@spelldesc287771
 
 Name             : Touch of Death (id=290521) [Spell Family (53), Hidden] 
 Class            : Monk
