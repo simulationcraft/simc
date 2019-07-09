@@ -4660,7 +4660,6 @@ void items::cyclotronic_blast( special_effect_t& effect )
   {
     cyclotronic_blast_t( const special_effect_t& e ) : proc_t( e, "cyclotronic_blast", e.driver() )
     {
-      trigger_gcd  = 0_ms;
       channeled    = true;
     }
 
