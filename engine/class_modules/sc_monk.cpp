@@ -6812,6 +6812,7 @@ struct reverse_harm_damage_t : public monk_spell_t
 struct reverse_harm_t : public monk_heal_t
 {
   reverse_harm_damage_t* damage;
+  bool essence_equipped;
   reverse_harm_t( monk_t& player, const std::string& options_str )
     : monk_heal_t( "reverse_harm", player, player.spec.reverse_harm ), damage( nullptr )
   {
@@ -6820,6 +6821,7 @@ struct reverse_harm_t : public monk_heal_t
     damage->stats    = stats;
     cooldown->hasted = false;
     target           = &player;
+    essence_equipped = player.find_azerite_essence( "Conflict and Strife" ).is_major();
 
     base_dd_min = static_cast<int>( player.resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
     base_dd_max = static_cast<int>( player.resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
@@ -6831,6 +6833,11 @@ struct reverse_harm_t : public monk_heal_t
     // disable the snapshot_flags for all multipliers except for Versatility
     snapshot_flags &= STATE_NO_MULTIPLIER;
     snapshot_flags |= STATE_VERSATILITY;
+  }
+
+  bool ready() override
+  {
+    return essence_equipped && p()->specialization() == MONK_WINDWALKER ? monk_heal_t::ready() : false;
   }
 
   virtual void execute() override
