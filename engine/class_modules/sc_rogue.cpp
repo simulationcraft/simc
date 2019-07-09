@@ -5755,8 +5755,8 @@ void rogue_t::init_action_list()
     essences->add_action( "concentrated_flame" );
     essences->add_action( "blood_of_the_enemy,if=debuff.vendetta.up&(!talent.toxic_blade.enabled|debuff.toxic_blade.up|debuff.vendetta.remains<=10)|target.time_to_die<=10", "Always use Blood with Vendetta up. Also use with TB up (if talented) as long as it runs for 10s during Vendetta." );
     essences->add_action( "guardian_of_azeroth" );
-    essences->add_action( "focused_azerite_beam" );
-    essences->add_action( "purifying_blast" );
+    essences->add_action( "focused_azerite_beam,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60" );
+    essences->add_action( "purifying_blast,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60" );
     essences->add_action( "the_unbound_force" );
     essences->add_action( "ripple_in_space" );
     essences->add_action( "worldvein_resonance" );
@@ -5859,8 +5859,8 @@ void rogue_t::init_action_list()
     essences->add_action( "concentrated_flame" );
     essences->add_action( "blood_of_the_enemy,if=variable.blade_flurry_sync" );
     essences->add_action( "guardian_of_azeroth" );
-    essences->add_action( "focused_azerite_beam" );
-    essences->add_action( "purifying_blast" );
+    essences->add_action( "focused_azerite_beam,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60" );
+    essences->add_action( "purifying_blast,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60" );
     essences->add_action( "the_unbound_force" );
     essences->add_action( "ripple_in_space" );
     essences->add_action( "worldvein_resonance" );
@@ -5948,8 +5948,8 @@ void rogue_t::init_action_list()
     essences->add_action( "concentrated_flame" );
     essences->add_action( "blood_of_the_enemy" );
     essences->add_action( "guardian_of_azeroth" );
-    essences->add_action( "focused_azerite_beam" );
-    essences->add_action( "purifying_blast" );
+    essences->add_action( "focused_azerite_beam,if=spell_targets.shuriken_storm>=2|raid_event.adds.in>60" );
+    essences->add_action( "purifying_blast,if=spell_targets.shuriken_storm>=2|raid_event.adds.in>60" );
     essences->add_action( "the_unbound_force" );
     essences->add_action( "ripple_in_space" );
     essences->add_action( "worldvein_resonance" );
