@@ -5730,6 +5730,7 @@ void mage_t::apl_arcane()
   burn->add_action( "berserking" );
   burn->add_action( this, "Arcane Power" );
   burn->add_action( "use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains" );
+  burn->add_action( "use_item,name=pocketsized_computation_device,if=!cooldown.cyclotronic_blast.duration&(buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains)" );
   for ( const auto& ra : racial_actions )
   {
     if ( ra == "lights_judgment" || ra == "arcane_torrent" || ra == "berserking" )
@@ -5893,6 +5894,7 @@ void mage_t::apl_fire()
   bm_combustion_phase->add_action( this, "Scorch" );
 
   trinkets->add_action( "use_items" );
+  trinkets->add_action( "use_item,name=pocketsized_computation_device,if=!cooldown.cyclotronic_blast.duration" );
 }
 
 void mage_t::apl_frost()
@@ -6029,6 +6031,7 @@ void mage_t::apl_frost()
     "extra Rune of Power charges that should be used with active talents, if possible." );
   cooldowns->add_action( "potion,if=prev_gcd.1.icy_veins|target.time_to_die<30" );
   cooldowns->add_action( "use_items" );
+  cooldowns->add_action( "use_item,name=pocketsized_computation_device,if=!cooldown.cyclotronic_blast.duration" );
   for ( const auto& ra : racial_actions )
   {
     if ( ra == "arcane_torrent" )
