@@ -3440,7 +3440,7 @@ void arcane_heart( special_effect_t& effect )
 
     if ( buff->current_value <= 0 )
     {
-      omni->trigger();
+      make_event( *buff->sim, [ omni ] { omni->trigger(); } );
       buff->current_value += buff->default_value;
     }
 
