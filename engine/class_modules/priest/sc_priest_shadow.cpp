@@ -2007,10 +2007,6 @@ void priest_t::generate_apl_shadow()
     default_list->add_action( profession_action );
   }
 
-  // Pocket-Sized Computational Device
-  // TODO: For some reason this needs to be hardcoded
-  default_list->add_action( "use_item,name=pocketsized_computation_device,if=equipped.167555" );
-
   // Potions
   default_list->add_action(
       "potion,if=buff.bloodlust.react|target.time_to_die<=80|"
@@ -2053,6 +2049,7 @@ void priest_t::generate_apl_shadow()
   single->add_action( "concentrated_flame" );
   single->add_action( "ripple_in_space" );
   single->add_action( "worldvein_resonance" );
+  single->add_action( "use_item,name=pocketsized_computation_device,if=equipped.167555&(buff.voidform.stack<15|(current_insanity_drain*gcd.max*4)>insanity)" );
   single->add_action( this, "Mind Sear",
                       "if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&"
                       "azerite.searing_dialogue.rank>=1" );
@@ -2109,6 +2106,7 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( "concentrated_flame" );
   cleave->add_action( "ripple_in_space" );
   cleave->add_action( "worldvein_resonance" );
+  cleave->add_action( "use_item,name=pocketsized_computation_device,if=equipped.167555&(buff.voidform.stack<15|(current_insanity_drain*gcd.max*4)>insanity)" );
   cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   cleave->add_talent( this, "Dark Void",
