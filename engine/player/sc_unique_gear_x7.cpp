@@ -4660,12 +4660,12 @@ void items::cyclotronic_blast( special_effect_t& effect )
   {
     cyclotronic_blast_t( const special_effect_t& e ) : proc_t( e, "cyclotronic_blast", e.driver() )
     {
-      channeled    = true;
+      channeled = true;
     }
 
     timespan_t tick_time( const action_state_t* s ) const override
     {
-      return data().effectN( 1 ).period();
+      return base_tick_time;
     }
 
     bool usable_moving() const override
@@ -4678,6 +4678,18 @@ void items::cyclotronic_blast( special_effect_t& effect )
       proc_t::execute();
 
       event_t::cancel( player->readying );
+
+      if ( player->main_hand_attack && player->main_hand_attack->execute_event )
+      {
+        player->main_hand_attack->execute_event->reschedule(
+          player->main_hand_attack->execute_event->remains() + dot_duration );
+      }
+
+      if ( player->off_hand_attack && player->off_hand_attack->execute_event )
+      {
+        player->off_hand_attack->execute_event->reschedule(
+          player->off_hand_attack->execute_event->remains() + dot_duration );
+      }
     }
 
     void last_tick( dot_t* d ) override
