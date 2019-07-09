@@ -8127,6 +8127,8 @@ struct use_item_t : public action_t
     add_option( opt_string( "slot", item_slot ) );
     parse_options( options_str );
 
+    special = true;
+
     if ( !item_name.empty() )
     {
       item = player->find_item_by_name( item_name );
