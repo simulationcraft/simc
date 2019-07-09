@@ -3901,6 +3901,7 @@ struct player_t : public actor_t
     // 8.2 misc
     buff_t* damage_to_aberrations; // Benthic belt special effect
     buff_t* fathom_hunter; // Follower themed Benthic boots special effect
+    buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
   } buffs;
 
   struct debuffs_t

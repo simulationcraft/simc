@@ -3292,6 +3292,9 @@ double player_t::composite_melee_speed() const
   if ( buffs.galeforce_striking && buffs.galeforce_striking->check() )
     h *= 1.0 / ( 1.0 + buffs.galeforce_striking->check_value() );
 
+  if ( buffs.delirious_frenzy && buffs.delirious_frenzy->check() )
+    h *= 1.0 / ( 1.0 + buffs.delirious_frenzy->check_stack_value() );
+
   return h;
 }
 

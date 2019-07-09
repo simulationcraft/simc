@@ -182,6 +182,7 @@ namespace items
   void ashvanes_razor_coral( special_effect_t& );
   void dribbling_inkpod( special_effect_t& );
   void reclaimed_shock_coil( special_effect_t& );
+  void dreams_end( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -4191,6 +4192,40 @@ void items::reclaimed_shock_coil( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Dream's End ============================================================
+// TODO: Figure out details of how the attack speed buff stacks with other haste.
+
+void items::dreams_end( special_effect_t& effect )
+{
+  struct delirious_frenzy_cb_t : public dbc_proc_callback_t
+  {
+    player_t* target;
+
+    delirious_frenzy_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {}
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      if ( !target || target != s->target )  // new target
+      {
+        target = s->target;
+        listener->buffs.delirious_frenzy->expire();  // cancel buff, restart below
+      }
+
+      listener->buffs.delirious_frenzy->trigger();
+    }
+  };
+
+  if ( !effect.player->buffs.delirious_frenzy )
+  {
+    effect.player->buffs.delirious_frenzy = make_buff( effect.player, "delirious_frenzy", effect.trigger() )
+      ->set_default_value( effect.trigger()->effectN( 1 ).percent() )
+      ->add_invalidate( CACHE_ATTACK_SPEED );
+  }
+
+  new delirious_frenzy_cb_t( effect );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -5149,6 +5184,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 296963, items::dribbling_inkpod );
   register_special_effect( 300142, items::hyperthread_wristwraps );
   register_special_effect( 301753, items::reclaimed_shock_coil );
+  register_special_effect( 303356, items::dreams_end );
   // 8.2 Mechagon combo rings
   register_special_effect( 300124, items::logic_loop_of_division );
   register_special_effect( 300125, items::logic_loop_of_recursion );
