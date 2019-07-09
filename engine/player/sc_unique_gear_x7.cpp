@@ -4698,11 +4698,6 @@ void items::cyclotronic_blast( special_effect_t& effect )
       channeled = true;
     }
 
-    timespan_t tick_time( const action_state_t* s ) const override
-    {
-      return base_tick_time;
-    }
-
     bool usable_moving() const override
     {
       return true;
@@ -4717,13 +4712,13 @@ void items::cyclotronic_blast( special_effect_t& effect )
       if ( player->main_hand_attack && player->main_hand_attack->execute_event )
       {
         player->main_hand_attack->execute_event->reschedule(
-          player->main_hand_attack->execute_event->remains() + dot_duration );
+          player->main_hand_attack->execute_event->remains() + composite_dot_duration( execute_state ) );
       }
 
       if ( player->off_hand_attack && player->off_hand_attack->execute_event )
       {
         player->off_hand_attack->execute_event->reschedule(
-          player->off_hand_attack->execute_event->remains() + dot_duration );
+          player->off_hand_attack->execute_event->remains() + composite_dot_duration( execute_state ) );
       }
     }
 
