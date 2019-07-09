@@ -286,6 +286,8 @@ public:
   std::vector<unsigned> enabled_essences() const;
 
   std::string option_str() const;
+
+  void update_traversal_nodes();
 };
 
 /// Creates an azerite state object for the actor
