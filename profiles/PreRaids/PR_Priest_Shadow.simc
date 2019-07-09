@@ -48,6 +48,7 @@ actions.cleave+=/dark_ascension,if=buff.voidform.down
 actions.cleave+=/vampiric_touch,if=!ticking&azerite.thought_harvester.rank>=1
 actions.cleave+=/mind_sear,if=buff.harvested_thoughts.up
 actions.cleave+=/void_bolt
+actions.cleave+=/use_item,name=azsharas_font_of_power,if=(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0
 actions.cleave+=/memory_of_lucid_dreams,if=(buff.voidform.stack>20&insanity<=50)|buff.voidform.stack>(25+5*buff.bloodlust.up)|(current_insanity_drain*gcd.max*3)>insanity
 actions.cleave+=/blood_of_the_enemy
 actions.cleave+=/guardian_of_azeroth
@@ -75,6 +76,7 @@ actions.cleave+=/shadow_word_pain
 actions.single=void_eruption
 actions.single+=/dark_ascension,if=buff.voidform.down
 actions.single+=/void_bolt
+actions.single+=/use_item,name=azsharas_font_of_power,if=(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0
 actions.single+=/memory_of_lucid_dreams,if=(buff.voidform.stack>20&insanity<=50)|buff.voidform.stack>(25+5*buff.bloodlust.up)|(current_insanity_drain*gcd.max*3)>insanity
 actions.single+=/blood_of_the_enemy
 actions.single+=/guardian_of_azeroth

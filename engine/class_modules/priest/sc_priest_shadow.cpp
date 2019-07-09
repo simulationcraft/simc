@@ -2037,6 +2037,7 @@ void priest_t::generate_apl_shadow()
   single->add_action( this, "Void Eruption" );
   single->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
+  single->add_action( "use_item,name=azsharas_font_of_power,if=(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0" );
   // Make sure to use lucid before you fall out of voidform
   single->add_action( "memory_of_lucid_dreams,if=(buff.voidform.stack>20&insanity<=50)|"
                       "buff.voidform.stack>(25+5*buff.bloodlust.up)|"
@@ -2094,6 +2095,7 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Vampiric Touch", "if=!ticking&azerite.thought_harvester.rank>=1" );
   cleave->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
   cleave->add_action( this, "Void Bolt" );
+  cleave->add_action( "use_item,name=azsharas_font_of_power,if=(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0" );
   // Make sure to use lucid before you fall out of voidform
   cleave->add_action( "memory_of_lucid_dreams,if=(buff.voidform.stack>20&insanity<=50)|"
                       "buff.voidform.stack>(25+5*buff.bloodlust.up)|"
