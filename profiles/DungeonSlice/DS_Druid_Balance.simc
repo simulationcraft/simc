@@ -40,17 +40,13 @@ actions.precombat+=/solar_wrath
 
 # Executed every time the actor is available.
 actions=potion,if=buff.ca_inc.remains>6
-actions+=/blood_fury,if=buff.ca_inc.up
 actions+=/berserking,if=buff.ca_inc.up
-actions+=/arcane_torrent,if=buff.ca_inc.up
-actions+=/lights_judgment,if=buff.ca_inc.up
-actions+=/fireblood,if=buff.ca_inc.up
-actions+=/ancestral_call,if=buff.ca_inc.up
 # CDs
 actions+=/use_item,name=azsharas_font_of_power,if=equipped.169314&dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
 actions+=/guardian_of_azeroth,if=(!talent.starlord.enabled|buff.starlord.up)&dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
 actions+=/use_item,name=tidestorm_codex,if=equipped.165576
 actions+=/use_item,name=pocketsized_computation_device,if=equipped.167555&dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
+actions+=/use_item,name=shiver_venom_relic,if=equipped.168905&cooldown.ca_inc.remains>30&!buff.ca_inc.up
 actions+=/use_items,if=cooldown.ca_inc.remains>30
 actions+=/blood_of_the_enemy,if=cooldown.ca_inc.remains>30
 actions+=/memory_of_lucid_dreams,if=dot.sunfire.remains>10&dot.moonfire.remains>10&(!talent.stellar_flare.enabled|dot.stellar_flare.remains>10)&!buff.ca_inc.up&(astral_power<25|cooldown.ca_inc.remains>30)
