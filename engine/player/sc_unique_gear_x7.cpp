@@ -1680,8 +1680,9 @@ void items::briny_barnacle( special_effect_t& effect )
   action_t* choking_brine_damage = create_proc_action<choking_brine_damage_t>( "choking_brine", effect );
   action_t* explosion = new choking_brine_spreader_t( effect, choking_brine_damage );
 
+  auto p = effect.player;
   // Add a callback on demise to each enemy in the simulation
-  range::for_each( effect.player -> sim -> actor_list, [ effect, explosion ]( player_t* target )
+  range::for_each( p -> sim -> actor_list, [ p, explosion ]( player_t* target )
   {
     // Don't do anything on players
     if ( !target -> is_enemy() )
@@ -1689,7 +1690,7 @@ void items::briny_barnacle( special_effect_t& effect )
       return;
     }
 
-    target -> callbacks_on_demise.push_back( [ effect, explosion ] ( player_t* target )
+    target -> callbacks_on_demise.push_back( [ p, explosion ] ( player_t* target )
     {
       // Don't do anything if the sim is ending
       if ( target -> sim -> event_mgr.canceled )
@@ -1697,7 +1698,7 @@ void items::briny_barnacle( special_effect_t& effect )
         return;
       }
 
-      auto td = effect.player -> get_target_data( target );
+      auto td = p->get_target_data( target );
 
       if ( td -> debuff.choking_brine -> up() )
       {
