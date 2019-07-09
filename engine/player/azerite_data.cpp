@@ -840,7 +840,19 @@ void azerite_essence_state_t::copy_state( const std::unique_ptr<azerite_essence_
 // TODO: Once armory import works with essences, adjust
 std::string azerite_essence_state_t::option_str() const
 {
-  return m_option_str;
+  if ( !m_option_str.empty() )
+  {
+    return m_option_str;
+  }
+
+  // Return a three-state option set for the essences grabbed from armory
+  std::vector<std::string> options;
+  range::for_each( m_state, [ &options ]( const slot_state_t& slot ) {
+    std::vector<std::string> entry;
+    options.push_back( slot.str() );
+  } );
+
+  return util::string_join( options, "/" );
 }
 
 // Formats:
