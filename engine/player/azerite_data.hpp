@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <functional>
 
+#include "sc_util.hpp"
 #include "util/rapidjson/document.h"
 
 #include "sc_timespan.hpp"
@@ -252,6 +253,13 @@ class azerite_essence_state_t
 
       essence_type type() const
       { return m_type; }
+
+      std::string str() const
+      {
+        return util::to_string( m_id ) + ":" +
+               util::to_string( m_rank ) + ":" +
+               ( type() == essence_type::MAJOR ? '1' : '0' );
+      }
   };
 
   const player_t*           m_player;
