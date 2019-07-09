@@ -1633,6 +1633,7 @@ class SpellDataGenerator(DataGenerator):
           ( 252768, 3 ), # Tier 21 2-piece DPS effect
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
+		  ( 290461, 3 ), # Reverse Harm Damage
           # Legendary
           ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
           # Azerite Traits
