@@ -912,12 +912,28 @@ std::string item_t::encoded_item() const
       ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) ) )
     s << ",gems=" << encoded_gems();
 
-  if ( ! option_gem_id_str.empty() )
-    s << ",gem_id=" << option_gem_id_str;
-
   auto gem_bonus_it = range::find_if( parsed.gem_bonus_id, []( const std::vector<unsigned> v ) {
     return v.size() > 0;
   } );
+
+  auto gem_it = range::find_if( parsed.gem_id, []( int id ) {
+    return id != 0;
+  } );
+
+  if ( ! option_gem_id_str.empty() )
+    s << ",gem_id=" << option_gem_id_str;
+  else if ( gem_it != parsed.gem_id.end() && parsed.gem_stats.size() == 0 )
+  {
+    s << ",gem_id=";
+    for ( size_t i = 0; i < parsed.gem_id.size(); ++i )
+    {
+      s << parsed.gem_id[ i ];
+      if ( i < parsed.gem_id.size() - 1 )
+      {
+        s << '/';
+      }
+    }
+  }
 
   if ( !option_gem_bonus_id_str.empty() )
   {
