@@ -59,7 +59,7 @@ actions.cleave+=/the_unbound_force
 actions.cleave+=/concentrated_flame
 actions.cleave+=/ripple_in_space
 actions.cleave+=/worldvein_resonance
-actions.cleave+=/use_item,name=pocketsized_computation_device,if=equipped.167555&(buff.voidform.stack<15|(current_insanity_drain*gcd.max*4)>insanity)
+actions.cleave+=/use_item,name=pocketsized_computation_device,if=equipped.167555&(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0
 actions.cleave+=/shadow_word_death,target_if=target.time_to_die<3|buff.voidform.down
 actions.cleave+=/surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
 actions.cleave+=/dark_void,if=raid_event.adds.in>10&(dot.shadow_word_pain.refreshable|target.time_to_die>30)
@@ -87,7 +87,7 @@ actions.single+=/the_unbound_force
 actions.single+=/concentrated_flame
 actions.single+=/ripple_in_space
 actions.single+=/worldvein_resonance
-actions.single+=/use_item,name=pocketsized_computation_device,if=equipped.167555&(buff.voidform.stack<15|(current_insanity_drain*gcd.max*4)>insanity)
+actions.single+=/use_item,name=pocketsized_computation_device,if=equipped.167555&(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0
 actions.single+=/mind_sear,if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&azerite.searing_dialogue.rank>=1
 actions.single+=/shadow_word_death,if=target.time_to_die<3|cooldown.shadow_word_death.charges=2|(cooldown.shadow_word_death.charges=1&cooldown.shadow_word_death.remains<gcd.max)
 actions.single+=/surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
