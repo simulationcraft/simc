@@ -1200,7 +1200,7 @@ struct sim_t : private sc_thread_t
     /// Chance on every check to see if Undulating Tides gets locked out
     double              undulating_tides_lockout_chance = 0.0;
     /// Base RPPM for Leviathan's Lure
-    double              leviathans_lure_base_rppm = 0.8;
+    double              leviathans_lure_base_rppm = 0.75;
     /// Chance to catch returning wave of Aquipotent Nautilus
     double              aquipotent_nautilus_catch_chance = 1.0;
     /// Chance of having to interrupt casting by moving to void tear from Za'qul's Portal Key
