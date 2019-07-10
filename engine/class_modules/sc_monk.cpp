@@ -6798,16 +6798,14 @@ struct reverse_harm_damage_t : public monk_spell_t
     background = true;
     ww_mastery = true;
     may_crit   = false;
-
-	base_dd_min = static_cast<int>( player.resources.max[ RESOURCE_HEALTH ] * player.spec.reverse_harm->effectN( 1 ).percent() );
-    base_dd_max = static_cast<int>( player.resources.max[ RESOURCE_HEALTH ] * player.spec.reverse_harm->effectN( 1 ).percent() );
   }
 
   double action_multiplier() const override
   {
     double am = monk_spell_t::action_multiplier();
 
-    am *= p()->spec.reverse_harm->effectN( 2 ).percent();
+	am *= p()->spec.reverse_harm->effectN( 1 ).percent(); // 8%
+    am *= p()->spec.reverse_harm->effectN( 2 ).percent(); // 100%
 
     return am;
   }
@@ -6827,7 +6825,7 @@ struct reverse_harm_t : public monk_heal_t
   reverse_harm_damage_t* damage;
   bool essence_equipped;
   reverse_harm_t( monk_t& player, const std::string& options_str )
-    : monk_heal_t( "reverse_harm", player, player.spec.reverse_harm ), damage( nullptr )
+    : monk_heal_t( "reverse_harm", player, player.spec.reverse_harm )
   {
     parse_options( options_str );
     damage           = new reverse_harm_damage_t( player );
@@ -6862,7 +6860,13 @@ struct reverse_harm_t : public monk_heal_t
 
     monk_heal_t::execute();
 
-    p()->resource_gain( RESOURCE_CHI, p()->spec.reverse_harm->effectN( 3 ).base_value(), p()->gain.reverse_harm );
+    //p()->resource_gain( RESOURCE_CHI, p()->spec.reverse_harm->effectN( 3 ).base_value(), p()->gain.reverse_harm );
+
+	double dmg_multiplier = p()->spec.reverse_harm->effectN( 1 ).percent();  // 8%
+    dmg_multiplier *= p()->spec.reverse_harm->effectN( 2 ).percent();     // 100%
+
+	damage->base_dd_min = static_cast<int>( p()->resources.max[ RESOURCE_HEALTH ] * dmg_multiplier );
+    damage->base_dd_max = static_cast<int>( p()->resources.max[ RESOURCE_HEALTH ] * dmg_multiplier );
 
     damage->execute();
   }
