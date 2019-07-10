@@ -5969,8 +5969,9 @@ void mage_t::apl_frost()
       single->add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&cast_time=0" );
       single->add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react&talent.splitting_ice.enabled&active_enemies>1" );
       single->add_talent( this, "Comet Storm" );
-      single->add_talent( this, "Ebonbolt", "if=buff.icicles.stack=5&!buff.brain_freeze.react" );
-      single->add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt" );
+      single->add_talent( this, "Ebonbolt", "if=buff.icicles.stack=5&!buff.brain_freeze.react&buff.memory_of_lucid_dreams.down" );
+      single->add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt"
+        "|talent.incanters_flow.enabled&cast_time+travel_time>incanters_flow_time_to.5.up&cast_time+travel_time<incanters_flow_time_to.4.down" );
       break;
     case ROTATION_FROZEN_ORB:
       single->add_action( "call_action_list,name=essences" );
