@@ -3660,24 +3660,15 @@ void items::aquipotent_nautilus( special_effect_t& effect )
  * driver id=302696, 1.5rppm to create void tear (driver->trigger id=303104)
  * void tear id=303104, lasts 30s, move within 4yd to create portal
  * portal id=302702, lasts 10s, while open gives int buff
- * int buff id=302960, stat amount held in driver->effect#1, 10 MAX STACKS?
- * TODO:
- * Determine if multiple tear/portals can exist at the same time via frequent procs
- * Why is there 10 max stacks on the int buff?
- * Can you get multiple stacks via multiple portals (either your own or from others)
- * Determine various timings (how long for tear/portal to appear, how far do you move, etc.)
+ * int buff id=302960, stat amount held in driver->effect#1
  */
 void items::zaquls_portal_key( special_effect_t& effect )
 {
-  // How long void tear is up for. Seems unncessary atm so commented out. May come into play if better implementation is
-  // made for total delay time rather than current hardcoding.
-
+  // How long void tear is up for. Seems unncessary atm so commented out.
   // timespan_t tear_duration = effect.driver()->effectN( 1 ).trigger()->duration();
 
   struct void_negotiation_cb_t : public dbc_proc_callback_t
   {
-    // How long it takes for a) tear to spawn, b) you to move to the tear, c) portal to spawn
-    timespan_t total_delay = 5_s;
     buff_t* buff;
 
     void_negotiation_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b )
@@ -3685,17 +3676,19 @@ void items::zaquls_portal_key( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* ) override
     {
-      // TODO: determine when the appropriate time to force moving() is (or if trigger_movement() with a distance is
-      // more appropriate). For now implemented to force you to move immeidately as the void tear spawns (assuming you
-      // set the option to move).
-      if ( rng().real() < listener->sim->bfa_opts.zaquls_portal_key_move_chance )
-      {
-        listener->moving();
-      }
+      // Approximate player behavior of waiting for the next gcd (or current cast to finish), then spending a gcd to
+      // move and open the portal
+      timespan_t delay = listener->gcd_ready - listener->sim->current_time()
+                       + (listener->last_foreground_action ? listener->last_foreground_action->time_to_execute : 0_ms)
+                       + listener->base_gcd * listener->gcd_current_haste_value;
 
-      listener->sim->print_debug( "za'qul's portal key portal spawned, void_negotiation scheduled in {} at {}",
-        total_delay, listener->sim->current_time() );
-      make_event( listener->sim, total_delay, [this] {
+      listener->sim->print_debug( "za'qul's portal key portal spawned, void_negotiation scheduled in {} at {}", delay,
+        listener->sim->current_time() + delay);
+      make_event( listener->sim, delay, [this] {
+        // Portals spawn close enough that distance moving seems unnecessary, and an instance of moving() will suffice
+        if ( rng().real() < listener->sim->bfa_opts.zaquls_portal_key_move_chance )
+          listener->moving();
+
         buff->trigger();
       } );
     }
@@ -3710,8 +3703,6 @@ void items::zaquls_portal_key( special_effect_t& effect )
     // option to set the buff uptime. For now assuming this is a non-issue and you can maintain the buff for the full
     // 10s.
     buff->set_duration( effect.player->find_spell( 302702 )->duration() );
-    // TODO: determine if buff from multiple portals can stack. For now assume they do and thus exhibit asynchronous
-    // stacking behavior
     buff->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   }
 
