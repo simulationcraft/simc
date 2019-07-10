@@ -6800,16 +6800,6 @@ struct reverse_harm_damage_t : public monk_spell_t
     may_crit   = false;
   }
 
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-	am *= p()->spec.reverse_harm->effectN( 1 ).percent(); // 8%
-    am *= p()->spec.reverse_harm->effectN( 2 ).percent(); // 100%
-
-    return am;
-  }
-
   virtual void init() override
   {
     monk_spell_t::init();
