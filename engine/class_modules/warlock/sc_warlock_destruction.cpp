@@ -1157,6 +1157,7 @@ namespace warlock {
     cds->add_action( "blood_fury,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30" );
     cds->add_action( "fireblood,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30" );
     cds->add_action( "use_items,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30" );
+    cds->add_action( "use_item,name=pocketsized_computation_device,if=dot.immolate.remains>=5" );
 
     havoc->add_action( this, "Conflagrate", "if=buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
     havoc->add_action( this, "Immolate", "if=talent.internal_combustion.enabled&remains<duration*0.5|!talent.internal_combustion.enabled&refreshable" );
