@@ -4378,28 +4378,13 @@ item_t init_punchcard( const special_effect_t& effect )
     return {};
   }
 
-  auto gem_slot = std::distance( effect.item->parsed.gem_id.begin(), it );
-
   item_t punchcard( effect.player, "" );
   punchcard.parsed.data = *item_data;
   punchcard.name_str = item_data->name;
   ::util::tokenize( punchcard.name_str );
 
-  if ( effect.item->parsed.gem_ilevel[ gem_slot ] > 0 )
-  {
-    punchcard.parsed.data.level = effect.item->parsed.gem_ilevel[ gem_slot ];
-  }
-  else
-  {
-    // Apply bonus ids to punchcard item
-    range::for_each( effect.item->parsed.gem_bonus_id[ gem_slot ],
-      [ &punchcard ]( unsigned bonus_id ) {
-        auto bonuses = punchcard.player -> dbc.item_bonus( bonus_id );
-        range::for_each( bonuses, [ &punchcard ]( const item_bonus_entry_t* entry ) {
-          item_database::apply_item_bonus( punchcard, *entry );
-        } );
-    } );
-  }
+  // Punchcards use the item level of he trinket itself, apparently.
+  punchcard.parsed.data.level = effect.item->item_level();
 
   if ( effect.player->sim->debug )
   {
@@ -4536,14 +4521,22 @@ void items::subroutine_recalibration( special_effect_t& effect )
   {
     recalibration_buff = make_buff<stat_buff_t>( effect.player, "recalibrating",
       effect.player->find_spell( 299065 ), effect.item );
-    recalibration_buff->add_stat( STAT_HASTE_RATING, -effect.driver()->effectN( 3 ).average( &( punchcard ) ) );
+    recalibration_buff->add_stat( STAT_HASTE_RATING,
+        item_database::apply_combat_rating_multiplier( effect.player,
+          combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
+          punchcard.item_level(),
+          effect.player->find_spell( 299065 )->effectN( 1 ).average( &( punchcard ) ) ) );
   }
 
   if ( !primary_buff )
   {
     primary_buff = make_buff<stat_buff_t>( effect.player, "subroutine_recalibration",
       effect.player->find_spell( 299064 ), effect.item );
-    primary_buff->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( &( punchcard ) ) );
+    primary_buff->add_stat( STAT_HASTE_RATING,
+        item_database::apply_combat_rating_multiplier( effect.player,
+          combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
+          punchcard.item_level(),
+          effect.player->find_spell( 299064 )->effectN( 1 ).average( &( punchcard ) ) ) );
     primary_buff->set_stack_change_callback( [recalibration_buff]( buff_t*, int /* old */, int new_ ) {
       if ( new_ == 0 )
       {
