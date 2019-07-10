@@ -1538,6 +1538,7 @@ struct bladestorm_tick_t : public warrior_attack_t
   {
     dual = true;
     aoe  = -1;
+    background = true;
     if ( p->specialization() == WARRIOR_ARMS )
     {
       base_multiplier *= 1.0 + p->spec.arms_warrior->effectN( 4 ).percent();
@@ -2105,6 +2106,7 @@ struct execute_damage_t : public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
+    background = true;
   }
 
   double action_multiplier() const override
@@ -2226,6 +2228,7 @@ struct execute_main_hand_t : public warrior_attack_t
     : warrior_attack_t( name, p, s ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
+    background = true;
     dual   = true;
     weapon = &( p->main_hand_weapon );
     base_multiplier *= 1.0 + p->spec.execute_2->effectN( 1 ).percent();
@@ -2249,6 +2252,7 @@ struct execute_off_hand_t : public warrior_attack_t
     : warrior_attack_t( name, p, s ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
+    background = true;
     dual     = true;
     may_miss = may_dodge = may_parry = may_block = false;
     weapon                                       = &( p->off_hand_weapon );
@@ -2727,6 +2731,7 @@ struct raging_blow_attack_t : public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual                                         = true;
+    background = true;
 
     base_multiplier *= 1.0 + p->talents.inner_rage->effectN( 2 ).percent();
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
@@ -3044,6 +3049,7 @@ struct rampage_attack_t : public warrior_attack_t
       rage_from_simmering_rage(
           ( p->azerite.simmering_rage.spell()->effectN( 1 ).base_value() ) / 10.0 )
   {
+    background = true;
     dual = true;
     if ( p->sets->has_set_bonus( WARRIOR_FURY, T21, B4 ) )
     {
@@ -3751,6 +3757,7 @@ struct whirlwind_off_hand_t : public warrior_attack_t
 {
   whirlwind_off_hand_t( warrior_t* p, const spell_data_t* whirlwind ) : warrior_attack_t( "whirlwind_oh", p, whirlwind )
   {
+    background = true;
     aoe = -1;
   }
 };
@@ -3759,6 +3766,7 @@ struct fury_whirlwind_mh_t : public warrior_attack_t
 {
   fury_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ) : warrior_attack_t( "whirlwind_mh", p, whirlwind )
   {
+    background = true;
     aoe = -1;
   }
 };
@@ -3877,6 +3885,7 @@ struct arms_whirlwind_mh_t : public warrior_attack_t
   arms_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ) : warrior_attack_t( "whirlwind_mh", p, whirlwind )
   {
     aoe = -1;
+    background = true;
   }
 
   double action_multiplier() const override
@@ -3908,6 +3917,7 @@ struct first_arms_whirlwind_mh_t : public warrior_attack_t
   first_arms_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind )
     : warrior_attack_t( "whirlwind_mh", p, whirlwind )
   {
+    background = true;
     aoe = -1;
   }
 
