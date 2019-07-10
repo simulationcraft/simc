@@ -4302,28 +4302,16 @@ void items::divers_folly( special_effect_t& effect )
   struct bioelectric_charge_cb_t : public dbc_proc_callback_t
   {
     timespan_t duration;
-    event_t* end_cb;
 
     bioelectric_charge_cb_t( const special_effect_t& e ) :
       dbc_proc_callback_t( e.player, e ), duration( e.driver()->duration() )
     {}
-
-    void activate() override
-    {
-      dbc_proc_callback_t::activate();
-      // Spell data suggests you have 15s to perform the AA to discharge
-      end_cb = make_event( listener->sim, duration, [this] {
-        listener->sim->print_debug("Bioelectric Charge (Diver's Folly) discharge expired without auto-attack...");
-        deactivate();
-      } );
-    }
 
     void execute( action_t* a, action_state_t* s ) override
     {
       listener->sim->print_debug(
         "Bioelectric Charge (Diver's Folly) discharged for {} damage!", proc_action->base_dd_min );
       dbc_proc_callback_t::execute( a, s );
-      event_t::cancel( end_cb );
       deactivate();
     }
   };
