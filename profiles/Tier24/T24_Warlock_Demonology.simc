@@ -134,7 +134,7 @@ back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
 chest=vestments_of_creeping_terror,id=168337,bonus_id=4824/1517/4775,azerite_powers=429/576/30/13
 wrists=waveblade_farseers_bindings,id=170306,bonus_id=1512
 hands=poens_deepsea_gloves,id=170333,bonus_id=1512
-waist=cephalopods_sash,id=168872,bonus_id=4800/1517
+waist=vims_scalecrusher_belt,id=170367,bonus_id=1512
 legs=seawrath_legwraps,id=168371,bonus_id=4800/1517
 feet=eelskin_flippers,id=168373,bonus_id=4800/1517
 finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_haste
@@ -144,12 +144,12 @@ trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 main_hand=anuazshara_staff_of_the_eternal,id=168275,bonus_id=4800/1517,enchant=machinists_brilliance
 
 # Gear Summary
-# gear_ilvl=444.53
-# gear_stamina=13495
-# gear_intellect=9019
-# gear_crit_rating=1329
-# gear_haste_rating=1361
+# gear_ilvl=443.20
+# gear_stamina=13343
+# gear_intellect=8946
+# gear_crit_rating=1311
+# gear_haste_rating=1266
 # gear_mastery_rating=921
-# gear_versatility_rating=413
-# gear_armor=1765
+# gear_versatility_rating=511
+# gear_armor=1743
 default_pet=felguard

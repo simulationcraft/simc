@@ -63,9 +63,10 @@ actions+=/berserking
 actions+=/call_action_list,name=spenders
 actions+=/call_action_list,name=fillers
 
-actions.cooldowns=use_item,name=azsharas_font_of_power,if=(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains<4*spell_haste|!cooldown.phantom_singularity.remains)&cooldown.summon_darkglare.remains<15*spell_haste
+actions.cooldowns=use_item,name=azsharas_font_of_power,if=(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains<4*spell_haste|!cooldown.phantom_singularity.remains)&cooldown.summon_darkglare.remains<15*spell_haste&dot.agony.remains&dot.corruption.remains&(dot.siphon_life.remains|!talent.siphon_life.enabled)
 actions.cooldowns+=/potion,if=(talent.dark_soul_misery.enabled&cooldown.summon_darkglare.up&cooldown.dark_soul.up)|cooldown.summon_darkglare.up|target.time_to_die<30
 actions.cooldowns+=/use_items,if=cooldown.summon_darkglare.remains>70|time_to_die<20|((buff.active_uas.stack=5|soul_shard=0)&(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains)&(!talent.deathbolt.enabled|cooldown.deathbolt.remains<=gcd|!cooldown.deathbolt.remains)&!cooldown.summon_darkglare.remains)
+actions.cooldowns+=/use_item,name=pocketsized_computation_device,if=cooldown.summon_darkglare.remains>=25&(cooldown.deathbolt.remains|!talent.deathbolt.enabled)
 actions.cooldowns+=/fireblood,if=!cooldown.summon_darkglare.up
 actions.cooldowns+=/blood_fury,if=!cooldown.summon_darkglare.up
 actions.cooldowns+=/memory_of_lucid_dreams,if=time>30
@@ -121,7 +122,7 @@ back=cloak_of_ill_tidings,id=168391,bonus_id=4800/1517
 chest=vestments_of_creeping_terror,id=168337,bonus_id=4824/1517/4775,azerite_powers=123/230/30/13
 wrists=waveblade_farseers_bindings,id=170306,bonus_id=1512
 hands=poens_deepsea_gloves,id=170333,bonus_id=1512
-waist=belt_of_blind_devotion,id=168374,bonus_id=4800/1517
+waist=vims_scalecrusher_belt,id=170367,bonus_id=1512
 legs=seawrath_legwraps,id=168371,bonus_id=4800/1517
 feet=akanas_reefstrider_soles,id=170140,bonus_id=1512
 finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_mastery
@@ -132,12 +133,12 @@ main_hand=pashmars_finial,id=168898,bonus_id=4800/1517,enchant=machinists_brilli
 off_hand=stormtamers_orb,id=168896,bonus_id=4800/1517
 
 # Gear Summary
-# gear_ilvl=443.31
-# gear_stamina=13342
-# gear_intellect=8943
-# gear_crit_rating=913
-# gear_haste_rating=1383
+# gear_ilvl=442.06
+# gear_stamina=13190
+# gear_intellect=8870
+# gear_crit_rating=1029
+# gear_haste_rating=1229
 # gear_mastery_rating=1140
-# gear_versatility_rating=549
-# gear_armor=1737
+# gear_versatility_rating=572
+# gear_armor=1715
 default_pet=imp
