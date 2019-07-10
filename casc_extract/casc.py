@@ -959,7 +959,8 @@ class CASCRootFile(CASCObject):
 			if len(keys) > 1:
 				print('Duplicate root key found for %s, using first one ...' % self.build.root_file())
 
-			handle = self.cached_open(self.build.root_file(),
+			root_file_path = os.path.join(self.cache_dir('data'), self.build.root_file())
+			handle = self.cached_open(root_file_path,
 				self.build.cdn_url('data', codecs.encode(keys[0], 'hex').decode('utf-8')))
 			#handle = self.get_url(self.build.cdn_url('data', codecs.encode(keys[0], 'hex').decode('utf-8')))
 
