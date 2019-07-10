@@ -169,7 +169,8 @@ namespace items
   void highborne_compendium_of_sundering( special_effect_t& );
   void highborne_compendium_of_storms( special_effect_t& );
   void neural_synapse_enhancer( special_effect_t& );
-  void shiver_venom_relic( special_effect_t& );
+  void shiver_venom_relic_onuse( special_effect_t& );
+  void shiver_venom_relic_equip( special_effect_t& );
   void leviathans_lure( special_effect_t& );
   void aquipotent_nautilus( special_effect_t& );
   void zaquls_portal_key( special_effect_t& );
@@ -3451,19 +3452,17 @@ void items::neural_synapse_enhancer( special_effect_t& effect )
  * - Automagic picked up by simc
  * On-use: Venomous Shiver (id=301834)
  * - Consume dots to do damage (id=305290), damage value in Equip driver->effect#1
- * TODO: 1) Does the on-use crit? Assuming it doesn't for now.
- *       2) If it crits, does each target crit separately or is it all-or-nothing?
- *       3) Does it do nothing if you have no stacks? Assuming 0 stacks = 0 damage.
  */
-void items::shiver_venom_relic( special_effect_t& effect )
+void items::shiver_venom_relic_onuse( special_effect_t& effect )
 {
-  struct venomous_shivers_freeze_t : public proc_t
+  struct venomous_shivers_t : public proc_t
   {
     dot_t* sv_dot;
 
-    venomous_shivers_freeze_t( const special_effect_t& e ) :
+    venomous_shivers_t( const special_effect_t& e ) :
       proc_t( e, "venomous_shivers", e.player->find_spell( 305290 ) )
     {
+      aoe = -1;
       base_dd_max = base_dd_min = e.player->find_spell( 301576 )->effectN( 1 ).average( e.item );
     }
 
@@ -3488,7 +3487,20 @@ void items::shiver_venom_relic( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = new venomous_shivers_freeze_t( effect );
+  effect.execute_action = create_proc_action<venomous_shivers_t>( "venomous_shivers", effect );
+}
+
+void items::shiver_venom_relic_equip( special_effect_t& effect )
+{
+  auto action = create_proc_action<proc_spell_t>( "shiver_venom", effect );
+
+  auto onuse = effect.player->find_action( "venomous_shivers" );
+  if ( onuse )
+    action->add_child( onuse );
+
+  effect.execute_action = action;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 /**Leviathan's Lure
@@ -5301,7 +5313,8 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 300830, items::highborne_compendium_of_sundering );
   register_special_effect( 300913, items::highborne_compendium_of_storms );
   register_special_effect( 300612, items::neural_synapse_enhancer );
-  register_special_effect( 301834, items::shiver_venom_relic );
+  register_special_effect( 301834, items::shiver_venom_relic_onuse ); // on-use
+  register_special_effect( 301576, items::shiver_venom_relic_equip ); // equip proc
   register_special_effect( 302773, items::leviathans_lure );
   register_special_effect( 306146, items::aquipotent_nautilus );
   register_special_effect( 302696, items::zaquls_portal_key );
