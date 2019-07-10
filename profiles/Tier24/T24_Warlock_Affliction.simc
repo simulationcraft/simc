@@ -70,7 +70,7 @@ actions.cooldowns+=/use_item,name=pocketsized_computation_device,if=cooldown.sum
 actions.cooldowns+=/fireblood,if=!cooldown.summon_darkglare.up
 actions.cooldowns+=/blood_fury,if=!cooldown.summon_darkglare.up
 actions.cooldowns+=/memory_of_lucid_dreams,if=time>30
-actions.cooldowns+=/blood_of_the_enemy
+actions.cooldowns+=/blood_of_the_enemy,if=pet.darkglare.remains|(!cooldown.deathbolt.remains|!talent.deathbolt.enabled)&cooldown.summon_darkglare.remains>=90
 actions.cooldowns+=/worldvein_resonance,if=buff.lifeblood.stack<3
 actions.cooldowns+=/ripple_in_space
 
