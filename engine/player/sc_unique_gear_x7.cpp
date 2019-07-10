@@ -3708,58 +3708,76 @@ void items::vision_of_demise( special_effect_t& effect )
  * driver id=296971, 4s duration channel, periodic triggers latent arcana (driver->trigger id=296962) every 1s
  * latent arcana id=296962, 6s fully extending duration stat buff.
  * unknown id=305190, maybe used to hold # of channel tics?
- *
- * Spell data shows channel (34) rather than channel (38) like codex, suggesting standard channeling behavior of being
- * unable to cast while channeling. Base buff duration is 6s, max duration is 30s, and channel time is 4s with 1s tics.
- * Currently implemented with buff being applied immediately on channel start.
- *
- * TODO: Check channel related behavior such as interrupt auto, etc. Confirm buff is applied (and begins to expire)
- * immediately upon channel start rather than after channel end.
  */
 void items::azsharas_font_of_power( special_effect_t& effect )
 {
   struct latent_arcana_channel_t : public proc_t
   {
     buff_t* buff;
+    unsigned counter;
+    timespan_t duration;
 
     latent_arcana_channel_t( const special_effect_t& e, buff_t* b ) :
-      proc_t( e, "latent_arcana", e.driver() ), buff( b )
+      proc_t( e, "latent_arcana", e.driver() ), buff( b ), counter( 1 ), duration( e.trigger()->duration() )
     {
       channeled = true;
-      harmful = false;
+      harmful   = false;
+    }
+
+    timespan_t tick_time( const action_state_t* ) const override
+    {
+      return base_tick_time;
     }
 
     void execute() override
     {
+      counter = 1;  // for 0tick
       proc_t::execute();
       event_t::cancel( player->readying );
+
+      if ( player->main_hand_attack && player->main_hand_attack->execute_event )
+      {
+        player->main_hand_attack->execute_event->reschedule(
+          player->main_hand_attack->execute_event->remains() + composite_dot_duration( execute_state ) );
+      }
+
+      if ( player->off_hand_attack && player->off_hand_attack->execute_event )
+      {
+        player->off_hand_attack->execute_event->reschedule(
+          player->off_hand_attack->execute_event->remains() + composite_dot_duration( execute_state ) );
+      }
     }
 
     void tick( dot_t* d ) override
     {
       proc_t::tick( d );
-      buff->trigger();
+      counter++;
     }
 
     void last_tick( dot_t* d ) override
     {
+      bool was_channeling = player->channeling == this;
       proc_t::last_tick( d );
-      if ( !player->readying )
-        player->schedule_ready();
+
+      if ( was_channeling && !player->readying )
+      {
+        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+      }
+
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, counter * duration );
     }
   };
 
   auto buff = buff_t::find( effect.player, "latent_arcana" );
   if ( !buff )
   {
-    auto buff_s = effect.player->find_spell( 296962 );
-
-    buff = make_buff<stat_buff_t>( effect.player, "latent_arcana", buff_s )
-      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), buff_s->effectN( 1 ).average( effect.item ) );
-    buff->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+    buff = make_buff<stat_buff_t>( effect.player, "latent_arcana", effect.trigger() )
+      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+        effect.trigger()->effectN( 1 ).average( effect.item ) );
   }
 
   effect.execute_action = create_proc_action<latent_arcana_channel_t>( "latent_arcana_channel", effect, buff );
+  effect.disable_buff();
 }
 
 // Arcane Tempest =========================================================
