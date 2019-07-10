@@ -1090,7 +1090,7 @@ namespace warlock
     cds->add_action( "fireblood,if=!cooldown.summon_darkglare.up" );
     cds->add_action( "blood_fury,if=!cooldown.summon_darkglare.up" );
     cds->add_action( "memory_of_lucid_dreams,if=time>30" );
-    cds->add_action( "blood_of_the_enemy" );
+    cds->add_action( "blood_of_the_enemy,if=pet.darkglare.remains|(!cooldown.deathbolt.remains|!talent.deathbolt.enabled)&cooldown.summon_darkglare.remains>=90" );
     cds->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
     cds->add_action( "ripple_in_space" );
 
