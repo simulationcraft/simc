@@ -1293,7 +1293,9 @@ class SpellDataGenerator(DataGenerator):
          # Harbinger's Inscrutable Will
          295395,
          # Mechagon combo rings
-         306474, 301886, 301887
+         306474, 301886, 301887,
+         # Anu-Azshara lockout debuff
+         304482
         ),
 
         # Warrior:

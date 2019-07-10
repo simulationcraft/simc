@@ -8133,7 +8133,7 @@ std::string druid_t::default_flask() const
 }
 std::string druid_t::default_potion() const
 {
-  std::string balance_pot =  (true_level > 110) ? "focused_resolve" :
+  std::string balance_pot =  (true_level > 110) ? "unbridled_fury" :
                              (true_level > 100) ? "deadly_grace" :
                              (true_level >= 90) ? "draenic_intellect" :
                              (true_level >= 85) ? "jade_serpent" :
@@ -8599,8 +8599,6 @@ void druid_t::apl_feral()
 
 void druid_t::apl_balance()
 {
-  std::vector<std::string> racial_actions = get_racial_actions();
-
   action_priority_list_t* default_list = get_action_priority_list( "default" );
 
   if ( sim->allow_potions && true_level >= 80 )
