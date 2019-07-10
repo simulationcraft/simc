@@ -6797,6 +6797,18 @@ struct reverse_harm_damage_t : public monk_spell_t
   {
     background = true;
     ww_mastery = true;
+
+	base_dd_min = static_cast<int>( player.resources.max[ RESOURCE_HEALTH ] * player.spec.reverse_harm->effectN( 1 ).percent() );
+    base_dd_max = static_cast<int>( player.resources.max[ RESOURCE_HEALTH ] * player.spec.reverse_harm->effectN( 1 ).percent() );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    am *= p()->spec.reverse_harm->effectN( 2 ).percent();
+
+    return am;
   }
 
   virtual void init() override
@@ -6805,6 +6817,7 @@ struct reverse_harm_damage_t : public monk_spell_t
     // disable the snapshot_flags for all multipliers, but specifically allow
     // action_multiplier() to be called so we can override.
     snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags &= STATE_CRIT;
     snapshot_flags |= STATE_MUL_DA;
   }
 };
@@ -6832,6 +6845,7 @@ struct reverse_harm_t : public monk_heal_t
     monk_heal_t::init();
     // disable the snapshot_flags for all multipliers except for Versatility
     snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags &= STATE_CRIT;
     snapshot_flags |= STATE_VERSATILITY;
   }
 
@@ -6850,8 +6864,6 @@ struct reverse_harm_t : public monk_heal_t
 
     p()->resource_gain( RESOURCE_CHI, p()->spec.reverse_harm->effectN( 3 ).base_value(), p()->gain.reverse_harm );
 
-    damage->base_dd_min = p()->spec.reverse_harm->effectN( 2 ).percent() * this->base_dd_max;
-    damage->base_dd_max = p()->spec.reverse_harm->effectN( 2 ).percent() * this->base_dd_max;
     damage->execute();
   }
 };
