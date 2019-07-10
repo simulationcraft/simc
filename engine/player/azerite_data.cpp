@@ -890,8 +890,10 @@ std::string azerite_essence_state_t::option_str() const
   // Return a three-state option set for the essences grabbed from armory
   std::vector<std::string> options;
   range::for_each( m_state, [ &options ]( const slot_state_t& slot ) {
-    std::vector<std::string> entry;
-    options.push_back( slot.str() );
+    if ( slot.type() != essence_type::PASSIVE )
+    {
+      options.push_back( slot.str() );
+    }
   } );
 
   return util::string_join( options, "/" );
