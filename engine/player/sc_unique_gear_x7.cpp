@@ -4486,19 +4486,23 @@ void items::subroutine_recalibration( special_effect_t& effect )
   struct recalibration_cb_t : public dbc_proc_callback_t
   {
     unsigned casts, req_casts;
+    buff_t *buff, *debuff;
 
-    recalibration_cb_t( const special_effect_t& effect ) :
+    recalibration_cb_t( const special_effect_t& effect, buff_t* b, buff_t* d ) :
       dbc_proc_callback_t( effect.player, effect ),
-      casts( 0 ), req_casts( as<unsigned>( effect.driver()->effectN( 2 ).base_value() ) )
-    {
-      cooldown = effect.player->get_cooldown( "subroutine_recalibration" );
-      cooldown->duration =
-        effect.player->find_spell( 299065 )->duration() + effect.player->find_spell( 299064 )->duration();
-    }
+      casts( 0 ), req_casts( as<unsigned>( effect.driver()->effectN( 2 ).base_value() ) ),
+      buff( b ), debuff( d )
+    { }
 
     void trigger( action_t* a, void* call_data ) override
     {
       if ( a->background )
+      {
+        return;
+      }
+
+      // The cast counter does not increase if either of the associated buffs is active
+      if ( buff->check() || debuff->check() )
       {
         return;
       }
@@ -4552,7 +4556,7 @@ void items::subroutine_recalibration( special_effect_t& effect )
   effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
   effect.custom_buff = primary_buff;
 
-  new recalibration_cb_t( effect );
+  new recalibration_cb_t( effect, primary_buff, recalibration_buff );
 }
 
 void items::subroutine_optimization( special_effect_t& effect )
