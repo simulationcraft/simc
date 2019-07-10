@@ -4502,7 +4502,11 @@ void items::subroutine_recalibration( special_effect_t& effect )
     recalibration_cb_t( const special_effect_t& effect ) :
       dbc_proc_callback_t( effect.player, effect ),
       casts( 0 ), req_casts( as<unsigned>( effect.driver()->effectN( 2 ).base_value() ) )
-    { }
+    {
+      cooldown = effect.player->get_cooldown( "subroutine_recalibration" );
+      cooldown->duration =
+        effect.player->find_spell( 299065 )->duration() + effect.player->find_spell( 299064 )->duration();
+    }
 
     void trigger( action_t* a, void* call_data ) override
     {
@@ -4511,22 +4515,17 @@ void items::subroutine_recalibration( special_effect_t& effect )
         return;
       }
 
-      dbc_proc_callback_t::trigger( a, call_data );
+      if ( ++casts == req_casts )
+      {
+        dbc_proc_callback_t::trigger( a, call_data );
+        casts = 0;
+      }
     }
 
     void activate() override
     {
       dbc_proc_callback_t::activate();
       casts = 0;
-    }
-
-    void execute( action_t* /* a */, action_state_t* /* state */ ) override
-    {
-      if ( ++casts == req_casts )
-      {
-        proc_buff->trigger();
-        casts = 0;
-      }
     }
   };
 
@@ -4545,30 +4544,18 @@ void items::subroutine_recalibration( special_effect_t& effect )
   {
     recalibration_buff = make_buff<stat_buff_t>( effect.player, "recalibrating",
       effect.player->find_spell( 299065 ), effect.item );
-    recalibration_buff->add_stat( STAT_HASTE_RATING,
-        -item_database::apply_combat_rating_multiplier( effect.player,
-          combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
-          punchcard.item_level(),
-          effect.driver()->effectN( 3 ).average( &( punchcard ) ) ) );
+    recalibration_buff->add_stat( STAT_HASTE_RATING, -effect.driver()->effectN( 3 ).average( &( punchcard ) ) );
   }
 
   if ( !primary_buff )
   {
     primary_buff = make_buff<stat_buff_t>( effect.player, "subroutine_recalibration",
       effect.player->find_spell( 299064 ), effect.item );
-    primary_buff->add_stat( STAT_HASTE_RATING,
-        item_database::apply_combat_rating_multiplier( effect.player,
-          combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
-          punchcard.item_level(),
-          effect.driver()->effectN( 1 ).average( &( punchcard ) ) ) );
+    primary_buff->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( &( punchcard ) ) );
     primary_buff->set_stack_change_callback( [recalibration_buff]( buff_t*, int /* old */, int new_ ) {
       if ( new_ == 0 )
       {
         recalibration_buff->trigger();
-      }
-      else
-      {
-        recalibration_buff->expire();
       }
     } );
   }
