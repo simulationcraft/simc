@@ -4492,6 +4492,12 @@ void items::subroutine_recalibration( special_effect_t& effect )
         return;
       }
 
+      if ( listener->sim->debug )
+      {
+        listener->sim->out_debug.print( "{} procs subroutine_recalibration on {}, casts={}, max={}",
+          listener->name(), a->name(), casts, req_casts );
+      }
+
       if ( ++casts == req_casts )
       {
         dbc_proc_callback_t::trigger( a, call_data );
