@@ -3509,40 +3509,87 @@ void items::shiver_venom_relic_equip( special_effect_t& effect )
  * tooltip refers to driver->effect#2 for damage value, but effect doesn't exist and instead effect#1 is displayed
  *
  * Luminous Algae secondary proc driver id=302776
- * buff is driver->trigger id=302775
- * presumably increases main driver rppm by buff->effect#1
+ * debuff is driver->trigger id=302775
+ * presumably increases main driver rppm by debuff->effect#1
  */
+struct luminous_algae_constructor_t : public item_targetdata_initializer_t
+{
+  luminous_algae_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
+  {}
+
+  const special_effect_t* find_effect( player_t* player ) const override
+  {
+    auto it = range::find_if( player->special_effects, []( const special_effect_t* effect ) {
+      return effect->spell_id == 302776;
+    } );
+
+    if ( it != player->special_effects.end() )
+      return *it;
+
+    return nullptr;
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td->source );
+    if ( !effect )
+    {
+      td->debuff.luminous_algae = make_buff( *td, "luminous_algae" );
+      return;
+    }
+    assert( !td->debuff.luminous_algae );
+
+    td->debuff.luminous_algae = make_buff( *td, "luminous_algae_debuff", effect->trigger() );
+    td->debuff.luminous_algae->set_max_stack( 1 );  // Data says 999, but logs show only 1 stack
+    td->debuff.luminous_algae->set_default_value( effect->trigger()->effectN( 1 ).percent() );
+    td->debuff.luminous_algae->set_activated( false );
+    td->debuff.luminous_algae->reset();
+  }
+};
+
 void items::leviathans_lure( special_effect_t& effect )
 {
-  struct leviathan_chomp_t : public proc_t
+  struct leviathan_chomp_cb_t : public dbc_proc_callback_t
   {
-    buff_t* algae;
+    leviathan_chomp_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {}
 
-    leviathan_chomp_t( const special_effect_t& e, buff_t* b ) :
-      proc_t( e, "leviathan_chomp", e.player->find_spell( 302763 ) ), algae( b )
+    void trigger( action_t* a, void* cd ) override
     {
-      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      auto s  = static_cast<action_state_t*>( cd );
+      auto td = listener->get_target_data( s->target );
+      assert( td );
+      assert( td->debuff.luminous_algae );
+
+      // adjust the rppm before triggering
+      rppm->set_modifier( 1.0 + td->debuff.luminous_algae->check_value() );
+      dbc_proc_callback_t::trigger( a, cd );
     }
 
-    void execute() override
+    void execute( action_t* a, action_state_t* s ) override
     {
-      proc_t::execute();
+      auto td = listener->get_target_data( s->target );
+      assert( td );
+      assert( td->debuff.luminous_algae );
+      td->debuff.luminous_algae->expire();  // debuff removed on execute, not impact
 
-      if ( algae )
-        algae->expire();
+      dbc_proc_callback_t::execute( a, s );
     }
   };
 
-  effect.ppm_ = -( effect.player->sim->bfa_opts.leviathans_lure_base_rppm );
+  struct luminous_algae_cb_t : public dbc_proc_callback_t
+  {
+    luminous_algae_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {}
 
-  // secondary proc buff
-  auto algae = buff_t::find( effect.player, "luminous algae" );
-  if ( !algae )
-    algae = make_buff( effect.player, "luminous_algae", effect.player->find_spell( 302775 ) );
-
-  auto chomp            = create_proc_action<leviathan_chomp_t>( "leviathan_chomp", effect, algae );
-  effect.execute_action = chomp;
-  auto main             = new dbc_proc_callback_t( effect.player, effect );
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      auto td = listener->get_target_data( s->target );
+      assert( td );
+      assert( td->debuff.luminous_algae );
+      td->debuff.luminous_algae->trigger();
+    }
+  };
 
   // secondary (luminous algae) proc effect
   auto second      = new special_effect_t( effect.player );
@@ -3550,17 +3597,17 @@ void items::leviathans_lure( special_effect_t& effect )
   second->source   = effect.source;
   second->spell_id = 302776;
 
-  algae->set_default_value( algae->data().effectN( 1 ).percent() );
-  algae->set_stack_change_callback( [main, algae]( buff_t*, int, int new_ ) {
-    if ( new_ )
-      main->rppm->set_modifier( 1.0 + algae->check_stack_value() );
-    else
-      main->rppm->set_modifier( 1.0 );
-  } );
-
-  second->custom_buff = algae;
   effect.player->special_effects.push_back( second );
-  new dbc_proc_callback_t( effect.player, *second );
+  new luminous_algae_cb_t( *second );
+
+  // primary (leviathan chomp) proc
+  auto action           = create_proc_action<proc_t>( "leviathan_chomp", effect, "leviathan_chomp", 302763 );
+  action->base_dd_min   = effect.driver()->effectN( 1 ).average( effect.item );
+  action->base_dd_max   = effect.driver()->effectN( 1 ).average( effect.item );
+  effect.execute_action = action;
+
+  effect.ppm_ = -( effect.player->sim->bfa_opts.leviathans_lure_base_rppm );
+  new leviathan_chomp_cb_t( effect );
 }
 
 /**Aquipotent Nautilus
@@ -5358,6 +5405,7 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
   sim->register_target_data_initializer( potion_of_focused_resolve_t() );
   sim->register_target_data_initializer( razor_coral_constructor_t( 169311, items ) );
   sim->register_target_data_initializer( conductive_ink_constructor_t( 169319, items ) );
+  sim->register_target_data_initializer( luminous_algae_constructor_t( 169304, items ) );
 }
 
 void unique_gear::register_hotfixes_bfa()
