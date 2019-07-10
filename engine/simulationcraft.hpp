@@ -515,6 +515,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* choking_brine;
     buff_t* razor_coral;
     buff_t* conductive_ink;
+    buff_t* luminous_algae;
     // BFA - Essences
     buff_t* blood_of_the_enemy;
     buff_t* condensed_lifeforce;
@@ -1199,7 +1200,7 @@ struct sim_t : private sc_thread_t
     /// Chance on every check to see if Undulating Tides gets locked out
     double              undulating_tides_lockout_chance = 0.0;
     /// Base RPPM for Leviathan's Lure
-    double              leviathans_lure_base_rppm = 0.5;
+    double              leviathans_lure_base_rppm = 0.8;
     /// Chance to catch returning wave of Aquipotent Nautilus
     double              aquipotent_nautilus_catch_chance = 1.0;
     /// Chance of having to interrupt casting by moving to void tear from Za'qul's Portal Key
