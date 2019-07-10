@@ -3806,7 +3806,7 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
       }
     }
     tick_zero = true;
-    callbacks = hasted_ticks = false;
+    hasted_ticks = false;
     base_tick_time           = spin_time;
     dot_duration             = base_tick_time * 2;
   }
@@ -3980,7 +3980,7 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
       add_child( first_mh_attack );
     }
     tick_zero = true;
-    callbacks = hasted_ticks = false;
+    hasted_ticks = false;
     base_tick_time           = spin_time;
     dot_duration             = base_tick_time * 2;
   }
