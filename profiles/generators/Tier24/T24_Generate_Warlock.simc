@@ -15,7 +15,7 @@ back=,id=168391,bonus_id=4800/1517
 chest=,id=168337,bonus_id=4824/1517/4775,azerite_powers=123/230/30/13
 wrist=,id=170306,bonus_id=1512
 hands=,id=170333,bonus_id=1512
-waist=,id=168374,bonus_id=4800/1517
+waist=,id=170367,bonus_id=1512
 legs=,id=168371,bonus_id=4800/1517
 feet=,id=170140,bonus_id=1512
 finger1=,id=168891,bonus_id=4800/1517,enchant=accord_of_mastery
@@ -44,7 +44,7 @@ back=,id=168604,bonus_id=4800/1517
 chest=,id=168337,bonus_id=4824/1517/4775,azerite_powers=429/576/30/13
 wrist=,id=170306,bonus_id=1512
 hands=,id=170333,bonus_id=1512
-waist=,id=168872,bonus_id=4800/1517
+waist=,id=170367,bonus_id=1512
 legs=,id=168371,bonus_id=4800/1517
 feet=,id=168373,bonus_id=4800/1517
 finger1=,id=168891,bonus_id=4800/1517,enchant=accord_of_haste
@@ -72,7 +72,7 @@ chest=,id=168337,bonus_id=4824/1517/4775,azerite_powers=131/576/30/13
 back=,id=168604,bonus_id=4800/1517
 wrist=,id=170306,bonus_id=1512
 hands=,id=170333,bonus_id=1512
-waist=,id=168872,bonus_id=4800/1517
+waist=,id=170367,bonus_id=1512
 legs=,id=168371,bonus_id=4800/1517
 feet=,id=170140,bonus_id=1512
 finger1=,id=168891,bonus_id=4800/1517,enchant=accord_of_haste

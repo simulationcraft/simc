@@ -127,6 +127,7 @@ actions.cds+=/berserking,if=pet.infernal.active|buff.memory_of_lucid_dreams.rema
 actions.cds+=/blood_fury,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30
 actions.cds+=/fireblood,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30
 actions.cds+=/use_items,if=pet.infernal.active|buff.memory_of_lucid_dreams.remains|buff.dark_soul_instability.remains|target.time_to_die<30
+actions.cds+=/use_item,name=pocketsized_computation_device,if=dot.immolate.remains>=5
 
 actions.havoc=conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4
 actions.havoc+=/immolate,if=talent.internal_combustion.enabled&remains<duration*0.5|!talent.internal_combustion.enabled&refreshable
@@ -142,7 +143,7 @@ back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
 chest=vestments_of_creeping_terror,id=168337,bonus_id=4824/1517/4775,azerite_powers=131/576/30/13
 wrists=waveblade_farseers_bindings,id=170306,bonus_id=1512
 hands=poens_deepsea_gloves,id=170333,bonus_id=1512
-waist=cephalopods_sash,id=168872,bonus_id=4800/1517
+waist=vims_scalecrusher_belt,id=170367,bonus_id=1512
 legs=seawrath_legwraps,id=168371,bonus_id=4800/1517
 feet=akanas_reefstrider_soles,id=170140,bonus_id=1512
 finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_haste
@@ -152,12 +153,12 @@ trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 main_hand=anuazshara_staff_of_the_eternal,id=168275,bonus_id=4800/1517,enchant=machinists_brilliance
 
 # Gear Summary
-# gear_ilvl=443.20
-# gear_stamina=13343
-# gear_intellect=8946
-# gear_crit_rating=1533
-# gear_haste_rating=1303
+# gear_ilvl=441.87
+# gear_stamina=13191
+# gear_intellect=8873
+# gear_crit_rating=1515
+# gear_haste_rating=1208
 # gear_mastery_rating=752
-# gear_versatility_rating=420
-# gear_armor=1737
+# gear_versatility_rating=518
+# gear_armor=1715
 default_pet=imp
