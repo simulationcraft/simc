@@ -1162,6 +1162,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 303007, special_effects::loyal_to_the_end      );
   unique_gear::register_special_effect( 303006, special_effects::arcane_heart          );
   unique_gear::register_special_effect( 300170, special_effects::clockwork_heart       );
+  unique_gear::register_special_effect( 300168, special_effects::personcomputer_interface );
 
   // Generic Azerite Essences
   //
@@ -3487,6 +3488,51 @@ void clockwork_heart( special_effect_t& effect )
   effect.player->register_combat_begin( [ticker] (player_t* ) {
     ticker->trigger();
   } );
+}
+
+void personcomputer_interface( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  auto trinket = effect.player->find_item_by_id( 167555 );  // Pocket-sized Computation Device
+  if ( !trinket )
+  {
+    effect.player->sim->print_debug( "Person-Computer Interface equipped with no Pocket-Sized Computation Device." );
+    return;
+  }
+
+  auto it = range::find_if( trinket->parsed.special_effects, []( const special_effect_t* e ) {
+    // Yellow Punchcards have type == -1
+    return e->type == -1 && e->source == SPECIAL_EFFECT_SOURCE_GEM && e->is_stat_buff();
+  } );
+
+  if ( it == trinket->parsed.special_effects.end() )
+  {
+    effect.player->sim->print_debug( "Person-Computer Interface equipped with no Yellow Punchcards." );
+    return;
+  }
+
+  auto stat = ( *it )->stat_type();
+
+  if ( !stat )
+  {
+    effect.player->sim->print_debug( "Person-Computer Interface could not find a stat from {}.", ( *it )->name() );
+    return;
+  }
+
+  effect.player->sim->print_debug( "Person-Computer Interface found {}, adding {} {}.", ( *it )->name(),
+    power.value( 1 ), util::stat_type_string( stat ) );
+
+  switch( stat )
+  {
+    case STAT_HASTE_RATING:       effect.player->passive.haste_rating += power.value(1);   break;
+    case STAT_CRIT_RATING:        effect.player->passive.crit_rating += power.value(1);    break;
+    case STAT_MASTERY_RATING:     effect.player->passive.mastery_rating += power.value(1); break;
+    case STAT_VERSATILITY_RATING: effect.player->passive.haste_rating += power.value(1);   break;
+    default: break;
+  }
 }
 } // Namespace special effects ends
 
