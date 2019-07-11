@@ -8,9 +8,9 @@ position=front
 talents=1200003
 
 # Default consumables
-potion=battle_potion_of_strength
-flask=flask_of_the_undertow
-food=bountiful_captains_feast
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_the_undertow
+food=mechdowels_big_mech
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -47,6 +47,7 @@ actions+=/hammer_of_the_righteous
 actions+=/consecration
 
 actions.cooldowns=fireblood,if=buff.avenging_wrath.up
+actions.cooldowns+=/use_item,name=azsharas_font_of_power,if=cooldown.seraphim.remains<=10|!talent.seraphim.enabled
 actions.cooldowns+=/seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
 actions.cooldowns+=/avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
 actions.cooldowns+=/bastion_of_light,if=cooldown.shield_of_the_righteous.charges_fractional<=0.5
