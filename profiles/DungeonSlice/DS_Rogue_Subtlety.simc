@@ -99,16 +99,16 @@ actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&target.time_to_die<=5+talent
 actions.essences=concentrated_flame
 actions.essences+=/blood_of_the_enemy
 actions.essences+=/guardian_of_azeroth
-actions.essences+=/focused_azerite_beam,if=spell_targets.shuriken_storm>=2|raid_event.adds.in>60
+actions.essences+=/focused_azerite_beam,if=(spell_targets.shuriken_storm>=2|raid_event.adds.in>60)&!cooldown.symbols_of_death.up&!buff.symbols_of_death.up
 actions.essences+=/purifying_blast,if=spell_targets.shuriken_storm>=2|raid_event.adds.in>60
 actions.essences+=/the_unbound_force
 actions.essences+=/ripple_in_space
-actions.essences+=/worldvein_resonance
+actions.essences+=/worldvein_resonance,if=buff.lifeblood.stack<3
 actions.essences+=/memory_of_lucid_dreams,if=energy<40&buff.symbols_of_death.up
 
 # Finishers
-# Eviscerate highest priority at 2+ targets with Shadow Focus (5+ with Secret Technique in addition) and Night's Vengeance up.
-actions.finish=eviscerate,if=talent.shadow_focus.enabled&buff.nights_vengeance.up&spell_targets.shuriken_storm>=2+3*talent.secret_technique.enabled
+# Eviscerate has highest priority with Night's Vengeance up.
+actions.finish=eviscerate,if=buff.nights_vengeance.up
 # Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow.
 actions.finish+=/nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2
 # Multidotting outside Dance on targets that will live for the duration of Nightblade, refresh during pandemic. Multidot as long as 2+ targets do not have Nightblade up with Replicating Shadows (unless you have Night's Vengeance too).

@@ -87,11 +87,11 @@ actions.cds+=/shadowmeld,if=!stealthed.all&variable.ambush_condition
 actions.essences=concentrated_flame
 actions.essences+=/blood_of_the_enemy,if=variable.blade_flurry_sync
 actions.essences+=/guardian_of_azeroth
-actions.essences+=/focused_azerite_beam,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60
+actions.essences+=/focused_azerite_beam,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60&!buff.adrenaline_rush.up
 actions.essences+=/purifying_blast,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60
 actions.essences+=/the_unbound_force
 actions.essences+=/ripple_in_space
-actions.essences+=/worldvein_resonance
+actions.essences+=/worldvein_resonance,if=buff.lifeblood.stack<3
 actions.essences+=/memory_of_lucid_dreams,if=energy<45
 
 # Finishers
