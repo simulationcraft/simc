@@ -7,7 +7,6 @@ timeofday=day
 role=attack
 position=back
 talents=2000122
-azerite_essences=300573:1:0/300575:1:0/300576:1:0
 
 # Default consumables
 potion=focused_resolve

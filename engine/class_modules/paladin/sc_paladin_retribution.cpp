@@ -764,8 +764,6 @@ void paladin_t::generate_action_prio_list_ret()
   // Pre-potting
   precombat -> add_action( "potion" );
 
-  precombat -> add_action( "memory_of_lucid_dreams" );
-
   precombat -> add_action( "arcane_torrent,if=!talent.wake_of_ashes.enabled" );
 
   ///////////////////////
@@ -781,6 +779,40 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Rebuke" );
   def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "call_action_list,name=generators" );
+
+  if ( sim -> allow_potions )
+  {
+    if ( true_level > 100 )
+      cds -> add_action( "potion,if=buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25" );
+    else if ( true_level >= 80 )
+      cds -> add_action( "potion,if=buff.bloodlust.react|buff.avenging_wrath.up" );
+  }
+
+
+
+  std::vector<std::string> racial_actions = get_racial_actions();
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+
+    if (racial_actions[i] == "lights_judgment" )
+    {
+      cds -> add_action( "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)" );
+    }
+
+    if ( racial_actions[i] == "fireblood" )
+    {
+      cds -> add_action( "fireblood,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10" );
+    }
+
+    /*
+    TODO(mserrano): work out if the other racials are worth using
+    else
+    {
+      opener -> add_action( racial_actions[ i ] );
+      cds -> add_action( racial_actions[ i ] );
+    } */
+  }
+  cds -> add_action( this, "Shield of Vengeance", "if=buff.seething_rage.down&buff.memory_of_lucid_dreams.down" );
 
   // Items
   bool has_knot = false;
@@ -875,6 +907,18 @@ void paladin_t::generate_action_prio_list_ret()
       {
         item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=20";
       }
+      else if ( items[i].name_str == "azsharas_font_of_power" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=!talent.crusade.enabled&cooldown.avenging_wrath.remains<5|talent.crusade.enabled&cooldown.crusade.remains<5&time>10|holy_power>=3&time<10&talent.wake_of_ashes.enabled";
+      }
+      else if ( items[i].name_str == "vision_of_demise" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|cooldown.avenging_wrath.remains>=30|cooldown.crusade.remains>=30";
+      }
+      else if ( items[i].name_str == "ashvanes_razor_coral" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=(cooldown.avenging_wrath.remains>=8|cooldown.crusade.remains>=8|buff.crusade.stack=10)";
+      }
       else if ( items[i].slot != SLOT_WAIST )
       {
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)";
@@ -892,65 +936,36 @@ void paladin_t::generate_action_prio_list_ret()
     cds -> add_action( "use_item,name=knot_of_ancient_fury,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>30|!buff.crusade.up&cooldown.crusade.remains>30" );
   }
 
-  if ( sim -> allow_potions )
-  {
-    if ( true_level > 100 )
-      cds -> add_action( "potion,if=buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25" );
-    else if ( true_level >= 80 )
-      cds -> add_action( "potion,if=buff.bloodlust.react|buff.avenging_wrath.up" );
-  }
-
-  std::vector<std::string> racial_actions = get_racial_actions();
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-  {
-
-    if (racial_actions[i] == "lights_judgment" )
-    {
-      cds -> add_action( "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)" );
-    }
-
-    if ( racial_actions[i] == "fireblood" )
-    {
-      cds -> add_action( "fireblood,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10" );
-    }
-
-    /*
-    TODO(mserrano): work out if the other racials are worth using
-    else
-    {
-      opener -> add_action( racial_actions[ i ] );
-      cds -> add_action( racial_actions[ i ] );
-    } */
-  }
-  cds -> add_action( this, "Shield of Vengeance", "if=buff.seething_rage.down&buff.memory_of_lucid_dreams.down" );
   cds -> add_action( "the_unbound_force,if=time<=2|buff.reckless_force.up" );
   cds -> add_action( "blood_of_the_enemy,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10" );
-  cds -> add_action( "guardian_of_azeroth,if=!talent.crusade.enabled&(cooldown.avenging_wrath.remains<gcd&holy_power>=3|cooldown.avenging_wrath.remains>=45)|(talent.crusade.enabled&cooldown.crusade.remains<gcd&holy_power>=4|cooldown.crusade.remains>=45)" );
+  cds -> add_action( "guardian_of_azeroth,if=!talent.crusade.enabled&(cooldown.avenging_wrath.remains<5&holy_power>=3&(buff.inquisition.up|!talent.inquisition.enabled)|cooldown.avenging_wrath.remains>=45)|(talent.crusade.enabled&cooldown.crusade.remains<gcd&holy_power>=4|holy_power>=3&time<10&talent.wake_of_ashes.enabled|cooldown.crusade.remains>=45)" );
   cds -> add_action( "worldvein_resonance,if=cooldown.avenging_wrath.remains<gcd&holy_power>=3|cooldown.crusade.remains<gcd&holy_power>=4|cooldown.avenging_wrath.remains>=45|cooldown.crusade.remains>=45" );
   cds -> add_action( "focused_azerite_beam,if=(!raid_event.adds.exists|raid_event.adds.in>30|spell_targets.divine_storm>=2)&(buff.avenging_wrath.down|buff.crusade.down)&(cooldown.blade_of_justice.remains>gcd*3&cooldown.judgment.remains>gcd*3)" );
   cds -> add_action( "memory_of_lucid_dreams,if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10)&holy_power<=3" );
   cds -> add_action( "purifying_blast,if=(!raid_event.adds.exists|raid_event.adds.in>30|spell_targets.divine_storm>=2)" );
-  cds -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up|!talent.inquisition.enabled" );
-  cds -> add_talent( this, "Crusade", "if=holy_power>=4" );
+  cds -> add_action( this, "Avenging Wrath", "if=(!talent.inquisition.enabled|buff.inquisition.up)&holy_power>=3" );
+  cds -> add_talent( this, "Crusade", "if=holy_power>=4|holy_power>=3&time<10&talent.wake_of_ashes.enabled" );
+
   if ( has_lurkers )
   {
     cds -> add_action( "use_item,name=lurkers_insidious_gift,if=buff.avenging_wrath.up|buff.crusade.up" );
   }
 
+  finishers -> add_action( "variable,name=wings_pool,value=!equipped.169314&(!talent.crusade.enabled&cooldown.avenging_wrath.remains>gcd*3|cooldown.crusade.remains>gcd*3)|equipped.169314&(!talent.crusade.enabled&cooldown.avenging_wrath.remains>gcd*6|cooldown.crusade.remains>gcd*6)" );
   finishers -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm>=2&!talent.righteous_verdict.enabled|spell_targets.divine_storm>=3&talent.righteous_verdict.enabled" );
-  finishers -> add_talent( this, "Inquisition", "if=buff.inquisition.down|buff.inquisition.remains<5&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3" );
+  finishers -> add_talent( this, "Inquisition", "if=buff.avenging_wrath.down&(buff.inquisition.down|buff.inquisition.remains<8&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3)" );
   finishers -> add_talent( this, "Execution Sentence", "if=spell_targets.divine_storm<=2&(!talent.crusade.enabled&cooldown.avenging_wrath.remains>10|talent.crusade.enabled&buff.crusade.down&cooldown.crusade.remains>10|buff.crusade.stack>=7)" );
-  finishers -> add_action( this, "Divine Storm", "if=variable.ds_castable&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)|buff.empyrean_power.up&debuff.judgment.down&buff.divine_purpose.down" );
-  finishers -> add_action( this, "Templar's Verdict", "if=(!talent.crusade.enabled&cooldown.avenging_wrath.remains>gcd*3|cooldown.crusade.remains>gcd*3)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*2|cooldown.avenging_wrath.remains>gcd*3&cooldown.avenging_wrath.remains<10|buff.crusade.up&buff.crusade.stack<10)" );
+  finishers -> add_action( this, "Divine Storm", "if=variable.ds_castable&variable.wings_pool&(!talent.execution_sentence.enabled|spell_targets.divine_storm<=2&cooldown.execution_sentence.remains>gcd*2|cooldown.avenging_wrath.remains>gcd*3&cooldown.avenging_wrath.remains<10|buff.crusade.up&buff.crusade.stack<10)" );
+  finishers -> add_action( this, "Templar's Verdict", "if=variable.wings_pool&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*2|cooldown.avenging_wrath.remains>gcd*3&cooldown.avenging_wrath.remains<10|buff.crusade.up&buff.crusade.stack<10)" );
 
   generators -> add_action( "variable,name=HoW,value=(!talent.hammer_of_wrath.enabled|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down))" );
-  generators -> add_action( "call_action_list,name=finishers,if=holy_power>=5|buff.memory_of_lucid_dreams.up|buff.seething_rage.up" );
+  generators -> add_action( "call_action_list,name=finishers,if=holy_power>=5|buff.memory_of_lucid_dreams.up|buff.seething_rage.up|buff.inquisition.down&holy_power>=3" );
   generators -> add_talent( this, "Wake of Ashes", "if=(!raid_event.adds.exists|raid_event.adds.in>15|spell_targets.wake_of_ashes>=2)&(holy_power<=0|holy_power=1&cooldown.blade_of_justice.remains>gcd)&(cooldown.avenging_wrath.remains>10|talent.crusade.enabled&cooldown.crusade.remains>10)" );
   generators -> add_action( this, "Blade of Justice", "if=holy_power<=2|(holy_power=3&(cooldown.hammer_of_wrath.remains>gcd*2|variable.HoW))" );
   generators -> add_action( this, "Judgment", "if=holy_power<=2|(holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|variable.HoW))" );
   generators -> add_talent( this, "Hammer of Wrath", "if=holy_power<=4" );
   generators -> add_talent( this, "Consecration", "if=holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2" );
-  generators -> add_action( "call_action_list,name=finishers,if=talent.hammer_of_wrath.enabled&(target.health.pct<=20|buff.avenging_wrath.up|buff.crusade.up)" );
+  generators -> add_action( "call_action_list,name=finishers,if=talent.hammer_of_wrath.enabled&target.health.pct<=20|buff.avenging_wrath.up|buff.crusade.up" );
   generators -> add_action( this, "Crusader Strike", "if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2&cooldown.consecration.remains>gcd*2)" );
   generators -> add_action( "call_action_list,name=finishers" );
   generators -> add_action( "concentrated_flame" );
