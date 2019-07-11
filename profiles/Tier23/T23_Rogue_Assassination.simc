@@ -36,7 +36,7 @@ actions=stealth
 actions+=/variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)
 actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
 actions+=/call_action_list,name=stealthed,if=stealthed.rogue
-actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=cds,if=!talent.master_assassin.enabled|dot.garrote.ticking
 actions+=/call_action_list,name=dot
 actions+=/call_action_list,name=direct
 actions+=/arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
@@ -66,8 +66,8 @@ actions.cds+=/vanish,if=talent.nightstalker.enabled&!talent.exsanguinate.enabled
 actions.cds+=/variable,name=ss_vanish_condition,value=azerite.shrouded_suffocation.enabled&(non_ss_buffed_targets>=1|spell_targets.fan_of_knives=3)&(ss_buffed_targets_above_pandemic=0|spell_targets.fan_of_knives>=6)
 actions.cds+=/pool_resource,for_next=1,extra_amount=45
 actions.cds+=/vanish,if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(variable.ss_vanish_condition|!azerite.shrouded_suffocation.enabled&dot.garrote.refreshable)&combo_points.deficit>=((1+2*azerite.shrouded_suffocation.enabled)*spell_targets.fan_of_knives)>?4&raid_event.adds.in>12
-# Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range
-actions.cds+=/vanish,if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3
+# Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Blood essenz if available.
+actions.cds+=/vanish,if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(!essence.blood_of_the_enemy.major|buff.seething_rage.up)
 # Shadowmeld for Shrouded Suffocation
 actions.cds+=/shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1
 # Exsanguinate when both Rupture and Garrote are up for long enough
@@ -100,9 +100,9 @@ actions.dot+=/variable,name=skip_rupture,value=debuff.vendetta.up&debuff.toxic_b
 actions.dot+=/rupture,if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2)))
 # Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher
 actions.dot+=/pool_resource,for_next=1
-actions.dot+=/garrote,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1+3*(azerite.shrouded_suffocation.enabled&cooldown.vanish.up)&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains)>4&(master_assassin_remains=0|!ticking)
+actions.dot+=/garrote,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1+3*(azerite.shrouded_suffocation.enabled&cooldown.vanish.up)&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains)>4&(master_assassin_remains=0|!ticking&azerite.shrouded_suffocation.enabled)
 actions.dot+=/pool_resource,for_next=1
-actions.dot+=/garrote,cycle_targets=1,if=!variable.skip_cycle_garrote&target!=self.target&(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1+3*(azerite.shrouded_suffocation.enabled&cooldown.vanish.up)&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains)>12&(master_assassin_remains=0|!ticking)
+actions.dot+=/garrote,cycle_targets=1,if=!variable.skip_cycle_garrote&target!=self.target&(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1+3*(azerite.shrouded_suffocation.enabled&cooldown.vanish.up)&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains)>12&(master_assassin_remains=0|!ticking&azerite.shrouded_suffocation.enabled)
 # Crimson Tempest only on multiple targets at 4+ CP when running out in 2s (up to 4 targets) or 3s (5+ targets)
 actions.dot+=/crimson_tempest,if=spell_targets>=2&remains<2+(spell_targets>=5)&combo_points>=4
 # Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)
@@ -111,14 +111,14 @@ actions.dot+=/rupture,cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.
 
 # Essences
 actions.essences=concentrated_flame
-# Always use Blood with Vendetta up. Also use with TB up (if talented) as long as it runs for 10s during Vendetta.
-actions.essences+=/blood_of_the_enemy,if=debuff.vendetta.up&(!talent.toxic_blade.enabled|debuff.toxic_blade.up|debuff.vendetta.remains<=10)|target.time_to_die<=10
+# Always use Blood with Vendetta up. Also use with TB up before a finisher (if talented) as long as it runs for 10s during Vendetta.
+actions.essences+=/blood_of_the_enemy,if=debuff.vendetta.up&(!talent.toxic_blade.enabled|debuff.toxic_blade.up&combo_points.deficit<=1|debuff.vendetta.remains<=10)|target.time_to_die<=10
 actions.essences+=/guardian_of_azeroth
 actions.essences+=/focused_azerite_beam,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60
 actions.essences+=/purifying_blast,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60
 actions.essences+=/the_unbound_force
 actions.essences+=/ripple_in_space
-actions.essences+=/worldvein_resonance
+actions.essences+=/worldvein_resonance,if=buff.lifeblood.stack<3
 actions.essences+=/memory_of_lucid_dreams,if=energy<50
 
 # Stealthed Actions
