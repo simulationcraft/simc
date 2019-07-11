@@ -7971,7 +7971,7 @@ std::string shaman_t::default_potion() const
 {
   std::string elemental_pot =
       ( true_level > 110 )
-          ? "battle_potion_of_intellect"
+          ? "potion_of_unbridled_fury"
           : ( true_level > 100 )
                 ? "prolonged_power"
                 : ( true_level >= 90 )
@@ -7996,7 +7996,7 @@ std::string shaman_t::default_flask() const
 {
   std::string elemental_flask =
       ( true_level > 110 )
-          ? "flask_of_endless_fathoms"
+          ? "greater_flask_of_endless_fathoms"
           : ( true_level > 100 )
                 ? "whispered_pact"
                 : ( true_level >= 90 )
@@ -8020,7 +8020,7 @@ std::string shaman_t::default_flask() const
 std::string shaman_t::default_food() const
 {
   std::string elemental_food = ( true_level > 110 )
-                                   ? "bountiful_captains_feast"
+                                   ? "mechdowels_big_mech"
                                    : ( true_level > 100 )
                                          ? "lemon_herb_filet"
                                          : ( true_level > 90 )
