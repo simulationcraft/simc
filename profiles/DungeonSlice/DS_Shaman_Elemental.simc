@@ -8,9 +8,9 @@ position=ranged_back
 talents=2301032
 
 # Default consumables
-potion=battle_potion_of_intellect
-flask=flask_of_endless_fathoms
-food=bountiful_captains_feast
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_endless_fathoms
+food=mechdowels_big_mech
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
