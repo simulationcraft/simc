@@ -7971,7 +7971,7 @@ std::string shaman_t::default_potion() const
 {
   std::string elemental_pot =
       ( true_level > 110 )
-          ? "battle_potion_of_intellect"
+          ? "potion_of_unbridled_fury"
           : ( true_level > 100 )
                 ? "prolonged_power"
                 : ( true_level >= 90 )
@@ -8016,11 +8016,12 @@ std::string shaman_t::default_flask() const
 }
 
 // shaman_t::default_food ===================================================
+// 2019-09-10 resolve merge for PR4852 by using upstream choice "mechdowels_big_mech" for enchance (crit over int)
 
 std::string shaman_t::default_food() const
 {
   std::string elemental_food = ( true_level > 110 )
-                                   ? "famine_evaluator_and_snack_table"
+                                   ? "mechdowels_big_mech"
                                    : ( true_level > 100 )
                                          ? "lemon_herb_filet"
                                          : ( true_level > 90 )
