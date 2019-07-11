@@ -6,7 +6,6 @@ race=troll
 role=tank
 position=front
 talents=1000131
-azerite_essences=300573:1:0/300575:1:0/300576:1:0
 
 # Default consumables
 potion=focused_resolve

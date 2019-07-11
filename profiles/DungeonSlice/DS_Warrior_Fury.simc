@@ -6,7 +6,6 @@ race=gnome
 role=attack
 position=back
 talents=2123123
-azerite_essences=300573:1:0/300575:1:0/300576:1:0
 
 # Default consumables
 potion=potion_of_unbridled_fury

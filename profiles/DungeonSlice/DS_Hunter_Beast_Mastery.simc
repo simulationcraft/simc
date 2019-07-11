@@ -6,7 +6,6 @@ race=lightforged_draenei
 role=attack
 position=ranged_back
 talents=1303011
-azerite_essences=300573:1:0/300575:1:0/300576:1:0
 
 # Default consumables
 potion=battle_potion_of_agility

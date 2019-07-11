@@ -6,7 +6,6 @@ race=troll
 role=spell
 position=ranged_back
 talents=3302023
-azerite_essences=300573:1:0/300575:1:0/300576:1:0
 
 # Default consumables
 potion=focused_resolve
@@ -63,13 +62,14 @@ actions+=/berserking
 actions+=/call_action_list,name=spenders
 actions+=/call_action_list,name=fillers
 
-actions.cooldowns=use_item,name=azsharas_font_of_power,if=(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains<4*spell_haste|!cooldown.phantom_singularity.remains)&cooldown.summon_darkglare.remains<15*spell_haste
+actions.cooldowns=use_item,name=azsharas_font_of_power,if=(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains<4*spell_haste|!cooldown.phantom_singularity.remains)&cooldown.summon_darkglare.remains<15*spell_haste&dot.agony.remains&dot.corruption.remains&(dot.siphon_life.remains|!talent.siphon_life.enabled)
 actions.cooldowns+=/potion,if=(talent.dark_soul_misery.enabled&cooldown.summon_darkglare.up&cooldown.dark_soul.up)|cooldown.summon_darkglare.up|target.time_to_die<30
 actions.cooldowns+=/use_items,if=cooldown.summon_darkglare.remains>70|time_to_die<20|((buff.active_uas.stack=5|soul_shard=0)&(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains)&(!talent.deathbolt.enabled|cooldown.deathbolt.remains<=gcd|!cooldown.deathbolt.remains)&!cooldown.summon_darkglare.remains)
+actions.cooldowns+=/use_item,name=pocketsized_computation_device,if=cooldown.summon_darkglare.remains>=25&(cooldown.deathbolt.remains|!talent.deathbolt.enabled)
 actions.cooldowns+=/fireblood,if=!cooldown.summon_darkglare.up
 actions.cooldowns+=/blood_fury,if=!cooldown.summon_darkglare.up
 actions.cooldowns+=/memory_of_lucid_dreams,if=time>30
-actions.cooldowns+=/blood_of_the_enemy
+actions.cooldowns+=/blood_of_the_enemy,if=pet.darkglare.remains|(!cooldown.deathbolt.remains|!talent.deathbolt.enabled)&cooldown.summon_darkglare.remains>=80&essence.blood_of_the_enemy.rank>1
 actions.cooldowns+=/worldvein_resonance,if=buff.lifeblood.stack<3
 actions.cooldowns+=/ripple_in_space
 
