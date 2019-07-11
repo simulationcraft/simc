@@ -1183,7 +1183,7 @@ std::string paladin_t::default_potion() const
                                 (true_level >= 80) ? "golemblood" :
                                 "disabled";
 
-  std::string protection_pot = (true_level > 110) ? "battle_potion_of_strength" :
+  std::string protection_pot = (true_level > 110) ? "potion_of_unbridled_fury" :
                                (true_level > 100) ? "prolonged_power" :
                                (true_level >= 90) ? "draenic_strength" :
                                (true_level >= 85) ? "mogu_power" :
@@ -1217,7 +1217,7 @@ std::string paladin_t::default_food() const
                                  (true_level >= 80) ? "beerbasted_crocolisk" :
                                  "disabled";
 
-  std::string protection_food = (true_level > 110) ? "bountiful_captains_feast" :
+  std::string protection_food = (true_level > 110) ? "mechdowels_big_mech" :
                                 (true_level > 100) ? "lavish_suramar_feast" :
                                 (true_level >= 90) ? "pickled_eel" :
                                 (true_level >= 85) ? "chun_tian_spring_rolls" :
@@ -1258,7 +1258,7 @@ std::string paladin_t::default_flask() const
                                   (true_level >= 80) ? "titanic_strength" :
                                   "disabled";
 
-  std::string protection_flask = (true_level > 110) ? "flask_of_the_undertow" :
+  std::string protection_flask = (true_level > 110) ? "greater_flask_of_the_undertow" :
                                  (true_level > 100) ? "flask_of_the_countless_armies" :
                                  (true_level >= 90) ? "greater_draenic_strength_flask" :
                                  (true_level >= 85) ? "earth" :
