@@ -936,6 +936,7 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( "call_action_list,name=cooldowns" );
 
   cds -> add_action( "fireblood,if=buff.avenging_wrath.up" );
+  cds -> add_action( "use_item,name=azsharas_font_of_power,if=cooldown.seraphim.remains<=10|!talent.seraphim.enabled" );
   cds -> add_talent( this, "Seraphim", "if=cooldown.shield_of_the_righteous.charges_fractional>=2" );
   cds -> add_action( this, "Avenging Wrath", "if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled" );
   cds -> add_talent( this, "Bastion of Light", "if=cooldown.shield_of_the_righteous.charges_fractional<=0.5" );
