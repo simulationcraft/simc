@@ -3449,7 +3449,6 @@ void items::neural_synapse_enhancer( special_effect_t& effect )
 /**Shiver Venom Relic
  * Equip: Shiver Venom (id=301576)
  * - Applies a stacking dot (effect#1->trigger id=301624), 0tick, hasted, can crit
- * - Automagic picked up by simc
  * On-use: Venomous Shiver (id=301834)
  * - Consume dots to do damage (id=305290), damage value in Equip driver->effect#1
  */
@@ -3459,11 +3458,23 @@ void items::shiver_venom_relic_onuse( special_effect_t& effect )
   {
     dot_t* sv_dot;
 
-    venomous_shivers_t( const special_effect_t& e ) :
-      proc_t( e, "venomous_shivers", e.player->find_spell( 305290 ) )
+    venomous_shivers_t( const special_effect_t& e ) : proc_t( e, "venomous_shivers", e.player->find_spell( 305290 ) )
     {
-      aoe = -1;
+      aoe         = -1;
       base_dd_max = base_dd_min = e.player->find_spell( 301576 )->effectN( 1 ).average( e.item );
+    }
+
+    bool ready() override
+    {
+      if ( !target )
+        return false;
+
+      sv_dot = target->find_dot( "shiver_venom", player );
+
+      if ( !sv_dot || !sv_dot->is_ticking() )
+        return false;
+
+      return proc_t::ready();
     }
 
     double action_multiplier() const override
@@ -3478,8 +3489,6 @@ void items::shiver_venom_relic_onuse( special_effect_t& effect )
 
     void execute() override
     {
-      sv_dot = target->find_dot( "shiver_venom", player );
-
       proc_t::execute();
 
       if ( sv_dot )
