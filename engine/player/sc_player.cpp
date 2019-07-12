@@ -3029,7 +3029,7 @@ void player_t::create_buffs()
   debuffs.casting = make_buff( this, "casting" )->set_max_stack( 1 )->set_quiet( 1 );
 
   // .. for players
-  if ( !is_enemy() )
+  if ( !is_enemy() && type != HEALING_ENEMY )
   {
     // Racials
     buffs.berserking = make_buff( this, "berserking", find_spell( 26297 ) )->add_invalidate( CACHE_HASTE );
@@ -3253,7 +3253,7 @@ double player_t::composite_melee_haste() const
 
   h = 1.0 / ( 1.0 + h );
 
-  if ( !is_pet() && !is_enemy() )
+  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->data().effectN( 1 ).percent() );
@@ -3360,7 +3360,7 @@ double player_t::composite_attack_power_multiplier() const
 {
   double m = current.attack_power_multiplier;
 
-  if ( is_pet() || is_enemy() )
+  if ( is_pet() || is_enemy() || type == HEALING_ENEMY )
   {
     return 1.0;
   }
@@ -3578,7 +3578,7 @@ double player_t::composite_spell_haste() const
 
   h = 1.0 / ( 1.0 + h );
 
-  if ( !is_pet() && !is_enemy() )
+  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->data().effectN( 1 ).percent() );
@@ -3606,7 +3606,7 @@ double player_t::composite_spell_speed() const
 {
   auto speed = cache.spell_haste();
 
-  if ( !is_pet() && !is_enemy() )
+  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.tempus_repit->check() )
     {
@@ -3693,7 +3693,7 @@ double player_t::composite_damage_versatility() const
 {
   double cdv = composite_damage_versatility_rating() / current.rating.damage_versatility;
 
-  if ( !is_pet() && !is_enemy() )
+  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.legendary_tank_buff )
       cdv += buffs.legendary_tank_buff->check_value();
@@ -3714,7 +3714,7 @@ double player_t::composite_heal_versatility() const
 {
   double chv = composite_heal_versatility_rating() / current.rating.heal_versatility;
 
-  if ( !is_pet() && !is_enemy() )
+  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.legendary_tank_buff )
       chv += buffs.legendary_tank_buff->check_value();
@@ -3735,7 +3735,7 @@ double player_t::composite_mitigation_versatility() const
 {
   double cmv = composite_mitigation_versatility_rating() / current.rating.mitigation_versatility;
 
-  if ( !is_pet() && !is_enemy() )
+  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.legendary_tank_buff )
       cmv += buffs.legendary_tank_buff->check_value() / 2;
@@ -3907,13 +3907,13 @@ double player_t::temporary_movement_modifier() const
 {
   double temporary = 0;
 
-  if ( !is_enemy() )
+  if ( !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.stampeding_roar->check() )
       temporary = std::max( buffs.stampeding_roar->data().effectN( 1 ).percent(), temporary );
   }
 
-  if ( !is_enemy() && !is_pet() )
+  if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
   {
     if ( buffs.darkflight->check() )
       temporary = std::max( buffs.darkflight->data().effectN( 1 ).percent(), temporary );
@@ -3993,7 +3993,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = current.attribute_multiplier[ attr ];
 
-  if ( is_pet() || is_enemy() )
+  if ( is_pet() || is_enemy() || type == HEALING_ENEMY )
     return m;
 
   if ( ( true_level >= 50 ) && matching_gear )
@@ -4530,7 +4530,7 @@ void player_t::datacollection_end()
     stats->datacollection_end();
   }
 
-  if ( !is_enemy() && !is_add() )
+  if ( !is_enemy() && !is_add() && type != HEALING_ENEMY )
   {
     sim->iteration_dmg += iteration_dmg;
     sim->priority_iteration_dmg += priority_iteration_dmg;
@@ -4539,7 +4539,7 @@ void player_t::datacollection_end()
   }
 
   // make sure TMI-relevant timeline lengths all match for tanks
-  if ( !is_enemy() && !is_pet() && primary_role() == ROLE_TANK )
+  if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY && primary_role() == ROLE_TANK )
   {
     collected_data.timeline_healing_taken.add( sim->current_time(), 0.0 );
     collected_data.timeline_dmg_taken.add( sim->current_time(), 0.0 );
@@ -12632,7 +12632,7 @@ void player_collected_data_t::collect_data( const player_t& p )
     health_changes_tmi.merged_timeline.merge( health_changes_tmi.timeline );
 
     // Calculate Theck-Meloree Index (TMI), ETMI, and maximum spike damage
-    if ( !p.is_enemy() )  // Boss TMI is irrelevant, causes problems in iteration #1
+    if ( !p.is_enemy() && p.type != HEALING_ENEMY )  // Boss TMI is irrelevant, causes problems in iteration #1
     {
       if ( f_length )
       {
