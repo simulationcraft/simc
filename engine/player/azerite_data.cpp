@@ -219,6 +219,9 @@ azerite_essence_t::azerite_essence_t( const player_t* player, const spell_data_t
 const item_t* azerite_essence_t::item() const
 { return &( m_player->items[ SLOT_NECK ] ); }
 
+bool azerite_essence_t::enabled() const
+{ return item()->parsed.data.id == 158075 && m_type != essence_type::INVALID; }
+
 const spell_data_t* azerite_essence_t::spell( unsigned rank, essence_type type ) const
 {
   return spell( rank, essence_spell::BASE, type );

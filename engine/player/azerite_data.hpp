@@ -139,8 +139,8 @@ public:
   /// Passives constructor
   azerite_essence_t( const player_t* player, const spell_data_t* passive );
 
-  bool enabled() const
-  { return m_type != essence_type::INVALID; }
+  /// Is Azerite Essence enabled?
+  bool enabled() const;
 
   const player_t* player() const
   { return m_player; }
