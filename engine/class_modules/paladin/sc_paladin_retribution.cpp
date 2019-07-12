@@ -783,7 +783,7 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      cds -> add_action( "potion,if=buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25" );
+      cds -> add_action( "potion,if=cooldown.guardian_of_azeroth.remains>90&(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25)" );
     else if ( true_level >= 80 )
       cds -> add_action( "potion,if=buff.bloodlust.react|buff.avenging_wrath.up" );
   }
@@ -917,7 +917,7 @@ void paladin_t::generate_action_prio_list_ret()
       }
       else if ( items[i].name_str == "ashvanes_razor_coral" )
       {
-        item_str = "use_item,name=" + items[i].name_str + ",if=(cooldown.avenging_wrath.remains>=8|cooldown.crusade.remains>=8|buff.crusade.stack=10)";
+        item_str = "use_item,name=" + items[i].name_str + ",if=debuff.razor_coral_debuff.down|buff.avenging_wrath.remains>=20|buff.crusade.up&buff.crusade.stack=10&buff.crusade.remains>15";
       }
       else if ( items[i].slot != SLOT_WAIST )
       {
@@ -952,7 +952,7 @@ void paladin_t::generate_action_prio_list_ret()
   }
 
   finishers -> add_action( "variable,name=wings_pool,value=!equipped.169314&(!talent.crusade.enabled&cooldown.avenging_wrath.remains>gcd*3|cooldown.crusade.remains>gcd*3)|equipped.169314&(!talent.crusade.enabled&cooldown.avenging_wrath.remains>gcd*6|cooldown.crusade.remains>gcd*6)" );
-  finishers -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm>=2&!talent.righteous_verdict.enabled|spell_targets.divine_storm>=3&talent.righteous_verdict.enabled" );
+  finishers -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm>=2&!talent.righteous_verdict.enabled|spell_targets.divine_storm>=3&talent.righteous_verdict.enabled|buff.empyrean_power.up&debuff.judgment.down&buff.divine_purpose.down&buff.avenging_wrath_autocrit.down" );
   finishers -> add_talent( this, "Inquisition", "if=buff.avenging_wrath.down&(buff.inquisition.down|buff.inquisition.remains<8&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3)" );
   finishers -> add_talent( this, "Execution Sentence", "if=spell_targets.divine_storm<=2&(!talent.crusade.enabled&cooldown.avenging_wrath.remains>10|talent.crusade.enabled&buff.crusade.down&cooldown.crusade.remains>10|buff.crusade.stack>=7)" );
   finishers -> add_action( this, "Divine Storm", "if=variable.ds_castable&variable.wings_pool&(!talent.execution_sentence.enabled|spell_targets.divine_storm<=2&cooldown.execution_sentence.remains>gcd*2|cooldown.avenging_wrath.remains>gcd*3&cooldown.avenging_wrath.remains<10|buff.crusade.up&buff.crusade.stack<10)" );
