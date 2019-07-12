@@ -35,11 +35,11 @@ actions+=/rebuke
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=generators
 
-actions.cooldowns=potion,if=buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25
+actions.cooldowns=potion,if=cooldown.guardian_of_azeroth.remains>90&(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25)
 actions.cooldowns+=/lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)
 actions.cooldowns+=/fireblood,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10
 actions.cooldowns+=/shield_of_vengeance,if=buff.seething_rage.down&buff.memory_of_lucid_dreams.down
-actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=(cooldown.avenging_wrath.remains>=8|cooldown.crusade.remains>=8|buff.crusade.stack=10)
+actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.avenging_wrath.remains>=20|buff.crusade.up&buff.crusade.stack=10&buff.crusade.remains>15
 actions.cooldowns+=/the_unbound_force,if=time<=2|buff.reckless_force.up
 actions.cooldowns+=/blood_of_the_enemy,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10
 actions.cooldowns+=/guardian_of_azeroth,if=!talent.crusade.enabled&(cooldown.avenging_wrath.remains<5&holy_power>=3&(buff.inquisition.up|!talent.inquisition.enabled)|cooldown.avenging_wrath.remains>=45)|(talent.crusade.enabled&cooldown.crusade.remains<gcd&holy_power>=4|holy_power>=3&time<10&talent.wake_of_ashes.enabled|cooldown.crusade.remains>=45)
@@ -51,7 +51,7 @@ actions.cooldowns+=/avenging_wrath,if=(!talent.inquisition.enabled|buff.inquisit
 actions.cooldowns+=/crusade,if=holy_power>=4|holy_power>=3&time<10&talent.wake_of_ashes.enabled
 
 actions.finishers=variable,name=wings_pool,value=!equipped.169314&(!talent.crusade.enabled&cooldown.avenging_wrath.remains>gcd*3|cooldown.crusade.remains>gcd*3)|equipped.169314&(!talent.crusade.enabled&cooldown.avenging_wrath.remains>gcd*6|cooldown.crusade.remains>gcd*6)
-actions.finishers+=/variable,name=ds_castable,value=spell_targets.divine_storm>=2&!talent.righteous_verdict.enabled|spell_targets.divine_storm>=3&talent.righteous_verdict.enabled
+actions.finishers+=/variable,name=ds_castable,value=spell_targets.divine_storm>=2&!talent.righteous_verdict.enabled|spell_targets.divine_storm>=3&talent.righteous_verdict.enabled|buff.empyrean_power.up&debuff.judgment.down&buff.divine_purpose.down&buff.avenging_wrath_autocrit.down
 actions.finishers+=/inquisition,if=buff.avenging_wrath.down&(buff.inquisition.down|buff.inquisition.remains<8&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3)
 actions.finishers+=/execution_sentence,if=spell_targets.divine_storm<=2&(!talent.crusade.enabled&cooldown.avenging_wrath.remains>10|talent.crusade.enabled&buff.crusade.down&cooldown.crusade.remains>10|buff.crusade.stack>=7)
 actions.finishers+=/divine_storm,if=variable.ds_castable&variable.wings_pool&(!talent.execution_sentence.enabled|spell_targets.divine_storm<=2&cooldown.execution_sentence.remains>gcd*2|cooldown.avenging_wrath.remains>gcd*3&cooldown.avenging_wrath.remains<10|buff.crusade.up&buff.crusade.stack<10)
@@ -75,7 +75,7 @@ head=greathelm_of_the_tender,id=168365,bonus_id=4824/1517/4775,azerite_powers=39
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=pauldrons_of_zaqul,id=168868,bonus_id=4824/1517/4775,azerite_powers=154/187/459/13
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
-chest=breastplate_of_arterial_protection,id=159432,bonus_id=4824/1517/4775,azerite_powers=125/187/22/13
+chest=naga_centaurs_shellplate,id=168361,bonus_id=4824/1517/4775,azerite_powers=187/125/38/13
 wrists=palace_sentinel_vambraces,id=168387,bonus_id=4800/1517
 hands=undercove_crushers,id=168885,bonus_id=4800/1517
 waist=eternity_keepers_greatbelt,id=168869,bonus_id=4800/1517
@@ -88,11 +88,11 @@ trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
 main_hand=monstrositys_shipbreaker,id=168478,bonus_id=4800/1517,enchant=force_multiplier
 
 # Gear Summary
-# gear_ilvl=435.20
-# gear_strength=6945
-# gear_stamina=11807
+# gear_ilvl=441.87
+# gear_strength=7639
+# gear_stamina=13285
 # gear_crit_rating=1405
 # gear_haste_rating=1075
 # gear_mastery_rating=758
 # gear_versatility_rating=450
-# gear_armor=5673
+# gear_armor=6227
