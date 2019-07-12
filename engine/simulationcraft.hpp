@@ -5735,8 +5735,12 @@ public:
     {
       // Essence: Blood of the Enemy Major debuff
       c += td->debuff.blood_of_the_enemy->stack_value();
-      // Consumable: Potion of Focused Resolve
-      c += td->debuff.focused_resolve->stack_value();
+
+      // Consumable: Potion of Focused Resolve (TODO: Does this apply to pets as well?)
+      if ( !player->is_pet() )
+      {
+        c += td->debuff.focused_resolve->stack_value();
+      }
     }
 
     return c;
