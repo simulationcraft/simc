@@ -474,7 +474,7 @@ expr_t* cooldown_t::create_expression( const std::string& name_str )
         if ( recharge_event )
         {
           recharge_event_t* re = debug_cast<recharge_event_t*>( recharge_event );
-          charges += 1 - ( re -> remains() / cooldown_duration( this, re -> duration_ ) );
+          charges += 1 - std::min( 1.0, re -> remains() / cooldown_duration( this, re -> duration_ ) );
         }
         return charges;
       }
