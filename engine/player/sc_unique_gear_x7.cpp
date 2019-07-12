@@ -3913,9 +3913,10 @@ void items::anuazshara_staff_of_the_eternal( special_effect_t& effect )
   struct prodigys_potency_unleash_t : public proc_t
   {
     buff_t* buff;
+    buff_t* lockout;
 
-    prodigys_potency_unleash_t( const special_effect_t& e, buff_t* b ) :
-      proc_t( e, "prodigys_potency", e.player->find_spell( 302995 ) ), buff( b )
+    prodigys_potency_unleash_t( const special_effect_t& e, buff_t* b, buff_t* lock ) :
+      proc_t( e, "prodigys_potency", e.player->find_spell( 302995 ) ), buff( b ), lockout( lock )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
@@ -3927,27 +3928,47 @@ void items::anuazshara_staff_of_the_eternal( special_effect_t& effect )
 
     void execute() override
     {
+      lockout->trigger();
       proc_t::execute();
       sim->print_debug( "anu-azshara potency unleashed at {} stacks!", buff->stack() );
       buff->expire();
     }
   };
 
+  struct prodigys_potency_cb_t : dbc_proc_callback_t
+  {
+    buff_t* lockout;
+
+    prodigys_potency_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), lockout( b )
+    {}
+
+    void trigger( action_t* a, void* cd ) override
+    {
+      if ( lockout->check() )
+        return;
+
+      dbc_proc_callback_t::trigger( a, cd );
+    }
+  };
+
+  auto lockout = buff_t::find( effect.player, "arcane_exhaustion" );
+  if ( !lockout )
+    lockout = make_buff( effect.player, "arcane_exhaustion", effect.player->find_spell( 304482 ) );
+
   auto buff = buff_t::find( effect.player, "prodigys_potency" );
   if ( !buff )
     buff = make_buff( effect.player, "prodigys_potency", effect.trigger() );
 
   effect.custom_buff = buff;
+  new prodigys_potency_cb_t( effect, lockout );
 
-  new dbc_proc_callback_t( effect.player, effect );
+  auto action = create_proc_action<prodigys_potency_unleash_t>( "prodigys_potency", effect, buff, lockout );
+  auto time   = effect.player->sim->bfa_opts.anuazshara_unleash_time;
 
-  auto action = create_proc_action<prodigys_potency_unleash_t>( "prodigys_potency", effect, buff );
-  auto timer  = effect.player->sim->bfa_opts.anuazshara_unleash_timer;
-
-  if ( timer > 0_ms )
+  if ( time > 0_ms )
   {
-    effect.player->register_combat_begin( [action, timer]( player_t* ) {
-      make_repeating_event( *action->sim, timer, [action]() {
+    effect.player->register_combat_begin( [effect, action, time]( player_t* ) {
+      make_event( *effect.player->sim, time, [action]() {
         action->execute();
       } );
     } );

@@ -3458,34 +3458,30 @@ void arcane_heart( special_effect_t& effect )
 
 void clockwork_heart( special_effect_t& effect )
 {
-  azerite_power_t power = effect.player->find_azerite_spell(effect.driver()->name_cstr());
-  if (!power.enabled())
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
     return;
 
-  spell_data_t* ticker_s = effect.driver()->effectN(1).trigger();
-  spell_data_t* clock_s = ticker_s->effectN(1).trigger();
-  double amount = power.value(1);
+  buff_t* clockwork = buff_t::find( effect.player, "clockwork_heart" );
+  if ( !clockwork )
+    clockwork = make_buff<stat_buff_t>( effect.player, "clockwork_heart", effect.trigger()->effectN( 1 ).trigger() )
+      ->add_stat( STAT_CRIT_RATING, power.value( 1 ) )
+      ->add_stat( STAT_HASTE_RATING, power.value( 1 ) )
+      ->add_stat( STAT_MASTERY_RATING, power.value( 1 ) )
+      ->add_stat( STAT_VERSATILITY_RATING, power.value( 1 ) );
 
-  buff_t* clockwork = buff_t::find(effect.player, "clockwork_heart");
-  if (!clockwork)
-    clockwork = make_buff<stat_buff_t>(effect.player, "clockwork_heart", clock_s)
-      ->add_stat(STAT_CRIT_RATING, amount)
-      ->add_stat(STAT_HASTE_RATING, amount)
-      ->add_stat(STAT_MASTERY_RATING, amount)
-      ->add_stat(STAT_VERSATILITY_RATING, amount);
-
-  buff_t* ticker = buff_t::find(effect.player, "clockwork_heart_ticker");
-  if (!ticker)
+  buff_t* ticker = buff_t::find( effect.player, "clockwork_heart_ticker" );
+  if ( !ticker )
   {
-    ticker = make_buff(effect.player, "clockwork_heart_ticker", effect.driver()->effectN(1).trigger())
-      ->set_quiet(true)
-      ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
-      ->set_tick_callback( [clockwork, effect] (buff_t*, int, const timespan_t& ) {
+    ticker = make_buff( effect.player, "clockwork_heart_ticker", effect.trigger() )
+      ->set_quiet( true )
+      ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+      ->set_tick_callback( [clockwork]( buff_t*, int, const timespan_t& ) {
         clockwork->trigger();
       } );
   }
 
-  effect.player->register_combat_begin( [ticker] (player_t* ) {
+  effect.player->register_combat_begin( [ticker]( player_t* ) {
     ticker->trigger();
   } );
 }
