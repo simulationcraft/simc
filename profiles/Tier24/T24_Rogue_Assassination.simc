@@ -48,8 +48,7 @@ actions+=/lights_judgment
 actions.cds=potion,if=buff.bloodlust.react|debuff.vendetta.up
 # Default Trinket usage: Use on cooldown.
 actions.cds+=/use_item,name=azsharas_font_of_power
-# Default Trinket usage: Use on cooldown.
-actions.cds+=/use_item,name=ashvanes_razor_coral
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10|target.time_to_die<20
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/fireblood,if=debuff.vendetta.up
@@ -116,7 +115,7 @@ actions.essences=concentrated_flame
 # Always use Blood with Vendetta up. Also use with TB up before a finisher (if talented) as long as it runs for 10s during Vendetta.
 actions.essences+=/blood_of_the_enemy,if=debuff.vendetta.up&(!talent.toxic_blade.enabled|debuff.toxic_blade.up&combo_points.deficit<=1|debuff.vendetta.remains<=10)|target.time_to_die<=10
 actions.essences+=/guardian_of_azeroth
-actions.essences+=/focused_azerite_beam,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60
+actions.essences+=/focused_azerite_beam,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60&energy<70
 actions.essences+=/purifying_blast,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60
 actions.essences+=/the_unbound_force
 actions.essences+=/ripple_in_space

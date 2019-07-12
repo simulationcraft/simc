@@ -5720,6 +5720,8 @@ void rogue_t::init_action_list()
         auto use_effect_id = items[i].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) -> spell_id;
         if ( items[i].name_str == "galecallers_boon" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=cooldown.vendetta.remains>45" );
+        else if ( items[i].name_str == "ashvanes_razor_coral" )
+          cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10|target.time_to_die<20" );
         else if ( use_effect_id == 271107 || use_effect_id == 277179 || use_effect_id == 277185 || // Golden Luster, Gladiator's Medallion, Gladiator's Badge
                   items[i].name_str == "lurkers_insidious_gift" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.vendetta.up" );
@@ -5755,7 +5757,7 @@ void rogue_t::init_action_list()
     essences->add_action( "concentrated_flame" );
     essences->add_action( "blood_of_the_enemy,if=debuff.vendetta.up&(!talent.toxic_blade.enabled|debuff.toxic_blade.up&combo_points.deficit<=1|debuff.vendetta.remains<=10)|target.time_to_die<=10", "Always use Blood with Vendetta up. Also use with TB up before a finisher (if talented) as long as it runs for 10s during Vendetta." );
     essences->add_action( "guardian_of_azeroth" );
-    essences->add_action( "focused_azerite_beam,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60" );
+    essences->add_action( "focused_azerite_beam,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60&energy<70" );
     essences->add_action( "purifying_blast,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60" );
     essences->add_action( "the_unbound_force" );
     essences->add_action( "ripple_in_space" );
@@ -5832,6 +5834,8 @@ void rogue_t::init_action_list()
         auto use_effect_id = items[i].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) -> spell_id;
         if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.all&buff.adrenaline_rush.down&buff.memory_of_lucid_dreams.down&energy.time_to_max>4&rtb_buffs<5" );
+        else if ( items[i].name_str == "ashvanes_razor_coral" )
+          cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.adrenaline_rush.up&(target.health.pct<30|target.time_to_die<60)" );
         else // Default
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2", "Falling back to default item usage" );
       }
@@ -5920,6 +5924,10 @@ void rogue_t::init_action_list()
           cds -> add_action( "use_item,name=" + items[i].name_str, "Use on cooldown." );
         else if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.all&dot.nightblade.ticking&!buff.symbols_of_death.up&energy.deficit>=30" );
+        else if ( items[i].name_str == "azsharas_font_of_power" )
+          cds -> add_action( "use_item,name=azsharas_font_of_power,if=!buff.shadow_dance.up&cooldown.symbols_of_death.remains<10" );
+        else if ( items[i].name_str == "ashvanes_razor_coral" )
+          cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.symbols_of_death.up&(target.health.pct<30|target.time_to_die<60)" );
         else // Use with Symbols default
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.symbols_of_death.up|target.time_to_die<20", "Falling back to default item usage: Use with Symbols of Death." );
       }
@@ -5948,7 +5956,7 @@ void rogue_t::init_action_list()
     essences->add_action( "concentrated_flame" );
     essences->add_action( "blood_of_the_enemy" );
     essences->add_action( "guardian_of_azeroth" );
-    essences->add_action( "focused_azerite_beam,if=(spell_targets.shuriken_storm>=2|raid_event.adds.in>60)&!cooldown.symbols_of_death.up&!buff.symbols_of_death.up" );
+    essences->add_action( "focused_azerite_beam,if=(spell_targets.shuriken_storm>=2|raid_event.adds.in>60)&!cooldown.symbols_of_death.up&!buff.symbols_of_death.up&energy.deficit>=30" );
     essences->add_action( "purifying_blast,if=spell_targets.shuriken_storm>=2|raid_event.adds.in>60" );
     essences->add_action( "the_unbound_force" );
     essences->add_action( "ripple_in_space" );
