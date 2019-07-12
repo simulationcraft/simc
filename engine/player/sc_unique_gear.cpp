@@ -4235,12 +4235,11 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
 // from user input
 struct item_cooldown_expr_t : public item_effect_expr_t
 {
-  item_cooldown_expr_t( player_t& player, const std::vector<slot_e> slots, const std::string& expr ) :
+  item_cooldown_expr_t( player_t& player, const std::vector<slot_e>& slots, const std::string& expr ) :
     item_effect_expr_t( player, slots )
   {
     for (auto e : effects)
     {
-      
       if ( e -> cooldown() != timespan_t::zero() )
       {
         cooldown_t* cd = player.get_cooldown( e -> cooldown_name() );
@@ -4260,7 +4259,6 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
   {
     for (auto e : effects)
     {
-      
       if ( e -> cooldown() != timespan_t::zero() && e -> rppm() == 0 ) // Technically, rppm doesn't have a cooldown.
       {
         v = 1;
@@ -4281,8 +4279,8 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
  * expression processing.
  *
  * Trinket expressions are of the form:
- * trinket[.12].(has_|)(stacking_|)proc.<stat>.<buff_expr> OR
- * trinket[.12].(has_|)cooldown.<cooldown_expr>
+ * trinket[.1|2|name].(has_|)(stacking_|)proc.<stat>.<buff_expr> OR
+ * trinket[.1|2|name].(has_|)cooldown.<cooldown_expr>
  */
 expr_t* unique_gear::create_expression( player_t& player, const std::string& name_str )
 {
@@ -4330,7 +4328,26 @@ expr_t* unique_gear::create_expression( player_t& player, const std::string& nam
     stat_idx++;
     expr_idx++;
   }
-    // No positional parameter given so check both trinkets
+  // Try to find trinket.<trinketname>
+  else if ( !splits[ 1 ].empty() )
+  {
+    auto item = player.find_item_by_name( splits[ 1 ] );
+    if ( item && ( item->slot == SLOT_TRINKET_1 || item->slot == SLOT_TRINKET_2 ) )
+    {
+      slots.push_back( item->slot );
+    }
+    // If the item is not found, return an always false expression instead of erroring out
+    else
+    {
+      return expr_t::create_constant( "trinket-named-expr", 0 );
+    }
+
+    ptype_idx++;
+
+    stat_idx++;
+    expr_idx++;
+  }
+  // No positional parameter given so check both trinkets
   else
   {
     slots.push_back( SLOT_TRINKET_1 );
