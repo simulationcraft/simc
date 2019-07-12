@@ -185,6 +185,7 @@ namespace items
   void reclaimed_shock_coil( special_effect_t& );
   void dreams_end( special_effect_t& );
   void divers_folly( special_effect_t& );
+  void remote_guidance_device( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -4421,6 +4422,51 @@ void items::divers_folly( special_effect_t& effect )
   new divers_folly_cb_t( effect );
 }
 
+/**Remote Guidance Device
+ * id=302307, on-use driver
+ * id=302308, primary target damage in e#1, aoe damage in e#2
+ * id=302311, primary target damage
+ * id=302312, aoe damage
+ * TODO: Does the aoe also hit the primary target? What is the travel time of the mechacycle?
+ */
+
+void items::remote_guidance_device( special_effect_t& effect )
+{
+  struct remote_guidance_device_t : public proc_t
+  {
+    action_t* area;
+
+    remote_guidance_device_t( const special_effect_t& e, action_t* a ) :
+      proc_t( e, "remote_guidance_device", e.player->find_spell( 302311 ) ), area( a )
+    {
+      aoe = 0;
+      travel_speed = 10.0;  // TODO: find actual travel speed (either from data or testing) and update
+      base_dd_min = base_dd_max = e.player->find_spell( 302308 )->effectN( 1 ).average( e.item );
+      add_child( area );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_t::impact( s );
+      area->set_target( s->target );
+      area->execute();
+    }
+  };
+
+  struct remote_guidance_device_aoe_t : public proc_t
+  {
+    remote_guidance_device_aoe_t( const special_effect_t& e ) :
+      proc_t( e, "remote_guidance_device_aoe", e.player->find_spell( 302312 ) )
+    {
+      aoe = -1;
+      base_dd_min = base_dd_max = e.player->find_spell( 302308 )->effectN( 2 ).average( e.item );
+    }
+  };
+
+  auto area = create_proc_action<remote_guidance_device_aoe_t>( "remote_guidance_device_aoe", effect );
+  effect.execute_action = create_proc_action<remote_guidance_device_t>( "remote_guidance_device", effect, area );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -5373,6 +5419,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 301753, items::reclaimed_shock_coil );
   register_special_effect( 303356, items::dreams_end );
   register_special_effect( 303353, items::divers_folly );
+  register_special_effect( 302307, items::remote_guidance_device );
   // 8.2 Mechagon combo rings
   register_special_effect( 300124, items::logic_loop_of_division );
   register_special_effect( 300125, items::logic_loop_of_recursion );
