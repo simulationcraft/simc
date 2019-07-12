@@ -4054,7 +4054,8 @@ struct avatar_t : public warrior_spell_t
     parse_options( options_str );
     callbacks = false;
 
-    if ( p -> azerite.vision_of_perfection.enabled() )
+    // Vision of Perfection doesn't reduce the cooldown for non-prot
+    if ( p -> azerite.vision_of_perfection.enabled() && p -> specialization() == WARRIOR_PROTECTION )
     {
       cooldown -> duration *= 1.0 + azerite::vision_of_perfection_cdr( p -> azerite.vision_of_perfection );
     }
