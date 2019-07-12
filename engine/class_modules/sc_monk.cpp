@@ -6804,9 +6804,9 @@ struct reverse_harm_damage_t : public monk_spell_t
   {
     monk_spell_t::init();
     // disable the snapshot_flags for all multipliers, but specifically allow
-    // action_multiplier() to be called so we can override.
+    // composite_persistent_multiplier() to be called so we can override.
     snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_MUL_DA;
+    snapshot_flags |= STATE_MUL_PERSISTENT;
   }
 };
 
