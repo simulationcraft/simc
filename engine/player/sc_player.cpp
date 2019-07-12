@@ -8200,8 +8200,8 @@ struct use_item_t : public action_t
 
   void init() override
   {
-    action_t::init();
-
+    // Precombat channel hack: Do item checking before action_t::init() so we can grab the effect->execute_action to
+    // setup bypass if necessary.
     action_priority_list_t* apl = nullptr;
     if ( action_list )
     {
@@ -8214,8 +8214,24 @@ struct use_item_t : public action_t
       return;
     }
 
-    // Parse Special Effect
     const special_effect_t* e = item->special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+
+    // Check if we're in precombat and a channeled action exists. Automagic created actions are not allowed.
+    if ( action_list && action_list->name_str == "precombat" && e && e->type == SPECIAL_EFFECT_USE && e->execute_action
+         && e->execute_action->channeled )
+    {
+      // Hack to allow bypass of action_t::init() checks.
+      base_execute_time = e->execute_action->dot_duration;
+
+      // Note: This only allows you to bypass the checks. Ticks will still occur normally encroaching into combat time.
+      // For proper simulation of pre-combat usage, adjust the execute() and other relevant overrides in the channeled
+      // action as necessary to properly account for all the ticks having occurred immediately upon execution of the
+      // action.
+    }
+
+    action_t::init();
+
+    // Parse Special Effect
     if ( e && e->type == SPECIAL_EFFECT_USE )
     {
       // Create a buff
@@ -8299,6 +8315,11 @@ struct use_item_t : public action_t
 
     if ( triggered && action && ( !buff || buff->check() == buff->max_stack() ) )
     {
+      // Because only one action is created to handle both precombat & regular /use_item, set the action_list before
+      // execute to ensure the channel action's execute() can recognize which action_list it's in.
+      if ( action->channeled )
+        action->action_list = action_list;
+
       action->target = target;
       action->execute();
 
@@ -8560,6 +8581,12 @@ struct use_items_t : public action_t
     // use_item,name=X action for the item.
     range::for_each( use_item_actions, [this, &slot_order]( const use_item_t* action ) {
       if ( action->item_name.empty() )
+      {
+        return;
+      }
+
+      // As precombat channeled /use_item,name=X are special hacks, don't remove them.
+      if ( action->action_list && action->action_list->name_str == "precombat" && action->action && action->action->channeled )
       {
         return;
       }
