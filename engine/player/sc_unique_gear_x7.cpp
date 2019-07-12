@@ -5233,21 +5233,10 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
     {
       proc_spell_t::execute();
 
-      // Track which cooldowns have been reduces so far so that we don't
-      // apply the reduction to the same cooldown twice.
-      // TODO: Is that how this works?
-      std::vector<cooldown_t*> reduced_cds;
       for ( auto a : tracker->last_used )
       {
-        if ( range::find( reduced_cds, a->cooldown ) != reduced_cds.end() )
-        {
-          sim->print_debug( "Cooldown of action {} already reduced, skipping.", a->name_str );
-          continue;
-        }
-
         sim->print_debug( "Reducing cooldown of action {} by {} s.", a->name_str, reduction.total_seconds() );
         a->cooldown->adjust( -reduction );
-        reduced_cds.push_back( a->cooldown );
       }
     }
   };
