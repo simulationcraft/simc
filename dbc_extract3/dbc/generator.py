@@ -1272,6 +1272,8 @@ class SpellDataGenerator(DataGenerator):
          296061,
          # Shiver Venom Relic
          305290,
+         # Shivering Bolt/Venomous Lance (Shiver Venom Crossbow/Lance bonus damage)
+         303559, 303562,
          # Leviathan's Lure
          302763,
          # Za'qul's Portal key
@@ -1295,7 +1297,7 @@ class SpellDataGenerator(DataGenerator):
          # Mechagon combo rings
          306474, 301886, 301887,
          # Anu-Azshara lockout debuff
-         304482
+         304482,
         ),
 
         # Warrior:

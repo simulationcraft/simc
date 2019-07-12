@@ -3980,13 +3980,12 @@ void items::anuazshara_staff_of_the_eternal( special_effect_t& effect )
 void items::shiver_venom_crossbow( special_effect_t& effect )
 {
 
-  struct venomous_bolt_frost_t : public proc_spell_t
+  struct shivering_bolt_t : public proc_spell_t
   {
-    venomous_bolt_frost_t( const special_effect_t& effect ) :
-      proc_spell_t( "venomous_bolt_frost", effect.player, effect.player -> find_spell( 303558 ), effect.item )
+    shivering_bolt_t( const special_effect_t& effect ) :
+      proc_spell_t( "shivering_bolt", effect.player, effect.player -> find_spell( 303559 ), effect.item )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
-      school = SCHOOL_FROST;
     }
   };
 
@@ -3996,7 +3995,7 @@ void items::shiver_venom_crossbow( special_effect_t& effect )
 
     venomous_bolt_t( const special_effect_t& effect ) :
       proc_spell_t( "venomous_bolt", effect.player, effect.player -> find_spell( 303558 ), effect.item ),
-      frost( create_proc_action<venomous_bolt_frost_t>( "venomous_bolt_frost", effect ) )
+      frost( create_proc_action<shivering_bolt_t>( "shivering_bolt", effect ) )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
       add_child( frost );
@@ -4024,14 +4023,12 @@ void items::shiver_venom_crossbow( special_effect_t& effect )
 void items::shiver_venom_lance( special_effect_t& effect )
 {
 
-  struct shivering_lance_nature_t : public proc_spell_t
+  struct venomous_lance_t : public proc_spell_t
   {
-    shivering_lance_nature_t( const special_effect_t& effect ) :
-      proc_spell_t( "shivering_lance_nature", effect.player, effect.player -> find_spell( 303560 ), effect.item )
+    venomous_lance_t( const special_effect_t& effect ) :
+      proc_spell_t( "venomous_lance", effect.player, effect.player -> find_spell( 303562 ), effect.item )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
-      aoe = -1;
-      school = SCHOOL_NATURE;
     }
   };
 
@@ -4041,7 +4038,7 @@ void items::shiver_venom_lance( special_effect_t& effect )
 
     shivering_lance_t( const special_effect_t& effect ) :
       proc_spell_t( "shivering_lance", effect.player, effect.player -> find_spell( 303560 ), effect.item ),
-      nature( create_proc_action<shivering_lance_nature_t>( "shivering_lance_nature", effect ) )
+      nature( create_proc_action<venomous_lance_t>( "venomous_lance", effect ) )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
       add_child( nature );
