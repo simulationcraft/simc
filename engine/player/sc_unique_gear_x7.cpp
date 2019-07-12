@@ -3774,9 +3774,11 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     buff_t* buff;
     unsigned counter;
     timespan_t duration;
+    timespan_t max_dur;
 
     latent_arcana_channel_t( const special_effect_t& e, buff_t* b ) :
-      proc_t( e, "latent_arcana", e.driver() ), buff( b ), counter( 1 ), duration( e.trigger()->duration() )
+      proc_t( e, "latent_arcana", e.driver() ), buff( b ), counter( 1 ), duration( e.trigger()->duration() ),
+      max_dur( timespan_t::from_seconds( e.trigger()->effectN( 4 ).base_value() ) )
     {
       channeled = true;
       harmful   = false;
@@ -3789,6 +3791,12 @@ void items::azsharas_font_of_power( special_effect_t& effect )
 
     void execute() override
     {
+      if ( action_list && action_list->name_str == "precombat" )  // precombat hack
+      {
+        buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, max_dur );
+        return;
+      }
+
       counter = 1;  // for 0tick
       proc_t::execute();
       event_t::cancel( player->readying );
@@ -3822,7 +3830,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
         player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
       }
 
-      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, counter * duration );
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( max_dur, counter * duration ) );
     }
   };
 
