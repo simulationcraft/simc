@@ -67,15 +67,8 @@ actions.build+=/gloomblade
 actions.build+=/backstab
 
 # Cooldowns
-actions.cds=potion,if=buff.bloodlust.react|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
-# Falling back to default item usage: Use with Symbols of Death.
-actions.cds+=/use_item,name=galecallers_boon,if=buff.symbols_of_death.up|target.time_to_die<20
-actions.cds+=/blood_fury,if=buff.symbols_of_death.up
-actions.cds+=/berserking,if=buff.symbols_of_death.up
-actions.cds+=/fireblood,if=buff.symbols_of_death.up
-actions.cds+=/ancestral_call,if=buff.symbols_of_death.up
 # Use Dance off-gcd before the first Shuriken Storm from Tornado comes in.
-actions.cds+=/shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
+actions.cds=shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
 # (Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in.
 actions.cds+=/symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
 actions.cds+=/call_action_list,name=essences,if=!stealthed.all&dot.nightblade.ticking
@@ -93,6 +86,13 @@ actions.cds+=/shadow_blades,if=combo_points.deficit>=2+stealthed.all
 # With SF, if not already done, use Tornado with SoD up.
 actions.cds+=/shuriken_tornado,if=talent.shadow_focus.enabled&dot.nightblade.ticking&buff.symbols_of_death.up
 actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled&!raid_event.adds.up
+actions.cds+=/potion,if=buff.bloodlust.react|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
+# Falling back to default item usage: Use with Symbols of Death.
+actions.cds+=/use_item,name=galecallers_boon,if=buff.symbols_of_death.up|target.time_to_die<20
+actions.cds+=/blood_fury,if=buff.symbols_of_death.up
+actions.cds+=/berserking,if=buff.symbols_of_death.up
+actions.cds+=/fireblood,if=buff.symbols_of_death.up
+actions.cds+=/ancestral_call,if=buff.symbols_of_death.up
 
 # Essences
 actions.essences=concentrated_flame
