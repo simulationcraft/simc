@@ -4233,6 +4233,18 @@ void purification_protocol(special_effect_t& effect)
       aoe=-1;
       school = SCHOOL_FIRE;
     }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = proc_spell_t::composite_target_multiplier( target );
+
+      if ( target->race == RACE_ABERRATION )
+      {
+        m *= 1.0 + data().effectN( 2 ).percent();
+      }
+
+      return m;
+    }
   };
 
   auto action = unique_gear::create_proc_action<purification_protocol_t>( "purification_protocol", effect,
