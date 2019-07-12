@@ -783,7 +783,7 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      cds -> add_action( "potion,if=cooldown.guardian_of_azeroth.remains>90&(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25)" );
+      cds -> add_action( "potion,if=(cooldown.guardian_of_azeroth.remains>90|!essence.condensed_lifeforce.major)&(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25)" );
     else if ( true_level >= 80 )
       cds -> add_action( "potion,if=buff.bloodlust.react|buff.avenging_wrath.up" );
   }
