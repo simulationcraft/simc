@@ -5727,7 +5727,7 @@ public:
 
   virtual double composite_target_crit_chance( player_t* target ) const
   {
-    actor_target_data_t* td = player -> get_target_data( target );
+    actor_target_data_t* td = player->get_owner_or_self()->get_target_data( target );
 
     double c = 0.0;
 
