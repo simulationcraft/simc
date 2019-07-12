@@ -6819,7 +6819,6 @@ struct reverse_harm_t : public monk_heal_t
   {
     parse_options( options_str );
     damage           = new reverse_harm_damage_t( player );
-    damage->stats    = stats;
     cooldown->hasted = false;
     target           = &player;
     may_crit         = false;
