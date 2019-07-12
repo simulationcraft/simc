@@ -4083,7 +4083,7 @@ struct razor_coral_constructor_t : public item_targetdata_initializer_t
     const special_effect_t* effect = find_effect( td->source );
     if ( !effect )
     {
-      td->debuff.razor_coral = make_buff( *td, "razor_coral" );
+      td->debuff.razor_coral = make_buff( *td, "razor_coral_debuff" );
       return;
     }
     assert( !td->debuff.razor_coral );
