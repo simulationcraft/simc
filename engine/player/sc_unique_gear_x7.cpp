@@ -3793,6 +3793,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     {
       if ( action_list && action_list->name_str == "precombat" )  // precombat hack
       {
+        proc_t::execute();
         buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, max_dur );
         return;
       }
