@@ -3639,8 +3639,8 @@ void sim_t::create_options()
         bfa_opts.aquipotent_nautilus_catch_chance, 0.0, 1.0 ) );
   add_option( opt_float( "bfa.zaquls_portal_key_move_chance",
         bfa_opts.zaquls_portal_key_move_chance, 0.0, 1.0 ) );
-  add_option( opt_timespan( "bfa.anuazshara_unleash_timer",
-        bfa_opts.anuazshara_unleash_timer, 10_s, timespan_t::max() ) );
+  add_option( opt_timespan( "bfa.anuazshara_unleash_time",
+        bfa_opts.anuazshara_unleash_time, 1_s, timespan_t::max() ) );
   add_option( opt_bool( "bfa.nazjatar",
         bfa_opts.nazjatar ) );
   add_option( opt_bool( "bfa.shiver_venom",
