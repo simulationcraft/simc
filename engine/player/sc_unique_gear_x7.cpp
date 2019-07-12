@@ -3868,11 +3868,12 @@ void items::arcane_tempest( special_effect_t& effect )
       buff_t( e.player, "arcane_tempest", e.trigger(), e.item )
     {
       set_refresh_behavior( buff_refresh_behavior::DISABLED );
+      set_tick_on_application( true );
       set_tick_time_callback( []( const buff_t* b, unsigned /* current_tick */ ) {
         timespan_t amplitude = b->data().effectN( 1 ).period();
 
         // TODO: What's the speedup multiplier?
-        return amplitude * ( 1.0 / ( 1.0 + ( b->current_stack - 1 ) * 0.1 ) );
+        return amplitude * ( 1.0 / ( 1.0 + ( b->current_stack - 1 ) * 0.5 ) );
       } );
     }
 
