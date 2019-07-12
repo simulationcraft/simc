@@ -10,21 +10,19 @@ namespace { // UNNAMED NAMESPACE
 struct recharge_event_t : event_t
 {
   cooldown_t* cooldown_;
-  timespan_t duration_, event_duration_;
+  timespan_t duration_;
 
   recharge_event_t( cooldown_t* cd, timespan_t base_duration )
     : event_t( cd->sim, cooldown_t::cooldown_duration( cd, base_duration ) ),
       cooldown_( cd ),
-      duration_( base_duration ),
-      event_duration_( cooldown_t::cooldown_duration( cd, base_duration ) )
+      duration_( base_duration )
   { }
 
   recharge_event_t( cooldown_t* cd, timespan_t event_duration,
                     timespan_t base_duration )
     : event_t( cd->sim, event_duration ),
       cooldown_( cd ),
-      duration_( base_duration ),
-      event_duration_( event_duration )
+      duration_( base_duration )
   { }
 
   const char* name() const override
@@ -476,7 +474,7 @@ expr_t* cooldown_t::create_expression( const std::string& name_str )
         if ( recharge_event )
         {
           recharge_event_t* re = debug_cast<recharge_event_t*>( recharge_event );
-          charges += 1 - ( re -> remains() / re -> event_duration_ );
+          charges += 1 - ( re -> remains() / cooldown_duration( this, re -> duration_ ) );
         }
         return charges;
       }
