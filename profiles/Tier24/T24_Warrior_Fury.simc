@@ -36,7 +36,7 @@ actions=auto_attack
 actions+=/charge
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/run_action_list,name=movement,if=movement.distance>5
-actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
+actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
 actions+=/potion
 actions+=/furious_slash,if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))
 actions+=/rampage,if=cooldown.recklessness.remains<3
@@ -49,10 +49,9 @@ actions+=/concentrated_flame,if=!buff.recklessness.up&!buff.siegebreaker.up&dot.
 actions+=/the_unbound_force,if=buff.reckless_force.up
 actions+=/guardian_of_azeroth,if=!buff.recklessness.up
 actions+=/memory_of_lucid_dreams,if=!buff.recklessness.up
-actions+=/recklessness,if=!essence.condensed_lifeforce.major|cooldown.guardian_of_azeroth.remains>20|buff.guardian_of_azeroth.up
+actions+=/recklessness,if=!essence.condensed_lifeforce.major&!essence.blood_of_the_enemy.major|cooldown.guardian_of_azeroth.remains>20|buff.guardian_of_azeroth.up|cooldown.blood_of_the_enemy.remains<gcd
 actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up
-actions+=/use_item,name=ashvanes_razor_coral,if=!debuff.razor_coral_debuff.up|prev_gcd.1.memory_of_lucid_dreams|(prev_gcd.1.recklessness&!essence.memory_of_lucid_dreams.major)
-actions+=/use_item,name=ashvanes_razor_coral
+actions+=/use_item,name=ashvanes_razor_coral,if=!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|prev_gcd.2.recklessness&(buff.guardian_of_azeroth.up|!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major))
 actions+=/blood_fury
 actions+=/berserking
 actions+=/lights_judgment,if=buff.recklessness.down
