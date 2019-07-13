@@ -3623,11 +3623,13 @@ void items::leviathans_lure( special_effect_t& effect )
 /**Aquipotent Nautilus
  * driver id=306146
  * driver->trigger id=302550 does not contain typical projectile or damage related info.
- * has 12s duration of unknown function. possibly time limit to 'catch' returning wave? 
+ * has 12s duration of unknown function. possibly time limit to 'catch' returning wave?
  * frontal wave applies dot id=302580, tick damage value in id=302579->effect#1
  * id=302579->effect#2 contains cd reduction (in seconds) for catching the returning wave.
  *
- * TODO: determine speed of outgoing & incoming wave (if any) and find out if id=302550 12s duration has any meaning
+ * TODO: In-game testing suggests the dot follows old tick_zero behavior, i.e. a target in between the main target can
+ * be hit by the outgoing wave and then hit again by the returning wave, and both the outgoing and returnig wave will
+ * deal tick zero damage. Add a way to model this behavior if it becomes relevant.
  */
 void items::aquipotent_nautilus( special_effect_t& effect )
 {
@@ -3643,7 +3645,7 @@ void items::aquipotent_nautilus( special_effect_t& effect )
       aoe     = -1;
       base_td = e.player->find_spell( 302579 )->effectN( 1 ).average( e.item );
 
-      // TODO: replace this HARDCODED travel speed with actual speed
+      // In-game testing suggests 10yd/s speed
       travel_speed = 10.0;
     }
 
@@ -3651,15 +3653,17 @@ void items::aquipotent_nautilus( special_effect_t& effect )
     {
       proc_t::impact( s );
 
-      // TODO: replace this HARDCODED event with actual travel time of returning wave
-      make_event( player->sim, time_to_travel, [this] {
-        if ( rng().real() < sim->bfa_opts.aquipotent_nautilus_catch_chance )
-        {
-          sim->print_debug( "surging_flood return wave caught, adjusting cooldown from {} to {}", cd->remains(),
-            cd->remains() + reduction );
-          cd->adjust( reduction );
-        }
-      } );
+      if ( s->chain_target == 0 )
+      {
+        make_event( player->sim, time_to_travel, [this] {
+          if ( rng().real() < sim->bfa_opts.aquipotent_nautilus_catch_chance )
+          {
+            sim->print_debug( "surging_flood return wave caught, adjusting cooldown from {} to {}", cd->remains(),
+              cd->remains() + reduction );
+            cd->adjust( reduction );
+          }
+        } );
+      }
     }
   };
 
