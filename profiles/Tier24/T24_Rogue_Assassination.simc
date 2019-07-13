@@ -120,7 +120,7 @@ actions.essences+=/purifying_blast,if=spell_targets.fan_of_knives>=2|raid_event.
 actions.essences+=/the_unbound_force
 actions.essences+=/ripple_in_space
 actions.essences+=/worldvein_resonance,if=buff.lifeblood.stack<3
-actions.essences+=/memory_of_lucid_dreams,if=energy<50
+actions.essences+=/memory_of_lucid_dreams,if=energy<50&!cooldown.vendetta.up
 
 # Stealthed Actions
 # Nighstalker, or Subt+Exsg on 1T: Snapshot Rupture
