@@ -1260,7 +1260,7 @@ struct deadeye_spyglass_constructor_t : public item_targetdata_initializer_t
     const special_effect_t* effect = find_effect( td -> source );
     if ( !effect )
     {
-      td -> debuff.dead_ahead = make_buff( *td, "dead_ahead" );
+      td -> debuff.dead_ahead = make_buff( *td, "dead_ahead_debuff" );
       return;
     }
 
@@ -1628,7 +1628,7 @@ struct briny_barnacle_constructor_t : public item_targetdata_initializer_t
     const special_effect_t* effect = find_effect( td -> source );
     if ( !effect )
     {
-      td -> debuff.choking_brine = make_buff( *td, "choking_brine" );
+      td -> debuff.choking_brine = make_buff( *td, "choking_brine_debuff" );
       return;
     }
     assert( !td -> debuff.choking_brine );
@@ -2076,7 +2076,7 @@ struct syringe_of_bloodborne_infirmity_constructor_t : public item_targetdata_in
     const special_effect_t* effect = find_effect( td -> source );
     if ( !effect )
     {
-      td -> debuff.wasting_infection = make_buff( *td, "wasting_infection" );
+      td -> debuff.wasting_infection = make_buff( *td, "wasting_infection_debuff" );
       return;
     }
     assert( !td -> debuff.wasting_infection );
@@ -2680,7 +2680,7 @@ struct everchill_anchor_constructor_t : public item_targetdata_initializer_t
     const special_effect_t* effect = find_effect( td -> source );
     if ( !effect )
     {
-      td -> debuff.everchill = make_buff( *td, "everchill" );
+      td -> debuff.everchill = make_buff( *td, "everchill_debuff" );
       return;
     }
     assert( !td -> debuff.everchill );
@@ -3544,7 +3544,7 @@ struct luminous_algae_constructor_t : public item_targetdata_initializer_t
     const special_effect_t* effect = find_effect( td->source );
     if ( !effect )
     {
-      td->debuff.luminous_algae = make_buff( *td, "luminous_algae" );
+      td->debuff.luminous_algae = make_buff( *td, "luminous_algae_debuff" );
       return;
     }
     assert( !td->debuff.luminous_algae );
@@ -4216,7 +4216,7 @@ struct conductive_ink_constructor_t : public item_targetdata_initializer_t
     const special_effect_t* effect = find_effect( td->source );
     if ( !effect )
     {
-      td->debuff.conductive_ink = make_buff( *td, "conductive_ink" );
+      td->debuff.conductive_ink = make_buff( *td, "conductive_ink_debuff" );
       return;
     }
     assert( !td->debuff.conductive_ink );
