@@ -5452,8 +5452,11 @@ void hunter_t::apl_mm()
   default_list -> add_action( "auto_shot" );
   
   default_list -> add_action( special_use_item_action( "lurkers_insidious_gift", "if=cooldown.trueshot.remains_guess<15|target.time_to_die<30" ) );
+  default_list -> add_action( special_use_item_action( "azsharas_font_of_power", "if=cooldown.trueshot.remains_guess<15|target.time_to_die<30" ) );
   default_list -> add_action( special_use_item_action( "lustrous_golden_plumage", "if=cooldown.trueshot.remains_guess<5|target.time_to_die<20" ) );
   default_list -> add_action( special_use_item_action( "galecallers_boon", "if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<10" ) );
+  default_list -> add_action( special_use_item_action( "pocketsized_computation_device", "if=!buff.trueshot.up|target.time_to_die<5" ) );
+  default_list -> add_action( special_use_item_action( "ashvanes_razor_coral", "if=buff.trueshot.up&ca_execute|debuff.razor_coral_debuff.down|target.time_to_die<20" ) );
 
   default_list -> add_action( "use_items,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<20",
 	  "Try to line up activated trinkets with Trueshot" );
@@ -5470,10 +5473,10 @@ void hunter_t::apl_mm()
   cds -> add_action( "fireblood,if=buff.trueshot.up&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9" );
   cds -> add_action( "lights_judgment" );
 
-  cds -> add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
-  cds -> add_action( "guardian_of_azeroth,if=cooldown.trueshot.remains<15" );
+  cds -> add_action( "worldvein_resonance,if=buff.lifeblood.stack<4&!buff.trueshot.up" );
+  cds -> add_action( "guardian_of_azeroth,if=(ca_execute|target.time_to_die>210)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<30" );
   cds -> add_action( "ripple_in_space,if=cooldown.trueshot.remains<7" );
-  cds -> add_action( "memory_of_lucid_dreams" );
+  cds -> add_action( "memory_of_lucid_dreams,if=!buff.trueshot.up" );
 
   cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|target.time_to_die<25" );
   cds -> add_action( this, "Trueshot", "if=focus>60&(buff.precise_shots.down&cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15" );
@@ -5483,14 +5486,14 @@ void hunter_t::apl_mm()
   st -> add_talent( this, "A Murder of Crows" );
   st -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
   st -> add_action( this, "Rapid Fire", "if=buff.trueshot.down|focus<70");
+  st -> add_action( "blood_of_the_enemy", "if=buff.trueshot.up&(buff.unerring_vision.stack>4|!azerite.unerring_vision.enabled)|target.time_to_die<11" );
+  st -> add_action( "focused_azerite_beam","if=!buff.trueshot.up" );
   st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.master_marksman.up&!buff.memory_of_lucid_dreams.up");
-  st -> add_action( this, "Aimed Shot", "if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time" );
+  st -> add_action( this, "Aimed Shot", "if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time&cooldown.trueshot.remains" );
   st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.master_marksman.up&buff.memory_of_lucid_dreams.up" );
   st -> add_talent( this, "Piercing Shot" );
-  st -> add_action( "focused_azerite_beam" );
-  st -> add_action( "purifying_blast" );
-  st -> add_action( "concentrated_flame" );
-  st -> add_action( "blood_of_the_enemy" );
+  st -> add_action( "purifying_blast", "if=!buff.trueshot.up" );
+  st -> add_action( "concentrated_flame", "if=!buff.trueshot.up" );
   st -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   st -> add_action( this, "Arcane Shot", "if=buff.trueshot.down&(buff.precise_shots.up&(focus>41|buff.master_marksman.up)|(focus>50&azerite.focused_fire.enabled|focus>75)&(cooldown.trueshot.remains>5|focus>80)|target.time_to_die<5)" );
   st -> add_action( this, "Steady Shot" );
