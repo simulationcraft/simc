@@ -3501,13 +3501,24 @@ void items::shiver_venom_relic_onuse( special_effect_t& effect )
 
 void items::shiver_venom_relic_equip( special_effect_t& effect )
 {
-  auto action = create_proc_action<proc_spell_t>( "shiver_venom", effect );
+  struct shiver_venom_t : proc_t
+  {
+    action_t* onuse;
 
-  auto onuse = effect.player->find_action( "venomous_shivers" );
-  if ( onuse )
-    action->add_child( onuse );
+    shiver_venom_t( const special_effect_t& e ) :
+      proc_t( e, "shiver_venom", e.trigger() ), onuse( e.player->find_action( "venomous_shivers" ) )
+    {
+      if ( onuse )
+        add_child( onuse );
+    }
 
-  effect.execute_action = action;
+    timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t t ) const override
+    {
+      return t;  // dot doesn't pandemic
+    }
+  };
+
+  effect.execute_action = create_proc_action<shiver_venom_t>( "shiver_venom", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
