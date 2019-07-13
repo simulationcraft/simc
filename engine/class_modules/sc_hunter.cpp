@@ -5229,7 +5229,7 @@ void hunter_t::init_assessors()
 
 std::string hunter_t::default_potion() const
 {
-  return ( true_level >  110 ) ? "battle_potion_of_agility" :
+  return ( true_level >  110 ) ? "unbridled_fury" :
          ( true_level >= 100 ) ? "prolonged_power" :
          ( true_level >= 90  ) ? "draenic_agility" :
          ( true_level >= 85  ) ? "virmens_bite":
@@ -5240,7 +5240,7 @@ std::string hunter_t::default_potion() const
 
 std::string hunter_t::default_flask() const
 {
-  return ( true_level >  110 ) ? "currents" :
+  return ( true_level >  110 ) ? "greater_flask_of_the_currents" :
          ( true_level >  100 ) ? "seventh_demon" :
          ( true_level >= 90  ) ? "greater_draenic_agility_flask" :
          ( true_level >= 85  ) ? "spring_blossoms" :
@@ -5252,7 +5252,7 @@ std::string hunter_t::default_flask() const
 
 std::string hunter_t::default_food() const
 {
-  return ( true_level >  110 ) ? "bountiful_captains_feast" :
+  return ( true_level >  110 ) ? "famine_evaluator_and_snack_table" :
          ( true_level >  100 ) ? "lavish_suramar_feast" :
          ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
          ( true_level >= 80  ) ? "seafood_magnifique_feast" :
