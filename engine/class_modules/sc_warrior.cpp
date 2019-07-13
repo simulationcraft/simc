@@ -5145,7 +5145,7 @@ void warrior_t::apl_fury()
                             "This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list->add_action(
       this, "Heroic Leap",
-      "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
+      "if=(raid_event.movement.distance>25&raid_event.movement.in>45)" );
 
   if ( sim->allow_potions && true_level >= 80 )
   {
@@ -5167,8 +5167,8 @@ void warrior_t::apl_fury()
   default_list->add_action( "guardian_of_azeroth,if=!buff.recklessness.up" );
   default_list->add_action( "memory_of_lucid_dreams,if=!buff.recklessness.up" );
 
-  default_list->add_action( this, "Recklessness", "if=!essence.condensed_lifeforce.major|cooldown.guardian_of_azeroth.remains>20"
-                            "|buff.guardian_of_azeroth.up" );
+  default_list->add_action( this, "Recklessness", "if=!essence.condensed_lifeforce.major&!essence.blood_of_the_enemy.major|"
+                            "cooldown.guardian_of_azeroth.remains>20|buff.guardian_of_azeroth.up|cooldown.blood_of_the_enemy.remains<gcd" );
   default_list->add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.meat_cleaver.up" );
 
   for ( size_t i = 0; i < items.size(); i++ )
@@ -5176,20 +5176,21 @@ void warrior_t::apl_fury()
     if ( items[ i ].name_str == "ashvanes_razor_coral" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
-                                ",if=!debuff.razor_coral_debuff.up|prev_gcd.1.memory_of_lucid_dreams|"
-                                "(prev_gcd.1.recklessness&!essence.memory_of_lucid_dreams.major)" );
+                                ",if=!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|"
+                                "(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|prev_gcd.2.recklessness&"
+                                "(buff.guardian_of_azeroth.up|!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major))" );
     }
-    if ( items[ i ].name_str == "azsharas_font_of_power" )
+    else if ( items[ i ].name_str == "azsharas_font_of_power" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
                                 ",if=!buff.recklessness.up&!buff.memory_of_lucid_dreams.up" );
     }
-    if ( items[ i ].name_str == "grongs_primal_rage" )
+    else if ( items[ i ].name_str == "grongs_primal_rage" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
                                 ",if=equipped.grongs_primal_rage&buff.enrage.up&!buff.recklessness.up" );
     }
-    if ( items[ i ].name_str == "pocketsized_computation_device" )
+    else if ( items[ i ].name_str == "pocketsized_computation_device" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
                                 ",if=!buff.recklessness.up&!debuff.siegebreaker.up" );
@@ -5284,20 +5285,21 @@ void warrior_t::apl_arms()
     if ( items[ i ].name_str == "ashvanes_razor_coral" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
-                                ",if=!debuff.razor_coral_debuff.up|prev_gcd.1.memory_of_lucid_dreams|"
-                                "(prev_gcd.1.colossus_smash&!essence.memory_of_lucid_dreams.major)" );
+                                ",if=!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|"
+                                "(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|(prev_gcd.1.colossus_smash&"
+                                "!essence.memory_of_lucid_dreams.major))" );
     }
-    if ( items[ i ].name_str == "azsharas_font_of_power" )
+    else if ( items[ i ].name_str == "azsharas_font_of_power" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
                                 ",if=!debuff.colossus_smash.up&!buff.test_of_might.up&!buff.memory_of_lucid_dreams.up" );
     }
-    if ( items[ i ].name_str == "grongs_primal_rage" )
+    else if ( items[ i ].name_str == "grongs_primal_rage" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
                                 ",if=equipped.grongs_primal_rage&!debuff.colossus_smash.up&!buff.test_of_might.up" );
     }
-    if ( items[ i ].name_str == "pocketsized_computation_device" )
+    else if ( items[ i ].name_str == "pocketsized_computation_device" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
                                 ",if=!debuff.colossus_smash.up&!buff.test_of_might.up&!buff.memory_of_lucid_dreams.up" );
