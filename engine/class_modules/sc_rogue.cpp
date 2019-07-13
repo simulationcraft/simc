@@ -5764,7 +5764,7 @@ void rogue_t::init_action_list()
     essences->add_action( "the_unbound_force" );
     essences->add_action( "ripple_in_space" );
     essences->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
-    essences->add_action( "memory_of_lucid_dreams,if=energy<50" );
+    essences->add_action( "memory_of_lucid_dreams,if=energy<50&!cooldown.vendetta.up" );
 
     // Stealth
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
