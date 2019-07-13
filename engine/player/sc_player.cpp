@@ -4360,6 +4360,8 @@ void player_t::combat_begin()
           action->execute();
         }
       }
+      if ( in_combat && ( action->channeled || action->travel_time() == timespan_t::zero() ) )
+        break;
     }
   }
   first_cast = false;
