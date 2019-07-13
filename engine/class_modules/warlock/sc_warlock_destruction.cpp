@@ -831,7 +831,8 @@ namespace warlock {
         infernal_awakening = new infernal_awakening_t(p);
         infernal_awakening->stats = stats;
         radius = infernal_awakening->radius;
-        cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
+        if ( p->azerite.crashing_chaos.ok() )
+          cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
         cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
       }
 
