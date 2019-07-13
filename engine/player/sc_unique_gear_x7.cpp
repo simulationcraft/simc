@@ -3243,8 +3243,7 @@ void items::exploding_pufferfish( special_effect_t& effect )
     }
   };
 
-  effect.trigger_spell_id = 305315;
-  effect.execute_action = create_proc_action<proc_spell_t>( "exploding_pufferfish", effect );
+  effect.execute_action = create_proc_action<aoe_proc_t>( "exploding_pufferfish", effect, "exploding_pufferfish", 305315, true );
   effect.execute_action->aoe = -1;
   effect.execute_action->base_dd_min = effect.execute_action->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
 
