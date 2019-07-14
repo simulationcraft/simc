@@ -1002,7 +1002,10 @@ void paladin_t::vision_of_perfection_proc()
   if ( vision_multiplier <= 0 )
     return;
 
-  buff_t* main_buff = talents.crusade -> ok() ? as<buff_t*>( buffs.crusade ) : as<buff_t*>( buffs.avenging_wrath );
+  buff_t* main_buff = buffs.avenging_wrath;
+  if ( talents.crusade -> ok() )
+    main_buff =  buffs.crusade;
+
   buff_t* autocrit_buff = talents.crusade -> ok() ? nullptr : buffs.avenging_wrath_autocrit;
 
   // Light's Decree's duration increase to AW doesn't affect the VoP proc
