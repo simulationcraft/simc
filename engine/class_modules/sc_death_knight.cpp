@@ -6360,24 +6360,21 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       }
 
       // Memory of Lucid Dreams minor
-      // TODO: will have to be adapted if blizzard decides
-      // to change the refund value from 50% to something else
       if ( lucid_dreams_minor_refund > 0 && rng().roll( options.lucid_dreams_minor_proc_chance ) )
       {
         double to_refund = lucid_dreams_minor_refund * actual_amount
                          + lucid_dreams_minor_partial_rune;
         int runes_refunded = 0;
         // Compute how many full runes the player gets back
-        while ( to_refund >= 1 )
-        {
-          runes_refunded++;
-          to_refund--;
-        }
+
+        runes_refunded = as<int>( floor( to_refund ) );
+        to_refund -= runes_refunded;
 
         // Store the left-over rune for the next proc
         lucid_dreams_minor_partial_rune = to_refund;
 
-        replenish_rune( runes_refunded, gains.memory_of_lucid_dreams );
+        if ( runes_refunded > 0 )
+          replenish_rune( runes_refunded, gains.memory_of_lucid_dreams );
 
         player_t::buffs.lucid_dreams -> trigger();
       }

@@ -737,7 +737,7 @@ std::string warlock_t::default_potion() const
   std::string lvl120_potion = 
     ( specialization() == WARLOCK_DESTRUCTION ) ? "unbridled_fury" :
     ( specialization() == WARLOCK_DEMONOLOGY ) ?  "unbridled_fury" :
-    ( specialization() == WARLOCK_AFFLICTION ) ?  "focused_resolve" :
+    ( specialization() == WARLOCK_AFFLICTION ) ?  "unbridled_fury" :
                                                   "unbridled_fury";
 
   std::string lvl110_potion = "prolonged_power";

@@ -25,10 +25,8 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   procs( procs_t() ),
   spells( spells_t() ),
   talents( talents_t() ),
+  options( options_t() ),
   beacon_target( nullptr ),
-  fake_sov( true ),
-  indomitable_justice_pct( 0 ),
-  proc_chance_ret_memory_of_lucid_dreams( 0.15 ),
   lucid_dreams_accumulator( 0.0 )
 {
   active_consecration = nullptr;
@@ -163,6 +161,12 @@ struct avenging_wrath_t : public paladin_spell_t
       p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.avenging_wrath -> buff_duration );
 
     p() -> buffs.avenging_wrath_autocrit -> trigger();
+  }
+
+  bool ready() override
+  {
+    // Avenging Wrath can not be used if the buff is already active (eg. with Vision of Perfection)
+    return p() -> buffs.avenging_wrath -> check() ? false : paladin_spell_t::ready();
   }
 };
 
@@ -669,14 +673,14 @@ judgment_t::judgment_t( paladin_t* p, const std::string& options_str ) :
   if ( p -> azerite.indomitable_justice.enabled() )
   {
     // If using the default setting, set to 80% hp for protection, 100% hp for other specs
-    if ( p -> indomitable_justice_pct == 0 )
+    if ( p -> options.indomitable_justice_pct == 0 )
     {
       indomitable_justice_pct = p -> specialization() == PALADIN_PROTECTION ? 80 : 100;
     }
     // Else, clamp the value between -1 ("real" usage) and 100
     else
     {
-      indomitable_justice_pct = clamp<int>( p -> indomitable_justice_pct, -1, 100 );
+      indomitable_justice_pct = clamp<int>( p -> options.indomitable_justice_pct, -1, 100 );
     }
   }
 }
@@ -956,11 +960,10 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
     return;
 
   if ( specialization() == PALADIN_RETRIBUTION ) {
-    // TODO(mserrano): make this into an option
-    if ( ! rng().roll( proc_chance_ret_memory_of_lucid_dreams ) )
+    if ( ! rng().roll( options.proc_chance_ret_memory_of_lucid_dreams ) )
       return;
 
-    double total_gain = lucid_dreams_accumulator + cost * spells.memory_of_lucid_dreams_base -> effectN( 1 ).percent();
+    double total_gain = lucid_dreams_accumulator + cost * lucid_dreams_minor_refund_coeff;
 
     // mserrano note: apparently when you get a proc on a 1-holy-power spender, if it did proc,
     // you always get 1 holy power instead of alternating between 0 and 1. This is based on
@@ -974,15 +977,23 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
     lucid_dreams_accumulator = total_gain - real_gain;
 
     resource_gain( RESOURCE_HOLY_POWER, real_gain, gains.hp_memory_of_lucid_dreams );
-  } else {
-    // TODO: implement holy/prot
-    return;
+  }
+
+  else if ( specialization() == PALADIN_PROTECTION )
+  {
+    if ( ! rng().roll( options.proc_chance_prot_memory_of_lucid_dreams ) )
+      return;
+
+    cooldowns.shield_of_the_righteous -> adjust( -1.0 * cooldown_t::cooldown_duration( cooldowns.shield_of_the_righteous ) * lucid_dreams_minor_refund_coeff );
+
+    procs.prot_lucid_dreams -> occur();
   }
 
   if ( azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
     player_t::buffs.lucid_dreams -> trigger();
 }
 
+// TODO?: holy specifics
 void paladin_t::vision_of_perfection_proc()
 {
   auto vision = azerite_essence.vision_of_perfection;
@@ -991,42 +1002,36 @@ void paladin_t::vision_of_perfection_proc()
   if ( vision_multiplier <= 0 )
     return;
 
-  // TODO: other 2 specs
-  if ( specialization() == PALADIN_RETRIBUTION )
+  buff_t* main_buff = buffs.avenging_wrath;
+  if ( talents.crusade -> ok() )
+    main_buff =  buffs.crusade;
+
+  buff_t* autocrit_buff = talents.crusade -> ok() ? nullptr : buffs.avenging_wrath_autocrit;
+
+  // Light's Decree's duration increase to AW doesn't affect the VoP proc
+  // We use the duration from spelldata rather than buff -> buff_duration
+  timespan_t trigger_duration = vision_multiplier * main_buff -> data().duration();
+
+  if ( main_buff -> check() )
   {
-    buff_t* primary = buffs.avenging_wrath;
-    buff_t* secondary = nullptr;
-    buff_t* tertiary = buffs.avenging_wrath_autocrit;
+    main_buff -> extend_duration( this, trigger_duration );
 
-    if ( talents.crusade -> ok() )
-    {
-      primary = buffs.crusade;
-      tertiary = nullptr;
-    }
+    // Bug? the autocrit buff isn't triggered if AW is already active
+    if ( autocrit_buff && autocrit_buff -> check() )
+      autocrit_buff -> extend_duration( this, trigger_duration );
 
-    if ( azerite.avengers_might.ok() )
-      secondary = buffs.avengers_might;
+    if ( azerite.avengers_might.enabled() )
+      buffs.avengers_might -> extend_duration( this, trigger_duration );
+  }
+  else
+  {
+    main_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
 
-    timespan_t primary_duration = vision_multiplier * primary -> data().duration();
-    timespan_t secondary_duration = secondary ? (vision_multiplier * secondary -> data().duration()) : 0_ms;
-    timespan_t tertiary_duration = tertiary ? (vision_multiplier * tertiary -> data().duration()) : 0_ms;
+    if ( autocrit_buff )
+      autocrit_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
 
-    if ( primary -> check() )
-    {
-      primary -> extend_duration( this, primary_duration );
-      if ( secondary )
-        secondary -> extend_duration( this, secondary_duration );
-      if ( tertiary && tertiary -> check() )
-        tertiary -> extend_duration( this, tertiary_duration );
-    }
-    else
-    {
-      primary -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, primary_duration );
-      if ( secondary )
-        secondary -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, secondary_duration );
-      if ( tertiary )
-        tertiary -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, tertiary_duration );
-    }
+    if ( azerite.avengers_might.enabled() )
+      buffs.avengers_might -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
   }
 }
 
@@ -1122,6 +1127,7 @@ void paladin_t::init_procs()
   procs.divine_purpose            = get_proc( "Divine Purpose"   );
   procs.fires_of_justice          = get_proc( "Fires of Justice" );
   procs.grand_crusader            = get_proc( "Grand Crusader"   );
+  procs.prot_lucid_dreams         = get_proc( "Lucid Dreams SotR");
 }
 
 // paladin_t::init_scaling ==================================================
@@ -1401,7 +1407,7 @@ void paladin_t::init_spells()
 
   // Essences
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  spells.memory_of_lucid_dreams_base = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  lucid_dreams_minor_refund_coeff = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR ) -> effectN( 1 ).percent();
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
 }
 
@@ -1862,9 +1868,10 @@ void paladin_t::assess_damage( school_e school,
 void paladin_t::create_options()
 {
   // TODO: figure out a better solution for this.
-  add_option( opt_bool( "paladin_fake_sov", fake_sov ) );
-  add_option( opt_int( "indomitable_justice_pct", indomitable_justice_pct ) );
-  add_option( opt_float( "proc_chance_ret_memory_of_lucid_dreams", proc_chance_ret_memory_of_lucid_dreams, 0.0, 1.0 ) );
+  add_option( opt_bool( "paladin_fake_sov", options.fake_sov ) );
+  add_option( opt_int( "indomitable_justice_pct", options.indomitable_justice_pct ) );
+  add_option( opt_float( "proc_chance_ret_memory_of_lucid_dreams", options.proc_chance_ret_memory_of_lucid_dreams, 0.0, 1.0 ) );
+  add_option( opt_float( "proc_chance_prot_memory_of_lucid_dreams", options.proc_chance_prot_memory_of_lucid_dreams, 0.0, 1.0 ) );
 
   player_t::create_options();
 }
@@ -1875,10 +1882,7 @@ void paladin_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  paladin_t* p = debug_cast<paladin_t*>( source );
-
-  fake_sov = p -> fake_sov;
-  indomitable_justice_pct = p -> indomitable_justice_pct;
+  options = debug_cast<paladin_t*>( source ) -> options;
 }
 
 // paladin_t::combat_begin ==================================================

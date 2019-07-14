@@ -3243,8 +3243,7 @@ void items::exploding_pufferfish( special_effect_t& effect )
     }
   };
 
-  effect.trigger_spell_id = 305315;
-  effect.execute_action = create_proc_action<proc_spell_t>( "exploding_pufferfish", effect );
+  effect.execute_action = create_proc_action<aoe_proc_t>( "exploding_pufferfish", effect, "exploding_pufferfish", 305315, true );
   effect.execute_action->aoe = -1;
   effect.execute_action->base_dd_min = effect.execute_action->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
 
@@ -3502,13 +3501,24 @@ void items::shiver_venom_relic_onuse( special_effect_t& effect )
 
 void items::shiver_venom_relic_equip( special_effect_t& effect )
 {
-  auto action = create_proc_action<proc_spell_t>( "shiver_venom", effect );
+  struct shiver_venom_t : proc_t
+  {
+    action_t* onuse;
 
-  auto onuse = effect.player->find_action( "venomous_shivers" );
-  if ( onuse )
-    action->add_child( onuse );
+    shiver_venom_t( const special_effect_t& e ) :
+      proc_t( e, "shiver_venom", e.trigger() ), onuse( e.player->find_action( "venomous_shivers" ) )
+    {
+      if ( onuse )
+        add_child( onuse );
+    }
 
-  effect.execute_action = action;
+    timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t t ) const override
+    {
+      return t;  // dot doesn't pandemic
+    }
+  };
+
+  effect.execute_action = create_proc_action<shiver_venom_t>( "shiver_venom", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -3623,11 +3633,13 @@ void items::leviathans_lure( special_effect_t& effect )
 /**Aquipotent Nautilus
  * driver id=306146
  * driver->trigger id=302550 does not contain typical projectile or damage related info.
- * has 12s duration of unknown function. possibly time limit to 'catch' returning wave? 
+ * has 12s duration of unknown function. possibly time limit to 'catch' returning wave?
  * frontal wave applies dot id=302580, tick damage value in id=302579->effect#1
  * id=302579->effect#2 contains cd reduction (in seconds) for catching the returning wave.
  *
- * TODO: determine speed of outgoing & incoming wave (if any) and find out if id=302550 12s duration has any meaning
+ * TODO: In-game testing suggests the dot follows old tick_zero behavior, i.e. a target in between the main target can
+ * be hit by the outgoing wave and then hit again by the returning wave, and both the outgoing and returnig wave will
+ * deal tick zero damage. Add a way to model this behavior if it becomes relevant.
  */
 void items::aquipotent_nautilus( special_effect_t& effect )
 {
@@ -3643,7 +3655,7 @@ void items::aquipotent_nautilus( special_effect_t& effect )
       aoe     = -1;
       base_td = e.player->find_spell( 302579 )->effectN( 1 ).average( e.item );
 
-      // TODO: replace this HARDCODED travel speed with actual speed
+      // In-game testing suggests 10yd/s speed
       travel_speed = 10.0;
     }
 
@@ -3651,15 +3663,17 @@ void items::aquipotent_nautilus( special_effect_t& effect )
     {
       proc_t::impact( s );
 
-      // TODO: replace this HARDCODED event with actual travel time of returning wave
-      make_event( player->sim, time_to_travel, [this] {
-        if ( rng().real() < sim->bfa_opts.aquipotent_nautilus_catch_chance )
-        {
-          sim->print_debug( "surging_flood return wave caught, adjusting cooldown from {} to {}", cd->remains(),
-            cd->remains() + reduction );
-          cd->adjust( reduction );
-        }
-      } );
+      if ( s->chain_target == 0 )
+      {
+        make_event( player->sim, time_to_travel, [this] {
+          if ( rng().real() < sim->bfa_opts.aquipotent_nautilus_catch_chance )
+          {
+            sim->print_debug( "surging_flood return wave caught, adjusting cooldown from {} to {}", cd->remains(),
+              cd->remains() + reduction );
+            cd->adjust( reduction );
+          }
+        } );
+      }
     }
   };
 
@@ -3766,17 +3780,17 @@ void items::vision_of_demise( special_effect_t& effect )
  * driver id=296971, 4s duration channel, periodic triggers latent arcana (driver->trigger id=296962) every 1s
  * latent arcana id=296962, 6s fully extending duration stat buff.
  * unknown id=305190, maybe used to hold # of channel tics?
+ * 
+ * TODO: Implement getting 6s of buff upon immediately cancelling channel if such a use case arises
  */
 void items::azsharas_font_of_power( special_effect_t& effect )
 {
   struct latent_arcana_channel_t : public proc_t
   {
     buff_t* buff;
-    unsigned counter;
-    timespan_t duration;
 
     latent_arcana_channel_t( const special_effect_t& e, buff_t* b ) :
-      proc_t( e, "latent_arcana", e.driver() ), buff( b ), counter( 1 ), duration( e.trigger()->duration() )
+      proc_t( e, "latent_arcana", e.driver() ), buff( b )
     {
       channeled = true;
       harmful   = false;
@@ -3789,7 +3803,6 @@ void items::azsharas_font_of_power( special_effect_t& effect )
 
     void execute() override
     {
-      counter = 1;  // for 0tick
       proc_t::execute();
       event_t::cancel( player->readying );
 
@@ -3809,7 +3822,9 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     void tick( dot_t* d ) override
     {
       proc_t::tick( d );
-      counter++;
+
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
+        ( d->current_tick == 1 ? buff->buff_duration : base_tick_time ) + buff->buff_duration );
     }
 
     void last_tick( dot_t* d ) override
@@ -3821,8 +3836,6 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       {
         player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
       }
-
-      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, counter * duration );
     }
   };
 
@@ -3832,6 +3845,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     buff = make_buff<stat_buff_t>( effect.player, "latent_arcana", effect.trigger() )
       ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
         effect.trigger()->effectN( 1 ).average( effect.item ) );
+    buff->set_refresh_behavior( buff_refresh_behavior::EXTEND );
   }
 
   effect.execute_action = create_proc_action<latent_arcana_channel_t>( "latent_arcana_channel", effect, buff );

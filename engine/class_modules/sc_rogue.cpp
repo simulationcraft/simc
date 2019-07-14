@@ -5702,8 +5702,9 @@ void rogue_t::init_action_list()
   {
     def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)" );
     def -> add_action( "variable,name=single_target,value=spell_targets.fan_of_knives<2" );
+    def -> add_action( "use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&cooldown.vendetta.remains<10&!debuff.vendetta.up&!debuff.toxic_blade.up" );
     def -> add_action( "call_action_list,name=stealthed,if=stealthed.rogue" );
-    def -> add_action( "call_action_list,name=cds,if=!talent.master_assassin.enabled|dot.garrote.ticking" );
+    def -> add_action( "call_action_list,name=cds,if=(!talent.master_assassin.enabled|dot.garrote.ticking)&(!equipped.azsharas_font_of_power|!trinket.azsharas_font_of_power.cooldown.up)" );
     def -> add_action( "call_action_list,name=dot" );
     def -> add_action( "call_action_list,name=direct" );
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined" );
@@ -5721,7 +5722,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "variable,name=ss_vanish_condition,value=azerite.shrouded_suffocation.enabled&(non_ss_buffed_targets>=1|spell_targets.fan_of_knives=3)&(ss_buffed_targets_above_pandemic=0|spell_targets.fan_of_knives>=6)", "See full comment on https://github.com/Ravenholdt-TC/Rogue/wiki/Assassination-APL-Research." );
     cds -> add_action( "pool_resource,for_next=1,extra_amount=45" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(variable.ss_vanish_condition|!azerite.shrouded_suffocation.enabled&dot.garrote.refreshable)&combo_points.deficit>=((1+2*azerite.shrouded_suffocation.enabled)*spell_targets.fan_of_knives)>?4&raid_event.adds.in>12" );
-    cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(!essence.blood_of_the_enemy.major|buff.seething_rage.up)", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Blood essenz if available." );
+    cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up)", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Blood essenz if available." );
     cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
     cds -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable", "Exsanguinate when both Rupture and Garrote are up for long enough" );
     cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking" );
@@ -5736,12 +5737,14 @@ void rogue_t::init_action_list()
         if ( items[i].name_str == "galecallers_boon" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=cooldown.vendetta.remains>45" );
         else if ( items[i].name_str == "ashvanes_razor_coral" )
-          cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10|target.time_to_die<20" );
+          cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10|target.time_to_die<20+trinket.azsharas_font_of_power.cooldown.remains" );
         else if ( use_effect_id == 271107 || use_effect_id == 277179 || use_effect_id == 277185 || // Golden Luster, Gladiator's Medallion, Gladiator's Badge
                   items[i].name_str == "lurkers_insidious_gift" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.vendetta.up" );
         else if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.toxic_blade.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4" );
+        else if ( items[i].name_str == "azsharas_font_of_power" )
+          continue; // Handled in default list with static entry
         else // Default: Use on CD
           cds -> add_action( "use_item,name=" + items[i].name_str, "Default Trinket usage: Use on cooldown." );
       }
@@ -5764,7 +5767,7 @@ void rogue_t::init_action_list()
     essences->add_action( "the_unbound_force" );
     essences->add_action( "ripple_in_space" );
     essences->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
-    essences->add_action( "memory_of_lucid_dreams,if=energy<50" );
+    essences->add_action( "memory_of_lucid_dreams,if=energy<50&!cooldown.vendetta.up" );
 
     // Stealth
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
@@ -5993,6 +5996,7 @@ void rogue_t::init_action_list()
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
+    finish -> add_action( "pool_resource,for_next=1" );
     finish -> add_action( this, "Eviscerate", "if=buff.nights_vengeance.up", "Eviscerate has highest priority with Night's Vengeance up." );
     finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2", "Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
     finish -> add_action( this, "Nightblade", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(azerite.nights_vengeance.enabled|!azerite.replicating_shadows.enabled|spell_targets.shuriken_storm-active_dot.nightblade>=2)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Nightblade, refresh during pandemic. Multidot as long as 2+ targets do not have Nightblade up with Replicating Shadows (unless you have Night's Vengeance too)." );

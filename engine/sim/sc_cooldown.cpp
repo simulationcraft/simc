@@ -288,7 +288,7 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
       // Excess time adjustment goes to the next recharge event, if we didnt
       // max out on charges (recharge_event is still present after reset()
       // call)
-      if ( remains < 0_ms && recharge_event )
+      if ( recharge_event )
       {
         event_t::cancel( recharge_event );
         recharge_event = make_event<recharge_event_t>( sim, this, cd_duration + remains );

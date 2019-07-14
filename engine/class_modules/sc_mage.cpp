@@ -3772,17 +3772,15 @@ struct living_bomb_dot_t : public fire_mage_spell_t
     return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
-  void last_tick( dot_t* d ) override
+  void trigger_explosion( player_t* target )
   {
-    fire_mage_spell_t::last_tick( d );
-
-    p()->action.living_bomb_explosion->set_target( d->target );
+    p()->action.living_bomb_explosion->set_target( target );
 
     if ( primary )
     {
       for ( auto t : p()->action.living_bomb_explosion->target_list() )
       {
-        if ( t == d->target )
+        if ( t == target )
           continue;
 
         p()->action.living_bomb_dot_spread->set_target( t );
@@ -3791,6 +3789,20 @@ struct living_bomb_dot_t : public fire_mage_spell_t
     }
 
     p()->action.living_bomb_explosion->execute();
+  }
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    if ( get_dot( s->target )->is_ticking() )
+      trigger_explosion( s->target );
+
+    fire_mage_spell_t::trigger_dot( s );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    fire_mage_spell_t::last_tick( d );
+    trigger_explosion( d->target );
   }
 };
 
@@ -5798,17 +5810,19 @@ void mage_t::apl_fire()
   default_list->add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
   default_list->add_action( "variable,name=fire_blast_pooling,value=talent.rune_of_power.enabled&cooldown.rune_of_power.remains<cooldown.fire_blast.full_recharge_time&(cooldown.combustion.remains>variable.combustion_rop_cutoff|firestarter.active)&(cooldown.rune_of_power.remains<target.time_to_die|action.rune_of_power.charges>0)|cooldown.combustion.remains<action.fire_blast.full_recharge_time+cooldown.fire_blast.duration*azerite.blaster_master.enabled&!firestarter.active&cooldown.combustion.remains<target.time_to_die|talent.firestarter.enabled&firestarter.active&firestarter.remains<cooldown.fire_blast.full_recharge_time+cooldown.fire_blast.duration*azerite.blaster_master.enabled" );
   default_list->add_action( "variable,name=phoenix_pooling,value=talent.rune_of_power.enabled&cooldown.rune_of_power.remains<cooldown.phoenix_flames.full_recharge_time&cooldown.combustion.remains>variable.combustion_rop_cutoff&(cooldown.rune_of_power.remains<target.time_to_die|action.rune_of_power.charges>0)|cooldown.combustion.remains<action.phoenix_flames.full_recharge_time&cooldown.combustion.remains<target.time_to_die" );
-
   default_list->add_action( "call_action_list,name=standard_rotation" );
+
   active_talents->add_talent( this, "Living Bomb", "if=active_enemies>1&buff.combustion.down&(cooldown.combustion.remains>cooldown.living_bomb.duration|cooldown.combustion.ready)" );
   active_talents->add_talent( this, "Meteor", "if=buff.rune_of_power.up&(firestarter.remains>cooldown.meteor.duration|!firestarter.active)|cooldown.rune_of_power.remains>target.time_to_die&action.rune_of_power.charges<1|(cooldown.meteor.duration<cooldown.combustion.remains|cooldown.combustion.ready)&!talent.rune_of_power.enabled&(cooldown.meteor.duration<firestarter.remains|!talent.firestarter.enabled|!firestarter.active)" );
   active_talents->add_talent( this, "Dragon's Breath", "if=talent.alexstraszas_fury.enabled&(buff.combustion.down&!buff.hot_streak.react|buff.combustion.up&action.fire_blast.charges<action.fire_blast.max_charges&!buff.hot_streak.react)" );
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down", "Combustion phase prepares abilities with a delay, then launches into the Combustion sequence" );
-  combustion_phase->add_action( "call_action_list,name=bm_combustion_phase,if=azerite.blaster_master.enabled&talent.flame_on.enabled&!essence.memory_of_lucid_dreams.major" );
+  combustion_phase->add_action( "use_item,name=azsharas_font_of_power" );
+  combustion_phase->add_action( "use_item,name=hyperthread_wristwraps,if=buff.combustion.up&action.fire_blast.charges_fractional<1.2" );
   combustion_phase->add_action( "blood_of_the_enemy" );
-  combustion_phase->add_action( "memory_of_lucid_dreams" );
   combustion_phase->add_action( "guardian_of_azeroth" );
+  combustion_phase->add_action( "call_action_list,name=bm_combustion_phase,if=azerite.blaster_master.enabled&talent.flame_on.enabled&!essence.memory_of_lucid_dreams.major" );
+  combustion_phase->add_action( "memory_of_lucid_dreams" );
   combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,use_off_gcd=1,if=essence.memory_of_lucid_dreams.major&charges=max_charges&!buff.hot_streak.react&!(buff.heating_up.react&(buff.combustion.up&(action.fireball.in_flight|action.pyroblast.in_flight|action.scorch.executing)|target.health.pct<=30&action.scorch.executing))&!(!buff.heating_up.react&!buff.hot_streak.react&buff.combustion.down&(action.fireball.in_flight|action.pyroblast.in_flight))" );
   combustion_phase->add_talent( this, "Rune of Power", "if=buff.combustion.down" );
   combustion_phase->add_action( "call_action_list,name=active_talents,if=(azerite.blaster_master.enabled&buff.blaster_master.stack>=3)|!azerite.blaster_master.enabled" );

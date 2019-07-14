@@ -7886,7 +7886,7 @@ void druid_t::create_buffs()
   
   buff.wild_charge_movement  = make_buff( this, "wild_charge_movement" );
 
-  buff.cenarion_ward         = make_buff( this, "cenarion_ward", find_talent_spell( "Cenarion Ward" ) );
+  buff.cenarion_ward         = make_buff( this, "cenarion_ward", talent.cenarion_ward );
 
   buff.incarnation_cat       = new incarnation_cat_buff_t( *this );
 
@@ -8608,35 +8608,37 @@ void druid_t::apl_balance()
     default_list->add_action( "berserking,if=buff.ca_inc.up" );
 
   // CDs
-  default_list->add_action( "use_item,name=azsharas_font_of_power,if=equipped.169314"
-                              "&dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)", "CDs" );
-  default_list->add_action( "guardian_of_azeroth,if=(!talent.starlord.enabled|buff.starlord.up)"
-                              "&dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
+  default_list->add_action( "use_item,name=azsharas_font_of_power,if=equipped.169314&!buff.ca_inc.up,"
+                              "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)", "CDs" );
+  default_list->add_action( "guardian_of_azeroth,if=(!talent.starlord.enabled|buff.starlord.up)&!buff.ca_inc.up,"
+                              "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "use_item,name=tidestorm_codex,if=equipped.165576" );
-  default_list->add_action( "use_item,name=pocketsized_computation_device,if=equipped.167555"
-                              "&dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
-  default_list->add_action( "use_item,name=shiver_venom_relic,if=equipped.168905&cooldown.ca_inc.remains>30&!buff.ca_inc.up" );
+  default_list->add_action( "use_item,name=pocketsized_computation_device,if=equipped.167555&!buff.ca_inc.up,"
+                              "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
+  default_list->add_action( "use_item,name=shiver_venom_relic,if=equipped.168905&!buff.ca_inc.up&dot.shiver_venom.stack>=5" );
   default_list->add_action( "use_items,if=cooldown.ca_inc.remains>30" );
   default_list->add_action( "blood_of_the_enemy,if=cooldown.ca_inc.remains>30" );
-  default_list->add_action( "memory_of_lucid_dreams,if=dot.sunfire.remains>10&dot.moonfire.remains>10"
-                              "&(!talent.stellar_flare.enabled|dot.stellar_flare.remains>10)&!buff.ca_inc.up&(astral_power<25|cooldown.ca_inc.remains>30)" );
+  default_list->add_action( "memory_of_lucid_dreams,if=!buff.ca_inc.up&(astral_power<25|cooldown.ca_inc.remains>30),"
+                              "target_if=dot.sunfire.remains>10&dot.moonfire.remains>10&(!talent.stellar_flare.enabled|dot.stellar_flare.remains>10)" );
   default_list->add_action( "purifying_blast" );
   default_list->add_action( "ripple_in_space" );
   default_list->add_action( "concentrated_flame" );
-  default_list->add_action( "the_unbound_force,if=buff.reckless_force.up|time<5" );
+  default_list->add_action( "the_unbound_force,if=buff.reckless_force.up,"
+                              "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "worldvein_resonance" );
-  default_list->add_action( "focused_azerite_beam" );
+  default_list->add_action( "focused_azerite_beam,if=(!variable.az_ss|!buff.ca_inc.up),"
+                              "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "thorns" );
   default_list->add_talent( this, "Warrior of Elune", "" );
   default_list->add_action( this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)" );
   default_list->add_action( "incarnation,if=!buff.ca_inc.up"
-                              "&(buff.memory_of_lucid_dreams.up|((cooldown.memory_of_lucid_dreams.remains>20|!essence.memory_of_lucid_dreams.major)&ap_check&astral_power>=40))"
-                              "&(buff.memory_of_lucid_dreams.up|ap_check)"
-                              "&dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)" );
+                              "&(buff.memory_of_lucid_dreams.up|((cooldown.memory_of_lucid_dreams.remains>20|!essence.memory_of_lucid_dreams.major)&ap_check))"
+                              "&(buff.memory_of_lucid_dreams.up|ap_check),"
+                              "target_if=dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)" );
   default_list->add_action( this, "Celestial Alignment", "if=!buff.ca_inc.up"
-                              "&(buff.memory_of_lucid_dreams.up|((cooldown.memory_of_lucid_dreams.remains>20|!essence.memory_of_lucid_dreams.major)&ap_check&astral_power>=40))"
-                              "&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)"
-                              "&(dot.sunfire.remains>2&dot.moonfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare.enabled))" );
+                              "&(buff.memory_of_lucid_dreams.up|((cooldown.memory_of_lucid_dreams.remains>20|!essence.memory_of_lucid_dreams.major)&ap_check))"
+                              "&(!azerite.lively_spirit.enabled|buff.lively_spirit.up),"
+                              "target_if=(dot.sunfire.remains>2&dot.moonfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare.enabled))" );
   default_list->add_talent( this, "Fury of Elune", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&solar_wrath.ap_check" );
   default_list->add_talent( this, "Force of Nature", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&ap_check" );
   // Spenders
