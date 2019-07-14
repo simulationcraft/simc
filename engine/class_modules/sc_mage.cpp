@@ -5882,6 +5882,8 @@ void mage_t::apl_fire()
 
   bm_combustion_phase->add_action( "lights_judgment,if=buff.combustion.down" );
   bm_combustion_phase->add_talent( this, "Living Bomb", "if=buff.combustion.down&active_enemies>1" );
+  bm_combustion_phase->add_action( "blood_of_the_enemy" );
+  bm_combustion_phase->add_action( "guardian_of_azeroth" );
   bm_combustion_phase->add_talent( this, "Rune of Power", "if=buff.combustion.down" );
   bm_combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,if=buff.blaster_master.down&(talent.rune_of_power.enabled&action.rune_of_power.executing&action.rune_of_power.execute_remains<0.6|(cooldown.combustion.ready|buff.combustion.up)&!talent.rune_of_power.enabled&!action.pyroblast.in_flight&!action.fireball.in_flight)" );
   bm_combustion_phase->add_action( "call_action_list,name=active_talents" );
