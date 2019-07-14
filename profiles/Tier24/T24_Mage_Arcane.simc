@@ -4,11 +4,12 @@ spec=arcane
 level=120
 race=troll
 role=spell
-position=ranged_back
+position=back
 talents=2032021
+azerite_essences=14:3/4:3/32:3
 
 # Default consumables
-potion=focused_resolve
+potion=potion_of_focused_resolve
 flask=greater_flask_of_endless_fathoms
 food=mechdowels_big_mech
 augmentation=battle_scarred
@@ -111,29 +112,28 @@ actions.movement+=/arcane_missiles
 actions.movement+=/arcane_orb
 actions.movement+=/supernova
 
-head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=127/562/459/13
+head=incubators_bellcap,id=168339,bonus_id=4824/1517/4775,azerite_powers=127/575/31/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537/4775,azerite_powers=127/88/459/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=blooddrenched_robes,id=159241,bonus_id=1587/4819/4775,azerite_powers=127/562/30/13
-wrists=lever_stabilizing_wristwraps,id=165508,bonus_id=4800/1537
-hands=firecallers_handwraps,id=165764,bonus_id=4800/1537
-waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
-legs=leggings_of_dire_research,id=165499,bonus_id=4800/1537
-feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
-finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_versatility
-finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_versatility
-trinket1=balefire_branch,id=159630,bonus_id=1572/4780
-trinket2=incandescent_sliver,id=165571,bonus_id=4800/1537
-main_hand=phoenixfire_staff,id=165587,bonus_id=4800/1537,enchant=torrent_of_elements
+shoulders=fathomfeeders_mantle,id=168342,bonus_id=4824/1517/4775,azerite_powers=127/88/459/13
+back=cloak_of_ill_tidings,id=168391,bonus_id=4800/1517
+chest=blooddrenched_robes,id=159241,bonus_id=1617/5440/4775,azerite_powers=127/374/21/13
+wrists=waveblade_farseers_bindings,id=170306,bonus_id=1512
+hands=poens_deepsea_gloves,id=170333,bonus_id=1512
+waist=vims_scalecrusher_belt,id=170367,bonus_id=1512
+legs=seawrath_legwraps,id=168371,bonus_id=4800/1517
+feet=akanas_reefstrider_soles,id=170140,bonus_id=1512
+finger1=logic_loop_of_division,id=169157,bonus_id=4779/1472,enchant=accord_of_critical_strike
+finger2=overclocking_bit_band,id=169159,bonus_id=4779/1472,enchant=accord_of_critical_strike
+trinket1=balefire_branch,id=159630,bonus_id=1602/4780
+trinket2=leviathans_lure,id=169304,bonus_id=4800/1517
+main_hand=anuazshara_staff_of_the_eternal,id=168275,bonus_id=4800/1517,enchant=torrent_of_elements
 
 # Gear Summary
-# gear_ilvl=418.20
-# gear_stamina=10191
-# gear_intellect=7009
-# gear_crit_rating=1039
-# gear_haste_rating=893
-# gear_mastery_rating=961
-# gear_versatility_rating=795
-# gear_armor=1442
-# set_bonus=gift_of_the_loa_2pc=1
+# gear_ilvl=436.87
+# gear_stamina=12867
+# gear_intellect=8873
+# gear_crit_rating=1401
+# gear_haste_rating=1222
+# gear_mastery_rating=967
+# gear_versatility_rating=288
+# gear_armor=1715
