@@ -35,6 +35,7 @@ actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>1
 actions=stealth
 actions+=/variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)
 actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
+actions+=/use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&cooldown.vendetta.remains<10&!debuff.vendetta.up&!debuff.toxic_blade.up
 actions+=/call_action_list,name=stealthed,if=stealthed.rogue
 actions+=/call_action_list,name=cds,if=!talent.master_assassin.enabled|dot.garrote.ticking
 actions+=/call_action_list,name=dot
