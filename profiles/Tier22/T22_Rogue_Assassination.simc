@@ -37,7 +37,7 @@ actions+=/variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds
 actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
 actions+=/use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&cooldown.vendetta.remains<10&!debuff.vendetta.up&!debuff.toxic_blade.up
 actions+=/call_action_list,name=stealthed,if=stealthed.rogue
-actions+=/call_action_list,name=cds,if=!talent.master_assassin.enabled|dot.garrote.ticking
+actions+=/call_action_list,name=cds,if=(!talent.master_assassin.enabled|dot.garrote.ticking)&(!equipped.azsharas_font_of_power|!trinket.azsharas_font_of_power.cooldown.up)
 actions+=/call_action_list,name=dot
 actions+=/call_action_list,name=direct
 actions+=/arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
