@@ -36,8 +36,9 @@ actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>1
 actions=stealth
 actions+=/variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)
 actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
+actions+=/use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&cooldown.vendetta.remains<10&!debuff.vendetta.up&!debuff.toxic_blade.up
 actions+=/call_action_list,name=stealthed,if=stealthed.rogue
-actions+=/call_action_list,name=cds,if=!talent.master_assassin.enabled|dot.garrote.ticking
+actions+=/call_action_list,name=cds,if=(!talent.master_assassin.enabled|dot.garrote.ticking)&(!equipped.azsharas_font_of_power|!trinket.azsharas_font_of_power.cooldown.up)
 actions+=/call_action_list,name=dot
 actions+=/call_action_list,name=direct
 actions+=/arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
@@ -60,16 +61,14 @@ actions.cds+=/variable,name=ss_vanish_condition,value=azerite.shrouded_suffocati
 actions.cds+=/pool_resource,for_next=1,extra_amount=45
 actions.cds+=/vanish,if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(variable.ss_vanish_condition|!azerite.shrouded_suffocation.enabled&dot.garrote.refreshable)&combo_points.deficit>=((1+2*azerite.shrouded_suffocation.enabled)*spell_targets.fan_of_knives)>?4&raid_event.adds.in>12
 # Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Blood essenz if available.
-actions.cds+=/vanish,if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(!essence.blood_of_the_enemy.major|buff.seething_rage.up)
+actions.cds+=/vanish,if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up)
 # Shadowmeld for Shrouded Suffocation
 actions.cds+=/shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1
 # Exsanguinate when both Rupture and Garrote are up for long enough
 actions.cds+=/exsanguinate,if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable
 actions.cds+=/toxic_blade,if=dot.rupture.ticking
 actions.cds+=/potion,if=buff.bloodlust.react|debuff.vendetta.up
-# Default Trinket usage: Use on cooldown.
-actions.cds+=/use_item,name=azsharas_font_of_power
-actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10|target.time_to_die<20
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10|target.time_to_die<20+trinket.azsharas_font_of_power.cooldown.remains
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/fireblood,if=debuff.vendetta.up
