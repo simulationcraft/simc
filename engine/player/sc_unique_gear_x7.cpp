@@ -3780,17 +3780,17 @@ void items::vision_of_demise( special_effect_t& effect )
  * driver id=296971, 4s duration channel, periodic triggers latent arcana (driver->trigger id=296962) every 1s
  * latent arcana id=296962, 6s fully extending duration stat buff.
  * unknown id=305190, maybe used to hold # of channel tics?
+ * 
+ * TODO: Implement getting 6s of buff upon immediately cancelling channel if such a use case arises
  */
 void items::azsharas_font_of_power( special_effect_t& effect )
 {
   struct latent_arcana_channel_t : public proc_t
   {
     buff_t* buff;
-    unsigned counter;
-    timespan_t duration;
 
     latent_arcana_channel_t( const special_effect_t& e, buff_t* b ) :
-      proc_t( e, "latent_arcana", e.driver() ), buff( b ), counter( 1 ), duration( e.trigger()->duration() )
+      proc_t( e, "latent_arcana", e.driver() ), buff( b )
     {
       channeled = true;
       harmful   = false;
@@ -3803,7 +3803,6 @@ void items::azsharas_font_of_power( special_effect_t& effect )
 
     void execute() override
     {
-      counter = 1;  // for 0tick
       proc_t::execute();
       event_t::cancel( player->readying );
 
@@ -3823,7 +3822,9 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     void tick( dot_t* d ) override
     {
       proc_t::tick( d );
-      counter++;
+
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
+        ( d->current_tick == 1 ? buff->buff_duration : base_tick_time ) + buff->buff_duration );
     }
 
     void last_tick( dot_t* d ) override
@@ -3835,8 +3836,6 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       {
         player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
       }
-
-      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, counter * duration );
     }
   };
 
@@ -3846,6 +3845,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     buff = make_buff<stat_buff_t>( effect.player, "latent_arcana", effect.trigger() )
       ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
         effect.trigger()->effectN( 1 ).average( effect.item ) );
+    buff->set_refresh_behavior( buff_refresh_behavior::EXTEND );
   }
 
   effect.execute_action = create_proc_action<latent_arcana_channel_t>( "latent_arcana_channel", effect, buff );
