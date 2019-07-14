@@ -8105,6 +8105,7 @@ void shaman_t::init_action_list_elemental()
   // "Default" APL controlling logic flow to specialized sub-APLs
   def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
   def->add_talent( this, "Totem Mastery", "if=talent.totem_mastery.enabled&buff.resonance_totem.remains<2" );
+  def->add_action( "use_items" );
   def->add_action( this, "Fire Elemental", "if=!talent.storm_elemental.enabled" );
   def->add_talent( this, "Storm Elemental",
                    "if=talent.storm_elemental.enabled&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)&("
@@ -8115,7 +8116,6 @@ void shaman_t::init_action_list_elemental()
       "120&!"
       "talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120&talent.storm_elemental.enabled)" );
   // On-use items
-  def->add_action( "use_items" );
   // Get going with Azerite Essences (necklace effects)
   def->add_action( "concentrated_flame" );
   def->add_action( "blood_of_the_enemy" );
