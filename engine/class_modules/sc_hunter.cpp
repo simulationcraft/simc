@@ -5361,10 +5361,10 @@ void hunter_t::apl_bm()
   precombat -> add_action( "worldvein_resonance" );
   precombat -> add_action( "guardian_of_azeroth" );
   precombat -> add_action( "memory_of_lucid_dreams" );
-
+  precombat -> add_action( "focused_azerite_beam" );
   precombat -> add_action( this, "Aspect of the Wild", "precast_time=1.1,if=!azerite.primal_instincts.enabled",
           "Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s." );
-  precombat -> add_action( this, "Bestial Wrath", "precast_time=1.5,if=azerite.primal_instincts.enabled",
+  precombat -> add_action( this, "Bestial Wrath", "precast_time=1.5,if=azerite.primal_instincts.enabled&(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration)",
           "Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat." );
 
   default_list -> add_action( "auto_shot" );
@@ -5382,22 +5382,22 @@ void hunter_t::apl_bm()
   cds -> add_action("blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16");
   cds -> add_action("lights_judgment,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains>gcd.max|!pet.cat.buff.frenzy.up");
   cds -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&(target.health.pct<35|!talent.killer_instinct.enabled)|target.time_to_die<25" );
- 
+
   cds -> add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
   cds -> add_action( "guardian_of_azeroth" );
   cds -> add_action( "ripple_in_space" );
   cds -> add_action( "memory_of_lucid_dreams" );
 
-  st -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max|full_recharge_time<gcd.max&cooldown.bestial_wrath.remains|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd" );
-  st -> add_action( this, "Aspect of the Wild" );
-  st -> add_talent( this, "A Murder of Crows" );
+  st -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<gcd|cooldown.bestial_wrath.remains&(full_recharge_time<gcd|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd)" );
+  st -> add_action( this, "Aspect of the Wild", "if=cooldown.barbed_shot.charges<2|pet.cat.buff.frenzy.stack>2|!azerite.primal_instincts.enabled" );
   st -> add_talent( this, "Stampede", "if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15" );
-  st -> add_action( this, "Bestial Wrath", "if=cooldown.aspect_of_the_wild.remains>20|target.time_to_die<15" );
+  st -> add_talent( this, "A Murder of Crows", "if=cooldown.bestial_wrath.remains" );
+  st -> add_action( "focused_azerite_beam,if=buff.bestial_wrath.down" );
+  st -> add_action( this, "Bestial Wrath" );
   st -> add_action( this, "Kill Command" );
   st -> add_talent( this, "Chimaera Shot" );
   st -> add_talent( this, "Dire Beast" );
   st -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|azerite.dance_of_death.rank>1&buff.dance_of_death.down&crit_pct_current>40|target.time_to_die<9" );
-  st -> add_action( "focused_azerite_beam" );
   st -> add_action( "purifying_blast" );
   st -> add_action( "concentrated_flame" );
   st -> add_action( "blood_of_the_enemy" );

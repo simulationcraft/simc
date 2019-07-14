@@ -44,10 +44,10 @@ actions+=/potion,if=expected_combat_length-time<30|cooldown.fire_elemental.remai
 # Interrupt of casts.
 actions+=/wind_shear
 actions+=/totem_mastery,if=talent.totem_mastery.enabled&buff.resonance_totem.remains<2
-actions+=/use_items
 actions+=/fire_elemental,if=!talent.storm_elemental.enabled
 actions+=/storm_elemental,if=talent.storm_elemental.enabled&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)&(!talent.ascendance.enabled|!cooldown.ascendance.up)
 actions+=/earth_elemental,if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(cooldown.fire_elemental.remains<120&!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120&talent.storm_elemental.enabled)
+actions+=/use_items
 actions+=/concentrated_flame
 actions+=/blood_of_the_enemy
 actions+=/guardian_of_azeroth
