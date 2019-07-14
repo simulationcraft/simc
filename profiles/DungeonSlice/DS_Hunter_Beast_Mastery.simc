@@ -30,10 +30,11 @@ actions.precombat+=/potion
 actions.precombat+=/worldvein_resonance
 actions.precombat+=/guardian_of_azeroth
 actions.precombat+=/memory_of_lucid_dreams
+actions.precombat+=/focused_azerite_beam
 # Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s.
 actions.precombat+=/aspect_of_the_wild,precast_time=1.1,if=!azerite.primal_instincts.enabled
 # Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat.
-actions.precombat+=/bestial_wrath,precast_time=1.5,if=azerite.primal_instincts.enabled
+actions.precombat+=/bestial_wrath,precast_time=1.5,if=azerite.primal_instincts.enabled&(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration)
 
 # Executed every time the actor is available.
 actions=auto_shot
@@ -75,16 +76,16 @@ actions.cleave+=/multishot,if=azerite.rapid_reload.enabled&active_enemies>2
 actions.cleave+=/cobra_shot,if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload.enabled)
 actions.cleave+=/spitting_cobra
 
-actions.st=barbed_shot,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max|full_recharge_time<gcd.max&cooldown.bestial_wrath.remains|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd
-actions.st+=/aspect_of_the_wild
-actions.st+=/a_murder_of_crows
+actions.st=barbed_shot,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<gcd|cooldown.bestial_wrath.remains&(full_recharge_time<gcd|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd)
+actions.st+=/aspect_of_the_wild,if=cooldown.barbed_shot.charges<2|pet.cat.buff.frenzy.stack>2|!azerite.primal_instincts.enabled
 actions.st+=/stampede,if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15
-actions.st+=/bestial_wrath,if=cooldown.aspect_of_the_wild.remains>20|target.time_to_die<15
+actions.st+=/a_murder_of_crows,if=cooldown.bestial_wrath.remains
+actions.st+=/focused_azerite_beam,if=buff.bestial_wrath.down
+actions.st+=/bestial_wrath
 actions.st+=/kill_command
 actions.st+=/chimaera_shot
 actions.st+=/dire_beast
 actions.st+=/barbed_shot,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|azerite.dance_of_death.rank>1&buff.dance_of_death.down&crit_pct_current>40|target.time_to_die<9
-actions.st+=/focused_azerite_beam
 actions.st+=/purifying_blast
 actions.st+=/concentrated_flame
 actions.st+=/blood_of_the_enemy
