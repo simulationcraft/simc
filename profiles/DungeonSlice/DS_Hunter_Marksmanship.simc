@@ -38,6 +38,7 @@ actions.precombat+=/aimed_shot,if=active_enemies<3
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/use_item,name=galecallers_boon,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<10
+actions+=/use_item,name=pocketsized_computation_device,if=!buff.trueshot.up|target.time_to_die<5
 # Try to line up activated trinkets with Trueshot
 actions+=/use_items,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<20
 actions+=/call_action_list,name=cds
