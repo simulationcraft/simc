@@ -3772,17 +3772,15 @@ struct living_bomb_dot_t : public fire_mage_spell_t
     return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
-  void last_tick( dot_t* d ) override
+  void trigger_explosion( player_t* target )
   {
-    fire_mage_spell_t::last_tick( d );
-
-    p()->action.living_bomb_explosion->set_target( d->target );
+    p()->action.living_bomb_explosion->set_target( target );
 
     if ( primary )
     {
       for ( auto t : p()->action.living_bomb_explosion->target_list() )
       {
-        if ( t == d->target )
+        if ( t == target )
           continue;
 
         p()->action.living_bomb_dot_spread->set_target( t );
@@ -3791,6 +3789,20 @@ struct living_bomb_dot_t : public fire_mage_spell_t
     }
 
     p()->action.living_bomb_explosion->execute();
+  }
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    if ( get_dot( s->target )->is_ticking() )
+      trigger_explosion( s->target );
+
+    fire_mage_spell_t::trigger_dot( s );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    fire_mage_spell_t::last_tick( d );
+    trigger_explosion( d->target );
   }
 };
 
