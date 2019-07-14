@@ -2,13 +2,14 @@ mage="T24_Mage_Fire"
 source=default
 spec=fire
 level=120
-race=dwarf
+race=troll
 role=spell
-position=ranged_back
+position=back
 talents=3031022
+azerite_essences=14:3/4:3/27:3
 
 # Default consumables
-potion=unbridled_fury
+potion=potion_of_unbridled_fury
 flask=greater_flask_of_endless_fathoms
 food=baked_port_tato
 augmentation=battle_scarred
@@ -140,30 +141,28 @@ actions.standard_rotation+=/scorch
 actions.trinkets=use_items
 actions.trinkets+=/use_item,name=pocketsized_computation_device,if=!cooldown.cyclotronic_blast.duration
 
-head=soulfuel_headdress,id=159279,bonus_id=1587/4819/4775,azerite_powers=168/193/459/13
+head=soulfuel_headdress,id=159279,bonus_id=1617/4820/4775,azerite_powers=168/193/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=brood_cleansers_amice,id=159254,bonus_id=1587/4819/4775,azerite_powers=168/196/31/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=inmates_straight_robe,id=159268,bonus_id=1587/4819/4775,azerite_powers=168/479/22/13
-wrists=bracers_of_zealous_calling,id=165501,bonus_id=4800/1537
-hands=firecallers_handwraps,id=165764,bonus_id=4800/1537
-waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
-legs=wavecaller_leggings,id=165506,bonus_id=4800/1537
-feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
-finger1=seal_of_questionable_loyalties,id=158314,bonus_id=1572/4780,enchant=pact_of_versatility
-finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_versatility
-trinket1=balefire_branch,id=159630,bonus_id=1572/4780
-trinket2=incandescent_sliver,id=165571,bonus_id=4800/1537
-main_hand=desecrated_blade_of_the_disciples,id=165919,bonus_id=4800/1537,enchant=torrent_of_elements
-off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
+shoulders=brood_cleansers_amice,id=159254,bonus_id=1617/4820/4775,azerite_powers=168/196/459/13
+back=cloak_of_ill_tidings,id=168391,bonus_id=4800/1517
+chest=siren_mystics_vestments,id=168341,bonus_id=4824/1517/4775,azerite_powers=168/575/31/13
+wrists=waveblade_farseers_bindings,id=170306,bonus_id=1512
+hands=poens_deepsea_gloves,id=170333,bonus_id=1512
+waist=vims_scalecrusher_belt,id=170367,bonus_id=1512
+legs=seawrath_legwraps,id=168371,bonus_id=4800/1517
+feet=akanas_reefstrider_soles,id=170140,bonus_id=1512
+finger1=logic_loop_of_division,id=169157,bonus_id=4779/1472,enchant=accord_of_haste
+finger2=shorting_bit_band,id=169160,bonus_id=4779/1472,enchant=accord_of_haste
+trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+trinket2=leviathans_lure,id=169304,bonus_id=4800/1517
+main_hand=anuazshara_staff_of_the_eternal,id=168275,bonus_id=4800/1517,enchant=torrent_of_elements
 
 # Gear Summary
-# gear_ilvl=417.06
-# gear_stamina=10127
-# gear_intellect=7009
-# gear_crit_rating=772
-# gear_haste_rating=1484
-# gear_mastery_rating=889
-# gear_versatility_rating=515
-# gear_armor=1442
-# set_bonus=gift_of_the_loa_2pc=1
+# gear_ilvl=437.87
+# gear_stamina=12867
+# gear_intellect=8873
+# gear_crit_rating=1499
+# gear_haste_rating=1342
+# gear_mastery_rating=759
+# gear_versatility_rating=288
+# gear_armor=1715
