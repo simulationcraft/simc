@@ -5702,6 +5702,7 @@ void rogue_t::init_action_list()
   {
     def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)" );
     def -> add_action( "variable,name=single_target,value=spell_targets.fan_of_knives<2" );
+    def -> add_action( "use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&cooldown.vendetta.remains<10&!debuff.vendetta.up&!debuff.toxic_blade.up" );
     def -> add_action( "call_action_list,name=stealthed,if=stealthed.rogue" );
     def -> add_action( "call_action_list,name=cds,if=!talent.master_assassin.enabled|dot.garrote.ticking" );
     def -> add_action( "call_action_list,name=dot" );
@@ -5742,6 +5743,8 @@ void rogue_t::init_action_list()
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.vendetta.up" );
         else if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.toxic_blade.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4" );
+        else if ( items[i].name_str == "azsharas_font_of_power" )
+          continue; // Handled in default list with static entry
         else // Default: Use on CD
           cds -> add_action( "use_item,name=" + items[i].name_str, "Default Trinket usage: Use on cooldown." );
       }
