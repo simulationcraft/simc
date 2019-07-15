@@ -5549,7 +5549,7 @@ void hunter_t::apl_surv()
   default_list -> add_action( "arcane_torrent" );
 
   for ( std::string racial : { "blood_fury", "ancestral_call", "fireblood" } )
-  cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
+    cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
   cds -> add_action( "lights_judgment" );
   cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13");
   cds -> add_action( "potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)|time_to_die<26" );
