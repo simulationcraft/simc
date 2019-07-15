@@ -4141,6 +4141,7 @@ public:
   pet_t*      find_pet( const std::string& name ) const;
   item_t*     find_item_by_name( const std::string& name );
   item_t*     find_item_by_id( unsigned id );
+  item_t*     find_item_by_use_effect_name( const std::string& name );
   action_t*   find_action( const std::string& ) const;
   cooldown_t* find_cooldown( const std::string& name ) const;
   dot_t*      find_dot     ( const std::string& name, player_t* source ) const;
