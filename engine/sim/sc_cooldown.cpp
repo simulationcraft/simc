@@ -131,11 +131,16 @@ cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
  */
 void cooldown_t::adjust_recharge_multiplier()
 {
+  if ( !ongoing() )
+  {
+    return;
+  }
+
   double old_multiplier = recharge_multiplier;
   assert( action && "Only cooldowns with associated action can have their recharge multiplier adjusted." );
   recharge_multiplier = action->recharge_multiplier();
   assert( recharge_multiplier > 0.0 );
-  if ( !ongoing() || old_multiplier == recharge_multiplier )
+  if ( old_multiplier == recharge_multiplier )
   {
     return;
   }
@@ -159,11 +164,16 @@ void cooldown_t::adjust_recharge_multiplier()
  */
 void cooldown_t::adjust_base_duration()
 {
+  if ( !ongoing() )
+  {
+    return;
+  }
+
   timespan_t old_duration = base_duration;
   assert( action && "Only cooldowns with associated action can have their base duration adjusted." );
   base_duration = action->cooldown_base_duration( *this );
   assert( base_duration > 0_ms );
-  if ( !ongoing() || old_duration == base_duration )
+  if ( old_duration == base_duration )
   {
     return;
   }
@@ -448,14 +458,33 @@ void cooldown_t::start( timespan_t _override, timespan_t delay )
   start( nullptr, _override, delay );
 }
 
+timespan_t cooldown_t::cooldown_duration( const cooldown_t* cd )
+{
+  if ( cd->ongoing() )
+    return cd->recharge_multiplier * cd->base_duration;
+  else if ( cd->action )
+    return cd->action->recharge_multiplier() * cd->action->cooldown_base_duration( *cd );
+  else
+    return cd->duration;
+}
+
 expr_t* cooldown_t::create_expression( const std::string& name_str )
 {
   if ( name_str == "remains" )
     return make_mem_fn_expr( name_str, *this, &cooldown_t::remains );
 
   else if ( name_str == "base_duration" )
-    return make_ref_expr( name_str, base_duration );
-
+  {
+    return make_fn_expr( name_str, [ this ]
+    {
+      if ( ongoing() )
+        return base_duration.total_seconds();
+      else if ( action )
+        return action->cooldown_base_duration( *this ).total_seconds();
+      else
+        return duration.total_seconds();
+    } );
+  }
   else if ( name_str == "duration" )
   {
     return make_fn_expr( name_str, [ this ]

@@ -5296,8 +5296,6 @@ void player_t::arise()
 
   current_attack_speed = cache.attack_speed();
 
-  adjust_dynamic_cooldowns();
-
   range::for_each( callbacks_on_arise, []( const std::function<void( void )>& fn ) { fn(); } );
 }
 

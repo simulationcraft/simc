@@ -3726,7 +3726,6 @@ struct fire_blast_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     // update_ready() assumes the ICD is affected by haste
-    internal_cooldown->recharge_multiplier = 1.0;
     internal_cooldown->start();
 
     p()->buffs.blaster_master->trigger();
