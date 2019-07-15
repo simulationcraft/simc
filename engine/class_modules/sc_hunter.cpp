@@ -5552,9 +5552,9 @@ void hunter_t::apl_surv()
     cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
   cds -> add_action( "lights_judgment" );
   cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13");
-
   cds -> add_action( "potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)|time_to_die<26" );
   cds -> add_action( this, "Aspect of the Eagle", "if=target.distance>=6" );
+  cds -> add_action( "use_item,name=ashvanes_razor_coral,if=buff.memory_of_lucid_dreams.up|buff.guardian_of_azeroth.up|debuff.razor_coral_debuff.down|target.time_to_die<20" );
 	
   // Essences
   cds->add_action( "focused_azerite_beam" );
