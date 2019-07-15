@@ -2823,7 +2823,7 @@ struct cooldown_t
   // the execute_type enum class
   unsigned execute_types_mask;
 
-  // State of the current cooldown progression.
+  // State of the current cooldown progression. Only updated for ongoing cooldowns.
   int current_charge;
   double recharge_multiplier;
   timespan_t base_duration;
@@ -2889,8 +2889,7 @@ struct cooldown_t
   static timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
 
-  static timespan_t cooldown_duration( const cooldown_t* cd )
-  { return cd->base_duration * cd->recharge_multiplier; }
+  static timespan_t cooldown_duration( const cooldown_t* cd );
 
 private:
   void adjust_remaining_duration( double delta ); // Modify the remaining duration of an ongoing cooldown.
