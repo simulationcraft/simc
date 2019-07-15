@@ -5296,6 +5296,8 @@ void player_t::arise()
 
   current_attack_speed = cache.attack_speed();
 
+  adjust_dynamic_cooldowns();
+
   range::for_each( callbacks_on_arise, []( const std::function<void( void )>& fn ) { fn(); } );
 }
 
@@ -6748,7 +6750,7 @@ action_t* player_t::find_action( const std::string& name ) const
   return find_vector_member( action_list, name );
 }
 
-cooldown_t* player_t::get_cooldown( const std::string& name )
+cooldown_t* player_t::get_cooldown( const std::string& name, action_t* a )
 {
   cooldown_t* c = find_cooldown( name );
 
@@ -6758,6 +6760,9 @@ cooldown_t* player_t::get_cooldown( const std::string& name )
 
     cooldown_list.push_back( c );
   }
+
+  if ( a )
+    c->action = a;
 
   return c;
 }

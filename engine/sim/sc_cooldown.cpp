@@ -131,16 +131,11 @@ cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
  */
 void cooldown_t::adjust_recharge_multiplier()
 {
-  if ( !ongoing() )
-  {
-    return;
-  }
-
   double old_multiplier = recharge_multiplier;
   assert( action && "Only cooldowns with associated action can have their recharge multiplier adjusted." );
   recharge_multiplier = action->recharge_multiplier();
   assert( recharge_multiplier > 0.0 );
-  if ( old_multiplier == recharge_multiplier )
+  if ( !ongoing() || old_multiplier == recharge_multiplier )
   {
     return;
   }
@@ -164,16 +159,11 @@ void cooldown_t::adjust_recharge_multiplier()
  */
 void cooldown_t::adjust_base_duration()
 {
-  if ( !ongoing() )
-  {
-    return;
-  }
-
   timespan_t old_duration = base_duration;
   assert( action && "Only cooldowns with associated action can have their base duration adjusted." );
   base_duration = action->cooldown_base_duration( *this );
   assert( base_duration > 0_ms );
-  if ( old_duration == base_duration )
+  if ( !ongoing() || old_duration == base_duration )
   {
     return;
   }
@@ -400,6 +390,10 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
   if ( a )
   {
     recharge_multiplier = a->recharge_multiplier();
+  }
+  else
+  {
+    recharge_multiplier = 1.0;
   }
 
   if ( _override > 0_ms )
