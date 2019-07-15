@@ -8539,7 +8539,7 @@ struct use_items_t : public action_t
     // that only the designated slots will be checked/executed for a special effect
     priority_slots.clear();
 
-    auto split = util::string_split( ":|", opt_value );
+    auto split = util::string_split( opt_value, ":|" );
     range::for_each( split, [this]( const std::string& slot_str ) {
       auto slot = util::parse_slot_type( slot_str );
       if ( slot != SLOT_INVALID )
