@@ -1749,8 +1749,6 @@ void sim_t::combat_begin()
     if ( m ) m -> combat_begin( this );
   }
 
-  raid_event_t::combat_begin( this );
-
   if ( single_actor_batch )
   {
     player_no_pet_list[ current_index ] -> combat_begin();
@@ -1791,6 +1789,8 @@ void sim_t::combat_begin()
   {
     legion_data.pantheon_proxy -> start();
   }
+
+  raid_event_t::combat_begin( this );
 }
 
 // sim_t::combat_end ========================================================
