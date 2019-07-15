@@ -5729,33 +5729,19 @@ void rogue_t::init_action_list()
 
     // Non-spec stuff with lower prio
     cds -> add_action( potion_action );
-    for ( size_t i = 0; i < items.size(); i++ )
-    {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) || items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_GEM, SPECIAL_EFFECT_USE ) )
-      {
-        auto use_effect_id = items[i].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) -> spell_id;
-        if ( items[i].name_str == "galecallers_boon" )
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=cooldown.vendetta.remains>45" );
-        else if ( items[i].name_str == "ashvanes_razor_coral" )
-          cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10|target.time_to_die<20+trinket.azsharas_font_of_power.cooldown.remains" );
-        else if ( use_effect_id == 271107 || use_effect_id == 277179 || use_effect_id == 277185 || // Golden Luster, Gladiator's Medallion, Gladiator's Badge
-                  items[i].name_str == "lurkers_insidious_gift" )
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.vendetta.up" );
-        else if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.toxic_blade.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4" );
-        else if ( items[i].name_str == "azsharas_font_of_power" )
-          continue; // Handled in default list with static entry
-        else // Default: Use on CD
-          cds -> add_action( "use_item,name=" + items[i].name_str, "Default Trinket usage: Use on cooldown." );
-      }
-    }
-    for ( size_t i = 0; i < racial_actions.size(); i++ )
-    {
-      if ( racial_actions[i] == "lights_judgment" || racial_actions[i] == "arcane_torrent" || racial_actions[i] == "arcane_pulse" )
-        continue; // Manually added
-      else
-        cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
-    }
+    cds -> add_action( "blood_fury,if=debuff.vendetta.up" );
+    cds -> add_action( "berserking,if=debuff.vendetta.up" );
+    cds -> add_action( "fireblood,if=debuff.vendetta.up" );
+    cds -> add_action( "ancestral_call,if=debuff.vendetta.up" );
+
+    cds -> add_action( "use_item,name=galecallers_boon,if=cooldown.vendetta.remains>45" );
+    cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10|target.time_to_die<20+trinket.azsharas_font_of_power.cooldown.remains" );
+    cds -> add_action( "use_item,name=lurkers_insidious_gift,if=debuff.vendetta.up" );
+    cds -> add_action( "use_item,name=lustrous_golden_plumage,if=debuff.vendetta.up" );
+    cds -> add_action( "use_item,effect_name=gladiators_medallion,if=debuff.vendetta.up" );
+    cds -> add_action( "use_item,effect_name=gladiators_badge,if=debuff.vendetta.up" );
+    cds -> add_action( "use_item,effect_name=cyclotronic_blast,if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.toxic_blade.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4" );
+    cds -> add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
     // Azerite Essences
     action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
@@ -5844,26 +5830,14 @@ void rogue_t::init_action_list()
 
     // Non-spec stuff with lower prio
     cds -> add_action( potion_action );
-    for ( size_t i = 0; i < items.size(); i++ )
-    {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) || items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_GEM, SPECIAL_EFFECT_USE ) )
-      {
-        auto use_effect_id = items[i].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) -> spell_id;
-        if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.all&buff.adrenaline_rush.down&buff.memory_of_lucid_dreams.down&energy.time_to_max>4&rtb_buffs<5" );
-        else if ( items[i].name_str == "ashvanes_razor_coral" )
-          cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.adrenaline_rush.up&(target.health.pct<30|target.time_to_die<60)" );
-        else // Default
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2", "Falling back to default item usage" );
-      }
-    }
-    for ( size_t i = 0; i < racial_actions.size(); i++ )
-    {
-      if ( racial_actions[i] == "lights_judgment" || racial_actions[i] == "arcane_torrent" || racial_actions[i] == "arcane_pulse" )
-        continue; // Manually added
-      else
-        cds -> add_action( racial_actions[i] );
-    }
+    cds -> add_action( "blood_fury" );
+    cds -> add_action( "berserking" );
+    cds -> add_action( "fireblood" );
+    cds -> add_action( "ancestral_call" );
+
+    cds -> add_action( "use_item,effect_name=cyclotronic_blast,if=!stealthed.all&buff.adrenaline_rush.down&buff.memory_of_lucid_dreams.down&energy.time_to_max>4&rtb_buffs<5" );
+    cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.adrenaline_rush.up&(target.health.pct<30|target.time_to_die<60)" );
+    cds -> add_action( "use_items,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2", "Default fallback for usable items." );
 
     // Azerite Essences
     action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
@@ -5934,31 +5908,16 @@ void rogue_t::init_action_list()
 
     // Non-spec stuff with lower prio
     cds -> add_action( potion_action );
-    for ( size_t i = 0; i < items.size(); i++ )
-    {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) || items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_GEM, SPECIAL_EFFECT_USE ) )
-      {
-        auto use_effect_id = items[i].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) -> spell_id;
-        // Use on-cd exceptions
-        if ( items[i].name_str == "mydas_talisman" )
-          cds -> add_action( "use_item,name=" + items[i].name_str, "Use on cooldown." );
-        else if ( use_effect_id == 293491 ) // Red Punchcard: Cyclotronic Blast
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=!stealthed.all&dot.nightblade.ticking&!buff.symbols_of_death.up&energy.deficit>=30" );
-        else if ( items[i].name_str == "azsharas_font_of_power" )
-          cds -> add_action( "use_item,name=azsharas_font_of_power,if=!buff.shadow_dance.up&cooldown.symbols_of_death.remains<10" );
-        else if ( items[i].name_str == "ashvanes_razor_coral" )
-          cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.symbols_of_death.up&(target.health.pct<30|target.time_to_die<60)" );
-        else // Use with Symbols default
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.symbols_of_death.up|target.time_to_die<20", "Falling back to default item usage: Use with Symbols of Death." );
-      }
-    }
-    for ( size_t i = 0; i < racial_actions.size(); i++ )
-    {
-      if ( racial_actions[i] == "lights_judgment" || racial_actions[i] == "arcane_torrent" )
-        continue; // Manually added
-      else
-        cds -> add_action( racial_actions[i] + ",if=buff.symbols_of_death.up" );
-    }
+    cds -> add_action( "blood_fury,if=buff.symbols_of_death.up" );
+    cds -> add_action( "berserking,if=buff.symbols_of_death.up" );
+    cds -> add_action( "fireblood,if=buff.symbols_of_death.up" );
+    cds -> add_action( "ancestral_call,if=buff.symbols_of_death.up" );
+
+    cds -> add_action( "use_item,effect_name=cyclotronic_blast,if=!stealthed.all&dot.nightblade.ticking&!buff.symbols_of_death.up&energy.deficit>=30" );
+    cds -> add_action( "use_item,name=azsharas_font_of_power,if=!buff.shadow_dance.up&cooldown.symbols_of_death.remains<10" );
+    cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.symbols_of_death.up&(target.health.pct<30|target.time_to_die<60)" );
+    cds -> add_action( "use_item,name=mydas_talisman" );
+    cds -> add_action( "use_items,if=buff.symbols_of_death.up|target.time_to_die<20", "Default fallback for usable items: Use with Symbols of Death." );
 
     // Azerite Essences
     action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
