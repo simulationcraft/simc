@@ -8289,7 +8289,7 @@ void druid_t::apl_precombat()
   // Spec Specific Optimizations
   if ( specialization() == DRUID_BALANCE )
   {
-    precombat -> add_action( this, "Solar Wrath" );
+    precombat -> add_action( this, "Solar Wrath,if=!equipped.169314" );
   }
   else if ( specialization() == DRUID_RESTORATION )
     precombat -> add_talent( this, "Cenarion Ward" );

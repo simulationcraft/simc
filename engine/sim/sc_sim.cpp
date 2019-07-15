@@ -3647,6 +3647,8 @@ void sim_t::create_options()
         bfa_opts.shiver_venom ) );
   add_option( opt_float( "bfa.storm_of_the_eternal_ratio",
         bfa_opts.storm_of_the_eternal_ratio, 0.0, 1.0 ) );
+  add_option( opt_timespan( "bfa.font_of_power_precombat_channel",
+        bfa_opts.font_of_power_precombat_channel, 0_ms, 34_s ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
