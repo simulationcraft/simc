@@ -3203,6 +3203,20 @@ item_t* player_t::find_item_by_id( unsigned item_id )
   return nullptr;
 }
 
+item_t* player_t::find_item_by_use_effect_name( const std::string& effect_name )
+{
+  auto it = range::find_if(items, [effect_name](const item_t& item) {
+    return item.has_use_special_effect() && effect_name == item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name();
+  } );
+
+  if ( it != items.end())
+  {
+    return &(*it);
+  }
+
+  return nullptr;
+}
+
 bool player_t::has_t18_class_trinket() const
 {
   // Class modules should override this with their individual trinket detection
@@ -8118,7 +8132,7 @@ struct use_item_t : public action_t
   buff_t* buff;
   cooldown_t* cooldown_group;
   timespan_t cooldown_group_duration;
-  std::string item_name, item_slot;
+  std::string item_name, item_slot, effect_name;
 
   use_item_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "use_item", player ),
@@ -8130,6 +8144,7 @@ struct use_item_t : public action_t
   {
     add_option( opt_string( "name", item_name ) );
     add_option( opt_string( "slot", item_slot ) );
+    add_option( opt_string( "effect_name", effect_name ) );
     parse_options( options_str );
 
     special = true;
@@ -8177,6 +8192,22 @@ struct use_item_t : public action_t
       {
         name_str = name_str + "_" + item->name();
       }
+    }
+    else if ( !effect_name.empty() )
+    {
+      item = player->find_item_by_use_effect_name( effect_name );
+      if ( !item )
+      {
+        if ( sim->debug )
+        {
+          sim->errorf( "Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n",
+                       player->name(), item_name.c_str() );
+        }
+        background = true;
+        return;
+      }
+
+      name_str = name_str + "_" + item->name();
     }
     else
     {
@@ -8569,6 +8600,30 @@ struct use_items_t : public action_t
       // Find out if the item is worn
       auto it = range::find_if( player->items, [action]( const item_t& item ) {
         return util::str_compare_ci( item.name(), action->item_name );
+      } );
+
+      // Worn item, remove slot if necessary
+      if ( it != player->items.end() )
+      {
+        auto slot_it = range::find( slot_order, it->slot );
+        if ( slot_it != slot_order.end() )
+        {
+          slot_order.erase( slot_it );
+        }
+      }
+    } );
+
+    // Remove any slots from the list, where the actor has an item equipped, and corresponding a
+    // use_item,effect_name=X action for the item.
+    range::for_each( use_item_actions, [this, &slot_order]( const use_item_t* action ) {
+      if ( action->effect_name.empty() )
+      {
+        return;
+      }
+
+      // Find out if the item is worn
+      auto it = range::find_if( player->items, [action]( const item_t& item ) {
+        return item.has_use_special_effect() && util::str_compare_ci( item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE)->name(), action->effect_name );
       } );
 
       // Worn item, remove slot if necessary
