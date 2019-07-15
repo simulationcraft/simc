@@ -86,12 +86,16 @@ actions.cds+=/shadow_blades,if=combo_points.deficit>=2+stealthed.all
 actions.cds+=/shuriken_tornado,if=talent.shadow_focus.enabled&dot.nightblade.ticking&buff.symbols_of_death.up
 actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled&!raid_event.adds.up
 actions.cds+=/potion,if=buff.bloodlust.react|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
-# Falling back to default item usage: Use with Symbols of Death.
-actions.cds+=/use_item,name=galecallers_boon,if=buff.symbols_of_death.up|target.time_to_die<20
 actions.cds+=/blood_fury,if=buff.symbols_of_death.up
 actions.cds+=/berserking,if=buff.symbols_of_death.up
 actions.cds+=/fireblood,if=buff.symbols_of_death.up
 actions.cds+=/ancestral_call,if=buff.symbols_of_death.up
+actions.cds+=/use_item,effect_name=cyclotronic_blast,if=!stealthed.all&dot.nightblade.ticking&!buff.symbols_of_death.up&energy.deficit>=30
+actions.cds+=/use_item,name=azsharas_font_of_power,if=!buff.shadow_dance.up&cooldown.symbols_of_death.remains<10
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.symbols_of_death.up&(target.health.pct<30|target.time_to_die<60)
+actions.cds+=/use_item,name=mydas_talisman
+# Default fallback for usable items: Use with Symbols of Death.
+actions.cds+=/use_items,if=buff.symbols_of_death.up|target.time_to_die<20
 
 # Essences
 actions.essences=concentrated_flame

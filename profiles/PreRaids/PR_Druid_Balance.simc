@@ -46,7 +46,7 @@ actions+=/use_item,name=azsharas_font_of_power,if=equipped.169314&!buff.ca_inc.u
 actions+=/guardian_of_azeroth,if=(!talent.starlord.enabled|buff.starlord.up)&!buff.ca_inc.up,target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
 actions+=/use_item,name=tidestorm_codex,if=equipped.165576
 actions+=/use_item,name=pocketsized_computation_device,if=equipped.167555&!buff.ca_inc.up,target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
-actions+=/use_item,name=shiver_venom_relic,if=equipped.168905&!buff.ca_inc.up&dot.shiver_venom.stack>=5
+actions+=/use_item,name=shiver_venom_relic,if=equipped.168905&!buff.ca_inc.up,target_if=dot.shiver_venom.stack>=5
 actions+=/use_items,if=cooldown.ca_inc.remains>30
 actions+=/blood_of_the_enemy,if=cooldown.ca_inc.remains>30
 actions+=/memory_of_lucid_dreams,if=!buff.ca_inc.up&(astral_power<25|cooldown.ca_inc.remains>30),target_if=dot.sunfire.remains>10&dot.moonfire.remains>10&(!talent.stellar_flare.enabled|dot.stellar_flare.remains>10)

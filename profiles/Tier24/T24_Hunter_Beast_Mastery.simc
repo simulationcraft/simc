@@ -30,7 +30,7 @@ actions.precombat+=/potion
 actions.precombat+=/worldvein_resonance
 actions.precombat+=/guardian_of_azeroth
 actions.precombat+=/memory_of_lucid_dreams
-actions.precombat+=/focused_azerite_beam
+actions.precombat+=/focused_azerite_beam,if=!raid_event.invulnerable.exists
 # Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s.
 actions.precombat+=/aspect_of_the_wild,precast_time=1.1,if=!azerite.primal_instincts.enabled
 # Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat.
