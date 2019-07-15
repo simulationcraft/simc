@@ -7,6 +7,8 @@ position=back
 talents=3213221
 timeofday=night
 
+azerite_essences=14:3/32:3/12:3
+
 head=helm_of_the_inexorable_tide,id=168345,bonus_id=4824/1517,azerite_powers=20/575/159/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=notorious_gladiators_leather_mantle,id=167350,bonus_id=1557,azerite_powers=31/159/220/13
