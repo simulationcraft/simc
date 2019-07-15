@@ -2813,17 +2813,20 @@ struct cooldown_t
   timespan_t ready;
   timespan_t reset_react;
   int charges;
-  int current_charge;
   event_t* recharge_event;
   event_t* ready_trigger_event;
   timespan_t last_start, last_charged;
-  double recharge_multiplier;
   bool hasted; // Hasted cooldowns will reschedule based on haste state changing (through buffs). TODO: Separate hastes?
   action_t* action; // Dynamic cooldowns will need to know what action triggered the cd
 
   // Associated execution types amongst all the actions shared by this cooldown. Bitmasks based on
   // the execute_type enum class
   unsigned execute_types_mask;
+
+  // State of the current cooldown progression.
+  int current_charge;
+  double recharge_multiplier;
+  timespan_t base_duration;
 
   cooldown_t( const std::string& name, player_t& );
   cooldown_t( const std::string& name, sim_t& );
@@ -2832,6 +2835,7 @@ struct cooldown_t
   // the user would react to rather than plan ahead for.
   void adjust( timespan_t, bool requires_reaction = true );
   void adjust_recharge_multiplier(); // Reacquire cooldown recharge multiplier from the action to adjust the cooldown time
+  void adjust_base_duration(); // Reacquire base cooldown duration from the action to adjust the cooldown time
   // Instalty recharge a cooldown. For multicharge cooldowns, charges_ specifies how many charges to reset.
   // If less than zero, all charges are reset.
   void reset( bool require_reaction, int charges_ = 1 );
@@ -2844,15 +2848,19 @@ struct cooldown_t
   { return std::max( timespan_t::zero(), ready - sim.current_time() ); }
 
   timespan_t current_charge_remains() const
-  { return recharge_event != NULL ? recharge_event -> remains() : timespan_t::zero(); }
+  { return recharge_event ? recharge_event -> remains() : timespan_t::zero(); }
 
-  // return true if the cooldown is done (i.e., the associated ability is ready)
+  // Return true if the cooldown is ready (has at least one charge).
   bool up() const
   { return ready <= sim.current_time(); }
 
-  // Return true if the cooldown is currently ticking down
+  // Return true if the cooldown is not ready (has zero charges).
   bool down() const
   { return ready > sim.current_time(); }
+
+  // Return true if the cooldown is in progress.
+  bool ongoing() const
+  { return down() || recharge_event; }
 
   // Return true if the action bound to this cooldown is ready. Cooldowns are ready either when
   // their cooldown has elapsed, or a short while before its cooldown is finished. The latter case
@@ -2873,9 +2881,6 @@ struct cooldown_t
   const char* name() const
   { return name_str.c_str(); }
 
-  timespan_t reduced_cooldown() const
-  { return ready - last_start; }
-
   expr_t* create_expression( const std::string& name_str );
 
   void add_execute_type( execute_type e )
@@ -2884,7 +2889,11 @@ struct cooldown_t
   static timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
 
-  static timespan_t cooldown_duration( const cooldown_t* cd, const timespan_t& override_duration = timespan_t::min() );
+  static timespan_t cooldown_duration( const cooldown_t* cd )
+  { return cd->base_duration * cd->recharge_multiplier; }
+
+private:
+  void adjust_remaining_duration( double delta ); // Modify the remaining duration of an ongoing cooldown.
 };
 
 // Player Callbacks
