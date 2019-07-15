@@ -2836,7 +2836,6 @@ struct cooldown_t
   void adjust( timespan_t, bool requires_reaction = true );
   void adjust_recharge_multiplier(); // Reacquire cooldown recharge multiplier from the action to adjust the cooldown time
   void adjust_base_duration(); // Reacquire base cooldown duration from the action to adjust the cooldown time
-  void adjust_remaining_duration( double delta ); // Modify the remaining duration of an ongoing cooldown.
   // Instalty recharge a cooldown. For multicharge cooldowns, charges_ specifies how many charges to reset.
   // If less than zero, all charges are reset.
   void reset( bool require_reaction, int charges_ = 1 );
@@ -2892,6 +2891,9 @@ struct cooldown_t
 
   static timespan_t cooldown_duration( const cooldown_t* cd )
   { return cd->base_duration * cd->recharge_multiplier; }
+
+private:
+  void adjust_remaining_duration( double delta ); // Modify the remaining duration of an ongoing cooldown.
 };
 
 // Player Callbacks
