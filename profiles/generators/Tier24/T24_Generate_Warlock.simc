@@ -33,9 +33,9 @@ race=troll
 spec=demonology
 role=spell
 position=ranged_back
-talents=3102012
+talents=2303032
 default_pet=felguard
-azerite_essences=22:3:1/4:3:0/27:3:0
+azerite_essences=14:3:1/4:3:0/32:3:0
 
 head=,id=159244,bonus_id=5062/1617/4786/4775,azerite_powers=429/428/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
