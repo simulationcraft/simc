@@ -4163,7 +4163,7 @@ public:
   action_priority_list_t* find_action_priority_list( const std::string& name ) const;
   int find_action_id( const std::string& name ) const;
 
-  cooldown_t* get_cooldown( const std::string& name );
+  cooldown_t* get_cooldown( const std::string& name, action_t* action = nullptr );
   real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
   real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
   shuffled_rng_t* get_shuffled_rng(const std::string& name, int success_entries = 0, int total_entries = 0);
