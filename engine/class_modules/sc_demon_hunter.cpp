@@ -5111,6 +5111,10 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       {
         apl->add_action( "use_item,name=pocketsized_computation_device,if=buff.metamorphosis.down&buff.memory_of_lucid_dreams.down&(!talent.demon_blades.enabled|fury<60)" );
       }
+      else if ( util::str_compare_ci( item.name_str, "ashvanes_razor_coral" ) )
+      {
+        apl->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod&(buff.metamorphosis.remains>20|target.time_to_die<20))|(equipped.dribbling_inkpod&target.health.pct<31)" );
+      }
       else
       {
         std::string line = std::string( "use_item,name=" ) + item.name_str;
