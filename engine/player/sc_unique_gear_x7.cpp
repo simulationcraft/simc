@@ -3456,8 +3456,6 @@ void items::shiver_venom_relic_onuse( special_effect_t& effect )
 {
   struct venomous_shivers_t : public proc_t
   {
-    dot_t* sv_dot;
-
     venomous_shivers_t( const special_effect_t& e ) : proc_t( e, "venomous_shivers", e.player->find_spell( 305290 ) )
     {
       aoe         = -1;
@@ -3466,32 +3464,36 @@ void items::shiver_venom_relic_onuse( special_effect_t& effect )
 
     bool ready() override
     {
-      if ( !target )
+      if ( !target || !proc_t::ready() )
         return false;
 
-      sv_dot = target->find_dot( "shiver_venom", player );
+      dot_t* sv_dot;
 
-      if ( !sv_dot || !sv_dot->is_ticking() )
-        return false;
-
-      return proc_t::ready();
+      for ( auto t : sim->target_non_sleeping_list )
+      {
+        if ( ( sv_dot = t->find_dot( "shiver_venom", player ) ) && sv_dot->is_ticking() )
+          return true;
+      }
+      return false;
     }
 
     double action_multiplier() const override
     {
-      double num_dots = 0;
+      dot_t* sv_dot = target->find_dot( "shiver_venom", player );
+      if (!sv_dot)
+        sim->print_debug("venomous_shivers->action_multiplier() cannot find shiver_venom dot on {}", target->name());
 
-      if ( sv_dot )
-        num_dots = sv_dot->current_stack();
-
-      return proc_t::action_multiplier() * num_dots;
+      return proc_t::action_multiplier() * ( sv_dot ? sv_dot->current_stack() : 0.0 );
     }
 
     void execute() override
     {
       proc_t::execute();
 
-      if ( sv_dot )
+      dot_t* sv_dot = target->find_dot( "shiver_venom", player);
+      if (!sv_dot)
+        sim->print_debug("venomous_shivers->execute() cannot find shiver_venom dot on {}", target->name());
+      else
         sv_dot->cancel();
     }
   };
