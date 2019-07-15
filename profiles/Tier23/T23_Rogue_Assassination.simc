@@ -67,13 +67,19 @@ actions.cds+=/shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&
 actions.cds+=/exsanguinate,if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable
 actions.cds+=/toxic_blade,if=dot.rupture.ticking
 actions.cds+=/potion,if=buff.bloodlust.react|debuff.vendetta.up
-actions.cds+=/use_item,name=lustrous_golden_plumage,if=debuff.vendetta.up
-# Default Trinket usage: Use on cooldown.
-actions.cds+=/use_item,name=variable_intensity_gigavolt_oscillating_reactor
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/fireblood,if=debuff.vendetta.up
 actions.cds+=/ancestral_call,if=debuff.vendetta.up
+actions.cds+=/use_item,name=galecallers_boon,if=cooldown.vendetta.remains>45
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10|target.time_to_die<20+trinket.azsharas_font_of_power.cooldown.remains
+actions.cds+=/use_item,name=lurkers_insidious_gift,if=debuff.vendetta.up
+actions.cds+=/use_item,name=lustrous_golden_plumage,if=debuff.vendetta.up
+actions.cds+=/use_item,effect_name=gladiators_medallion,if=debuff.vendetta.up
+actions.cds+=/use_item,effect_name=gladiators_badge,if=debuff.vendetta.up
+actions.cds+=/use_item,effect_name=cyclotronic_blast,if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.toxic_blade.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4
+# Default fallback for usable items: Use on cooldown.
+actions.cds+=/use_items
 
 # Direct damage abilities
 # Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.
