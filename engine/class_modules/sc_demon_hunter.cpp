@@ -5111,6 +5111,10 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       {
         apl->add_action( "use_item,name=pocketsized_computation_device,if=buff.metamorphosis.down&buff.memory_of_lucid_dreams.down&(!talent.demon_blades.enabled|fury<60)" );
       }
+      else if ( util::str_compare_ci( item.name_str, "ashvanes_razor_coral" ) )
+      {
+        apl->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod&(buff.metamorphosis.remains>20|target.time_to_die<20))|(equipped.dribbling_inkpod&target.health.pct<31)" );
+      }
       else
       {
         std::string line = std::string( "use_item,name=" ) + item.name_str;
@@ -5148,13 +5152,13 @@ void demon_hunter_t::apl_havoc()
 
   action_priority_list_t* essences = get_action_priority_list( "essences" );
   essences->add_action( "concentrated_flame" );
-  essences->add_action( "blood_of_the_enemy" );
+  essences->add_action( "blood_of_the_enemy,if=buff.metamorphosis.up|target.time_to_die<=10" );
   essences->add_action( "guardian_of_azeroth" );
-  essences->add_action( "focused_azerite_beam" );
-  essences->add_action( "purifying_blast" );
+  essences->add_action( "focused_azerite_beam,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
+  essences->add_action( "purifying_blast,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
   essences->add_action( "the_unbound_force" );
   essences->add_action( "ripple_in_space" );
-  essences->add_action( "worldvein_resonance" );
+  essences->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
   essences->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );
   apl_cooldown->add_action( "call_action_list,name=essences" );
 

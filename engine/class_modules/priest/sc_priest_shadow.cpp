@@ -1318,6 +1318,9 @@ struct voidform_t final : public priest_buff_t<buff_t>
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_HASTE );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
+    set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
+    { if ( old == 0 || cur == 0 ) priest().cooldowns.mind_blast->adjust_base_duration(); } );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override

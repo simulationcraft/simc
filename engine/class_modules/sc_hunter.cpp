@@ -5361,7 +5361,7 @@ void hunter_t::apl_bm()
   precombat -> add_action( "worldvein_resonance" );
   precombat -> add_action( "guardian_of_azeroth" );
   precombat -> add_action( "memory_of_lucid_dreams" );
-  precombat -> add_action( "focused_azerite_beam" );
+  precombat -> add_action( "focused_azerite_beam,if=!raid_event.invulnerable.exists" );
   precombat -> add_action( this, "Aspect of the Wild", "precast_time=1.1,if=!azerite.primal_instincts.enabled",
           "Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s." );
   precombat -> add_action( this, "Bestial Wrath", "precast_time=1.5,if=azerite.primal_instincts.enabled&(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration)",
@@ -5552,9 +5552,9 @@ void hunter_t::apl_surv()
     cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
   cds -> add_action( "lights_judgment" );
   cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13");
-
   cds -> add_action( "potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)|time_to_die<26" );
   cds -> add_action( this, "Aspect of the Eagle", "if=target.distance>=6" );
+  cds -> add_action( "use_item,name=ashvanes_razor_coral,if=buff.memory_of_lucid_dreams.up|buff.guardian_of_azeroth.up|debuff.razor_coral_debuff.down|target.time_to_die<20" );
 	
   // Essences
   cds->add_action( "focused_azerite_beam" );
