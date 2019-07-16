@@ -1280,11 +1280,12 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     void execute() override
     {
-      if ( time_to_execute > timespan_t::zero() && player->executing )
+      if ( time_to_execute > timespan_t::zero() && ( player->channeling || player->executing ) )
       {
         if ( sim->debug )
         {
-          sim->out_debug.printf( "%s Executing '%s' during melee (%s).", player->name(), player->executing->name(),
+          sim->out_debug.printf( "%s Executing '%s' during melee (%s).", player->name(),
+              player->executing ? player->executing->name() : player->channeling->name(),
                                  util::slot_type_string( weapon->slot ) );
         }
 
@@ -8764,6 +8765,10 @@ void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& 
     sim->out_debug.printf( "%s storm_earth_and_fire %s (re)target=%s old_target=%s", name(), pet->name(),
                            pet->target->name(), original_target->name() );
   }
+
+  range::for_each( pet->action_list, [pet]( action_t* a ) {
+    a->acquire_target( SELF_ARISE, nullptr, pet->target );
+  } );
 }
 
 // monk_t::retarget_storm_earth_and_fire_pets =======================================
