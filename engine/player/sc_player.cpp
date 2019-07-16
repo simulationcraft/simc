@@ -8236,8 +8236,6 @@ struct use_item_t : public action_t
 
   void init() override
   {
-    action_t::init();
-
     action_priority_list_t* apl = nullptr;
     if ( action_list )
     {
@@ -8246,7 +8244,9 @@ struct use_item_t : public action_t
 
     if ( !item )
     {
+      action_t::init();
       erase_action( apl );
+      background = true;
       return;
     }
 
@@ -8320,6 +8320,8 @@ struct use_item_t : public action_t
 
       erase_action( apl );
     }
+
+    action_t::init();
   }
 
   timespan_t execute_time() const override
