@@ -54,7 +54,7 @@ actions.aoe+=/glacial_spike
 # Using Cone of Cold is mostly DPS neutral with the AoE target thresholds. It only becomes decent gain with roughly 7 or more targets.
 actions.aoe+=/cone_of_cold
 actions.aoe+=/use_item,name=tidestorm_codex,if=buff.icy_veins.down&buff.rune_of_power.down
-actions.aoe+=/use_item,name=pocketsized_computation_device,if=cooldown.cyclotronic_blast.duration&buff.icy_veins.down&buff.rune_of_power.down
+actions.aoe+=/use_item,effect_name=cyclotronic_blast,if=buff.icy_veins.down&buff.rune_of_power.down
 actions.aoe+=/frostbolt
 actions.aoe+=/call_action_list,name=movement
 actions.aoe+=/ice_lance
@@ -68,7 +68,6 @@ actions.cooldowns+=/rune_of_power,if=prev_gcd.1.frozen_orb|target.time_to_die>10
 actions.cooldowns+=/call_action_list,name=talent_rop,if=talent.rune_of_power.enabled&active_enemies=1&cooldown.rune_of_power.full_recharge_time<cooldown.frozen_orb.remains
 actions.cooldowns+=/potion,if=prev_gcd.1.icy_veins|target.time_to_die<30
 actions.cooldowns+=/use_items
-actions.cooldowns+=/use_item,name=pocketsized_computation_device,if=!cooldown.cyclotronic_blast.duration
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/lights_judgment
@@ -100,7 +99,7 @@ actions.single+=/ebonbolt,if=buff.icicles.stack=5&!buff.brain_freeze.react&buff.
 actions.single+=/glacial_spike,if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|talent.incanters_flow.enabled&cast_time+travel_time>incanters_flow_time_to.5.up&cast_time+travel_time<incanters_flow_time_to.4.down
 actions.single+=/ice_nova
 actions.single+=/use_item,name=tidestorm_codex,if=buff.icy_veins.down&buff.rune_of_power.down
-actions.single+=/use_item,name=pocketsized_computation_device,if=cooldown.cyclotronic_blast.duration&buff.icy_veins.down&buff.rune_of_power.down
+actions.single+=/use_item,effect_name=cyclotronic_blast,if=buff.icy_veins.down&buff.rune_of_power.down
 actions.single+=/frostbolt
 actions.single+=/call_action_list,name=movement
 actions.single+=/ice_lance

@@ -37,7 +37,7 @@ actions.precombat+=/aimed_shot,if=active_enemies<3
 
 # Executed every time the actor is available.
 actions=auto_shot
-actions+=/use_item,name=pocketsized_computation_device,if=!buff.trueshot.up|target.time_to_die<5
+actions+=/use_item,name=pocketsized_computation_device,if=!buff.trueshot.up&!essence.blood_of_the_enemy.major.rank3|debuff.blood_of_the_enemy.up|target.time_to_die<5
 # Try to line up activated trinkets with Trueshot
 actions+=/use_items,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<20
 actions+=/call_action_list,name=cds
@@ -63,18 +63,14 @@ actions.st+=/barrage,if=active_enemies>1
 actions.st+=/a_murder_of_crows
 actions.st+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
 actions.st+=/rapid_fire,if=buff.trueshot.down|focus<70
-# if=buff.trueshot.up&(buff.unerring_vision.stack>4|!azerite.unerring_vision.enabled)|target.time_to_die<11
-actions.st+=/blood_of_the_enemy
-# if=!buff.trueshot.up
-actions.st+=/focused_azerite_beam
+actions.st+=/blood_of_the_enemy,if=buff.trueshot.up&(buff.unerring_vision.stack>4|!azerite.unerring_vision.enabled)|target.time_to_die<11
+actions.st+=/focused_azerite_beam,if=!buff.trueshot.up
 actions.st+=/arcane_shot,if=buff.trueshot.up&buff.master_marksman.up&!buff.memory_of_lucid_dreams.up
 actions.st+=/aimed_shot,if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time&cooldown.trueshot.remains
 actions.st+=/arcane_shot,if=buff.trueshot.up&buff.master_marksman.up&buff.memory_of_lucid_dreams.up
 actions.st+=/piercing_shot
-# if=!buff.trueshot.up
-actions.st+=/purifying_blast
-# if=!buff.trueshot.up
-actions.st+=/concentrated_flame
+actions.st+=/purifying_blast,if=!buff.trueshot.up
+actions.st+=/concentrated_flame,if=!buff.trueshot.up
 actions.st+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10
 actions.st+=/arcane_shot,if=buff.trueshot.down&(buff.precise_shots.up&(focus>41|buff.master_marksman.up)|(focus>50&azerite.focused_fire.enabled|focus>75)&(cooldown.trueshot.remains>5|focus>80)|target.time_to_die<5)
 actions.st+=/steady_shot
