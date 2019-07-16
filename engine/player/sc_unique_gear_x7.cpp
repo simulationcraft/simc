@@ -3261,6 +3261,7 @@ void items::nazjatar_proc_check( special_effect_t& effect )
   if ( !effect.player->sim->bfa_opts.nazjatar )
     return;
 
+  effect.proc_flags_ &= ~PF_ALL_HEAL;
   new dbc_proc_callback_t( effect.player, effect );
 }
 
