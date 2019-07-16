@@ -3582,6 +3582,7 @@ struct stormstrike_base_t : public shaman_attack_t
     weapon             = &( p()->main_hand_weapon );
     cooldown           = p()->cooldown.strike;
     cooldown->duration = data().cooldown();
+    cooldown->action   = this;
     weapon_multiplier  = 0.0;
     may_crit           = false;
     school             = SCHOOL_PHYSICAL;

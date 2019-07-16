@@ -5888,6 +5888,7 @@ struct ironskin_brew_t : public monk_spell_t
         p.talent.light_brewing->effectN( 1 ).time_value();  // Saved as -3000
     p.cooldown.brewmaster_active_mitigation->charges += (int)p.talent.light_brewing->effectN( 2 ).base_value();
     p.cooldown.brewmaster_active_mitigation->hasted = true;
+    p.cooldown.brewmaster_active_mitigation->action = this;
 
     cooldown = p.cooldown.brewmaster_active_mitigation;
   }
@@ -5946,6 +5947,7 @@ struct purifying_brew_t : public monk_spell_t
         p.talent.light_brewing->effectN( 1 ).time_value();  // Saved as -3000
     p.cooldown.brewmaster_active_mitigation->charges += (int)p.talent.light_brewing->effectN( 2 ).base_value();
     p.cooldown.brewmaster_active_mitigation->hasted = true;
+    p.cooldown.brewmaster_active_mitigation->action = this;
 
     cooldown = p.cooldown.brewmaster_active_mitigation;
 

@@ -12,7 +12,7 @@ struct recharge_event_t : event_t
   cooldown_t* cooldown_;
 
   recharge_event_t( cooldown_t* cd ) :
-    event_t( cd->sim, cooldown_t::cooldown_duration( cd ) ),
+    event_t( cd->sim, cd->recharge_multiplier * cd->base_duration ),
     cooldown_( cd )
   { }
 
@@ -42,8 +42,8 @@ struct recharge_event_t : event_t
 
     if ( sim().debug )
     {
-      auto dur = cooldown_t::cooldown_duration( cooldown_ ).total_seconds();
       auto base_duration = cooldown_->base_duration.total_seconds();
+      auto dur = cooldown_->recharge_multiplier * base_duration;
       sim().out_debug.printf( "%s recharge cooldown %s regenerated charge, current=%d, total=%d, next=%.3f, ready=%.3f, dur=%.3f, base_dur=%.3f, mul=%f",
         cooldown_->player ? cooldown_->player->name() : "sim", cooldown_->name_str.c_str(), cooldown_->current_charge, cooldown_->charges,
         cooldown_->recharge_event ? cooldown_->recharge_event->occurs().total_seconds() : 0,
@@ -277,7 +277,7 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
     // Recharged at least one charge
     else
     {
-      timespan_t cd_duration = cooldown_duration( this );
+      timespan_t cd_duration = recharge_multiplier * base_duration;
 
       // If the remaining adjustment is greater than cooldown duration,
       // we have to recharge more than one charge.
@@ -401,6 +401,10 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
   {
     recharge_multiplier = a->recharge_multiplier();
   }
+  else
+  {
+    recharge_multiplier = 1.0;
+  }
 
   if ( _override > 0_ms )
   {
@@ -415,7 +419,7 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
     base_duration = duration;
   }
 
-  timespan_t event_duration = cooldown_duration( this );
+  timespan_t event_duration = recharge_multiplier * base_duration;
   assert( event_duration > 0_ms );
 
   if ( delay > 0_ms )
@@ -454,14 +458,33 @@ void cooldown_t::start( timespan_t _override, timespan_t delay )
   start( nullptr, _override, delay );
 }
 
+timespan_t cooldown_t::cooldown_duration( const cooldown_t* cd )
+{
+  if ( cd->ongoing() )
+    return cd->recharge_multiplier * cd->base_duration;
+  else if ( cd->action )
+    return cd->action->recharge_multiplier() * cd->action->cooldown_base_duration( *cd );
+  else
+    return cd->duration;
+}
+
 expr_t* cooldown_t::create_expression( const std::string& name_str )
 {
   if ( name_str == "remains" )
     return make_mem_fn_expr( name_str, *this, &cooldown_t::remains );
 
   else if ( name_str == "base_duration" )
-    return make_ref_expr( name_str, base_duration );
-
+  {
+    return make_fn_expr( name_str, [ this ]
+    {
+      if ( ongoing() )
+        return base_duration.total_seconds();
+      else if ( action )
+        return action->cooldown_base_duration( *this ).total_seconds();
+      else
+        return duration.total_seconds();
+    } );
+  }
   else if ( name_str == "duration" )
   {
     return make_fn_expr( name_str, [ this ]

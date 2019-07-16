@@ -2825,7 +2825,7 @@ struct cooldown_t
   // the execute_type enum class
   unsigned execute_types_mask;
 
-  // State of the current cooldown progression.
+  // State of the current cooldown progression. Only updated for ongoing cooldowns.
   int current_charge;
   double recharge_multiplier;
   timespan_t base_duration;
@@ -2891,8 +2891,7 @@ struct cooldown_t
   static timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
 
-  static timespan_t cooldown_duration( const cooldown_t* cd )
-  { return cd->base_duration * cd->recharge_multiplier; }
+  static timespan_t cooldown_duration( const cooldown_t* cd );
 
 private:
   void adjust_remaining_duration( double delta ); // Modify the remaining duration of an ongoing cooldown.
@@ -4165,7 +4164,7 @@ public:
   action_priority_list_t* find_action_priority_list( const std::string& name ) const;
   int find_action_id( const std::string& name ) const;
 
-  cooldown_t* get_cooldown( const std::string& name );
+  cooldown_t* get_cooldown( const std::string& name, action_t* action = nullptr );
   real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
   real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
   shuffled_rng_t* get_shuffled_rng(const std::string& name, int success_entries = 0, int total_entries = 0);
@@ -4451,6 +4450,8 @@ public:
   virtual void teleport( double yards, timespan_t duration = timespan_t::zero() );
   virtual movement_direction_e movement_direction() const
   { return current.movement_direction; }
+  
+  virtual void reset_auto_attacks( timespan_t delay = timespan_t::zero() );
 
   virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */ = nullptr );
 

@@ -6748,7 +6748,7 @@ action_t* player_t::find_action( const std::string& name ) const
   return find_vector_member( action_list, name );
 }
 
-cooldown_t* player_t::get_cooldown( const std::string& name )
+cooldown_t* player_t::get_cooldown( const std::string& name, action_t* a )
 {
   cooldown_t* c = find_cooldown( name );
 
@@ -6758,6 +6758,9 @@ cooldown_t* player_t::get_cooldown( const std::string& name )
 
     cooldown_list.push_back( c );
   }
+
+  if ( a )
+    c->action = a;
 
   return c;
 }
@@ -8534,7 +8537,7 @@ struct use_items_t : public action_t
     // that only the designated slots will be checked/executed for a special effect
     priority_slots.clear();
 
-    auto split = util::string_split( ":|", opt_value );
+    auto split = util::string_split( opt_value, ":|" );
     range::for_each( split, [this]( const std::string& slot_str ) {
       auto slot = util::parse_slot_type( slot_str );
       if ( slot != SLOT_INVALID )
@@ -13192,6 +13195,45 @@ bool player_t::verify_use_items() const
   } );
 
   return missing_actions.empty();
+}
+
+/**
+ * Reset the main hand (and off hand, if application) swing timer
+ * Optionally delay by a set amount
+ */
+void player_t::reset_auto_attacks( timespan_t delay )
+{
+  if ( sim->debug )
+  {
+    if ( delay == timespan_t::zero() )
+    {
+      sim->print_debug( "Resetting auto attack swing timers" );
+    }
+    else
+    {
+      sim->print_debug( "Resetting auto attack swing timers with an additional delay of {}", delay );
+    }
+  }
+
+  if ( main_hand_attack && main_hand_attack->execute_event )
+  {
+    event_t::cancel( main_hand_attack->execute_event );
+    main_hand_attack->schedule_execute();
+    if ( delay > timespan_t::zero() )
+    {
+      main_hand_attack->execute_event->reschedule( main_hand_attack->execute_event->remains() + delay );
+    }
+  }
+
+  if ( off_hand_attack && off_hand_attack->execute_event )
+  {
+    event_t::cancel( off_hand_attack->execute_event );
+    off_hand_attack->schedule_execute();
+    if ( delay > timespan_t::zero() )
+    {
+      off_hand_attack->execute_event->reschedule( off_hand_attack->execute_event->remains() + delay );
+    }
+  }
 }
 
 /**

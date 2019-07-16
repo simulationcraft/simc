@@ -8604,20 +8604,16 @@ void druid_t::apl_balance()
   if ( sim->allow_potions && true_level >= 80 )
     default_list->add_action( "potion,if=buff.ca_inc.remains>6" );
 
-  if ( race == RACE_TROLL )
-    default_list->add_action( "berserking,if=buff.ca_inc.up" );
-
   // CDs
-  default_list->add_action( "use_item,name=azsharas_font_of_power,if=equipped.169314&!buff.ca_inc.up,"
-                              "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)", "CDs" );
+  default_list->add_action( "berserking,if=buff.ca_inc.up", "CDs" );
+  default_list->add_action( "use_item,name=azsharas_font_of_power,if=!buff.ca_inc.up,"
+                              "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "guardian_of_azeroth,if=(!talent.starlord.enabled|buff.starlord.up)&!buff.ca_inc.up,"
                               "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
-  default_list->add_action( "use_item,name=tidestorm_codex,if=equipped.165576" );
-  default_list->add_action( "use_item,name=pocketsized_computation_device,if=equipped.167555&!buff.ca_inc.up,"
+  default_list->add_action( "use_item,effect_name=cyclotronic_blast,if=!buff.ca_inc.up,"
                               "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
-  default_list->add_action( "use_item,name=shiver_venom_relic,if=equipped.168905&!buff.ca_inc.up,"
+  default_list->add_action( "use_item,name=shiver_venom_relic,if=!buff.ca_inc.up,"
                               "target_if=dot.shiver_venom.stack>=5" );
-  default_list->add_action( "use_items,if=cooldown.ca_inc.remains>30" );
   default_list->add_action( "blood_of_the_enemy,if=cooldown.ca_inc.remains>30" );
   default_list->add_action( "memory_of_lucid_dreams,if=!buff.ca_inc.up&(astral_power<25|cooldown.ca_inc.remains>30),"
                               "target_if=dot.sunfire.remains>10&dot.moonfire.remains>10&(!talent.stellar_flare.enabled|dot.stellar_flare.remains>10)" );
@@ -8630,6 +8626,10 @@ void druid_t::apl_balance()
   default_list->add_action( "focused_azerite_beam,if=(!variable.az_ss|!buff.ca_inc.up),"
                               "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "thorns" );
+  // NOTE: This will ALWAYS line up ALL trinkets where the effect_name == ANY stat buff_name. Make sure to handle any special cases above.
+  default_list->add_action( "use_items,slots=trinket1,if=!trinket.1.has_proc.any|buff.ca_inc.up" );
+  default_list->add_action( "use_items,slots=trinket2,if=!trinket.2.has_proc.any|buff.ca_inc.up" );
+  default_list->add_action( "use_items" );
   default_list->add_talent( this, "Warrior of Elune", "" );
   default_list->add_action( this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)" );
   default_list->add_action( "incarnation,if=!buff.ca_inc.up"

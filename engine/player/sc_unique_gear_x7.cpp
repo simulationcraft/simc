@@ -1204,25 +1204,8 @@ void items::merekthas_fang( special_effect_t& effect )
     void execute() override
     {
       proc_t::execute();
-
       event_t::cancel( player->readying );
-
-      // Interrupts auto-attacks so push them forward by the channeling time.
-      // TODO: Does this actually pause the cooldown or just let it run & insta attack potentially
-      // when channel ends?
-      if ( player->main_hand_attack && player->main_hand_attack->execute_event )
-      {
-        player->main_hand_attack->execute_event->reschedule(
-            player->main_hand_attack->execute_event->remains() +
-            composite_dot_duration( execute_state ) );
-      }
-
-      if ( player->off_hand_attack && player->off_hand_attack->execute_event )
-      {
-        player->off_hand_attack->execute_event->reschedule(
-            player->off_hand_attack->execute_event->remains() +
-            composite_dot_duration( execute_state ) );
-      }
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
     }
 
     void tick( dot_t* d ) override
@@ -3795,7 +3778,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       proc_t( e, "latent_arcana", e.driver() ), buff( b )
     {
       channeled = true;
-      harmful   = false;
+      harmful = hasted_ticks = false;
     }
 
     timespan_t tick_time( const action_state_t* ) const override
@@ -3807,18 +3790,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     {
       proc_t::execute();
       event_t::cancel( player->readying );
-
-      if ( player->main_hand_attack && player->main_hand_attack->execute_event )
-      {
-        player->main_hand_attack->execute_event->reschedule(
-          player->main_hand_attack->execute_event->remains() + composite_dot_duration( execute_state ) );
-      }
-
-      if ( player->off_hand_attack && player->off_hand_attack->execute_event )
-      {
-        player->off_hand_attack->execute_event->reschedule(
-          player->off_hand_attack->execute_event->remains() + composite_dot_duration( execute_state ) );
-      }
+      player->reset_auto_attacks( data().duration() );
     }
 
     void tick( dot_t* d ) override
@@ -4984,20 +4956,8 @@ void items::cyclotronic_blast( special_effect_t& effect )
     void execute() override
     {
       proc_t::execute();
-
       event_t::cancel( player->readying );
-
-      if ( player->main_hand_attack && player->main_hand_attack->execute_event )
-      {
-        player->main_hand_attack->execute_event->reschedule(
-          player->main_hand_attack->execute_event->remains() + composite_dot_duration( execute_state ) );
-      }
-
-      if ( player->off_hand_attack && player->off_hand_attack->execute_event )
-      {
-        player->off_hand_attack->execute_event->reschedule(
-          player->off_hand_attack->execute_event->remains() + composite_dot_duration( execute_state ) );
-      }
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
     }
 
     void last_tick( dot_t* d ) override
