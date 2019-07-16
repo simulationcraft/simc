@@ -7673,7 +7673,8 @@ player_t* download_player( sim_t*,
                            const std::string& server,
                            const std::string& name,
                            const std::string& talents = std::string( "active" ),
-                           cache::behavior_e b = cache::players() );
+                           cache::behavior_e b = cache::players(),
+                           bool allow_failures = true );
 
 player_t* from_local_json( sim_t*,
                            const std::string&,
