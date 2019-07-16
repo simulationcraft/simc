@@ -5051,9 +5051,6 @@ public:
   /// Tells the sim to not perform any other actions, as the ability is channeled.
   bool channeled;
 
-  /// Channels prevent autoattacks (no reset)
-  bool channel_prevent_aa;
-
   /// mark this as a sequence_t action
   bool sequence;
 
