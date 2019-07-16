@@ -3724,10 +3724,6 @@ struct fire_blast_t : public fire_mage_spell_t
   void execute() override
   {
     fire_mage_spell_t::execute();
-
-    // update_ready() assumes the ICD is affected by haste
-    internal_cooldown->start();
-
     p()->buffs.blaster_master->trigger();
   }
 
@@ -3735,7 +3731,7 @@ struct fire_blast_t : public fire_mage_spell_t
   {
     double m = fire_mage_spell_t::recharge_multiplier( cd );
 
-    if ( p()->player_t::buffs.memory_of_lucid_dreams->check() )
+    if ( &cd == cooldown && p()->player_t::buffs.memory_of_lucid_dreams->check() )
       m /= 1.0 + p()->player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
 
     return m;
