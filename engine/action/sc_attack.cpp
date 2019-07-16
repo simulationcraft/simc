@@ -26,18 +26,7 @@ attack_t::attack_t( const std::string& n, player_t* p, const spell_data_t* s )
 
 void attack_t::execute()
 {
-  if ( !special && player->channeling && player->channeling->channel_prevent_aa )
-  {
-    if ( sim->debug )
-    {
-      sim->out_debug.print( "{} {} swing during channel of {}, ignoring",
-        player->name(), name(), player->channeling->name() );
-    }
-  }
-  else
-  {
-    action_t::execute();
-  }
+  action_t::execute();
 }
 
 timespan_t attack_t::execute_time() const
