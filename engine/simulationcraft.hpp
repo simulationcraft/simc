@@ -5596,7 +5596,7 @@ public:
   virtual double target_armor( player_t* t ) const
   { return t -> cache.armor(); }
 
-  virtual double recharge_multiplier() const
+  virtual double recharge_multiplier( const cooldown_t& ) const
   { return base_recharge_multiplier; }
 
   /** Cooldown base duration for action based cooldowns. */
@@ -6093,13 +6093,13 @@ struct attack_t : public action_t
   virtual double composite_versatility( const action_state_t* state ) const override
   { return action_t::composite_versatility( state ) + player -> cache.damage_versatility(); }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double m = action_t::recharge_multiplier();
+    double m = action_t::recharge_multiplier( cd );
 
-    if ( cooldown && cooldown -> hasted )
+    if ( cd.hasted )
     {
-      m *= player -> cache.attack_haste();
+      m *= player->cache.attack_haste();
     }
 
     return m;
@@ -6187,13 +6187,13 @@ struct spell_base_t : public action_t
   virtual double composite_crit_chance_multiplier() const override
   { return action_t::composite_crit_chance_multiplier() * player -> composite_spell_crit_chance_multiplier(); }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double m = action_t::recharge_multiplier();
+    double m = action_t::recharge_multiplier( cd );
 
-    if ( cooldown && cooldown -> hasted )
+    if ( cd.hasted )
     {
-      m *= player -> cache.spell_haste();
+      m *= player->cache.spell_haste();
     }
 
     return m;

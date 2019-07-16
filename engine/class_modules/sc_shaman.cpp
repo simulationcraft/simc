@@ -1221,9 +1221,9 @@ public:
     return m;
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double m = ab::recharge_multiplier();
+    double m = ab::recharge_multiplier( cd );
 
     m *= 1.0 / ( 1.0 + p()->buff.thundercharge->stack_value() );
 
@@ -3755,9 +3755,9 @@ struct windstrike_t : public stormstrike_base_t
     }
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    auto m = stormstrike_base_t::recharge_multiplier();
+    auto m = stormstrike_base_t::recharge_multiplier( cd );
 
     if ( p()->buff.ascendance->up() )
     {
@@ -3831,9 +3831,9 @@ struct rockbiter_t : public shaman_spell_t
     cooldown->hasted = true;
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double m = shaman_spell_t::recharge_multiplier();
+    double m = shaman_spell_t::recharge_multiplier( cd );
 
     m *= 1.0 + p()->talent.boulderfist->effectN( 1 ).percent();
 

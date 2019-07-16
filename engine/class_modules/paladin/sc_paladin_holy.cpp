@@ -342,9 +342,9 @@ struct holy_shock_t : public paladin_spell_t
     }
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double rm = paladin_spell_t::recharge_multiplier();
+    double rm = paladin_spell_t::recharge_multiplier( cd );
 
     if ( p() -> buffs.avenging_wrath -> check() && p() -> talents.sanctified_wrath -> ok() )
       rm *= 1.0 + p() -> talents.sanctified_wrath -> effectN( 2 ).percent();

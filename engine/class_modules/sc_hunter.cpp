@@ -2592,9 +2592,9 @@ struct aimed_shot_t : public aimed_shot_base_t
     return et;
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double m = aimed_shot_base_t::recharge_multiplier();
+    double m = aimed_shot_base_t::recharge_multiplier( cd );
 
     // XXX [8.1]: Spell Data indicates that it's reducing Aimed Shot recharge rate by 225% (12s/3.25 = 3.69s)
     // m /= 1.0 + .6;  // The information from the bluepost
@@ -2919,9 +2919,9 @@ struct rapid_fire_t: public hunter_spell_t
     return num_ticks_;
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double m = hunter_spell_t::recharge_multiplier();
+    double m = hunter_spell_t::recharge_multiplier( cd );
 
     // XXX [8.1]: Spell Data indicates that it's reducing Rapid Fire by 240% (20s/3.4 = 5.88s)
     // m /= 1.0 + .6;  // The information from the bluepost
