@@ -3713,13 +3713,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 0.68168 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
+                   Hotfixed: PvP Coefficient (1 -> 0.68168)
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 0.68168 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
+                   Hotfixed: PvP Coefficient (1 -> 0.68168)
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191152)   : Apply Aura (6) | Modify Max Mana% (178)
