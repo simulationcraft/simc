@@ -13198,6 +13198,45 @@ bool player_t::verify_use_items() const
 }
 
 /**
+ * Reset the main hand (and off hand, if application) swing timer
+ * Optionally delay by a set amount
+ */
+void player_t::reset_auto_attacks( timespan_t delay )
+{
+  if ( sim->debug )
+  {
+    if ( delay == timespan_t::zero() )
+    {
+      sim->print_debug( "Resetting auto attack swing timers" );
+    }
+    else
+    {
+      sim->print_debug( "Resetting auto attack swing timers with an additional delay of {}", delay );
+    }
+  }
+
+  if ( main_hand_attack && main_hand_attack->execute_event )
+  {
+    event_t::cancel( main_hand_attack->execute_event );
+    main_hand_attack->schedule_execute();
+    if ( delay > timespan_t::zero() )
+    {
+      main_hand_attack->execute_event->reschedule( main_hand_attack->execute_event->remains() + delay );
+    }
+  }
+
+  if ( off_hand_attack && off_hand_attack->execute_event )
+  {
+    event_t::cancel( off_hand_attack->execute_event );
+    off_hand_attack->schedule_execute();
+    if ( delay > timespan_t::zero() )
+    {
+      off_hand_attack->execute_event->reschedule( off_hand_attack->execute_event->remains() + delay );
+    }
+  }
+}
+
+/**
  * Poor man's targeting support. Acquire_target is triggered by various events (see retarget_event_e) in the core.
  * Context contains the triggering entity (if relevant). Figures out a target out of all non-sleeping targets.
  * Skip "invulnerable" ones for now, anything else is fair game.

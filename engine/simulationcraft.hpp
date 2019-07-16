@@ -4448,6 +4448,8 @@ public:
   virtual void teleport( double yards, timespan_t duration = timespan_t::zero() );
   virtual movement_direction_e movement_direction() const
   { return current.movement_direction; }
+  
+  virtual void reset_auto_attacks( timespan_t delay = timespan_t::zero() );
 
   virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */ = nullptr );
 
