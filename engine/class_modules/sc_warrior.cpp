@@ -2802,9 +2802,9 @@ struct raging_blow_t : public warrior_attack_t
     }
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    auto m = warrior_attack_t::recharge_multiplier();
+    auto m = warrior_attack_t::recharge_multiplier( cd );
 
     if ( p()->talents.inner_rage->ok() )
     {
@@ -3698,9 +3698,9 @@ struct thunder_clap_t : public warrior_attack_t
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thunder_clap );
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double rm = warrior_attack_t::recharge_multiplier();
+    double rm = warrior_attack_t::recharge_multiplier( cd );
     if ( p() -> buff.avatar -> up() && p() -> talents.unstoppable_force -> ok() )
     {
       rm *= 1.0 + ( p() -> talents.unstoppable_force -> effectN( 2 ).percent() );

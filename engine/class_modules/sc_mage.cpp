@@ -3731,9 +3731,9 @@ struct fire_blast_t : public fire_mage_spell_t
     p()->buffs.blaster_master->trigger();
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double m = fire_mage_spell_t::recharge_multiplier();
+    double m = fire_mage_spell_t::recharge_multiplier( cd );
 
     if ( p()->player_t::buffs.memory_of_lucid_dreams->check() )
       m /= 1.0 + p()->player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();

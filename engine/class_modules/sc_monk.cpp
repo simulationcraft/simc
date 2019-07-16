@@ -3374,9 +3374,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     base_t::init_finished();
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double rm = base_t::recharge_multiplier();
+    double rm = base_t::recharge_multiplier( cd );
     if ( p()->buff.serenity->up() )
     {
       rm *= 1.0 / ( 1 + p()->talent.serenity->effectN( 5 ).percent() );
