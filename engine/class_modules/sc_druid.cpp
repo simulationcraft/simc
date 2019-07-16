@@ -8604,12 +8604,10 @@ void druid_t::apl_balance()
   if ( sim->allow_potions && true_level >= 80 )
     default_list->add_action( "potion,if=buff.ca_inc.remains>6" );
 
-  if ( race == RACE_TROLL )
-    default_list->add_action( "berserking,if=buff.ca_inc.up" );
-
   // CDs
+  default_list->add_action( "berserking,if=buff.ca_inc.up", "CDs" );
   default_list->add_action( "use_item,name=azsharas_font_of_power,if=!buff.ca_inc.up,"
-                              "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)", "CDs" );
+                              "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "guardian_of_azeroth,if=(!talent.starlord.enabled|buff.starlord.up)&!buff.ca_inc.up,"
                               "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "use_item,effect_name=cyclotronic_blast,if=!buff.ca_inc.up,"
