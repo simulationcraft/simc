@@ -12,7 +12,7 @@ struct recharge_event_t : event_t
   cooldown_t* cooldown_;
 
   recharge_event_t( cooldown_t* cd ) :
-    event_t( cd->sim, cooldown_t::cooldown_duration( cd ) ),
+    event_t( cd->sim, cd->recharge_multiplier * cd->base_duration ),
     cooldown_( cd )
   { }
 
@@ -42,8 +42,8 @@ struct recharge_event_t : event_t
 
     if ( sim().debug )
     {
-      auto dur = cooldown_t::cooldown_duration( cooldown_ ).total_seconds();
       auto base_duration = cooldown_->base_duration.total_seconds();
+      auto dur = cooldown_->recharge_multiplier * base_duration;
       sim().out_debug.printf( "%s recharge cooldown %s regenerated charge, current=%d, total=%d, next=%.3f, ready=%.3f, dur=%.3f, base_dur=%.3f, mul=%f",
         cooldown_->player ? cooldown_->player->name() : "sim", cooldown_->name_str.c_str(), cooldown_->current_charge, cooldown_->charges,
         cooldown_->recharge_event ? cooldown_->recharge_event->occurs().total_seconds() : 0,
@@ -277,7 +277,7 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
     // Recharged at least one charge
     else
     {
-      timespan_t cd_duration = cooldown_duration( this );
+      timespan_t cd_duration = recharge_multiplier * base_duration;
 
       // If the remaining adjustment is greater than cooldown duration,
       // we have to recharge more than one charge.
@@ -419,7 +419,7 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
     base_duration = duration;
   }
 
-  timespan_t event_duration = cooldown_duration( this );
+  timespan_t event_duration = recharge_multiplier * base_duration;
   assert( event_duration > 0_ms );
 
   if ( delay > 0_ms )
