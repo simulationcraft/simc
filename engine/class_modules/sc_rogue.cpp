@@ -5704,7 +5704,7 @@ void rogue_t::init_action_list()
     def -> add_action( "variable,name=single_target,value=spell_targets.fan_of_knives<2" );
     def -> add_action( "use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&cooldown.vendetta.remains<10&!debuff.vendetta.up&!debuff.toxic_blade.up" );
     def -> add_action( "call_action_list,name=stealthed,if=stealthed.rogue" );
-    def -> add_action( "call_action_list,name=cds,if=(!talent.master_assassin.enabled|dot.garrote.ticking)&(!equipped.azsharas_font_of_power|!trinket.azsharas_font_of_power.cooldown.up)" );
+    def -> add_action( "call_action_list,name=cds,if=(!talent.master_assassin.enabled|dot.garrote.ticking)&(!equipped.azsharas_font_of_power|!cooldown.latent_arcana.up)" );
     def -> add_action( "call_action_list,name=dot" );
     def -> add_action( "call_action_list,name=direct" );
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined" );
@@ -5735,7 +5735,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "ancestral_call,if=debuff.vendetta.up" );
 
     cds -> add_action( "use_item,name=galecallers_boon,if=cooldown.vendetta.remains>45" );
-    cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10|target.time_to_die<20+trinket.azsharas_font_of_power.cooldown.remains" );
+    cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10|target.time_to_die<20+cooldown.latent_arcana.remains" );
     cds -> add_action( "use_item,name=lurkers_insidious_gift,if=debuff.vendetta.up" );
     cds -> add_action( "use_item,name=lustrous_golden_plumage,if=debuff.vendetta.up" );
     cds -> add_action( "use_item,effect_name=gladiators_medallion,if=debuff.vendetta.up" );
