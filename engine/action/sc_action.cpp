@@ -329,6 +329,7 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
     callbacks( true ),
     special(),
     channeled(),
+    channel_prevent_aa( false ),
     sequence(),
     quiet(),
     background(),
