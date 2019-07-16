@@ -3822,8 +3822,36 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     buff->set_refresh_behavior( buff_refresh_behavior::EXTEND );
   }
 
-  effect.execute_action = create_proc_action<latent_arcana_channel_t>( "latent_arcana_channel", effect, buff );
+  auto action = create_proc_action<latent_arcana_channel_t>( "latent_arcana_channel", effect, buff );
+  effect.execute_action = action;
   effect.disable_buff();
+
+  // pre-combat channeling hack
+  if ( effect.player->sim->bfa_opts.font_of_power_precombat_channel > 0_ms )
+  {
+    auto time = timespan_t::from_seconds(
+      static_cast<int>( effect.player->sim->bfa_opts.font_of_power_precombat_channel.total_seconds() ) );
+    if ( time > 0_ms )
+    {
+      auto channel = std::min( 4_s, time );  // how long you channel for
+      auto total =
+        effect.trigger()->duration() * ( channel.total_seconds() + 1 );  // total duration of the buff you got
+      auto actual = total + channel - time;  // actual duration of the buff you'll get in combat
+      auto cdgrp = effect.player->get_cooldown( effect.cooldown_group_name() );
+      auto cdgrp_dur = std::max( 0_ms, effect.cooldown_group_duration() - time );
+
+      effect.player->sim->print_debug(
+        "Azshara's Hack of Power started {}s before combat, channeled for {}s, giving {}s buff in combat", time,
+        channel, actual );
+
+      effect.player->register_combat_begin( [cdgrp, cdgrp_dur, buff, action, actual, time]( player_t* ) {
+        buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
+        action->cooldown->start( action->cooldown->duration - time );
+        if ( cdgrp_dur > 0_ms )
+          cdgrp->start( cdgrp_dur );
+      } );
+    }
+  }
 }
 
 // Arcane Tempest =========================================================

@@ -1213,6 +1213,8 @@ struct sim_t : private sc_thread_t
     bool                shiver_venom = false;
     /// Storm of the Eternal haste and crit stat split ratio.
     double              storm_of_the_eternal_ratio = 0.05;
+    /// How long before combat to start channeling Azshara's Font of Power
+    timespan_t          font_of_power_precombat_channel = 0_ms;
   } bfa_opts;
 
   // Expansion specific data

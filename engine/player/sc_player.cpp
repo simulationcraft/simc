@@ -10270,6 +10270,19 @@ expr_t* player_t::create_expression( const std::string& expression_str )
 
       throw std::invalid_argument(fmt::format("Unsupported movement expression '{}'.", splits[ 1 ]));
     }
+
+    // specific bfa. options
+    if ( splits[ 0 ] == "bfa" )
+    {
+      if ( splits[ 1 ] == "font_of_power_precombat_channel" )
+      {
+        return make_fn_expr( expression_str, [this] {
+          return sim->bfa_opts.font_of_power_precombat_channel.total_seconds();
+        } );
+      }
+
+      throw std::invalid_argument( fmt::format( "Unsupported bfa. option '{}'.", splits[ 1 ] ) );
+    }
   } // splits.size() == 2
 
 
