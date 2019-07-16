@@ -5488,15 +5488,15 @@ void hunter_t::apl_mm()
   st -> add_talent( this, "A Murder of Crows" );
   st -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
   st -> add_action( this, "Rapid Fire", "if=buff.trueshot.down|focus<70");
-  st -> add_action( this, "blood_of_the_enemy", "if=buff.trueshot.up&(buff.unerring_vision.stack>4|!azerite.unerring_vision.enabled)|target.time_to_die<11" );
-  st -> add_action( this, "focused_azerite_beam", "if=!buff.trueshot.up" );
+  st -> add_action( "blood_of_the_enemy,if=buff.trueshot.up&(buff.unerring_vision.stack>4|!azerite.unerring_vision.enabled)|target.time_to_die<11" );
+  st -> add_action( "focused_azerite_beam,if=!buff.trueshot.up" );
   st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.master_marksman.up&!buff.memory_of_lucid_dreams.up");
   st -> add_action( this, "Aimed Shot", "if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time&cooldown.trueshot.remains" );
   st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.master_marksman.up&buff.memory_of_lucid_dreams.up" );
   st -> add_talent( this, "Piercing Shot" );
-  st -> add_action( this, "purifying_blast", "if=!buff.trueshot.up" );
-  st -> add_action( this, "concentrated_flame", "if=!buff.trueshot.up" );
-  st -> add_action( this, "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
+  st -> add_action( "purifying_blast,if=!buff.trueshot.up" );
+  st -> add_action( "concentrated_flame,if=!buff.trueshot.up" );
+  st -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   st -> add_action( this, "Arcane Shot", "if=buff.trueshot.down&(buff.precise_shots.up&(focus>41|buff.master_marksman.up)|(focus>50&azerite.focused_fire.enabled|focus>75)&(cooldown.trueshot.remains>5|focus>80)|target.time_to_die<5)" );
   st -> add_action( this, "Steady Shot" );
 
