@@ -8644,7 +8644,7 @@ void druid_t::apl_balance()
   action_priority_list_t* default_list = get_action_priority_list( "default" );
 
   if ( sim->allow_potions && true_level >= 80 )
-    default_list->add_action( "potion,if=buff.ca_inc.remains>6" );
+    default_list->add_action( "potion,if=buff.celestial_alignment.remains>13|buff.incarnation.remains>16.5" );
 
   // Precombat Hack
   default_list->add_action( this, "Solar Wrath", "precombat=1,if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel"
