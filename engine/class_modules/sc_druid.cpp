@@ -758,7 +758,7 @@ public:
     starshards( 0.0 ),
     previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
-    initial_astral_power( 8 ),
+    initial_astral_power( 0 ),
     initial_moon_stage( NEW_MOON ),
     lively_spirit_stacks(9),  //set a usually fitting default value
     ahhhhh_the_great_outdoors( false ),
@@ -2173,33 +2173,33 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 {
 private:
   typedef druid_spell_base_t<spell_t> ab;
+
 public:
   bool warrior_of_elune;
   bool owlkin_frenzy;
+  bool precombat;
+  bool precombat_cast;
 
-  druid_spell_t( const std::string& token, druid_t* p,
-                 const spell_data_t* s      = spell_data_t::nil(),
-                 const std::string& options = std::string() )
-    : base_t( token, p, s ),
-      warrior_of_elune( data().affected_by( p -> talent.warrior_of_elune -> effectN( 1 ) ) ),
-      owlkin_frenzy( data().affected_by( p -> spec.owlkin_frenzy -> effectN( 1 ) ) )
+  druid_spell_t( const std::string& token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
+    const std::string& options = std::string() ) :
+    base_t( token, p, s ),
+    warrior_of_elune( data().affected_by( p->talent.warrior_of_elune->effectN( 1 ) ) ),
+    owlkin_frenzy( data().affected_by( p->spec.owlkin_frenzy->effectN( 1 ) ) ), precombat( false ),
+    precombat_cast( false )
   {
+    add_option( opt_bool( "precombat", precombat ) );
     parse_options( options );
 
     // Apply Guardian Druid aura damage modifiers
-    if (p -> specialization() == DRUID_GUARDIAN)
+    if ( p->specialization() == DRUID_GUARDIAN )
     {
       // direct damage
-      if ( s -> affected_by( p -> spec.guardian -> effectN( 1 ) ) )
-      {
-        base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 1 ).percent();
-      }
+      if ( s->affected_by( p->spec.guardian->effectN( 1 ) ) )
+        base_dd_multiplier *= 1.0 + p->spec.guardian->effectN( 1 ).percent();
 
       // ticking damage
-      if ( s -> affected_by( p -> spec.guardian -> effectN( 2 ) ) )
-      {
-        base_td_multiplier *= 1.0 + p -> spec.guardian -> effectN( 2 ).percent();
-      }
+      if ( s->affected_by( p->spec.guardian->effectN( 2 ) ) )
+        base_td_multiplier *= 1.0 + p->spec.guardian->effectN( 2 ).percent();
     }
   }
 
@@ -2209,13 +2209,11 @@ public:
 
     if ( energize_resource_() == RESOURCE_ASTRAL_POWER )
     {
-      if (warrior_of_elune && p()->buff.warrior_of_elune->check())
-        e *= 1.0 + p()->talent.warrior_of_elune->effectN(2).percent();
+      if ( warrior_of_elune && p()->buff.warrior_of_elune->check() )
+        e *= 1.0 + p()->talent.warrior_of_elune->effectN( 2 ).percent();
 
       if ( p()->buffs.memory_of_lucid_dreams->up() )
-      {
         e *= 1.0 + p()->buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
-      }
     }
 
     return e;
@@ -2230,57 +2228,49 @@ public:
   virtual bool consume_cost_per_tick( const dot_t& dot ) override
   {
     bool ab = ab::consume_cost_per_tick( dot );
-    if (ab::consume_per_tick_) {
-        trigger_impeccable_fel_essence();
-    }
+    if ( ab::consume_per_tick_ )
+      trigger_impeccable_fel_essence();
+
     return ab;
   }
 
-  virtual double composite_ta_multiplier(const action_state_t* s) const override
+  virtual double composite_ta_multiplier( const action_state_t* s ) const override
   {
-    double tm = base_t::composite_ta_multiplier(s);
+    double tm = base_t::composite_ta_multiplier( s );
 
-    if (data().affected_by(p()->talent.incarnation_moonkin->effectN(2)) && p()->buff.incarnation_moonkin->up())
-    {
-      tm *= 1.0 + p()->talent.incarnation_moonkin->effectN(2).percent();
-    }
-    if (data().affected_by(p()->spec.celestial_alignment->effectN(2)) && p()->buff.celestial_alignment->up())
-    {
-      tm *= 1.0 + p()->spec.celestial_alignment->effectN(2).percent();
-    }
-    if (data().affected_by(p()->spec.moonkin_form->effectN(10)) && p()->buff.moonkin_form->up())
-    {
-      tm *= 1.0 + p()->spec.moonkin_form->effectN(10).percent();
-    }
+    if ( data().affected_by( p()->talent.incarnation_moonkin->effectN( 2 ) ) && p()->buff.incarnation_moonkin->up() )
+      tm *= 1.0 + p()->talent.incarnation_moonkin->effectN( 2 ).percent();
+
+    if ( data().affected_by( p()->spec.celestial_alignment->effectN( 2 ) ) && p()->buff.celestial_alignment->up() )
+      tm *= 1.0 + p()->spec.celestial_alignment->effectN( 2 ).percent();
+
+    if ( data().affected_by( p()->spec.moonkin_form->effectN( 10 ) ) && p()->buff.moonkin_form->up() )
+      tm *= 1.0 + p()->spec.moonkin_form->effectN( 10 ).percent();
 
     return tm;
   }
 
-  virtual double composite_da_multiplier(const action_state_t* s) const override
+  virtual double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double dm = base_t::composite_da_multiplier(s);
+    double dm = base_t::composite_da_multiplier( s );
 
-    if (data().affected_by(p()->talent.incarnation_moonkin->effectN(1)) && p()->buff.incarnation_moonkin->up())
-    {
-      dm *= 1.0 + p()->talent.incarnation_moonkin->effectN(1).percent();
-    }
-    if (data().affected_by(p()->spec.celestial_alignment->effectN(1)) && p()->buff.celestial_alignment->up())
-    {
-      dm *= 1.0 + p()->spec.celestial_alignment->effectN(1).percent();
-    }
-    if (data().affected_by(p()->spec.moonkin_form->effectN(9)) && p()->buff.moonkin_form->up())
-    {
-      dm *= 1.0 + p()->spec.moonkin_form->effectN(9).percent();
-    }
+    if ( data().affected_by( p()->talent.incarnation_moonkin->effectN( 1 ) ) && p()->buff.incarnation_moonkin->up() )
+      dm *= 1.0 + p()->talent.incarnation_moonkin->effectN( 1 ).percent();
+
+    if ( data().affected_by( p()->spec.celestial_alignment->effectN( 1 ) ) && p()->buff.celestial_alignment->up() )
+      dm *= 1.0 + p()->spec.celestial_alignment->effectN( 1 ).percent();
+
+    if ( data().affected_by( p()->spec.moonkin_form->effectN( 9 ) ) && p()->buff.moonkin_form->up() )
+      dm *= 1.0 + p()->spec.moonkin_form->effectN( 9 ).percent();
 
     return dm;
   }
-  
+
   virtual bool usable_moving() const override
   {
-    if (p()->buff.stellar_drift_2->check() && data().affected_by(p()->spec.stellar_drift_2->effectN(1)))
+    if ( p()->buff.stellar_drift_2->check() && data().affected_by( p()->spec.stellar_drift_2->effectN( 1 ) ) )
       return true;
-    
+
     return spell_t::usable_moving();
   }
 
@@ -2288,9 +2278,10 @@ public:
   {
     timespan_t et = ab::execute_time();
 
-    if (warrior_of_elune)
+    if ( warrior_of_elune )
       et *= 1 + p()->buff.warrior_of_elune->check_value();
-    if (owlkin_frenzy)
+
+    if ( owlkin_frenzy )
       et *= 1 + p()->buff.owlkin_frenzy->check_value();
 
     return et;
@@ -2299,74 +2290,83 @@ public:
   virtual void execute() override
   {
     // Adjust buffs and cooldowns if we're in precombat.
-    if ( ! p() -> in_combat )
+    if ( !p()->in_combat )
     {
-      if ( p() -> buff.incarnation_moonkin -> check() )
+      if ( p()->buff.incarnation_moonkin->check() )
       {
-        timespan_t time = std::max( std::max( min_gcd, trigger_gcd * composite_haste() ), base_execute_time * composite_haste() );
-        p() -> buff.incarnation_moonkin -> extend_duration( p(), -time );
-        p() -> cooldown.incarnation -> adjust( -time );
+        timespan_t time =
+          std::max( std::max( min_gcd, trigger_gcd * composite_haste() ), base_execute_time * composite_haste() );
+        p()->buff.incarnation_moonkin->extend_duration( p(), -time );
+        p()->cooldown.incarnation->adjust( -time );
       }
     }
 
     ab::execute();
 
-    if (time_to_execute == timespan_t::zero()) // Check on instant cast to see if instant-cast-buff decrement is needed
+    // Check on instant cast to see if instant-cast-buff decrement is needed
+    if ( time_to_execute == timespan_t::zero() )
     {
-      if (warrior_of_elune && p()->buff.warrior_of_elune->up())
+      if ( warrior_of_elune && p()->buff.warrior_of_elune->up() )
         p()->buff.warrior_of_elune->decrement();
-      else if (owlkin_frenzy && p()->buff.owlkin_frenzy->up())
+
+      else if ( owlkin_frenzy && p()->buff.owlkin_frenzy->up() )
         p()->buff.owlkin_frenzy->decrement();
     }
   }
 
   virtual void trigger_impeccable_fel_essence()
   {
-    if ( p() -> legendary.impeccable_fel_essence == timespan_t::zero() )
+    if ( p()->legendary.impeccable_fel_essence == timespan_t::zero() )
       return;
+
     if ( resource_current != RESOURCE_ASTRAL_POWER )
       return;
+
     if ( last_resource_cost <= 0.0 )
       return;
 
-    timespan_t reduction = last_resource_cost * p() -> legendary.impeccable_fel_essence;
-    p() -> cooldown.celestial_alignment -> adjust( reduction );
-    p() -> cooldown.incarnation -> adjust( reduction );
+    timespan_t reduction = last_resource_cost * p()->legendary.impeccable_fel_essence;
+    p()->cooldown.celestial_alignment->adjust( reduction );
+    p()->cooldown.incarnation->adjust( reduction );
   };
 
   virtual double composite_lunar_empowerment() const
   {
-    double le = p() -> buff.lunar_empowerment -> check_value();
+    double le = p()->buff.lunar_empowerment->check_value();
 
-    le += p() -> mastery.starlight -> ok() * p() -> cache.mastery_value();
-    if (p ()->talent.soul_of_the_forest->ok ())
-      le *= (1.0 + p ()->talent.soul_of_the_forest->effectN (1).percent ());
+    le += p()->mastery.starlight->ok() * p()->cache.mastery_value();
+
+    if ( p()->talent.soul_of_the_forest->ok() )
+      le *= ( 1.0 + p()->talent.soul_of_the_forest->effectN( 1 ).percent() );
 
     return le;
   }
 
-  expr_t* create_expression(const std::string& name_str) override
+  expr_t* create_expression( const std::string& name_str ) override
   {
-    std::vector<std::string> splits = util::string_split(name_str, ".");
+    std::vector<std::string> splits = util::string_split( name_str, "." );
 
     // check for AP overcap on current action. check for other action handled in druid_t::create_expression
     // syntax: ap_check.<allowed overcap = 0>
-    if (p()->specialization() == DRUID_BALANCE && util::str_compare_ci(splits[0], "ap_check"))
+    if ( p()->specialization() == DRUID_BALANCE && util::str_compare_ci( splits[ 0 ], "ap_check" ) )
     {
-      return make_fn_expr(name_str, [this, splits]() {
+      return make_fn_expr( name_str, [this, splits]() {
         action_state_t* state = this->get_state();
-        double ap = p()->resources.current[RESOURCE_ASTRAL_POWER];
-        ap += composite_energize_amount(state);
-        ap += p()->talent.shooting_stars->ok() ? p()->spec.shooting_stars_dmg->effectN(2).base_value() / 10 : 0;
-        ap += p()->talent.natures_balance->ok() ? std::ceil(time_to_execute / timespan_t::from_seconds(1.5)) : 0;
-        action_state_t::release(state);
-        return ap <= p()->resources.base[RESOURCE_ASTRAL_POWER] + (splits.size() >= 2 ? std::stoi(splits[1]) : 0);
-      });
+        double ap = p()->resources.current[ RESOURCE_ASTRAL_POWER ];
+
+        ap += composite_energize_amount( state );
+        ap += p()->talent.shooting_stars->ok() ? p()->spec.shooting_stars_dmg->effectN( 2 ).base_value() / 10 : 0;
+        ap += p()->talent.natures_balance->ok() ? std::ceil( time_to_execute / 1.5_s ) : 0;
+
+        action_state_t::release( state );
+        return ap
+               <= p()->resources.base[ RESOURCE_ASTRAL_POWER ] + ( splits.size() >= 2 ? std::stoi( splits[ 1 ] ) : 0 );
+      } );
     }
 
-    return ab::create_expression(name_str);
+    return ab::create_expression( name_str );
   }
-}; // end druid_spell_t
+};  // end druid_spell_t
 
 // Shooting Stars ===========================================================
 
@@ -6537,10 +6537,28 @@ struct solar_wrath_t : public druid_spell_t
     druid_spell_t( "solar_wrath", player, player->find_affinity_spell( "Solar Wrath" ), options_str )
   {
     form_mask = NO_FORM | MOONKIN_FORM;
-
     add_child( player->active.solar_empowerment );
-
     energize_amount = player->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+
+    if ( precombat )
+    {
+      base_execute_time = trigger_gcd = 0_ms;
+      travel_speed = 0;
+    }
+  }
+
+  void reset() override
+  {
+    druid_spell_t::reset();
+    precombat_cast = false;
+  }
+
+  bool ready() override
+  {
+    if ( precombat && precombat_cast )
+      return false;
+
+    return druid_spell_t::ready();
   }
 
   double composite_crit_chance() const override
@@ -6563,9 +6581,7 @@ struct solar_wrath_t : public druid_spell_t
     druid_spell_t::snapshot_state( state, type );
 
     if ( p()->buff.solar_empowerment->check() && player->specialization() == DRUID_BALANCE )
-    {
       debug_cast<solar_wrath_state_t*>( state )->empowered = true;
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -6573,10 +6589,9 @@ struct solar_wrath_t : public druid_spell_t
     druid_spell_t::impact( s );
 
     solar_wrath_state_t* st = debug_cast<solar_wrath_state_t*>( s );
+
     if ( st->empowered )
-    {
       p()->trigger_solar_empowerment( s );
-    }
   }
 
   timespan_t gcd() const override
@@ -6603,6 +6618,9 @@ struct solar_wrath_t : public druid_spell_t
 
   void execute() override
   {
+    if ( precombat )
+      precombat_cast = true;
+
     if ( !p()->buff.solar_empowerment->up() )
       p()->proc.unempowered_solar_wrath->occur();
 
@@ -6816,7 +6834,24 @@ struct starsurge_t : public druid_spell_t
     druid_spell_t( "starsurge", p,
       p->specialization() == DRUID_BALANCE ? p->find_affinity_spell( "Starsurge" ) : p->find_spell( 197626 ),
       options_str )
-  {}
+  {
+    if ( precombat )
+      base_execute_time = trigger_gcd = 0_ms;
+  }
+
+  void reset() override
+  {
+    druid_spell_t::reset();
+    precombat_cast = false;
+  }
+
+  bool ready() override
+  {
+    if ( precombat && precombat_cast )
+      return false;
+
+    return druid_spell_t::ready();
+  }
 
   double cost() const override
   {
@@ -6848,9 +6883,7 @@ struct starsurge_t : public druid_spell_t
     double cdbm = druid_spell_t::composite_crit_damage_bonus_multiplier();
 
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T20, B2 ) )
-    {
       cdbm += p()->sets->set( DRUID_BALANCE, T20, B2 )->effectN( 2 ).percent();
-    }
 
     return cdbm;
   }
@@ -6861,6 +6894,7 @@ struct starsurge_t : public druid_spell_t
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T19, B4 ) )
     {
       bool apply = td( target )->dots.moonfire->is_ticking() & td( target )->dots.sunfire->is_ticking();
+
       if ( apply )
         tm *= 1.0 + p()->sets->set( DRUID_BALANCE, T19, B4 )->effectN( 1 ).percent();
     }
@@ -6869,6 +6903,9 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
+    if ( precombat )
+      precombat_cast = true;
+
     druid_spell_t::execute();
 
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T20, B4 ) )
@@ -6932,7 +6969,8 @@ struct starsurge_t : public druid_spell_t
         else
           proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
 
-        p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );  // hardcoded 12AP because 6s / 20s * 40AP = 12AP
+        // hardcoded 12AP because 6s / 20s * 40AP = 12AP
+        p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );
         p()->buff.arcanic_pulsar->expire();
         p()->proc.arcanic_pulsar_proc->occur();
         streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
@@ -8289,7 +8327,7 @@ void druid_t::apl_precombat()
   // Spec Specific Optimizations
   if ( specialization() == DRUID_BALANCE )
   {
-    precombat -> add_action( this, "Solar Wrath", "if=!bfa.font_of_power_precombat_channel" );
+    precombat -> add_action( this, "Solar Wrath", "if=!bfa.font_of_power_precombat_channel|!equipped.azsharas_font_of_power" );
   }
   else if ( specialization() == DRUID_RESTORATION )
     precombat -> add_talent( this, "Cenarion Ward" );
@@ -8604,6 +8642,9 @@ void druid_t::apl_balance()
   if ( sim->allow_potions && true_level >= 80 )
     default_list->add_action( "potion,if=buff.ca_inc.remains>6" );
 
+  // Precombat Hack
+  default_list->add_action( this, "Solar Wrath", "precombat=1,if=!bfa.font_of_power_precombat_channel|!equipped.azsharas_font_of_power", "Precombat Hack" );
+  default_list->add_action( this, "Starsurge", "precombat=1" );
   // CDs
   default_list->add_action( "berserking,if=buff.ca_inc.up", "CDs" );
   default_list->add_action( "use_item,name=azsharas_font_of_power,if=!buff.ca_inc.up,"
@@ -8932,7 +8973,8 @@ void druid_t::init_resources( bool force )
 
   resources.current[ RESOURCE_RAGE ] = 0;
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
-  resources.current[ RESOURCE_ASTRAL_POWER ] = std::max(talent.natures_balance->ok() ? 58.0 : 0.0, initial_astral_power);
+  resources.current[ RESOURCE_ASTRAL_POWER ] =
+    std::max( talent.natures_balance->ok() ? 50.0 : 0.0, initial_astral_power );
   expected_max_health = calculate_expected_max_health();
 }
 
