@@ -2351,7 +2351,7 @@ void action_t::init()
   {
     if ( harmful )
     {
-      if ( this->travel_time() > timespan_t::zero() || this->base_execute_time > timespan_t::zero() )
+      if ( this->travel_time() > timespan_t::zero() || this->execute_time() > timespan_t::zero() )
       {
         player->precombat_action_list.push_back( this );
       }

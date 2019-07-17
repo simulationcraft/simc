@@ -8603,7 +8603,7 @@ struct use_items_t : public action_t
       }
 
       // As precombat /use_item,name=X are only used once, don't remove them.
-      if ( action->action_list && action->action_list->name_str == "precombat" && action->action )
+      if ( action->action_list && action->action_list->name_str == "precombat" )
         return;
 
       // Find out if the item is worn
@@ -8629,6 +8629,10 @@ struct use_items_t : public action_t
       {
         return;
       }
+
+      // As precombat /use_item,effect_name=X are only used once, don't remove them.
+      if ( action->action_list && action->action_list->name_str == "precombat" )
+        return;
 
       // Find out if the item is worn
       auto it = range::find_if( player->items, [action]( const item_t& item ) {
