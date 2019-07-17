@@ -4759,6 +4759,8 @@ public:
   { return active_during_iteration || ( dynamic && sim -> report_pets_separately == 1 ); }
 
   timespan_t composite_active_time() const override;
+
+  void acquire_target( retarget_event_e /* event */, player_t* /* context */ = nullptr ) override;
 };
 
 
