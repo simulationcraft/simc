@@ -5464,8 +5464,9 @@ void mage_t::init_benefits()
     case MAGE_FIRE:
       if ( azerite.blaster_master.enabled() )
       {
-        benefits.blaster_master.combustion    = std::make_unique<buff_stack_benefit_t>( buffs.blaster_master, "Combustion" );
-        benefits.blaster_master.rune_of_power = std::make_unique<buff_stack_benefit_t>( buffs.blaster_master, "Rune of Power" );
+        benefits.blaster_master.combustion = std::make_unique<buff_stack_benefit_t>( buffs.blaster_master, "Combustion" );
+        if ( talents.rune_of_power->ok() )
+          benefits.blaster_master.rune_of_power = std::make_unique<buff_stack_benefit_t>( buffs.blaster_master, "Rune of Power" );
         if ( talents.searing_touch->ok() )
           benefits.blaster_master.searing_touch = std::make_unique<buff_stack_benefit_t>( buffs.blaster_master, "Searing Touch" );
       }
