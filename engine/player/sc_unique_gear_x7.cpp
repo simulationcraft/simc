@@ -3828,33 +3828,36 @@ void items::azsharas_font_of_power( special_effect_t& effect )
   effect.disable_buff();
 
   // pre-combat channeling hack
-  if ( effect.player->sim->bfa_opts.font_of_power_precombat_channel > 0_ms )
+  timespan_t time = effect.player->sim->bfa_opts.font_of_power_precombat_channel;
+  if ( time > 0_ms )
   {
-    auto time = timespan_t::from_seconds(
-      static_cast<int>( effect.player->sim->bfa_opts.font_of_power_precombat_channel.total_seconds() ) );
-    if ( time > 0_ms )
-    {
-      auto channel    = std::min( 4_s, time );             // how long you channel for
-      auto total      = effect.trigger()->duration() * ( channel.total_seconds() + 1 ); // total duration of the buff
-      auto actual     = total + channel - time;            // actual duration of the buff you'll get in combat
-      auto cd_dur     = action->cooldown->duration - time; // cooldown on effect/trinket at start of combat
-      auto cdgrp      = effect.player->get_cooldown( effect.cooldown_group_name() );    // shared cd
-      auto cdgrp_dur  = std::max( 0_ms, effect.cooldown_group_duration() - time );      // shared cd duration
-      auto use_action = effect.player->find_action( "use_item_" + effect.item->name_str );
+    // how long you channel for (rounded down to seconds)
+    auto channel    = std::min( 4_s, timespan_t::from_seconds( static_cast<int>( time.total_seconds() ) ) );
+    // total duration of the buff from channeling
+    auto total      = effect.trigger()->duration() * ( channel.total_seconds() + 1 );
+    // actual duration of the buff you'll get in combat
+    auto actual     = total + channel - time;
+    // cooldown on effect/trinket at start of combat
+    auto cd_dur     = action->cooldown->duration - time;
+    // shared cd (other trinkets & on-use items)
+    auto cdgrp      = effect.player->get_cooldown( effect.cooldown_group_name() );
+    // shared cooldown at start of combat
+    auto cdgrp_dur  = std::max( 0_ms, effect.cooldown_group_duration() - time );
 
-      effect.player->sim->print_debug(
-        "Azshara's Hack of Power started {}s before combat, channeled for {}s, giving {}s buff in combat", time,
-        channel, actual );
+    auto use_action = effect.player->find_action( "use_item_" + effect.item->name_str );
 
-      effect.player->register_combat_begin( [buff, actual, action, use_action, cd_dur, cdgrp, cdgrp_dur]( player_t* ) {
-        buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
-        action->cooldown->start( cd_dur );
-        if ( use_action )
-          use_action->cooldown->start( cd_dur );
-        if ( cdgrp_dur > 0_ms )
-          cdgrp->start( cdgrp_dur );
-      } );
-    }
+    effect.player->sim->print_debug(
+      "Azshara's Hack of Power started {}s before combat, channeled for {}s, giving {}s buff in combat", time,
+      channel, actual );
+
+    effect.player->register_combat_begin( [buff, actual, action, use_action, cd_dur, cdgrp, cdgrp_dur]( player_t* ) {
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
+      action->cooldown->start( cd_dur );
+      if ( use_action )
+        use_action->cooldown->start( cd_dur );
+      if ( cdgrp_dur > 0_ms )
+        cdgrp->start( cdgrp_dur );
+    } );
   }
 }
 
