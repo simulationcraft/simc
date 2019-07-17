@@ -8274,14 +8274,14 @@ void druid_t::apl_precombat()
   if ( specialization() == DRUID_BALANCE )
   {
     // Azerite variables
-    precombat->add_action("variable,name=az_ss,value=azerite.streaking_stars.rank", "Azerite variables");
-    precombat->add_action("variable,name=az_ap,value=azerite.arcanic_pulsar.rank");
+    precombat->add_action( "variable,name=az_ss,value=azerite.streaking_stars.rank", "Azerite variables" );
+    precombat->add_action( "variable,name=az_ap,value=azerite.arcanic_pulsar.rank" );
     // Starfall v Starsurge target cutoff
-    precombat->add_action("variable,name=sf_targets,value=4", "Starfall v Starsurge target cutoff");
-    precombat->add_action("variable,name=sf_targets,op=add,value=1,if=azerite.arcanic_pulsar.enabled");
-    precombat->add_action("variable,name=sf_targets,op=add,value=1,if=talent.starlord.enabled");
-    precombat->add_action("variable,name=sf_targets,op=add,value=1,if=azerite.streaking_stars.rank>2&azerite.arcanic_pulsar.enabled");
-    precombat->add_action("variable,name=sf_targets,op=sub,value=1,if=!talent.twin_moons.enabled");
+    precombat->add_action( "variable,name=sf_targets,value=4", "Starfall v Starsurge target cutoff" );
+    precombat->add_action( "variable,name=sf_targets,op=add,value=1,if=azerite.arcanic_pulsar.enabled" );
+    precombat->add_action( "variable,name=sf_targets,op=add,value=1,if=talent.starlord.enabled" );
+    precombat->add_action( "variable,name=sf_targets,op=add,value=1,if=azerite.streaking_stars.rank>2&azerite.arcanic_pulsar.enabled" );
+    precombat->add_action( "variable,name=sf_targets,op=sub,value=1,if=!talent.twin_moons.enabled" );
   }
 
   // Guardian
@@ -8290,14 +8290,14 @@ void druid_t::apl_precombat()
     // Memory of Lucid Dreams doubles the Rage gain from Bear Form
     precombat->add_action( "memory_of_lucid_dreams" );
   }
-  
+
   // Forms
-  if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) ||
-       ( specialization() == DRUID_GUARDIAN && catweave_bear && talent.feral_affinity -> ok() ) ||
-       primary_role() == ROLE_ATTACK )
+  if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
+       || ( specialization() == DRUID_GUARDIAN && catweave_bear && talent.feral_affinity->ok() )
+       || primary_role() == ROLE_ATTACK )
   {
-    precombat -> add_action( this, "Cat Form" );
-    precombat -> add_action( this, "Prowl" );
+    precombat->add_action( this, "Cat Form" );
+    precombat->add_action( this, "Prowl" );
   }
   else if ( specialization() == DRUID_RESTORATION && role == ROLE_ATTACK )
   {
@@ -8311,11 +8311,11 @@ void druid_t::apl_precombat()
   }
   else if ( primary_role() == ROLE_TANK )
   {
-    precombat -> add_action( this, "Bear Form" );
+    precombat->add_action( this, "Bear Form" );
   }
   else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
   {
-    precombat -> add_action( this, "Moonkin Form" );
+    precombat->add_action( this, "Moonkin Form" );
   }
 
   // Snapshot stats
@@ -8327,13 +8327,17 @@ void druid_t::apl_precombat()
   // Spec Specific Optimizations
   if ( specialization() == DRUID_BALANCE )
   {
-    precombat -> add_action( this, "Solar Wrath", "if=!bfa.font_of_power_precombat_channel|!equipped.azsharas_font_of_power" );
+    precombat->add_action( this, "Solar Wrath", "if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel"
+                                   "|bfa.font_of_power_precombat_channel>=7.0" );
   }
   else if ( specialization() == DRUID_RESTORATION )
-    precombat -> add_talent( this, "Cenarion Ward" );
+  {
+    precombat->add_talent( this, "Cenarion Ward" );
+  }
   else if ( specialization() == DRUID_FERAL )
-    precombat -> add_action("berserk");
-    
+  {
+    precombat->add_action( "berserk" );
+  }
 }
 
 // NO Spec Combat Action Priority List ======================================
@@ -8643,7 +8647,8 @@ void druid_t::apl_balance()
     default_list->add_action( "potion,if=buff.ca_inc.remains>6" );
 
   // Precombat Hack
-  default_list->add_action( this, "Solar Wrath", "precombat=1,if=!bfa.font_of_power_precombat_channel|!equipped.azsharas_font_of_power", "Precombat Hack" );
+  default_list->add_action( this, "Solar Wrath", "precombat=1,if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel"
+                                    "|bfa.font_of_power_precombat_channel>=5.5", "Precombat Hack" );
   default_list->add_action( this, "Starsurge", "precombat=1" );
   // CDs
   default_list->add_action( "berserking,if=buff.ca_inc.up", "CDs" );
