@@ -8646,10 +8646,10 @@ void druid_t::apl_balance()
   if ( sim->allow_potions && true_level >= 80 )
     default_list->add_action( "potion,if=buff.celestial_alignment.remains>13|buff.incarnation.remains>16.5" );
 
-  // Precombat Hack
+  // Precombat Hack - WARNING: there is NO checking to see if these actually happen precombat!! You MUST carefuly ensure this with conditions.
   default_list->add_action( this, "Solar Wrath", "precombat=1,if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel"
                                     "|bfa.font_of_power_precombat_channel>=5.5", "Precombat Hack" );
-  default_list->add_action( this, "Starsurge", "precombat=1" );
+  default_list->add_action( this, "Starsurge", "precombat=1,if=talent.natures_balance.enabled" );
   // CDs
   default_list->add_action( "berserking,if=buff.ca_inc.up", "CDs" );
   default_list->add_action( "use_item,name=azsharas_font_of_power,if=!buff.ca_inc.up,"
