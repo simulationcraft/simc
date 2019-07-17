@@ -754,7 +754,7 @@ public:
     lucid_dreams_proc_chance_feral( 0.15 ),
     lucid_dreams_proc_chance_guardian( 0.15 ),
     thorns_attack_period( 2.0 ),
-    thorns_hit_chance( 1.0 ),
+    thorns_hit_chance( 0.75 ),
     starshards( 0.0 ),
     previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
