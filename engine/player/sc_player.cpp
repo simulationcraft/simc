@@ -13266,8 +13266,9 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
   // usually are handled in action target cache regeneration)?
   if ( sim->debug )
   {
-    sim->out_debug.printf( "%s retargeting event=%s context=%s", name(), util::retarget_event_string( event ),
-                           context ? context->name() : "NONE" );
+    sim->out_debug.printf( "%s retargeting event=%s context=%s current_target=%s", name(),
+        util::retarget_event_string( event ),
+        context ? context->name() : "NONE", target ? target->name() : "NONE" );
   }
 
   player_t* candidate_target = nullptr;
@@ -13287,6 +13288,14 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
 
     candidate_target = enemy;
     break;
+  }
+
+  // Invulnerable targets are currently not in the target_non_sleeping_list, so fall back to
+  // checking if the first target has the invulnerability buff up, and use that as the fallback
+  auto first_target = sim->target_list.data().front();
+  if ( !first_invuln_target && first_target->debuffs.invulnerable->up() )
+  {
+    first_invuln_target = first_target;
   }
 
   // Only perform target acquisition if the actor's current target would change (to the candidate
