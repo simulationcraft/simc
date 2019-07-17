@@ -13,6 +13,8 @@
 #include <curl/curl.h>
 #endif
 
+#include "util/utf8-2.h"
+
 // ==========================================================================
 // Blizzard Community Platform API
 // ==========================================================================
@@ -1068,18 +1070,26 @@ player_t* bcp_api::download_player( sim_t*             sim,
 
   player_spec_t player;
 
-  auto normalized_name = name;
-  util::tolower( normalized_name );
+  std::vector<std::string::value_type> chars { name.begin(), name.end() };
+  chars.push_back( 0 );
+
+  utf8lwr( reinterpret_cast<void*>( chars.data() ) );
+
+  auto normalized_name = std::string { chars.begin(), chars.end() };
+  util::urlencode( normalized_name );
+
+  auto normalized_server = server;
+  util::tolower( normalized_server );
 
   if ( !util::str_compare_ci( region, "cn" ) )
   {
-    player.url = fmt::format( GLOBAL_PLAYER_ENDPOINT_URI, region, server, normalized_name, region, LOCALES[ region ].first );
-    player.origin = fmt::format( GLOBAL_ORIGIN_URI, LOCALES[ region ].second, server, normalized_name );
+    player.url = fmt::format( GLOBAL_PLAYER_ENDPOINT_URI, region, normalized_server, normalized_name, region, LOCALES[ region ].first );
+    player.origin = fmt::format( GLOBAL_ORIGIN_URI, LOCALES[ region ].second, normalized_server, normalized_name );
   }
   else
   {
-    player.url = fmt::format( CHINA_PLAYER_ENDPOINT_URI, server, normalized_name );
-    player.origin = fmt::format( CHINA_ORIGIN_URI, server, normalized_name );
+    player.url = fmt::format( CHINA_PLAYER_ENDPOINT_URI, normalized_server, normalized_name );
+    player.origin = fmt::format( CHINA_ORIGIN_URI, normalized_server, normalized_name );
   }
 
 #ifdef SC_DEFAULT_APIKEY
@@ -1201,7 +1211,18 @@ bool bcp_api::download_guild( sim_t* sim,
 {
   rapidjson::Document js;
 
-  if ( ! download_roster( js, sim, region, server, name, caching ) )
+  std::vector<std::string::value_type> chars { name.begin(), name.end() };
+  chars.push_back( 0 );
+
+  utf8lwr( reinterpret_cast<void*>( chars.data() ) );
+
+  auto normalized_name = std::string { chars.begin(), chars.end() };
+  util::urlencode( normalized_name );
+
+  auto normalized_server = server;
+  util::tolower( normalized_server );
+
+  if ( ! download_roster( js, sim, region, normalized_server, normalized_name, caching ) )
     return false;
 
   if ( !check_for_error( sim, js ) )
