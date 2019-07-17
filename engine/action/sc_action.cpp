@@ -1826,6 +1826,18 @@ void action_t::start_gcd()
 
 void action_t::schedule_execute( action_state_t* execute_state )
 {
+  if ( target->is_sleeping() )
+  {
+    sim->print_debug( "{} action={} attempted to schedule on a dead target {}",
+      player->name(), name(), target->name() );
+
+    if ( execute_state )
+    {
+      action_state_t::release( execute_state );
+    }
+    return;
+  }
+
   if ( sim->log )
   {
     sim->out_log.printf( "%s schedules execute for %s", player->name(), name() );
