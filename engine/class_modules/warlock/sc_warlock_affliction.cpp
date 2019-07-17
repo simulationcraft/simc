@@ -1065,6 +1065,9 @@ namespace warlock
     def->add_action( "the_unbound_force,if=buff.reckless_force.remains" );
     def->add_action( "agony,target_if=min:dot.agony.remains,if=remains<=gcd+action.shadow_bolt.execute_time&target.time_to_die>8" );
     def->add_action( "memory_of_lucid_dreams,if=time<30" );
+    def->add_action( "agony,line_cd=30,if=cooldown.summon_darkglare.remains<=15&equipped.169314", "Temporary fix to make sure azshara's font doesn't break darkglare usage." );
+    def->add_action( "corruption,line_cd=30,if=cooldown.summon_darkglare.remains<=15&equipped.169314&!talent.absolute_corruption.enabled&(talent.siphon_life.enabled|spell_targets.seed_of_corruption_aoe>1&spell_targets.seed_of_corruption_aoe<=3)" );
+    def->add_action( "siphon_life,line_cd=30,if=cooldown.summon_darkglare.remains<=15&equipped.169314" );
     def->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.summon_darkglare.remains<10" );
     def->add_action( "unstable_affliction,target_if=!contagion&target.time_to_die<=8" );
     def->add_action( "drain_soul,target_if=min:debuff.shadow_embrace.remains,cancel_if=ticks_remain<5,if=talent.shadow_embrace.enabled&variable.maintain_se&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=gcd*2" );
