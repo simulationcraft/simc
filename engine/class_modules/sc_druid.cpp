@@ -8678,16 +8678,16 @@ void druid_t::apl_balance()
   default_list->add_action( "use_items" );
   default_list->add_talent( this, "Warrior of Elune", "" );
   default_list->add_action( this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)" );
+  default_list->add_talent( this, "Force of Nature", "if=(variable.az_ss&!buff.ca_inc.up|!variable.az_ss&(buff.ca_inc.up|cooldown.ca_inc.remains>30))&ap_check" );
   default_list->add_action( "incarnation,if=!buff.ca_inc.up"
                               "&(buff.memory_of_lucid_dreams.up|((cooldown.memory_of_lucid_dreams.remains>20|!essence.memory_of_lucid_dreams.major)&ap_check))"
                               "&(buff.memory_of_lucid_dreams.up|ap_check),"
                               "target_if=dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)" );
-  default_list->add_action( this, "Celestial Alignment", "if=!buff.ca_inc.up"
+  default_list->add_action( this, "Celestial Alignment", "if=!buff.ca_inc.up&(!talent.starlord.enabled|buff.starlord.up)"
                               "&(buff.memory_of_lucid_dreams.up|((cooldown.memory_of_lucid_dreams.remains>20|!essence.memory_of_lucid_dreams.major)&ap_check))"
                               "&(!azerite.lively_spirit.enabled|buff.lively_spirit.up),"
                               "target_if=(dot.sunfire.remains>2&dot.moonfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare.enabled))" );
   default_list->add_talent( this, "Fury of Elune", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&solar_wrath.ap_check" );
-  default_list->add_talent( this, "Force of Nature", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&ap_check" );
   // Spenders
   default_list->add_action("cancel_buff,name=starlord,if=buff.starlord.remains<3&!solar_wrath.ap_check", "Spenders");
   default_list->add_action(this, "Starfall", "if="
