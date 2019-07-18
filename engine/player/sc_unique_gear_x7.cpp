@@ -5030,6 +5030,10 @@ void items::cyclotronic_blast( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<cyclotronic_blast_t>( "cyclotronic_blast", effect );
+
+  action_t* action = effect.player->find_action( "use_item_" + effect.item->name_str );
+  if ( action )
+    action->base_execute_time = effect.execute_action->base_execute_time;
 }
 
 // Mechagon Logic Loop - Bit Band combo rings
