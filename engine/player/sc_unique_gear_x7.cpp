@@ -3291,14 +3291,16 @@ void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 
   auto action = create_proc_action<sote_arcane_damage_t>( "storm_of_the_eternal", effect );
 
-  timespan_t storm_period = effect.player->find_spell( 303722 )->duration();
-  unsigned storm_hits     = effect.player->find_spell( 303724 )->max_stacks();
+  timespan_t storm_period = effect.player->find_spell( 303722 )->duration();    // every 2 minutes
+  timespan_t storm_dur    = effect.player->find_spell( 303723 )->duration();    // over 10 seconds
+  unsigned storm_hits     = effect.player->find_spell( 303724 )->max_stacks();  // 3 hits
 
-  effect.player->register_combat_begin( [action, storm_period, storm_hits]( player_t* ) {
-    make_repeating_event( action->sim, storm_period, [action, storm_hits] {
+  effect.player->register_combat_begin( [action, storm_period, storm_dur, storm_hits]( player_t* ) {
+    make_repeating_event( action->sim, storm_period, [action, storm_dur, storm_hits] {
       for ( unsigned i = 0u; i < storm_hits; i++ )
       {
-        action->schedule_execute();
+        auto delay = timespan_t::from_seconds( action->sim->rng().range( 0.0, storm_dur.total_seconds() ) );
+        make_event( action->sim, delay, [action] { action->schedule_execute(); } );
       }
     } );
   } );
