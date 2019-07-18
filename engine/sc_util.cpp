@@ -2929,7 +2929,15 @@ void util::tokenize( std::string& name )
 
   // remove leading '_' or '+'
   std::string::size_type n = name.find_first_not_of( "_+" );
-  std::string::iterator it = name.erase( name.begin(), name.begin() + n );
+  std::string::iterator it;
+  if ( n != std::string::npos )
+  {
+    it = name.erase( name.begin(), name.begin() + n );
+  }
+  else
+  {
+    it = name.begin();
+  }
 
   for ( ; it != name.end(); )
   {
