@@ -65,7 +65,7 @@ role=tank
 position=front
 talents=1223231
 
-head=harbormaster_faceguard,id=157993,bonus_id=4775,ilevel=445,azerite_powers=118/192/30/44/13
+head=harbormaster_faceguard,id=157993,bonus_id=4775,ilevel=450,azerite_powers=118/192/30/44/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulder=pauldrons_of_fanatical_might,id=168364,bonus_id=4775,ilevel=450,azerite_powers=237/575/31/477/13
 back=drape_of_the_hatcher,id=168604,bonus_id=1517
