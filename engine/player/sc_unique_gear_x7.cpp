@@ -4255,52 +4255,98 @@ void items::dribbling_inkpod( special_effect_t& effect )
   struct conductive_ink_cb_t : public dbc_proc_callback_t
   {
     double hp_pct;
-    action_t* action;
 
-    conductive_ink_cb_t( const special_effect_t& e, action_t* a ) :
-      dbc_proc_callback_t( e.player, e ), hp_pct( e.driver()->effectN( 3 ).base_value() ), action( a )
+    conductive_ink_cb_t( const special_effect_t& e ) :
+      dbc_proc_callback_t( e.player, e ), hp_pct( e.trigger()->effectN( 1 ).base_value() )
     {}
+
+    void trigger( action_t* a, void* cd ) override
+    {
+      auto s = static_cast<action_state_t*>( cd );
+
+      if ( s->target->health_percentage() > hp_pct )
+      {
+        dbc_proc_callback_t::trigger( a, cd );
+      }
+    }
 
     void execute( action_t* a, action_state_t* s )
     {
+      if ( s->target->health_percentage() > hp_pct )
+      {
+        auto td = listener->get_target_data( s->target );
+        assert( td );
+        assert( td->debuff.conductive_ink );
+        td->debuff.conductive_ink->trigger();
+      }
+    }
+  };
+
+  struct conductive_ink_boom_cb_t : public dbc_proc_callback_t
+  {
+    double hp_pct;
+
+    conductive_ink_boom_cb_t( const special_effect_t& e, const special_effect_t& primary ) :
+      dbc_proc_callback_t( e.player, e ), hp_pct( primary.trigger()->effectN( 1 ).base_value() )
+    {}
+
+    void trigger( action_t* a, void* cd ) override
+    {
+      auto s  = static_cast<action_state_t*>( cd );
       auto td = listener->get_target_data( s->target );
       assert( td );
       assert( td->debuff.conductive_ink );
 
-      if ( s->target->health_percentage() >= hp_pct )  // over %, stack debuff
+      if ( td->debuff.conductive_ink->check() && s->target->health_percentage() <= hp_pct )
       {
-        td->debuff.conductive_ink->trigger();
-      }
-      // BOOM. But should happen as soon as target reaches 30%, not waiting until the next rppm proc we do like here.
-      else if ( td->debuff.conductive_ink->check() )
-      {
-        action->set_target( s->target );
-        action->execute();
-        td->debuff.conductive_ink->expire();
+        dbc_proc_callback_t::trigger( a, cd );
       }
     }
   };
 
   struct conductive_ink_t : public proc_t
   {
-    conductive_ink_t( const special_effect_t& e ) : proc_t( e, "conductive_ink", e.player->find_spell( 302491 ) )
+    conductive_ink_t( const special_effect_t& e, const special_effect_t& primary ) :
+      proc_t( e, "conductive_ink", e.driver() )
     {
-      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      base_dd_min = base_dd_max = primary.driver()->effectN( 1 ).average( primary.item );
     }
 
     double action_multiplier() const override
     {
-      auto td = player->get_target_data( target );
+      auto t  = execute_state ? execute_state->target : target;
+      auto td = player->get_target_data( t );
       assert( td );
       assert( td->debuff.conductive_ink );
 
       return proc_t::action_multiplier() * td->debuff.conductive_ink->stack();
     }
+
+    void execute() override
+    {
+      proc_t::execute();
+
+      auto t  = execute_state ? execute_state->target : target;
+      auto td = player->get_target_data( t );
+      assert( td );
+      assert( td->debuff.conductive_ink );
+      td->debuff.conductive_ink->expire();
+    }
   };
 
-  auto action = create_proc_action<conductive_ink_t>( "conductive_ink", effect );
+  new conductive_ink_cb_t( effect );
 
-  new conductive_ink_cb_t( effect, action );
+  auto second            = new special_effect_t( effect.player );
+  second->type           = effect.type;
+  second->source         = effect.source;
+  second->spell_id       = 302491;
+  second->proc_flags_    = PF_ALL_DAMAGE | PF_PERIODIC;
+  second->proc_flags2_   = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  second->proc_chance_   = 1.0;
+  second->execute_action = create_proc_action<conductive_ink_t>( "conductive_ink", *second, effect );
+  effect.player->special_effects.push_back( second );
+
+  new conductive_ink_boom_cb_t( *second, effect );
 }
 
 // Reclaimed Shock Coil ===================================================
