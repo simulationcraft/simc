@@ -65,15 +65,15 @@ role=tank
 position=front
 talents=1223231
 
-head=harbormaster_faceguard,id=157993,bonus_id=4775,ilevel=450,azerite_powers=118/192/30/44/13
+head=soulspun_casque,id=155866,bonus_id=1617/4819/4775,azerite_powers=450/157/30/83/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulder=pauldrons_of_fanatical_might,id=168364,bonus_id=4775,ilevel=450,azerite_powers=237/575/31/477/13
+shoulder=pauldrons_of_fanatical_might,id=168364,bonus_id=1517/4823,azerite_powers=237/575/31/477/13
 back=drape_of_the_hatcher,id=168604,bonus_id=1517
-chest=naga_centaurs_shellplate,id=168361,bonus_id=4775,ilevel=450,azerite_powers=440/575/461/83/13
+chest=naga_centaurs_shellplate,id=168361,bonus_id=1517/4823,azerite_powers=440/575/461/83/13
 wrists=waveblade_farseers_armguards,id=170303,bonus_id=1512
 hands=poens_deepsea_handguards,id=170336,bonus_id=1512
 waist=eternity_keepers_greatbelt,id=168869,bonus_id=1517
-legs=legplates_of_unbound_anguish,id=167217,ilevel=425
+legs=legplates_of_unbound_anguish,id=167217,bonus_id=4800/1547
 feet=akanas_reefstrider_boots,id=170143,bonus_id=1512
 finger1=cursed_lovers_ring,id=168891,enchant_id=168446,bonus_id=1517,enchant=accord_of_critical_strike
 finger2=ring_of_the_highborne_courtier,id=168890,enchant_id=168446,bonus_id=1517,enchant=accord_of_critical_strike
