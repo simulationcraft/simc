@@ -5472,7 +5472,7 @@ void warrior_t::apl_prot()
   st -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
   st -> add_action( "anima_of_death,if=buff.last_stand.up" );
   st -> add_action( this, "Shield Slam" );
-  st -> add_action( "use_item,name=ashvanes_razor_coral,target_if=debuff.razor_coral_debuff.stack=0" )
+  st -> add_action( "use_item,name=ashvanes_razor_coral,target_if=debuff.razor_coral_debuff.stack=0" );
   st -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>7&(cooldown.avatar.remains<5|buff.avatar.up)" );
   st -> add_talent( this, "Dragon Roar" );
   st -> add_action( this, "Thunder Clap" );
