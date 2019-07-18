@@ -6397,9 +6397,9 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_c
       // auto attack) in most cases.
       player->main_hand_attack->base_execute_time = timespan_t::zero();
       player->main_hand_attack->schedule_execute();
+      player->main_hand_attack->base_execute_time = player->main_hand_attack->weapon->swing_time;
       if ( player->main_hand_attack->execute_event )
       {
-        player->main_hand_attack->base_execute_time = player->main_hand_attack->weapon->swing_time;
         player->main_hand_attack->execute_event->reschedule( time_to_hit );
       }
     }
@@ -6435,9 +6435,9 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_c
         // auto attack) in most cases.
         player->off_hand_attack->base_execute_time = timespan_t::zero();
         player->off_hand_attack->schedule_execute();
+        player->off_hand_attack->base_execute_time = player->off_hand_attack->weapon->swing_time;
         if ( player->off_hand_attack->execute_action )
         {
-          player->off_hand_attack->base_execute_time = player->off_hand_attack->weapon->swing_time;
           player->off_hand_attack->execute_event->reschedule( time_to_hit );
         }
       }
