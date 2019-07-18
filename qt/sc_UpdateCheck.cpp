@@ -6,7 +6,7 @@
 #include "simulationcraft.hpp"
 #include "sc_UpdateCheck.hpp"
 
-static const QString UPDATE_CHECK_URL { "https://www.simulationcraft.org/version.json" };
+static const QString UPDATE_CHECK_URL { "%1://www.simulationcraft.org/version.json" };
 
 UpdateCheckWidget::UpdateCheckWidget( QWidget* parent ) :
   QMessageBox( parent ),
@@ -18,7 +18,17 @@ UpdateCheckWidget::UpdateCheckWidget( QWidget* parent ) :
 
 void UpdateCheckWidget::start()
 {
-  m_manager->get( QNetworkRequest( QUrl( UPDATE_CHECK_URL ) ) );
+  QString url;
+
+  if ( QSslSocket::supportsSsl() )
+  {
+    url = UPDATE_CHECK_URL.arg( "https" );
+  }
+  else
+  {
+    url = UPDATE_CHECK_URL.arg( "http" );
+  }
+  m_manager->get( QNetworkRequest( QUrl( url ) ) );
 }
 
 void UpdateCheckWidget::replyFinished( QNetworkReply* reply )
