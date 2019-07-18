@@ -3776,12 +3776,80 @@ void items::azsharas_font_of_power( special_effect_t& effect )
   struct latent_arcana_channel_t : public proc_t
   {
     buff_t* buff;
+    action_t* use_action;
 
     latent_arcana_channel_t( const special_effect_t& e, buff_t* b ) :
       proc_t( e, "latent_arcana", e.driver() ), buff( b )
     {
+      effect    = &e;
       channeled = true;
-      harmful = hasted_ticks = false;
+      harmful   = hasted_ticks = false;
+
+      for ( auto a : player->action_list )
+      {
+        if ( a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + item->name_str )
+        {
+          a->harmful = harmful;  // pass down harmful to allow action_t::init() precombat check bypass
+          use_action = a;
+          break;
+        }
+      }
+    }
+
+    void precombat_buff()
+    {
+      timespan_t time = sim->bfa_opts.font_of_power_precombat_channel;
+      bool from_apl   = ( time == 0_ms );
+
+      if ( from_apl )  // No options override, so apply spec-based default timings
+      {
+        switch ( player->specialization() )
+        {
+          case DRUID_BALANCE: time = 7.5_s; break;
+          default: time = 4_s; break;
+        }
+      }
+
+      // how long you channel for (rounded down to seconds)
+      auto channel   = std::min( 4_s, timespan_t::from_seconds( static_cast<int>( time.total_seconds() ) ) );
+      // total duration of the buff from channeling
+      auto total     = buff->buff_duration * ( channel.total_seconds() + 1 );
+      // actual duration of the buff you'll get in combat
+      auto actual    = total + channel - time;
+      // cooldown on effect/trinket at start of combat
+      auto cd_dur    = cooldown->duration - time;
+      // shared cd (other trinkets & on-use items)
+      auto cdgrp     = player->get_cooldown( effect->cooldown_group_name() );
+      // shared cooldown at start of combat
+      auto cdgrp_dur = std::max( 0_ms, effect->cooldown_group_duration() - time );
+
+      sim->print_debug(
+        "Azshara's Font of Power started {}s before combat via {}, channeled for {}s, giving {}s buff in combat", time,
+        from_apl ? "APL" : "options", channel, actual );
+
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
+
+      if ( from_apl )  // from the apl, so cooldowns will be started by use_item_t. adjust. we are still in precombat.
+      {
+        make_event( *sim, [this, time, cdgrp] {  // make an event so we adjust after cooldowns are started
+          cooldown->adjust( -time );
+
+          if ( use_action )
+            use_action->cooldown->adjust( -time );
+
+          cdgrp->adjust( -time );
+        } );
+      }
+      else  // via bfa. option override, start cooldowns. we are in-combat.
+      {
+        cooldown->start( cd_dur );
+
+        if ( use_action )
+          use_action->cooldown->start( cd_dur );
+
+        if ( cdgrp_dur > 0_ms )
+          cdgrp->start( cdgrp_dur );
+      }
     }
 
     timespan_t tick_time( const action_state_t* ) const override
@@ -3789,11 +3857,30 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       return base_tick_time;
     }
 
+    void trigger_dot( action_state_t* s ) override
+    {
+      if ( player->in_combat )  // only trigger channel 'dot' in combat
+      {
+        proc_t::trigger_dot( s );
+      }
+    }
+
     void execute() override
     {
       proc_t::execute();
-      event_t::cancel( player->readying );
-      player->reset_auto_attacks( data().duration() );
+
+      if ( player->in_combat )  // only channel in-combat
+      {
+        event_t::cancel( player->readying );
+        player->reset_auto_attacks( data().duration() );
+      }
+      else  // if precombat...
+      {
+        if ( sim->bfa_opts.font_of_power_precombat_channel == 0_ms )  // ...and no option override
+        {
+          precombat_buff();
+        }
+      }
     }
 
     void tick( dot_t* d ) override
@@ -3816,50 +3903,24 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     }
   };
 
-  auto buff = buff_t::find( effect.player, "latent_arcana" );
+  auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "latent_arcana" ) );
   if ( !buff )
   {
-    buff = make_buff<stat_buff_t>( effect.player, "latent_arcana", effect.trigger() )
-      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-        effect.trigger()->effectN( 1 ).average( effect.item ) );
+    buff = make_buff<stat_buff_t>( effect.player, "latent_arcana", effect.trigger() );
+    buff->add_stat(
+      effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.trigger()->effectN( 1 ).average( effect.item ) );
     buff->set_refresh_behavior( buff_refresh_behavior::EXTEND );
   }
 
-  auto action = create_proc_action<latent_arcana_channel_t>( "latent_arcana_channel", effect, buff );
+  auto action           = create_proc_action<latent_arcana_channel_t>( "latent_arcana_channel", effect, buff );
   effect.execute_action = action;
   effect.disable_buff();
 
-  // pre-combat channeling hack
-  timespan_t time = effect.player->sim->bfa_opts.font_of_power_precombat_channel;
-  if ( time > 0_ms )
+  // pre-combat channeling hack via bfa. options
+  if ( effect.player->sim->bfa_opts.font_of_power_precombat_channel > 0_ms )  // option is set
   {
-    // how long you channel for (rounded down to seconds)
-    auto channel    = std::min( 4_s, timespan_t::from_seconds( static_cast<int>( time.total_seconds() ) ) );
-    // total duration of the buff from channeling
-    auto total      = effect.trigger()->duration() * ( channel.total_seconds() + 1 );
-    // actual duration of the buff you'll get in combat
-    auto actual     = total + channel - time;
-    // cooldown on effect/trinket at start of combat
-    auto cd_dur     = action->cooldown->duration - time;
-    // shared cd (other trinkets & on-use items)
-    auto cdgrp      = effect.player->get_cooldown( effect.cooldown_group_name() );
-    // shared cooldown at start of combat
-    auto cdgrp_dur  = std::max( 0_ms, effect.cooldown_group_duration() - time );
-
-    auto use_action = effect.player->find_action( "use_item_" + effect.item->name_str );
-
-    effect.player->sim->print_debug(
-      "Azshara's Hack of Power started {}s before combat, channeled for {}s, giving {}s buff in combat", time,
-      channel, actual );
-
-    effect.player->register_combat_begin( [buff, actual, action, use_action, cd_dur, cdgrp, cdgrp_dur]( player_t* ) {
-      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
-      action->cooldown->start( cd_dur );
-      if ( use_action )
-        use_action->cooldown->start( cd_dur );
-      if ( cdgrp_dur > 0_ms )
-        cdgrp->start( cdgrp_dur );
-    } );
+    effect.player->register_combat_begin(
+      [action]( player_t* ) { static_cast<latent_arcana_channel_t*>( action )->precombat_buff(); } );
   }
 }
 
