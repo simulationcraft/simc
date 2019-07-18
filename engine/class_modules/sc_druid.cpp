@@ -8327,6 +8327,7 @@ void druid_t::apl_precombat()
   // Spec Specific Optimizations
   if ( specialization() == DRUID_BALANCE )
   {
+    precombat->add_action( "use_item,name=azsharas_font_of_power" );
     precombat->add_action( this, "Solar Wrath", "if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel"
                                    "|bfa.font_of_power_precombat_channel>=7.0" );
   }
