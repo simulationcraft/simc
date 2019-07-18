@@ -4032,7 +4032,7 @@ void items::shiver_venom_crossbow( special_effect_t& effect )
 
       if ( sim->bfa_opts.shiver_venom )
       {
-        frost->set_target( get_state()->target );
+        frost->set_target( execute_state->target );
         frost->execute();
       }
     }
@@ -4075,7 +4075,7 @@ void items::shiver_venom_lance( special_effect_t& effect )
 
       if ( sim->bfa_opts.shiver_venom )
       {
-        nature->set_target( get_state()->target );
+        nature->set_target( execute_state->target );
         nature->execute();
       }
     }
