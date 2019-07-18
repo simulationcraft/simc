@@ -4117,7 +4117,7 @@ void action_t::reschedule_queue_event()
 void action_t::acquire_target( retarget_event_e /* event */, player_t* /* context */, player_t* candidate_target )
 {
   // Don't change targets if they are not of the same generic type (both enemies, or both friendlies)
-  if ( target && target->is_enemy() != candidate_target->is_enemy() )
+  if ( target && candidate_target && target->is_enemy() != candidate_target->is_enemy() )
   {
     return;
   }
