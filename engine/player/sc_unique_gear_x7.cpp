@@ -466,7 +466,6 @@ void consumables::potion_of_focused_resolve( special_effect_t& effect )
       if ( current_target )
       {
         auto td = listener->get_target_data( current_target );
-        auto remaining_time = td->debuff.focused_resolve->remains();
         td->debuff.focused_resolve->expire();
       }
     }
@@ -3590,7 +3589,7 @@ void items::leviathans_lure( special_effect_t& effect )
     luminous_algae_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       auto td = listener->get_target_data( s->target );
       assert( td );
@@ -3776,10 +3775,10 @@ void items::azsharas_font_of_power( special_effect_t& effect )
   struct latent_arcana_channel_t : public proc_t
   {
     buff_t* buff;
-    action_t* use_action;
+    action_t* use_action; // if this exists, then we're prechanneling via the APL
 
     latent_arcana_channel_t( const special_effect_t& e, buff_t* b ) :
-      proc_t( e, "latent_arcana", e.driver() ), buff( b )
+      proc_t( e, "latent_arcana", e.driver() ), buff( b ), use_action( nullptr )
     {
       effect    = &e;
       channeled = true;
@@ -3799,9 +3798,8 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     void precombat_buff()
     {
       timespan_t time = sim->bfa_opts.font_of_power_precombat_channel;
-      bool from_apl   = ( time == 0_ms );
 
-      if ( from_apl )  // No options override, so apply spec-based default timings
+      if ( time == 0_ms)  // No options override, so apply spec-based default timings
       {
         switch ( player->specialization() )
         {
@@ -3825,11 +3823,11 @@ void items::azsharas_font_of_power( special_effect_t& effect )
 
       sim->print_debug(
         "Azshara's Font of Power started {}s before combat via {}, channeled for {}s, giving {}s buff in combat", time,
-        from_apl ? "APL" : "options", channel, actual );
+        use_action ? "APL" : "options", channel, actual );
 
       buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
 
-      if ( from_apl )  // from the apl, so cooldowns will be started by use_item_t. adjust. we are still in precombat.
+      if ( use_action )  // from the apl, so cooldowns will be started by use_item_t. adjust. we are still in precombat.
       {
         make_event( *sim, [this, time, cdgrp] {  // make an event so we adjust after cooldowns are started
           cooldown->adjust( -time );
@@ -3876,7 +3874,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       }
       else  // if precombat...
       {
-        if ( sim->bfa_opts.font_of_power_precombat_channel == 0_ms )  // ...and no option override
+        if ( use_action )  // ...and use_item exists in the precombat apl
         {
           precombat_buff();
         }
@@ -3912,15 +3910,18 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     buff->set_refresh_behavior( buff_refresh_behavior::EXTEND );
   }
 
-  auto action           = create_proc_action<latent_arcana_channel_t>( "latent_arcana_channel", effect, buff );
+  auto action = new latent_arcana_channel_t( effect, buff );
+
   effect.execute_action = action;
   effect.disable_buff();
 
   // pre-combat channeling hack via bfa. options
   if ( effect.player->sim->bfa_opts.font_of_power_precombat_channel > 0_ms )  // option is set
   {
-    effect.player->register_combat_begin(
-      [action]( player_t* ) { static_cast<latent_arcana_channel_t*>( action )->precombat_buff(); } );
+    effect.player->register_combat_begin( [action]( player_t* ) {
+      if ( !action->use_action )  // no use_item in precombat apl, so we apply the buff on combat start
+        action->precombat_buff();
+    } );
   }
 }
 
@@ -4333,7 +4334,7 @@ void items::dribbling_inkpod( special_effect_t& effect )
       }
     }
 
-    void execute( action_t* a, action_state_t* s )
+    void execute( action_t*, action_state_t* s )
     {
       if ( s->target->health_percentage() > hp_pct )
       {
@@ -4473,7 +4474,7 @@ void items::divers_folly( special_effect_t& effect )
     divers_folly_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {}
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( action_t*, action_state_t* ) override
     {
       listener->buffs.bioelectric_charge->trigger();
     }
@@ -4523,7 +4524,7 @@ void items::divers_folly( special_effect_t& effect )
 
   // discharge action, executed by secondary proc
   auto action2 = create_proc_action<proc_t>( "bioelectric_charge", effect, "bioelectric_charge", 303583 );
-  action2->aoe = effect.driver()->effectN( 2 ).base_value();
+  action2->aoe = static_cast<int>( effect.driver()->effectN( 2 ).base_value() );
 
   second->execute_action = action2;
   effect.player->special_effects.push_back( second );
