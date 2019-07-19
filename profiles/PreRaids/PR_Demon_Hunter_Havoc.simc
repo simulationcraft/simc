@@ -76,10 +76,10 @@ actions.demonic+=/throw_glaive,if=talent.demon_blades.enabled
 
 actions.essences=concentrated_flame
 actions.essences+=/blood_of_the_enemy,if=buff.metamorphosis.up|target.time_to_die<=10
-actions.essences+=/guardian_of_azeroth
+actions.essences+=/guardian_of_azeroth,if=buff.metamorphosis.up|target.time_to_die<=30
 actions.essences+=/focused_azerite_beam,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60
 actions.essences+=/purifying_blast,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60
-actions.essences+=/the_unbound_force
+actions.essences+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10
 actions.essences+=/ripple_in_space
 actions.essences+=/worldvein_resonance,if=buff.lifeblood.stack<3
 actions.essences+=/memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up
