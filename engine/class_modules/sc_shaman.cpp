@@ -735,6 +735,7 @@ public:
   void init_rng() override;
   void init_special_effects() override;
 
+  double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void moving() override;
   void invalidate_cache( cache_e c ) override;
   double temporary_movement_modifier() const override;
@@ -1336,23 +1337,6 @@ public:
     }
 
     ab::update_ready( cd );
-  }
-
-  void consume_resource() override
-  {
-    ab::consume_resource();
-
-    if ( ab::current_resource() == RESOURCE_MAELSTROM )
-    {
-      p()->trigger_memory_of_lucid_dreams( ab::last_resource_cost );
-    }
-  }
-
-  bool consume_cost_per_tick( const dot_t& dot ) override
-  {
-    auto ret = ab::consume_cost_per_tick( dot );
-
-    return ret;
   }
 
   expr_t* create_expression( const std::string& name ) override
@@ -7543,7 +7527,7 @@ void shaman_t::trigger_memory_of_lucid_dreams( double cost )
     return;
   }
 
-  double total_gain = cost * spell.memory_of_lucid_dreams_base->effectN( 1 ).percent();
+  double total_gain = util::round( cost * spell.memory_of_lucid_dreams_base->effectN( 1 ).percent(), 0 );
 
   trigger_maelstrom_gain( total_gain, gain.memory_of_lucid_dreams );
 
@@ -8681,6 +8665,21 @@ void shaman_t::init_action_list()
 
   player_t::init_action_list();
 }
+
+// shaman_t::resource_loss ==================================================
+
+double shaman_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* a )
+{
+  auto actual_loss = player_t::resource_loss( resource_type, amount, g, a );
+
+  if ( resource_type == RESOURCE_MAELSTROM )
+  {
+    trigger_memory_of_lucid_dreams( actual_loss );
+  }
+
+  return actual_loss;
+}
+
 
 // shaman_t::moving =========================================================
 
