@@ -5599,6 +5599,7 @@ void mage_t::apl_precombat()
   }
 
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "use_item,name=azsharas_font_of_power" );
   precombat->add_talent( this, "Mirror Image" );
   precombat->add_action( "potion" );
 
