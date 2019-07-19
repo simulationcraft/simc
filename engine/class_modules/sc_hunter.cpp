@@ -5483,7 +5483,7 @@ void hunter_t::apl_mm()
   cds -> add_action( "ripple_in_space,if=cooldown.trueshot.remains<7" );
   cds -> add_action( "memory_of_lucid_dreams,if=!buff.trueshot.up" );
 
-  cds -> add_action( "potion,name=potion_of_unbridled_fury,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|target.time_to_die<25" );
+  cds -> add_action( "potion,name=potion_of_unbridled_fury,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|target.time_to_die<60" );
   cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|target.time_to_die<25" );
   cds -> add_action( this, "Trueshot", "if=focus>60&(buff.precise_shots.down&cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15" );
 
