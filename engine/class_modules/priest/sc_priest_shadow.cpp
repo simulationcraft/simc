@@ -2072,13 +2072,13 @@ void priest_t::generate_apl_shadow()
   single->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   single->add_talent( this, "Dark Void", "if=raid_event.adds.in>10", "Use Dark Void on CD unless adds are incoming in 10s or less." );
   single->add_talent( this, "Mindbender", "if=talent.mindbender.enabled|(buff.voidform.stack>18|target.time_to_die<15)",
-                      "Use Mindbender at 19 or more stacks, or if the target will die in less than 15s.");
+                      "Use Mindbender at 19 or more stacks, or if the target will die in less than 15s." );
   single->add_talent( this, "Shadow Word: Death",
                       "if=!buff.voidform.up|"
                       "(cooldown.shadow_word_death.charges=2&"
                       "buff.voidform.stack<15)" );
   single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
-                      "Use Shadow Crash on CD unless there are adds incoming.");
+                      "Use Shadow Crash on CD unless there are adds incoming." );
   single->add_action( this, "Mind Blast",
                       "if=variable.dots_up&"
                       "((raid_event.movement.in>cast_time+0.5&raid_event.movement.in<4)|"
