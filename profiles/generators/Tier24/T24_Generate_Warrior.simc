@@ -77,8 +77,8 @@ hands=poens_deepsea_handguards,id=170336,bonus_id=1512
 waist=eternity_keepers_greatbelt,id=168869,bonus_id=1517
 legs=legplates_of_unbound_anguish,id=167217,bonus_id=4800/1547
 feet=akanas_reefstrider_boots,id=170143,bonus_id=1512
-finger1=cursed_lovers_ring,id=168891,enchant_id=168446,bonus_id=1517,enchant=accord_of_critical_strike
-finger2=ring_of_the_highborne_courtier,id=168890,enchant_id=168446,bonus_id=1517,enchant=accord_of_critical_strike
+finger1=cursed_lovers_ring,id=168891,bonus_id=1517,enchant=accord_of_critical_strike
+finger2=ring_of_the_highborne_courtier,id=168890,bonus_id=1517,enchant=accord_of_critical_strike
 trinket1=dribbling_inkpod,id=169319,bonus_id=1517
 trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=dreams_end,id=168902,bonus_id=1517,enchant=quick_navigation
