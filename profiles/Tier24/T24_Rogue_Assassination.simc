@@ -26,10 +26,10 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/apply_poison
-actions.precombat+=/stealth
 actions.precombat+=/potion
 actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>15
+actions.precombat+=/apply_poison
+actions.precombat+=/stealth
 
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)
