@@ -199,15 +199,16 @@ struct cooldown_waste_data_t : private noncopyable
     cumulative( cd->name_str + " cumulative cooldown waste", simple )
   { }
 
-  bool may_add( timespan_t cd_override = timespan_t::min() ) const
-  {
-    return ( cd->duration > 0_ms || cd_override > 0_ms )
-        && ( ( cd->charges == 1 && cd->up() ) || ( cd->charges > 1 && cd->current_charge == cd->charges ) );
-  }
-
   void add( timespan_t cd_override = timespan_t::min(), timespan_t time_to_execute = 0_ms )
   {
-    if ( may_add( cd_override ) )
+    if ( cd_override == 0_ms || ( cd_override < 0_ms && cd->duration <= 0_ms ) )
+      return;
+
+    if ( cd->ongoing() )
+    {
+      normal.add( 0.0 );
+    }
+    else
     {
       double wasted = ( cd->sim.current_time() - cd->last_charged ).total_seconds();
 
@@ -244,7 +245,7 @@ struct cooldown_waste_data_t : private noncopyable
 
   void datacollection_end()
   {
-    if ( may_add() )
+    if ( !cd->ongoing() )
       buffer += ( cd->sim.current_time() - cd->last_charged ).total_seconds();
 
     cumulative.add( buffer );
