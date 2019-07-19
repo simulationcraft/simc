@@ -26,12 +26,13 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/stealth
 actions.precombat+=/potion
 actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
+actions.precombat+=/stealth,if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)
 actions.precombat+=/roll_the_bones,precombat_seconds=2
 actions.precombat+=/slice_and_dice,precombat_seconds=2
-actions.precombat+=/adrenaline_rush,precombat_seconds=1
+actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)
+actions.precombat+=/use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists
 
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)
