@@ -27,6 +27,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/arcane_intellect
 actions.precombat+=/summon_water_elemental
 actions.precombat+=/snapshot_stats
+actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/mirror_image
 actions.precombat+=/potion
 actions.precombat+=/frostbolt
