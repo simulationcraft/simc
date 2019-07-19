@@ -32,6 +32,7 @@ actions.precombat+=/variable,name=vt_trait_ranks_check,op=set,value=(1-0.04*azer
 actions.precombat+=/variable,name=vt_mis_trait_ranks_check,op=set,value=(1-0.07*azerite.death_throes.rank-0.03*azerite.thought_harvester.rank-0.055*azerite.spiteful_apparitions.rank)*(1-0.027*azerite.thought_harvester.rank*azerite.searing_dialogue.rank)
 actions.precombat+=/variable,name=vt_mis_sd_check,op=set,value=1-0.014*azerite.searing_dialogue.rank
 actions.precombat+=/shadowform,if=!buff.shadowform.up
+actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/mind_blast,if=spell_targets.mind_sear<2|azerite.thought_harvester.rank=0
 actions.precombat+=/vampiric_touch
 

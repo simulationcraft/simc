@@ -1197,6 +1197,7 @@ void priest_t::create_apl_precombat()
                              "*(1-0.027*azerite.thought_harvester.rank*azerite.searing_dialogue.rank)" );
       precombat->add_action( "variable,name=vt_mis_sd_check,op=set,value=1-0.014*azerite.searing_dialogue.rank" );
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
+      precombat->add_action( "use_item,name=azsharas_font_of_power" );
       precombat->add_action( this, "Mind Blast", "if=spell_targets.mind_sear<2|azerite.thought_harvester.rank=0" );
       precombat->add_action( this, "Vampiric Touch" );
       break;
