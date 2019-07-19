@@ -38,12 +38,11 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/solar_wrath,if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel|bfa.font_of_power_precombat_channel>=7.0
+actions.precombat+=/solar_wrath,if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel|bfa.font_of_power_precombat_channel>=5.5
+actions.precombat+=/starsurge,if=talent.natures_balance.enabled
 
 # Executed every time the actor is available.
 actions=potion,if=buff.celestial_alignment.remains>13|buff.incarnation.remains>16.5
-# Precombat Hack
-actions+=/solar_wrath,precombat=1,if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel|bfa.font_of_power_precombat_channel>=5.5
-actions+=/starsurge,precombat=1,if=talent.natures_balance.enabled
 # CDs
 actions+=/berserking,if=buff.ca_inc.up
 actions+=/use_item,name=azsharas_font_of_power,if=!buff.ca_inc.up,target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)

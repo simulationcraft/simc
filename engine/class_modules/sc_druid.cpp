@@ -2177,17 +2177,13 @@ private:
 public:
   bool warrior_of_elune;
   bool owlkin_frenzy;
-  bool precombat;
-  bool precombat_cast;
 
   druid_spell_t( const std::string& token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
     const std::string& options = std::string() ) :
     base_t( token, p, s ),
     warrior_of_elune( data().affected_by( p->talent.warrior_of_elune->effectN( 1 ) ) ),
-    owlkin_frenzy( data().affected_by( p->spec.owlkin_frenzy->effectN( 1 ) ) ), precombat( false ),
-    precombat_cast( false )
+    owlkin_frenzy( data().affected_by( p->spec.owlkin_frenzy->effectN( 1 ) ) )
   {
-    add_option( opt_bool( "precombat", precombat ) );
     parse_options( options );
 
     // Apply Guardian Druid aura damage modifiers
@@ -5450,8 +5446,10 @@ struct cat_form_t : public druid_spell_t
 
 struct celestial_alignment_t : public druid_spell_t
 {
+  bool precombat;
+
   celestial_alignment_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "celestial_alignment", player, player->spec.celestial_alignment, options_str )
+    druid_spell_t( "celestial_alignment", player, player->spec.celestial_alignment, options_str ), precombat( false )
   {
     harmful = false;
     cooldown->duration *= 1.0 + player->vision_of_perfection_cdr;
@@ -5863,6 +5861,7 @@ struct swipe_proxy_t : public druid_spell_t
 struct incarnation_t : public druid_spell_t
 {
   buff_t* spec_buff;
+  bool precombat;
 
   incarnation_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "incarnation", p,
@@ -5870,7 +5869,7 @@ struct incarnation_t : public druid_spell_t
       p->specialization() == DRUID_FERAL       ? p->talent.incarnation_cat     :
       p->specialization() == DRUID_GUARDIAN    ? p->talent.incarnation_bear    :
       p->specialization() == DRUID_RESTORATION ? p->talent.incarnation_tree    :
-      spell_data_t::nil(), options_str )
+      spell_data_t::nil(), options_str ), precombat( false )
   {
     switch ( p->specialization() )
     {
@@ -6524,32 +6523,44 @@ struct solar_empowerment_t : public druid_spell_t
 
 struct solar_wrath_t : public druid_spell_t
 {
+  int64_t precombat_count;
+
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "solar_wrath", player, player->find_affinity_spell( "Solar Wrath" ), options_str )
+    druid_spell_t( "solar_wrath", player, player->find_affinity_spell( "Solar Wrath" ), options_str ),
+    precombat_count( 0 )
   {
     form_mask = NO_FORM | MOONKIN_FORM;
     add_child( player->active.solar_empowerment );
     energize_amount = player->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+  }
 
-    if ( precombat )
+  void init_finished() override
+  {
+    druid_spell_t::init_finished();
+
+    if ( p()->specialization() == DRUID_BALANCE && action_list && action_list->name_str == "precombat" )
     {
-      base_execute_time = trigger_gcd = 0_ms;
-      travel_speed = 0;
+      auto apl = player->precombat_action_list;
+
+      auto it = range::find( apl, this );
+      if ( it != apl.end() )
+      {
+        // not the last action, set non-harmful so we can keep casting more precombat actions
+        harmful = false;
+
+        // see how many more solar wrath casts are left, so we can adjust travel time when combat begins
+        precombat_count = std::count_if( it + 1, apl.end(), [this]( action_t* a ) { return a->name_str == name_str; } );
+      }
     }
   }
 
-  void reset() override
+  timespan_t travel_time() const override
   {
-    druid_spell_t::reset();
-    precombat_cast = false;
-  }
+    if ( !precombat_count )
+      return druid_spell_t::travel_time();
 
-  bool ready() override
-  {
-    if ( precombat && ( precombat_cast || sim->current_time() > 0_s ) )
-      return false;
-
-    return druid_spell_t::ready();
+    // for each additional solar wrath in precombat apl, reduce the travel time by the cast time
+    return std::max( 1_ms, druid_spell_t::travel_time() - base_execute_time * composite_haste() * precombat_count );
   }
 
   double composite_crit_chance() const override
@@ -6609,9 +6620,6 @@ struct solar_wrath_t : public druid_spell_t
 
   void execute() override
   {
-    if ( precombat )
-      precombat_cast = true;
-
     if ( !p()->buff.solar_empowerment->up() )
       p()->proc.unempowered_solar_wrath->occur();
 
@@ -6825,23 +6833,11 @@ struct starsurge_t : public druid_spell_t
     druid_spell_t( "starsurge", p,
       p->specialization() == DRUID_BALANCE ? p->find_affinity_spell( "Starsurge" ) : p->find_spell( 197626 ),
       options_str )
-  {
-    if ( precombat )
-      base_execute_time = trigger_gcd = 0_ms;
-  }
+  {}
 
-  void reset() override
+  timespan_t travel_time() const override  // hack to allow bypassing of action_t::init() precombat check
   {
-    druid_spell_t::reset();
-    precombat_cast = false;
-  }
-
-  bool ready() override
-  {
-    if ( precombat && ( precombat_cast || sim->current_time() > 0_s ) )
-      return false;
-
-    return druid_spell_t::ready();
+    return action_list && action_list->name_str == "precombat" ? 1_ms : druid_spell_t::travel_time();
   }
 
   double cost() const override
@@ -6894,9 +6890,6 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
-    if ( precombat )
-      precombat_cast = true;
-
     druid_spell_t::execute();
 
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T20, B4 ) )
@@ -8235,17 +8228,17 @@ void druid_t::apl_precombat()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   // Flask
-  precombat->add_action("flask");
+  precombat->add_action( "flask" );
 
   // Food
-  precombat->add_action("food");
+  precombat->add_action( "food" );
 
   // Rune
-  precombat->add_action("augmentation");
+  precombat->add_action( "augmentation" );
 
   // Feral: Bloodtalons
   if ( specialization() == DRUID_FERAL && true_level >= 100 )
-    precombat -> add_action( this, "Regrowth", "if=talent.bloodtalons.enabled" );
+    precombat->add_action( this, "Regrowth", "if=talent.bloodtalons.enabled" );
 
   // Feral: Rotational control variables
   if ( specialization() == DRUID_FERAL )
@@ -8310,17 +8303,20 @@ void druid_t::apl_precombat()
   }
 
   // Snapshot stats
-  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Pre-Potion
-  precombat -> add_action("potion");
+  precombat->add_action( "potion" );
 
   // Spec Specific Optimizations
   if ( specialization() == DRUID_BALANCE )
   {
     precombat->add_action( "use_item,name=azsharas_font_of_power" );
-    precombat->add_action( this, "Solar Wrath", "if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel"
-                                   "|bfa.font_of_power_precombat_channel>=7.0" );
+    precombat->add_action( this, "Solar Wrath", "if=!equipped.azsharas_font_of_power"
+                                   "|!bfa.font_of_power_precombat_channel|bfa.font_of_power_precombat_channel>=7.0" );
+    precombat->add_action( this, "Solar Wrath", "if=!equipped.azsharas_font_of_power"
+                                   "|!bfa.font_of_power_precombat_channel|bfa.font_of_power_precombat_channel>=5.5" );
+    precombat->add_action( this, "Starsurge", "if=talent.natures_balance.enabled" );
   }
   else if ( specialization() == DRUID_RESTORATION )
   {
@@ -8638,11 +8634,6 @@ void druid_t::apl_balance()
   if ( sim->allow_potions && true_level >= 80 )
     default_list->add_action( "potion,if=buff.celestial_alignment.remains>13|buff.incarnation.remains>16.5" );
 
-  // Precombat Hack - WARNING: there is NO checking to see if these actually happen precombat!!
-  // You MUST carefuly ensure this with conditions or within the spell code!!
-  default_list->add_action( this, "Solar Wrath", "precombat=1,if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel"
-                                    "|bfa.font_of_power_precombat_channel>=5.5", "Precombat Hack" );
-  default_list->add_action( this, "Starsurge", "precombat=1,if=talent.natures_balance.enabled" );
   // CDs
   default_list->add_action( "berserking,if=buff.ca_inc.up", "CDs" );
   default_list->add_action( "use_item,name=azsharas_font_of_power,if=!buff.ca_inc.up,"
