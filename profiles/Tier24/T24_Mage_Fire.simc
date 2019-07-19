@@ -28,6 +28,7 @@ actions.precombat+=/arcane_intellect
 # This variable sets the time at which Rune of Power should start being saved for the next Combustion phase
 actions.precombat+=/variable,name=combustion_rop_cutoff,op=set,value=60
 actions.precombat+=/snapshot_stats
+actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/mirror_image
 actions.precombat+=/potion
 actions.precombat+=/pyroblast
