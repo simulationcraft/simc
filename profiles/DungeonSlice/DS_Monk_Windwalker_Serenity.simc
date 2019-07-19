@@ -37,6 +37,7 @@ actions+=/touch_of_karma,interval=90,pct_health=0.5
 # Potion if Serenity or Storm, Earth, and Fire are up or you are running serenity and a main stat trinket procs, or you are under the effect of bloodlust, or target time to die is greater or equal to 60
 actions+=/potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60
 actions+=/call_action_list,name=serenity,if=buff.serenity.up
+actions+=/reverse_harm,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=2
 actions+=/fist_of_the_white_tiger,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=3
 actions+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=2&!prev_gcd.1.tiger_palm
 actions+=/call_action_list,name=cd
@@ -95,11 +96,11 @@ actions.st=whirling_dragon_punch
 actions.st+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=chi>=5
 actions.st+=/fists_of_fury,if=energy.time_to_max>3
 actions.st+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
-actions.st+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&buff.dance_of_chiji.up
 actions.st+=/rushing_jade_wind,if=buff.rushing_jade_wind.down&active_enemies>1
 actions.st+=/reverse_harm,if=chi.max-chi>=2
 actions.st+=/fist_of_the_white_tiger,if=chi<=2
 actions.st+=/energizing_elixir,if=chi<=3&energy<50
+actions.st+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&buff.dance_of_chiji.up
 actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>3|chi>=3)&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))&buff.swift_roundhouse.stack<2
 actions.st+=/chi_wave
 actions.st+=/chi_burst,if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2

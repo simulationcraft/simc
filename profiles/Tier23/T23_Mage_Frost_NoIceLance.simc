@@ -91,8 +91,7 @@ actions.single+=/flurry,if=talent.ebonbolt.enabled&prev_gcd.1.ebonbolt&buff.brai
 actions.single+=/flurry,if=prev_gcd.1.glacial_spike&buff.brain_freeze.react
 actions.single+=/call_action_list,name=essences
 actions.single+=/frozen_orb
-actions.single+=/blizzard,if=active_enemies>2|active_enemies>1&cast_time=0
-actions.single+=/ice_lance,if=buff.fingers_of_frost.react&talent.splitting_ice.enabled&active_enemies>1
+actions.single+=/blizzard,if=active_enemies>2|active_enemies>1&!talent.splitting_ice.enabled
 actions.single+=/comet_storm
 actions.single+=/ebonbolt,if=buff.icicles.stack=5&!buff.brain_freeze.react&buff.memory_of_lucid_dreams.down
 actions.single+=/glacial_spike,if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|talent.incanters_flow.enabled&cast_time+travel_time>incanters_flow_time_to.5.up&cast_time+travel_time<incanters_flow_time_to.4.down
