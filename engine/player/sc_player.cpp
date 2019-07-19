@@ -8203,8 +8203,8 @@ struct use_item_t : public action_t
       {
         if ( sim->debug )
         {
-          sim->errorf( "Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n",
-                       player->name(), item_name.c_str() );
+          sim->errorf( "Player %s attempting 'use_item' action with effect '%s' which cannot be found.\n",
+                       player->name(), effect_name.c_str() );
         }
         background = true;
         return;
