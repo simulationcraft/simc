@@ -93,7 +93,7 @@ actions.cds+=/fireblood,if=buff.symbols_of_death.up
 actions.cds+=/ancestral_call,if=buff.symbols_of_death.up
 actions.cds+=/use_item,effect_name=cyclotronic_blast,if=!stealthed.all&dot.nightblade.ticking&!buff.symbols_of_death.up&energy.deficit>=30
 actions.cds+=/use_item,name=azsharas_font_of_power,if=!buff.shadow_dance.up&cooldown.symbols_of_death.remains<10
-actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.symbols_of_death.up&(target.health.pct<30|target.time_to_die<60)
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(buff.symbols_of_death.up|equipped.dribbling_inkpod)&(target.health.pct<31|target.time_to_die<60)
 actions.cds+=/use_item,name=mydas_talisman
 # Default fallback for usable items: Use with Symbols of Death.
 actions.cds+=/use_items,if=buff.symbols_of_death.up|target.time_to_die<20
