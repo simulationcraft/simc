@@ -6792,6 +6792,12 @@ struct dbc_proc_callback_t : public action_callback_t
       return;
     }
 
+    // Don't allow harmful actions to proc on players
+    if ( proc_action && proc_action->harmful && !state->target->is_enemy() )
+    {
+      return;
+    }
+
     bool triggered = roll( a );
     if ( listener -> sim -> debug )
       listener -> sim -> out_debug.printf( "%s attempts to proc %s on %s: %d",
