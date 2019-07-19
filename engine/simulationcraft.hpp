@@ -3909,6 +3909,8 @@ struct player_t : public actor_t
     buff_t* fathom_hunter; // Follower themed Benthic boots special effect
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
     buff_t* bioelectric_charge; // Diver's Folly 1H AGI axe buff to store damage
+    buff_t* razor_coral; // Ashvane's Razor Coral trinket crit rating buff
+
   } buffs;
 
   struct debuffs_t

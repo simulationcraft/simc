@@ -4260,10 +4260,9 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
   auto action = create_proc_action<razor_coral_t>( "razor_coral", effect );
 
   // crit buff from 2nd on-use activation
-  auto buff = buff_t::find( effect.player, "razor_coral" );
-  if ( !buff )
+  if ( !effect.player->buffs.razor_coral )
   {
-    buff = make_buff<stat_buff_t>( effect.player, "razor_coral", effect.player->find_spell( 303570 ) )
+    effect.player->buffs.razor_coral = make_buff<stat_buff_t>( effect.player, "razor_coral", effect.player->find_spell( 303570 ) )
       ->add_stat( STAT_CRIT_RATING, effect.player->find_spell( 303573 )->effectN( 1 ).average( effect.item ) );
   }
 
@@ -4281,7 +4280,7 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
 
   // the primary on-use
   effect.execute_action =
-    create_proc_action<ashvanes_razor_coral_t>( "ashvanes_razor_coral", effect, buff, proc, action );
+    create_proc_action<ashvanes_razor_coral_t>( "ashvanes_razor_coral", effect, effect.player->buffs.razor_coral, proc, action );
 }
 
 /**Dribbling Inkpod
