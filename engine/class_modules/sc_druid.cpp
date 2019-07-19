@@ -5450,11 +5450,8 @@ struct cat_form_t : public druid_spell_t
 
 struct celestial_alignment_t : public druid_spell_t
 {
-  bool precombat;
-
   celestial_alignment_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "celestial_alignment", player, player -> spec.celestial_alignment , options_str ),
-    precombat()
+    druid_spell_t( "celestial_alignment", player, player->spec.celestial_alignment, options_str )
   {
     harmful = false;
     cooldown->duration *= 1.0 + player->vision_of_perfection_cdr;
@@ -5464,7 +5461,7 @@ struct celestial_alignment_t : public druid_spell_t
   {
     druid_spell_t::init_finished();
 
-    if ( action_list -> name_str == "precombat" )
+    if ( action_list->name_str == "precombat" )
       precombat = true;
   }
 
@@ -5472,7 +5469,7 @@ struct celestial_alignment_t : public druid_spell_t
   {
     // buff applied first to reduce GCD
     if ( !precombat )
-      p() -> buff.celestial_alignment -> trigger();
+      p()->buff.celestial_alignment->trigger();
 
     druid_spell_t::schedule_execute( s );
   }
@@ -5481,18 +5478,17 @@ struct celestial_alignment_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    // Precombat actions skip schedule_execute, so the buff needs to be
-    // triggered here for precombat actions.
+    // Precombat actions skip schedule_execute, so the buff needs to be triggered here for precombat actions.
     if ( precombat )
-      p() -> buff.celestial_alignment -> trigger();
-    
-    //Trigger after triggering the buff so the cast procs the spell
-    streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
+      p()->buff.celestial_alignment->trigger();
+
+    // Trigger after triggering the buff so the cast procs the spell
+    streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
   }
 
   virtual bool ready() override
   {
-    if ( p() -> talent.incarnation_moonkin -> ok() )
+    if ( p()->talent.incarnation_moonkin->ok() )
       return false;
 
     return druid_spell_t::ready();
@@ -5867,37 +5863,33 @@ struct swipe_proxy_t : public druid_spell_t
 struct incarnation_t : public druid_spell_t
 {
   buff_t* spec_buff;
-  bool precombat;
 
   incarnation_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "incarnation", p,
-                   p -> specialization() == DRUID_BALANCE     ? p -> talent.incarnation_moonkin :
-                   p -> specialization() == DRUID_FERAL       ? p -> talent.incarnation_cat     :
-                   p -> specialization() == DRUID_GUARDIAN    ? p -> talent.incarnation_bear    :
-                   p -> specialization() == DRUID_RESTORATION ? p -> talent.incarnation_tree    :
-                   spell_data_t::nil(), options_str ),
-    precombat()
+      p->specialization() == DRUID_BALANCE     ? p->talent.incarnation_moonkin :
+      p->specialization() == DRUID_FERAL       ? p->talent.incarnation_cat     :
+      p->specialization() == DRUID_GUARDIAN    ? p->talent.incarnation_bear    :
+      p->specialization() == DRUID_RESTORATION ? p->talent.incarnation_tree    :
+      spell_data_t::nil(), options_str )
   {
-    switch ( p -> specialization() )
+    switch ( p->specialization() )
     {
-    case DRUID_BALANCE:
-      spec_buff = p -> buff.incarnation_moonkin;
-      cooldown->duration *= 1.0 + p->vision_of_perfection_cdr;
-      break;
-    case DRUID_FERAL:
-      spec_buff = p -> buff.incarnation_cat;
-      cooldown->duration *= 1.0 + p->vision_of_perfection_cdr;
-      break;
-    case DRUID_GUARDIAN:
-      spec_buff = p -> buff.incarnation_bear;
-      break;
-    case DRUID_RESTORATION:
-      spec_buff = p -> buff.incarnation_tree;
-      break;
-    default:
-      {
+      case DRUID_BALANCE:
+        spec_buff = p->buff.incarnation_moonkin;
+        cooldown->duration *= 1.0 + p->vision_of_perfection_cdr;
+        break;
+      case DRUID_FERAL:
+        spec_buff = p->buff.incarnation_cat;
+        cooldown->duration *= 1.0 + p->vision_of_perfection_cdr;
+        break;
+      case DRUID_GUARDIAN:
+        spec_buff = p->buff.incarnation_bear;
+        break;
+      case DRUID_RESTORATION:
+        spec_buff = p->buff.incarnation_tree;
+        break;
+      default:
         assert( false && "Actor attempted to create incarnation action with no specialization." );
-      }
     }
 
     harmful = false;
@@ -5907,15 +5899,15 @@ struct incarnation_t : public druid_spell_t
   {
     druid_spell_t::init_finished();
 
-    if ( action_list -> name_str == "precombat" )
+    if ( action_list->name_str == "precombat" )
       precombat = true;
   }
-  
+
   void schedule_execute( action_state_t* s ) override
   {
     // buff applied first to reduce GCD for moonkin
     if ( !precombat )
-      spec_buff -> trigger();
+      spec_buff->trigger();
 
     druid_spell_t::schedule_execute( s );
   }
@@ -5924,40 +5916,39 @@ struct incarnation_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    // Precombat actions skip schedule_execute, so the buff needs to be
-    // triggered here for precombat actions.
+    // Precombat actions skip schedule_execute, so the buff needs to be triggered here for precombat actions.
     if ( precombat )
-      spec_buff -> trigger();
+      spec_buff->trigger();
 
-    if ( p() -> buff.incarnation_cat -> check() )
+    if ( p()->buff.incarnation_cat->check() )
     {
-      p() -> buff.jungle_stalker -> trigger();
+      p()->buff.jungle_stalker->trigger();
     }
 
-    if (p()->buff.incarnation_moonkin->check())
+    if ( p()->buff.incarnation_moonkin->check() )
     {
-      streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
+      streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
     }
 
-    if ( ! p() -> in_combat )
+    if ( p()->buff.incarnation_bear->check() )
+    {
+      p()->cooldown.mangle->reset( false );
+      p()->cooldown.thrash_bear->reset( false );
+      p()->cooldown.growl->reset( false );
+      p()->cooldown.maul->reset( false );
+    }
+
+    if ( !p()->in_combat )
     {
       timespan_t time = std::max( min_gcd, trigger_gcd * composite_haste() );
 
-      spec_buff -> extend_duration( p(), -time );
-      cooldown -> adjust( -time );
+      spec_buff->extend_duration( p(), -time );
+      cooldown->adjust( -time );
 
-      // King of the Jungle raises energy cap, so manually trigger some regen so that the actor starts with the correct amount of energy.
-      if ( p() -> buff.incarnation_cat -> check() )
-        p() -> regen( time );
-    }
-
-    if ( p() -> buff.incarnation_bear -> check() )
-    {
-      p() -> cooldown.mangle      -> reset( false );
-      p() -> cooldown.thrash_bear -> reset( false );
-      p() -> cooldown.growl       -> reset( false );
-      p() -> cooldown.maul        -> reset( false );
-
+      // King of the Jungle raises energy cap, so manually trigger some regen so that the actor starts with the correct
+      // amount of energy.
+      if ( p()->buff.incarnation_cat->check() )
+        p()->regen( time );
     }
   }
 };
@@ -6555,7 +6546,7 @@ struct solar_wrath_t : public druid_spell_t
 
   bool ready() override
   {
-    if ( precombat && precombat_cast )
+    if ( precombat && ( precombat_cast || sim->current_time() > 0_s ) )
       return false;
 
     return druid_spell_t::ready();
@@ -6847,7 +6838,7 @@ struct starsurge_t : public druid_spell_t
 
   bool ready() override
   {
-    if ( precombat && precombat_cast )
+    if ( precombat && ( precombat_cast || sim->current_time() > 0_s ) )
       return false;
 
     return druid_spell_t::ready();
@@ -8647,7 +8638,8 @@ void druid_t::apl_balance()
   if ( sim->allow_potions && true_level >= 80 )
     default_list->add_action( "potion,if=buff.celestial_alignment.remains>13|buff.incarnation.remains>16.5" );
 
-  // Precombat Hack - WARNING: there is NO checking to see if these actually happen precombat!! You MUST carefuly ensure this with conditions.
+  // Precombat Hack - WARNING: there is NO checking to see if these actually happen precombat!!
+  // You MUST carefuly ensure this with conditions or within the spell code!!
   default_list->add_action( this, "Solar Wrath", "precombat=1,if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel"
                                     "|bfa.font_of_power_precombat_channel>=5.5", "Precombat Hack" );
   default_list->add_action( this, "Starsurge", "precombat=1,if=talent.natures_balance.enabled" );
