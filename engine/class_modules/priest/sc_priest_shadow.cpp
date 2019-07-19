@@ -1997,12 +1997,8 @@ void priest_t::generate_apl_shadow()
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* cleave       = get_action_priority_list( "cleave" );
   action_priority_list_t* single       = get_action_priority_list( "single" );
-
-  // On-Use Items
-  for ( const std::string& item_action : get_item_actions() )
-  {
-    default_list->add_action( item_action );
-  }
+  action_priority_list_t* cds          = get_action_priority_list( "cds" );
+  action_priority_list_t* crit_cds     = get_action_priority_list( "crit_cds" );
 
   // Professions
   for ( const std::string& profession_action : get_profession_actions() )
@@ -2036,47 +2032,60 @@ void priest_t::generate_apl_shadow()
   default_list->add_action( "run_action_list,name=cleave,if=active_enemies>1" );
   default_list->add_action( "run_action_list,name=single,if=active_enemies=1" );
 
+  // CDs
+  cds->add_action( "memory_of_lucid_dreams,if=(buff.voidform.stack>20&insanity<=50)|"
+                   "buff.voidform.stack>(25+5*buff.bloodlust.up)|"
+                   "(current_insanity_drain*gcd.max*3)>insanity",
+                   "Use Memory of Lucid Dreams right before you are about to fall out of Voidform" );
+  cds->add_action( "blood_of_the_enemy" );
+  cds->add_action( "guardian_of_azeroth" );
+  cds->add_action( "focused_azerite_beam,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
+  cds->add_action( "purifying_blast,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
+  cds->add_action( "the_unbound_force" );
+  cds->add_action( "concentrated_flame" );
+  cds->add_action( "ripple_in_space" );
+  cds->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
+  cds->add_action( "call_action_list,name=crit_cds,if=(buff.voidform.up&"
+                   "buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0",
+                   "Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity active" );
+  cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
+
+  // Crit CDs
+  crit_cds->add_action( "use_item,name=azsharas_font_of_power" );
+  crit_cds->add_action( "use_item,effect_name=cyclotronic_blast" );
+
   // single APL
   single->add_action( this, "Void Eruption" );
   single->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
-  single->add_action( "use_item,name=azsharas_font_of_power,if=(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0" );
-  // Make sure to use lucid before you fall out of voidform
-  single->add_action( "memory_of_lucid_dreams,if=(buff.voidform.stack>20&insanity<=50)|"
-                      "buff.voidform.stack>(25+5*buff.bloodlust.up)|"
-                      "(current_insanity_drain*gcd.max*3)>insanity");
-  single->add_action( "blood_of_the_enemy" );
-  single->add_action( "guardian_of_azeroth" );
-  single->add_action( "focused_azerite_beam" );
-  single->add_action( "purifying_blast" );
-  single->add_action( "the_unbound_force" );
-  single->add_action( "concentrated_flame" );
-  single->add_action( "ripple_in_space" );
-  single->add_action( "worldvein_resonance" );
-  single->add_action( "use_item,name=pocketsized_computation_device,if=equipped.167555&(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0" );
+  single->add_action( "call_action_list,name=cds" );
   single->add_action( this, "Mind Sear",
                       "if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&"
-                      "azerite.searing_dialogue.rank>=1" );
+                      "azerite.searing_dialogue.rank>=1",
+                      "Use Mind Sear on ST only if you get a Thought Harvester Proc with at least 1 Searing Dialogue Trait." );
   single->add_talent( this, "Shadow Word: Death",
                       "if=target.time_to_die<3|"
                       "cooldown.shadow_word_death.charges=2|"
                       "(cooldown.shadow_word_death.charges=1&"
-                      "cooldown.shadow_word_death.remains<gcd.max)" );
+                      "cooldown.shadow_word_death.remains<gcd.max)",
+                      "Use SWD before capping charges, or the target is about to die." );
   single->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
-  single->add_talent( this, "Dark Void", "if=raid_event.adds.in>10" );
-  single->add_talent( this, "Mindbender", "if=talent.mindbender.enabled|(buff.voidform.stack>18|target.time_to_die<15)" );
+  single->add_talent( this, "Dark Void", "if=raid_event.adds.in>10", "Use Dark Void on CD unless adds are incoming in 10s or less." );
+  single->add_talent( this, "Mindbender", "if=talent.mindbender.enabled|(buff.voidform.stack>18|target.time_to_die<15)",
+                      "Use Mindbender at 19 or more stacks, or if the target will die in less than 15s." );
   single->add_talent( this, "Shadow Word: Death",
                       "if=!buff.voidform.up|"
                       "(cooldown.shadow_word_death.charges=2&"
                       "buff.voidform.stack<15)" );
-  single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
-  // Bank the Shadow Word: Void charges for a bit to try and avoid overcapping on Insanity.
+  single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
+                      "Use Shadow Crash on CD unless there are adds incoming." );
   single->add_action( this, "Mind Blast",
                       "if=variable.dots_up&"
                       "((raid_event.movement.in>cast_time+0.5&raid_event.movement.in<4)|"
                       "!talent.shadow_word_void.enabled|buff.voidform.down|"
                       "buff.voidform.stack>14&(insanity<70|charges_fractional>1.33)|"
-                      "buff.voidform.stack<=14&(insanity<60|charges_fractional>1.33))" );
+                      "buff.voidform.stack<=14&(insanity<60|charges_fractional>1.33))",
+                      "Bank the Shadow Word: Void charges for a bit to try and avoid overcapping on Insanity." );
   single->add_talent( this, "Void Torrent",
                       "if=dot.shadow_word_pain.remains>4&"
                       "dot.vampiric_touch.remains>4&buff.voidform.up" );
@@ -2098,25 +2107,13 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Vampiric Touch", "if=!ticking&azerite.thought_harvester.rank>=1" );
   cleave->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
   cleave->add_action( this, "Void Bolt" );
-  cleave->add_action( "use_item,name=azsharas_font_of_power,if=(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0" );
-  // Make sure to use lucid before you fall out of voidform
-  cleave->add_action( "memory_of_lucid_dreams,if=(buff.voidform.stack>20&insanity<=50)|"
-                      "buff.voidform.stack>(25+5*buff.bloodlust.up)|"
-                      "(current_insanity_drain*gcd.max*3)>insanity");
-  cleave->add_action( "blood_of_the_enemy" );
-  cleave->add_action( "guardian_of_azeroth" );
-  cleave->add_action( "focused_azerite_beam" );
-  cleave->add_action( "purifying_blast" );
-  cleave->add_action( "the_unbound_force" );
-  cleave->add_action( "concentrated_flame" );
-  cleave->add_action( "ripple_in_space" );
-  cleave->add_action( "worldvein_resonance" );
-  cleave->add_action( "use_item,name=pocketsized_computation_device,if=equipped.167555&(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0" );
+  cleave->add_action( "call_action_list,name=cds" );
   cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   cleave->add_talent( this, "Dark Void",
                       "if=raid_event.adds.in>10"
-                      "&(dot.shadow_word_pain.refreshable|target.time_to_die>30)" );
+                      "&(dot.shadow_word_pain.refreshable|target.time_to_die>30)",
+                      "Use Dark Void on CD unless adds are incoming in 10s or less." );
   cleave->add_talent( this, "Mindbender" );
   cleave->add_action( this, "Mind Blast",
                       "target_if=spell_targets.mind_sear<variable.mind_blast_targets" );
