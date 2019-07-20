@@ -30,6 +30,7 @@ actions.precombat+=/potion
 actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>15
 actions.precombat+=/apply_poison
 actions.precombat+=/stealth
+actions.precombat+=/use_item,name=azsharas_font_of_power
 
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)

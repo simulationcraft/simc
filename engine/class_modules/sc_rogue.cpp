@@ -5696,6 +5696,7 @@ void rogue_t::init_action_list()
     // Pre-Combat
     precombat->add_action( "apply_poison" );
     precombat->add_action( this, "Stealth" );
+    precombat->add_action( "use_item,name=azsharas_font_of_power" );
 
     // Main Rotation
     def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)" );
@@ -5798,6 +5799,7 @@ void rogue_t::init_action_list()
     precombat -> add_action( this, "Roll the Bones", "precombat_seconds=2" );
     precombat -> add_talent( this, "Slice and Dice", "precombat_seconds=2" );
     precombat -> add_action( this, "Adrenaline Rush", "precombat_seconds=1,if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)" );
+    precombat -> add_action( "use_item,name=azsharas_font_of_power" );
     precombat -> add_action( "use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists" );
 
     // Main Rotation
@@ -5875,6 +5877,7 @@ void rogue_t::init_action_list()
     precombat -> add_talent( this, "Marked for Death", "precombat_seconds=15" );
     precombat -> add_action( this, "Shadow Blades", "precombat_seconds=1" );
     precombat -> add_action( "potion" );
+    precombat -> add_action( "use_item,name=azsharas_font_of_power" );
 
     // Main Rotation
     def -> add_action( "call_action_list,name=cds", "Check CDs at first" );
