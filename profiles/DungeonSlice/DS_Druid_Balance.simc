@@ -37,8 +37,8 @@ actions.precombat+=/moonkin_form
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/use_item,name=azsharas_font_of_power
-actions.precombat+=/solar_wrath,if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel|bfa.font_of_power_precombat_channel>=7.0
-actions.precombat+=/solar_wrath,if=!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel|bfa.font_of_power_precombat_channel>=5.5
+actions.precombat+=/solar_wrath
+actions.precombat+=/solar_wrath
 actions.precombat+=/starsurge,if=talent.natures_balance.enabled
 
 # Executed every time the actor is available.
