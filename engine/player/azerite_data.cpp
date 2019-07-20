@@ -3412,28 +3412,20 @@ void arcane_heart( special_effect_t& effect )
       ->set_default_value( power.spell_ref().effectN( 1 ).base_value() );
   }
 
-  double value = power.value( 2 );
-  auto omni    = static_cast<stat_buff_t*>( buff_t::find( effect.player, "omnipotence" ) );
+  auto omni = static_cast<stat_buff_t*>( buff_t::find( effect.player, "omnipotence" ) );
   if ( !omni )
   {
-    omni = make_buff<stat_buff_t>( effect.player, "omnipotence", effect.trigger()->effectN( 1 ).trigger() )
-      ->add_stat( STAT_CRIT_RATING, 0 )
-      ->add_stat( STAT_HASTE_RATING, 0 )
-      ->add_stat( STAT_MASTERY_RATING, 0 )
-      ->add_stat( STAT_VERSATILITY_RATING, 0 );
-    omni->set_stack_change_callback( [omni, value]( buff_t*, int, int new_ ) {
-      stat_e highest = util::highest_stat( omni->player,
-        {STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING} );
-
+    omni = make_buff<stat_buff_t>( effect.player, "omnipotence", effect.trigger()->effectN( 1 ).trigger() );
+    omni->add_stat( STAT_NONE, power.value( 2 ) );
+    omni->set_stack_change_callback( [omni]( buff_t*, int, int new_ ) {
+      if ( new_ )
+      {
+        omni->stats.front().stat = util::highest_stat(
+          omni->player, { STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING } );
+      }
       omni->sim->print_debug( "arcane_heart omnipotence stack change: highest stat {} {} by {}",
-        util::stat_type_string( highest ), new_ ? "increased" : "decreased", value );
-
-      range::for_each( omni->stats, [value, new_, highest]( stat_buff_t::buff_stat_t& s ) {
-        if ( new_ && s.stat == highest )
-          s.amount = value;
-        else
-          s.amount = 0;
-      } );
+        util::stat_type_string( omni->stats.front().stat ), new_ ? "increased" : "decreased",
+        omni->stats.front().amount );
     } );
   }
 
@@ -3446,26 +3438,37 @@ void arcane_heart( special_effect_t& effect )
   //    do not seem to count. Unknown if active shields do.
   // * Leech does not seem to count.
   effect.player->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [buff, omni]( dmg_e, action_state_t* state ) {
-    if ( state->result_amount <= 0 )
+    double amount = state->result_amount;
+
+    if ( amount <= 0 )
       return assessor::CONTINUE;
 
-    buff->current_value -= state->result_amount;
+    if ( !buff->check() )  // special handling for damage from precombat actions
+    {
+      make_event( *buff->sim, [buff, amount] {
+        buff->current_value -= amount;
+        buff->sim->print_debug(
+          "arcane_heart_counter ability:precombat damage:{} counter now at:{}", amount, buff->current_value );
+      } );
+
+      return assessor::CONTINUE;
+    }
+
+    buff->current_value -= amount;
 
     buff->sim->print_debug( "arcane_heart_counter ability:{} damage:{} counter now at:{}", state->action->name(),
-      state->result_amount, buff->current_value );
+      amount, buff->current_value );
 
     if ( buff->current_value <= 0 )
     {
-      make_event( *buff->sim, [ omni ] { omni->trigger(); } );
+      make_event( *buff->sim, [omni] { omni->trigger(); } );
       buff->current_value += buff->default_value;
     }
 
     return assessor::CONTINUE;
   } );
 
-  effect.player->register_combat_begin( [buff]( player_t* ) {
-    buff->trigger();
-  } );
+  effect.player->register_combat_begin( [buff]( player_t* ) { buff->trigger(); } );
 }
 
 void clockwork_heart( special_effect_t& effect )
