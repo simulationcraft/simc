@@ -6842,6 +6842,27 @@ struct starsurge_t : public druid_spell_t
     return action_list && action_list->name_str == "precombat" ? 1_ms : druid_spell_t::travel_time();
   }
 
+  bool ready() override
+  {
+    if ( p()->in_combat )
+      return druid_spell_t::ready();
+
+    // in precombat, so hijack standard ready() procedure
+    auto apl = player->precombat_action_list;
+
+    // emulate performing check_form_restriction()
+    auto it =
+      range::find_if( apl, [this]( action_t* a ) { return util::str_compare_ci( a->name(), "moonkin_form" ); } );
+    if ( it == apl.end() )
+      return false;
+
+    // emulate performing resource_available( current_resource(), cost() )
+    if ( !p()->talent.natures_balance->ok() && p()->initial_astral_power < cost() )
+      return false;
+
+    return true;
+  }
+
   double cost() const override
   {
     if ( p()->buff.oneths_intuition->check() )
