@@ -8314,7 +8314,7 @@ void druid_t::apl_precombat()
     precombat->add_action( "use_item,name=azsharas_font_of_power" );
     precombat->add_action( this, "Solar Wrath" );
     precombat->add_action( this, "Solar Wrath" );
-    precombat->add_action( this, "Starsurge", "if=talent.natures_balance.enabled" );
+    precombat->add_action( this, "Starsurge" );
   }
   else if ( specialization() == DRUID_RESTORATION )
   {

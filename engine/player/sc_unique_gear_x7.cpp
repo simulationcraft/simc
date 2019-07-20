@@ -3808,6 +3808,9 @@ void items::azsharas_font_of_power( special_effect_t& effect )
         }
       }
 
+      // shared cd (other trinkets & on-use items)
+      auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );
+
       if ( time == 0_ms ) // No hardcoded override, so dynamically calculate timing via the precombat APL
       {
         time = 4_s;  // base 4s channel for full effect
@@ -3820,11 +3823,19 @@ void items::azsharas_font_of_power( special_effect_t& effect )
           return;
         }
 
+        if ( cdgrp )
+          cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
+
         // add cast time or gcd for any following precombat action
-        std::find_if( it + 1, apl.end(), [&time]( action_t* a ) {
-          if ( !a->background && !a->use_off_gcd && ( !a->if_expr || a->if_expr->success() ) )
+        std::find_if( it + 1, apl.end(), [&time, this]( action_t* a ) {
+          if ( a->action_ready() )
           {
-            time += std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+            timespan_t delta =
+              std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+            sim->print_debug(
+              "PRECOMBAT: Azshara's Font of Power prechannel timing pushed by {} for {}", delta, a->name() );
+            time += delta;
+
             return a->harmful;  // stop processing after first valid harmful spell
           }
           return false;
@@ -3839,8 +3850,6 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       auto actual    = total + channel - time;
       // cooldown on effect/trinket at start of combat
       auto cd_dur    = cooldown->duration - time;
-      // shared cd (other trinkets & on-use items)
-      auto cdgrp     = player->get_cooldown( effect->cooldown_group_name() );
       // shared cooldown at start of combat
       auto cdgrp_dur = std::max( 0_ms, effect->cooldown_group_duration() - time );
 
