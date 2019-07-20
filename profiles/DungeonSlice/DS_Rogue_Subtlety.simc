@@ -31,6 +31,7 @@ actions.precombat+=/stealth
 actions.precombat+=/marked_for_death,precombat_seconds=15
 actions.precombat+=/shadow_blades,precombat_seconds=1
 actions.precombat+=/potion
+actions.precombat+=/use_item,name=azsharas_font_of_power
 
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)

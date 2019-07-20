@@ -32,6 +32,7 @@ actions.precombat+=/stealth,if=(!equipped.pocketsized_computation_device|!cooldo
 actions.precombat+=/roll_the_bones,precombat_seconds=2
 actions.precombat+=/slice_and_dice,precombat_seconds=2
 actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)
+actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists
 
 # Executed every time the actor is available.
