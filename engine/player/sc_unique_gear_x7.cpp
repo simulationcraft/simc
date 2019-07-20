@@ -3821,9 +3821,13 @@ void items::azsharas_font_of_power( special_effect_t& effect )
         }
 
         // add cast time or gcd for any following precombat action
-        std::for_each( it + 1, apl.end(), [&time]( action_t* a ) {
-          if ( !a->background && !a->use_off_gcd )
+        std::find_if( it + 1, apl.end(), [&time]( action_t* a ) {
+          if ( !a->background && !a->use_off_gcd && ( !a->if_expr || a->if_expr->success() ) )
+          {
             time += std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+            return a->harmful;  // stop processing after first valid harmful spell
+          }
+          return false;
         } );
       }
 
