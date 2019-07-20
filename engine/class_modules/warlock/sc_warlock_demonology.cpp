@@ -1082,16 +1082,16 @@ namespace warlock {
   }
 
   void warlock_t::create_apl_demonology() {
-    action_priority_list_t* def = get_action_priority_list("default");
-    action_priority_list_t* np = get_action_priority_list("nether_portal");
-    action_priority_list_t* npb = get_action_priority_list("nether_portal_building");
-    action_priority_list_t* npa = get_action_priority_list("nether_portal_active");
-    action_priority_list_t* bas = get_action_priority_list("build_a_shard");
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    action_priority_list_t* np = get_action_priority_list( "nether_portal" );
+    action_priority_list_t* npb = get_action_priority_list( "nether_portal_building" );
+    action_priority_list_t* npa = get_action_priority_list( "nether_portal_active" );
+    action_priority_list_t* bas = get_action_priority_list( "build_a_shard" );
     action_priority_list_t* imp = get_action_priority_list( "implosion" );
-    action_priority_list_t* opener = get_action_priority_list( "dcon_opener" );
+    action_priority_list_t* opener = get_action_priority_list( "opener" );
 
     def->add_action( "potion,if=pet.demonic_tyrant.active&(!essence.vision_of_perfection.major|!talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains>=cooldown.summon_demonic_tyrant.duration-5)&(!talent.nether_portal.enabled|cooldown.nether_portal.remains>160)|target.time_to_die<30" );
-    def->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.summon_demonic_tyrant.remains<=20" );
+    def->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.summon_demonic_tyrant.remains<=20&!talent.nether_portal.enabled" );
     def->add_action( "use_items,if=pet.demonic_tyrant.active&(!essence.vision_of_perfection.major|!talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains>=cooldown.summon_demonic_tyrant.duration-5)|target.time_to_die<=15" );
     def->add_action( "berserking,if=pet.demonic_tyrant.active&(!essence.vision_of_perfection.major|!talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains>=cooldown.summon_demonic_tyrant.duration-5)|target.time_to_die<=15" );
     def->add_action( "blood_fury,if=pet.demonic_tyrant.active&(!essence.vision_of_perfection.major|!talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains>=cooldown.summon_demonic_tyrant.duration-5)|target.time_to_die<=15" );
@@ -1105,15 +1105,15 @@ namespace warlock {
     def->add_action( "use_item,name=aquipotent_nautilus,if=(cooldown.summon_demonic_tyrant.remains>=25|target.time_to_die<=30)" );
     def->add_action( "use_item,name=tidestorm_codex,if=(cooldown.summon_demonic_tyrant.remains>=25|target.time_to_die<=30)" );
     def->add_action( "use_item,name=vial_of_storms,if=(cooldown.summon_demonic_tyrant.remains>=25|target.time_to_die<=30)" );
-    def->add_action( "call_action_list,name=dcon_opener,if=talent.demonic_consumption.enabled&time<30&!cooldown.summon_demonic_tyrant.remains" );
-    def->add_action( "use_item,name=azsharas_font_of_power,if=talent.grimoire_felguard.enabled&(target.time_to_die>120|target.time_to_die<cooldown.summon_demonic_tyrant.remains+15)|target.time_to_die<=35" );
+    def->add_action( "call_action_list,name=opener,if=!talent.nether_portal.enabled&time<30&!cooldown.summon_demonic_tyrant.remains" );
+    def->add_action( "use_item,name=azsharas_font_of_power,if=(time>30|!talent.nether_portal.enabled)&talent.grimoire_felguard.enabled&(target.time_to_die>120|target.time_to_die<cooldown.summon_demonic_tyrant.remains+15)|target.time_to_die<=35" );
     def->add_action( "hand_of_guldan,if=azerite.explosive_potential.rank&time<5&soul_shard>2&buff.explosive_potential.down&buff.wild_imps.stack<3&!prev_gcd.1.hand_of_guldan&&!prev_gcd.2.hand_of_guldan" );
     def->add_action( "demonbolt,if=soul_shard<=3&buff.demonic_core.up&buff.demonic_core.stack=4" );
     def->add_action( "implosion,if=azerite.explosive_potential.rank&buff.wild_imps.stack>2&buff.explosive_potential.remains<action.shadow_bolt.execute_time&(!talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains>12)" );
-    def->add_action( "doom,if=!ticking&time_to_die>30&spell_targets.implosion<2" );
+    def->add_action( "doom,if=!ticking&time_to_die>30&spell_targets.implosion<2&!buff.nether_portal.remains" );
     def->add_action( "bilescourge_bombers,if=azerite.explosive_potential.rank>0&time<10&spell_targets.implosion<2&buff.dreadstalkers.remains&talent.nether_portal.enabled" );
-    def->add_action( "demonic_strength,if=(buff.wild_imps.stack<6|buff.demonic_power.up)|spell_targets.implosion<2");
-    def->add_action( "call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2");
+    def->add_action( "demonic_strength,if=(buff.wild_imps.stack<6|buff.demonic_power.up)|spell_targets.implosion<2" );
+    def->add_action( "call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2" );
     def->add_action( "call_action_list,name=implosion,if=spell_targets.implosion>1" );
     def->add_action( "guardian_of_azeroth,if=cooldown.summon_demonic_tyrant.remains<=15|target.time_to_die<=30" );
     def->add_action( "grimoire_felguard,if=(target.time_to_die>120|target.time_to_die<cooldown.summon_demonic_tyrant.remains+15|cooldown.summon_demonic_tyrant.remains<13)" );
@@ -1134,8 +1134,8 @@ namespace warlock {
     def->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight&!pet.demonic_tyrant.active" );
     def->add_action( "call_action_list,name=build_a_shard" );
 
-    np->add_action("call_action_list,name=nether_portal_building,if=cooldown.nether_portal.remains<20");
-    np->add_action("call_action_list,name=nether_portal_active,if=cooldown.nether_portal.remains>165");
+    np->add_action( "call_action_list,name=nether_portal_building,if=cooldown.nether_portal.remains<20" );
+    np->add_action( "call_action_list,name=nether_portal_active,if=cooldown.nether_portal.remains>165" );
 
     npa->add_action( "bilescourge_bombers" );
     npa->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13|!equipped.132369" );
@@ -1148,12 +1148,14 @@ namespace warlock {
     npa->add_action( "demonbolt,if=buff.demonic_core.up&soul_shard<=3" );
     npa->add_action( "call_action_list,name=build_a_shard" );
 
-    npb->add_action("nether_portal,if=soul_shard>=5&(!talent.power_siphon.enabled|buff.demonic_core.up)");
-    npb->add_action("call_dreadstalkers");
-    npb->add_action("hand_of_guldan,if=cooldown.call_dreadstalkers.remains>18&soul_shard>=3");
-    npb->add_action("power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down&soul_shard>=3");
-    npb->add_action("hand_of_guldan,if=soul_shard>=5");
-    npb->add_action("call_action_list,name=build_a_shard");
+    npb->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.nether_portal.remains<=5*spell_haste" );
+    npb->add_action( "guardian_of_azeroth,if=!cooldown.nether_portal.remains&soul_shard>=5" );
+    npb->add_action( "nether_portal,if=soul_shard>=5" );
+    npb->add_action( "call_dreadstalkers,if=time>=30" );
+    npb->add_action( "hand_of_guldan,if=time>=30&cooldown.call_dreadstalkers.remains>18&soul_shard>=3" );
+    npb->add_action( "power_siphon,if=time>=30&buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down&soul_shard>=3" );
+    npb->add_action( "hand_of_guldan,if=time>=30&soul_shard>=5" );
+    npb->add_action( "call_action_list,name=build_a_shard" );
 
     opener->add_action( "hand_of_guldan,line_cd=30,if=azerite.explosive_potential.enabled" );
     opener->add_action( "implosion,if=azerite.explosive_potential.enabled&buff.wild_imps.stack>2&buff.explosive_potential.down" );
@@ -1191,7 +1193,7 @@ namespace warlock {
     imp->add_action( "call_action_list,name=build_a_shard" );
 
     bas->add_action( "memory_of_lucid_dreams,if=soul_shard<2" );
-    bas->add_action("soul_strike,if=!talent.demonic_consumption.enabled|time>15|prev_gcd.1.hand_of_guldan&!buff.bloodlust.remains");
-    bas->add_action("shadow_bolt");
+    bas->add_action( "soul_strike,if=!talent.demonic_consumption.enabled|time>15|prev_gcd.1.hand_of_guldan&!buff.bloodlust.remains" );
+    bas->add_action( "shadow_bolt" );
   }
 }

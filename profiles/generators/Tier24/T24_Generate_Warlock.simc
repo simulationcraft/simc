@@ -37,21 +37,21 @@ talents=2303032
 default_pet=felguard
 azerite_essences=14:3:1/4:3:0/32:3:0
 
-head=,id=159244,bonus_id=5062/1617/4786/4775,azerite_powers=429/428/30/13
+head=soulfuel_headdress,id=159279,bonus_id=5062/1617/4786/4775,azerite_powers=231/193/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulder=,id=159273,bonus_id=5062/1617/4786/4775,azerite_powers=429/458/30/13
-back=,id=168604,bonus_id=4800/1517
-chest=,id=168337,bonus_id=4824/1517/4775,azerite_powers=429/576/30/13
-wrist=,id=170306,bonus_id=1512
-hands=,id=170333,bonus_id=1512
-waist=,id=170367,bonus_id=1512
-legs=,id=168371,bonus_id=4800/1517
-feet=,id=168373,bonus_id=4800/1517
-finger1=,id=168891,bonus_id=4800/1517,enchant=accord_of_haste
-finger2=,id=168889,bonus_id=4800/1517,enchant=accord_of_haste
-trinket1=,id=169304,bonus_id=4800/1517
-trinket2=,id=169314,bonus_id=4800/1517
-main_hand=,id=168275,bonus_id=4800/1517,enchant=machinists_brilliance
+shoulder=amice_of_the_reef_witch,id=168338,bonus_id=4824/1517/4775,azerite_powers=231/190/30/13
+back=,id=168391,bonus_id=4800/1517
+chest=vestments_of_creeping_terror,id=168337,bonus_id=4824/1517/4775,azerite_powers=429/231/30/13
+wrist=waveblade_farseers_bindings,id=170306,bonus_id=1512
+hands=poens_deepsea_gloves,id=170333,bonus_id=1512
+waist=vims_scalecrusher_belt,id=170367,bonus_id=1512
+legs=seawrath_legwraps,id=168371,bonus_id=4800/1517
+feet=eelskin_flippers,id=168373,bonus_id=4800/1517
+finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_versatility
+finger2=,id=168890,bonus_id=4800/1517,enchant=accord_of_versatility
+trinket1=leviathans_lure,id=169304,bonus_id=4800/1517
+trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+main_hand=anuazshara_staff_of_the_eternal,id=168275,bonus_id=4800/1517,enchant=machinists_brilliance
 
 save=T24_Warlock_Demonology.simc
 
@@ -69,14 +69,14 @@ head=,id=168336,bonus_id=4824/1517/4775,azerite_powers=460/576/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulder=,id=168338,bonus_id=4824/1517/4775,azerite_powers=432/460/30/13
 chest=,id=168337,bonus_id=4824/1517/4775,azerite_powers=131/576/30/13
-back=,id=168604,bonus_id=4800/1517
+back=,id=168391,bonus_id=4800/1517
 wrist=,id=170306,bonus_id=1512
 hands=,id=170333,bonus_id=1512
 waist=,id=170367,bonus_id=1512
 legs=,id=168371,bonus_id=4800/1517
 feet=,id=170140,bonus_id=1512
-finger1=,id=168891,bonus_id=4800/1517,enchant=accord_of_haste
-finger2=,id=168890,bonus_id=4800/1517,enchant=accord_of_haste
+finger1=,id=168891,bonus_id=4800/1517,enchant=accord_of_versatility
+finger2=,id=168890,bonus_id=4800/1517,enchant=accord_of_versatility
 trinket1=,id=169304,bonus_id=4800/1517
 trinket2=,id=169314,bonus_id=4800/1517
 main_hand=,id=168275,bonus_id=4800/1517,enchant=machinists_brilliance
