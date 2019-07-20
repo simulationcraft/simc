@@ -944,6 +944,7 @@ void paladin_t::generate_action_prio_list_ret()
   cds -> add_action( "focused_azerite_beam,if=(!raid_event.adds.exists|raid_event.adds.in>30|spell_targets.divine_storm>=2)&(buff.avenging_wrath.down|buff.crusade.down)&(cooldown.blade_of_justice.remains>gcd*3&cooldown.judgment.remains>gcd*3)" );
   cds -> add_action( "memory_of_lucid_dreams,if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10)&holy_power<=3" );
   cds -> add_action( "purifying_blast,if=(!raid_event.adds.exists|raid_event.adds.in>30|spell_targets.divine_storm>=2)" );
+  cds -> add_action( "use_item,effect_name=cyclotronic_blast,if=(buff.avenging_wrath.down|buff.crusade.down)&(cooldown.blade_of_justice.remains>gcd*3&cooldown.judgment.remains>gcd*3)" );
   cds -> add_action( this, "Avenging Wrath", "if=(!talent.inquisition.enabled|buff.inquisition.up)&holy_power>=3" );
   cds -> add_talent( this, "Crusade", "if=holy_power>=4|holy_power>=3&time<10&talent.wake_of_ashes.enabled" );
 
