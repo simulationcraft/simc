@@ -3562,6 +3562,7 @@ struct chill_streak_damage_t : public death_knight_spell_t
         {
           this -> set_target( target );
           this -> schedule_execute();
+          return;
         }
       }
     }
