@@ -173,7 +173,7 @@ struct cooldown_reduction_data_t
   void add( timespan_t reduction )
   {
     timespan_t remaining = cd->recharge_event
-      ? cd->current_charge_remains() + ( cd->charges + cd->current_charge - 1 ) * cooldown_t::cooldown_duration( cd )
+      ? cd->current_charge_remains() + ( cd->charges - cd->current_charge - 1 ) * cooldown_t::cooldown_duration( cd )
       : cd->remains();
 
     double reduction_sec = -reduction.total_seconds();
