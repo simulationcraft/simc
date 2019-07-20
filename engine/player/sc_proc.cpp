@@ -1349,18 +1349,19 @@ int special_effect_t::cooldown_group() const
     return 0;
   }
 
+  // New-style On-Use item spells may use a special cooldown category to signal the shared cooldown
+  if ( driver() -> category() == ITEM_TRINKET_BURST_CATEGORY )
+  {
+    return driver() -> category();
+  }
+
+  // For everything else, look at the item effects for a cooldown group
   for ( size_t i = 0; i < MAX_ITEM_EFFECT; ++i )
   {
     if ( item -> parsed.data.cooldown_group[ i ] > 0 )
     {
       return item -> parsed.data.cooldown_group[ i ];
     }
-  }
-
-  // On-Use trinkets use a special cooldown category to signal the shared cooldown
-  if ( driver() -> category() == ITEM_TRINKET_BURST_CATEGORY )
-  {
-    return driver() -> category();
   }
 
   return 0;
@@ -1373,6 +1374,14 @@ timespan_t special_effect_t::cooldown_group_duration() const
     return timespan_t::zero();
   }
 
+  // New-style On-Use items when using a special cooldown category signal the shared cooldown
+  // duration in the spell itself
+  if ( driver() -> category() == ITEM_TRINKET_BURST_CATEGORY )
+  {
+    return driver() -> category_cooldown();
+  }
+
+  // For everything else, look at the item effects with a cooldown group
   for ( size_t i = 0; i < MAX_ITEM_EFFECT; ++i )
   {
     if ( item -> parsed.data.cooldown_group[ i ] > 0 )
@@ -1381,7 +1390,7 @@ timespan_t special_effect_t::cooldown_group_duration() const
     }
   }
 
-  return driver() -> category_cooldown();
+  return 0_ms;
 }
 
 const item_t dbc_proc_callback_t::default_item_ = item_t();
