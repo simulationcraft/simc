@@ -3799,13 +3799,32 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     {
       timespan_t time = sim->bfa_opts.font_of_power_precombat_channel;
 
-      if ( time == 0_ms)  // No options override, so apply spec-based default timings
+      if ( time == 0_ms )  // No options override, first apply any spec-based hardcoded timings
       {
         switch ( player->specialization() )
         {
-          case DRUID_BALANCE: time = 7.5_s; break;
-          default: time = 4_s; break;
+          // case DRUID_BALANCE: time = 7.5_s; break;
+          default: break;
         }
+      }
+
+      if ( time == 0_ms ) // No hardcoded override, so dynamically calculate timing via the precombat APL
+      {
+        time = 4_s;  // base 4s channel for full effect
+        auto apl = player->precombat_action_list;
+
+        auto it = range::find( apl, use_action );
+        if ( it == apl.end() )
+        {
+          sim->print_debug( "WARNING: Precombat /use_item for Font of Power exists but not found in precombat APL!" );
+          return;
+        }
+
+        // add cast time or gcd for any following precombat action
+        std::for_each( it + 1, apl.end(), [&time]( action_t* a ) {
+          if ( !a->background && !a->use_off_gcd )
+            time += std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+        } );
       }
 
       // how long you channel for (rounded down to seconds)
@@ -3822,8 +3841,8 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       auto cdgrp_dur = std::max( 0_ms, effect->cooldown_group_duration() - time );
 
       sim->print_debug(
-        "Azshara's Font of Power started {}s before combat via {}, channeled for {}s, giving {}s buff in combat", time,
-        use_action ? "APL" : "options", channel, actual );
+        "PRECOMBAT: Azshara's Font of Power started {}s before combat via {}, channeled for {}s, {}s in-combat buff",
+        time, use_action ? "APL" : "BFA_OPT", channel, actual );
 
       buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
 
