@@ -6523,11 +6523,11 @@ struct solar_empowerment_t : public druid_spell_t
 
 struct solar_wrath_t : public druid_spell_t
 {
-  int64_t precombat_count;
+  unsigned count;
 
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "solar_wrath", player, player->find_affinity_spell( "Solar Wrath" ), options_str ),
-    precombat_count( 0 )
+    count( 0 )
   {
     form_mask = NO_FORM | MOONKIN_FORM;
     add_child( player->active.solar_empowerment );
@@ -6545,22 +6545,24 @@ struct solar_wrath_t : public druid_spell_t
       auto it = range::find( apl, this );
       if ( it != apl.end() )
       {
-        // not the last action, set non-harmful so we can keep casting more precombat actions
-        harmful = false;
+        auto it2 = std::for_each( it + 1, apl.end(), [this]( action_t* a ) {
+          if ( harmful && a->harmful && a->action_ready() )
+            harmful = false;  // another harmful action exists; set current to non-harmful so we can keep casting
 
-        // see how many more solar wrath casts are left, so we can adjust travel time when combat begins
-        precombat_count = std::count_if( it + 1, apl.end(), [this]( action_t* a ) { return a->name_str == name_str; } );
+          if ( a->name_str == name_str )
+            count++;  // see how many solar wrath casts are left, so we can adjust travel time when combat begins
+        } );
       }
     }
   }
 
   timespan_t travel_time() const override
   {
-    if ( !precombat_count )
+    if ( !count )
       return druid_spell_t::travel_time();
 
     // for each additional solar wrath in precombat apl, reduce the travel time by the cast time
-    return std::max( 1_ms, druid_spell_t::travel_time() - base_execute_time * composite_haste() * precombat_count );
+    return std::max( 1_ms, druid_spell_t::travel_time() - base_execute_time * composite_haste() * count );
   }
 
   double composite_crit_chance() const override
