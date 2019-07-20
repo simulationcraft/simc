@@ -481,7 +481,6 @@ public:
     cooldown_t* vampiric_blood;
     // Frost
     cooldown_t* empower_rune_weapon;
-    cooldown_t* frost_fever_icd;
     cooldown_t* icecap_icd;
     cooldown_t* pillar_of_frost;
     // Unholy
@@ -4971,9 +4970,6 @@ struct frost_fever_t : public death_knight_spell_t
   {
     ap_type = AP_WEAPON_BOTH;
 
-    p -> cooldown.frost_fever_icd = p -> get_cooldown( "frost_fever" );
-    p -> cooldown.frost_fever_icd -> duration = p -> spec.frost_fever -> internal_cooldown();
-
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
   }
@@ -4985,15 +4981,19 @@ struct frost_fever_t : public death_knight_spell_t
     // TODO: Melekus, 2019-05-15: Frost fever proc chance and ICD have been removed from spelldata on PTR
     // Figure out what is up with the "30% proc chance, diminishing beyond the first target" from blue post.
     // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
-    double chance = 0.3;
 
-    if ( p() -> cooldown.frost_fever_icd -> up() && rng().roll( chance ) )
+    // 2019-07-20: Logs analysis points at a 30% proc chance on main target, and 7% chance on additional enemies
+    // We're using the player's target to evalute the "main" enemy that will have a 30% proc chance
+    // TODO: fix this behavior for situations where p() -> target will not be affected by the dot
+    // (should only happen if they're invulnerable but targetable, or if HB was used on a different target that is too far away)
+    double chance = d -> target == p() -> target ? 0.3 : 0.07;
+
+    if ( rng().roll( chance ) )
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
                             p() -> spec.frost_fever -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
                             p() -> gains.frost_fever,
                             this );
-      p() -> cooldown.frost_fever_icd -> start();
     }
   }
 };
