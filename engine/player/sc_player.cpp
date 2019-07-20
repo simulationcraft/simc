@@ -3117,6 +3117,7 @@ void player_t::create_buffs()
       buffs.lucid_dreams->add_stat( STAT_VERSATILITY_RATING,
         memory_of_lucid_dreams.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average(
           memory_of_lucid_dreams.item() ) );
+      buffs.lucid_dreams->set_quiet( memory_of_lucid_dreams.rank() < 3 );
 
       buffs.reckless_force = make_buff( this, "reckless_force", find_spell( 302932 ) )
         ->add_invalidate(CACHE_CRIT_CHANCE)
