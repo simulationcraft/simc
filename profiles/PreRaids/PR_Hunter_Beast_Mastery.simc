@@ -30,17 +30,18 @@ actions.precombat+=/potion
 actions.precombat+=/worldvein_resonance
 actions.precombat+=/guardian_of_azeroth
 actions.precombat+=/memory_of_lucid_dreams
+actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists
 actions.precombat+=/focused_azerite_beam,if=!raid_event.invulnerable.exists
 # Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s.
-actions.precombat+=/aspect_of_the_wild,precast_time=1.1,if=!azerite.primal_instincts.enabled
+actions.precombat+=/aspect_of_the_wild,precast_time=1.1,if=!azerite.primal_instincts.enabled&!essence.essence_of_the_focusing_iris.major&(equipped.azsharas_font_of_power|!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration)
 # Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat.
-actions.precombat+=/bestial_wrath,precast_time=1.5,if=azerite.primal_instincts.enabled&(!essence.essence_of_the_focusing_iris.major)&(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration)
+actions.precombat+=/bestial_wrath,precast_time=1.5,if=azerite.primal_instincts.enabled&!essence.essence_of_the_focusing_iris.major&(equipped.azsharas_font_of_power|!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration)
 
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/use_items
-actions+=/use_item,effect_name=cyclotronic_blast
+actions+=/use_item,effect_name=cyclotronic_blast,if=!buff.bestial_wrath.up
 actions+=/use_item,name=ashvanes_razor_coral,if=buff.aspect_of_the_wild.remains>15|debuff.razor_coral_debuff.down|target.time_to_die<20
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=st,if=active_enemies<2
