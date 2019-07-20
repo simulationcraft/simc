@@ -4772,6 +4772,13 @@ struct lava_burst_t : public shaman_spell_t
     if ( result_is_hit( s->result ) )
     {
       p()->buff.t21_2pc_elemental->trigger();
+
+      if ( p()->buff.surge_of_power->up() )
+      {
+        p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
+        p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
+        p()->buff.surge_of_power->decrement();
+      }
     }
   }
 
@@ -4829,13 +4836,6 @@ struct lava_burst_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    if ( p()->buff.surge_of_power->up() )
-    {
-      p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
-      p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
-      p()->buff.surge_of_power->decrement();
-    }
 
     if ( p()->talent.master_of_the_elements->ok() )
     {
@@ -8679,7 +8679,6 @@ double shaman_t::resource_loss( resource_e resource_type, double amount, gain_t*
 
   return actual_loss;
 }
-
 
 // shaman_t::moving =========================================================
 
