@@ -918,7 +918,7 @@ void paladin_t::generate_action_prio_list_ret()
       }
       else if ( items[i].name_str == "ashvanes_razor_coral" )
       {
-        item_str = "use_item,name=" + items[i].name_str + ",if=debuff.razor_coral_debuff.down|buff.avenging_wrath.remains>=20&(cooldown.guardian_of_azeroth.remains>90|target.time_to_die<30)|buff.crusade.up&buff.crusade.stack=10&buff.crusade.remains>15&(cooldown.guardian_of_azeroth.remains>90||target.time_to_die<30)";
+        item_str = "use_item,name=" + items[i].name_str + ",if=debuff.razor_coral_debuff.down|(buff.avenging_wrath.remains>=20|buff.crusade.stack=10&buff.crusade.remains>15)&(cooldown.guardian_of_azeroth.remains>90|target.time_to_die<30|!essence.condensed_lifeforce.major)";
       }
       else if ( items[i].slot != SLOT_WAIST )
       {
