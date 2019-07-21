@@ -153,27 +153,31 @@ struct action_execute_event_t : public player_event_t
     {
       target                    = execute_state->target;
       action->pre_execute_state = execute_state;
-      execute_state             = 0;
+      execute_state             = nullptr;
     }
 
-    action->execute_event = 0;
-
-    if ( target->is_sleeping() && action->pre_execute_state )
-    {
-      action_state_t::release( action->pre_execute_state );
-      action->pre_execute_state = 0;
-    }
+    action->execute_event = nullptr;
 
     // Note, presumes that if the action is instant, it will still be ready, since it was ready on
     // the (near) previous event. Does check target sleepiness, since technically there can be
     // several damage events on the same timestamp one of which will kill the target.
     if ( ( has_cast_time && action->ready() && action->target_ready( target ) ) ||
-         !target->is_sleeping() )
+         ( !has_cast_time && !target->is_sleeping() ) )
     {
       // Action target must follow any potential pre-execute-state target if it differs from the
       // current (default) target of the action.
       action->set_target( target );
       action->execute();
+    }
+    else
+    {
+      // Release assigned pre_execute_state, since we are not calling action->execute() (that does
+      // it automatically)
+      if ( action->pre_execute_state )
+      {
+        action_state_t::release( action->pre_execute_state );
+        action->pre_execute_state = nullptr;
+      }
     }
 
     assert( !action->pre_execute_state );
