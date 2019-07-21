@@ -161,7 +161,7 @@ struct action_execute_event_t : public player_event_t
     // Note, presumes that if the action is instant, it will still be ready, since it was ready on
     // the (near) previous event. Does check target sleepiness, since technically there can be
     // several damage events on the same timestamp one of which will kill the target.
-    if ( ( has_cast_time && action->ready() && action->target_ready( target ) ) ||
+    if ( ( has_cast_time && ( action->background || action->ready() ) && action->target_ready( target ) ) ||
          ( !has_cast_time && !target->is_sleeping() ) )
     {
       // Action target must follow any potential pre-execute-state target if it differs from the
