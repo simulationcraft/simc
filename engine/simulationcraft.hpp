@@ -2632,7 +2632,14 @@ struct set_bonus_t
 
   // Fast accessor for checking whether a set bonus is enabled
   bool has_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
-  { return set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( spec ) ][ bonus ].enabled; }
+  {
+    if ( specdata::spec_idx( spec ) < 0 )
+    {
+      return false;
+    }
+
+    return set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( spec ) ][ bonus ].enabled;
+  }
 
   bool parse_set_bonus_option( const std::string& opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus );
   std::string to_string() const;
