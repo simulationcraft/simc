@@ -2780,6 +2780,12 @@ struct raging_blow_t : public warrior_attack_t
     track_cd_waste = true;
   }
 
+  void init() override
+  {
+    warrior_attack_t::init();
+    cooldown->hasted = true;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
