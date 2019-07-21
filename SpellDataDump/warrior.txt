@@ -1,4 +1,4 @@
-SimulationCraft 820-01 for World of Warcraft 8.2.0 Live (wow build 30918)
+SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 30918)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -1713,6 +1713,7 @@ Description      : Increases your chance to block by ${$s2}.1% and your chance t
 Also increases your attack power by ${$s5}.1%.
 
 Name             : Raging Blow (id=85288) [Spell Family (4)] 
+Hotfixed         : Affecting Spells
 Class            : Fury Warrior
 School           : Physical
 Spell Type       : Melee
@@ -1722,8 +1723,8 @@ GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Charges          : 2 (8 seconds cooldown)
 Category         : 1672: Fury Warrior (137050 effect#5)
-Affecting spells : Recklessness (1719 effect#6), Whirlwind (85739 effect#1), Warrior (137047 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1)
-Family Flags     : 8, 45, 106
+Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2)
+Family Flags     : 8, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1793,7 +1794,7 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=87073)    : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881), Victory Rush (34428), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Execute Off-Hand (163558), Impending Victory (202168), Execute (260798), Siegebreaker (280772), Execute (280849)
+                   Affected Spells: Bloodthirst (23881), Victory Rush (34428), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Execute Off-Hand (163558), Impending Victory (202168), Execute (260798), Siegebreaker (280772), Execute (280849)
                    Family Flags: 40, 42, 45, 53, 69, 72, 115, 116
 #2 (id=333347)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
@@ -2684,7 +2685,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179731)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Cleave (845), Slam (1464), Execute (5308), Thunder Clap (6343), Revenge (6572), Mortal Strike (12294), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Execute (163201), Execute Off-Hand (163558), Skullsplitter (260643), Execute (260798), Execute (280849)
+                   Affected Spells: Cleave (845), Slam (1464), Execute (5308), Thunder Clap (6343), Revenge (6572), Mortal Strike (12294), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Execute (163201), Execute Off-Hand (163558), Skullsplitter (260643), Execute (260798), Execute (280849)
                    Family Flags: 6, 7, 10, 18, 22, 29, 41, 45, 69
 #2 (id=188987)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
@@ -4926,7 +4927,7 @@ Effects          :
                    Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 1.00000 | Misc Value: 1672 | Target: Self (1)
 #2 (id=738411)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Raging Blow (85288), Raging Blow (85384), Raging Blow (96103)
+                   Affected Spells: Raging Blow (85384), Raging Blow (96103)
                    Family Flags: 45
 #3 (id=738435)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)

@@ -32,7 +32,7 @@ actions.precombat+=/cat_form
 actions.precombat+=/prowl
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
+actions.precombat+=/potion,dynamic_prepot=1
 actions.precombat+=/berserk
 
 # Executed every time the actor is available.
