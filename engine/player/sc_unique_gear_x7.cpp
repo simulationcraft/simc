@@ -4410,23 +4410,21 @@ void items::dribbling_inkpod( special_effect_t& effect )
 
     double action_multiplier() const override
     {
-      auto t  = execute_state ? execute_state->target : target;
-      auto td = player->get_target_data( t );
+      auto td = player->get_target_data( target );
       assert( td );
       assert( td->debuff.conductive_ink );
 
       return proc_t::action_multiplier() * td->debuff.conductive_ink->stack();
     }
 
-    void execute() override
+    void impact( action_state_t* s ) override
     {
-      proc_t::execute();
-
-      auto t  = execute_state ? execute_state->target : target;
-      auto td = player->get_target_data( t );
+      auto td = player->get_target_data( s->target );
       assert( td );
       assert( td->debuff.conductive_ink );
       td->debuff.conductive_ink->expire();
+
+      proc_t::impact( s );
     }
   };
 
