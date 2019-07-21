@@ -3358,7 +3358,8 @@ struct glacial_spike_t : public frost_mage_spell_t
 
   bool ready() override
   {
-    if ( p()->buffs.icicles->check() < p()->buffs.icicles->max_stack() )
+    // Glacial Spike doesn't check the Icicles buff after it started executing.
+    if ( p()->executing != this && p()->buffs.icicles->check() < p()->buffs.icicles->max_stack() )
       return false;
 
     return frost_mage_spell_t::ready();
