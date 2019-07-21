@@ -8328,24 +8328,28 @@ void druid_t::apl_precombat()
   // Snapshot stats
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  // Pre-Potion
-  precombat->add_action( "potion" );
-
   // Spec Specific Optimizations
   if ( specialization() == DRUID_BALANCE )
   {
     precombat->add_action( "use_item,name=azsharas_font_of_power" );
+    precombat->add_action( "potion,dynamic_prepot=1" );
     precombat->add_action( this, "Solar Wrath" );
     precombat->add_action( this, "Solar Wrath" );
     precombat->add_action( this, "Starsurge" );
   }
   else if ( specialization() == DRUID_RESTORATION )
   {
+    precombat->add_action( "potion" );
     precombat->add_talent( this, "Cenarion Ward" );
   }
   else if ( specialization() == DRUID_FERAL )
   {
+    precombat->add_action( "potion,dynamic_prepot=1" );
     precombat->add_action( "berserk" );
+  }
+  else
+  {
+    precombat->add_action( "potion" );
   }
 }
 

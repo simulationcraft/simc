@@ -3790,6 +3790,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
         {
           a->harmful = harmful;  // pass down harmful to allow action_t::init() precombat check bypass
           use_action = a;
+          use_action->base_execute_time = 4_s;
           break;
         }
       }
