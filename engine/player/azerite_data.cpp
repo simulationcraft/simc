@@ -3385,6 +3385,7 @@ void loyal_to_the_end( special_effect_t& effect )
       ->add_stat( STAT_CRIT_RATING, value )
       ->add_stat( STAT_HASTE_RATING, value )
       ->add_stat( STAT_VERSATILITY_RATING, value );
+    buff->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   }
 
   if ( chance )
