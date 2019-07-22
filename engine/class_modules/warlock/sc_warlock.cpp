@@ -726,9 +726,10 @@ void warlock_t::apl_precombat()
   }
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    precombat->add_action( "seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>=3" );
+    precombat->add_action( "use_item,name=azsharas_font_of_power" );
+    precombat->add_action( "seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>=3&!equipped.169314" );
     precombat->add_action( "haunt" );
-    precombat->add_action( "shadow_bolt,if=!talent.haunt.enabled&spell_targets.seed_of_corruption_aoe<3" );
+    precombat->add_action( "shadow_bolt,if=!talent.haunt.enabled&spell_targets.seed_of_corruption_aoe<3&!equipped.169314" );
   }
 }
 
