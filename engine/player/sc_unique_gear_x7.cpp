@@ -4398,6 +4398,18 @@ void items::dribbling_inkpod( special_effect_t& effect )
         dbc_proc_callback_t::trigger( a, cd );
       }
     }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      auto td = listener->get_target_data( s->target );
+
+      // Simultaneous attacks that hit at once can all count as the damage to burst the debuff, triggering the callback
+      // multiple times. Ensure the event-scheduled callback execute checks for the debuff so we don't get multiple hits
+      if ( td->debuff.conductive_ink->check() )
+      {
+        dbc_proc_callback_t::execute( a, s );
+      }
+    }
   };
 
   struct conductive_ink_t : public proc_t
@@ -4420,8 +4432,6 @@ void items::dribbling_inkpod( special_effect_t& effect )
     void impact( action_state_t* s ) override
     {
       auto td = player->get_target_data( s->target );
-      assert( td );
-      assert( td->debuff.conductive_ink );
       td->debuff.conductive_ink->expire();
 
       proc_t::impact( s );
