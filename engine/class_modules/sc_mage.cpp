@@ -3130,7 +3130,7 @@ struct flurry_t : public frost_mage_spell_t
 
     p()->trigger_icicle_gain( target, p()->icicle.flurry );
     if ( p()->player_t::buffs.memory_of_lucid_dreams->check() )
-      p()->trigger_icicle( target, p()->icicle.flurry );
+      p()->trigger_icicle_gain( target, p()->icicle.flurry );
 
     bool brain_freeze = p()->buffs.brain_freeze->up();
     p()->state.brain_freeze_active = brain_freeze;
