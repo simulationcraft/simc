@@ -7971,7 +7971,7 @@ std::string shaman_t::default_potion() const
 
   std::string enhance_pot =
       ( true_level > 110 )
-          ? "battle_potion_of_agility"
+          ? "potion_of_unbridled_fury"
           : ( true_level > 100 )
                 ? "prolonged_power"
                 : ( true_level >= 90 )
@@ -7996,7 +7996,7 @@ std::string shaman_t::default_flask() const
 
   std::string enhance_flask =
       ( true_level > 110 )
-          ? "currents"
+          ? "greater_flask_of_the_currents"
           : ( true_level > 100 )
                 ? "seventh_demon"
                 : ( true_level >= 90 )
@@ -8021,7 +8021,7 @@ std::string shaman_t::default_food() const
                                                      : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   std::string enhance_food = ( true_level > 110 )
-                                 ? "bountiful_captains_feast"
+                                 ? "baked_port_tato"
                                  : ( true_level > 100 )
                                        ? "lemon_herb_filet"
                                        : ( true_level > 90 )
