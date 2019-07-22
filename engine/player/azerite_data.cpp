@@ -3441,7 +3441,7 @@ void arcane_heart( special_effect_t& effect )
   effect.player->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [buff, omni]( dmg_e, action_state_t* state ) {
     double amount = state->result_amount;
 
-    if ( amount <= 0 )
+    if ( amount <= 0 || omni->check() )  // doesn't count damage while omnipotence is up
       return assessor::CONTINUE;
 
     if ( !buff->check() )  // special handling for damage from precombat actions
@@ -3463,7 +3463,7 @@ void arcane_heart( special_effect_t& effect )
     if ( buff->current_value <= 0 )
     {
       make_event( *buff->sim, [omni] { omni->trigger(); } );
-      buff->current_value += buff->default_value;
+      buff->current_value = buff->default_value;  // damage doesn't spill over? TODO: confirm
     }
 
     return assessor::CONTINUE;
