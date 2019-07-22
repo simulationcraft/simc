@@ -1997,6 +1997,12 @@ struct icicle_t : public frost_mage_spell_t
     frost_mage_spell_t::init_finished();
   }
 
+  void execute() override
+  {
+    frost_mage_spell_t::execute();
+    p()->buffs.icicles->decrement();
+  }
+
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
@@ -4565,7 +4571,6 @@ struct icicle_event_t : public event_t
 
     icicle_action->set_target( target );
     icicle_action->execute();
-    mage->buffs.icicles->decrement();
 
     if ( !mage->icicles.empty() )
     {
@@ -6627,7 +6632,7 @@ void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_acti
     icicles.erase( icicles.begin() );
   } ) } );
 
-  assert( icicles.size() <= max_icicles );
+  assert( icicle_action && icicles.size() <= max_icicles );
 }
 
 void mage_t::trigger_evocation( timespan_t duration_override, bool hasted )
