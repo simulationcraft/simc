@@ -4192,6 +4192,8 @@ void items::shiver_venom_lance( special_effect_t& effect )
  * id=303572 damage spell
  * id=303573 crit buff value in effect#1
  * id=304877 damage spell value in effect #1
+ * 
+ * TODO: Determine refresh / stack behavior of the crit buff
  */
 struct razor_coral_constructor_t : public item_targetdata_initializer_t
 {
@@ -4210,6 +4212,10 @@ struct razor_coral_constructor_t : public item_targetdata_initializer_t
 
     td->debuff.razor_coral =
       make_buff( *td, "razor_coral_debuff", td->source->find_spell( 303568 ) )->set_activated( false );
+    td->debuff.razor_coral->set_stack_change_callback( [td]( buff_t*, int old_, int new_ ) {
+      if ( !new_ )  // buff on expiration, including demise
+        td->source->buffs.razor_coral->trigger( old_ );
+    } );
     td->debuff.razor_coral->reset();
   }
 };
@@ -4226,94 +4232,94 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
 
   struct ashvanes_razor_coral_t : public proc_t
   {
-    buff_t* buff;
-    dbc_proc_callback_t* proc;
     action_t* action;
+    buff_t* debuff;  // there can be only one target with the debuff at a time
 
-    ashvanes_razor_coral_t( const special_effect_t& e, buff_t* b, dbc_proc_callback_t* cb, action_t* a ) :
-      proc_t( e, "ashvanes_razor_coral", e.driver() ), buff( b ), proc( cb ), action( a )
+    ashvanes_razor_coral_t( const special_effect_t& e, action_t* a ) :
+      proc_t( e, "ashvanes_razor_coral", e.driver() ), action( a ), debuff( nullptr )
     {}
+
+    void reset_debuff()
+    {
+      debuff = nullptr;
+    }
 
     void execute() override
     {
       proc_t::execute();  // no damage, but sets up execute_state
-      auto td = player->get_target_data( execute_state->target );
-      assert( td );
-      assert( td->debuff.razor_coral );
 
-      if ( !td->debuff.razor_coral->check() )  // first time
+      if ( !debuff )  // first use
       {
         action->set_target( execute_state->target );
         action->execute();  // do the damage here
 
-        for ( auto t : sim->target_non_sleeping_list )  // clear everyone
-        {
-          auto td2 = player->get_target_data( t );
-          assert( td2 );
-          assert( td2->debuff.razor_coral );
-          td2->debuff.razor_coral->expire();
-        }
-
-        td->debuff.razor_coral->trigger();  // apply to new target
-        proc->activate();
+        auto td = player->get_target_data( execute_state->target );
+        debuff = td->debuff.razor_coral;
+        debuff->trigger();  // apply to new target
       }
-      else  // second time
+      else  // second use
       {
-        proc->deactivate();
-        buff->trigger( td->debuff.razor_coral->stack() );
-        td->debuff.razor_coral->expire();
+        debuff->expire();  // debuff's stack_change_callback will trigger the crit buff
+        reset_debuff();
       }
     }
   };
 
   struct razor_coral_cb_t : public dbc_proc_callback_t
   {
-    razor_coral_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    ashvanes_razor_coral_t* action;
+
+    razor_coral_cb_t( const special_effect_t& e, ashvanes_razor_coral_t* a ) :
+      dbc_proc_callback_t( e.player, e ), action( a )
     {}
 
     void trigger( action_t* a, void* cd ) override
     {
-      auto state = static_cast<action_state_t*>( cd );
-      auto td    = listener->get_target_data( state->target );
-      if ( td->debuff.razor_coral->check() )  // Only trigger against the debuffed target
-      {
+      auto s = static_cast<action_state_t*>( cd );
+
+      if ( action->debuff && s && action->debuff->player == s->target && action->debuff->check() )
         dbc_proc_callback_t::trigger( a, cd );
-      }
     }
 
     void execute( action_t* a, action_state_t* s ) override
     {
       dbc_proc_callback_t::execute( a, s );
-      auto td = listener->get_target_data( s->target );
-      td->debuff.razor_coral->trigger();
+
+      if ( action->debuff )
+        action->debuff->trigger();
     }
   };
 
   // razor coral damage action used by both on-use and rppm proc
-  auto action = create_proc_action<razor_coral_t>( "razor_coral", effect );
+  auto razor = create_proc_action<razor_coral_t>( "razor_coral", effect );
 
-  // crit buff from 2nd on-use activation
-  if ( !effect.player->buffs.razor_coral )
-  {
-    effect.player->buffs.razor_coral = make_buff<stat_buff_t>( effect.player, "razor_coral", effect.player->find_spell( 303570 ) )
-      ->add_stat( STAT_CRIT_RATING, effect.player->find_spell( 303573 )->effectN( 1 ).average( effect.item ) );
-  }
+  // the primary on-use
+  auto action = new ashvanes_razor_coral_t( effect, razor );
+  effect.execute_action = action;
 
   // secondary rppm effect for when debuff is applied
   auto second            = new special_effect_t( effect.player );
   second->type           = SPECIAL_EFFECT_EQUIP;
   second->source         = effect.source;
   second->spell_id       = 303565;
-  second->execute_action = action;
-  effect.player->special_effects.push_back( second );
+  second->execute_action = razor;
 
-  auto proc = new razor_coral_cb_t( *second );
-  proc->deactivate();
+  effect.player->special_effects.push_back( second );
+  auto proc = new razor_coral_cb_t( *second, action );
   proc->initialize();
 
-  // the primary on-use
-  effect.execute_action =
-    create_proc_action<ashvanes_razor_coral_t>( "ashvanes_razor_coral", effect, effect.player->buffs.razor_coral, proc, action );
+  // crit buff from 2nd on-use activation
+  if ( !effect.player->buffs.razor_coral )
+  {
+    effect.player->buffs.razor_coral =
+      make_buff<stat_buff_t>( effect.player, "razor_coral", effect.player->find_spell( 303570 ) )
+        ->add_stat( STAT_CRIT_RATING, effect.player->find_spell( 303573 )->effectN( 1 ).average( effect.item ) )
+        ->set_refresh_behavior( buff_refresh_behavior::DURATION )  // TODO: determine this behavior
+        ->set_stack_change_callback( [action]( buff_t*, int, int new_ ) {
+          if ( new_ )
+            action->reset_debuff();  // buff also gets applied on demise, so reset the pointer in case this happens
+        } );
+  }
 }
 
 /**Dribbling Inkpod
@@ -4323,7 +4329,6 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
  * id=302491 damage spell
  * id=302565 stacking debuff
  * id=302597 unknown
- * TODO: Change damage handling to trigger as soon as target reaches 30% hp, not waiting for the next rppm proc.
  */
 struct conductive_ink_constructor_t : public item_targetdata_initializer_t
 {
