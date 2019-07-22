@@ -5450,8 +5450,8 @@ void hunter_t::apl_mm()
   precombat -> add_action( "memory_of_lucid_dreams" );
   precombat -> add_action( "use_item,name=azsharas_font_of_power" );
 
-  precombat -> add_action( this, "Trueshot", "precast_time=1.5,if=active_enemies>2&(!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel|bfa.font_of_power_precombat_channel=4+gcd)" );
-  precombat -> add_action( this, "Aimed Shot", "if=active_enemies<3&(!equipped.azsharas_font_of_power|!bfa.font_of_power_precombat_channel|bfa.font_of_power_precombat_channel=4+action.aimed_shot.cast_time)" );
+  precombat -> add_action( this, "Trueshot", "precast_time=1.5,if=active_enemies>2" );
+  precombat -> add_action( this, "Aimed Shot", "if=active_enemies<3" );
 
   default_list -> add_action( "auto_shot" );
   
