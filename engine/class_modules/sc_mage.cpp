@@ -3936,11 +3936,10 @@ struct mirror_image_t : public mage_spell_t
 
   void init_finished() override
   {
-    for ( pet_t* image : p()->pets.mirror_images )
+    for ( auto image : p()->pets.mirror_images )
     {
-      stats->add_child( image->get_stats( "arcane_blast" ) );
-      stats->add_child( image->get_stats( "fireball" ) );
-      stats->add_child( image->get_stats( "frostbolt" ) );
+      for ( auto a : image->action_list )
+        add_child( a );
     }
 
     mage_spell_t::init_finished();
@@ -3950,7 +3949,7 @@ struct mirror_image_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    for ( pet_t* image : p()->pets.mirror_images )
+    for ( auto image : p()->pets.mirror_images )
       image->summon( data().duration() );
   }
 };
@@ -5101,12 +5100,12 @@ void mage_t::create_pets()
 
   if ( talents.mirror_image->ok() && find_action( "mirror_image" ) )
   {
-    int image_num = as<int>( talents.mirror_image->effectN( 2 ).base_value() );
-    for ( int i = 0; i < image_num; i++ )
+    for ( int i = 0; i < as<int>( talents.mirror_image->effectN( 2 ).base_value() ); i++ )
     {
-      pets.mirror_images.push_back( new pets::mirror_image::mirror_image_pet_t( sim, this ) );
+      auto image = new pets::mirror_image::mirror_image_pet_t( sim, this );
       if ( i > 0 )
-        pets.mirror_images[ i ]->quiet = true;
+        image->quiet = true;
+      pets.mirror_images.push_back( image );
     }
   }
 }
