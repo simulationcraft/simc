@@ -268,27 +268,26 @@ public:
   double initial_astral_power;
   double thorns_attack_period;
   double thorns_hit_chance;
-  int    initial_moon_stage;
-  int    lively_spirit_stacks; //to set how many spells a healer will cast during Innervate
+  int initial_moon_stage;
+  int lively_spirit_stacks;  // to set how many spells a healer will cast during Innervate
   bool ahhhhh_the_great_outdoors;
   bool catweave_bear;
-  bool t21_2pc;
-  bool t21_4pc;
+  bool affinity_resources;  // activate resources tied to affinities
 
   struct active_actions_t
   {
-    stalwart_guardian_t*            stalwart_guardian;
+    stalwart_guardian_t* stalwart_guardian;
     action_t* gushing_wound;
-    heals::cenarion_ward_hot_t*     cenarion_ward_hot;
+    heals::cenarion_ward_hot_t* cenarion_ward_hot;
     action_t* brambles;
     action_t* brambles_pulse;
-    spell_t*  galactic_guardian;
+    spell_t* galactic_guardian;
     action_t* natures_guardian;
-    spell_t*  shooting_stars;
-    spell_t*  starfall;
+    spell_t* shooting_stars;
+    spell_t* starfall;
     spell_t* solar_empowerment;
     spell_t* fury_of_elune;
-    spell_t*  starshards;
+    spell_t* starshards;
     action_t* yseras_gift;
     spell_t* lunar_shrapnel;
     spell_t* streaking_stars;
@@ -763,8 +762,7 @@ public:
     lively_spirit_stacks(9),  //set a usually fitting default value
     ahhhhh_the_great_outdoors( false ),
     catweave_bear( false ),
-    t21_2pc(false),
-    t21_4pc(false),
+    affinity_resources( false ),
     active( active_actions_t() ),
     force_of_nature(),
     caster_form_weapon(),
@@ -7777,58 +7775,59 @@ void druid_t::init_spells()
   mastery.razor_claws         = find_mastery_spell( DRUID_FERAL );
   mastery.harmony             = find_mastery_spell( DRUID_RESTORATION );
   mastery.natures_guardian    = find_mastery_spell( DRUID_GUARDIAN );
-  mastery.natures_guardian_AP = mastery.natures_guardian -> ok() ?
-    find_spell( 159195 ) : spell_data_t::not_found();
+  mastery.natures_guardian_AP = mastery.natures_guardian -> ok() ? find_spell( 159195 ) : spell_data_t::not_found();
   mastery.starlight           = find_mastery_spell( DRUID_BALANCE );
 
   // Active Actions =========================================================
 
   caster_melee_attack = new caster_attacks::druid_melee_t( this );
-  if ( !this -> cat_melee_attack )
+
+  if ( !this->cat_melee_attack )
   {
-     this -> init_beast_weapon( this -> cat_weapon, 1.0 );
-     this -> cat_melee_attack = new cat_attacks::cat_melee_t( this );
+    this->init_beast_weapon( this->cat_weapon, 1.0 );
+    this->cat_melee_attack = new cat_attacks::cat_melee_t( this );
   }
 
-  if ( !this -> bear_melee_attack )
+  if ( !this->bear_melee_attack )
   {
-     this -> init_beast_weapon( this->bear_weapon, 2.5 );
-     this -> bear_melee_attack = new bear_attacks::bear_melee_t( this );
+    this->init_beast_weapon( this->bear_weapon, 2.5 );
+    this->bear_melee_attack = new bear_attacks::bear_melee_t( this );
   }
 
-  if ( talent.cenarion_ward -> ok() )
-    active.cenarion_ward_hot  = new heals::cenarion_ward_hot_t( this );
+  if ( talent.cenarion_ward->ok() )
+    active.cenarion_ward_hot = new heals::cenarion_ward_hot_t( this );
+
   if ( spec.yseras_gift )
-    active.yseras_gift        = new heals::yseras_gift_t( this );
-  if ( sets -> has_set_bonus( DRUID_FERAL, T17, B4 ) )
-    active.gushing_wound      = new cat_attacks::gushing_wound_t( this );
-  if ( talent.brambles -> ok() )
+    active.yseras_gift = new heals::yseras_gift_t( this );
+
+  if ( sets->has_set_bonus( DRUID_FERAL, T17, B4 ) )
+    active.gushing_wound = new cat_attacks::gushing_wound_t( this );
+
+  if ( talent.brambles->ok() )
   {
-    active.brambles           = new spells::brambles_t( this );
-    active.brambles_pulse     = new spells::brambles_pulse_t( this );
+    active.brambles = new spells::brambles_t( this );
+    active.brambles_pulse = new spells::brambles_pulse_t( this );
 
     instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
-        talent.brambles->id(), instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler ) ) );
+      talent.brambles->id(), instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler ) ) );
   }
-  if ( talent.galactic_guardian -> ok() )
+
+  if ( talent.galactic_guardian->ok() )
   {
-    active.galactic_guardian  = new spells::moonfire_t::galactic_guardian_damage_t( this );
-    active.galactic_guardian -> stats = get_stats( "moonfire" );
+    active.galactic_guardian = new spells::moonfire_t::galactic_guardian_damage_t( this );
+    active.galactic_guardian->stats = get_stats( "moonfire" );
   }
- 
-  if ( mastery.natures_guardian -> ok() )
+
+  if ( mastery.natures_guardian->ok() )
     active.natures_guardian = new heals::natures_guardian_t( this );
 
-  active.solar_empowerment = new spells::solar_empowerment_t (this);
+  active.solar_empowerment = new spells::solar_empowerment_t( this );
 
-  if (azerite.lunar_shrapnel.ok())
-  {
-    active.lunar_shrapnel = new spells::lunar_shrapnel_t(this);
-  }
-  if (azerite.streaking_stars.ok())
-  {
-    active.streaking_stars = new spells::streaking_stars_t(this);
-  }
+  if ( azerite.lunar_shrapnel.ok() )
+    active.lunar_shrapnel = new spells::lunar_shrapnel_t( this );
+
+  if ( azerite.streaking_stars.ok() )
+    active.streaking_stars = new spells::streaking_stars_t( this );
 }
 
 // druid_t::init_base =======================================================
@@ -7848,27 +7847,40 @@ void druid_t::init_base_stats()
   resources.base[ RESOURCE_RAGE         ] = 100;
   resources.base[ RESOURCE_COMBO_POINT  ] = 5;
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100
-      + sets -> set( DRUID_BALANCE, T20, B2 )->effectN(1).resource(RESOURCE_ASTRAL_POWER);
+    + sets->set( DRUID_BALANCE, T20, B2 )->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
   resources.base[ RESOURCE_ENERGY       ] = 100
-      + sets->set(DRUID_FERAL, T18, B2)->effectN(2).resource(RESOURCE_ENERGY)
-      + talent.moment_of_clarity->effectN(3).resource(RESOURCE_ENERGY);
+    + sets->set( DRUID_FERAL, T18, B2 )->effectN( 2 ).resource( RESOURCE_ENERGY )
+    + talent.moment_of_clarity->effectN( 3 ).resource( RESOURCE_ENERGY );
 
-  resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
-  resources.active_resource[ RESOURCE_HEALTH       ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
-  resources.active_resource[ RESOURCE_MANA         ] = primary_role() == ROLE_HEAL || talent.restoration_affinity -> ok()
-      || talent.balance_affinity -> ok() || specialization() == DRUID_GUARDIAN;
-  resources.active_resource[ RESOURCE_ENERGY       ] = primary_role() == ROLE_ATTACK || talent.feral_affinity -> ok()
+  if ( specialization() == DRUID_BALANCE )
+  {
+    resources.active_resource[ RESOURCE_ASTRAL_POWER ] = true;
+
+    // only activate other resources if you have the affinity and affinity_resources = true
+    resources.active_resource[ RESOURCE_HEALTH      ] = affinity_resources && talent.guardian_affinity->ok();
+    resources.active_resource[ RESOURCE_RAGE        ] = affinity_resources && talent.guardian_affinity->ok();
+    resources.active_resource[ RESOURCE_COMBO_POINT ] = affinity_resources && talent.feral_affinity->ok();
+    resources.active_resource[ RESOURCE_ENERGY      ] = affinity_resources && talent.feral_affinity->ok();
+    resources.active_resource[ RESOURCE_MANA        ] = affinity_resources && talent.restoration_affinity->ok();
+  }
+  else
+  {
+    resources.active_resource[ RESOURCE_HEALTH      ] = primary_role() == ROLE_TANK || talent.guardian_affinity->ok();
+    resources.active_resource[ RESOURCE_RAGE        ] = primary_role() == ROLE_TANK || talent.guardian_affinity->ok();
+    resources.active_resource[ RESOURCE_COMBO_POINT ] = primary_role() == ROLE_ATTACK || talent.feral_affinity->ok();
+    resources.active_resource[ RESOURCE_ENERGY      ] = primary_role() == ROLE_ATTACK || talent.feral_affinity->ok()
       || specialization() == DRUID_RESTORATION;
-  resources.active_resource[ RESOURCE_COMBO_POINT  ] = primary_role() == ROLE_ATTACK || talent.feral_affinity -> ok();
-  resources.active_resource[ RESOURCE_RAGE         ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
+    resources.active_resource[ RESOURCE_MANA        ] = primary_role() == ROLE_HEAL || talent.restoration_affinity->ok()
+      || talent.balance_affinity->ok() || specialization() == DRUID_GUARDIAN;
+  }
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
   if ( specialization() == DRUID_FERAL )
   {
     resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-        1.0 + query_aura_effect( spec.feral, E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT, 3 )->percent();
+      1.0 + query_aura_effect( spec.feral, E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT, 3 )->percent();
   }
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.feral_affinity -> effectN( 2 ).percent();
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.feral_affinity->effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 }
@@ -9810,15 +9822,14 @@ void druid_t::create_options()
   player_t::create_options();
 
   add_option( opt_float ( "predator_rppm", predator_rppm_rate ) );
-  add_option( opt_bool  ( "feral_t21_2pc", t21_2pc) );
-  add_option( opt_bool  ( "feral_t21_4pc", t21_4pc) );
   add_option( opt_float ( "initial_astral_power", initial_astral_power ) );
   add_option( opt_int   ( "initial_moon_stage", initial_moon_stage ) );
   add_option( opt_int   ( "lively_spirit_stacks", lively_spirit_stacks));
   add_option( opt_bool  ( "outside", ahhhhh_the_great_outdoors ) );
   add_option( opt_bool  ( "catweave_bear", catweave_bear ) );
+  add_option( opt_bool  ( "affinity_resources", affinity_resources ) );
   add_option( opt_float ( "thorns_attack_period", thorns_attack_period ) );
-  add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
+  add_option( opt_float ( "thorns_hit_chance", thorns_hit_chance ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10363,15 +10374,14 @@ void druid_t::copy_from( player_t* source )
 
   druid_t* p = debug_cast<druid_t*>( source );
 
-  predator_rppm_rate = p -> predator_rppm_rate;
-  initial_astral_power = p -> initial_astral_power;
-  initial_moon_stage = p -> initial_moon_stage;
+  predator_rppm_rate = p->predator_rppm_rate;
+  initial_astral_power = p->initial_astral_power;
+  initial_moon_stage = p->initial_moon_stage;
   lively_spirit_stacks = p->lively_spirit_stacks;
-  t21_2pc = p -> t21_2pc;
-  t21_4pc = p -> t21_4pc;
-  ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
-  thorns_attack_period      = p->thorns_attack_period;
-  thorns_hit_chance         = p->thorns_hit_chance;
+  affinity_resources = p->affinity_resources;
+  ahhhhh_the_great_outdoors = p->ahhhhh_the_great_outdoors;
+  thorns_attack_period = p->thorns_attack_period;
+  thorns_hit_chance = p->thorns_hit_chance;
 }
 void druid_t::output_json_report(js::JsonOutput& /*root*/) const
 {
