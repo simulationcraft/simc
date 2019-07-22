@@ -1214,7 +1214,9 @@ struct sim_t : private sc_thread_t
     /// Storm of the Eternal haste and crit stat split ratio.
     double              storm_of_the_eternal_ratio = 0.05;
     /// How long before combat to start channeling Azshara's Font of Power
-    timespan_t          font_of_power_precombat_channel = 0_ms;
+    timespan_t font_of_power_precombat_channel = 0_ms;
+    /// Hps done while using the Azerite Trait Arcane Heart
+    unsigned arcane_heart_hps = 0;
   } bfa_opts;
 
   // Expansion specific data

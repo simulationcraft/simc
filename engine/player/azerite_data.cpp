@@ -3469,7 +3469,14 @@ void arcane_heart( special_effect_t& effect )
     return assessor::CONTINUE;
   } );
 
-  effect.player->register_combat_begin( [buff]( player_t* ) { buff->trigger(); } );
+  effect.player->register_combat_begin( [buff]( player_t* ) {
+    buff->trigger();
+    make_repeating_event( buff->sim, 1_s, [buff] {
+      buff->current_value -= buff->sim->bfa_opts.arcane_heart_hps;
+      buff->sim->print_debug( "arcane_heart_counter healing:{} counter now at:{}", buff->sim->bfa_opts.arcane_heart_hps,
+                              buff->current_value );
+    } );
+  } );
 }
 
 void clockwork_heart( special_effect_t& effect )
