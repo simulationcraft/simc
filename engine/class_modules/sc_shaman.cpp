@@ -8356,6 +8356,8 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( "potion" );
   // Lightning shield can be turned on pre-combat
   precombat->add_talent( this, "Lightning Shield" );
+  // Use precombat time to channel buff trinket
+  precombat->add_action( "use_item,name=azsharas_font_of_power" );
   // All Shamans Bloodlust and Wind Shear by default
   def->add_action( this, "Wind Shear" );
   def->add_action(
@@ -8453,6 +8455,7 @@ void shaman_t::init_action_list_enhancement()
       "|(essence.blood_of_the_enemy.major&(buff.seething_rage.up|cooldown.blood_of_the_enemy.remains>40)))" );
   priority->add_action( "focused_azerite_beam,if=active_enemies>=3" );
   priority->add_action( "purifying_blast,if=active_enemies>=3" );
+  priority->add_action( "ripple_in_space,if=active_enemies>=3" );
   priority->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
   priority->add_action(
       this, "Frostbrand",
@@ -8473,6 +8476,7 @@ void shaman_t::init_action_list_enhancement()
   cds->add_action( this, "Bloodlust", "if=azerite.ancestral_resonance.enabled",
                    "Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present." );
   cds->add_action( "berserking,if=variable.cooldown_sync" );
+  cds->add_action( "use_item,name=azsharas_font_of_power" );
   cds->add_action( "blood_fury,if=variable.cooldown_sync" );
   cds->add_action( "fireblood,if=variable.cooldown_sync" );
   cds->add_action( "ancestral_call,if=variable.cooldown_sync" );
@@ -8484,6 +8488,9 @@ void shaman_t::init_action_list_enhancement()
   cds->add_action( this, "Feral Spirit" );
   cds->add_action( "blood_of_the_enemy" );
   cds->add_talent( this, "Ascendance", "if=cooldown.strike.remains>0" );
+  cds->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(target.time_to_die<20&debuff.razor_coral_debuff.stack>2)" );
+  cds->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>2&debuff.conductive_ink_debuff.down&(buff.ascendance.remains>10|buff.molten_weapon.remains>10|buff.crackling_surge.remains>10|buff.icy_edge.remains>10|debuff.earthen_spike.remains>6)" );
+  cds->add_action( "use_item,name=ashvanes_razor_coral,if=(debuff.conductive_ink_debuff.up|buff.ascendance.remains>10|buff.molten_weapon.remains>10|buff.crackling_surge.remains>10|buff.icy_edge.remains>10|debuff.earthen_spike.remains>6)&target.health.pct<31" );
   cds->add_action( "use_items" );
   cds->add_action( this, "Earth Elemental" );
 
@@ -8525,6 +8532,8 @@ void shaman_t::init_action_list_enhancement()
       "focused_azerite_beam,if=!buff.ascendance.up&!buff.molten_weapon.up&!buff.icy_edge.up"
       "&!buff.crackling_surge.up&!debuff.earthen_spike.up" );
   filler->add_action( "purifying_blast" );
+  filler->add_action( "ripple_in_space" );
+  filler->add_action( "thundercharge" );
   filler->add_action( "concentrated_flame" );
   filler->add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
   filler->add_action( this, "Crash Lightning",
