@@ -749,12 +749,12 @@ public:
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
+    starshards( 0.0 ),
     lucid_dreams_proc_chance_balance( 0.15 ),
     lucid_dreams_proc_chance_feral( 0.15 ),
     lucid_dreams_proc_chance_guardian( 0.15 ),
     thorns_attack_period( 2.0 ),
     thorns_hit_chance( 0.75 ),
-    starshards( 0.0 ),
     previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
     initial_astral_power( 0 ),
@@ -6543,7 +6543,7 @@ struct solar_wrath_t : public druid_spell_t
       auto it = range::find( apl, this );
       if ( it != apl.end() )
       {
-        auto it2 = std::for_each( it + 1, apl.end(), [this]( action_t* a ) {
+        std::for_each( it + 1, apl.end(), [this]( action_t* a ) {
           if ( harmful && a->harmful && a->action_ready() )
             harmful = false;  // another harmful action exists; set current to non-harmful so we can keep casting
 
