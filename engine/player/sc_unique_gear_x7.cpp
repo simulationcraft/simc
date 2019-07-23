@@ -186,6 +186,7 @@ namespace items
   void dreams_end( special_effect_t& );
   void divers_folly( special_effect_t& );
   void remote_guidance_device( special_effect_t& );
+  void gladiators_maledict( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -4646,6 +4647,14 @@ void items::remote_guidance_device( special_effect_t& effect )
   effect.execute_action = create_proc_action<remote_guidance_device_t>( "remote_guidance_device", effect, area );
 }
 
+// Gladiator's Maledict ===================================================
+
+void items::gladiators_maledict( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<proc_spell_t>( "gladiators_maledict", effect );
+  effect.execute_action->base_td = effect.player->find_spell( 305251 )->effectN( 1 ).average( effect.item );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -5580,6 +5589,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 303356, items::dreams_end );
   register_special_effect( 303353, items::divers_folly );
   register_special_effect( 302307, items::remote_guidance_device );
+  register_special_effect( 305252, items::gladiators_maledict );
   // 8.2 Mechagon combo rings
   register_special_effect( 300124, items::logic_loop_of_division );
   register_special_effect( 300125, items::logic_loop_of_recursion );
