@@ -8455,7 +8455,7 @@ void druid_t::apl_feral()
    cooldowns->add_action("incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)");
    cooldowns->add_action("potion,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))");
    cooldowns->add_action("shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up");
-   cooldowns->add_action("use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(debuff.conductive_ink_debuff.up|buff.metamorphosis.remains>20)&target.health.pct<31|target.time_to_die<20");	
+   cooldowns->add_action("use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(debuff.conductive_ink_debuff.up)&target.health.pct<31|target.time_to_die<20");	
    cooldowns->add_action("use_item,effect_name=cyclotronic_blast,if=energy.deficit>=50");
    cooldowns->add_action("use_item,effect_name=azsharas_font_of_power,if=energy.deficit>=50");
    cooldowns->add_action("use_items");
