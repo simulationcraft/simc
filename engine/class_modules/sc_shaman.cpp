@@ -4063,6 +4063,7 @@ struct storm_elemental_t : public shaman_spell_t
     : shaman_spell_t( "storm_elemental", player, player->talent.storm_elemental, options_str )
   {
     harmful = may_crit = false;
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( player->azerite_essence.vision_of_perfection );
   }
 
   void execute() override
