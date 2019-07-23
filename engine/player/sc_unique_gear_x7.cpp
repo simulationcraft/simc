@@ -3634,10 +3634,12 @@ void items::aquipotent_nautilus( special_effect_t& effect )
   struct surging_flood_dot_t : public proc_t
   {
     cooldown_t* cd;
+    cooldown_t* cdgrp;
     timespan_t  reduction;
 
     surging_flood_dot_t( const special_effect_t& e ) :
       proc_t( e, "surging_flood", e.player->find_spell( 302580 ) ), cd( e.player->get_cooldown( e.cooldown_name() ) ),
+      cdgrp( e.player->get_cooldown( e.cooldown_group_name() ) ),
       reduction( timespan_t::from_seconds( e.player->find_spell( 302579 )->effectN( 2 ).base_value() ) )
     {
       aoe     = -1;
@@ -3659,6 +3661,7 @@ void items::aquipotent_nautilus( special_effect_t& effect )
             sim->print_debug( "surging_flood return wave caught, adjusting cooldown from {} to {}", cd->remains(),
               cd->remains() + reduction );
             cd->adjust( reduction );
+            cdgrp->adjust( reduction );
           }
         } );
       }
