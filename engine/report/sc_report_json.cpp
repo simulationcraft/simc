@@ -205,7 +205,41 @@ void procs_to_json( JsonOutput root, const player_t& p )
   } );
 }
 
-void stats_to_json( JsonOutput root, const std::vector<stats_t*> stats_list, int level = 0 )
+bool has_valid_stats( const std::vector<stats_t*>& stats_list, int level = 0 )
+{
+  auto it = range::find_if( stats_list, [level]( const stats_t* stats ) {
+    if ( stats->quiet )
+    {
+      return false;
+    }
+
+    if ( level == 0 )
+    {
+      if ( stats->num_executes.mean() == 0 )
+      {
+        return false;
+      }
+
+      if ( stats->parent )
+      {
+        return false;
+      }
+    }
+    else
+    {
+      if ( stats->compound_amount == 0 )
+      {
+        return false;
+      }
+    }
+
+    return true;
+  } );
+
+  return it != stats_list.end();
+}
+
+void stats_to_json( JsonOutput root, const std::vector<stats_t*>& stats_list, int level = 0 )
 {
   root.make_array();
 
@@ -306,7 +340,10 @@ void stats_to_json( JsonOutput root, const std::vector<stats_t*> stats_list, int
     }
 
     // add children stats
-    stats_to_json( node[ "children" ], s->children, level + 1 );
+    if ( has_valid_stats( s->children, level + 1 ) )
+    {
+      stats_to_json( node[ "children" ], s->children, level + 1 );
+    }
   } );
 }
 
@@ -814,7 +851,10 @@ void to_json( JsonOutput& arr, const player_t& p )
     JsonOutput stats_pets = root[ "stats_pets" ];
     for ( const auto& pet : p.pet_list )
     {
-      stats_to_json( stats_pets[ pet->name_str ], pet->stats_list );
+      if ( has_valid_stats( pet->stats_list ) )
+      {
+        stats_to_json( stats_pets[ pet->name_str ], pet->stats_list );
+      }
     }
   }
 
