@@ -8,9 +8,9 @@ position=back
 talents=2302031
 
 # Default consumables
-potion=battle_potion_of_agility
-flask=currents
-food=bountiful_captains_feast
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_the_currents
+food=baked_port_tato
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -27,6 +27,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/lightning_shield
+actions.precombat+=/use_item,name=azsharas_font_of_power
 
 # Executed every time the actor is available.
 actions=wind_shear
@@ -68,6 +69,7 @@ actions.asc+=/windstrike
 # Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present.
 actions.cds=bloodlust,if=azerite.ancestral_resonance.enabled
 actions.cds+=/berserking,if=variable.cooldown_sync
+actions.cds+=/use_item,name=azsharas_font_of_power
 actions.cds+=/blood_fury,if=variable.cooldown_sync
 actions.cds+=/fireblood,if=variable.cooldown_sync
 actions.cds+=/ancestral_call,if=variable.cooldown_sync
@@ -78,6 +80,9 @@ actions.cds+=/memory_of_lucid_dreams
 actions.cds+=/feral_spirit
 actions.cds+=/blood_of_the_enemy
 actions.cds+=/ascendance,if=cooldown.strike.remains>0
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(target.time_to_die<20&debuff.razor_coral_debuff.stack>2)
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>2&debuff.conductive_ink_debuff.down&(buff.ascendance.remains>10|buff.molten_weapon.remains>10|buff.crackling_surge.remains>10|buff.icy_edge.remains>10|debuff.earthen_spike.remains>6)
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=(debuff.conductive_ink_debuff.up|buff.ascendance.remains>10|buff.molten_weapon.remains>10|buff.crackling_surge.remains>10|buff.icy_edge.remains>10|debuff.earthen_spike.remains>6)&target.health.pct<31
 actions.cds+=/use_items
 actions.cds+=/earth_elemental
 
@@ -91,6 +96,8 @@ actions.default_core+=/stormstrike,if=variable.OCPool_SS&variable.furyCheck_SS
 actions.filler=sundering,if=active_enemies<3
 actions.filler+=/focused_azerite_beam,if=!buff.ascendance.up&!buff.molten_weapon.up&!buff.icy_edge.up&!buff.crackling_surge.up&!debuff.earthen_spike.up
 actions.filler+=/purifying_blast
+actions.filler+=/ripple_in_space
+actions.filler+=/thundercharge
 actions.filler+=/concentrated_flame
 actions.filler+=/worldvein_resonance,if=buff.lifeblood.stack<4
 actions.filler+=/crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL
@@ -129,6 +136,7 @@ actions.priority+=/totem_mastery,if=buff.resonance_totem.remains<=2*gcd
 actions.priority+=/sundering,if=active_enemies>=3&(!essence.blood_of_the_enemy.major|(essence.blood_of_the_enemy.major&(buff.seething_rage.up|cooldown.blood_of_the_enemy.remains>40)))
 actions.priority+=/focused_azerite_beam,if=active_enemies>=3
 actions.priority+=/purifying_blast,if=active_enemies>=3
+actions.priority+=/ripple_in_space,if=active_enemies>=3
 actions.priority+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
 # With Natural Harmony, elevate the priority of elemental attacks in order to maintain the buffs when they're about to expire.
 actions.priority+=/frostbrand,if=(azerite.natural_harmony.enabled&buff.natural_harmony_frost.remains<=2*gcd)&talent.hailstorm.enabled&variable.furyCheck_FB
