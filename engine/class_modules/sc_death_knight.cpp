@@ -7793,6 +7793,7 @@ void death_knight_t::default_apl_unholy()
   default_apl_dps_precombat();
 
   precombat -> add_action( this, "Raise Dead" );
+  precombat -> add_action( "use_item,name=azsharas_font_of_power" );
   precombat -> add_action( this, "Army of the Dead", "delay=2" );
 
   def -> add_action( "auto_attack" );
