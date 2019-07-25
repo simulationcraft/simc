@@ -1270,7 +1270,7 @@ void register_azerite_target_data_initializers( sim_t* sim )
     auto essence = td->source->find_azerite_essence( "Condensed Life-Force" );
     if ( essence.enabled() )
     {
-      td->debuff.condensed_lifeforce = make_buff( *td, "condensed_life_force", td->source->find_spell( 295838 ) )
+      td->debuff.condensed_lifeforce = make_buff( *td, "condensed_lifeforce", td->source->find_spell( 295838 ) )
         ->set_default_value( td->source->find_spell( 295838 )->effectN( 1 ).percent() );
       td->debuff.condensed_lifeforce->reset();
     }
@@ -3745,11 +3745,11 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
   }
 }; //End of Memory of Lucid Dreams
 
-//Blood of the Enemy
-void blood_of_the_enemy(special_effect_t& effect)
+// Blood of the Enemy
+void blood_of_the_enemy( special_effect_t& effect )
 {
-  auto essence = effect.player->find_azerite_essence(effect.driver()->essence_id());
-  if (!essence.enabled())
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
     return;
 
   struct bloodsoaked_callback_t : public dbc_proc_callback_t
@@ -3758,21 +3758,21 @@ void blood_of_the_enemy(special_effect_t& effect)
     double chance;
     int dec;
 
-    bloodsoaked_callback_t(player_t *p, special_effect_t& e, buff_t* b, double c, int d) :
-      dbc_proc_callback_t(p, e), haste_buff(b), chance(c), dec(d)
+    bloodsoaked_callback_t( player_t* p, special_effect_t& e, buff_t* b, double c, int d ) :
+      dbc_proc_callback_t( p, e ), haste_buff( b ), chance( c ), dec( d )
     {}
 
-    void execute(action_t*, action_state_t* s) override
+    void execute( action_t*, action_state_t* ) override
     {
       // Does not proc when haste buff is up
-      if (haste_buff->check())
+      if ( haste_buff->check() )
         return;
 
-      if (proc_buff && proc_buff->trigger() && proc_buff->check() == proc_buff->max_stack())
+      if ( proc_buff && proc_buff->trigger() && proc_buff->check() == proc_buff->max_stack() )
       {
         haste_buff->trigger();
-        if (rng().roll(chance))
-          proc_buff->decrement(dec);
+        if ( rng().roll( chance ) )
+          proc_buff->decrement( dec );
         else
           proc_buff->expire();
       }
@@ -3780,38 +3780,43 @@ void blood_of_the_enemy(special_effect_t& effect)
   };
 
   effect.proc_flags2_ = PF2_CRIT;
+
   // buff id=297162, not referenced in spell data
-  effect.custom_buff = buff_t::find(effect.player, "bloodsoaked_counter");
-  if (!effect.custom_buff)
-    effect.custom_buff = make_buff<stat_buff_t>(effect.player, "bloodsoaked_counter", effect.player->find_spell(297162));
+  auto counter = static_cast<stat_buff_t*>( buff_t::find( effect.player, "bloodsoaked_counter" ) );
+  if ( !counter )
+    counter = make_buff<stat_buff_t>( effect.player, "bloodsoaked_counter", effect.player->find_spell( 297162 ) );
 
   // Crit per stack from R2 upgrade stored in R1 MINOR BASE effect#3
-  if (essence.rank() >= 2)
-    static_cast<stat_buff_t*>(effect.custom_buff)->add_stat(STAT_CRIT_RATING, essence.spell_ref(1u, essence_type::MINOR).effectN(3).average(essence.item()));
+  if ( essence.rank() >= 2 )
+    counter->add_stat(
+      STAT_CRIT_RATING, essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() ) );
+
+  effect.custom_buff = counter;
 
   // buff id=297168, not referenced in spell data
   // Haste from end proc stored in R1 MINOR BASE effect#2
-  buff_t* haste_buff = buff_t::find(effect.player, "bloodsoaked");
-  if (!haste_buff)
+  auto haste_buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "bloodsoaked" ) );
+  if ( !haste_buff )
   {
-    haste_buff = make_buff<stat_buff_t>(effect.player, "bloodsoaked", effect.player->find_spell(297168))
-      ->add_stat(STAT_HASTE_RATING, essence.spell_ref(1u, essence_type::MINOR).effectN(2).average(essence.item()));
+    haste_buff = make_buff<stat_buff_t>( effect.player, "bloodsoaked", effect.player->find_spell( 297168 ) );
+    haste_buff->add_stat(
+      STAT_HASTE_RATING, essence.spell_ref( 1u, essence_type::MINOR ).effectN( 2 ).average( essence.item() ) );
   }
 
   double chance = 0;
   int dec = 0;
-  if (essence.rank() >= 3)
+  if ( essence.rank() >= 3 )
   {
     // 25% chance to...
-    chance = essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent();
+    chance = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
     // only lose 30 stacks
-    dec = essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(2).base_value();
+    dec = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 2 ).base_value();
   }
 
-  new bloodsoaked_callback_t(effect.player, effect, haste_buff, chance, dec);
+  new bloodsoaked_callback_t( effect.player, effect, haste_buff, chance, dec );
 }
 
-//Major Power: Blood of the Enemy
+// Major Power: Blood of the Enemy
 struct blood_of_the_enemy_t : public azerite_essence_major_t
 {
   blood_of_the_enemy_t( player_t* p, const std::string& options_str ) :
@@ -3884,7 +3889,7 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
       init_stacks( is )
     { }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       // The effect remembers which target was hit while no buff was active and then only triggers when
       // that target is hit again.
