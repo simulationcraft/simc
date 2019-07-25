@@ -6567,12 +6567,22 @@ struct expel_harm_t : public monk_spell_t
       niuzao->execute();
     }
 
-    // Triggering the Gift of the ox heals, but not the damage
-    // TODO damage part of Expel Harm
-    // double mult = p()->spec.expel_harm->effectN( 2 ).percent();
+    // This implementation of EH is correct *on average* but not in
+    // detail. In particular: the damage dealt is exactly 10% of the
+    // healing done and can't crit, but this gets damage dealt
+    // independently and allows it to crit, so it will have higher
+    // variance but with enough iterations will have the same mean.
+    double coeff = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff() * p()->spec.expel_harm->effectN( 2 ).percent();
+    double ap = p()->composite_melee_attack_power();
+    double stacks = p()->buff.gift_of_the_ox->stack();
+    dmg->base_dd_min = ap * coeff * stacks;
+    dmg->base_dd_max = ap * coeff * stacks;
+    dmg->execute();
 
     for ( int i = 0; i < p()->buff.gift_of_the_ox->stack(); i++ )
-      p()->buff.gift_of_the_ox->decrement();
+    {
+        p()->buff.gift_of_the_ox->decrement();
+    }
   }
 };
 
@@ -9769,14 +9779,19 @@ void monk_t::apl_combat_brewmaster()
   def->add_action(
       this, "Tiger Palm",
       "if=(talent.invoke_niuzao_the_black_ox.enabled|talent.special_delivery.enabled)&buff.blackout_combo.up" );
+  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>4" );
   def->add_action( this, "Blackout Strike" );
   def->add_action( this, "Keg Smash" );
+  def->add_action( "concentrated_flame" );
+  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
   def->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action(
       this, "Breath of Fire",
       "if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))" );
   def->add_talent( this, "Chi Burst" );
   def->add_talent( this, "Chi Wave" );
+  def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=2",
+                   "Expel Harm has higher DPET than TP when you have at least 2 orbs.");
   def->add_action( this, "Tiger Palm",
                    "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown."
                    "keg_smash.remains+gcd)))>=65" );
