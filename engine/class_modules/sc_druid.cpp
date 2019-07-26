@@ -8457,7 +8457,7 @@ void druid_t::apl_feral()
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("thrash_cat,if=(talent.scent_of_blood.enabled&buff.scent_of_blood.down)&spell_targets.thrash_cat>3");
    generator->add_action("pool_resource,for_next=1");
-   generator->add_action("swipe_cat,if=buff.scent_of_blood.up|(action.swipe_cat.damage*spell_targets.swipe_cat>(action.rake.damage+(action.rake.tick_dmg*5)))");
+   generator->add_action("swipe_cat,if=buff.scent_of_blood.up|(action.swipe_cat.damage*spell_targets.swipe_cat>(action.rake.damage+(action.rake_bleed.tick_damage*5)))");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4");
    generator->add_action("pool_resource,for_next=1");
