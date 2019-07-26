@@ -8262,22 +8262,15 @@ void druid_t::apl_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  // Flask
+  // Consumables
   precombat->add_action( "flask" );
-
-  // Food
   precombat->add_action( "food" );
-
-  // Rune
   precombat->add_action( "augmentation" );
+  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  // Feral: Bloodtalons
-  if ( specialization() == DRUID_FERAL && true_level >= 100 )
-    precombat->add_action( this, "Regrowth", "if=talent.bloodtalons.enabled" );
-
-  // Feral: Rotational control variables
   if ( specialization() == DRUID_FERAL )
   {
+    // Feral: Rotational control variables
     precombat->add_action( "variable,name=use_thrash,value=0", "It is worth it for almost everyone to maintain thrash" );
     precombat->add_action( "variable,name=use_thrash,value=2,if=azerite.wild_fleshrending.enabled");
     //precombat->add_action( "variable,name=opener_done,value=0" );
@@ -8287,9 +8280,15 @@ void druid_t::apl_precombat()
         "variable,name=delayed_tf_opener,value=1,if=talent.sabertooth.enabled&talent.bloodtalons.enabled&!talent.lunar_"
         "inspiration.enabled",
         "This happens when Sabertooth, Bloodtalons but not LI is talented" );*/
+    // Precombat opener
+    precombat->add_action( this, "Regrowth", "if=talent.bloodtalons.enabled" );
+    precombat->add_action( "use_item,name=azsharas_font_of_power" );
+    precombat->add_action( this, "Cat Form" );
+    precombat->add_action( this, "Prowl" );
+    precombat->add_action( "potion,dynamic_prepot=1" );
+    precombat->add_action( "berserk" );
   }
 
-  // Balance
   if ( specialization() == DRUID_BALANCE )
   {
     // Azerite variables
@@ -8301,25 +8300,32 @@ void druid_t::apl_precombat()
     precombat->add_action( "variable,name=sf_targets,op=add,value=1,if=talent.starlord.enabled" );
     precombat->add_action( "variable,name=sf_targets,op=add,value=1,if=azerite.streaking_stars.rank>2&azerite.arcanic_pulsar.enabled" );
     precombat->add_action( "variable,name=sf_targets,op=sub,value=1,if=!talent.twin_moons.enabled" );
+    // Precombat opener
+    precombat->add_action( this, "Moonkin Form", "", "Precombat opener" );
+    precombat->add_action( "use_item,name=azsharas_font_of_power" );
+    precombat->add_action( "potion,dynamic_prepot=1" );
+    precombat->add_action( this, "Solar Wrath" );
+    precombat->add_action( this, "Solar Wrath" );
+    precombat->add_action( this, "Starsurge" );
   }
 
-  // Guardian
   if ( specialization() == DRUID_GUARDIAN )
   {
-    // Memory of Lucid Dreams doubles the Rage gain from Bear Form
-    precombat->add_action( "memory_of_lucid_dreams" );
+    if ( catweave_bear && talent.feral_affinity->ok() )
+    {
+      precombat->add_action( this, "Cat Form" );
+      precombat->add_action( this, "Prowl" );
+    }
+    else
+    {
+      // Memory of Lucid Dreams doubles the Rage gain from Bear Form
+      precombat->add_action( "memory_of_lucid_dreams" );
+      precombat->add_action( this, "Bear Form" );
+    }
+    precombat->add_action( "potion" );
   }
 
-  // Forms
-  if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
-       || ( specialization() == DRUID_GUARDIAN && catweave_bear && talent.feral_affinity->ok() )
-       || primary_role() == ROLE_ATTACK )
-  {
-    precombat->add_action( "use_item,name=azsharas_font_of_power" );
-    precombat->add_action( this, "Cat Form" );
-    precombat->add_action( this, "Prowl" );
-  }
-  else if ( specialization() == DRUID_RESTORATION && role == ROLE_ATTACK )
+  if ( specialization() == DRUID_RESTORATION )
   {
     if ( talent.feral_affinity->ok() )
     {
@@ -8327,41 +8333,9 @@ void druid_t::apl_precombat()
       precombat->add_action( this, "Prowl" );
     }
     if ( talent.balance_affinity->ok() )
+    {
       precombat->add_action( this, "Moonkin Form" );
-  }
-  else if ( primary_role() == ROLE_TANK )
-  {
-    precombat->add_action( this, "Bear Form" );
-  }
-  else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
-  {
-    precombat->add_action( this, "Moonkin Form" );
-  }
-
-  // Snapshot stats
-  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  // Spec Specific Optimizations
-  if ( specialization() == DRUID_BALANCE )
-  {
-    precombat->add_action( "use_item,name=azsharas_font_of_power" );
-    precombat->add_action( "potion,dynamic_prepot=1" );
-    precombat->add_action( this, "Solar Wrath" );
-    precombat->add_action( this, "Solar Wrath" );
-    precombat->add_action( this, "Starsurge" );
-  }
-  else if ( specialization() == DRUID_RESTORATION )
-  {
-    precombat->add_action( "potion" );
-    precombat->add_talent( this, "Cenarion Ward" );
-  }
-  else if ( specialization() == DRUID_FERAL )
-  {
-    precombat->add_action( "potion,dynamic_prepot=1" );
-    precombat->add_action( "berserk" );
-  }
-  else
-  {
+    }
     precombat->add_action( "potion" );
   }
 }
@@ -8389,17 +8363,17 @@ void druid_t::apl_default()
 
   if ( primary_role() == ROLE_ATTACK )
   {
-    def -> add_action( extra_actions );
-    def -> add_action( this, "Rake", "if=remains<=duration*0.3" );
-    def -> add_action( this, "Shred" );
-    def -> add_action( this, "Ferocious Bite", "if=combo_points>=5" );
+    def->add_action( extra_actions );
+    def->add_action( this, "Rake", "if=remains<=duration*0.3" );
+    def->add_action( this, "Shred" );
+    def->add_action( this, "Ferocious Bite", "if=combo_points>=5" );
   }
   // Specless (or speced non-main role) druid who has a primary role of a healer
   else if ( primary_role() == ROLE_HEAL )
   {
-    def -> add_action( extra_actions );
-    def -> add_action( this, "Rejuvenation", "if=remains<=duration*0.3" );
-    def -> add_action( this, "Regrowth", "if=mana.pct>=30" );
+    def->add_action( extra_actions );
+    def->add_action( this, "Rejuvenation", "if=remains<=duration*0.3" );
+    def->add_action( this, "Regrowth", "if=mana.pct>=30" );
   }
 }
 
@@ -8673,11 +8647,9 @@ void druid_t::apl_balance()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
 
-  if ( sim->allow_potions && true_level >= 80 )
-    default_list->add_action( "potion,if=buff.celestial_alignment.remains>13|buff.incarnation.remains>16.5" );
-
   // CDs
-  default_list->add_action( "berserking,if=buff.ca_inc.up", "CDs" );
+  default_list->add_action( "potion,if=buff.celestial_alignment.remains>13|buff.incarnation.remains>16.5", "CDs" );
+  default_list->add_action( "berserking,if=buff.ca_inc.up" );
   default_list->add_action( "use_item,name=azsharas_font_of_power,if=!buff.ca_inc.up,"
                               "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "guardian_of_azeroth,if=(!talent.starlord.enabled|buff.starlord.up)&!buff.ca_inc.up,"
@@ -8702,7 +8674,7 @@ void druid_t::apl_balance()
   default_list->add_action( "use_items,slots=trinket1,if=!trinket.1.has_proc.any|buff.ca_inc.up" );
   default_list->add_action( "use_items,slots=trinket2,if=!trinket.2.has_proc.any|buff.ca_inc.up" );
   default_list->add_action( "use_items" );
-  default_list->add_talent( this, "Warrior of Elune", "" );
+  default_list->add_talent( this, "Warrior of Elune" );
   default_list->add_action( this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)" );
   default_list->add_talent( this, "Force of Nature", "if=(variable.az_ss&!buff.ca_inc.up|!variable.az_ss&(buff.ca_inc.up|cooldown.ca_inc.remains>30))&ap_check" );
   default_list->add_action( "incarnation,if=!buff.ca_inc.up"
