@@ -34,22 +34,23 @@ role=attack
 position=back
 talents=2000122
 timeofday=day
+azerite_essences="14:3/27:3/4:3"
 
-head=crown_of_aakuls_dark_reign,id=165526,bonus_id=4824/1537/4775,azerite_powers=247/359/18/83/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulder=admiraltys_ceremonial_epaulets,id=165824,bonus_id=4824/1537/4775,azerite_powers=359/247/459/467/13
-back=high_tinkers_cape,id=165924,bonus_id=4800/1537
-chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=5062/1587/4786/4775,azerite_powers=247/209/31/44/13
-wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
-hands=mechjockey_grips,id=165522,bonus_id=4800/1537
-waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
-legs=cranedancer_leggings,id=165521,bonus_id=4800/1537
-feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
-finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_critical_strike
-trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
-trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
-main_hand=hornridged_crusher,id=165589,bonus_id=4800/1537,enchant=deadly_navigation
+head=",id=168349,azerite_powers=359/576/30/13,ilevel=450"
+neck=",id=158075,azerite_level=65,ilevel=463"
+shoulder=",id=159339,azerite_powers=359/193/459/13,ilevel=450"
+back=",id=168604,ilevel=445"
+chest=",id=159298,azerite_powers=209/359/459/13,ilevel=450"
+wrist=",id=170305,gems=50haste,ilevel=425"
+hands=",id=168887,ilevel=445"
+waist=",id=170368,gems=50haste,ilevel=425"
+legs=",id=168378,ilevel=445"
+feet=",id=170141,gems=50haste,ilevel=425"
+finger1=",id=169159,enchant_id=6108,enchant=60haste,ilevel=415"
+finger2=",id=169157,enchant_id=6108,enchant=60haste,ilevel=415"
+trinket1=",id=169311,bonus_id=4800/1517"
+trinket2=",id=169319,bonus_id=4800/1517"
+main_hand=",id=168306,bonus_id=4800/1517,enchant_id=5965"
 
 save=T24_Druid_Feral.simc
 
