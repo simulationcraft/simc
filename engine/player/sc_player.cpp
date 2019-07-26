@@ -10118,7 +10118,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
       return new variable_expr_t( this, splits[ 1 ] );
     }
 
-    // item equipped by item_id or name
+    // item equipped by item_id or name or effect_name
     if ( splits[ 0 ] == "equipped" )
     {
       unsigned item_id = util::to_unsigned( splits[ 1 ] );
@@ -10129,6 +10129,12 @@ expr_t* player_t::create_expression( const std::string& expression_str )
           return expr_t::create_constant( "item_equipped", 1 );
         }
         else if ( util::str_compare_ci( items[ i ].name_str, splits[ 1 ] ) )
+        {
+          return expr_t::create_constant( "item_equipped", 1 );
+        }
+        else if ( items[ i ].has_use_special_effect() &&
+          util::str_compare_ci(
+            items[ i ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name(), splits[ 1 ] ) )
         {
           return expr_t::create_constant( "item_equipped", 1 );
         }
@@ -10175,7 +10181,6 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     // spec
     if ( splits[ 0 ] == "spec" )
     {
-
       return expr_t::create_constant( "spec", dbc::translate_spec_str( type, splits[1]) == specialization() );
     }
 
