@@ -8429,11 +8429,11 @@ void druid_t::apl_feral()
    cooldowns->add_action("incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)");
    cooldowns->add_action("potion,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))");
    cooldowns->add_action("shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up");
-   cooldowns->add_action("use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(debuff.conductive_ink_debuff.up)&target.health.pct<31|target.time_to_die<20");	
-   cooldowns->add_action("use_item,effect_name=cyclotronic_blast");
-   cooldowns->add_action("use_item,effect_name=lurkers_insidious_gift");
+   cooldowns->add_action("use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.time_to_pct_30<1.5|!debuff.conductive_ink_debuff.up&(debuff.razor_coral_debuff.stack>=25-10*debuff.blood_of_the_enemy.up|target.time_to_die<40)&buff.tigers_fury.remains>10");	
+   cooldowns->add_action("use_item,effect_name=cyclotronic_blast,if=(energy.deficit>=energy.regen*3)&buff.tigers_fury.down&!azerite.jungle_fury.enabled");
+   cooldowns->add_action("use_item,effect_name=cyclotronic_blast,if=buff.tigers_fury.up&azerite.jungle_fury.enabled");
    cooldowns->add_action("use_item,effect_name=azsharas_font_of_power,if=energy.deficit>=50");
-   cooldowns->add_action("use_items");
+   cooldowns->add_action("use_items,if=buff.tigers_fury.up|target.time_to_die<20");
 
    finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("savage_roar,if=buff.savage_roar.down");
