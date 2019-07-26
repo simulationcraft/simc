@@ -103,8 +103,8 @@ actions.direct+=/mutilate,if=variable.use_filler
 actions.dot=variable,name=skip_cycle_garrote,value=priority_rotation&spell_targets.fan_of_knives>3&(dot.garrote.remains<cooldown.garrote.duration|poisoned_bleeds>5)
 # Limit Ruptures on non-primrary targets for the priority rotation if 5+ bleeds are already up
 actions.dot+=/variable,name=skip_cycle_rupture,value=priority_rotation&spell_targets.fan_of_knives>3&(debuff.toxic_blade.up|(poisoned_bleeds>5&!azerite.scent_of_blood.enabled))
-# Limit Ruptures if Vendetta+Toxic Blade is up and we have 2+ seconds left on the Rupture DoT
-actions.dot+=/variable,name=skip_rupture,value=debuff.vendetta.up&debuff.toxic_blade.up&dot.rupture.remains>2
+# Limit Ruptures if Vendetta+Toxic Blade/Master Assassin is up and we have 2+ seconds left on the Rupture DoT
+actions.dot+=/variable,name=skip_rupture,value=debuff.vendetta.up&(debuff.toxic_blade.up|master_assassin_remains>0)&dot.rupture.remains>2
 # Special Rupture setup for Exsg
 actions.dot+=/rupture,if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2)))
 # Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher
