@@ -3716,12 +3716,10 @@ Effects          :
                    Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 0.68168 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
-                   Hotfixed: PvP Coefficient (1 -> 0.68168)
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 0.68168 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
-                   Hotfixed: PvP Coefficient (1 -> 0.68168)
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191152)   : Apply Aura (6) | Modify Max Mana% (178)
@@ -10684,16 +10682,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=773466)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1792 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=779235)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #3 (id=779236)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 33554432 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #4 (id=779237)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : $?$a303590[Critical Strike increased by $s1.]?$a303592[Haste increased by $s2.]?$a303595[Mastery increased by $s3.]?$a303596[Versatility increased by $s4.][A secondary stat of your choice is increased by $s1 while using the Pocket-Sized Computation Device.] Stat is chosen based on equipped Logic Board.
 
 Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
@@ -10846,7 +10840,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=778215)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (0.5 -> 0.25)
 #4 (id=778216)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.
