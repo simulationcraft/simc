@@ -4878,15 +4878,15 @@ void items::subroutine_optimization( special_effect_t& effect )
   struct subroutine_optimization_buff_t : public buff_t
   {
     std::array<double, STAT_MAX> stats;
-    stat_e major;
-    stat_e minor;
+    stat_e major_stat;
+    stat_e minor_stat;
     item_t punchcard;
     double raw_bonus;
 
     subroutine_optimization_buff_t( const special_effect_t& effect ) :
       buff_t( effect.player, "subroutine_optimization", effect.trigger() ),
-      major( STAT_NONE ),
-      minor( STAT_NONE ),
+      major_stat( STAT_NONE ),
+      minor_stat( STAT_NONE ),
       punchcard( init_punchcard( effect ) ),
       raw_bonus( item_database::apply_combat_rating_multiplier( effect.player,
           combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
@@ -4913,8 +4913,8 @@ void items::subroutine_optimization( special_effect_t& effect )
       range::sort( punchcard_stats, [] ( const auto& a, const auto& b ) { return a.second > b.second; } );
       if ( punchcard_stats.size() == 2 )
       {
-        major = punchcard_stats[ 0 ].first;
-        minor = punchcard_stats[ 1 ].first;
+        major_stat = punchcard_stats[ 0 ].first;
+        minor_stat = punchcard_stats[ 1 ].first;
       }
       else
       {
@@ -4999,9 +4999,9 @@ void items::subroutine_optimization( special_effect_t& effect )
     double stat_multiplier( stat_e s ) const
     {
       // Stat split is defined somewhere server side.
-      if ( s == major )
+      if ( s == major_stat )
         return 0.6;
-      else if ( s == minor )
+      else if ( s == minor_stat )
         return 0.4;
       else
         return 0.0;
