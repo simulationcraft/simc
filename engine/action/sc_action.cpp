@@ -20,6 +20,18 @@ namespace
  */
 void do_execute( action_t* action, execute_type type )
 {
+  // Schedule off gcd or cast while casting ready event before the action executes.
+  // This prevents the action from scheduling ready events with non-zero delay
+  // (for example as a result of the cooldown thresholds update).
+  if ( type == execute_type::OFF_GCD )
+  {
+    action->player->schedule_off_gcd_ready( timespan_t::zero() );
+  }
+  else if ( type == execute_type::CAST_WHILE_CASTING )
+  {
+    action->player->schedule_cwc_ready( timespan_t::zero() );
+  }
+
   if ( !action->quiet )
   {
     action->player->iteration_executed_foreground_actions++;
@@ -31,15 +43,6 @@ void do_execute( action_t* action, execute_type type )
 
   // If the ability has a GCD, we need to start it
   action->start_gcd();
-
-  if ( type == execute_type::OFF_GCD )
-  {
-    action->player->schedule_off_gcd_ready( timespan_t::zero() );
-  }
-  else if ( type == execute_type::CAST_WHILE_CASTING )
-  {
-    action->player->schedule_cwc_ready( timespan_t::zero() );
-  }
 
   if ( action->player->queueing == action )
   {
