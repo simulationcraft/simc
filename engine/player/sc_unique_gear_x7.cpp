@@ -187,6 +187,7 @@ namespace items
   void divers_folly( special_effect_t& );
   void remote_guidance_device( special_effect_t& );
   void gladiators_maledict( special_effect_t& );
+  void getiikku_cut_of_death( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -4658,6 +4659,18 @@ void items::gladiators_maledict( special_effect_t& effect )
   effect.execute_action->base_td = effect.player->find_spell( 305251 )->effectN( 1 ).average( effect.item );
 }
 
+// Geti'ikku, Cut of Death ================================================
+
+void items::getiikku_cut_of_death( special_effect_t& effect )
+{
+  // Note, no create_proc_action here, since there is the possibility of dual-wielding them and
+  // special_effect_t does not have enough support for defining "shared spells" on initialization
+  effect.execute_action = new proc_spell_t( "cut_of_death", effect.player,
+    effect.player->find_spell( 281711 ), effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -5593,6 +5606,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 303353, items::divers_folly );
   register_special_effect( 302307, items::remote_guidance_device );
   register_special_effect( 305252, items::gladiators_maledict );
+  register_special_effect( 281712, items::getiikku_cut_of_death );
   // 8.2 Mechagon combo rings
   register_special_effect( 300124, items::logic_loop_of_division );
   register_special_effect( 300125, items::logic_loop_of_recursion );
