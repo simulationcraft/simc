@@ -8756,7 +8756,7 @@ void druid_t::apl_guardian()
     default_list -> add_action( this, "Rake", "if=buff.prowl.up&buff.cat_form.up" );
     default_list -> add_action( "auto_attack" );
     default_list -> add_action( "call_action_list,name=cooldowns" );
-    default_list -> add_action( "call_action_list,name=cat,if=talent.feral_affinity.enabled&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&rage<45&buff.incarnation.down&buff.galactic_guardian.down)|(buff.cat_form.up&energy>20)|(dot.rip.ticking&dot.rip.remains<3&target.health.pct<25))" );
+    default_list -> add_action( "call_action_list,name=cat,if=talent.feral_affinity.enabled&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&rage<40&buff.incarnation.down&buff.galactic_guardian.down)|(buff.cat_form.up&energy>20))" );
     default_list -> add_action( "call_action_list,name=bear" );
 
     bear -> add_action( this, "Bear Form" );
