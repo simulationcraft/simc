@@ -3269,7 +3269,6 @@ void items::nazjatar_proc_check( special_effect_t& effect )
 // Storm of the Eternal ===================================================
 void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 {
-
   struct sote_arcane_damage_t : public proc_t
   {
     sote_arcane_damage_t( const special_effect_t& e )
@@ -3307,7 +3306,6 @@ void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 
 void items::storm_of_the_eternal_stats( special_effect_t& effect )
 {
-
   stat_e stat;
   switch ( effect.spell_id )
   {
