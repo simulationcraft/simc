@@ -183,6 +183,8 @@ struct tick_t : public buff_event_t
       if ( buff->remains() == period )
         period -= timespan_t::from_millis( 1 );
       buff->tick_event = make_event<tick_t>( *buff->sim, buff, period, current_value, current_stacks );
+    } else {
+        buff->sim->print_debug( "not scheduling another tick for {} {}", *buff->player, *buff );
     }
   }
 };
@@ -1488,6 +1490,18 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
     if ( tick_event && tick_behavior == buff_tick_behavior::CLIP )
     {
       event_t::cancel( tick_event );
+      current_tick      = 0;
+      timespan_t period = tick_time();
+      // Reorder the last tick to happen 1ms before expiration
+      if ( period == d )
+        period -= timespan_t::from_millis( 1 );
+      tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? 1 : stacks );
+    } else if ( tick_event == nullptr && tick_behavior != buff_tick_behavior::NONE ) {
+      // there is a minor off-by-a-small-amount condition that can
+      // happen where the last tick has happened, but we still have
+      // the buff and so technically refresh. this happens with RJW
+      //
+      // this condition sets up the next tick in that case
       current_tick      = 0;
       timespan_t period = tick_time();
       // Reorder the last tick to happen 1ms before expiration

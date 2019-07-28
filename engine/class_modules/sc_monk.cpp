@@ -7158,6 +7158,9 @@ struct touch_of_karma_buff_t : public monk_buff_t<buff_t>
 // Rushing Jade Wind Buff ================================================
 struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
 {
+  // gonna assume this is 1 buff per monk combatant
+  timespan_t _period;
+
   static void rjw_callback( buff_t* b, int, const timespan_t& )
   {
     monk_t* p = debug_cast<monk_t*>( b->player );
@@ -7172,7 +7175,8 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
     set_cooldown( timespan_t::zero() );
 
     set_period( s->effectN( 1 ).period() );
-    set_tick_time_behavior( buff_tick_time_behavior::HASTED );
+    set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
+    set_tick_time_callback( [&] (const buff_t*, unsigned int) { return _period; } );
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
     if ( p.specialization() == MONK_BREWMASTER )
@@ -7181,11 +7185,15 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
       set_duration( s->duration() );
 
     set_tick_callback( rjw_callback );
-    set_tick_behavior( buff_tick_behavior::CLIP );
+    set_tick_behavior( buff_tick_behavior::REFRESH );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
+    duration = (duration >= timespan_t::zero() ? duration : this->buff_duration) * p().cache.spell_speed();
+    // RJW snapshots the tick period on cast. this + the tick_time
+    // callback represent that behavior
+    _period = this->buff_period * p().cache.spell_speed();
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
@@ -8829,7 +8837,7 @@ double monk_t::clear_stagger()
  */
 double shared_composite_haste_modifiers( const monk_t& p, double h )
 {
-  if ( p.buff.sephuzs_secret->check() )
+  if ( p.buff.sephuzs_secret && p.buff.sephuzs_secret->check() )
   {
     h *= 1.0 / ( 1.0 + p.buff.sephuzs_secret->stack_value() );
   }
@@ -8846,7 +8854,7 @@ double shared_composite_haste_modifiers( const monk_t& p, double h )
     int effect_index = 2;  // Effect index of HT affecting each stagger buff
     for ( auto&& buff : {p.buff.light_stagger, p.buff.moderate_stagger, p.buff.heavy_stagger} )
     {
-      if ( buff->check() )
+      if ( buff && buff->check() )
       {
         h *= 1.0 / ( 1.0 + p.talent.high_tolerance->effectN( effect_index ).percent() );
       }
