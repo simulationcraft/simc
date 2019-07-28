@@ -7197,6 +7197,21 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
+
+  void refresh( int stacks, double value, timespan_t duration ) {
+    buff_t::refresh( stacks, value, duration );
+    if ( tick_event == nullptr ) {
+        // there is a minor off-by-a-small-amount condition that can
+        // happen where the last tick has happened, but we still have
+        // the buff and so technically refresh. 
+        //
+        // this condition sets up the next tick in that case
+        sim->print_debug("adding new tick for refreshed RJW {}", *this);
+        current_tick      = 0;
+        schedule_tick( 1, duration );
+    }
+  }
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
