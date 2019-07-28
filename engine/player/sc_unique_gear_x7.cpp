@@ -5113,8 +5113,6 @@ void items::harmonic_dematerializer( special_effect_t& effect )
     buff = make_buff( effect.player, "harmonic_dematerializer", effect.driver() );
     buff->set_cooldown( timespan_t::zero() );
     buff->set_default_value( effect.driver()->effectN( 2 ).percent() );
-    // TODO: How does the buff work when you refresh it?
-    buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   }
 
   effect.execute_action = create_proc_action<harmonic_dematerializer_t>( "harmonic_dematerializer",
