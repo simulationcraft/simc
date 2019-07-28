@@ -3269,9 +3269,6 @@ void items::nazjatar_proc_check( special_effect_t& effect )
 // Storm of the Eternal ===================================================
 void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 {
-  if ( !effect.player->sim->bfa_opts.nazjatar )
-    return;
-
   struct sote_arcane_damage_t : public proc_t
   {
     sote_arcane_damage_t( const special_effect_t& e )
@@ -3309,9 +3306,6 @@ void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 
 void items::storm_of_the_eternal_stats( special_effect_t& effect )
 {
-  if ( !effect.player->sim->bfa_opts.nazjatar )
-    return;
-
   stat_e stat;
   switch ( effect.spell_id )
   {
@@ -4877,22 +4871,25 @@ void items::subroutine_optimization( special_effect_t& effect )
 {
   struct subroutine_optimization_buff_t : public buff_t
   {
-    std::vector<std::tuple<stat_e, double, double>> dist;
     std::array<double, STAT_MAX> stats;
+    stat_e major_stat;
+    stat_e minor_stat;
     item_t punchcard;
     double raw_bonus;
 
     subroutine_optimization_buff_t( const special_effect_t& effect ) :
       buff_t( effect.player, "subroutine_optimization", effect.trigger() ),
+      major_stat( STAT_NONE ),
+      minor_stat( STAT_NONE ),
       punchcard( init_punchcard( effect ) ),
       raw_bonus( item_database::apply_combat_rating_multiplier( effect.player,
           combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
           punchcard.item_level(),
           effect.driver()->effectN( 2 ).average( &( punchcard ) ) ) )
     {
-      // Collect the stat distribution to the vector
+      // Find the two stats provided by the punchcard.
       auto stat_spell = yellow_punchcard( effect );
-      double total_coefficient = 0.0;
+      std::vector<std::pair<stat_e, double>> punchcard_stats;
       for ( size_t i = 1u; i <= stat_spell->effect_count(); ++i )
       {
         if ( stat_spell->effectN( i ).subtype() != A_MOD_RATING )
@@ -4902,14 +4899,21 @@ void items::subroutine_optimization( special_effect_t& effect )
 
         auto stats = ::util::translate_all_rating_mod( stat_spell->effectN( i ).misc_value1() );
         double value = stat_spell->effectN( i ).m_coefficient();
-        total_coefficient += value;
 
-        dist.emplace_back( stats.front(), value, value );
+        punchcard_stats.emplace_back( stats.front(), value );
       }
 
-      range::for_each( dist, [total_coefficient]( std::tuple<stat_e, double, double>& entry ) {
-        std::get<1>( entry ) = std::get<1>( entry ) / total_coefficient;
-      } );
+      // Find out which stat has the bigger coefficient.
+      range::sort( punchcard_stats, [] ( const auto& a, const auto& b ) { return a.second > b.second; } );
+      if ( punchcard_stats.size() == 2 )
+      {
+        major_stat = punchcard_stats[ 0 ].first;
+        minor_stat = punchcard_stats[ 1 ].first;
+      }
+      else
+      {
+        assert( false );
+      }
     }
 
     const spell_data_t* yellow_punchcard( const special_effect_t& effect ) const
@@ -4984,7 +4988,17 @@ void items::subroutine_optimization( special_effect_t& effect )
       {
         source->stat_loss( stat, delta, nullptr, nullptr, true );
       }
+    }
 
+    double stat_multiplier( stat_e s ) const
+    {
+      // Stat split is defined somewhere server side.
+      if ( s == major_stat )
+        return 0.6;
+      else if ( s == minor_stat )
+        return 0.4;
+      else
+        return 0.0;
     }
 
     void adjust_stats( bool up )
@@ -4996,53 +5010,32 @@ void items::subroutine_optimization( special_effect_t& effect )
 
       // TODO: scale factor behavior?
       double haste = source->current.stats.haste_rating;
-      double new_haste = 0, bonus_haste = 0;
       double mastery = source->current.stats.mastery_rating;
-      double new_mastery = 0, bonus_mastery = 0;
       double crit = source->current.stats.crit_rating;
-      double new_crit = 0, bonus_crit = 0;
       double versatility = source->current.stats.versatility_rating;
-      double new_versatility = 0, bonus_versatility = 0;
-      double total = haste + mastery + crit + versatility;
 
-      range::for_each( dist, [&]( const std::tuple<stat_e, double, double>& distribution ) {
-          auto stat = std::get<0>( distribution );
-          switch ( stat )
-          {
-            case STAT_HASTE_RATING:
-              new_haste   = total * std::get<1>( distribution );
-              bonus_haste = as<double>( !up * raw_bonus * std::get<2>( distribution ) );
-              break;
-            case STAT_CRIT_RATING:
-              new_crit   = total * std::get<1>( distribution );
-              bonus_crit = as<double>( !up * raw_bonus * std::get<2>( distribution ) );
-              break;
-            case STAT_MASTERY_RATING:
-              new_mastery   = total * std::get<1>( distribution );
-              bonus_mastery = as<double>( !up * raw_bonus * std::get<2>( distribution ) );
-              break;
-            case STAT_VERSATILITY_RATING:
-              new_versatility    = total * std::get<1>( distribution );
-              bonus_versatility = as<double>( !up * raw_bonus * std::get<2>( distribution ) );
-              break;
-            default:
-              break;
-          }
-      } );
+      double total = haste + mastery + crit + versatility;
+      if ( !up )
+        total += raw_bonus;
+
+      double new_haste = total * stat_multiplier( STAT_HASTE_RATING );
+      double new_mastery = total * stat_multiplier( STAT_MASTERY_RATING );
+      double new_crit = total * stat_multiplier( STAT_CRIT_RATING );
+      double new_versatility = total * stat_multiplier( STAT_VERSATILITY_RATING );
 
       if ( sim->debug )
       {
         sim->out_debug.print(
-          "{} subroutine_optimization total={}, haste={}->{} (+{}), crit={}->{} (+{}), "
-          "mastery={}->{} (+{}), versatility={}->{} (+{})",
-          source->name(), total, haste, new_haste, bonus_haste, crit, new_crit, bonus_crit,
-          mastery, new_mastery, bonus_mastery, versatility, new_versatility, bonus_versatility );
+          "{} subroutine_optimization total={}, haste={}->{}, crit={}->{}, "
+          "mastery={}->{}, versatility={}->{}",
+          source->name(), total, haste, new_haste, crit, new_crit,
+          mastery, new_mastery, versatility, new_versatility );
       }
 
-      adjust_stat( STAT_HASTE_RATING, haste, new_haste + bonus_haste );
-      adjust_stat( STAT_CRIT_RATING, crit, new_crit + bonus_crit );
-      adjust_stat( STAT_MASTERY_RATING, mastery, new_mastery + bonus_mastery );
-      adjust_stat( STAT_VERSATILITY_RATING, versatility, new_versatility + bonus_versatility );
+      adjust_stat( STAT_HASTE_RATING, haste, new_haste );
+      adjust_stat( STAT_CRIT_RATING, crit, new_crit );
+      adjust_stat( STAT_MASTERY_RATING, mastery, new_mastery );
+      adjust_stat( STAT_VERSATILITY_RATING, versatility, new_versatility );
     }
 
     void bump( int stacks, double value ) override
@@ -5120,8 +5113,6 @@ void items::harmonic_dematerializer( special_effect_t& effect )
     buff = make_buff( effect.player, "harmonic_dematerializer", effect.driver() );
     buff->set_cooldown( timespan_t::zero() );
     buff->set_default_value( effect.driver()->effectN( 2 ).percent() );
-    // TODO: How does the buff work when you refresh it?
-    buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   }
 
   effect.execute_action = create_proc_action<harmonic_dematerializer_t>( "harmonic_dematerializer",
