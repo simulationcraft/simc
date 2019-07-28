@@ -4156,7 +4156,9 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
   {
     parse_options( options_str );
     harmful = may_crit = false;
-    rockboi = new guardian_of_azeroth_pet_t(p, essence);
+    rockboi = p->find_pet( "guardian_of_azeroth" );
+    if ( !rockboi )
+      rockboi = new guardian_of_azeroth_pet_t(p, essence);
   }
 
   void execute() override
