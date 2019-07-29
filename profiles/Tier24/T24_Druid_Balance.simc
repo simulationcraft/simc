@@ -23,6 +23,8 @@ augmentation=battle_scarred
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
 # Azerite variables
 actions.precombat+=/variable,name=az_ss,value=azerite.streaking_stars.rank
 actions.precombat+=/variable,name=az_ap,value=azerite.arcanic_pulsar.rank
@@ -32,9 +34,8 @@ actions.precombat+=/variable,name=sf_targets,op=add,value=1,if=azerite.arcanic_p
 actions.precombat+=/variable,name=sf_targets,op=add,value=1,if=talent.starlord.enabled
 actions.precombat+=/variable,name=sf_targets,op=add,value=1,if=azerite.streaking_stars.rank>2&azerite.arcanic_pulsar.enabled
 actions.precombat+=/variable,name=sf_targets,op=sub,value=1,if=!talent.twin_moons.enabled
+# Precombat opener
 actions.precombat+=/moonkin_form
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/potion,dynamic_prepot=1
 actions.precombat+=/solar_wrath
@@ -42,8 +43,8 @@ actions.precombat+=/solar_wrath
 actions.precombat+=/starsurge
 
 # Executed every time the actor is available.
-actions=potion,if=buff.celestial_alignment.remains>13|buff.incarnation.remains>16.5
 # CDs
+actions=potion,if=buff.celestial_alignment.remains>13|buff.incarnation.remains>16.5
 actions+=/berserking,if=buff.ca_inc.up
 actions+=/use_item,name=azsharas_font_of_power,if=!buff.ca_inc.up,target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
 actions+=/guardian_of_azeroth,if=(!talent.starlord.enabled|buff.starlord.up)&!buff.ca_inc.up,target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
