@@ -5657,6 +5657,7 @@ struct remorseless_winter_buff_t : public buff_t
     {
       damage -> execute();
     } );
+    set_partial_tick( true );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
