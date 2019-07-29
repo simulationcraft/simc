@@ -26,9 +26,10 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
+actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/memory_of_lucid_dreams
 actions.precombat+=/guardian_of_azeroth
+actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=charge
@@ -40,7 +41,7 @@ actions+=/arcane_torrent,if=debuff.colossus_smash.down&cooldown.mortal_strike.re
 actions+=/lights_judgment,if=debuff.colossus_smash.down
 actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
-actions+=/use_item,name=vision_of_demise
+actions+=/use_item,name=ashvanes_razor_coral,if=!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|(prev_gcd.1.colossus_smash&!essence.memory_of_lucid_dreams.major))
 actions+=/avatar,if=cooldown.colossus_smash.remains<8|(talent.warbreaker.enabled&cooldown.warbreaker.remains<8)
 actions+=/sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>10|cooldown.colossus_smash.remains>8|azerite.test_of_might.enabled)
 actions+=/blood_of_the_enemy,if=buff.test_of_might.up|(debuff.colossus_smash.up&!azerite.test_of_might.enabled)
@@ -128,7 +129,7 @@ legs=legplates_of_unbound_anguish,id=167217,bonus_id=4800/1547
 feet=akanas_reefstrider_boots,id=170143,bonus_id=1512
 finger1=logic_loop_of_division,id=169157,bonus_id=4779/1472,enchant=accord_of_haste
 finger2=shorting_bit_band,id=169160,bonus_id=4779/1472,enchant=accord_of_haste
-trinket1=vision_of_demise,id=169307,bonus_id=4800/1517
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
 main_hand=tentacle_crusher,id=168897,bonus_id=4800/1517,enchant=galeforce_striking
 
