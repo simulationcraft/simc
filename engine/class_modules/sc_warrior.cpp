@@ -5125,7 +5125,7 @@ void warrior_t::default_apl_dps_precombat()
 
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  precombat->add_action( "potion" );
+  precombat->add_action( "use_item,name=azsharas_font_of_power" );
 
   precombat->add_action( "memory_of_lucid_dreams" );
 
@@ -5133,8 +5133,10 @@ void warrior_t::default_apl_dps_precombat()
 
   if ( specialization() == WARRIOR_FURY )
   {
-    precombat->add_action( this, "Recklessness", "if=!talent.furious_slash.enabled" );
+    precombat->add_action( this, "Recklessness" );
   }
+
+  precombat->add_action( "potion" );
 }
 
 // Fury Warrior Action Priority List ========================================
