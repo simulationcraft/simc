@@ -102,6 +102,7 @@ public:
   buff_tick_time_callback_t tick_time_callback;
   bool tick_zero;
   bool tick_on_application; // Immediately tick when the buff first goes up, but not on refreshes
+  bool partial_tick; // Allow non-full duration ticks at the end of the buff period
 
   // tmp data collection
 protected:
@@ -298,6 +299,8 @@ public:
   { tick_zero = v; return this; }
   buff_t* set_tick_on_application( bool v )
   { tick_on_application = v; return this; }
+  buff_t* set_partial_tick( bool v )
+  { partial_tick = v; return this; }
   buff_t* set_tick_time_behavior( buff_tick_time_behavior b )
   { tick_time_behavior = b; return this; }
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
