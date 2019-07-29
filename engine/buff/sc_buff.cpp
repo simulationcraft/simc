@@ -1457,9 +1457,6 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   {
     current_tick = 0;
 
-    // Reorder the last tick to happen 1ms before expiration
-    if ( period == d )
-      period -= timespan_t::from_millis( 1 );
     assert( !tick_event );
     tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? reverse_stack_reduction : stacks );
 
@@ -1526,9 +1523,6 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
       event_t::cancel( tick_event );
       current_tick      = 0;
       timespan_t period = tick_time();
-      // Reorder the last tick to happen 1ms before expiration
-      if ( period == d )
-        period -= timespan_t::from_millis( 1 );
       tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? 1 : stacks );
     }
 
