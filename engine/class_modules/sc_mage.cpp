@@ -5741,7 +5741,7 @@ void mage_t::apl_arcane()
     "Charged Up), use it before using RoP+AP, because the mana reduction is otherwise largely wasted "
     "since the AB was free anyway." );
   burn->add_action( "lights_judgment,if=buff.arcane_power.down" );
-  burn->add_action( "use_item,name=azsharas_font_of_power" );
+  burn->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.arcane_power.remains<5|time_to_die<cooldown.arcane_power.remains" );
   burn->add_talent( this, "Rune of Power", "if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
   burn->add_action( "berserking" );
   burn->add_action( this, "Arcane Power" );
