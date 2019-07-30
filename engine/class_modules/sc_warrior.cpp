@@ -5185,8 +5185,8 @@ void warrior_t::apl_fury()
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
                                 ",if=!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|"
-                                "(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|prev_gcd.2.recklessness&"
-                                "(buff.guardian_of_azeroth.up|!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major))" );
+                                "(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|prev_gcd.2.guardian_of_azeroth|"
+                                "prev_gcd.2.recklessness&(!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major))" );
     }
     else if ( items[ i ].name_str == "azsharas_font_of_power" )
     {
