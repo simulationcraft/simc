@@ -5734,7 +5734,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "ancestral_call,if=debuff.vendetta.up" );
 
     cds -> add_action( "use_item,name=galecallers_boon,if=cooldown.vendetta.remains>45" );
-    cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10|target.time_to_die<20+cooldown.latent_arcana.remains" );
+    cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10-4*equipped.azsharas_font_of_power|target.time_to_die<20+cooldown.latent_arcana.remains" );
     cds -> add_action( "use_item,name=lurkers_insidious_gift,if=debuff.vendetta.up" );
     cds -> add_action( "use_item,name=lustrous_golden_plumage,if=debuff.vendetta.up" );
     cds -> add_action( "use_item,effect_name=gladiators_medallion,if=debuff.vendetta.up" );
