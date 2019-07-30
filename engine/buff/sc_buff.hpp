@@ -221,7 +221,6 @@ public:
   virtual void   extend_duration( player_t* p, timespan_t seconds );
 
   virtual void start    ( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void schedule_tick ( int stacks = 1, timespan_t duration = timespan_t::min() );
   virtual void refresh  ( int stacks = 0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void bump     ( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual void override_buff ( int stacks = 1, double value = DEFAULT_VALUE() );
