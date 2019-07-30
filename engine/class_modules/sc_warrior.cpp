@@ -5125,7 +5125,7 @@ void warrior_t::default_apl_dps_precombat()
 
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  precombat->add_action( "potion" );
+  precombat->add_action( "use_item,name=azsharas_font_of_power" );
 
   precombat->add_action( "memory_of_lucid_dreams" );
 
@@ -5133,8 +5133,10 @@ void warrior_t::default_apl_dps_precombat()
 
   if ( specialization() == WARRIOR_FURY )
   {
-    precombat->add_action( this, "Recklessness", "if=!talent.furious_slash.enabled" );
+    precombat->add_action( this, "Recklessness" );
   }
+
+  precombat->add_action( "potion" );
 }
 
 // Fury Warrior Action Priority List ========================================
@@ -5161,9 +5163,6 @@ void warrior_t::apl_fury()
     default_list->add_action( "potion" );
   }
 
-  default_list->add_talent( this, "Furious Slash",
-                            "if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|("
-                            "cooldown.recklessness.remains<3&buff.furious_slash.remains<9))" );
   default_list->add_action( this, "Rampage", "if=cooldown.recklessness.remains<3" );
 
   default_list->add_action( "blood_of_the_enemy,if=buff.recklessness.up" );
@@ -5239,6 +5238,7 @@ void warrior_t::apl_fury()
                              "(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|"
                              "rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))" );
   single_target->add_action( this, "Execute" );
+  single_target->add_talent( this, "Furious Slash", "if=!buff.bloodlust.up&buff.furious_slash.remains<3" );
   single_target->add_talent( this, "Bladestorm",  "if=prev_gcd.1.rampage" );
   single_target->add_action( this, "Bloodthirst", "if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1" );
   single_target->add_talent( this, "Dragon Roar", "if=buff.enrage.up" );

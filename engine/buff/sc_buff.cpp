@@ -97,13 +97,73 @@ struct react_ready_trigger_t : public buff_event_t
   }
 };
 
+struct tick_t : public buff_event_t
+{
+  double current_value;
+  int current_stacks;
+  timespan_t tick_time, start_time;
+
+  tick_t( buff_t* b, timespan_t d, double value, int stacks )
+    : buff_event_t( b, d ), current_value( value ), current_stacks( stacks ), tick_time( d ),
+      start_time( b->sim->current_time() )
+  { }
+
+  const char* name() const override
+  { return "buff_tick"; }
+
+  void execute() override
+  {
+    buff->tick_event = nullptr;
+    buff->current_tick++;
+
+    int total_ticks = buff->expiration.empty()
+      ? -1
+      : buff->current_tick + static_cast<int>( buff->remains() / buff->tick_time() );
+
+    if ( buff->partial_tick &&
+         ( buff->buff_duration.total_millis() % buff->tick_time().total_millis() ) != 0 )
+    {
+      total_ticks++;
+    }
+
+    buff->sim->print_debug( "{} {} ticks ({} of {}).",
+        *buff->player, *buff, buff->current_tick, total_ticks );
+
+    // Tick callback is called before the aura stack count is altered to ensure
+    // that the buff is always up during the "tick". Last tick detection can be
+    // made through the int arguments passed to the function call.
+    if ( buff->tick_callback )
+    {
+      buff->tick_callback( buff, total_ticks, tick_time );
+    }
+
+    if ( !buff->freeze_stacks() )
+    {
+      if ( !buff->reverse )
+      {
+        buff->bump( current_stacks, current_value );
+      }
+      else
+      {
+        buff->decrement( current_stacks, current_value );
+      }
+    }
+
+    timespan_t period = buff->tick_time();
+    // Unconditionally schedule the tick, expiration event will handle the "final tick"
+    if ( buff->current_stack > 0 && ( buff->remains() > 0_ms || buff->remains() == timespan_t::min() ) )
+    {
+      buff->tick_event = make_event<tick_t>( *buff->sim, buff, period, current_value, current_stacks );
+    }
+  }
+};
+
 struct expiration_t : public buff_event_t
 {
   unsigned stack;
 
   expiration_t( buff_t* b, unsigned s, timespan_t d ) : buff_event_t( b, d ), stack( s )
-  {
-  }
+  { }
 
   expiration_t( buff_t* b, timespan_t d ) : buff_event_t( b, d ), stack( 0 )
   {
@@ -116,73 +176,48 @@ struct expiration_t : public buff_event_t
   }
 
   const char* name() const override
-  {
-    return "buff_expiration";
-  }
+  { return "buff_expiration"; }
 
-  virtual void execute() override
+  void execute() override
   {
     assert( buff->expiration.size() );
+
+    // For non-async buffs, this is always unconditionally the "last tick" since we expire the buff
+    auto last_tick = buff->stack_behavior != buff_stack_behavior::ASYNCHRONOUS ||
+      ( buff->stack_behavior == buff_stack_behavior::ASYNCHRONOUS && buff->current_stack == 1 );
+    auto actual_tick_time = 0_ms;
+    tick_t* tick_event = nullptr;
+    if ( buff->tick_event )
+    {
+      tick_event = debug_cast<tick_t*>( buff->tick_event );
+      actual_tick_time = sim().current_time() - tick_event->start_time;
+    }
+
+    bool can_tick = tick_event &&
+      ( ( buff->partial_tick && actual_tick_time > 0_ms ) ||
+        ( !buff->partial_tick && tick_event->tick_time == actual_tick_time ) );
+
+    if ( last_tick && can_tick )
+    {
+      buff->current_tick++;
+      buff->sim->print_debug( "{} {} ticks ({} of {}).",
+          *buff->player, *buff, buff->current_tick, buff->current_tick );
+
+      if ( buff->tick_callback )
+      {
+        buff->tick_callback( buff, buff->current_tick, actual_tick_time );
+      }
+    }
 
     buff->expiration.erase( buff->expiration.begin() );
 
     if ( buff->stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
+    {
       buff->decrement( stack );
-    else
-      buff->expire();
-  }
-};
-
-struct tick_t : public buff_event_t
-{
-  double current_value;
-  int current_stacks;
-  timespan_t tick_time;
-
-  tick_t( buff_t* b, timespan_t d, double value, int stacks )
-    : buff_event_t( b, d ), current_value( value ), current_stacks( stacks ), tick_time( d )
-  {
-  }
-
-  const char* name() const override
-  {
-    return "buff_tick";
-  }
-
-  void execute() override
-  {
-    buff->tick_event = nullptr;
-    buff->current_tick++;
-
-    // For tick number calculations, always include the +1ms so we get correct
-    // tick number labeling on the last tick, just before the buff expires.
-    int total_ticks =
-        buff->expiration.empty() ? -1 : buff->current_tick + static_cast<int>( buff->remains() / buff->tick_time() );
-
-    buff->sim->print_debug( "{} {} ticks ({} of {}).",
-        *buff->player, *buff, buff->current_tick, total_ticks );
-
-    // Tick callback is called before the aura stack count is altered to ensure
-    // that the buff is always up during the "tick". Last tick detection can be
-    // made through the int arguments passed to the function call.
-    if ( buff->tick_callback )
-      buff->tick_callback( buff, total_ticks, tick_time );
-
-    if ( !( buff->freeze_stacks() ) )
-    {
-      if ( !buff->reverse )
-        buff->bump( current_stacks, current_value );
-      else
-        buff->decrement( current_stacks, current_value );
     }
-    timespan_t period = buff->tick_time();
-    if ( buff->current_stack > 0 &&
-         ( buff->remains() >= period || buff->buff_duration == timespan_t::zero() ) )
+    else
     {
-      // Reorder the last tick to happen 1ms before expiration
-      if ( buff->remains() == period )
-        period -= timespan_t::from_millis( 1 );
-      buff->tick_event = make_event<tick_t>( *buff->sim, buff, period, current_value, current_stacks );
+      buff->expire();
     }
   }
 };
@@ -480,6 +515,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, const std::strin
     tick_event( nullptr ),
     tick_zero( false ),
     tick_on_application( false ),
+    partial_tick( false ),
     last_start(),
     last_trigger(),
     iteration_uptime_sum(),
@@ -1421,9 +1457,6 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   {
     current_tick = 0;
 
-    // Reorder the last tick to happen 1ms before expiration
-    if ( period == d )
-      period -= timespan_t::from_millis( 1 );
     assert( !tick_event );
     tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? reverse_stack_reduction : stacks );
 
@@ -1490,9 +1523,6 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
       event_t::cancel( tick_event );
       current_tick      = 0;
       timespan_t period = tick_time();
-      // Reorder the last tick to happen 1ms before expiration
-      if ( period == d )
-        period -= timespan_t::from_millis( 1 );
       tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? 1 : stacks );
     }
 
@@ -1654,7 +1684,10 @@ void buff_t::override_buff( int stacks, double value )
 void buff_t::expire( timespan_t delay )
 {
   if ( current_stack <= 0 )
+  {
+    assert( tick_event == nullptr );
     return;
+  }
 
   if ( delay > timespan_t::zero() )  // Expiration Delay
   {

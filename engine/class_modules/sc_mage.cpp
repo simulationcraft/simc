@@ -5595,6 +5595,10 @@ void mage_t::apl_precombat()
     case MAGE_FIRE:
       precombat->add_action( "variable,name=combustion_rop_cutoff,op=set,value=60",
         "This variable sets the time at which Rune of Power should start being saved for the next Combustion phase" );
+      precombat->add_action( "variable,name=combustion_on_use,op=set,value=equipped.notorious_aspirants_badge|equipped.notorious_gladiators_badge|equipped.sinister_gladiators_badge|equipped.sinister_aspirants_badge|equipped.dread_gladiators_badge|equipped.dread_aspirants_badge|equipped.dread_combatants_insignia|equipped.notorious_aspirants_medallion|equipped.notorious_gladiators_medallion|equipped.sinister_gladiators_medallion|equipped.sinister_aspirants_medallion|equipped.dread_gladiators_medallion|equipped.dread_aspirants_medallion|equipped.dread_combatants_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch" );
+      precombat->add_action( "variable,name=font_double_on_use,op=set,value=equipped.azsharas_font_of_power&variable.combustion_on_use" );
+      precombat->add_action( "variable,name=on_use_cutoff,op=set,value=20*variable.combustion_on_use&!variable.font_double_on_use+40*variable.font_double_on_use+25*equipped.azsharas_font_of_power&!variable.font_double_on_use",
+        "Items that are used outside of Combustion are not used after this time if they would put a trinket used with Combustion on a sharded cooldown." );
       break;
     case MAGE_FROST:
       precombat->add_action( this, "Summon Water Elemental" );
@@ -5741,7 +5745,7 @@ void mage_t::apl_arcane()
     "Charged Up), use it before using RoP+AP, because the mana reduction is otherwise largely wasted "
     "since the AB was free anyway." );
   burn->add_action( "lights_judgment,if=buff.arcane_power.down" );
-  burn->add_action( "use_item,name=azsharas_font_of_power" );
+  burn->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.arcane_power.remains<5|time_to_die<cooldown.arcane_power.remains" );
   burn->add_talent( this, "Rune of Power", "if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
   burn->add_action( "berserking" );
   burn->add_action( this, "Arcane Power" );
@@ -5792,13 +5796,15 @@ void mage_t::apl_fire()
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"             );
   action_priority_list_t* combustion_phase    = get_action_priority_list( "combustion_phase"    );
-  action_priority_list_t* bm_combustion_phase = get_action_priority_list( "bm_combustion_phase" );
   action_priority_list_t* rop_phase           = get_action_priority_list( "rop_phase"           );
   action_priority_list_t* active_talents      = get_action_priority_list( "active_talents"      );
-  action_priority_list_t* trinkets            = get_action_priority_list( "trinkets"            );
+  action_priority_list_t* items_low_priority  = get_action_priority_list( "items_low_priority"  );
+  action_priority_list_t* items_high_priority = get_action_priority_list( "items_high_priority" );
+  action_priority_list_t* items_combustion    = get_action_priority_list( "items_combustion"    );
   action_priority_list_t* standard            = get_action_priority_list( "standard_rotation"   );
 
   default_list->add_action( this, "Counterspell" );
+  default_list->add_action( "call_action_list,name=items_high_priority" );
   default_list->add_talent( this, "Mirror Image", "if=buff.combustion.down" );
   default_list->add_action( "concentrated_flame" );
   default_list->add_action( "focused_azerite_beam" );
@@ -5807,7 +5813,6 @@ void mage_t::apl_fire()
   default_list->add_action( "the_unbound_force" );
   default_list->add_action( "worldvein_resonance" );
   default_list->add_talent( this, "Rune of Power", "if=talent.firestarter.enabled&firestarter.remains>full_recharge_time|cooldown.combustion.remains>variable.combustion_rop_cutoff&buff.combustion.down|target.time_to_die<cooldown.combustion.remains&buff.combustion.down" );
-  default_list->add_action( "use_item,name=malformed_heralds_legwraps,if=cooldown.combustion.remains>55" );
   default_list->add_action( "call_action_list,name=combustion_phase,if=(talent.rune_of_power.enabled&cooldown.combustion.remains<=action.rune_of_power.cast_time|cooldown.combustion.ready)&!firestarter.active|buff.combustion.up" );
   default_list->add_action( this, "Fire Blast", "use_while_casting=1,use_off_gcd=1,if=(essence.memory_of_lucid_dreams.major|essence.memory_of_lucid_dreams.minor&azerite.blaster_master.enabled)&charges=max_charges&!buff.hot_streak.react&!(buff.heating_up.react&(buff.combustion.up&(action.fireball.in_flight|action.pyroblast.in_flight|action.scorch.executing)|target.health.pct<=30&action.scorch.executing))&!(!buff.heating_up.react&!buff.hot_streak.react&buff.combustion.down&(action.fireball.in_flight|action.pyroblast.in_flight))" );
   default_list->add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
@@ -5820,17 +5825,22 @@ void mage_t::apl_fire()
   active_talents->add_talent( this, "Dragon's Breath", "if=talent.alexstraszas_fury.enabled&(buff.combustion.down&!buff.hot_streak.react|buff.combustion.up&action.fire_blast.charges<action.fire_blast.max_charges&!buff.hot_streak.react)" );
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down", "Combustion phase prepares abilities with a delay, then launches into the Combustion sequence" );
-  combustion_phase->add_action( "use_item,name=azsharas_font_of_power" );
-  combustion_phase->add_action( "use_item,name=hyperthread_wristwraps,if=buff.combustion.up&action.fire_blast.charges_fractional<1.2" );
+  combustion_phase->add_talent( this, "Living Bomb", "if=buff.combustion.down&active_enemies>1" );
   combustion_phase->add_action( "blood_of_the_enemy" );
   combustion_phase->add_action( "guardian_of_azeroth" );
-  combustion_phase->add_action( "call_action_list,name=bm_combustion_phase,if=azerite.blaster_master.enabled&talent.flame_on.enabled&!essence.memory_of_lucid_dreams.major" );
   combustion_phase->add_action( "memory_of_lucid_dreams" );
-  combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,use_off_gcd=1,if=essence.memory_of_lucid_dreams.major&charges=max_charges&!buff.hot_streak.react&!(buff.heating_up.react&(buff.combustion.up&(action.fireball.in_flight|action.pyroblast.in_flight|action.scorch.executing)|target.health.pct<=30&action.scorch.executing))&!(!buff.heating_up.react&!buff.hot_streak.react&buff.combustion.down&(action.fireball.in_flight|action.pyroblast.in_flight))" );
+  combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,use_off_gcd=1,if=charges>=1&((action.fire_blast.charges_fractional+(buff.combustion.remains-buff.blaster_master.duration)%cooldown.fire_blast.duration-(buff.combustion.remains)%(buff.blaster_master.duration-0.5))>=0|!azerite.blaster_master.enabled|!talent.flame_on.enabled|buff.combustion.remains<=buff.blaster_master.duration|buff.blaster_master.remains<0.5|equipped.hyperthread_wristwraps&cooldown.hyperthread_wristwraps.remains<5)&buff.combustion.up&(!action.scorch.executing&!action.pyroblast.in_flight&buff.heating_up.up|action.scorch.executing&buff.hot_streak.down&(buff.heating_up.down|azerite.blaster_master.enabled)|azerite.blaster_master.enabled&talent.flame_on.enabled&action.pyroblast.in_flight&buff.heating_up.down&buff.hot_streak.down)",
+    "During Combustion, Fire Blasts are used to generate Hot Streaks and minimize the amount of time spent executing other spells. "
+    "For standard Fire, Fire Blasts are only used when Heating Up is active or when a Scorch cast is in progress and Heating Up and Hot Streak are not active. "
+    "With Blaster Master and Flame On, Fire Blasts can additionally be used while Hot Streak and Heating Up are not active and a Pyroblast is in the air "
+    "and also while casting Scorch even if Heating Up is already active. The latter allows two Hot Streak Pyroblasts to be cast in succession after the Scorch. "
+    "Additionally with Blaster Master and Flame On, Fire Blasts should not be used unless Blaster Master is about to expire "
+    "or there are more than enough Fire Blasts to extend Blaster Master to the end of Combustion." ); 
   combustion_phase->add_talent( this, "Rune of Power", "if=buff.combustion.down" );
-  combustion_phase->add_action( "call_action_list,name=active_talents,if=(azerite.blaster_master.enabled&buff.blaster_master.stack>=3)|!azerite.blaster_master.enabled" );
-  combustion_phase->add_action( this, "Combustion", "use_off_gcd=1,use_while_casting=1,if=!essence.memory_of_lucid_dreams.major&(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((action.meteor.in_flight&action.meteor.in_flight_remains<=0.5)|!talent.meteor.enabled)&(buff.rune_of_power.up|!talent.rune_of_power.enabled)" );
-  combustion_phase->add_action( this, "Combustion", "use_off_gcd=1,use_while_casting=1,if=essence.memory_of_lucid_dreams.major&(buff.rune_of_power.up|!talent.rune_of_power.enabled)" );
+  combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,if=azerite.blaster_master.enabled&talent.flame_on.enabled&buff.blaster_master.down&(talent.rune_of_power.enabled&action.rune_of_power.executing&action.rune_of_power.execute_remains<0.6|(cooldown.combustion.ready|buff.combustion.up)&!talent.rune_of_power.enabled&!action.pyroblast.in_flight&!action.fireball.in_flight)",
+    "With Blaster Master, a Fire Blast should be used while casting Rune of Power." );
+  combustion_phase->add_action( "call_action_list,name=active_talents,if=azerite.blaster_master.enabled&talent.flame_on.enabled&(essence.memory_of_lucid_dreams.major&buff.blaster_master.stack>=3|!essence.memory_of_lucid_dreams.major|equipped.hyperthread_wristwraps)|!azerite.blaster_master.enabled|!talent.flame_on.enabled" );
+  combustion_phase->add_action( this, "Combustion", "use_off_gcd=1,use_while_casting=1,if=(buff.rune_of_power.up|!talent.rune_of_power.enabled)&(action.meteor.in_flight&action.meteor.in_flight_remains<=0.5|(talent.rune_of_power.enabled|!talent.rune_of_power.enabled&action.scorch.executing)&(azerite.blaster_master.enabled&essence.memory_of_lucid_dreams.major&!equipped.hyperthread_wristwraps|!talent.meteor.enabled))" );
   combustion_phase->add_action( "potion" );
   for ( const auto& ra : racial_actions )
   {
@@ -5839,12 +5849,9 @@ void mage_t::apl_fire()
 
     combustion_phase->add_action( ra );
   }
-  combustion_phase->add_action( "call_action_list,name=trinkets" );
   combustion_phase->add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react&!azerite.blaster_master.enabled" );
   combustion_phase->add_action( this, "Pyroblast", "if=buff.pyroclasm.react&buff.combustion.remains>cast_time" );
   combustion_phase->add_action( this, "Pyroblast", "if=buff.hot_streak.react" );
-  combustion_phase->add_action( this, "Fire Blast", "use_off_gcd=1,use_while_casting=1,if=essence.memory_of_lucid_dreams.major&(charges_fractional>1.3|buff.blaster_master.remains<0.5|buff.combustion.remains<buff.blaster_master.duration|!azerite.blaster_master.enabled)&((buff.combustion.up&(buff.heating_up.react&!action.pyroblast.in_flight&!action.scorch.executing)|(action.scorch.execute_remains&buff.heating_up.down&buff.hot_streak.down&!action.pyroblast.in_flight)))" );
-  combustion_phase->add_action( this, "Fire Blast", "use_off_gcd=1,use_while_casting=1,if=!essence.memory_of_lucid_dreams.major&(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((buff.combustion.up&(buff.heating_up.react&!action.pyroblast.in_flight&!action.scorch.executing)|(action.scorch.execute_remains&buff.heating_up.down&buff.hot_streak.down&!action.pyroblast.in_flight)))" );
   combustion_phase->add_action( this, "Pyroblast", "if=prev_gcd.1.scorch&buff.heating_up.up" );
   combustion_phase->add_talent( this, "Phoenix Flames" );
   combustion_phase->add_action( this, "Scorch", "if=buff.combustion.remains>cast_time&buff.combustion.up|buff.combustion.down" );
@@ -5870,7 +5877,7 @@ void mage_t::apl_fire()
   standard->add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1&!firestarter.active)|active_enemies>4)&buff.hot_streak.react" );
   standard->add_action( this, "Pyroblast", "if=buff.hot_streak.react&buff.hot_streak.remains<action.fireball.execute_time" );
   standard->add_action( this, "Pyroblast", "if=buff.hot_streak.react&(prev_gcd.1.fireball|firestarter.active|action.pyroblast.in_flight)" );
-  standard->add_action( this, "Phoenix Flames", "if=charges>=3&active_enemies>2&!variable.phoenix_pooling" );
+  standard->add_talent( this, "Phoenix Flames", "if=charges>=3&active_enemies>2&!variable.phoenix_pooling" );
   standard->add_action( this, "Pyroblast", "if=buff.hot_streak.react&target.health.pct<=30&talent.searing_touch.enabled" );
   standard->add_action( this, "Pyroblast", "if=buff.pyroclasm.react&cast_time<buff.pyroclasm.remains" );
   standard->add_action( this, "Fire Blast", "use_off_gcd=1,use_while_casting=1,if=(cooldown.combustion.remains>0&buff.rune_of_power.down|firestarter.active)&!talent.kindling.enabled&!variable.fire_blast_pooling&(((action.fireball.executing|action.pyroblast.executing)&(buff.heating_up.react|firestarter.active&!buff.hot_streak.react&!buff.heating_up.react))|(talent.searing_touch.enabled&target.health.pct<=30&(buff.heating_up.react&!action.scorch.executing|!buff.hot_streak.react&!buff.heating_up.react&action.scorch.executing&!action.pyroblast.in_flight&!action.fireball.in_flight))|(firestarter.active&(action.pyroblast.in_flight|action.fireball.in_flight)&!buff.heating_up.react&!buff.hot_streak.react))" );
@@ -5879,40 +5886,36 @@ void mage_t::apl_fire()
   standard->add_talent( this, "Phoenix Flames", "if=(buff.heating_up.react|(!buff.hot_streak.react&(action.fire_blast.charges>0|talent.searing_touch.enabled&target.health.pct<=30)))&!variable.phoenix_pooling" );
   standard->add_action( "call_action_list,name=active_talents" );
   standard->add_action( this, "Dragon's Breath", "if=active_enemies>1" );
-  standard->add_action( "use_item,name=tidestorm_codex,if=cooldown.combustion.remains>20|talent.firestarter.enabled&firestarter.remains>20" );
-  standard->add_action( "use_item,effect_name=cyclotronic_blast,if=cooldown.combustion.remains>20|talent.firestarter.enabled&firestarter.remains>20" );
+  standard->add_action( "call_action_list,name=items_low_priority" );
   standard->add_action( this, "Scorch", "if=target.health.pct<=30&talent.searing_touch.enabled" );
   standard->add_action( this, "Fireball" );
   standard->add_action( this, "Scorch" );
 
-  bm_combustion_phase->add_action( "lights_judgment,if=buff.combustion.down" );
-  bm_combustion_phase->add_talent( this, "Living Bomb", "if=buff.combustion.down&active_enemies>1" );
-  bm_combustion_phase->add_talent( this, "Rune of Power", "if=buff.combustion.down" );
-  bm_combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,if=buff.blaster_master.down&(talent.rune_of_power.enabled&action.rune_of_power.executing&action.rune_of_power.execute_remains<0.6|(cooldown.combustion.ready|buff.combustion.up)&!talent.rune_of_power.enabled&!action.pyroblast.in_flight&!action.fireball.in_flight)" );
-  bm_combustion_phase->add_action( "call_action_list,name=active_talents" );
-  bm_combustion_phase->add_action( this, "Combustion", "use_off_gcd=1,use_while_casting=1,if=azerite.blaster_master.enabled&((action.meteor.in_flight&action.meteor.in_flight_remains<0.2)|!talent.meteor.enabled|prev_gcd.1.meteor)&(buff.rune_of_power.up|!talent.rune_of_power.enabled)" );
-  bm_combustion_phase->add_action( "potion" );
-  for ( const auto& ra : racial_actions )
-  {
-    if ( ra == "lights_judgment" || ra == "arcane_torrent" )
-      continue;  // Handled manually.
+  items_low_priority->add_action( "use_item,name=tidestorm_codex,if=cooldown.combustion.remains>variable.on_use_cutoff|talent.firestarter.enabled&firestarter.remains>variable.on_use_cutoff" );
+  items_low_priority->add_action( "use_item,effect_name=cyclotronic_blast,if=cooldown.combustion.remains>variable.on_use_cutoff|talent.firestarter.enabled&firestarter.remains>variable.on_use_cutoff" );
 
-    bm_combustion_phase->add_action( ra );
-  }
-  bm_combustion_phase->add_action( "call_action_list,name=trinkets" );
-  bm_combustion_phase->add_action( this, "Pyroblast", "if=prev_gcd.1.scorch&buff.heating_up.up" );
-  bm_combustion_phase->add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
-  bm_combustion_phase->add_action( this, "Pyroblast", "if=buff.pyroclasm.react&cast_time<buff.combustion.remains" );
-  bm_combustion_phase->add_talent( this, "Phoenix Flames" );
-  bm_combustion_phase->add_action( this, "Fire Blast", "use_off_gcd=1,if=buff.blaster_master.stack=1&buff.hot_streak.down&!buff.pyroclasm.react&prev_gcd.1.pyroblast&(buff.blaster_master.remains<0.15|gcd.remains<0.15)" );
-  bm_combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,if=buff.blaster_master.stack=1&(action.scorch.executing&action.scorch.execute_remains<0.15|buff.blaster_master.remains<0.15)" );
-  bm_combustion_phase->add_action( this, "Scorch", "if=buff.hot_streak.down&(cooldown.fire_blast.remains<cast_time|action.fire_blast.charges>0)" );
-  bm_combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,use_off_gcd=1,if=buff.blaster_master.stack>1&(prev_gcd.1.scorch&!buff.hot_streak.up&!action.scorch.executing|buff.blaster_master.remains<0.15)" );
-  bm_combustion_phase->add_talent( this, "Living Bomb", "if=buff.combustion.remains<gcd.max&active_enemies>1" );
-  bm_combustion_phase->add_action( this, "Dragon's Breath", "if=buff.combustion.remains<gcd.max" );
-  bm_combustion_phase->add_action( this, "Scorch" );
+  items_high_priority->add_action( "call_action_list,name=items_combustion,if=(talent.rune_of_power.enabled&cooldown.combustion.remains<=action.rune_of_power.cast_time|cooldown.combustion.ready)&!firestarter.active|buff.combustion.up" );
+  items_high_priority->add_action( "use_items" );
+  items_high_priority->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.combustion.remains<=5+15*variable.font_double_on_use" );
+  items_high_priority->add_action( "use_item,name=rotcrusted_voodoo_doll,if=cooldown.combustion.remains>variable.on_use_cutoff" );
+  items_high_priority->add_action( "use_item,name=aquipotent_nautilus,if=cooldown.combustion.remains>variable.on_use_cutoff" );
+  items_high_priority->add_action( "use_item,name=shiver_venom_relic,if=cooldown.combustion.remains>variable.on_use_cutoff" );
+  items_high_priority->add_action( "use_item,effect_name=harmonic_dematerializer" );
+  items_high_priority->add_action( "use_item,name=malformed_heralds_legwraps,if=cooldown.combustion.remains>=55&buff.combustion.down&cooldown.combustion.remains>variable.on_use_cutoff" );
+  items_high_priority->add_action( "use_item,name=ancient_knot_of_wisdom,if=cooldown.combustion.remains>=55&buff.combustion.down&cooldown.combustion.remains>variable.on_use_cutoff" );
+  items_high_priority->add_action( "use_item,name=neural_synapse_enhancer,if=cooldown.combustion.remains>=45&buff.combustion.down&cooldown.combustion.remains>variable.on_use_cutoff" );
 
-  trinkets->add_action( "use_items" );
+  items_combustion->add_action( "use_item,name=ignition_mages_fuse" );
+  items_combustion->add_action( "use_item,name=hyperthread_wristwraps,if=buff.combustion.up&(action.fire_blast.full_recharge_time>=10+gcd.remains|action.fire_blast.charges=0&action.fire_blast.recharge_time>gcd.remains)" );
+  items_combustion->add_action( "use_item,use_off_gcd=1,name=azurethos_singed_plumage,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
+  items_combustion->add_action( "use_item,use_off_gcd=1,effect_name=gladiators_badge,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
+  items_combustion->add_action( "use_item,use_off_gcd=1,effect_name=gladiators_medallion,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
+  items_combustion->add_action( "use_item,use_off_gcd=1,name=balefire_branch,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
+  items_combustion->add_action( "use_item,use_off_gcd=1,name=shockbiters_fang,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
+  items_combustion->add_action( "use_item,use_off_gcd=1,name=tzanes_barkspines,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
+  items_combustion->add_action( "use_item,use_off_gcd=1,name=ancient_knot_of_wisdom,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
+  items_combustion->add_action( "use_item,use_off_gcd=1,name=neural_synapse_enhancer,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
+  items_combustion->add_action( "use_item,use_off_gcd=1,name=malformed_heralds_legwraps,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
 }
 
 void mage_t::apl_frost()

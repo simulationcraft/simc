@@ -20,7 +20,7 @@ legs=legplates_of_unbound_anguish,id=167217,bonus_id=4800/1547
 feet=akanas_reefstrider_boots,id=170143,bonus_id=1512
 finger1=logic_loop_of_division,id=169157,bonus_id=4779/1472,enchant=accord_of_haste
 finger2=shorting_bit_band,id=169160,bonus_id=4779/1472,enchant=accord_of_haste
-trinket1=vision_of_demise,id=169307,bonus_id=4800/1517
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
 main_hand=tentacle_crusher,id=168897,bonus_id=4800/1517,enchant=galeforce_striking
 
@@ -33,15 +33,15 @@ race=gnome
 spec=fury
 role=attack
 position=back
-talents=2123123
+talents=2133123
 
-azerite_essences=14:3/12:3/5:3
+azerite_essences=14:3/12:3/32:3
 
 head=helm_of_abyssal_malevolence,id=159430,bonus_id=1617/4819,azerite_powers=176/437/30/83/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=cthraxxi_binders_pauldrons,id=159439,bonus_id=1617/4819,azerite_powers=176/196/30/15/13
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
-chest=naga_centaurs_shellplate,id=168361,bonus_id=4824/1517,azerite_powers=176/119/18/83/13
+chest=/dark_passengers_breastplate,id=168363,bonus_id=4824/1517,azerite_powers=119/576/30/15/13
 wrists=waveblade_farseers_armguards,id=170303,bonus_id=1512
 hands=poens_deepsea_handguards,id=170336,bonus_id=1512
 waist=eternity_keepers_greatbelt,id=168869,bonus_id=4800/1517
@@ -51,8 +51,9 @@ finger1=logic_loop_of_division,id=169157,bonus_id=4779/1472,enchant=accord_of_cr
 finger2=shorting_bit_band,id=169160,bonus_id=4779/1472,enchant=accord_of_critical_strike
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
-main_hand=tentacle_crusher,id=168897,bonus_id=4800/1517,enchant=force_multiplier
-off_hand=tentacle_crusher,id=168897,bonus_id=4800/1517,enchant=deadly_navigation
+main_hand=monstrositys_shipbreaker,id=168478,bonus_id=4800/1517,enchant=force_multiplier
+off_hand=getiikku_cut_of_death,id=159644,bonus_id=5010/1602/4786,enchant=deadly_navigation
+
 
 save=T24_Warrior_Fury.simc
 

@@ -25,10 +25,11 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
+actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/memory_of_lucid_dreams
 actions.precombat+=/guardian_of_azeroth
-actions.precombat+=/recklessness,if=!talent.furious_slash.enabled
+actions.precombat+=/recklessness
+actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -37,7 +38,6 @@ actions+=/charge
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
 actions+=/potion
-actions+=/furious_slash,if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))
 actions+=/rampage,if=cooldown.recklessness.remains<3
 actions+=/blood_of_the_enemy,if=buff.recklessness.up
 actions+=/purifying_blast,if=!buff.recklessness.up&!buff.siegebreaker.up
@@ -62,6 +62,7 @@ actions.movement=heroic_leap
 actions.single_target=siegebreaker
 actions.single_target+=/rampage,if=(buff.recklessness.up|buff.memory_of_lucid_dreams.up)|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
 actions.single_target+=/execute
+actions.single_target+=/furious_slash,if=!buff.bloodlust.up&buff.furious_slash.remains<3
 actions.single_target+=/bladestorm,if=prev_gcd.1.rampage
 actions.single_target+=/bloodthirst,if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1
 actions.single_target+=/dragon_roar,if=buff.enrage.up
