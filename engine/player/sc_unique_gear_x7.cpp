@@ -4078,7 +4078,10 @@ void items::anuazshara_staff_of_the_eternal( special_effect_t& effect )
 
   auto buff = buff_t::find( effect.player, "prodigys_potency" );
   if ( !buff )
+  {
     buff = make_buff( effect.player, "prodigys_potency", effect.trigger() );
+    buff->set_max_stack( 255 );
+  }
 
   effect.custom_buff = buff;
   new prodigys_potency_cb_t( effect, lockout );
@@ -4345,7 +4348,8 @@ struct conductive_ink_constructor_t : public item_targetdata_initializer_t
     assert( !td->debuff.conductive_ink );
 
     td->debuff.conductive_ink =
-      make_buff( *td, "conductive_ink_debuff", td->source->find_spell( 302565 ) )->set_activated( false );
+      make_buff( *td, "conductive_ink_debuff", td->source->find_spell( 302565 ) )->set_activated( false )
+      ->set_max_stack( 255 );
     td->debuff.conductive_ink->reset();
   }
 };

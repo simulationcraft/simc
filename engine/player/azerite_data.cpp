@@ -4581,7 +4581,7 @@ struct lifeblood_shard_t : public buff_t
     buff_t( p, "lifeblood_shard", p->find_spell( 295114 ), ess.item() )
   {
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-    set_max_stack( 255 );
+    set_max_stack( 64 );  // sufficiently large enough to cover major esssence + 10 allies
     set_quiet( true );
     buff_duration *= 1.0 + ess.spell_ref( 2, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
 
