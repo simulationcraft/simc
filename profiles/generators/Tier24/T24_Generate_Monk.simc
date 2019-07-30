@@ -45,7 +45,8 @@ legs=leggings_of_the_stormborn,id=168378,bonus_id=4800/1517
 feet=akanas_reefstrider_footwraps,id=170141,bonus_id=1512
 finger1=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=pact_of_versatility
 finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=pact_of_versatility
-trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=masterful_navigation
 off_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=versatile_navigation
 
@@ -71,7 +72,8 @@ legs=leggings_of_the_stormborn,id=168378,bonus_id=4800/1517
 feet=akanas_reefstrider_footwraps,id=170141,bonus_id=1512
 finger1=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=pact_of_versatility
 finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=pact_of_versatility
-trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=masterful_navigation
 off_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=versatile_navigation
 
