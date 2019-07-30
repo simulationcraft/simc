@@ -7178,6 +7178,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
     set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
     set_tick_time_callback( [&] (const buff_t*, unsigned int) { return _period; } );
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+    set_partial_tick( true );
 
     if ( p.specialization() == MONK_BREWMASTER )
       set_duration( s->duration() * ( 1 + p.spec.brewmaster_monk->effectN( 9 ).percent() ) );
@@ -7195,21 +7196,6 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
     // callback represent that behavior
     _period = this->buff_period * p().cache.spell_speed();
     return buff_t::trigger( stacks, value, chance, duration );
-  }
-
-
-  void refresh( int stacks, double value, timespan_t duration ) {
-    buff_t::refresh( stacks, value, duration );
-    if ( tick_event == nullptr ) {
-        // there is a minor off-by-a-small-amount condition that can
-        // happen where the last tick has happened, but we still have
-        // the buff and so technically refresh. 
-        //
-        // this condition sets up the next tick in that case
-        sim->print_debug("adding new tick for refreshed RJW {}", *this);
-        current_tick      = 0;
-        schedule_tick( 1, duration );
-    }
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
