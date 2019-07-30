@@ -5598,7 +5598,7 @@ void mage_t::apl_precombat()
       precombat->add_action( "variable,name=combustion_on_use,op=set,value=equipped.notorious_aspirants_badge|equipped.notorious_gladiators_badge|equipped.sinister_gladiators_badge|equipped.sinister_aspirants_badge|equipped.dread_gladiators_badge|equipped.dread_aspirants_badge|equipped.dread_combatants_insignia|equipped.notorious_aspirants_medallion|equipped.notorious_gladiators_medallion|equipped.sinister_gladiators_medallion|equipped.sinister_aspirants_medallion|equipped.dread_gladiators_medallion|equipped.dread_aspirants_medallion|equipped.dread_combatants_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch" );
       precombat->add_action( "variable,name=font_double_on_use,op=set,value=equipped.azsharas_font_of_power&variable.combustion_on_use" );
       precombat->add_action( "variable,name=on_use_cutoff,op=set,value=20*variable.combustion_on_use&!variable.font_double_on_use+40*variable.font_double_on_use+25*equipped.azsharas_font_of_power&!variable.font_double_on_use",
-        "items that are used outside of Combustion are not used after this time if they would put a trinket used with Combustion on a sharded cooldown." );
+        "Items that are used outside of Combustion are not used after this time if they would put a trinket used with Combustion on a sharded cooldown." );
       break;
     case MAGE_FROST:
       precombat->add_action( this, "Summon Water Elemental" );
@@ -5830,15 +5830,15 @@ void mage_t::apl_fire()
   combustion_phase->add_action( "guardian_of_azeroth" );
   combustion_phase->add_action( "memory_of_lucid_dreams" );
   combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,use_off_gcd=1,if=charges>=1&((action.fire_blast.charges_fractional+(buff.combustion.remains-buff.blaster_master.duration)%cooldown.fire_blast.duration-(buff.combustion.remains)%(buff.blaster_master.duration-0.5))>=0|!azerite.blaster_master.enabled|!talent.flame_on.enabled|buff.combustion.remains<=buff.blaster_master.duration|buff.blaster_master.remains<0.5|equipped.hyperthread_wristwraps&cooldown.hyperthread_wristwraps.remains<5)&buff.combustion.up&(!action.scorch.executing&!action.pyroblast.in_flight&buff.heating_up.up|action.scorch.executing&buff.hot_streak.down&(buff.heating_up.down|azerite.blaster_master.enabled)|azerite.blaster_master.enabled&talent.flame_on.enabled&action.pyroblast.in_flight&buff.heating_up.down&buff.hot_streak.down)",
-    "during Combustion, Fire Blasts are used to generate Hot Streaks and minimize the amount of time spent executing other spells. "
+    "During Combustion, Fire Blasts are used to generate Hot Streaks and minimize the amount of time spent executing other spells. "
     "For standard Fire, Fire Blasts are only used when Heating Up is active or when a Scorch cast is in progress and Heating Up and Hot Streak are not active. "
     "With Blaster Master and Flame On, Fire Blasts can additionally be used while Hot Streak and Heating Up are not active and a Pyroblast is in the air "
-    "and also while casting Scorch even if Heating Up is already active. The later allows two Hot Streak Pyroblasts to be cast in succession after the Scorch. "
+    "and also while casting Scorch even if Heating Up is already active. The latter allows two Hot Streak Pyroblasts to be cast in succession after the Scorch. "
     "Additionally with Blaster Master and Flame On, Fire Blasts should not be used unless Blaster Master is about to expire "
     "or there are more than enough Fire Blasts to extend Blaster Master to the end of Combustion." ); 
   combustion_phase->add_talent( this, "Rune of Power", "if=buff.combustion.down" );
   combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,if=azerite.blaster_master.enabled&talent.flame_on.enabled&buff.blaster_master.down&(talent.rune_of_power.enabled&action.rune_of_power.executing&action.rune_of_power.execute_remains<0.6|(cooldown.combustion.ready|buff.combustion.up)&!talent.rune_of_power.enabled&!action.pyroblast.in_flight&!action.fireball.in_flight)",
-    "with Blaster Master, a Fire Blast should be used while casting Rune of Power" );
+    "With Blaster Master, a Fire Blast should be used while casting Rune of Power." );
   combustion_phase->add_action( "call_action_list,name=active_talents,if=azerite.blaster_master.enabled&talent.flame_on.enabled&(essence.memory_of_lucid_dreams.major&buff.blaster_master.stack>=3|!essence.memory_of_lucid_dreams.major|equipped.hyperthread_wristwraps)|!azerite.blaster_master.enabled|!talent.flame_on.enabled" );
   combustion_phase->add_action( this, "Combustion", "use_off_gcd=1,use_while_casting=1,if=(buff.rune_of_power.up|!talent.rune_of_power.enabled)&(action.meteor.in_flight&action.meteor.in_flight_remains<=0.5|(talent.rune_of_power.enabled|!talent.rune_of_power.enabled&action.scorch.executing)&(azerite.blaster_master.enabled&essence.memory_of_lucid_dreams.major&!equipped.hyperthread_wristwraps|!talent.meteor.enabled))" );
   combustion_phase->add_action( "potion" );
