@@ -3127,9 +3127,6 @@ void player_t::create_buffs()
 
       auto worldvein_resonance = find_azerite_essence( "Worldvein Resonance" );
       buffs.lifeblood = make_buff<stat_buff_t>( this, "lifeblood", find_spell( 295137 ) );
-      buffs.lifeblood->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-      buffs.lifeblood->set_duration( find_spell( 295114 )->duration() 
-        * ( 1.0 + worldvein_resonance.spell( 2, essence_spell::UPGRADE, essence_type::MINOR )->effectN( 1 ).percent() ) );
       buffs.lifeblood->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ), 
         worldvein_resonance.spell( 1, essence_type::MINOR )->effectN( 5 ).average( worldvein_resonance.item() ) );
 
