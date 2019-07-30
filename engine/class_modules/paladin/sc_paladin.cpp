@@ -1016,10 +1016,6 @@ void paladin_t::vision_of_perfection_proc()
   {
     main_buff -> extend_duration( this, trigger_duration );
 
-    // Bug? the autocrit buff isn't triggered if AW is already active
-    if ( autocrit_buff && autocrit_buff -> check() )
-      autocrit_buff -> extend_duration( this, trigger_duration );
-
     if ( azerite.avengers_might.enabled() )
       buffs.avengers_might -> extend_duration( this, trigger_duration );
   }
