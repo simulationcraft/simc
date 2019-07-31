@@ -976,7 +976,7 @@ void paladin_t::generate_action_prio_list_prot()
   cds -> add_action( "use_item,name=merekthas_fang,if=!buff.avenging_wrath.up&(buff.seraphim.up|!talent.seraphim.enabled)" );
   cds -> add_action( "use_item,name=razdunks_big_red_button" );
 
-  def -> add_action( "worldvein_resonance,if=buff.lifeblood.stacks<3" );
+  def -> add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
   def -> add_action( this, "Shield of the Righteous", "if=(buff.avengers_valor.up&cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)", "Dumping SotR charges" );
   def -> add_action( this, "Shield of the Righteous", "if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up&buff.avengers_valor.up" );
   def -> add_action( this, "Shield of the Righteous", "if=(buff.avenging_wrath.up&buff.avenging_wrath.remains<4&!talent.seraphim.enabled)|(buff.seraphim.remains<4&buff.seraphim.up)" );
