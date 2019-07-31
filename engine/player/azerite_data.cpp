@@ -3444,6 +3444,14 @@ void arcane_heart( special_effect_t& effect )
     if ( amount <= 0 || omni->check() )  // doesn't count damage while omnipotence is up
       return assessor::CONTINUE;
 
+    // spell attribute bit 416 being set seems to be a necessary condition for damage to count
+    // TODO: determine if this bit is also a sufficient condition
+    if ( state->action->s_data != spell_data_t::nil() &&
+      !state->action->s_data->flags( static_cast<spell_attribute>( 416u ) ) )
+    {
+      return assessor::CONTINUE;
+    }
+
     if ( !buff->check() )  // special handling for damage from precombat actions
     {
       make_event( *buff->sim, [buff, amount] {
