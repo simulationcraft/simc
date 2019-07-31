@@ -7137,6 +7137,7 @@ void shaman_t::summon_fire_elemental( const timespan_t& duration, bool essence_p
       pet.pet_fire_elemental->summon( duration );
       expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, this );
       vision_of_perfection_proced_pet = essence_proc;
+      pet.pet_fire_elemental->get_cooldown( "meteor" )->reset( false );
     }
     else
     {
@@ -7177,6 +7178,7 @@ void shaman_t::summon_storm_elemental( const timespan_t& duration, bool essence_
     {
       pet.pet_storm_elemental->summon( duration );
       vision_of_perfection_proced_pet = essence_proc;
+      pet.pet_storm_elemental->get_cooldown( "eye_of_the_storm" )->reset( false );
     }
     else
     {
@@ -8489,9 +8491,17 @@ void shaman_t::init_action_list_enhancement()
   cds->add_action( this, "Feral Spirit" );
   cds->add_action( "blood_of_the_enemy" );
   cds->add_talent( this, "Ascendance", "if=cooldown.strike.remains>0" );
-  cds->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(target.time_to_die<20&debuff.razor_coral_debuff.stack>2)" );
-  cds->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>2&debuff.conductive_ink_debuff.down&(buff.ascendance.remains>10|buff.molten_weapon.remains>10|buff.crackling_surge.remains>10|buff.icy_edge.remains>10|debuff.earthen_spike.remains>6)" );
-  cds->add_action( "use_item,name=ashvanes_razor_coral,if=(debuff.conductive_ink_debuff.up|buff.ascendance.remains>10|buff.molten_weapon.remains>10|buff.crackling_surge.remains>10|buff.icy_edge.remains>10|debuff.earthen_spike.remains>6)&target.health.pct<31" );
+  cds->add_action(
+      "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(target.time_to_die<20&debuff.razor_coral_"
+      "debuff.stack>2)" );
+  cds->add_action(
+      "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>2&debuff.conductive_ink_debuff.down&(buff."
+      "ascendance.remains>10|buff.molten_weapon.remains>10|buff.crackling_surge.remains>10|buff.icy_edge.remains>10|"
+      "debuff.earthen_spike.remains>6)" );
+  cds->add_action(
+      "use_item,name=ashvanes_razor_coral,if=(debuff.conductive_ink_debuff.up|buff.ascendance.remains>10|buff.molten_"
+      "weapon.remains>10|buff.crackling_surge.remains>10|buff.icy_edge.remains>10|debuff.earthen_spike.remains>6)&"
+      "target.health.pct<31" );
   cds->add_action( "use_items" );
   cds->add_action( this, "Earth Elemental" );
 
