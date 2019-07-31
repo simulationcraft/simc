@@ -66,7 +66,7 @@ role=tank
 position=front
 talents=1223231
 
-azerite_essences=12:3/22:3/4:3
+azerite_essences=12:3/13:3/22:3
 
 head=soulspun_casque,id=155866,bonus_id=1617/4819/4775,azerite_powers=450/157/30/83/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
