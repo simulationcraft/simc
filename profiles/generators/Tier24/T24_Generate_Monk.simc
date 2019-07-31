@@ -33,22 +33,22 @@ role=attack
 position=back
 talents=2022032
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=5062/1587/4786/4775,azerite_powers=390/389/22/218/13
+head=helm_of_hideous_transformation,id=168347,bonus_id=4824/1517/4775,azerite_powers=389/390/21/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=5062/1587/4786/4775,azerite_powers=389/388/461/83/13
-back=high_tinkers_cape,id=165924,bonus_id=4800/1537
-chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=389/117/22/14/13
-wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
-hands=mechjockey_grips,id=165522,bonus_id=4800/1537
-waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
-legs=cranedancer_leggings,id=165521,bonus_id=4800/1537
-feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
-finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_versatility
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_versatility
-trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
-trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
-main_hand=stormtoothed_kasuyu,id=165601,bonus_id=4800/1537,enchant=deadly_navigation
-off_hand=daelin_proudmoores_saber,id=165604,bonus_id=4800/1537,enchant=versatile_navigation
+shoulders=shoulderpads_of_frothing_rage,id=168348,bonus_id=4824/1517/4775,azerite_powers=117/388/22/13
+back=cloak_of_blessed_depths,id=168602,bonus_id=4800/1517
+chest=blackwater_shimmerscale_vest,id=168343,bonus_id=4824/1517/4775,azerite_powers=389/391/38/13
+wrists=oris_tidal_wristwraps,id=170305,bonus_id=1512
+hands=poens_deepsea_grips,id=170334,bonus_id=1512
+waist=vims_scalecrusher_clasp,id=170368,bonus_id=1512
+legs=leggings_of_the_stormborn,id=168378,bonus_id=4800/1517
+feet=akanas_reefstrider_footwraps,id=170141,bonus_id=1512
+finger1=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=pact_of_versatility
+finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=pact_of_versatility
+trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+main_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=masterful_navigation
+off_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=versatile_navigation
 
 save=T24_Monk_Windwalker.simc
 
@@ -60,21 +60,21 @@ role=attack
 position=back
 talents=2022033
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=5062/1587/4786/4775,azerite_powers=390/389/22/218/13
+head=helm_of_hideous_transformation,id=168347,bonus_id=4824/1517/4775,azerite_powers=389/390/21/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=5062/1587/4786/4775,azerite_powers=389/388/461/83/13
-back=high_tinkers_cape,id=165924,bonus_id=4800/1537
-chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=389/117/22/14/13
-wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
-hands=mechjockey_grips,id=165522,bonus_id=4800/1537
-waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
-legs=cranedancer_leggings,id=165521,bonus_id=4800/1537
-feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
-finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_versatility
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_versatility
-trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
-trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
-main_hand=stormtoothed_kasuyu,id=165601,bonus_id=4800/1537,enchant=deadly_navigation
-off_hand=daelin_proudmoores_saber,id=165604,bonus_id=4800/1537,enchant=versatile_navigation
+shoulders=shoulderpads_of_frothing_rage,id=168348,bonus_id=4824/1517/4775,azerite_powers=117/388/22/13
+back=cloak_of_blessed_depths,id=168602,bonus_id=4800/1517
+chest=blackwater_shimmerscale_vest,id=168343,bonus_id=4824/1517/4775,azerite_powers=389/391/38/13
+wrists=oris_tidal_wristwraps,id=170305,bonus_id=1512
+hands=poens_deepsea_grips,id=170334,bonus_id=1512
+waist=vims_scalecrusher_clasp,id=170368,bonus_id=1512
+legs=leggings_of_the_stormborn,id=168378,bonus_id=4800/1517
+feet=akanas_reefstrider_footwraps,id=170141,bonus_id=1512
+finger1=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=pact_of_versatility
+finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=pact_of_versatility
+trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+main_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=masterful_navigation
+off_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=versatile_navigation
 
 save=T24_Monk_Windwalker_Serenity.simc

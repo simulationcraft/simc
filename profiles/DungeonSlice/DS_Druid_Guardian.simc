@@ -23,10 +23,10 @@ augmentation=battle_scarred
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
-actions.precombat+=/memory_of_lucid_dreams
-actions.precombat+=/bear_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/memory_of_lucid_dreams
+actions.precombat+=/bear_form
 actions.precombat+=/potion
 
 # Executed every time the actor is available.

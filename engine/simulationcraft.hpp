@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "820"
-#define SC_MINOR_VERSION "01"
+#define SC_MINOR_VERSION "02"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
 #if SC_BETA
@@ -1210,11 +1210,13 @@ struct sim_t : private sc_thread_t
     /// Whether the player is in Nazjatar/Eternal Palace for various effects
     bool                nazjatar = true;
     /// Whether the Shiver Venom Crossbow/Lance should assume the target has the Shiver Venom debuff
-    bool                shiver_venom = false;
+    bool                shiver_venom = true;
     /// Storm of the Eternal haste and crit stat split ratio.
     double              storm_of_the_eternal_ratio = 0.05;
     /// How long before combat to start channeling Azshara's Font of Power
-    timespan_t          font_of_power_precombat_channel = 0_ms;
+    timespan_t font_of_power_precombat_channel = 0_ms;
+    /// Hps done while using the Azerite Trait Arcane Heart
+    unsigned arcane_heart_hps = 0;
   } bfa_opts;
 
   // Expansion specific data
@@ -2632,7 +2634,14 @@ struct set_bonus_t
 
   // Fast accessor for checking whether a set bonus is enabled
   bool has_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
-  { return set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( spec ) ][ bonus ].enabled; }
+  {
+    if ( specdata::spec_idx( spec ) < 0 )
+    {
+      return false;
+    }
+
+    return set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( spec ) ][ bonus ].enabled;
+  }
 
   bool parse_set_bonus_option( const std::string& opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus );
   std::string to_string() const;
@@ -3909,6 +3918,8 @@ struct player_t : public actor_t
     buff_t* fathom_hunter; // Follower themed Benthic boots special effect
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
     buff_t* bioelectric_charge; // Diver's Folly 1H AGI axe buff to store damage
+    buff_t* razor_coral; // Ashvane's Razor Coral trinket crit rating buff
+
   } buffs;
 
   struct debuffs_t
@@ -4759,6 +4770,8 @@ public:
   { return active_during_iteration || ( dynamic && sim -> report_pets_separately == 1 ); }
 
   timespan_t composite_active_time() const override;
+
+  void acquire_target( retarget_event_e /* event */, player_t* /* context */ = nullptr ) override;
 };
 
 
@@ -5050,9 +5063,6 @@ public:
 
   /// Tells the sim to not perform any other actions, as the ability is channeled.
   bool channeled;
-
-  /// Channels prevent autoattacks (no reset)
-  bool channel_prevent_aa;
 
   /// mark this as a sequence_t action
   bool sequence;
@@ -5596,7 +5606,7 @@ public:
   virtual double target_armor( player_t* t ) const
   { return t -> cache.armor(); }
 
-  virtual double recharge_multiplier() const
+  virtual double recharge_multiplier( const cooldown_t& ) const
   { return base_recharge_multiplier; }
 
   /** Cooldown base duration for action based cooldowns. */
@@ -6093,13 +6103,13 @@ struct attack_t : public action_t
   virtual double composite_versatility( const action_state_t* state ) const override
   { return action_t::composite_versatility( state ) + player -> cache.damage_versatility(); }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double m = action_t::recharge_multiplier();
+    double m = action_t::recharge_multiplier( cd );
 
-    if ( cooldown && cooldown -> hasted )
+    if ( cd.hasted )
     {
-      m *= player -> cache.attack_haste();
+      m *= player->cache.attack_haste();
     }
 
     return m;
@@ -6187,13 +6197,13 @@ struct spell_base_t : public action_t
   virtual double composite_crit_chance_multiplier() const override
   { return action_t::composite_crit_chance_multiplier() * player -> composite_spell_crit_chance_multiplier(); }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double m = action_t::recharge_multiplier();
+    double m = action_t::recharge_multiplier( cd );
 
-    if ( cooldown && cooldown -> hasted )
+    if ( cd.hasted )
     {
-      m *= player -> cache.spell_haste();
+      m *= player->cache.spell_haste();
     }
 
     return m;
@@ -6787,6 +6797,12 @@ struct dbc_proc_callback_t : public action_callback_t
 
     // Don't allow procs to proc itself
     if ( proc_action && state->action && state->action->internal_id == proc_action->internal_id )
+    {
+      return;
+    }
+
+    // Don't allow harmful actions to proc on players
+    if ( proc_action && proc_action->harmful && !state->target->is_enemy() )
     {
       return;
     }
@@ -7676,7 +7692,8 @@ player_t* download_player( sim_t*,
                            const std::string& server,
                            const std::string& name,
                            const std::string& talents = std::string( "active" ),
-                           cache::behavior_e b = cache::players() );
+                           cache::behavior_e b = cache::players(),
+                           bool allow_failures = false );
 
 player_t* from_local_json( sim_t*,
                            const std::string&,

@@ -4250,6 +4250,35 @@ struct item_cooldown_expr_t : public item_effect_expr_t
   }
 };
 
+struct item_ready_expr_t : public item_effect_base_expr_t
+{
+  item_ready_expr_t( player_t& player, const std::vector<slot_e>& slots ) :
+    item_effect_base_expr_t( player, slots )
+  {
+  }
+
+  double evaluate() override
+  {
+    for ( auto e : effects )
+    {
+      if ( e -> cooldown_group_duration() != timespan_t::zero() )
+      {
+        cooldown_t* cd = e->player->get_cooldown( e -> cooldown_group_name() );
+        if ( !cd -> up() )
+          return 0;
+      }
+      if ( e -> cooldown() != timespan_t::zero() )
+      {
+        cooldown_t* cd = e->player->get_cooldown( e -> cooldown_name() );
+        if ( !cd -> up() )
+          return 0;
+      }
+    }
+
+    return 1;
+  }
+};
+
 struct item_cooldown_exists_expr_t : public item_effect_expr_t
 {
   double v;
@@ -4287,7 +4316,8 @@ expr_t* unique_gear::create_expression( player_t& player, const std::string& nam
   enum proc_expr_e
   {
     PROC_EXISTS,
-    PROC_ENABLED
+    PROC_ENABLED,
+    PROC_READY
   };
 
   enum proc_type_e
@@ -4362,6 +4392,8 @@ expr_t* unique_gear::create_expression( player_t& player, const std::string& nam
 
   if ( util::str_prefix_ci( splits[ ptype_idx ], "has_" ) )
     pexprtype = PROC_EXISTS;
+  else if ( util::str_prefix_ci( splits[ ptype_idx ], "ready_" ) )
+    pexprtype = PROC_READY;
 
   if ( util::str_in_str_ci( splits[ ptype_idx ], "cooldown" ) )
   {
@@ -4397,7 +4429,7 @@ expr_t* unique_gear::create_expression( player_t& player, const std::string& nam
   {
     return new item_buff_expr_t( player, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
   }
-  else if ( pexprtype == PROC_ENABLED && ptype == PROC_COOLDOWN && splits.size() >= 3  )
+  else if ( pexprtype == PROC_ENABLED && ptype == PROC_COOLDOWN && splits.size() >= 3 )
   {
     return new item_cooldown_expr_t( player, slots, splits[ expr_idx ] );
   }
@@ -4411,6 +4443,10 @@ expr_t* unique_gear::create_expression( player_t& player, const std::string& nam
     {
       return new item_cooldown_exists_expr_t( player, slots );
     }
+  }
+  else if ( pexprtype == PROC_READY )
+  {
+    return new item_ready_expr_t( player, slots );
   }
 
   throw std::invalid_argument(fmt::format("Unsupported unique gear expression '{}'.", splits.back()));

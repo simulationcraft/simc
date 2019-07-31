@@ -20,6 +20,18 @@ namespace
  */
 void do_execute( action_t* action, execute_type type )
 {
+  // Schedule off gcd or cast while casting ready event before the action executes.
+  // This prevents the action from scheduling ready events with non-zero delay
+  // (for example as a result of the cooldown thresholds update).
+  if ( type == execute_type::OFF_GCD )
+  {
+    action->player->schedule_off_gcd_ready( timespan_t::zero() );
+  }
+  else if ( type == execute_type::CAST_WHILE_CASTING )
+  {
+    action->player->schedule_cwc_ready( timespan_t::zero() );
+  }
+
   if ( !action->quiet )
   {
     action->player->iteration_executed_foreground_actions++;
@@ -31,15 +43,6 @@ void do_execute( action_t* action, execute_type type )
 
   // If the ability has a GCD, we need to start it
   action->start_gcd();
-
-  if ( type == execute_type::OFF_GCD )
-  {
-    action->player->schedule_off_gcd_ready( timespan_t::zero() );
-  }
-  else if ( type == execute_type::CAST_WHILE_CASTING )
-  {
-    action->player->schedule_cwc_ready( timespan_t::zero() );
-  }
 
   if ( action->player->queueing == action )
   {
@@ -153,27 +156,31 @@ struct action_execute_event_t : public player_event_t
     {
       target                    = execute_state->target;
       action->pre_execute_state = execute_state;
-      execute_state             = 0;
+      execute_state             = nullptr;
     }
 
-    action->execute_event = 0;
-
-    if ( target->is_sleeping() && action->pre_execute_state )
-    {
-      action_state_t::release( action->pre_execute_state );
-      action->pre_execute_state = 0;
-    }
+    action->execute_event = nullptr;
 
     // Note, presumes that if the action is instant, it will still be ready, since it was ready on
     // the (near) previous event. Does check target sleepiness, since technically there can be
     // several damage events on the same timestamp one of which will kill the target.
-    if ( ( has_cast_time && action->ready() && action->target_ready( target ) ) ||
-         !target->is_sleeping() )
+    if ( ( has_cast_time && ( action->background || action->ready() ) && action->target_ready( target ) ) ||
+         ( !has_cast_time && !target->is_sleeping() ) )
     {
       // Action target must follow any potential pre-execute-state target if it differs from the
       // current (default) target of the action.
       action->set_target( target );
       action->execute();
+    }
+    else
+    {
+      // Release assigned pre_execute_state, since we are not calling action->execute() (that does
+      // it automatically)
+      if ( action->pre_execute_state )
+      {
+        action_state_t::release( action->pre_execute_state );
+        action->pre_execute_state = nullptr;
+      }
     }
 
     assert( !action->pre_execute_state );
@@ -329,7 +336,6 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
     callbacks( true ),
     special(),
     channeled(),
-    channel_prevent_aa( false ),
     sequence(),
     quiet(),
     background(),
@@ -1827,6 +1833,18 @@ void action_t::start_gcd()
 
 void action_t::schedule_execute( action_state_t* execute_state )
 {
+  if ( target->is_sleeping() )
+  {
+    sim->print_debug( "{} action={} attempted to schedule on a dead target {}",
+      player->name(), name(), target->name() );
+
+    if ( execute_state )
+    {
+      action_state_t::release( execute_state );
+    }
+    return;
+  }
+
   if ( sim->log )
   {
     sim->out_log.printf( "%s schedules execute for %s", player->name(), name() );
@@ -4106,7 +4124,7 @@ void action_t::reschedule_queue_event()
 void action_t::acquire_target( retarget_event_e /* event */, player_t* /* context */, player_t* candidate_target )
 {
   // Don't change targets if they are not of the same generic type (both enemies, or both friendlies)
-  if ( target && target->is_enemy() != candidate_target->is_enemy() )
+  if ( target && candidate_target && target->is_enemy() != candidate_target->is_enemy() )
   {
     return;
   }

@@ -26,12 +26,14 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/stealth
 actions.precombat+=/potion
 actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
+actions.precombat+=/stealth,if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)
 actions.precombat+=/roll_the_bones,precombat_seconds=2
 actions.precombat+=/slice_and_dice,precombat_seconds=2
-actions.precombat+=/adrenaline_rush,precombat_seconds=1
+actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)
+actions.precombat+=/use_item,name=azsharas_font_of_power
+actions.precombat+=/use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists
 
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)
@@ -45,6 +47,7 @@ actions+=/variable,name=rtb_reroll,op=set,if=azerite.snake_eyes.rank>=2,value=rt
 # 2+ Snake Eyes: Do not reroll with 2+ stacks of the Snake Eyes buff (1+ stack with Broadside up).
 actions+=/variable,name=rtb_reroll,op=reset,if=azerite.snake_eyes.rank>=2&buff.snake_eyes.stack>=2-buff.broadside.up
 actions+=/variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up
+actions+=/variable,name=bte_condition,value=buff.ruthless_precision.up|(azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled)&buff.roll_the_bones.up
 # With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
 actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up
 actions+=/call_action_list,name=stealth,if=stealthed.all
@@ -82,24 +85,25 @@ actions.cds+=/berserking
 actions.cds+=/fireblood
 actions.cds+=/ancestral_call
 actions.cds+=/use_item,effect_name=cyclotronic_blast,if=!stealthed.all&buff.adrenaline_rush.down&buff.memory_of_lucid_dreams.down&energy.time_to_max>4&rtb_buffs<5
-actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.adrenaline_rush.up&(target.health.pct<30|target.time_to_die<60)
+# Very roughly rule of thumbified maths below: Use for Inkpod crit, otherwise with AR at 20+ stacks or 10+ with also Blood up.
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<31|!debuff.conductive_ink_debuff.up&(debuff.razor_coral_debuff.stack>=20-10*debuff.blood_of_the_enemy.up|target.time_to_die<60)&buff.adrenaline_rush.remains>18
 # Default fallback for usable items.
 actions.cds+=/use_items,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
 
 # Essences
 actions.essences=concentrated_flame
-actions.essences+=/blood_of_the_enemy,if=variable.blade_flurry_sync
+actions.essences+=/blood_of_the_enemy,if=variable.blade_flurry_sync&cooldown.between_the_eyes.up&variable.bte_condition
 actions.essences+=/guardian_of_azeroth
 actions.essences+=/focused_azerite_beam,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60&!buff.adrenaline_rush.up
 actions.essences+=/purifying_blast,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60
-actions.essences+=/the_unbound_force
+actions.essences+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10
 actions.essences+=/ripple_in_space
 actions.essences+=/worldvein_resonance,if=buff.lifeblood.stack<3
 actions.essences+=/memory_of_lucid_dreams,if=energy<45
 
 # Finishers
 # BtE over RtB rerolls with Deadshot/Ace traits or Ruthless Precision.
-actions.finish=between_the_eyes,if=buff.ruthless_precision.up|(azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled)&buff.roll_the_bones.up
+actions.finish=between_the_eyes,if=variable.bte_condition
 actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
 actions.finish+=/roll_the_bones,if=buff.roll_the_bones.remains<=3|variable.rtb_reroll
 # BtE with the Ace Up Your Sleeve or Deadshot traits.

@@ -35,7 +35,7 @@ position=front
 talents=3200003
 azerite_essences=12:3/300573/13:3/4:3
 
-head=soulspun_casque,id=155866,ilevel=450,azerite_powers=395/157/30/13
+head=soulspun_casque,id=155866,bonus_id=1617/4819,azerite_powers=395/157/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=pauldrons_of_fanatical_might,id=168364,bonus_id=4800/1517/4775,azerite_powers=235/575/31/13
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517

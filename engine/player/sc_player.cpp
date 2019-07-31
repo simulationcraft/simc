@@ -3117,6 +3117,7 @@ void player_t::create_buffs()
       buffs.lucid_dreams->add_stat( STAT_VERSATILITY_RATING,
         memory_of_lucid_dreams.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average(
           memory_of_lucid_dreams.item() ) );
+      buffs.lucid_dreams->set_quiet( memory_of_lucid_dreams.rank() < 3 );
 
       buffs.reckless_force = make_buff( this, "reckless_force", find_spell( 302932 ) )
         ->add_invalidate(CACHE_CRIT_CHANCE)
@@ -3126,9 +3127,6 @@ void player_t::create_buffs()
 
       auto worldvein_resonance = find_azerite_essence( "Worldvein Resonance" );
       buffs.lifeblood = make_buff<stat_buff_t>( this, "lifeblood", find_spell( 295137 ) );
-      buffs.lifeblood->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-      buffs.lifeblood->set_duration( find_spell( 295114 )->duration() 
-        * ( 1.0 + worldvein_resonance.spell( 2, essence_spell::UPGRADE, essence_type::MINOR )->effectN( 1 ).percent() ) );
       buffs.lifeblood->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ), 
         worldvein_resonance.spell( 1, essence_type::MINOR )->effectN( 5 ).average( worldvein_resonance.item() ) );
 
@@ -8203,8 +8201,8 @@ struct use_item_t : public action_t
       {
         if ( sim->debug )
         {
-          sim->errorf( "Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n",
-                       player->name(), item_name.c_str() );
+          sim->errorf( "Player %s attempting 'use_item' action with effect '%s' which cannot be found.\n",
+                       player->name(), effect_name.c_str() );
         }
         background = true;
         return;
@@ -8236,8 +8234,6 @@ struct use_item_t : public action_t
 
   void init() override
   {
-    action_t::init();
-
     action_priority_list_t* apl = nullptr;
     if ( action_list )
     {
@@ -8246,7 +8242,9 @@ struct use_item_t : public action_t
 
     if ( !item )
     {
+      action_t::init();
       erase_action( apl );
+      background = true;
       return;
     }
 
@@ -8320,6 +8318,8 @@ struct use_item_t : public action_t
 
       erase_action( apl );
     }
+
+    action_t::init();
   }
 
   timespan_t execute_time() const override
@@ -8627,6 +8627,10 @@ struct use_items_t : public action_t
       {
         return;
       }
+
+      // As precombat /use_item,effect_name=X are only used once, don't remove them.
+      if ( action->action_list && action->action_list->name_str == "precombat" && action->action )
+        return;
 
       // Find out if the item is worn
       auto it = range::find_if( player->items, [action]( const item_t& item ) {
@@ -10111,7 +10115,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
       return new variable_expr_t( this, splits[ 1 ] );
     }
 
-    // item equipped by item_id or name
+    // item equipped by item_id or name or effect_name
     if ( splits[ 0 ] == "equipped" )
     {
       unsigned item_id = util::to_unsigned( splits[ 1 ] );
@@ -10122,6 +10126,12 @@ expr_t* player_t::create_expression( const std::string& expression_str )
           return expr_t::create_constant( "item_equipped", 1 );
         }
         else if ( util::str_compare_ci( items[ i ].name_str, splits[ 1 ] ) )
+        {
+          return expr_t::create_constant( "item_equipped", 1 );
+        }
+        else if ( items[ i ].has_use_special_effect() &&
+          util::str_compare_ci(
+            items[ i ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name(), splits[ 1 ] ) )
         {
           return expr_t::create_constant( "item_equipped", 1 );
         }
@@ -10168,7 +10178,6 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     // spec
     if ( splits[ 0 ] == "spec" )
     {
-
       return expr_t::create_constant( "spec", dbc::translate_spec_str( type, splits[1]) == specialization() );
     }
 
@@ -13264,8 +13273,9 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
   // usually are handled in action target cache regeneration)?
   if ( sim->debug )
   {
-    sim->out_debug.printf( "%s retargeting event=%s context=%s", name(), util::retarget_event_string( event ),
-                           context ? context->name() : "NONE" );
+    sim->out_debug.printf( "%s retargeting event=%s context=%s current_target=%s", name(),
+        util::retarget_event_string( event ),
+        context ? context->name() : "NONE", target ? target->name() : "NONE" );
   }
 
   player_t* candidate_target = nullptr;
@@ -13285,6 +13295,14 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
 
     candidate_target = enemy;
     break;
+  }
+
+  // Invulnerable targets are currently not in the target_non_sleeping_list, so fall back to
+  // checking if the first target has the invulnerability buff up, and use that as the fallback
+  auto first_target = sim->target_list.data().front();
+  if ( !first_invuln_target && first_target->debuffs.invulnerable->up() )
+  {
+    first_invuln_target = first_target;
   }
 
   // Only perform target acquisition if the actor's current target would change (to the candidate

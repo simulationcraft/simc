@@ -540,12 +540,13 @@ struct crystal_of_insanity_t : public flask_base_t
 struct potion_t : public dbc_consumable_base_t
 {
   timespan_t pre_pot_time;
+  bool dynamic_prepot;
 
   potion_t( player_t* p, const std::string& options_str ) :
-    dbc_consumable_base_t( p, "potion" ),
-    pre_pot_time( timespan_t::from_seconds( 2.0 ) )
+    dbc_consumable_base_t( p, "potion" ), pre_pot_time( 2_s ), dynamic_prepot( false )
   {
     add_option( opt_timespan( "pre_pot_time", pre_pot_time ) );
+    add_option( opt_bool( "dynamic_prepot", dynamic_prepot ) );
     parse_options( options_str );
 
     type = ITEM_SUBCLASS_POTION;
@@ -600,8 +601,38 @@ struct potion_t : public dbc_consumable_base_t
     }
   }
 
+  void adjust_dynamic_prepot_time()
+  {
+    auto apl = player->precombat_action_list;
+
+    auto it = range::find( apl, this );
+    if ( it == apl.end() )
+      return;
+
+    pre_pot_time = 0_ms;
+
+    std::find_if( it + 1, apl.end(), [this]( action_t* a ) {
+      if ( a->action_ready() )
+      {
+        timespan_t delta =
+          std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+        sim->print_debug( "PRECOMBAT: {} pre-pot timing pushed by {} for {}", consumable_name, delta, a->name() );
+        pre_pot_time += delta;
+
+        return a->harmful;
+      }
+      return false;
+    } );
+
+    sim->print_debug( "PRECOMBAT: {} quaffed {}s before combat.", consumable_name, pre_pot_time );
+  }
+
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
+    // dynamic pre-pot timing adjustment
+    if ( dynamic_prepot && !player->in_combat )
+      adjust_dynamic_prepot_time();
+
     // If the player is in combat, just make a very long CD
     if ( player -> in_combat )
       cd_duration = sim -> max_time * 3;

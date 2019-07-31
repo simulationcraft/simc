@@ -5113,7 +5113,7 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       }
       else if ( util::str_compare_ci( item.name_str, "ashvanes_razor_coral" ) )
       {
-        apl->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod&(buff.metamorphosis.remains>20|target.time_to_die<20))|(equipped.dribbling_inkpod&target.health.pct<31)" );
+        apl->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(debuff.conductive_ink_debuff.up|buff.metamorphosis.remains>20)&target.health.pct<31|target.time_to_die<20" );
       }
       else
       {
@@ -5144,7 +5144,7 @@ void demon_hunter_t::apl_havoc()
   
   action_priority_list_t* apl_cooldown = get_action_priority_list( "cooldown" );
   apl_cooldown->add_action( this, "Metamorphosis", "if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis)|target.time_to_die<25" );
-  apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&(!azerite.chaotic_transformation.enabled|(cooldown.eye_beam.remains>20&cooldown.blade_dance.remains>gcd.max))" );
+  apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&(!azerite.chaotic_transformation.enabled|(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)))" );
   apl_cooldown->add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)" );
   apl_cooldown->add_talent( this, "Nemesis", "if=!raid_event.adds.exists" );
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|target.time_to_die<60" );
@@ -5153,10 +5153,10 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* essences = get_action_priority_list( "essences" );
   essences->add_action( "concentrated_flame" );
   essences->add_action( "blood_of_the_enemy,if=buff.metamorphosis.up|target.time_to_die<=10" );
-  essences->add_action( "guardian_of_azeroth" );
+  essences->add_action( "guardian_of_azeroth,if=buff.metamorphosis.up|target.time_to_die<=30" );
   essences->add_action( "focused_azerite_beam,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
   essences->add_action( "purifying_blast,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
-  essences->add_action( "the_unbound_force" );
+  essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   essences->add_action( "ripple_in_space" );
   essences->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
   essences->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );

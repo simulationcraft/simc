@@ -481,7 +481,6 @@ public:
     cooldown_t* vampiric_blood;
     // Frost
     cooldown_t* empower_rune_weapon;
-    cooldown_t* frost_fever_icd;
     cooldown_t* icecap_icd;
     cooldown_t* pillar_of_frost;
     // Unholy
@@ -3562,6 +3561,7 @@ struct chill_streak_damage_t : public death_knight_spell_t
         {
           this -> set_target( target );
           this -> schedule_execute();
+          return;
         }
       }
     }
@@ -4970,9 +4970,6 @@ struct frost_fever_t : public death_knight_spell_t
   {
     ap_type = AP_WEAPON_BOTH;
 
-    p -> cooldown.frost_fever_icd = p -> get_cooldown( "frost_fever" );
-    p -> cooldown.frost_fever_icd -> duration = p -> spec.frost_fever -> internal_cooldown();
-
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
   }
@@ -4984,15 +4981,19 @@ struct frost_fever_t : public death_knight_spell_t
     // TODO: Melekus, 2019-05-15: Frost fever proc chance and ICD have been removed from spelldata on PTR
     // Figure out what is up with the "30% proc chance, diminishing beyond the first target" from blue post.
     // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
-    double chance = 0.3;
 
-    if ( p() -> cooldown.frost_fever_icd -> up() && rng().roll( chance ) )
+    // 2019-07-20: Logs analysis points at a 30% proc chance on main target, and 7% chance on additional enemies
+    // We're using the player's target to evalute the "main" enemy that will have a 30% proc chance
+    // TODO: fix this behavior for situations where p() -> target will not be affected by the dot
+    // (should only happen if they're invulnerable but targetable, or if HB was used on a different target that is too far away)
+    double chance = d -> target == p() -> target ? 0.3 : 0.07;
+
+    if ( rng().roll( chance ) )
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
                             p() -> spec.frost_fever -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
                             p() -> gains.frost_fever,
                             this );
-      p() -> cooldown.frost_fever_icd -> start();
     }
   }
 };
@@ -5656,6 +5657,7 @@ struct remorseless_winter_buff_t : public buff_t
     {
       damage -> execute();
     } );
+    set_partial_tick( true );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -7629,7 +7631,7 @@ void death_knight_t::default_apl_frost()
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
 
-  precombat -> add_action( "variable,name=other_on_use_equipped,value=(equipped.dread_gladiators_badge|equipped.sinister_gladiators_badge|equipped.sinister_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.dread_aspirants_medallion)" );
+  precombat -> add_action( "variable,name=other_on_use_equipped,value=(equipped.notorious_gladiators_badge|equipped.sinister_gladiators_badge|equipped.sinister_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.notorious_gladiators_medallion)" );
 
   def -> add_action( "auto_attack" );
 
@@ -7653,6 +7655,8 @@ void death_knight_t::default_apl_frost()
   // Hearth of Azeroth Essences
   essences -> add_action( "blood_of_the_enemy,if=buff.pillar_of_frost.remains<10&cooldown.breath_of_sindragosa.remains|buff.pillar_of_frost.remains<10&!talent.breath_of_sindragosa.enabled" );
   essences -> add_action( "guardian_of_azeroth" );
+  essences -> add_action( "chill_streak,if=buff.pillar_of_frost.remains<5|target.1.time_to_die<5" );
+  essences -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<11" );
   essences -> add_action( "focused_azerite_beam,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
   essences -> add_action( "concentrated_flame,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&dot.concentrated_flame_burn.remains=0" );
   essences -> add_action( "purifying_blast,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
@@ -7661,7 +7665,10 @@ void death_knight_t::default_apl_frost()
   essences -> add_action( "memory_of_lucid_dreams,if=buff.empower_rune_weapon.remains<5&buff.breath_of_sindragosa.up|(rune.time_to_2>gcd&runic_power<50)" );
 
   // On-use items
+  cooldowns -> add_action( "use_item,name=azsharas_font_of_power,if=(cooldown.empowered_rune_weapon.ready&!variable.other_on_use_equipped)|(cooldown.pillar_of_frost.remains<=10&variable.other_on_use_equipped)" );
   cooldowns -> add_action( "use_item,name=lurkers_insidious_gift,if=talent.breath_of_sindragosa.enabled&((cooldown.pillar_of_frost.remains<=10&variable.other_on_use_equipped)|(buff.pillar_of_frost.up&!variable.other_on_use_equipped))|(buff.pillar_of_frost.up&!talent.breath_of_sindragosa.enabled)" );
+  cooldowns -> add_action( "use_item,name=cyclotronic_blast,if=!buff.pillar_of_frost.up" );
+  cooldowns -> add_action( "use_item,name=ashvanes_razor_coral,if=cooldown.empower_rune_weapon.remains>110|cooldown.breath_of_sindragosa.remains>90|time<50|target.1.time_to_die<21" );
   cooldowns -> add_action( "use_items,if=(cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20)&(!talent.breath_of_sindragosa.enabled|cooldown.empower_rune_weapon.remains>95)" );
   cooldowns -> add_action( "use_item,name=jes_howler,if=(equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains)|(!equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains<12&buff.pillar_of_frost.up)" );
   cooldowns -> add_action( "use_item,name=knot_of_ancient_fury,if=cooldown.empower_rune_weapon.remains>40");
@@ -7762,7 +7769,7 @@ void death_knight_t::default_apl_frost()
   aoe -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up" );
   aoe -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
   aoe -> add_action( this, "Frost Strike", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power.deficit<(15+talent.runic_attenuation.enabled*3)&!talent.frostscythe.enabled" );
-  aoe -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
+  aoe -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)&!talent.frostscythe.enabled" );
   aoe -> add_action( this, "Remorseless Winter" );
   aoe -> add_talent( this, "Frostscythe" );
   aoe -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power.deficit>(25+talent.runic_attenuation.enabled*3)&!talent.frostscythe.enabled" );
@@ -7787,6 +7794,7 @@ void death_knight_t::default_apl_unholy()
   default_apl_dps_precombat();
 
   precombat -> add_action( this, "Raise Dead" );
+  precombat -> add_action( "use_item,name=azsharas_font_of_power" );
   precombat -> add_action( this, "Army of the Dead", "delay=2" );
 
   def -> add_action( "auto_attack" );
@@ -7800,7 +7808,10 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5", "Racials, Items, and other ogcds" );
   def -> add_action( "blood_fury,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
   def -> add_action( "berserking,if=buff.unholy_frenzy.up|pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
-  def -> add_action( "use_items,if=time>20|!equipped.ramping_amplitude_gigavolt_engine", "Custom trinkets usage" );
+  def -> add_action( "use_items,if=time>20|!equipped.ramping_amplitude_gigavolt_engine|!equipped.vision_of_demise", "Custom trinkets usage" );
+  def -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack<1" );
+  def -> add_action( "use_item,name=ashvanes_razor_coral,if=(cooldown.apocalypse.ready&debuff.festering_wound.stack>=4&debuff.razor_coral_debuff.stack>=1)|buff.unholy_frenzy.up" );
+  def -> add_action( "use_item,name=vision_of_demise,if=(cooldown.apocalypse.ready&debuff.festering_wound.stack>=4&essence.vision_of_perfection.enabled)|buff.unholy_frenzy.up|pet.gargoyle.active" );
   def -> add_action( "use_item,name=ramping_amplitude_gigavolt_engine,if=cooldown.apocalypse.remains<2|talent.army_of_the_damned.enabled|raid_event.adds.in<5" );
   def -> add_action( "use_item,name=bygone_bee_almanac,if=cooldown.summon_gargoyle.remains>60|!talent.summon_gargoyle.enabled&time>20|!equipped.ramping_amplitude_gigavolt_engine" );
   def -> add_action( "use_item,name=jes_howler,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled&time>20|!equipped.ramping_amplitude_gigavolt_engine" );
@@ -7819,6 +7830,7 @@ void death_knight_t::default_apl_unholy()
   essences -> add_action( "memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40" );
   essences -> add_action( "blood_of_the_enemy,if=(cooldown.death_and_decay.remains&spell_targets.death_and_decay>1)|(cooldown.defile.remains&spell_targets.defile>1)|(cooldown.apocalypse.remains&cooldown.death_and_decay.ready)" );
   essences -> add_action( "guardian_of_azeroth,if=cooldown.apocalypse.ready" );
+  essences -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<11" );
   essences -> add_action( "focused_azerite_beam,if=!death_and_decay.ticking" );
   essences -> add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains=0" );
   essences -> add_action( "purifying_blast,if=!death_and_decay.ticking" );

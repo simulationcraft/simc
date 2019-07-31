@@ -24,15 +24,16 @@ augmentation=battle_scarred
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
-actions.precombat+=/regrowth,if=talent.bloodtalons.enabled
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
 # It is worth it for almost everyone to maintain thrash
 actions.precombat+=/variable,name=use_thrash,value=0
 actions.precombat+=/variable,name=use_thrash,value=2,if=azerite.wild_fleshrending.enabled
+actions.precombat+=/regrowth,if=talent.bloodtalons.enabled
+actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/cat_form
 actions.precombat+=/prowl
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
+actions.precombat+=/potion,dynamic_prepot=1
 actions.precombat+=/berserk
 
 # Executed every time the actor is available.
@@ -60,7 +61,11 @@ actions.cooldowns+=/heart_essence,if=buff.tigers_fury.up
 actions.cooldowns+=/incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)
 actions.cooldowns+=/potion,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))
 actions.cooldowns+=/shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
-actions.cooldowns+=/use_items
+actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.time_to_pct_30<1.5|!debuff.conductive_ink_debuff.up&(debuff.razor_coral_debuff.stack>=25-10*debuff.blood_of_the_enemy.up|target.time_to_die<40)&buff.tigers_fury.remains>10
+actions.cooldowns+=/use_item,effect_name=cyclotronic_blast,if=(energy.deficit>=energy.regen*3)&buff.tigers_fury.down&!azerite.jungle_fury.enabled
+actions.cooldowns+=/use_item,effect_name=cyclotronic_blast,if=buff.tigers_fury.up&azerite.jungle_fury.enabled
+actions.cooldowns+=/use_item,effect_name=azsharas_font_of_power,if=energy.deficit>=50
+actions.cooldowns+=/use_items,if=buff.tigers_fury.up|target.time_to_die<20
 
 actions.finishers=pool_resource,for_next=1
 actions.finishers+=/savage_roar,if=buff.savage_roar.down
@@ -84,7 +89,7 @@ actions.generators+=/thrash_cat,if=(refreshable)&(spell_targets.thrash_cat>2)
 actions.generators+=/pool_resource,for_next=1
 actions.generators+=/thrash_cat,if=(talent.scent_of_blood.enabled&buff.scent_of_blood.down)&spell_targets.thrash_cat>3
 actions.generators+=/pool_resource,for_next=1
-actions.generators+=/swipe_cat,if=buff.scent_of_blood.up|(action.swipe_cat.damage*spell_targets.swipe_cat>(action.rake.damage+(action.rake.tick_dmg*5)))
+actions.generators+=/swipe_cat,if=buff.scent_of_blood.up|(action.swipe_cat.damage*spell_targets.swipe_cat>(action.rake.damage+(action.rake_bleed.tick_damage*5)))
 actions.generators+=/pool_resource,for_next=1
 actions.generators+=/rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4
 actions.generators+=/pool_resource,for_next=1

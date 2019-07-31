@@ -1270,7 +1270,7 @@ void register_azerite_target_data_initializers( sim_t* sim )
     auto essence = td->source->find_azerite_essence( "Condensed Life-Force" );
     if ( essence.enabled() )
     {
-      td->debuff.condensed_lifeforce = make_buff( *td, "condensed_life_force", td->source->find_spell( 295838 ) )
+      td->debuff.condensed_lifeforce = make_buff( *td, "condensed_lifeforce", td->source->find_spell( 295838 ) )
         ->set_default_value( td->source->find_spell( 295838 )->effectN( 1 ).percent() );
       td->debuff.condensed_lifeforce->reset();
     }
@@ -3385,6 +3385,7 @@ void loyal_to_the_end( special_effect_t& effect )
       ->add_stat( STAT_CRIT_RATING, value )
       ->add_stat( STAT_HASTE_RATING, value )
       ->add_stat( STAT_VERSATILITY_RATING, value );
+    buff->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   }
 
   if ( chance )
@@ -3412,28 +3413,20 @@ void arcane_heart( special_effect_t& effect )
       ->set_default_value( power.spell_ref().effectN( 1 ).base_value() );
   }
 
-  double value = power.value( 2 );
-  auto omni    = static_cast<stat_buff_t*>( buff_t::find( effect.player, "omnipotence" ) );
+  auto omni = static_cast<stat_buff_t*>( buff_t::find( effect.player, "omnipotence" ) );
   if ( !omni )
   {
-    omni = make_buff<stat_buff_t>( effect.player, "omnipotence", effect.trigger()->effectN( 1 ).trigger() )
-      ->add_stat( STAT_CRIT_RATING, 0 )
-      ->add_stat( STAT_HASTE_RATING, 0 )
-      ->add_stat( STAT_MASTERY_RATING, 0 )
-      ->add_stat( STAT_VERSATILITY_RATING, 0 );
-    omni->set_stack_change_callback( [omni, value]( buff_t*, int, int new_ ) {
-      stat_e highest = util::highest_stat( omni->player,
-        {STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING} );
-
+    omni = make_buff<stat_buff_t>( effect.player, "omnipotence", effect.trigger()->effectN( 1 ).trigger() );
+    omni->add_stat( STAT_NONE, power.value( 2 ) );
+    omni->set_stack_change_callback( [omni]( buff_t*, int, int new_ ) {
+      if ( new_ )
+      {
+        omni->stats.front().stat = util::highest_stat(
+          omni->player, { STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING } );
+      }
       omni->sim->print_debug( "arcane_heart omnipotence stack change: highest stat {} {} by {}",
-        util::stat_type_string( highest ), new_ ? "increased" : "decreased", value );
-
-      range::for_each( omni->stats, [value, new_, highest]( stat_buff_t::buff_stat_t& s ) {
-        if ( new_ && s.stat == highest )
-          s.amount = value;
-        else
-          s.amount = 0;
-      } );
+        util::stat_type_string( omni->stats.front().stat ), new_ ? "increased" : "decreased",
+        omni->stats.front().amount );
     } );
   }
 
@@ -3446,18 +3439,39 @@ void arcane_heart( special_effect_t& effect )
   //    do not seem to count. Unknown if active shields do.
   // * Leech does not seem to count.
   effect.player->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [buff, omni]( dmg_e, action_state_t* state ) {
-    if ( state->result_amount <= 0 )
+    double amount = state->result_amount;
+
+    if ( amount <= 0 || omni->check() )  // doesn't count damage while omnipotence is up
       return assessor::CONTINUE;
 
-    buff->current_value -= state->result_amount;
+    // spell attribute bit 416 being set seems to be a necessary condition for damage to count
+    // TODO: determine if this bit is also a sufficient condition
+    if ( state->action->s_data != spell_data_t::nil() &&
+      !state->action->s_data->flags( static_cast<spell_attribute>( 416u ) ) )
+    {
+      return assessor::CONTINUE;
+    }
+
+    if ( !buff->check() )  // special handling for damage from precombat actions
+    {
+      make_event( *buff->sim, [buff, amount] {
+        buff->current_value -= amount;
+        buff->sim->print_debug(
+          "arcane_heart_counter ability:precombat damage:{} counter now at:{}", amount, buff->current_value );
+      } );
+
+      return assessor::CONTINUE;
+    }
+
+    buff->current_value -= amount;
 
     buff->sim->print_debug( "arcane_heart_counter ability:{} damage:{} counter now at:{}", state->action->name(),
-      state->result_amount, buff->current_value );
+      amount, buff->current_value );
 
     if ( buff->current_value <= 0 )
     {
-      make_event( *buff->sim, [ omni ] { omni->trigger(); } );
-      buff->current_value += buff->default_value;
+      make_event( *buff->sim, [omni] { omni->trigger(); } );
+      buff->current_value = buff->default_value;  // damage doesn't spill over? TODO: confirm
     }
 
     return assessor::CONTINUE;
@@ -3465,6 +3479,11 @@ void arcane_heart( special_effect_t& effect )
 
   effect.player->register_combat_begin( [buff]( player_t* ) {
     buff->trigger();
+    make_repeating_event( buff->sim, 1_s, [buff] {
+      buff->current_value -= buff->sim->bfa_opts.arcane_heart_hps;
+      buff->sim->print_debug( "arcane_heart_counter healing:{} counter now at:{}", buff->sim->bfa_opts.arcane_heart_hps,
+                              buff->current_value );
+    } );
   } );
 }
 
@@ -3734,11 +3753,11 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
   }
 }; //End of Memory of Lucid Dreams
 
-//Blood of the Enemy
-void blood_of_the_enemy(special_effect_t& effect)
+// Blood of the Enemy
+void blood_of_the_enemy( special_effect_t& effect )
 {
-  auto essence = effect.player->find_azerite_essence(effect.driver()->essence_id());
-  if (!essence.enabled())
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
     return;
 
   struct bloodsoaked_callback_t : public dbc_proc_callback_t
@@ -3747,21 +3766,21 @@ void blood_of_the_enemy(special_effect_t& effect)
     double chance;
     int dec;
 
-    bloodsoaked_callback_t(player_t *p, special_effect_t& e, buff_t* b, double c, int d) :
-      dbc_proc_callback_t(p, e), haste_buff(b), chance(c), dec(d)
+    bloodsoaked_callback_t( player_t* p, special_effect_t& e, buff_t* b, double c, int d ) :
+      dbc_proc_callback_t( p, e ), haste_buff( b ), chance( c ), dec( d )
     {}
 
-    void execute(action_t*, action_state_t* s) override
+    void execute( action_t*, action_state_t* ) override
     {
       // Does not proc when haste buff is up
-      if (haste_buff->check())
+      if ( haste_buff->check() )
         return;
 
-      if (proc_buff && proc_buff->trigger() && proc_buff->check() == proc_buff->max_stack())
+      if ( proc_buff && proc_buff->trigger() && proc_buff->check() == proc_buff->max_stack() )
       {
         haste_buff->trigger();
-        if (rng().roll(chance))
-          proc_buff->decrement(dec);
+        if ( rng().roll( chance ) )
+          proc_buff->decrement( dec );
         else
           proc_buff->expire();
       }
@@ -3769,38 +3788,43 @@ void blood_of_the_enemy(special_effect_t& effect)
   };
 
   effect.proc_flags2_ = PF2_CRIT;
+
   // buff id=297162, not referenced in spell data
-  effect.custom_buff = buff_t::find(effect.player, "bloodsoaked_counter");
-  if (!effect.custom_buff)
-    effect.custom_buff = make_buff<stat_buff_t>(effect.player, "bloodsoaked_counter", effect.player->find_spell(297162));
+  auto counter = static_cast<stat_buff_t*>( buff_t::find( effect.player, "bloodsoaked_counter" ) );
+  if ( !counter )
+    counter = make_buff<stat_buff_t>( effect.player, "bloodsoaked_counter", effect.player->find_spell( 297162 ) );
 
   // Crit per stack from R2 upgrade stored in R1 MINOR BASE effect#3
-  if (essence.rank() >= 2)
-    static_cast<stat_buff_t*>(effect.custom_buff)->add_stat(STAT_CRIT_RATING, essence.spell_ref(1u, essence_type::MINOR).effectN(3).average(essence.item()));
+  if ( essence.rank() >= 2 )
+    counter->add_stat(
+      STAT_CRIT_RATING, essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() ) );
+
+  effect.custom_buff = counter;
 
   // buff id=297168, not referenced in spell data
   // Haste from end proc stored in R1 MINOR BASE effect#2
-  buff_t* haste_buff = buff_t::find(effect.player, "bloodsoaked");
-  if (!haste_buff)
+  auto haste_buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "bloodsoaked" ) );
+  if ( !haste_buff )
   {
-    haste_buff = make_buff<stat_buff_t>(effect.player, "bloodsoaked", effect.player->find_spell(297168))
-      ->add_stat(STAT_HASTE_RATING, essence.spell_ref(1u, essence_type::MINOR).effectN(2).average(essence.item()));
+    haste_buff = make_buff<stat_buff_t>( effect.player, "bloodsoaked", effect.player->find_spell( 297168 ) );
+    haste_buff->add_stat(
+      STAT_HASTE_RATING, essence.spell_ref( 1u, essence_type::MINOR ).effectN( 2 ).average( essence.item() ) );
   }
 
   double chance = 0;
   int dec = 0;
-  if (essence.rank() >= 3)
+  if ( essence.rank() >= 3 )
   {
     // 25% chance to...
-    chance = essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent();
+    chance = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
     // only lose 30 stacks
-    dec = essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(2).base_value();
+    dec = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 2 ).base_value();
   }
 
-  new bloodsoaked_callback_t(effect.player, effect, haste_buff, chance, dec);
+  new bloodsoaked_callback_t( effect.player, effect, haste_buff, chance, dec );
 }
 
-//Major Power: Blood of the Enemy
+// Major Power: Blood of the Enemy
 struct blood_of_the_enemy_t : public azerite_essence_major_t
 {
   blood_of_the_enemy_t( player_t* p, const std::string& options_str ) :
@@ -3873,7 +3897,7 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
       init_stacks( is )
     { }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       // The effect remembers which target was hit while no buff was active and then only triggers when
       // that target is hit again.
@@ -3942,9 +3966,7 @@ struct focused_azerite_beam_t : public azerite_essence_major_t
     harmful = true;
     channeled = true;
     tick_zero = true;
-    // Auto attacks do not land during Focused Azerite Beam
-    channel_prevent_aa = true;
-
+    interrupt_auto_attack = true;
 
     double tick = essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 1 ).average( essence.item() );
     double mult = 1 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
@@ -4042,6 +4064,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
         // Hotfix per https://us.forums.blizzard.com/en/wow/t/essences-feedback-damage-essences/181165/41
         dam *= 0.65;
         base_dd_min = base_dd_max = dam;
+        gcd_haste = HASTE_NONE;
       }
 
       void execute() override
@@ -4141,7 +4164,9 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
   {
     parse_options( options_str );
     harmful = may_crit = false;
-    rockboi = new guardian_of_azeroth_pet_t(p, essence);
+    rockboi = p->find_pet( "guardian_of_azeroth" );
+    if ( !rockboi )
+      rockboi = new guardian_of_azeroth_pet_t(p, essence);
   }
 
   void execute() override
@@ -4547,8 +4572,54 @@ void vision_of_perfection(special_effect_t& effect)
   new vision_of_perfection_callback_t(effect.player, effect);
 }
 
-//Worldvein Resonance
-//Major Power: Worldvein Resonance
+// Worldvein Resonance
+// The shards & resultant buff in-game exhibits various small delays in their timings:
+// 1) the buff is not applied immediately upon the shard being summoned (NYI)
+// 2) the buff duration varies from ~17.8s to ~19s with possibly discrete intervals (NYI)
+// 3) shards summoned within a small timeframe can have their buffs grouped up and applied all at once, as well as have
+// the buff expirations grouped up and expiring all at once. the application grouping and expiration grouping can be
+// different (NYI)
+// 4) only four stacks of the buff is applied at a time. when a shard expires the buff is decremented by a stack
+// regardless of how many shards exist. after a short delay the buff is re-adjusted upwards if enough shards exist to
+// refill the decremented stack (Implemented, TODO: further investigate range/distribution of delay)
+
+struct lifeblood_shard_t : public buff_t
+{
+  lifeblood_shard_t( player_t* p, const azerite_essence_t& ess ) :
+    buff_t( p, "lifeblood_shard", p->find_spell( 295114 ), ess.item() )
+  {
+    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    set_max_stack( 64 );  // sufficiently large enough to cover major esssence + 10 allies
+    set_quiet( true );
+    buff_duration *= 1.0 + ess.spell_ref( 2, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+
+    set_stack_change_callback( [this]( buff_t*, int old_, int new_ ) {
+      if ( new_ > old_ )
+      {
+        player->buffs.lifeblood->trigger( new_ - old_ );
+      }
+      else if ( old_ > new_ )
+      {
+        player->buffs.lifeblood->decrement( old_ - new_ );
+
+        // testing data shows an exponential variable-like distribution of the delay times, with 0.636s mean and highest
+        // gap seen was 1.923s. for now implement as an exponential variable with a mean of 0.636 generated by a uniform
+        // distribution on the interval [0.048, 1] (0.048 derived from exp(-1.93/0.636)).
+        auto delay = timespan_t::from_seconds( std::log( rng().range( 0.048, 1.0 ) ) * -0.636 );
+
+        make_event( *sim, delay, [this]() {
+          auto delta = std::min( player->buffs.lifeblood->max_stack(), check() ) - player->buffs.lifeblood->check();
+          if ( delta > 0 )
+          {
+            player->buffs.lifeblood->trigger( delta );
+          }
+        } );
+      }
+    } );
+  }
+};
+
+// Major Power: Worldvein Resonance
 void worldvein_resonance( special_effect_t& effect )
 {
   auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
@@ -4560,7 +4631,10 @@ void worldvein_resonance( special_effect_t& effect )
   int period_min = as<int>( base_spell->effectN( 4 ).base_value() +
     essence.spell( 3, essence_spell::UPGRADE, essence_type::MINOR )->effectN( 1 ).base_value() );
   int period_max = as<int>( base_spell->effectN( 1 ).base_value() );
-  auto lifeblood = effect.player->buffs.lifeblood;
+
+  auto lifeblood = buff_t::find( effect.player, "lifeblood_shard" );
+  if ( !lifeblood )
+    lifeblood = make_buff<lifeblood_shard_t>( effect.player, essence );
 
   struct lifeblood_event_t : public event_t
   {
@@ -4605,14 +4679,16 @@ struct worldvein_resonance_t : public azerite_essence_major_t
   buff_t* lifeblood;
 
   worldvein_resonance_t( player_t* p, const std::string& options_str ) :
-    azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) ),
-    stacks(),
-    lifeblood( p->buffs.lifeblood )
+    azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) ), stacks()
   {
     harmful = false;
     parse_options( options_str );
     stacks = as<int>( data().effectN( 1 ).base_value() +
       essence.spell( 2, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).base_value() );
+
+    lifeblood = buff_t::find( player, "lifeblood_shard" );
+    if ( !lifeblood )
+      lifeblood = make_buff<lifeblood_shard_t>( p, essence );
   }
 
   void execute() override

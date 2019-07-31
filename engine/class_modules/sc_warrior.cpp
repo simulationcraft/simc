@@ -2780,6 +2780,12 @@ struct raging_blow_t : public warrior_attack_t
     track_cd_waste = true;
   }
 
+  void init() override
+  {
+    warrior_attack_t::init();
+    cooldown->hasted = true;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -2802,9 +2808,9 @@ struct raging_blow_t : public warrior_attack_t
     }
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    auto m = warrior_attack_t::recharge_multiplier();
+    auto m = warrior_attack_t::recharge_multiplier( cd );
 
     if ( p()->talents.inner_rage->ok() )
     {
@@ -3698,9 +3704,9 @@ struct thunder_clap_t : public warrior_attack_t
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thunder_clap );
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double rm = warrior_attack_t::recharge_multiplier();
+    double rm = warrior_attack_t::recharge_multiplier( cd );
     if ( p() -> buff.avatar -> up() && p() -> talents.unstoppable_force -> ok() )
     {
       rm *= 1.0 + ( p() -> talents.unstoppable_force -> effectN( 2 ).percent() );
@@ -5119,7 +5125,7 @@ void warrior_t::default_apl_dps_precombat()
 
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  precombat->add_action( "potion" );
+  precombat->add_action( "use_item,name=azsharas_font_of_power" );
 
   precombat->add_action( "memory_of_lucid_dreams" );
 
@@ -5127,8 +5133,10 @@ void warrior_t::default_apl_dps_precombat()
 
   if ( specialization() == WARRIOR_FURY )
   {
-    precombat->add_action( this, "Recklessness", "if=!talent.furious_slash.enabled" );
+    precombat->add_action( this, "Recklessness" );
   }
+
+  precombat->add_action( "potion" );
 }
 
 // Fury Warrior Action Priority List ========================================
@@ -5155,9 +5163,6 @@ void warrior_t::apl_fury()
     default_list->add_action( "potion" );
   }
 
-  default_list->add_talent( this, "Furious Slash",
-                            "if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|("
-                            "cooldown.recklessness.remains<3&buff.furious_slash.remains<9))" );
   default_list->add_action( this, "Rampage", "if=cooldown.recklessness.remains<3" );
 
   default_list->add_action( "blood_of_the_enemy,if=buff.recklessness.up" );
@@ -5180,8 +5185,8 @@ void warrior_t::apl_fury()
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
                                 ",if=!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|"
-                                "(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|prev_gcd.2.recklessness&"
-                                "(buff.guardian_of_azeroth.up|!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major))" );
+                                "(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|prev_gcd.2.guardian_of_azeroth|"
+                                "prev_gcd.2.recklessness&(!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major))" );
     }
     else if ( items[ i ].name_str == "azsharas_font_of_power" )
     {
@@ -5233,6 +5238,7 @@ void warrior_t::apl_fury()
                              "(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|"
                              "rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))" );
   single_target->add_action( this, "Execute" );
+  single_target->add_talent( this, "Furious Slash", "if=!buff.bloodlust.up&buff.furious_slash.remains<3" );
   single_target->add_talent( this, "Bladestorm",  "if=prev_gcd.1.rampage" );
   single_target->add_action( this, "Bloodthirst", "if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1" );
   single_target->add_talent( this, "Dragon Roar", "if=buff.enrage.up" );
@@ -5456,26 +5462,36 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
   default_list -> add_action( this, "Ignore Pain", "if=rage.deficit<25+20*talent.booming_voice.enabled*cooldown.demoralizing_shout.ready", "use Ignore Pain to avoid rage capping" );
+  default_list -> add_action( "worldvein_resonance,if=cooldown.avatar.remains<=2");
+  default_list -> add_action( "ripple_in_space" );
+  default_list -> add_action( "memory_of_lucid_dreams" );
+  default_list -> add_action( "concentrated_flame,if=buff.avatar.down");
+  default_list -> add_action( this, "Last Stand", "if=cooldown.anima_of_death.remains<=2" );
   default_list -> add_action( this, "Avatar" );
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
   default_list -> add_action( "call_action_list,name=st" );
 
   st -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap=2&talent.unstoppable_force.enabled&buff.avatar.up" );
-  st -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down&azerite.brace_for_impact.rank>azerite.deafening_crash.rank&buff.avatar.up" );
-  st -> add_action( this, "Shield Slam", "if=azerite.brace_for_impact.rank>azerite.deafening_crash.rank&buff.avatar.up&buff.shield_block.up" );
+  st -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down" );
+  st -> add_action( this, "Shield Slam", "if=buff.shield_block.up" );
   st -> add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up)" );
   st -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
-  st -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down" );
+  st -> add_action( "anima_of_death,if=buff.last_stand.up" );
   st -> add_action( this, "Shield Slam" );
+  st -> add_action( "use_item,name=ashvanes_razor_coral,target_if=debuff.razor_coral_debuff.stack=0" );
+  st -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>7&(cooldown.avatar.remains<5|buff.avatar.up)" );
   st -> add_talent( this, "Dragon Roar" );
   st -> add_action( this, "Thunder Clap" );
   st -> add_action( this, "Revenge" );
   st -> add_action( "use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.shield_slam.remains>=4" );
   st -> add_talent( this, "Ravager" );
   st -> add_action( this, "Devastate" );
+  st -> add_action( this, "Storm Bolt");
 
   aoe -> add_action( this, "Thunder Clap" );
+  aoe -> add_action( "memory_of_lucid_dreams,if=buff.avatar.down");
   aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
+  aoe -> add_action( "anima_of_death,if=buff.last_stand.up");
   aoe -> add_talent( this, "Dragon Roar" );
   aoe -> add_action( this, "Revenge" );
   aoe -> add_action( "use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.thunder_clap.remains>=4" );
@@ -5484,7 +5500,6 @@ void warrior_t::apl_prot()
   aoe -> add_action( this, "Shield Slam" );
 
 }
-
 // NO Spec Combat Action Priority List
 
 void warrior_t::apl_default()

@@ -13,6 +13,8 @@
 #include <curl/curl.h>
 #endif
 
+#include "util/utf8-2.h"
+
 // ==========================================================================
 // Blizzard Community Platform API
 // ==========================================================================
@@ -189,6 +191,46 @@ bool authorize( sim_t*, const std::string& )
 
 // download
 
+
+// Check for errors and return the (HTTP) return code from the status message, if applicable. Return
+// value of 0 indicates error.
+int check_for_error( sim_t*                     sim,
+                     const rapidjson::Document& d,
+                     std::vector<int>           allowed_codes = {} )
+{
+  auto ret_code = 200;
+
+  // Old community API NOK status, report Blizzard API reason to the user. Note that there's no way
+  // to check for the return codes in the json object response, since they don't exist there
+  if ( d.IsObject() && d.HasMember( "status" ) &&
+       util::str_compare_ci( d[ "status" ].GetString(), "nok" ) )
+  {
+    sim->error( "Error response from Blizzard API: {}", d[ "reason" ].GetString() );
+    return 0;
+  }
+
+  // New community API status code handling
+  if ( d.IsObject() && d.HasMember( "code" ) )
+  {
+    ret_code = d[ "code" ].GetInt();
+    if ( range::find( allowed_codes, ret_code ) == allowed_codes.end() )
+    {
+      sim->error( "Error response {} from Blizzard API: {}", ret_code, d[ "detail" ].GetString() );
+      return 0;
+    }
+  }
+
+  return ret_code;
+}
+
+// Check if HTTP response code falls on the ranges of successful responses from the Blizzard API
+bool check_response_code( int response_code )
+{
+  // 401 implies reauthentication required, so it's not a valid response
+  return ( response_code >= 200 && response_code < 300 ) ||
+         ( response_code >= 400 && response_code < 500 && response_code != 401 );
+}
+
 bool download( sim_t*               sim,
                rapidjson::Document& d,
                const std::string&   region,
@@ -212,13 +254,11 @@ bool download( sim_t*               sim,
     headers.push_back( "Authorization: Bearer " + token );
   }
 
-  int response_code = 0;
   // We can make two attempts at most
   for ( size_t i = 0; i < 2; ++i )
   {
-    response_code = http::get( result, url, caching, "", headers );
-    // 200 OK, 404 Not Found, consider them "successful" results
-    if ( response_code == 200 || response_code == 404 )
+    auto response_code = http::get( result, url, caching, "", headers );
+    if ( check_response_code( response_code ) )
     {
       break;
     }
@@ -226,15 +266,17 @@ bool download( sim_t*               sim,
     // Blizzard's issue, lets not bother trying again
     if ( response_code >= 500 && response_code < 600 )
     {
+      sim->error( "Blizzard API responded with internal server error ({}), aborting",
+        response_code );
       return false;
     }
     // Bearer token is invalid, lets try to regenerate if we can
-    else if ( response_code == 401 || response_code == 403 )
+    else if ( response_code == 401 )
     {
       // Loaded token is bogus, so clear it
       token.clear();
 
-      // If there's an user provided apitoken and we get 401/403, or if we already regenerated
+      // If there's an user provided apitoken and we get 401, or if we already regenerated
       // our bearer token successfully, there's no point in trying again
       if ( !sim->user_apitoken.empty() )
       {
@@ -252,21 +294,21 @@ bool download( sim_t*               sim,
       headers.clear();
       headers.push_back( "Authorization: Bearer " + token );
     }
+    // Note, not modified is automatically handled by http::get, and translated into 200 OK
+    else
+    {
+      sim->error( "Blizzard API responded with an unhandled HTTP response code {}",
+        response_code );
+      return false;
+    }
   }
 
   d.Parse<0>( result.c_str() );
 
   // Corrupt data
-  if ( ! result.empty() && d.HasParseError() )
+  if ( !result.empty() && d.HasParseError() )
   {
     sim->error( "Malformed response from Blizzard API" );
-    return false;
-  }
-
-  // NOK status, report Blizzard API reason to the user
-  if ( d.IsObject() && d.HasMember( "status" ) && util::str_compare_ci( d[ "status" ].GetString(), "nok" ) )
-  {
-    sim->error( "Error response from Blizzard API: {}", d[ "reason" ].GetString() );
     return false;
   }
 
@@ -279,17 +321,16 @@ bool download( sim_t*               sim,
     sim->out_debug.raw() << b.GetString();
   }
 
-  // Download is successful only with 200 OK response code
-  return response_code == 200;
+  return true;
 }
 
-// download_id ==============================================================
+// download_item ==============================================================
 
-bool download_id( sim_t* sim,
-                  rapidjson::Document& d,
-                  const std::string& region,
-                  unsigned item_id,
-                  cache::behavior_e caching )
+bool download_item( sim_t* sim,
+                    rapidjson::Document& d,
+                    const std::string& region,
+                    unsigned item_id,
+                    cache::behavior_e caching )
 {
   if ( item_id == 0 )
     return false;
@@ -305,8 +346,13 @@ bool download_id( sim_t* sim,
     url = fmt::format( CHINA_ITEM_ENDPOINT_URI, item_id );
   }
 
-  if ( ! download( sim, d, region, url, caching ) )
+  if ( !download( sim, d, region, url, caching ) )
     return false;
+
+  if ( !check_for_error( sim, d ) )
+  {
+    return false;
+  }
 
   return true;
 }
@@ -588,9 +634,10 @@ void parse_media( player_t*            p,
 
 // parse_player =============================================================
 
-player_t* parse_player( sim_t*               sim,
-                        player_spec_t& player,
-                        cache::behavior_e    caching )
+player_t* parse_player( sim_t*            sim,
+                        player_spec_t&    player,
+                        cache::behavior_e caching,
+                        bool              allow_failures = false )
 {
   sim -> current_slot = 0;
 
@@ -611,6 +658,26 @@ player_t* parse_player( sim_t*               sim,
     {
       throw std::runtime_error( fmt::format( "Unable to parse JSON from '{}'.",
         player.local_json ) );
+    }
+  }
+
+  if ( !allow_failures && !check_for_error( sim, profile ) )
+  {
+    throw std::runtime_error(fmt::format("Unable to download JSON from '{}'.",
+        player.url ));
+  }
+  // 200, 403, 404 results are OK, anything else not OK
+  else if ( allow_failures )
+  {
+    auto ret_code = check_for_error( sim, profile, {403, 404} );
+    if ( !ret_code )
+    {
+      throw std::runtime_error(fmt::format("Unable to download JSON from '{}'.",
+          player.url ));
+    }
+    else if ( ret_code == 403 || ret_code == 404 )
+    {
+      return nullptr;
     }
   }
 
@@ -708,7 +775,7 @@ player_t* parse_player( sim_t*               sim,
 bool download_item_data( item_t& item, cache::behavior_e caching )
 {
   rapidjson::Document js;
-  if ( ! download_id( item.sim, js, item.player -> region_str, item.parsed.data.id, caching ) ||
+  if ( ! download_item( item.sim, js, item.player -> region_str, item.parsed.data.id, caching ) ||
        js.HasParseError() )
   {
     if ( caching != cache::ONLY )
@@ -996,24 +1063,33 @@ player_t* bcp_api::download_player( sim_t*             sim,
                                     const std::string& server,
                                     const std::string& name,
                                     const std::string& talents,
-                                    cache::behavior_e  caching )
+                                    cache::behavior_e  caching,
+                                    bool               allow_failures )
 {
   sim -> current_name = name;
 
   player_spec_t player;
 
-  auto normalized_name = name;
-  util::tolower( normalized_name );
+  std::vector<std::string::value_type> chars { name.begin(), name.end() };
+  chars.push_back( 0 );
+
+  utf8lwr( reinterpret_cast<void*>( chars.data() ) );
+
+  auto normalized_name = std::string { chars.begin(), chars.end() };
+  util::urlencode( normalized_name );
+
+  auto normalized_server = server;
+  util::tolower( normalized_server );
 
   if ( !util::str_compare_ci( region, "cn" ) )
   {
-    player.url = fmt::format( GLOBAL_PLAYER_ENDPOINT_URI, region, server, normalized_name, region, LOCALES[ region ].first );
-    player.origin = fmt::format( GLOBAL_ORIGIN_URI, LOCALES[ region ].second, server, normalized_name );
+    player.url = fmt::format( GLOBAL_PLAYER_ENDPOINT_URI, region, normalized_server, normalized_name, region, LOCALES[ region ].first );
+    player.origin = fmt::format( GLOBAL_ORIGIN_URI, LOCALES[ region ].second, normalized_server, normalized_name );
   }
   else
   {
-    player.url = fmt::format( CHINA_PLAYER_ENDPOINT_URI, server, normalized_name );
-    player.origin = fmt::format( CHINA_ORIGIN_URI, server, normalized_name );
+    player.url = fmt::format( CHINA_PLAYER_ENDPOINT_URI, normalized_server, normalized_name );
+    player.origin = fmt::format( CHINA_ORIGIN_URI, normalized_server, normalized_name );
   }
 
 #ifdef SC_DEFAULT_APIKEY
@@ -1034,7 +1110,7 @@ player_t* bcp_api::download_player( sim_t*             sim,
   player.name = name;
   player.talent_spec = talents;
 
-  return parse_player( sim, player, caching );
+  return parse_player( sim, player, caching, allow_failures );
 }
 
 // bcp_api::from_local_json =================================================
@@ -1135,8 +1211,24 @@ bool bcp_api::download_guild( sim_t* sim,
 {
   rapidjson::Document js;
 
-  if ( ! download_roster( js, sim, region, server, name, caching ) )
+  std::vector<std::string::value_type> chars { name.begin(), name.end() };
+  chars.push_back( 0 );
+
+  utf8lwr( reinterpret_cast<void*>( chars.data() ) );
+
+  auto normalized_name = std::string { chars.begin(), chars.end() };
+  util::urlencode( normalized_name );
+
+  auto normalized_server = server;
+  util::tolower( normalized_server );
+
+  if ( ! download_roster( js, sim, region, normalized_server, normalized_name, caching ) )
     return false;
+
+  if ( !check_for_error( sim, js ) )
+  {
+    return false;
+  }
 
   if ( ! js.HasMember( "members" ) )
   {
@@ -1185,7 +1277,7 @@ bool bcp_api::download_guild( sim_t* sim,
   for (auto & cname : names)
   {
     std::cout << "Downloading character: " << cname << std::endl;
-    download_player( sim, region, server, cname, "active", caching );
+    download_player( sim, region, server, cname, "active", caching, true );
   }
 
   return true;

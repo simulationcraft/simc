@@ -679,6 +679,11 @@ void wild_imp_pet_t::reschedule_firebolt()
     return;
   }
 
+  if ( is_sleeping() )
+  {
+    return;
+  }
+
   if ( player_t::buffs.movement->check() )
   {
     return;

@@ -5,8 +5,8 @@ level=120
 race=gnome
 role=attack
 position=back
-talents=2123123
-azerite_essences=14:3/12:3/5:3
+talents=2133123
+azerite_essences=14:3/12:3/32:3
 
 # Default consumables
 potion=potion_of_unbridled_fury
@@ -26,10 +26,11 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
+actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/memory_of_lucid_dreams
 actions.precombat+=/guardian_of_azeroth
-actions.precombat+=/recklessness,if=!talent.furious_slash.enabled
+actions.precombat+=/recklessness
+actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -38,7 +39,6 @@ actions+=/charge
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
 actions+=/potion
-actions+=/furious_slash,if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))
 actions+=/rampage,if=cooldown.recklessness.remains<3
 actions+=/blood_of_the_enemy,if=buff.recklessness.up
 actions+=/purifying_blast,if=!buff.recklessness.up&!buff.siegebreaker.up
@@ -64,6 +64,7 @@ actions.movement=heroic_leap
 actions.single_target=siegebreaker
 actions.single_target+=/rampage,if=(buff.recklessness.up|buff.memory_of_lucid_dreams.up)|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
 actions.single_target+=/execute
+actions.single_target+=/furious_slash,if=!buff.bloodlust.up&buff.furious_slash.remains<3
 actions.single_target+=/bladestorm,if=prev_gcd.1.rampage
 actions.single_target+=/bloodthirst,if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1
 actions.single_target+=/dragon_roar,if=buff.enrage.up
@@ -77,7 +78,7 @@ head=helm_of_abyssal_malevolence,id=159430,bonus_id=1617/4819/4775,azerite_power
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=cthraxxi_binders_pauldrons,id=159439,bonus_id=1617/4819/4775,azerite_powers=176/196/30/15/13
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
-chest=naga_centaurs_shellplate,id=168361,bonus_id=4824/1517/4775,azerite_powers=176/119/18/83/13
+chest=dark_passengers_breastplate,id=168363,bonus_id=4824/1517/4775,azerite_powers=119/576/30/15/13
 wrists=waveblade_farseers_armguards,id=170303,bonus_id=1512
 hands=poens_deepsea_handguards,id=170336,bonus_id=1512
 waist=eternity_keepers_greatbelt,id=168869,bonus_id=4800/1517
@@ -87,15 +88,15 @@ finger1=logic_loop_of_division,id=169157,bonus_id=4779/1472,enchant=accord_of_cr
 finger2=shorting_bit_band,id=169160,bonus_id=4779/1472,enchant=accord_of_critical_strike
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
-main_hand=tentacle_crusher,id=168897,bonus_id=4800/1517,enchant=force_multiplier
-off_hand=tentacle_crusher,id=168897,bonus_id=4800/1517,enchant=deadly_navigation
+main_hand=monstrositys_shipbreaker,id=168478,bonus_id=4800/1517,enchant=force_multiplier
+off_hand=getiikku_cut_of_death,id=159644,bonus_id=5010/1602/4786,enchant=deadly_navigation
 
 # Gear Summary
-# gear_ilvl=438.31
-# gear_strength=7988
-# gear_stamina=13870
-# gear_crit_rating=1271
-# gear_haste_rating=1674
-# gear_mastery_rating=774
-# gear_versatility_rating=85
+# gear_ilvl=437.38
+# gear_strength=7913
+# gear_stamina=13714
+# gear_crit_rating=1406
+# gear_haste_rating=1334
+# gear_mastery_rating=504
+# gear_versatility_rating=255
 # gear_armor=5939

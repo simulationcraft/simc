@@ -29,6 +29,7 @@ actions.precombat+=/arcane_familiar
 # conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP.
 actions.precombat+=/variable,name=conserve_mana,op=set,value=60+20*azerite.equipoise.enabled
 actions.precombat+=/snapshot_stats
+actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/mirror_image
 actions.precombat+=/potion
 actions.precombat+=/arcane_blast
@@ -55,11 +56,11 @@ actions.burn+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack
 # When running Overpowered, and we got a Rule of Threes proc (AKA we got our 4th Arcane Charge via Charged Up), use it before using RoP+AP, because the mana reduction is otherwise largely wasted since the AB was free anyway.
 actions.burn+=/arcane_blast,if=buff.rule_of_threes.up&talent.overpowered.enabled&active_enemies<3
 actions.burn+=/lights_judgment,if=buff.arcane_power.down
+actions.burn+=/use_item,name=azsharas_font_of_power,if=cooldown.arcane_power.remains<5|time_to_die<cooldown.arcane_power.remains
 actions.burn+=/rune_of_power,if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)
 actions.burn+=/berserking
 actions.burn+=/arcane_power
 actions.burn+=/use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains
-actions.burn+=/use_item,name=pocketsized_computation_device,if=!cooldown.cyclotronic_blast.duration&(buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains)
 actions.burn+=/blood_fury
 actions.burn+=/fireblood
 actions.burn+=/ancestral_call
@@ -84,7 +85,7 @@ actions.conserve+=/arcane_orb,if=buff.arcane_charge.stack<=2&(cooldown.arcane_po
 # Arcane Blast shifts up in priority when running rule of threes.
 actions.conserve+=/arcane_blast,if=buff.rule_of_threes.up&buff.arcane_charge.stack>3
 actions.conserve+=/use_item,name=tidestorm_codex,if=buff.rune_of_power.down&!buff.arcane_power.react&cooldown.arcane_power.remains>20
-actions.conserve+=/use_item,name=pocketsized_computation_device,if=cooldown.cyclotronic_blast.duration&buff.rune_of_power.down&!buff.arcane_power.react&cooldown.arcane_power.remains>20
+actions.conserve+=/use_item,effect_name=cyclotronic_blast,if=buff.rune_of_power.down&!buff.arcane_power.react&cooldown.arcane_power.remains>20
 actions.conserve+=/rune_of_power,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|full_recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)
 actions.conserve+=/arcane_missiles,if=mana.pct<=95&buff.clearcasting.react&active_enemies<3,chain=1
 # During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible (aka conserve_mana threshhold) and then swap to a 4x AB->Abarr conserve rotation. If we do not have 4 AC, we can dip slightly lower to get a 4th AC. We also sustain at a higher mana percentage when we plan to use a Rune of Power during conserve phase, so we can burn during the Rune of Power.

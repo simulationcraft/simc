@@ -23,6 +23,8 @@ augmentation=battle_scarred
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
 # Azerite variables
 actions.precombat+=/variable,name=az_ss,value=azerite.streaking_stars.rank
 actions.precombat+=/variable,name=az_ap,value=azerite.arcanic_pulsar.rank
@@ -32,22 +34,22 @@ actions.precombat+=/variable,name=sf_targets,op=add,value=1,if=azerite.arcanic_p
 actions.precombat+=/variable,name=sf_targets,op=add,value=1,if=talent.starlord.enabled
 actions.precombat+=/variable,name=sf_targets,op=add,value=1,if=azerite.streaking_stars.rank>2&azerite.arcanic_pulsar.enabled
 actions.precombat+=/variable,name=sf_targets,op=sub,value=1,if=!talent.twin_moons.enabled
+# Precombat opener
 actions.precombat+=/moonkin_form
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
+actions.precombat+=/use_item,name=azsharas_font_of_power
+actions.precombat+=/potion,dynamic_prepot=1
 actions.precombat+=/solar_wrath
+actions.precombat+=/solar_wrath
+actions.precombat+=/starsurge
 
 # Executed every time the actor is available.
-actions=potion,if=buff.ca_inc.remains>6
-actions+=/berserking,if=buff.ca_inc.up
 # CDs
-actions+=/use_item,name=azsharas_font_of_power,if=equipped.169314&!buff.ca_inc.up,target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
+actions=potion,if=buff.celestial_alignment.remains>13|buff.incarnation.remains>16.5
+actions+=/berserking,if=buff.ca_inc.up
+actions+=/use_item,name=azsharas_font_of_power,if=!buff.ca_inc.up,target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
 actions+=/guardian_of_azeroth,if=(!talent.starlord.enabled|buff.starlord.up)&!buff.ca_inc.up,target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
-actions+=/use_item,name=tidestorm_codex,if=equipped.165576
-actions+=/use_item,name=pocketsized_computation_device,if=equipped.167555&!buff.ca_inc.up,target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
-actions+=/use_item,name=shiver_venom_relic,if=equipped.168905&!buff.ca_inc.up,target_if=dot.shiver_venom.stack>=5
-actions+=/use_items,if=cooldown.ca_inc.remains>30
+actions+=/use_item,effect_name=cyclotronic_blast,if=!buff.ca_inc.up,target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
+actions+=/use_item,name=shiver_venom_relic,if=!buff.ca_inc.up,target_if=dot.shiver_venom.stack>=5
 actions+=/blood_of_the_enemy,if=cooldown.ca_inc.remains>30
 actions+=/memory_of_lucid_dreams,if=!buff.ca_inc.up&(astral_power<25|cooldown.ca_inc.remains>30),target_if=dot.sunfire.remains>10&dot.moonfire.remains>10&(!talent.stellar_flare.enabled|dot.stellar_flare.remains>10)
 actions+=/purifying_blast
@@ -57,12 +59,15 @@ actions+=/the_unbound_force,if=buff.reckless_force.up,target_if=dot.moonfire.tic
 actions+=/worldvein_resonance
 actions+=/focused_azerite_beam,if=(!variable.az_ss|!buff.ca_inc.up),target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
 actions+=/thorns
+actions+=/use_items,slots=trinket1,if=!trinket.1.has_proc.any|buff.ca_inc.up
+actions+=/use_items,slots=trinket2,if=!trinket.2.has_proc.any|buff.ca_inc.up
+actions+=/use_items
 actions+=/warrior_of_elune
 actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)
+actions+=/force_of_nature,if=(variable.az_ss&!buff.ca_inc.up|!variable.az_ss&(buff.ca_inc.up|cooldown.ca_inc.remains>30))&ap_check
 actions+=/incarnation,if=!buff.ca_inc.up&(buff.memory_of_lucid_dreams.up|((cooldown.memory_of_lucid_dreams.remains>20|!essence.memory_of_lucid_dreams.major)&ap_check))&(buff.memory_of_lucid_dreams.up|ap_check),target_if=dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)
-actions+=/celestial_alignment,if=!buff.ca_inc.up&(buff.memory_of_lucid_dreams.up|((cooldown.memory_of_lucid_dreams.remains>20|!essence.memory_of_lucid_dreams.major)&ap_check))&(!azerite.lively_spirit.enabled|buff.lively_spirit.up),target_if=(dot.sunfire.remains>2&dot.moonfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare.enabled))
+actions+=/celestial_alignment,if=!buff.ca_inc.up&(!talent.starlord.enabled|buff.starlord.up)&(buff.memory_of_lucid_dreams.up|((cooldown.memory_of_lucid_dreams.remains>20|!essence.memory_of_lucid_dreams.major)&ap_check))&(!azerite.lively_spirit.enabled|buff.lively_spirit.up),target_if=(dot.sunfire.remains>2&dot.moonfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare.enabled))
 actions+=/fury_of_elune,if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&solar_wrath.ap_check
-actions+=/force_of_nature,if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&ap_check
 # Spenders
 actions+=/cancel_buff,name=starlord,if=buff.starlord.remains<3&!solar_wrath.ap_check
 actions+=/starfall,if=(buff.starlord.stack<3|buff.starlord.remains>=8)&spell_targets>=variable.sf_targets&(target.time_to_die+1)*spell_targets>cost%2.5

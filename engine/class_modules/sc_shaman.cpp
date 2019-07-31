@@ -735,6 +735,7 @@ public:
   void init_rng() override;
   void init_special_effects() override;
 
+  double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void moving() override;
   void invalidate_cache( cache_e c ) override;
   double temporary_movement_modifier() const override;
@@ -1221,9 +1222,9 @@ public:
     return m;
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double m = ab::recharge_multiplier();
+    double m = ab::recharge_multiplier( cd );
 
     m *= 1.0 / ( 1.0 + p()->buff.thundercharge->stack_value() );
 
@@ -1336,23 +1337,6 @@ public:
     }
 
     ab::update_ready( cd );
-  }
-
-  void consume_resource() override
-  {
-    ab::consume_resource();
-
-    if ( ab::current_resource() == RESOURCE_MAELSTROM )
-    {
-      p()->trigger_memory_of_lucid_dreams( ab::last_resource_cost );
-    }
-  }
-
-  bool consume_cost_per_tick( const dot_t& dot ) override
-  {
-    auto ret = ab::consume_cost_per_tick( dot );
-
-    return ret;
   }
 
   expr_t* create_expression( const std::string& name ) override
@@ -3755,9 +3739,9 @@ struct windstrike_t : public stormstrike_base_t
     }
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    auto m = stormstrike_base_t::recharge_multiplier();
+    auto m = stormstrike_base_t::recharge_multiplier( cd );
 
     if ( p()->buff.ascendance->up() )
     {
@@ -3831,9 +3815,9 @@ struct rockbiter_t : public shaman_spell_t
     cooldown->hasted = true;
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double m = shaman_spell_t::recharge_multiplier();
+    double m = shaman_spell_t::recharge_multiplier( cd );
 
     m *= 1.0 + p()->talent.boulderfist->effectN( 1 ).percent();
 
@@ -4079,6 +4063,7 @@ struct storm_elemental_t : public shaman_spell_t
     : shaman_spell_t( "storm_elemental", player, player->talent.storm_elemental, options_str )
   {
     harmful = may_crit = false;
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( player->azerite_essence.vision_of_perfection );
   }
 
   void execute() override
@@ -4788,6 +4773,13 @@ struct lava_burst_t : public shaman_spell_t
     if ( result_is_hit( s->result ) )
     {
       p()->buff.t21_2pc_elemental->trigger();
+
+      if ( p()->buff.surge_of_power->up() )
+      {
+        p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
+        p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
+        p()->buff.surge_of_power->decrement();
+      }
     }
   }
 
@@ -4845,13 +4837,6 @@ struct lava_burst_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    if ( p()->buff.surge_of_power->up() )
-    {
-      p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
-      p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
-      p()->buff.surge_of_power->decrement();
-    }
 
     if ( p()->talent.master_of_the_elements->ok() )
     {
@@ -6398,7 +6383,10 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_c
       player->main_hand_attack->base_execute_time = timespan_t::zero();
       player->main_hand_attack->schedule_execute();
       player->main_hand_attack->base_execute_time = player->main_hand_attack->weapon->swing_time;
-      player->main_hand_attack->execute_event->reschedule( time_to_hit );
+      if ( player->main_hand_attack->execute_event )
+      {
+        player->main_hand_attack->execute_event->reschedule( time_to_hit );
+      }
     }
 
     if ( player->off_hand_attack )
@@ -6433,7 +6421,10 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_c
         player->off_hand_attack->base_execute_time = timespan_t::zero();
         player->off_hand_attack->schedule_execute();
         player->off_hand_attack->base_execute_time = player->off_hand_attack->weapon->swing_time;
-        player->off_hand_attack->execute_event->reschedule( time_to_hit );
+        if ( player->off_hand_attack->execute_action )
+        {
+          player->off_hand_attack->execute_event->reschedule( time_to_hit );
+        }
       }
     }
   }
@@ -7537,7 +7528,7 @@ void shaman_t::trigger_memory_of_lucid_dreams( double cost )
     return;
   }
 
-  double total_gain = cost * spell.memory_of_lucid_dreams_base->effectN( 1 ).percent();
+  double total_gain = util::round( cost * spell.memory_of_lucid_dreams_base->effectN( 1 ).percent(), 0 );
 
   trigger_maelstrom_gain( total_gain, gain.memory_of_lucid_dreams );
 
@@ -7981,7 +7972,7 @@ std::string shaman_t::default_potion() const
 
   std::string enhance_pot =
       ( true_level > 110 )
-          ? "battle_potion_of_agility"
+          ? "potion_of_unbridled_fury"
           : ( true_level > 100 )
                 ? "prolonged_power"
                 : ( true_level >= 90 )
@@ -8006,7 +7997,7 @@ std::string shaman_t::default_flask() const
 
   std::string enhance_flask =
       ( true_level > 110 )
-          ? "currents"
+          ? "greater_flask_of_the_currents"
           : ( true_level > 100 )
                 ? "seventh_demon"
                 : ( true_level >= 90 )
@@ -8031,7 +8022,7 @@ std::string shaman_t::default_food() const
                                                      : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   std::string enhance_food = ( true_level > 110 )
-                                 ? "bountiful_captains_feast"
+                                 ? "baked_port_tato"
                                  : ( true_level > 100 )
                                        ? "lemon_herb_filet"
                                        : ( true_level > 90 )
@@ -8364,6 +8355,8 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( "potion" );
   // Lightning shield can be turned on pre-combat
   precombat->add_talent( this, "Lightning Shield" );
+  // Use precombat time to channel buff trinket
+  precombat->add_action( "use_item,name=azsharas_font_of_power" );
   // All Shamans Bloodlust and Wind Shear by default
   def->add_action( this, "Wind Shear" );
   def->add_action(
@@ -8461,6 +8454,7 @@ void shaman_t::init_action_list_enhancement()
       "|(essence.blood_of_the_enemy.major&(buff.seething_rage.up|cooldown.blood_of_the_enemy.remains>40)))" );
   priority->add_action( "focused_azerite_beam,if=active_enemies>=3" );
   priority->add_action( "purifying_blast,if=active_enemies>=3" );
+  priority->add_action( "ripple_in_space,if=active_enemies>=3" );
   priority->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
   priority->add_action(
       this, "Frostbrand",
@@ -8481,6 +8475,7 @@ void shaman_t::init_action_list_enhancement()
   cds->add_action( this, "Bloodlust", "if=azerite.ancestral_resonance.enabled",
                    "Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present." );
   cds->add_action( "berserking,if=variable.cooldown_sync" );
+  cds->add_action( "use_item,name=azsharas_font_of_power" );
   cds->add_action( "blood_fury,if=variable.cooldown_sync" );
   cds->add_action( "fireblood,if=variable.cooldown_sync" );
   cds->add_action( "ancestral_call,if=variable.cooldown_sync" );
@@ -8492,6 +8487,9 @@ void shaman_t::init_action_list_enhancement()
   cds->add_action( this, "Feral Spirit" );
   cds->add_action( "blood_of_the_enemy" );
   cds->add_talent( this, "Ascendance", "if=cooldown.strike.remains>0" );
+  cds->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(target.time_to_die<20&debuff.razor_coral_debuff.stack>2)" );
+  cds->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>2&debuff.conductive_ink_debuff.down&(buff.ascendance.remains>10|buff.molten_weapon.remains>10|buff.crackling_surge.remains>10|buff.icy_edge.remains>10|debuff.earthen_spike.remains>6)" );
+  cds->add_action( "use_item,name=ashvanes_razor_coral,if=(debuff.conductive_ink_debuff.up|buff.ascendance.remains>10|buff.molten_weapon.remains>10|buff.crackling_surge.remains>10|buff.icy_edge.remains>10|debuff.earthen_spike.remains>6)&target.health.pct<31" );
   cds->add_action( "use_items" );
   cds->add_action( this, "Earth Elemental" );
 
@@ -8533,6 +8531,8 @@ void shaman_t::init_action_list_enhancement()
       "focused_azerite_beam,if=!buff.ascendance.up&!buff.molten_weapon.up&!buff.icy_edge.up"
       "&!buff.crackling_surge.up&!debuff.earthen_spike.up" );
   filler->add_action( "purifying_blast" );
+  filler->add_action( "ripple_in_space" );
+  filler->add_action( "thundercharge" );
   filler->add_action( "concentrated_flame" );
   filler->add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
   filler->add_action( this, "Crash Lightning",
@@ -8673,6 +8673,20 @@ void shaman_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
+}
+
+// shaman_t::resource_loss ==================================================
+
+double shaman_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* a )
+{
+  auto actual_loss = player_t::resource_loss( resource_type, amount, g, a );
+
+  if ( resource_type == RESOURCE_MAELSTROM )
+  {
+    trigger_memory_of_lucid_dreams( actual_loss );
+  }
+
+  return actual_loss;
 }
 
 // shaman_t::moving =========================================================

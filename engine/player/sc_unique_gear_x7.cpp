@@ -186,6 +186,8 @@ namespace items
   void dreams_end( special_effect_t& );
   void divers_folly( special_effect_t& );
   void remote_guidance_device( special_effect_t& );
+  void gladiators_maledict( special_effect_t& );
+  void getiikku_cut_of_death( special_effect_t& );
   // 8.2.0 - Rise of Azshara Punchcards
   void yellow_punchcard( special_effect_t& );
   void subroutine_overclock( special_effect_t& );
@@ -466,7 +468,6 @@ void consumables::potion_of_focused_resolve( special_effect_t& effect )
       if ( current_target )
       {
         auto td = listener->get_target_data( current_target );
-        auto remaining_time = td->debuff.focused_resolve->remains();
         td->debuff.focused_resolve->expire();
       }
     }
@@ -3261,15 +3262,13 @@ void items::nazjatar_proc_check( special_effect_t& effect )
   if ( !effect.player->sim->bfa_opts.nazjatar )
     return;
 
+  effect.proc_flags_ = effect.driver()->proc_flags() & ~PF_ALL_HEAL;
   new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Storm of the Eternal ===================================================
 void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 {
-  if ( !effect.player->sim->bfa_opts.nazjatar )
-    return;
-
   struct sote_arcane_damage_t : public proc_t
   {
     sote_arcane_damage_t( const special_effect_t& e )
@@ -3290,14 +3289,16 @@ void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 
   auto action = create_proc_action<sote_arcane_damage_t>( "storm_of_the_eternal", effect );
 
-  timespan_t storm_period = effect.player->find_spell( 303722 )->duration();
-  unsigned storm_hits     = effect.player->find_spell( 303724 )->max_stacks();
+  timespan_t storm_period = effect.player->find_spell( 303722 )->duration();    // every 2 minutes
+  timespan_t storm_dur    = effect.player->find_spell( 303723 )->duration();    // over 10 seconds
+  unsigned storm_hits     = effect.player->find_spell( 303724 )->max_stacks();  // 3 hits
 
-  effect.player->register_combat_begin( [action, storm_period, storm_hits]( player_t* ) {
-    make_repeating_event( action->sim, storm_period, [action, storm_hits] {
+  effect.player->register_combat_begin( [action, storm_period, storm_dur, storm_hits]( player_t* ) {
+    make_repeating_event( action->sim, storm_period, [action, storm_dur, storm_hits] {
       for ( unsigned i = 0u; i < storm_hits; i++ )
       {
-        action->schedule_execute();
+        auto delay = timespan_t::from_seconds( action->sim->rng().range( 0.0, storm_dur.total_seconds() ) );
+        make_event( action->sim, delay, [action] { action->schedule_execute(); } );
       }
     } );
   } );
@@ -3305,9 +3306,6 @@ void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 
 void items::storm_of_the_eternal_stats( special_effect_t& effect )
 {
-  if ( !effect.player->sim->bfa_opts.nazjatar )
-    return;
-
   stat_e stat;
   switch ( effect.spell_id )
   {
@@ -3587,7 +3585,7 @@ void items::leviathans_lure( special_effect_t& effect )
     luminous_algae_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       auto td = listener->get_target_data( s->target );
       assert( td );
@@ -3631,10 +3629,12 @@ void items::aquipotent_nautilus( special_effect_t& effect )
   struct surging_flood_dot_t : public proc_t
   {
     cooldown_t* cd;
+    cooldown_t* cdgrp;
     timespan_t  reduction;
 
     surging_flood_dot_t( const special_effect_t& e ) :
       proc_t( e, "surging_flood", e.player->find_spell( 302580 ) ), cd( e.player->get_cooldown( e.cooldown_name() ) ),
+      cdgrp( e.player->get_cooldown( e.cooldown_group_name() ) ),
       reduction( timespan_t::from_seconds( e.player->find_spell( 302579 )->effectN( 2 ).base_value() ) )
     {
       aoe     = -1;
@@ -3656,6 +3656,7 @@ void items::aquipotent_nautilus( special_effect_t& effect )
             sim->print_debug( "surging_flood return wave caught, adjusting cooldown from {} to {}", cd->remains(),
               cd->remains() + reduction );
             cd->adjust( reduction );
+            cdgrp->adjust( reduction );
           }
         } );
       }
@@ -3773,12 +3774,112 @@ void items::azsharas_font_of_power( special_effect_t& effect )
   struct latent_arcana_channel_t : public proc_t
   {
     buff_t* buff;
+    action_t* use_action; // if this exists, then we're prechanneling via the APL
 
     latent_arcana_channel_t( const special_effect_t& e, buff_t* b ) :
-      proc_t( e, "latent_arcana", e.driver() ), buff( b )
+      proc_t( e, "latent_arcana", e.driver() ), buff( b ), use_action( nullptr )
     {
+      effect    = &e;
       channeled = true;
-      harmful = hasted_ticks = false;
+      harmful   = hasted_ticks = false;
+
+      for ( auto a : player->action_list )
+      {
+        if ( a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + item->name_str )
+        {
+          a->harmful = harmful;  // pass down harmful to allow action_t::init() precombat check bypass
+          use_action = a;
+          use_action->base_execute_time = 4_s;
+          break;
+        }
+      }
+    }
+
+    void precombat_buff()
+    {
+      timespan_t time = sim->bfa_opts.font_of_power_precombat_channel;
+
+      if ( time == 0_ms )  // No options override, first apply any spec-based hardcoded timings
+      {
+        switch ( player->specialization() )
+        {
+          // case DRUID_BALANCE: time = 7.5_s; break;
+          default: break;
+        }
+      }
+
+      // shared cd (other trinkets & on-use items)
+      auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );
+
+      if ( time == 0_ms ) // No hardcoded override, so dynamically calculate timing via the precombat APL
+      {
+        time = 4_s;  // base 4s channel for full effect
+        auto apl = player->precombat_action_list;
+
+        auto it = range::find( apl, use_action );
+        if ( it == apl.end() )
+        {
+          sim->print_debug( "WARNING: Precombat /use_item for Font of Power exists but not found in precombat APL!" );
+          return;
+        }
+
+        if ( cdgrp )
+          cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
+
+        // add cast time or gcd for any following precombat action
+        std::find_if( it + 1, apl.end(), [&time, this]( action_t* a ) {
+          if ( a->action_ready() )
+          {
+            timespan_t delta =
+              std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+            sim->print_debug(
+              "PRECOMBAT: Azshara's Font of Power prechannel timing pushed by {} for {}", delta, a->name() );
+            time += delta;
+
+            return a->harmful;  // stop processing after first valid harmful spell
+          }
+          return false;
+        } );
+      }
+
+      // how long you channel for (rounded down to seconds)
+      auto channel   = std::min( 4_s, timespan_t::from_seconds( static_cast<int>( time.total_seconds() ) ) );
+      // total duration of the buff from channeling
+      auto total     = buff->buff_duration * ( channel.total_seconds() + 1 );
+      // actual duration of the buff you'll get in combat
+      auto actual    = total + channel - time;
+      // cooldown on effect/trinket at start of combat
+      auto cd_dur    = cooldown->duration - time;
+      // shared cooldown at start of combat
+      auto cdgrp_dur = std::max( 0_ms, effect->cooldown_group_duration() - time );
+
+      sim->print_debug(
+        "PRECOMBAT: Azshara's Font of Power started {}s before combat via {}, channeled for {}s, {}s in-combat buff",
+        time, use_action ? "APL" : "BFA_OPT", channel, actual );
+
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
+
+      if ( use_action )  // from the apl, so cooldowns will be started by use_item_t. adjust. we are still in precombat.
+      {
+        make_event( *sim, [this, time, cdgrp] {  // make an event so we adjust after cooldowns are started
+          cooldown->adjust( -time );
+
+          if ( use_action )
+            use_action->cooldown->adjust( -time );
+
+          cdgrp->adjust( -time );
+        } );
+      }
+      else  // via bfa. option override, start cooldowns. we are in-combat.
+      {
+        cooldown->start( cd_dur );
+
+        if ( use_action )
+          use_action->cooldown->start( cd_dur );
+
+        if ( cdgrp_dur > 0_ms )
+          cdgrp->start( cdgrp_dur );
+      }
     }
 
     timespan_t tick_time( const action_state_t* ) const override
@@ -3786,11 +3887,30 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       return base_tick_time;
     }
 
+    void trigger_dot( action_state_t* s ) override
+    {
+      if ( player->in_combat )  // only trigger channel 'dot' in combat
+      {
+        proc_t::trigger_dot( s );
+      }
+    }
+
     void execute() override
     {
       proc_t::execute();
-      event_t::cancel( player->readying );
-      player->reset_auto_attacks( data().duration() );
+
+      if ( player->in_combat )  // only channel in-combat
+      {
+        event_t::cancel( player->readying );
+        player->reset_auto_attacks( data().duration() );
+      }
+      else  // if precombat...
+      {
+        if ( use_action )  // ...and use_item exists in the precombat apl
+        {
+          precombat_buff();
+        }
+      }
     }
 
     void tick( dot_t* d ) override
@@ -3813,44 +3933,27 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     }
   };
 
-  auto buff = buff_t::find( effect.player, "latent_arcana" );
+  auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "latent_arcana" ) );
   if ( !buff )
   {
-    buff = make_buff<stat_buff_t>( effect.player, "latent_arcana", effect.trigger() )
-      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-        effect.trigger()->effectN( 1 ).average( effect.item ) );
+    buff = make_buff<stat_buff_t>( effect.player, "latent_arcana", effect.trigger() );
+    buff->add_stat(
+      effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.trigger()->effectN( 1 ).average( effect.item ) );
     buff->set_refresh_behavior( buff_refresh_behavior::EXTEND );
   }
 
-  auto action = create_proc_action<latent_arcana_channel_t>( "latent_arcana_channel", effect, buff );
+  auto action = new latent_arcana_channel_t( effect, buff );
+
   effect.execute_action = action;
   effect.disable_buff();
 
-  // pre-combat channeling hack
-  if ( effect.player->sim->bfa_opts.font_of_power_precombat_channel > 0_ms )
+  // pre-combat channeling hack via bfa. options
+  if ( effect.player->sim->bfa_opts.font_of_power_precombat_channel > 0_ms )  // option is set
   {
-    auto time = timespan_t::from_seconds(
-      static_cast<int>( effect.player->sim->bfa_opts.font_of_power_precombat_channel.total_seconds() ) );
-    if ( time > 0_ms )
-    {
-      auto channel = std::min( 4_s, time );  // how long you channel for
-      auto total =
-        effect.trigger()->duration() * ( channel.total_seconds() + 1 );  // total duration of the buff you got
-      auto actual = total + channel - time;  // actual duration of the buff you'll get in combat
-      auto cdgrp = effect.player->get_cooldown( effect.cooldown_group_name() );
-      auto cdgrp_dur = std::max( 0_ms, effect.cooldown_group_duration() - time );
-
-      effect.player->sim->print_debug(
-        "Azshara's Hack of Power started {}s before combat, channeled for {}s, giving {}s buff in combat", time,
-        channel, actual );
-
-      effect.player->register_combat_begin( [cdgrp, cdgrp_dur, buff, action, actual, time]( player_t* ) {
-        buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
-        action->cooldown->start( action->cooldown->duration - time );
-        if ( cdgrp_dur > 0_ms )
-          cdgrp->start( cdgrp_dur );
-      } );
-    }
+    effect.player->register_combat_begin( [action]( player_t* ) {
+      if ( !action->use_action )  // no use_item in precombat apl, so we apply the buff on combat start
+        action->precombat_buff();
+    } );
   }
 }
 
@@ -3975,7 +4078,10 @@ void items::anuazshara_staff_of_the_eternal( special_effect_t& effect )
 
   auto buff = buff_t::find( effect.player, "prodigys_potency" );
   if ( !buff )
+  {
     buff = make_buff( effect.player, "prodigys_potency", effect.trigger() );
+    buff->set_max_stack( 255 );
+  }
 
   effect.custom_buff = buff;
   new prodigys_potency_cb_t( effect, lockout );
@@ -4025,7 +4131,7 @@ void items::shiver_venom_crossbow( special_effect_t& effect )
 
       if ( sim->bfa_opts.shiver_venom )
       {
-        frost->set_target( get_state()->target );
+        frost->set_target( execute_state->target );
         frost->execute();
       }
     }
@@ -4068,7 +4174,7 @@ void items::shiver_venom_lance( special_effect_t& effect )
 
       if ( sim->bfa_opts.shiver_venom )
       {
-        nature->set_target( get_state()->target );
+        nature->set_target( execute_state->target );
         nature->execute();
       }
     }
@@ -4088,6 +4194,8 @@ void items::shiver_venom_lance( special_effect_t& effect )
  * id=303572 damage spell
  * id=303573 crit buff value in effect#1
  * id=304877 damage spell value in effect #1
+ * 
+ * TODO: Determine refresh / stack behavior of the crit buff
  */
 struct razor_coral_constructor_t : public item_targetdata_initializer_t
 {
@@ -4106,6 +4214,10 @@ struct razor_coral_constructor_t : public item_targetdata_initializer_t
 
     td->debuff.razor_coral =
       make_buff( *td, "razor_coral_debuff", td->source->find_spell( 303568 ) )->set_activated( false );
+    td->debuff.razor_coral->set_stack_change_callback( [td]( buff_t*, int old_, int new_ ) {
+      if ( !new_ )  // buff on expiration, including demise
+        td->source->buffs.razor_coral->trigger( old_ );
+    } );
     td->debuff.razor_coral->reset();
   }
 };
@@ -4122,95 +4234,94 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
 
   struct ashvanes_razor_coral_t : public proc_t
   {
-    buff_t* buff;
-    dbc_proc_callback_t* proc;
     action_t* action;
+    buff_t* debuff;  // there can be only one target with the debuff at a time
 
-    ashvanes_razor_coral_t( const special_effect_t& e, buff_t* b, dbc_proc_callback_t* cb, action_t* a ) :
-      proc_t( e, "ashvanes_razor_coral", e.driver() ), buff( b ), proc( cb ), action( a )
+    ashvanes_razor_coral_t( const special_effect_t& e, action_t* a ) :
+      proc_t( e, "ashvanes_razor_coral", e.driver() ), action( a ), debuff( nullptr )
     {}
+
+    void reset_debuff()
+    {
+      debuff = nullptr;
+    }
 
     void execute() override
     {
       proc_t::execute();  // no damage, but sets up execute_state
-      auto td = player->get_target_data( execute_state->target );
-      assert( td );
-      assert( td->debuff.razor_coral );
 
-      if ( !td->debuff.razor_coral->check() )  // first time
+      if ( !debuff )  // first use
       {
         action->set_target( execute_state->target );
         action->execute();  // do the damage here
 
-        for ( auto t : sim->target_non_sleeping_list )  // clear everyone
-        {
-          auto td2 = player->get_target_data( t );
-          assert( td2 );
-          assert( td2->debuff.razor_coral );
-          td2->debuff.razor_coral->expire();
-        }
-
-        td->debuff.razor_coral->trigger();  // apply to new target
-        proc->activate();
+        auto td = player->get_target_data( execute_state->target );
+        debuff = td->debuff.razor_coral;
+        debuff->trigger();  // apply to new target
       }
-      else  // second time
+      else  // second use
       {
-        proc->deactivate();
-        buff->trigger( td->debuff.razor_coral->stack() );
-        td->debuff.razor_coral->expire();
+        debuff->expire();  // debuff's stack_change_callback will trigger the crit buff
+        reset_debuff();
       }
     }
   };
 
   struct razor_coral_cb_t : public dbc_proc_callback_t
   {
-    razor_coral_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    ashvanes_razor_coral_t* action;
+
+    razor_coral_cb_t( const special_effect_t& e, ashvanes_razor_coral_t* a ) :
+      dbc_proc_callback_t( e.player, e ), action( a )
     {}
 
     void trigger( action_t* a, void* cd ) override
     {
-      auto state = static_cast<action_state_t*>( cd );
-      auto td    = listener->get_target_data( state->target );
-      if ( td->debuff.razor_coral->check() )  // Only trigger against the debuffed target
-      {
+      auto s = static_cast<action_state_t*>( cd );
+
+      if ( action->debuff && s && action->debuff->player == s->target && action->debuff->check() )
         dbc_proc_callback_t::trigger( a, cd );
-      }
     }
 
     void execute( action_t* a, action_state_t* s ) override
     {
       dbc_proc_callback_t::execute( a, s );
-      auto td = listener->get_target_data( s->target );
-      td->debuff.razor_coral->trigger();
+
+      if ( action->debuff )
+        action->debuff->trigger();
     }
   };
 
   // razor coral damage action used by both on-use and rppm proc
-  auto action = create_proc_action<razor_coral_t>( "razor_coral", effect );
+  auto razor = create_proc_action<razor_coral_t>( "razor_coral", effect );
 
-  // crit buff from 2nd on-use activation
-  auto buff = buff_t::find( effect.player, "razor_coral" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "razor_coral", effect.player->find_spell( 303570 ) )
-      ->add_stat( STAT_CRIT_RATING, effect.player->find_spell( 303573 )->effectN( 1 ).average( effect.item ) );
-  }
+  // the primary on-use
+  auto action = new ashvanes_razor_coral_t( effect, razor );
+  effect.execute_action = action;
 
   // secondary rppm effect for when debuff is applied
   auto second            = new special_effect_t( effect.player );
   second->type           = SPECIAL_EFFECT_EQUIP;
   second->source         = effect.source;
   second->spell_id       = 303565;
-  second->execute_action = action;
-  effect.player->special_effects.push_back( second );
+  second->execute_action = razor;
 
-  auto proc = new razor_coral_cb_t( *second );
-  proc->deactivate();
+  effect.player->special_effects.push_back( second );
+  auto proc = new razor_coral_cb_t( *second, action );
   proc->initialize();
 
-  // the primary on-use
-  effect.execute_action =
-    create_proc_action<ashvanes_razor_coral_t>( "ashvanes_razor_coral", effect, buff, proc, action );
+  // crit buff from 2nd on-use activation
+  if ( !effect.player->buffs.razor_coral )
+  {
+    effect.player->buffs.razor_coral =
+      make_buff<stat_buff_t>( effect.player, "razor_coral", effect.player->find_spell( 303570 ) )
+        ->add_stat( STAT_CRIT_RATING, effect.player->find_spell( 303573 )->effectN( 1 ).average( effect.item ) )
+        ->set_refresh_behavior( buff_refresh_behavior::DURATION )  // TODO: determine this behavior
+        ->set_stack_change_callback( [action]( buff_t*, int, int new_ ) {
+          if ( new_ )
+            action->reset_debuff();  // buff also gets applied on demise, so reset the pointer in case this happens
+        } );
+  }
 }
 
 /**Dribbling Inkpod
@@ -4220,7 +4331,6 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
  * id=302491 damage spell
  * id=302565 stacking debuff
  * id=302597 unknown
- * TODO: Change damage handling to trigger as soon as target reaches 30% hp, not waiting for the next rppm proc.
  */
 struct conductive_ink_constructor_t : public item_targetdata_initializer_t
 {
@@ -4238,7 +4348,8 @@ struct conductive_ink_constructor_t : public item_targetdata_initializer_t
     assert( !td->debuff.conductive_ink );
 
     td->debuff.conductive_ink =
-      make_buff( *td, "conductive_ink_debuff", td->source->find_spell( 302565 ) )->set_activated( false );
+      make_buff( *td, "conductive_ink_debuff", td->source->find_spell( 302565 ) )->set_activated( false )
+      ->set_max_stack( 255 );
     td->debuff.conductive_ink->reset();
   }
 };
@@ -4248,37 +4359,73 @@ void items::dribbling_inkpod( special_effect_t& effect )
   struct conductive_ink_cb_t : public dbc_proc_callback_t
   {
     double hp_pct;
-    action_t* action;
 
-    conductive_ink_cb_t( const special_effect_t& e, action_t* a ) :
-      dbc_proc_callback_t( e.player, e ), hp_pct( e.driver()->effectN( 3 ).base_value() ), action( a )
+    conductive_ink_cb_t( const special_effect_t& e ) :
+      dbc_proc_callback_t( e.player, e ), hp_pct( e.trigger()->effectN( 1 ).base_value() )
     {}
 
-    void execute( action_t* a, action_state_t* s )
+    void trigger( action_t* a, void* cd ) override
     {
+      auto s = static_cast<action_state_t*>( cd );
+
+      if ( s->target->health_percentage() > hp_pct )
+      {
+        dbc_proc_callback_t::trigger( a, cd );
+      }
+    }
+
+    void execute( action_t*, action_state_t* s )
+    {
+      if ( s->target->health_percentage() > hp_pct )
+      {
+        auto td = listener->get_target_data( s->target );
+        assert( td );
+        assert( td->debuff.conductive_ink );
+        td->debuff.conductive_ink->trigger();
+      }
+    }
+  };
+
+  struct conductive_ink_boom_cb_t : public dbc_proc_callback_t
+  {
+    double hp_pct;
+
+    conductive_ink_boom_cb_t( const special_effect_t& e, const special_effect_t& primary ) :
+      dbc_proc_callback_t( e.player, e ), hp_pct( primary.trigger()->effectN( 1 ).base_value() )
+    {}
+
+    void trigger( action_t* a, void* cd ) override
+    {
+      auto s  = static_cast<action_state_t*>( cd );
       auto td = listener->get_target_data( s->target );
       assert( td );
       assert( td->debuff.conductive_ink );
 
-      if ( s->target->health_percentage() >= hp_pct )  // over %, stack debuff
+      if ( td->debuff.conductive_ink->check() && s->target->health_percentage() <= hp_pct )
       {
-        td->debuff.conductive_ink->trigger();
+        dbc_proc_callback_t::trigger( a, cd );
       }
-      // BOOM. But should happen as soon as target reaches 30%, not waiting until the next rppm proc we do like here.
-      else if ( td->debuff.conductive_ink->check() )
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      auto td = listener->get_target_data( s->target );
+
+      // Simultaneous attacks that hit at once can all count as the damage to burst the debuff, triggering the callback
+      // multiple times. Ensure the event-scheduled callback execute checks for the debuff so we don't get multiple hits
+      if ( td->debuff.conductive_ink->check() )
       {
-        action->set_target( s->target );
-        action->execute();
-        td->debuff.conductive_ink->expire();
+        dbc_proc_callback_t::execute( a, s );
       }
     }
   };
 
   struct conductive_ink_t : public proc_t
   {
-    conductive_ink_t( const special_effect_t& e ) : proc_t( e, "conductive_ink", e.player->find_spell( 302491 ) )
+    conductive_ink_t( const special_effect_t& e, const special_effect_t& primary ) :
+      proc_t( e, "conductive_ink", e.driver() )
     {
-      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      base_dd_min = base_dd_max = primary.driver()->effectN( 1 ).average( primary.item );
     }
 
     double action_multiplier() const override
@@ -4289,11 +4436,29 @@ void items::dribbling_inkpod( special_effect_t& effect )
 
       return proc_t::action_multiplier() * td->debuff.conductive_ink->stack();
     }
+
+    void impact( action_state_t* s ) override
+    {
+      auto td = player->get_target_data( s->target );
+      td->debuff.conductive_ink->expire();
+
+      proc_t::impact( s );
+    }
   };
 
-  auto action = create_proc_action<conductive_ink_t>( "conductive_ink", effect );
+  new conductive_ink_cb_t( effect );
 
-  new conductive_ink_cb_t( effect, action );
+  auto second            = new special_effect_t( effect.player );
+  second->type           = effect.type;
+  second->source         = effect.source;
+  second->spell_id       = 302491;
+  second->proc_flags_    = PF_ALL_DAMAGE | PF_PERIODIC;
+  second->proc_flags2_   = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  second->proc_chance_   = 1.0;
+  second->execute_action = create_proc_action<conductive_ink_t>( "conductive_ink", *second, effect );
+  effect.player->special_effects.push_back( second );
+
+  new conductive_ink_boom_cb_t( *second, effect );
 }
 
 // Reclaimed Shock Coil ===================================================
@@ -4357,7 +4522,7 @@ void items::divers_folly( special_effect_t& effect )
     divers_folly_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {}
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( action_t*, action_state_t* ) override
     {
       listener->buffs.bioelectric_charge->trigger();
     }
@@ -4407,7 +4572,7 @@ void items::divers_folly( special_effect_t& effect )
 
   // discharge action, executed by secondary proc
   auto action2 = create_proc_action<proc_t>( "bioelectric_charge", effect, "bioelectric_charge", 303583 );
-  action2->aoe = effect.driver()->effectN( 2 ).base_value();
+  action2->aoe = static_cast<int>( effect.driver()->effectN( 2 ).base_value() );
 
   second->execute_action = action2;
   effect.player->special_effects.push_back( second );
@@ -4482,6 +4647,26 @@ void items::remote_guidance_device( special_effect_t& effect )
 
   auto area = create_proc_action<remote_guidance_device_aoe_t>( "remote_guidance_device_aoe", effect );
   effect.execute_action = create_proc_action<remote_guidance_device_t>( "remote_guidance_device", effect, area );
+}
+
+// Gladiator's Maledict ===================================================
+
+void items::gladiators_maledict( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<proc_spell_t>( "gladiators_maledict", effect );
+  effect.execute_action->base_td = effect.player->find_spell( 305251 )->effectN( 1 ).average( effect.item );
+}
+
+// Geti'ikku, Cut of Death ================================================
+
+void items::getiikku_cut_of_death( special_effect_t& effect )
+{
+  // Note, no create_proc_action here, since there is the possibility of dual-wielding them and
+  // special_effect_t does not have enough support for defining "shared spells" on initialization
+  effect.execute_action = new proc_spell_t( "cut_of_death", effect.player,
+    effect.player->find_spell( 281711 ), effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Punchcard stuff ========================================================
@@ -4690,22 +4875,25 @@ void items::subroutine_optimization( special_effect_t& effect )
 {
   struct subroutine_optimization_buff_t : public buff_t
   {
-    std::vector<std::tuple<stat_e, double, double>> dist;
     std::array<double, STAT_MAX> stats;
+    stat_e major_stat;
+    stat_e minor_stat;
     item_t punchcard;
     double raw_bonus;
 
     subroutine_optimization_buff_t( const special_effect_t& effect ) :
       buff_t( effect.player, "subroutine_optimization", effect.trigger() ),
+      major_stat( STAT_NONE ),
+      minor_stat( STAT_NONE ),
       punchcard( init_punchcard( effect ) ),
       raw_bonus( item_database::apply_combat_rating_multiplier( effect.player,
           combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
           punchcard.item_level(),
           effect.driver()->effectN( 2 ).average( &( punchcard ) ) ) )
     {
-      // Collect the stat distribution to the vector
+      // Find the two stats provided by the punchcard.
       auto stat_spell = yellow_punchcard( effect );
-      double total_coefficient = 0.0;
+      std::vector<std::pair<stat_e, double>> punchcard_stats;
       for ( size_t i = 1u; i <= stat_spell->effect_count(); ++i )
       {
         if ( stat_spell->effectN( i ).subtype() != A_MOD_RATING )
@@ -4715,14 +4903,21 @@ void items::subroutine_optimization( special_effect_t& effect )
 
         auto stats = ::util::translate_all_rating_mod( stat_spell->effectN( i ).misc_value1() );
         double value = stat_spell->effectN( i ).m_coefficient();
-        total_coefficient += value;
 
-        dist.emplace_back( stats.front(), value, value );
+        punchcard_stats.emplace_back( stats.front(), value );
       }
 
-      range::for_each( dist, [total_coefficient]( std::tuple<stat_e, double, double>& entry ) {
-        std::get<1>( entry ) = std::get<1>( entry ) / total_coefficient;
-      } );
+      // Find out which stat has the bigger coefficient.
+      range::sort( punchcard_stats, [] ( const auto& a, const auto& b ) { return a.second > b.second; } );
+      if ( punchcard_stats.size() == 2 )
+      {
+        major_stat = punchcard_stats[ 0 ].first;
+        minor_stat = punchcard_stats[ 1 ].first;
+      }
+      else
+      {
+        assert( false );
+      }
     }
 
     const spell_data_t* yellow_punchcard( const special_effect_t& effect ) const
@@ -4797,7 +4992,17 @@ void items::subroutine_optimization( special_effect_t& effect )
       {
         source->stat_loss( stat, delta, nullptr, nullptr, true );
       }
+    }
 
+    double stat_multiplier( stat_e s ) const
+    {
+      // Stat split is defined somewhere server side.
+      if ( s == major_stat )
+        return 0.6;
+      else if ( s == minor_stat )
+        return 0.4;
+      else
+        return 0.0;
     }
 
     void adjust_stats( bool up )
@@ -4809,53 +5014,32 @@ void items::subroutine_optimization( special_effect_t& effect )
 
       // TODO: scale factor behavior?
       double haste = source->current.stats.haste_rating;
-      double new_haste = 0, bonus_haste = 0;
       double mastery = source->current.stats.mastery_rating;
-      double new_mastery = 0, bonus_mastery = 0;
       double crit = source->current.stats.crit_rating;
-      double new_crit = 0, bonus_crit = 0;
       double versatility = source->current.stats.versatility_rating;
-      double new_versatility = 0, bonus_versatility = 0;
-      double total = haste + mastery + crit + versatility;
 
-      range::for_each( dist, [&]( const std::tuple<stat_e, double, double>& distribution ) {
-          auto stat = std::get<0>( distribution );
-          switch ( stat )
-          {
-            case STAT_HASTE_RATING:
-              new_haste   = total * std::get<1>( distribution );
-              bonus_haste = as<double>( !up * raw_bonus * std::get<2>( distribution ) );
-              break;
-            case STAT_CRIT_RATING:
-              new_crit   = total * std::get<1>( distribution );
-              bonus_crit = as<double>( !up * raw_bonus * std::get<2>( distribution ) );
-              break;
-            case STAT_MASTERY_RATING:
-              new_mastery   = total * std::get<1>( distribution );
-              bonus_mastery = as<double>( !up * raw_bonus * std::get<2>( distribution ) );
-              break;
-            case STAT_VERSATILITY_RATING:
-              new_versatility    = total * std::get<1>( distribution );
-              bonus_versatility = as<double>( !up * raw_bonus * std::get<2>( distribution ) );
-              break;
-            default:
-              break;
-          }
-      } );
+      double total = haste + mastery + crit + versatility;
+      if ( !up )
+        total += raw_bonus;
+
+      double new_haste = total * stat_multiplier( STAT_HASTE_RATING );
+      double new_mastery = total * stat_multiplier( STAT_MASTERY_RATING );
+      double new_crit = total * stat_multiplier( STAT_CRIT_RATING );
+      double new_versatility = total * stat_multiplier( STAT_VERSATILITY_RATING );
 
       if ( sim->debug )
       {
         sim->out_debug.print(
-          "{} subroutine_optimization total={}, haste={}->{} (+{}), crit={}->{} (+{}), "
-          "mastery={}->{} (+{}), versatility={}->{} (+{})",
-          source->name(), total, haste, new_haste, bonus_haste, crit, new_crit, bonus_crit,
-          mastery, new_mastery, bonus_mastery, versatility, new_versatility, bonus_versatility );
+          "{} subroutine_optimization total={}, haste={}->{}, crit={}->{}, "
+          "mastery={}->{}, versatility={}->{}",
+          source->name(), total, haste, new_haste, crit, new_crit,
+          mastery, new_mastery, versatility, new_versatility );
       }
 
-      adjust_stat( STAT_HASTE_RATING, haste, new_haste + bonus_haste );
-      adjust_stat( STAT_CRIT_RATING, crit, new_crit + bonus_crit );
-      adjust_stat( STAT_MASTERY_RATING, mastery, new_mastery + bonus_mastery );
-      adjust_stat( STAT_VERSATILITY_RATING, versatility, new_versatility + bonus_versatility );
+      adjust_stat( STAT_HASTE_RATING, haste, new_haste );
+      adjust_stat( STAT_CRIT_RATING, crit, new_crit );
+      adjust_stat( STAT_MASTERY_RATING, mastery, new_mastery );
+      adjust_stat( STAT_VERSATILITY_RATING, versatility, new_versatility );
     }
 
     void bump( int stacks, double value ) override
@@ -4933,8 +5117,6 @@ void items::harmonic_dematerializer( special_effect_t& effect )
     buff = make_buff( effect.player, "harmonic_dematerializer", effect.driver() );
     buff->set_cooldown( timespan_t::zero() );
     buff->set_default_value( effect.driver()->effectN( 2 ).percent() );
-    // TODO: How does the buff work when you refresh it?
-    buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   }
 
   effect.execute_action = create_proc_action<harmonic_dematerializer_t>( "harmonic_dematerializer",
@@ -5418,6 +5600,8 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 303356, items::dreams_end );
   register_special_effect( 303353, items::divers_folly );
   register_special_effect( 302307, items::remote_guidance_device );
+  register_special_effect( 305252, items::gladiators_maledict );
+  register_special_effect( 281712, items::getiikku_cut_of_death );
   // 8.2 Mechagon combo rings
   register_special_effect( 300124, items::logic_loop_of_division );
   register_special_effect( 300125, items::logic_loop_of_recursion );

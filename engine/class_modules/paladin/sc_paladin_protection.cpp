@@ -610,9 +610,9 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     }
   }
 
-  double recharge_multiplier() const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double rm = paladin_melee_attack_t::recharge_multiplier();
+    double rm = paladin_melee_attack_t::recharge_multiplier( cd );
 
     if ( p() -> player_t::buffs.memory_of_lucid_dreams -> check() )
     {

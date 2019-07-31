@@ -26,6 +26,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/arcane_intellect
 actions.precombat+=/summon_water_elemental
 actions.precombat+=/snapshot_stats
+actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/mirror_image
 actions.precombat+=/potion
 actions.precombat+=/frostbolt
@@ -55,7 +56,7 @@ actions.aoe+=/glacial_spike
 # Using Cone of Cold is mostly DPS neutral with the AoE target thresholds. It only becomes decent gain with roughly 7 or more targets.
 actions.aoe+=/cone_of_cold
 actions.aoe+=/use_item,name=tidestorm_codex,if=buff.icy_veins.down&buff.rune_of_power.down
-actions.aoe+=/use_item,name=pocketsized_computation_device,if=cooldown.cyclotronic_blast.duration&buff.icy_veins.down&buff.rune_of_power.down
+actions.aoe+=/use_item,effect_name=cyclotronic_blast,if=buff.icy_veins.down&buff.rune_of_power.down
 actions.aoe+=/frostbolt
 actions.aoe+=/call_action_list,name=movement
 actions.aoe+=/ice_lance
@@ -69,7 +70,6 @@ actions.cooldowns+=/rune_of_power,if=prev_gcd.1.frozen_orb|target.time_to_die>10
 actions.cooldowns+=/call_action_list,name=talent_rop,if=talent.rune_of_power.enabled&active_enemies=1&cooldown.rune_of_power.full_recharge_time<cooldown.frozen_orb.remains
 actions.cooldowns+=/potion,if=prev_gcd.1.icy_veins|target.time_to_die<30
 actions.cooldowns+=/use_items
-actions.cooldowns+=/use_item,name=pocketsized_computation_device,if=!cooldown.cyclotronic_blast.duration
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/lights_judgment
@@ -104,7 +104,7 @@ actions.single+=/ray_of_frost,if=debuff.packed_ice.up,interrupt_if=buff.fingers_
 actions.single+=/blizzard
 actions.single+=/ice_nova
 actions.single+=/use_item,name=tidestorm_codex,if=buff.icy_veins.down&buff.rune_of_power.down
-actions.single+=/use_item,name=pocketsized_computation_device,if=cooldown.cyclotronic_blast.duration&buff.icy_veins.down&buff.rune_of_power.down
+actions.single+=/use_item,effect_name=cyclotronic_blast,if=buff.icy_veins.down&buff.rune_of_power.down
 actions.single+=/frostbolt
 actions.single+=/call_action_list,name=movement
 actions.single+=/ice_lance
