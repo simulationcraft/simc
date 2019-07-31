@@ -5536,6 +5536,8 @@ void hunter_t::apl_surv()
   precombat -> add_talent( this, "Steel Trap" );
   precombat -> add_action( this, "Harpoon" );
   precombat -> add_action( "use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists" );
+  precombat -> add_action( "use_item,name=azsharas_font_of_power" );
+  precombat -> add_action( "guardian_of_azeroth" );
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "use_items" );
