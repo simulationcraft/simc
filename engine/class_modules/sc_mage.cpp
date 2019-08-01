@@ -5825,7 +5825,6 @@ void mage_t::apl_fire()
   active_talents->add_talent( this, "Dragon's Breath", "if=talent.alexstraszas_fury.enabled&(buff.combustion.down&!buff.hot_streak.react|buff.combustion.up&action.fire_blast.charges<action.fire_blast.max_charges&!buff.hot_streak.react)" );
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down", "Combustion phase prepares abilities with a delay, then launches into the Combustion sequence" );
-  combustion_phase->add_talent( this, "Living Bomb", "if=buff.combustion.down&active_enemies>1" );
   combustion_phase->add_action( "blood_of_the_enemy" );
   combustion_phase->add_action( "guardian_of_azeroth" );
   combustion_phase->add_action( "memory_of_lucid_dreams" );
