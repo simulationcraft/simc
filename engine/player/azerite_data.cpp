@@ -4503,30 +4503,34 @@ void strive_for_perfection( special_effect_t& effect )
   if ( !essence.enabled() )
     return;
 
+  effect.player->sim->print_debug(
+    "{} reducing cooldown by {}%", effect.name(), vision_of_perfection_cdr( essence ) * -100 );
+
   if ( essence.rank() >= 3 )
   {
-    double avg = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
-    effect.player->passive.versatility_rating += item_database::apply_combat_rating_multiplier( *essence.item(), avg );
+    double avg = item_database::apply_combat_rating_multiplier( *essence.item(),
+      essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average( essence.item() ) );
+    effect.player->passive.versatility_rating += avg;
+    effect.player->sim->print_debug( "{} increasing versatility by {} rating", effect.name(), avg );
   }
 }
 
 // Major Power: Vision of Perfect (Passive)
-void vision_of_perfection(special_effect_t& effect)
+void vision_of_perfection( special_effect_t& effect )
 {
-  auto essence = effect.player->find_azerite_essence(effect.driver()->essence_id());
-  if (!essence.enabled())
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
     return;
 
   struct vision_of_perfection_callback_t : public dbc_proc_callback_t
   {
-    vision_of_perfection_callback_t(player_t* p, special_effect_t& e) :
-      dbc_proc_callback_t(p, e)
+    vision_of_perfection_callback_t( player_t* p, special_effect_t& e ) : dbc_proc_callback_t( p, e )
     {}
 
-    void execute(action_t* a, action_state_t* s) override
+    void execute( action_t* a, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute(a, s);
-      make_event( *listener->sim, [ this ] { listener->vision_of_perfection_proc(); } );
+      dbc_proc_callback_t::execute( a, s );
+      make_event( *listener->sim, [this] { listener->vision_of_perfection_proc(); } );
     }
   };
 
@@ -4534,7 +4538,7 @@ void vision_of_perfection(special_effect_t& effect)
   //   1) id=297866 0.85 rppm, 0.1s icd, yellow hits + dot -- tank spec: logs show tank spec procing with 2.4s interval
   //   2) id=297868 0.85 rppm, 0.1s icd, heals only      -- healer spec: hotfix on this spell for holy paladins
   //   3) id=297869 0.85 rppm, 3.5s icd, yellow hits + dot -- dps spec?: by process of elimination?
-  switch (effect.player->specialization())
+  switch ( effect.player->specialization() )
   {
     case DEATH_KNIGHT_BLOOD:
     case DEMON_HUNTER_HAVOC:
@@ -4557,19 +4561,22 @@ void vision_of_perfection(special_effect_t& effect)
       break;
   }
 
-  if (essence.rank() >= 3)
+  if ( essence.rank() >= 3 )
   {
     // buff id=303344, not referenced in spell data
     // amount from R3 major/upgrade
-    effect.custom_buff = buff_t::find(effect.player, "vision_of_perfection");
-    if (!effect.custom_buff)
+    effect.custom_buff = buff_t::find( effect.player, "vision_of_perfection" );
+    if ( !effect.custom_buff )
     {
-      effect.custom_buff = make_buff<stat_buff_t>(effect.player, "vision_of_perfection", effect.player->find_spell(303344))
-        ->add_stat(STAT_HASTE_RATING, essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(2).average(essence.item()));
+      effect.custom_buff =
+        make_buff<stat_buff_t>( effect.player, "vision_of_perfection", effect.player->find_spell( 303344 ) )
+          ->add_stat( STAT_HASTE_RATING,
+            essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MAJOR )
+              .effectN( 2 ).average( essence.item() ) );
     }
   }
 
-  new vision_of_perfection_callback_t(effect.player, effect);
+  new vision_of_perfection_callback_t( effect.player, effect );
 }
 
 // Worldvein Resonance
