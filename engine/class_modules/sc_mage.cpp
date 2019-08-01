@@ -5905,7 +5905,7 @@ void mage_t::apl_fire()
   items_high_priority->add_action( "use_item,name=neural_synapse_enhancer,if=cooldown.combustion.remains>=45&buff.combustion.down&cooldown.combustion.remains>variable.on_use_cutoff" );
 
   items_combustion->add_action( "use_item,name=ignition_mages_fuse" );
-  items_combustion->add_action( "use_item,name=hyperthread_wristwraps,if=buff.combustion.up&(action.fire_blast.full_recharge_time>=10+gcd.remains|action.fire_blast.charges=0&action.fire_blast.recharge_time>gcd.remains)" );
+  items_combustion->add_action( "use_item,name=hyperthread_wristwraps,if=buff.combustion.up&action.fire_blast.charges=0&action.fire_blast.recharge_time>gcd.remains" );
   items_combustion->add_action( "use_item,use_off_gcd=1,name=azurethos_singed_plumage,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
   items_combustion->add_action( "use_item,use_off_gcd=1,effect_name=gladiators_badge,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
   items_combustion->add_action( "use_item,use_off_gcd=1,effect_name=gladiators_medallion,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
