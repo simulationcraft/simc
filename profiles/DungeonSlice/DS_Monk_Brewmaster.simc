@@ -54,12 +54,17 @@ actions+=/black_ox_brew,if=(energy+(energy.regen*cooldown.keg_smash.remains))<40
 actions+=/keg_smash,if=spell_targets>=2
 actions+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up
 actions+=/tiger_palm,if=(talent.invoke_niuzao_the_black_ox.enabled|talent.special_delivery.enabled)&buff.blackout_combo.up
+actions+=/expel_harm,if=buff.gift_of_the_ox.stack>4
 actions+=/blackout_strike
 actions+=/keg_smash
+actions+=/concentrated_flame
+actions+=/expel_harm,if=buff.gift_of_the_ox.stack>=3
 actions+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
 actions+=/breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))
 actions+=/chi_burst
 actions+=/chi_wave
+# Expel Harm has higher DPET than TP when you have at least 2 orbs.
+actions+=/expel_harm,if=buff.gift_of_the_ox.stack>=2
 actions+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65
 actions+=/arcane_torrent,if=energy<31
 actions+=/rushing_jade_wind

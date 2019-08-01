@@ -33,6 +33,7 @@ actions.precombat+=/lights_judgment
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/call_action_list,name=cooldowns
+actions+=/worldvein_resonance,if=buff.lifeblood.stack<3
 # Dumping SotR charges
 actions+=/shield_of_the_righteous,if=(buff.avengers_valor.up&cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)
 actions+=/shield_of_the_righteous,if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up&buff.avengers_valor.up
@@ -42,19 +43,25 @@ actions+=/consecration,if=!consecration.up
 actions+=/judgment,if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled
 actions+=/avengers_shield,if=cooldown_react
 actions+=/judgment,if=cooldown_react|!talent.crusaders_judgment.enabled
+actions+=/concentrated_flame,if=buff.seraphim.up&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3
 actions+=/lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up
+actions+=/anima_of_death
 actions+=/blessed_hammer,strikes=3
 actions+=/hammer_of_the_righteous
 actions+=/consecration
+actions+=/heart_essence,if=!essence.the_crucible_of_flame.major|!essence.worldvein_resonance.major|!essence.anima_of_life_and_death.major|!essence.memory_of_lucid_dreams.major
 
 actions.cooldowns=fireblood,if=buff.avenging_wrath.up
 actions.cooldowns+=/use_item,name=azsharas_font_of_power,if=cooldown.seraphim.remains<=10|!talent.seraphim.enabled
+actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>7&buff.avenging_wrath.up
 actions.cooldowns+=/seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
 actions.cooldowns+=/avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
+actions.cooldowns+=/memory_of_lucid_dreams,if=!talent.seraphim.enabled|cooldown.seraphim.remains<=gcd|buff.seraphim.up
 actions.cooldowns+=/bastion_of_light,if=cooldown.shield_of_the_righteous.charges_fractional<=0.5
 actions.cooldowns+=/potion,if=buff.avenging_wrath.up
 actions.cooldowns+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
-actions.cooldowns+=/use_item,name=grongs_primal_rage,if=((cooldown.judgment.full_recharge_time>4|(!talent.crusaders_judgment.enabled&prev_gcd.1.judgment))&cooldown.avengers_shield.remains>4&buff.seraphim.remains>4)|(buff.seraphim.remains<4)
+actions.cooldowns+=/use_item,name=grongs_primal_rage,if=cooldown.judgment.full_recharge_time>4&cooldown.avengers_shield.remains>4&(buff.seraphim.up|cooldown.seraphim.remains+4+gcd>expected_combat_length-time)&consecration.up
+actions.cooldowns+=/use_item,name=pocketsized_computation_device,if=cooldown.judgment.full_recharge_time>4*spell_haste&cooldown.avengers_shield.remains>4*spell_haste&(!equipped.grongs_primal_rage|!trinket.grongs_primal_rage.cooldown.up)&consecration.up
 actions.cooldowns+=/use_item,name=merekthas_fang,if=!buff.avenging_wrath.up&(buff.seraphim.up|!talent.seraphim.enabled)
 actions.cooldowns+=/use_item,name=razdunks_big_red_button
 
@@ -64,23 +71,23 @@ shoulders=pauldrons_of_fanatical_might,id=168364,bonus_id=4800/1517/4775,azerite
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
 chest=naga_centaurs_shellplate,id=168361,bonus_id=4800/1517/4775,azerite_powers=150/575/20/13
 wrists=waveblade_farseers_armguards,id=170303,bonus_id=1512
-hands=gauntlets_of_overflowing_chill,id=168386,bonus_id=4800/1517
+hands=poens_deepsea_handguards,id=170336,bonus_id=1512
 waist=eternity_keepers_greatbelt,id=168869,bonus_id=4800/1517
 legs=legplates_of_unbound_anguish,id=167217,bonus_id=4800/1547
 feet=akanas_reefstrider_boots,id=170143,bonus_id=1512
-finger1=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_versatility
-finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_versatility
-trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
-trinket2=vision_of_demise,id=169307,bonus_id=4800/1517
-main_hand=dreams_end,id=168902,bonus_id=4800/1517,enchant=force_multiplier
+finger1=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_critical_strike
+finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_haste
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
+main_hand=dreams_end,id=168902,bonus_id=4800/1517,enchant=deadly_navigation
 off_hand=great_reef_barrier,id=168476,bonus_id=4800/1517
 
 # Gear Summary
-# gear_ilvl=443.31
-# gear_strength=6939
-# gear_stamina=13292
-# gear_crit_rating=1288
-# gear_haste_rating=1226
-# gear_mastery_rating=828
-# gear_versatility_rating=493
-# gear_armor=9207
+# gear_ilvl=442.06
+# gear_strength=7412
+# gear_stamina=13140
+# gear_crit_rating=1246
+# gear_haste_rating=1283
+# gear_mastery_rating=701
+# gear_versatility_rating=373
+# gear_armor=9114
