@@ -6,7 +6,7 @@ race=lightforged_draenei
 role=tank
 position=front
 talents=1223231
-azerite_essences=12:3/22:3/4:3
+azerite_essences=12:3/13:3/22:3
 
 # Default consumables
 potion=superior_battle_potion_of_strength
