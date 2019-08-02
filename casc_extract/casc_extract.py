@@ -2,7 +2,7 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 import optparse, sys, os
 
-import build_cfg, casc
+import build_cfg, casc, keyfile
 import binascii
 
 parser = optparse.OptionParser( usage = 'Usage: %prog -d wow_install_dir [options] file_path ...')
@@ -21,6 +21,8 @@ parser.add_option( '-o', '--output', type = 'string', dest = 'output',
 		help = "Output directory for dbc mode, output file name for unpack mode" )
 parser.add_option( '-z', '--region', type = 'string', dest = 'region', default = 'us',
 		help = "Region for CDN downloads [default us]")
+parser.add_option( '-k', '--keydb', type = 'string', dest = 'key_file',
+		help = "A JSON key database file [default keyfile]", default = 'keyfile')
 parser.add_option( '-x', '--cache', type = 'string', dest = 'cache', default = 'cache', help = 'Cache directory [default cache]' )
 parser.add_option( '--ptr', action = 'store_true', dest = 'ptr', default = False, help = 'Download PTR files [default no, only used for --cdn]' )
 parser.add_option( '--beta', action = 'store_true', dest = 'beta', default = False, help = 'Download Beta files [default no, only used for --cdn]' )
@@ -32,6 +34,9 @@ parser.add_option( '--ribbit', action = 'store_true', dest = 'ribbit', default =
 if __name__ == '__main__':
 	(opts, args) = parser.parse_args()
 	opts.parser = parser
+
+	if not keyfile.initialize(opts):
+		sys.exit(1)
 
 	if not opts.mode and opts.online:
 		if opts.ribbit:
