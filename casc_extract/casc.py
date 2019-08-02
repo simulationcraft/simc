@@ -9,14 +9,16 @@ import keyfile
 try:
 	import salsa20
 	no_decrypt = False
-except Exception as e:
-	print('WARN: Unable to import salsa20 decryptor: %s' % e, file = sys.stderr)
+except Exception as error:
+	print('WARN: Salsa20 decryption disabled. Install the Python fixedint (https://pypi.org/project/fixedint/) package to enable' % error,
+		file = sys.stderr)
 	no_decrypt = True
 
 try:
     import requests
 except Exception as error:
-    print('ERROR: %s, casc_extract.py requires the Python requests (http://docs.python-requests.org/en/master/) package to function' % error, file = sys.stderr)
+    print('ERROR: %s, casc_extract.py requires the Python requests (http://docs.python-requests.org/en/master/) package to function' % error,
+		file = sys.stderr)
     sys.exit(1)
 
 _S = requests.Session()
