@@ -1,3 +1,4 @@
+# vim: tabstop=4 shiftwidth=4 softtabstop=4
 # Adapted from https://github.com/ladislav-zezula/CascLib/blob/master/src/CascDecrypt.cpp
 import sys, struct
 
@@ -12,25 +13,25 @@ def rol32(value, count):
 def initialize(key, iv):
     state = [None,] * 16
 
-    state[0] = uint32.from_bytes(CONSTANT, byteorder = 'little')
-    state[1] = uint32.from_bytes(key, byteorder = 'little')
-    state[2] = uint32.from_bytes(key[4:], byteorder = 'little')
-    state[3] = uint32.from_bytes(key[8:], byteorder = 'little')
-    state[4] = uint32.from_bytes(key[12:], byteorder = 'little')
-    state[5] = uint32.from_bytes(CONSTANT[4:], byteorder = 'little')
-    state[6] = uint32.from_bytes(iv, byteorder = 'little')
+    state[0] = uint32.from_bytes(CONSTANT, 'little')
+    state[1] = uint32.from_bytes(key, 'little')
+    state[2] = uint32.from_bytes(key[4:], 'little')
+    state[3] = uint32.from_bytes(key[8:], 'little')
+    state[4] = uint32.from_bytes(key[12:], 'little')
+    state[5] = uint32.from_bytes(CONSTANT[4:], 'little')
+    state[6] = uint32.from_bytes(iv, 'little')
     if len(iv) > 4:
-        state[7] = uint32.from_bytes(iv[4:], byteorder = 'little')
+        state[7] = uint32.from_bytes(iv[4:], 'little')
     else:
         state[7] = uint32(0)
     state[8] = uint32(0)
     state[9] = uint32(0)
-    state[10] = uint32.from_bytes(CONSTANT[8:], byteorder = 'little')
-    state[11] = uint32.from_bytes(key, byteorder = 'little')
-    state[12] = uint32.from_bytes(key[4:], byteorder = 'little')
-    state[13] = uint32.from_bytes(key[8:], byteorder = 'little')
-    state[14] = uint32.from_bytes(key[12:], byteorder = 'little')
-    state[15] = uint32.from_bytes(CONSTANT[12:], byteorder = 'little')
+    state[10] = uint32.from_bytes(CONSTANT[8:], 'little')
+    state[11] = uint32.from_bytes(key, 'little')
+    state[12] = uint32.from_bytes(key[4:], 'little')
+    state[13] = uint32.from_bytes(key[8:], 'little')
+    state[14] = uint32.from_bytes(key[12:], 'little')
+    state[15] = uint32.from_bytes(CONSTANT[12:], 'little')
 
     return state
 
@@ -85,10 +86,10 @@ def decrypt(state, data):
             state_copy[0x0f] ^= rol32(state_copy[0x0e] + state_copy[0x0d], 0x12)
 
         xor_values = [state_copy[i] + state[i] for i in range(0, len(state))]
-        xor_bytes = b''.join([v.to_bytes(4, byteorder = 'little') for v in xor_values])
+        xor_bytes = b''.join([v.to_bytes(4, 'little') for v in xor_values])
 
         for i in range(decrypted, decrypted + sz):
-            data_out[i] = (data[i] ^ xor_bytes[i - decrypted]).to_bytes(1, byteorder = 'little')
+            data_out[i] = (data[i] ^ xor_bytes[i - decrypted]).to_bytes(1, 'little')
 
         state[8] += 1
         if state[8] == 0:

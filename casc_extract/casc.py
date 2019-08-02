@@ -61,7 +61,8 @@ class BLTEChunk(object):
 
 		type = data[0]
 		if type not in [ _NULL_CHUNK, _COMPRESSED_CHUNK, _UNCOMPRESSED_CHUNK, _ENCRYPTED_CHUNK ]:
-			sys.stderr.write('Unknown chunk type %#x for chunk%d length=%d\n' % (type, self.id, len(data)))
+			sys.stderr.write('Unknown chunk type %#x for chunk%d length=%d\n' % (type,
+				self.id, len(data)))
 			return False
 
 		if type != 0x00:
@@ -79,7 +80,8 @@ class BLTEChunk(object):
 			dc = zlib.decompressobj()
 			uncompressed_data = dc.decompress(data[1:])
 			if len(dc.unused_data) > 0:
-				sys.stderr.write('Unused %d bytes of compressed data in chunk%d' % (len(dc.unused_data), self.id))
+				sys.stderr.write('Unused %d bytes of compressed data in chunk%d' % (
+					len(dc.unused_data), self.id))
 				return False
 
 			if len(uncompressed_data) != self.output_length:
