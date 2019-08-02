@@ -4,6 +4,15 @@ import os, sys, mmap, hashlib, stat, struct, zlib, glob, re, urllib.request, url
 
 import jenkins
 
+import keyfile
+
+try:
+	import salsa20
+	no_decrypt = False
+except Exception as e:
+	print('WARN: Unable to import salsa20 decryptor: %s' % e, file = sys.stderr)
+	no_decrypt = True
+
 try:
     import requests
 except Exception as error:
@@ -40,7 +49,7 @@ class BLTEChunk(object):
 		self.output_length = output_length
 		self.sum = md5s
 
-		self.output_data = ''
+		self.output_data = b''
 
 	def extract(self, data):
 		if len(data) != self.chunk_length:
@@ -56,12 +65,12 @@ class BLTEChunk(object):
 		if type != 0x00:
 			self.__verify(data)
 
-		return self.__decompress(data)
+		return self.__process(data)
 
-	def __decompress(self, data):
+	def __process(self, data):
 		type = data[0]
 		if type == _NULL_CHUNK:
-			self.output_data = ''
+			self.output_data = b''
 		elif type == _UNCOMPRESSED_CHUNK:
 			self.output_data = data[1:]
 		elif type == _COMPRESSED_CHUNK:
@@ -78,6 +87,11 @@ class BLTEChunk(object):
 
 			self.output_data = uncompressed_data
 		elif type == _ENCRYPTED_CHUNK:
+			# Could not import salsa20, write zeros
+			if no_decrypt:
+				self.output_data = b'\x00' * self.output_length
+				return True
+
 			offset = 1
 			key_name_len = struct.unpack_from('<B', data, offset)[0]
 			offset += 1
@@ -86,7 +100,7 @@ class BLTEChunk(object):
 					key_name_len)
 				return False
 
-			key_name = struct.unpack_from('%ds' % key_name_len, data, offset)[0]
+			key_name = data[offset:offset + key_name_len]
 			offset += key_name_len
 
 			iv_len = struct.unpack_from('<B', data, offset)[0]
@@ -96,8 +110,15 @@ class BLTEChunk(object):
 					iv_len)
 				return False
 
-			iv = struct.unpack_from('%ds' % iv_len, data, offset)[0]
+			iv = data[offset:offset + iv_len]
 			offset += iv_len
+
+			normalized_iv = b''
+
+			for i in range(0, len(iv)):
+				b = iv[i]
+				val = (self.id >> (i * 8)) & 0xff
+				normalized_iv += (b ^ val).to_bytes(1, byteorder = 'little')
 
 			type_ = struct.unpack_from('<c', data, offset)[0]
 			offset += 1
@@ -107,15 +128,28 @@ class BLTEChunk(object):
 					type_.decode('ascii'))
 				return False
 
-			sys.stderr.write('Encrypted chunk %d, type=%s, key_name_len=%d, key_name=%s, iv_len=%d iv=%s, sz=%d\n' % (
-				self.id, type_.decode('ascii'), key_name_len, binascii.hexlify(key_name).decode('ascii'), iv_len,
-				binascii.hexlify(iv).decode('ascii'),
-				len(data) - (_ENCRYPTION_HEADER.size + 1)
-			))
+			#sys.stderr.write('Encrypted chunk %d, type=%s, key_name_len=%d, key_name=%s, iv_len=%d iv=%s (%s), sz=%d, c_len=%d, o_len=%d offset=%d\n' % (
+			#	self.id, type_.decode('ascii'), key_name_len, binascii.hexlify(key_name).decode('ascii'), iv_len,
+			#	binascii.hexlify(iv).decode('ascii'), binascii.hexlify(normalized_iv).decode('ascii'),
+			#	len(data) - offset, self.chunk_length, self.output_length, offset
+			#))
 
-			self.output_data = b'\x00' * (len(data) - (_ENCRYPTION_HEADER.size + 1))
+			key = keyfile.find(key_name)
+			# No encryption key in the database, just write zeros
+			if not key:
+				self.output_data = b'\x00' * self.output_length
+				return True
+
+			state = salsa20.initialize(key, normalized_iv)
+			tmp_data = salsa20.decrypt(state, data[offset:])
+
+			# Run chunk processing once more, since the decrypted data is now a valid
+			# chunk to perform (a non-decryption) BLTE operation on
+			return self.__process(tmp_data)
 		else:
-			return False
+			sys.stderr.write('Unknown chunk %d, type=%c, sz=%d, out_len=%d\n' % (
+				self.id, data[0], len(data), self.output_length))
+			self.output_data = b'\x00' * self.output_length
 
 		return True
 
@@ -227,6 +261,7 @@ class BLTEFile(object):
 
 				self.output_data += chunk.output_data
 				sum_in_file += len(chunk.output_data)
+				#print(chunk_id, sum_in_file)
 
 		return True
 

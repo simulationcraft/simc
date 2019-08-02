@@ -4646,23 +4646,23 @@ class TactKeyGenerator(DataGenerator):
             for idx in range(0, 8):
                 vals.append('{:02x}'.format(getattr(data, 'key_name_{}'.format(idx + 1))))
 
-            map_[id] = {'key_name': ''.join(vals), 'key': None}
+            map_[id] = {'id': id, 'key_name': ''.join(vals), 'key': None}
 
 
         for id, data in self._tactkey_db.items():
             if id not in map_:
-                map_[id] = {'key_name': None, 'key': None}
+                map_[id] = {'id': id, 'key_name': None, 'key': None}
 
             vals = []
             for idx in range(0, 16):
                 vals.append('{:02x}'.format(getattr(data, 'key_{}'.format(idx + 1))))
             map_[id]['key'] = ''.join(vals)
 
-        out = {}
-        for v in map_.values():
-            if v['key_name'] == None:
-                continue
+        out = []
+        for v in sorted(map_.keys()):
+            data = map_[v]
+            out.append("  {{ \"id\": {:-3d}, \"key_id\": \"{}\", \"key\": {:34s} }}".format(
+                v, data['key_name'], data['key'] and "\"{}\"".format(data['key']) or "null"))
 
-            out[v['key_name']] = v['key']
+        self._out.write('[\n{}\n]'.format(',\n'.join(out)))
 
-        json.dump(out, fp = self._out, indent = 2, sort_keys = True)
