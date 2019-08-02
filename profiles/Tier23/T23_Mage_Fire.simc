@@ -85,7 +85,7 @@ actions.combustion_phase+=/dragons_breath,if=buff.combustion.remains<gcd.max&buf
 actions.combustion_phase+=/scorch,if=target.health.pct<=30&talent.searing_touch.enabled
 
 actions.items_combustion=use_item,name=ignition_mages_fuse
-actions.items_combustion+=/use_item,name=hyperthread_wristwraps,if=buff.combustion.up&(action.fire_blast.full_recharge_time>=10+gcd.remains|action.fire_blast.charges=0&action.fire_blast.recharge_time>gcd.remains)
+actions.items_combustion+=/use_item,name=hyperthread_wristwraps,if=buff.combustion.up&action.fire_blast.charges=0&action.fire_blast.recharge_time>gcd.remains
 actions.items_combustion+=/use_item,use_off_gcd=1,name=azurethos_singed_plumage,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5
 actions.items_combustion+=/use_item,use_off_gcd=1,effect_name=gladiators_badge,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5
 actions.items_combustion+=/use_item,use_off_gcd=1,effect_name=gladiators_medallion,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5
