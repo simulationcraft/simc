@@ -29,8 +29,7 @@ item_t::item_t( player_t* p, const std::string& o ) :
   is_ptr( p -> dbc.ptr ),
   parsed(),
   xml(),
-  options_str( o ), option_initial_cd(0),
-  cached_upgrade_item_level( -1 )
+  options_str( o ), option_initial_cd(0)
 {
   parsed.data.name = name_str.c_str();
 }
@@ -278,17 +277,9 @@ std::ostream& operator<<(std::ostream& s, const item_t& item )
     s << " slot=" << item.slot_name();
   }
   s << " quality=" << util::item_quality_string( item.parsed.data.quality );
-  if ( item.upgrade_level() > 0 )
-  {
-    s << " upgrade_level=" << item.upgrade_level();
-  }
   s << " ilevel=" << item.item_level();
   if ( item.parent_slot == SLOT_INVALID )
   {
-    if ( item.sim -> scale_to_itemlevel > 0 )
-      s << " (" << ( item.parsed.data.level + item_database::upgrade_ilevel( item, item.upgrade_level() ) ) << ")";
-    else if ( item.upgrade_level() > 0 )
-      s << " (" << item.parsed.data.level << ")";
     if ( item.parsed.drop_level > 0 )
       s << " drop_level=" << item.parsed.drop_level;
   }
@@ -445,24 +436,6 @@ bool item_t::has_item_stat( stat_e stat ) const
   return false;
 }
 
-// item_t::upgrade_level ====================================================
-
-unsigned item_t::upgrade_level() const
-{
-  return parsed.upgrade_level + sim -> global_item_upgrade_level;
-}
-
-unsigned item_t::upgrade_item_level() const
-{
-  // upgrade_ilevel call is expensive, thus cache it.
-  if ( cached_upgrade_item_level < 0 )
-  {
-    cached_upgrade_item_level = item_database::upgrade_ilevel( *this, upgrade_level() );
-  }
-  assert( as<unsigned>(cached_upgrade_item_level) == item_database::upgrade_ilevel( *this, upgrade_level() ) );
-  return as<unsigned>(cached_upgrade_item_level);
-}
-
 // item_t::item_level =======================================================
 
 unsigned item_t::item_level() const
@@ -481,10 +454,10 @@ unsigned item_t::item_level() const
   {
     ilvl = parsed.item_level;
   }
-  // Otherwise, normal ilevel processing (base ilevel + upgrade ilevel + artifact ilevel increase)
+  // Otherwise, normal ilevel processing (base ilevel + artifact ilevel increase)
   else
   {
-    ilvl = parsed.data.level + upgrade_item_level();
+    ilvl = parsed.data.level;
     if ( slot == player -> artifact -> slot() )
     {
       ilvl += player -> artifact -> ilevel_increase();
@@ -639,7 +612,7 @@ void item_t::parse_options()
 
   std::vector<std::unique_ptr<option_t>> options;
   options.push_back(opt_uint("id", parsed.data.id));
-  options.push_back(opt_int("upgrade", parsed.upgrade_level));
+  options.push_back(opt_obsoleted("upgrade"));
   options.push_back(opt_string("stats", option_stats_str));
   options.push_back(opt_string("gems", option_gems_str));
   options.push_back(opt_string("enchant", option_enchant_str));
@@ -891,9 +864,6 @@ std::string item_t::encoded_item() const
 
   if ( ! option_quality_str.empty() )
     s << ",quality=" << util::item_quality_string( parsed.data.quality );
-
-  if ( parsed.upgrade_level > 0 )
-    s << ",upgrade=" << encoded_upgrade_level();
 
   if ( ! option_stats_str.empty() )
     s << ",stats=" << encoded_stats();
@@ -1153,17 +1123,6 @@ std::string item_t::encoded_addon() const
   return stat_pairs_to_str( parsed.addon_stats );
 }
 
-// item_t::encoded_upgrade_level ============================================
-
-std::string item_t::encoded_upgrade_level() const
-{
-  std::string upgrade_level_str;
-  if ( parsed.upgrade_level > 0 )
-    upgrade_level_str = util::to_string( parsed.upgrade_level );
-
-  return upgrade_level_str;
-}
-
 // item_t::encoded_stats ====================================================
 
 std::string item_t::encoded_stats() const
@@ -1295,12 +1254,6 @@ void item_t::init()
   decode_quality();
   decode_ilevel();
   decode_armor_type();
-
-  if ( parsed.upgrade_level > 0 && ( ! parsed.data.quality || ( ! parsed.data.level && ! parsed.item_level ) ) )
-  {
-    sim -> errorf( "Player %s upgrading item %s at slot %s without quality or ilevel, upgrading will not work\n",
-                   player -> name(), name(), slot_name() );
-  }
 
   // Process complex input, and initialize item in earnest
 

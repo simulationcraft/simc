@@ -1255,11 +1255,6 @@ std::string report::decorated_item_name( const item_t* item )
       params.push_back( "enchantment=" + util::to_string( item->parsed.enchant_id ) );
     }
 
-    if ( item->parsed.upgrade_level > 0 )
-    {
-      params.push_back( "upgradeNum=" + util::to_string( item->parsed.upgrade_level ) );
-    }
-
     std::string gem_str = "";
     for ( size_t i = 0; i < item->parsed.gem_id.size(); ++i )
     {
@@ -1368,7 +1363,7 @@ std::vector<std::string> report::action_decorator_t::parms() const
 }
 
 report::spell_data_decorator_t::spell_data_decorator_t( const player_t* obj, const spell_data_t* spell )
-  : html_decorator_t(), m_sim( obj->sim ), m_player( obj ), m_spell( spell ), m_item( nullptr ), m_power( nullptr )
+  : html_decorator_t(), m_sim( obj->sim ), m_spell( spell ), m_item( nullptr ), m_power( nullptr )
 {
 }
 
@@ -1459,11 +1454,6 @@ std::vector<std::string> report::item_decorator_t::parms() const
   if ( m_item->parsed.enchant_id > 0 )
   {
     params.push_back( "ench=" + util::to_string( m_item->parsed.enchant_id ) );
-  }
-
-  if ( m_item->parsed.upgrade_level > 0 )
-  {
-    params.push_back( "upgd=" + util::to_string( m_item->parsed.upgrade_level ) );
   }
 
   std::stringstream gem_str;
