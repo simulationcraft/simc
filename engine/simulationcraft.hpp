@@ -1297,7 +1297,6 @@ struct sim_t : private sc_thread_t
   int allow_flasks;
   int allow_augmentations;
   int solo_raid;
-  int global_item_upgrade_level;
   bool maximize_reporting;
   std::string apikey, user_apitoken;
   bool distance_targeting_enabled;
@@ -2323,7 +2322,6 @@ struct item_t
   struct parsed_input_t
   {
     int                                              item_level;
-    int                                              upgrade_level;
     unsigned                                         enchant_id;
     unsigned                                         addon_id;
     int                                              armor;
@@ -2348,7 +2346,7 @@ struct item_t
     std::vector<unsigned>                            azerite_ids;
 
     parsed_input_t() :
-      item_level( 0 ), upgrade_level( 0 ), enchant_id( 0 ), addon_id( 0 ),
+      item_level( 0 ), enchant_id( 0 ), addon_id( 0 ),
       armor( 0 ), azerite_level( 0 ), data(), initial_cd( timespan_t::zero() ), drop_level( 0 )
     {
       range::fill( data.stat_type_e, -1 );
@@ -2402,12 +2400,11 @@ struct item_t
   // Extracted data
   gear_stats_t base_stats, stats;
 
-  mutable int cached_upgrade_item_level;
-
   item_t() : sim( nullptr ), player( nullptr ), slot( SLOT_INVALID ), parent_slot( SLOT_INVALID ),
     unique( false ), unique_addon( false ), is_ptr( false ),
-    parsed(), xml(), option_initial_cd(0),
-             cached_upgrade_item_level( -1 ) { }
+    parsed(), xml(), option_initial_cd(0)
+  { }
+
   item_t( player_t*, const std::string& options_str );
 
   bool active() const;
@@ -2425,8 +2422,6 @@ struct item_t
   bool socket_color_match() const;
 
   unsigned item_level() const;
-  unsigned upgrade_level() const;
-  unsigned upgrade_item_level() const;
   unsigned base_item_level() const;
   stat_e stat( size_t idx ) const;
   int stat_value( size_t idx ) const;
@@ -2441,7 +2436,6 @@ struct item_t
   std::string encoded_gems() const;
   std::string encoded_enchant() const;
   std::string encoded_addon() const;
-  std::string encoded_upgrade_level() const;
 
   void decode_stats();
   void decode_gems();
@@ -6998,7 +6992,6 @@ std::string stat_to_str( int stat, int stat_amount );
 double approx_scale_coefficient( unsigned current_ilevel, unsigned new_ilevel );
 int scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel );
 
-unsigned upgrade_ilevel( const item_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
 stat_pair_t item_enchantment_effect_stats( player_t* player, const item_enchantment_data_t& enchantment, int index );
 double item_budget( const item_t* item, unsigned max_ilevel );

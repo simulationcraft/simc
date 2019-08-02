@@ -438,14 +438,13 @@ public:
 class spell_data_decorator_t : public html_decorator_t<spell_data_decorator_t>
 {
   const sim_t* m_sim;
-  const player_t* m_player;
   const spell_data_t* m_spell;
   const item_t* m_item;
   const artifact_power_t* m_power;
 
 public:
   spell_data_decorator_t( const sim_t* obj, const spell_data_t* spell ) :
-    html_decorator_t(), m_sim( obj ), m_player( nullptr ), m_spell( spell ),
+    html_decorator_t(), m_sim( obj ), m_spell( spell ),
     m_item( nullptr ), m_power( nullptr )
   { }
 

@@ -1401,7 +1401,6 @@ sim_t::sim_t() :
   allow_flasks( true ),
   allow_augmentations( true ),
   solo_raid( false ),
-  global_item_upgrade_level( 0 ),
   maximize_reporting( false ),
 #ifndef SC_NO_NETWORKING
   apikey( get_api_key() ),
@@ -3502,7 +3501,7 @@ void sim_t::create_options()
   add_option( opt_bool( "ignore_invulnerable_targets", ignore_invulnerable_targets ) );
   add_option( opt_bool( "enable_dps_healing", enable_dps_healing ) );
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
-  add_option( opt_int( "global_item_upgrade_level", global_item_upgrade_level ) );
+  add_option( opt_obsoleted( "global_item_upgrade_level" ) );
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );

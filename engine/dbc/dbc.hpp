@@ -1535,8 +1535,6 @@ public:
   std::vector<const rppm_modifier_t*> real_ppm_modifiers( unsigned ) const;
   unsigned real_ppm_scale( unsigned ) const;
   double real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level = 0 ) const;
-
-  std::vector<const item_upgrade_t*> item_upgrades(unsigned ) const;
 private:
   template <typename T>
   const T* find_by_id( unsigned id ) const
