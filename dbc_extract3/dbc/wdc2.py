@@ -178,6 +178,8 @@ class WDC2Section:
         if len(self.offset_map) > 0:
             for index in range(0, len(self.offset_map)):
                 dbc_id, offset, size = self.offset_map[index]
+                if dbc_id == 0:
+                    continue
 
                 parent_id = self.key_block[index]
 
@@ -188,6 +190,9 @@ class WDC2Section:
         elif len(self.record_dbc_id_table) > 0:
             for index in range(0, len(self.record_dbc_id_table)):
                 dbc_id = self.record_dbc_id_table[index]
+                if dbc_id == 0:
+                    continue
+
                 offset = self.ptr_records + index * self.parser.record_size
                 parent_id = self.key_block[index]
 
@@ -284,35 +289,35 @@ class WDC2Parser(WDC1Parser):
         return True
 
     def parse_offset_map(self):
-        for section in filter(lambda s: s.tact_key_id == 0, self.section_data):
+        for section in self.section_data:
             if not section.parse_offset_map():
                 return False
 
         return True
 
     def parse_id_block(self):
-        for section in filter(lambda s: s.tact_key_id == 0, self.section_data):
+        for section in self.section_data:
             if not section.parse_id_block():
                 return False
 
         return True
 
     def parse_id_data(self):
-        for section in filter(lambda s: s.tact_key_id == 0, self.section_data):
+        for section in self.section_data:
             if not section.parse_id_data():
                 return False
 
         return True
 
     def parse_clone_block(self):
-        for section in filter(lambda s: s.tact_key_id == 0, self.section_data):
+        for section in self.section_data:
             if not section.parse_clone_block():
                 return False
 
         return True
 
     def parse_key_block(self):
-        for section in filter(lambda s: s.tact_key_id == 0, self.section_data):
+        for section in self.section_data:
             if not section.parse_key_block():
                 return False
 
@@ -339,7 +344,7 @@ class WDC2Parser(WDC1Parser):
         # Index by record id (aka dbc id)
         self.id_table = collections.defaultdict(lambda : None)
 
-        for section in filter(lambda s: s.tact_key_id == 0, self.section_data):
+        for section in self.section_data:
             records = section.construct_record_info()
             self.record_table += records
             for record in records:
