@@ -947,8 +947,13 @@ int dot_t::ticks_left() const
     return 0;
   if ( !ticking )
     return 0;
+
+  // If no tick_event is scheduled but the dot is ticking, ticks_left() was called
+  // during tick(). In that case, include the currently processed tick.
+  timespan_t next_tick = tick_event ? tick_event->remains() : 0_ms;
+
   return static_cast<int>(
-      std::ceil( remains() / current_action->tick_time( state ) ) );
+    1 + std::ceil( ( remains() - next_tick ) / current_action->tick_time( state ) ) );
 }
 
 /* Called on Dot start if dot action has tick_zero = true set.
