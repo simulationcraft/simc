@@ -10,7 +10,7 @@ try:
 	import salsa20
 	no_decrypt = False
 except Exception as error:
-	print('WARN: Salsa20 decryption disabled. Install the Python fixedint (https://pypi.org/project/fixedint/) package to enable' % error,
+	print('WARN: %s, salsa20 decryption disabled. Install the Python fixedint (https://pypi.org/project/fixedint/) package to enable' % error,
 		file = sys.stderr)
 	no_decrypt = True
 
