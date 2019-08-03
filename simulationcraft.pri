@@ -12,6 +12,10 @@ CONFIG(release, debug|release): OBJECTS_DIR = build/release
 
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
 
+isEmpty(SC_NO_NETWORKING) {
+  SC_NO_NETWORKING=$$(SC_NO_NETWORKING)
+}
+
 # Setup some paths if DESTDIR/PREFIX are defined for Linux stuff
 unix:!macx {
   !isEmpty(DESTDIR): PREFIX=$$DESTDIR/$$PREFIX
@@ -43,6 +47,11 @@ CONFIG(openssl) {
   }
 }
 
+!isEmpty(SC_NO_NETWORKING) {
+  DEFINES += SC_NO_NETWORKING
+  message(Building without networking support)
+}
+
 contains(QMAKE_CXX, .+/clang\+\+)|contains(QMAKE_CXX, .+/g\+\+) {
   QMAKE_CXXFLAGS += -Wextra
   QMAKE_CXXFLAGS_RELEASE -= -O2
@@ -72,8 +81,8 @@ macx {
 
 win32 {
   LIBS += -lshell32
-  win32-msvc2013|win32-msvc2015 {
-    QMAKE_CXXFLAGS_RELEASE += /Ot /MP
+  win32-msvc {
+    QMAKE_CXXFLAGS_RELEASE += /O2 /MP /GL
     QMAKE_CXXFLAGS_WARN_ON += /w44800 /w44100 /w44065
   }
 
