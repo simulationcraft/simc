@@ -4508,8 +4508,8 @@ void strive_for_perfection( special_effect_t& effect )
 
   if ( essence.rank() >= 3 )
   {
-    double avg = item_database::apply_combat_rating_multiplier( *essence.item(),
-      essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average( essence.item() ) );
+    double avg =
+      essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
     effect.player->passive.versatility_rating += avg;
     effect.player->sim->print_debug( "{} increasing versatility by {} rating", effect.name(), avg );
   }
