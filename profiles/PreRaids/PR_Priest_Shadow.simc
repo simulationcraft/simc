@@ -46,7 +46,7 @@ actions+=/run_action_list,name=single,if=active_enemies=1
 # Use Memory of Lucid Dreams right before you are about to fall out of Voidform
 actions.cds=memory_of_lucid_dreams,if=(buff.voidform.stack>20&insanity<=50)|buff.voidform.stack>(26+7*buff.bloodlust.up)|(current_insanity_drain*gcd.max*3)>insanity
 actions.cds+=/blood_of_the_enemy
-actions.cds+=/guardian_of_azeroth
+actions.cds+=/guardian_of_azeroth,if=buff.voidform.stack>15
 actions.cds+=/focused_azerite_beam,if=spell_targets.mind_sear>=2|raid_event.adds.in>60
 actions.cds+=/purifying_blast,if=spell_targets.mind_sear>=2|raid_event.adds.in>60
 actions.cds+=/the_unbound_force
