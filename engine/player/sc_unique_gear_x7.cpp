@@ -3262,6 +3262,12 @@ void items::nazjatar_proc_check( special_effect_t& effect )
   if ( !effect.player->sim->bfa_opts.nazjatar )
     return;
 
+  if ( effect.spell_id == 304715 )  // Tidal Droplet is not an AoE
+  {
+    effect.execute_action = create_proc_action<proc_spell_t>( "tidal_droplet", effect );
+    effect.execute_action->aoe = 0;
+  }
+
   effect.proc_flags_ = effect.driver()->proc_flags() & ~PF_ALL_HEAL;
   new dbc_proc_callback_t( effect.player, effect );
 }
