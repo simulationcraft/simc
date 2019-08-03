@@ -5033,7 +5033,7 @@ std::string demon_hunter_t::default_flask() const
 
 std::string demon_hunter_t::default_potion() const
 {
-  return (true_level > 110) ? (specialization() == DEMON_HUNTER_HAVOC ? "potion_of_focused_resolve" : "steelskin_potion") :
+  return (true_level > 110) ? (specialization() == DEMON_HUNTER_HAVOC ? "potion_of_unbridled_fury" : "steelskin_potion") :
          (true_level > 100) ? (specialization() == DEMON_HUNTER_HAVOC ? "prolonged_power" : "unbending_potion") :
          (true_level >= 90) ? (specialization() == DEMON_HUNTER_HAVOC ? "draenic_agility" : "draenic_versatility") :
          (true_level >= 85) ? "virmens_bite" :
