@@ -355,6 +355,9 @@ class WDC2Parser(WDC1Parser):
 
         return True
 
+    def get_dbc_info(self, dbc_id):
+        return self.id_table[dbc_id]
+
     def get_string_offset(self, raw_offset, dbc_id, field_index):
         column = self.data_column(field_index)
         record = self.id_table[dbc_id]
