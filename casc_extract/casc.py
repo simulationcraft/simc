@@ -70,7 +70,7 @@ class BLTEChunk(object):
 
 		return self.__process(data)
 
-	def __process(self, data):
+	def __process(self, data, recursive = False):
 		type = data[0]
 		if type == _NULL_CHUNK:
 			self.output_data = b''
@@ -91,6 +91,11 @@ class BLTEChunk(object):
 
 			self.output_data = uncompressed_data
 		elif type == _ENCRYPTED_CHUNK:
+			if recursive:
+				print("ERROR: Encrypted chunk within encrypted chunk not supported", file = sys.stderr)
+				self.output_data = b'\x00' * self.output_len
+				return False
+
 			# Could not import salsa20, write zeros
 			if no_decrypt:
 				self.output_data = b'\x00' * self.output_length
@@ -149,7 +154,7 @@ class BLTEChunk(object):
 
 			# Run chunk processing once more, since the decrypted data is now a valid
 			# chunk to perform (a non-decryption) BLTE operation on
-			return self.__process(tmp_data)
+			return self.__process(tmp_data, True)
 		else:
 			sys.stderr.write('Unknown chunk %d, type=%c, sz=%d, out_len=%d\n' % (
 				self.id, data[0], len(data), self.output_length))
