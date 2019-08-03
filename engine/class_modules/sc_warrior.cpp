@@ -1588,6 +1588,11 @@ struct bladestorm_t : public warrior_attack_t
         mortal_strike = new mortal_strike_t20_t( p, "bladestorm_mortal_strike" );
         add_child( mortal_strike );
       }
+      // Vision of Perfection only reduces the cooldown for Arms
+      if ( p->azerite.vision_of_perfection.enabled() && p->specialization() == WARRIOR_ARMS )
+      {
+        cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite.vision_of_perfection );
+      }
     }
   }
 
@@ -3274,6 +3279,11 @@ struct ravager_t : public warrior_attack_t
     {
       mortal_strike = new mortal_strike_t20_t( p, "ravager_mortal_strike" );
       add_child( mortal_strike );
+    }
+    // Vision of Perfection only reduces the cooldown for Arms
+    if ( p->azerite.vision_of_perfection.enabled() && p->specialization() == WARRIOR_ARMS )
+    {
+      cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite.vision_of_perfection );
     }
   }
 
@@ -6732,6 +6742,21 @@ void warrior_t::vision_of_perfection_proc()
       else
       {
         this->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+      }
+      break;
+    }
+
+    case WARRIOR_ARMS:
+    {
+      const timespan_t duration =
+          this->buff.bladestorm->data().duration() * azerite.vision_of_perfection_percentage;
+      if ( this->buff.bladestorm->check() )
+      {
+        this->buff.bladestorm->extend_duration( this, duration );
+      }
+      else
+      {
+        this->buff.bladestorm->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
       }
       break;
     }
