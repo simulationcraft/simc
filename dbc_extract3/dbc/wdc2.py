@@ -201,6 +201,9 @@ class WDC2Section:
                 record_id_map[record.dbc_id] = record
 
         for target_dbc_id, source_dbc_id in self.clone_block_data:
+            if source_dbc_id == 0:
+                continue
+
             if source_dbc_id not in record_id_map:
                 logging.warn('Unable to find clone source id %d in section %d', source_dbc_id, self.id)
                 continue
