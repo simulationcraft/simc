@@ -5083,6 +5083,8 @@ void demon_hunter_t::apl_precombat()
   {
     pre->add_action( this, "Metamorphosis", "if=!azerite.chaotic_transformation.enabled" );
   }
+
+  pre->add_action( "use_item,name=azsharas_font_of_power" );
 }
 
 // demon_hunter_t::apl_default ==============================================
@@ -5096,32 +5098,11 @@ void demon_hunter_t::apl_default()
 
 void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
 {
-  // On-Use Items
-  for ( auto& item : p->items )
-  {
-    auto effect = item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
-    if ( effect && effect->source != SPECIAL_EFFECT_SOURCE_ADDON )
-    {
-      if ( util::str_compare_ci( item.name_str, "galecallers_boon" ) )
-      {
-        apl->add_action( "use_item,name=galecallers_boon,sync=fel_barrage" );
-        apl->add_action( "use_item,name=galecallers_boon,if=!talent.fel_barrage.enabled" );
-      }
-      else if ( util::str_compare_ci( item.name_str, "pocketsized_computation_device" ) )
-      {
-        apl->add_action( "use_item,name=pocketsized_computation_device,if=buff.metamorphosis.down&buff.memory_of_lucid_dreams.down&(!talent.demon_blades.enabled|fury<60)" );
-      }
-      else if ( util::str_compare_ci( item.name_str, "ashvanes_razor_coral" ) )
-      {
-        apl->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(debuff.conductive_ink_debuff.up|buff.metamorphosis.remains>20)&target.health.pct<31|target.time_to_die<20" );
-      }
-      else
-      {
-        std::string line = std::string( "use_item,name=" ) + item.name_str;
-        apl->add_action( line );
-      }
-    }
-  }
+  apl->add_action( "use_item,name=galecallers_boon,if=!talent.fel_barrage.enabled|cooldown.fel_barrage.ready" );
+  apl->add_action( "use_item,effect_name=cyclotronic_blast,if=buff.metamorphosis.up&buff.memory_of_lucid_dreams.down&(!variable.blade_dance|!cooldown.blade_dance.ready)" );
+  apl->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(debuff.conductive_ink_debuff.up|buff.metamorphosis.remains>20)&target.health.pct<31|target.time_to_die<20" );
+  apl->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.metamorphosis.remains<10|cooldown.metamorphosis.remains>60" );
+  apl->add_action( "use_items,if=buff.metamorphosis.up", "Default fallback for usable items." );
 }
 
 void demon_hunter_t::apl_havoc()

@@ -28,6 +28,7 @@ actions.precombat+=/food
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/metamorphosis,if=!azerite.chaotic_transformation.enabled
+actions.precombat+=/use_item,name=azsharas_font_of_power
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -50,9 +51,12 @@ actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&(!azerite.chaotic_tra
 actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
-actions.cooldown+=/use_item,name=galecallers_boon,sync=fel_barrage
-actions.cooldown+=/use_item,name=galecallers_boon,if=!talent.fel_barrage.enabled
-actions.cooldown+=/use_item,name=lustrous_golden_plumage
+actions.cooldown+=/use_item,name=galecallers_boon,if=!talent.fel_barrage.enabled|cooldown.fel_barrage.ready
+actions.cooldown+=/use_item,effect_name=cyclotronic_blast,if=buff.metamorphosis.up&buff.memory_of_lucid_dreams.down&(!variable.blade_dance|!cooldown.blade_dance.ready)
+actions.cooldown+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(debuff.conductive_ink_debuff.up|buff.metamorphosis.remains>20)&target.health.pct<31|target.time_to_die<20
+actions.cooldown+=/use_item,name=azsharas_font_of_power,if=cooldown.metamorphosis.remains<10|cooldown.metamorphosis.remains>60
+# Default fallback for usable items.
+actions.cooldown+=/use_items,if=buff.metamorphosis.up
 actions.cooldown+=/call_action_list,name=essences
 
 actions.dark_slash=dark_slash,if=fury>=80&(!variable.blade_dance|!cooldown.blade_dance.ready)
