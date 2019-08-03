@@ -2432,7 +2432,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
       travel_speed            = 1.0;                              // Allows use in the precombat list
 
       // Conflict and Strife -> Demonic Origins PvP Talent
-      if ( p->azerite.conflict_and_strife.enabled() && p->talent.demonic_origins->ok() )
+      if ( p->azerite.conflict_and_strife.enabled() && p->azerite.conflict_and_strife.is_major() && p->talent.demonic_origins->ok() )
       {
         cooldown->duration += p->talent.demonic_origins->effectN( 1 ).time_value();
       }
@@ -3908,7 +3908,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       add_invalidate( CACHE_LEECH );
 
       // Conflict and Strife -> Demonic Origins PvP Talent
-      if ( p->azerite.conflict_and_strife.enabled() && p->talent.demonic_origins->ok() )
+      if ( p->azerite.conflict_and_strife.enabled() && p->azerite.conflict_and_strife.is_major() && p->talent.demonic_origins->ok() )
       {
         buff_duration += p->talent.demonic_origins->effectN( 2 ).time_value();
       }
