@@ -789,6 +789,9 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
           if ( !is_enabled( id ) )
             continue;
 
+          if ( m_overrides.find( id ) != m_overrides.end() )
+            continue;
+
           auto decorator = report::spell_data_decorator_t(
             m_player, m_player->find_spell( m_player->dbc.azerite_power( id ).spell_id ) );
           decorator.item( item );
