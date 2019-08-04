@@ -753,6 +753,118 @@ std::vector<unsigned> azerite_state_t::enabled_spells() const
   return spells;
 }
 
+report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream& root ) const
+{
+  // Heart of Azeroth
+  const item_t& hoa = m_player->items[ SLOT_NECK ];
+
+  if ( !hoa.active() || hoa.parsed.data.id != 158075 )
+    return root;
+
+  size_t n_traits = 0;
+
+  for ( auto item : m_items )
+    n_traits += rank( item.first );
+
+  for ( auto override : m_overrides )
+    n_traits += rank( override.first );
+
+  if ( n_traits == 0 )
+    return root;
+
+  for ( auto slot : { SLOT_HEAD, SLOT_SHOULDERS, SLOT_CHEST } )
+  {
+    const item_t& item = m_player->items[ slot ];
+    if ( item.active() )
+    {
+      root << "<tr class=\"left\">\n"
+           << "<th></th>\n"
+           << "<td><ul class=\"float\">\n"
+           << "<li>" << report::item_decorator_t( item ).decorate().c_str() << " (" << item.parsed.item_level
+           << ")</li>\n";
+
+      if ( item.parsed.azerite_ids.size() )
+      {
+        for ( auto id : item.parsed.azerite_ids )
+        {
+          if ( !is_enabled( id ) )
+            continue;
+
+          auto decorator = report::spell_data_decorator_t(
+            m_player, m_player->find_spell( m_player->dbc.azerite_power( id ).spell_id ) );
+          decorator.item( item );
+
+          root << "<li>" << decorator.decorate().c_str() << "</li>\n";
+        }
+      }
+    }
+  }
+
+  if ( m_overrides.size() )
+  {
+    root << "<tr class=\"left\">\n"
+         << "<th></th>\n"
+         << "<td><ul class=\"float\">\n"
+         << "<li>Azerite Overrides:</li>\n";
+
+    for ( auto override : m_overrides )
+    {
+      for ( auto ilevel : override.second )
+      {
+        if ( !is_enabled( override.first ) )
+          continue;
+
+        auto decorator = report::spell_data_decorator_t(
+          m_player, m_player->find_spell( m_player->dbc.azerite_power( override.first ).spell_id ) );
+
+        root << "<li>" << decorator.decorate().c_str() << " (" << ilevel << ")</li>\n";
+      }
+    }
+  }
+
+  return root;
+}
+
+report::sc_html_stream& azerite_essence_state_t::generate_report( report::sc_html_stream& root ) const
+{
+  // Heart of Azeroth
+  const item_t& hoa = m_player->items[ SLOT_NECK ];
+
+  if ( !hoa.active() || hoa.parsed.data.id != 158075 )
+    return root;
+
+  root << "<tr class=\"left\">\n"
+       << "<th>Azerite</th>\n"
+       << "<td><ul class=\"float\">\n"
+       << "<li>Level: <strong>" << hoa.parsed.azerite_level << "</strong> "
+       << report::item_decorator_t( hoa ).decorate().c_str() << " (" << hoa.parsed.item_level << ")</li>\n";
+
+  for ( const auto& slot : m_state )
+  {
+    if ( slot.type() == essence_type::PASSIVE || slot.type() == essence_type::INVALID )
+      continue;
+
+    auto essence = get_essence( slot.id() );
+    auto decorator = report::spell_data_decorator_t( m_player, essence.spell( slot.rank(), slot.type() ) );
+    decorator.item( hoa );
+
+    root << "<li>Rank: <strong>" << slot.rank() << "</strong> " << decorator.decorate().c_str();
+
+    if ( essence.is_major() )
+    {
+      auto decorator2 = report::spell_data_decorator_t( m_player, essence.spell( slot.rank(), essence_type::MINOR ) );
+      decorator2.item( hoa );
+
+      root << " (Major)</li>\n"
+           << "<li>Rank: <strong>" << slot.rank() << "</strong> " << decorator2.decorate().c_str();
+    }
+
+    root << "</li>\n";
+  }
+
+  return root;
+}
+
 std::unique_ptr<azerite_essence_state_t> create_essence_state( player_t* p )
 {
   return std::unique_ptr<azerite_essence_state_t>( new azerite_essence_state_t( p ) );

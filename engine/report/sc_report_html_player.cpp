@@ -3615,6 +3615,18 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
       os << "</tr>\n";
     }
 
+    // Essence
+    if ( p.azerite_essence )
+    {
+      p.azerite_essence->generate_report( os );
+    }
+
+    // Azerite
+    if ( p.azerite )
+    {
+      p.azerite->generate_report( os );
+    }
+
     // Artifact
     if ( p.artifact )
     {

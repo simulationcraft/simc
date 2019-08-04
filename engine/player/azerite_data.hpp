@@ -224,6 +224,9 @@ public:
 
   /// Enabled azerite spells
   std::vector<unsigned> enabled_spells() const;
+
+  // Generate HTML report table output for the azerite data
+  report::sc_html_stream& generate_report( report::sc_html_stream& root ) const;
 };
 
 class azerite_essence_state_t
@@ -288,6 +291,9 @@ public:
   std::string option_str() const;
 
   void update_traversal_nodes();
+
+  // Generate HTML report table output for the azerite data
+  report::sc_html_stream& generate_report( report::sc_html_stream& root ) const;
 };
 
 /// Creates an azerite state object for the actor
