@@ -758,16 +758,13 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
   // Heart of Azeroth
   const item_t& hoa = m_player->items[ SLOT_NECK ];
 
-  if ( !hoa.active() || hoa.parsed.data.id != 158075 )
+  if ( !hoa.active() || hoa.parsed.data.id != 158075 || m_player->sim->azerite_status == AZERITE_DISABLED_ALL )
     return root;
 
-  size_t n_traits = 0;
+  size_t n_traits = m_overrides.size();
 
   for ( auto item : m_items )
     n_traits += rank( item.first );
-
-  for ( auto override : m_overrides )
-    n_traits += rank( override.first );
 
   if ( n_traits == 0 )
     return root;
@@ -775,6 +772,7 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
   for ( auto slot : { SLOT_HEAD, SLOT_SHOULDERS, SLOT_CHEST } )
   {
     const item_t& item = m_player->items[ slot ];
+
     if ( item.active() )
     {
       root << "<tr class=\"left\">\n"
@@ -787,10 +785,16 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
         for ( auto id : item.parsed.azerite_ids )
         {
           if ( !is_enabled( id ) )
+          {
+            root << "<li>Disabled</li>\n";
             continue;
+          }
 
           if ( m_overrides.find( id ) != m_overrides.end() )
+          {
+            root << "<li>Overridden</li>\n";
             continue;
+          }
 
           auto decorator = report::spell_data_decorator_t(
             m_player, m_player->find_spell( m_player->dbc.azerite_power( id ).spell_id ) );
@@ -813,13 +817,17 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
     {
       for ( auto ilevel : override.second )
       {
-        if ( !is_enabled( override.first ) )
-          continue;
-
         auto decorator = report::spell_data_decorator_t(
           m_player, m_player->find_spell( m_player->dbc.azerite_power( override.first ).spell_id ) );
 
-        root << "<li>" << decorator.decorate() << " (" << ilevel << ")</li>\n";
+        if ( !is_enabled( override.first ) )
+        {
+          root << "<li><del>" << decorator.decorate() << "</del> (Disable)</li>\n";
+        }
+        else
+        {
+          root << "<li>" << decorator.decorate() << " (" << ilevel << ")</li>\n";
+        }
       }
     }
   }
