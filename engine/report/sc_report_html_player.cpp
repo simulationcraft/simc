@@ -1595,12 +1595,15 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
       }
       for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
       {
-        talent_data_t* t = talent_data_t::find( p.type, row, col,
-                                                p.specialization(), p.dbc.ptr );
+        talent_data_t* t = talent_data_t::find( p.type, row, col, p.specialization(), p.dbc.ptr );
         std::string name = "none";
-        if ( t && t->name_cstr() )
+        if ( t )
         {
-          name = util::encode_html( t->name_cstr() );
+          if ( t->spell() )
+            name = report::spell_data_decorator_t( &p, t->spell() ).decorate();
+          else if ( t->name_cstr() )
+            name = util::encode_html( t->name_cstr() );
+
           if ( t->specialization() != SPEC_NONE )
           {
             name += " (";
@@ -3584,12 +3587,15 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
       {
         for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
         {
-          talent_data_t* t = talent_data_t::find(
-              p.type, row, col, p.specialization(), p.dbc.ptr );
+          talent_data_t* t = talent_data_t::find( p.type, row, col, p.specialization(), p.dbc.ptr );
           std::string name = "none";
-          if ( t && t->name_cstr() )
+          if ( t )
           {
-            name = util::encode_html( t->name_cstr() );
+            if ( t->spell() )
+              name = report::spell_data_decorator_t( &p, t->spell() ).decorate();
+            else if ( t->name_cstr() )
+              name = util::encode_html( t->name_cstr() );
+
             if ( t->specialization() != SPEC_NONE )
             {
               name += " (";
@@ -3598,9 +3604,10 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
             }
           }
           if ( p.talent_points.has_row_col( row, col ) )
-            os.printf( "<li><strong>%d</strong>:&#160;%s</li>\n",
-                       row == 6 ? 100 : ( row + 1 ) * 15, name.c_str() );
+            os.printf( "<li><strong>%d</strong>:&#160;%s</li>\n", row == 6 ? 100 : ( row + 1 ) * 15, name.c_str() );
         }
+        if ( p.talent_points.choice( row ) == -1 )
+          os.printf( "<li><strong>%d</strong>:&#160;None</li>\n", row == 6 ? 100 : ( row + 1 ) * 15 );
       }
       std::string url_string = p.talents_str;
       if ( !util::str_in_str_ci( url_string, "http" ) )

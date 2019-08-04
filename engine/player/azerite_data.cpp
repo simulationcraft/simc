@@ -778,7 +778,7 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
       root << "<tr class=\"left\">\n"
            << "<th></th>\n"
            << "<td><ul class=\"float\">\n"
-           << "<li>" << report::item_decorator_t( item ).decorate() << " (" << item.item_level() << ")</li>\n";
+           << "<li>" << report::item_decorator_t( item ).decorate() << "&#160;(" << item.item_level() << ")</li>\n";
 
       if ( item.parsed.azerite_ids.size() )
       {
@@ -822,11 +822,11 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
 
         if ( !is_enabled( override.first ) )
         {
-          root << "<li><del>" << decorator.decorate() << "</del> (Disable)</li>\n";
+          root << "<li><del>" << decorator.decorate() << "</del>&#160;(Disable)</li>\n";
         }
         else
         {
-          root << "<li>" << decorator.decorate() << " (" << ilevel << ")</li>\n";
+          root << "<li>" << decorator.decorate() << "&#160;(" << ilevel << ")</li>\n";
         }
       }
     }
@@ -846,8 +846,8 @@ report::sc_html_stream& azerite_essence_state_t::generate_report( report::sc_htm
   root << "<tr class=\"left\">\n"
        << "<th>Azerite</th>\n"
        << "<td><ul class=\"float\">\n"
-       << "<li>Level: <strong>" << hoa.parsed.azerite_level << "</strong> "
-       << report::item_decorator_t( hoa ).decorate() << " (" << hoa.item_level() << ")</li>\n";
+       << "<li>Level:&#160;<strong>" << hoa.parsed.azerite_level << "</strong>&#160;"
+       << report::item_decorator_t( hoa ).decorate() << "&#160;(" << hoa.item_level() << ")</li>\n";
 
   for ( const auto& slot : m_state )
   {
@@ -858,7 +858,7 @@ report::sc_html_stream& azerite_essence_state_t::generate_report( report::sc_htm
     auto decorator = report::spell_data_decorator_t( m_player, essence.spell( slot.rank(), slot.type() ) );
     decorator.item( hoa );
 
-    root << "<li>Rank: <strong>" << slot.rank() << "</strong> " << decorator.decorate();
+    root << "<li>Rank:&#160;<strong>" << slot.rank() << "</strong>&#160;" << decorator.decorate();
 
     if ( essence.is_major() )
     {
@@ -866,7 +866,7 @@ report::sc_html_stream& azerite_essence_state_t::generate_report( report::sc_htm
       decorator2.item( hoa );
 
       root << " (Major)</li>\n"
-           << "<li>Rank: <strong>" << slot.rank() << "</strong> " << decorator2.decorate();
+           << "<li>Rank:&#160;<strong>" << slot.rank() << "</strong>&#160;" << decorator2.decorate();
     }
 
     root << "</li>\n";
