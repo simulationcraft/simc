@@ -1028,6 +1028,39 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       }
     }
 
+    if ( item.parsed.data.id == 158075 )
+    {
+      std::stringstream s;
+      s << "level: " << item.parsed.azerite_level;
+
+      if ( item.player->azerite_essence )
+      {
+        std::stringstream s2;
+        auto spell_list = item.player->azerite_essence->enabled_essences();
+
+        for ( size_t i = 0; i < spell_list.size(); ++i )
+        {
+          const auto spell = item.player->find_spell( spell_list[ i ] );
+          auto decorator = report::spell_data_decorator_t( item.player, spell );
+          decorator.item( item );
+
+          s2 << decorator.decorate();
+
+          if ( i < spell_list.size() - 1 )
+            s2 << ", ";
+        }
+
+        if ( !s2.str().empty() )
+          s << ", azerite essences: { " << s2.str() << " }";
+      }
+
+      if ( !s.str().empty() )
+      {
+        item_sim_desc += "<br/>";
+        item_sim_desc += s.str();
+      }
+    }
+
     os.printf(
         "<tr>\n"
         "<th class=\"left\" colspan=\"2\"></th>\n"
