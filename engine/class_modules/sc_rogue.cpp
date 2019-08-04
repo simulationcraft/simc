@@ -5746,7 +5746,8 @@ void rogue_t::init_action_list()
     action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
     essences->add_action( "concentrated_flame,if=energy.time_to_max>1&!debuff.vendetta.up&(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)" );
     essences->add_action( "blood_of_the_enemy,if=debuff.vendetta.up&(!talent.toxic_blade.enabled|debuff.toxic_blade.up&combo_points.deficit<=1|debuff.vendetta.remains<=10)|target.time_to_die<=10", "Always use Blood with Vendetta up. Also use with TB up before a finisher (if talented) as long as it runs for 10s during Vendetta." );
-    essences->add_action( "guardian_of_azeroth" );
+    essences->add_action( "guardian_of_azeroth,if=cooldown.vendetta.remains<3|debuff.vendetta.up|target.time_to_die<30", "Attempt to align Guardian with Vendetta as long as it won't result in losing a full-value cast over the remaining duration of the fight" );
+    essences->add_action( "guardian_of_azeroth,if=floor((target.time_to_die-30)%cooldown)>floor((target.time_to_die-30-cooldown.vendetta.remains)%cooldown)" );
     essences->add_action( "focused_azerite_beam,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60&energy<70" );
     essences->add_action( "purifying_blast,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60" );
     essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
