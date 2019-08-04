@@ -5387,6 +5387,34 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
   spell_tracker->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
   effect.player->special_effects.push_back( spell_tracker );
 
+  static std::unordered_map<unsigned, bool> spell_blacklist {
+    // Racials
+    { 26297, true }, // Berserking
+    { 28730, true }, // Arcane Torrent
+    { 33702, true }, // Blood Fury
+    { 58984, true }, // Shadowmeld
+    { 65116, true }, // Stoneform
+    { 68992, true }, // Darkflight
+    { 69041, true }, // Rocket Barrage
+    { 232633, true }, // Arcane Torrent
+    { 255647, true }, // Light's Judgment
+    { 256893, true }, // Light's Judgment
+    { 260364, true }, // Arcane Pulse
+    { 265221, true }, // Fireblood
+    { 274738, true }, // Ancestral Call
+    { 287712, true }, // Haymaker
+    // Major Essences
+    { 295373, true }, // Concentrated Flame
+    { 298357, true }, // Memory of Lucid Dreams
+    { 297108, true }, // Blood of The Enemy
+    { 295258, true }, // Focused Azerite Beam
+    { 295840, true }, // Guardian of Azeroth
+    { 295337, true }, // Purifying Blast
+    { 302731, true }, // Ripple in Space
+    { 298452, true }, // The Unbound Force
+    { 295186, true } // Worldvein Resonance
+  };
+
   struct spell_tracker_cb_t : public dbc_proc_callback_t
   {
     size_t max_size;
@@ -5399,10 +5427,13 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* ) override
     {
-      listener->sim->print_debug( "Adding {} to Hyperthread Wristwraps tracked spells.", a->name_str );
-      last_used.push_back( a );
-      while ( last_used.size() > max_size )
-        last_used.erase( last_used.begin() );
+      if ( spell_blacklist.find( a->id ) == spell_blacklist.end() )
+      {
+        listener->sim->print_debug( "Adding {} to Hyperthread Wristwraps tracked spells.", a->name_str );
+        last_used.push_back( a );
+        while ( last_used.size() > max_size )
+          last_used.erase( last_used.begin() );
+      }
     }
 
     void reset() override
