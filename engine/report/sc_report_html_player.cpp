@@ -173,7 +173,7 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   if ( actor && !actor->is_pet() && s.player->is_pet() )
     name += " (" + util::encode_html( s.player->name_str ) + ")";
 
-  return "<span " + class_attr + ">" + name + "</span>";
+  return "<span" + class_attr + ">" + name + "</span>";
 }
 
 // print_html_action_info =================================================

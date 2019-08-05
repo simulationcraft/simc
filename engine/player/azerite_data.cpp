@@ -809,6 +809,9 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
           root << "<li>" << decorator.decorate() << "</li>\n";
         }
       }
+
+      root << "</ul></td>\n"
+           << "</tr>";
     }
   }
 
@@ -836,6 +839,9 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
         }
       }
     }
+
+    root << "</ul></td>\n"
+         << "</tr>";
   }
 
   return root;
@@ -877,6 +883,9 @@ report::sc_html_stream& azerite_essence_state_t::generate_report( report::sc_htm
 
     root << "</li>\n";
   }
+
+  root << "</ul></td>\n"
+       << "</tr>\n";
 
   return root;
 }
