@@ -130,6 +130,15 @@ bool player_has_glance( const player_t& p, unsigned stats_mask )
   return false;
 }
 
+// Use smaller font & padding for Ability tables when dps/hps is over 1 million
+
+bool use_small_table( const player_t* p )
+{
+  double cutoff = 1000000;
+
+  return p->collected_data.dps.max() >= cutoff || p->collected_data.hps.max() >= cutoff;
+}
+
 std::string output_action_name( const stats_t& s, const player_t* actor )
 {
   std::string class_attr;
@@ -251,51 +260,51 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   const auto& tr = s.tick_results;
 
   // Result type
-  os.printf( "<td class=\"right small\">%s</td>\n", type_str.c_str() );
+  os.printf( "<td class=\"right\">%s</td>\n", type_str.c_str() );
 
-  os.printf( "<td class=\"right small\">%.1f</td>\n",
+  os.printf( "<td class=\"right\">%.1f</td>\n",
              result_type == 1
              ? s.num_tick_results.mean()
              : s.num_direct_results.mean() );
 
   // Hit results
-  os.printf( "<td class=\"right small\">%.0f</td>\n",
+  os.printf( "<td class=\"right\">%.0f</td>\n",
              result_type == 1
              ? mean_value<result_t, result_e>( tr, { RESULT_HIT } )
              : mean_value<full_result_t, full_result_e>( dr, { FULLTYPE_HIT, FULLTYPE_HIT_BLOCK, FULLTYPE_HIT_CRITBLOCK } ) );
 
   // Crit results
-  os.printf( "<td class=\"right small\">%.0f</td>\n",
+  os.printf( "<td class=\"right\">%.0f</td>\n",
              result_type == 1
              ? mean_value<result_t, result_e>( tr, { RESULT_CRIT } )
              : mean_value<full_result_t, full_result_e>( dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
 
   // Mean amount
-  os.printf( "<td class=\"right small\">%.0f</td>\n",
+  os.printf( "<td class=\"right\">%.0f</td>\n",
              result_type == 1
              ? mean_damage( tr )
              : mean_damage( dr ) );
 
   // Crit%
-  os.printf( "<td class=\"right small\">%.1f%%</td>\n",
+  os.printf( "<td class=\"right\">%.1f%%</td>\n",
              result_type == 1
              ? pct_value<result_t, result_e>( tr, { RESULT_CRIT } )
              : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
 
   if ( player_has_avoidance( p, stats_mask ) )
-    os.printf( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Avoid%
+    os.printf( "<td class=\"right\">%.1f%%</td>\n",  // direct_results Avoid%
                result_type == 1
                ? pct_value<result_t, result_e>( tr, { RESULT_MISS, RESULT_DODGE, RESULT_PARRY } )
                : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_MISS, FULLTYPE_DODGE, FULLTYPE_PARRY } ) );
 
   if ( player_has_glance( p, stats_mask ) )
-    os.printf( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Glance%
+    os.printf( "<td class=\"right\">%.1f%%</td>\n",  // direct_results Glance%
              result_type == 1
              ? pct_value<result_t, result_e>( tr, { RESULT_GLANCE } )
              : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_GLANCE, FULLTYPE_GLANCE_BLOCK, FULLTYPE_GLANCE_CRITBLOCK } ) );
 
   if ( player_has_block( p, stats_mask ) )
-    os.printf( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Block%
+    os.printf( "<td class=\"right\">%.1f%%</td>\n",  // direct_results Block%
         result_type == 1
         ? 0
         : pct_value<full_result_t, full_result_e>( dr,
@@ -309,11 +318,11 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   if ( player_has_tick_results( p, stats_mask ) )
   {
     if ( util::str_in_str_ci( type_str, "Periodic" ) )
-      os.printf( "<td class=\"right small\">%.1f%%</td>\n",  // Uptime%
+      os.printf( "<td class=\"right\">%.1f%%</td>\n",  // Uptime%
                  100 * s.total_tick_time.mean() /
                      p.collected_data.fight_length.mean() );
     else
-      os.printf( "<td class=\"right small\">&#160;</td>\n" );
+      os.printf( "<td class=\"right\">&#160;</td>\n" );
   }
 }
 
@@ -323,7 +332,13 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
 {
   const player_t& p = *s.player->get_owner_or_self();
 
-  std::string row_class = ( j & 1 ) ? " class=\"odd\"" : "";
+  std::string row_class = ( j & 1 ) ? "odd" : "";
+
+  if ( use_small_table( s.player ) )
+    row_class += row_class.empty() ? "small" : " small";
+
+  if ( !row_class.empty() )
+    row_class = " class=\"" + row_class + "\"";
 
   os << "<tr" << row_class << ">\n";
   int result_rows = s.has_direct_amount_results() + s.has_tick_amount_results();
@@ -331,7 +346,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
     result_rows = 1;
 
   // Ability name
-  os << "<td class=\"left small\" rowspan=\"" << result_rows << "\">";
+  os << "<td class=\"left\" rowspan=\"" << result_rows << "\">";
   if ( s.parent && s.parent->player == actor )
   {
     for( int i = 0; i< indentation; ++i)
@@ -363,29 +378,29 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
     if ( cAPSpct > s.portion_amount )
       compound_aps_pct = "&#160;(" + util::to_string( cAPSpct * 100, 1 ) + "%)";
 
-    os.printf( "<td class=\"right small\" rowspan=\"%d\">%.0f%s</td>\n",
+    os.printf( "<td class=\"right\" rowspan=\"%d\">%.0f%s</td>\n",
                result_rows, s.portion_aps.pretty_mean(), compound_aps.c_str() );
-    os.printf( "<td class=\"right small\" rowspan=\"%d\">%.1f%%%s</td>\n",
+    os.printf( "<td class=\"right\" rowspan=\"%d\">%.1f%%%s</td>\n",
                result_rows, s.portion_amount * 100, compound_aps_pct.c_str() );
   }
 
   // Number of executes
-  os.printf( "<td class=\"right small\" rowspan=\"%d\">%.1f</td>\n",
+  os.printf( "<td class=\"right\" rowspan=\"%d\">%.1f</td>\n",
              result_rows, s.num_executes.pretty_mean() );
 
   // Execute interval
-  os.printf( "<td class=\"right small\" rowspan=\"%d\">%.2fsec</td>\n",
+  os.printf( "<td class=\"right\" rowspan=\"%d\">%.2fsec</td>\n",
              result_rows, s.total_intervals.pretty_mean() );
 
   // Skip the rest of this for abilities that do no damage
   if ( s.compound_amount > 0 )
   {
     // Amount per execute
-    os.printf( "<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
+    os.printf( "<td class=\"right\" rowspan=\"%d\">%.0f</td>\n",
                result_rows, s.ape );
 
     // Amount per execute time
-    os.printf( "<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
+    os.printf( "<td class=\"right\" rowspan=\"%d\">%.0f</td>\n",
                result_rows, s.apet );
 
     bool periodic_only = false;
@@ -397,7 +412,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
       print_html_action_summary( os, stats_mask, 1, s, p );
     }
     else
-      os.printf( "<td class=\"right small\" colspan=\"%d\"></td>\n",
+      os.printf( "<td class=\"right\" colspan=\"%d\"></td>\n",
                  n_columns );
 
     os.printf( "</tr>\n" );
@@ -3753,68 +3768,77 @@ void output_player_damage_summary( report::sc_html_stream& os,
   int n_optional_columns = 6;
 
   // Abilities Section - Damage
-  os << "<table class=\"sc\">\n"
-     << "<tr>\n"
-     << "<th class=\"left small\">Damage Stats</th>\n"
-     << "<th class=\"small\"><a href=\"#help-dps\" "
+  os << "<table class=\"sc\">\n";
+
+  if ( use_small_table( &actor ) )
+    os << "<tr class=\"small\">\n";
+  else
+    os << "<tr>\n";
+
+  os << "<th class=\"left\">Damage Stats</th>\n"
+     << "<th><a href=\"#help-dps\" "
         "class=\"help\">DPS</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-dps-pct\" "
+     << "<th><a href=\"#help-dps-pct\" "
         "class=\"help\">DPS%</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-Count\" "
+     << "<th><a href=\"#help-Count\" "
         "class=\"help\">Execute</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-interval\" "
+     << "<th><a href=\"#help-interval\" "
         "class=\"help\">Interval</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-dpe\" "
+     << "<th><a href=\"#help-dpe\" "
         "class=\"help\">DPE</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-dpet\" "
+     << "<th><a href=\"#help-dpet\" "
         "class=\"help\">DPET</a></th>\n"
      // Optional columns begin here
-     << "<th class=\"small\"><a href=\"#help-type\" "
+     << "<th><a href=\"#help-type\" "
         "class=\"help\">Type</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-count\" "
+     << "<th><a href=\"#help-count\" "
         "class=\"help\">Count</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-hit\" "
+     << "<th><a href=\"#help-hit\" "
         "class=\"help\">Hit</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-crit\" "
+     << "<th><a href=\"#help-crit\" "
         "class=\"help\">Crit</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-avg\" "
+     << "<th><a href=\"#help-avg\" "
         "class=\"help\">Avg</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-crit-pct\" "
+     << "<th><a href=\"#help-crit-pct\" "
         "class=\"help\">Crit%</a></th>\n";
 
   if ( player_has_avoidance( actor, MASK_DMG ) )
   {
-    os << "<th class=\"small\"><a href=\"#help-miss-pct\" "
+    os << "<th><a href=\"#help-miss-pct\" "
           "class=\"help\">Avoid%</a></th>\n";
     n_optional_columns++;
   }
 
   if ( player_has_glance( actor, MASK_DMG ) )
   {
-    os << "<th class=\"small\"><a href=\"#help-glance-pct\" "
+    os << "<th><a href=\"#help-glance-pct\" "
           "class=\"help\">G%</a></th>\n";
     n_optional_columns++;
   }
 
   if ( player_has_block( actor, MASK_DMG ) )
   {
-    os << "<th class=\"small\"><a href=\"#help-block-pct\" "
+    os << "<th><a href=\"#help-block-pct\" "
           "class=\"help\">B%</a></th>\n";
     n_optional_columns++;
   }
 
   if ( player_has_tick_results( actor, MASK_DMG ) )
   {
-    os << "<th class=\"small\"><a href=\"#help-ticks-uptime-pct\" "
+    os << "<th><a href=\"#help-ticks-uptime-pct\" "
           "class=\"help\">Up%</a></th>\n"
        << "</tr>\n";
     n_optional_columns++;
   }
 
-  os << "<tr>\n"
-     << "<th class=\"left small\">" << util::encode_html( actor.name() )
+  if ( use_small_table( &actor ) )
+    os << "<tr class=\"small\">\n";
+  else
+    os << "<tr>\n";
+
+  os << "<th class=\"left small\">" << util::encode_html( actor.name() )
      << "</th>\n"
-     << "<th class=\"right small\">"
+     << "<th class=\"right\">"
      << util::to_string( actor.collected_data.dps.mean(), 0 ) << "</th>\n"
      << "<td colspan=\"" << ( static_columns + n_optional_columns )
      << "\" class=\"filler\"></td>\n"
@@ -3846,10 +3870,15 @@ void output_player_damage_summary( report::sc_html_stream& os,
       if ( first )
       {
         first = false;
+
+        if ( use_small_table( &actor ) )
+          os << "<tr class=\"small\">\n";
+        else
+          os << "<tr>\n";
+
         os.printf(
-            "<tr>\n"
             "<th class=\"left small\">pet - %s</th>\n"
-            "<th class=\"right small\">%.0f / %.0f</th>\n"
+            "<th class=\"right\">%.0f / %.0f</th>\n"
             "<td colspan=\"%d\" class=\"filler\"></td>\n"
             "</tr>\n",
             util::encode_html( pet->name_str ).c_str(), pet->collected_data.dps.mean(),
@@ -3878,47 +3907,56 @@ void output_player_heal_summary( report::sc_html_stream& os,
   int n_optional_columns = 6;
 
   // Abilities Section - Heal
-  os << "<table class=\"sc\">\n"
-     << "<tr>\n"
-     << "<th class=\"left small\">Healing and Absorb Stats</th>\n"
-     << "<th class=\"small\"><a href=\"#help-dps\" "
+  os << "<table class=\"sc\">\n";
+
+  if ( use_small_table( &actor ) )
+    os << "<tr class=\"small\">\n";
+  else
+    os << "<tr>\n";
+
+  os << "<th class=\"left\">Healing and Absorb Stats</th>\n"
+     << "<th><a href=\"#help-dps\" "
         "class=\"help\">HPS</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-dps-pct\" "
+     << "<th><a href=\"#help-dps-pct\" "
         "class=\"help\">HPS%</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-count\" "
+     << "<th><a href=\"#help-count\" "
         "class=\"help\">Execute</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-interval\" "
+     << "<th><a href=\"#help-interval\" "
         "class=\"help\">Interval</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-dpe\" "
+     << "<th><a href=\"#help-dpe\" "
         "class=\"help\">HPE</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-dpet\" "
+     << "<th><a href=\"#help-dpet\" "
         "class=\"help\">HPET</a></th>\n"
      // Optional columns begin here
-     << "<th class=\"small\"><a href=\"#help-type\" "
+     << "<th><a href=\"#help-type\" "
         "class=\"help\">Type</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-count\" "
+     << "<th><a href=\"#help-count\" "
         "class=\"help\">Count</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-hit\" "
+     << "<th><a href=\"#help-hit\" "
         "class=\"help\">Hit</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-crit\" "
+     << "<th><a href=\"#help-crit\" "
         "class=\"help\">Crit</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-avg\" "
+     << "<th><a href=\"#help-avg\" "
         "class=\"help\">Avg</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-crit-pct\" "
+     << "<th><a href=\"#help-crit-pct\" "
         "class=\"help\">Crit%</a></th>\n";
 
   if ( player_has_tick_results( actor, MASK_HEAL | MASK_ABSORB ) )
   {
-    os << "<th class=\"small\"><a href=\"#help-ticks-uptime-pct\" "
+    os << "<th><a href=\"#help-ticks-uptime-pct\" "
           "class=\"help\">Up%</a></th>\n"
        << "</tr>\n";
     n_optional_columns++;
   }
 
-  os << "<tr>\n"
-     << "<th class=\"left small\">" << util::encode_html( actor.name() )
+  if ( use_small_table( &actor ) )
+    os << "<tr class=\"small\">\n";
+  else
+    os << "<tr>\n";
+
+  os << "<th class=\"left small\">" << util::encode_html( actor.name() )
      << "</th>\n"
-     << "<th class=\"right small\">"
+     << "<th class=\"right\">"
      << util::to_string( actor.collected_data.hps.mean(), 0 ) << "</th>\n"
      << "<td colspan=\"" << ( static_columns + n_optional_columns )
      << "\" class=\"filler\"></td>\n"
@@ -3950,10 +3988,15 @@ void output_player_heal_summary( report::sc_html_stream& os,
       if ( first )
       {
         first = false;
+
+        if ( use_small_table( &actor ) )
+          os << "<tr class=\"small\">\n";
+        else
+          os << "<tr>\n";
+
         os.printf(
-            "<tr>\n"
             "<th class=\"left small\">pet - %s</th>\n"
-            "<th class=\"right small\">%.0f / %.0f</th>\n"
+            "<th class=\"right\">%.0f / %.0f</th>\n"
             "<td colspan=\"%d\" class=\"filler\"></td>\n"
             "</tr>\n",
             util::encode_html( pet->name_str ).c_str(), pet->collected_data.dps.mean(),
@@ -3976,17 +4019,26 @@ void output_player_simple_ability_summary( report::sc_html_stream& os,
     return;
 
   // Abilities Section - Simple Actions
-  os << "<table class=\"sc\">\n"
-     << "<tr>\n"
-     << "<th class=\"left small\">Simple Action Stats</th>\n"
-     << "<th class=\"small\"><a href=\"#help-count\" "
+  os << "<table class=\"sc\">\n";
+
+  if ( use_small_table( &actor ) )
+    os << "<tr class=\"small\">\n";
+  else
+    os << "<tr>\n";
+
+  os << "<th class=\"left\">Simple Action Stats</th>\n"
+     << "<th><a href=\"#help-count\" "
         "class=\"help\">Execute</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-interval\" "
+     << "<th><a href=\"#help-interval\" "
         "class=\"help\">Interval</a></th>\n"
      << "</tr>\n";
 
-  os << "<tr>\n"
-     << "<th class=\"left small\">" << util::encode_html( actor.name() )
+  if ( use_small_table( &actor ) )
+    os << "<tr class=\"small\">\n";
+  else
+    os << "<tr>\n";
+    
+  os << "<th class=\"left small\">" << util::encode_html( actor.name() )
      << "</th>\n"
      << "<th colspan=\"2\" class=\"filler\"></th>\n"
      << "</tr>\n";
@@ -4017,8 +4069,13 @@ void output_player_simple_ability_summary( report::sc_html_stream& os,
       if ( first )
       {
         first = false;
+
+        if ( use_small_table( &actor ) )
+          os << "<tr class=\"small\">\n";
+        else
+          os << "<tr>\n";
+
         os.printf(
-            "<tr>\n"
             "<th class=\"left small\">pet - %s</th>\n"
             "<th colspan=\"%d\" class=\"filler\"></th>\n"
             "</tr>\n",
