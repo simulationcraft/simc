@@ -394,7 +394,12 @@ void azerite_state_t::initialize()
 {
   range::for_each( m_player -> items, [ this ]( const item_t& item ) {
     range::for_each( item.parsed.azerite_ids, [ & ]( unsigned id ) {
-      m_items[ id ].push_back( &( item ) );
+      const auto& power = m_player->dbc.azerite_power( id );
+      if ( power.id )
+      {
+        m_items[ id ].push_back( &( item ) );
+        m_spell_items[ power.spell_id ].push_back( &( item ) );
+      }
     } );
   });
 }
@@ -451,12 +456,13 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
   else
   {
     // Item-related azerite effects are only enabled when "all" is defined
-    if ( m_items[ id ].size() > 0 && m_player -> sim -> azerite_status == AZERITE_ENABLED )
+    if ( m_spell_items[ power.spell_id ].size() > 0 &&
+         m_player -> sim -> azerite_status == AZERITE_ENABLED )
     {
       if ( m_player -> sim -> debug )
       {
         std::stringstream s;
-        const auto& items = m_items[ power.id ];
+        const auto& items = m_spell_items[ power.spell_id ];
 
         for ( size_t i = 0; i < items.size(); ++i )
         {
@@ -474,7 +480,7 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
             m_player -> name(), power.name, s.str().c_str() );
       }
 
-      return { m_player, &power, m_items[ id ] };
+      return { m_player, &power, m_spell_items[ power.spell_id ] };
     }
     else
     {
@@ -1404,7 +1410,7 @@ void register_azerite_target_data_initializers( sim_t* sim )
   } );
 }
 
-std::tuple<int, int, int > compute_value( const azerite_power_t& power, const spelleffect_data_t& effect )
+std::tuple<int, int, int> compute_value( const azerite_power_t& power, const spelleffect_data_t& effect )
 {
   int min_ = 0, max_ = 0, avg_ = 0;
   if ( !power.enabled() || effect.m_coefficient() == 0 )
@@ -3988,7 +3994,7 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
     if ( essence.rank() >= 3 )
     {
       player->buffs.seething_rage->trigger();  // First buff the player
-      range::for_each( player->pet_list, [this]( pet_t* pet ) {
+      range::for_each( player->pet_list, []( pet_t* pet ) {
         if ( !pet->is_sleeping() )
           pet->buffs.seething_rage->trigger();
       } );

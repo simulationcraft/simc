@@ -188,6 +188,8 @@ class azerite_state_t
   player_t*                          m_player;
   /// Map of the actor's azerite power ids, and their associated items (items that select the power)
   std::unordered_map<unsigned, std::vector<const item_t*>> m_items;
+  /// Map of the actor's azerite power spell ids, and their associated items (items that select the power that uses the spell)
+  std::unordered_map<unsigned, std::vector<const item_t*>> m_spell_items;
   /// Azerite power overrides, (power, list of override ilevels)
   std::unordered_map<unsigned, std::vector<unsigned>> m_overrides;
 
