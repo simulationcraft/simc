@@ -5806,6 +5806,7 @@ void mage_t::apl_fire()
   default_list->add_action( this, "Counterspell" );
   default_list->add_action( "call_action_list,name=items_high_priority" );
   default_list->add_talent( this, "Mirror Image", "if=buff.combustion.down" );
+  default_list->add_action( "guardian_of_azeroth,if=cooldown.combustion.remains<10|target.time_to_die<cooldown.combustion.remains" );
   default_list->add_action( "concentrated_flame" );
   default_list->add_action( "focused_azerite_beam" );
   default_list->add_action( "purifying_blast" );
@@ -5826,7 +5827,6 @@ void mage_t::apl_fire()
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down", "Combustion phase prepares abilities with a delay, then launches into the Combustion sequence" );
   combustion_phase->add_action( "blood_of_the_enemy" );
-  combustion_phase->add_action( "guardian_of_azeroth" );
   combustion_phase->add_action( "memory_of_lucid_dreams" );
   combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,use_off_gcd=1,if=charges>=1&((action.fire_blast.charges_fractional+(buff.combustion.remains-buff.blaster_master.duration)%cooldown.fire_blast.duration-(buff.combustion.remains)%(buff.blaster_master.duration-0.5))>=0|!azerite.blaster_master.enabled|!talent.flame_on.enabled|buff.combustion.remains<=buff.blaster_master.duration|buff.blaster_master.remains<0.5|equipped.hyperthread_wristwraps&cooldown.hyperthread_wristwraps_300142.remains<5)&buff.combustion.up&(!action.scorch.executing&!action.pyroblast.in_flight&buff.heating_up.up|action.scorch.executing&buff.hot_streak.down&(buff.heating_up.down|azerite.blaster_master.enabled)|azerite.blaster_master.enabled&talent.flame_on.enabled&action.pyroblast.in_flight&buff.heating_up.down&buff.hot_streak.down)",
     "During Combustion, Fire Blasts are used to generate Hot Streaks and minimize the amount of time spent executing other spells. "
