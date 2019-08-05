@@ -111,8 +111,8 @@ actions.cds+=/guardian_of_azeroth,if=time>30&target.time_to_die>cooldown.guardia
 actions.cds+=/summon_infernal,if=talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains>target.time_to_die
 actions.cds+=/guardian_of_azeroth,if=cooldown.summon_infernal.remains>target.time_to_die
 # If the fight will end before infernal is back up, use DSI
-actions.cds+=/dark_soul_instability,if=cooldown.summon_infernal.remains>target.time_to_die
-actions.cds+=/memory_of_lucid_dreams,if=cooldown.summon_infernal.remains>target.time_to_die
+actions.cds+=/dark_soul_instability,if=cooldown.summon_infernal.remains>target.time_to_die&pet.infernal.remains<=20
+actions.cds+=/memory_of_lucid_dreams,if=cooldown.summon_infernal.remains>target.time_to_die&pet.infernal.remains<=20
 # If the fight is about to end, use CDs such that they get as much time up as possible
 actions.cds+=/summon_infernal,if=target.time_to_die<30
 actions.cds+=/guardian_of_azeroth,if=target.time_to_die<30

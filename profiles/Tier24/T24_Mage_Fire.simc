@@ -41,6 +41,7 @@ actions.precombat+=/pyroblast
 actions=counterspell
 actions+=/call_action_list,name=items_high_priority
 actions+=/mirror_image,if=buff.combustion.down
+actions+=/guardian_of_azeroth,if=cooldown.combustion.remains<10|target.time_to_die<cooldown.combustion.remains
 actions+=/concentrated_flame
 actions+=/focused_azerite_beam
 actions+=/purifying_blast
@@ -61,7 +62,6 @@ actions.active_talents+=/meteor,if=buff.rune_of_power.up&(firestarter.remains>co
 # Combustion phase prepares abilities with a delay, then launches into the Combustion sequence
 actions.combustion_phase=lights_judgment,if=buff.combustion.down
 actions.combustion_phase+=/blood_of_the_enemy
-actions.combustion_phase+=/guardian_of_azeroth
 actions.combustion_phase+=/memory_of_lucid_dreams
 # During Combustion, Fire Blasts are used to generate Hot Streaks and minimize the amount of time spent executing other spells. For standard Fire, Fire Blasts are only used when Heating Up is active or when a Scorch cast is in progress and Heating Up and Hot Streak are not active. With Blaster Master and Flame On, Fire Blasts can additionally be used while Hot Streak and Heating Up are not active and a Pyroblast is in the air and also while casting Scorch even if Heating Up is already active. The latter allows two Hot Streak Pyroblasts to be cast in succession after the Scorch. Additionally with Blaster Master and Flame On, Fire Blasts should not be used unless Blaster Master is about to expire or there are more than enough Fire Blasts to extend Blaster Master to the end of Combustion.
 actions.combustion_phase+=/fire_blast,use_while_casting=1,use_off_gcd=1,if=charges>=1&((action.fire_blast.charges_fractional+(buff.combustion.remains-buff.blaster_master.duration)%cooldown.fire_blast.duration-(buff.combustion.remains)%(buff.blaster_master.duration-0.5))>=0|!azerite.blaster_master.enabled|!talent.flame_on.enabled|buff.combustion.remains<=buff.blaster_master.duration|buff.blaster_master.remains<0.5|equipped.hyperthread_wristwraps&cooldown.hyperthread_wristwraps_300142.remains<5)&buff.combustion.up&(!action.scorch.executing&!action.pyroblast.in_flight&buff.heating_up.up|action.scorch.executing&buff.hot_streak.down&(buff.heating_up.down|azerite.blaster_master.enabled)|azerite.blaster_master.enabled&talent.flame_on.enabled&action.pyroblast.in_flight&buff.heating_up.down&buff.hot_streak.down)
