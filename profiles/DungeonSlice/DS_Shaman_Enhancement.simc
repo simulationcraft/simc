@@ -5,7 +5,8 @@ level=120
 race=troll
 role=attack
 position=back
-talents=2302031
+talents=3202033
+azerite_essences=23:3/6:3/32:3
 
 # Default consumables
 potion=potion_of_unbridled_fury
@@ -76,7 +77,6 @@ actions.cds+=/ancestral_call,if=variable.cooldown_sync
 # Attempt to sync your DPS potion with a cooldown, unless the target is about to die.
 actions.cds+=/potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
 actions.cds+=/guardian_of_azeroth
-actions.cds+=/memory_of_lucid_dreams
 actions.cds+=/feral_spirit
 actions.cds+=/blood_of_the_enemy
 actions.cds+=/ascendance,if=cooldown.strike.remains>0
@@ -99,7 +99,6 @@ actions.filler+=/purifying_blast
 actions.filler+=/ripple_in_space
 actions.filler+=/thundercharge
 actions.filler+=/concentrated_flame
-actions.filler+=/worldvein_resonance,if=buff.lifeblood.stack<4
 actions.filler+=/crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL
 actions.filler+=/flametongue,if=talent.searing_assault.enabled
 actions.filler+=/lava_lash,if=!azerite.primal_primer.enabled&talent.hot_hand.enabled&buff.hot_hand.react
@@ -107,9 +106,11 @@ actions.filler+=/crash_lightning,if=active_enemies>1&variable.furyCheck_CL
 actions.filler+=/rockbiter,if=maelstrom<70&!buff.strength_of_earth.up
 actions.filler+=/crash_lightning,if=talent.crashing_storm.enabled&variable.OCPool_CL
 actions.filler+=/lava_lash,if=variable.OCPool_LL&variable.furyCheck_LL
+actions.filler+=/memory_of_lucid_dreams
 actions.filler+=/rockbiter
 actions.filler+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck_FB
 actions.filler+=/flametongue
+actions.filler+=/worldvein_resonance,if=buff.lifeblood.stack<4
 
 actions.freezerburn_core=lava_lash,target_if=max:debuff.primal_primer.stack,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10&variable.furyCheck_LL&variable.CLPool_LL
 actions.freezerburn_core+=/earthen_spike,if=variable.furyCheck_ES
@@ -143,30 +144,29 @@ actions.priority+=/frostbrand,if=(azerite.natural_harmony.enabled&buff.natural_h
 actions.priority+=/flametongue,if=(azerite.natural_harmony.enabled&buff.natural_harmony_fire.remains<=2*gcd)
 actions.priority+=/rockbiter,if=(azerite.natural_harmony.enabled&buff.natural_harmony_nature.remains<=2*gcd)&maelstrom<70
 
-head=hood_of_the_dark_reaper,id=159391,bonus_id=4786/1587/5481/4775,azerite_powers=137/416/30/539/13
+head=sethraliss_fanged_helm,id=159374,bonus_id=4786/1617/4819/4775,azerite_powers=530/420/30/83/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4786/1587/5480/4775,azerite_powers=137/416/461/207/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=mistfire_raiment,id=165540,bonus_id=4800/1537/5482/4775,azerite_powers=137/416/22/474/13
-wrists=ape_wranglers_wristguards,id=165534,bonus_id=4800/1537
-hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
-waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
-legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
-feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_mastery
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
-trinket1=galecallers_boon,id=159614,bonus_id=4786/1572
-trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
-main_hand=bonelash_paw,id=165588,bonus_id=4800/1537,enchant=quick_navigation
-off_hand=bonelash_paw,id=165588,bonus_id=4800/1537,enchant=masterful_navigation
+shoulders=abyssal_commanders_mantle,id=168359,bonus_id=4824/1517/4775,azerite_powers=416/575/18/83/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=shrapneldampening_chestguard,id=158307,bonus_id=4786/1617/4819/4775,azerite_powers=447/416/22/474/13
+wrists=arcanamental_bindings,id=168382,bonus_id=4800/1517
+hands=grips_of_the_scaled_arcanist,id=168381,bonus_id=4800/1517
+waist=tanglekelp_waistwrap,id=168870,bonus_id=4800/1517
+legs=pelagos_predators_legguards,id=168383,bonus_id=4800/1517
+feet=slipstreamers_saltwalkers,id=168385,bonus_id=4800/1517
+finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_haste
+finger2=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_haste
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
+main_hand=divers_folly,id=168900,bonus_id=4800/1517,enchant=force_multiplier
+off_hand=divers_folly,id=168900,bonus_id=4800/1517,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=418.00
-# gear_agility=5871
-# gear_stamina=11118
-# gear_crit_rating=579
-# gear_haste_rating=1335
-# gear_mastery_rating=1186
-# gear_versatility_rating=400
-# gear_armor=3410
-# set_bonus=gift_of_the_loa_2pc=1
+# gear_ilvl=447.06
+# gear_agility=7711
+# gear_stamina=13760
+# gear_crit_rating=1181
+# gear_haste_rating=1278
+# gear_mastery_rating=790
+# gear_versatility_rating=559
+# gear_armor=4274

@@ -8485,7 +8485,6 @@ void shaman_t::init_action_list_enhancement()
       "potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60",
       "Attempt to sync your DPS potion with a cooldown, unless the target is about to die." );
   cds->add_action( "guardian_of_azeroth" );
-  cds->add_action( "memory_of_lucid_dreams" );
   cds->add_action( this, "Feral Spirit" );
   cds->add_action( "blood_of_the_enemy" );
   cds->add_talent( this, "Ascendance", "if=cooldown.strike.remains>0" );
@@ -8544,7 +8543,6 @@ void shaman_t::init_action_list_enhancement()
   filler->add_action( "ripple_in_space" );
   filler->add_action( "thundercharge" );
   filler->add_action( "concentrated_flame" );
-  filler->add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
   filler->add_action( this, "Crash Lightning",
                       "if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL" );
   filler->add_action( this, "Flametongue", "if=talent.searing_assault.enabled" );
@@ -8554,11 +8552,13 @@ void shaman_t::init_action_list_enhancement()
   filler->add_action( this, "Rockbiter", "if=maelstrom<70&!buff.strength_of_earth.up" );
   filler->add_action( this, "Crash Lightning", "if=talent.crashing_storm.enabled&variable.OCPool_CL" );
   filler->add_action( this, "Lava Lash", "if=variable.OCPool_LL&variable.furyCheck_LL" );
+  filler->add_action( "memory_of_lucid_dreams" );
   filler->add_action( this, "Rockbiter" );
   filler->add_action( this, "Frostbrand",
                       "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd"
                       "&variable.furyCheck_FB" );
   filler->add_action( this, "Flametongue" );
+  filler->add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
 }
 // shaman_t::init_action_list_restoration ===================================
 
