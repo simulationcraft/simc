@@ -2035,7 +2035,7 @@ void priest_t::generate_apl_shadow()
   // CDs
   cds->add_action( "memory_of_lucid_dreams,if=(buff.voidform.stack>20&insanity<=50)|"
                    "buff.voidform.stack>(26+7*buff.bloodlust.up)|"
-                   "(current_insanity_drain*gcd.max*3)>insanity",
+                   "(current_insanity_drain*((gcd.max*2)+action.mind_blast.cast_time))>insanity",
                    "Use Memory of Lucid Dreams right before you are about to fall out of Voidform" );
   cds->add_action( "blood_of_the_enemy" );
   cds->add_action( "guardian_of_azeroth,if=buff.voidform.stack>15" );
