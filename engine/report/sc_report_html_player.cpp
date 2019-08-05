@@ -2918,25 +2918,22 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
   std::string buff_name;
 
   if ( b.player && b.player->is_pet() )
-  {
-    buff_name += b.player->name_str + '-';
-  }
-  buff_name += b.name_str.c_str();
-  buff_name = util::encode_html( buff_name );
+    buff_name += b.player->name_str + "&#160;-&#160;";
+
+  if ( b.data().id() )
+    buff_name += report::buff_decorator_t( b ).decorate();
+  else
+    buff_name += b.name_str;
 
   os << "<tr";
+
   if ( i & 1 )
-  {
     os << " class=\"odd\"";
-  }
+
   os << ">\n";
+
   if ( report_details )
-  {
-    buff_name = report::buff_decorator_t( b ).decorate();
-    os.printf(
-        "<td class=\"left\"><span class=\"toggle-details\">%s</span></td>\n",
-        buff_name.c_str() );
-  }
+    os.printf( "<td class=\"left\"><span class=\"toggle-details\">%s</span></td>\n", buff_name.c_str() );
   else
     os.printf( "<td class=\"left\">%s</td>\n", buff_name.c_str() );
 
