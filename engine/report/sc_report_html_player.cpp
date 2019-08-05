@@ -2918,12 +2918,12 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
   std::string buff_name;
 
   if ( b.player && b.player->is_pet() )
-    buff_name += b.player->name_str + "&#160;-&#160;";
+    buff_name += util::encode_html( b.player->name_str ) + "&#160;-&#160;";
 
   if ( b.data().id() )
     buff_name += report::buff_decorator_t( b ).decorate();
   else
-    buff_name += b.name_str;
+    buff_name += util::encode_html( b.name_str );
 
   os << "<tr";
 
