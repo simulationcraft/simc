@@ -148,6 +148,15 @@
     span.open {
       background-position: 0 -13px;
     }
+    tr.small td a.toggle-details,
+    span.toggle-details {
+      background-size: 10px auto;
+      background-position: 0 2px;
+    }
+    tr.small td a.open,
+    span.open {
+      background-position: 0 -12px;
+    }
     td.small a.toggle-details,
     span.toggle-details {
       background-size: 10px auto;
@@ -471,6 +480,14 @@
         text-align: right;
         padding-right: 4px;
         vertical-align: top;
+      }
+      table.sc tr.small th {
+        padding: 2px 2px 3px 2px;
+        font-size: 11px;
+      }
+      table.sc tr.small td {
+        padding: 2px 2px 3px 2px;
+        font-size: 11px;
       }
       table.sc th.small {
         padding: 2px 2px 3px 2px;
