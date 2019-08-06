@@ -5456,10 +5456,10 @@ void hunter_t::apl_mm()
   default_list -> add_action( "auto_shot" );
   
   default_list -> add_action( special_use_item_action( "lurkers_insidious_gift", "if=cooldown.trueshot.remains_guess<15|target.time_to_die<30" ) );
-  default_list -> add_action( special_use_item_action( "azsharas_font_of_power", "if=cooldown.trueshot.remains_guess<15|target.time_to_die<30" ) );
+  default_list -> add_action( special_use_item_action( "azsharas_font_of_power", "if=cooldown.trueshot.remains<18|target.time_to_die<40" ) );
   default_list -> add_action( special_use_item_action( "lustrous_golden_plumage", "if=cooldown.trueshot.remains_guess<5|target.time_to_die<20" ) );
   default_list -> add_action( special_use_item_action( "galecallers_boon", "if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<10" ) );
-  default_list -> add_action( special_use_item_action( "ashvanes_razor_coral", "if=buff.trueshot.up&ca_execute|debuff.razor_coral_debuff.down|target.time_to_die<20" ) );
+  default_list -> add_action( special_use_item_action( "ashvanes_razor_coral", "if=buff.trueshot.up&(buff.guardian_of_azeroth.up|!essence.condensed_life_force.major.rank3&ca_execute)|debuff.razor_coral_debuff.down|target.time_to_die<20" ) );
 
   default_list -> add_action( "use_item,name=pocketsized_computation_device,if=!buff.trueshot.up&!essence.blood_of_the_enemy.major.rank3|debuff.blood_of_the_enemy.up|target.time_to_die<5" );
   default_list -> add_action( "use_items,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<20",
@@ -5478,7 +5478,7 @@ void hunter_t::apl_mm()
   cds -> add_action( "lights_judgment" );
 
   cds -> add_action( "worldvein_resonance,if=buff.lifeblood.stack<4&!buff.trueshot.up" );
-  cds -> add_action( "guardian_of_azeroth,if=(ca_execute|target.time_to_die>210)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<30" );
+  cds -> add_action( "guardian_of_azeroth,if=(ca_execute|target.time_to_die>cooldown.guardian_of_azeroth.duration+duration)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<31" );
   cds -> add_action( "ripple_in_space,if=cooldown.trueshot.remains<7" );
   cds -> add_action( "memory_of_lucid_dreams,if=!buff.trueshot.up" );
 
