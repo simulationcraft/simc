@@ -9743,6 +9743,8 @@ void monk_t::apl_combat_brewmaster()
 
   int num_items = (int)items.size();
 
+  def->add_action("call_action_list,name=essences" );
+
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
