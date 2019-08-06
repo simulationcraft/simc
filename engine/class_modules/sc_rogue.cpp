@@ -5602,10 +5602,7 @@ std::string rogue_t::default_flask() const
 
 std::string rogue_t::default_potion() const
 {
-  if ( ( specialization() == ROGUE_OUTLAW || specialization() == ROGUE_SUBTLETY ) && true_level > 110 )
-    return "potion_of_unbridled_fury";
-
-  return ( true_level > 110 ) ? "potion_of_focused_resolve" :
+  return ( true_level > 110 ) ? "potion_of_unbridled_fury" :
          ( true_level > 100 ) ? "prolonged_power" :
          ( true_level >= 90 ) ? "draenic_agility" :
          ( true_level >= 85 ) ? "virmens_bite" :
