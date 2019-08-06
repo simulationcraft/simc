@@ -7475,21 +7475,21 @@ void death_knight_t::default_apl_dps_precombat()
 
 std::string death_knight_t::default_potion() const
 {
-  std::string frost_potion = ( true_level > 110 ) ? "battle_potion_of_strength" :
+  std::string frost_potion = ( true_level > 110 ) ? "potion_of_unbridled_fury" :
 	                           ( true_level > 100 ) ? "prolonged_power" :
                              ( true_level >= 90 ) ? "draenic_strength" :
                              ( true_level >= 85 ) ? "mogu_power" :
                              ( true_level >= 80 ) ? "golemblood_potion" :
                              "disabled";
 
-  std::string unholy_potion = ( true_level > 110 ) ? "battle_potion_of_strength" :
+  std::string unholy_potion = ( true_level > 110 ) ? "potion_of_unbridled_fury" :
 	                            ( true_level > 100 ) ? "prolonged_power" :
                               ( true_level >= 90 ) ? "draenic_strength" :
                               ( true_level >= 85 ) ? "mogu_power" :
                               ( true_level >= 80 ) ? "golemblood_potion" :
                               "disabled";
 
-  std::string blood_potion =  ( true_level > 110 ) ? "battle_potion_of_strength" :
+  std::string blood_potion =  ( true_level > 110 ) ? "potion_of_unbridled_fury" :
                               ( true_level > 100 ) ? "old_war" :
                               ( true_level >= 90 ) ? "draenic_strength" :
                               ( true_level >= 85 ) ? "mogu_power" :
@@ -7508,14 +7508,14 @@ std::string death_knight_t::default_potion() const
 
 std::string death_knight_t::default_food() const
 {
-  std::string frost_food = ( true_level > 110 ) ? "bountiful_captains_feast" :
+  std::string frost_food = ( true_level > 110 ) ? "abyssalfried_rissole" :
                            ( true_level > 100 ) ? "lemon_herb_filet" :
                            ( true_level >= 90 ) ? "pickled_eel" :
                            ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                            ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                            "disabled";
 
-  std::string unholy_food = ( true_level > 110 ) ? "bountiful_captains_feast" :
+  std::string unholy_food = ( true_level > 110 ) ? "baked_port_tato" :
                             ( true_level > 100 ) ? "nightborne_delicacy_platter" :
                             ( true_level >  90 ) ? "buttered_sturgeon" :
                             ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
@@ -7541,7 +7541,7 @@ std::string death_knight_t::default_food() const
 
 std::string death_knight_t::default_flask() const
 {
-  std::string flask_name = ( true_level >  110 ) ? "flask_of_the_undertow" :
+  std::string flask_name = ( true_level >  110 ) ? "greater_flask_of_the_undertow" :
                            ( true_level >= 100 ) ? "countless_armies" :
                            ( true_level >= 90  ) ? "greater_draenic_strength_flask" :
                            ( true_level >= 85  ) ? "winters_bite" :
