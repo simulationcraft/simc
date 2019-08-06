@@ -32,7 +32,7 @@ race=blood_elf
 role=attack
 position=back
 talents=3102013
-azerite_essences="14:4:1/27:4:0/4:4:0"
+azerite_essences=14:4:1/27:4:0/4:4:0
 
 head=warhelm_of_dread_waters,id=168360,bonus_id=1517/4824,azerite_powers=108/576/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
@@ -61,7 +61,7 @@ spec=unholy
 role=attack
 position=back
 talents=2203032
-azerite_essences="14:4:1/27:4:0/4:4:0"
+azerite_essences=14:4:1/27:4:0/4:4:0
 
 head=helm_of_abyssal_malevolence,id=159430,bonus_id=1617/4918,azerite_powers=109/199/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
