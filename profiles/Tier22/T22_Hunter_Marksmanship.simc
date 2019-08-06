@@ -53,7 +53,7 @@ actions.cds+=/ancestral_call,if=buff.trueshot.up&(target.time_to_die>cooldown.an
 actions.cds+=/fireblood,if=buff.trueshot.up&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9
 actions.cds+=/lights_judgment
 actions.cds+=/worldvein_resonance,if=buff.lifeblood.stack<4&!buff.trueshot.up
-actions.cds+=/guardian_of_azeroth,if=(ca_execute|target.time_to_die>210)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<30
+actions.cds+=/guardian_of_azeroth,if=(ca_execute|target.time_to_die>cooldown.guardian_of_azeroth.duration+duration)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<31
 actions.cds+=/ripple_in_space,if=cooldown.trueshot.remains<7
 actions.cds+=/memory_of_lucid_dreams,if=!buff.trueshot.up
 actions.cds+=/potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|(consumable.potion_of_unbridled_fury&target.time_to_die<61|target.time_to_die<26)
