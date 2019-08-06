@@ -1,4 +1,4 @@
-﻿
+
 // ==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
@@ -9734,6 +9734,7 @@ void monk_t::apl_combat_brewmaster()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
   action_priority_list_t* def             = get_action_priority_list( "default" );
+  action_priority_list_t* essences        = get_action_priority_list( "essences" );
   def->add_action( "auto_attack" );
   def->add_action( this, "Gift of the Ox", "if=health<health.max*0.65" );
   def->add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
@@ -9810,6 +9811,17 @@ void monk_t::apl_combat_brewmaster()
       def->add_action( racial_actions[ i ] + ",if=energy<31" );
   }
   def->add_talent( this, "Rushing Jade Wind" );
+
+  // Essences
+  essences->add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains=0" );
+  essences->add_action( "blood_of_the_enemy" );
+  essences->add_action( "guardian_of_azeroth" );
+  essences->add_action( "focused_azerite_beam" );
+  essences->add_action( "purifying_blast" );
+  essences->add_action( "the_unbound_force" );
+  essences->add_action( "ripple_in_space" );
+  essences->add_action( "worldvein_resonance" );
+  essences->add_action( "memory_of_lucid_dreams,if=energy<40" );
 }
 
 // Windwalker Combat Action Priority List ===============================
