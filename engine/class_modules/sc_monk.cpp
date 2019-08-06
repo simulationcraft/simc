@@ -9791,7 +9791,7 @@ void monk_t::apl_combat_brewmaster()
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>4" );
   def->add_action( this, "Blackout Strike" );
   def->add_action( this, "Keg Smash" );
-  def->add_action( "concentrated_flame" );
+  def->add_action( "concentrated_flame,if=dot.concentrated_flame.remains=0" );
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
   def->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action(
