@@ -32,12 +32,13 @@ race=blood_elf
 role=attack
 position=back
 talents=3102013
+azerite_essences=14:4:1/27:4:0/4:4:0
 
-head=warhelm_of_dread_waters,id=168360,bonus_id=1517/4824,azerite_powers=6/108/576/459/13
+head=warhelm_of_dread_waters,id=168360,bonus_id=1517/4824,azerite_powers=108/576/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=cthraxxi_binders_pauldrons,id=159439,bonus_id=1617/4918,azerite_powers=6/347/196/30/13
+shoulders=cthraxxi_binders_pauldrons,id=159439,bonus_id=1617/4918,azerite_powers=347/196/30/13
 back=cloak_of_ill_tidings,id=168391,bonus_id=4800/1517
-chest=dark_passengers_breastplate,id=168363,bonus_id=1517/4824,azerite_powers=6/108/576/30/13
+chest=dark_passengers_breastplate,id=168363,bonus_id=1517/4824,azerite_powers=108/576/30/13
 wrists=waveblade_farseers_armguards,id=170303,bonus_id=1512
 hands=poens_deepsea_handguards,id=170336,bonus_id=1512
 waist=eternity_keepers_greatbelt,id=168869,bonus_id=4800/1517
@@ -60,12 +61,13 @@ spec=unholy
 role=attack
 position=back
 talents=2203032
+azerite_essences=14:4:1/27:4:0/4:4:0
 
-head=helm_of_abyssal_malevolence,id=159430,bonus_id=1617/4918,azerite_powers=6/109/199/30/13
+head=helm_of_abyssal_malevolence,id=159430,bonus_id=1617/4918,azerite_powers=109/199/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=pauldrons_of_fanatical_might,id=168364,bonus_id=1517/4824,azerite_powers=6/199/575/31/13
+shoulders=pauldrons_of_fanatical_might,id=168364,bonus_id=1517/4824,azerite_powers=199/575/31/13
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
-chest=dark_passengers_breastplate,id=168363,bonus_id=1517/4824,azerite_powers=6/109/199/30/13
+chest=dark_passengers_breastplate,id=168363,bonus_id=1517/4824,azerite_powers=109/199/30/13
 wrists=waveblade_farseers_armguards,id=170303,bonus_id=1512
 hands=poens_deepsea_handguards,id=170336,bonus_id=1512
 waist=eternity_keepers_greatbelt,id=168869,bonus_id=4800/1517
