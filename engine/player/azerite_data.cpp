@@ -2385,39 +2385,20 @@ void overwhelming_power( special_effect_t& effect )
   if ( !power.enabled() )
     return;
 
-  const spell_data_t* driver = effect.player -> find_spell( 271705 );
-  const spell_data_t* spell = effect.player -> find_spell( 271711 );
-
   buff_t* buff = buff_t::find( effect.player, "overwhelming_power" );
   if ( !buff )
   {
-    buff = make_buff<stat_buff_t>( effect.player, "overwhelming_power", spell )
-      -> add_stat( STAT_HASTE_RATING, power.value( 1 ) );
+    buff = make_buff<stat_buff_t>( effect.player, "overwhelming_power", effect.player->find_spell( 271711 ) )
+      ->add_stat( STAT_HASTE_RATING, power.value( 1 ) )
+      ->set_reverse( true );
   }
 
   effect.custom_buff = buff;
-  effect.spell_id = driver -> id();
+  effect.spell_id = effect.trigger()->id();
 
-  struct overwhelming_power_cb_t : public dbc_proc_callback_t
-  {
-    overwhelming_power_cb_t( const special_effect_t& effect ) :
-      dbc_proc_callback_t( effect.player, effect )
-    { }
-
-    void execute( action_t*, action_state_t* ) override
-    {
-      proc_buff -> trigger( proc_buff -> max_stack() );
-    }
-  };
-
-  new overwhelming_power_cb_t( effect );
+  new dbc_proc_callback_t( effect.player, effect );
 
   // TODO: add on damage taken mechanic
-  effect.player -> register_combat_begin( [ buff, driver ]( player_t* ) {
-    make_repeating_event( *buff -> sim, driver -> effectN( 2 ).period(), [ buff ]() {
-      buff -> decrement();
-    } );
-  } );
 }
 
 void earthlink( special_effect_t& effect )
