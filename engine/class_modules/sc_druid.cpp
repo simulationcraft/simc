@@ -7852,28 +7852,18 @@ void druid_t::init_base_stats()
     + sets->set( DRUID_FERAL, T18, B2 )->effectN( 2 ).resource( RESOURCE_ENERGY )
     + talent.moment_of_clarity->effectN( 3 ).resource( RESOURCE_ENERGY );
 
-  if ( specialization() == DRUID_BALANCE )
-  {
-    resources.active_resource[ RESOURCE_ASTRAL_POWER ] = true;
-
-    // only activate other resources if you have the affinity and affinity_resources = true
-    resources.active_resource[ RESOURCE_HEALTH       ] = affinity_resources && talent.guardian_affinity->ok();
-    resources.active_resource[ RESOURCE_RAGE         ] = affinity_resources && talent.guardian_affinity->ok();
-    resources.active_resource[ RESOURCE_COMBO_POINT  ] = affinity_resources && talent.feral_affinity->ok();
-    resources.active_resource[ RESOURCE_ENERGY       ] = affinity_resources && talent.feral_affinity->ok();
-    resources.active_resource[ RESOURCE_MANA         ] = affinity_resources && talent.restoration_affinity->ok();
-  }
-  else
-  {
-    resources.active_resource[ RESOURCE_HEALTH       ] = primary_role() == ROLE_TANK || talent.guardian_affinity->ok();
-    resources.active_resource[ RESOURCE_RAGE         ] = primary_role() == ROLE_TANK || talent.guardian_affinity->ok();
-    resources.active_resource[ RESOURCE_COMBO_POINT  ] = primary_role() == ROLE_ATTACK || talent.feral_affinity->ok();
-    resources.active_resource[ RESOURCE_ENERGY       ] = primary_role() == ROLE_ATTACK || talent.feral_affinity->ok()
-      || specialization() == DRUID_RESTORATION;
-    resources.active_resource[ RESOURCE_MANA         ] = primary_role() == ROLE_HEAL || talent.restoration_affinity->ok()
-      || talent.balance_affinity->ok() || specialization() == DRUID_GUARDIAN;
-    resources.active_resource[ RESOURCE_ASTRAL_POWER ] = false;
-  }
+  // only activate other resources if you have the affinity and affinity_resources = true
+  resources.active_resource[ RESOURCE_HEALTH       ] = specialization() == DRUID_GUARDIAN
+                                                       || talent.guardian_affinity->ok() && affinity_resources;
+  resources.active_resource[ RESOURCE_RAGE         ] = specialization() == DRUID_GUARDIAN
+                                                       || talent.guardian_affinity->ok() && affinity_resources;
+  resources.active_resource[ RESOURCE_MANA         ] = specialization() == DRUID_RESTORATION
+                                                       || talent.restoration_affinity->ok() && affinity_resources;
+  resources.active_resource[ RESOURCE_COMBO_POINT  ] = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION
+                                                       || talent.feral_affinity->ok() && ( affinity_resources || catweave_bear );
+  resources.active_resource[ RESOURCE_ENERGY       ] = specialization() == DRUID_FERAL||  specialization() == DRUID_RESTORATION
+                                                       || talent.feral_affinity->ok() && ( affinity_resources || catweave_bear );
+  resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
   if ( specialization() == DRUID_FERAL )
@@ -7883,7 +7873,7 @@ void druid_t::init_base_stats()
   }
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.feral_affinity->effectN( 2 ).percent();
 
-  base_gcd = timespan_t::from_seconds( 1.5 );
+  base_gcd = 1.5_s;
 }
 
 // druid_t::init_buffs ======================================================
