@@ -11,7 +11,7 @@ azerite_essences=14:3/4:3/27:3
 # Default consumables
 potion=potion_of_unbridled_fury
 flask=greater_flask_of_endless_fathoms
-food=baked_port_tato
+food=biltong
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -51,6 +51,8 @@ actions+=/worldvein_resonance
 actions+=/rune_of_power,if=talent.firestarter.enabled&firestarter.remains>full_recharge_time|cooldown.combustion.remains>variable.combustion_rop_cutoff&buff.combustion.down|target.time_to_die<cooldown.combustion.remains&buff.combustion.down
 actions+=/call_action_list,name=combustion_phase,if=(talent.rune_of_power.enabled&cooldown.combustion.remains<=action.rune_of_power.cast_time|cooldown.combustion.ready)&!firestarter.active|buff.combustion.up
 actions+=/fire_blast,use_while_casting=1,use_off_gcd=1,if=(essence.memory_of_lucid_dreams.major|essence.memory_of_lucid_dreams.minor&azerite.blaster_master.enabled)&charges=max_charges&!buff.hot_streak.react&!(buff.heating_up.react&(buff.combustion.up&(action.fireball.in_flight|action.pyroblast.in_flight|action.scorch.executing)|target.health.pct<=30&action.scorch.executing))&!(!buff.heating_up.react&!buff.hot_streak.react&buff.combustion.down&(action.fireball.in_flight|action.pyroblast.in_flight))
+# During Firestarter, Fire Blasts are used similarly to during Combustion. Generally, they are used to generate Hot Streaks when crits will not be wasted and with Blaster Master, they should be spread out to maintain the Blaster Master buff.
+actions+=/fire_blast,use_while_casting=1,use_off_gcd=1,if=firestarter.active&charges>=1&(!variable.fire_blast_pooling|buff.rune_of_power.up)&(!azerite.blaster_master.enabled|buff.blaster_master.remains<0.5)&(!action.fireball.executing&!action.pyroblast.in_flight&buff.heating_up.up|action.fireball.executing&buff.hot_streak.down|action.pyroblast.in_flight&buff.heating_up.down&buff.hot_streak.down)
 actions+=/call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down
 actions+=/variable,name=fire_blast_pooling,value=talent.rune_of_power.enabled&cooldown.rune_of_power.remains<cooldown.fire_blast.full_recharge_time&(cooldown.combustion.remains>variable.combustion_rop_cutoff|firestarter.active)&(cooldown.rune_of_power.remains<target.time_to_die|action.rune_of_power.charges>0)|cooldown.combustion.remains<action.fire_blast.full_recharge_time+cooldown.fire_blast.duration*azerite.blaster_master.enabled&!firestarter.active&cooldown.combustion.remains<target.time_to_die|talent.firestarter.enabled&firestarter.active&firestarter.remains<cooldown.fire_blast.full_recharge_time+cooldown.fire_blast.duration*azerite.blaster_master.enabled
 actions+=/variable,name=phoenix_pooling,value=talent.rune_of_power.enabled&cooldown.rune_of_power.remains<cooldown.phoenix_flames.full_recharge_time&cooldown.combustion.remains>variable.combustion_rop_cutoff&(cooldown.rune_of_power.remains<target.time_to_die|action.rune_of_power.charges>0)|cooldown.combustion.remains<action.phoenix_flames.full_recharge_time&cooldown.combustion.remains<target.time_to_die
@@ -114,11 +116,11 @@ actions.items_low_priority+=/use_item,effect_name=cyclotronic_blast,if=cooldown.
 actions.rop_phase=rune_of_power
 actions.rop_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>4)&buff.hot_streak.react
 actions.rop_phase+=/pyroblast,if=buff.hot_streak.react
-actions.rop_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=(cooldown.combustion.remains>0|firestarter.active&buff.rune_of_power.up)&(!buff.heating_up.react&!buff.hot_streak.react&!prev_off_gcd.fire_blast&(action.fire_blast.charges>=2|(action.phoenix_flames.charges>=1&talent.phoenix_flames.enabled)|(talent.alexstraszas_fury.enabled&cooldown.dragons_breath.ready)|(talent.searing_touch.enabled&target.health.pct<=30)|(talent.firestarter.enabled&firestarter.active)))
+actions.rop_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=(!firestarter.active&cooldown.combustion.remains>0)&(!buff.heating_up.react&!buff.hot_streak.react&!prev_off_gcd.fire_blast&(action.fire_blast.charges>=2|(action.phoenix_flames.charges>=1&talent.phoenix_flames.enabled)|(talent.alexstraszas_fury.enabled&cooldown.dragons_breath.ready)|(talent.searing_touch.enabled&target.health.pct<=30)))
 actions.rop_phase+=/call_action_list,name=active_talents
 actions.rop_phase+=/pyroblast,if=buff.pyroclasm.react&cast_time<buff.pyroclasm.remains&buff.rune_of_power.remains>cast_time
-actions.rop_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=(cooldown.combustion.remains>0|firestarter.active&buff.rune_of_power.up)&(buff.heating_up.react&(target.health.pct>=30|!talent.searing_touch.enabled))
-actions.rop_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=(cooldown.combustion.remains>0|firestarter.active&buff.rune_of_power.up)&talent.searing_touch.enabled&target.health.pct<=30&(buff.heating_up.react&!action.scorch.executing|!buff.heating_up.react&!buff.hot_streak.react)
+actions.rop_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=(!firestarter.active&cooldown.combustion.remains>0)&(buff.heating_up.react&(target.health.pct>=30|!talent.searing_touch.enabled))
+actions.rop_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=(!firestarter.active&cooldown.combustion.remains>0)&talent.searing_touch.enabled&target.health.pct<=30&(buff.heating_up.react&!action.scorch.executing|!buff.heating_up.react&!buff.hot_streak.react)
 actions.rop_phase+=/pyroblast,if=prev_gcd.1.scorch&buff.heating_up.up&talent.searing_touch.enabled&target.health.pct<=30&(!talent.flame_patch.enabled|active_enemies=1)
 actions.rop_phase+=/phoenix_flames,if=!prev_gcd.1.phoenix_flames&buff.heating_up.react
 actions.rop_phase+=/scorch,if=target.health.pct<=30&talent.searing_touch.enabled
@@ -132,8 +134,8 @@ actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&(prev_gcd.1.fireb
 actions.standard_rotation+=/phoenix_flames,if=charges>=3&active_enemies>2&!variable.phoenix_pooling
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&target.health.pct<=30&talent.searing_touch.enabled
 actions.standard_rotation+=/pyroblast,if=buff.pyroclasm.react&cast_time<buff.pyroclasm.remains
-actions.standard_rotation+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=(cooldown.combustion.remains>0&buff.rune_of_power.down|firestarter.active)&!talent.kindling.enabled&!variable.fire_blast_pooling&(((action.fireball.executing|action.pyroblast.executing)&(buff.heating_up.react|firestarter.active&!buff.hot_streak.react&!buff.heating_up.react))|(talent.searing_touch.enabled&target.health.pct<=30&(buff.heating_up.react&!action.scorch.executing|!buff.hot_streak.react&!buff.heating_up.react&action.scorch.executing&!action.pyroblast.in_flight&!action.fireball.in_flight))|(firestarter.active&(action.pyroblast.in_flight|action.fireball.in_flight)&!buff.heating_up.react&!buff.hot_streak.react))
-actions.standard_rotation+=/fire_blast,if=talent.kindling.enabled&buff.heating_up.react&(cooldown.combustion.remains>full_recharge_time+2+talent.kindling.enabled|firestarter.remains>full_recharge_time|(!talent.rune_of_power.enabled|cooldown.rune_of_power.remains>target.time_to_die&action.rune_of_power.charges<1)&cooldown.combustion.remains>target.time_to_die)
+actions.standard_rotation+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=(cooldown.combustion.remains>0&buff.rune_of_power.down&!firestarter.active)&!talent.kindling.enabled&!variable.fire_blast_pooling&(((action.fireball.executing|action.pyroblast.executing)&(buff.heating_up.react))|(talent.searing_touch.enabled&target.health.pct<=30&(buff.heating_up.react&!action.scorch.executing|!buff.hot_streak.react&!buff.heating_up.react&action.scorch.executing&!action.pyroblast.in_flight&!action.fireball.in_flight)))
+actions.standard_rotation+=/fire_blast,if=talent.kindling.enabled&buff.heating_up.react&!firestarter.active&(cooldown.combustion.remains>full_recharge_time+2+talent.kindling.enabled|(!talent.rune_of_power.enabled|cooldown.rune_of_power.remains>target.time_to_die&action.rune_of_power.charges<1)&cooldown.combustion.remains>target.time_to_die)
 actions.standard_rotation+=/pyroblast,if=prev_gcd.1.scorch&buff.heating_up.up&talent.searing_touch.enabled&target.health.pct<=30&((talent.flame_patch.enabled&active_enemies=1&!firestarter.active)|(active_enemies<4&!talent.flame_patch.enabled))
 actions.standard_rotation+=/phoenix_flames,if=(buff.heating_up.react|(!buff.hot_streak.react&(action.fire_blast.charges>0|talent.searing_touch.enabled&target.health.pct<=30)))&!variable.phoenix_pooling
 actions.standard_rotation+=/call_action_list,name=active_talents
@@ -143,28 +145,29 @@ actions.standard_rotation+=/scorch,if=target.health.pct<=30&talent.searing_touch
 actions.standard_rotation+=/fireball
 actions.standard_rotation+=/scorch
 
-head=soulfuel_headdress,id=159279,bonus_id=1617/4820/4775,azerite_powers=168/193/459/13
+head=grasping_crown_of_the_deep,id=159252,bonus_id=1617/4820/4775,azerite_powers=168/215/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=brood_cleansers_amice,id=159254,bonus_id=1617/4820/4775,azerite_powers=168/196/459/13
-back=cloak_of_ill_tidings,id=168391,bonus_id=4800/1517
-chest=siren_mystics_vestments,id=168341,bonus_id=4824/1517/4775,azerite_powers=168/575/31/13
-wrists=waveblade_farseers_bindings,id=170306,bonus_id=1512
+shoulders=amice_of_the_reef_witch,id=168338,bonus_id=4824/1517/4775,azerite_powers=215/168/30/13
+back=cloak_of_blessed_depths,id=168602,bonus_id=4800/1517
+chest=vestments_of_creeping_terror,id=168337,bonus_id=4824/1517/4775,azerite_powers=378/215/30/13
+wrists=hyperthread_wristwraps,id=168989,bonus_id=4779/1472
 hands=poens_deepsea_gloves,id=170333,bonus_id=1512
 waist=vims_scalecrusher_belt,id=170367,bonus_id=1512
-legs=seawrath_legwraps,id=168371,bonus_id=4800/1517
+legs=malformed_heralds_legwraps,id=167835,bonus_id=4800/1547
 feet=akanas_reefstrider_soles,id=170140,bonus_id=1512
-finger1=logic_loop_of_division,id=169157,bonus_id=4779/1472,enchant=accord_of_haste
-finger2=shorting_bit_band,id=169160,bonus_id=4779/1472,enchant=accord_of_haste
+finger1=overclocking_bit_band,id=169159,bonus_id=4779/1472,enchant=accord_of_versatility
+finger2=logic_loop_of_division,id=169157,bonus_id=4779/1472,enchant=accord_of_versatility
 trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 trinket2=leviathans_lure,id=169304,bonus_id=4800/1517
-main_hand=anuazshara_staff_of_the_eternal,id=168275,bonus_id=4800/1517,enchant=torrent_of_elements
+main_hand=fang_of_the_behemoth,id=168397,bonus_id=4800/1517,enchant=torrent_of_elements
+off_hand=stormtamers_orb,id=168896,bonus_id=4800/1517
 
 # Gear Summary
-# gear_ilvl=437.87
-# gear_stamina=12867
-# gear_intellect=8873
-# gear_crit_rating=1499
-# gear_haste_rating=1342
-# gear_mastery_rating=759
-# gear_versatility_rating=288
-# gear_armor=1715
+# gear_ilvl=436.44
+# gear_stamina=12616
+# gear_intellect=8749
+# gear_crit_rating=1362
+# gear_haste_rating=1235
+# gear_mastery_rating=422
+# gear_versatility_rating=552
+# gear_armor=1672
