@@ -806,6 +806,7 @@ public:
   virtual double composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double composite_melee_expertise( const weapon_t* weapon ) const override;
   virtual double composite_melee_attack_power() const override;
+  virtual double composite_melee_attack_power( attack_power_e ap_type ) const override;
   virtual double composite_spell_haste() const override;
   virtual double composite_melee_haste() const override;
   virtual double composite_attack_power_multiplier() const override;
@@ -6548,6 +6549,9 @@ struct expel_harm_t : public monk_spell_t
       niuzao( new niuzaos_blessing_t( *p ) )
   {
     parse_options( options_str );
+
+    // like other BrM spells, this has fixed 1.0 second GCD. 
+    trigger_gcd        = timespan_t::from_seconds( 1.0 );
   }
 
   virtual bool ready() override
@@ -6573,8 +6577,9 @@ struct expel_harm_t : public monk_spell_t
     // independently and allows it to crit, so it will have higher
     // variance but with enough iterations will have the same mean.
     double coeff = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff() * p()->spec.expel_harm->effectN( 2 ).percent();
-    double ap = p()->composite_melee_attack_power();
+    double ap = p()->composite_melee_attack_power( AP_WEAPON_MH ) * p()->composite_attack_power_multiplier();
     double stacks = p()->buff.gift_of_the_ox->stack();
+
     dmg->base_dd_min = ap * coeff * stacks;
     dmg->base_dd_max = ap * coeff * stacks;
     dmg->execute();
@@ -8978,11 +8983,12 @@ double monk_t::composite_melee_attack_power() const
   if ( specialization() == MONK_MISTWEAVER )
     return composite_spell_power( SCHOOL_MAX );
 
-  double ap = player_t::composite_melee_attack_power();
+  return player_t::composite_melee_attack_power();
+}
 
-  ap += buff.bladed_armor->default_value * current.stats.get_stat( STAT_BONUS_ARMOR );
-
-  return ap;
+double monk_t::composite_melee_attack_power( attack_power_e ap_type) const
+{
+  return player_t::composite_melee_attack_power( ap_type );
 }
 
 // monk_t::composite_attack_power_multiplier() ==========================
@@ -9791,7 +9797,7 @@ void monk_t::apl_combat_brewmaster()
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>4" );
   def->add_action( this, "Blackout Strike" );
   def->add_action( this, "Keg Smash" );
-  def->add_action( "concentrated_flame" );
+  def->add_action( "heart_essence" );
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>=3" );
   def->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action(
