@@ -8518,7 +8518,7 @@ void monk_t::create_buffs()
                           ->set_trigger_spell( azerite.fit_to_burst.spell() )
                           ->set_reverse( true );
   buff.training_of_niuzao = make_buff<stat_buff_t>( this, "training_of_niuzao", find_spell( 278767 ) )
-                                ->add_stat( STAT_MASTERY_RATING, azerite.training_of_niuzao.value() / 3 );
+                                ->add_stat( STAT_MASTERY_RATING, azerite.training_of_niuzao.value() );
   buff.training_of_niuzao->set_max_stack( 3 );
 
   // Windwalker
