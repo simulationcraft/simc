@@ -6052,6 +6052,7 @@ void mage_t::apl_frost()
     "On single target fights, the cooldown of Rune of Power is lower than the cooldown of Frozen Orb, this gives "
     "extra Rune of Power charges that should be used with active talents, if possible." );
   cooldowns->add_action( "potion,if=prev_gcd.1.icy_veins|target.time_to_die<30" );
+  cooldowns->add_action( "use_item,name=balefire_branch,if=!talent.glacial_spike.enabled|buff.brain_freeze.react&prev_gcd.1.glacial_spike" );
   cooldowns->add_action( "use_items" );
   for ( const auto& ra : racial_actions )
   {
