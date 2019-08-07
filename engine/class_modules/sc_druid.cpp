@@ -750,14 +750,14 @@ public:
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
     starshards( 0.0 ),
+    previous_streaking_stars(SS_NONE),
     lucid_dreams_proc_chance_balance( 0.15 ),
     lucid_dreams_proc_chance_feral( 0.15 ),
     lucid_dreams_proc_chance_guardian( 0.15 ),
-    thorns_attack_period( 2.0 ),
-    thorns_hit_chance( 0.75 ),
-    previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
     initial_astral_power( 0 ),
+    thorns_attack_period( 2.0 ),
+    thorns_hit_chance( 0.75 ),
     initial_moon_stage( NEW_MOON ),
     lively_spirit_stacks(9),  //set a usually fitting default value
     ahhhhh_the_great_outdoors( false ),
@@ -7857,21 +7857,22 @@ void druid_t::init_base_stats()
     resources.active_resource[ RESOURCE_ASTRAL_POWER ] = true;
 
     // only activate other resources if you have the affinity and affinity_resources = true
-    resources.active_resource[ RESOURCE_HEALTH      ] = affinity_resources && talent.guardian_affinity->ok();
-    resources.active_resource[ RESOURCE_RAGE        ] = affinity_resources && talent.guardian_affinity->ok();
-    resources.active_resource[ RESOURCE_COMBO_POINT ] = affinity_resources && talent.feral_affinity->ok();
-    resources.active_resource[ RESOURCE_ENERGY      ] = affinity_resources && talent.feral_affinity->ok();
-    resources.active_resource[ RESOURCE_MANA        ] = affinity_resources && talent.restoration_affinity->ok();
+    resources.active_resource[ RESOURCE_HEALTH       ] = affinity_resources && talent.guardian_affinity->ok();
+    resources.active_resource[ RESOURCE_RAGE         ] = affinity_resources && talent.guardian_affinity->ok();
+    resources.active_resource[ RESOURCE_COMBO_POINT  ] = affinity_resources && talent.feral_affinity->ok();
+    resources.active_resource[ RESOURCE_ENERGY       ] = affinity_resources && talent.feral_affinity->ok();
+    resources.active_resource[ RESOURCE_MANA         ] = affinity_resources && talent.restoration_affinity->ok();
   }
   else
   {
-    resources.active_resource[ RESOURCE_HEALTH      ] = primary_role() == ROLE_TANK || talent.guardian_affinity->ok();
-    resources.active_resource[ RESOURCE_RAGE        ] = primary_role() == ROLE_TANK || talent.guardian_affinity->ok();
-    resources.active_resource[ RESOURCE_COMBO_POINT ] = primary_role() == ROLE_ATTACK || talent.feral_affinity->ok();
-    resources.active_resource[ RESOURCE_ENERGY      ] = primary_role() == ROLE_ATTACK || talent.feral_affinity->ok()
+    resources.active_resource[ RESOURCE_HEALTH       ] = primary_role() == ROLE_TANK || talent.guardian_affinity->ok();
+    resources.active_resource[ RESOURCE_RAGE         ] = primary_role() == ROLE_TANK || talent.guardian_affinity->ok();
+    resources.active_resource[ RESOURCE_COMBO_POINT  ] = primary_role() == ROLE_ATTACK || talent.feral_affinity->ok();
+    resources.active_resource[ RESOURCE_ENERGY       ] = primary_role() == ROLE_ATTACK || talent.feral_affinity->ok()
       || specialization() == DRUID_RESTORATION;
-    resources.active_resource[ RESOURCE_MANA        ] = primary_role() == ROLE_HEAL || talent.restoration_affinity->ok()
+    resources.active_resource[ RESOURCE_MANA         ] = primary_role() == ROLE_HEAL || talent.restoration_affinity->ok()
       || talent.balance_affinity->ok() || specialization() == DRUID_GUARDIAN;
+    resources.active_resource[ RESOURCE_ASTRAL_POWER ] = false;
   }
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
