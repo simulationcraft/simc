@@ -168,7 +168,7 @@ void print( report::sc_html_stream& os, const sim_t& sim )
      << "<th class=\"small help\" data-help=\"#help-block-pct\">B%</th>\n"
      << "<th class=\"small help\" data-help=\"#help-interval\">Interval</th>\n"
      << "<th class=\"small help\" data-help=\"#help-combined\">Combined</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-duration\"Duration</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-duration\">Duration</th>\n"
      << "</tr>\n";
 
   int count = 0;
@@ -978,7 +978,9 @@ void print_html_style( report::sc_html_stream& os, const sim_t& )
      << "</style>\n";
 
   // Rest
+  os << "<style type=\"text/css\" media=\"all\">\n";
   print_text_array( os, __html_stylesheet );
+  os << "\n</style>\n";
 }
 
 // print_html_masthead ======================================================
@@ -1239,12 +1241,12 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
   // Should have no effect on GUI reports or directly viewing the HTML report in a browser
   os << "<base target=\"_top\">\n";
 
-  os << "<script type=\"text/javascript\">" << std::endl;
+  os << "<script type=\"text/javascript\">\n";
   print_text_array( os, __jquery_include );
-  os << "</script>" << std::endl
-     << "<script type=\"text/javascript\">" << std::endl;
+  os << "\n</script>\n"
+     << "<script type=\"text/javascript\">\n";
   print_text_array( os, __highcharts_include );
-  os << "</script>" << std::endl;
+  os << "\n</script>\n";
 
   print_html_style( os, sim );
 
@@ -1252,7 +1254,7 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
   highchart::theme( highcharts_theme, highchart::THEME_DEFAULT );
   os << "<script type=\"text/javascript\">\n"
      << "Highcharts.setOptions(" << highcharts_theme.to_json() << ");\n"
-     << "</script>";
+     << "</script>\n";
 }
 
 void print_nothing_to_report( report::sc_html_stream& os, const std::string& reason )
@@ -1371,23 +1373,25 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
     //Apply the prettification stuff only if its a single report
     if ( num_players > 1 || k > 1 )
     {
-      os << R"(<script>var whTooltips = {colorLinks: false, iconizeLinks: false, renameLinks: false};</script>\n)";
+      os << R"(<script>var whTooltips = {colorLinks: false, iconizeLinks: false, renameLinks: false};</script>)";
     }
     else
     {
-      os << R"(<script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>\n)";
+      os << R"(<script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>)";
     }
 
-    os << R"(<script type="text/javascript" src="https://wow.zamimg.com/widgets/power.js"></script>\n)";
+    os << std::endl << R"(<script type="text/javascript" src="https://wow.zamimg.com/widgets/power.js"></script>)";
   }
 
   if ( sim.hosted_html )
   {
     // Google Analytics
-    os << R"(<script type="text/javascript" src="https://www.simulationcraft.org/js/ga.js"></script>\n)";
+    os << std::endl << R"(<script type="text/javascript" src="https://www.simulationcraft.org/js/ga.js"></script>)";
   }
 
+  os << "\n<script type=\"text/javascript\">\n";
   print_html_image_load_scripts( os );
+  os << "\n</script>\n";
 
   os << "<script type=\"text/javascript\">\n";
   os << "jQuery( document ).ready( function( $ ) {\n";
