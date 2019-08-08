@@ -16,7 +16,6 @@
             });
         });
     }
-
     function open_anchor(anchor) {
         var img_id = '';
         var src = '';
@@ -120,6 +119,81 @@
             anchor = $(this).attr('href');
             target = $(anchor).children('h2:first');
             open_anchor(target);
+        });
+        function oddstripe() {
+            var rows = $(this).find('.toprow');
+            rows.filter(':even').removeClass('odd');
+            rows.filter(':odd').addClass('odd');
+        }
+        $('.stripetoprow').each(oddstripe);
+        function getCell(elem, i, both) {
+            var $row;
+            if ($(elem).is('tr')) {
+                $row = $(elem);
+            } else {
+                $row = $(elem).find('tr:first');
+            }
+            return $row.children('td').eq(i).text().trim();
+        }
+        function numberSort(a, b, i, dsc, both) {
+            var va = parseFloat(getCell(a, i, both)) || 0;
+            var vb = parseFloat(getCell(b, i, both)) || 0;
+            return dsc ? vb - va : va - vb;
+        }
+        function alphaSort(a, b, i, dsc, both) {
+            var va = getCell(a, i, both);
+            var vb = getCell(b, i, both);
+            if (dsc) {
+                return va < vb ? 1 : -1;
+            } else {
+                return va > vb ? 1 : -1;
+            }
+        }
+        $('.toggle-sort').click(function (e) {
+            e.preventDefault();
+            var $col = $(this).closest('th');
+            var $tbl = $col.closest('table.sort');
+            var $sib = $col.siblings('th').find('.asc-sorted, .dsc-sorted');
+            $sib.add($col.siblings('.asc-sorted, .dsc-sorted'));
+            $sib.removeClass('asc-sorted dsc-sorted');
+            var idx = $col.index();
+            var doAlpha = $(this).data('sorttype') == 'alpha';
+            var doAsc = $(this).data('sortdir') == 'asc';
+            var doRows = $(this).data('sortrows') == 'both';
+            if (!($(this).hasClass('dsc-sorted') || $(this).hasClass('asc-sorted'))) {
+                $(this).toggleClass('dsc-sorted', !doAsc);
+            } else {
+                $(this).toggleClass('dsc-sorted');
+            }
+            var isDsc = $(this).hasClass('dsc-sorted');
+            $(this).toggleClass('asc-sorted', !isDsc);
+            var srt;
+            if (doAlpha) {
+                srt = function(i, dsc, both) {
+                    return function(a, b) {
+                        return alphaSort(a, b, i, dsc, both);
+                    };
+                };
+            } else {
+                srt = function(i, dsc, both) {
+                    return function(a, b) {
+                        return numberSort(a, b, i, dsc, both);
+                    };
+                };
+            }
+            var $bucket = $tbl.children('tbody:not(.nosort)');
+            var $remain = $tbl.children('tbody.nosort');
+            if ($bucket.length == 1) {
+                $bucket = $bucket.children('tr');
+            }
+            if ($bucket.length) {
+                $bucket.sort(srt(idx, isDsc, doRows));
+                $tbl.append($bucket);
+                $tbl.append($remain);
+                if ($tbl.hasClass('stripetoprow')) {
+                    oddstripe.call($tbl);
+                }
+            }
         });
     });
 </script>

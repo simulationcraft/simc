@@ -32,7 +32,7 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
   json.set( "lang.thousandsSep", "," );
 
   json.set( "legend.enabled", false );
-  json.set( "legend.itemStyle.fontsize", "14px" );
+  json.set( "legend.itemStyle.fontSize", "14px" );
   json.set( "legend.itemStyle.color", _text_color );
   // json.set( "legend.itemStyle.textShadow", TEXT_OUTLINE );
 
@@ -64,7 +64,7 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
   json.set( "title.style.color", _text_color );
   // json.set( "title.style.textShadow", TEXT_OUTLINE );
 
-  json.set( "subtitle.style.fontsize", "13px" );
+  json.set( "subtitle.style.fontSize", "13px" );
   // json.set( "subtitle.style.textShadow", TEXT_OUTLINE );
 
   json.set( "tooltip.backgroundColor", "#3F3E38" );
