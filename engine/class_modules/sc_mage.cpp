@@ -6866,7 +6866,7 @@ public:
       else
         name = util::encode_html( name );
 
-      fmt::print( os, "<tr{}>", ++row & 1 ? " class=\"odd\"" : "" );
+      fmt::print( os, "<tr{}>", row++ & 1 ? " class=\"odd\"" : "" );
       fmt::print( os, "<td class=\"left\">{}</td>", name );
       fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.mean() );
       fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.min() );
@@ -7019,7 +7019,7 @@ public:
       else
         name = util::encode_html( name );
 
-      fmt::print( os, "<tr{}>", ++row & 1 ? " class=\"odd\"" : "" );
+      fmt::print( os, "<tr{}>", row++ & 1 ? " class=\"odd\"" : "" );
       fmt::print( os, "<td class=\"left\">{}</td>", name );
       cells( data->count( FROZEN_NONE ) );
       cells( data->count( FROZEN_WINTERS_CHILL ), true );
