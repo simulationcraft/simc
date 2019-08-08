@@ -8591,9 +8591,9 @@ void shaman_t::init_action_list_enhancement()
       this, "Sundering",
       "if=active_enemies>=3&(!essence.blood_of_the_enemy.major"
       "|(essence.blood_of_the_enemy.major&(buff.seething_rage.up|cooldown.blood_of_the_enemy.remains>40)))" );
-  priority->add_action( "focused_azerite_beam,if=active_enemies>=3" );
-  priority->add_action( "purifying_blast,if=active_enemies>=3" );
-  priority->add_action( "ripple_in_space,if=active_enemies>=3" );
+  priority->add_action( "focused_azerite_beam,if=active_enemies>1" );
+  priority->add_action( "purifying_blast,if=active_enemies>1" );
+  priority->add_action( "ripple_in_space,if=active_enemies>1" );
   priority->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
   priority->add_action(
       this, "Frostbrand",
@@ -8623,7 +8623,7 @@ void shaman_t::init_action_list_enhancement()
       "Attempt to sync your DPS potion with a cooldown, unless the target is about to die." );
   cds->add_action( "guardian_of_azeroth" );
   cds->add_action( this, "Feral Spirit" );
-  cds->add_action( "blood_of_the_enemy" );
+  cds->add_action( "blood_of_the_enemy,if=raid_event.adds.in>90|active_enemies>1" );
   cds->add_talent( this, "Ascendance", "if=cooldown.strike.remains>0" );
   cds->add_action(
       "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(target.time_to_die<20&debuff.razor_coral_"
@@ -8672,12 +8672,12 @@ void shaman_t::init_action_list_enhancement()
                             "&variable.furyCheck_LB&maelstrom>=40" );
   default_core->add_action( this, "Stormstrike", "if=variable.OCPool_SS&variable.furyCheck_SS" );
 
-  filler->add_talent( this, "Sundering", "if=active_enemies<3" );
+  filler->add_talent( this, "Sundering", "if=raid_event.adds.in>40" );
   filler->add_action(
-      "focused_azerite_beam,if=!buff.ascendance.up&!buff.molten_weapon.up&!buff.icy_edge.up"
+      "focused_azerite_beam,if=raid_event.adds.in>90&!buff.ascendance.up&!buff.molten_weapon.up&!buff.icy_edge.up"
       "&!buff.crackling_surge.up&!debuff.earthen_spike.up" );
-  filler->add_action( "purifying_blast" );
-  filler->add_action( "ripple_in_space" );
+  filler->add_action( "purifying_blast,if=raid_event.adds.in>60" );
+  filler->add_action( "ripple_in_space,if=raid_event.adds.in>60" );
   filler->add_action( "thundercharge" );
   filler->add_action( "concentrated_flame" );
   filler->add_action( this, "Crash Lightning",
