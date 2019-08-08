@@ -3220,6 +3220,11 @@ struct storm_earth_and_fire_t : public monk_spell_t
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
 
     cooldown->charges += (int)p->spec.storm_earth_and_fire_2->effectN( 1 ).base_value();
+
+	if ( p->azerite.vision_of_perfection.enabled() )
+    {
+      cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite.vision_of_perfection );
+    }
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -3260,23 +3265,17 @@ struct storm_earth_and_fire_t : public monk_spell_t
     auto targets   = p()->create_storm_earth_and_fire_target_list();
     auto n_targets = targets.size();
 
-	timespan_t sef_duration = p()->spec.storm_earth_and_fire->duration();
-    if ( p()->azerite.vision_of_perfection.enabled() && p()->specialization() == MONK_WINDWALKER )
-    {
-      sef_duration *= 1.0 + azerite::vision_of_perfection_cdr( p()->azerite.vision_of_perfection );
-    }
-
     // Start targeting logic from "owner" always
     p()->pet.sef[ SEF_EARTH ]->reset_targeting();
     p()->pet.sef[ SEF_EARTH ]->target = p()->target;
     p()->retarget_storm_earth_and_fire( p()->pet.sef[ SEF_EARTH ], targets, n_targets );
-    p()->pet.sef[ SEF_EARTH ]->summon( sef_duration );
+    p()->pet.sef[ SEF_EARTH ]->summon( data().duration() );
 
     // Start targeting logic from "owner" always
     p()->pet.sef[ SEF_FIRE ]->reset_targeting();
     p()->pet.sef[ SEF_FIRE ]->target = p()->target;
     p()->retarget_storm_earth_and_fire( p()->pet.sef[ SEF_FIRE ], targets, n_targets );
-    p()->pet.sef[ SEF_FIRE ]->summon( sef_duration );
+    p()->pet.sef[ SEF_FIRE ]->summon( data().duration() );
   }
 
   // Monk used SEF while pets are up to sticky target them into an enemy
@@ -5472,6 +5471,11 @@ struct serenity_t : public monk_spell_t
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd   = timespan_t::from_millis( 750 );
     gcd_haste = HASTE_SPELL;
+
+	if ( player->azerite.vision_of_perfection.enabled() )
+    {
+      cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( player->azerite.vision_of_perfection );
+    }
   }
 
   void execute() override
@@ -8499,27 +8503,21 @@ void monk_t::create_buffs()
 
 
   timespan_t serenity_duration = talent.serenity->duration();
-  buff.serenity_vop = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
+  buff.serenity_vop = new buffs::serenity_buff_t( *this, "serenity_vop", talent.serenity );
   buff.serenity_vop->set_duration( serenity_duration * azerite.vision_of_perfection_percentage );
 
-  if ( azerite.vision_of_perfection.enabled() && specialization() == MONK_WINDWALKER )  {
-    serenity_duration *= 1.0 + azerite::vision_of_perfection_cdr( azerite.vision_of_perfection );
-  }
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
   buff.serenity->set_duration( serenity_duration );
   
   timespan_t sef_duration = spec.storm_earth_and_fire->duration();
   buff.storm_earth_and_fire_vop =
-      make_buff( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
+      make_buff( this, "storm_earth_and_fire_vop", spec.storm_earth_and_fire )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
           ->set_can_cancel( false )  // Undocumented hotfix 28/09/2018 - SEF can no longer be canceled.
           ->set_duration( sef_duration * azerite.vision_of_perfection_percentage )
           ->set_cooldown( timespan_t::zero() );
   
-  if ( azerite.vision_of_perfection.enabled() && specialization() == MONK_WINDWALKER )  {
-    sef_duration *= 1.0 + azerite::vision_of_perfection_cdr( azerite.vision_of_perfection );
-  }
   buff.storm_earth_and_fire =
       make_buff( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
