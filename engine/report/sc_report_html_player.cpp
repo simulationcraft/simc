@@ -1564,12 +1564,13 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
           else if ( t->name_cstr() )
             name = util::encode_html( t->name_cstr() );
 
-          if ( t->specialization() != SPEC_NONE )
+        // Seems unnecessary...
+        /*if ( t->specialization() != SPEC_NONE )
           {
             name += " (";
             name += util::specialization_string( t->specialization() );
             name += ")";
-          }
+          }*/
         }
         if ( p.talent_points.has_row_col( row, col ) )
         {
@@ -2421,7 +2422,7 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
   os << "<table class=\"sc even\">\n"
      << "<thead>\n"
      << "<tr>\n"
-     << "<th class=left>Resource</th>\n"
+     << "<th class=\"left\">Resource</th>\n"
      << "<th>RPS Gain</th>\n"
      << "<th>RPS Loss</th>\n"
      << "</tr>\n"
@@ -3303,8 +3304,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
        << "<th>&#160;</th>\n"
        << "<th class=\"help\" data-help=\"#help-theck-meloree-index\">TMI</th>\n"
        << "<th class=\"help\" data-help=\"#help-error\">TMI Error</th>\n"
-       << "<th class=\"help\" data-help=\"#help-tmi\">TMI Min</th>\n"
-       << "<th class=\"help\" data-help=\"#help-tmi\">TMI Max</th>\n"
+       << "<th>TMI Min</th>\n"
+       << "<th>TMI Max</th>\n"
        << "<th class=\"help\" data-help=\"#help-tmirange\">TMI Range</th>\n"
        << "<th>&#160;</th>\n"
        << "<th class=\"help\" data-help=\"#help-msd\">MSD Mean</th>\n"
@@ -3460,12 +3461,13 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
             else if ( t->name_cstr() )
               name = util::encode_html( t->name_cstr() );
 
-            if ( t->specialization() != SPEC_NONE )
+          // Seems unnecessary...
+          /*if ( t->specialization() != SPEC_NONE )
             {
               name += " (";
               name += util::specialization_string( t->specialization() );
               name += ")";
-            }
+            }*/
           }
           if ( p.talent_points.has_row_col( row, col ) )
             os.printf( "<li><strong>%d</strong>:&#160;%s</li>\n", row == 6 ? 100 : ( row + 1 ) * 15, name.c_str() );
