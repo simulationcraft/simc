@@ -146,41 +146,28 @@ void sorttable_header( report::sc_html_stream& os, const std::string& header, bo
                        bool alphasort = false, bool leftclass = false, const std::string& helptext = std::string(),
                        bool bothrow = false )
 {
-  std::string th_str;
-  std::string span_str = " class=\"toggle-sort\"";
-  std::string a_href_str;
+  std::string class_str = "toggle-sort";
+  std::string data_str;
 
   if ( ascsort )
-    span_str += " data-sortdir=\"asc\"";
+    data_str += " data-sortdir=\"asc\"";
 
   if ( alphasort )
-    span_str += " data-sorttype=\"alpha\"";
+    data_str += " data-sorttype=\"alpha\"";
 
   if (bothrow )
-    span_str += " data-sortrows=\"both\"";
+    data_str += " data-sortrows=\"both\"";
 
   if ( leftclass )
-    th_str = "left";
+    class_str += " left";
 
   if ( !helptext.empty() )
   {
-    th_str.empty() ? th_str = "iconhelp" : th_str += " iconhelp";
-    a_href_str = "<a href=\"#" + helptext + "\" class=\"help\">?</a>";
+    class_str += " help";
+    data_str += " data-help=\"#" + helptext + "\"";
   }
 
-  os << "<th";
-  if ( !th_str.empty() )
-    os << " class=\"" << th_str << "\"";
-  os << ">";
-
-  os << "<span" << span_str << ">"
-     << header
-     << "</span>";
-
-  if ( !a_href_str.empty() )
-    os << a_href_str;
-
-  os << "</th>\n";
+  os << "<th class=\"" << class_str << "\"" << data_str << ">" << header << "</th>\n";
 }
 
 void sorttable_help_header( report::sc_html_stream& os, const std::string& header, const std::string& helptext,
@@ -375,17 +362,14 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   }
 }
 
-void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, const stats_t& s, int j, int n_columns,
+void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, const stats_t& s, int n_columns,
                              const player_t* actor = nullptr, int indentation = 0 )
 {
   const player_t& p = *s.player->get_owner_or_self();
   std::string row_class;
-  bool child_row = indentation;
 
   if ( use_small_table( &p ) )
     row_class = " small";
-
-  //if ( child_row ) row_class += ( row_class.empty() ? "childrow" : " childrow" );
 
   os << "<tr class=\"toprow" << row_class << "\">\n";
 
@@ -462,10 +446,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
     if ( !periodic_only && s.has_tick_amount_results() )
     {
-      //if ( !child_row ) row_class += ( row_class.empty() ? "childrow" : " childrow" );
-
       os << "<tr class=\"childrow" << row_class << "\">\n";
-
       print_html_action_summary( os, stats_mask, 1, s, p );
       os << "</tr>\n";
     }
@@ -553,7 +534,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
         int colspan = 0;
         os << "<table class=\"details\">\n";
         os << "<tr>\n"
-           << "<th><a href=\"#help-scale-factors\" class=\"help\">?</a></th>\n";
+           << "<th class=\"help\" data-help=\"#help-scale-factors\">?</th>\n";
         for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
           if ( p.scaling->scales_with[ i ] )
           {
@@ -1151,9 +1132,9 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
        << "<th></th>\n"
        << "<th>Level Bonus (" << p.level() << ")</th>\n"
        << "<th>Race Bonus (" << util::race_type_string(p.race) << ")</th>\n"
-       << "<th><a href=\"#help-stats-raid-buffed\" class=\"help\">Raid-Buffed</a></th>\n"
-       << "<th><a href=\"#help-stats-unbuffed\" class=\"help\">Unbuffed</a></th>\n"
-       << "<th><a href=\"#help-gear-amount\" class=\"help\">Gear Amount</a></th>\n"
+       << "<th class=\"help\" data-help=\"#help-stats-raid-buffed\">Raid-Buffed</th>\n"
+       << "<th class=\"help\" data-help=\"#help-stats-unbuffed\">Unbuffed</th>\n"
+       << "<th class=\"help\" data-help=\"#help-gear-amount\">Gear Amount</th>\n"
        << "</tr>\n"
        << "</thead>\n";
 
@@ -1619,9 +1600,9 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, const sim
   os << "<table class=\"sc mt\">\n";
 
   os << "<tr>\n"
-     << "<th colspan=\"" << util::to_string( 1 + colspan )
-     << "\"><a href=\"#help-scale-factors\" class=\"help\">Scale Factors for "
-     << util::encode_html( p.scaling_for_metric( sm ).name ) << "</a></th>\n"
+     << "<th colspan=\"" << util::to_string( 1 + colspan ) << "\" "
+     << "class=\"help\" data-help=\"#help-scale-factors\">Scale Factors for "
+     << util::encode_html( p.scaling_for_metric( sm ).name ) << "</th>\n"
      << "</tr>\n";
 
   os << "<tr>\n"
@@ -1735,8 +1716,7 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, const sim
   // Text Ranking
   os.printf(
       "<tr class=\"left\">\n"
-      "<th><a href=\"#help-scale-factor-ranking\" "
-      "class=\"help\">Ranking</a></th>\n"
+      "<th class=\"help\" data-help=\"#help-scale-factor-ranking\">Ranking</th>\n"
       "<td colspan=\"%i\" class=\"filler\">\n"
       "<ul class=\"float\">\n"
       "<li>",
@@ -1748,16 +1728,12 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, const sim
     {
       // holy hell this was hard to read - splitting this out into
       // human-readable code
-      double separation =
-          fabs( p.scaling->scaling[ sm ].get_stat( scaling_stats[ i - 1 ] ) -
-                p.scaling->scaling[ sm ].get_stat( scaling_stats[ i ] ) );
-      double error_est = sqrt(
-          p.scaling->scaling_compare_error[ sm ].get_stat( scaling_stats[ i - 1 ] ) *
-              p.scaling->scaling_compare_error[ sm ].get_stat( scaling_stats[ i - 1 ] ) /
-              4 +
-          p.scaling->scaling_compare_error[ sm ].get_stat( scaling_stats[ i ] ) *
-              p.scaling->scaling_compare_error[ sm ].get_stat( scaling_stats[ i ] ) /
-              4 );
+      double separation = fabs( p.scaling->scaling[ sm ].get_stat( scaling_stats[ i - 1 ] )
+                              - p.scaling->scaling[ sm ].get_stat( scaling_stats[ i ] ) );
+      double error_est  = sqrt( p.scaling->scaling_compare_error[ sm ].get_stat( scaling_stats[ i - 1 ] )
+                              * p.scaling->scaling_compare_error[ sm ].get_stat( scaling_stats[ i - 1 ] ) / 4
+                              + p.scaling->scaling_compare_error[ sm ].get_stat( scaling_stats[ i ] )
+                              * p.scaling->scaling_compare_error[ sm ].get_stat( scaling_stats[ i ] ) / 4 );
       if ( separation > ( error_est * 2 ) )
         os << " > ";
       else
@@ -2796,7 +2772,7 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
    }
 }
 // This function MUST accept non-player buffs as well!
-void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int report_details, size_t i,
+void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int report_details,
                              bool constant_buffs = false )
 {
   std::string buff_name;
@@ -3004,7 +2980,7 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
     buff_t* b = ri.dynamic_buffs[ i ];
 
     os << "<tbody>\n";
-    print_html_player_buff( os, *b, p.sim->report_details, i );
+    print_html_player_buff( os, *b, p.sim->report_details );
     os << "</tbody>\n";
   }
   os << "</table>\n";
@@ -3015,7 +2991,7 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
     os << "<table class=\"sc stripebody\">\n"
        << "<thead>\n"
        << "<tr>\n"
-       << "<th class=\"left\"><a href=\"#help-constant-buffs\" class=\"help\">Constant Buffs</a></th>\n"
+       << "<th class=\"left help\" data-help=\"#help-constant-buffs\">Constant Buffs</th>\n"
        << "</tr>\n"
        << "</thead>\n";
 
@@ -3024,7 +3000,7 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
       buff_t* b = ri.constant_buffs[ i ];
 
       os << "<tbody>\n";
-      print_html_player_buff( os, *b, p.sim->report_details, i, true );
+      print_html_player_buff( os, *b, p.sim->report_details, true );
       os << "</tbody>\n";
     }
     os << "</table>\n";
@@ -3213,11 +3189,11 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     // Damage
     if ( cd.dps.mean() > 0 )
     {
-      os << "<th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
-         << "<th><a href=\"#help-dpse\" class=\"help\">DPS(e)</a></th>\n"
-         << "<th><a href=\"#help-error\" class=\"help\">DPS Error</a></th>\n"
-         << "<th><a href=\"#help-range\" class=\"help\">DPS Range</a></th>\n"
-         << "<th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n";
+      os << "<th class=\"help\" data-help=\"#help-dps\">DPS</th>\n"
+         << "<th class=\"help\" data-help=\"#help-dpse\">DPS(e)</th>\n"
+         << "<th class=\"help\" data-help=\"#help-error\">DPS Error</th>\n"
+         << "<th class=\"help\" data-help=\"#help-range\">DPS Range</th>\n"
+         << "<th class=\"help\" data-help=\"#help-dpr\">DPR</th>\n";
     }
     // spacer
     if ( cd.hps.mean() > 0 && cd.dps.mean() > 0 )
@@ -3225,11 +3201,11 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     // Heal
     if ( cd.hps.mean() > 0 )
     {
-      os << "<th><a href=\"#help-hps\" class=\"help\">HPS</a></th>\n"
-         << "<th><a href=\"#help-hpse\" class=\"help\">HPS(e)</a></th>\n"
-         << "<th><a href=\"#help-error\" class=\"help\">HPS Error</a></th>\n"
-         << "<th><a href=\"#help-range\" class=\"help\">HPS Range</a></th>\n"
-         << "<th><a href=\"#help-hpr\" class=\"help\">HPR</a></th>\n";
+      os << "<th class=\"help\" data-help=\"#help-hps\">HPS</th>\n"
+         << "<th class=\"help\" data-help=\"#help-hpse\">HPS(e)</th>\n"
+         << "<th class=\"help\" data-help=\"#help-error\">HPS Error</th>\n"
+         << "<th class=\"help\" data-help=\"#help-range\">HPS Range</th>\n"
+         << "<th class=\"help\" data-help=\"#help-hpr\">HPR</th>\n";
     }
     // spacer
     if ( cd.hps.mean() > 0 && cd.aps.mean() > 0 )
@@ -3237,10 +3213,10 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     // Absorb
     if ( cd.aps.mean() > 0 )
     {
-      os << "<th><a href=\"#help-aps\" class=\"help\">APS</a></th>\n"
-         << "<th><a href=\"#help-error\" class=\"help\">APS Error</a></th>\n"
-         << "<th><a href=\"#help-range\" class=\"help\">APS Range</a></th>\n"
-         << "<th><a href=\"#help-hpr\" class=\"help\">APR</a></th>\n";
+      os << "<th class=\"help\" data-help=\"#help-aps\">APS</th>\n"
+         << "<th class=\"help\" data-help=\"#help-error\">APS Error</th>\n"
+         << "<th class=\"help\" data-help=\"#help-range\">APS Range</th>\n"
+         << "<th class=\"help\" data-help=\"#help-hpr\">APR</th>\n";
     }
     // end row, begin new row
     os << "</tr>\n"
@@ -3321,24 +3297,22 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
        // class=\"help\">MSD</a></th>\n"
        //<< "</tr>\n" // end first row
        << "<tr>\n"  // start second row
-       << "<th><a href=\"#help-dtps\" class=\"help\">DTPS</a></th>\n"
-       << "<th><a href=\"#help-error\" class=\"help\">DTPS Error</a></th>\n"
-       << "<th><a href=\"#help-range\" class=\"help\">DTPS Range</a></th>\n"
+       << "<th class=\"help\" data-help=\"#help-dtps\">DTPS</th>\n"
+       << "<th class=\"help\" data-help=\"#help-error\">DTPS Error</th>\n"
+       << "<th class=\"help\" data-help=\"#help-range\">DTPS Range</th>\n"
        << "<th>&#160;</th>\n"
-       << "<th><a href=\"#help-theck-meloree-index\" "
-          "class=\"help\">TMI</a></th>\n"
-       << "<th><a href=\"#help-error\" class=\"help\">TMI Error</a></th>\n"
-       << "<th><a href=\"#help-tmi\" class=\"help\">TMI Min</a></th>\n"
-       << "<th><a href=\"#help-tmi\" class=\"help\">TMI Max</a></th>\n"
-       << "<th><a href=\"#help-tmirange\" class=\"help\">TMI Range</a></th>\n"
+       << "<th class=\"help\" data-help=\"#help-theck-meloree-index\">TMI</th>\n"
+       << "<th class=\"help\" data-help=\"#help-error\">TMI Error</th>\n"
+       << "<th class=\"help\" data-help=\"#help-tmi\">TMI Min</th>\n"
+       << "<th class=\"help\" data-help=\"#help-tmi\">TMI Max</th>\n"
+       << "<th class=\"help\" data-help=\"#help-tmirange\">TMI Range</th>\n"
        << "<th>&#160;</th>\n"
-       << "<th><a href=\"#help-msd\" class=\"help\">MSD Mean</a></th>\n"
-       << "<th><a href=\"#help-msd\" class=\"help\">MSD Min</a></th>\n"
-       << "<th><a href=\"#help-msd\" class=\"help\">MSD Max</a></th>\n"
+       << "<th class=\"help\" data-help=\"#help-msd\">MSD Mean</th>\n"
+       << "<th class=\"help\" data-help=\"#help-msd\">MSD Min</th>\n"
+       << "<th class=\"help\" data-help=\"#help-msd\">MSD Max</th>\n"
        << "<th>&#160;</th>\n"
-       << "<th><a href=\"#help-tmiwin\" class=\"help\">Window</a></th>\n"
-       << "<th><a href=\"#help-tmi-bin-size\" class=\"help\">Bin "
-          "Size</a></th>\n"
+       << "<th class=\"help\" data-help=\"#help-tmiwin\">Window</th>\n"
+       << "<th class=\"help\" data-help=\"#help-tmi-bin-size\">Bin Size</th>\n"
        << "</tr>\n"  // end second row
        << "<tr>\n";  // start third row
 
@@ -3426,11 +3400,11 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   {
     os << "<table class=\"sc ra\">\n"
        << "<tr>\n"
-       << "<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
-       << "<th><a href=\"#help-rps-in\" class=\"help\">RPS In</a></th>\n"
+       << "<th class=\"help\" data-help=\"#help-rps-out\">RPS Out</th>\n"
+       << "<th class=\"help\" data-help=\"#help-rps-in\">RPS In</th>\n"
        << "<th>Primary Resource</th>\n"
-       << "<th><a href=\"#help-waiting\" class=\"help\">Waiting</a></th>\n"
-       << "<th><a href=\"#help-apm\" class=\"help\">APM</a></th>\n"
+       << "<th class=\"help\" data-help=\"#help-waiting\">Waiting</th>\n"
+       << "<th class=\"help\" data-help=\"#help-apm\">APM</th>\n"
        << "<th>Active</th>\n"
        << "<th>Skill</th>\n"
        << "</tr>\n"
@@ -3462,7 +3436,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
       std::string origin_url = util::encode_html( p.origin_str );
       os.printf(
           "<tr class=\"left\">\n"
-          "<th><a href=\"#help-origin\" class=\"help\">Origin</a></th>\n"
+          "<th class=\"help\" data-help=\"#help-origin\">Origin</th>\n"
           "<td><a href=\"%s\" class=\"ext\">%s</a></td>\n"
           "</tr>\n",
           p.origin_str.c_str(), origin_url.c_str() );
@@ -3576,7 +3550,7 @@ bool is_output_stat( unsigned mask, bool child, const stats_t& s )
   return true;
 }
 
-void output_player_action( report::sc_html_stream& os, unsigned& row, unsigned cols, unsigned mask, const stats_t& s,
+void output_player_action( report::sc_html_stream& os, unsigned cols, unsigned mask, const stats_t& s,
                            const player_t* actor, int level = 0 )
 {
   if (level > 2 )
@@ -3588,11 +3562,11 @@ void output_player_action( report::sc_html_stream& os, unsigned& row, unsigned c
   if ( level == 0 && !actor->is_pet() )
     os << "<tbody>\n";
 
-  print_html_action_info( os, mask, s, row++, cols, actor, level );
+  print_html_action_info( os, mask, s, cols, actor, level );
 
   for ( auto child_stats : s.children )
   {
-    output_player_action( os, row, cols, mask, *child_stats, actor, level + 1 );
+    output_player_action( os, cols, mask, *child_stats, actor, level + 1 );
   }
   if ( level == 0 && !actor->is_pet() )
     os << "</tbody>\n";
@@ -3669,12 +3643,11 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
      << "</tr>\n"
      << "</thead>\n";
 
-  unsigned n_row = 0;
   for ( const auto& stat : actor.stats_list )
   {
     if ( stat->compound_amount > 0 )
     {
-      output_player_action( os, n_row, n_optional_columns, MASK_DMG, *stat, &actor );
+      output_player_action( os, n_optional_columns, MASK_DMG, *stat, &actor );
     }
   }
 
@@ -3712,7 +3685,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
             pet->collected_data.dpse.mean(),
             static_columns + n_optional_columns );
       }
-      output_player_action( os, n_row, n_optional_columns, MASK_DMG, *stat, pet );
+      output_player_action( os, n_optional_columns, MASK_DMG, *stat, pet );
     }
   }
   os << "</tbody>\n"
@@ -3772,12 +3745,11 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
      << "</tr>\n"
      << "</thead>\n";
 
-  unsigned n_row = 0;
   for ( const auto& stat : actor.stats_list )
   {
     if ( stat->compound_amount > 0 )
     {
-      output_player_action( os, n_row, n_optional_columns, MASK_HEAL | MASK_ABSORB, *stat, &actor );
+      output_player_action( os, n_optional_columns, MASK_HEAL | MASK_ABSORB, *stat, &actor );
     }
   }
 
@@ -3815,7 +3787,7 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
             pet->collected_data.dpse.mean(),
             static_columns + n_optional_columns );
       }
-      output_player_action( os, n_row, n_optional_columns, MASK_HEAL | MASK_ABSORB, *stat, pet );
+      output_player_action( os, n_optional_columns, MASK_HEAL | MASK_ABSORB, *stat, pet );
     }
   }
   os << "</tbody>\n"
@@ -3852,12 +3824,11 @@ void output_player_simple_ability_summary( report::sc_html_stream& os, const pla
      << "</tr>\n"
      << "</thead>\n";
 
-  unsigned n_row = 0;
   for ( const auto& stat : actor.stats_list )
   {
     if ( stat->compound_amount == 0 )
     {
-      output_player_action( os, n_row, 0, MASK_DMG | MASK_HEAL | MASK_ABSORB, *stat, &actor );
+      output_player_action( os, 0, MASK_DMG | MASK_HEAL | MASK_ABSORB, *stat, &actor );
     }
   }
 
@@ -3892,7 +3863,7 @@ void output_player_simple_ability_summary( report::sc_html_stream& os, const pla
             "</tr>\n",
             util::encode_html( pet->name_str ).c_str(), 2 );
       }
-      output_player_action( os, n_row, 0, MASK_DMG | MASK_HEAL | MASK_ABSORB, *stat, pet );
+      output_player_action( os, 0, MASK_DMG | MASK_HEAL | MASK_ABSORB, *stat, pet );
     }
   }
   os << "</tbody>\n"

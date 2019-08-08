@@ -92,24 +92,30 @@
             $(this).toggleClass('open');
             $(this).parent().next('.toggle-content').toggle(150);
         });
-        $('.help').click(function (e) {
-            e.preventDefault();
-            var target = $(this).attr('href') + ' .help-box';
+        var hoverTimeout;
+        $('.help').hover(function (e) {
+            var target = $(this).data('help') + ' .help-box';
             var content = $(target).html();
             $('#active-help-dynamic .help-box').html(content);
             $('#active-help .help-box').show();
-            var t = e.pageY - 20;
-            var l = e.pageX - 20;
+            var pos = $(this).offset();
             $('#active-help').css({
-                top: t,
-                left: l
+                top: pos.top - $('#active-help').height() - $(this).height() - 4,
+                left: pos.left,
             });
-            $('#active-help').show(250);
+            hoverTimeOut = setTimeout(function() {
+                $('#active-help').fadeIn(500);
+            }, 1500);
+        }, function () {
+            clearTimeout(hoverTimeout);
+            $('#active-help').stop();
+            $('#active-help').hide();
         });
-        $('#active-help a.close').click(function (e) {
-            e.preventDefault();
-            $('#active-help').toggle(250);
-        });
+        window.onblur = function () {
+            clearTimeout(hoverTimeout);
+            $('#active-help').stop();
+            $('#active-help').hide();
+        };
         if (anchor) {
             anchor = '#' + anchor;
             target = $(anchor).children('h2:first');
