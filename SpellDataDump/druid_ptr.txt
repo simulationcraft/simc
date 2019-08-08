@@ -1,4 +1,4 @@
-SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
+SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31229)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -10,7 +10,7 @@ Duration         : 3 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 101%
 Mechanic         : Incapacitate
-Affecting spells : Druid (137009 effect#4), Astral Influence (197524 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7)
+Affecting spells : Druid (137009 effect#4), Astral Influence (197524 effect#3), Stellar Drift (202461 effect#1)
 Family Flags     : 32
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -41,7 +41,7 @@ Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Cat Form (3025 effect#4), Predatory Swiftness (69369 effect#1), Incarnation: Tree of Life (81097 effect#1), Roots Range Increase (96148 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Cat Form (3025 effect#4), Predatory Swiftness (69369 effect#1), Incarnation: Tree of Life (81097 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 9
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ .x...... 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
@@ -70,7 +70,7 @@ Cooldown         : 180 seconds
 Category         : 46
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
-Affecting spells : Inner Peace (197073 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Inner Peace (197073 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 53
 Attributes       : ........ ........ x....... ........   ..x...x. ..x..... ........ ....xx.. 
                  : ........ ........ ........ ......x.   ........ ........ ........ ........ 
@@ -100,7 +100,7 @@ Spell Level      : 8
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Stellar Drift (202461 effect#1)
+Affecting spells : Druid (137009 effect#4), Stellar Drift (202461 effect#1)
 Family Flags     : 31, 96
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ x....... ........ ........   ........ .x...... ........ ........ 
@@ -127,7 +127,7 @@ Effects          :
                    Family Flags: 67
 #6 (id=774482)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Global Cooldown (21)
                    Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 1.00000 | Misc Value: 21 | Misc Value 2: 640 (Label) | Target: Self (1)
-                   Affected Spells (Label): Life-Binder's Invocation (293032), Azeroth's Undying Gift (293019), Suppressing Pulse (293031), Azeroth's Undying Gift (294650), Azeroth's Undying Gift (294653), Azeroth's Undying Gift (294655), Hardened Azerite (294668), Hardened Azerite (294685), Hardened Azerite (294687), Hardened Azerite (294688), Hardened Azerite (294689), Sphere of Suppression (294906), Sphere of Suppression (294907), Sphere of Suppression (294908), Sphere of Suppression (294909), Sphere of Suppression (294910), Sphere of Suppression (294912), Sphere of Suppression (294919), Sphere of Suppression (294920), Sphere of Suppression (294922), Anima of Death (294926), Anima of Death (294945), Anima of Death (294946), Azeroth's Undying Gift (294951), Anima of Life (294964), Anima of Life (294966), Anima of Life (294969), Anima of Life (294970), Anima of Life (294972), Lifeblood (295078), Lifeblood Shard (295114), Lifeblood (295137), Worldvein Resonance (295160), Lifeblood (295165), Lifeblood (295166), Worldvein Resonance (295186), Worldvein Resonance (295206), Worldvein Resonance (295208), Worldvein Resonance (295209), Worldvein Resonance (295210), Focused Energy (295246), Focused Energy (295248), Focused Energy (295251), Focused Energy (295252), Essence of the Focusing Iris (295253), Focused Azerite Beam (295258), Focused Azerite Beam (295261), Focused Azerite Beam (295262), Focused Azerite Beam (295263), Focused Azerite Beam (295264), Purification Protocol (295293), Purification Protocol (295305), Anima of Death (295306), Anima of Death (295307), Purification Protocol (295310), Purification Protocol (295333), Purifying Blast (295337), Purifying Blast (295338), Purification Protocol (295351), Purifying Blast (295352), Purifying Blast (295354), Purifying Blast (295358), Purification Protocol (295363), Purifying Blast (295364), Ancient Flame (295365), Purifying Blast (295366), Ancient Flame (295367), Concentrated Flame (295368), Ancient Flame (295369), Ancient Flame (295372), Concentrated Flame (295373), Concentrated Flame (295374), Concentrated Flame (295376), Concentrated Flame (295377), Concentrated Flame (295379), Concentrated Flame (295380), Ancient Flame (295381), Empowered Null Barrier (295746), Null Dynamo (295747), Null Dynamo (295748), Null Barrier (295749), Null Barrier (295750), Condensed Life-Force (295834), Azerite Spike (295835), Condensed Life-Force (295836), Condensed Life-Force (295837), Condensed Life-Force (295838), Condensed Life-Force (295839), Guardian of Azeroth (295840), Guardian of Azeroth (295841), Null Barrier (295842), Guardian of Azeroth (295843), Null Dynamo (295844), Null Dynamo (295845), Null Dynamo (295846), Guardian of Azeroth (295855), Azerite Spike (295856), Azeroth's Undying Gift (295872), Hardened Azerite (295883), Condensed Life-Force (295892), The Ever-Rising Tide (296050), The Ever-Rising Tide (296059), Null Barrier (296061), The Ever-Rising Tide (296062), The Ever-Rising Tide (296067), Overcharge Mana (296072), Overcharge Mana (296074), Overcharge Mana (296075), Artifice of Time (296081), Quickening (296086), Artifice of Time (296089), Artifice of Time (296091), Standstill (296094), Rewind (296101), Artifice of Time (296102), Artifice of Time (296103), The Well of Existence (296136), The Well of Existence (296192), The Well of Existence (296193), Refreshment (296197), Refreshment (296200), Refreshment (296201), Suppressing Pulse (296203), Seed of Eonar (296207), Seed of Eonar (296211), Life-Binder's Invocation (296213), Life-Binder's Invocation (296214), Life-Binder's Invocation (296220), Life-Binder's Invocation (296221), Vitality Conduit (296230), Vitality Conduit (296231), Vitality Conduit (296232), Strive for Perfection (296321), Strive for Perfection (296322), Strive for Perfection (296324), Vision of Perfection (296325), Vision of Perfection (296326), Vision of Perfection (296328), Strive for Perfection (296330), Blood of the Enemy (297108), Blood of the Enemy (297120), Blood of the Enemy (297122), Seething Rage (297126), Blood-Soaked (297147), Blood-Soaked (297162), Blood-Soaked (297168), Blood-Soaked (297177), Blood-Soaked (297178), Anima of Life and Death (297365), Nullification Dynamo (297384), Vision of Perfection (297736), Vision of Perfection (297737), Vision of Perfection (297738), Vision of Perfection (297739), Vision of Perfection (297745), Vision of Perfection (297866), Vision of Perfection (297868), Vision of Perfection (297869), Blood of the Enemy (297969), Blood of the Enemy (297970), Blood of the Enemy (297971), Azeroth's Undying Gift (298080), Azeroth's Undying Gift (298081), Hardened Azerite (298082), Hardened Azerite (298083), Vision of Perfection (298084), Aegis of the Deep (298168), Aegis of the Deep (298169), Aegis of the Deep (298174), Blood of the Enemy (298182), Blood of the Enemy (298183), Aegis of the Deep (298186), Stand Your Ground (298193), Stand Your Ground (298197), Stand Your Ground (298204), Blood of the Enemy (298273), Blood-Soaked (298274), Blood-Soaked (298275), Blood of the Enemy (298277), Azeroth's Undying Gift (298278), Azeroth's Undying Gift (298279), Azeroth's Undying Gift (298280), Nullification Dynamo (298281), Nullification Dynamo (298282), Nullification Dynamo (298284), Anima of Life and Death (298286), Anima of Life and Death (298287), Anima of Life and Death (298288), Sphere of Suppression (298292), Strive for Perfection (296320), Lucid Dreams (298268), Lucid Dreams (298337), Lucid Dreams (298339), Lucid Dreams (298343), Stand Your Ground (298351), Stand Your Ground (298352), Aegis of the Deep (298353), Memory of Lucid Dreams (298357), Lucid Dreams (298373), Memory of Lucid Dreams (298376), Memory of Lucid Dreams (298377), Lucid Dreams (298404), Lucid Dreams (298405), Reckless Force (298407), Reckless Force (298409), Sphere of Suppression (298418), Sphere of Suppression (298419), Sphere of Suppression (298420), Reckless Force (298448), Reckless Force (298449), Reckless Force (298450), The Unbound Force (298452), The Unbound Force (298453), The Unbound Force (298455), The Unbound Force (298456), The Unbound Force (298457), The Crucible of Flame (298601), The Crucible of Flame (298603), The Crucible of Flame (298604), The Crucible of Flame (298605), Worldvein Resonance (298606), Worldvein Resonance (298607), Worldvein Resonance (298609), Worldvein Resonance (298611), Essence of the Focusing Iris (298618), Essence of the Focusing Iris (298620), Essence of the Focusing Iris (298621), Essence of the Focusing Iris (298623), Lifeblood (298627), Worldvein Resonance (298628), Blood of the Enemy (299039), Aegis of the Deep (299237), Aegis of the Deep (299238), Aegis of the Deep (299239), Aegis of the Deep (299240), Aegis of the Deep (299273), Stand Your Ground (299274), Aegis of the Deep (299275), Stand Your Ground (299277), Vision of Perfection (299296), Vision of Perfection (299297), Vision of Perfection (299298), Vision of Perfection (299299), Memory of Lucid Dreams (299300), Memory of Lucid Dreams (299302), Memory of Lucid Dreams (299304), Memory of Lucid Dreams (299305), Ripple in Space (299306), Ripple in Space (299307), Ripple in Space (299309), Ripple in Space (299310), Condensed Life-Force (299312), Condensed Life-Force (299313), Condensed Life-Force (299314), Condensed Life-Force (299315), Purification Protocol (299316), Purification Protocol (299317), Purification Protocol (299318), Purification Protocol (299320), The Unbound Force (299321), The Unbound Force (299322), The Unbound Force (299323), The Unbound Force (299324), Lifeblood (299333), Worldvein Resonance (299334), Focused Energy (299335), Focused Azerite Beam (299336), Focused Energy (299337), Focused Azerite Beam (299338), Purification Protocol (299343), Purifying Blast (299345), Purification Protocol (299346), Purifying Blast (299347), Ancient Flame (299348), Concentrated Flame (299349), Ancient Flame (299350), Concentrated Flame (299353), Condensed Life-Force (299354), Guardian of Azeroth (299355), Condensed Life-Force (299357), Guardian of Azeroth (299358), Strive for Perfection (299367), Vision of Perfection (299368), Strive for Perfection (299369), Vision of Perfection (299370), Lucid Dreams (299371), Memory of Lucid Dreams (299372), Lucid Dreams (299373), Memory of Lucid Dreams (299374), Reckless Force (299375), The Unbound Force (299376), Reckless Force (299377), The Unbound Force (299378), Burning Embrace (299396), Artifice of Time (299506), Artifice of Time (299507), Artifice of Time (299508), Artifice of Time (299509), Life-Binder's Invocation (299510), Life-Binder's Invocation (299511), Life-Binder's Invocation (299512), Life-Binder's Invocation (299513), The Ever-Rising Tide (299514), The Ever-Rising Tide (299515), The Ever-Rising Tide (299516), The Ever-Rising Tide (299517), Artifice of Time (299518), Artifice of Time (299519), Life-Binder's Invocation (299520), Life-Binder's Invocation (299521), Overcharge Mana (299522), The Ever-Rising Tide (299523), The Well of Existence (299524), The Well of Existence (299526), The Well of Existence (299527), The Well of Existence (299528), Refreshment (299529), The Well of Existence (299530), Vitality Conduit (299550), Vitality Conduit (299551), Vitality Conduit (299552), Vitality Conduit (299554), Vitality Conduit (299559), Vitality Conduit (299560), Overcharge Mana (299624), Overcharge Mana (299875), Overcharge Mana (299876), The Ever-Rising Tide (299878), The Ever-Rising Tide (299879), Standstill (299882), Standstill (299883), Artifice of Time (299885), Artifice of Time (299887), Refreshment (299932), Refreshment (299933), The Well of Existence (299935), The Well of Existence (299936), Seed of Eonar (299939), Seed of Eonar (299940), Life-Binder's Invocation (299943), Life-Binder's Invocation (299944), Vitality Conduit (299958), Vitality Conduit (299959), Anima of Death (300002), Anima of Death (300003), Anima of Life (300004), Anima of Life (300005), Suppressing Pulse (300009), Suppressing Pulse (300010), Sphere of Suppression (300012), Sphere of Suppression (300013), Empowered Null Barrier (300015), Empowered Null Barrier (300016), Null Barrier (300018), Null Barrier (300020), Guardian of Azeroth (300091), Memory of Lucid Dreams (300120), Perseverance (300573), Perseverance (300575), Perseverance (300576), Perseverance (300577), Heart of Azeroth Slot Unlock (300949), Azerite Spike (302555), Ripple in Space (302731), Ripple in Space (302778), Ripple in Space (302780), Ripple in Space (302864), Ripple in Space (302910), Reality Shift (302916), Reckless Force (302917), Reckless Force (302932), Reality Shift (302952), Reality Shift (302953), Reality Shift (302957), Reality Shift (302961), Reality Shift (302962), Ripple in Space (302982), Ripple in Space (302983), Reality Shift (302984), Reality Shift (302985), Vision of Perfection (303342), Vision of Perfection (303344), Guardian of Azeroth (303347), Guardian of Azeroth (303349), Azerite Volley (303351), Memory of Lucid Dreams (303399), Memory of Lucid Dreams (303412), Transference (303448), Vitality Conduit (303460), Vitality Conduit (303463), Vitality Conduit (303472), Transference (303474), Transference (303476), Conflict (303823), Conflict and Strife (303824), Conflict and Strife (303834), Conflict and Strife (303835), Conflict and Strife (303836), Conflict and Strife (303837), Conflict and Strife (303868), Conflict (303892), Conflict (303894), Conflict and Strife (303897), Conflict and Strife (304014), Conflict and Strife (304015), Conflict and Strife (304016), Conflict and Strife (304017), Conflict and Strife (304018), Conflict and Strife (304019), Conflict and Strife (304020), Conflict and Strife (304021), Conflict and Strife (304022), Conflict and Strife (304023), Reckless Force (304038), Strife (304055), Strife (304056), Strife (304081), Conflict (304086), Conflict (304088), Strife (304089), Conflict (304121), Strife (304123), Strife (304125), Conflict (304375), Strife (304533), Lucid Dreams (304633), Aegis of the Deep (304693), Conflict (304720), Vitality Conduit (304722), Conflict (304724), Conflict (304775), Strife (305148), Conflict and Strife (305350), Conflict and Strife (305352), Seed of Eonar (305500), Lifeblood (305694), Strife (305723)
+                   Affected Spells (Label): Life-Binder's Invocation (293032), Azeroth's Undying Gift (293019), Suppressing Pulse (293031), Azeroth's Undying Gift (294650), Azeroth's Undying Gift (294653), Azeroth's Undying Gift (294655), Hardened Azerite (294668), Hardened Azerite (294685), Hardened Azerite (294687), Hardened Azerite (294688), Hardened Azerite (294689), Sphere of Suppression (294906), Sphere of Suppression (294907), Sphere of Suppression (294908), Sphere of Suppression (294909), Sphere of Suppression (294910), Sphere of Suppression (294912), Sphere of Suppression (294919), Sphere of Suppression (294920), Sphere of Suppression (294922), Anima of Death (294926), Anima of Death (294945), Anima of Death (294946), Anima of Life (294964), Anima of Life (294966), Anima of Life (294969), Anima of Life (294970), Anima of Life (294972), Lifeblood (295078), Lifeblood Shard (295114), Lifeblood (295137), Worldvein Resonance (295160), Lifeblood (295165), Lifeblood (295166), Worldvein Resonance (295186), Worldvein Resonance (295206), Worldvein Resonance (295208), Worldvein Resonance (295209), Worldvein Resonance (295210), Focused Energy (295246), Focused Energy (295248), Focused Energy (295251), Focused Energy (295252), Essence of the Focusing Iris (295253), Focused Azerite Beam (295258), Focused Azerite Beam (295261), Focused Azerite Beam (295262), Focused Azerite Beam (295263), Focused Azerite Beam (295264), Purification Protocol (295293), Purification Protocol (295305), Anima of Death (295306), Anima of Death (295307), Purification Protocol (295310), Purification Protocol (295333), Purifying Blast (295337), Purifying Blast (295338), Purification Protocol (295351), Purifying Blast (295352), Purifying Blast (295354), Purifying Blast (295358), Purification Protocol (295363), Purifying Blast (295364), Ancient Flame (295365), Purifying Blast (295366), Ancient Flame (295367), Concentrated Flame (295368), Ancient Flame (295369), Ancient Flame (295372), Concentrated Flame (295373), Concentrated Flame (295374), Concentrated Flame (295376), Concentrated Flame (295377), Concentrated Flame (295379), Concentrated Flame (295380), Ancient Flame (295381), Empowered Null Barrier (295746), Null Dynamo (295747), Null Dynamo (295748), Null Barrier (295749), Null Barrier (295750), Condensed Life-Force (295834), Azerite Spike (295835), Condensed Life-Force (295836), Condensed Life-Force (295837), Condensed Life-Force (295838), Condensed Life-Force (295839), Guardian of Azeroth (295840), Guardian of Azeroth (295841), Null Barrier (295842), Guardian of Azeroth (295843), Null Dynamo (295844), Null Dynamo (295845), Null Dynamo (295846), Guardian of Azeroth (295855), Azerite Spike (295856), Azeroth's Undying Gift (295872), Hardened Azerite (295883), Condensed Life-Force (295892), The Ever-Rising Tide (296050), The Ever-Rising Tide (296059), Null Barrier (296061), The Ever-Rising Tide (296062), The Ever-Rising Tide (296067), Overcharge Mana (296072), Overcharge Mana (296074), Overcharge Mana (296075), Artifice of Time (296081), Quickening (296086), Artifice of Time (296089), Artifice of Time (296091), Standstill (296094), Rewind (296101), Artifice of Time (296102), Artifice of Time (296103), The Well of Existence (296136), The Well of Existence (296192), The Well of Existence (296193), Refreshment (296197), Refreshment (296200), Refreshment (296201), Suppressing Pulse (296203), Seed of Eonar (296207), Seed of Eonar (296211), Life-Binder's Invocation (296213), Life-Binder's Invocation (296214), Life-Binder's Invocation (296220), Life-Binder's Invocation (296221), Vitality Conduit (296230), Vitality Conduit (296231), Vitality Conduit (296232), Strive for Perfection (296321), Strive for Perfection (296322), Strive for Perfection (296324), Vision of Perfection (296325), Vision of Perfection (296326), Vision of Perfection (296328), Strive for Perfection (296330), Blood of the Enemy (297108), Blood of the Enemy (297120), Blood of the Enemy (297122), Seething Rage (297126), Blood-Soaked (297147), Blood-Soaked (297162), Blood-Soaked (297168), Blood-Soaked (297177), Blood-Soaked (297178), Vision of Perfection (297736), Vision of Perfection (297737), Vision of Perfection (297738), Vision of Perfection (297739), Vision of Perfection (297745), Vision of Perfection (297866), Vision of Perfection (297868), Vision of Perfection (297869), Azeroth's Undying Gift (298080), Azeroth's Undying Gift (298081), Hardened Azerite (298082), Hardened Azerite (298083), Aegis of the Deep (298168), Aegis of the Deep (298169), Aegis of the Deep (298174), Blood of the Enemy (298182), Blood of the Enemy (298183), Aegis of the Deep (298186), Stand Your Ground (298193), Stand Your Ground (298197), Stand Your Ground (298204), Blood of the Enemy (298273), Blood-Soaked (298274), Blood-Soaked (298275), Blood of the Enemy (298277), Strive for Perfection (296320), Lucid Dreams (298268), Lucid Dreams (298337), Lucid Dreams (298339), Lucid Dreams (298343), Stand Your Ground (298351), Stand Your Ground (298352), Aegis of the Deep (298353), Memory of Lucid Dreams (298357), Lucid Dreams (298373), Memory of Lucid Dreams (298376), Memory of Lucid Dreams (298377), Lucid Dreams (298404), Lucid Dreams (298405), Reckless Force (298407), Reckless Force (298409), Reckless Force (298448), Reckless Force (298449), Reckless Force (298450), The Unbound Force (298452), The Unbound Force (298453), The Unbound Force (298455), The Unbound Force (298456), The Unbound Force (298457), Lifeblood (298627), Worldvein Resonance (298628), Aegis of the Deep (299273), Stand Your Ground (299274), Aegis of the Deep (299275), Stand Your Ground (299277), Lifeblood (299333), Worldvein Resonance (299334), Focused Energy (299335), Focused Azerite Beam (299336), Focused Energy (299337), Focused Azerite Beam (299338), Purification Protocol (299343), Purifying Blast (299345), Purification Protocol (299346), Purifying Blast (299347), Ancient Flame (299348), Concentrated Flame (299349), Ancient Flame (299350), Concentrated Flame (299353), Condensed Life-Force (299354), Guardian of Azeroth (299355), Condensed Life-Force (299357), Guardian of Azeroth (299358), Strive for Perfection (299367), Vision of Perfection (299368), Strive for Perfection (299369), Vision of Perfection (299370), Lucid Dreams (299371), Memory of Lucid Dreams (299372), Lucid Dreams (299373), Memory of Lucid Dreams (299374), Reckless Force (299375), The Unbound Force (299376), Reckless Force (299377), The Unbound Force (299378), Burning Embrace (299396), Artifice of Time (299518), Artifice of Time (299519), Life-Binder's Invocation (299520), Life-Binder's Invocation (299521), Overcharge Mana (299522), The Ever-Rising Tide (299523), Refreshment (299529), The Well of Existence (299530), Vitality Conduit (299559), Vitality Conduit (299560), Overcharge Mana (299624), Overcharge Mana (299875), Overcharge Mana (299876), The Ever-Rising Tide (299878), The Ever-Rising Tide (299879), Standstill (299882), Standstill (299883), Artifice of Time (299885), Artifice of Time (299887), Refreshment (299932), Refreshment (299933), The Well of Existence (299935), The Well of Existence (299936), Seed of Eonar (299939), Seed of Eonar (299940), Life-Binder's Invocation (299943), Life-Binder's Invocation (299944), Vitality Conduit (299958), Vitality Conduit (299959), Anima of Death (300002), Anima of Death (300003), Anima of Life (300004), Anima of Life (300005), Suppressing Pulse (300009), Suppressing Pulse (300010), Sphere of Suppression (300012), Sphere of Suppression (300013), Empowered Null Barrier (300015), Empowered Null Barrier (300016), Null Barrier (300018), Null Barrier (300020), Guardian of Azeroth (300091), Memory of Lucid Dreams (300120), Perseverance (300573), Perseverance (300575), Perseverance (300576), Perseverance (300577), Heart of Azeroth Slot Unlock (300949), Azerite Spike (302555), Vision of Perfection (302656), Ripple in Space (302731), Ripple in Space (302778), Ripple in Space (302780), Ripple in Space (302864), Ripple in Space (302910), Reality Shift (302916), Reckless Force (302917), Reckless Force (302932), Reality Shift (302952), Reality Shift (302953), Reality Shift (302957), Reality Shift (302961), Reality Shift (302962), Ripple in Space (302982), Ripple in Space (302983), Reality Shift (302984), Reality Shift (302985), Vision of Perfection (303342), Vision of Perfection (303344), Guardian of Azeroth (303347), Guardian of Azeroth (303349), Azerite Volley (303351), Memory of Lucid Dreams (303399), Memory of Lucid Dreams (303412), Transference (303448), Vitality Conduit (303460), Vitality Conduit (303463), Vitality Conduit (303472), Transference (303474), Transference (303476), Conflict (303823), Conflict and Strife (303824), Conflict and Strife (303868), Conflict (303892), Conflict (303894), Conflict and Strife (303897), Conflict and Strife (304014), Conflict and Strife (304015), Conflict and Strife (304016), Conflict and Strife (304017), Conflict and Strife (304018), Conflict and Strife (304019), Conflict and Strife (304020), Conflict and Strife (304021), Conflict and Strife (304022), Conflict and Strife (304023), Reckless Force (304038), Strife (304055), Strife (304056), Strife (304081), Conflict (304086), Conflict (304088), Strife (304089), Conflict (304121), Strife (304123), Strife (304125), Conflict (304375), Strife (304533), Lucid Dreams (304633), Aegis of the Deep (304693), Conflict (304720), Vitality Conduit (304722), Conflict (304724), Conflict (304775), Strife (305148), Conflict and Strife (305350), Conflict and Strife (305352), Seed of Eonar (305500), Lifeblood (305694), Strife (305723)
 Description      : Shapeshift into Cat Form, increasing auto-attack damage by $s4%, movement speed by $113636s1%, granting protection from Polymorph effects, and reducing falling damage.
 
 The act of shapeshifting frees you from movement impairing effects.
@@ -144,7 +144,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Bear Form (5487 effect#9), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Germination (155675 effect#1), Thrash (192090 effect#2), Restoration Affinity (197492 effect#3), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Bear Form (5487 effect#9), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Germination (155675 effect#1), Thrash (192090 effect#2), Restoration Affinity (197492 effect#3), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1)
 Family Flags     : 4, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -178,7 +178,7 @@ Spell Level      : 18
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Stellar Drift (202461 effect#1)
+Affecting spells : Druid (137009 effect#4), Stellar Drift (202461 effect#1)
 Family Flags     : 46
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ....x... x....... ........ ........   ........ ........ ........ ........ 
@@ -209,7 +209,7 @@ GCD              : 1 seconds
 Duration         : 4 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), Gushing Lacerations (278509 effect#2), Berserk (279526 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), Gushing Lacerations (278509 effect#2), Berserk (279526 effect#1)
 Family Flags     : 85, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -276,7 +276,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1)
 Family Flags     : 12, 98
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -340,7 +340,7 @@ Duration         : 40 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x40000002
 Mechanic         : Sleep
-Affecting spells : Cat Form (768 effect#2), Bear Form (5487 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Cat Form (768 effect#2), Bear Form (5487 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 49, 79
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... ........ 
                  : ........ ........ ...x.... ........   x....... ........ ........ ........ 
@@ -365,7 +365,7 @@ Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
-Affecting spells : Cat Form (768 effect#2), Bear Form (5487 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Cat Form (768 effect#2), Bear Form (5487 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 111
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -443,7 +443,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#5), Restoration Druid (137012 effect#8), Solar Empowerment (164545 effect#2), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#4), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#5), Restoration Druid (137012 effect#8), Solar Empowerment (164545 effect#2), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#4), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1)
 Family Flags     : 0
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -470,7 +470,7 @@ Category         : 32
 Category Cooldown: 50 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
-Affecting spells : Druid (137009 effect#4), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Druid (137009 effect#4), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 13
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -525,7 +525,7 @@ Spell Type       : None
 Spell Level      : 13
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Affecting spells : Wildcat Celerity (184877 effect#1), Predator (202021 effect#1), Stellar Drift (202461 effect#1), Tiger's Fury (231055 effect#1), Jungle Fury (274425 effect#2)
+Affecting spells : Predator (202021 effect#1), Stellar Drift (202461 effect#1), Tiger's Fury (231055 effect#1), Jungle Fury (274425 effect#2)
 Family Flags     : 75
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -560,7 +560,7 @@ Spell Level      : 8
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1)
 Family Flags     : 15, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -674,7 +674,7 @@ Spell Level      : 10
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Stellar Drift (202461 effect#1)
+Affecting spells : Druid (137009 effect#4), Stellar Drift (202461 effect#1)
 Family Flags     : 30, 97
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -734,7 +734,7 @@ Category Cooldown: 8 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x00000010
 Mechanic         : Taunt
-Affecting spells : Incarnation: Guardian of Ursoc (102558 effect#3), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Incarnation: Guardian of Ursoc (102558 effect#3), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 35
 Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ..x..... ........ 
@@ -761,7 +761,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Incarnation: Guardian of Ursoc (102558 effect#2), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Bloodtalons (145152 effect#1), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2)
+Affecting spells : Incarnation: Guardian of Ursoc (102558 effect#2), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Bloodtalons (145152 effect#1), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Guardian's Wrath (278511 effect#2)
 Family Flags     : 11, 77
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -786,7 +786,7 @@ Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Bear Form (5487 effect#2), Mastery: Starlight (77492 effect#1), Guardian Druid (137010 effect#8), Balance Druid (137013 effect#4), Lunar Inspiration (155627 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Astral Power (197911 effect#3), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Galactic Guardian (213708 effect#1), Solar Solstice (252767 effect#1), Long Night (269379 effect#2), Twin Moons (279620 effect#2), 
+Affecting spells : Bear Form (5487 effect#2), Mastery: Starlight (77492 effect#1), Guardian Druid (137010 effect#8), Balance Druid (137013 effect#4), Lunar Inspiration (155627 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Galactic Guardian (213708 effect#1), Solar Solstice (252767 effect#1), Long Night (269379 effect#2), Twin Moons (279620 effect#2), 
 Family Flags     : 1, 21, 103
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -817,7 +817,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effect#1), Clearcasting (16870 effect#1), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Predatory Swiftness (69369 effect#1), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#3), Guardian Druid (137010 effect#4), Feral Druid (137011 effect#5), Restoration Druid (137012 effect#1), Balance Druid (137013 effect#6), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Abundance (207640 effect#1), Essence of G'Hanir (208253 effect#1), Power of Elune, the Moon Goddess (208284 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Rampant Growth (278515 effect#1)
+Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effect#1), Clearcasting (16870 effect#1), Predatory Swiftness (69369 effect#1), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#3), Guardian Druid (137010 effect#4), Feral Druid (137011 effect#5), Restoration Druid (137012 effect#1), Balance Druid (137013 effect#6), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Abundance (207640 effect#1), Essence of G'Hanir (208253 effect#1), Rampant Growth (278515 effect#1)
 Family Flags     : 6, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   .......x ........ ........ ........ 
@@ -948,7 +948,7 @@ Range            : 100 yards
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x00000001
-Triggered by     : Primal Fury (159286), The Wildshaper's Clutch (208319)
+Triggered by     : Primal Fury (159286)
 Attributes       : ....x... ........ ........ x.......   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ xx...... ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
@@ -1018,7 +1018,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (25 seconds cooldown)
 Category         : 1576
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Restoration Druid (137012 effect#1), Thrash (192090 effect#2), Restoration Affinity (197492 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Restoration Druid (137012 effect#1), Thrash (192090 effect#2), Restoration Affinity (197492 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 33, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1044,7 +1044,7 @@ GCD              : 1.5 seconds
 Cooldown         : 600 seconds
 Category         : 26
 Category Cooldown: 600 seconds
-Affecting spells : Cat Form (3025 effect#4), Bear Form (5487 effect#2), Cheaper Druid Shapeshifting (38314 effect#1), Book of Rebirth (176021 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Cat Form (3025 effect#4), Bear Form (5487 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 28
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : x....... ........ ........ ........   ....x... ........ ........ ........ 
@@ -1144,7 +1144,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Apex Predator (252752 effect#1), Berserk (279526 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Apex Predator (252752 effect#1), Berserk (279526 effect#1)
 Family Flags     : 98, 108
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1179,7 +1179,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 20 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Maim Damage (61252 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), Berserk (279526 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Maim Damage (61252 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Berserk (279526 effect#1)
 Family Flags     : 39, 98
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1274,7 +1274,7 @@ GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Feral Druid (137011 effect#4), Stellar Drift (202461 effect#1), Moonkin Form (231042 effect#1)
+Affecting spells : Druid (137009 effect#4), Feral Druid (137011 effect#4), Stellar Drift (202461 effect#1), Moonkin Form (231042 effect#1)
 Family Flags     : 45
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -1329,7 +1329,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 180 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 79
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ........ 
@@ -1358,7 +1358,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x00000002
 Proc Flags       : ........ ........ ........ .......x 
                  
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Item - Druid WoD PvP Restoration 4P Bonus (165707 effect#1), Item - Druid T18 Restoration 4P Bonus (185397 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Item - Druid WoD PvP Restoration 4P Bonus (165707 effect#1), Item - Druid T18 Restoration 4P Bonus (185397 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1)
 Family Flags     : 36, 44, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ..x..... 
@@ -1381,7 +1381,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 64
 Range            : 40 yards
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Restoration Druid (137012 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Restoration Druid (137012 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 36, 118
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....x...   ........ ........ x....... ........ 
@@ -1407,7 +1407,7 @@ Cooldown         : 180 seconds
 Category         : 1333
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Stellar Drift (202461 effect#1)
+Affecting spells : Incarnation (117679 effect#1), Druid (137009 effect#4), Stellar Drift (202461 effect#1)
 Family Flags     : 43, 48
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
@@ -1439,7 +1439,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Gore (93622 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Soul of the Forest (158477 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Gore (93622 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Soul of the Forest (158477 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 38, 77
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1558,7 +1558,7 @@ Duration         : 7 seconds
 Cooldown         : 10 seconds
 Category         : 1237
 Category Cooldown: 10 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Nature's Wisdom (167715 effect#1), Thrash (192090 effect#2), Restoration Affinity (197492 effect#5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Nature's Wisdom (167715 effect#1), Thrash (192090 effect#2), Restoration Affinity (197492 effect#5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1)
 Family Flags     : 58, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   .......x ........ ........ ........ 
@@ -1606,7 +1606,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
-Affecting spells : Stellar Drift (202461 effect#1), Dual Determination (208228 effect#3)
+Affecting spells : Stellar Drift (202461 effect#1)
 Family Flags     : 71
 Attributes       : .......x ........ ........ ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1773,7 +1773,7 @@ Cooldown         : 6 seconds
 Charges          : 2 (180 seconds cooldown)
 Category         : 1469
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
-Affecting spells : Stellar Drift (202461 effect#1), Dual Determination (208228 effect#3)
+Affecting spells : Stellar Drift (202461 effect#1)
 Family Flags     : 71
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1797,7 +1797,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 15 yards
 Duration         : 6 seconds
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Triggered by     : Typhoon (132469)
 Family Flags     : 56
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -1919,7 +1919,7 @@ Spell Type       : Magic
 Duration         : 12 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Item - Druid WoD PvP Restoration 4P Bonus (165707 effect#2), Stellar Drift (202461 effect#1), Ailuro Pouncers (208209 effect#1)
+Affecting spells : Item - Druid WoD PvP Restoration 4P Bonus (165707 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 51
 Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -2033,7 +2033,7 @@ GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x00000010
 Mechanic         : Bleed
-Affecting spells : Bear Form (5487 effect#7), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Guardian Overrides Passive (106734 effect#6), Berserk (106951 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1)
+Affecting spells : Bear Form (5487 effect#7), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Guardian Overrides Passive (106734 effect#6), Berserk (106951 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1)
 Family Flags     : 77, 86, 91
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2062,7 +2062,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2)
+Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2)
 Family Flags     : 18, 89
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2090,7 +2090,7 @@ Cooldown         : 60 seconds
 Category         : 1420
 Category Cooldown: 60 seconds
 Stance Mask      : 0x40000000
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 90
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2117,7 +2117,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Druid (137009 effect#4), Guardian Druid (137010 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Druid (137009 effect#4), Guardian Druid (137010 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 77, 123
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2331,7 +2331,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1510
-Affecting spells : Cat Form (768 effect#2), Bear Form (5487 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Cat Form (768 effect#2), Bear Form (5487 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 111
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2397,19 +2397,18 @@ Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Mastery: Starlight (77492 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#4), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1)
+Affecting spells : Mastery: Starlight (77492 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#4), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1)
 Family Flags     : 1, 102
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x......x ........ ........ ........ 
-                 : Periodic effect affected by haste (173), Periodic effect can crit (265)
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=97908)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.571) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=324053)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=324054)   : Energize Power (30)
@@ -2453,7 +2452,7 @@ Spell Level      : 64
 Range            : 100 yards
 Duration         : 4 seconds
 Mechanic         : Interrupt
-Affecting spells : Cat Form (3025 effect#4), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Druid (137009 effect#4), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Berserk (279526 effect#1)
+Affecting spells : Cat Form (3025 effect#4), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Druid (137009 effect#4), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Berserk (279526 effect#1)
 Family Flags     : 25
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2518,7 +2517,7 @@ Spell Level      : 54
 Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Affecting spells : Stonebark (197061 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), X'oni's Caress (235039 effect#2)
+Affecting spells : Stonebark (197061 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 104
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   x....... ........ ........ ........ 
@@ -2552,7 +2551,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Bear Form (5487 effect#9), Ironbark (102342 effect#3), Druid (137009 effect#4), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Bear Form (5487 effect#9), Ironbark (102342 effect#3), Druid (137009 effect#4), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1)
 Family Flags     : 106
 Attributes       : ....x... ...x.... x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -2574,7 +2573,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Bear Form (5487 effect#9), Ironbark (102342 effect#3), Druid (137009 effect#4), Restoration Druid (137012 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Bear Form (5487 effect#9), Ironbark (102342 effect#3), Druid (137009 effect#4), Restoration Druid (137012 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1)
 Triggered by     : Cenarion Ward (102351)
 Family Flags     : 106, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2604,7 +2603,7 @@ Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 66
 Attributes       : ........ ........ ........ ......x.   ........ ..x..... ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2628,7 +2627,7 @@ Duration         : 0.5 seconds
 Cooldown         : 15 seconds
 Category         : 1205
 Category Cooldown: 15 seconds
-Affecting spells : Cat Form (3025 effect#3), Travel Form (Passive) (5419 effect#2), Aquatic Form Passive (5421 effect#3), Bear Form Passive 2 (21178 effect#2), Moonkin Form (24858 effect#7), Astral Influence (197524 effect#1), Moonkin Form (197625 effect#6), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Cat Form (3025 effect#3), Travel Form (Passive) (5419 effect#2), Aquatic Form Passive (5421 effect#3), Bear Form Passive 2 (21178 effect#2), Moonkin Form (24858 effect#7), Astral Influence (197524 effect#1), Moonkin Form (197625 effect#6), Stellar Drift (202461 effect#1)
 Family Flags     : 68
 Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2648,7 +2647,7 @@ Description      : Fly to a nearby ally's position.
 Tooltip          : Flying to an ally's position.
 
 Name             : Incarnation: King of the Jungle (rank=Talent, Shapeshift) (id=102543) [Spell Family (7)] 
-Class            : Druid
+Class            : Death Knight, Druid
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
@@ -2659,7 +2658,7 @@ Category         : 1333
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Stellar Drift (202461 effect#1)
+Affecting spells : Incarnation (117679 effect#1), Druid (137009 effect#4), Stellar Drift (202461 effect#1)
 Family Flags     : 31, 43
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2733,7 +2732,7 @@ Cooldown         : 180 seconds
 Category         : 1333
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Stellar Drift (202461 effect#1)
+Affecting spells : Incarnation (117679 effect#1), Druid (137009 effect#4), Stellar Drift (202461 effect#1)
 Family Flags     : 30, 43
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2767,7 +2766,7 @@ Lasts $d. You may freely shapeshift in and out of this improved Bear Form for it
 Tooltip          : Incarnation: Guardian of Ursoc activated.
 
 Name             : Incarnation: Chosen of Elune (rank=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
-Class            : Druid
+Class            : Death Knight, Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
@@ -2778,7 +2777,7 @@ Category         : 1333
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
-Affecting spells : Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Stellar Drift (202461 effect#1)
+Affecting spells : Incarnation (117679 effect#1), Druid (137009 effect#4), Stellar Drift (202461 effect#1)
 Family Flags     : 43
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2821,7 +2820,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 60 seconds
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 110
 Attributes       : ........ ........ ..x..... ........   ...x...x ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2928,7 +2927,7 @@ Spell Level      : 32
 Range            : 8 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Feral Affinity (197490 effect#3), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#3), Feral Affinity (202157 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Scent of Blood (285646 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Feral Affinity (197490 effect#3), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#3), Feral Affinity (202157 effect#3), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Scent of Blood (285646 effect#1)
 Family Flags     : 74, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2959,7 +2958,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T19 Feral 2P Bonus (211140 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T19 Feral 2P Bonus (211140 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1)
 Family Flags     : 86, 98, 126
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2986,7 +2985,7 @@ Spell Type       : None
 Spell Level      : 12
 Range            : 5 yards
 Stance Mask      : 0x00000011
-Affecting spells : Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#3), 
+Affecting spells : Stellar Drift (202461 effect#1)
 Family Flags     : 26
 Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3010,7 +3009,7 @@ Cooldown         : 15 seconds
 Category         : 1260
 Category Cooldown: 15 seconds
 Stance Mask      : 0x00000011
-Affecting spells : Cat Form (3025 effect#4), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Druid (137009 effect#4), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Berserk (279526 effect#1)
+Affecting spells : Cat Form (3025 effect#4), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Druid (137009 effect#4), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Berserk (279526 effect#1)
 Family Flags     : 25
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -3068,7 +3067,7 @@ Cooldown         : 180 seconds
 Category         : 1208
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
-Affecting spells : Wildcat Celerity (184877 effect#1), Stellar Drift (202461 effect#1)
+Affecting spells : Stellar Drift (202461 effect#1)
 Family Flags     : 70
 Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3500,7 +3499,7 @@ GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Category         : 1217
 Category Cooldown: 30 seconds
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 56
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3593,7 +3592,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Guardian Druid (id=137010) [Spell Family (7), Passive, Hidden] 
-Class            : Guardian Druid
+Class            : Guardian Death Knight, Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3647,7 +3646,7 @@ Effects          :
                    Base Value: 96 | Scaled Value: 96 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
-Class            : Feral Druid
+Class            : Feral Death Knight, Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3700,7 +3699,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
-Class            : Restoration Druid
+Class            : Restoration Death Knight, Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3713,11 +3712,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 0.68168 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 0.68168 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
@@ -3744,7 +3743,7 @@ Effects          :
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
-Class            : Balance Druid
+Class            : Balance Death Knight, Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3849,7 +3848,7 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 34
 Range            : 100 yards
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1)
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1)
 Family Flags     : 82
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3869,7 +3868,7 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1)
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1)
 Family Flags     : 82
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
@@ -3890,7 +3889,7 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
-Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1)
+Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1)
 Family Flags     : 82
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ...x.... ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
@@ -3940,7 +3939,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Proc Chance      : 101%
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 115
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4029,7 +4028,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 14 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Astral Influence (197524 effect#1), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Power of the Moon (273367 effect#2), Berserk (279526 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Power of the Moon (273367 effect#2), Berserk (279526 effect#1)
 Family Flags     : 98, 120
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4118,7 +4117,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodletting (165699 effect#1), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1)
 Triggered by     : Rake (1822)
 Family Flags     : 12, 98
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
@@ -4231,7 +4230,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#3), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#3), Flourish (197721 effect#2), Stellar Drift (202461 effect#1)
 Triggered by     : Tranquility (740)
 Family Flags     : 7, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4321,7 +4320,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 20 seconds
-Affecting spells : Druid (137009 effect#4), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Druid (137009 effect#4), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 123
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4585,7 +4584,7 @@ Spell Level      : 3
 Range            : 100 yards
 Duration         : 16 seconds
 Stance Mask      : 0x40000013
-Affecting spells : Tiger's Fury (5217 effect#1), Bear Form (5487 effect#2), Moonkin Form (24858 effect#9), Savage Roar (62071 effect#1), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Guardian Druid (137010 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lunar Inspiration (155627 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effect#1), Long Night (269379 effect#2), Power of the Moon (273367 effect#2), Twin Moons (279620 effect#2), 
+Affecting spells : Tiger's Fury (5217 effect#1), Bear Form (5487 effect#2), Moonkin Form (24858 effect#9), Savage Roar (62071 effect#1), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Guardian Druid (137010 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lunar Inspiration (155627 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effect#1), Long Night (269379 effect#2), Power of the Moon (273367 effect#2), Twin Moons (279620 effect#2), 
 Family Flags     : 1, 18, 77, 92, 98, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
@@ -4613,7 +4612,7 @@ Spell Level      : 16
 Range            : 100 yards
 Duration         : 12 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1)
 Family Flags     : 1, 18, 102
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
@@ -4664,7 +4663,7 @@ Spell Level      : 58
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Stellar Drift (202461 effect#1)
+Affecting spells : Druid (137009 effect#4), Stellar Drift (202461 effect#1)
 Family Flags     : 46
 Attributes       : ....x... .......x ..x..... ....x...   ........ ..x..... x....... ........ 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4850,7 +4849,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Solar Empowerment (164545 effect#2), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Solar Empowerment (164545 effect#2), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1)
 Triggered by     : Solar Empowerment (164545)
 Family Flags     : 0, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4879,7 +4878,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Stance Mask      : 0x40000000
-Affecting spells : Mastery: Starlight (77492 effect#1), Soul of the Forest (114107 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202354 effect#1), Stellar Drift (202461 effect#1), Oneth's Overconfidence (209407 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1)
+Affecting spells : Mastery: Starlight (77492 effect#1), Soul of the Forest (114107 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202354 effect#1), Stellar Drift (202461 effect#1), Oneth's Overconfidence (209407 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1)
 Family Flags     : 55, 119
 Attributes       : ........ ........ x....... .......x   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4906,7 +4905,7 @@ Spell Type       : Magic
 Spell Level      : 76
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
-Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Soul of the Forest (114107 effect#2), Balance Druid (137013 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202354 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Soul of the Forest (114107 effect#2), Balance Druid (137013 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202354 effect#1), Stellar Drift (202461 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1)
 Family Flags     : 18, 55
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   x....... .x...... ....x... .x....x. 
@@ -4956,7 +4955,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#8), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Rend and Tear (204053 effect#2), Elize's Everlasting Encasement (208342 effect#1), Luffa Wrappings (208681 effect#3), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1), 
+Affecting spells : Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#8), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Rend and Tear (204053 effect#2), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1), 
 Family Flags     : 40, 77
 Attributes       : ....x... ........ .....x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ......x. 
@@ -5021,7 +5020,7 @@ Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Owlkin Frenzy (157228 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Owlkin Frenzy (157228 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1)
 Triggered by     : Lunar Empowerment (164547)
 Family Flags     : 2, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -5322,7 +5321,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Feral Druid (137011 effect#4), Stellar Drift (202461 effect#1), Moonkin Form (231042 effect#1)
+Affecting spells : Druid (137009 effect#4), Feral Druid (137011 effect#4), Stellar Drift (202461 effect#1), Moonkin Form (231042 effect#1)
 Family Flags     : 45
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -5365,7 +5364,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Cooldown         : 10 seconds
-Affecting spells : Mastery: Starlight (77492 effect#1), Restoration Druid (137012 effect#8), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2)
+Affecting spells : Mastery: Starlight (77492 effect#1), Restoration Druid (137012 effect#8), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2)
 Family Flags     : 89
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5394,7 +5393,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#5), Restoration Druid (137012 effect#8), Owlkin Frenzy (157228 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#4), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#5), Restoration Druid (137012 effect#8), Owlkin Frenzy (157228 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#4), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 2
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5420,7 +5419,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#5), Restoration Druid (137012 effect#8), Solar Empowerment (164545 effect#2), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#4), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#5), Restoration Druid (137012 effect#8), Solar Empowerment (164545 effect#2), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#4), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1)
 Family Flags     : 0
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5442,7 +5441,7 @@ Resource         : 12% Base Mana (0) (id=10709)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Starlight (77492 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#4), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1)
+Affecting spells : Mastery: Starlight (77492 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#4), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1)
 Family Flags     : 1, 102
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5701,7 +5700,7 @@ GCD              : 1 seconds
 Charges          : 3 (8 seconds cooldown)
 Category         : 1581: Druid (137009 effect#1)
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Scent of Blood (285646 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Scent of Blood (285646 effect#1)
 Family Flags     : 98, 99
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5857,15 +5856,15 @@ School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6), Hidden (7)
+                 : Passive (6), Hidden (7), Periodic effect affected by haste (173)
 Effects          :
-#1 (id=298290)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7798 | Target: Self (1)
+#1 (id=298290)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Moonfire and Sunfire damage over time has a chance to call down a falling star, dealing $202497s1 Astral damage and generating ${$202497m2/10} Astral Power.
 
 Name             : Starlord (id=202345) [Spell Family (7), Passive, Hidden] 
@@ -5898,7 +5897,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 24 seconds
-Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 18, 105
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -6025,7 +6024,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 18
 Attributes       : ........ ........ ........ ...x....   .......x ..x..... ........ ........ 
                  : ..x..... ........ ......x. ........   x....... .x...... ......x. .x....x. 
@@ -6106,7 +6105,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 23
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -6388,7 +6387,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Guardian Druid (137010 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Guardian Druid (137010 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 54, 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
@@ -6413,7 +6412,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ .x...... ........ 
@@ -6625,7 +6624,7 @@ Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Stellar Drift (202461 effect#1)
+Affecting spells : Druid (137009 effect#4), Stellar Drift (202461 effect#1)
 Family Flags     : 46
 Attributes       : ....x... .......x x.x..... ........   ........ ..x..... x....... ....x... 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -6929,7 +6928,7 @@ Class            : Druid
 School           : Astral
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 18, 23
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
@@ -6971,7 +6970,7 @@ Spell Level      : 66
 Range            : 100 yards
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 73
 Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
@@ -7066,7 +7065,7 @@ Class            : Druid
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Guardian Druid (137010 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Guardian Druid (137010 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 54, 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7088,7 +7087,7 @@ Spell Level      : 32
 Range            : 8 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000011
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Sharpened Claws (279943 effect#1)
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Sharpened Claws (279943 effect#1)
 Family Flags     : 24
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7112,7 +7111,7 @@ Spell Level      : 32
 Range            : 8 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Bear Form (5487 effect#7), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1)
+Affecting spells : Bear Form (5487 effect#7), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1)
 Family Flags     : 52, 77
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7558,7 +7557,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Incarnation: Guardian of Ursoc (102558 effect#2), Druid (137009 effect#3), Bloodtalons (145152 effect#1), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2)
+Affecting spells : Incarnation: Guardian of Ursoc (102558 effect#2), Druid (137009 effect#3), Bloodtalons (145152 effect#1), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Guardian's Wrath (278511 effect#2)
 Family Flags     : 11
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -7581,7 +7580,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 10 seconds
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Triggered by     : Force of Nature (205636)
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -7637,13 +7636,13 @@ Effects          :
 Description      : When Rip deals damage, there is a $h% chance for it to deal damage again.
 
 Name             : Jungle Stalker (rank=Talent, Shapeshift) (id=252071) [Spell Family (7)] 
-Class            : Druid
+Class            : Death Knight, Druid
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Duration         : 30 seconds
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Stellar Drift (202461 effect#1)
+Affecting spells : Incarnation (117679 effect#1), Druid (137009 effect#4), Stellar Drift (202461 effect#1)
 Triggered by     : Incarnation: King of the Jungle (102543)
 Family Flags     : 31, 43
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... x....... ........ 
@@ -8330,7 +8329,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 309366 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
@@ -8397,7 +8396,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 309352 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -8578,7 +8577,7 @@ Class            : Druid
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8817,7 +8816,7 @@ GCD              : 1 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (25 seconds cooldown)
 Category         : 1727
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Guardian Druid (137010 effect#10), Feral Druid (137011 effect#9), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Guardian Druid (137010 effect#10), Feral Druid (137011 effect#9), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 18, 63
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8847,7 +8846,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (25 seconds cooldown)
 Category         : 1727
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Guardian Druid (137010 effect#10), Feral Druid (137011 effect#9), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Guardian Druid (137010 effect#10), Feral Druid (137011 effect#9), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 18, 63
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8877,7 +8876,7 @@ GCD              : 1.5 seconds
 Velocity         : 0.9 yards/sec
 Charges          : 3 (25 seconds cooldown)
 Category         : 1727
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Guardian Druid (137010 effect#10), Feral Druid (137011 effect#9), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Guardian Druid (137010 effect#10), Feral Druid (137011 effect#9), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 18, 63
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9061,7 +9060,7 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 18
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Stellar Drift (202461 effect#1)
+Affecting spells : Druid (137009 effect#4), Stellar Drift (202461 effect#1)
 Family Flags     : 29
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9128,7 +9127,7 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 58
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Crow Discount (40389 effect#1), Druid (137009 effect#4), Stellar Drift (202461 effect#1)
+Affecting spells : Druid (137009 effect#4), Stellar Drift (202461 effect#1)
 Family Flags     : 47
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9458,7 +9457,7 @@ Class            : Druid
 School           : Astral
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10306,7 +10305,7 @@ Resource         : 1 - 5 Combo Points (4) (id=191998)
 Range            : 8 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 54, 93, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10681,13 +10680,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7), Scales with item level (354)
 Effects          :
 #1 (id=773466)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1792 | Target: Self (1)
 #2 (id=779235)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
 #3 (id=779236)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 33554432 | Target: Self (1)
 #4 (id=779237)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
 Description      : $?$a303590[Critical Strike increased by $s1.]?$a303592[Haste increased by $s2.]?$a303595[Mastery increased by $s3.]?$a303596[Versatility increased by $s4.][A secondary stat of your choice is increased by $s1 while using the Pocket-Sized Computation Device.] Stat is chosen based on equipped Logic Board.
 
 Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
@@ -10773,7 +10772,10 @@ Name             : Arcane Heart (id=303006) [Scaling Spell (-7), Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
 Azerite Power Id : 577
+Proc Flags       : ........ ........ ........ ....x... 
+                 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10786,7 +10788,7 @@ Effects          :
 #1 (id=778205)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
 #2 (id=778206)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 0 (coefficient=1.39285) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 0 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778207)   : Apply Aura (6) | Unknown(285)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 303209 | Target: Self (1)
 Description      : Every $s1 damage and healing done you gain Omnipotence, increasing your highest stat by $s2 for $303212d. You heal for $s3% of all Arcane damage taken.
@@ -10806,11 +10808,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778208)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 1.00000 | Trigger Spell: 303250 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
 #2 (id=778209)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778210)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your Mastery is increased by $s1, plus an additional $s2 for each ally also affected by Loyal to the End, up to $s3.
 
 When you die, your allies gain Critical Strike, Haste, and Versatility equal to their Mastery bonus from this trait.
@@ -10832,11 +10834,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778211)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 1.00000 | Trigger Spell: 303388 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
 #2 (id=778212)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=778215)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
 #4 (id=778216)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.
@@ -10877,7 +10879,7 @@ Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7)
+Affecting spells : Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 100
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
