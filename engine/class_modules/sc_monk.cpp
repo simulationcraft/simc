@@ -3265,23 +3265,17 @@ struct storm_earth_and_fire_t : public monk_spell_t
     auto targets   = p()->create_storm_earth_and_fire_target_list();
     auto n_targets = targets.size();
 
-	timespan_t sef_duration = data().duration();
-    if ( p()->azerite.vision_of_perfection.enabled() )
-    {
-      sef_duration *= p()->azerite.vision_of_perfection_percentage;
-    }
-
-    // Start targeting logic from "owner" always
+	// Start targeting logic from "owner" always
     p()->pet.sef[ SEF_EARTH ]->reset_targeting();
     p()->pet.sef[ SEF_EARTH ]->target = p()->target;
     p()->retarget_storm_earth_and_fire( p()->pet.sef[ SEF_EARTH ], targets, n_targets );
-    p()->pet.sef[ SEF_EARTH ]->summon( sef_duration );
+    p()->pet.sef[ SEF_EARTH ]->summon( data().duration() );
 
     // Start targeting logic from "owner" always
     p()->pet.sef[ SEF_FIRE ]->reset_targeting();
     p()->pet.sef[ SEF_FIRE ]->target = p()->target;
     p()->retarget_storm_earth_and_fire( p()->pet.sef[ SEF_FIRE ], targets, n_targets );
-    p()->pet.sef[ SEF_FIRE ]->summon( sef_duration );
+    p()->pet.sef[ SEF_FIRE ]->summon( data().duration() );
   }
 
   // Monk used SEF while pets are up to sticky target them into an enemy
