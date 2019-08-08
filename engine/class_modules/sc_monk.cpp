@@ -3265,17 +3265,23 @@ struct storm_earth_and_fire_t : public monk_spell_t
     auto targets   = p()->create_storm_earth_and_fire_target_list();
     auto n_targets = targets.size();
 
+	timespan_t sef_duration = data().duration();
+    if ( p()->azerite.vision_of_perfection.enabled() )
+    {
+      sef_duration *= p()->azerite.vision_of_perfection_percentage;
+    }
+
     // Start targeting logic from "owner" always
     p()->pet.sef[ SEF_EARTH ]->reset_targeting();
     p()->pet.sef[ SEF_EARTH ]->target = p()->target;
     p()->retarget_storm_earth_and_fire( p()->pet.sef[ SEF_EARTH ], targets, n_targets );
-    p()->pet.sef[ SEF_EARTH ]->summon( data().duration() );
+    p()->pet.sef[ SEF_EARTH ]->summon( sef_duration );
 
     // Start targeting logic from "owner" always
     p()->pet.sef[ SEF_FIRE ]->reset_targeting();
     p()->pet.sef[ SEF_FIRE ]->target = p()->target;
     p()->retarget_storm_earth_and_fire( p()->pet.sef[ SEF_FIRE ], targets, n_targets );
-    p()->pet.sef[ SEF_FIRE ]->summon( data().duration() );
+    p()->pet.sef[ SEF_FIRE ]->summon( sef_duration );
   }
 
   // Monk used SEF while pets are up to sticky target them into an enemy
@@ -7147,6 +7153,43 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
   }
 };
 
+struct serenity_vop_buff_t : public monk_buff_t<buff_t>
+{
+  double percent_adjust;
+  monk_t& m;
+  serenity_vop_buff_t( monk_t& p, const std::string& n, const spell_data_t* s )
+    : monk_buff_t( p, n, s ), percent_adjust( 0 ), m( p )
+  {
+    set_default_value( s->effectN( 2 ).percent() );
+    set_cooldown( timespan_t::zero() );
+
+    set_duration( s->duration() * p.azerite.vision_of_perfection_percentage );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
+    percent_adjust = s->effectN( 4 ).percent();  // saved as 100%
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd->adjust_recharge_multiplier(); } );
+  }
+
+  void expire( timespan_t delay ) override
+  {
+    bool expired = check() != 0;
+
+    buff_t::expire( delay );
+
+    if ( expired )
+    {
+      range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd->adjust_recharge_multiplier(); } );
+    }
+  }
+};
+
 // Touch of Karma Buff ===================================================
 struct touch_of_karma_buff_t : public monk_buff_t<buff_t>
 {
@@ -8502,12 +8545,9 @@ void monk_t::create_buffs()
                            ->set_default_value( find_spell( 261769 )->effectN( 1 ).base_value() );
 
 
-  timespan_t serenity_duration = talent.serenity->duration();
-  buff.serenity_vop = new buffs::serenity_buff_t( *this, "serenity_vop", talent.serenity );
-  buff.serenity_vop->set_duration( serenity_duration * azerite.vision_of_perfection_percentage );
-
+  buff.serenity_vop = new buffs::serenity_vop_buff_t( *this, "serenity_vop", talent.serenity );
+  
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
-  buff.serenity->set_duration( serenity_duration );
   
   timespan_t sef_duration = spec.storm_earth_and_fire->duration();
   buff.storm_earth_and_fire_vop =
