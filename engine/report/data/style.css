@@ -162,6 +162,9 @@
       background-size: 10px auto;
       background-position: 0 2px;
     }
+    .toggle-sort {
+      cursor: pointer;
+    }
     td.small a.open,
     span.open {
       background-position: 0 -12px;
@@ -225,6 +228,22 @@
     }
     a.help:hover {
       text-shadow: 0 0 1px #C68E17;
+    }
+    .iconhelp a.help {
+      display: inline-block;
+      color: #333;
+      background-color: #C68E17;
+      font-weight: 1000;
+      text-align: center;
+      width: 1.2em;
+      height: 1.2em;
+      margin-left: 0.2em;
+      border-radius: 50%;
+      cursor: help;
+    }
+    .iconhelp a.help:hover {
+      background-color: inherit;
+      color: #C68E17;
     }
     .section {
       position: relative;
@@ -348,7 +367,7 @@
       }
       #masthead h2 {
         margin-left: 354px;
-        color: 268f45;
+        color: #268f45;
       }
       #masthead ul.params {
         margin: 20px 0 0 344px;
@@ -452,6 +471,11 @@
         background-color: #aaa;
         color: #fff;
       }
+      table.even tbody tr:nth-of-type(even),
+      table.odd tbody tr:nth-of-type(odd),
+      table.stripebody tbody:nth-of-type(even) tr:first-of-type,
+      table.stripebody tbody:nth-of-type(even) tr:first-of-type + tr.childrow,
+      table.sc tr.odd + tr.childrow,
       table.sc tr.odd {
         background-color: #222;
       }
@@ -482,18 +506,22 @@
         vertical-align: top;
       }
       table.sc tr.small th {
+        vertical-align: middle;
         padding: 2px 2px 3px 2px;
         font-size: 11px;
       }
       table.sc tr.small td {
+        vertical-align: middle;
         padding: 2px 2px 3px 2px;
         font-size: 11px;
       }
       table.sc th.small {
+        vertical-align: middle;
         padding: 2px 2px 3px 2px;
         font-size: 11px;
       }
       table.sc td.small {
+        vertical-align: middle;
         padding: 2px 2px 3px 2px;
         font-size: 11px;
       }
