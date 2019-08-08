@@ -275,8 +275,6 @@ public:
     stat_buff_t* fury_of_xuen_haste;
     stat_buff_t* iron_fists;
     stat_buff_t* training_of_niuzao;
-    buff_t* serenity_vop;
-    buff_t* storm_earth_and_fire_vop;
     buff_t* sunrise_technique;
     buff_t* swift_roundhouse;
   } buff;
@@ -1824,7 +1822,6 @@ public:
     pet_t::dismiss( expired );
 
     o()->buff.storm_earth_and_fire->decrement();
-    o()->buff.storm_earth_and_fire_vop->decrement();
   }
 
   void create_buffs() override
@@ -2739,7 +2736,7 @@ public:
     if ( p()->buff.mana_tea->up() && ab::data().affected_by( p()->talent.mana_tea->effectN( 1 ) ) )
       c += p()->buff.mana_tea->value();  // saved as -50%
 
-    else if ( ( p()->buff.serenity->up() || p()->buff.serenity_vop->up() ) && ab::data().affected_by( p()->talent.serenity->effectN( 1 ) ) )
+    else if ( p()->buff.serenity->up() && ab::data().affected_by( p()->talent.serenity->effectN( 1 ) ) )
       c += p()->talent.serenity->effectN( 1 ).percent();  // Saved as -100
 
     else if ( p()->buff.bok_proc->up() && ab::data().affected_by( p()->passives.bok_proc->effectN( 1 ) ) )
@@ -2758,7 +2755,7 @@ public:
     }
 
     // Update the cooldown while Serenity is active
-    if ( ( p()->buff.serenity->up() || p()->buff.serenity_vop->up() ) && ab::data().affected_by( p()->talent.serenity->effectN( 5 ) ) )
+    if ( p()->buff.serenity->up() && ab::data().affected_by( p()->talent.serenity->effectN( 5 ) ) )
       cd *= ( 1 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() ) );  // saved as 100
     ab::update_ready( cd );
   }
@@ -2777,7 +2774,7 @@ public:
         // Drinking Horn Cover Legendary
         if ( p()->legendary.drinking_horn_cover )
         {
-          if ( p()->buff.storm_earth_and_fire->up() || p()->buff.storm_earth_and_fire_vop->up())
+          if ( p()->buff.storm_earth_and_fire->up() )
           {
             // Effect is saved as 4; duration is saved as 400 milliseconds
             double duration  = p()->legendary.drinking_horn_cover->effectN( 1 ).base_value() * 100;
@@ -2873,7 +2870,7 @@ public:
 
         // Having Storm, Earth and Fire out increases the amplifier by 3 which is hard coded and not in any spell
         // effect. This is due to the fact that the SEF clones don't contribute to the amplifier.
-        if ( p()->buff.storm_earth_and_fire->up() || p()->buff.storm_earth_and_fire_vop->up() )
+        if ( p()->buff.storm_earth_and_fire->up() )
           touch_of_death_amplifier *= 3;
 
         if ( td( s->target )->debuff.touch_of_death_amplifier->up() )
@@ -2922,7 +2919,7 @@ public:
       return;
     }
 
-    if ( !p()->buff.storm_earth_and_fire->up() || !p()->buff.storm_earth_and_fire_vop->up() )
+    if ( !p()->buff.storm_earth_and_fire->up() )
     {
       return;
     }
@@ -2991,13 +2988,13 @@ struct monk_spell_t : public monk_action_t<spell_t>
   {
     double am = base_t::action_multiplier();
 
-    if ( p()->buff.storm_earth_and_fire->up() || p()->buff.storm_earth_and_fire_vop->up() )
+    if ( p()->buff.storm_earth_and_fire->up() )
     {
       if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) )
         am *= 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
     }
 
-    if ( p()->buff.serenity->up() || p()->buff.serenity_vop->up() )
+    if ( p()->buff.serenity->up() )
     {
       if ( base_t::data().affected_by( p()->talent.serenity->effectN( 2 ) ) )
         am *= 1 + p()->talent.serenity->effectN( 2 ).percent();
@@ -3055,13 +3052,13 @@ struct monk_heal_t : public monk_action_t<heal_t>
         am *= 1.0 + p()->spec.life_cocoon->effectN( 2 ).percent();
     }
 
-    if ( p()->buff.storm_earth_and_fire->up() || p()->buff.storm_earth_and_fire_vop->up() )
+    if ( p()->buff.storm_earth_and_fire->up() )
     {
       if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) )
         am *= 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
     }
 
-    if ( p()->buff.serenity->up() || p()->buff.serenity_vop->up() )
+    if ( p()->buff.serenity->up() )
     {
       if ( base_t::data().affected_by( p()->talent.serenity->effectN( 2 ) ) )
         am *= 1 + p()->talent.serenity->effectN( 2 ).percent();
@@ -3306,7 +3303,7 @@ struct storm_earth_and_fire_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( !p()->buff.storm_earth_and_fire->check() || !p()->buff.storm_earth_and_fire_vop->check() )
+    if ( !p()->buff.storm_earth_and_fire->check() )
     {
       normal_summon();
     }
@@ -3389,7 +3386,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   double recharge_multiplier( const cooldown_t& cd ) const override
   {
     double rm = base_t::recharge_multiplier( cd );
-    if ( p()->buff.serenity->up() || p()->buff.serenity_vop->up() )
+    if ( p()->buff.serenity->up() )
     {
       rm *= 1.0 / ( 1 + p()->talent.serenity->effectN( 5 ).percent() );
     }
@@ -3418,13 +3415,13 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     if ( ww_mastery && p()->buff.combo_strikes->up() )
       am *= 1 + p()->cache.mastery_value();
 
-    if ( p()->buff.storm_earth_and_fire->up() || p()->buff.storm_earth_and_fire_vop->up() )
+    if ( p()->buff.storm_earth_and_fire->up() )
     {
       if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) )
         am *= 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
     }
 
-    if ( p()->buff.serenity->up() || p()->buff.serenity_vop->up() )
+    if ( p()->buff.serenity->up() )
     {
       if ( base_t::data().affected_by( p()->talent.serenity->effectN( 2 ) ) )
         am *= 1 + p()->talent.serenity->effectN( 2 ).percent();
@@ -3673,7 +3670,7 @@ struct tiger_palm_t : public monk_melee_attack_t
         {
           p()->proc.bok_proc->occur();
 
-          if ( p()->buff.storm_earth_and_fire->up() || p()->buff.storm_earth_and_fire_vop->up() )
+          if ( p()->buff.storm_earth_and_fire->up() )
           {
             p()->pet.sef[ SEF_FIRE ]->buff.bok_proc_sef->trigger();
             p()->pet.sef[ SEF_EARTH ]->buff.bok_proc_sef->trigger();
@@ -3750,7 +3747,7 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     // https://us.forums.blizzard.com/en/wow/t/ww-sef-bugs-and-more/95585/10
     // The 35% cannot be located in any effect (whether it's Windwalker aura, SEF's spell, or in either of GotD's
     // spells) Using SEF' damage reduction times 3 for future proofing (1 + -55%) = 45%; 45% * 3 = 135%
-    if ( p()->buff.storm_earth_and_fire->up() || p()->buff.storm_earth_and_fire_vop->up() )
+    if ( p()->buff.storm_earth_and_fire->up() )
     {
       am *= ( 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
     }
@@ -3912,7 +3909,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
-    if ( p()->buff.serenity->up() || p()->buff.serenity_vop->up() )
+    if ( p()->buff.serenity->up() )
       p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
   }
 
@@ -4111,13 +4108,13 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
-    if ( p()->buff.serenity->up() || p()->buff.serenity_vop->up() )
+    if ( p()->buff.serenity->up() )
       p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
 
     if ( p()->buff.bok_proc->up() )
     {
       p()->buff.bok_proc->expire();
-      if ( !p()->buff.serenity->up() || !p()->buff.serenity_vop->up() )
+      if ( !p()->buff.serenity->up() )
         p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
 
       if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T21, B2 ) )
@@ -4422,7 +4419,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    if ( p()->buff.dance_of_chiji->up() && ( !p()->buff.serenity->up() || !p()->buff.serenity_vop->up() ) )
+    if ( p()->buff.dance_of_chiji->up() && !p()->buff.serenity->up() )
       c += p()->buff.dance_of_chiji->data().effectN( 3 ).base_value();  // saved as -2
 
     return c;
@@ -4432,7 +4429,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
-    if ( p()->buff.serenity->up() || p()->buff.serenity_vop->up() )
+    if ( p()->buff.serenity->up() )
       p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
   }
 
@@ -4556,7 +4553,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
-    if ( p()->buff.serenity->up() || p()->buff.serenity_vop->up() )
+    if ( p()->buff.serenity->up() )
     {
       if ( p()->legendary.katsuos_eclipse )
         p()->gain.serenity->add(
@@ -4767,10 +4764,10 @@ struct melee_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    if ( p()->buff.storm_earth_and_fire->up() || p()->buff.storm_earth_and_fire_vop->up())
+    if ( p()->buff.storm_earth_and_fire->up() )
       am *= 1.0 + p()->spec.storm_earth_and_fire->effectN( 3 ).percent();
 
-    if ( p()->buff.serenity->up() || p()->buff.serenity_vop->up())
+    if ( p()->buff.serenity->up() )
       am *= 1 + p()->talent.serenity->effectN( 7 ).percent();
 
     if ( p()->buff.hit_combo->up() )
@@ -7147,43 +7144,6 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
   }
 };
 
-struct serenity_vop_buff_t : public monk_buff_t<buff_t>
-{
-  double percent_adjust;
-  monk_t& m;
-  serenity_vop_buff_t( monk_t& p, const std::string& n, const spell_data_t* s )
-    : monk_buff_t( p, n, s ), percent_adjust( 0 ), m( p )
-  {
-    set_default_value( s->effectN( 2 ).percent() );
-    set_cooldown( timespan_t::zero() );
-
-    set_duration( s->duration() * p.azerite.vision_of_perfection_percentage );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-
-    percent_adjust = s->effectN( 4 ).percent();  // saved as 100%
-  }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::execute( stacks, value, duration );
-
-    range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd->adjust_recharge_multiplier(); } );
-  }
-
-  void expire( timespan_t delay ) override
-  {
-    bool expired = check() != 0;
-
-    buff_t::expire( delay );
-
-    if ( expired )
-    {
-      range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd->adjust_recharge_multiplier(); } );
-    }
-  }
-};
-
 // Touch of Karma Buff ===================================================
 struct touch_of_karma_buff_t : public monk_buff_t<buff_t>
 {
@@ -8539,25 +8499,13 @@ void monk_t::create_buffs()
                            ->set_default_value( find_spell( 261769 )->effectN( 1 ).base_value() );
 
 
-  buff.serenity_vop = new buffs::serenity_vop_buff_t( *this, "serenity_vop", talent.serenity );
-  
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
-  
-  timespan_t sef_duration = spec.storm_earth_and_fire->duration();
-  buff.storm_earth_and_fire_vop =
-      make_buff( this, "storm_earth_and_fire_vop", spec.storm_earth_and_fire )
-          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-          ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
-          ->set_can_cancel( false )  // Undocumented hotfix 28/09/2018 - SEF can no longer be canceled.
-          ->set_duration( sef_duration * azerite.vision_of_perfection_percentage )
-          ->set_cooldown( timespan_t::zero() );
   
   buff.storm_earth_and_fire =
       make_buff( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
           ->set_can_cancel( false )  // Undocumented hotfix 28/09/2018 - SEF can no longer be canceled.
-          ->set_duration( sef_duration )
           ->set_cooldown( timespan_t::zero() );
 
   buff.pressure_point = make_buff( this, "pressure_point", find_spell( 247255 ) )
