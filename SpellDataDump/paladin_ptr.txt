@@ -1,4 +1,4 @@
-SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
+SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31229)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -29,7 +29,6 @@ Duration         : 3 seconds
 Cooldown         : 300 seconds
 Category         : 1162
 Category Cooldown: 300 seconds
-Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31, 50
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -97,7 +96,7 @@ Range            : 40 yards
 Cooldown         : 600 seconds
 Category         : 56
 Category Cooldown: 600 seconds
-Affecting spells : Sanctuary (105805 effect#5), Unbreakable Spirit (114154 effect#1), Tyr's Hand of Faith (206380 effect#1), Rule of Law (214202 effect#1)
+Affecting spells : Sanctuary (105805 effect#5), Unbreakable Spirit (114154 effect#1), Rule of Law (214202 effect#1)
 Family Flags     : 15
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -157,7 +156,6 @@ Category         : 32
 Category Cooldown: 60 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
-Affecting spells : Improved Hammer of Justice (24188 effect#1)
 Family Flags     : 11
 Attributes       : ........ ........ x.x..... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -189,7 +187,6 @@ Cooldown         : 1.5 seconds
 Charges          : 1 (300 seconds cooldown)
 Category         : 1392
 Mechanic         : Invulneraility
-Affecting spells : Uther's Guard (207558 effect#2)
 Family Flags     : 7
 Attributes       : ........ ........ x.x..... ........   ........ .......x ........ ........ 
                  : ...x.... x....... .....x.. ........   ........ ........ ........ ........ 
@@ -222,7 +219,7 @@ Duration         : 8 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (25 seconds cooldown)
 Category         : 1390
-Affecting spells : Unbound Freedom (199325 effect#1), Uther's Guard (207558 effect#2), Unbound Freedom (305394 effect#1)
+Affecting spells : Unbound Freedom (199325 effect#1), Unbound Freedom (305394 effect#1)
 Family Flags     : 4
 Attributes       : ........ ........ x.x..... ........   ........ .......x .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -282,7 +279,7 @@ Duration         : 12 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (120 seconds cooldown)
 Category         : 1186
-Affecting spells : Blessing of Sacrifice (200327 effect#1), Uther's Guard (207558 effect#2)
+Affecting spells : Blessing of Sacrifice (200327 effect#1)
 Family Flags     : 13
 Attributes       : ........ ........ x.x..... .......x   ........ ........ ...x.... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -313,7 +310,7 @@ Spell Level      : 5
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#2), Sanctuary (105805 effect#5), Selfless Healer (114250 effect#1), Retribution Paladin (137027 effect#8), Protection Paladin (137028 effect#10), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Purity of Light (254332 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#2), Sanctuary (105805 effect#5), Selfless Healer (114250 effect#1), Retribution Paladin (137027 effect#8), Protection Paladin (137028 effect#10), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Purity of Light (254332 effect#1)
 Family Flags     : 30, 46
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -682,7 +679,7 @@ Spell Type       : Magic
 Spell Level      : 50
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Affecting spells : Unbreakable Spirit (114154 effect#1), Item - Paladin WoD PvP Protection 4P Bonus (171427 effect#1), Pillars of Inmost Ligiht (281291 effect#1)
+Affecting spells : Unbreakable Spirit (114154 effect#1), Item - Paladin WoD PvP Protection 4P Bonus (171427 effect#1)
 Family Flags     : 87
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -696,7 +693,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
 #2 (id=21514)    : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=728128)   : Apply Aura (6) | Absorb Damage (69)
+#3 (id=728128)   : Apply Aura (6) | Unknown(316)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x14 | Target: Self (1)
 Description      : Reduces all damage you take by $s1% for $d.
 
@@ -762,7 +759,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Grand Crusader (85416 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Last Defender (203791 effect#5), Ferren Marcus's Strength (207614 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Soaring Shield (278951 effect#2), Redoubt (280373 effect#2)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Grand Crusader (85416 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Soaring Shield (278951 effect#2), Redoubt (280373 effect#2)
 Family Flags     : 14, 65
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -814,7 +811,6 @@ School           : Arcane
 Spell Type       : None
 Spell Level      : 42
 Duration         : 20 seconds
-Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31, 54, 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -844,7 +840,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (6 seconds cooldown)
 Category         : 1627: Retribution Paladin (137027 effect#5), Paladin (137026 effect#5)
-Affecting spells : Avenging Wrath (31884 effect#1), Improved Crusader Strike (44300 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Last Defender (203791 effect#5), Judgment (214222 effect#1), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Last Defender (203791 effect#5), Judgment (214222 effect#1), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
 Family Flags     : 47, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -911,7 +907,7 @@ Resource         : 3 Holy Power (9) (id=2444)
 Spell Level      : 40
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#5), Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), Scarlet Inquisitor's Expurgation (248289 effect#1), Sacred Judgment (253806 effect#1), Empyrean Power (286393 effect#1), 
+Affecting spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#5), Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), Sacred Judgment (253806 effect#1), Empyrean Power (286393 effect#1), 
 Family Flags     : 49
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1295,7 +1291,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : None
 Spell Level      : 40
-Affecting spells : Unbreakable Spirit (114154 effect#1), Item - Paladin WoD PvP Protection 4P Bonus (171427 effect#1), Pillars of Inmost Ligiht (281291 effect#1)
+Affecting spells : Unbreakable Spirit (114154 effect#1), Item - Paladin WoD PvP Protection 4P Bonus (171427 effect#1)
 Family Flags     : 87
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -1446,7 +1442,7 @@ Spell Level      : 25
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Purity of Light (254332 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Purity of Light (254332 effect#1)
 Family Flags     : 46, 74
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2352,7 +2348,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Retribution Paladin (id=137027) [Spell Family (10), Passive, Hidden] 
-Class            : Retribution Paladin
+Class            : Retribution Paladin, Death Knight
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
@@ -2418,7 +2414,7 @@ Effects          :
                    Family Flags: 47
 
 Name             : Protection Paladin (id=137028) [Spell Family (10), Passive, Hidden] 
-Class            : Protection Paladin
+Class            : Protection Paladin, Death Knight
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2478,7 +2474,7 @@ Effects          :
                    Affected Spells (Label): Indomitable Justice (275496)
 
 Name             : Holy Paladin (id=137029) [Spell Family (10), Passive, Hidden] 
-Class            : Holy Paladin
+Class            : Holy Paladin, Death Knight
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
@@ -2850,7 +2846,6 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 180 seconds
 Mechanic         : Stun
-Triggered by     : The Jailer's Libram (168802)
 Attributes       : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3981,7 +3976,6 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
 Mechanic         : Invulneraility
-Affecting spells : Uther's Guard (207558 effect#2)
 Family Flags     : 28
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... .....x.. ........   ........ ........ ........ ........ 
@@ -4324,7 +4318,7 @@ Description      : $@spelldesc205273
 Tooltip          : Stunned.
 
 Name             : Chain of Thrayn (id=206338) [Spell Family (10), Passive] 
-Class            : Paladin
+Class            : Paladin, Death Knight
 School           : Physical
 Spell Type       : None
 Req. Max Level   : 115
@@ -4653,7 +4647,7 @@ Description      : Focuses Holy energy to deliver a powerful weapon strike that 
 Damage is increased by $s2% when used against a stunned target.
 
 Name             : Avenging Crusader (id=216331) [Spell Family (10)] 
-Class            : Paladin
+Class            : Paladin, Death Knight
 School           : Holy
 Spell Type       : None
 Resource         : 50% Base Mana (0) (id=191685)
@@ -4878,7 +4872,7 @@ Spell Type       : Melee
 Spell Level      : 32
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Judgment (197277 effect#1), Last Defender (203791 effect#5), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Scarlet Inquisitor's Expurgation (248289 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Empyrean Power (286393 effect#1), Avenging Wrath (294027 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Judgment (197277 effect#1), Last Defender (203791 effect#5), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Empyrean Power (286393 effect#1), Avenging Wrath (294027 effect#1)
 Family Flags     : 27, 65, 91
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4899,7 +4893,7 @@ Spell Type       : Melee
 Spell Level      : 10
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Judgment (197277 effect#1), Last Defender (203791 effect#5), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Righteous Verdict (267611 effect#1), Execution Sentence (267799 effect#1), Avenging Wrath (294027 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Judgment (197277 effect#1), Last Defender (203791 effect#5), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Righteous Verdict (267611 effect#1), Execution Sentence (267799 effect#1), Avenging Wrath (294027 effect#1)
 Family Flags     : 27, 44, 65
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5121,7 +5115,7 @@ Effects          :
 Description      : Art of War resets the cooldown of Blade of Justice $s1% more often and increases its damage by $281178s1%.
 
 Name             : Crusade (id=231895) [Spell Family (10)] 
-Class            : Paladin
+Class            : Paladin, Death Knight
 School           : Holy
 Spell Type       : None
 Spell Level      : 72
@@ -5464,7 +5458,7 @@ Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Ashes to Dust (236106 effect#1), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1)
 Family Flags     : 27, 65, 68
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6172,7 +6166,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 309366 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
@@ -6239,7 +6233,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 309352 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -7853,7 +7847,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
 
 Name             : Chain of Thrayn (id=281573) [Spell Family (10), Hidden] 
-Class            : Paladin
+Class            : Paladin, Death Knight
 School           : Physical
 Spell Type       : None
 Req. Max Level   : 115
@@ -8269,13 +8263,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7), Scales with item level (354)
 Effects          :
 #1 (id=773466)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1792 | Target: Self (1)
 #2 (id=779235)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
 #3 (id=779236)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 33554432 | Target: Self (1)
 #4 (id=779237)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
 Description      : $?$a303590[Critical Strike increased by $s1.]?$a303592[Haste increased by $s2.]?$a303595[Mastery increased by $s3.]?$a303596[Versatility increased by $s4.][A secondary stat of your choice is increased by $s1 while using the Pocket-Sized Computation Device.] Stat is chosen based on equipped Logic Board.
 
 Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
@@ -8301,7 +8295,10 @@ Name             : Arcane Heart (id=303006) [Scaling Spell (-7), Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
 Azerite Power Id : 577
+Proc Flags       : ........ ........ ........ ....x... 
+                 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8314,7 +8311,7 @@ Effects          :
 #1 (id=778205)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
 #2 (id=778206)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 0 (coefficient=1.39285) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 0 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778207)   : Apply Aura (6) | Unknown(285)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 303209 | Target: Self (1)
 Description      : Every $s1 damage and healing done you gain Omnipotence, increasing your highest stat by $s2 for $303212d. You heal for $s3% of all Arcane damage taken.
@@ -8334,11 +8331,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778208)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 1.00000 | Trigger Spell: 303250 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
 #2 (id=778209)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778210)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your Mastery is increased by $s1, plus an additional $s2 for each ally also affected by Loyal to the End, up to $s3.
 
 When you die, your allies gain Critical Strike, Haste, and Versatility equal to their Mastery bonus from this trait.
@@ -8360,11 +8357,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778211)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 1.00000 | Trigger Spell: 303388 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
 #2 (id=778212)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=778215)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
 #4 (id=778216)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.

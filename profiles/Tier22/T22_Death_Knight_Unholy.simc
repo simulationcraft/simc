@@ -8,9 +8,9 @@ position=back
 talents=2203022
 
 # Default consumables
-potion=battle_potion_of_strength
-flask=flask_of_the_undertow
-food=bountiful_captains_feast
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_the_undertow
+food=baked_port_tato
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.

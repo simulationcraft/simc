@@ -750,14 +750,14 @@ public:
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
     starshards( 0.0 ),
+    previous_streaking_stars(SS_NONE),
     lucid_dreams_proc_chance_balance( 0.15 ),
     lucid_dreams_proc_chance_feral( 0.15 ),
     lucid_dreams_proc_chance_guardian( 0.15 ),
-    thorns_attack_period( 2.0 ),
-    thorns_hit_chance( 0.75 ),
-    previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
     initial_astral_power( 0 ),
+    thorns_attack_period( 2.0 ),
+    thorns_hit_chance( 0.75 ),
     initial_moon_stage( NEW_MOON ),
     lively_spirit_stacks(9),  //set a usually fitting default value
     ahhhhh_the_great_outdoors( false ),
@@ -7852,27 +7852,18 @@ void druid_t::init_base_stats()
     + sets->set( DRUID_FERAL, T18, B2 )->effectN( 2 ).resource( RESOURCE_ENERGY )
     + talent.moment_of_clarity->effectN( 3 ).resource( RESOURCE_ENERGY );
 
-  if ( specialization() == DRUID_BALANCE )
-  {
-    resources.active_resource[ RESOURCE_ASTRAL_POWER ] = true;
-
-    // only activate other resources if you have the affinity and affinity_resources = true
-    resources.active_resource[ RESOURCE_HEALTH      ] = affinity_resources && talent.guardian_affinity->ok();
-    resources.active_resource[ RESOURCE_RAGE        ] = affinity_resources && talent.guardian_affinity->ok();
-    resources.active_resource[ RESOURCE_COMBO_POINT ] = affinity_resources && talent.feral_affinity->ok();
-    resources.active_resource[ RESOURCE_ENERGY      ] = affinity_resources && talent.feral_affinity->ok();
-    resources.active_resource[ RESOURCE_MANA        ] = affinity_resources && talent.restoration_affinity->ok();
-  }
-  else
-  {
-    resources.active_resource[ RESOURCE_HEALTH      ] = primary_role() == ROLE_TANK || talent.guardian_affinity->ok();
-    resources.active_resource[ RESOURCE_RAGE        ] = primary_role() == ROLE_TANK || talent.guardian_affinity->ok();
-    resources.active_resource[ RESOURCE_COMBO_POINT ] = primary_role() == ROLE_ATTACK || talent.feral_affinity->ok();
-    resources.active_resource[ RESOURCE_ENERGY      ] = primary_role() == ROLE_ATTACK || talent.feral_affinity->ok()
-      || specialization() == DRUID_RESTORATION;
-    resources.active_resource[ RESOURCE_MANA        ] = primary_role() == ROLE_HEAL || talent.restoration_affinity->ok()
-      || talent.balance_affinity->ok() || specialization() == DRUID_GUARDIAN;
-  }
+  // only activate other resources if you have the affinity and affinity_resources = true
+  resources.active_resource[ RESOURCE_HEALTH       ] = specialization() == DRUID_GUARDIAN
+                                                       || talent.guardian_affinity->ok() && affinity_resources;
+  resources.active_resource[ RESOURCE_RAGE         ] = specialization() == DRUID_GUARDIAN
+                                                       || talent.guardian_affinity->ok() && affinity_resources;
+  resources.active_resource[ RESOURCE_MANA         ] = specialization() == DRUID_RESTORATION
+                                                       || talent.restoration_affinity->ok() && affinity_resources;
+  resources.active_resource[ RESOURCE_COMBO_POINT  ] = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION
+                                                       || talent.feral_affinity->ok() && ( affinity_resources || catweave_bear );
+  resources.active_resource[ RESOURCE_ENERGY       ] = specialization() == DRUID_FERAL||  specialization() == DRUID_RESTORATION
+                                                       || talent.feral_affinity->ok() && ( affinity_resources || catweave_bear );
+  resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
   if ( specialization() == DRUID_FERAL )
@@ -7882,7 +7873,7 @@ void druid_t::init_base_stats()
   }
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.feral_affinity->effectN( 2 ).percent();
 
-  base_gcd = timespan_t::from_seconds( 1.5 );
+  base_gcd = 1.5_s;
 }
 
 // druid_t::init_buffs ======================================================
@@ -8756,7 +8747,7 @@ void druid_t::apl_guardian()
     default_list -> add_action( this, "Rake", "if=buff.prowl.up&buff.cat_form.up" );
     default_list -> add_action( "auto_attack" );
     default_list -> add_action( "call_action_list,name=cooldowns" );
-    default_list -> add_action( "call_action_list,name=cat,if=talent.feral_affinity.enabled&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&rage<45&buff.incarnation.down&buff.galactic_guardian.down)|(buff.cat_form.up&energy>20)|(dot.rip.ticking&dot.rip.remains<3&target.health.pct<25))" );
+    default_list -> add_action( "call_action_list,name=cat,if=talent.feral_affinity.enabled&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&rage<40&buff.incarnation.down&buff.galactic_guardian.down)|(buff.cat_form.up&energy>20))" );
     default_list -> add_action( "call_action_list,name=bear" );
 
     bear -> add_action( this, "Bear Form" );
