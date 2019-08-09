@@ -280,24 +280,68 @@ double pct_value( const T& results, const std::initializer_list<V>& selectors )
   return sum;
 }
 
+template <typename T, typename V>
+int num_count( const T& results, const std::initializer_list<V>& selectors )
+{
+  double count = 0;
+
+  range::for_each( selectors, [ & ]( const V& selector ) {
+    auto idx = static_cast<int>( selector );
+    if ( idx < 0 )
+    {
+      return;
+    }
+
+    if ( results.size() < as<size_t>( idx ) )
+    {
+      return;
+    }
+
+    count += results[ idx ].actual_amount.count();
+  } );
+
+  return as<int>( count );
+}
+
 void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask, int result_type, const stats_t& s,
                                 const player_t& p )
 {
   using full_result_t = std::array<stats_t::stats_results_t, FULLTYPE_MAX>;
   using result_t = std::array<stats_t::stats_results_t, RESULT_MAX>;
 
-  std::string type_str;
-  if ( result_type == 1 )
-    type_str = "Periodic";
-  else
-    type_str = "Direct";
-
   const auto& dr = s.direct_results;
   const auto& tr = s.tick_results;
 
-  // Result type
-  os.printf( "<td class=\"right\">%s</td>\n", type_str.c_str() );
+  // Strings for merged stat reporting
+  std::string crit_str;
 
+  // Create Merged Stat
+  if ( s.children.size() )
+  {
+    auto compound_stats = new stats_t( s.name_str + "_compound", s.player );
+    compound_stats->merge( s );
+
+    for ( auto& c : s.children )
+    {
+      compound_stats->merge( *c );
+    }
+
+    compound_stats->analyze();
+
+    const auto& compound_dr = compound_stats->direct_results;
+    const auto& compound_tr = compound_stats->tick_results;
+
+    double compound_crit = result_type == 1 ? pct_value<result_t, result_e>( compound_tr, { RESULT_CRIT } )
+                                            : pct_value<full_result_t, full_result_e>( compound_dr,
+                                              { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } );
+    crit_str = "&#160;(" + util::to_string( compound_crit, 1 ) + "%)";
+
+    delete compound_stats;
+  }
+  // Result type
+  os.printf( "<td class=\"right\">%s</td>\n", result_type == 1 ? "Periodic" : "Direct" );
+
+  // Count
   os.printf( "<td class=\"right\">%.1f</td>\n",
              result_type == 1
              ? s.num_tick_results.mean()
@@ -324,11 +368,12 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
              : mean_damage( dr ) );
 
   // Crit%
-  os.printf( "<td class=\"right\">%.1f%%</td>\n",
+  os.printf( "<td class=\"right\">%.1f%%%s</td>\n",
              result_type == 1
              ? pct_value<result_t, result_e>( tr, { RESULT_CRIT } )
              : pct_value<full_result_t, full_result_e>( dr,
-               { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
+               { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ),
+             crit_str.c_str() );
 
   if ( player_has_avoidance( p, stats_mask ) )
     os.printf( "<td class=\"right\">%.1f%%</td>\n",  // direct_results Avoid%
@@ -354,7 +399,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
 
   if ( player_has_tick_results( p, stats_mask ) )
   {
-    if ( util::str_in_str_ci( type_str, "Periodic" ) )
+    if ( result_type == 1 )
       os.printf( "<td class=\"right\">%.1f%%</td>\n",  // Uptime%
                  100 * s.total_tick_time.mean() / p.collected_data.fight_length.mean() );
     else
@@ -2300,7 +2345,7 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
 
   os << "</tr>\n"
      << "<tr>\n"
-     << "<th class=\"left small\">" << util::encode_html( p.name() ) << "</th>\n"
+     << "<th class=\"left\">" << util::encode_html( p.name() ) << "</th>\n"
      << "<td colspan=\"7\" class=\"filler\"></td>\n"
      << "</tr>\n"
      << "</thead>\n";
@@ -2369,7 +2414,7 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
 
     os << "</tr>\n"
        << "<tr>\n"
-       << "<th class=\"left small\">" << util::encode_html( p.name() ) << "</th>\n"
+       << "<th class=\"left\">" << util::encode_html( p.name() ) << "</th>\n"
        << "<td colspan=\"7\" class=\"filler\"></td>\n"
        << "</tr>\n"
        << "</thead>\n";
@@ -3639,7 +3684,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
   else
     os << "<tr>\n";
 
-  os << "<th class=\"left small\">" << util::encode_html( actor.name() ) << "</th>\n"
+  os << "<th class=\"left\">" << util::encode_html( actor.name() ) << "</th>\n"
      << "<th class=\"right\">" << util::to_string( actor.collected_data.dps.mean(), 0 ) << "</th>\n"
      << "<td colspan=\"" << ( static_columns + n_optional_columns ) << "\" class=\"filler\"></td>\n"
      << "</tr>\n"
@@ -3741,7 +3786,7 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
   else
     os << "<tr>\n";
 
-  os << "<th class=\"left small\">" << util::encode_html( actor.name() ) << "</th>\n"
+  os << "<th class=\"left\">" << util::encode_html( actor.name() ) << "</th>\n"
      << "<th class=\"right\">" << util::to_string( actor.collected_data.hps.mean(), 0 ) << "</th>\n"
      << "<td colspan=\"" << ( static_columns + n_optional_columns ) << "\" class=\"filler\"></td>\n"
      << "</tr>\n"
@@ -3821,7 +3866,7 @@ void output_player_simple_ability_summary( report::sc_html_stream& os, const pla
   else
     os << "<tr>\n";
     
-  os << "<th class=\"left small\">" << util::encode_html( actor.name() ) << "</th>\n"
+  os << "<th class=\"left\">" << util::encode_html( actor.name() ) << "</th>\n"
      << "<th colspan=\"2\" class=\"filler\"></th>\n"
      << "</tr>\n"
      << "</thead>\n";
