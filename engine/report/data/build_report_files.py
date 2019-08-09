@@ -29,7 +29,7 @@ def print_as_char_array( name, input ):
     out += ("static const char* %s[] = {\n"%(name))
     for line in input_list:
         out += "\"%s\",\n"%(line)
-    out += "};";
+    out += "};"
     return out
         
 def main():
@@ -46,7 +46,7 @@ def main():
         f.write( "\n\n" )
         f.write( print_as_char_array( "__highcharts_include", get_file_as_lines( "highcharts.inc", line_length ) ) )
         f.write( "\n\n" )
-        f.write( print_as_char_array( "__jquery_include", get_file_as_lines( "jquery-1.12.1.min.js", line_length ) ) )
+        f.write( print_as_char_array( "__jquery_include", get_file_as_lines( "jquery-3.4.1.min.js", line_length ) ) )
     print( "done")
     
 if __name__ == "__main__":
