@@ -1374,8 +1374,8 @@ static const char* __image_load_script[] = {
 "(a, b, i, dsc, both); }; }; } else { srt = function(i, dsc, both) { return function(a, b) { return numberSort(a, b, ",
 "i, dsc, both); }; }; } var $bucket = $tbl.children('tbody:not(.nosort)'); var $remain = $tbl.children('tbody.nosort'",
 "); if ($bucket.length == 1) { $bucket = $bucket.children('tr'); } if ($bucket.length) { $bucket.sort(srt(idx, isDsc,",
-" doRows)); $tbl.append($bucket); $tbl.append($remain); if ($tbl.hasClass('stripetoprow')) { oddstripe.call($tbl); } ",
-"} });});",
+" doRows)); this.offsetHeight; $tbl.append($bucket); $tbl.append($remain); if ($tbl.hasClass('stripetoprow')) { oddst",
+"ripe.call($tbl); } } });});",
 };
 
 // Automatically generated from file style.css
