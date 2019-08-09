@@ -963,7 +963,7 @@ void paladin_t::generate_action_prio_list_prot()
 
   cds -> add_action( "fireblood,if=buff.avenging_wrath.up" );
   cds -> add_action( "use_item,name=azsharas_font_of_power,if=cooldown.seraphim.remains<=10|!talent.seraphim.enabled" );
-  cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>7&buff.avenging_wrath.up" );
+  cds -> add_action( "use_item,name=ashvanes_razor_coral,if=(debuff.razor_coral_debuff.stack>7&buff.avenging_wrath.up)|debuff.razor_coral_debuff.stack=0" );
   cds -> add_talent( this, "Seraphim", "if=cooldown.shield_of_the_righteous.charges_fractional>=2" );
   cds -> add_action( this, "Avenging Wrath", "if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled" );
   cds -> add_action( "memory_of_lucid_dreams,if=!talent.seraphim.enabled|cooldown.seraphim.remains<=gcd|buff.seraphim.up" );
