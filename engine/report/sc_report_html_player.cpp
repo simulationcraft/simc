@@ -312,8 +312,11 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   const auto& dr = s.direct_results;
   const auto& tr = s.tick_results;
 
+  double count = result_type == 1 ? s.num_tick_results.mean() : s.num_direct_results.mean();
+
   // Strings for merged stat reporting
-  std::string crit_str;
+  std::string count_str;
+  std::string critpct_str;
 
   // Create Merged Stat
   if ( s.children.size() )
@@ -321,31 +324,34 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
     auto compound_stats = new stats_t( s.name_str + "_compound", s.player );
     compound_stats->merge( s );
 
+    double compound_count = count;
+
     for ( auto& c : s.children )
     {
       compound_stats->merge( *c );
+      compound_count += result_type == 1 ? c->num_tick_results.mean() : c->num_direct_results.mean();
     }
 
     compound_stats->analyze();
 
+    count_str = "&#160;(" + util::to_string( compound_count, 1 ) + ")";
+
     const auto& compound_dr = compound_stats->direct_results;
     const auto& compound_tr = compound_stats->tick_results;
 
-    double compound_crit = result_type == 1 ? pct_value<result_t, result_e>( compound_tr, { RESULT_CRIT } )
-                                            : pct_value<full_result_t, full_result_e>( compound_dr,
-                                              { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } );
-    crit_str = "&#160;(" + util::to_string( compound_crit, 1 ) + "%)";
+    double compound_critpct = result_type == 1 ? pct_value<result_t, result_e>( compound_tr, { RESULT_CRIT } )
+                                               : pct_value<full_result_t, full_result_e>( compound_dr,
+                                                 { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } );
+    critpct_str = "&#160;(" + util::to_string( compound_critpct, 1 ) + "%)";
 
     delete compound_stats;
   }
+
   // Result type
   os.printf( "<td class=\"right\">%s</td>\n", result_type == 1 ? "Periodic" : "Direct" );
 
   // Count
-  os.printf( "<td class=\"right\">%.1f</td>\n",
-             result_type == 1
-             ? s.num_tick_results.mean()
-             : s.num_direct_results.mean() );
+  os.printf( "<td class=\"right\">%.1f%s</td>\n", count, count_str.c_str() );
 
   // Hit results
   os.printf( "<td class=\"right\">%.0f</td>\n",
@@ -373,7 +379,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
              ? pct_value<result_t, result_e>( tr, { RESULT_CRIT } )
              : pct_value<full_result_t, full_result_e>( dr,
                { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ),
-             crit_str.c_str() );
+             critpct_str.c_str() );
 
   if ( player_has_avoidance( p, stats_mask ) )
     os.printf( "<td class=\"right\">%.1f%%</td>\n",  // direct_results Avoid%
@@ -3641,7 +3647,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
   sorttable_header( os, "Damage Stats", true, true, true );
   sorttable_help_header( os, "DPS", "help-dps" );
   sorttable_help_header( os, "DPS%", "help-dps-pct" );
-  sorttable_help_header( os, "Execute", "help-count" );
+  sorttable_help_header( os, "Execute", "help-execute" );
   sorttable_help_header( os, "Interval", "help-interval", true );
   sorttable_help_header( os, "DPE", "help-dpe" );
   sorttable_help_header( os, "DPET", "help-dpet" );
@@ -3761,7 +3767,7 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
   sorttable_header( os, "Healing and Absorb Stats", true, true, true );
   sorttable_help_header( os, "HPS", "help-hps" );
   sorttable_help_header( os, "HPS%", "help-hps-pct" );
-  sorttable_help_header( os, "Execute", "help-count" );
+  sorttable_help_header( os, "Execute", "help-execute" );
   sorttable_help_header( os, "Interval", "help-interval", true );
   sorttable_help_header( os, "HPE", "help-hpe" );
   sorttable_help_header( os, "HPET", "help-hpet" );
@@ -3856,7 +3862,7 @@ void output_player_simple_ability_summary( report::sc_html_stream& os, const pla
     os << "<tr>\n";
 
   sorttable_header( os, "Simple Action Stats", true, true, true );
-  sorttable_help_header( os, "Execute", "help-count" );
+  sorttable_help_header( os, "Execute", "help-execute" );
   sorttable_help_header( os, "Interval", "help-interval", true );
 
   os << "</tr>\n";

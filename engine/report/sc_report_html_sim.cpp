@@ -41,8 +41,7 @@ int find_id( const stats_t& s )
   return id;
 }
 
-void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s,
-                              const player_t& p, int j, const sim_t& sim )
+void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s, const player_t& p, int j, const sim_t& sim )
 {
   if ( s.num_executes.mean() == 0 && s.compound_amount == 0 && !sim.debug )
     return;
@@ -82,28 +81,30 @@ void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s,
       os << " class=\"odd\"";
     os << ">\n";
 
-    os.printf( format, util::encode_html( p.name() ).c_str(),
-               util::encode_html( s.player->name() ).c_str(),
-               util::encode_html( s.name_str ).c_str(), "", id, direct_total,
-               direct_total / s.player->collected_data.fight_length.mean(),
-               s.num_direct_results.mean() /
-                   ( s.player->collected_data.fight_length.mean() / 60.0 ),
-               s.direct_results[ FULLTYPE_HIT ].actual_amount.mean(),
-               s.direct_results[ FULLTYPE_CRIT ].actual_amount.mean(),
-               s.num_executes.mean(), s.num_direct_results.mean(),
-               s.direct_results[ FULLTYPE_CRIT ].pct,
-               s.direct_results[ FULLTYPE_MISS ].pct +
-                   s.direct_results[ FULLTYPE_DODGE ].pct +
-                   s.direct_results[ FULLTYPE_PARRY ].pct,
-               s.direct_results[ FULLTYPE_GLANCE ].pct,
-               s.direct_results[ FULLTYPE_HIT_BLOCK ].pct +
-                   s.direct_results[ FULLTYPE_HIT_CRITBLOCK ].pct +
-                   s.direct_results[ FULLTYPE_GLANCE_BLOCK ].pct +
-                   s.direct_results[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
-                   s.direct_results[ FULLTYPE_CRIT_BLOCK ].pct +
-                   s.direct_results[ FULLTYPE_CRIT_CRITBLOCK ].pct,
-               s.total_intervals.mean(), s.total_amount.mean(),
-               s.player->collected_data.fight_length.mean() );
+    os.printf(
+      format,
+      util::encode_html( p.name() ).c_str(),
+      util::encode_html( s.player->name() ).c_str(),
+      util::encode_html( s.name_str ).c_str(),
+      "",
+      id,
+      direct_total,
+      direct_total / s.player->collected_data.fight_length.mean(),
+      s.num_direct_results.mean() / ( s.player->collected_data.fight_length.mean() / 60.0 ),
+      s.direct_results[ FULLTYPE_HIT ].actual_amount.mean(),
+      s.direct_results[ FULLTYPE_CRIT ].actual_amount.mean(),
+      s.num_executes.mean(),
+      s.num_direct_results.mean(),
+      s.direct_results[ FULLTYPE_CRIT ].pct,
+      s.direct_results[ FULLTYPE_MISS ].pct + s.direct_results[ FULLTYPE_DODGE ].pct
+        + s.direct_results[ FULLTYPE_PARRY ].pct,
+      s.direct_results[ FULLTYPE_GLANCE ].pct,
+      s.direct_results[ FULLTYPE_HIT_BLOCK ].pct + s.direct_results[ FULLTYPE_HIT_CRITBLOCK ].pct
+        + s.direct_results[ FULLTYPE_GLANCE_BLOCK ].pct + s.direct_results[ FULLTYPE_GLANCE_CRITBLOCK ].pct
+        + s.direct_results[ FULLTYPE_CRIT_BLOCK ].pct + s.direct_results[ FULLTYPE_CRIT_CRITBLOCK ].pct,
+      s.total_intervals.mean(),
+      s.total_amount.mean(),
+      s.player->collected_data.fight_length.mean() );
   }
 
   if ( tick_total > 0.0 )
@@ -114,26 +115,26 @@ void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s,
     os << ">\n";
 
     os.printf(
-        format,
-        util::encode_html( p.name() ).c_str(),
-        util::encode_html( s.player->name() ).c_str(),
-        util::encode_html( s.name_str ).c_str(),
-        " ticks",
-        -id,
-        tick_total,
-        tick_total / sim.max_time.total_seconds(),
-        s.num_ticks.mean() / sim.max_time.total_minutes(),
-        s.tick_results[ RESULT_HIT ].actual_amount.mean(),
-        s.tick_results[ RESULT_CRIT ].actual_amount.mean(),
-        s.num_executes.mean(),
-        s.num_ticks.mean(),
-        s.tick_results[ RESULT_CRIT ].pct,
-        s.tick_results[ RESULT_MISS ].pct + s.tick_results[ RESULT_DODGE ].pct +
-            s.tick_results[ RESULT_PARRY ].pct,
-        s.tick_results[ RESULT_GLANCE ].pct,
-        0.0,
-        s.total_intervals.mean(), s.total_amount.mean(),
-        s.player->collected_data.fight_length.mean() );
+      format,
+      util::encode_html( p.name() ).c_str(),
+      util::encode_html( s.player->name() ).c_str(),
+      util::encode_html( s.name_str ).c_str(),
+      " ticks",
+      -id,
+      tick_total,
+      tick_total / sim.max_time.total_seconds(),
+      s.num_ticks.mean() / sim.max_time.total_minutes(),
+      s.tick_results[ RESULT_HIT ].actual_amount.mean(),
+      s.tick_results[ RESULT_CRIT ].actual_amount.mean(),
+      s.num_executes.mean(),
+      s.num_ticks.mean(),
+      s.tick_results[ RESULT_CRIT ].pct,
+      s.tick_results[ RESULT_MISS ].pct + s.tick_results[ RESULT_DODGE ].pct + s.tick_results[ RESULT_PARRY ].pct,
+      s.tick_results[ RESULT_GLANCE ].pct,
+      0.0,
+      s.total_intervals.mean(),
+      s.total_amount.mean(),
+      s.player->collected_data.fight_length.mean() );
   }
 
   for ( auto& elem : s.children )
@@ -160,8 +161,8 @@ void print( report::sc_html_stream& os, const sim_t& sim )
      << "<th class=\"small help\" data-help=\"#help-ipm\">Imp/Min</th>\n"
      << "<th class=\"small help\" data-help=\"#help-hit\">Hit</th>\n"
      << "<th class=\"small help\" data-help=\"#help-crit\">Crit</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-execute\">Execute</th>\n"
      << "<th class=\"small help\" data-help=\"#help-count\">Count</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-impacts\">Impacts</th>\n"
      << "<th class=\"small help\" data-help=\"#help-crit-pct\">Crit%</th>\n"
      << "<th class=\"small help\" data-help=\"#help-miss-pct\">Avoid%</th>\n"
      << "<th class=\"small help\" data-help=\"#help-glance-pct\">G%</th>\n"
@@ -412,8 +413,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
       sim.simulation_length.max(), sim.simulation_length.mean() );
 
   os << "<tr class=\"left\">\n"
-     << "<td><h2>Performance:</h2></td>\n"
-     << "<td></td>\n"
+     << "<td colspan=\"2\"><h3>Performance:</h3></td>\n"
      << "</tr>\n";
 
   os.printf(
@@ -456,8 +456,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
       sim.iterations * sim.simulation_length.mean() / sim.elapsed_cpu );
 
   os << "<tr class=\"left\">\n"
-     << "<td><h2>Settings:</h2></td>\n"
-     << "<td></td>\n"
+     << "<td colspan=\"2\"><h3>Settings:</h3></td>\n"
      << "</tr>\n";
 
   os.printf(
@@ -825,7 +824,7 @@ const help_box_t help_boxes[] = {
   { "APM", "Average number of actions executed per minute." },
   { "APS", "Average absorption per active player duration." },
   { "Constant Buffs", "Buffs received prior to combat and present the entire fight." },
-  { "Count", "Average number of times an action is executed per iteration." },
+  { "Execute", "Average number of times an action is executed per iteration." },
   { "Crit", "Average crit damage." },
   { "Crit%", "Percentage of executes that resulted in critical strikes." },
   { "DPE", "Average damage per execution of an individual action." },
@@ -841,8 +840,7 @@ const help_box_t help_boxes[] = {
   { "HPET", "Average healing (or absorb) per execute time of an individual action; the amount of healing generated, "
             "divided by the time taken to execute the action, including time spent in the GCD." },
   { "HPR", "Average healing (or absorb) per resource point spent." },
-  { "Impacts",
-    "Average number of impacts against a target (for attacks that hit multiple times per execute) per iteration." },
+  { "Count", "Average count of impacts per iteration." },
   { "Dodge%", "Percentage of executes that resulted in dodges." },
   { "DPS%", "Percentage of total DPS contributed by a particular action." },
   { "HPS%", "Percentage of total HPS (including absorb) contributed by a particular action." },

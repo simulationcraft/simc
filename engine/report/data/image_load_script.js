@@ -209,6 +209,7 @@ jQuery(document).ready(function ($) {
         }
         if ($bucket.length) {
             $bucket.sort(srt(idx, isDsc, doRows));
+            this.offsetHeight;
             $tbl.append($bucket);
             $tbl.append($remain);
             if ($tbl.hasClass('stripetoprow')) {
