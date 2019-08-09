@@ -287,6 +287,7 @@ public:
     spell_t* lightning_shield;
     spell_t* earthen_rage;
     spell_t* crashing_storm;
+    attack_t* crash_lightning_aoe;
     spell_t* searing_assault;
     spell_t* molten_weapon;
     action_t* molten_weapon_dot;
@@ -458,6 +459,7 @@ public:
     const spell_data_t* lava_surge;
 
     // Enhancement
+    const spell_data_t* crash_lightning;
     const spell_data_t* critical_strikes;
     const spell_data_t* dual_wield;
     const spell_data_t* enhancement_shaman;
@@ -2875,7 +2877,7 @@ struct windfury_attack_t : public shaman_attack_t
 
 struct crash_lightning_attack_t : public shaman_attack_t
 {
-  crash_lightning_attack_t( shaman_t* p, const std::string& n ) : shaman_attack_t( n, p, p->find_spell( 195592 ) )
+  crash_lightning_attack_t( shaman_t* p ) : shaman_attack_t( "crash_lightning_aoe", p, p->find_spell( 195592 ) )
   {
     weapon     = &( p->main_hand_weapon );
     background = true;
@@ -3432,12 +3434,10 @@ struct molten_weapon_dot_t : public residual_action::residual_periodic_action_t<
 
 struct lava_lash_t : public shaman_attack_t
 {
-  crash_lightning_attack_t* cl;
   molten_weapon_dot_t* mw_dot;
 
   lava_lash_t( shaman_t* player, const std::string& options_str )
     : shaman_attack_t( "lava_lash", player, player->find_specialization_spell( "Lava Lash" ) ),
-      cl( new crash_lightning_attack_t( player, "lava_lash_cl" ) ),
       mw_dot( nullptr )
   {
     check_spec( SHAMAN_ENHANCEMENT );
@@ -3450,8 +3450,6 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( weapon->type == WEAPON_NONE )
       background = true;  // Do not allow execution.
-
-    add_child( cl );
 
     if ( player->talent.elemental_spirits->ok() )
     {
@@ -3523,8 +3521,8 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( result_is_hit( state->result ) && p()->buff.crash_lightning->up() )
     {
-      cl->set_target( state->target );
-      cl->schedule_execute();
+      p()->action.crash_lightning_aoe->set_target( state->target );
+      p()->action.crash_lightning_aoe->schedule_execute();
     }
 
     if ( p()->buff.molten_weapon->up() )
@@ -3549,14 +3547,12 @@ struct lava_lash_t : public shaman_attack_t
 
 struct stormstrike_base_t : public shaman_attack_t
 {
-  crash_lightning_attack_t* cl;
   stormstrike_attack_t *mh, *oh;
   bool background_action;
 
   stormstrike_base_t( shaman_t* player, const std::string& name, const spell_data_t* spell,
                       const std::string& options_str )
     : shaman_attack_t( name, player, spell ),
-      cl( new crash_lightning_attack_t( player, name + "_cl" ) ),
       mh( nullptr ),
       oh( nullptr ),
       background_action( false )
@@ -3570,8 +3566,6 @@ struct stormstrike_base_t : public shaman_attack_t
     weapon_multiplier  = 0.0;
     may_crit           = false;
     school             = SCHOOL_PHYSICAL;
-
-    add_child( cl );
   }
 
   void init() override
@@ -3618,8 +3612,8 @@ struct stormstrike_base_t : public shaman_attack_t
 
       if ( p()->buff.crash_lightning->up() )
       {
-        cl->set_target( execute_state->target );
-        cl->execute();
+        p()->action.crash_lightning_aoe->set_target( execute_state->target );
+        p()->action.crash_lightning_aoe->execute();
       }
 
       if ( p()->azerite.thunderaans_fury.ok() )
@@ -3951,6 +3945,11 @@ struct crash_lightning_t : public shaman_attack_t
     if ( player->action.crashing_storm )
     {
       add_child( player->action.crashing_storm );
+    }
+
+    if ( player->action.crash_lightning_aoe )
+    {
+      add_child( player->action.crash_lightning_aoe );
     }
   }
 
@@ -6839,6 +6838,11 @@ void shaman_t::create_actions()
     action.searing_assault = new searing_assault_t( this );
   }
 
+  if ( spec.crash_lightning->ok() )
+  {
+    action.crash_lightning_aoe = new crash_lightning_attack_t( this );
+  }
+
   // Always create the Fury of Air damage action so spell_targets.fury_of_air works with or without
   // the talent
   action.fury_of_air = new fury_of_air_aoe_t( this );
@@ -6889,6 +6893,7 @@ void shaman_t::init_spells()
   spec.lava_surge        = find_specialization_spell( "Lava Surge" );
 
   // Enhancement
+  spec.crash_lightning    = find_specialization_spell( "Crash Lightning" );
   spec.critical_strikes   = find_specialization_spell( "Critical Strikes" );
   spec.dual_wield         = find_specialization_spell( "Dual Wield" );
   spec.enhancement_shaman = find_specialization_spell( "Enhancement Shaman" );
