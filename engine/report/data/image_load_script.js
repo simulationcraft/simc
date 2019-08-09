@@ -39,8 +39,9 @@ jQuery.noConflict();
 jQuery(document).ready(function ($) {
     var chart_containers = false;
     var anchor_check = document.location.href.split('#');
+    var anchor;
     if (anchor_check.length > 1) {
-        var anchor = anchor_check[anchor_check.length - 1];
+        anchor = anchor_check[anchor_check.length - 1];
     }
     $('a.ext').mouseover(function () {
         $(this).attr('target', '_blank');
@@ -135,16 +136,30 @@ jQuery(document).ready(function ($) {
     $('.stripetoprow').each(oddstripe);
     function getCell(elem, i, both) {
         var $row;
+        var ret;
+        var idx = i;
         if ($(elem).is('tr')) {
             $row = $(elem);
         } else {
-            $row = $(elem).find('tr:first');
+            $row = $(elem).find('tr').first();
         }
-        return $row.children('td').eq(i).text().trim();
+        ret = $row.children('td').eq(idx).text().trim();
+        if (!ret.length && both) {
+            var span = $row.children('td[rowspan]').length;
+            $row = $row.next();
+            if (idx > span) {
+                idx -= span;
+                ret = $row.children('td').eq(idx).text().trim();
+            }
+        }
+        return ret;
+    }
+    function strip(val) {
+        return val.slice(val.indexOf('\xa0') + 1).replace(/[^\d.-]/g,'');
     }
     function numberSort(a, b, i, dsc, both) {
-        var va = parseFloat(getCell(a, i, both)) || 0;
-        var vb = parseFloat(getCell(b, i, both)) || 0;
+        var va = +strip(getCell(a, i, both)) || 0;
+        var vb = +strip(getCell(b, i, both)) || 0;
         return dsc ? vb - va : va - vb;
     }
     function alphaSort(a, b, i, dsc, both) {

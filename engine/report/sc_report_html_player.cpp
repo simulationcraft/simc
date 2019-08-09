@@ -3714,12 +3714,12 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
     os << "<tr>\n";
 
   sorttable_header( os, "Healing and Absorb Stats", true, true, true );
-  sorttable_help_header( os, "HPS", "help-dps" );
-  sorttable_help_header( os, "HPS%", "help-dps-pct" );
+  sorttable_help_header( os, "HPS", "help-hps" );
+  sorttable_help_header( os, "HPS%", "help-hps-pct" );
   sorttable_help_header( os, "Execute", "help-count" );
   sorttable_help_header( os, "Interval", "help-interval", true );
-  sorttable_help_header( os, "HPE", "help-dpe" );
-  sorttable_help_header( os, "HPET", "help-dpet" );
+  sorttable_help_header( os, "HPE", "help-hpe" );
+  sorttable_help_header( os, "HPET", "help-hpet" );
   // Optional columns being here
   sorttable_help_header( os, "Type", "help-type", true, true );
   sorttable_help_header( os, "Count", "help-count" );
