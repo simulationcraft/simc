@@ -1,4 +1,4 @@
-SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
+SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31229)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -36,7 +36,7 @@ Resource         : 1% Base Mana (0) (id=7817)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Epidemic (184922 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Absolute Corruption (196103 effect#2), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), 
 Family Flags     : 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -62,7 +62,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#2)
 Family Flags     : 2, 49, 118
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -92,7 +92,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1)
 Family Flags     : 0, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -242,7 +242,6 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Affecting spells : Orb of the Fel Temptress (240264 effect#1)
 Family Flags     : 28
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -290,7 +289,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Writhe in Agony (196102 effect#1), Hood of Eternal Disdain (205797 effect#1), Agony (231792 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Sudden Onset (278721 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Writhe in Agony (196102 effect#1), Agony (231792 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Sudden Onset (278721 effect#1)
 Family Flags     : 10, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -322,7 +321,6 @@ GCD              : 1.5 seconds
 Duration         : 300 seconds
 Proc Chance      : 101%
 Mechanic         : Charm
-Affecting spells : Grimoire of Convert Demon (168800 effect#1)
 Family Flags     : 11
 Attributes       : ........ ........ x....... ......x.   x....... ..x..... .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -400,7 +398,6 @@ Range            : 40 yards
 Cast Time        : 1.75 seconds
 GCD              : 0.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Increased Imp Firebolt Damage (22855 effect#1)
 Family Flags     : 94
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -503,7 +500,6 @@ Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Category         : 1266
-Affecting spells : Increased Fear Break Threshold (95677 effect#1)
 Family Flags     : 42, 111
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ .x...... 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
@@ -590,7 +586,7 @@ GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 20 seconds
 Category         : 631
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 49, 65
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -679,7 +675,6 @@ Cooldown         : 45 seconds
 Category         : 633
 Category Cooldown: 45 seconds
 Proc Chance      : 101%
-Affecting spells : Odr, Shawl of the Ymirjar (212173 effect#1)
 Family Flags     : 19, 118
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -834,7 +829,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 2 (12 seconds cooldown)
 Category         : 651
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 7, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -882,7 +877,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (12.96 seconds cooldown)
 Category         : 672: Warlock (137042 effect#2)
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Flashover (267115 effect#3), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flashover (267115 effect#3)
 Family Flags     : 49, 55, 118
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1117,7 +1112,7 @@ Duration         : 12 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 36, 49
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1147,7 +1142,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 72
 Range            : 50000 yards
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 47, 49
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   x....... .x...... ........ ......x. 
@@ -1214,7 +1209,7 @@ GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Chaotic Inferno (279673 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Chaos Shards (287637 effect#2)
+Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Chaotic Flames (253092 effect#1), Chaotic Inferno (279673 effect#1), Chaos Shards (287637 effect#2)
 Family Flags     : 38, 49, 118
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -1245,7 +1240,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
 Family Flags     : 40
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1518,7 +1513,7 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 49, 92
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
@@ -1545,7 +1540,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 15 seconds
 Cooldown         : 15 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 49, 101
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x..... 
@@ -1683,7 +1678,7 @@ Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), 
 Family Flags     : 8, 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -1927,7 +1922,7 @@ Class            : Shaman, Warlock
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Dirty Hands (211105 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Dirty Hands (211105 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1)
 Family Flags     : 49, 86
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
@@ -2628,7 +2623,6 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 0.001 seconds
 Cooldown         : 10 seconds
-Affecting spells : Pillars of the Dark Portal (217519 effect#1)
 Family Flags     : 57
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2883,7 +2877,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Flamelicked (185229 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Embrace Chaos (212019 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Grimoire of Supremacy (266091 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Embrace Chaos (212019 effect#1), Grimoire of Supremacy (266091 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2)
 Family Flags     : 45, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2994,7 +2988,6 @@ Proc Chance      : 100%
 Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Increased Fear Break Threshold (95677 effect#1)
 Family Flags     : 42
 Attributes       : ........ ........ x....... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ..x..... 
@@ -3089,7 +3082,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Affliction Warlock (id=137043) [Spell Family (5), Passive, Hidden] 
-Class            : Affliction Warlock
+Class            : Affliction Death Knight, Warlock
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3133,7 +3126,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Demonology Warlock (id=137044) [Spell Family (5), Passive, Hidden] 
-Class            : Demonology Warlock
+Class            : Demonology Death Knight, Warlock
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3185,7 +3178,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Destruction Warlock (id=137046) [Spell Family (5), Passive, Hidden] 
-Class            : Destruction Warlock
+Class            : Destruction Death Knight, Warlock
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3233,7 +3226,7 @@ Spell Type       : Magic
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 14 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Absolute Corruption (196103 effect#2), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), 
 Triggered by     : Corruption (172)
 Family Flags     : 1, 49
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -3287,7 +3280,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 49, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3308,7 +3301,7 @@ Spell Type       : Magic
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 18 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#1)
 Family Flags     : 4, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3736,7 +3729,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Triggered by     : Grimoire of Sacrifice (196099)
 Family Flags     : 49, 116
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3861,7 +3854,7 @@ School           : Shadowflame
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Master Demonologist (77219 effect#2), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Master Demonologist (77219 effect#2), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 46, 49
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ...x.... ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
@@ -4003,7 +3996,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 25 seconds
-Affecting spells : Improved Rain of Fire/Hellfire (24430 effect#1), Warlock (137042 effect#1)
+Affecting spells : Warlock (137042 effect#1)
 Family Flags     : 5
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4023,7 +4016,7 @@ Class            : Warlock
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 15, 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -4172,7 +4165,7 @@ Resource         : 0% Base Mana (0) and 1% Base Mana (0) per tick (id=10748)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 23, 49
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4322,7 +4315,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 16 seconds
 Cooldown         : 45 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 49, 84
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4430,7 +4423,7 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Range            : 500 yards
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 49, 84
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x....x. 
@@ -4725,7 +4718,6 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 44
 Proc Chance      : 101%
-Affecting spells : Improved Rain of Fire/Hellfire (24430 effect#1)
 Family Flags     : 6
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4910,7 +4902,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1)
 Family Flags     : 0, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4933,7 +4925,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4959,7 +4951,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4985,7 +4977,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5011,7 +5003,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5037,7 +5029,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5063,7 +5055,7 @@ Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Inevitable Demise (273525 effect#3), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Inevitable Demise (273525 effect#3)
 Family Flags     : 3, 49
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5130,7 +5122,7 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 14
 Range            : 100 yards
-Affecting spells : Backdraft (117828 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Chaotic Inferno (279673 effect#1), Chaos Shards (287637 effect#2)
+Affecting spells : Backdraft (117828 effect#1), Chaotic Flames (253092 effect#1), Chaotic Inferno (279673 effect#1), Chaos Shards (287637 effect#2)
 Family Flags     : 38, 118
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -5695,7 +5687,7 @@ Range            : 40 yards
 Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Demonic Core (264173 effect#1), From the Shadows (270569 effect#1), Shadow's Bite (272945 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Demonic Core (264173 effect#1), From the Shadows (270569 effect#1), Shadow's Bite (272945 effect#1)
 Family Flags     : 49, 70
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5880,7 +5872,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5902,7 +5894,7 @@ Resource         : 1% Base Mana (0) (id=191509)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 33, 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5929,7 +5921,7 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 33, 49
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -5951,7 +5943,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 49, 87, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6230,7 +6222,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Master Demonologist (77219 effect#2), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Master Demonologist (77219 effect#2), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 49, 89
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x....x. 
@@ -6943,7 +6935,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 309366 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
@@ -7010,7 +7002,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 309352 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -7672,7 +7664,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 20 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 49, 85
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -7734,7 +7726,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 81.6375 (coefficient=1.05) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Unstable Affliction (30108), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
                    Family Flags: 40
-Description      : Unstable Affliction deals ${$s2*($233490d/$233490t1)} additional damage, and casting Unstable Affliction reduce the cooldown of Summon Darkglare by ${$s1/1000} sec.
+Description      : Unstable Affliction deals ${$s2*($233490d/$233490t1)} additional damage, and casting Unstable Affliction reduces the cooldown of Summon Darkglare by ${$s1/1000} sec.
 
 Name             : Demonic Meteor (id=278737) [Scaling Spell (-1), Spell Family (5), Passive] 
 Class            : Warlock
@@ -8885,7 +8877,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 40 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -8918,13 +8910,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7), Scales with item level (354)
 Effects          :
 #1 (id=773466)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1792 | Target: Self (1)
 #2 (id=779235)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
 #3 (id=779236)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 33554432 | Target: Self (1)
 #4 (id=779237)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
 Description      : $?$a303590[Critical Strike increased by $s1.]?$a303592[Haste increased by $s2.]?$a303595[Mastery increased by $s3.]?$a303596[Versatility increased by $s4.][A secondary stat of your choice is increased by $s1 while using the Pocket-Sized Computation Device.] Stat is chosen based on equipped Logic Board.
 
 Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
@@ -8950,7 +8942,10 @@ Name             : Arcane Heart (id=303006) [Scaling Spell (-7), Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
 Azerite Power Id : 577
+Proc Flags       : ........ ........ ........ ....x... 
+                 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8963,7 +8958,7 @@ Effects          :
 #1 (id=778205)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
 #2 (id=778206)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 0 (coefficient=1.39285) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 0 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778207)   : Apply Aura (6) | Unknown(285)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 303209 | Target: Self (1)
 Description      : Every $s1 damage and healing done you gain Omnipotence, increasing your highest stat by $s2 for $303212d. You heal for $s3% of all Arcane damage taken.
@@ -8983,11 +8978,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778208)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 1.00000 | Trigger Spell: 303250 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
 #2 (id=778209)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778210)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your Mastery is increased by $s1, plus an additional $s2 for each ally also affected by Loyal to the End, up to $s3.
 
 When you die, your allies gain Critical Strike, Haste, and Versatility equal to their Mastery bonus from this trait.
@@ -9009,11 +9004,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778211)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 1.00000 | Trigger Spell: 303388 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
 #2 (id=778212)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=778215)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
 #4 (id=778216)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.

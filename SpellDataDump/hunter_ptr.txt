@@ -1,4 +1,4 @@
-SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
+SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31229)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -8,7 +8,7 @@ Spell Level      : 1
 Range            : 40 yards
 Velocity         : 60 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Bestial Wrath (19574 effect#1), Survival Hunter (137017 effect#6), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Signet of Melandrus (233001 effect#1), Signet of Melandrus (233005 effect#1), Thrill of the Hunt (257946 effect#1)
+Affecting spells : Bestial Wrath (19574 effect#1), Survival Hunter (137017 effect#6), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1)
 Family Flags     : 0, 121
 Attributes       : .x..x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ .......x ........ ........ 
@@ -118,7 +118,7 @@ Spell Level      : 1
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Hunter (137014 effect#1), Survival Hunter (137017 effect#5), Aspect of the Wild (193530 effect#3), Roar of the Seven Lions (207318 effect#1)
+Affecting spells : Hunter (137014 effect#1), Survival Hunter (137017 effect#5), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 24
 Attributes       : ....x... ........ x....... .......x   ........ ..x..... .x...... ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -234,7 +234,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Hunter (137014 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 121
 Attributes       : ....x... ........ x....... ........   ........ ..x....x .x...... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -280,7 +280,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Focus of the Titans (197139 effect#1), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), Bestial Rage (246116 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Coordinated Assault (266779 effect#1), Master Marksman (269576 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Focus of the Titans (197139 effect#1), Trueshot (211327 effect#1), Bestial Rage (246116 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Coordinated Assault (266779 effect#1), Master Marksman (269576 effect#1)
 Family Flags     : 1, 12, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -340,7 +340,7 @@ Duration         : 6 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 5 seconds
 Mechanic         : Snare
-Affecting spells : Hunter (137014 effect#3), Item - Hunter WoD PvP 2P Bonus (166005 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#3), Item - Hunter WoD PvP 2P Bonus (166005 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 9, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -363,7 +363,7 @@ Spell Type       : None
 Spell Level      : 28
 Duration         : 360 seconds
 Cooldown         : 30 seconds
-Affecting spells : Improved Feign Death (24432 effect#1), Duck and Cover (280169 effect#2)
+Affecting spells : Duck and Cover (280169 effect#2)
 Family Flags     : 8
 Attributes       : ........ x....... x.x.x... .x......   ........ ..x..... .xx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -559,7 +559,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Charges          : 2 (12 seconds cooldown)
 Category         : 1715: Marksmanship Hunter (137016 effect#9)
 Azerite Power Id : 97
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Item - Hunter T18 Marksmanship 4P Bonus (188191 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Lock and Load (194594 effect#1), Sentinel's Sight (208913 effect#1), Trueshot (211327 effect#1), Wind Arrows (214826 effect#1), Gyroscopic Stabilization (235712 effect#1), Precision (246153 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Coordinated Assault (266779 effect#1), Trueshot (288613 effect#4)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Item - Hunter T18 Marksmanship 4P Bonus (188191 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Lock and Load (194594 effect#1), Trueshot (211327 effect#1), Wind Arrows (214826 effect#1), Precision (246153 effect#1), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Coordinated Assault (266779 effect#1), Trueshot (288613 effect#4)
 Triggered by     : Lock and Load (194594)
 Family Flags     : 1, 17, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
@@ -589,7 +589,7 @@ Range            : 100 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 90 seconds
-Affecting spells : Hunter (137014 effect#3), Beastlord (184900 effect#1), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 57
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -950,7 +950,7 @@ Spell Level      : 10
 Range            : 50 yards
 GCD              : 1.5 seconds
 Cooldown         : 7.5 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#2), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Unseen Predator's Cloak (248212 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1), Thrill of the Hunt (257946 effect#1), Rotting Jaws (264195 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#2), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1), Thrill of the Hunt (257946 effect#1), Rotting Jaws (264195 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 2, 43, 106
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1186,7 +1186,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 15 seconds
-Affecting spells : Hunter (137014 effect#2), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 2, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -1390,7 +1390,7 @@ Cast Time        : 1.75 seconds
 GCD              : 1.5 seconds
 Velocity         : 75 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Steady Focus (193534 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Steady Focus (193534 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 32, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -1733,7 +1733,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1), Rotting Jaws (264195 effect#1)
+Affecting spells : Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1), Rotting Jaws (264195 effect#1)
 Family Flags     : 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2106,7 +2106,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 45 seconds
-Affecting spells : Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1)
+Affecting spells : Mastery: Sniper Training (193468 effect#1)
 Family Flags     : 102, 121
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2253,7 +2253,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Range            : 50000 yards
+Range            : 200 yards
 Duration         : 4 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
@@ -2321,7 +2321,7 @@ Duration         : 3 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 20 seconds
 Category         : 85
-Affecting spells : Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#6), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1)
+Affecting spells : Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#6), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Trueshot (211327 effect#1)
 Family Flags     : 1, 98, 121
 Attributes       : .x..x... ........ x....... ........   ..x...x. .x....x. ........ ..x.xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2344,7 +2344,7 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50 yards
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Triggered by     : Barrage (120360)
 Family Flags     : 106, 119, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
@@ -2550,7 +2550,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mastery: Master of Beasts (76657 effect#3), Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#5), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), The Mantle of Command (247993 effect#2)
+Affecting spells : Mastery: Master of Beasts (76657 effect#3), Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#5), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Trueshot (211327 effect#1)
 Family Flags     : 1, 99, 121
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -2573,7 +2573,7 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 1.5 yards/sec
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), The Mantle of Command (247993 effect#2), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mastery: Master of Beasts (76657 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Trueshot (211327 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 55, 99, 106
 Attributes       : ........ ........ x....x.x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2724,7 +2724,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Beast Mastery Hunter (id=137015) [Spell Family (9), Passive, Hidden] 
-Class            : Beast Mastery Hunter
+Class            : Beast Mastery Hunter, Death Knight
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2756,12 +2756,9 @@ Effects          :
                    Family Flags: 34
 
 Name             : Marksmanship Hunter (id=137016) [Spell Family (9), Passive, Hidden] 
-Class            : Marksmanship Hunter
+Class            : Marksmanship Hunter, Death Knight
 School           : Physical
 Spell Type       : None
-Proc Chance      : 100%
-Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2804,7 +2801,7 @@ Effects          :
                    Affected Spells (Category): Aimed Shot (19434)
 
 Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidden] 
-Class            : Survival Hunter
+Class            : Survival Hunter, Death Knight
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2879,7 +2876,7 @@ Duration         : 3 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 24 seconds
 Proc Chance      : 101%
-Affecting spells : Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1)
+Affecting spells : Mastery: Sniper Training (193468 effect#1)
 Family Flags     : 115, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -3277,7 +3274,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 20 seconds
 Mechanic         : Bleed
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3302,7 +3299,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Trap Cooldown Reduction (61255 effect#1), Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 7
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -3387,7 +3384,7 @@ Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -3412,7 +3409,7 @@ Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -3457,7 +3454,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 70 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Coordinated Assault (266779 effect#1), Master Marksman (269576 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Coordinated Assault (266779 effect#1), Master Marksman (269576 effect#1)
 Triggered by     : Precise Shots (260242)
 Family Flags     : 1, 105, 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -3530,7 +3527,6 @@ Spell Level      : 20
 Range            : 100 yards
 Duration         : 15 seconds
 Cooldown         : 90 seconds
-Affecting spells : Beastlord (184900 effect#1)
 Family Flags     : 57
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -3559,7 +3555,7 @@ Spell Type       : None
 Spell Level      : 22
 Duration         : 3 seconds
 Cooldown         : 180 seconds
-Affecting spells : Call of the Wild (206332 effect#1), Embrace of the Aspects (225092 effect#1), Born To Be Wild (266921 effect#1)
+Affecting spells : Embrace of the Aspects (225092 effect#1), Born To Be Wild (266921 effect#1)
 Family Flags     : 21
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3581,7 +3577,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 5
 Duration         : 9 seconds
-Affecting spells : Call of the Wild (206332 effect#1), Embrace of the Aspects (225092 effect#1), Born To Be Wild (266921 effect#1)
+Affecting spells : Embrace of the Aspects (225092 effect#1), Born To Be Wild (266921 effect#1)
 Family Flags     : 21
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3626,7 +3622,7 @@ Spell Type       : None
 Spell Level      : 70
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Affecting spells : Call of the Wild (206332 effect#1), Embrace of the Aspects (225092 effect#1), Born To Be Wild (266921 effect#1)
+Affecting spells : Embrace of the Aspects (225092 effect#1), Born To Be Wild (266921 effect#1)
 Family Flags     : 15
 Attributes       : ....x... ........ x.x..... ........   ....x... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3665,7 +3661,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Raptor Strike (262839 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#3)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Raptor Strike (262839 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#3)
 Family Flags     : 1, 55, 80, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3690,7 +3686,7 @@ Spell Level      : 54
 Range            : 100 yards
 Duration         : 15 seconds
 Cooldown         : 90 seconds
-Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Call of the Wild (206332 effect#1), Embrace of the Aspects (225092 effect#1), Vigorous Wings (263818 effect#1), Born To Be Wild (266921 effect#1)
+Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Embrace of the Aspects (225092 effect#1), Vigorous Wings (263818 effect#1), Born To Be Wild (266921 effect#1)
 Family Flags     : 1, 20
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3720,7 +3716,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Trueshot (211327 effect#1), Magnetized Blasting Cap Launcher (226841 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Trueshot (211327 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 70, 106
 Attributes       : .x..x... ........ x...x... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -3751,7 +3747,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Trap Cooldown Reduction (61255 effect#1), Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 7, 90
 Attributes       : ....x... ........ x...x... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -3798,7 +3794,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Trap Cooldown Reduction (61255 effect#1), Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 7
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -3871,7 +3867,7 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#2), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Butcher's Bone Apron (236446 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Frizzo's Fingertrap (281262 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#2), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 2, 55, 71, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3989,7 +3985,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Spitting Cobras (197140 effect#1), Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Cobra Shot (262837 effect#1), Cobra Shot (262838 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Spitting Cobras (197140 effect#1), Bestial Rage (246116 effect#1), Thrill of the Hunt (257946 effect#1), Cobra Shot (262837 effect#1), Cobra Shot (262838 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 86, 106
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -4055,7 +4051,7 @@ GCD              : 1.3 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
-Affecting spells : Hunter (137014 effect#3), Call of the Wild (206332 effect#1), Embrace of the Aspects (225092 effect#1), Ride the Lightning (263821 effect#1), Aspect of the Cheetah (263829 effect#1)
+Affecting spells : Hunter (137014 effect#3), Embrace of the Aspects (225092 effect#1), Ride the Lightning (263821 effect#1), Aspect of the Cheetah (263829 effect#1)
 Family Flags     : 1, 77
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -4268,7 +4264,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Trueshot (211327 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Trueshot (211327 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 76, 106, 121
 Attributes       : .x..x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -4347,7 +4343,7 @@ Name             : Stomp (id=199530) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4472,7 +4468,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
 Range            : 150 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), The Mantle of Command (247993 effect#2), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mastery: Master of Beasts (76657 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106, 113
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ......x. 
@@ -4808,7 +4804,7 @@ Velocity         : 75 yards/sec
 Duration         : 3 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 30 seconds
-Affecting spells : Hunter (137014 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Trueshot (211327 effect#1)
+Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Trueshot (211327 effect#1)
 Family Flags     : 1, 63, 121
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   .......x ........ ........ ........ 
@@ -4835,7 +4831,7 @@ GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Charges          : 3 (9 seconds cooldown)
 Category         : 1616: Hunter (137014 effect#5)
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Butcher's Bone Apron (236446 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Frizzo's Fingertrap (281262 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 38, 55, 106
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4862,7 +4858,7 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 73, 106
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ .x...... ........   ........ ........ ........ ......x. 
@@ -4890,7 +4886,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Charges          : 2 (12 seconds cooldown)
 Category         : 1675: Hunter (137014 effect#9)
 Mechanic         : Bleed
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Feeding Frenzy (278529 effect#2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Feeding Frenzy (278529 effect#2)
 Family Flags     : 1, 78, 106
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4942,7 +4938,7 @@ Proc Chance      : 100%
 Mechanic         : Snare
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Affecting spells : Mastery: Sniper Training (193468 effect#2), Trueshot (211327 effect#1), Magnetized Blasting Cap Launcher (226841 effect#1), 
+Affecting spells : Mastery: Sniper Training (193468 effect#2), Trueshot (211327 effect#1)
 Triggered by     : Bursting Shot (186387)
 Family Flags     : 70
 Attributes       : ....x... ........ x...x... ........   ........ ........ ........ ...x.... 
@@ -5298,7 +5294,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 20 seconds
-Affecting spells : Hunter (137014 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Streamline (260367 effect#1), Double Tap (260402 effect#1), Whirling Rebound (264199 effect#1), Trueshot (288613 effect#1)
+Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Streamline (260367 effect#1), Double Tap (260402 effect#1), Whirling Rebound (264199 effect#1), Trueshot (288613 effect#1)
 Family Flags     : 1, 118, 121
 Attributes       : .x...... ........ ........ ........   ..x...x. .x...... ........ .....x.. 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -5328,7 +5324,7 @@ Spell Level      : 3
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#1), Coordinated Assault (266779 effect#1), Focused Fire (278531 effect#2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#1), Coordinated Assault (266779 effect#1), Focused Fire (278531 effect#2)
 Family Flags     : 3, 106, 121
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ .x...... ........   .....x.. .x...... ........ ........ 
@@ -5383,7 +5379,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Focus of the Titans (197139 effect#1), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), Bestial Rage (246116 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Coordinated Assault (266779 effect#1), Master Marksman (269576 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Focus of the Titans (197139 effect#1), Trueshot (211327 effect#1), Bestial Rage (246116 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Coordinated Assault (266779 effect#1), Master Marksman (269576 effect#1)
 Triggered by     : Precise Shots (260242)
 Family Flags     : 1, 12, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -5558,7 +5554,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Blackness (184902 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#2)
 Family Flags     : 1, 55, 96, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5632,7 +5628,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
 Range            : 100 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 55, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5653,7 +5649,7 @@ Spell Type       : Ranged
 Spell Level      : 14
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
 Triggered by     : Chakrams (259391)
 Family Flags     : 55, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5679,7 +5675,7 @@ Range            : 50 yards
 GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 1171: Hunter (137014 effect#11)
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Alpha Predator (269737 effect#2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Alpha Predator (269737 effect#2)
 Family Flags     : 1, 72, 106
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5716,7 +5712,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 60 yards/sec
 Duration         : 12 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Item - Hunter T11 2P Bonus (89923 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Hydra's Bite (260241 effect#2), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Viper's Venom (268552 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Item - Hunter T11 2P Bonus (89923 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Hydra's Bite (260241 effect#2), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Viper's Venom (268552 effect#1), 
 Family Flags     : 1, 14, 55, 106
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5826,7 +5822,7 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5944,7 +5940,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
 Range            : 100 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Trueshot (211327 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Triggered by     : Volley (260243)
 Family Flags     : 34, 106
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
@@ -6432,7 +6428,7 @@ School           : Physical
 Spell Type       : Ranged
 Spell Level      : 3
 Range            : 40 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7360,7 +7356,7 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
 Family Flags     : 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7406,7 +7402,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Raptor Strike (262839 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#3)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Raptor Strike (262839 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#3)
 Family Flags     : 1, 55, 80, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -7431,7 +7427,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Blackness (184902 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#2)
 Family Flags     : 1, 55, 96, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -7645,7 +7641,7 @@ Effects          :
 #1 (id=713555)   : Apply Aura (6) | Unknown(493)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 273277 | Target: Self (1)
 #2 (id=740947)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your Call Pet additionally summons the first pet from your stable. This pet will obey your Kill Command, but cannot use pet family abilities.
 
 Name             : Chakrams (id=267605) [Spell Family (9)] 
@@ -7701,7 +7697,7 @@ School           : Physical
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 55, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8039,7 +8035,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 309366 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
@@ -8106,7 +8102,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 309352 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -8166,7 +8162,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -8189,7 +8185,7 @@ Spell Type       : None
 Range            : 15 yards
 GCD              : 1.5 seconds
 Cooldown         : 40 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 106
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -8215,7 +8211,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : .......x ........ ........ ........   ........ ..x..... ........ ......x. 
@@ -8286,7 +8282,7 @@ School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
 Mechanic         : Bleed
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
 Family Flags     : 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8308,7 +8304,7 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -8376,7 +8372,7 @@ School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
 Mechanic         : Bleed
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
 Family Flags     : 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8401,7 +8397,7 @@ Duration         : 6 seconds
 Proc Chance      : 100%
 Proc Flags       : .....x.. .x...... ........ ........ 
                  : Yellow Melee Taken, Yellow Ranged Taken
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -8541,7 +8537,7 @@ Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
 Family Flags     : 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8562,7 +8558,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -8744,7 +8740,7 @@ School           : Physical
 Spell Type       : Ranged
 Range            : 100 yards
 Velocity         : 70 yards/sec
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
@@ -8769,7 +8765,7 @@ GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Duration         : 12 seconds
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 5, 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   .......x ........ ........ ........ 
@@ -8900,7 +8896,7 @@ Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
 Range            : 100 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9061,7 +9057,7 @@ Class            : Hunter
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9417,7 +9413,7 @@ Spell Level      : 16
 Range            : 100 yards
 Velocity         : 50 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -10542,13 +10538,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7), Scales with item level (354)
 Effects          :
 #1 (id=773466)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1792 | Target: Self (1)
 #2 (id=779235)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
 #3 (id=779236)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 33554432 | Target: Self (1)
 #4 (id=779237)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
 Description      : $?$a303590[Critical Strike increased by $s1.]?$a303592[Haste increased by $s2.]?$a303595[Mastery increased by $s3.]?$a303596[Versatility increased by $s4.][A secondary stat of your choice is increased by $s1 while using the Pocket-Sized Computation Device.] Stat is chosen based on equipped Logic Board.
 
 Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
@@ -10574,7 +10570,10 @@ Name             : Arcane Heart (id=303006) [Scaling Spell (-7), Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
 Azerite Power Id : 577
+Proc Flags       : ........ ........ ........ ....x... 
+                 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10587,7 +10586,7 @@ Effects          :
 #1 (id=778205)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
 #2 (id=778206)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 0 (coefficient=1.39285) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 0 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778207)   : Apply Aura (6) | Unknown(285)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 303209 | Target: Self (1)
 Description      : Every $s1 damage and healing done you gain Omnipotence, increasing your highest stat by $s2 for $303212d. You heal for $s3% of all Arcane damage taken.
@@ -10607,11 +10606,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778208)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 1.00000 | Trigger Spell: 303250 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
 #2 (id=778209)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778210)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your Mastery is increased by $s1, plus an additional $s2 for each ally also affected by Loyal to the End, up to $s3.
 
 When you die, your allies gain Critical Strike, Haste, and Versatility equal to their Mastery bonus from this trait.
@@ -10633,11 +10632,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778211)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 1.00000 | Trigger Spell: 303388 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
 #2 (id=778212)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=778215)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
 #4 (id=778216)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.

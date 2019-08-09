@@ -67,6 +67,7 @@ actions.cooldowns+=/rune_of_power,if=prev_gcd.1.frozen_orb|target.time_to_die>10
 # On single target fights, the cooldown of Rune of Power is lower than the cooldown of Frozen Orb, this gives extra Rune of Power charges that should be used with active talents, if possible.
 actions.cooldowns+=/call_action_list,name=talent_rop,if=talent.rune_of_power.enabled&active_enemies=1&cooldown.rune_of_power.full_recharge_time<cooldown.frozen_orb.remains
 actions.cooldowns+=/potion,if=prev_gcd.1.icy_veins|target.time_to_die<30
+actions.cooldowns+=/use_item,name=balefire_branch,if=!talent.glacial_spike.enabled|buff.brain_freeze.react&prev_gcd.1.glacial_spike
 actions.cooldowns+=/use_items
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
