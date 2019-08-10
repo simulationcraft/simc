@@ -303,6 +303,22 @@ int num_count( const T& results, const std::initializer_list<V>& selectors )
   return as<int>( count );
 }
 
+double vulnerable_fight_length( player_t* actor )
+{
+  double fight_length = actor->collected_data.fight_length.mean();
+
+  auto it = range::find_if( actor->report_information.dynamic_buffs, []( buff_t* b ) {
+    return b->name_str == "invulnerable";
+  } );
+
+  if ( it != actor->report_information.dynamic_buffs.end() )
+  {
+    fight_length *= 1.0 - ( *it )->uptime_pct.pretty_mean() / 100.0;
+  }
+
+  return fight_length;
+}
+
 void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask, int result_type, const stats_t& s,
                                 const player_t& p )
 {
@@ -406,10 +422,24 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   if ( player_has_tick_results( p, stats_mask ) )
   {
     if ( result_type == 1 )
-      os.printf( "<td class=\"right\">%.1f%%</td>\n",  // Uptime%
-                 100 * s.total_tick_time.mean() / p.collected_data.fight_length.mean() );
+    {
+      double target_fight_length = 0.0;
+
+      for ( auto target : p.sim->targets_by_name )
+      {
+        target_fight_length += vulnerable_fight_length( target );
+
+        for ( auto pet : target->pet_list )
+        {
+          target_fight_length += vulnerable_fight_length( pet );
+        }
+      }
+      os.printf( "<td class=\"right\">%.1f%%</td>\n", 100 * s.total_tick_time.mean() / target_fight_length );
+    }
     else
-      os.printf( "<td class=\"right\">&#160;</td>\n" );
+    {
+      os.printf( "<td class=\"right\"></td>\n" );
+    }
   }
 }
 
