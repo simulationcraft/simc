@@ -503,7 +503,7 @@ table.stripebody tbody:nth-of-type(even) tr:first-of-type + tr.childrow {
 .asc-sorted:after {
     content: '';
     position: relative;
-    left: 0.1em;
+    left: 0.15em;
     border: 0.4em solid transparent;
 }
 .dsc-sorted:after {
@@ -569,10 +569,12 @@ table.sc .dynamic-buffs tr.details td ul li span.label {
     width: 120px;
 }
 tr.details td table.details {
+    table-layout: fixed;
     padding: 0px;
     margin: 5px 0 10px 0;
 }
 tr.details td table.details tr th {
+    max-width: 75px;
     background-color: #222;
 }
 tr.details td table.details tr td {
