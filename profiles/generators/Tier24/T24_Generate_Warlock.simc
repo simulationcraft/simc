@@ -63,20 +63,20 @@ role=spell
 position=ranged_back
 talents=2103023
 default_pet=imp
-azerite_essences=14:3:1/12:3:0/4:3:0
+azerite_essences=27:3:1/22:3:0/4:3:0
 
-head=,id=168336,bonus_id=4824/1517/4775,azerite_powers=460/576/30/13
+head=,id=168336,bonus_id=4824/1517/4775,azerite_powers=444/576/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulder=,id=168338,bonus_id=4824/1517/4775,azerite_powers=432/460/30/13
-chest=,id=168337,bonus_id=4824/1517/4775,azerite_powers=131/576/30/13
+chest=,id=168337,bonus_id=4824/1517/4775,azerite_powers=432/576/30/13
 back=,id=168391,bonus_id=4800/1517
 wrist=,id=170306,bonus_id=1512
 hands=,id=170333,bonus_id=1512
 waist=,id=170367,bonus_id=1512
-legs=,id=168371,bonus_id=4800/1517
+legs=,id=168876,bonus_id=4800/1517
 feet=,id=170140,bonus_id=1512
-finger1=,id=168891,bonus_id=4800/1517,enchant=accord_of_versatility
-finger2=,id=168890,bonus_id=4800/1517,enchant=accord_of_versatility
+finger1=,id=168891,bonus_id=4800/1517,enchant=accord_of_critical_strike
+finger2=,id=168890,bonus_id=4800/1517,enchant=accord_of_mastery
 trinket1=,id=169304,bonus_id=4800/1517
 trinket2=,id=169314,bonus_id=4800/1517
 main_hand=,id=168275,bonus_id=4800/1517,enchant=machinists_brilliance
