@@ -171,9 +171,6 @@ tr.small td a.open,
 span.open {
     background-position: 0 -12px;
 }
-.toggle-sort {
-    cursor: pointer;
-}
 #active-help,
 .help-box {
     display: none;
@@ -217,6 +214,9 @@ span.open {
 }
 .help {
     color: #C68E17 !important;
+    cursor: help;
+}
+.toggle-sort {
     cursor: pointer;
 }
 .section {
@@ -521,7 +521,7 @@ table.sort thead tr:first-of-type {
   user-select: none;
 }
 table.sc tr.details td {
-    padding: 0 0 15px 15px;
+    padding: 0 15px 15px 15px;
     text-align: left;
     background-color: #333;
     font-size: 11px;
@@ -569,12 +569,11 @@ table.sc .dynamic-buffs tr.details td ul li span.label {
     width: 120px;
 }
 tr.details td table.details {
-    table-layout: fixed;
     padding: 0px;
     margin: 5px 0 10px 0;
+    max-width: 1040px;
 }
 tr.details td table.details tr th {
-    max-width: 75px;
     background-color: #222;
 }
 tr.details td table.details tr td {
