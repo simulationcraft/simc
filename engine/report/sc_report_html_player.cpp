@@ -139,26 +139,31 @@ bool use_small_table( const player_t* p )
   return p->collected_data.dps.max() >= cutoff || p->collected_data.hps.max() >= cutoff;
 }
 
-/*
- * Arguments: stream, string, ascending_sort(false), alphasort(false), leftalign(false), helptext(empty)
- */
-void sorttable_header( report::sc_html_stream& os, const std::string& header, bool ascsort = false,
-                       bool alphasort = false, bool leftclass = false, const std::string& helptext = std::string(),
-                       bool bothrow = false )
+enum sort_flag_e : unsigned
+{
+  SORT_FLAG_NONE  = 0x00,
+  SORT_FLAG_ASC   = 0x01,
+  SORT_FLAG_ALPHA = 0x02,
+  SORT_FLAG_LEFT  = 0x04,
+  SORT_FLAG_BOTH  = 0x08,
+};
+
+void sorttable_header( report::sc_html_stream& os, const std::string& header, unsigned flag = SORT_FLAG_NONE,
+                       const std::string& helptext = std::string() )
 {
   std::string class_str = "toggle-sort";
   std::string data_str;
 
-  if ( ascsort )
+  if ( flag & SORT_FLAG_ASC )
     data_str += " data-sortdir=\"asc\"";
 
-  if ( alphasort )
+  if ( flag & SORT_FLAG_ALPHA )
     data_str += " data-sorttype=\"alpha\"";
 
-  if (bothrow )
+  if ( flag & SORT_FLAG_BOTH )
     data_str += " data-sortrows=\"both\"";
 
-  if ( leftclass )
+  if ( flag & SORT_FLAG_LEFT )
     class_str += " left";
 
   if ( !helptext.empty() )
@@ -171,9 +176,9 @@ void sorttable_header( report::sc_html_stream& os, const std::string& header, bo
 }
 
 void sorttable_help_header( report::sc_html_stream& os, const std::string& header, const std::string& helptext,
-                            bool ascsort = false, bool alphasort = false, bool leftclass = false, bool bothrow = false )
+                            unsigned flag = SORT_FLAG_NONE )
 {
-  sorttable_header( os, header, ascsort, alphasort, leftclass, helptext, bothrow );
+  sorttable_header( os, header, flag, helptext );
 }
 
 std::string output_action_name( const stats_t& s, const player_t* actor )
@@ -448,6 +453,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 {
   const player_t& p = *s.player->get_owner_or_self();
   std::string row_class;
+  std::string rowspan;
 
   if ( use_small_table( &p ) )
     row_class = " small";
@@ -455,11 +461,12 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
   os << "<tr class=\"toprow" << row_class << "\">\n";
 
   int result_rows = s.has_direct_amount_results() + s.has_tick_amount_results();
-  if ( result_rows == 0 )
-    result_rows = 1;
+
+  if ( result_rows > 1 )
+    rowspan = " rowspan=\"" + util::to_string( result_rows ) + "\"";
 
   // Ability name
-  os << "<td class=\"left\" rowspan=\"" << result_rows << "\">";
+  os << "<td class=\"left\"" << rowspan << ">";
   if ( s.parent && s.parent->player == actor )
   {
     for( int i = 0; i< indentation; ++i)
@@ -491,26 +498,26 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     if ( cAPSpct > s.portion_amount )
       compound_aps_pct = "&#160;(" + util::to_string( cAPSpct * 100, 1 ) + "%)";
 
-    os.printf( "<td class=\"right\" rowspan=\"%d\">%.0f%s</td>\n",
-               result_rows, s.portion_aps.pretty_mean(), compound_aps.c_str() );
-    os.printf( "<td class=\"right\" rowspan=\"%d\">%.1f%%%s</td>\n",
-               result_rows, s.portion_amount * 100, compound_aps_pct.c_str() );
+    os.printf( "<td class=\"right\"%s>%.0f%s</td>\n",
+               rowspan.c_str(), s.portion_aps.pretty_mean(), compound_aps.c_str() );
+    os.printf( "<td class=\"right\"%s>%.1f%%%s</td>\n",
+               rowspan.c_str(), s.portion_amount * 100, compound_aps_pct.c_str() );
   }
 
   // Number of executes 
-  os.printf( "<td class=\"right\" rowspan=\"%d\">%.1f</td>\n", result_rows, s.num_executes.pretty_mean() );
+  os.printf( "<td class=\"right\"%s>%.1f</td>\n", rowspan.c_str(), s.num_executes.pretty_mean() );
 
   // Execute interval
-  os.printf( "<td class=\"right\" rowspan=\"%d\">%.2fsec</td>\n", result_rows, s.total_intervals.pretty_mean() );
+  os.printf( "<td class=\"right\"%s>%.2fsec</td>\n", rowspan.c_str(), s.total_intervals.pretty_mean() );
 
   // Skip the rest of this for abilities that do no damage
   if ( s.compound_amount > 0 )
   {
     // Amount per execute
-    os.printf( "<td class=\"right\" rowspan=\"%d\">%.0f</td>\n", result_rows, s.ape );
+    os.printf( "<td class=\"right\"%s>%.0f</td>\n", rowspan.c_str(), s.ape );
 
     // Amount per execute time
-    os.printf( "<td class=\"right\" rowspan=\"%d\">%.0f</td>\n", result_rows, s.apet );
+    os.printf( "<td class=\"right\"%s>%.0f</td>\n", rowspan.c_str(), s.apet );
 
     bool periodic_only = false;
     if ( s.has_direct_amount_results() )
@@ -2371,8 +2378,8 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
      << "<thead>\n"
      << "<tr>\n";
 
-  sorttable_header( os, "Resource Usage", true, true, true);
-  sorttable_header( os, "Type", true, true );
+  sorttable_header( os, "Resource Usage", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
+  sorttable_header( os, "Type", SORT_FLAG_ASC | SORT_FLAG_ALPHA );
   sorttable_header( os, "Count" );
   sorttable_header( os, "Total" );
   sorttable_header( os, "Avg" );
@@ -2439,8 +2446,8 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
        << "<thead>\n"
        << "<tr>\n";
 
-    sorttable_header( os, "Resource Gains", true, true, true );
-    sorttable_header( os, "Type", true, true );
+    sorttable_header( os, "Resource Gains", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
+    sorttable_header( os, "Type", SORT_FLAG_ASC | SORT_FLAG_ALPHA );
     sorttable_header( os, "Count" );
     sorttable_header( os, "Total" );
     sorttable_header( os, "Tot%" );
@@ -3044,11 +3051,11 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
      << "<thead>\n"
      << "<tr>\n";
 
-  sorttable_help_header( os, "Dynamic Buffs", "help-dynamic-buffs", true, true, true );
+  sorttable_help_header( os, "Dynamic Buffs", "help-dynamic-buffs", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_header( os, "Start" );
   sorttable_header( os, "Refresh" );
-  sorttable_header( os, "Interval", true );
-  sorttable_header( os, "Trigger", true );
+  sorttable_header( os, "Interval", SORT_FLAG_ASC );
+  sorttable_header( os, "Trigger", SORT_FLAG_ASC );
   sorttable_header( os, "Up-Time" );
   sorttable_help_header( os, "Benefit", "help-buff-benefit" );
   sorttable_header( os, "Overflow" );
@@ -3674,20 +3681,20 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
   else
     os << "<tr>\n";
 
-  sorttable_header( os, "Damage Stats", true, true, true );
+  sorttable_header( os, "Damage Stats", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_help_header( os, "DPS", "help-dps" );
   sorttable_help_header( os, "DPS%", "help-dps-pct" );
   sorttable_help_header( os, "Execute", "help-execute" );
-  sorttable_help_header( os, "Interval", "help-interval", true );
+  sorttable_help_header( os, "Interval", "help-interval", SORT_FLAG_ASC );
   sorttable_help_header( os, "DPE", "help-dpe" );
   sorttable_help_header( os, "DPET", "help-dpet" );
   // Optional columns begin here
-  sorttable_help_header( os, "Type", "help-type", true, true );
-  sorttable_help_header( os, "Count", "help-count" );
-  sorttable_help_header( os, "Hit", "help-hit" );
-  sorttable_help_header( os, "Crit", "help-crit" );
-  sorttable_help_header( os, "Avg", "help-avg" );
-  sorttable_help_header( os, "Crit%", "help-crit-pct" );
+  sorttable_help_header( os, "Type", "help-type", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_BOTH );
+  sorttable_help_header( os, "Count", "help-count", SORT_FLAG_BOTH );
+  sorttable_help_header( os, "Hit", "help-hit", SORT_FLAG_BOTH );
+  sorttable_help_header( os, "Crit", "help-crit", SORT_FLAG_BOTH );
+  sorttable_help_header( os, "Avg", "help-avg", SORT_FLAG_BOTH );
+  sorttable_help_header( os, "Crit%", "help-crit-pct", SORT_FLAG_BOTH );
 
   if ( player_has_avoidance( actor, MASK_DMG ) )
   {
@@ -3709,7 +3716,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
 
   if ( player_has_tick_results( actor, MASK_DMG ) )
   {
-    sorttable_help_header( os, "Up%", "help-ticks-uptime-pct", false, false, false, true );
+    sorttable_help_header( os, "Up%", "help-ticks-uptime-pct", SORT_FLAG_BOTH );
     n_optional_columns++;
   }
 
@@ -3761,7 +3768,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
 
         os.printf(
             "<th class=\"left small\">pet - %s</th>\n"
-            "<th class=\"right\">%.0f / %.0f</th>\n"
+            "<th class=\"right small\">%.0f / %.0f</th>\n"
             "<td colspan=\"%d\" class=\"filler\"></td>\n"
             "</tr>\n",
             util::encode_html( pet->name_str ).c_str(), pet->collected_data.dps.mean(),
@@ -3794,15 +3801,15 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
   else
     os << "<tr>\n";
 
-  sorttable_header( os, "Healing and Absorb Stats", true, true, true );
+  sorttable_header( os, "Healing and Absorb Stats", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_help_header( os, "HPS", "help-hps" );
   sorttable_help_header( os, "HPS%", "help-hps-pct" );
   sorttable_help_header( os, "Execute", "help-execute" );
-  sorttable_help_header( os, "Interval", "help-interval", true );
+  sorttable_help_header( os, "Interval", "help-interval", SORT_FLAG_ASC );
   sorttable_help_header( os, "HPE", "help-hpe" );
   sorttable_help_header( os, "HPET", "help-hpet" );
   // Optional columns being here
-  sorttable_help_header( os, "Type", "help-type", true, true );
+  sorttable_help_header( os, "Type", "help-type", SORT_FLAG_ASC | SORT_FLAG_ALPHA );
   sorttable_help_header( os, "Count", "help-count" );
   sorttable_help_header( os, "Hit", "help-hit" );
   sorttable_help_header( os, "Crit", "help-crit" );
@@ -3811,7 +3818,7 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
 
   if ( player_has_tick_results( actor, MASK_HEAL | MASK_ABSORB ) )
   {
-    sorttable_help_header( os, "Up%", "help-ticks-uptime-pct", false, false, false, true );
+    sorttable_help_header( os, "Up%", "help-ticks-uptime-pct", SORT_FLAG_BOTH );
     n_optional_columns++;
   }
 
@@ -3891,9 +3898,9 @@ void output_player_simple_ability_summary( report::sc_html_stream& os, const pla
   else
     os << "<tr>\n";
 
-  sorttable_header( os, "Simple Action Stats", true, true, true );
+  sorttable_header( os, "Simple Action Stats", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_help_header( os, "Execute", "help-execute" );
-  sorttable_help_header( os, "Interval", "help-interval", true );
+  sorttable_help_header( os, "Interval", "help-interval", SORT_FLAG_ASC );
 
   os << "</tr>\n";
 
@@ -4098,9 +4105,9 @@ void print_html_player_procs( report::sc_html_stream& os, const std::vector<proc
      << "<thead>\n"
      << "<tr>\n";
 
-  sorttable_header( os, "Name", true, true, true );
+  sorttable_header( os, "Name", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_header( os, "Count" );
-  sorttable_header( os, "Interval", true );
+  sorttable_header( os, "Interval", SORT_FLAG_ASC );
 
   os << "</tr>\n"
      << "</thead>\n";

@@ -146,7 +146,7 @@ jQuery(document).ready(function ($) {
         ret = $row.children('td').eq(idx).text().trim();
         if (!ret.length && both) {
             var span = $row.children('td[rowspan]').length;
-            $row = $row.next();
+            $row = $row.nextAll(':not(.details)').first();
             if (idx > span) {
                 idx -= span;
                 ret = $row.children('td').eq(idx).text().trim();
