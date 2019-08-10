@@ -350,7 +350,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
     for ( auto& c : s.children )
     {
       compound_stats->merge( *c );
-      compound_count += result_type == 1 ? c->num_tick_results.mean() : c->num_direct_results.mean();
+      compound_count += c->has_direct_amount_results() ? c->num_direct_results.mean() : c->num_tick_results.mean();
     }
 
     compound_stats->analyze();
@@ -608,13 +608,12 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     {
       os << "<table class=\"details\">\n";
       int sd_counter = 0;
-      report::print_html_sample_data( os, p, s.actual_amount, "Actual Amount", sd_counter );
-
-      report::print_html_sample_data( os, p, s.portion_aps, "portion Amount per Second ( pAPS )", sd_counter );
-
-      report::print_html_sample_data( os, p, s.portion_apse, "portion Effective Amount per Second ( pAPSe )",
-                                      sd_counter );
-
+      report::print_html_sample_data( os, p, s.actual_amount,
+                                      "Actual Amount", sd_counter );
+      report::print_html_sample_data( os, p, s.portion_aps,
+                                      "portion Amount per Second ( pAPS )", sd_counter );
+      report::print_html_sample_data( os, p, s.portion_apse,
+                                      "portion Effective Amount per Second ( pAPSe )", sd_counter );
       os << "</table>\n";
 
       if ( !s.portion_aps.simple && p.sim->scaling->has_scale_factors() && s.scaling )
@@ -2401,9 +2400,7 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
       print_html_action_resource( os, *stat );
     }
   }
-  os << "</tbody>\n";
 
-  os << "<tbody class=\"nosort\">\n";
   for ( const auto& pet : p.pet_list )
   {
     bool first = true;
@@ -2415,7 +2412,7 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
         if ( first )
         {
           first = false;
-          os << "<tr class=\"nosort\">\n"
+          os << "<tr class=\"petrow\">\n"
              << "<th class=\"left small\">pet - " << util::encode_html( pet->name_str ) << "</th>\n"
              << "<td colspan=\"7\" class=\"filler\"></td>\n"
              << "</tr>\n";
@@ -2467,9 +2464,7 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
     {
       print_html_gain( os, *gain, total_player_gains );
     }
-    os << "</tbody>\n";
 
-    os << "<tbody class=\"nosort\">\n";
     for ( const auto& pet : p.pet_list )
     {
       if ( pet->collected_data.fight_length.mean() <= 0 )
@@ -2493,7 +2488,7 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
           if ( found )
           {
             first = false;
-            os << "<tr class=\"nosort\">\n"
+            os << "<tr class=\"petrow\">\n"
                << "<th class=\"left small\">pet - " << util::encode_html( pet->name_str ) << "</th>\n"
                << "<td colspan=\"7\" class=\"filler\"></td>\n"
                << "</tr>\n";
@@ -2889,7 +2884,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
         "<td class=\"right\">%.1fsec</td>\n"
         "<td class=\"right\">%.2f%%</td>\n"
         "<td class=\"right\">%.2f%%</td>\n"
-        "<td class=\"right\">%.1f(%.1f)</td>\n"
+        "<td class=\"right\">%.1f&#160;(%.1f)</td>\n"
         "<td class=\"right\">%.1f</td>\n",
         b.avg_start.pretty_mean(), b.avg_refresh.pretty_mean(),
         b.start_intervals.pretty_mean(), b.trigger_intervals.pretty_mean(),
@@ -3649,7 +3644,7 @@ void output_player_action( report::sc_html_stream& os, unsigned cols, unsigned m
   if ( !is_output_stat( mask, level != 0, s ) )
     return;
 
-  if ( level == 0 && !actor->is_pet() )
+  if ( level == 0 )
     os << "<tbody>\n";
 
   print_html_action_info( os, mask, s, cols, actor, level );
@@ -3658,7 +3653,7 @@ void output_player_action( report::sc_html_stream& os, unsigned cols, unsigned m
   {
     output_player_action( os, cols, mask, *child_stats, actor, level + 1 );
   }
-  if ( level == 0 && !actor->is_pet() )
+  if ( level == 0 )
     os << "</tbody>\n";
 }
 
@@ -3742,7 +3737,6 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
   }
 
   // Print pet statistics
-  os << "<tbody class=\"nosort\">\n";
   for ( const auto& pet : actor.pet_list )
   {
     bool first = true;
@@ -3761,10 +3755,11 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
       {
         first = false;
 
+        os << "<tbody class=\"petrow\">\n";
         if ( use_small_table( &actor ) )
-          os << "<tr class=\"nosort small\">\n";
+          os << "<tr class=\"small\">\n";
         else
-          os << "<tr class=\"nosort\">\n";
+          os << "<tr>\n";
 
         os.printf(
             "<th class=\"left small\">pet - %s</th>\n"
@@ -3774,12 +3769,12 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
             util::encode_html( pet->name_str ).c_str(), pet->collected_data.dps.mean(),
             pet->collected_data.dpse.mean(),
             static_columns + n_optional_columns );
+        os << "</tbody>\n";
       }
       output_player_action( os, n_optional_columns, MASK_DMG, *stat, pet );
     }
   }
-  os << "</tbody>\n"
-     << "</table>\n";
+  os << "</table>\n";
 }
 
 void output_player_heal_summary( report::sc_html_stream& os, const player_t& actor )
@@ -3844,7 +3839,6 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
   }
 
   // Print pet statistics
-  os << "<tbody class=\"nosort\">\n";
   for ( const auto& pet : actor.pet_list )
   {
     bool first = true;
@@ -3863,25 +3857,26 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
       {
         first = false;
 
+        os << "<tbody class=\"petrow\">\n";
         if ( use_small_table( &actor ) )
-          os << "<tr class=\"nosort small\">\n";
+          os << "<tr class=\"small\">\n";
         else
-          os << "<tr class=\"nosort\">\n";
+          os << "<tr>\n";
 
         os.printf(
             "<th class=\"left small\">pet - %s</th>\n"
-            "<th class=\"right\">%.0f / %.0f</th>\n"
+            "<th class=\"right small\">%.0f / %.0f</th>\n"
             "<td colspan=\"%d\" class=\"filler\"></td>\n"
             "</tr>\n",
             util::encode_html( pet->name_str ).c_str(), pet->collected_data.dps.mean(),
             pet->collected_data.dpse.mean(),
             static_columns + n_optional_columns );
+        os << "</tbody>\n";
       }
       output_player_action( os, n_optional_columns, MASK_HEAL | MASK_ABSORB, *stat, pet );
     }
   }
-  os << "</tbody>\n"
-     << "</table>\n";
+  os << "</table>\n";
 }
 
 void output_player_simple_ability_summary( report::sc_html_stream& os, const player_t& actor )
@@ -3923,7 +3918,6 @@ void output_player_simple_ability_summary( report::sc_html_stream& os, const pla
   }
 
   // Print pet statistics
-  os << "<tbody class=\"nosort\">\n";
   for ( const auto& pet : actor.pet_list )
   {
     bool first = true;
@@ -3942,22 +3936,23 @@ void output_player_simple_ability_summary( report::sc_html_stream& os, const pla
       {
         first = false;
 
+        os << "<tbody class=\"petrow\">\n";
         if ( use_small_table( &actor ) )
-          os << "<tr class=\"nosort small\">\n";
+          os << "<tr class=\"small\">\n";
         else
-          os << "<tr class=\"nosort\">\n";
+          os << "<tr>\n";
 
         os.printf(
             "<th class=\"left small\">pet - %s</th>\n"
             "<th colspan=\"%d\" class=\"filler\"></th>\n"
             "</tr>\n",
             util::encode_html( pet->name_str ).c_str(), 2 );
+        os << "</tbody>\n";
       }
       output_player_action( os, 0, MASK_DMG | MASK_HEAL | MASK_ABSORB, *stat, pet );
     }
   }
-  os << "</tbody>\n"
-     << "</table>\n";
+  os << "</table>\n";
 }
 
 void print_html_player_abilities( report::sc_html_stream& os, const player_t& p )
@@ -4159,8 +4154,7 @@ void print_html_player_deaths( report::sc_html_stream& os, const player_t& p,
 
     os << "<tr>\n"
        << "<td class=\"left\">death count pct</td>\n"
-       << "<td class=\"right\">"
-       << (double)deaths.size() / p.sim->iterations * 100 << "</td>\n"
+       << "<td class=\"right\">" << as<double>( deaths.size() ) / p.sim->iterations * 100 << "</td>\n"
        << "</tr>\n";
 
     os << "<tr>\n"
@@ -4180,8 +4174,7 @@ void print_html_player_deaths( report::sc_html_stream& os, const player_t& p,
 
     os << "<tr>\n"
        << "<td class=\"left\">dmg taken</td>\n"
-       << "<td class=\"right\">" << p.collected_data.dmg_taken.mean()
-       << "</td>\n"
+       << "<td class=\"right\">" << p.collected_data.dmg_taken.mean() << "</td>\n"
        << "</tr>\n";
 
     os << "</table>\n";

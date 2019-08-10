@@ -129,9 +129,9 @@ jQuery(document).ready(function ($) {
         open_anchor(target);
     });
     function oddstripe() {
-        var rows = $(this).find('.toprow');
-        rows.filter(':even').removeClass('odd');
-        rows.filter(':odd').addClass('odd');
+        var $rows = $(this).find('.toprow');
+        $rows.filter(':even').removeClass('odd');
+        $rows.filter(':odd').addClass('odd');
     }
     $('.stripetoprow').each(oddstripe);
     function getCell(elem, i, both) {
@@ -174,7 +174,8 @@ jQuery(document).ready(function ($) {
     $('.toggle-sort').click(function (e) {
         e.preventDefault();
         var $col = $(this).closest('th');
-        var $tbl = $col.closest('table.sort');
+        var $thd = $col.closest('thead');
+        var $tbl = $thd.closest('table.sort');
         var $sib = $col.siblings('.asc-sorted, .dsc-sorted');
         $sib.removeClass('asc-sorted dsc-sorted');
         var idx = $col.index();
@@ -202,19 +203,26 @@ jQuery(document).ready(function ($) {
                 };
             };
         }
-        var $bucket = $tbl.children('tbody:not(.nosort)');
-        var $remain = $tbl.children('tbody.nosort');
+        var $bucket = $thd.nextUntil('.petrow');
         if ($bucket.length == 1) {
-            $bucket = $bucket.children('tr');
+            $bucket = $bucket.children('tr').first().nextUntil('.petrow').addBack();
         }
-        if ($bucket.length) {
+        var $remain = $bucket.last().nextAll();
+        var $petrow;
+        do {
             $bucket.sort(srt(idx, isDsc, doRows));
-            this.offsetHeight;
             $tbl.append($bucket);
-            $tbl.append($remain);
-            if ($tbl.hasClass('stripetoprow')) {
-                oddstripe.call($tbl);
+            if (!$remain.length) {
+                break;
             }
+            $tbl.append($remain);
+            $petrow = $remain.first();
+            $bucket = $petrow.nextUntil('.petrow');
+            $remain = $bucket.last().nextAll();
+        } while ($bucket.length > 1);
+        if ($tbl.hasClass('stripetoprow')) {
+            oddstripe.call($tbl);
         }
+        this.offsetHeight;
     });
 });
