@@ -87,34 +87,13 @@ namespace warlock {
       {
         warlock_spell_t::consume_resource();
 
-        if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat)
+        if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
         {
-          bool active_infernal = false;
+          if ( p()->buffs.grimoire_of_supremacy_driver->check() )
+            p()->buffs.grimoire_of_supremacy->trigger( as<int>( last_resource_cost ) );
 
-          if (p()->talents.grimoire_of_supremacy->ok())
-          {
-            for (auto& infernal : p()->warlock_pet_list.infernals)
-            {
-              if (!infernal->is_sleeping())
-              {
-                active_infernal = true;
-              }
-            }
-
-            for (auto& infernal : p()->warlock_pet_list.vop_infernals)
-            {
-              if (!infernal->is_sleeping())
-              {
-                active_infernal = true;
-              }
-            }
-
-            if(active_infernal)
-              p()->buffs.grimoire_of_supremacy->trigger(as<int>(last_resource_cost));
-          }
-
-          if (p()->talents.soul_fire->ok())
-            p()->cooldowns.soul_fire->adjust((-1 * (p()->talents.soul_fire->effectN(2).time_value()*last_resource_cost)));
+          if ( p()->talents.soul_fire->ok() )
+            p()->cooldowns.soul_fire->adjust( ( -1 * ( p()->talents.soul_fire->effectN( 2 ).time_value() * last_resource_cost ) ) );
         }
       }
 
@@ -156,15 +135,15 @@ namespace warlock {
       {
         double pm = warlock_spell_t::action_multiplier();
 
-        if (p()->mastery_spells.chaotic_energies->ok() && destro_mastery)
+        if ( p()->mastery_spells.chaotic_energies->ok() && destro_mastery )
         {
           double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-          double chaotic_energies_rng = rng().range(0, destro_mastery_value);
+          double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
 
-          pm *= 1.0 + chaotic_energies_rng + (destro_mastery_value);
+          pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
         }
 
-        if (p()->buffs.grimoire_of_supremacy->check() && this->data().affected_by(p()->find_spell(266091)->effectN(1)))
+        if ( p()->buffs.grimoire_of_supremacy->check() && this->data().affected_by( p()->find_spell( 266091 )->effectN( 1 ) ) )
         {
           pm *= 1.0 + p()->buffs.grimoire_of_supremacy->check_stack_value();
         }
@@ -840,22 +819,26 @@ namespace warlock {
       {
         destruction_spell_t::execute();
 
-        if (infernal_awakening)
+        // TODO - Make infernal not spawn until after infernal awakening impacts.
+        if ( infernal_awakening )
           infernal_awakening->execute();
 
-        for (size_t i = 0; i < p()->warlock_pet_list.infernals.size(); i++)
+        for ( size_t i = 0; i < p()->warlock_pet_list.infernals.size(); i++ )
         {
-          if (p()->warlock_pet_list.infernals[i]->is_sleeping())
+          if ( p()->warlock_pet_list.infernals[i]->is_sleeping() )
           {
-            p()->warlock_pet_list.infernals[i]->summon(infernal_duration);
+            p()->warlock_pet_list.infernals[i]->summon( infernal_duration );
           }
         }
 
-        if (p()->azerite.crashing_chaos.ok())
+        if ( p()->talents.grimoire_of_supremacy->ok() )
+          p()->buffs.grimoire_of_supremacy_driver->trigger();
+
+        if ( p()->azerite.crashing_chaos.ok() )
         {
           //Cancel the Vision of Perfection version if necessary
           p()->buffs.crashing_chaos_vop->expire();
-          p()->buffs.crashing_chaos->trigger(p()->buffs.crashing_chaos->max_stack());
+          p()->buffs.crashing_chaos->trigger( p()->buffs.crashing_chaos->max_stack() );
         }
       }
     };
@@ -994,6 +977,15 @@ namespace warlock {
       ->set_trigger_spell( talents.reverse_entropy )
       ->add_invalidate( CACHE_HASTE );
 
+    buffs.grimoire_of_supremacy_driver = make_buff( this, "grimoire_of_supremacy_driver", find_spell( 266091 ) )
+      ->set_duration( timespan_t::from_seconds( 30 ) )
+      ->set_max_stack( 1 )
+      ->set_refresh_behavior( buff_refresh_behavior::EXTEND )
+      ->set_stack_change_callback( [this]( buff_t*, int, int )
+        {
+          buffs.grimoire_of_supremacy->expire();
+        } );
+   
     buffs.grimoire_of_supremacy = make_buff( this, "grimoire_of_supremacy", find_spell( 266091 ) )
       ->set_default_value( find_spell( 266091 )->effectN( 1 ).percent() );
 
@@ -1041,6 +1033,9 @@ namespace warlock {
       buffs.crashing_chaos->expire();
       buffs.crashing_chaos_vop->trigger( buffs.crashing_chaos_vop->max_stack() );
     }
+
+    if ( talents.grimoire_of_supremacy->ok() )
+      buffs.grimoire_of_supremacy_driver->trigger( 1, buffs.grimoire_of_supremacy_driver->DEFAULT_VALUE(), -1.0, summon_duration );
   }
 
   void warlock_t::init_spells_destruction() {
