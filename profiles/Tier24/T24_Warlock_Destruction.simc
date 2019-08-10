@@ -50,7 +50,7 @@ actions+=/concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.con
 actions+=/channel_demonfire
 # The if condition here always applies Havoc to something other than the primary target
 actions+=/havoc,cycle_targets=1,if=!(target=self.target)&(dot.immolate.remains>dot.immolate.duration*0.5|!talent.internal_combustion.enabled)&(!cooldown.summon_infernal.ready|!talent.grimoire_of_supremacy.enabled|talent.grimoire_of_supremacy.enabled&pet.infernal.remains<=10)
-actions+=/call_action_list,name=gosup_infernal,if=talent.grimoire_of_supremacy.enabled&essence.memory_of_lucid_dreams.major&pet.infernal.active
+actions+=/call_action_list,name=gosup_infernal,if=talent.grimoire_of_supremacy.enabled&pet.infernal.active
 # Soul Fire should be used on cooldown, it does not appear worth saving for generating Soul Shards during cooldowns
 actions+=/soul_fire
 # It's worth stocking up on Soul Shards before a major cooldown usage
