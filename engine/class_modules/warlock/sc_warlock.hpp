@@ -330,6 +330,7 @@ namespace warlock
         //destruction_buffs
         propagate_const<buff_t*> backdraft;
         propagate_const<buff_t*> reverse_entropy;
+        propagate_const<buff_t*> grimoire_of_supremacy_driver;
         propagate_const<buff_t*> grimoire_of_supremacy;
         propagate_const<buff_t*> dark_soul_instability;
 
