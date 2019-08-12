@@ -2,6 +2,7 @@ optimal_raid=1
 default_actions=1
 bfa.nazjatar=1
 bfa.worldvein_allies=5
+bfa.loyal_to_the_end_allies=4
 
 T24_Death_Knight_Blood.simc
 T24_Death_Knight_Frost.simc
