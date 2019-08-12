@@ -7,11 +7,11 @@ position=ranged_back
 talents=1203011
 azerite_essences=14:3/12:3/32:3
 
-head=silivazs_skullguard,id=168357,bonus_id=4824/1517,azerite_powers=211/366/31/469/13
+head=silivazs_skullguard,id=168357,bonus_id=4824/1517/4775,azerite_powers=211/366/31/469/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulder=amalgamated_abomination_spaulders,id=159385,bonus_id=5440/1617,azerite_powers=161/211/30/83/13
-back=raals_bib,id=159294,bonus_id=4779/1602
-chest=scalemail_of_unnatural_selection,id=168352,bonus_id=4824/1517,azerite_powers=211/161/30/87/13
+shoulder=amalgamated_abomination_spaulders,id=159385,bonus_id=5440/1617/4775,azerite_powers=161/211/30/83/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=scalemail_of_unnatural_selection,id=168352,bonus_id=4824/1517/4775,azerite_powers=211/161/30/87/13
 wrists=oris_tidal_bracers,id=170304,bonus_id=1512
 hands=poens_deepsea_handgrips,id=170335,bonus_id=1512
 waist=vims_scalecrusher_chain,id=170369,bonus_id=1512
@@ -20,7 +20,7 @@ feet=akanas_reefstrider_treads,id=170142,bonus_id=1512
 finger1=charged_sandstone_band,id=158366,bonus_id=4779/1602,enchant=accord_of_critical_strike
 finger2=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_critical_strike
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
-trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
+trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 main_hand=shiver_venom_crossbow,id=168273,bonus_id=4800/1517,enchant=crows_nest_scope
 
 save=T24_Hunter_Beast_Mastery.simc
@@ -33,22 +33,23 @@ spec=marksmanship
 role=attack
 position=ranged_back
 talents=1103031
+azerite_essences=14:3/12:3/4:3
 
-head=targettracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=212/36/22/14/13
+head=soulscarred_headgear,id=159398,bonus_id=4786/1617/4819/4775,azerite_powers=212/36/459/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=tidal_shroud_spaulders,id=165923,bonus_id=4824/1537,azerite_powers=212/36/30/15/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440,azerite_powers=36/370/30/14/13
-wrists=ape_wranglers_wristguards,id=165534,bonus_id=4800/1537
-hands=slimy_kelpweavers,id=165546,bonus_id=4800/1537
-waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
-legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
-feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_mastery
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
-trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
-trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
-main_hand=twinpipe_buster_cannon,id=165600,bonus_id=4800/1537,enchant=masterful_navigation
+shoulder=gardbrace_of_fractured_reality,id=169588,bonus_id=4824/1517/4775,azerite_powers=36/576/30/15/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=4786/1617/4819/4775,azerite_powers=36/370/30/14/13
+wrists=oris_tidal_bracers,id=170304,bonus_id=1512
+hands=poens_deepsea_handgrips,id=170335,bonus_id=1512
+waist=vims_scalecrusher_chain,id=170369,bonus_id=1512
+legs=pelagos_predators_legguards,id=168383,bonus_id=4800/1517
+feet=akanas_reefstrider_treads,id=170142,bonus_id=1512
+finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_critical_strike
+finger2=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_critical_strike
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+main_hand=shiver_venom_crossbow,id=168273,bonus_id=4800/1517,enchant=crows_nest_scope
 
 save=T24_Hunter_Marksmanship.simc
 
@@ -60,21 +61,22 @@ spec=survival
 role=attack
 position=back
 talents=1101021
+azerite_essences=14:3/5:3/4:3
 
-head=visage_of_bloody_horrors,id=159381,bonus_id=1587/5440,azerite_powers=371/372/30/83/13
+head=hood_of_lightless_depths,id=168353,bonus_id=4824/1517,azerite_powers=371/373/30/543/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=mantle_of_the_soulbinders_caress,id=165537,bonus_id=4824/1537,azerite_powers=371/163/30/15/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440,azerite_powers=163/371/30/14/13
-wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
-hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
-waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
-legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
-feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
-finger2=seal_of_questionable_loyalties,id=158314,bonus_id=1572/4780,enchant=pact_of_haste
-trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
-trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
-main_hand=hornridged_crusher,id=165589,bonus_id=4800/1537,enchant=quick_navigation
+shoulder=shoulderguards_of_crushing_depths,id=168354,bonus_id=4824/1517,azerite_powers=371/372/21/14/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=4786/1617/4819/4775,azerite_powers=163/371/30/14/13
+wrists=oris_tidal_bracers,id=170304,bonus_id=1512
+hands=poens_deepsea_handgrips,id=170335,bonus_id=1512
+waist=vims_scalecrusher_chain,id=170369,bonus_id=1512
+legs=pelagos_predators_legguards,id=168383,bonus_id=4800/1517
+feet=akanas_reefstrider_treads,id=170142,bonus_id=1512
+finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_critical_strike
+finger2=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_critical_strike
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+main_hand=shiver_venom_lance,id=168306,bonus_id=4800/1517,enchant=quick_navigation
 
 save=T24_Hunter_Survival.simc

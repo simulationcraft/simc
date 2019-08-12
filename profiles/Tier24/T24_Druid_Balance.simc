@@ -90,7 +90,7 @@ actions+=/sunfire
 
 head=shroud_of_unmooring_whispers,id=168349,bonus_id=4824/1517/4775,azerite_powers=122/200/30/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=shoulderpads_of_frothing_rage,id=168348,bonus_id=4824/1517/4775,azerite_powers=122/576/22/15/13
+shoulders=gorak_tuls_mantle,id=159339,bonus_id=4786/1617/4819/4775,azerite_powers=122/193/459/219/13
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
 chest=blackwater_shimmerscale_vest,id=168343,bonus_id=4824/1517/4775,azerite_powers=250/576/30/540/13
 wrists=oris_tidal_wristwraps,id=170305,bonus_id=1512
