@@ -93,7 +93,7 @@ jQuery(document).ready(function ($) {
             $row.fadeToggle(75);
         } else {
             $me.addClass('open');
-            $row.fadeToggle(300);
+            $row.fadeToggle(150);
         }
     });
 	$('.toggle, .toggle-details').each(function() {
@@ -128,7 +128,7 @@ jQuery(document).ready(function ($) {
         });
         hoverTimeout = setTimeout(function() {
             $('#active-help').fadeIn(450);
-        }, 750);
+        }, 600);
     }, hoverHide);
     window.onblur = hoverHide;
     function getCell(elem, i, both) {
@@ -168,6 +168,20 @@ jQuery(document).ready(function ($) {
             return va > vb ? 1 : -1;
         }
     }
+    function pulsecolumn(table, index) {
+        var $cells = table.find('.toprow td:nth-of-type(' + (index + 1) + ')');
+        table.find('.childrow').each(function() {
+            var span = $(this).prev().children('td[rowspan]').length;
+            if (index > span) {
+                $.merge($cells, $(this).children('td').eq(index - span));
+            }
+        });
+        if (!$cells.length)
+        {
+            $cells = table.find('tbody tr td:nth-of-type(' + (index + 1) + ')');
+        }
+        $cells.fadeTo(75, 0.75).fadeTo(75, 1);
+    }
     $('.toggle-sort').click(function (e) {
         e.preventDefault();
         var $me = $(this);
@@ -187,7 +201,6 @@ jQuery(document).ready(function ($) {
         }
         var isDsc = $me.hasClass('dsc-sorted');
         $me.toggleClass('asc-sorted', !isDsc);
-        this.offsetHeight;
         var srt;
         if (doAlpha) {
             srt = function(i, dsc, both) {
@@ -222,13 +235,6 @@ jQuery(document).ready(function ($) {
         if ($tbl.hasClass('stripetoprow')) {
             $tbl.oddstripe();
         }
-        var $cells = $tbl.find('.toprow td:nth-of-type(' + (idx + 1) + ')');
-        $tbl.find('.childrow').each(function() {
-            var span = $(this).prev().children('td[rowspan]').length;
-            if (idx > span) {
-                $.merge($cells, $(this).children('td').eq(idx - span));
-            }
-        })
-        $cells.css('opacity', 0.66).fadeTo(150, 1).fadeTo(150, 0.66).fadeTo(150, 1);
+        pulsecolumn($tbl, idx);
     });
 });
