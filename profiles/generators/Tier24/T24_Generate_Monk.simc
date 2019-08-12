@@ -32,6 +32,7 @@ spec=windwalker
 role=attack
 position=back
 talents=2022032
+azerite_essences=14:3/32:3/4:3
 
 head=helm_of_hideous_transformation,id=168347,bonus_id=4824/1517/4775,azerite_powers=389/390/21/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
@@ -45,7 +46,7 @@ legs=leggings_of_the_stormborn,id=168378,bonus_id=4800/1517
 feet=akanas_reefstrider_footwraps,id=170141,bonus_id=1512
 finger1=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=pact_of_versatility
 finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=pact_of_versatility
-trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+trinket1=dribbling_inkpod,id=169319,bonus_id=4800/1517
 trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=masterful_navigation
 off_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=versatile_navigation
@@ -59,6 +60,7 @@ spec=windwalker
 role=attack
 position=back
 talents=2022033
+azerite_essences=14:3/32:3/4:3
 
 head=helm_of_hideous_transformation,id=168347,bonus_id=4824/1517/4775,azerite_powers=389/390/21/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
@@ -72,7 +74,7 @@ legs=leggings_of_the_stormborn,id=168378,bonus_id=4800/1517
 feet=akanas_reefstrider_footwraps,id=170141,bonus_id=1512
 finger1=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=pact_of_versatility
 finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=pact_of_versatility
-trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+trinket1=dribbling_inkpod,id=169319,bonus_id=4800/1517
 trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=masterful_navigation
 off_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=versatile_navigation
