@@ -3108,32 +3108,17 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   int num_players  = (int)sim.players_by_name.size();
 
   // Player Description
-  os << "<div id=\"player" << p.index << "\" class=\"player section";
-  if ( num_players > 1 && j == 0 && !sim.scaling->has_scale_factors() && !p.is_enemy() )
-  {
-    os << " grouped-first";
-  }
-  else if ( p.is_enemy() && j == (int)sim.targets_by_name.size() - 1 )
-  {
-    os << " final grouped-last";
-  }
-  else if ( num_players == 1 )
-  {
-    os << " section-open";
-  }
-  os << "\">\n";
+  os << "<div id=\"player" << p.index << "\" class=\"player section\">\n";
 
   if ( !p.report_information.thumbnail_url.empty() )
   {
     os.printf(
-        "<class=\"toggle-thumbnail ext%s\"><img src=\"%s\" "
-        "alt=\"%s\" class=\"player-thumbnail\"/>\n",
+        "<class=\"toggle-thumbnail ext%s\"><img src=\"%s\" alt=\"%s\" class=\"player-thumbnail\"/>\n",
         ( num_players == 1 ) ? "" : " hide",
         p.report_information.thumbnail_url.c_str(), util::remove_special_chars( p.name_str ).c_str() );
   }
 
-  os << "<h2 id=\""
-     << "player" << p.index << "toggle\" class=\"toggle";
+  os << "<h2 id=\"player" << p.index << "toggle\" class=\"toggle";
   if ( num_players == 1 )
   {
     os << " open";
@@ -3146,8 +3131,7 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
     os.printf( "\">%s&#160;:&#160;%.0f dps, %.0f dps to main target", n.c_str(), p.collected_data.dps.mean(),
                p.collected_data.prioritydps.mean() );
   }
-  else if ( p.collected_data.dps.mean() >= p.collected_data.hps.mean() ||
-            p.primary_role() == ROLE_TANK )
+  else if ( p.collected_data.dps.mean() >= p.collected_data.hps.mean() || p.primary_role() == ROLE_TANK )
   {
     os.printf( "\">%s&#160;:&#160;%.0f dps", n.c_str(), p.collected_data.dps.mean() );
   }
@@ -3177,8 +3161,7 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
 
     if ( sim.show_etmi || sim.player_no_pet_list.size() > 1 )
     {
-      double etmi_display =
-          p.collected_data.effective_theck_meloree_index.mean();
+      double etmi_display = p.collected_data.effective_theck_meloree_index.mean();
       if ( etmi_display >= 1.0e7 )
         os.printf( ", %.1fk ETMI", etmi_display / 1.0e6 );
       else if ( std::abs( etmi_display ) <= 999.9 )

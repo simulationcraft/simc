@@ -40,7 +40,7 @@ def main():
         # simc logo with transparent background.
         f.write( print_as_char_array( "__logo", get_file_as_lines( "simc_logo.txt", line_length ) ) )
         f.write( "\n\n" )
-        f.write( print_as_char_array( "__image_load_script", get_file_as_lines( "image_load_script.js", line_length ) ) )
+        f.write( print_as_char_array( "__html_report_script", get_file_as_lines( "html_report_script.js", line_length ) ) )
         f.write( "\n\n" )
         f.write( print_as_char_array( "__html_stylesheet", get_file_as_lines( "style.css", line_length ) ) )
         f.write( "\n\n" )
