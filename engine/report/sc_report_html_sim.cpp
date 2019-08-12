@@ -238,7 +238,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
     }
   }
 
-  os << "<div id=\"table-of-contents\" class=\"section grouped-first grouped-last\">\n"
+  os << "<div id=\"table-of-contents\" class=\"section\">\n"
      << "<h2 class=\"toggle\">Table of Contents</h2>\n"
      << "<div class=\"toggle-content hide\">\n";
 
@@ -312,8 +312,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
       if ( pi < static_cast<int>( sim.players_by_name.size() ) )
       {
         player_t* p = sim.players_by_name[ pi ];
-        os << "<li><a href=\"#player" << p->index << "\">" << util::encode_html( p->name() )
-           << "</a>";
+        os << "<li><a href=\"#player" << p->index << "\">" << util::encode_html( p->name() ) << "</a>";
         ci++;
         if ( sim.report_pets_separately )
         {
@@ -324,8 +323,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
             pet_t* pet = sim.players_by_name[ pi ]->pet_list[ k ];
             if ( pet->summoned )
             {
-              os << "<li><a href=\"#player" << pet->index << "\">" << util::encode_html( pet->name() )
-                 << "</a></li>\n";
+              os << "<li><a href=\"#player" << pet->index << "\">" << util::encode_html( pet->name() ) << "</a></li>\n";
               ci++;
             }
           }
@@ -338,7 +336,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
       {
         if ( ab == 0 )
         {
-          os << "<li><a href=\"#auras-buffs\">Auras/Buffs</a></li>\n";
+          //os << "<li><a href=\"#auras-buffs\">Auras/Buffs</a></li>\n";
           ab = 1;
         }
         ci++;
@@ -362,8 +360,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
           if ( pi < static_cast<int>( sim.targets_by_name.size() ) )
           {
             player_t* p = sim.targets_by_name[ pi ];
-            os << "<li><a href=\"#player" << p->index << "\">"
-               << util::encode_html( p->name() ) << "</a></li>\n";
+            os << "<li><a href=\"#player" << p->index << "\">" << util::encode_html( p->name() ) << "</a></li>\n";
           }
           ci++;
           pi++;
@@ -557,7 +554,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
 
 void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
 {
-  os << "<div id=\"raid-summary\" class=\"section section-open\">\n\n";
+  os << "<div id=\"raid-summary\" class=\"section\">\n\n";
 
   os << "<h2 class=\"toggle open\">Raid Summary</h2>\n";
 
@@ -667,7 +664,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
      << "</div>\n"
      << "</div>\n\n";
 
-  os << "<div id=\"apm-summary\" class=\"section grouped-first\">\n\n";
+  os << "<div id=\"apm-summary\" class=\"section\">\n\n";
 
   os << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Actions per Minute / DPS Variance Summary</h2>\n"
      << "<div class=\"toggle-content hide\">\n"
@@ -711,9 +708,8 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
   std::string SF    = sf;
   std::transform( SF.begin(), SF.end(), SF.begin(), toupper );
 
-  os << "<div id=\"raid-scale-factors\" class=\"section grouped-first\">\n\n"
-     << "<h2 class=\"toggle\">" << SF << " Scale Factors (" << sf
-     << " increase per unit stat)</h2>\n"
+  os << "<div id=\"raid-scale-factors\" class=\"section\">\n\n"
+     << "<h2 class=\"toggle\">" << SF << " Scale Factors (" << sf << " increase per unit stat)</h2>\n"
      << "<div class=\"toggle-content hide\">\n";
 
   os << "<table class=\"sc\">\n";
@@ -1227,7 +1223,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
 
 void print_html_image_load_scripts( report::sc_html_stream& os )
 {
-  print_text_array( os, __image_load_script );
+  print_text_array( os, __html_report_script );
 }
 
 void print_html_head( report::sc_html_stream& os, const sim_t& sim )
@@ -1419,24 +1415,8 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   }
   os << "};\n";
 
-  os << "</script>\n";
-  os << "<script type=\"text/javascript\">\n";
-  os << "jQuery(document).ready(function() {\n";
-  os << "\tjQuery('.toggle, .toggle-details').each(function(index) {\n";
-  os << "\t\tvar s = jQuery(this);\n";
-  os << "\t\tif ( __chartData[s.attr('id')] === undefined ) return;\n";
-  os << "\t\ts.one('click', function() {\n";
-  os << "\t\t\tvar s = jQuery(this);\n";
-  os << "\t\t\tvar d = __chartData[s.attr('id')];\n";
-  os << "\t\t\tfor ( idx in d ) {\n";
-  os << "\t\t\t\tjQuery('#' + d[idx]['target']).highcharts(d[idx]['data']);\n";
-  os << "\t\t\t}\n";
-  os << "\t\t});\n";
-  os << "\t});\n";
-  os << "});\n";
-  os << "</script>\n";
-
-  os << "</body>\n\n"
+  os << "</script>\n"
+     << "</body>\n\n"
      << "</html>\n";
 }
 
