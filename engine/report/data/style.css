@@ -512,7 +512,7 @@ table.stripebody tbody:nth-of-type(even) tr:first-of-type + tr.childrow {
 }
 .dsc-sorted:after,
 .asc-sorted:after {
-    content: '';
+    content: ' ';
     position: relative;
     left: 0.15em;
     border: 0.4em solid transparent;
