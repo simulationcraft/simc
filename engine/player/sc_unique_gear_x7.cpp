@@ -4381,7 +4381,7 @@ void items::dribbling_inkpod( special_effect_t& effect )
       }
     }
 
-    void execute( action_t*, action_state_t* s )
+    void execute( action_t*, action_state_t* s ) override
     {
       if ( s->target->health_percentage() > hp_pct )
       {
@@ -4680,10 +4680,31 @@ void items::getiikku_cut_of_death( special_effect_t& effect )
 
 void items::bilestained_crawg_tusks( special_effect_t& effect )
 {
+  struct vile_bile_t : public proc_spell_t
+  {
+    vile_bile_t( const special_effect_t& effect ) :
+      proc_spell_t( "vile_bile", effect.player, effect.player->find_spell( 281721 ), effect.item )
+    { }
+
+    // Refresh procs do not override the potency of the dot (if wielding two different
+    // ilevel weapons)
+    void trigger_dot( action_state_t* state ) override
+    {
+      auto dot = get_dot( state->target );
+      auto dot_action = dot->is_ticking() ? dot->current_action : nullptr;
+
+      proc_spell_t::trigger_dot( state );
+
+      if ( dot_action )
+      {
+        dot->current_action = dot_action;
+      }
+    }
+  };
+
   // Note, no create_proc_action here, since there is the possibility of dual-wielding them and
   // special_effect_t does not have enough support for defining "shared spells" on initialization
-  effect.execute_action = new proc_spell_t( "vile_bile", effect.player,
-    effect.player->find_spell( 281721 ), effect.item );
+  effect.execute_action = new vile_bile_t( effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
