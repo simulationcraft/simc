@@ -86,8 +86,15 @@ jQuery(document).ready(function ($) {
     });
     $('.toggle-details').click(function (e) {
         e.preventDefault();
-        $(this).toggleClass('open');
-        $(this).parents('tr').nextAll('.details').first().fadeToggle(150);
+        var $me = $(this);
+        var $row = $me.parents('tr').nextAll('.details').first();
+        if ($me.hasClass('open')) {
+            $me.removeClass('open');
+            $row.fadeToggle(75);
+        } else {
+            $me.addClass('open');
+            $row.fadeToggle(300);
+        }
     });
 	$('.toggle, .toggle-details').each(function() {
 		if ( __chartData[this.id] === undefined ) return;
@@ -215,5 +222,13 @@ jQuery(document).ready(function ($) {
         if ($tbl.hasClass('stripetoprow')) {
             $tbl.oddstripe();
         }
+        var $cells = $tbl.find('.toprow td:nth-of-type(' + (idx + 1) + ')');
+        $tbl.find('.childrow').each(function() {
+            var span = $(this).prev().children('td[rowspan]').length;
+            if (idx > span) {
+                $.merge($cells, $(this).children('td').eq(idx - span));
+            }
+        })
+        $cells.css('opacity', 0.66).fadeTo(150, 1).fadeTo(150, 0.66).fadeTo(150, 1);
     });
 });

@@ -3102,10 +3102,10 @@ void print_html_player_custom_section( report::sc_html_stream& os, const player_
 
 // print_html_player ========================================================
 
-void print_html_player_description( report::sc_html_stream& os, const player_t& p, int j )
+void print_html_player_description( report::sc_html_stream& os, const player_t& p )
 {
   const sim_t& sim = *p.sim;
-  int num_players  = (int)sim.players_by_name.size();
+  bool one_player = sim.players_by_name.size() == 1 && !p.is_enemy();
 
   // Player Description
   os << "<div id=\"player" << p.index << "\" class=\"player section\">\n";
@@ -3114,12 +3114,12 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   {
     os.printf(
         "<class=\"toggle-thumbnail ext%s\"><img src=\"%s\" alt=\"%s\" class=\"player-thumbnail\"/>\n",
-        ( num_players == 1 ) ? "" : " hide",
+        ( one_player ) ? "" : " hide",
         p.report_information.thumbnail_url.c_str(), util::remove_special_chars( p.name_str ).c_str() );
   }
 
   os << "<h2 id=\"player" << p.index << "toggle\" class=\"toggle";
-  if ( num_players == 1 )
+  if ( one_player )
   {
     os << " open";
   }
@@ -3179,7 +3179,7 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   os << "</h2>\n";
 
   os << "<div class=\"toggle-content";
-  if ( num_players > 1 )
+  if ( !one_player )
   {
     os << " hide";
   }
@@ -4180,9 +4180,9 @@ void print_html_player_deaths( report::sc_html_stream& os, const player_t& p,
 
 // print_html_player_ =======================================================
 
-void print_html_player_( report::sc_html_stream& os, const player_t& p, int player_index )
+void print_html_player_( report::sc_html_stream& os, const player_t& p )
 {
-  print_html_player_description( os, p, player_index );
+  print_html_player_description( os, p );
 
   print_html_player_results_spec_gear( os, p );
 
@@ -4262,10 +4262,10 @@ void build_player_report_data( player_t& p )
 
 namespace report
 {
-void print_html_player( report::sc_html_stream& os, player_t& p, int player_index )
+void print_html_player( report::sc_html_stream& os, player_t& p )
 {
   build_player_report_data( p );
-  print_html_player_( os, p, player_index );
+  print_html_player_( os, p );
 }
 
 }  // END report NAMESPACE
