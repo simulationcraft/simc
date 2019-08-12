@@ -1310,12 +1310,10 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
     print_html_scale_factors( os, sim );
   }
 
-  int k = 0;  // Counter for both players and enemies, without pets.
-
   // Report Players
   for ( auto& player : sim.players_by_name )
   {
-    report::print_html_player( os, *player, k );
+    report::print_html_player( os, *player );
 
     // Pets
     if ( sim.report_pets_separately )
@@ -1323,7 +1321,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
       for ( auto& pet : player->pet_list )
       {
         if ( pet->summoned && !pet->quiet )
-          report::print_html_player( os, *pet, 1 );
+          report::print_html_player( os, *pet );
       }
     }
   }
@@ -1338,10 +1336,11 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   // Report Targets
   if ( sim.report_targets )
   {
+    num_players += sim.targets_by_name.size();
+
     for ( auto& player : sim.targets_by_name )
     {
-      report::print_html_player( os, *player, k );
-      ++k;
+      report::print_html_player( os, *player );
 
       // Pets
       if ( sim.report_pets_separately )
@@ -1349,7 +1348,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
         for ( auto& pet : player->pet_list )
         {
           // if ( pet -> summoned )
-          report::print_html_player( os, *pet, 1 );
+          report::print_html_player( os, *pet );
         }
       }
     }
@@ -1365,7 +1364,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   if ( sim.decorated_tooltips )
   {
     //Apply the prettification stuff only if its a single report
-    if ( num_players > 1 || k > 1 )
+    if ( num_players > 1 )
     {
       os << R"(<script>var whTooltips = {colorLinks: false, iconizeLinks: false, renameLinks: false};</script>)";
     }
@@ -1397,8 +1396,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   os << "</script>\n";
   os << "<script type=\"text/javascript\">\n";
   os << "__chartData = {\n";
-  for ( std::map<std::string, std::vector<std::string> >::const_iterator i = sim.chart_data.begin();
-        i != sim.chart_data.end(); ++i )
+  for ( auto i = sim.chart_data.begin(); i != sim.chart_data.end(); ++i )
   {
     os << "\"" + i->first + "\": [\n";
     const std::vector<std::string> data = i->second;
