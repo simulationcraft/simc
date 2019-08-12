@@ -5,6 +5,7 @@ spec=elemental
 role=spell
 position=ranged_back
 talents=2311132
+azerite_essences=14:3/32:3/4:3
 
 head=hood_of_the_dark_reaper,id=159391,bonus_id=1617/4819/4775,azerite_powers=457/416/30/83/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
@@ -22,8 +23,6 @@ trinket1=shiver_venom_relic,id=168905,bonus_id=4800/1517
 trinket2=leviathans_lure,id=169304,bonus_id=4800/1517
 main_hand=scepter_of_the_azshari,id=168903,bonus_id=4800/1517,enchant=versatile_navigation
 off_hand=great_reef_barrier,id=168476,bonus_id=4800/1517
-
-azerite_essences=14:3/32:3/4:3
 
 save=T24_Shaman_Elemental.simc
 
@@ -122,21 +121,23 @@ spec=restoration
 role=spell
 position=ranged_back
 talents=1132221
+azerite_essences=12:3/32:3/4:3
 
-head=hood_of_the_dark_reaper,id=159391,bonus_id=1587/4819,azerite_powers=457/416/30/83/13
+head=silivazs_skullguard,id=168357,bonus_id=4824/1517/4775,azerite_powers=457/575/31/85/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulder=amalgamated_abomination_spaulders,id=159385,bonus_id=1587/4819,azerite_powers=457/194/38/83/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=mistfire_raiment,id=165540,bonus_id=1537/4823,azerite_powers=457/562/31/474/13
-wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
-hands=biteresistant_chain_gloves,id=155892,bonus_id=1572/4777
-waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
-legs=legguards_of_the_awakening_brood,id=159375,bonus_id=1572/4777
-feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_versatility
-finger2=,id=159458,bonus_id=1572/4777,enchant=pact_of_versatility
-trinket1=crest_of_paku,id=165581,bonus_id=4800/1537
-trinket2=tidestorm_codex,id=165576,bonus_id=4800/1537
-main_hand=deathspeaker_spire,id=165597,bonus_id=4800/1537/4786,enchant=versatile_navigation
+shoulders=amalgamated_abomination_spaulders,id=159385,bonus_id=4786/1617/4819/4775,azerite_powers=457/194/38/83/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=4786/1617/4819/4775,azerite_powers=457/482/30/14/13
+wrists=oris_tidal_bracers,id=170304,bonus_id=1512
+hands=poens_deepsea_handgrips,id=170335,bonus_id=1512
+waist=tanglekelp_waistwrap,id=168870,bonus_id=4800/1517
+legs=pelagos_predators_legguards,id=168383,bonus_id=4800/1517
+feet=akanas_reefstrider_treads,id=170142,bonus_id=1512
+finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_versatility
+finger2=lord_waycrests_signet,id=158362,bonus_id=1602/4779,enchant=accord_of_versatility
+trinket1=shiver_venom_relic,id=168905,bonus_id=4800/1517
+trinket2=leviathans_lure,id=169304,bonus_id=4800/1517
+main_hand=scepter_of_the_azshari,id=168903,bonus_id=4800/1517,enchant=versatile_navigation
+off_hand=great_reef_barrier,id=168476,bonus_id=4800/1517
 
 save=T24_Shaman_Restoration.simc
