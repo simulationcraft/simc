@@ -56,7 +56,8 @@ actions+=/tiger_palm,if=(talent.invoke_niuzao_the_black_ox.enabled|talent.specia
 actions+=/expel_harm,if=buff.gift_of_the_ox.stack>4
 actions+=/blackout_strike
 actions+=/keg_smash
-actions+=/concentrated_flame
+actions+=/concentrated_flame,if=dot.concentrated_flame.remains=0
+actions+=/heart_essence,if=!essence.the_crucible_of_flame.major
 actions+=/expel_harm,if=buff.gift_of_the_ox.stack>=3
 actions+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
 actions+=/breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))
