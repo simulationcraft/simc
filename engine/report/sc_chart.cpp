@@ -881,8 +881,7 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
   return true;
 }
 
-bool chart::generate_stats_sources( highchart::pie_chart_t& pc,
-                                    const player_t& p, const std::string title,
+bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& p, const std::string title,
                                     const std::vector<stats_t*>& stats_list )
 {
   if ( stats_list.empty() )
@@ -891,8 +890,7 @@ bool chart::generate_stats_sources( highchart::pie_chart_t& pc,
   }
 
   pc.set_title( title );
-  pc.set( "plotOptions.pie.dataLabels.format",
-          "<b>{point.name}</b>: {point.percentage:.1f}%" );
+  pc.set( "plotOptions.pie.dataLabels.format", "<b>{point.name}</b>: {point.percentage:.1f}%" );
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
     pc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
@@ -914,14 +912,16 @@ bool chart::generate_stats_sources( highchart::pie_chart_t& pc,
     name_str += report::decorate_html_string( util::encode_html( stats->name_str ), c );
 
     e.set( "name", name_str );
+    e.set( "id", "#actor" + util::to_string( stats->player->index ) + "_"
+                   + util::remove_special_chars( stats->name_str ) + "_"
+                   + util::stats_type_string( stats->type ) + "_toggle" );
     pc.add( "series.0.data", e );
   }
 
   return true;
 }
 
-bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart,
-                                           const player_t& p )
+bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart, const player_t& p )
 {
   std::vector<stats_t*> stats_list;
 
@@ -935,13 +935,11 @@ bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart,
     return true;
   };
 
-  range::copy_if( p.stats_list, std::back_inserter( stats_list ),
-                  stats_filter );
+  range::copy_if( p.stats_list, std::back_inserter( stats_list ), stats_filter );
 
   for ( const auto& pet : p.pet_list )
   {
-    range::copy_if( pet->stats_list, std::back_inserter( stats_list ),
-                    stats_filter );
+    range::copy_if( pet->stats_list, std::back_inserter( stats_list ), stats_filter );
   }
 
   range::sort( stats_list, compare_stats_by_mean );
@@ -949,17 +947,17 @@ bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart,
   if ( stats_list.empty() )
     return false;
 
-  generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Damage Sources",
-                          stats_list );
+  generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Damage Sources", stats_list );
   chart.set( "series.0.name", "Damage" );
   chart.set( "plotOptions.pie.tooltip.pointFormat",
-             "<span style=\"color:{point.color}\">\xE2\x97\x8F</span> "
-             "{series.name}: <b>{point.y}</b>%<br/>" );
+             "<span style=\"color:{point.color}\">\xE2\x97\x8F</span> {series.name}: <b>{point.y}</b>%<br/>" );
+  chart.set( "plotOptions.pie.events.click", "open_details_from_chart" );
+  chart.value( "plotOptions.pie.events.click" ).SetRawOutput( true );
+
   return true;
 }
 
-bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart,
-                                         const player_t& p )
+bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart, const player_t& p )
 {
   std::vector<stats_t*> stats_list;
 
@@ -973,13 +971,11 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart,
     return true;
   };
 
-  range::copy_if( p.stats_list, std::back_inserter( stats_list ),
-                  stats_filter );
+  range::copy_if( p.stats_list, std::back_inserter( stats_list ), stats_filter );
 
   for ( const auto& pet : p.pet_list )
   {
-    range::copy_if( pet->stats_list, std::back_inserter( stats_list ),
-                    stats_filter );
+    range::copy_if( pet->stats_list, std::back_inserter( stats_list ), stats_filter );
   }
 
   if ( stats_list.empty() )
@@ -987,14 +983,14 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart,
 
   range::sort( stats_list, compare_stats_by_mean );
 
-  generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Healing Sources",
-                          stats_list );
+  generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Healing Sources", stats_list );
+  chart.set( "plotOptions.pie.events.click", "open_details_from_chart" );
+  chart.value( "plotOptions.pie.events.click" ).SetRawOutput( true );
 
   return true;
 }
 
-bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
-                               const std::string& type )
+bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const std::string& type )
 {
   // Prepare list, based on the selected metric
   std::vector<const player_t*> player_list;
@@ -1059,8 +1055,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
       sc_js_t e;
       e.set( "color", c.str() );
       e.set( "name", util::encode_html( p->name_str ) );
-      e.set( "y",
-             util::round( value, static_cast<unsigned int>( precision ) ) );
+      e.set( "y", util::round( value, static_cast<unsigned int>( precision ) ) );
       e.set( "id", "#player" + util::to_string( p->index ) + "toggle" );
 
       // If lowest_value is defined, add relative difference (in percent) to the data
@@ -1096,8 +1091,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
     }
     bc.add( "__data." + series_id_str + ".series.0.name", chart_name );
 
-    bc.set( "__data." + series_id_str + ".title.text",
-            get_metric_value_name( vm ) + " " + chart_name );
+    bc.set( "__data." + series_id_str + ".title.text", get_metric_value_name( vm ) + " " + chart_name );
     // Configure candlebars
     if ( candlebars )
     {
@@ -1279,13 +1273,8 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
   bc.value( "plotOptions.bar.dataLabels.formatter" ).SetRawOutput( true );
 
   // Bar click action, opens (and scrolls) to the player section clicked on
-  std::string js = "function(event) {";
-  js += "var anchor = jQuery(event.point.id);";
-  js += "anchor.click();";
-  js +=
-      "jQuery('html, body').animate({ scrollTop: anchor.offset().top }, "
-      "'slow');";
-  js += "}";
+  std::string js = "function(e){var anchor=jQuery(e.point.id);if(!anchor.hasClass('open')){anchor.click()}";
+  js += "jQuery('html, body').animate({scrollTop:anchor.parent().offset().top-anchor.height()},300)}";
   bc.set( "plotOptions.bar.events.click", js );
   bc.value( "plotOptions.bar.events.click" ).SetRawOutput( true );
 
@@ -1343,8 +1332,7 @@ bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
   return ret;
 }
 
-bool chart::generate_apet( highchart::bar_chart_t& bc,
-                           const std::vector<stats_t*>& stats_list )
+bool chart::generate_apet( highchart::bar_chart_t& bc, const std::vector<stats_t*>& stats_list )
 {
   if ( stats_list.empty() )
   {
@@ -1384,6 +1372,9 @@ bool chart::generate_apet( highchart::bar_chart_t& bc,
     }
     e.set( "name", name_str );
     e.set( "y", util::round( stats->apet, 1 ) );
+    e.set( "id", "#actor" + util::to_string( stats->player->index ) + "_"
+                   + util::remove_special_chars( stats->name_str ) + "_"
+                   + util::stats_type_string( stats->type ) + "_toggle" );
 
     bc.add( "series.0.data", e );
   }
@@ -1393,15 +1384,12 @@ bool chart::generate_apet( highchart::bar_chart_t& bc,
   return true;
 }
 
-bool chart::generate_action_dpet( highchart::bar_chart_t& bc,
-                                  const player_t& p )
+bool chart::generate_action_dpet( highchart::bar_chart_t& bc, const player_t& p )
 {
   std::vector<stats_t*> stats_list;
 
-  // Copy all stats* from p -> stats_list to stats_list, which satisfy the
-  // filter
-  range::remove_copy_if( p.stats_list, back_inserter( stats_list ),
-                         filter_stats_dpet( p ) );
+  // Copy all stats* from p -> stats_list to stats_list, which satisfy the filter
+  range::remove_copy_if( p.stats_list, back_inserter( stats_list ), filter_stats_dpet( p ) );
   range::sort( stats_list, []( const stats_t* l, const stats_t* r ) {
     if ( l->apet == r->apet )
     {
@@ -1436,11 +1424,13 @@ bool chart::generate_action_dpet( highchart::bar_chart_t& bc,
 
   generate_apet( bc, stats_list );
 
+  bc.set( "plotOptions.bar.events.click", "open_details_from_chart" );
+  bc.value( "plotOptions.bar.events.click" ).SetRawOutput( true );
+
   return true;
 }
 
-bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p,
-                                   scale_metric_e metric )
+bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p, scale_metric_e metric )
 {
   double max_dps = 0, min_dps = std::numeric_limits<double>::max();
 
