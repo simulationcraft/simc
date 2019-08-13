@@ -143,8 +143,8 @@ jQuery(document).ready(function ($) {
         ret = $row.children('td').eq(idx).text().trim();
         if (!ret.length && both) {
             var span = $row.children('td[rowspan]').length;
-            $row = $row.nextAll(':not(.details)').first();
-            if (idx >= span) {
+            $row = $row.nextAll('.childrow').first();
+            if ($row.length && idx >= span) {
                 idx -= span;
                 ret = $row.children('td').eq(idx).text().trim();
             }
@@ -168,17 +168,21 @@ jQuery(document).ready(function ($) {
             return va > vb ? 1 : -1;
         }
     }
-    function pulsecolumn(table, index) {
-        var $cells;
+    function pulsecolumn(table, index, both) {
+        var $cells = $();
         if (table.hasClass('stripetoprow')) {
-            $cells = table.find('.toprow td:nth-of-type(' + (index + 1) + '):not(:empty)');
-            table.find('.childrow').each(function() {
-                var $prev = $(this).prev();
-                if ($prev.children('td').eq(index).is(':empty')) {
-                    var span = $prev.children('td[rowspan]').length;
-                    if (index >= span) {
-                        $.merge($cells, $(this).children('td').eq(index - span));
+            table.find('.toprow:not(.childrow)').each(function() {
+                var me = $(this);
+                var cell = me.children('td').eq(index);
+                if (both && (!cell.length || cell.is(':empty'))) {
+                    var span = me.children('td[rowspan]').length;
+                    var row = me.nextAll('.childrow').first();
+                    if (row.length && index >= span) {
+                        cell = row.children('td').eq(index - span);
                     }
+                }
+                if (cell.length && !cell.is(':empty')) {
+                    $.merge($cells, cell);
                 }
             });
         } else if (table.hasClass('stripebody')) {
@@ -244,6 +248,6 @@ jQuery(document).ready(function ($) {
         if ($tbl.hasClass('stripetoprow')) {
             $tbl.oddstripe();
         }
-        pulsecolumn($tbl, idx);
+        pulsecolumn($tbl, idx, doRows);
     });
 });

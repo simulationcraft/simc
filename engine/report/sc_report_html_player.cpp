@@ -452,11 +452,15 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                              const player_t* actor = nullptr, int indentation = 0 )
 {
   const player_t& p = *s.player->get_owner_or_self();
+  bool hasparent = s.parent && s.parent->player == actor;
   std::string row_class;
   std::string rowspan;
 
   if ( use_small_table( &p ) )
     row_class = " small";
+
+  if ( hasparent )
+    row_class += " childrow";
 
   os << "<tr class=\"toprow" << row_class << "\">\n";
 
@@ -467,16 +471,16 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
   // Ability name
   os << "<td class=\"left\"" << rowspan << ">";
-  if ( s.parent && s.parent->player == actor )
+
+  if ( hasparent )
   {
-    for( int i = 0; i< indentation; ++i)
+    for ( int i = 0; i < indentation; ++i )
     {
       os << "&#160;&#160;&#160;\n";
     }
   }
 
-  os << output_action_name( s, actor );
-  os << "</td>\n";
+  os << output_action_name( s, actor ) << "</td>\n";
 
   // DPS and DPS %
   // Skip for abilities that do no damage
