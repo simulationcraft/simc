@@ -805,8 +805,7 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p,
 bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
 {
   pc.set_title( util::encode_html( p.name_str ) + " Spent Time" );
-  pc.set( "plotOptions.pie.dataLabels.format",
-          "<b>{point.name}</b>: {point.y:.1f}s" );
+  pc.set( "plotOptions.pie.dataLabels.format", "<b>{point.name}</b>: {point.y:.1f}s" );
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
     pc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
@@ -816,21 +815,19 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
 
   // Filter stats we do not want in the chart ( quiet, background, zero
   // total_time ) and copy them to filtered_waiting_stats
-  range::remove_copy_if( p.stats_list, back_inserter( filtered_waiting_stats ),
-                         filter_waiting_stats() );
+  range::remove_copy_if( p.stats_list, back_inserter( filtered_waiting_stats ), filter_waiting_stats() );
 
   size_t num_stats = filtered_waiting_stats.size();
   if ( num_stats == 0 && p.collected_data.waiting_time.mean() == 0 )
     return false;
 
-  range::sort( filtered_waiting_stats,
-               []( const stats_t* l, const stats_t* r ) {
-                 if ( l->total_time == r->total_time )
-                 {
-                   return l->name_str < r->name_str;
-                 }
-                 return l->total_time > r->total_time;
-               } );
+  range::sort( filtered_waiting_stats, []( const stats_t* l, const stats_t* r ) {
+    if ( l->total_time == r->total_time )
+    {
+      return l->name_str < r->name_str;
+    }
+    return l->total_time > r->total_time;
+  } );
 
   // Build Data
   if ( !filtered_waiting_stats.empty() )
@@ -841,19 +838,18 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
       if ( color.empty() )
       {
         p.sim->errorf(
-            "chart::generate_stats_sources assertion error! School color "
-            "unknown, stats %s from %s. School %s\n",
-            stats->name_str.c_str(), p.name(),
-            util::school_type_string( stats->school ) );
+          "chart::generate_stats_sources assertion error! School color unknown, stats %s from %s. School %s\n",
+          stats->name_str.c_str(), p.name(), util::school_type_string( stats->school ) );
         assert( 0 );
       }
 
       sc_js_t e;
       e.set( "color", color );
-      e.set( "y", util::round( stats->total_time.total_seconds(),
-                               p.sim->report_precision ) );
+      e.set( "y", util::round( stats->total_time.total_seconds(), p.sim->report_precision ) );
       e.set( "name", report::decorate_html_string( util::encode_html( stats->name_str ), color ) );
-
+      e.set( "id", "#actor" + util::to_string( stats->player->index ) + "_"
+                    + util::remove_special_chars( stats->name_str ) + "_"
+                    + util::stats_type_string( stats->type ) + "_toggle" );
       pc.add( "series.0.data", e );
     }
   }
@@ -862,8 +858,7 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
   {
     sc_js_t e;
     e.set( "color", color::WHITE.str() );
-    e.set( "y", util::round( p.collected_data.waiting_time.mean(),
-                             p.sim->report_precision ) );
+    e.set( "y", util::round( p.collected_data.waiting_time.mean(), p.sim->report_precision ) );
     e.set( "name", "Waiting" );
     pc.add( "series.0.data", e );
   }
@@ -872,11 +867,16 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
   {
     sc_js_t e;
     e.set( "color", color::GREY3.str() );
-    e.set( "y", util::round( p.collected_data.pooling_time.mean(),
-                             p.sim->report_precision ) );
+    e.set( "y", util::round( p.collected_data.pooling_time.mean(), p.sim->report_precision ) );
     e.set( "name", "Pooling" );
     pc.add( "series.0.data", e );
   }
+
+  pc.set( "series.0.name", "Time" );
+  pc.set( "plotOptions.pie.tooltip.pointFormat",
+          "<span style=\"color:{point.color}\">\xE2\x97\x8F</span> {series.name}: <b>{point.y}</b>s<br/>" );
+  pc.set( "plotOptions.pie.events.click", "open_details_from_chart" );
+  pc.value( "plotOptions.pie.events.click" ).SetRawOutput( true );
 
   return true;
 }
