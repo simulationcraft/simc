@@ -223,6 +223,10 @@ span.open {
 }
 .toggle-sort {
     cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 .section {
     position: relative;
@@ -584,12 +588,6 @@ tr.details td table.details tr.odd td {
 }
 tr.details td table.details tr td.right {
     text-align: right;
-}
-table.sort thead tr:first-of-type {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
 table.sort td.pulse,
 table.odd tr:hover:not(.petrow),

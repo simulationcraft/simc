@@ -2808,37 +2808,32 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
   // Spelldata
    if ( data.ok() )
    {
-     os.printf(
-         "<td style=\"vertical-align: top;\" class=\"filler\">\n"
-         "<h4>%s details</h4>\n"
-         "<ul>\n"
-         "<li><span class=\"label\">id:</span>%i</li>\n"
-         "<li><span class=\"label\">name:</span>%s</li>\n"
-         "<li><span class=\"label\">tooltip:</span><span "
-         "class=\"tooltip\">%s</span></li>\n"
-         "<li><span class=\"label\">description:</span><span "
-         "class=\"tooltip\">%s</span></li>\n"
-         "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
-         "<li><span class=\"label\">duration:</span>%.2f</li>\n"
-         "<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
-         "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
-         "</ul>\n"
-         "</td>\n",
-         util::encode_html( data_name ).c_str(),
-         data.id(), util::encode_html( data.name_cstr() ).c_str(),
-         b.player
-             ? util::encode_html(
-                   report::pretty_spell_text( data, data.tooltip(),
-                                              *b.player ) )
-                   .c_str()
-             : util::encode_html( data.tooltip() ).c_str(),
-         b.player
-             ? util::encode_html( report::pretty_spell_text(
-                                      data, data.desc(), *b.player ) )
-                   .c_str()
-             : util::encode_html( data.desc() ).c_str(),
-         data.max_stacks(), data.duration().total_seconds(),
-         data.cooldown().total_seconds(), data.proc_chance() * 100 );
+     os.printf( "<td style=\"vertical-align: top;\" class=\"filler\">\n"
+                "<h4>%s details</h4>\n"
+                "<ul>\n"
+                "<li><span class=\"label\">id:</span>%i</li>\n"
+                "<li><span class=\"label\">name:</span>%s</li>\n"
+                "<li><span class=\"label\">tooltip:</span><span "
+                "class=\"tooltip\">%s</span></li>\n"
+                "<li><span class=\"label\">description:</span><span "
+                "class=\"tooltip\">%s</span></li>\n"
+                "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
+                "<li><span class=\"label\">duration:</span>%.2f</li>\n"
+                "<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+                "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
+                "</ul>\n"
+                "</td>\n",
+                util::encode_html( data_name ).c_str(),
+                data.id(),
+                util::encode_html( data.name_cstr() ).c_str(),
+                b.player ? util::encode_html( report::pretty_spell_text( data, data.tooltip(), *b.player ) ).c_str()
+                         : util::encode_html( data.tooltip() ).c_str(),
+                b.player ? util::encode_html( report::pretty_spell_text( data, data.desc(), *b.player ) ).c_str()
+                         : util::encode_html( data.desc() ).c_str(),
+                data.max_stacks(),
+                data.duration().total_seconds(),
+                data.cooldown().total_seconds(),
+                data.proc_chance() * 100 );
    }
 }
 // This function MUST accept non-player buffs as well!
@@ -2863,68 +2858,69 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     os.printf( "<td class=\"left\">%s</td>\n", buff_name.c_str() );
 
   if ( !constant_buffs )
-    os.printf(
-        "<td class=\"right\">%.1f</td>\n"
-        "<td class=\"right\">%.1f</td>\n"
-        "<td class=\"right\">%.1fsec</td>\n"
-        "<td class=\"right\">%.1fsec</td>\n"
-        "<td class=\"right\">%.2f%%</td>\n"
-        "<td class=\"right\">%.2f%%</td>\n"
-        "<td class=\"right\">%.1f&#160;(%.1f)</td>\n"
-        "<td class=\"right\">%.1f</td>\n",
-        b.avg_start.pretty_mean(), b.avg_refresh.pretty_mean(),
-        b.start_intervals.pretty_mean(), b.trigger_intervals.pretty_mean(),
-        b.uptime_pct.pretty_mean(),
-        b.benefit_pct.mean(),
-        b.avg_overflow_count.mean(), b.avg_overflow_total.mean(),
-        b.avg_expire.pretty_mean() );
+    os.printf( "<td class=\"right\">%.1f</td>\n"
+               "<td class=\"right\">%.1f</td>\n"
+               "<td class=\"right\">%.1fsec</td>\n"
+               "<td class=\"right\">%.1fsec</td>\n"
+               "<td class=\"right\">%.2f%%</td>\n"
+               "<td class=\"right\">%.2f%%</td>\n"
+               "<td class=\"right\">%.1f&#160;(%.1f)</td>\n"
+               "<td class=\"right\">%.1f</td>\n",
+               b.avg_start.pretty_mean(),
+               b.avg_refresh.pretty_mean(),
+               b.start_intervals.pretty_mean(),
+               b.trigger_intervals.pretty_mean(),
+               b.uptime_pct.pretty_mean(),
+               b.benefit_pct.mean(),
+               b.avg_overflow_count.mean(), b.avg_overflow_total.mean(),
+               b.avg_expire.pretty_mean() );
 
   os << "</tr>\n";
 
   if ( report_details )
   {
-    os.printf(
-        "<tr class=\"details hide\">\n"
-        "<td colspan=\"%d\" class=\"filler\">\n"
-        "<table><tr>\n"
-        "<td style=\"vertical-align: top;\" class=\"filler\">\n"
-        "<h4>Buff details</h4>\n"
-        "<ul>\n",
-        b.constant ? 1 : 9);
-    os.printf(
-        "<li><span class=\"label\">buff initial source:</span>%s</li>\n"
-        "<li><span class=\"label\">cooldown name:</span>%s</li>\n"
-        "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
-        "<li><span class=\"label\">duration:</span>%.2f</li>\n"
-        "<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
-        "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
-        "<li><span class=\"label\">default_value:</span>%.2f</li>\n"
-        "<li><span class=\"label\">activated:</span>%s</li>\n"
-        "<li><span class=\"label\">reactable:</span>%s</li>\n"
-        "<li><span class=\"label\">reverse:</span>%s</li>\n"
-        "<li><span class=\"label\">refresh behavior:</span>%s</li>\n"
-        "<li><span class=\"label\">stack behavior:</span>%s</li>\n"
-        "<li><span class=\"label\">tick behavior:</span>%s</li>\n"
-        "<li><span class=\"label\">tick_time behavior:</span>%s</li>\n"
-        "<li><span class=\"label\">period:</span>%.2f</li>\n",
-        b.source ? util::encode_html( b.source->name() ).c_str() : "",
-        util::encode_html( b.cooldown->name_str ).c_str(), b.max_stack(),
-        b.buff_duration.total_seconds(), b.cooldown->duration.total_seconds(),
-        b.default_chance * 100, b.default_value,
-        b.activated ? "true" : "false",
-        b.reactable ? "true" : "false",
-        b.reverse ? "true" : "false",
-        util::buff_refresh_behavior_string(b.refresh_behavior),
-        util::buff_stack_behavior_string(b.stack_behavior),
-        util::buff_tick_behavior_string(b.tick_behavior),
-        util::buff_tick_time_behavior_string(b.tick_time_behavior),
-        b.buff_period.total_seconds());
+    os.printf( "<tr class=\"details hide\">\n"
+               "<td colspan=\"%d\" class=\"filler\">\n"
+               "<table><tr>\n"
+               "<td style=\"vertical-align: top;\" class=\"filler\">\n"
+               "<h4>Buff details</h4>\n"
+               "<ul>\n",
+               b.constant ? 1 : 9 );
+
+    os.printf( "<li><span class=\"label\">buff initial source:</span>%s</li>\n"
+               "<li><span class=\"label\">cooldown name:</span>%s</li>\n"
+               "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
+               "<li><span class=\"label\">duration:</span>%.2f</li>\n"
+               "<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+               "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
+               "<li><span class=\"label\">default_value:</span>%.2f</li>\n"
+               "<li><span class=\"label\">activated:</span>%s</li>\n"
+               "<li><span class=\"label\">reactable:</span>%s</li>\n"
+               "<li><span class=\"label\">reverse:</span>%s</li>\n"
+               "<li><span class=\"label\">refresh behavior:</span>%s</li>\n"
+               "<li><span class=\"label\">stack behavior:</span>%s</li>\n"
+               "<li><span class=\"label\">tick behavior:</span>%s</li>\n"
+               "<li><span class=\"label\">tick_time behavior:</span>%s</li>\n"
+               "<li><span class=\"label\">period:</span>%.2f</li>\n",
+               b.source ? util::encode_html( b.source->name() ).c_str() : "",
+               util::encode_html( b.cooldown->name_str ).c_str(),
+               b.max_stack(),
+               b.buff_duration.total_seconds(),
+               b.cooldown->duration.total_seconds(),
+               b.default_chance * 100,
+               b.default_value,
+               b.activated ? "true" : "false",
+               b.reactable ? "true" : "false",
+               b.reverse ? "true" : "false",
+               util::buff_refresh_behavior_string( b.refresh_behavior ),
+               util::buff_stack_behavior_string( b.stack_behavior ),
+               util::buff_tick_behavior_string( b.tick_behavior ),
+               util::buff_tick_time_behavior_string( b.tick_time_behavior ),
+               b.buff_period.total_seconds() );
     if ( b.item )
     {
-      os.printf(
-          "<li><span class=\"label\">associated item:</span>%s</li>\n",
-          util::encode_html( b.item->full_name() ).c_str());
-
+      os.printf( "<li><span class=\"label\">associated item:</span>%s</li>\n",
+                 util::encode_html( b.item->full_name() ).c_str() );
     }
     os << "</ul>\n";
 
@@ -2933,13 +2929,12 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
       os << "<h4>RPPM Buff details</h4>\n"
          << "<ul>\n";
 
-      os.printf(
-          "<li><span class=\"label\">scaling:</span>%s</li>\n"
-          "<li><span class=\"label\">frequency:</span>%.2f</li>\n"
-          "<li><span class=\"label\">modifier:</span>%.2f</li>\n",
-          util::rppm_scaling_string(b.rppm->get_scaling()).c_str(),
-          b.rppm->get_frequency(),
-          b.rppm->get_modifier());
+      os.printf( "<li><span class=\"label\">scaling:</span>%s</li>\n"
+                 "<li><span class=\"label\">frequency:</span>%.2f</li>\n"
+                 "<li><span class=\"label\">modifier:</span>%.2f</li>\n",
+                 util::rppm_scaling_string( b.rppm->get_scaling() ).c_str(),
+                 b.rppm->get_frequency(),
+                 b.rppm->get_modifier() );
       os << "</ul>\n";
     }
 
@@ -2950,16 +2945,35 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
 
       for ( size_t j = 0; j < stat_buff->stats.size(); ++j )
       {
-        os.printf(
-            "<li><span class=\"label\">stat:</span>%s</li>\n"
-            "<li><span class=\"label\">amount:</span>%.2f</li>\n",
-            util::stat_type_string( stat_buff->stats[ j ].stat ),
-            stat_buff->stats[ j ].amount );
+        os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
+                   "<li><span class=\"label\">amount:</span>%.2f</li>\n",
+                   util::stat_type_string( stat_buff->stats[ j ].stat ),
+                   stat_buff->stats[ j ].amount );
       }
       os << "</ul>\n";
     }
 
-    os << "<h4>Stack Uptimes</h4>\n"
+    if ( b.trigger_pct.mean() > 0 )
+    {
+      os << "<h4>Trigger details</h4>\n"
+         << "<ul>\n";
+
+      os.printf( "<li><span class=\"label\">interval_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
+                 "<li><span class=\"label\">trigger_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
+                 "<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n",
+                 b.start_intervals.min(), b.start_intervals.max(),
+                 b.trigger_intervals.min(), b.trigger_intervals.max(),
+                 b.trigger_pct.mean() );
+      os << "</ul>\n";
+    }
+
+    if ( b.stack_uptime.size() > 20 )
+    {
+      os << "</td>\n"
+         << "<td style=\"vertical-align: top;\" class=\"filler\">\n";
+    }
+
+    os << "<h4>Stack uptimes</h4>\n"
        << "<ul>\n";
     for ( unsigned int j = 0; j < b.stack_uptime.size(); j++ )
     {
@@ -2970,17 +2984,8 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                    util::encode_html( b.name_str ).c_str(), j, uptime * 100.0 );
       }
     }
-    os << "</ul>\n";
-
-    if ( b.trigger_pct.mean() > 0 )
-    {
-      os << "<h4>Trigger Attempt Success</h4>\n"
-         << "<ul>\n";
-      os.printf( "<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n",
-                 b.trigger_pct.mean() );
-      os << "</ul>\n";
-    }
-    os << "</td>\n";
+    os << "</ul>\n"
+       << "</td>\n";
 
     print_html_player_buff_spelldata(os, b, b.data(), "Spelldata" );
 
