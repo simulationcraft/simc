@@ -8,11 +8,11 @@ talents=2210021
 
 azerite_essences=5:3:1/27:3:0/6:3:0
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=1587/4819,azerite_powers=407/408/22/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=1617/4819,azerite_powers=407/408/22/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulder=gorak_tuls_mantle,id=159339,bonus_id=1617/4819,azerite_powers=408/193/30/13
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
-chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1587/4819,azerite_powers=408/407/31/13
+chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1617/4819,azerite_powers=408/407/31/13
 wrists=tideblood_bracers,id=168377,bonus_id=4800/1517
 hands=gloves_of_incomparable_beauty,id=168887,bonus_id=4800/1517
 waist=beloved_monarchs_waistwrap,id=168871,bonus_id=4800/1517
