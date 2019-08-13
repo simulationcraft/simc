@@ -3,16 +3,8 @@ function open_details_from_chart(e) {
     if (!anchor.hasClass('open')) {
         anchor.click();
     }
-    var det = anchor.closest('tr').nextAll('.details').first();
-    var win = jQuery(window).height();
-    var pos = det.offset().top;
-    if (det.height() > win) {
-        pos -= anchor.height();
-    } else {
-        pos += det.height() - win;
-    }
     jQuery('html, body').animate({
-        scrollTop: pos
+        scrollTop: anchor.offset().top - jQuery(window).height() / 3
     }, 300);
 }
 (function($) {
