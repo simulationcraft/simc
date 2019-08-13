@@ -2685,16 +2685,14 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
       p.sim->add_chart_data( bc );
     }
 
-    highchart::pie_chart_t damage_pie( highchart::build_id( p, "dps_sources" ),
-                                       *p.sim );
+    highchart::pie_chart_t damage_pie( highchart::build_id( p, "dps_sources" ), *p.sim );
     if ( chart::generate_damage_stats_sources( damage_pie, p ) )
     {
       os << damage_pie.to_target_div();
       p.sim->add_chart_data( damage_pie );
     }
 
-    highchart::pie_chart_t heal_pie( highchart::build_id( p, "hps_sources" ),
-                                     *p.sim );
+    highchart::pie_chart_t heal_pie( highchart::build_id( p, "hps_sources" ), *p.sim );
     if ( chart::generate_heal_stats_sources( heal_pie, p ) )
     {
       os << heal_pie.to_target_div();
@@ -2702,10 +2700,8 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     }
   }
 
-  highchart::chart_t scaling_plot( highchart::build_id( p, "scaling_plot" ),
-                                   *p.sim );
-  if ( chart::generate_scaling_plot( scaling_plot, p,
-                                     p.sim->scaling->scaling_metric ) )
+  highchart::chart_t scaling_plot( highchart::build_id( p, "scaling_plot" ), *p.sim );
+  if ( chart::generate_scaling_plot( scaling_plot, p, p.sim->scaling->scaling_metric ) )
   {
     os << scaling_plot.to_target_div();
     p.sim->add_chart_data( scaling_plot );
@@ -2713,21 +2709,17 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
 
   if ( p.collected_data.timeline_dmg_taken.mean() > 0 )
   {
-    highchart::time_series_t dps_taken( highchart::build_id( p, "dps_taken" ),
-                                        *p.sim );
+    highchart::time_series_t dps_taken( highchart::build_id( p, "dps_taken" ), *p.sim );
     sc_timeline_t timeline_dps_taken;
-    p.collected_data.timeline_dmg_taken.build_derivative_timeline(
-        timeline_dps_taken );
+    p.collected_data.timeline_dmg_taken.build_derivative_timeline( timeline_dps_taken );
     dps_taken.set_yaxis_title( "Damage taken per second" );
     dps_taken.set_title( util::encode_html( p.name_str ) + " Damage taken per second" );
-    dps_taken.add_simple_series( "area", "#FDD017", "DPS taken",
-                                 timeline_dps_taken.data() );
+    dps_taken.add_simple_series( "area", "#FDD017", "DPS taken", timeline_dps_taken.data() );
     dps_taken.set_mean( timeline_dps_taken.mean() );
 
     if ( p.sim->player_no_pet_list.size() > 1 )
     {
-      dps_taken.set_toggle_id( "player" + util::to_string( p.index ) +
-                               "toggle" );
+      dps_taken.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
     }
 
     os << dps_taken.to_target_div();
@@ -2751,24 +2743,20 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     p.sim->add_chart_data( ac );
   }
 
-  scaling_metric_data_t scaling_data =
-      p.scaling_for_metric( p.sim->scaling->scaling_metric );
+  scaling_metric_data_t scaling_data = p.scaling_for_metric( p.sim->scaling->scaling_metric );
   std::string scale_factor_id = "scale_factor_";
   scale_factor_id += util::scale_metric_type_abbrev( scaling_data.metric );
-  highchart::bar_chart_t bc( highchart::build_id( p, scale_factor_id ),
-                             *p.sim );
+  highchart::bar_chart_t bc( highchart::build_id( p, scale_factor_id ), *p.sim );
   if ( chart::generate_scale_factors( bc, p, scaling_data.metric ) )
   {
     os << bc.to_target_div();
     p.sim->add_chart_data( bc );
   }
 
-  highchart::histogram_chart_t chart( highchart::build_id( p, "dps_dist" ),
-                                      *p.sim );
-  if ( chart::generate_distribution(
-           chart, &p, p.collected_data.dps.distribution, util::encode_html( p.name_str ) + " DPS",
-           p.collected_data.dps.mean(), p.collected_data.dps.min(),
-           p.collected_data.dps.max() ) )
+  highchart::histogram_chart_t chart( highchart::build_id( p, "dps_dist" ), *p.sim );
+  if ( chart::generate_distribution( chart, &p, p.collected_data.dps.distribution,
+                                     util::encode_html( p.name_str ) + " DPS", p.collected_data.dps.mean(),
+                                     p.collected_data.dps.min(), p.collected_data.dps.max() ) )
   {
     chart.set( "tooltip.headerFormat", "<b>{point.key}</b> DPS<br/>" );
     os << chart.to_target_div();
@@ -2777,20 +2765,17 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
 
   if ( p.collected_data.hps.mean() > 0 || p.collected_data.aps.mean() > 0 )
   {
-    highchart::histogram_chart_t chart( highchart::build_id( p, "hps_dist" ),
-                                        *p.sim );
-    if ( chart::generate_distribution(
-             chart, &p, p.collected_data.hps.distribution, util::encode_html( p.name_str ) + " HPS",
-             p.collected_data.hps.mean(), p.collected_data.hps.min(),
-             p.collected_data.hps.max() ) )
+    highchart::histogram_chart_t chart( highchart::build_id( p, "hps_dist" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, p.collected_data.hps.distribution,
+                                       util::encode_html( p.name_str ) + " HPS", p.collected_data.hps.mean(),
+                                       p.collected_data.hps.min(), p.collected_data.hps.max() ) )
     {
       os << chart.to_target_div();
       p.sim->add_chart_data( chart );
     }
   }
 
-  highchart::pie_chart_t time_spent( highchart::build_id( p, "time_spent" ),
-                                     *p.sim );
+  highchart::pie_chart_t time_spent( highchart::build_id( p, "time_spent" ), *p.sim );
   if ( chart::generate_spent_time( time_spent, p ) )
   {
     os << time_spent.to_target_div();
@@ -2803,11 +2788,8 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
       continue;
 
     std::string stat_str = util::stat_type_string( timeline.type );
-    highchart::time_series_t ts( highchart::build_id( p, "stat_" + stat_str ),
-                                 *p.sim );
-    chart::generate_actor_timeline( ts, p, stat_str,
-                                    color::stat_color( timeline.type ),
-                                    timeline.timeline );
+    highchart::time_series_t ts( highchart::build_id( p, "stat_" + stat_str ), *p.sim );
+    chart::generate_actor_timeline( ts, p, stat_str, color::stat_color( timeline.type ), timeline.timeline );
     ts.set_mean( timeline.timeline.mean() );
 
     os << ts.to_target_div();

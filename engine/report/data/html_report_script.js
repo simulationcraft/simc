@@ -1,3 +1,20 @@
+function open_details_from_chart(e) {
+    var anchor = jQuery(e.point.id);
+    if (!anchor.hasClass('open')) {
+        anchor.click();
+    }
+    var det = anchor.closest('tr').nextAll('.details').first();
+    var win = jQuery(window).height();
+    var pos = det.offset().top;
+    if (det.height() > win) {
+        pos -= anchor.height();
+    } else {
+        pos += det.height() - win;
+    }
+    jQuery('html, body').animate({
+        scrollTop: pos
+    }, 300);
+}
 (function($) {
     $.fn.validate_section = function() {
         if (this[0].id == 'masthead') {
@@ -61,7 +78,7 @@ jQuery(document).ready(function ($) {
             $anchor.click();
         }
         $('html, body').animate( {
-            scrollTop: $(href).offset().top - $anchor.height()
+            scrollTop: $anchor.parent().offset().top - $anchor.height()
         }, 300);
     });
     $('.toggle').click(function (e) {
@@ -87,7 +104,7 @@ jQuery(document).ready(function ($) {
     $('.toggle-details').click(function (e) {
         e.preventDefault();
         var $me = $(this);
-        var $row = $me.parents('tr').nextAll('.details').first();
+        var $row = $me.closest('tr').nextAll('.details').first();
         if ($me.hasClass('open')) {
             $me.removeClass('open');
             $row.fadeToggle(75);
