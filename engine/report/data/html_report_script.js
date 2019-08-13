@@ -43,7 +43,7 @@ jQuery(document).ready(function ($) {
         anchor = '#' + anchor[anchor.length - 1];
         anchor = $(anchor).children('h2').first();
         if (!anchor.hasClass('open')) {
-            $anchor.click();
+            anchor.click();
         }
     }
     $('.stripetoprow').oddstripe();
@@ -96,14 +96,14 @@ jQuery(document).ready(function ($) {
             $row.fadeToggle(150);
         }
     });
-	$('.toggle, .toggle-details').each(function() {
-		if ( __chartData[this.id] === undefined ) return;
-		$(this).one('click', function() {
-			var d = __chartData[this.id];
-			for (var idx in d) {
-				$('#' + d[idx]['target']).highcharts(d[idx]['data']);
-			}
-		});
+    $('.toggle, .toggle-details').each(function() {
+        if ( __chartData[this.id] === undefined ) return;
+        $(this).one('click', function() {
+            var d = __chartData[this.id];
+            for (var idx in d) {
+                $('#' + d[idx]['target']).highcharts(d[idx]['data']);
+            }
+        });
     });
     var hoverTimeout;
     function hoverHide() {
@@ -127,8 +127,8 @@ jQuery(document).ready(function ($) {
             left: pos.left,
         });
         hoverTimeout = setTimeout(function() {
-            $('#active-help').fadeIn(450);
-        }, 600);
+            $('#active-help').fadeIn(300);
+        }, 750);
     }, hoverHide);
     window.onblur = hoverHide;
     function getCell(elem, i, both) {
@@ -144,7 +144,7 @@ jQuery(document).ready(function ($) {
         if (!ret.length && both) {
             var span = $row.children('td[rowspan]').length;
             $row = $row.nextAll(':not(.details)').first();
-            if (idx > span) {
+            if (idx >= span) {
                 idx -= span;
                 ret = $row.children('td').eq(idx).text().trim();
             }
@@ -169,18 +169,27 @@ jQuery(document).ready(function ($) {
         }
     }
     function pulsecolumn(table, index) {
-        var $cells = table.find('.toprow td:nth-of-type(' + (index + 1) + ')');
-        table.find('.childrow').each(function() {
-            var span = $(this).prev().children('td[rowspan]').length;
-            if (index > span) {
-                $.merge($cells, $(this).children('td').eq(index - span));
-            }
-        });
-        if (!$cells.length)
-        {
-            $cells = table.find('tbody tr td:nth-of-type(' + (index + 1) + ')');
+        var $cells;
+        if (table.hasClass('stripetoprow')) {
+            $cells = table.find('.toprow td:nth-of-type(' + (index + 1) + '):not(:empty)');
+            table.find('.childrow').each(function() {
+                var $prev = $(this).prev();
+                if ($prev.children('td').eq(index).is(':empty')) {
+                    var span = $prev.children('td[rowspan]').length;
+                    if (index >= span) {
+                        $.merge($cells, $(this).children('td').eq(index - span));
+                    }
+                }
+            });
+        } else if (table.hasClass('stripebody')) {
+            $cells = table.find('tbody tr:first-of-type td:nth-of-type(' + (index + 1) + '):not(:empty)');
+        } else {
+            $cells = table.find('tbody tr td:nth-of-type(' + (index + 1) + '):not(:empty)');
         }
-        $cells.fadeTo(75, 0.75).fadeTo(75, 1);
+        $cells.addClass('pulse');
+        setTimeout(function () {
+            $cells.removeClass('pulse');
+        }, 150);
     }
     $('.toggle-sort').click(function (e) {
         e.preventDefault();
