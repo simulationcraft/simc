@@ -6,6 +6,7 @@ race=human
 role=attack
 position=ranged_back
 talents=1103031
+azerite_essences=14:3/12:3/4:3
 
 # Default consumables
 potion=unbridled_fury
@@ -38,7 +39,8 @@ actions.precombat+=/aimed_shot,if=active_enemies<3
 
 # Executed every time the actor is available.
 actions=auto_shot
-actions+=/use_item,name=galecallers_boon,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<10
+actions+=/use_item,name=azsharas_font_of_power,if=cooldown.trueshot.remains<18|target.time_to_die<40
+actions+=/use_item,name=ashvanes_razor_coral,if=buff.trueshot.up&(buff.guardian_of_azeroth.up|!essence.condensed_lifeforce.major.rank3&ca_execute)|debuff.razor_coral_debuff.down|target.time_to_die<20
 actions+=/use_item,name=pocketsized_computation_device,if=!buff.trueshot.up&!essence.blood_of_the_enemy.major.rank3|debuff.blood_of_the_enemy.up|target.time_to_die<5
 # Try to line up activated trinkets with Trueshot
 actions+=/use_items,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<20
@@ -94,29 +96,28 @@ actions.trickshots+=/a_murder_of_crows
 actions.trickshots+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
 actions.trickshots+=/steady_shot
 
-head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=212/36/22/14/13
+head=soulscarred_headgear,id=159398,bonus_id=4786/1617/4819/4775,azerite_powers=212/36/459/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=tidal_shroud_spaulders,id=165923,bonus_id=4824/1537/4775,azerite_powers=212/36/30/15/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440/4775,azerite_powers=36/370/30/14/13
-wrists=ape_wranglers_wristguards,id=165534,bonus_id=4800/1537
-hands=slimy_kelpweavers,id=165546,bonus_id=4800/1537
-waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
-legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
-feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_mastery
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
-trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
-trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
-main_hand=twinpipe_buster_cannon,id=165600,bonus_id=4800/1537,enchant=masterful_navigation
+shoulders=gardbrace_of_fractured_reality,id=169588,bonus_id=4824/1517/4775,azerite_powers=36/576/30/15/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=4786/1617/4819/4775,azerite_powers=36/370/30/14/13
+wrists=oris_tidal_bracers,id=170304,bonus_id=1512
+hands=poens_deepsea_handgrips,id=170335,bonus_id=1512
+waist=vims_scalecrusher_chain,id=170369,bonus_id=1512
+legs=pelagos_predators_legguards,id=168383,bonus_id=4800/1517
+feet=akanas_reefstrider_treads,id=170142,bonus_id=1512
+finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_critical_strike
+finger2=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_critical_strike
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+main_hand=shiver_venom_crossbow,id=168273,bonus_id=4800/1517,enchant=crows_nest_scope
 
 # Gear Summary
-# gear_ilvl=418.20
-# gear_agility=5871
-# gear_stamina=10191
-# gear_crit_rating=629
-# gear_haste_rating=941
-# gear_mastery_rating=1177
-# gear_versatility_rating=481
-# gear_armor=3410
-# set_bonus=gift_of_the_loa_2pc=1
+# gear_ilvl=441.87
+# gear_agility=6892
+# gear_stamina=13191
+# gear_crit_rating=1496
+# gear_haste_rating=1108
+# gear_mastery_rating=618
+# gear_versatility_rating=597
+# gear_armor=4044

@@ -1,4 +1,4 @@
-SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
+SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31229)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -519,7 +519,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (9 seconds cooldown)
 Category         : 1612: Havoc Demon Hunter (212612 effect#6)
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4), Chaos Blades (247938 effect#2), 
 Family Flags     : 5, 16, 32, 42, 85
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -723,7 +723,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Affecting spells : Eye of Theras (297061 effect#1)
 Family Flags     : 74
 Attributes       : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1041,7 +1040,7 @@ Duration         : 2 seconds
 Cooldown         : 30 seconds
 Category         : 1582
 Category Cooldown: 30 seconds
-Affecting spells : Blind Fury (203550 effect#1), Soul Flame of Insight (226334 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1)
+Affecting spells : Blind Fury (203550 effect#1), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1)
 Family Flags     : 10
 Attributes       : ........ ........ ........ ........   ..x...x. .x...... ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1068,7 +1067,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Blind Fury (203550 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Soul Flame of Insight (226334 effect#1), Chaos Blades (247938 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Eyes of Rage (278500 effect#2)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Blind Fury (203550 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Eyes of Rage (278500 effect#2)
 Family Flags     : 8, 10, 16, 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -1972,7 +1971,7 @@ GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Category         : 1541
 Category Cooldown: 1 seconds
-Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#2), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2)
+Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#2), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2)
 Family Flags     : 32, 36, 70, 72
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -2000,7 +1999,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 3 seconds
-Affecting spells : Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#2), 
+Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#2), 
 Family Flags     : 5, 32, 70, 85
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2614,7 +2613,7 @@ Duration         : 8 seconds
 Proc Chance      : 100%
 Proc Flags       : .....x.. .....x.. .x.x.... ........ 
                  : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Fiery Brand (207771 effect#2), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2)
+Affecting spells : Fiery Brand (207771 effect#2), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2)
 Family Flags     : 36
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2658,7 +2657,7 @@ Duration         : 8 seconds
 Proc Chance      : 100%
 Proc Flags       : .....x.. .....x.. .x.x.... ........ 
                  : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Fiery Brand (207744 effect#2), Vengeance Demon Hunter (212613 effect#2), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2)
+Affecting spells : Fiery Brand (207744 effect#2), Vengeance Demon Hunter (212613 effect#2), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2)
 Family Flags     : 36, 70, 72
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
@@ -2782,13 +2781,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=309716)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x1e | Target: Self (1)
+#1 (id=309716)   : Apply Aura (6) | Unknown(316)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x19 | Target: Self (1)
 #2 (id=309745)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Sustaining fatal damage instead transforms you to Metamorphosis form, and returns you to $s2% health.
+Description      : Sustaining fatal damage instead transforms you to Metamorphosis form.
 
-This effect may only occur every $209261d.
+This may occur once every $209261d.
 
 Name             : Uncontained Fel (id=209261) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -3215,7 +3214,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Havoc Demon Hunter (id=212612) [Spell Family (107), Passive, Hidden] 
-Class            : Havoc Demon Hunter
+Class            : Havoc Death Knight, Demon Hunter
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3252,7 +3251,7 @@ Effects          :
                    Affected Spells (Category): Throw Glaive (185123)
 
 Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passive, Hidden] 
-Class            : Vengeance Demon Hunter
+Class            : Vengeance Death Knight, Demon Hunter
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3297,10 +3296,10 @@ Effects          :
                    Family Flags: 55
 #10 (id=315259)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
-                   Affected Spells (Label): Xavaric's Magnum Opus (207472)
+                   Affected Spells (Label): 
 #11 (id=315260)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 289 (Label) | Target: Self (1)
-                   Affected Spells (Label): Rethu's Incessant Courage (242597)
+                   Affected Spells (Label): 
 
 Name             : Blur (id=212800) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -5107,7 +5106,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 309366 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
@@ -5174,7 +5173,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 309352 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -6693,13 +6692,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7), Scales with item level (354)
 Effects          :
 #1 (id=773466)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1792 | Target: Self (1)
 #2 (id=779235)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
 #3 (id=779236)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 33554432 | Target: Self (1)
 #4 (id=779237)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
 Description      : $?$a303590[Critical Strike increased by $s1.]?$a303592[Haste increased by $s2.]?$a303595[Mastery increased by $s3.]?$a303596[Versatility increased by $s4.][A secondary stat of your choice is increased by $s1 while using the Pocket-Sized Computation Device.] Stat is chosen based on equipped Logic Board.
 
 Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
@@ -6725,7 +6724,10 @@ Name             : Arcane Heart (id=303006) [Scaling Spell (-7), Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
 Azerite Power Id : 577
+Proc Flags       : ........ ........ ........ ....x... 
+                 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6738,7 +6740,7 @@ Effects          :
 #1 (id=778205)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
 #2 (id=778206)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 0 (coefficient=1.39285) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 0 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778207)   : Apply Aura (6) | Unknown(285)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 303209 | Target: Self (1)
 Description      : Every $s1 damage and healing done you gain Omnipotence, increasing your highest stat by $s2 for $303212d. You heal for $s3% of all Arcane damage taken.
@@ -6758,11 +6760,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778208)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 1.00000 | Trigger Spell: 303250 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
 #2 (id=778209)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778210)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your Mastery is increased by $s1, plus an additional $s2 for each ally also affected by Loyal to the End, up to $s3.
 
 When you die, your allies gain Critical Strike, Haste, and Versatility equal to their Mastery bonus from this trait.
@@ -6784,11 +6786,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778211)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 1.00000 | Trigger Spell: 303388 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
 #2 (id=778212)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=778215)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
 #4 (id=778216)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.

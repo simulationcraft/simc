@@ -125,13 +125,13 @@ neck=heart_of_azeroth,id=158075,ilevel=463,azerite_level=65
 shoulders=gorak_tuls_mantle,id=159339,bonus_id=4775,ilevel=450,azerite_powers=359/193/459/13
 back=drape_of_the_hatcher,id=168604,ilevel=445
 chest=venture_co._plenipotentiary_vest,id=159298,bonus_id=4775,ilevel=450,azerite_powers=209/359/459/13
-wrists=oris_tidal_wristwraps,id=170305,ilevel=425,gems=50haste
+wrists=oris_tidal_wristwraps,id=170305,ilevel=425
 hands=gloves_of_incomparable_beauty,id=168887,ilevel=445
-waist=vims_scalecrusher_clasp,id=170368,ilevel=425,gems=50haste
+waist=vims_scalecrusher_clasp,id=170368,ilevel=425
 legs=leggings_of_the_stormborn,id=168378,ilevel=445
-feet=akanas_reefstrider_footwraps,id=170141,ilevel=425,gems=50haste
-finger1=overclocking_bit_band,id=169159,ilevel=415,enchant=60haste,enchant_id=6108
-finger2=logic_loop_of_division,id=169157,ilevel=415,enchant=60haste,enchant_id=6108
+feet=akanas_reefstrider_footwraps,id=170141,ilevel=425
+finger1=overclocking_bit_band,id=169159,ilevel=415,enchant=60haste
+finger2=logic_loop_of_division,id=169157,ilevel=415,enchant=60haste
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
 main_hand=shiver_venom_lance,id=168306,bonus_id=4800/1517,enchant_id=5965
@@ -140,8 +140,8 @@ main_hand=shiver_venom_lance,id=168306,bonus_id=4800/1517,enchant_id=5965
 # gear_ilvl=439.20
 # gear_agility=7511
 # gear_stamina=13019
-# gear_crit_rating=1287
-# gear_haste_rating=1607
+# gear_crit_rating=1167
+# gear_haste_rating=1457
 # gear_mastery_rating=619
 # gear_versatility_rating=266
 # gear_armor=2848

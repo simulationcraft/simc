@@ -53,7 +53,7 @@ actions+=/heart_essence,if=!essence.the_crucible_of_flame.major|!essence.worldve
 
 actions.cooldowns=fireblood,if=buff.avenging_wrath.up
 actions.cooldowns+=/use_item,name=azsharas_font_of_power,if=cooldown.seraphim.remains<=10|!talent.seraphim.enabled
-actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>7&buff.avenging_wrath.up
+actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=(debuff.razor_coral_debuff.stack>7&buff.avenging_wrath.up)|debuff.razor_coral_debuff.stack=0
 actions.cooldowns+=/seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
 actions.cooldowns+=/avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
 actions.cooldowns+=/memory_of_lucid_dreams,if=!talent.seraphim.enabled|cooldown.seraphim.remains<=gcd|buff.seraphim.up

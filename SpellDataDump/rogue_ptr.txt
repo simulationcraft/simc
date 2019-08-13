@@ -1,4 +1,4 @@
-SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
+SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31229)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -9,7 +9,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Dagger
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Sleight of Hand (145211 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), The First of the Dead (248210 effect#3), Master Assassin (256735 effect#1), Perforate (277720 effect#1), Inevitability (278683 effect#3)
+Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Sleight of Hand (145211 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Perforate (277720 effect#1), Inevitability (278683 effect#3)
 Family Flags     : 2, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
@@ -65,7 +65,7 @@ Category         : 270
 Category Cooldown: 20 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
-Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Deeper Stratagem (193531 effect#1), Acrobatic Strikes (196924 effect#1)
+Affecting spells : Deeper Stratagem (193531 effect#1), Acrobatic Strikes (196924 effect#1)
 Family Flags     : 21
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -146,7 +146,7 @@ Spell Level      : 13
 Range            : 10 yards
 Cooldown         : 0.5 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Pickpocketer's Handbook (168798 effect#1), Shadow Dance (185313 effect#6)
+Affecting spells : Shadow Dance (185313 effect#6)
 Family Flags     : 31
 Attributes       : ....x... ........ x....... ........   .....x.. ....x... .x.x.x.. ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -280,7 +280,7 @@ Spell Level      : 18
 Range            : 5 yards
 Duration         : 5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Improved Kick (24434 effect#1), Acrobatic Strikes (196924 effect#1)
+Affecting spells : Acrobatic Strikes (196924 effect#1)
 Family Flags     : 4
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -488,7 +488,7 @@ GCD              : 1 seconds
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Mechanic         : Bleed
-Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1)
 Family Flags     : 20, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -589,7 +589,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Deceit (166878 effect#1), Cold Blood (182304 effect#1), Eviscerating Blade (184917 effect#2), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Sharpened Sabers (252285 effect#1), Master Assassin (256735 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Deceit (166878 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Sharpened Sabers (252285 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 112
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -617,11 +617,11 @@ Spell Type       : Melee
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1)
 Triggered by     : Deadly Poison (2823)
 Family Flags     : 16, 51, 54
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
-                 : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   .......x ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..xx.. ........ ........   ........ ........ ........ ........ 
@@ -645,7 +645,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Envenom (32645 effect#2), Mastery: Potent Assassin (76803 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Envenom (32645 effect#2), Mastery: Potent Assassin (76803 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
 Family Flags     : 16, 64
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
@@ -774,7 +774,7 @@ Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Energetic Recovery (79152 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Lesser Adrenaline Rush (246558 effect#3)
+Affecting spells : Adrenaline Rush (13750 effect#3), Energetic Recovery (79152 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Family Flags     : 18, 89
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -814,7 +814,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#5), Restoration Druid (137012 effect#8), Solar Empowerment (164545 effect#2), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#4), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#5), Restoration Druid (137012 effect#8), Solar Empowerment (164545 effect#2), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#4), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1)
 Family Flags     : 0
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -899,7 +899,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... ........
 Affecting spells : Dirty Tricks (108216 effect#1), Shadow Dance (185313 effect#6)
 Family Flags     : 7
 Attributes       : ....x... ........ x.x.xx.. ........   .....x.. x.x..... ..x..... .x.x.... 
-                 : ........ ........ ........ ........   xx...... ........ xx...... ........ 
+                 : ........ ........ ........ ........   xx...... ........ xx...... ..x..... 
                  : ........ ........ .......x ........   .....x.. ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -1175,9 +1175,6 @@ Name             : Seal Fate (id=14189) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Range            : 50000 yards
-Stacks           : 3 maximum
-Proc Chance      : 101%
 Triggered by     : Seal Fate (14190)
 Family Flags     : 87
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1354,7 +1351,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=17065)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.25) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=99544)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=715088)   : Dummy (3)
@@ -1459,9 +1456,11 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=20803)    : Apply Aura (6) | Absorb Damage (69)
+#1 (id=20803)    : Apply Aura (6) | Unknown(316)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x1e | Target: Self (1)
-Description      : Fatal attacks instead reduce you to 7% of your maximum health. For $45182d afterward, you take $45182s1% reduced damage. Cannot trigger more often than once per $45181d.
+#2 (id=789239)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x1e | Target: Self (1)
+Description      : Fatal attacks instead reduce you to $s2% of your maximum health. For $45182d afterward, you take $45182s1% reduced damage. Cannot trigger more often than once per $45181d.
 
 Name             : Master of Subtlety (id=31665) [Spell Family (8)] 
 Class            : Rogue
@@ -1501,7 +1500,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Toxic Mutilator (184916 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Twist the Knife (273488 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Twist the Knife (273488 effect#1)
 Family Flags     : 35, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -1663,8 +1662,8 @@ Attributes       : ....x... ........ ........ x..x....   .....x.. ..x..... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=37132)    : Apply Aura (6) | Dummy (4)
-                   Base Value: -85 | Scaled Value: -85 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+#1 (id=37132)    : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -85 | Scaled Value: -85 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
 Description      : $@spelldesc31230
 Tooltip          : All damage taken reduced by $s1%.
 
@@ -1731,7 +1730,7 @@ Resource         : 35 Energy (3) (id=2351)
 Spell Level      : 63
 GCD              : 1 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), The Dreadlord's Deceit (208693 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Hidden Blades (270070 effect#1), Echoing Blades (287649 effect#2)
+Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Hidden Blades (270070 effect#1), Echoing Blades (287649 effect#2)
 Family Flags     : 50, 54
 Attributes       : ....x... ........ x....... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2531,7 +2530,7 @@ School           : Nature
 Spell Type       : Melee
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 16, 54
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -2788,7 +2787,7 @@ Name             : Prey on the Weak (id=131511) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Shadow Blades (121471 effect#2)
+Affecting spells : Shadow Blades (121471 effect#2)
 Family Flags     : 19
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2820,10 +2819,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=774479)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Global Cooldown (21)
                    Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 1.00000 | Misc Value: 21 | Misc Value 2: 640 (Label) | Target: Self (1)
-                   Affected Spells (Label): Life-Binder's Invocation (293032), Azeroth's Undying Gift (293019), Suppressing Pulse (293031), Azeroth's Undying Gift (294650), Azeroth's Undying Gift (294653), Azeroth's Undying Gift (294655), Hardened Azerite (294668), Hardened Azerite (294685), Hardened Azerite (294687), Hardened Azerite (294688), Hardened Azerite (294689), Sphere of Suppression (294906), Sphere of Suppression (294907), Sphere of Suppression (294908), Sphere of Suppression (294909), Sphere of Suppression (294910), Sphere of Suppression (294912), Sphere of Suppression (294919), Sphere of Suppression (294920), Sphere of Suppression (294922), Anima of Death (294926), Anima of Death (294945), Anima of Death (294946), Azeroth's Undying Gift (294951), Anima of Life (294964), Anima of Life (294966), Anima of Life (294969), Anima of Life (294970), Anima of Life (294972), Lifeblood (295078), Lifeblood Shard (295114), Lifeblood (295137), Worldvein Resonance (295160), Lifeblood (295165), Lifeblood (295166), Worldvein Resonance (295186), Worldvein Resonance (295206), Worldvein Resonance (295208), Worldvein Resonance (295209), Worldvein Resonance (295210), Focused Energy (295246), Focused Energy (295248), Focused Energy (295251), Focused Energy (295252), Essence of the Focusing Iris (295253), Focused Azerite Beam (295258), Focused Azerite Beam (295261), Focused Azerite Beam (295262), Focused Azerite Beam (295263), Focused Azerite Beam (295264), Purification Protocol (295293), Purification Protocol (295305), Anima of Death (295306), Anima of Death (295307), Purification Protocol (295310), Purification Protocol (295333), Purifying Blast (295337), Purifying Blast (295338), Purification Protocol (295351), Purifying Blast (295352), Purifying Blast (295354), Purifying Blast (295358), Purification Protocol (295363), Purifying Blast (295364), Ancient Flame (295365), Purifying Blast (295366), Ancient Flame (295367), Concentrated Flame (295368), Ancient Flame (295369), Ancient Flame (295372), Concentrated Flame (295373), Concentrated Flame (295374), Concentrated Flame (295376), Concentrated Flame (295377), Concentrated Flame (295379), Concentrated Flame (295380), Ancient Flame (295381), Empowered Null Barrier (295746), Null Dynamo (295747), Null Dynamo (295748), Null Barrier (295749), Null Barrier (295750), Condensed Life-Force (295834), Azerite Spike (295835), Condensed Life-Force (295836), Condensed Life-Force (295837), Condensed Life-Force (295838), Condensed Life-Force (295839), Guardian of Azeroth (295840), Guardian of Azeroth (295841), Null Barrier (295842), Guardian of Azeroth (295843), Null Dynamo (295844), Null Dynamo (295845), Null Dynamo (295846), Guardian of Azeroth (295855), Azerite Spike (295856), Azeroth's Undying Gift (295872), Hardened Azerite (295883), Condensed Life-Force (295892), The Ever-Rising Tide (296050), The Ever-Rising Tide (296059), Null Barrier (296061), The Ever-Rising Tide (296062), The Ever-Rising Tide (296067), Overcharge Mana (296072), Overcharge Mana (296074), Overcharge Mana (296075), Artifice of Time (296081), Quickening (296086), Artifice of Time (296089), Artifice of Time (296091), Standstill (296094), Rewind (296101), Artifice of Time (296102), Artifice of Time (296103), The Well of Existence (296136), The Well of Existence (296192), The Well of Existence (296193), Refreshment (296197), Refreshment (296200), Refreshment (296201), Suppressing Pulse (296203), Seed of Eonar (296207), Seed of Eonar (296211), Life-Binder's Invocation (296213), Life-Binder's Invocation (296214), Life-Binder's Invocation (296220), Life-Binder's Invocation (296221), Vitality Conduit (296230), Vitality Conduit (296231), Vitality Conduit (296232), Strive for Perfection (296321), Strive for Perfection (296322), Strive for Perfection (296324), Vision of Perfection (296325), Vision of Perfection (296326), Vision of Perfection (296328), Strive for Perfection (296330), Blood of the Enemy (297108), Blood of the Enemy (297120), Blood of the Enemy (297122), Seething Rage (297126), Blood-Soaked (297147), Blood-Soaked (297162), Blood-Soaked (297168), Blood-Soaked (297177), Blood-Soaked (297178), Anima of Life and Death (297365), Nullification Dynamo (297384), Vision of Perfection (297736), Vision of Perfection (297737), Vision of Perfection (297738), Vision of Perfection (297739), Vision of Perfection (297745), Vision of Perfection (297866), Vision of Perfection (297868), Vision of Perfection (297869), Blood of the Enemy (297969), Blood of the Enemy (297970), Blood of the Enemy (297971), Azeroth's Undying Gift (298080), Azeroth's Undying Gift (298081), Hardened Azerite (298082), Hardened Azerite (298083), Vision of Perfection (298084), Aegis of the Deep (298168), Aegis of the Deep (298169), Aegis of the Deep (298174), Blood of the Enemy (298182), Blood of the Enemy (298183), Aegis of the Deep (298186), Stand Your Ground (298193), Stand Your Ground (298197), Stand Your Ground (298204), Blood of the Enemy (298273), Blood-Soaked (298274), Blood-Soaked (298275), Blood of the Enemy (298277), Azeroth's Undying Gift (298278), Azeroth's Undying Gift (298279), Azeroth's Undying Gift (298280), Nullification Dynamo (298281), Nullification Dynamo (298282), Nullification Dynamo (298284), Anima of Life and Death (298286), Anima of Life and Death (298287), Anima of Life and Death (298288), Sphere of Suppression (298292), Strive for Perfection (296320), Lucid Dreams (298268), Lucid Dreams (298337), Lucid Dreams (298339), Lucid Dreams (298343), Stand Your Ground (298351), Stand Your Ground (298352), Aegis of the Deep (298353), Memory of Lucid Dreams (298357), Lucid Dreams (298373), Memory of Lucid Dreams (298376), Memory of Lucid Dreams (298377), Lucid Dreams (298404), Lucid Dreams (298405), Reckless Force (298407), Reckless Force (298409), Sphere of Suppression (298418), Sphere of Suppression (298419), Sphere of Suppression (298420), Reckless Force (298448), Reckless Force (298449), Reckless Force (298450), The Unbound Force (298452), The Unbound Force (298453), The Unbound Force (298455), The Unbound Force (298456), The Unbound Force (298457), The Crucible of Flame (298601), The Crucible of Flame (298603), The Crucible of Flame (298604), The Crucible of Flame (298605), Worldvein Resonance (298606), Worldvein Resonance (298607), Worldvein Resonance (298609), Worldvein Resonance (298611), Essence of the Focusing Iris (298618), Essence of the Focusing Iris (298620), Essence of the Focusing Iris (298621), Essence of the Focusing Iris (298623), Lifeblood (298627), Worldvein Resonance (298628), Blood of the Enemy (299039), Aegis of the Deep (299237), Aegis of the Deep (299238), Aegis of the Deep (299239), Aegis of the Deep (299240), Aegis of the Deep (299273), Stand Your Ground (299274), Aegis of the Deep (299275), Stand Your Ground (299277), Vision of Perfection (299296), Vision of Perfection (299297), Vision of Perfection (299298), Vision of Perfection (299299), Memory of Lucid Dreams (299300), Memory of Lucid Dreams (299302), Memory of Lucid Dreams (299304), Memory of Lucid Dreams (299305), Ripple in Space (299306), Ripple in Space (299307), Ripple in Space (299309), Ripple in Space (299310), Condensed Life-Force (299312), Condensed Life-Force (299313), Condensed Life-Force (299314), Condensed Life-Force (299315), Purification Protocol (299316), Purification Protocol (299317), Purification Protocol (299318), Purification Protocol (299320), The Unbound Force (299321), The Unbound Force (299322), The Unbound Force (299323), The Unbound Force (299324), Lifeblood (299333), Worldvein Resonance (299334), Focused Energy (299335), Focused Azerite Beam (299336), Focused Energy (299337), Focused Azerite Beam (299338), Purification Protocol (299343), Purifying Blast (299345), Purification Protocol (299346), Purifying Blast (299347), Ancient Flame (299348), Concentrated Flame (299349), Ancient Flame (299350), Concentrated Flame (299353), Condensed Life-Force (299354), Guardian of Azeroth (299355), Condensed Life-Force (299357), Guardian of Azeroth (299358), Strive for Perfection (299367), Vision of Perfection (299368), Strive for Perfection (299369), Vision of Perfection (299370), Lucid Dreams (299371), Memory of Lucid Dreams (299372), Lucid Dreams (299373), Memory of Lucid Dreams (299374), Reckless Force (299375), The Unbound Force (299376), Reckless Force (299377), The Unbound Force (299378), Burning Embrace (299396), Artifice of Time (299506), Artifice of Time (299507), Artifice of Time (299508), Artifice of Time (299509), Life-Binder's Invocation (299510), Life-Binder's Invocation (299511), Life-Binder's Invocation (299512), Life-Binder's Invocation (299513), The Ever-Rising Tide (299514), The Ever-Rising Tide (299515), The Ever-Rising Tide (299516), The Ever-Rising Tide (299517), Artifice of Time (299518), Artifice of Time (299519), Life-Binder's Invocation (299520), Life-Binder's Invocation (299521), Overcharge Mana (299522), The Ever-Rising Tide (299523), The Well of Existence (299524), The Well of Existence (299526), The Well of Existence (299527), The Well of Existence (299528), Refreshment (299529), The Well of Existence (299530), Vitality Conduit (299550), Vitality Conduit (299551), Vitality Conduit (299552), Vitality Conduit (299554), Vitality Conduit (299559), Vitality Conduit (299560), Overcharge Mana (299624), Overcharge Mana (299875), Overcharge Mana (299876), The Ever-Rising Tide (299878), The Ever-Rising Tide (299879), Standstill (299882), Standstill (299883), Artifice of Time (299885), Artifice of Time (299887), Refreshment (299932), Refreshment (299933), The Well of Existence (299935), The Well of Existence (299936), Seed of Eonar (299939), Seed of Eonar (299940), Life-Binder's Invocation (299943), Life-Binder's Invocation (299944), Vitality Conduit (299958), Vitality Conduit (299959), Anima of Death (300002), Anima of Death (300003), Anima of Life (300004), Anima of Life (300005), Suppressing Pulse (300009), Suppressing Pulse (300010), Sphere of Suppression (300012), Sphere of Suppression (300013), Empowered Null Barrier (300015), Empowered Null Barrier (300016), Null Barrier (300018), Null Barrier (300020), Guardian of Azeroth (300091), Memory of Lucid Dreams (300120), Perseverance (300573), Perseverance (300575), Perseverance (300576), Perseverance (300577), Heart of Azeroth Slot Unlock (300949), Azerite Spike (302555), Ripple in Space (302731), Ripple in Space (302778), Ripple in Space (302780), Ripple in Space (302864), Ripple in Space (302910), Reality Shift (302916), Reckless Force (302917), Reckless Force (302932), Reality Shift (302952), Reality Shift (302953), Reality Shift (302957), Reality Shift (302961), Reality Shift (302962), Ripple in Space (302982), Ripple in Space (302983), Reality Shift (302984), Reality Shift (302985), Vision of Perfection (303342), Vision of Perfection (303344), Guardian of Azeroth (303347), Guardian of Azeroth (303349), Azerite Volley (303351), Memory of Lucid Dreams (303399), Memory of Lucid Dreams (303412), Transference (303448), Vitality Conduit (303460), Vitality Conduit (303463), Vitality Conduit (303472), Transference (303474), Transference (303476), Conflict (303823), Conflict and Strife (303824), Conflict and Strife (303834), Conflict and Strife (303835), Conflict and Strife (303836), Conflict and Strife (303837), Conflict and Strife (303868), Conflict (303892), Conflict (303894), Conflict and Strife (303897), Conflict and Strife (304014), Conflict and Strife (304015), Conflict and Strife (304016), Conflict and Strife (304017), Conflict and Strife (304018), Conflict and Strife (304019), Conflict and Strife (304020), Conflict and Strife (304021), Conflict and Strife (304022), Conflict and Strife (304023), Reckless Force (304038), Strife (304055), Strife (304056), Strife (304081), Conflict (304086), Conflict (304088), Strife (304089), Conflict (304121), Strife (304123), Strife (304125), Conflict (304375), Strife (304533), Lucid Dreams (304633), Aegis of the Deep (304693), Conflict (304720), Vitality Conduit (304722), Conflict (304724), Conflict (304775), Strife (305148), Conflict and Strife (305350), Conflict and Strife (305352), Seed of Eonar (305500), Lifeblood (305694), Strife (305723)
+                   Affected Spells (Label): Life-Binder's Invocation (293032), Azeroth's Undying Gift (293019), Suppressing Pulse (293031), Azeroth's Undying Gift (294650), Azeroth's Undying Gift (294653), Azeroth's Undying Gift (294655), Hardened Azerite (294668), Hardened Azerite (294685), Hardened Azerite (294687), Hardened Azerite (294688), Hardened Azerite (294689), Sphere of Suppression (294906), Sphere of Suppression (294907), Sphere of Suppression (294908), Sphere of Suppression (294909), Sphere of Suppression (294910), Sphere of Suppression (294912), Sphere of Suppression (294919), Sphere of Suppression (294920), Sphere of Suppression (294922), Anima of Death (294926), Anima of Death (294945), Anima of Death (294946), Anima of Life (294964), Anima of Life (294966), Anima of Life (294969), Anima of Life (294970), Anima of Life (294972), Lifeblood (295078), Lifeblood Shard (295114), Lifeblood (295137), Worldvein Resonance (295160), Lifeblood (295165), Lifeblood (295166), Worldvein Resonance (295186), Worldvein Resonance (295206), Worldvein Resonance (295208), Worldvein Resonance (295209), Worldvein Resonance (295210), Focused Energy (295246), Focused Energy (295248), Focused Energy (295251), Focused Energy (295252), Essence of the Focusing Iris (295253), Focused Azerite Beam (295258), Focused Azerite Beam (295261), Focused Azerite Beam (295262), Focused Azerite Beam (295263), Focused Azerite Beam (295264), Purification Protocol (295293), Purification Protocol (295305), Anima of Death (295306), Anima of Death (295307), Purification Protocol (295310), Purification Protocol (295333), Purifying Blast (295337), Purifying Blast (295338), Purification Protocol (295351), Purifying Blast (295352), Purifying Blast (295354), Purifying Blast (295358), Purification Protocol (295363), Purifying Blast (295364), Ancient Flame (295365), Purifying Blast (295366), Ancient Flame (295367), Concentrated Flame (295368), Ancient Flame (295369), Ancient Flame (295372), Concentrated Flame (295373), Concentrated Flame (295374), Concentrated Flame (295376), Concentrated Flame (295377), Concentrated Flame (295379), Concentrated Flame (295380), Ancient Flame (295381), Empowered Null Barrier (295746), Null Dynamo (295747), Null Dynamo (295748), Null Barrier (295749), Null Barrier (295750), Condensed Life-Force (295834), Azerite Spike (295835), Condensed Life-Force (295836), Condensed Life-Force (295837), Condensed Life-Force (295838), Condensed Life-Force (295839), Guardian of Azeroth (295840), Guardian of Azeroth (295841), Null Barrier (295842), Guardian of Azeroth (295843), Null Dynamo (295844), Null Dynamo (295845), Null Dynamo (295846), Guardian of Azeroth (295855), Azerite Spike (295856), Azeroth's Undying Gift (295872), Hardened Azerite (295883), Condensed Life-Force (295892), The Ever-Rising Tide (296050), The Ever-Rising Tide (296059), Null Barrier (296061), The Ever-Rising Tide (296062), The Ever-Rising Tide (296067), Overcharge Mana (296072), Overcharge Mana (296074), Overcharge Mana (296075), Artifice of Time (296081), Quickening (296086), Artifice of Time (296089), Artifice of Time (296091), Standstill (296094), Rewind (296101), Artifice of Time (296102), Artifice of Time (296103), The Well of Existence (296136), The Well of Existence (296192), The Well of Existence (296193), Refreshment (296197), Refreshment (296200), Refreshment (296201), Suppressing Pulse (296203), Seed of Eonar (296207), Seed of Eonar (296211), Life-Binder's Invocation (296213), Life-Binder's Invocation (296214), Life-Binder's Invocation (296220), Life-Binder's Invocation (296221), Vitality Conduit (296230), Vitality Conduit (296231), Vitality Conduit (296232), Strive for Perfection (296321), Strive for Perfection (296322), Strive for Perfection (296324), Vision of Perfection (296325), Vision of Perfection (296326), Vision of Perfection (296328), Strive for Perfection (296330), Blood of the Enemy (297108), Blood of the Enemy (297120), Blood of the Enemy (297122), Seething Rage (297126), Blood-Soaked (297147), Blood-Soaked (297162), Blood-Soaked (297168), Blood-Soaked (297177), Blood-Soaked (297178), Vision of Perfection (297736), Vision of Perfection (297737), Vision of Perfection (297738), Vision of Perfection (297739), Vision of Perfection (297745), Vision of Perfection (297866), Vision of Perfection (297868), Vision of Perfection (297869), Azeroth's Undying Gift (298080), Azeroth's Undying Gift (298081), Hardened Azerite (298082), Hardened Azerite (298083), Aegis of the Deep (298168), Aegis of the Deep (298169), Aegis of the Deep (298174), Blood of the Enemy (298182), Blood of the Enemy (298183), Aegis of the Deep (298186), Stand Your Ground (298193), Stand Your Ground (298197), Stand Your Ground (298204), Blood of the Enemy (298273), Blood-Soaked (298274), Blood-Soaked (298275), Blood of the Enemy (298277), Strive for Perfection (296320), Lucid Dreams (298268), Lucid Dreams (298337), Lucid Dreams (298339), Lucid Dreams (298343), Stand Your Ground (298351), Stand Your Ground (298352), Aegis of the Deep (298353), Memory of Lucid Dreams (298357), Lucid Dreams (298373), Memory of Lucid Dreams (298376), Memory of Lucid Dreams (298377), Lucid Dreams (298404), Lucid Dreams (298405), Reckless Force (298407), Reckless Force (298409), Reckless Force (298448), Reckless Force (298449), Reckless Force (298450), The Unbound Force (298452), The Unbound Force (298453), The Unbound Force (298455), The Unbound Force (298456), The Unbound Force (298457), Lifeblood (298627), Worldvein Resonance (298628), Aegis of the Deep (299273), Stand Your Ground (299274), Aegis of the Deep (299275), Stand Your Ground (299277), Lifeblood (299333), Worldvein Resonance (299334), Focused Energy (299335), Focused Azerite Beam (299336), Focused Energy (299337), Focused Azerite Beam (299338), Purification Protocol (299343), Purifying Blast (299345), Purification Protocol (299346), Purifying Blast (299347), Ancient Flame (299348), Concentrated Flame (299349), Ancient Flame (299350), Concentrated Flame (299353), Condensed Life-Force (299354), Guardian of Azeroth (299355), Condensed Life-Force (299357), Guardian of Azeroth (299358), Strive for Perfection (299367), Vision of Perfection (299368), Strive for Perfection (299369), Vision of Perfection (299370), Lucid Dreams (299371), Memory of Lucid Dreams (299372), Lucid Dreams (299373), Memory of Lucid Dreams (299374), Reckless Force (299375), The Unbound Force (299376), Reckless Force (299377), The Unbound Force (299378), Burning Embrace (299396), Artifice of Time (299518), Artifice of Time (299519), Life-Binder's Invocation (299520), Life-Binder's Invocation (299521), Overcharge Mana (299522), The Ever-Rising Tide (299523), Refreshment (299529), The Well of Existence (299530), Vitality Conduit (299559), Vitality Conduit (299560), Overcharge Mana (299624), Overcharge Mana (299875), Overcharge Mana (299876), The Ever-Rising Tide (299878), The Ever-Rising Tide (299879), Standstill (299882), Standstill (299883), Artifice of Time (299885), Artifice of Time (299887), Refreshment (299932), Refreshment (299933), The Well of Existence (299935), The Well of Existence (299936), Seed of Eonar (299939), Seed of Eonar (299940), Life-Binder's Invocation (299943), Life-Binder's Invocation (299944), Vitality Conduit (299958), Vitality Conduit (299959), Anima of Death (300002), Anima of Death (300003), Anima of Life (300004), Anima of Life (300005), Suppressing Pulse (300009), Suppressing Pulse (300010), Sphere of Suppression (300012), Sphere of Suppression (300013), Empowered Null Barrier (300015), Empowered Null Barrier (300016), Null Barrier (300018), Null Barrier (300020), Guardian of Azeroth (300091), Memory of Lucid Dreams (300120), Perseverance (300573), Perseverance (300575), Perseverance (300576), Perseverance (300577), Heart of Azeroth Slot Unlock (300949), Azerite Spike (302555), Vision of Perfection (302656), Ripple in Space (302731), Ripple in Space (302778), Ripple in Space (302780), Ripple in Space (302864), Ripple in Space (302910), Reality Shift (302916), Reckless Force (302917), Reckless Force (302932), Reality Shift (302952), Reality Shift (302953), Reality Shift (302957), Reality Shift (302961), Reality Shift (302962), Ripple in Space (302982), Ripple in Space (302983), Reality Shift (302984), Reality Shift (302985), Vision of Perfection (303342), Vision of Perfection (303344), Guardian of Azeroth (303347), Guardian of Azeroth (303349), Azerite Volley (303351), Memory of Lucid Dreams (303399), Memory of Lucid Dreams (303412), Transference (303448), Vitality Conduit (303460), Vitality Conduit (303463), Vitality Conduit (303472), Transference (303474), Transference (303476), Conflict (303823), Conflict and Strife (303824), Conflict and Strife (303868), Conflict (303892), Conflict (303894), Conflict and Strife (303897), Conflict and Strife (304014), Conflict and Strife (304015), Conflict and Strife (304016), Conflict and Strife (304017), Conflict and Strife (304018), Conflict and Strife (304019), Conflict and Strife (304020), Conflict and Strife (304021), Conflict and Strife (304022), Conflict and Strife (304023), Reckless Force (304038), Strife (304055), Strife (304056), Strife (304081), Conflict (304086), Conflict (304088), Strife (304089), Conflict (304121), Strife (304123), Strife (304125), Conflict (304375), Strife (304533), Lucid Dreams (304633), Aegis of the Deep (304693), Conflict (304720), Vitality Conduit (304722), Conflict (304724), Conflict (304775), Strife (305148), Conflict and Strife (305350), Conflict and Strife (305352), Seed of Eonar (305500), Lifeblood (305694), Strife (305723)
 
 Name             : Subtlety Rogue (id=137035) [Spell Family (8), Passive, Hidden] 
-Class            : Subtlety Rogue
+Class            : Subtlety Rogue, Death Knight
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2861,7 +2860,7 @@ Effects          :
                    Affected Spells (Label): 
 
 Name             : Outlaw Rogue (id=137036) [Spell Family (8), Passive, Hidden] 
-Class            : Outlaw Rogue
+Class            : Outlaw Rogue, Death Knight
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2909,7 +2908,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Assassination Rogue (id=137037) [Spell Family (8), Passive, Hidden] 
-Class            : Assassination Rogue
+Class            : Assassination Rogue, Death Knight
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3240,7 +3239,7 @@ Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Dagger
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Sleight of Hand (145211 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), The First of the Dead (248210 effect#3), Master Assassin (256735 effect#1), Perforate (277720 effect#1), Inevitability (278683 effect#3)
+Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Sleight of Hand (145211 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Perforate (277720 effect#1), Inevitability (278683 effect#3)
 Family Flags     : 2, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
@@ -3357,7 +3356,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Dagger
 Stance Mask      : 0x20000000
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), From the Shadows (184918 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Shadowstrike (245623 effect#1), The First of the Dead (248210 effect#1), Master Assassin (256735 effect#1), Inevitability (278683 effect#3), Blade In The Shadows (279752 effect#2), Blade In The Shadows (279754 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Shadowstrike (245623 effect#1), Master Assassin (256735 effect#1), Inevitability (278683 effect#3), Blade In The Shadows (279752 effect#2), Blade In The Shadows (279754 effect#1)
 Family Flags     : 54, 104
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
@@ -3414,7 +3413,7 @@ Spell Level      : 10
 Range            : 20 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Broadside (193356 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Opportunity (195627 effect#1), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Deadshot (272940 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Broadside (193356 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Opportunity (195627 effect#1), Blunderbuss (202848 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Deadshot (272940 effect#1)
 Family Flags     : 54, 101
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4045,7 +4044,7 @@ Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Acrobatic Strikes (196924 effect#1), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effect#1), Eviscerate (231716 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Acrobatic Strikes (196924 effect#1), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effect#1), Eviscerate (231716 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1)
 Family Flags     : 17, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -4427,7 +4426,7 @@ Resource         : 35 Energy (3) (id=10714)
 Spell Level      : 63
 GCD              : 1 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), The Dreadlord's Deceit (228224 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 127
 Attributes       : ....x... ........ x....... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4670,7 +4669,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Dagger
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), The First of the Dead (248210 effect#2), Master Assassin (256735 effect#1), Perforate (277720 effect#1), Inevitability (278683 effect#3)
+Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Perforate (277720 effect#1), Inevitability (278683 effect#3)
 Family Flags     : 54, 109
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
@@ -4750,7 +4749,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Assassin (76803 effect#1), Poison Knives (192376 effect#2), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Mastery: Potent Assassin (76803 effect#1), Poison Knives (192376 effect#2), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
 Triggered by     : Agonizing Poison (200802)
 Family Flags     : 16, 51, 120
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
@@ -5768,7 +5767,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Shadow Blades (121471 effect#2)
+Affecting spells : Shadow Blades (121471 effect#2)
 Family Flags     : 19
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -6489,7 +6488,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 309366 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
@@ -6556,7 +6555,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 309352 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -8560,13 +8559,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7), Scales with item level (354)
 Effects          :
 #1 (id=773466)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1792 | Target: Self (1)
 #2 (id=779235)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
 #3 (id=779236)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 33554432 | Target: Self (1)
 #4 (id=779237)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.2468 (coefficient=0.766067) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
 Description      : $?$a303590[Critical Strike increased by $s1.]?$a303592[Haste increased by $s2.]?$a303595[Mastery increased by $s3.]?$a303596[Versatility increased by $s4.][A secondary stat of your choice is increased by $s1 while using the Pocket-Sized Computation Device.] Stat is chosen based on equipped Logic Board.
 
 Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
@@ -8592,7 +8591,10 @@ Name             : Arcane Heart (id=303006) [Scaling Spell (-7), Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
 Azerite Power Id : 577
+Proc Flags       : ........ ........ ........ ....x... 
+                 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8605,7 +8607,7 @@ Effects          :
 #1 (id=778205)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
 #2 (id=778206)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 0 (coefficient=1.39285) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 0 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778207)   : Apply Aura (6) | Unknown(285)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 303209 | Target: Self (1)
 Description      : Every $s1 damage and healing done you gain Omnipotence, increasing your highest stat by $s2 for $303212d. You heal for $s3% of all Arcane damage taken.
@@ -8625,11 +8627,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778208)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 1.00000 | Trigger Spell: 303250 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
 #2 (id=778209)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778210)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your Mastery is increased by $s1, plus an additional $s2 for each ally also affected by Loyal to the End, up to $s3.
 
 When you die, your allies gain Critical Strike, Haste, and Versatility equal to their Mastery bonus from this trait.
@@ -8651,11 +8653,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778211)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 1.00000 | Trigger Spell: 303388 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1870.19 (coefficient=24.05389) | PvP Coefficient: 0.50000 | Trigger Spell: 303388 | Target: Self (1)
 #2 (id=778212)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=778215)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 14665.42 (coefficient=188.6228) | PvP Coefficient: 0.25000 | Target: Self (1)
 #4 (id=778216)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to crash a wave upon your target for $s1 Frost damage.

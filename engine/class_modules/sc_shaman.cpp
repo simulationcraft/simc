@@ -287,6 +287,7 @@ public:
     spell_t* lightning_shield;
     spell_t* earthen_rage;
     spell_t* crashing_storm;
+    attack_t* crash_lightning_aoe;
     spell_t* searing_assault;
     spell_t* molten_weapon;
     action_t* molten_weapon_dot;
@@ -458,6 +459,7 @@ public:
     const spell_data_t* lava_surge;
 
     // Enhancement
+    const spell_data_t* crash_lightning;
     const spell_data_t* critical_strikes;
     const spell_data_t* dual_wield;
     const spell_data_t* enhancement_shaman;
@@ -2875,7 +2877,7 @@ struct windfury_attack_t : public shaman_attack_t
 
 struct crash_lightning_attack_t : public shaman_attack_t
 {
-  crash_lightning_attack_t( shaman_t* p, const std::string& n ) : shaman_attack_t( n, p, p->find_spell( 195592 ) )
+  crash_lightning_attack_t( shaman_t* p ) : shaman_attack_t( "crash_lightning_aoe", p, p->find_spell( 195592 ) )
   {
     weapon     = &( p->main_hand_weapon );
     background = true;
@@ -3432,12 +3434,10 @@ struct molten_weapon_dot_t : public residual_action::residual_periodic_action_t<
 
 struct lava_lash_t : public shaman_attack_t
 {
-  crash_lightning_attack_t* cl;
   molten_weapon_dot_t* mw_dot;
 
   lava_lash_t( shaman_t* player, const std::string& options_str )
     : shaman_attack_t( "lava_lash", player, player->find_specialization_spell( "Lava Lash" ) ),
-      cl( new crash_lightning_attack_t( player, "lava_lash_cl" ) ),
       mw_dot( nullptr )
   {
     check_spec( SHAMAN_ENHANCEMENT );
@@ -3450,8 +3450,6 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( weapon->type == WEAPON_NONE )
       background = true;  // Do not allow execution.
-
-    add_child( cl );
 
     if ( player->talent.elemental_spirits->ok() )
     {
@@ -3523,8 +3521,8 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( result_is_hit( state->result ) && p()->buff.crash_lightning->up() )
     {
-      cl->set_target( state->target );
-      cl->schedule_execute();
+      p()->action.crash_lightning_aoe->set_target( state->target );
+      p()->action.crash_lightning_aoe->schedule_execute();
     }
 
     if ( p()->buff.molten_weapon->up() )
@@ -3549,14 +3547,12 @@ struct lava_lash_t : public shaman_attack_t
 
 struct stormstrike_base_t : public shaman_attack_t
 {
-  crash_lightning_attack_t* cl;
   stormstrike_attack_t *mh, *oh;
   bool background_action;
 
   stormstrike_base_t( shaman_t* player, const std::string& name, const spell_data_t* spell,
                       const std::string& options_str )
     : shaman_attack_t( name, player, spell ),
-      cl( new crash_lightning_attack_t( player, name + "_cl" ) ),
       mh( nullptr ),
       oh( nullptr ),
       background_action( false )
@@ -3570,8 +3566,6 @@ struct stormstrike_base_t : public shaman_attack_t
     weapon_multiplier  = 0.0;
     may_crit           = false;
     school             = SCHOOL_PHYSICAL;
-
-    add_child( cl );
   }
 
   void init() override
@@ -3618,8 +3612,8 @@ struct stormstrike_base_t : public shaman_attack_t
 
       if ( p()->buff.crash_lightning->up() )
       {
-        cl->set_target( execute_state->target );
-        cl->execute();
+        p()->action.crash_lightning_aoe->set_target( execute_state->target );
+        p()->action.crash_lightning_aoe->execute();
       }
 
       if ( p()->azerite.thunderaans_fury.ok() )
@@ -3951,6 +3945,11 @@ struct crash_lightning_t : public shaman_attack_t
     if ( player->action.crashing_storm )
     {
       add_child( player->action.crashing_storm );
+    }
+
+    if ( player->action.crash_lightning_aoe )
+    {
+      add_child( player->action.crash_lightning_aoe );
     }
   }
 
@@ -6839,6 +6838,11 @@ void shaman_t::create_actions()
     action.searing_assault = new searing_assault_t( this );
   }
 
+  if ( spec.crash_lightning->ok() )
+  {
+    action.crash_lightning_aoe = new crash_lightning_attack_t( this );
+  }
+
   // Always create the Fury of Air damage action so spell_targets.fury_of_air works with or without
   // the talent
   action.fury_of_air = new fury_of_air_aoe_t( this );
@@ -6889,6 +6893,7 @@ void shaman_t::init_spells()
   spec.lava_surge        = find_specialization_spell( "Lava Surge" );
 
   // Enhancement
+  spec.crash_lightning    = find_specialization_spell( "Crash Lightning" );
   spec.critical_strikes   = find_specialization_spell( "Critical Strikes" );
   spec.dual_wield         = find_specialization_spell( "Dual Wield" );
   spec.enhancement_shaman = find_specialization_spell( "Enhancement Shaman" );
@@ -8591,9 +8596,9 @@ void shaman_t::init_action_list_enhancement()
       this, "Sundering",
       "if=active_enemies>=3&(!essence.blood_of_the_enemy.major"
       "|(essence.blood_of_the_enemy.major&(buff.seething_rage.up|cooldown.blood_of_the_enemy.remains>40)))" );
-  priority->add_action( "focused_azerite_beam,if=active_enemies>=3" );
-  priority->add_action( "purifying_blast,if=active_enemies>=3" );
-  priority->add_action( "ripple_in_space,if=active_enemies>=3" );
+  priority->add_action( "focused_azerite_beam,if=active_enemies>1" );
+  priority->add_action( "purifying_blast,if=active_enemies>1" );
+  priority->add_action( "ripple_in_space,if=active_enemies>1" );
   priority->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
   priority->add_action(
       this, "Frostbrand",
@@ -8623,7 +8628,7 @@ void shaman_t::init_action_list_enhancement()
       "Attempt to sync your DPS potion with a cooldown, unless the target is about to die." );
   cds->add_action( "guardian_of_azeroth" );
   cds->add_action( this, "Feral Spirit" );
-  cds->add_action( "blood_of_the_enemy" );
+  cds->add_action( "blood_of_the_enemy,if=raid_event.adds.in>90|active_enemies>1" );
   cds->add_talent( this, "Ascendance", "if=cooldown.strike.remains>0" );
   cds->add_action(
       "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|(target.time_to_die<20&debuff.razor_coral_"
@@ -8672,12 +8677,12 @@ void shaman_t::init_action_list_enhancement()
                             "&variable.furyCheck_LB&maelstrom>=40" );
   default_core->add_action( this, "Stormstrike", "if=variable.OCPool_SS&variable.furyCheck_SS" );
 
-  filler->add_talent( this, "Sundering", "if=active_enemies<3" );
+  filler->add_talent( this, "Sundering", "if=raid_event.adds.in>40" );
   filler->add_action(
-      "focused_azerite_beam,if=!buff.ascendance.up&!buff.molten_weapon.up&!buff.icy_edge.up"
+      "focused_azerite_beam,if=raid_event.adds.in>90&!buff.ascendance.up&!buff.molten_weapon.up&!buff.icy_edge.up"
       "&!buff.crackling_surge.up&!debuff.earthen_spike.up" );
-  filler->add_action( "purifying_blast" );
-  filler->add_action( "ripple_in_space" );
+  filler->add_action( "purifying_blast,if=raid_event.adds.in>60" );
+  filler->add_action( "ripple_in_space,if=raid_event.adds.in>60" );
   filler->add_action( "thundercharge" );
   filler->add_action( "concentrated_flame" );
   filler->add_action( this, "Crash Lightning",
