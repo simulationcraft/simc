@@ -6838,23 +6838,24 @@ public:
     os << "<div class=\"player-section custom_section\">\n"
           "<h3 class=\"toggle open\">Cooldown waste</h3>\n"
           "<div class=\"toggle-content\">\n"
-          "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
+          "<table class=\"sc sort even\" style=\"margin-top: 5px;\">\n"
+          "<thead>\n"
           "<tr>\n"
           "<th></th>\n"
           "<th colspan=\"3\">Seconds per Execute</th>\n"
           "<th colspan=\"3\">Seconds per Iteration</th>\n"
           "</tr>\n"
           "<tr>\n"
-          "<th>Ability</th>\n"
-          "<th>Average</th>\n"
-          "<th>Minimum</th>\n"
-          "<th>Maximum</th>\n"
-          "<th>Average</th>\n"
-          "<th>Minimum</th>\n"
-          "<th>Maximum</th>\n"
-          "</tr>\n";
+          "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+          "<th class=\"toggle-sort\">Average</th>\n"
+          "<th class=\"toggle-sort\">Minimum</th>\n"
+          "<th class=\"toggle-sort\">Maximum</th>\n"
+          "<th class=\"toggle-sort\">Average</th>\n"
+          "<th class=\"toggle-sort\">Minimum</th>\n"
+          "<th class=\"toggle-sort\">Maximum</th>\n"
+          "</tr>\n"
+          "</thead>\n";
 
-    size_t row = 0;
     for ( const cooldown_waste_data_t* data : p.cooldown_waste_data_list )
     {
       if ( !data->active() )
@@ -6866,7 +6867,7 @@ public:
       else
         name = util::encode_html( name );
 
-      fmt::print( os, "<tr{}>", row++ & 1 ? " class=\"odd\"" : "" );
+      os << "<tr>";
       fmt::print( os, "<td class=\"left\">{}</td>", name );
       fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.mean() );
       fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.min() );
@@ -6891,11 +6892,12 @@ public:
           "start_burn_phase and stop_burn_phase action being executed. Note that \"execute\" burn phases, i.e., the "
           "final burn of a fight, is also included.</p>\n"
           "<div style=\"display: flex;\">\n"
-          "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
+          "<table class=\"sc even\" style=\"margin-top: 5px;\">\n"
           "<thead>\n"
           "<tr>\n"
           "<th>Burn Phase Duration</th>\n"
           "</tr>\n"
+          "</thead>\n"
           "<tbody>\n";
 
     auto print_sample_data = [ &os ] ( extended_sample_data_t& s )
@@ -6928,11 +6930,12 @@ public:
 
     os << "</div>\n"
           "<p>Mana at burn start is the mana level recorded (in percentage of total mana) when a start_burn_phase command is executed.</p>\n"
-          "<table class=\"sc\">\n"
+          "<table class=\"sc even\">\n"
           "<thead>\n"
           "<tr>\n"
           "<th>Mana at Burn Start</th>\n"
           "</tr>\n"
+          "</thead>\n"
           "<tbody>\n";
 
     print_sample_data( *p.sample_data.burn_initial_mana );
@@ -6974,28 +6977,31 @@ public:
     os << "<div class=\"player-section custom_section\">\n"
           "<h3 class=\"toggle open\">Shatter</h3>\n"
           "<div class=\"toggle-content\">\n"
-          "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
+          "<table class=\"sc sort even\" style=\"margin-top: 5px;\">\n"
+          "<thead>\n"
           "<tr>\n"
-          "<th>Ability</th>\n"
+          "<th></th>\n"
           "<th colspan=\"2\">None</th>\n"
           "<th colspan=\"3\">Winter's Chill</th>\n"
           "<th colspan=\"2\">Fingers of Frost</th>\n"
           "<th colspan=\"2\">Other effects</th>\n"
           "</tr>\n"
-          "<th></th>\n"
-          "<th>Count</th>\n"
-          "<th>Percent</th>\n"
-          "<th>Count</th>\n"
-          "<th>Percent</th>\n"
-          "<th>Utilization</th>\n"
-          "<th>Count</th>\n"
-          "<th>Percent</th>\n"
-          "<th>Count</th>\n"
-          "<th>Percent</th>\n";
+          "<tr>\n"
+          "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+          "<th class=\"toggle-sort\">Count</th>\n"
+          "<th class=\"toggle-sort\">Percent</th>\n"
+          "<th class=\"toggle-sort\">Count</th>\n"
+          "<th class=\"toggle-sort\">Percent</th>\n"
+          "<th class=\"toggle-sort\">Utilization</th>\n"
+          "<th class=\"toggle-sort\">Count</th>\n"
+          "<th class=\"toggle-sort\">Percent</th>\n"
+          "<th class=\"toggle-sort\">Count</th>\n"
+          "<th class=\"toggle-sort\">Percent</th>\n"
+          "</tr>\n"
+          "</thead>\n";
 
     double bff = p.procs.brain_freeze_used->count.pretty_mean();
 
-    size_t row = 0;
     for ( const shatter_source_t* data : p.shatter_source_list )
     {
       if ( !data->active() )
@@ -7019,7 +7025,7 @@ public:
       else
         name = util::encode_html( name );
 
-      fmt::print( os, "<tr{}>", row++ & 1 ? " class=\"odd\"" : "" );
+      os << "<tr>";
       fmt::print( os, "<td class=\"left\">{}</td>", name );
       cells( data->count( FROZEN_NONE ) );
       cells( data->count( FROZEN_WINTERS_CHILL ), true );
