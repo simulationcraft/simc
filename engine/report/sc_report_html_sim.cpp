@@ -1221,7 +1221,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
   os << "</div>\n";
 }
 
-void print_html_image_load_scripts( report::sc_html_stream& os )
+void print_html_report_scripts( report::sc_html_stream& os )
 {
   print_text_array( os, __html_report_script );
 }
@@ -1336,8 +1336,6 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   // Report Targets
   if ( sim.report_targets )
   {
-    num_players += sim.targets_by_name.size();
-
     for ( auto& player : sim.targets_by_name )
     {
       report::print_html_player( os, *player );
@@ -1383,7 +1381,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   }
 
   os << "\n<script type=\"text/javascript\">\n";
-  print_html_image_load_scripts( os );
+  print_html_report_scripts( os );
   os << "\n</script>\n";
 
   os << "<script type=\"text/javascript\">\n";
