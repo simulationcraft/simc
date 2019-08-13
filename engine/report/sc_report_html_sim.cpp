@@ -41,8 +41,7 @@ int find_id( const stats_t& s )
   return id;
 }
 
-void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s,
-                              const player_t& p, int j, const sim_t& sim )
+void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s, const player_t& p, int j, const sim_t& sim )
 {
   if ( s.num_executes.mean() == 0 && s.compound_amount == 0 && !sim.debug )
     return;
@@ -82,28 +81,30 @@ void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s,
       os << " class=\"odd\"";
     os << ">\n";
 
-    os.printf( format, util::encode_html( p.name() ).c_str(),
-               util::encode_html( s.player->name() ).c_str(),
-               util::encode_html( s.name_str ).c_str(), "", id, direct_total,
-               direct_total / s.player->collected_data.fight_length.mean(),
-               s.num_direct_results.mean() /
-                   ( s.player->collected_data.fight_length.mean() / 60.0 ),
-               s.direct_results[ FULLTYPE_HIT ].actual_amount.mean(),
-               s.direct_results[ FULLTYPE_CRIT ].actual_amount.mean(),
-               s.num_executes.mean(), s.num_direct_results.mean(),
-               s.direct_results[ FULLTYPE_CRIT ].pct,
-               s.direct_results[ FULLTYPE_MISS ].pct +
-                   s.direct_results[ FULLTYPE_DODGE ].pct +
-                   s.direct_results[ FULLTYPE_PARRY ].pct,
-               s.direct_results[ FULLTYPE_GLANCE ].pct,
-               s.direct_results[ FULLTYPE_HIT_BLOCK ].pct +
-                   s.direct_results[ FULLTYPE_HIT_CRITBLOCK ].pct +
-                   s.direct_results[ FULLTYPE_GLANCE_BLOCK ].pct +
-                   s.direct_results[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
-                   s.direct_results[ FULLTYPE_CRIT_BLOCK ].pct +
-                   s.direct_results[ FULLTYPE_CRIT_CRITBLOCK ].pct,
-               s.total_intervals.mean(), s.total_amount.mean(),
-               s.player->collected_data.fight_length.mean() );
+    os.printf(
+      format,
+      util::encode_html( p.name() ).c_str(),
+      util::encode_html( s.player->name() ).c_str(),
+      util::encode_html( s.name_str ).c_str(),
+      "",
+      id,
+      direct_total,
+      direct_total / s.player->collected_data.fight_length.mean(),
+      s.num_direct_results.mean() / ( s.player->collected_data.fight_length.mean() / 60.0 ),
+      s.direct_results[ FULLTYPE_HIT ].actual_amount.mean(),
+      s.direct_results[ FULLTYPE_CRIT ].actual_amount.mean(),
+      s.num_executes.mean(),
+      s.num_direct_results.mean(),
+      s.direct_results[ FULLTYPE_CRIT ].pct,
+      s.direct_results[ FULLTYPE_MISS ].pct + s.direct_results[ FULLTYPE_DODGE ].pct
+        + s.direct_results[ FULLTYPE_PARRY ].pct,
+      s.direct_results[ FULLTYPE_GLANCE ].pct,
+      s.direct_results[ FULLTYPE_HIT_BLOCK ].pct + s.direct_results[ FULLTYPE_HIT_CRITBLOCK ].pct
+        + s.direct_results[ FULLTYPE_GLANCE_BLOCK ].pct + s.direct_results[ FULLTYPE_GLANCE_CRITBLOCK ].pct
+        + s.direct_results[ FULLTYPE_CRIT_BLOCK ].pct + s.direct_results[ FULLTYPE_CRIT_CRITBLOCK ].pct,
+      s.total_intervals.mean(),
+      s.total_amount.mean(),
+      s.player->collected_data.fight_length.mean() );
   }
 
   if ( tick_total > 0.0 )
@@ -114,26 +115,26 @@ void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s,
     os << ">\n";
 
     os.printf(
-        format,
-        util::encode_html( p.name() ).c_str(),
-        util::encode_html( s.player->name() ).c_str(),
-        util::encode_html( s.name_str ).c_str(),
-        " ticks",
-        -id,
-        tick_total,
-        tick_total / sim.max_time.total_seconds(),
-        s.num_ticks.mean() / sim.max_time.total_minutes(),
-        s.tick_results[ RESULT_HIT ].actual_amount.mean(),
-        s.tick_results[ RESULT_CRIT ].actual_amount.mean(),
-        s.num_executes.mean(),
-        s.num_ticks.mean(),
-        s.tick_results[ RESULT_CRIT ].pct,
-        s.tick_results[ RESULT_MISS ].pct + s.tick_results[ RESULT_DODGE ].pct +
-            s.tick_results[ RESULT_PARRY ].pct,
-        s.tick_results[ RESULT_GLANCE ].pct,
-        0.0,
-        s.total_intervals.mean(), s.total_amount.mean(),
-        s.player->collected_data.fight_length.mean() );
+      format,
+      util::encode_html( p.name() ).c_str(),
+      util::encode_html( s.player->name() ).c_str(),
+      util::encode_html( s.name_str ).c_str(),
+      " ticks",
+      -id,
+      tick_total,
+      tick_total / sim.max_time.total_seconds(),
+      s.num_ticks.mean() / sim.max_time.total_minutes(),
+      s.tick_results[ RESULT_HIT ].actual_amount.mean(),
+      s.tick_results[ RESULT_CRIT ].actual_amount.mean(),
+      s.num_executes.mean(),
+      s.num_ticks.mean(),
+      s.tick_results[ RESULT_CRIT ].pct,
+      s.tick_results[ RESULT_MISS ].pct + s.tick_results[ RESULT_DODGE ].pct + s.tick_results[ RESULT_PARRY ].pct,
+      s.tick_results[ RESULT_GLANCE ].pct,
+      0.0,
+      s.total_intervals.mean(),
+      s.total_amount.mean(),
+      s.player->collected_data.fight_length.mean() );
   }
 
   for ( auto& elem : s.children )
@@ -144,8 +145,8 @@ void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s,
 
 void print( report::sc_html_stream& os, const sim_t& sim )
 {
-  os << "<div id=\"raw-abilities\" class=\"section\">\n\n";
-  os << "<h2 class=\"toggle\">Raw Ability Summary</h2>\n"
+  os << "<div id=\"raw-abilities\" class=\"section\">\n\n"
+     << "<h2 class=\"toggle\">Raw Ability Summary</h2>\n"
      << "<div class=\"toggle-content hide\">\n";
 
   // Abilities Section
@@ -153,37 +154,22 @@ void print( report::sc_html_stream& os, const sim_t& sim )
      << "<tr>\n"
      << "<th class=\"left small\">Character</th>\n"
      << "<th class=\"left small\">Unit</th>\n"
-     << "<th class=\"small\"><a href=\"#help-ability\" "
-        "class=\"help\">Ability</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-id\" class=\"help\">Id</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-total\" "
-        "class=\"help\">Total</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-dps\" "
-        "class=\"help\">DPS</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-ipm\" "
-        "class=\"help\">Imp/Min</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-hit\" "
-        "class=\"help\">Hit</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-crit\" "
-        "class=\"help\">Crit</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-count\" "
-        "class=\"help\">Count</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-impacts\" "
-        "class=\"help\">Impacts</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-crit-pct\" "
-        "class=\"help\">Crit%</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-miss-pct\" "
-        "class=\"help\">Avoid%</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-glance-pct\" "
-        "class=\"help\">G%</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-block-pct\" "
-        "class=\"help\">B%</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-interval\" "
-        "class=\"help\">Interval</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-combined\" "
-        "class=\"help\">Combined</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-duration\" "
-        "class=\"help\">Duration</a></th>\n"
+     << "<th class=\"small help\" data-help=\"#help-ability\">Ability</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-id\">Id</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-total\">Total</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-dps\">DPS</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-ipm\">Imp/Min</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-hit\">Hit</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-crit\">Crit</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-execute\">Execute</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-count\">Count</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-crit-pct\">Crit%</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-miss-pct\">Avoid%</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-glance-pct\">G%</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-block-pct\">B%</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-interval\">Interval</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-combined\">Combined</th>\n"
+     << "<th class=\"small help\" data-help=\"#help-duration\">Duration</th>\n"
      << "</tr>\n";
 
   int count = 0;
@@ -206,8 +192,8 @@ void print( report::sc_html_stream& os, const sim_t& sim )
   }
 
   // closure
-  os << "</table>\n";
-  os << "<div class=\"clear\"></div>\n"
+  os << "</table>\n"
+     << "<div class=\"clear\"></div>\n"
      << "</div>\n"
      << "</div>\n\n";
 }
@@ -252,8 +238,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
     }
   }
 
-  os << "<div id=\"table-of-contents\" class=\"section grouped-first "
-        "grouped-last\">\n"
+  os << "<div id=\"table-of-contents\" class=\"section\">\n"
      << "<h2 class=\"toggle\">Table of Contents</h2>\n"
      << "<div class=\"toggle-content hide\">\n";
 
@@ -314,8 +299,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
       os << "<li><a href=\"#raid-summary\">Raid Summary</a></li>\n";
       ci++;
 
-      os << "<li><a href=\"#apm-summary\">Actions per Minute / DPS Variance "
-            "Summary</a></li>\n";
+      os << "<li><a href=\"#apm-summary\">Actions per Minute / DPS Variance Summary</a></li>\n";
       ci++;
       if ( sim.scaling->has_scale_factors() )
       {
@@ -328,8 +312,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
       if ( pi < static_cast<int>( sim.players_by_name.size() ) )
       {
         player_t* p = sim.players_by_name[ pi ];
-        os << "<li><a href=\"#player" << p->index << "\">" << util::encode_html( p->name() )
-           << "</a>";
+        os << "<li><a href=\"#player" << p->index << "\">" << util::encode_html( p->name() ) << "</a>";
         ci++;
         if ( sim.report_pets_separately )
         {
@@ -340,8 +323,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
             pet_t* pet = sim.players_by_name[ pi ]->pet_list[ k ];
             if ( pet->summoned )
             {
-              os << "<li><a href=\"#player" << pet->index << "\">" << util::encode_html( pet->name() )
-                 << "</a></li>\n";
+              os << "<li><a href=\"#player" << pet->index << "\">" << util::encode_html( pet->name() ) << "</a></li>\n";
               ci++;
             }
           }
@@ -354,7 +336,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
       {
         if ( ab == 0 )
         {
-          os << "<li><a href=\"#auras-buffs\">Auras/Buffs</a></li>\n";
+          //os << "<li><a href=\"#auras-buffs\">Auras/Buffs</a></li>\n";
           ab = 1;
         }
         ci++;
@@ -378,8 +360,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
           if ( pi < static_cast<int>( sim.targets_by_name.size() ) )
           {
             player_t* p = sim.targets_by_name[ pi ];
-            os << "<li><a href=\"#player" << p->index << "\">"
-               << util::encode_html( p->name() ) << "</a></li>\n";
+            os << "<li><a href=\"#player" << p->index << "\">" << util::encode_html( p->name() ) << "</a></li>\n";
           }
           ci++;
           pi++;
@@ -400,8 +381,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
 {
   os << "<div id=\"sim-info\" class=\"section\">\n";
 
-  os << "<h2 id=\"sim-info-toggle\" class=\"toggle\">Simulation & Raid "
-        "Information</h2>\n"
+  os << "<h2 id=\"sim-info-toggle\" class=\"toggle\">Simulation & Raid Information</h2>\n"
      << "<div class=\"toggle-content hide\">\n";
 
   os << "<table class=\"sc mt\">\n";
@@ -423,16 +403,14 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
 
   os.printf(
       "<tr class=\"left\">\n"
-      "<th><a href=\"#help-fight-length\" class=\"help\">Fight "
-      "Length%s:</a></th>\n"
+      "<th class=\"help\" data-help=\"#help-fight-length\">Fight Length%s:</th>\n"
       "<td>%.0f - %.0f ( %.1f )</td>\n"
       "</tr>\n",
       ( sim.fixed_time ? " (fixed time)" : "" ), sim.simulation_length.min(),
       sim.simulation_length.max(), sim.simulation_length.mean() );
 
   os << "<tr class=\"left\">\n"
-     << "<td><h2>Performance:</h2></td>\n"
-     << "<td></td>\n"
+     << "<td colspan=\"2\"><h3>Performance:</h3></td>\n"
      << "</tr>\n";
 
   os.printf(
@@ -475,8 +453,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
       sim.iterations * sim.simulation_length.mean() / sim.elapsed_cpu );
 
   os << "<tr class=\"left\">\n"
-     << "<td><h2>Settings:</h2></td>\n"
-     << "<td></td>\n"
+     << "<td colspan=\"2\"><h3>Settings:</h3></td>\n"
      << "</tr>\n";
 
   os.printf(
@@ -527,10 +504,9 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
   if ( sim.iterations > 1 )
   {
     highchart::histogram_chart_t chart( "sim_length_dist", sim );
-    if ( chart::generate_distribution(
-             chart, nullptr, sim.simulation_length.distribution, "Timeline",
-             sim.simulation_length.mean(), sim.simulation_length.min(),
-             sim.simulation_length.max() ) )
+    if ( chart::generate_distribution( chart, nullptr, sim.simulation_length.distribution, "Timeline",
+                                       sim.simulation_length.mean(), sim.simulation_length.min(),
+                                       sim.simulation_length.max() ) )
     {
       chart.set_toggle_id( "sim-info-toggle" );
       os << chart.to_target_div();
@@ -578,7 +554,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
 
 void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
 {
-  os << "<div id=\"raid-summary\" class=\"section section-open\">\n\n";
+  os << "<div id=\"raid-summary\" class=\"section\">\n\n";
 
   os << "<h2 class=\"toggle open\">Raid Summary</h2>\n";
 
@@ -605,8 +581,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
     os << raid_dps.to_string();
 
   bool dtps_chart_printed = false;
-  if ( sim.num_enemies > 1 || ( ( ( sim.num_tanks * 2 ) >= sim.num_players ) &&
-                                sim.num_enemies == 1 ) )
+  if ( sim.num_enemies > 1 || ( ( ( sim.num_tanks * 2 ) >= sim.num_players ) && sim.num_enemies == 1 ) )
   {  // Put this chart on the left side to prevent blank space.
     dtps_chart_printed = true;
 
@@ -623,8 +598,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
        << "<th class=\"left\">Raid Event List</th>\n"
        << "</tr>\n";
 
-    std::vector<std::string> raid_event_names =
-        util::string_split( sim.raid_events_str, "/" );
+    std::vector<std::string> raid_event_names = util::string_split( sim.raid_events_str, "/" );
     for ( size_t i = 0; i < raid_event_names.size(); i++ )
     {
       os << "<tr";
@@ -675,14 +649,10 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
     for ( size_t i = 0; i < sim.players_by_name.size(); i++ )
     {
       player_t* p  = sim.players_by_name[ i ];
-      double range = ( p->collected_data.dps.percentile( 0.95 ) -
-                       p->collected_data.dps.percentile( 0.05 ) ) /
-                     2.0;
+      double range = ( p->collected_data.dps.percentile( 0.95 ) - p->collected_data.dps.percentile( 0.05 ) ) / 2.0;
       os.printf( "<li>%s: %.1f / %.1f%%</li>\n",
                  util::encode_html( p->name() ).c_str(), range,
-                 p->collected_data.dps.mean()
-                     ? ( range * 100 / p->collected_data.dps.mean() )
-                     : 0 );
+                 p->collected_data.dps.mean() ? ( range * 100 / p->collected_data.dps.mean() ) : 0 );
     }
     os << "</ul>\n";
   }
@@ -694,12 +664,11 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
      << "</div>\n"
      << "</div>\n\n";
 
-  os << "<div id=\"apm-summary\" class=\"section grouped-first\">\n\n";
+  os << "<div id=\"apm-summary\" class=\"section\">\n\n";
 
-  os << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Actions per Minute / "
-        "DPS Variance Summary</h2>\n";
-  os << "<div class=\"toggle-content hide\">\n";
-  os << "<ul class=\"params\">\n";
+  os << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Actions per Minute / DPS Variance Summary</h2>\n"
+     << "<div class=\"toggle-content hide\">\n"
+     << "<ul class=\"params\">\n";
 
   // Left side charts: dps, raid events
   os << "<div class=\"charts charts-left\">\n";
@@ -739,9 +708,8 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
   std::string SF    = sf;
   std::transform( SF.begin(), SF.end(), SF.begin(), toupper );
 
-  os << "<div id=\"raid-scale-factors\" class=\"section grouped-first\">\n\n"
-     << "<h2 class=\"toggle\">" << SF << " Scale Factors (" << sf
-     << " increase per unit stat)</h2>\n"
+  os << "<div id=\"raid-scale-factors\" class=\"section\">\n\n"
+     << "<h2 class=\"toggle\">" << SF << " Scale Factors (" << sf << " increase per unit stat)</h2>\n"
      << "<div class=\"toggle-content hide\">\n";
 
   os << "<table class=\"sc\">\n";
@@ -785,8 +753,7 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
          << "<th class=\"left small\">Profile</th>\n";
       for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
       {
-        if ( sim.scaling->stats.get_stat( j ) != 0 &&
-             stat_effect_is_nonzero[ j ] > 0 )
+        if ( sim.scaling->stats.get_stat( j ) != 0 && stat_effect_is_nonzero[ j ] > 0 )
         {
           os << "<th class=\"small\">" << util::stat_type_abbrev( j )
              << "</th>\n";
@@ -817,8 +784,7 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
         }
         else
         {
-          os.printf( "<td class=\"small\">%.*f</td>\n", sim.report_precision,
-                     p->scaling->scaling[ sm ].get_stat( j ) );
+          os.printf( "<td class=\"small\">%.*f</td>\n", sim.report_precision, p->scaling->scaling[ sm ].get_stat( j ) );
         }
       }
     }
@@ -832,8 +798,7 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
   if ( sim.iterations < 10000 )
     os << "<div class=\"alert\">\n"
        << "<h3>Warning</h3>\n"
-       << "<p>Scale Factors generated using less than 10,000 iterations will "
-          "vary from run to run.</p>\n"
+       << "<p>Scale Factors generated using less than 10,000 iterations will vary from run to run.</p>\n"
        << "</div>\n";
 
   os << "</div>\n"
@@ -852,102 +817,73 @@ struct help_box_t
  * everything lowerspace and '%' replaced by '-pct'
  */
 const help_box_t help_boxes[] = {
-    {"APM", "Average number of actions executed per minute."},
-    {"APS", "Average absorption per active player duration."},
-    {"Constant Buffs",
-     "Buffs received prior to combat and present the entire fight."},
-    {"Count", "Average number of times an action is executed per iteration."},
-    {"Crit", "Average crit damage."},
-    {"Crit%", "Percentage of executes that resulted in critical strikes."},
-    {"DPE", "Average damage per execution of an individual action."},
-    {"DPET",
-     "Average damage per execute time of an individual action; the amount of "
-     "damage generated, divided by the time taken to execute the action, "
-     "including time spent in the GCD."},
-    {"DPR", "Average damage per resource point spent."},
-    {"DPS", "Average damage per active player duration."},
-    {"DPSE", "Average damage per fight duration."},
-    {"DTPS", "Average damage taken per second per active player duration."},
-    {"HPS", "Average healing (and absorption) per active player duration."},
-    {"HPSE", "Average healing (and absorption) per fight duration."},
-    {"HPE",
-     "Average healing (or absorb) per execution of an individual action."},
-    {"HPET",
-     "Average healing (or absorb) per execute time of an individual action; "
-     "the amount of healing generated, divided by the time taken to execute "
-     "the action, including time spent in the GCD."},
-    {"HPR", "Average healing (or absorb) per resource point spent."},
-    {"Impacts",
-     "Average number of impacts against a target (for attacks that hit "
-     "multiple times per execute) per iteration."},
-    {"Dodge%", "Percentage of executes that resulted in dodges."},
-    {"DPS%", "Percentage of total DPS contributed by a particular action."},
-    {"HPS%",
-     "Percentage of total HPS (including absorb) contributed by a particular "
-     "action."},
-    {"Theck-Meloree Index",
-     "Measure of damage smoothness, calculated over entire fight length. "
-     "Related to max spike damage, 1k TMI is roughly equivalent to 1% of your "
-     "health. TMI ignores external healing and absorbs. Lower is better."},
-    {"TMI bin size",
-     "Time bin size used to calculate TMI and MSD, in seconds."},
-    {"Type", "Direct or Periodic damage."},
-    {"Dynamic Buffs",
-     "Temporary buffs received during combat, perhaps multiple times."},
-    {"Buff Benefit",
-     "The percentage of times the buff had a actual benefit for its mainly intended purpose, eg. damage buffed / spell executes."},
-    {"Glance%", "Percentage of executes that resulted in glancing blows."},
-    {"Block%", "Percentage of executes that resulted in blocking blows."},
-    {"Id", "Associated spell-id for this ability."},
-    {"Ability", "Name of the ability."},
-    {"Total", "Total damage for this ability during the fight."},
-    {"Hit", "Average non-crit damage."},
-    {"Interval", "Average time between executions of a particular action."},
-    {"Avg", "Average direct damage per execution."},
-    {"Miss%",
-     "Percentage of executes that resulted in misses, dodges or parries."},
-    {"Origin",
-     "The player profile from which the simulation script was generated. The "
-     "profile must be copied into the same directory as this HTML file in "
-     "order for the link to work."},
-    {"Parry%", "Percentage of executes that resulted in parries."},
-    {"RPS In", "Average primary resource points generated per second."},
-    {"RPS Out", "Average primary resource points consumed per second."},
-    {"Scale Factors",
-     "Gain per unit stat increase except for <b>Hit/Expertise</b> which "
-     "represent <b>Loss</b> per unit stat <b>decrease</b>."},
-    {"Gear Amount",
-     "Amount from raw gear, before class, attunement, or buff modifiers. "
-     "Amount from hybrid primary stats (i.e. Agility/Intellect) shown in "
-     "parentheses."},
-    {"Stats Raid Buffed",
-     "Amount after all static buffs have been accounted for. Dynamic buffs "
-     "(i.e. trinkets, potions) not included."},
-    {"Stats Unbuffed",
-     "Amount after class modifiers and effects, but before buff modifiers."},
-    {"Ticks",
-     "Average number of periodic ticks per iteration. Spells that do not have "
-     "a damage-over-time component will have zero ticks."},
-    {"Ticks Crit", "Average crit tick damage."},
-    {"Ticks Crit%", "Percentage of ticks that resulted in critical strikes."},
-    {"Ticks Hit", "Average non-crit tick damage."},
-    {"Ticks Miss%",
-     "Percentage of ticks that resulted in misses, dodges or parries."},
-    {"Ticks Uptime%",
-     "Percentage of total time that DoT is ticking on target."},
-    {"Ticks Avg", "Average damage per tick."},
-    {"Timeline Distribution",
-     "The simulated encounter's duration can vary based on the health of the "
-     "target and variation in the raid DPS. This chart shows how often the "
-     "duration of the encounter varied by how much time."},
-    {"Waiting",
-     "This is the percentage of time in which no action can be taken other "
-     "than autoattacks. This can be caused by resource starvation, lockouts, "
-     "and timers."},
-    {"Scale Factor Ranking",
-     "This row ranks the scale factors from highest to lowest, checking "
-     "whether one scale factor is higher/lower than another with statistical "
-     "significance."},
+  { "APM", "Average number of actions executed per minute." },
+  { "APS", "Average absorption per active player duration." },
+  { "Constant Buffs", "Buffs received prior to combat and present the entire fight." },
+  { "Execute", "Average number of times an action is executed per iteration." },
+  { "Crit", "Average crit damage." },
+  { "Crit%", "Percentage of executes that resulted in critical strikes." },
+  { "DPE", "Average damage per execution of an individual action." },
+  { "DPET", "Average damage per execute time of an individual action; the amount of damage generated, divided by the "
+            "time taken to execute the action, including time spent in the GCD." },
+  { "DPR", "Average damage per resource point spent." },
+  { "DPS", "Average damage per active player duration." },
+  { "DPSE", "Average damage per fight duration." },
+  { "DTPS", "Average damage taken per second per active player duration." },
+  { "HPS", "Average healing (and absorption) per active player duration." },
+  { "HPSE", "Average healing (and absorption) per fight duration." },
+  { "HPE", "Average healing (or absorb) per execution of an individual action." },
+  { "HPET", "Average healing (or absorb) per execute time of an individual action; the amount of healing generated, "
+            "divided by the time taken to execute the action, including time spent in the GCD." },
+  { "HPR", "Average healing (or absorb) per resource point spent." },
+  { "Count", "Average count of impacts per iteration." },
+  { "Dodge%", "Percentage of executes that resulted in dodges." },
+  { "DPS%", "Percentage of total DPS contributed by a particular action." },
+  { "HPS%", "Percentage of total HPS (including absorb) contributed by a particular action." },
+  { "Theck-Meloree Index",
+    "Measure of damage smoothness, calculated over entire fight length. Related to max spike damage, 1k TMI is roughly "
+    "equivalent to 1% of your health. TMI ignores external healing and absorbs. Lower is better." },
+  { "TMI bin size", "Time bin size used to calculate TMI and MSD, in seconds." },
+  { "Type", "Direct or Periodic damage." },
+  { "Dynamic Buffs", "Temporary buffs received during combat, perhaps multiple times." },
+  { "Buff Benefit", "The percentage of times the buff had a actual benefit for its mainly intended purpose, eg. damage "
+                    "buffed / spell executes." },
+  { "Glance%", "Percentage of executes that resulted in glancing blows." },
+  { "Block%", "Percentage of executes that resulted in blocking blows." },
+  { "Id", "Associated spell-id for this ability." },
+  { "Ability", "Name of the ability." },
+  { "Total", "Total damage for this ability during the fight." },
+  { "Hit", "Average non-crit damage." },
+  { "Interval", "Average time between executions of a particular action." },
+  { "Avg", "Average direct damage per execution." },
+  { "Miss%", "Percentage of executes that resulted in misses, dodges or parries." },
+  { "Origin", "The player profile from which the simulation script was generated. The profile must be copied into the "
+              "same directory as this HTML file in order for the link to work." },
+  { "Parry%", "Percentage of executes that resulted in parries." },
+  { "RPS In", "Average primary resource points generated per second." },
+  { "RPS Out", "Average primary resource points consumed per second." },
+  { "Scale Factors", "Gain per unit stat increase except for <b>Hit/Expertise</b> which represent <b>Loss</b> per unit "
+                     "stat <b>decrease</b>." },
+  { "Gear Amount", "Amount from raw gear, before class, attunement, or buff modifiers. Amount from hybrid primary "
+                   "stats (i.e. Agility/Intellect) shown in parentheses." },
+  { "Stats Raid Buffed",
+    "Amount after all static buffs have been accounted for. Dynamic buffs (i.e. trinkets, potions) not included." },
+  { "Stats Unbuffed", "Amount after class modifiers and effects, but before buff modifiers." },
+  { "Ticks", "Average number of periodic ticks per iteration. Spells that do not have a damage-over-time component "
+             "will have zero ticks." },
+  { "Ticks Crit", "Average crit tick damage." },
+  { "Ticks Crit%", "Percentage of ticks that resulted in critical strikes." },
+  { "Ticks Hit", "Average non-crit tick damage." },
+  { "Ticks Miss%", "Percentage of ticks that resulted in misses, dodges or parries." },
+  { "Ticks Uptime%", "Percentage of total time that DoT is ticking on target." },
+  { "Ticks Avg", "Average damage per tick." },
+  { "Timeline Distribution",
+    "The simulated encounter's duration can vary based on the health of the target and variation in the raid DPS. This "
+    "chart shows how often the duration of the encounter varied by how much time." },
+  { "Waiting", "This is the percentage of time in which no action can be taken other than autoattacks. This can be "
+               "caused by resource starvation, lockouts, and timers." },
+  { "Scale Factor Ranking", "This row ranks the scale factors from highest to lowest, checking whether one scale "
+                            "factor is higher/lower than another with statistical significance." },
 };
 
 void print_html_help_boxes( report::sc_html_stream& os, const sim_t& sim )
@@ -988,19 +924,16 @@ void print_html_help_boxes( report::sc_html_stream& os, const sim_t& sim )
   os << "<div id=\"help-msd\">\n"
      << "<div class=\"help-box\">\n"
      << "<h3>Max Spike Damage</h3>\n"
-     << "<p>Maximum amount of net damage taken in any N-second period (default "
-        "6sec), expressed as a percentage of max health. Calculated "
-        "independently for each iteration. "
-     << "'MSD Min/Mean/Max' are the lowest/average/highest MSDs out of all "
-        "iterations.</p>\n"
+     << "<p>Maximum amount of net damage taken in any N-second period (default 6sec), expressed as a percentage of max "
+        "health. Calculated independently for each iteration. 'MSD Min/Mean/Max' are the lowest/average/highest MSDs "
+        "out of all iterations.</p>\n"
      << "</div>\n"
      << "</div>\n";
 
   os << "<div id=\"help-error\">\n"
      << "<div class=\"help-box\">\n"
      << "<h3>Error</h3>\n"
-     << "<p>Estimator for the " << sim.confidence * 100.0
-     << "% confidence interval.</p>\n"
+     << "<p>Estimator for the " << sim.confidence * 100.0 << "% confidence interval.</p>\n"
      << "</div>\n"
      << "</div>\n";
 
@@ -1017,12 +950,10 @@ void print_html_help_boxes( report::sc_html_stream& os, const sim_t& sim )
      << "<h3>Fight Length</h3>\n"
      << "<p>Fight Length: " << sim.max_time.total_seconds() << "<br />\n"
      << "Vary Combat Length: " << sim.vary_combat_length << "</p>\n"
-     << "<p>Fight Length is the specified average fight duration. If "
-        "vary_combat_length is set, the fight length will vary by +/- that "
-        "portion of the value. See <a "
-        "href=\"https://github.com/simulationcraft/simc/wiki/"
-        "Options#combat-length\" class=\"ext\">Combat Length</a> in the wiki "
-        "for further details.</p>\n"
+     << "<p>Fight Length is the specified average fight duration. If vary_combat_length is set, the fight length will "
+        "vary by +/- that portion of the value. See <a "
+        "href=\"https://github.com/simulationcraft/simc/wiki/Options#combat-length\" class=\"ext\">Combat Length</a> "
+        "in the wiki for further details.</p>\n"
      << "</div>\n"
      << "</div>\n";
 
@@ -1041,7 +972,9 @@ void print_html_style( report::sc_html_stream& os, const sim_t& )
      << "</style>\n";
 
   // Rest
+  os << "<style type=\"text/css\" media=\"all\">\n";
   print_text_array( os, __html_stylesheet );
+  os << "\n</style>\n";
 }
 
 // print_html_masthead ======================================================
@@ -1074,8 +1007,7 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
   {
     std::string commit_link = "https://github.com/simulationcraft/simc/commit/";
     commit_link += git_info::revision();
-    os.printf("<h2>for World of Warcraft %s %s (wow build level %d, git build <a "
-        "href=\"%s\">%s</a>)</h2>\n\n",
+    os.printf("<h2>for World of Warcraft %s %s (wow build level %d, git build <a href=\"%s\">%s</a>)</h2>\n\n",
         sim.dbc.wow_version(), type, sim.dbc.build_level(), commit_link.c_str(), git_info::revision());
   }
 
@@ -1091,14 +1023,12 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
     timespan_t min_length = sim.max_time * ( 1 - sim.vary_combat_length );
     timespan_t max_length = sim.max_time * ( 1 + sim.vary_combat_length );
     os.printf(
-        "<li class=\"linked\"><a href=\"#help-fight-length\" "
-        "class=\"help\"><b>Fight Length:</b> %.0f - %.0f</a></li>\n",
+        "<li class=\"linked help\" data-help=\"#help-fight-length\"><b>Fight Length:</b> %.0f - %.0f</li>\n",
         min_length.total_seconds(), max_length.total_seconds() );
   }
   else
   {
-    os.printf( "<li><b>Fight Length:</b> %.0f</li>\n",
-               sim.max_time.total_seconds() );
+    os.printf( "<li><b>Fight Length:</b> %.0f</li>\n", sim.max_time.total_seconds() );
   }
   os.printf( "<li><b>Fight Style:</b> %s</li>\n", util::encode_html( sim.fight_style ).c_str() );
   os << "</ul>\n"
@@ -1111,8 +1041,7 @@ void print_html_errors( report::sc_html_stream& os, const sim_t& sim )
 {
   if ( !sim.error_list.empty() )
   {
-    os << "<pre class=\"section section-open\" style=\"color: black; "
-          "background-color: white; font-weight: bold;\">\n";
+    os << "<pre class=\"section section-open\" style=\"color: black; background-color: white; font-weight: bold;\">\n";
 
     for ( const auto& error : sim.error_list )
       os << util::encode_html( error ) << "\n";
@@ -1199,8 +1128,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
          << "</strong></td>\n";
       os << "</tr>\n";
     }
-    if ( const hotfix::effect_hotfix_entry_t* e =
-             dynamic_cast<const hotfix::effect_hotfix_entry_t*>( entry ) )
+    if ( const hotfix::effect_hotfix_entry_t* e = dynamic_cast<const hotfix::effect_hotfix_entry_t*>( entry ) )
     {
       os << "<tr class=\"odd\">\n";
       os << "<td></td>\n";
@@ -1210,8 +1138,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
       name += " (effect#" + util::to_string( effect->index() + 1 ) + ")";
       os << "<td class=\"left\">" << name << "</td>\n";
     }
-    else if ( const hotfix::spell_hotfix_entry_t* e =
-                  dynamic_cast<const hotfix::spell_hotfix_entry_t*>( entry ) )
+    else if ( const hotfix::spell_hotfix_entry_t* e = dynamic_cast<const hotfix::spell_hotfix_entry_t*>( entry ) )
     {
       os << "<tr class=\"odd\">\n";
       os << "<td></td>\n";
@@ -1220,8 +1147,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
       os << "<td class=\"left\">" << name << "</td>\n";
     }
 
-    if ( const hotfix::dbc_hotfix_entry_t* e =
-             dynamic_cast<const hotfix::dbc_hotfix_entry_t*>( entry ) )
+    if ( const hotfix::dbc_hotfix_entry_t* e = dynamic_cast<const hotfix::dbc_hotfix_entry_t*>( entry ) )
     {
       os << "<td class=\"left\">" << util::encode_html( e->field_name_ ) << "</td>\n";
       os << "<td class=\"left\">" << e->hotfix_value_ << "</td>\n";
@@ -1229,8 +1155,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
            util::round( e->orig_value_, 6 ) != util::round( e->dbc_value_, 6 ) )
       {
         os << "<td class=\"left\">" << e->dbc_value_ << "</td>\n";
-        os << "<td class=\"left\" style=\"color:red;\"><strong>Verification "
-              "Failure ("
+        os << "<td class=\"left\" style=\"color:red;\"><strong>Verification Failure ("
            << e->orig_value_ << ")</strong></td>";
       }
       else
@@ -1268,8 +1193,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
     os << "<tr>\n";
     if ( entry.type_ == dbc_override::DBC_OVERRIDE_SPELL )
     {
-      const spell_data_t* spell =
-          hotfix::find_spell( sim.dbc.spell( entry.id_ ), sim.dbc.ptr );
+      const spell_data_t* spell = hotfix::find_spell( sim.dbc.spell( entry.id_ ), sim.dbc.ptr );
       std::string name = report::decorated_spell_name( sim, *spell );
       os << "<td class=\"left\">" << name << "</td>\n";
       os << "<td class=\"left\">" << util::encode_html( entry.field_ ) << "</td>\n";
@@ -1279,10 +1203,9 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
     }
     else if ( entry.type_ == dbc_override::DBC_OVERRIDE_EFFECT )
     {
-      const spelleffect_data_t* effect =
-          hotfix::find_effect( sim.dbc.effect( entry.id_ ), sim.dbc.ptr );
-      const spell_data_t* spell = effect->spell();
-      std::string name          = report::decorated_spell_name( sim, *spell );
+      const spelleffect_data_t* effect = hotfix::find_effect( sim.dbc.effect( entry.id_ ), sim.dbc.ptr );
+      const spell_data_t* spell        = effect->spell();
+      std::string name                 = report::decorated_spell_name( sim, *spell );
       name += " (effect#" + util::to_string( effect->index() + 1 ) + ")";
       os << "<td class=\"left\">" << name << "</td>\n";
       os << "<td class=\"left\">" << util::encode_html( entry.field_ ) << "</td>\n";
@@ -1298,27 +1221,26 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
   os << "</div>\n";
 }
 
-void print_html_image_load_scripts( report::sc_html_stream& os )
+void print_html_report_scripts( report::sc_html_stream& os )
 {
-  print_text_array( os, __image_load_script );
+  print_text_array( os, __html_report_script );
 }
 
 void print_html_head( report::sc_html_stream& os, const sim_t& sim )
 {
   os << "<title>Simulationcraft Results</title>\n";
-  os << "<meta http-equiv=\"Content-Type\" content=\"text/html; "
-        "charset=UTF-8\" />\n";
+  os << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
 
   // Default target for links. Lets links to wowhead/armory escape iframes (wowhead does not display in iframes at all)
   // Should have no effect on GUI reports or directly viewing the HTML report in a browser
   os << "<base target=\"_top\">\n";
 
-  os << "<script type=\"text/javascript\">" << std::endl;
+  os << "<script type=\"text/javascript\">\n";
   print_text_array( os, __jquery_include );
-  os << "</script>" << std::endl
-     << "<script type=\"text/javascript\">" << std::endl;
+  os << "\n</script>\n"
+     << "<script type=\"text/javascript\">\n";
   print_text_array( os, __highcharts_include );
-  os << "</script>" << std::endl;
+  os << "\n</script>\n";
 
   print_html_style( os, sim );
 
@@ -1326,11 +1248,10 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
   highchart::theme( highcharts_theme, highchart::THEME_DEFAULT );
   os << "<script type=\"text/javascript\">\n"
      << "Highcharts.setOptions(" << highcharts_theme.to_json() << ");\n"
-     << "</script>";
+     << "</script>\n";
 }
 
-void print_nothing_to_report( report::sc_html_stream& os,
-                              const std::string& reason )
+void print_nothing_to_report( report::sc_html_stream& os, const std::string& reason )
 {
   os << "<div id=\"notice\" class=\"section section-open\">\n"
      << "<h2>Nothing to report</h2>\n"
@@ -1361,7 +1282,6 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   os << "<div id=\"active-help\">\n"
      << "<div id=\"active-help-dynamic\">\n"
      << "<div class=\"help-box\"></div>\n"
-     << "<a href=\"#\" class=\"close\"><span class=\"hide\">close</span></a>\n"
      << "</div>\n"
      << "</div>\n\n";
 
@@ -1384,19 +1304,16 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
     print_html_contents( os, sim );
   }
 
-  if ( num_players > 1 || sim.report_raid_summary ||
-       !sim.raid_events_str.empty() )
+  if ( num_players > 1 || sim.report_raid_summary || !sim.raid_events_str.empty() )
   {
     print_html_raid_summary( os, sim );
     print_html_scale_factors( os, sim );
   }
 
-  int k = 0;  // Counter for both players and enemies, without pets.
-
   // Report Players
   for ( auto& player : sim.players_by_name )
   {
-    report::print_html_player( os, *player, k );
+    report::print_html_player( os, *player );
 
     // Pets
     if ( sim.report_pets_separately )
@@ -1404,7 +1321,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
       for ( auto& pet : player->pet_list )
       {
         if ( pet->summoned && !pet->quiet )
-          report::print_html_player( os, *pet, 1 );
+          report::print_html_player( os, *pet );
       }
     }
   }
@@ -1421,8 +1338,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   {
     for ( auto& player : sim.targets_by_name )
     {
-      report::print_html_player( os, *player, k );
-      ++k;
+      report::print_html_player( os, *player );
 
       // Pets
       if ( sim.report_pets_separately )
@@ -1430,7 +1346,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
         for ( auto& pet : player->pet_list )
         {
           // if ( pet -> summoned )
-          report::print_html_player( os, *pet, 1 );
+          report::print_html_player( os, *pet );
         }
       }
     }
@@ -1446,25 +1362,27 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   if ( sim.decorated_tooltips )
   {
     //Apply the prettification stuff only if its a single report
-    if ( num_players > 1 || k > 1 )
+    if ( num_players > 1 )
     {
-      os << R"(<script>var whTooltips = {colorLinks: false, iconizeLinks: false, renameLinks: false};</script>\n)";
+      os << R"(<script>var whTooltips = {colorLinks: false, iconizeLinks: false, renameLinks: false};</script>)";
     }
     else
     {
-      os << R"(<script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>\n)";
+      os << R"(<script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>)";
     }
 
-    os << R"(<script type="text/javascript" src="https://wow.zamimg.com/widgets/power.js"></script>\n)";
+    os << std::endl << R"(<script type="text/javascript" src="https://wow.zamimg.com/widgets/power.js"></script>)";
   }
 
   if ( sim.hosted_html )
   {
     // Google Analytics
-    os << R"(<script type="text/javascript" src="https://www.simulationcraft.org/js/ga.js"></script>\n)";
+    os << std::endl << R"(<script type="text/javascript" src="https://www.simulationcraft.org/js/ga.js"></script>)";
   }
 
-  print_html_image_load_scripts( os );
+  os << "\n<script type=\"text/javascript\">\n";
+  print_html_report_scripts( os );
+  os << "\n</script>\n";
 
   os << "<script type=\"text/javascript\">\n";
   os << "jQuery( document ).ready( function( $ ) {\n";
@@ -1476,9 +1394,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   os << "</script>\n";
   os << "<script type=\"text/javascript\">\n";
   os << "__chartData = {\n";
-  for ( std::map<std::string, std::vector<std::string> >::const_iterator i =
-            sim.chart_data.begin();
-        i != sim.chart_data.end(); ++i )
+  for ( auto i = sim.chart_data.begin(); i != sim.chart_data.end(); ++i )
   {
     os << "\"" + i->first + "\": [\n";
     const std::vector<std::string> data = i->second;
@@ -1495,24 +1411,8 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   }
   os << "};\n";
 
-  os << "</script>\n";
-  os << "<script type=\"text/javascript\">\n";
-  os << "jQuery(document).ready(function() {\n";
-  os << "\tjQuery('.toggle, .toggle-details').each(function(index) {\n";
-  os << "\t\tvar s = jQuery(this);\n";
-  os << "\t\tif ( __chartData[s.attr('id')] === undefined ) return;\n";
-  os << "\t\ts.one('click', function() {\n";
-  os << "\t\t\tvar s = jQuery(this);\n";
-  os << "\t\t\tvar d = __chartData[s.attr('id')];\n";
-  os << "\t\t\tfor ( idx in d ) {\n";
-  os << "\t\t\t\tjQuery('#' + d[idx]['target']).highcharts(d[idx]['data']);\n";
-  os << "\t\t\t}\n";
-  os << "\t\t});\n";
-  os << "\t});\n";
-  os << "});\n";
-  os << "</script>\n";
-
-  os << "</body>\n\n"
+  os << "</script>\n"
+     << "</body>\n\n"
      << "</html>\n";
 }
 
@@ -1536,8 +1436,7 @@ void print_html( sim_t& sim )
   s.open( sim.html_file_str );
   if ( !s )
   {
-    sim.errorf( "Failed to open html output file '%s'.",
-                sim.html_file_str.c_str() );
+    sim.errorf( "Failed to open html output file '%s'.", sim.html_file_str.c_str() );
     return;
   }
 
