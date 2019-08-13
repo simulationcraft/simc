@@ -150,11 +150,11 @@ actions.stealthed+=/garrote,target_if=min:remains,if=talent.subterfuge.enabled&a
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=1587/4819/4775,azerite_powers=407/408/22/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=1617/4819/4775,azerite_powers=407/408/22/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=gorak_tuls_mantle,id=159339,bonus_id=1617/4819/4775,azerite_powers=408/193/30/13
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
-chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1587/4819/4775,azerite_powers=408/407/31/13
+chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1617/4819/4775,azerite_powers=408/407/31/13
 wrists=tideblood_bracers,id=168377,bonus_id=4800/1517
 hands=gloves_of_incomparable_beauty,id=168887,bonus_id=4800/1517
 waist=beloved_monarchs_waistwrap,id=168871,bonus_id=4800/1517
@@ -168,11 +168,11 @@ main_hand=sivaras_slitherblade,id=168818,bonus_id=4800/1517,enchant=force_multip
 off_hand=sivaras_slitherblade,id=168818,bonus_id=4800/1517,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=443.31
-# gear_agility=6607
-# gear_stamina=12524
+# gear_ilvl=447.06
+# gear_agility=7165
+# gear_stamina=13760
 # gear_crit_rating=1087
 # gear_haste_rating=1522
 # gear_mastery_rating=1188
 # gear_versatility_rating=230
-# gear_armor=2777
+# gear_armor=2962
