@@ -496,12 +496,6 @@ table.sc td.small {
     padding: 2px 2px 3px 2px;
     font-size: 11px;
 }
-table.sort thead tr:first-of-type {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
 table.sc tr.odd,
 table.sc tr.odd + tr.childrow,
 table.even tbody tr:nth-of-type(even),
@@ -591,11 +585,29 @@ tr.details td table.details tr.odd td {
 tr.details td table.details tr td.right {
     text-align: right;
 }
+table.sort thead tr:first-of-type {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+table.sort td.pulse,
+table.odd tr:hover:not(.petrow),
+table.even tr:hover:not(.petrow),
+table.stripebody tbody:not(.petrow) tr:hover,
+table.stripetoprow .toprow:hover,
+table.stripetoprow .toprow:hover + .childrow,
+table.stripetoprow .childrow:hover {
+    background-color: #444;
+}
+table.sort tbody td {
+    transition: background-color 300ms ease-in;
+}
 .player-thumbnail {
     float: right;
     margin: 8px;
-    border-radius: 12px;
     -moz-border-radius: 12px;
     -khtml-border-radius: 12px;
     -webkit-border-radius: 12px;
+    border-radius: 12px;
 }
