@@ -8799,7 +8799,8 @@ void druid_t::apl_restoration()
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
-  default_list->add_action("use_items");
+  default_list->add_action( "use_items" );
+  default_list->add_action( "heart_essence,if=!buff.shadowmeld.up&!buff.prowl.up" );
   default_list->add_action( "run_action_list,name=feral,if=talent.feral_affinity.enabled" );
   default_list->add_action( "run_action_list,name=balance,if=talent.balance_affinity.enabled" );
   default_list->add_action( "sunfire,target_if=refreshable" );
