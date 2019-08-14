@@ -929,8 +929,8 @@ void profilesets_t::output_html( const sim_t& sim, std::ostream& out ) const
   }
 
   out << "<div class=\"section\">\n";
-  out << "<h2 class=\"toggle\">Profile sets</h2>\n";
-  out << "<div class=\"toggle-content hide\">\n";
+  out << "<h2 class=\"toggle open\">Profile sets</h2>\n";
+  out << "<div class=\"toggle-content\">\n";
 
   generate_chart( sim, out );
 
@@ -989,7 +989,7 @@ bool profilesets_t::generate_chart( const sim_t& sim, std::ostream& out ) const
     profileset.set( "subtitle.style.color", "#AA0000" );
     profileset.set_yaxis_title( "Median " + chart_name );
     profileset.width_ = 1150;
-    profileset.height_ = 24 * std::min( as<size_t>( MAX_CHART_ENTRIES + 1 ), results.size() - base_offset + 1 ) + 150;
+    profileset.height_ = 24 * std::min( as<size_t>( MAX_CHART_ENTRIES + 1 ), results.size() - base_offset + 1 ) + 166;
 
     profileset.add( "colors", c.str() );
     profileset.add( "colors", c.dark( .5 ).opacity( .5 ).str() );

@@ -179,7 +179,7 @@ metric_e populate_player_list( const std::string& type, const sim_t& sim,
   }
   else if ( util::str_compare_ci( type, "hps" ) )
   {
-    name        = "Heal & Absorb per Second";
+    name        = "Heal and Absorb per Second";
     source_list = &sim.players_by_hps;
     m           = METRIC_HPS;
   }
@@ -493,7 +493,7 @@ bool chart::generate_raid_downtime( highchart::bar_chart_t& bc,
 
   bc.set_title( "Raid downtime" );
   bc.set_yaxis_title( "Downtime% (of total fight length)" );
-  bc.height_ = 92 + players.size() * 20;
+  bc.height_ = 108 + players.size() * 20;
 
   return true;
 }
@@ -556,7 +556,7 @@ bool chart::generate_raid_gear( highchart::bar_chart_t& bc, const sim_t& sim )
     ++series_idx;
   }
 
-  bc.height_ = 95 + sim.players_by_name.size() * 24 + 55;
+  bc.height_ = 111 + sim.players_by_name.size() * 24 + 55;
 
   bc.set_title( "Raid Gear" );
   bc.set_yaxis_title( "Cumulative stat amount" );
@@ -1109,7 +1109,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
     bc.set( "__current", 0 );
   }
 
-  bc.height_ = 40 + player_list.size() * 24;
+  bc.height_ = 56 + player_list.size() * 24;
 
   bc.set( "yAxis.title.enabled", false );
   bc.set( "yAxis.gridLineWidth", 0 );
@@ -1327,7 +1327,7 @@ bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
 
   bool ret = generate_apet( bc, stats_list );
 
-  bc.height_ = 95 + stats_list.size() * 40;
+  bc.height_ = 111 + stats_list.size() * 40;
 
   return ret;
 }
@@ -1355,7 +1355,7 @@ bool chart::generate_apet( highchart::bar_chart_t& bc, const std::vector<stats_t
     }
   }
 
-  bc.height_ = 92 + num_stats * 22;
+  bc.height_ = 108 + num_stats * 22;
 
   for ( const stats_t* stats : stats_list )
   {
@@ -1523,7 +1523,7 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
   }
 
   bc.set_title( util::encode_html( scaling_data.name ) + " Scale Factors" );
-  bc.height_ = 92 + scaling_stats.size() * 24;
+  bc.height_ = 108 + scaling_stats.size() * 24;
 
   bc.set_yaxis_title( util::scale_metric_type_string( metric ) +
                       std::string( " per point" ) );
