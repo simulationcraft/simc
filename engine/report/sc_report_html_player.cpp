@@ -582,30 +582,37 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
        << "<th class=\"small\">Tick Time per  Tick</th>\n"
        << "<th class=\"small\">Actual Amount</th>\n"
        << "<th class=\"small\">Total Amount</th>\n"
-       << "<th class=\"small\">Overkill %</th>\n"
+       << "<th class=\"small\">Mitigated</th>\n"
        << "<th class=\"small\">Amount per Total Time</th>\n"
        << "<th class=\"small\">Amount per Total Execute Time</th>\n";
 
     os << "</tr>\n"
        << "<tr>\n";
 
-    os.printf(
-        "<td class=\"right small\">%s</td>\n"
-        "<td class=\"right small\">%.2f</td>\n"
-        "<td class=\"right small\">%.2f</td>\n"
-        "<td class=\"right small\">%.2f</td>\n"
-        "<td class=\"right small\">%.2f</td>\n"
-        "<td class=\"right small\">%.4f</td>\n"
-        "<td class=\"right small\">%.4f</td>\n"
-        "<td class=\"right small\">%.2f</td>\n"
-        "<td class=\"right small\">%.2f</td>\n"
-        "<td class=\"right small\">%.2f</td>\n"
-        "<td class=\"right small\">%.2f</td>\n"
-        "<td class=\"right small\">%.2f</td>\n",
-        util::stats_type_string( s.type ), s.num_executes.mean(),
-        s.num_direct_results.mean(), s.num_ticks.mean(),
-        s.num_tick_results.mean(), s.etpe, s.ttpt, s.actual_amount.mean(),
-        s.total_amount.mean(), s.overkill_pct, s.aps, s.apet );
+    os.printf( "<td class=\"left small\">%s</td>\n"
+               "<td class=\"right small\">%.2f</td>\n"
+               "<td class=\"right small\">%.2f</td>\n"
+               "<td class=\"right small\">%.2f</td>\n"
+               "<td class=\"right small\">%.2f</td>\n"
+               "<td class=\"right small\">%.4f</td>\n"
+               "<td class=\"right small\">%.4f</td>\n"
+               "<td class=\"right small\">%.2f</td>\n"
+               "<td class=\"right small\">%.2f</td>\n"
+               "<td class=\"right small\">%.2f%%</td>\n"
+               "<td class=\"right small\">%.2f</td>\n"
+               "<td class=\"right small\">%.2f</td>\n",
+               util::stats_type_string( s.type ),
+               s.num_executes.mean(),
+               s.num_direct_results.mean(),
+               s.num_ticks.mean(),
+               s.num_tick_results.mean(),
+               s.etpe,
+               s.ttpt,
+               s.actual_amount.mean(),
+               s.total_amount.mean(),
+               s.overkill_pct,
+               s.aps,
+               s.apet );
     os << "</tr>\n";
     os << "</table>\n";
     if ( !s.portion_aps.simple || !s.portion_apse.simple || !s.actual_amount.simple )
@@ -689,60 +696,65 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     if ( s.num_direct_results.mean() > 0 )
     {
       os << "<tr>\n"
-         << "<th class=\"small\" colspan=\"3\">&#160;</th>\n"
+         << "<th class=\"small\" rowspan=\"2\">Direct Results</th>\n"
+         << "<th class=\"small\" colspan=\"4\">Count</th>\n"
          << "<th class=\"small\" colspan=\"3\">Simulation</th>\n"
          << "<th class=\"small\" colspan=\"3\">Iteration Average</th>\n"
-         << "<th class=\"small\" colspan=\"3\">&#160;</th>\n"
+         << "<th class=\"small\" colspan=\"3\">Amount</th>\n"
          << "</tr>\n";
 
       // Direct Damage
       os << "<tr>\n"
-         << "<th class=\"small\">Direct Results</th>\n"
-         << "<th class=\"small\">Count</th>\n"
-         << "<th class=\"small\">Pct</th>\n"
+         << "<th class=\"small\">Percent</th>\n"
          << "<th class=\"small\">Mean</th>\n"
          << "<th class=\"small\">Min</th>\n"
          << "<th class=\"small\">Max</th>\n"
          << "<th class=\"small\">Mean</th>\n"
          << "<th class=\"small\">Min</th>\n"
          << "<th class=\"small\">Max</th>\n"
-         << "<th class=\"small\">Actual Amount</th>\n"
-         << "<th class=\"small\">Total Amount</th>\n"
-         << "<th class=\"small\">Overkill %</th>\n"
+         << "<th class=\"small\">Mean</th>\n"
+         << "<th class=\"small\">Min</th>\n"
+         << "<th class=\"small\">Max</th>\n"
+         << "<th class=\"small\">Actual</th>\n"
+         << "<th class=\"small\">Total</th>\n"
+         << "<th class=\"small\">Mitigated</th>\n"
          << "</tr>\n";
       for ( full_result_e i = FULLTYPE_MAX; --i >= FULLTYPE_NONE; )
       {
-        if ( ! s.direct_results[ i ].count.mean() )
+        if ( !s.direct_results[ i ].count.mean() )
           continue;
 
         os << "<tr>\n";
 
-        os.printf(
-            "<td class=\"left small\">%s</td>\n"
-            "<td class=\"right small\">%.2f</td>\n"
-            "<td class=\"right small\">%.2f%%</td>\n"
-            "<td class=\"right small\">%.2f</td>\n"
-            "<td class=\"right small\">%.0f</td>\n"
-            "<td class=\"right small\">%.0f</td>\n"
-            "<td class=\"right small\">%.2f</td>\n"
-            "<td class=\"right small\">%.0f</td>\n"
-            "<td class=\"right small\">%.0f</td>\n"
-            "<td class=\"right small\">%.0f</td>\n"
-            "<td class=\"right small\">%.0f</td>\n"
-            "<td class=\"right small\">%.2f</td>\n"
-            "</tr>\n",
-            util::full_result_type_string( i ),
-            s.direct_results[ i ].count.mean(),
-            s.direct_results[ i ].pct,
-            s.direct_results[ i ].actual_amount.mean(),
-            s.direct_results[ i ].actual_amount.min(),
-            s.direct_results[ i ].actual_amount.max(),
-            s.direct_results[ i ].avg_actual_amount.mean(),
-            s.direct_results[ i ].avg_actual_amount.min(),
-            s.direct_results[ i ].avg_actual_amount.max(),
-            s.direct_results[ i ].fight_actual_amount.mean(),
-            s.direct_results[ i ].fight_total_amount.mean(),
-            s.direct_results[ i ].overkill_pct.mean() );
+        os.printf( "<td class=\"left small\">%s</td>\n"
+                   "<td class=\"right small\">%.2f%%</td>\n"
+                   "<td class=\"right small\">%.2f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.2f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.2f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.2f%%</td>\n"
+                   "</tr>\n",
+                   util::full_result_type_string( i ),
+                   s.direct_results[ i ].pct,
+                   s.direct_results[ i ].count.mean(),
+                   s.direct_results[ i ].count.min(),
+                   s.direct_results[ i ].count.max(),
+                   s.direct_results[ i ].actual_amount.mean(),
+                   s.direct_results[ i ].actual_amount.min(),
+                   s.direct_results[ i ].actual_amount.max(),
+                   s.direct_results[ i ].avg_actual_amount.mean(),
+                   s.direct_results[ i ].avg_actual_amount.min(),
+                   s.direct_results[ i ].avg_actual_amount.max(),
+                   s.direct_results[ i ].fight_actual_amount.mean(),
+                   s.direct_results[ i ].fight_total_amount.mean(),
+                   s.direct_results[ i ].overkill_pct.mean() );
       }
     }
 
@@ -750,25 +762,27 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     {
       // Tick Damage
       os << "<tr>\n"
-         << "<th class=\"small\" colspan=\"3\">&#160;</th>\n"
+         << "<th class=\"small\" rowspan=\"2\">Tick Results</th>\n"
+         << "<th class=\"small\" colspan=\"4\">Count</th>\n"
          << "<th class=\"small\" colspan=\"3\">Simulation</th>\n"
          << "<th class=\"small\" colspan=\"3\">Iteration Average</th>\n"
-         << "<th class=\"small\" colspan=\"3\">&#160;</th>\n"
+         << "<th class=\"small\" colspan=\"3\">Amount</th>\n"
          << "</tr>\n";
 
       os << "<tr>\n"
-         << "<th class=\"small\">Tick Results</th>\n"
-         << "<th class=\"small\">Count</th>\n"
-         << "<th class=\"small\">Pct</th>\n"
+         << "<th class=\"small\">Percent</th>\n"
          << "<th class=\"small\">Mean</th>\n"
          << "<th class=\"small\">Min</th>\n"
          << "<th class=\"small\">Max</th>\n"
          << "<th class=\"small\">Mean</th>\n"
          << "<th class=\"small\">Min</th>\n"
          << "<th class=\"small\">Max</th>\n"
-         << "<th class=\"small\">Actual Amount</th>\n"
-         << "<th class=\"small\">Total Amount</th>\n"
-         << "<th class=\"small\">Overkill %</th>\n"
+         << "<th class=\"small\">Mean</th>\n"
+         << "<th class=\"small\">Min</th>\n"
+         << "<th class=\"small\">Max</th>\n"
+         << "<th class=\"small\">Actual</th>\n"
+         << "<th class=\"small\">Total</th>\n"
+         << "<th class=\"small\">Mitigated</th>\n"
          << "</tr>\n";
       for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
       {
@@ -776,30 +790,35 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
           continue;
 
         os << "<tr>\n";
-        os.printf(
-            "<td class=\"left small\">%s</td>\n"
-            "<td class=\"right small\">%.1f</td>\n"
-            "<td class=\"right small\">%.2f%%</td>\n"
-            "<td class=\"right small\">%.2f</td>\n"
-            "<td class=\"right small\">%.0f</td>\n"
-            "<td class=\"right small\">%.0f</td>\n"
-            "<td class=\"right small\">%.2f</td>\n"
-            "<td class=\"right small\">%.0f</td>\n"
-            "<td class=\"right small\">%.0f</td>\n"
-            "<td class=\"right small\">%.0f</td>\n"
-            "<td class=\"right small\">%.0f</td>\n"
-            "<td class=\"right small\">%.2f</td>\n"
-            "</tr>\n",
-            util::result_type_string( i ), s.tick_results[ i ].count.mean(),
-            s.tick_results[ i ].pct, s.tick_results[ i ].actual_amount.mean(),
-            s.tick_results[ i ].actual_amount.min(),
-            s.tick_results[ i ].actual_amount.max(),
-            s.tick_results[ i ].avg_actual_amount.mean(),
-            s.tick_results[ i ].avg_actual_amount.min(),
-            s.tick_results[ i ].avg_actual_amount.max(),
-            s.tick_results[ i ].fight_actual_amount.mean(),
-            s.tick_results[ i ].fight_total_amount.mean(),
-            s.tick_results[ i ].overkill_pct.mean() );
+        os.printf( "<td class=\"left small\">%s</td>\n"
+                   "<td class=\"right small\">%.2f%%</td>\n"
+                   "<td class=\"right small\">%.2f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.2f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.2f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.0f</td>\n"
+                   "<td class=\"right small\">%.2f%%</td>\n"
+                   "</tr>\n",
+                   util::result_type_string( i ),
+                   s.tick_results[ i ].pct,
+                   s.tick_results[ i ].count.mean(),
+                   s.tick_results[ i ].count.min(),
+                   s.tick_results[ i ].count.max(),
+                   s.tick_results[ i ].actual_amount.mean(),
+                   s.tick_results[ i ].actual_amount.min(),
+                   s.tick_results[ i ].actual_amount.max(),
+                   s.tick_results[ i ].avg_actual_amount.mean(),
+                   s.tick_results[ i ].avg_actual_amount.min(),
+                   s.tick_results[ i ].avg_actual_amount.max(),
+                   s.tick_results[ i ].fight_actual_amount.mean(),
+                   s.tick_results[ i ].fight_total_amount.mean(),
+                   s.tick_results[ i ].overkill_pct.mean() );
       }
     }
 
