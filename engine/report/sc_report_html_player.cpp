@@ -3108,7 +3108,7 @@ void print_html_player_custom_section( report::sc_html_stream& os, const player_
 void print_html_player_description( report::sc_html_stream& os, const player_t& p )
 {
   const sim_t& sim = *p.sim;
-  bool one_player = sim.players_by_name.size() == 1 && !p.is_enemy();
+  bool one_player = sim.players_by_name.size() == 1 && !p.is_enemy() && sim.profilesets.n_profilesets() == 0;
 
   // Player Description
   os << "<div id=\"player" << p.index << "\" class=\"player section\">\n";

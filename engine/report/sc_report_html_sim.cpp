@@ -1312,6 +1312,8 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
     print_html_scale_factors( os, sim );
   }
 
+  sim.profilesets.output_html( sim, os );
+
   // Report Players
   for ( auto& player : sim.players_by_name )
   {
@@ -1327,8 +1329,6 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
       }
     }
   }
-
-  sim.profilesets.output_html( sim, os );
 
   print_html_sim_summary( os, sim );
 

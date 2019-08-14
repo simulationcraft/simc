@@ -39,10 +39,10 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
   json.set( "chart.borderRadius", 4 );
   json.set( "chart.backgroundColor", _bg_color );
   json.set( "chart.style.fontSize", "13px" );
-  json.add( "chart.spacing", 2 )
-      .add( "chart.spacing", 2 )
-      .add( "chart.spacing", 2 )
-      .add( "chart.spacing", 2 );
+  json.add( "chart.spacing", 10 )
+      .add( "chart.spacing", 10 )
+      .add( "chart.spacing", 10 )
+      .add( "chart.spacing", 10 );
 
   json.set( "xAxis.lineColor", _text_color );
   json.set( "xAxis.tickColor", _text_color );
