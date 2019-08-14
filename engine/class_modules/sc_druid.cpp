@@ -7853,16 +7853,16 @@ void druid_t::init_base_stats()
     + talent.moment_of_clarity->effectN( 3 ).resource( RESOURCE_ENERGY );
 
   // only activate other resources if you have the affinity and affinity_resources = true
-  resources.active_resource[ RESOURCE_HEALTH       ] = specialization() == DRUID_GUARDIAN
-                                                       || talent.guardian_affinity->ok() && affinity_resources;
-  resources.active_resource[ RESOURCE_RAGE         ] = specialization() == DRUID_GUARDIAN
-                                                       || talent.guardian_affinity->ok() && affinity_resources;
-  resources.active_resource[ RESOURCE_MANA         ] = specialization() == DRUID_RESTORATION
-                                                       || talent.restoration_affinity->ok() && affinity_resources;
-  resources.active_resource[ RESOURCE_COMBO_POINT  ] = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION
-                                                       || talent.feral_affinity->ok() && ( affinity_resources || catweave_bear );
-  resources.active_resource[ RESOURCE_ENERGY       ] = specialization() == DRUID_FERAL||  specialization() == DRUID_RESTORATION
-                                                       || talent.feral_affinity->ok() && ( affinity_resources || catweave_bear );
+  resources.active_resource[ RESOURCE_HEALTH       ] = specialization() == DRUID_GUARDIAN ||
+                                                       ( talent.guardian_affinity->ok() && affinity_resources );
+  resources.active_resource[ RESOURCE_RAGE         ] = specialization() == DRUID_GUARDIAN ||
+                                                       ( talent.guardian_affinity->ok() && affinity_resources );
+  resources.active_resource[ RESOURCE_MANA         ] = specialization() == DRUID_RESTORATION ||
+                                                       ( talent.restoration_affinity->ok() && affinity_resources );
+  resources.active_resource[ RESOURCE_COMBO_POINT  ] = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION ||
+                                                       ( talent.feral_affinity->ok() && ( affinity_resources || catweave_bear ) );
+  resources.active_resource[ RESOURCE_ENERGY       ] = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION ||
+                                                       ( talent.feral_affinity->ok() && ( affinity_resources || catweave_bear ) );
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
@@ -9702,85 +9702,77 @@ expr_t* druid_t::create_expression( const std::string& name_str )
     return make_ref_expr( "combo_points", resources.current[ RESOURCE_COMBO_POINT ] );
   }
 
-  if (specialization() == DRUID_BALANCE)
+  if ( specialization() == DRUID_BALANCE )
   {
-    if (util::str_compare_ci( name_str, "astral_power"))
+    if ( util::str_compare_ci( name_str, "astral_power" ) )
     {
-      return make_ref_expr(name_str, resources.current[RESOURCE_ASTRAL_POWER]);
+      return make_ref_expr( name_str, resources.current[ RESOURCE_ASTRAL_POWER ] );
     }
-    
+
     // New Moon stage related expressions
-    else if (util::str_compare_ci(name_str, "new_moon"))
+    else if ( util::str_compare_ci( name_str, "new_moon" ) )
     {
-      return make_fn_expr(name_str, [this]() { return moon_stage == NEW_MOON; });
+      return make_fn_expr( name_str, [this]() { return moon_stage == NEW_MOON; } );
     }
-    else if (util::str_compare_ci(name_str, "half_moon"))
+    else if ( util::str_compare_ci( name_str, "half_moon" ) )
     {
-      return make_fn_expr(name_str, [this]() { return moon_stage == HALF_MOON; });
+      return make_fn_expr( name_str, [this]() { return moon_stage == HALF_MOON; } );
     }
-    else if (util::str_compare_ci(name_str, "full_moon"))
+    else if ( util::str_compare_ci( name_str, "full_moon" ) )
     {
-      return make_fn_expr(name_str, [this]() { return moon_stage == FULL_MOON || moon_stage == FREE_FULL_MOON; });
+      return make_fn_expr( name_str, [this]() { return moon_stage == FULL_MOON || moon_stage == FREE_FULL_MOON; } );
     }
-    else if (util::str_compare_ci(name_str, "free_full_moon"))
+    else if ( util::str_compare_ci( name_str, "free_full_moon" ) )
     {
-      return make_fn_expr(name_str, [this]() { return moon_stage == FREE_FULL_MOON; });
+      return make_fn_expr( name_str, [this]() { return moon_stage == FREE_FULL_MOON; } );
     }
 
     // automatic resolution of Celestial Alignment vs talented Incarnation
-    else if (splits.size() == 3 && util::str_compare_ci(splits[1], "ca_inc"))
+    else if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
     {
-      if (util::str_compare_ci(splits[0], "cooldown"))
-        splits[1] = talent.incarnation_moonkin->ok() ? ".incarnation." : ".celestial_alignment.";
+      if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) )
+        splits[ 1 ] = talent.incarnation_moonkin->ok() ? ".incarnation." : ".celestial_alignment.";
       else
-        splits[1] = talent.incarnation_moonkin->ok() ? ".incarnation_chosen_of_elune." : ".celestial_alignment.";
-      return player_t::create_expression(splits[0] + splits[1] + splits[2]);
+        splits[ 1 ] = talent.incarnation_moonkin->ok() ? ".incarnation_chosen_of_elune." : ".celestial_alignment.";
+      return player_t::create_expression( splits[ 0 ] + splits[ 1 ] + splits[ 2 ] );
     }
 
-    // check for AP overcap on action other than current action. check for current action handled in druid_spell_t::create_expression
-    // syntax: <action>.ap_check.<allowed overcap = 0>
-    else if (splits.size() >= 2 && util::str_compare_ci(splits[1], "ap_check"))
+    // check for AP overcap on action other than current action. check for current action handled in
+    // druid_spell_t::create_expression syntax: <action>.ap_check.<allowed overcap = 0>
+    else if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "ap_check" ) )
     {
-      action_t* action = find_action(splits[0]);
-      if (action)
+      action_t* action = find_action( splits[ 0 ] );
+      if ( action )
       {
-        return make_fn_expr(name_str, [action, this, splits]() {
+        return make_fn_expr( name_str, [action, this, splits]() {
           action_state_t* state = action->get_state();
-          double ap = this->resources.current[RESOURCE_ASTRAL_POWER];
-          ap += action->composite_energize_amount(state);
-          ap += this->talent.shooting_stars->ok() ? this->spec.shooting_stars_dmg->effectN(2).base_value() / 10 : 0;
-          ap += this->talent.natures_balance->ok() ? std::ceil(action->time_to_execute / timespan_t::from_seconds(1.5)) : 0;
-          action_state_t::release(state);
-          return ap <= this->resources.base[RESOURCE_ASTRAL_POWER] + (splits.size() >= 3 ? std::stoi(splits[2]) : 0);
-        });
+          double ap = resources.current[ RESOURCE_ASTRAL_POWER ];
+          ap += action->composite_energize_amount( state );
+          ap += talent.shooting_stars->ok() ? spec.shooting_stars_dmg->effectN( 2 ).base_value() / 10 : 0;
+          ap += talent.natures_balance->ok() ? std::ceil( action->time_to_execute / 1.5_s ) : 0;
+          action_state_t::release( state );
+          return ap <= resources.base[ RESOURCE_ASTRAL_POWER ] + ( splits.size() >= 3 ? std::stoi( splits[ 2 ] ) : 0 );
+        } );
       }
-      throw std::invalid_argument("invalid action");
+      throw std::invalid_argument( "invalid action" );
     }
   }
 
-  // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need name conversion.
-  if (splits.size() == 3 && util::str_compare_ci(splits[1], "incarnation") && (util::str_compare_ci(splits[0], "buff") || util::str_compare_ci(splits[0], "talent")))
+  // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need
+  // name conversion.
+  if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "incarnation" )
+       && ( util::str_compare_ci( splits[ 0 ], "buff" ) || util::str_compare_ci( splits[ 0 ], "talent" ) ) )
   {
-    switch(specialization())
+    switch ( specialization() )
     {
-      case DRUID_BALANCE: {
-        splits[1] = ".incarnation_chosen_of_elune.";
-      } break;
-      case DRUID_FERAL: {
-        splits[1] = ".incarnation_king_of_the_jungle.";
-      } break;
-      case DRUID_GUARDIAN: {
-        splits[1] = ".incarnation_guardian_of_ursoc.";
-      } break;
-      case DRUID_RESTORATION: {
-        splits[1] = ".incarnation_tree_of_life.";
-      } break;
+      case DRUID_BALANCE:     splits[ 1 ] = ".incarnation_chosen_of_elune.";    break;
+      case DRUID_FERAL:       splits[ 1 ] = ".incarnation_king_of_the_jungle."; break;
+      case DRUID_GUARDIAN:    splits[ 1 ] = ".incarnation_guardian_of_ursoc.";  break;
+      case DRUID_RESTORATION: splits[ 1 ] = ".incarnation_tree_of_life.";       break;
       default: break;
     }
-
-    return player_t::create_expression(splits[0] + splits[1] + splits[2]);
+    return player_t::create_expression( splits[ 0 ] + splits[ 1 ] + splits[ 2 ] );
   }
-
   return player_t::create_expression( name_str );
 }
 
@@ -10352,12 +10344,13 @@ void druid_t::copy_from( player_t* source )
   thorns_attack_period = p->thorns_attack_period;
   thorns_hit_chance = p->thorns_hit_chance;
 }
-void druid_t::output_json_report(js::JsonOutput& /*root*/) const
+void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
 {
-   return; //NYI.
-   if ( specialization() != DRUID_FERAL ) return;
+  return;  // NYI.
+  if ( specialization() != DRUID_FERAL )
+    return;
 
-   /* snapshot_stats:
+  /* snapshot_stats:
    *    savage_roar:
    *        [ name: Shred Exec: 15% Benefit: 98% ]
    *        [ name: Rip Exec: 88% Benefit: 35% ]
@@ -10365,88 +10358,72 @@ void druid_t::output_json_report(js::JsonOutput& /*root*/) const
    *        [ name: Rip Exec: 99% Benefit: 99% ]
    *    tigers_fury:
    */
-   for (size_t i = 0, end = stats_list.size(); i < end; i++)
-   {
-      stats_t* stats = stats_list[i];
-      double tf_exe_up = 0, tf_exe_total = 0;
-      double tf_benefit_up = 0, tf_benefit_total = 0;
-      double sr_exe_up = 0, sr_exe_total = 0;
-      double sr_benefit_up = 0, sr_benefit_total = 0;
-      double bt_exe_up = 0, bt_exe_total = 0;
-      double bt_benefit_up = 0, bt_benefit_total = 0;
-      //int n = 0;
+  for ( size_t i = 0, end = stats_list.size(); i < end; i++ )
+  {
+    stats_t* stats = stats_list[ i ];
+    double tf_exe_up = 0, tf_exe_total = 0;
+    double tf_benefit_up = 0, tf_benefit_total = 0;
+    double sr_exe_up = 0, sr_exe_total = 0;
+    double sr_benefit_up = 0, sr_benefit_total = 0;
+    double bt_exe_up = 0, bt_exe_total = 0;
+    double bt_benefit_up = 0, bt_benefit_total = 0;
+    // int n = 0;
 
-      for (size_t j = 0, end2 = stats->action_list.size(); j < end2; j++)
+    for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
+    {
+      cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>( stats->action_list[ j ] );
+      if ( !a )
+        continue;
+
+      if ( !a->consumes_bloodtalons )
+        continue;
+
+      tf_exe_up += a->tf_counter->mean_exe_up();
+      tf_exe_total += a->tf_counter->mean_exe_total();
+      tf_benefit_up += a->tf_counter->mean_tick_up();
+      tf_benefit_total += a->tf_counter->mean_tick_total();
+      if ( has_amount_results( stats->direct_results ) )
       {
-         cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>(stats->action_list[j]);
-         if (!a)
-            continue;
-
-         if (!a->consumes_bloodtalons)
-            continue;
-
-         tf_exe_up += a->tf_counter->mean_exe_up();
-         tf_exe_total += a->tf_counter->mean_exe_total();
-         tf_benefit_up += a->tf_counter->mean_tick_up();
-         tf_benefit_total += a->tf_counter->mean_tick_total();
-         if (has_amount_results(stats->direct_results))
-         {
-            tf_benefit_up += a->tf_counter->mean_exe_up();
-            tf_benefit_total += a->tf_counter->mean_exe_total();
-         }
-
-         if (talent.savage_roar->ok())
-         {
-            sr_exe_up += a->sr_counter->mean_exe_up();
-            sr_exe_total += a->sr_counter->mean_exe_total();
-            sr_benefit_up += a->sr_counter->mean_tick_up();
-            sr_benefit_total += a->sr_counter->mean_tick_total();
-            if (has_amount_results(stats->direct_results))
-            {
-               sr_benefit_up += a->sr_counter->mean_exe_up();
-               sr_benefit_total += a->sr_counter->mean_exe_total();
-            }
-         }
-         if (talent.bloodtalons->ok())
-         {
-            bt_exe_up += a->bt_counter->mean_exe_up();
-            bt_exe_total += a->bt_counter->mean_exe_total();
-            bt_benefit_up += a->bt_counter->mean_tick_up();
-            bt_benefit_total += a->bt_counter->mean_tick_total();
-            if (has_amount_results(stats->direct_results))
-            {
-               bt_benefit_up += a->bt_counter->mean_exe_up();
-               bt_benefit_total += a->bt_counter->mean_exe_total();
-            }
-         }
-
-         if (tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0)
-         {
-            //auto snapshot = root["snapshot_stats"].add();
-            if (talent.savage_roar->ok())
-            {
-               //auto sr = snapshot["savage_roar"].make_array();
-
-
-
-
-
-            }
-            if (talent.bloodtalons->ok())
-            {
-
-            }
-
-
-
-         }
-
+        tf_benefit_up += a->tf_counter->mean_exe_up();
+        tf_benefit_total += a->tf_counter->mean_exe_total();
       }
 
-   }
+      if ( talent.savage_roar->ok() )
+      {
+        sr_exe_up += a->sr_counter->mean_exe_up();
+        sr_exe_total += a->sr_counter->mean_exe_total();
+        sr_benefit_up += a->sr_counter->mean_tick_up();
+        sr_benefit_total += a->sr_counter->mean_tick_total();
+        if ( has_amount_results( stats->direct_results ) )
+        {
+          sr_benefit_up += a->sr_counter->mean_exe_up();
+          sr_benefit_total += a->sr_counter->mean_exe_total();
+        }
+      }
+      if ( talent.bloodtalons->ok() )
+      {
+        bt_exe_up += a->bt_counter->mean_exe_up();
+        bt_exe_total += a->bt_counter->mean_exe_total();
+        bt_benefit_up += a->bt_counter->mean_tick_up();
+        bt_benefit_total += a->bt_counter->mean_tick_total();
+        if ( has_amount_results( stats->direct_results ) )
+        {
+          bt_benefit_up += a->bt_counter->mean_exe_up();
+          bt_benefit_total += a->bt_counter->mean_exe_total();
+        }
+      }
 
-
-
+      if ( tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0 )
+      {
+        // auto snapshot = root["snapshot_stats"].add();
+        if ( talent.savage_roar->ok() )
+        {
+          // auto sr = snapshot["savage_roar"].make_array();
+        }
+        if ( talent.bloodtalons->ok() ) {}
+      }
+    }
+  }
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
@@ -10485,36 +10462,41 @@ public:
   void feral_snapshot_table( report::sc_html_stream& os )
   {
     // Write header
-     os << "<table class=\"sc\">\n"
-        << "<tr>\n"
-        << "<th >Ability</th>\n"
-        << "<th colspan=2>Tiger's Fury</th>\n";
+    os << "<div class=\"player-section custom_section\">\n"
+       << "<h3 class=\"toggle open\">Snapshot Table</h3>\n"
+       << "<div class=\"toggle-content\">\n"
+       << "<table class=\"sc sort even\">\n"
+       << "<thead>\n"
+       << "<tr>\n"
+       << "<th></th>\n"
+       << "<th colspan=\"2\">Tiger's Fury</th>\n";
     if( p.talent.savage_roar -> ok() )
     {
-      os << "<th colspan=2>Savage Roar</th>\n";
+      os << "<th colspan=\"2\">Savage Roar</th>\n";
     }
     if ( p.talent.bloodtalons -> ok() )
     {
-      os << "<th colspan=2>Bloodtalons</th>\n";
+      os << "<th colspan=\"2\">Bloodtalons</th>\n";
     }
     os << "</tr>\n";
 
     os << "<tr>\n"
-       << "<th>Name</th>\n"
-       << "<th>Execute %</th>\n"
-       << "<th>Benefit %</th>\n";
+       << "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability Name</th>\n"
+       << "<th class=\"toggle-sort\">Execute %</th>\n"
+       << "<th class=\"toggle-sort\">Benefit %</th>\n";
     if ( p.talent.savage_roar -> ok() )
     {
-       os << "<th>Execute %</th>\n"
-          << "<th>Benefit %</th>\n";
+       os << "<th class=\"toggle-sort\">Execute %</th>\n"
+          << "<th class=\"toggle-sort\">Benefit %</th>\n";
     }
 
     if ( p.talent.bloodtalons -> ok() )
     {
-      os << "<th>Execute %</th>\n"
-         << "<th>Benefit %</th>\n";
+      os << "<th class=\"toggle-sort\">Execute %</th>\n"
+         << "<th class=\"toggle-sort\">Benefit %</th>\n";
     }
-    os << "</tr>\n";
+    os << "</tr>\n"
+       << "</thead>\n";
 
     // Compile and Write Contents
     for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
@@ -10528,47 +10510,47 @@ public:
       double bt_benefit_up = 0, bt_benefit_total = 0;
       int n = 0;
 
-      for (size_t j = 0, end2 = stats->action_list.size(); j < end2; j++)
+      for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
       {
-         cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>(stats->action_list[j]);
-         if (!a)
-            continue;
+        cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>( stats->action_list[ j ] );
+        if ( !a )
+          continue;
 
-         if (!a->consumes_bloodtalons)
-            continue;
+        if ( !a->consumes_bloodtalons )
+          continue;
 
-         tf_exe_up += a->tf_counter->mean_exe_up();
-         tf_exe_total += a->tf_counter->mean_exe_total();
-         tf_benefit_up += a->tf_counter->mean_tick_up();
-         tf_benefit_total += a->tf_counter->mean_tick_total();
-         if (has_amount_results(stats->direct_results))
-         {
-            tf_benefit_up += a->tf_counter->mean_exe_up();
-            tf_benefit_total += a->tf_counter->mean_exe_total();
-         }
+        tf_exe_up += a->tf_counter->mean_exe_up();
+        tf_exe_total += a->tf_counter->mean_exe_total();
+        tf_benefit_up += a->tf_counter->mean_tick_up();
+        tf_benefit_total += a->tf_counter->mean_tick_total();
+        if ( has_amount_results( stats->direct_results ) )
+        {
+          tf_benefit_up += a->tf_counter->mean_exe_up();
+          tf_benefit_total += a->tf_counter->mean_exe_total();
+        }
 
-         if (p.talent.savage_roar->ok())
-         {
-         sr_exe_up += a->sr_counter->mean_exe_up();
-         sr_exe_total += a->sr_counter->mean_exe_total();
-         sr_benefit_up += a->sr_counter->mean_tick_up();
-         sr_benefit_total += a->sr_counter->mean_tick_total();
-         if (has_amount_results(stats->direct_results))
-         {
+        if ( p.talent.savage_roar->ok() )
+        {
+          sr_exe_up += a->sr_counter->mean_exe_up();
+          sr_exe_total += a->sr_counter->mean_exe_total();
+          sr_benefit_up += a->sr_counter->mean_tick_up();
+          sr_benefit_total += a->sr_counter->mean_tick_total();
+          if ( has_amount_results( stats->direct_results ) )
+          {
             sr_benefit_up += a->sr_counter->mean_exe_up();
             sr_benefit_total += a->sr_counter->mean_exe_total();
-         }
-         }
-        if ( p.talent.bloodtalons -> ok() )
+          }
+        }
+        if ( p.talent.bloodtalons->ok() )
         {
-          bt_exe_up += a -> bt_counter -> mean_exe_up();
-          bt_exe_total += a -> bt_counter -> mean_exe_total();
-          bt_benefit_up += a -> bt_counter -> mean_tick_up();
-          bt_benefit_total += a -> bt_counter -> mean_tick_total();
-          if ( has_amount_results( stats -> direct_results ) )
+          bt_exe_up += a->bt_counter->mean_exe_up();
+          bt_exe_total += a->bt_counter->mean_exe_total();
+          bt_benefit_up += a->bt_counter->mean_tick_up();
+          bt_benefit_total += a->bt_counter->mean_tick_total();
+          if ( has_amount_results( stats->direct_results ) )
           {
-            bt_benefit_up += a -> bt_counter -> mean_exe_up();
-            bt_benefit_total += a -> bt_counter -> mean_exe_total();
+            bt_benefit_up += a->bt_counter->mean_exe_up();
+            bt_benefit_total += a->bt_counter->mean_exe_total();
           }
         }
       }
@@ -10576,13 +10558,9 @@ public:
       if ( tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0 )
       {
         std::string name_str = report::action_decorator_t( stats -> action_list[ 0 ] ).decorate();
-        std::string row_class_str = "";
-        if ( ++n & 1 )
-          row_class_str = " class=\"odd\"";
 
         // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
-        os.printf( "<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
-                   row_class_str.c_str(),
+        os.printf( "<tr><td class=\"left\">%s</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
                    name_str.c_str(),
                    util::round( tf_exe_up / tf_exe_total * 100, 2 ),
                    util::round( tf_benefit_up / tf_benefit_total * 100, 2 ) );
@@ -10599,16 +10577,15 @@ public:
                      util::round( bt_exe_up / bt_exe_total * 100, 2 ),
                      util::round( bt_benefit_up / bt_benefit_total * 100, 2 ) );
         }
-
         os << "</tr>";
       }
-
     }
-
     os << "</tr>";
 
     // Write footer
-    os << "</table>\n";
+    os << "</table>\n"
+       << "</div>\n"
+       << "</div>\n";
   }
 
 private:
