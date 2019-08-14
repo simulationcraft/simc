@@ -803,321 +803,90 @@ void report::print_suite( sim_t* sim )
 }
 
 void report::print_html_sample_data( report::sc_html_stream& os, const player_t& p, const extended_sample_data_t& data,
-                                     const std::string& name, int& td_counter, int columns )
+                                     const std::string& name, int columns )
 {
   // Print Statistics of a Sample Data Container
-  os << "\t\t\t\t\t\t\t<tr";
-  if ( td_counter & 1 )
-  {
-    os << " class=\"odd\"";
-  }
-  td_counter++;
-  os << ">\n";
-  os << "\t\t\t\t\t\t\t\t<td class=\"left small\" colspan=\"" << columns << "\">";
+  os << "<tbody>\n"
+     << "<tr>\n"
+     << "<td class=\"left small\" colspan=\"" << columns << "\">";
 
   std::string tokenized_name = data.name_str;
   util::tokenize( tokenized_name );
   tokenized_name = util::remove_special_chars( tokenized_name );
-  os.printf(
-      "<a id=\"actor%d_%s_stats_toggle\" "
-      "class=\"toggle-details\">%s</a></td>\n",
-      p.index, tokenized_name.c_str(), name.c_str() );
+  os.printf( "<a id=\"actor%d_%s_stats_toggle\" class=\"toggle-details\">%s</a></td>\n</tr>\n",
+             p.index, tokenized_name.c_str(), name.c_str() );
 
-  os << "\t\t\t\t\t\t\t\t</tr>\n";
+  os << "<tr class=\"details hide\">\n"
+     << "<td class=\"filler\" colspan=\"" << columns << "\">\n"
+     << "<table class=\"details\">\n"
+     << "<tr>\n"
+     << "<th class=\"left\" colspan=\"2\">" << util::encode_html( data.name_str ) << "</th>\n"
+     << "</tr>\n";
 
-  os << "\t\t\t\t\t\t\t<tr class=\"details hide\">\n";
-
-  os << "\t\t\t\t\t\t\t\t<td class=\"filler\" colspan=\"" << columns << "\">\n";
-  int i = 0;
-
-  os << "\t\t\t\t\t\t\t<table class=\"details\">\n";
-
-  os << "\t\t\t\t\t\t\t\t<tr";
-  if ( !( i & 1 ) )
-  {
-    os << " class=\"odd\"";
-  }
-  os << ">\n";
-  os << "\t\t\t\t\t\t\t\t\t<th class=\"left\"><b>Sample Data</b></th>\n"
-     << "\t\t\t\t\t\t\t\t\t<th class=\"right\">" << util::encode_html( data.name_str ) << "</th>\n"
-     << "\t\t\t\t\t\t\t\t</tr>\n";
-
-  ++i;
-  os << "\t\t\t\t\t\t\t\t<tr";
-  if ( !( i & 1 ) )
-  {
-    os << " class=\"odd\"";
-  }
-  os << ">\n";
-  os.printf(
-      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Count</td>\n"
-      "\t\t\t\t\t\t\t\t\t<td class=\"right\">%d</td>\n"
-      "\t\t\t\t\t\t\t\t</tr>\n",
-      (int)data.size() );
-
-  ++i;
-  os << "\t\t\t\t\t\t\t\t<tr";
-  if ( !( i & 1 ) )
-  {
-    os << " class=\"odd\"";
-  }
-  os << ">\n";
-  os.printf(
-      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Mean</td>\n"
-      "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-      "\t\t\t\t\t\t\t\t</tr>\n",
-      data.mean() );
-
-  ++i;
-  os << "\t\t\t\t\t\t\t\t<tr";
-  if ( !( i & 1 ) )
-  {
-    os << " class=\"odd\"";
-  }
-  os << ">\n";
-
-  os.printf(
-      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
-      "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-      "\t\t\t\t\t\t\t\t</tr>\n",
-      data.min() );
-
-  ++i;
-  os << "\t\t\t\t\t\t\t\t<tr";
-  if ( !( i & 1 ) )
-  {
-    os << " class=\"odd\"";
-  }
-  os << ">\n";
-  os.printf(
-      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
-      "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-      "\t\t\t\t\t\t\t\t</tr>\n",
-      data.max() );
-
-  ++i;
-  os << "\t\t\t\t\t\t\t\t<tr";
-  if ( !( i & 1 ) )
-  {
-    os << " class=\"odd\"";
-  }
-  os << ">\n";
-  os.printf(
-      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
-      "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-      "\t\t\t\t\t\t\t\t</tr>\n",
-      data.max() - data.min() );
-
-  ++i;
-  os << "\t\t\t\t\t\t\t\t<tr";
-  if ( !( i & 1 ) )
-  {
-    os << " class=\"odd\"";
-  }
-  os << ">\n";
-  os.printf(
-      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% "
-      "]</td>\n"
-      "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t</tr>\n",
-      data.mean() ? ( ( data.max() - data.min() ) / 2 ) * 100 / data.mean() : 0 );
-
+  os.printf( "<tr>\n<td class=\"left\">Count</td>\n<td class=\"right\">%d</td>\n</tr>\n", (int)data.size() );
+  os.printf( "<tr>\n<td class=\"left\">Mean</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.mean() );
+  os.printf( "<tr>\n<td class=\"left\">Minimum</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.min() );
+  os.printf( "<tr>\n<td class=\"left\">Maximum</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.max() );
+  os.printf( "<tr>\n<td class=\"left\">Spread ( max - min )</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
+             data.max() - data.min() );
+  os.printf( "<tr>\n<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
+             "<td class=\"right\">%.2f%%</td>\n</tr>\n",
+             data.mean() ? ( ( data.max() - data.min() ) / 2 ) * 100 / data.mean() : 0 );
   if ( !data.simple )
   {
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        data.std_dev );
+    os.printf( "<tr>\n<td class=\"left\">Standard Deviation</td>\n<td class=\"right\">%.4f</td>\n</tr>\n",
+               data.std_dev );
+    os.printf( "<tr>\n<td class=\"left\">5th Percentile</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
+               data.percentile( 0.05 ) );
+    os.printf( "<tr>\n<td class=\"left\">95th Percentile</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
+               data.percentile( 0.95 ) );
+    os.printf( "<tr>\n<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
+               "<td class=\"right\">%.2f</td>\n</tr>\n",
+               data.percentile( 0.95 ) - data.percentile( 0.05 ) );
 
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">5th Percentile</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        data.percentile( 0.05 ) );
+    os << "<tr>\n"
+       << "<th class=\"left\" colspan=\"2\">Mean Distribution</th>\n"
+       << "</tr>\n";
 
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">95th Percentile</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        data.percentile( 0.95 ) );
+    os.printf( "<tr>\n<td class=\"left\">Standard Deviation</td>\n<td class=\"right\">%.4f</td>\n</tr>\n",
+               data.mean_std_dev );
 
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 95th Percentile - 5th "
-        "Percentile )</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        data.percentile( 0.95 ) - data.percentile( 0.05 ) );
-
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Mean Distribution</b></td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n" );
-
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        data.mean_std_dev );
-
-    ++i;
     double mean_error = data.mean_std_dev * p.sim->confidence_estimator;
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence "
-        "Intervall</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        p.sim->confidence * 100.0, data.mean() - mean_error, data.mean() + mean_error );
+    os.printf( "<tr>\n<td class=\"left\">%.2f%% Confidence Interval</td>\n"
+               "<td class=\"right\">( %.2f - %.2f )</td>\n</tr>\n",
+               p.sim->confidence * 100.0,
+               data.mean() - mean_error,
+               data.mean() + mean_error );
+    os.printf( "<tr>\n<td class=\"left\">Normalized %.2f%% Confidence Interval</td>\n"
+               "<td class=\"right\">( %.2f%% - %.2f%% )</td>\n</tr>\n",
+               p.sim->confidence * 100.0,
+               data.mean() ? 100 - mean_error * 100 / data.mean() : 0,
+               data.mean() ? 100 + mean_error * 100 / data.mean() : 0 );
 
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence "
-        "Intervall</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        p.sim->confidence * 100.0, data.mean() ? 100 - mean_error * 100 / data.mean() : 0,
-        data.mean() ? 100 + mean_error * 100 / data.mean() : 0 );
+    os << "<tr>\n"
+       << "<th class=\"left\" colspan=\"2\">Approx. Iterations needed for ( always use n>=50 )</th>\n"
+       << "</tr>\n";
 
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n"
-       << "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed "
-          "for ( always use n>=50 )</b></td>\n"
-       << "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
-       << "\t\t\t\t\t\t\t\t</tr>\n";
-
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        std::ceil( data.mean() ? ( mean_error * mean_error * data.size() / ( 0.01 * data.mean() * 0.01 * data.mean() ) )
-                               : 0 ) );
-
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        std::ceil( data.mean()
-                       ? ( mean_error * mean_error * data.size() / ( 0.001 * data.mean() * 0.001 * data.mean() ) )
-                       : 0 ) );
-
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with "
-        "Delta=300</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 30.0 * 30.0 ) ) );
-
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with "
-        "Delta=300</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 15 * 15 ) ) );
-
-    ++i;
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf(
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with "
-        "Delta=300</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 3 * 3 ) ) );
+    os.printf( "<tr>\n<td class=\"left\">1%% Error</td>\n<td class=\"right\">%.0f</td>\n</tr>\n",
+      std::ceil( data.mean()
+        ? ( mean_error * mean_error * data.size() / ( 0.01 * data.mean() * 0.01 * data.mean() ) )
+        : 0 ) );
+    os.printf( "<tr>\n<td class=\"left\">0.1%% Error</td>\n<td class=\"right\">%.0f</td>\n</tr>\n",
+      std::ceil( data.mean()
+        ? ( mean_error * mean_error * data.size() / ( 0.001 * data.mean() * 0.001 * data.mean() ) )
+        : 0 ) );
+    os.printf( "<tr>\n<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
+               "<td class=\"right\">%.0f</td>\n</tr>\n",
+               std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 30.0 * 30.0 ) ) );
+    os.printf( "<tr>\n<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
+               "<td class=\"right\">%.0f</td>\n</tr>\n",
+               std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 15 * 15 ) ) );
+    os.printf( "<tr>\n<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
+               "<td class=\"right\">%.0f</td>\n</tr>\n",
+               std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 3 * 3 ) ) );
   }
 
-  os << "\t\t\t\t\t\t\t\t</table>\n";
+  os << "</table>\n";
 
   if ( !data.simple )
   {
@@ -1130,8 +899,9 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t&
     }
   }
 
-  os << "\t\t\t\t\t\t\t\t</td>\n"
-     << "\t\t\t\t\t\t\t</tr>\n";
+  os << "</td>\n"
+     << "</tr>\n"
+     << "</tbody>\n";
 }
 
 void report::generate_player_buff_lists( player_t& p, player_processed_report_information_t& ri )

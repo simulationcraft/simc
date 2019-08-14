@@ -1106,32 +1106,32 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
         os << "</table>\n";
       }
 
-      os << "<h3>" << util::encode_html( entry->group_ ) << "</h3>\n";
-      os << "<table class=\"sc\" style=\"max-width:75%\">\n";
-      os << "<tr>\n";
-      os << "<th>Tag</th>\n";
-      os << "<th class=\"left\">Spell / Effect</th>\n";
-      os << "<th class=\"left\">Field</th>\n";
-      os << "<th class=\"left\">Hotfixed Value</th>\n";
-      os << "<th class=\"left\" colspan=\"2\">DBC Value</th>\n";
-      os << "</tr>\n";
+      os << "<h3>" << util::encode_html( entry->group_ ) << "</h3>\n"
+         << "<table class=\"sc even\">\n"
+         << "<thead>\n"
+         << "<tr>\n"
+         << "<th>Tag</th>\n"
+         << "<th class=\"left\">Spell / Effect</th>\n"
+         << "<th class=\"left\">Field</th>\n"
+         << "<th class=\"left\">Hotfixed Value</th>\n"
+         << "<th class=\"left\" colspan=\"2\">DBC Value</th>\n"
+         << "</tr>\n"
+         << "</thead>\n";
       current_group = entry->group_;
       first_group   = false;
     }
 
     if ( entry )
     {
-      os << "<tr>\n";
-      os << "<td class=\"left\" style=\"white-space:nowrap;\"><strong>"
-         << util::encode_html( entry->tag_.substr( 0, 10 ) ) << "</strong></td>\n";
-      os << "<td class=\"left\" colspan=\"5\"><strong>" << util::encode_html( entry->note_ )
-         << "</strong></td>\n";
-      os << "</tr>\n";
+      os << "<tr>\n"
+         << "<td class=\"left\"><strong>" << util::encode_html( entry->tag_.substr( 0, 10 ) ) << "</strong></td>\n"
+         << "<td class=\"left\" colspan=\"5\"><strong>" << util::encode_html( entry->note_ ) << "</strong></td>\n"
+         << "</tr>\n";
     }
     if ( const hotfix::effect_hotfix_entry_t* e = dynamic_cast<const hotfix::effect_hotfix_entry_t*>( entry ) )
     {
-      os << "<tr class=\"odd\">\n";
-      os << "<td></td>\n";
+      os << "<tr>\n"
+         << "<td></td>\n";
       const spelleffect_data_t* effect = sim.dbc.effect( e->id_ );
 
       std::string name = report::decorated_spell_name( sim, *effect->spell() );
@@ -1140,8 +1140,8 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
     }
     else if ( const hotfix::spell_hotfix_entry_t* e = dynamic_cast<const hotfix::spell_hotfix_entry_t*>( entry ) )
     {
-      os << "<tr class=\"odd\">\n";
-      os << "<td></td>\n";
+      os << "<tr>\n"
+         << "<td></td>\n";
       const spell_data_t* spell = sim.dbc.spell( e->id_ );
       std::string name          = report::decorated_spell_name( sim, *spell );
       os << "<td class=\"left\">" << name << "</td>\n";
@@ -1178,16 +1178,18 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
     return;
   }
 
-  os << "<div class=\"section\">\n";
-  os << "<h2 class=\"toggle\">Current simulator-wide DBC data overrides</h2>\n";
-  os << "<div class=\"toggle-content hide\">\n";
-  os << "<table class=\"sc\">\n";
-  os << "<tr>\n";
-  os << "<th class=\"left\">Spell / Effect</th>\n";
-  os << "<th class=\"left\">Field</th>\n";
-  os << "<th class=\"left\">Override Value</th>\n";
-  os << "<th class=\"left\">DBC Value</th>\n";
-  os << "</tr>\n";
+  os << "<div class=\"section\">\n"
+     << "<h2 class=\"toggle\">Current simulator-wide DBC data overrides</h2>\n"
+     << "<div class=\"toggle-content hide\">\n"
+     << "<table class=\"sc even\">\n"
+     << "<thead>\n"
+     << "<tr>\n"
+     << "<th class=\"left\">Spell / Effect</th>\n"
+     << "<th class=\"left\">Field</th>\n"
+     << "<th class=\"left\">Override Value</th>\n"
+     << "<th class=\"left\">DBC Value</th>\n"
+     << "</tr>\n"
+     << "</thead>\n";
   for ( const auto& entry : entries )
   {
     os << "<tr>\n";

@@ -71,7 +71,6 @@ ol.float {
 ul.float li,
 ol.float li {
     display: inline;
-    float: left;
     padding-right: 6px;
     margin-right: 6px;
     list-style-type: none;
@@ -269,10 +268,13 @@ span.open {
     padding-bottom: 8px;
 }
 .section .toggle-content {
-    padding: 0px 0px 0px 18px;
+    padding: 0px 9px 0px 18px;
 }
 .player-section .toggle-content {
     padding-left: 16px;
+}
+.player > .toggle-content {
+    padding-left: 0;
 }
 #home-toc .toggle-content {
     margin-bottom: 20px;
@@ -376,12 +378,6 @@ ul.params li a:hover {
 }
 .alert p {
     margin-bottom: 0px;
-}
-.section .toggle-content {
-    padding-left: 18px;
-}
-.player > .toggle-content {
-    padding-left: 0;
 }
 .toc {
     float: left;
@@ -546,11 +542,13 @@ table.sc tr.details td ul li span.tooltip {
     display: block;
     float: left;
     width: 190px;
+    word-wrap: break-word;
 }
 table.sc tr.details td ul li span.tooltip-wider {
     display: block;
     float: left;
     width: 350px;
+    word-wrap: break-word;
 }
 table.sc tr.details td div.float {
     width: 350px;
@@ -570,13 +568,9 @@ table.sc .dynamic-buffs tr.details td ul li span.label {
 tr.details td table.details {
     padding: 0px;
     margin: 5px 0 10px 0;
-    width: 814px;
 }
 tr.details td table.details tr th {
     background-color: #222;
-}
-tr.details td table.details tr th:first-of-type {
-    width: 5em;
 }
 tr.details td table.details tr td {
     background-color: #2d2d2d;
@@ -599,6 +593,12 @@ table.stripetoprow .childrow:hover {
 }
 table.sort tbody td {
     transition: background-color 300ms ease-in;
+}
+table.sort tr.details td table.details {
+    width: 814px;
+}
+table.sort tr.details td table.details tr th:first-of-type {
+    width: 5em;
 }
 .player-thumbnail {
     float: right;
