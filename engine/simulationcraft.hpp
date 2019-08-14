@@ -3314,10 +3314,17 @@ struct actor_t : private noncopyable
 };
 
 /* Player Report Extension
- * Allows class modules to write extension to the report sections
- * based on the dynamic class of the player
+ * Allows class modules to write extension to the report sections based on the dynamic class of the player.
+ * 
+ * To add sort functionaliy to custom tables:
+ *  1) add the 'sort' class to the table: <table="sc sort">
+ *    a) optionally add 'even' or 'odd' to automatically stripe the table: <table="sc sort even">
+ *  2) wrap <thead> around all header rows: <thead><tr><th> ... </th></tr></thead>
+ *  3) add the 'toggle-sort' class to each header to be sorted: <th class="toggle-sort"> ... </th>
+ *    a) default sort behavior is descending numerical sort
+ *    b) add 'data-sortdir="asc" to sort ascending: <th class="toggle-sort" data-sortdir="asc"> ... </th>
+ *    c) add 'data-sorttype="alpha" to sort alphabetically
  */
-
 struct player_report_extension_t
 {
 public:
