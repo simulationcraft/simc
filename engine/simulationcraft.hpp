@@ -4834,9 +4834,8 @@ public:
   struct stats_results_t
   {
   public:
-    simple_sample_data_with_min_max_t actual_amount, avg_actual_amount;
+    simple_sample_data_with_min_max_t actual_amount, avg_actual_amount, count;
     simple_sample_data_t total_amount, fight_actual_amount, fight_total_amount, overkill_pct;
-    simple_sample_data_t count;
     double pct;
   private:
     int iteration_count;

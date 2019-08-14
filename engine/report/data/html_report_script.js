@@ -95,6 +95,7 @@ jQuery(document).ready(function ($) {
     });
     $('.toggle-details').click(function (e) {
         e.preventDefault();
+        e.stopPropagation();
         var $me = $(this);
         var $row = $me.closest('tr').nextAll('.details').first();
         if ($me.hasClass('open')) {
@@ -113,6 +114,10 @@ jQuery(document).ready(function ($) {
                 $('#' + d[idx]['target']).highcharts(d[idx]['data']);
             }
         });
+    });
+    $('table.stripetoprow .toprow td:first-of-type, table.stripebody tbody td:first-of-type').click(function (e) {
+        e.preventDefault();
+        $(this).children('.toggle-details').first().click();
     });
     var hoverTimeout;
     function hoverHide() {
