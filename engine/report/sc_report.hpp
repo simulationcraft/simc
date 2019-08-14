@@ -208,30 +208,22 @@ namespace report
 {
 using sc_html_stream = io::ofstream;
 
-void generate_player_charts( player_t&,
-                             player_processed_report_information_t& );
-void generate_player_buff_lists( player_t&,
-                                 player_processed_report_information_t& );
+void generate_player_charts( player_t&, player_processed_report_information_t& );
+void generate_player_buff_lists( player_t&, player_processed_report_information_t& );
 
-void print_html_sample_data( report::sc_html_stream&, const player_t&,
-                             const extended_sample_data_t&,
-                             const std::string& name, int& td_counter,
-                             int columns = 1 );
+void print_html_sample_data( report::sc_html_stream&, const player_t&, const extended_sample_data_t&,
+                             const std::string& name, int columns = 1 );
 
 bool output_scale_factors( const player_t* p );
 
 std::string decoration_domain( const sim_t& sim );
-std::string decorated_spell_name(
-    const sim_t& sim, const spell_data_t& spell,
-    const std::string& parms_str = std::string() );
+std::string decorated_spell_name( const sim_t& sim, const spell_data_t& spell,
+                                  const std::string& parms_str = std::string() );
 std::string decorated_item_name( const item_t* item );
-std::string decorate_html_string( const std::string& value,
-                                  const color::rgb& color );
+std::string decorate_html_string( const std::string& value, const color::rgb& color );
 
-void print_spell_query( std::ostream& out, const sim_t& sim,
-                        const spell_data_expr_t&, unsigned level );
-void print_spell_query( xml_node_t* out, FILE* file, const sim_t& sim,
-                        const spell_data_expr_t&, unsigned level );
+void print_spell_query( std::ostream& out, const sim_t& sim, const spell_data_expr_t&, unsigned level );
+void print_spell_query( xml_node_t* out, FILE* file, const sim_t& sim, const spell_data_expr_t&, unsigned level );
 bool check_gear( player_t& p, sim_t& sim );
 void print_profiles( sim_t* );
 void print_text( sim_t*, bool detail );
@@ -240,13 +232,10 @@ void print_json( sim_t& );
 void print_html_player( report::sc_html_stream&, player_t& );
 void print_suite( sim_t* );
 std::vector<std::string> beta_warnings();
-std::string pretty_spell_text( const spell_data_t& default_spell,
-                               const std::string& text, const player_t& p );
-inline std::string pretty_spell_text( const spell_data_t& default_spell,
-                                      const char* text, const player_t& p )
+std::string pretty_spell_text( const spell_data_t& default_spell, const std::string& text, const player_t& p );
+inline std::string pretty_spell_text( const spell_data_t& default_spell, const char* text, const player_t& p )
 {
-  return text ? pretty_spell_text( default_spell, std::string( text ), p )
-              : std::string();
+  return text ? pretty_spell_text( default_spell, std::string( text ), p ) : std::string();
 }
 
 template <typename T>
@@ -501,6 +490,6 @@ public:
   std::string token() const override;
 };
 
-}  // report
+}  // namespace report
 
 #endif  // SC_REPORT_HPP

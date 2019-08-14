@@ -618,13 +618,9 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     if ( !s.portion_aps.simple || !s.portion_apse.simple || !s.actual_amount.simple )
     {
       os << "<table class=\"details\">\n";
-      int sd_counter = 0;
-      report::print_html_sample_data( os, p, s.actual_amount,
-                                      "Actual Amount", sd_counter );
-      report::print_html_sample_data( os, p, s.portion_aps,
-                                      "portion Amount per Second ( pAPS )", sd_counter );
-      report::print_html_sample_data( os, p, s.portion_apse,
-                                      "portion Effective Amount per Second ( pAPSe )", sd_counter );
+      report::print_html_sample_data( os, p, s.actual_amount, "Actual Amount" );
+      report::print_html_sample_data( os, p, s.portion_aps, "portion Amount per Second ( pAPS )" );
+      report::print_html_sample_data( os, p, s.portion_apse, "portion Effective Amount per Second ( pAPSe )" );
       os << "</table>\n";
 
       if ( !s.portion_aps.simple && p.sim->scaling->has_scale_factors() && s.scaling )
@@ -1417,7 +1413,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     os.printf(
         "<tr>\n"
-        "<th class=\"left\">Damage / Heal Versatility</th>\n"
+        "<th class=\"left\">Versatility</th>\n"
         "<td class=\"right\"></td>\n"
         "<td class=\"right\"></td>\n"
         "<td class=\"right\">%.2f%%</td>\n"
@@ -1446,7 +1442,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     {
       os.printf(
           "<tr>\n"
-          "<th class=\"left\">ManaReg per Second</th>\n"
+          "<th class=\"left\">Mana Regen</th>\n"
           "<td class=\"right\"></td>\n"
           "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -2240,9 +2236,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
 
     os << "<style type=\"text/css\" media=\"all\" scoped>\n";
 
-    char colors[ 12 ][ 7 ] = {"eeeeee", "ffffff", "ff5555", "55ff55",
-                              "5555ff", "ffff55", "55ffff", "ff9999",
-                              "99ff99", "9999ff", "ffff99", "99ffff"};
+    char colors[ 12 ][ 4 ] = { "999", "fff", "f55", "5f5", "55f", "ff5", "5ff", "f99", "9f9", "99f", "ff9", "9ff" };
 
     int j = 0;
 
@@ -2321,29 +2315,28 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
 {
   // Statistics & Data Analysis
 
-  os << "<div class=\"player-section gains\">\n"
+  os << "<div class=\"player-section analysis\">\n"
         "<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
         "<div class=\"toggle-content hide\">\n"
-        "<table class=\"sc\">\n";
+        "<table class=\"sc stripebody\">\n";
 
-  int sd_counter = 0;
-  report::print_html_sample_data( os, p, p.collected_data.fight_length, "Fight Length", sd_counter );
-  report::print_html_sample_data( os, p, p.collected_data.dps, "DPS", sd_counter );
-  report::print_html_sample_data( os, p, p.collected_data.prioritydps, "Priority Target DPS", sd_counter );
-  report::print_html_sample_data( os, p, p.collected_data.dpse, "DPS(e)", sd_counter );
-  report::print_html_sample_data( os, p, p.collected_data.dmg, "Damage", sd_counter );
-  report::print_html_sample_data( os, p, p.collected_data.dtps, "DTPS", sd_counter );
-  report::print_html_sample_data( os, p, p.collected_data.hps, "HPS", sd_counter );
-  report::print_html_sample_data( os, p, p.collected_data.hpse, "HPS(e)", sd_counter );
-  report::print_html_sample_data( os, p, p.collected_data.heal, "Heal", sd_counter );
-  report::print_html_sample_data( os, p, p.collected_data.htps, "HTPS", sd_counter );
-  report::print_html_sample_data( os, p, p.collected_data.theck_meloree_index, "TMI", sd_counter );
-  report::print_html_sample_data( os, p, p.collected_data.effective_theck_meloree_index, "ETMI", sd_counter );
-  report::print_html_sample_data( os, p, p.collected_data.max_spike_amount, "MSD", sd_counter );
+  report::print_html_sample_data( os, p, p.collected_data.fight_length, "Fight Length" );
+  report::print_html_sample_data( os, p, p.collected_data.dps, "DPS" );
+  report::print_html_sample_data( os, p, p.collected_data.prioritydps, "Priority Target DPS" );
+  report::print_html_sample_data( os, p, p.collected_data.dpse, "DPS(e)" );
+  report::print_html_sample_data( os, p, p.collected_data.dmg, "Damage" );
+  report::print_html_sample_data( os, p, p.collected_data.dtps, "DTPS" );
+  report::print_html_sample_data( os, p, p.collected_data.hps, "HPS" );
+  report::print_html_sample_data( os, p, p.collected_data.hpse, "HPS(e)" );
+  report::print_html_sample_data( os, p, p.collected_data.heal, "Heal" );
+  report::print_html_sample_data( os, p, p.collected_data.htps, "HTPS" );
+  report::print_html_sample_data( os, p, p.collected_data.theck_meloree_index, "TMI" );
+  report::print_html_sample_data( os, p, p.collected_data.effective_theck_meloree_index, "ETMI" );
+  report::print_html_sample_data( os, p, p.collected_data.max_spike_amount, "MSD" );
 
   for ( const auto& sample_data : p.sample_data_list )
   {
-    report::print_html_sample_data( os, p, *sample_data, util::encode_html( sample_data->name_str ), sd_counter );
+    report::print_html_sample_data( os, p, *sample_data, util::encode_html( sample_data->name_str ) );
   }
 
   os << "</table>\n"
@@ -4131,7 +4124,7 @@ void print_html_player_deaths( report::sc_html_stream& os, const player_t& p,
 
   if ( deaths.size() > 0 )
   {
-    os << "<div class=\"player-section gains\">\n"
+    os << "<div class=\"player-section deaths\">\n"
        << "<h3 class=\"toggle\">Deaths</h3>\n"
        << "<div class=\"toggle-content hide\">\n"
        << "<table class=\"sc\">\n"
