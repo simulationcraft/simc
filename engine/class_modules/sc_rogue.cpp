@@ -5868,7 +5868,7 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.keep_your_wits_about_you.stack<10|buff.deadshot.up|energy<45)", "Use Pistol Shot if it won't cap combo points and the Oppotunity buff is up. Avoid using when Keep Your Wits stacks are high unless the Deadshot buff is also up." );
+    build -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.keep_your_wits_about_you.stack<14|buff.deadshot.up|energy<45)", "Use Pistol Shot if it won't cap combo points and the Oppotunity buff is up. Avoid using when Keep Your Wits stacks are high unless the Deadshot buff is also up." );
     build -> add_action( this, "Sinister Strike" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
@@ -7526,23 +7526,6 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2019-08-09", "Blade Flurry now strikes nearby enemies for 30% of normal damage", 136652 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 30 )
-      .verification_value( 45 );
-
-    hotfix::register_effect( "Rogue", "2019-08-09", "Keep Your Wits About You now increases the chance for Sinister Strike to strike again by 3%", 753042 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3 )
-      .verification_value( 5 );
-
-    hotfix::register_spell( "Rogue", "2019-08-09", "The maximum number of stacks of Keep Your Wits About You has been increased to 33", 288988 )
-      .field( "max_stack" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 33 )
-      .verification_value( 20 ); 
   }
 
   virtual void init( player_t* ) const override {}
