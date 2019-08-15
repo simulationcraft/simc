@@ -5305,8 +5305,8 @@ void warrior_t::apl_arms()
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
                                 ",if=!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|"
-                                "(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|(prev_gcd.1.colossus_smash&"
-                                "!essence.memory_of_lucid_dreams.major))" );
+                                "(!debuff.conductive_ink_debuff.up&(buff.memory_of_lucid_dreams.up|(debuff.colossus_smash.up&"
+                                "!essence.memory_of_lucid_dreams.major)))" );
     }
     else if ( items[ i ].name_str == "azsharas_font_of_power" )
     {
@@ -5344,7 +5344,8 @@ void warrior_t::apl_arms()
   default_list->add_action( "concentrated_flame,if=!debuff.colossus_smash.up&!buff.test_of_might.up&dot.concentrated_flame_burn.remains=0" );
   default_list->add_action( "the_unbound_force,if=buff.reckless_force.up" );
   default_list->add_action( "guardian_of_azeroth,if=cooldown.colossus_smash.remains<10" );
-  default_list->add_action( "memory_of_lucid_dreams,if=cooldown.colossus_smash.remains<3" );
+  default_list->add_action( "memory_of_lucid_dreams,if=!talent.warbreaker.enabled&cooldown.colossus_smash.remains<3|"
+                            "cooldown.warbreaker.remains<3" );
 
   default_list->add_action( "run_action_list,name=hac,if=raid_event.adds.exists" );
   default_list->add_action( "run_action_list,name=five_target,if=spell_targets.whirlwind>4" );
