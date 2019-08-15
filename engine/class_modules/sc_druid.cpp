@@ -2420,11 +2420,6 @@ struct moonfire_t : public druid_spell_t
         galactic_guardian_dd_multiplier = p->find_spell(213708)->effectN(3).percent();
       }
 
-      if ( p->talent.twin_moons->ok() )
-      {
-        radius = p->talent.twin_moons->effectN( 1 ).trigger()->effectN( 1 ).radius_max();
-      }
-
       may_miss = false;
       triggers_galactic_guardian = false;
       benefits_from_galactic_guardian = true;
