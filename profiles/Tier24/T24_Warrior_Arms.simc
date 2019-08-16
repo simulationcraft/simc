@@ -41,7 +41,7 @@ actions+=/arcane_torrent,if=debuff.colossus_smash.down&cooldown.mortal_strike.re
 actions+=/lights_judgment,if=debuff.colossus_smash.down
 actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
-actions+=/use_item,name=ashvanes_razor_coral,if=!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|(prev_gcd.1.colossus_smash&!essence.memory_of_lucid_dreams.major))
+actions+=/use_item,name=ashvanes_razor_coral,if=!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|(!debuff.conductive_ink_debuff.up&(buff.memory_of_lucid_dreams.up|(debuff.colossus_smash.up&!essence.memory_of_lucid_dreams.major)))
 actions+=/avatar,if=cooldown.colossus_smash.remains<8|(talent.warbreaker.enabled&cooldown.warbreaker.remains<8)
 actions+=/sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>10|cooldown.colossus_smash.remains>8|azerite.test_of_might.enabled)
 actions+=/blood_of_the_enemy,if=buff.test_of_might.up|(debuff.colossus_smash.up&!azerite.test_of_might.enabled)
@@ -52,7 +52,7 @@ actions+=/focused_azerite_beam,if=!debuff.colossus_smash.up&!buff.test_of_might.
 actions+=/concentrated_flame,if=!debuff.colossus_smash.up&!buff.test_of_might.up&dot.concentrated_flame_burn.remains=0
 actions+=/the_unbound_force,if=buff.reckless_force.up
 actions+=/guardian_of_azeroth,if=cooldown.colossus_smash.remains<10
-actions+=/memory_of_lucid_dreams,if=cooldown.colossus_smash.remains<3
+actions+=/memory_of_lucid_dreams,if=!talent.warbreaker.enabled&cooldown.colossus_smash.remains<3|cooldown.warbreaker.remains<3
 actions+=/run_action_list,name=hac,if=raid_event.adds.exists
 actions+=/run_action_list,name=five_target,if=spell_targets.whirlwind>4
 actions+=/run_action_list,name=execute,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20

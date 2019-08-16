@@ -50,7 +50,7 @@ actions+=/focused_azerite_beam,if=!debuff.colossus_smash.up&!buff.test_of_might.
 actions+=/concentrated_flame,if=!debuff.colossus_smash.up&!buff.test_of_might.up&dot.concentrated_flame_burn.remains=0
 actions+=/the_unbound_force,if=buff.reckless_force.up
 actions+=/guardian_of_azeroth,if=cooldown.colossus_smash.remains<10
-actions+=/memory_of_lucid_dreams,if=cooldown.colossus_smash.remains<3
+actions+=/memory_of_lucid_dreams,if=!talent.warbreaker.enabled&cooldown.colossus_smash.remains<3|cooldown.warbreaker.remains<3
 actions+=/run_action_list,name=hac,if=raid_event.adds.exists
 actions+=/run_action_list,name=five_target,if=spell_targets.whirlwind>4
 actions+=/run_action_list,name=execute,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20

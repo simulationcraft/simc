@@ -27,7 +27,8 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
-actions.precombat+=/variable,name=other_on_use_equipped,value=(equipped.notorious_gladiators_badge|equipped.sinister_gladiators_badge|equipped.sinister_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.notorious_gladiators_medallion)
+actions.precombat+=/use_item,name=azsharas_font_of_power
+actions.precombat+=/variable,name=other_on_use_equipped,value=(equipped.notorious_gladiators_badge|equipped.sinister_gladiators_badge|equipped.sinister_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.notorious_gladiators_medallion|equipped.ashvanes_razor_coral)
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -101,8 +102,9 @@ actions.cold_heart+=/chains_of_ice,if=buff.icy_citadel.up&buff.unholy_strength.u
 actions.cooldowns=use_item,name=azsharas_font_of_power,if=(cooldown.empowered_rune_weapon.ready&!variable.other_on_use_equipped)|(cooldown.pillar_of_frost.remains<=10&variable.other_on_use_equipped)
 actions.cooldowns+=/use_item,name=lurkers_insidious_gift,if=talent.breath_of_sindragosa.enabled&((cooldown.pillar_of_frost.remains<=10&variable.other_on_use_equipped)|(buff.pillar_of_frost.up&!variable.other_on_use_equipped))|(buff.pillar_of_frost.up&!talent.breath_of_sindragosa.enabled)
 actions.cooldowns+=/use_item,name=cyclotronic_blast,if=!buff.pillar_of_frost.up
-actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=cooldown.empower_rune_weapon.remains>110|cooldown.breath_of_sindragosa.remains>90|time<50|target.1.time_to_die<21
 actions.cooldowns+=/use_items,if=(cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20)&(!talent.breath_of_sindragosa.enabled|cooldown.empower_rune_weapon.remains>95)
+actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down
+actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=cooldown.empower_rune_weapon.remains>90&debuff.razor_coral_debuff.up&variable.other_on_use_equipped|buff.breath_of_sindragosa.up&debuff.razor_coral_debuff.up&!variable.other_on_use_equipped|buff.empower_rune_weapon.up&debuff.razor_coral_debuff.up&!talent.breath_of_sindragosa.enabled|target.1.time_to_die<21
 actions.cooldowns+=/use_item,name=jes_howler,if=(equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains)|(!equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains<12&buff.pillar_of_frost.up)
 actions.cooldowns+=/use_item,name=knot_of_ancient_fury,if=cooldown.empower_rune_weapon.remains>40
 actions.cooldowns+=/use_item,name=grongs_primal_rage,if=rune<=3&!buff.pillar_of_frost.up&(!buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa.enabled)
@@ -172,15 +174,15 @@ feet=akanas_reefstrider_boots,id=170143,bonus_id=1512
 finger1=overclocking_bit_band,id=169159,bonus_id=4779/1472,enchant=accord_of_critical_strike
 finger2=logic_loop_of_division,id=169157,bonus_id=4779/1472,enchant=accord_of_critical_strike
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
-trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
+trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 main_hand=dreams_end,id=168902,bonus_id=4800/1517,enchant=rune_of_razorice
 off_hand=dreams_end,id=168902,bonus_id=4800/1517,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=438.31
-# gear_strength=7412
+# gear_strength=6866
 # gear_stamina=12816
-# gear_crit_rating=1348
+# gear_crit_rating=1566
 # gear_haste_rating=1263
 # gear_mastery_rating=802
 # gear_versatility_rating=85
