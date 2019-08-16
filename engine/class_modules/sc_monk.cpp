@@ -3934,10 +3934,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
         gotd->base_dd_max = raw;
         gotd->base_dd_min = raw;
         gotd->execute();
-
-        if ( p()->specialization() == MONK_WINDWALKER )
-          p()->resource_gain( RESOURCE_CHI, p()->passives.glory_of_the_dawn_dmg->effectN( 3 ).base_value(),
-                              p()->gain.glory_of_the_dawn );
       }
     }
   }
