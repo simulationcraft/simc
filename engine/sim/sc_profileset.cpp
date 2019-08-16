@@ -143,13 +143,15 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
   set.cleanup_options();
 }
 
-void insert_data( highchart::bar_chart_t&   chart,
-                  const std::string&        name,
-                  const color::rgb&         c,
+void insert_data( highchart::bar_chart_t& chart,
+                  const std::string& name,
+                  const color::rgb& c,
                   const profileset::statistical_data_t& data,
-                  bool                      baseline,
-                  double                    baseline_median )
+                  bool baseline,
+                  double baseline_value,
+                  bool mean = false )
 {
+  std::string data_idx_str = mean ? "__data.1." : "__data.0.";
   js::sc_js_t entry;
 
   if ( baseline )
@@ -159,33 +161,72 @@ void insert_data( highchart::bar_chart_t&   chart,
     entry.set( "dataLabels.style.fontWeight", "bold" );
   }
 
+  double data_value = mean ? data.mean : data.median;
+
   entry.set( "name", name );
-  entry.set( "reldiff", baseline_median > 0 ? (data.median / baseline_median - 1.0) * 100 : 0);
-  entry.set( "y", util::round( data.median ) );
+  entry.set( "reldiff", baseline_value > 0 ? (data_value / baseline_value - 1.0) * 100 : 0);
+  entry.set( "y", util::round( data_value ) );
 
-  chart.add( "series.0.data", entry );
+  chart.add( data_idx_str + "series.0.data", entry );
 
-  js::sc_js_t boxplot_entry;
-  boxplot_entry.set( "name", name );
-  boxplot_entry.set( "low", data.min );
-  boxplot_entry.set( "q1", data.first_quartile );
-  boxplot_entry.set( "median", data.median );
-  boxplot_entry.set( "mean", data.mean );
-  boxplot_entry.set( "q3", data.third_quartile );
-  boxplot_entry.set( "high", data.max );
-
-  if ( baseline )
+  if ( !mean )
   {
-    color::rgb c( "AA0000" );
-    boxplot_entry.set( "color", c.dark( .5 ).opacity( .5 ).str() );
-    boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
-  }
-  else
-  {
-    boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
-  }
+    js::sc_js_t boxplot_entry;
+    boxplot_entry.set( "name", name );
+    boxplot_entry.set( "low", data.min );
+    boxplot_entry.set( "q1", data.first_quartile );
+    boxplot_entry.set( "median", data.median );
+    boxplot_entry.set( "mean", data.mean );
+    boxplot_entry.set( "q3", data.third_quartile );
+    boxplot_entry.set( "high", data.max );
 
-  chart.add( "series.1.data", boxplot_entry );
+    if ( baseline )
+    {
+      color::rgb c( "AA0000" );
+      boxplot_entry.set( "color", c.dark( .5 ).opacity( .5 ).str() );
+      boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
+    }
+    else
+    {
+      boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
+    }
+
+    chart.add( data_idx_str + "series.1.data", boxplot_entry );
+  }
+}
+
+void populate_chart_data( highchart::bar_chart_t& profileset,
+                          size_t base_offset,
+                          size_t max_chart_entries,
+                          std::vector<const profileset::profile_set_t*> results,
+                          player_t* const baseline,
+                          scale_metric_e metric,
+                          const color::rgb& c,
+                          bool mean = false )
+{
+    // Baseline data, insert into the correct position in the for loop below
+    auto baseline_data = profileset::metric_data( baseline, metric );
+    auto baseline_value = mean ? baseline_data.mean : baseline_data.median;
+    bool inserted = false;
+    for ( size_t i = base_offset, end = std::min( base_offset + max_chart_entries, results.size() ); i < end; ++i )
+    {
+      const auto set = results[ i ];
+      const auto& data = set->result( metric );
+
+      if ( !inserted && ( mean ? data.mean() : data.median() ) <= baseline_value )
+      {
+        insert_data( profileset, util::encode_html( baseline->name() ), c, baseline_data, true, baseline_value, mean );
+        inserted = true;
+      }
+
+      insert_data( profileset, util::encode_html( set->name() ), c, set->result().statistical_data(), false,
+                   baseline_value, mean );
+    }
+
+    if ( inserted == false )
+    {
+      insert_data( profileset, util::encode_html( baseline->name() ), c, baseline_data, true, baseline_value, mean );
+    }
 }
 
 // Figure out if the option is the beginning of a player-scope option
@@ -938,15 +979,16 @@ void profilesets_t::output_html( const sim_t& sim, std::ostream& out ) const
   out << "</div>";
 }
 
-void profilesets_t::generate_sorted_profilesets( std::vector<const profile_set_t*>& out ) const
+void profilesets_t::generate_sorted_profilesets( std::vector<const profile_set_t*>& out, bool mean ) const
 {
   range::transform( m_profilesets, std::back_inserter( out ), []( const profileset_entry_t& p ) {
     return p.get();
   } );
 
   // Sort to descending with mean value
-  range::sort( out, []( const profile_set_t* l, const profile_set_t* r ) {
-    double lv = l -> result().median(), rv = r -> result().median();
+  range::sort( out, [mean]( const profile_set_t* l, const profile_set_t* r ) {
+    double lv = mean ? l->result().mean() : l->result().median();
+    double rv = mean ? r->result().mean() : r->result().median();
     if ( lv == rv )
     {
       return l->name() < r->name();
@@ -959,17 +1001,21 @@ void profilesets_t::generate_sorted_profilesets( std::vector<const profile_set_t
 bool profilesets_t::generate_chart( const sim_t& sim, std::ostream& out ) const
 {
   size_t chart_id = 0;
-
-  // Baseline data, insert into the correct position in the for loop below
   const auto baseline = sim.player_no_pet_list.data().front();
-  auto baseline_data = metric_data( baseline, sim.profileset_metric.front() );
-  auto inserted = false;
+
   // Bar color
   const auto& c = color::class_color( sim.player_no_pet_list.data().front() -> type );
   std::string chart_name = util::scale_metric_type_string( sim.profileset_metric.front() );
 
   std::vector<const profile_set_t*> results;
+  std::vector<const profile_set_t*> results_mean;
   generate_sorted_profilesets( results );
+  generate_sorted_profilesets( results_mean, true );
+  if ( results.size() != results_mean.size() )
+  {
+    const_cast<sim_t&>( sim ).errorf( "Entry count mismatch between Median chart (%d) and Mean chart (%d)",
+                                      results.size(), results_mean.size() );
+  }
 
   while ( chart_id * MAX_CHART_ENTRIES < m_profilesets.size() )
   {
@@ -978,21 +1024,30 @@ bool profilesets_t::generate_chart( const sim_t& sim, std::ostream& out ) const
     auto base_offset = chart_id * MAX_CHART_ENTRIES;
 
     int data_label_width = sim.chart_show_relative_difference ? 140 : 80;
+    int y_title_x = sim.chart_show_relative_difference ? -110 : -90;
+    std::string baseline_str = "<br/><span style=\"color:#A00;\">Baseline in red</span>";
 
-    profileset.set( "series.0.name", chart_name );
-    profileset.set( "series.1.type", "boxplot" );
-    profileset.set( "series.1.name", chart_name );
+    profileset.set( "__current", 0 );  // the current chart's __data index
+    profileset.set( "__data.0.series.0.name", chart_name );  // __data.0 is median chart, __data.1 is mean
+    profileset.set( "__data.0.series.1.type", "boxplot" );
+    profileset.set( "__data.0.series.1.name", chart_name );
+    profileset.set( "__data.0.title.text", "Median " + chart_name );
+    profileset.set( "__data.0.subtitle.text", "(Click title for Average)" + baseline_str );
+    profileset.set( "__data.1.series.0.name", chart_name );  // __data.0 is median chart, __data.1 is mean
+    profileset.set( "__data.1.title.text", "Average " + chart_name );
+    profileset.set( "__data.1.subtitle.text", "(Click title for Median)" + baseline_str );
     profileset.set( "yAxis.gridLineWidth", 0 );
     profileset.set( "xAxis.offset", data_label_width );
-    profileset.set_title( "Profile sets (median " + chart_name + ")" );
-    profileset.set( "subtitle.text", "Baseline in red" );
-    profileset.set( "subtitle.style.color", "#AA0000" );
-    profileset.set_yaxis_title( "Median " + chart_name );
+    profileset.set_yaxis_title( chart_name );
+    profileset.set( "yAxis.title.x", y_title_x );
     profileset.width_ = 1150;
     profileset.height_ = 24 * std::min( as<size_t>( MAX_CHART_ENTRIES + 1 ), results.size() - base_offset + 1 ) + 166;
 
     profileset.add( "colors", c.str() );
     profileset.add( "colors", c.dark( .5 ).opacity( .5 ).str() );
+
+    profileset.set( "plotOptions.series.animation", false );
+
     profileset.set( "plotOptions.boxplot.whiskerLength", "85%" );
     profileset.set( "plotOptions.boxplot.whiskerWidth", 1.5 );
     profileset.set( "plotOptions.boxplot.medianWidth", 1 );
@@ -1043,32 +1098,20 @@ bool profilesets_t::generate_chart( const sim_t& sim, std::ostream& out ) const
 
     profileset.set( "xAxis.labels.formatter", functor );
     profileset.value( "xAxis.labels.formatter" ).SetRawOutput( true );
+
+    profileset.set( "chart.events.load", "setup_cycle_chart" );
+    profileset.value( "chart.events.load" ).SetRawOutput( true );
+
     if ( sim.chart_show_relative_difference ) {
         profileset.set( "plotOptions.bar.dataLabels.format", "{y} ({point.reldiff}%)");
     }
 
-    for ( size_t i = base_offset, end = std::min( base_offset + MAX_CHART_ENTRIES, results.size() ); i < end; ++i )
-    {
-      const auto set = results[ i ];
-      const auto& data = set -> result( sim.profileset_metric.front() );
-
-      if ( ! inserted && data.median() <= baseline_data.median )
-      {
-        insert_data( profileset, util::encode_html( sim.player_no_pet_list.data().front() -> name() ), c, baseline_data, true, baseline_data.median );
-        inserted = true;
-      }
-
-      insert_data( profileset, util::encode_html( set -> name() ), c, set -> result().statistical_data(), false, baseline_data.median );
-    }
-
-    if ( inserted == false )
-    {
-      insert_data( profileset, util::encode_html( sim.player_no_pet_list.data().front() -> name() ), c, baseline_data, true, baseline_data.median );
-    }
+    populate_chart_data( profileset, base_offset, MAX_CHART_ENTRIES, results, baseline, sim.profileset_metric.front(), c );
+    populate_chart_data(profileset, base_offset, MAX_CHART_ENTRIES, results_mean, baseline, sim.profileset_metric.front(), c, true);
 
     out << profileset.to_string();
     ++chart_id;
-    inserted = false;
+//    inserted = false;
   }
 
   return true;

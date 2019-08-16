@@ -664,38 +664,46 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
      << "</div>\n"
      << "</div>\n\n";
 
-  os << "<div id=\"apm-summary\" class=\"section\">\n\n";
-
-  os << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Actions per Minute / DPS Variance Summary</h2>\n"
-     << "<div class=\"toggle-content hide\">\n"
-     << "<ul class=\"params\">\n";
-
-  // Left side charts: dps, raid events
-  os << "<div class=\"charts charts-left\">\n";
-
+  // Check if actions section is even needed
   highchart::bar_chart_t raid_apm( "raid_apm", sim );
-  if ( chart::generate_raid_aps( raid_apm, sim, "apm" ) )
-  {
-    raid_apm.set_toggle_id( "apm-summary-toggle" );
-    os << raid_apm.to_target_div();
-    sim.add_chart_data( raid_apm );
-  }
-  os << "</div>\n";
-  os << "<div class=\"charts\">\n";
+  bool has_aps = chart::generate_raid_aps( raid_apm, sim, "apm" );
+
   highchart::bar_chart_t raid_variance( "raid_variance", sim );
-  if ( chart::generate_raid_aps( raid_variance, sim, "variance" ) )
+  bool has_variance = chart::generate_raid_aps( raid_variance, sim, "variance" );
+
+  if ( has_aps || has_variance )
   {
-    raid_variance.set_toggle_id( "apm-summary-toggle" );
-    os << raid_variance.to_target_div();
-    sim.add_chart_data( raid_variance );
+    os << "<div id=\"apm-summary\" class=\"section\">\n\n";
+
+    os << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Actions per Minute / DPS Variance Summary</h2>\n"
+       << "<div class=\"toggle-content hide\">\n"
+       << "<ul class=\"params\">\n";
+
+    // Left side charts: dps, raid events
+    os << "<div class=\"charts charts-left\">\n";
+
+    if ( has_aps )
+    {
+      raid_apm.set_toggle_id( "apm-summary-toggle" );
+      os << raid_apm.to_target_div();
+      sim.add_chart_data( raid_apm );
+    }
+    os << "</div>\n";
+    os << "<div class=\"charts\">\n";
+    if ( has_variance )
+    {
+      raid_variance.set_toggle_id( "apm-summary-toggle" );
+      os << raid_variance.to_target_div();
+      sim.add_chart_data( raid_variance );
+    }
+
+    os << "</div>\n";
+    os << "</ul>\n";
+
+    os << "<div class=\"clear\"></div>\n"
+       << "</div>\n"
+       << "</div>\n\n";
   }
-
-  os << "</div>\n";
-  os << "</ul>\n";
-
-  os << "<div class=\"clear\"></div>\n"
-     << "</div>\n"
-     << "</div>\n\n";
 }
 
 void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
@@ -1249,7 +1257,49 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
   js::sc_js_t highcharts_theme;
   highchart::theme( highcharts_theme, highchart::THEME_DEFAULT );
   os << "<script type=\"text/javascript\">\n"
-     << "Highcharts.setOptions(" << highcharts_theme.to_json() << ");\n"
+     << "Highcharts.setOptions(" << highcharts_theme.to_json() << ");\n";
+
+  // Scripts that deal with chart click events. These needs to be loaded first so they're available as the page opens to
+  // the starting charts
+  std::string open_details_from_chart =  // Expand and scroll to action details
+    "function open_details_from_chart(e){"
+      "var anchor=jQuery(e.point.id);"
+      "if(!anchor.length){return false;}"
+      "if(!anchor.hasClass('open')){anchor.click()}"
+      "jQuery('html, body').animate({scrollTop:anchor.offset().top-jQuery(window).height()/3},300)"
+    "}";
+  std::string open_player_from_chart =  // Expand and scroll to player
+    "function open_player_from_chart(e){"
+      "var anchor=jQuery(e.point.id);"
+      "if(!anchor.length){return false;}"
+      "if(!anchor.hasClass('open')){anchor.click()}"
+      "jQuery('html, body').animate({scrollTop:anchor.parent().offset().top-anchor.height()},300)"
+    "}";
+  std::string cycle_chart =  // Data cycle & populator, called on chart load, and on click
+    "function cycle_chart(c){"
+      "if(c.series.length!==0){c.options.__current=(c.options.__current+1)%c.options.__data.length}"
+      "var cidx=c.options.__current;"
+      "var cdata=c.options.__data[cidx];"
+      "c.setTitle(cdata.title,cdata.subtitle,false);"
+      "while(c.series.length!==0){c.series[0].remove(false)}"
+      "for(var i=0;i<cdata.series.length;++i){c.addSeries(cdata.series[i],false)}"
+      "c.redraw()"
+    "}";
+  std::string setup_cycle_title =  // Add delegated listener to allow clicking on chart title
+    "function setup_cycle_chart(){"
+      "cycle_chart(this);"
+      "if(this.options.__data.length>1){"
+        "var $section=jQuery(this.renderTo);"
+        "$section.addClass('cycle-chart');"
+        "$section.on('click','.highcharts-title',function(e){"
+          "cycle_chart(Highcharts.charts[e.delegateTarget.dataset.highchartsChart]);"
+        "});"
+      "}"
+    "}";
+  os << open_player_from_chart << "\n"
+     << open_details_from_chart << "\n"
+     << cycle_chart << "\n"
+     << setup_cycle_title << "\n"
      << "</script>\n";
 }
 

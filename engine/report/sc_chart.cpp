@@ -117,10 +117,15 @@ enum metric_value_e
   VALUE_METRIC_MAX
 };
 
-const std::array<unsigned, METRIC_MAX> enabled_values = {
-    {0, ( 1 << VALUE_MEAN ) | ( 1 << VALUE_BURST_MAX ), ( 1 << VALUE_MEAN ),
-     ( 1 << VALUE_MEAN ), ( 1 << VALUE_MEAN ) | ( 1 << VALUE_BURST_MAX ),
-     ( 1 << VALUE_MEAN ), ( 1 << VALUE_MEAN ), ( 1 << VALUE_MEAN )}};
+const std::array<unsigned, METRIC_MAX> enabled_values =
+  { { 0,
+    ( 1 << VALUE_MEAN ) | ( 1 << VALUE_BURST_MAX ),
+    ( 1 << VALUE_MEAN ),
+    ( 1 << VALUE_MEAN ),
+    ( 1 << VALUE_MEAN ) | ( 1 << VALUE_BURST_MAX ),
+    ( 1 << VALUE_MEAN ),
+    ( 1 << VALUE_MEAN ),
+    ( 1 << VALUE_MEAN ) } };
 
 double apm_player_mean( const player_t* p )
 {
@@ -435,7 +440,7 @@ std::string get_metric_value_name( metric_value_e val )
     case VALUE_MEAN:
       return "";
     case VALUE_BURST_MAX:
-      return "Maximum burst";
+      return "Maximum Burst";
     default:
       return "Unknown " + util::to_string( val );
   }
@@ -1090,8 +1095,14 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
       }
     }
     bc.add( "__data." + series_id_str + ".series.0.name", chart_name );
-
     bc.set( "__data." + series_id_str + ".title.text", get_metric_value_name( vm ) + " " + chart_name );
+
+    if ( enabled_values[ chart_metric ] & ( 1 << VALUE_BURST_MAX ) )
+    {
+      std::string subtitle_str = vm == VALUE_MEAN ? "burst" : "average";
+      bc.set( "__data." + series_id_str + ".subtitle.text", "(Click title for " + subtitle_str + ")" );
+    }
+
     // Configure candlebars
     if ( candlebars )
     {
@@ -1101,15 +1112,16 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
     }
   }
 
-  // __current holds the current data set shown by the chart. Each mouse click
-  // on the chart
-  // increases this by one, wrapping it around at the end.
+  // __current holds the current data set shown by the chart. Each mouse click on the chart increases this by one,
+  // wrapping it around at the end.
   if ( series_idx > 0 )
-  {
     bc.set( "__current", 0 );
-  }
 
-  bc.height_ = 56 + player_list.size() * 24;
+  if ( series_idx > 1 )
+    bc.height_ = 80 + player_list.size() * 24;
+  else
+    bc.height_ = 56 + player_list.size() * 24;
+
 
   bc.set( "yAxis.title.enabled", false );
   bc.set( "yAxis.gridLineWidth", 0 );
@@ -1144,7 +1156,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
     n_chars += 2;
   }
 
-  bc.set( "chart.marginLeft", 315 );
+  bc.set( "chart.marginLeft", 280 );
 
   bc.set( "xAxis.lineWidth", 0 );
   bc.set( "xAxis.offset", 10 * n_chars );
@@ -1197,44 +1209,8 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
   bc.set( "xAxis.labels.formatter", xaxis_label );
   bc.value( "xAxis.labels.formatter" ).SetRawOutput( true );
 
-  // Data cycler, called on chart load to populate initial data, and on click to
-  // populate next data
-  // series to chart
-  std::string dataset = "function(chart) {";
-  dataset += "if ( chart.series.length !== 0 ) { ";
-  dataset +=
-      "chart.options.__current = ( chart.options.__current + 1 ) % "
-      "chart.options.__data.length;";
-  dataset += " }";
-  dataset += "var cidx = chart.options.__current;";
-  dataset += "var cdata = chart.options.__data[cidx];";
-  dataset += "chart.setTitle(cdata.title, '', false);";
-  dataset += "while ( chart.series.length !== 0 ) { ";
-  dataset += "chart.series[0].remove(false);";
-  dataset += " }";
-  dataset += "for (var i = 0; i < cdata.series.length; ++i) {";
-  dataset += "chart.addSeries(cdata.series[i], false);";
-  dataset += " }";
-  dataset += "chart.redraw();";
-  dataset += " }";
-
-  bc.set( "setter", dataset );
-  bc.value( "setter" ).SetRawOutput( true );
-
-  std::string loader = "function(event) {";
-  loader += "this.options.setter(this);";
-  loader += "}";
-
-  bc.set( "chart.events.load", loader );
+  bc.set( "chart.events.load", "setup_cycle_chart" );
   bc.value( "chart.events.load" ).SetRawOutput( true );
-
-  // Install the click handler only if we have more than one series output to
-  // the chart
-  if ( series_idx > 1 )
-  {
-    bc.set( "chart.events.click", loader );
-    bc.value( "chart.events.click" ).SetRawOutput( true );
-  }
 
   // If relative difference is used, print out a absolutevalue (relative
   // difference%) label
@@ -1273,9 +1249,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
   bc.value( "plotOptions.bar.dataLabels.formatter" ).SetRawOutput( true );
 
   // Bar click action, opens (and scrolls) to the player section clicked on
-  std::string js = "function(e){var anchor=jQuery(e.point.id);if(!anchor.hasClass('open')){anchor.click()}";
-  js += "jQuery('html, body').animate({scrollTop:anchor.parent().offset().top-anchor.height()},300)}";
-  bc.set( "plotOptions.bar.events.click", js );
+  bc.set( "plotOptions.bar.events.click", "open_player_from_chart" );
   bc.value( "plotOptions.bar.events.click" ).SetRawOutput( true );
 
   return true;
