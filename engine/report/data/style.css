@@ -409,6 +409,7 @@ ul.params li a:hover {
     margin-left: 0;
 }
 .charts {
+    cursor: default;
     float: left;
     width: 541px;
     margin-top: 10px;
@@ -424,6 +425,9 @@ ul.params li a:hover {
     -khtml-border-radius: 6px;
     -webkit-border-radius: 6px;
     border-radius: 6px;
+}
+.cycle-chart .highcharts-title {
+    cursor: pointer;
 }
 .talents div.float {
     width: auto;

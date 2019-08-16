@@ -9,6 +9,9 @@ namespace
 static const char* TEXT_COLOR     = "#CACACA";
 static const char* TEXT_COLOR_ALT = "black";
 
+static const char* SUBTEXT_COLOR = "#ACACAC";
+static const char* SUBTEXT_COLOR_ALT = "grey";
+
 static const char* TEXT_MEAN_COLOR = "#CC8888";
 static const char* TEXT_MAX_COLOR  = "#8888CC";
 
@@ -21,10 +24,9 @@ using namespace highchart;
 
 sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
 {
-  std::string _bg_color =
-      theme == THEME_DEFAULT ? CHART_BGCOLOR : CHART_BGCOLOR_ALT;
-  std::string _text_color =
-      theme == THEME_DEFAULT ? TEXT_COLOR : TEXT_COLOR_ALT;
+  std::string _bg_color = theme == THEME_DEFAULT ? CHART_BGCOLOR : CHART_BGCOLOR_ALT;
+  std::string _text_color = theme == THEME_DEFAULT ? TEXT_COLOR : TEXT_COLOR_ALT;
+  std::string _subtext_color = theme == THEME_DEFAULT ? SUBTEXT_COLOR : SUBTEXT_COLOR_ALT;
 
   json.set( "credits", false );
 
@@ -65,6 +67,7 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
   // json.set( "title.style.textShadow", TEXT_OUTLINE );
 
   json.set( "subtitle.style.fontSize", "13px" );
+  json.set( "subtitle.style.color", _subtext_color );
   // json.set( "subtitle.style.textShadow", TEXT_OUTLINE );
 
   json.set( "tooltip.backgroundColor", "#3F3E38" );

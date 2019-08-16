@@ -1,12 +1,3 @@
-function open_details_from_chart(e) {
-    var anchor = jQuery(e.point.id);
-    if (!anchor.hasClass('open')) {
-        anchor.click();
-    }
-    jQuery('html, body').animate({
-        scrollTop: anchor.offset().top - jQuery(window).height() / 3
-    }, 300);
-}
 (function($) {
     $.fn.validate_section = function() {
         if (this[0].id == 'masthead') {
@@ -209,7 +200,7 @@ jQuery(document).ready(function ($) {
             $cells.removeClass('pulse');
         }, 150);
     }
-    $('.toggle-sort').click(function (e) {
+    $('.sort').on('click', 'th.toggle-sort', function (e) {
         e.preventDefault();
         var $me = $(this);
         var $col = $me.closest('th');

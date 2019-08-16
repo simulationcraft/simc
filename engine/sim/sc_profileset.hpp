@@ -484,7 +484,7 @@ class profilesets_t
   int max_name_length() const;
 
   bool generate_chart( const sim_t& sim, std::ostream& out ) const;
-  void generate_sorted_profilesets( std::vector<const profile_set_t*>& out ) const;
+  void generate_sorted_profilesets( std::vector<const profile_set_t*>& out, bool mean = false ) const;
 
   void output_progressbar( const sim_t* ) const;
 
