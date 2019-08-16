@@ -1,4 +1,4 @@
-SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31229)
+SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31429)
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -356,7 +356,7 @@ Name             : Healing Surge (id=8004) [Spell Family (11)]
 Class            : Elemental Restoration Shaman
 School           : Nature
 Spell Type       : Magic
-Resource         : 19% Base Mana (0) (id=317)
+Resource         : 18% Base Mana (0) (id=317)
 Spell Level      : 5
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -372,7 +372,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=3235)     : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.43000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.57000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : A quick surge of healing energy that restores $s1 of a friendly target's health.
 
 Name             : Earth Shock (id=8042) [Spell Family (11)] 
@@ -1513,7 +1513,7 @@ Effects          :
 #1 (id=55127)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.66250 | PvP Coefficient: 0.85000 | Target: Friend (21)
 #2 (id=55128)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13250 | PvP Coefficient: 0.85000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15200 | PvP Coefficient: 0.85000 | Target: Friend (21)
 Description      : Restorative waters wash over a friendly target, healing them for $s1 and an additional $o2 over $d.
 Tooltip          : Heals $w2 every $t2 seconds.
 
@@ -1744,7 +1744,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=67015)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14000 | PvP Coefficient: 1.00000 | Radius: 0 - 11 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16800 | PvP Coefficient: 1.00000 | Radius: 0 - 11 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : $@spelldesc73920
 
 Name             : Purify Spirit (id=77130) [Spell Family (11)] 
@@ -1871,7 +1871,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.55000 | PvP Coefficient: 1.25000 | Target: Chain Friendly (45)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.25000 | Target: Chain Friendly (45)
 Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
@@ -3004,11 +3004,11 @@ Effects          :
 #3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191044)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: 31 | Scaled Value: 31 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: 39 | Scaled Value: 39 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Healing Surge (8004), Healing Surge (188070)
                    Family Flags: 7
 #5 (id=191045)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 81 | Scaled Value: 81 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Healing Surge (8004), Healing Surge (188070)
                    Family Flags: 7
 #6 (id=733898)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -5138,7 +5138,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=290989)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.12500 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc197995
 
 Name             : Fire Elemental (id=198067) [Spell Family (11)] 
@@ -7786,7 +7786,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=706763)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
-                   Base Value: 0 | Scaled Value: -311 (coefficient=-1) | PvP Coefficient: 0.50000 | Misc Value: 8 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -311 (coefficient=-1) | PvP Coefficient: 0.20000 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Astral Shift (108271)
                    Family Flags: 43
 Description      : Increases the damage reduction of Astral Shift by an additional $s1%. 
@@ -7930,7 +7930,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.50000 | Trigger Spell: 270568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.20000 | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -8404,7 +8404,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=715936)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 0.50000 | Trigger Spell: 270658 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Trigger Spell: 270658 | Target: Self (1)
 Description      : When stunned, immobilized, or knocked back, you heal for $s1.
 Tooltip          : When stunned, immobilized, or knocked back, you heal for $s1.
 
@@ -8428,7 +8428,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=715939)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 2243.779 (coefficient=28.8589) | PvP Coefficient: 0.50000 | Trigger Spell: 270654 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2243.779 (coefficient=28.8589) | PvP Coefficient: 0.20000 | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 
@@ -8447,9 +8447,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716157)   : Apply Aura (6) | Unknown(277)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | PvP Coefficient: 0.50000 | Trigger Spell: 270653 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | PvP Coefficient: 0.20000 | Trigger Spell: 270653 | Target: Self (1)
 #2 (id=716158)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.016714) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.016714) | PvP Coefficient: 0.20000 | Target: Self (1)
 Description      : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 Tooltip          : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 
@@ -8468,7 +8468,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 309366 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.20000 | Trigger Spell: 309366 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
@@ -8489,9 +8489,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716160)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 121.0763 (coefficient=0.389313) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 121.0763 (coefficient=0.389313) | PvP Coefficient: 0.20000 | Target: Self (1)
 #2 (id=716161)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 121.0763 (coefficient=0.389313) | PvP Coefficient: 0.50000 | Trigger Spell: 270579 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 121.0763 (coefficient=0.389313) | PvP Coefficient: 0.20000 | Trigger Spell: 270579 | Target: Self (1)
 #3 (id=720325)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Armor for $270576d.
@@ -8513,9 +8513,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716165)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 3165.077 (coefficient=10.1771) | PvP Coefficient: 0.50000 | Trigger Spell: 270652 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3165.077 (coefficient=10.1771) | PvP Coefficient: 0.20000 | Trigger Spell: 270652 | Target: Self (1)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 82.61684 (coefficient=0.265649) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 82.61684 (coefficient=0.265649) | PvP Coefficient: 0.20000 | Target: Self (1)
 Description      : When an enemy you harmed dies, you heal for $s1 and gain $s2 Speed for $269239d.
 Tooltip          : When an enemy you harmed dies, heal for $s1 and gain $s2 Speed for $269239d.
 
@@ -8535,7 +8535,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 309352 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.20000 | Trigger Spell: 309352 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -9084,7 +9084,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726726)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 4128.554 (coefficient=53.10038) | PvP Coefficient: 0.50000 | Trigger Spell: 274823 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4128.554 (coefficient=53.10038) | PvP Coefficient: 0.20000 | Trigger Spell: 274823 | Target: Self (1)
 Description      : When you cast Astral Shift and when Astral Shift ends, heal for $s1.
 
 Name             : Echo of the Elementals (id=275381) [Scaling Spell (-8), Spell Family (11), Passive] 
@@ -9850,7 +9850,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 0.20000 | Target: Self (1)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -9936,7 +9936,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | PvP Coefficient: 0.20000 | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing $280661s1% of damage taken over $280660d, up to $280660s1.
@@ -10341,7 +10341,7 @@ Effects          :
 #2 (id=738721)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | PvP Coefficient: 0.50000 | Trigger Spell: 280860 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
-Taking damage from a member of the opposite faction has a chance to activate this effect. 
+Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -10801,7 +10801,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=750972)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 2876.75 (coefficient=37) | PvP Coefficient: 0.50000 | Trigger Spell: 287775 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2876.75 (coefficient=37) | PvP Coefficient: 0.20000 | Trigger Spell: 287775 | Target: Self (1)
 Description      : While Reincarnation is off cooldown, your maximum health is increased by $s1.
 
 While you are at full health, Reincarnation cools down $287777s1% faster.
