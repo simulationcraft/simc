@@ -2334,8 +2334,11 @@ void player_t::init_uptimes()
 {
   sim->print_debug( "Initializing uptimes for {}.", *this );
 
-  uptimes.primary_resource_cap =
+  if ( primary_resource() )
+  {
+    uptimes.primary_resource_cap =
       get_uptime( util::inverse_tokenize( util::resource_type_string( primary_resource() ) ) + " Cap" );
+  }
 }
 
 void player_t::init_benefits()
@@ -5579,7 +5582,7 @@ double player_t::resource_loss( resource_e resource_type, double amount, gain_t*
   if ( current.sleeping )
     return 0.0;
 
-  if ( resource_type == primary_resource() )
+  if ( resource_type && resource_type == primary_resource() )
     uptimes.primary_resource_cap->update( false, sim->current_time() );
 
   double actual_amount;
@@ -5642,7 +5645,8 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
     iteration_resource_gained[ resource_type ] += actual_amount;
   }
 
-  if ( resource_type == primary_resource() && resources.max[ resource_type ] <= resources.current[ resource_type ] )
+  if ( resource_type && resource_type == primary_resource() &&
+       resources.max[ resource_type ] <= resources.current[ resource_type ] )
     uptimes.primary_resource_cap->update( true, sim->current_time() );
 
   if ( source )
