@@ -682,11 +682,9 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
 
 // chart::distribution_dps ==================================================
 
-bool chart::generate_distribution( highchart::histogram_chart_t& hc,
-                                   const player_t* p,
-                                   const std::vector<size_t>& dist_data,
-                                   const std::string& distribution_name,
-                                   double avg, double min, double max )
+bool chart::generate_distribution( highchart::histogram_chart_t& hc, const player_t* p,
+                                   const std::vector<size_t>& dist_data, const std::string& distribution_name,
+                                   double avg, double min, double max, bool occurance, std::string suf )
 {
   int max_buckets = as<int>( dist_data.size() );
 
@@ -702,12 +700,15 @@ bool chart::generate_distribution( highchart::histogram_chart_t& hc,
 
   hc.set( "xAxis.tickInterval", 25 );
   hc.set( "xAxis.tickAtEnd", true );
-  hc.set( "yAxis.title.text", "# Iterations" );
+  hc.set( "yAxis.title.text", occurance ? "# Occurances" : "# Iterations" );
   hc.set( "tooltip.headerFormat", "Values: <b>{point.key}</b><br/>" );
+  hc.set( "tooltip.valueDecimals", 0 );
 
   double step = ( max - min ) / dist_data.size();
 
   std::vector<int> tick_indices;
+  int mean_bucket = 0;
+  int sig = step < 1.0 ? 1 : 0;
 
   for ( int i = 0; i < max_buckets; i++ )
   {
@@ -725,9 +726,9 @@ bool chart::generate_distribution( highchart::histogram_chart_t& hc,
     }
     else if ( avg >= begin && avg <= end )
     {
+      mean_bucket = i;
       tick_indices.push_back( i );
-      e.set( "name",
-             "mean=" + util::to_string( static_cast<unsigned>( avg ) ) );
+      e.set( "name", "mean=" + util::to_string( static_cast<unsigned>( avg ) ) );
       e.set( "color", color::YELLOW.dark().str() );
     }
     else if ( i == max_buckets - 1 )
@@ -738,19 +739,26 @@ bool chart::generate_distribution( highchart::histogram_chart_t& hc,
     }
     else
     {
-      e.set( "name", util::to_string( util::round( begin, 0 ) ) + " to " +
-                         util::to_string( util::round( end, 0 ) ) );
+      e.set( "name", util::to_string( util::round( begin, sig ), sig ) + " to " +
+                       util::to_string( util::round( end, sig ), sig ) );
     }
 
     hc.add( "series.0.data", e );
   }
 
-  hc.set( "series.0.name", "Iterations" );
+  hc.set( "series.0.name", occurance ? "Occurances" : "Iterations" );
 
   for ( auto index : tick_indices )
   {
     hc.add( "xAxis.tickPositions", index );
   }
+
+  if ( !suf.empty() )
+    hc.set( "xAxis.labels.format", "{value}" + suf );
+
+  // Stagger mean label if avg < 12.5% chart axis span
+  if ( mean_bucket && mean_bucket / as<double>( max_buckets ) < 0.125 )
+    hc.add( "xAxis.labels.staggerLines", 2 );
 
   return true;
 }

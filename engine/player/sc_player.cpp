@@ -11247,6 +11247,8 @@ void player_t::analyze( sim_t& s )
 
   range::for_each( buff_list, []( buff_t* b ) { b->analyze(); } );
 
+  range::for_each( proc_list, []( proc_t* pr ) { pr->analyze(); } );
+
   range::sort( stats_list, []( const stats_t* l, const stats_t* r ) { return l->name_str < r->name_str; } );
 
   if ( quiet )
