@@ -4070,38 +4070,87 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
 
 // print_html_player_procs ==================================================
 
-void print_html_player_procs( report::sc_html_stream& os, const std::vector<proc_t*>& pr )
+void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
 {
-  if ( !pr.size() )
+  if ( range::count_if( p.proc_list, []( const proc_t* pr ) { return pr->count.mean() > 0; } ) == 0 )
     return;
 
-  // Procs Section
-  os << "<div class=\"player-section procs\">\n"
-     << "<h3 class=\"toggle open\">Procs</h3>\n"
-     << "<div class=\"toggle-content\">\n"
-     << "<table class=\"sc sort even\">\n"
-     << "<thead>\n"
-     << "<tr>\n";
+    // Procs Section
+    os << "<div class=\"player-section procs\">\n"
+       << "<h3 class=\"toggle open\">Procs</h3>\n"
+       << "<div class=\"toggle-content\">\n"
+       << "<table class=\"sc sort stripebody\">\n"
+       << "<thead>\n"
+       << "<tr>\n";
 
+  int columns = 5;  // Set number of columns to make distribution charts fill the table width
   sorttable_header( os, "Name", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_header( os, "Count" );
+  sorttable_header( os, "Min" );
+  sorttable_header( os, "Max" );
   sorttable_header( os, "Interval", SORT_FLAG_ASC );
 
   os << "</tr>\n"
      << "</thead>\n";
 
-  for ( const auto& proc : pr )
+  for ( const auto& proc : p.proc_list )
   {
     if ( proc->count.mean() > 0 )
     {
-      os << "<tr>\n";
+      std::string name       = util::encode_html( proc->name() );
+      std::string token_name = proc->name_str;
+      util::tokenize( token_name );
+      token_name = highchart::build_id( p, "_" + util::remove_special_chars( token_name ) ) + "_proc";
+      std::string span_str = name;
+
+      os << "<tbody>\n"
+         << "<tr>\n";
+
+      if ( p.sim->report_details )
+        span_str = "<span id=\"" + token_name + "_toggle\" class=\"toggle-details\">" + name + "</span></td>\n";
+
       os.printf( "<td class=\"left\">%s</td>\n"
                  "<td class=\"right\">%.1f</td>\n"
+                 "<td class=\"right\">%.1f</td>\n"
+                 "<td class=\"right\">%.1f</td>\n"
                  "<td class=\"right\">%.1fsec</td>\n",
-                 util::encode_html( proc->name() ).c_str(),
+                 span_str,
                  proc->count.mean(),
+                 proc->count.min(),
+                 proc->count.max(),
                  proc->interval_sum.mean() );
       os << "</tr>\n";
+
+      if ( p.sim->report_details )
+      {
+        os << "<tr class=\"details hide\">\n"
+           << "<td colspan=\"" << columns << "\">\n";
+
+        extended_sample_data_t* data = &proc->count;
+        highchart::histogram_chart_t count_chart( token_name + "_count", *p.sim );
+        if ( chart::generate_distribution( count_chart, &p, data->distribution, name + " " + data->name_str,
+                                           data->mean(), data->min(), data->max() ) )
+        {
+          count_chart.set_toggle_id( token_name + "_toggle" );
+          os << count_chart.to_target_div();
+          p.sim->add_chart_data( count_chart );
+        }
+
+        data = &proc->interval_sum;
+        highchart::histogram_chart_t interval_chart( token_name + "_interval", *p.sim );
+        if ( chart::generate_distribution( interval_chart, &p, data->distribution, name + " " + data->name_str,
+                                           data->mean(), data->min(), data->max(), true, "s" ) )
+        {
+          interval_chart.set_toggle_id( token_name + "_toggle" );
+          os << interval_chart.to_target_div();
+          p.sim->add_chart_data( interval_chart );
+        }
+
+        os << "</td>\n"
+           << "</tr>\n";
+      }
+
+      os << "</tbody>\n";
     }
   }
 
@@ -4194,7 +4243,7 @@ void print_html_player_( report::sc_html_stream& os, const player_t& p )
 
   print_html_player_buffs( os, p, p.report_information );
 
-  print_html_player_procs( os, p.proc_list );
+  print_html_player_procs( os, p );
 
   print_html_player_custom_section( os, p, p.report_information );
 
