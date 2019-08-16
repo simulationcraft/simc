@@ -258,7 +258,7 @@
     { "data_type": "H", "field": "socket_bonus" },
     { "data_type": "H", "field": "totem_category" },
     { "data_type": "H", "field": "map" },
-    { "data_type": "H", "field": "area" },
+    { "data_type": "H", "field": "area", "elements": 2 },
     { "data_type": "H", "field": "item_set" },
     { "data_type": "H", "field": "id_lock" },
     { "data_type": "H", "field": "start_quest" },
