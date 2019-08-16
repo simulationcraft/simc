@@ -3978,50 +3978,46 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
     return;
 
   os << "<div class=\"player-section benefits\">\n"
-     << "<h3 class=\"toggle\">Benefits & Uptimes</h3>\n"
-     << "<div class=\"toggle-content hide\">\n";
+     << "<h3 class=\"toggle open\">Benefits & Uptimes</h3>\n"
+     << "<div class=\"toggle-content\">\n";
 
   if ( benefit_count )
   {
-    os << "<table class=\"sc even\">\n"
+    os << "<table class=\"sc sort even\">\n"
        << "<thead>\n"
-       << "<tr>\n"
-       << "<th>Benefits</th>\n"
-       << "<th>%</th>\n"
-       << "</tr>\n"
+       << "<tr>\n";
+
+    sorttable_header( os, "Benefit", SORT_FLAG_ALPHA | SORT_FLAG_ASC | SORT_FLAG_LEFT );
+    sorttable_header( os, "%" );
+
+    os << "</tr>\n"
        << "</thead>\n";
 
     for ( const auto& benefit : p.benefit_list )
     {
-      if ( benefit->ratio.mean() > 0 )
-      {
-        os.printf( "<tr>\n"
-                   "<td class=\"left\">%s</td>\n"
-                   "<td class=\"right\">%.1f%%</td>\n"
-                   "</tr>\n",
-                   util::encode_html( benefit->name() ).c_str(),
-                   benefit->ratio.mean() );
-      }
+      os.printf( "<tr>\n"
+                 "<td class=\"left\">%s</td>\n"
+                 "<td class=\"right\">%.1f%%</td>\n"
+                 "</tr>\n",
+                 util::encode_html( benefit->name() ).c_str(),
+                 benefit->ratio.mean() );
     }
 
     for ( const auto& pet : p.pet_list )
     {
       for ( const auto& benefit : pet->benefit_list )
       {
-        if ( benefit->ratio.mean() > 0 )
-        {
-          std::string benefit_name;
-          benefit_name += pet->name_str + " - ";
-          benefit_name += benefit->name();
-          benefit_name = util::encode_html( benefit_name );
+        std::string benefit_name;
+        benefit_name += pet->name_str + " - ";
+        benefit_name += benefit->name();
+        benefit_name = util::encode_html( benefit_name );
 
-          os.printf( "<tr>\n"
-                     "<td class=\"left\">%s</td>\n"
-                     "<td class=\"right\">%.1f%%</td>\n"
-                     "</tr>\n",
-                     benefit_name.c_str(),
-                     benefit->ratio.mean() );
-        }
+        os.printf( "<tr>\n"
+                   "<td class=\"left\">%s</td>\n"
+                   "<td class=\"right\">%.1f%%</td>\n"
+                   "</tr>\n",
+                   benefit_name.c_str(),
+                   benefit->ratio.mean() );
       }
     }
     os << "</table>\n";
@@ -4029,45 +4025,41 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
 
   if ( uptime_count )
   {
-    os << "<table class=\"sc even\">\n"
+    os << "<table class=\"sc sort even\">\n"
        << "<thead>\n"
-       << "<tr>\n"
-       << "<th>Uptimes</th>\n"
-       << "<th>%</th>\n"
-       << "</tr>\n"
+       << "<tr>\n";
+
+    sorttable_header( os, "Uptime", SORT_FLAG_ALPHA | SORT_FLAG_ASC | SORT_FLAG_LEFT );
+    sorttable_header( os, "%" );
+
+    os << "</tr>\n"
        << "</thead>\n";
 
     for ( const auto& uptime : p.uptime_list )
     {
-      if ( uptime->uptime_sum.mean() > 0 )
-      {
-        os.printf( "<tr>\n"
-                   "<td class=\"left\">%s</td>\n"
-                   "<td class=\"right\">%.1f%%</td>\n"
-                   "</tr>\n",
-                   util::encode_html( uptime->name() ).c_str(),
-                   uptime->uptime_sum.mean() * 100.0 );
-      }
+      os.printf( "<tr>\n"
+                 "<td class=\"left\">%s</td>\n"
+                 "<td class=\"right\">%.1f%%</td>\n"
+                 "</tr>\n",
+                 util::encode_html( uptime->name() ).c_str(),
+                 uptime->uptime_sum.mean() * 100.0 );
     }
 
     for ( const auto& pet : p.pet_list )
     {
       for ( const auto& uptime : pet->uptime_list )
       {
-        if ( uptime->uptime_sum.mean() > 0 )
-        {
-          std::string uptime_name;
-          uptime_name += pet->name_str + "&#160;-&#160;";
-          uptime_name += uptime->name();
-          uptime_name = util::encode_html( uptime_name );
+        std::string uptime_name;
+        uptime_name += pet->name_str + " - ";
+        uptime_name += uptime->name();
+        uptime_name = util::encode_html( uptime_name );
 
-          os.printf( "<tr>\n"
-                     "<td class=\"left\">%s</td>\n"
-                     "<td class=\"right\">%.1f%%</td>\n"
-                     "</tr>\n",
-                     uptime_name.c_str(),
-                     uptime->uptime_sum.mean() * 100.0 );
-        }
+        os.printf( "<tr>\n"
+                   "<td class=\"left\">%s</td>\n"
+                   "<td class=\"right\">%.1f%%</td>\n"
+                   "</tr>\n",
+                   uptime_name.c_str(),
+                   uptime->uptime_sum.mean() * 100.0 );
       }
     }
     os << "</table>\n";
