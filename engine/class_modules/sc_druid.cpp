@@ -535,6 +535,9 @@ public:
   // Procs
   struct procs_t
   {
+    // General
+    proc_t* vision_of_perfection;
+
     // Feral & Resto
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
@@ -554,7 +557,7 @@ public:
     proc_t* unempowered_solar_wrath;
     proc_t* unempowered_lunar_strike;
     proc_t* wasted_streaking_star;
-    proc_t* arcanic_pulsar_proc;
+    proc_t* arcanic_pulsar;
 
     // Guardian
     proc_t* gore;
@@ -728,6 +731,13 @@ public:
     const spell_data_t* flourish;
   } talent;
 
+  struct uptimes_t
+  {
+    uptime_t* arcanic_pulsar;
+    uptime_t* vision_of_perfection;
+    uptime_t* combined_ca_inc;
+  } uptime;
+
   struct legendary_t
   {
     // General
@@ -777,6 +787,7 @@ public:
     proc( procs_t() ),
     spec( specializations_t() ),
     talent( talents_t() ),
+    uptime( uptimes_t() ),
     legendary( legendary_t() )
   {
     cooldown.berserk             = get_cooldown( "berserk"             );
@@ -825,6 +836,7 @@ public:
   virtual void      init_rng() override;
   virtual void      init_spells() override;
   virtual void      init_scaling() override;
+  virtual void      init_uptimes() override;
   virtual void      create_buffs() override;
   std::string       default_flask() const override;
   std::string       default_potion() const override;
@@ -5473,6 +5485,9 @@ struct celestial_alignment_t : public druid_spell_t
     if ( precombat )
       p()->buff.celestial_alignment->trigger();
 
+    p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
+    p()->uptime.vision_of_perfection->update( false, sim->current_time() );
+
     // Trigger after triggering the buff so the cast procs the spell
     streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
   }
@@ -5919,6 +5934,9 @@ struct incarnation_t : public druid_spell_t
 
     if ( p()->buff.incarnation_moonkin->check() )
     {
+      p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
+      p()->uptime.vision_of_perfection->update( false, sim->current_time() );
+
       streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
     }
 
@@ -6972,7 +6990,14 @@ struct starsurge_t : public druid_spell_t
         // hardcoded 12AP because 6s / 20s * 40AP = 12AP
         p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );
         p()->buff.arcanic_pulsar->expire();
-        p()->proc.arcanic_pulsar_proc->occur();
+
+        p()->proc.arcanic_pulsar->occur();
+
+        p()->uptime.arcanic_pulsar->update( true, sim->current_time() );
+        make_event( *sim, pulsar_dur, [this]() {
+          p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
+        } );
+
         streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
       }
     }
@@ -7963,69 +7988,83 @@ void druid_t::create_buffs()
 
   // Balance
 
-  buff.natures_balance = make_buff(this, "natures_balance", talent.natures_balance)
-    ->set_tick_zero(true)
-    ->set_quiet(true)
-    ->set_tick_callback([this] (buff_t*, int, const timespan_t&) {
-        resource_gain(RESOURCE_ASTRAL_POWER, talent.natures_balance->effectN(1).resource(RESOURCE_ASTRAL_POWER), gain.natures_balance);
-      } );
-  
-  buff.celestial_alignment = make_buff(this, "celestial_alignment", spec.celestial_alignment)
-    ->set_cooldown(timespan_t::zero())
-    ->set_default_value(spec.celestial_alignment->effectN(1).percent())
-    ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-    ->add_invalidate(CACHE_HASTE)
-    ->add_invalidate(CACHE_SPELL_HASTE);
+  buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance )
+    ->set_tick_zero( true )
+    ->set_quiet( true )
+    ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) {
+      resource_gain( RESOURCE_ASTRAL_POWER, talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
+                      gain.natures_balance );
+    } );
 
-  buff.incarnation_moonkin = make_buff(this, "incarnation_chosen_of_elune", talent.incarnation_moonkin)
-    ->set_cooldown(timespan_t::zero())
-    ->set_default_value(talent.incarnation_moonkin->effectN(1).percent())
-    ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-    ->add_invalidate(CACHE_HASTE)
-    ->add_invalidate(CACHE_SPELL_HASTE);
-  
-  buff.fury_of_elune = make_buff(this, "fury_of_elune", talent.fury_of_elune)
-    ->set_tick_callback([this](buff_t*, int, const timespan_t&) {
-        resource_gain(RESOURCE_ASTRAL_POWER, talent.fury_of_elune->effectN(3).resource(RESOURCE_ASTRAL_POWER), gain.fury_of_elune);
-      } );
+  buff.celestial_alignment = make_buff( this, "celestial_alignment", spec.celestial_alignment )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_default_value( spec.celestial_alignment->effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->add_invalidate( CACHE_HASTE )
+    ->add_invalidate( CACHE_SPELL_HASTE )
+    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        uptime.combined_ca_inc->update( true, sim->current_time() );
+      else
+        uptime.combined_ca_inc->update( false, sim->current_time() );
+    } );
 
-  buff.lunar_empowerment = make_buff(this, "lunar_empowerment", spec.lunar_empowerment)
-    ->set_default_value(spec.lunar_empowerment->effectN(1).percent())
-    ->set_max_stack(spec.lunar_empowerment->max_stacks() + (unsigned) spec.starsurge_2->effectN(1).base_value());
+  buff.incarnation_moonkin = make_buff( this, "incarnation_chosen_of_elune", talent.incarnation_moonkin )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_default_value( talent.incarnation_moonkin->effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->add_invalidate( CACHE_HASTE )
+    ->add_invalidate( CACHE_SPELL_HASTE )
+    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        uptime.combined_ca_inc->update( true, sim->current_time() );
+      else
+        uptime.combined_ca_inc->update( false, sim->current_time() );
+    } );
 
-  buff.solar_empowerment = make_buff(this, "solar_empowerment", spec.solar_empowerment)
-    ->set_default_value(spec.solar_empowerment->effectN(1).percent())
-    ->set_max_stack(spec.solar_empowerment->max_stacks() + (unsigned) spec.starsurge_2->effectN(1).base_value());
+  buff.fury_of_elune = make_buff( this, "fury_of_elune", talent.fury_of_elune )
+    ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) {
+      resource_gain( RESOURCE_ASTRAL_POWER, talent.fury_of_elune->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER ),
+                      gain.fury_of_elune );
+    } );
 
-  buff.moonkin_form = new buffs::moonkin_form_t(*this);
+  buff.lunar_empowerment = make_buff( this, "lunar_empowerment", spec.lunar_empowerment )
+    ->set_default_value( spec.lunar_empowerment->effectN( 1 ).percent() )
+    ->set_max_stack( spec.lunar_empowerment->max_stacks() +
+      as<unsigned>( spec.starsurge_2->effectN( 1 ).base_value() ) );
 
-  buff.moonkin_form_affinity = new buffs::moonkin_form_affinity_t(*this);
+  buff.solar_empowerment = make_buff( this, "solar_empowerment", spec.solar_empowerment )
+    ->set_default_value( spec.solar_empowerment->effectN( 1 ).percent() )
+    ->set_max_stack( spec.solar_empowerment->max_stacks() + 
+      as<unsigned>( spec.starsurge_2->effectN( 1 ).base_value() ) );
 
-  buff.warrior_of_elune = new warrior_of_elune_buff_t(*this);
+  buff.moonkin_form = new buffs::moonkin_form_t( *this );
 
-  buff.owlkin_frenzy = make_buff(this, "owlkin_frenzy", spec.owlkin_frenzy)
-    ->set_default_value(spec.owlkin_frenzy->effectN(1).percent())
-    ->set_chance(spec.moonkin_2->effectN(1).percent());
+  buff.moonkin_form_affinity = new buffs::moonkin_form_affinity_t( *this );
 
-  buff.astral_acceleration = make_buff(this, "astral_acceleration", find_spell(242232))
-    ->set_cooldown(timespan_t::zero())
-    ->set_default_value(find_spell(242232)->effectN(1).percent())
-    ->set_refresh_behavior(buff_refresh_behavior::DISABLED)
-    ->add_invalidate(CACHE_SPELL_HASTE);
+  buff.warrior_of_elune = new warrior_of_elune_buff_t( *this );
 
-  buff.starlord = make_buff(this, "starlord", find_spell(279709))
-    ->set_cooldown(timespan_t::zero())
-    ->set_default_value(find_spell(279709)->effectN(1).percent())
-    ->set_refresh_behavior(buff_refresh_behavior::DISABLED)
-    ->add_invalidate(CACHE_SPELL_HASTE);
+  buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", spec.owlkin_frenzy )
+    ->set_default_value( spec.owlkin_frenzy->effectN( 1 ).percent() )
+    ->set_chance( spec.moonkin_2->effectN( 1 ).percent() );
 
-  buff.solar_solstice = make_buff(this, "solar_solstice", find_spell(252767))
-    ->set_default_value(find_spell(252767)->effectN(1).percent());
+  buff.astral_acceleration = make_buff( this, "astral_acceleration", find_spell( 242232 ) )
+    ->set_default_value( find_spell( 242232 )->effectN( 1 ).percent() )
+    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+    ->add_invalidate( CACHE_SPELL_HASTE );
 
-  buff.starfall = make_buff(this, "starfall", spec.starfall);
+  buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
+    ->set_default_value( find_spell( 279709 )->effectN( 1 ).percent() )
+    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+    ->add_invalidate( CACHE_SPELL_HASTE );
 
-  buff.stellar_drift_2 = make_buff(this, "stellar_drift", find_spell(202461))
-    ->set_duration(spec.starfall->duration()); // peg stellar drift duration to starfall's
+  buff.solar_solstice = make_buff( this, "solar_solstice", find_spell( 252767 ) )
+    ->set_default_value( find_spell( 252767 )->effectN( 1 ).percent() );
+
+  buff.starfall = make_buff( this, "starfall", spec.starfall );
+
+  buff.stellar_drift_2 = make_buff( this, "stellar_drift", find_spell( 202461 ) )
+    ->set_duration( spec.starfall->duration() );  // peg stellar drift duration to starfall's
 
   // Feral
 
@@ -8863,6 +8902,20 @@ void druid_t::init_scaling()
   }
 }
 
+void druid_t::init_uptimes()
+{
+  player_t::init_uptimes();
+
+  if (specialization() == DRUID_BALANCE)
+  {
+    uptime.arcanic_pulsar = get_uptime( "Arcanic Pulsar Proc" );
+    uptime.vision_of_perfection = get_uptime( "Vision of Perfection" );
+    if ( talent.incarnation_moonkin->ok() )
+      uptime.combined_ca_inc = get_uptime( "Any Incarnation" );
+    else
+      uptime.combined_ca_inc = get_uptime( "Any Celestial Alignment" );
+  }
+}
 // druid_t::init ============================================================
 
 void druid_t::init()
@@ -8948,11 +9001,12 @@ void druid_t::init_procs()
   proc.primal_fury              = get_proc( "primal_fury" );
   proc.starshards               = get_proc( "Starshards" );
   proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee" );
-  proc.power_of_the_moon        = get_proc( "power_of_the_moon" );
+  proc.power_of_the_moon        = get_proc( "Power of the Moon" );
   proc.unempowered_solar_wrath  = get_proc( "unempowered_solar_wrath" );
   proc.unempowered_lunar_strike = get_proc( "unempowered_lunar_strike" );
   proc.wasted_streaking_star    = get_proc( "wasted_streaking_star" );
-  proc.arcanic_pulsar_proc      = get_proc( "arcanic_pulsar_proc" );
+  proc.arcanic_pulsar           = get_proc( "Arcanic Pulsar Proc" );
+  proc.vision_of_perfection     = get_proc( "Vision of Perfection" );
 }
 
 // druid_t::init_resources ==================================================
@@ -10284,6 +10338,16 @@ void druid_t::vision_of_perfection_proc()
     vp_buff->extend_duration( this, vp_dur );
   else
     vp_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, vp_dur );
+
+  proc.vision_of_perfection->occur();
+
+  if ( specialization() == DRUID_BALANCE )
+  {
+    uptime.vision_of_perfection->update( true, sim->current_time() );
+    make_event( *sim, vp_dur, [this]() {
+      uptime.vision_of_perfection->update( false, sim->current_time() );
+    } );
+  }
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
@@ -10503,7 +10567,6 @@ public:
       double sr_benefit_up = 0, sr_benefit_total = 0;
       double bt_exe_up = 0, bt_exe_total = 0;
       double bt_benefit_up = 0, bt_benefit_total = 0;
-      int n = 0;
 
       for ( size_t j = 0, end2 = stats->action_list.size(); j < end2; j++ )
       {

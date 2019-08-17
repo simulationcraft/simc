@@ -684,7 +684,7 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
 
 bool chart::generate_distribution( highchart::histogram_chart_t& hc, const player_t* p,
                                    const std::vector<size_t>& dist_data, const std::string& distribution_name,
-                                   double avg, double min, double max, bool occurance, std::string suf )
+                                   double avg, double min, double max )
 {
   int max_buckets = as<int>( dist_data.size() );
 
@@ -700,7 +700,7 @@ bool chart::generate_distribution( highchart::histogram_chart_t& hc, const playe
 
   hc.set( "xAxis.tickInterval", 25 );
   hc.set( "xAxis.tickAtEnd", true );
-  hc.set( "yAxis.title.text", occurance ? "# Occurances" : "# Iterations" );
+  hc.set( "yAxis.title.text", "# Iterations" );
   hc.set( "tooltip.headerFormat", "Values: <b>{point.key}</b><br/>" );
   hc.set( "tooltip.valueDecimals", 0 );
 
@@ -746,15 +746,12 @@ bool chart::generate_distribution( highchart::histogram_chart_t& hc, const playe
     hc.add( "series.0.data", e );
   }
 
-  hc.set( "series.0.name", occurance ? "Occurances" : "Iterations" );
+  hc.set( "series.0.name", "Iterations" );
 
   for ( auto index : tick_indices )
   {
     hc.add( "xAxis.tickPositions", index );
   }
-
-  if ( !suf.empty() )
-    hc.set( "xAxis.labels.format", "{value}" + suf );
 
   // Stagger mean label if avg < 12.5% chart axis span
   if ( mean_bucket && mean_bucket / as<double>( max_buckets ) < 0.125 )

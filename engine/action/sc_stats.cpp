@@ -386,11 +386,11 @@ void stats_t::analyze()
 stats_t::stats_results_t::stats_results_t() :
   actual_amount(),
   avg_actual_amount(),
+  count(),
   total_amount(),
   fight_actual_amount(),
   fight_total_amount(),
   overkill_pct(),
-  count(),
   pct( 0 ),
   iteration_count( 0 ),
   iteration_actual_amount( 0 ),

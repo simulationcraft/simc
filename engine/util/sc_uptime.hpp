@@ -17,12 +17,14 @@ private:
   timespan_t last_start;
   timespan_t iteration_uptime_sum;
 public:
-  simple_sample_data_t uptime_sum;
+  simple_sample_data_with_min_max_t uptime_sum;
+  simple_sample_data_with_min_max_t uptime_instance;
 
   uptime_common_t() :
     last_start( timespan_t::min() ),
     iteration_uptime_sum( timespan_t::zero() ),
-    uptime_sum()
+    uptime_sum(),
+    uptime_instance()
   { }
   void update( bool is_up, timespan_t current_time )
   {
@@ -33,7 +35,9 @@ public:
     }
     else if ( last_start >= timespan_t::zero() )
     {
-      iteration_uptime_sum += current_time - last_start;
+      auto delta = current_time - last_start;
+      iteration_uptime_sum += delta;
+      uptime_instance.add( delta.total_seconds() );
       reset();
     }
   }
@@ -43,7 +47,10 @@ public:
   { uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 ); }
   void reset() { last_start = timespan_t::min(); }
   void merge( const uptime_common_t& other )
-  { uptime_sum.merge( other.uptime_sum ); }
+  {
+    uptime_sum.merge( other.uptime_sum );
+    uptime_instance.merge( other.uptime_instance );
+  }
 };
 
 struct uptime_t : public uptime_common_t
