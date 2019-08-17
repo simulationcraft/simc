@@ -892,6 +892,7 @@ const help_box_t help_boxes[] = {
                "caused by resource starvation, lockouts, and timers." },
   { "Scale Factor Ranking", "This row ranks the scale factors from highest to lowest, checking whether one scale "
                             "factor is higher/lower than another with statistical significance." },
+  { "Uptime Average Duration", "The average duration of an instance of the tracked uptime." },
 };
 
 void print_html_help_boxes( report::sc_html_stream& os, const sim_t& sim )

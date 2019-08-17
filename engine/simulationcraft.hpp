@@ -2487,7 +2487,7 @@ struct benefit_t : private noncopyable
 private:
   int up, down;
 public:
-  simple_sample_data_t ratio;
+  simple_sample_data_with_min_max_t ratio;
   const std::string name_str;
 
   explicit benefit_t( const std::string& n ) :

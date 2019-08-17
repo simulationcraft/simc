@@ -3988,7 +3988,9 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
        << "<tr>\n";
 
     sorttable_header( os, "Benefit", SORT_FLAG_ALPHA | SORT_FLAG_ASC | SORT_FLAG_LEFT );
-    sorttable_header( os, "%" );
+    sorttable_header( os, "Avg %" );
+    sorttable_header( os, "Min" );
+    sorttable_header( os, "Max" );
 
     os << "</tr>\n"
        << "</thead>\n";
@@ -3997,10 +3999,14 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
     {
       os.printf( "<tr>\n"
                  "<td class=\"left\">%s</td>\n"
-                 "<td class=\"right\">%.1f%%</td>\n"
+                 "<td class=\"right\">%.2f%%</td>\n"
+                 "<td class=\"right\">%.2f%%</td>\n"
+                 "<td class=\"right\">%.2f%%</td>\n"
                  "</tr>\n",
                  util::encode_html( benefit->name() ).c_str(),
-                 benefit->ratio.mean() );
+                 benefit->ratio.pretty_mean(),
+                 benefit->ratio.min(),
+                 benefit->ratio.max() );
     }
 
     for ( const auto& pet : p.pet_list )
@@ -4014,10 +4020,14 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
 
         os.printf( "<tr>\n"
                    "<td class=\"left\">%s</td>\n"
-                   "<td class=\"right\">%.1f%%</td>\n"
+                   "<td class=\"right\">%.2f%%</td>\n"
+                   "<td class=\"right\">%.2f%%</td>\n"
+                   "<td class=\"right\">%.2f%%</td>\n"
                    "</tr>\n",
                    benefit_name.c_str(),
-                   benefit->ratio.mean() );
+                   benefit->ratio.pretty_mean(),
+                   benefit->ratio.min(),
+                   benefit->ratio.max() );
       }
     }
     os << "</table>\n";
@@ -4030,7 +4040,12 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
        << "<tr>\n";
 
     sorttable_header( os, "Uptime", SORT_FLAG_ALPHA | SORT_FLAG_ASC | SORT_FLAG_LEFT );
-    sorttable_header( os, "%" );
+    sorttable_header( os, "Avg %" );
+    sorttable_header( os, "Min" );
+    sorttable_header( os, "Max" );
+    sorttable_help_header( os, "Avg Dur", "help-uptime-average-duration" );
+    sorttable_header( os, "Min" );
+    sorttable_header( os, "Max" );
 
     os << "</tr>\n"
        << "</thead>\n";
@@ -4039,10 +4054,20 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
     {
       os.printf( "<tr>\n"
                  "<td class=\"left\">%s</td>\n"
-                 "<td class=\"right\">%.1f%%</td>\n"
+                 "<td class=\"right\">%.2f%%</td>\n"
+                 "<td class=\"right\">%.2f%%</td>\n"
+                 "<td class=\"right\">%.2f%%</td>\n"
+                 "<td class=\"right\">%.1fs</td>\n"
+                 "<td class=\"right\">%.1fs</td>\n"
+                 "<td class=\"right\">%.1fs</td>\n"
                  "</tr>\n",
                  util::encode_html( uptime->name() ).c_str(),
-                 uptime->uptime_sum.mean() * 100.0 );
+                 uptime->uptime_sum.pretty_mean() * 100.0,
+                 uptime->uptime_sum.min() * 100.0,
+                 uptime->uptime_sum.max() * 100.0,
+                 uptime->uptime_instance.pretty_mean(),
+                 uptime->uptime_instance.min(),
+                 uptime->uptime_instance.max() );
     }
 
     for ( const auto& pet : p.pet_list )
@@ -4056,10 +4081,20 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
 
         os.printf( "<tr>\n"
                    "<td class=\"left\">%s</td>\n"
-                   "<td class=\"right\">%.1f%%</td>\n"
+                   "<td class=\"right\">%.2f%%</td>\n"
+                   "<td class=\"right\">%.2f%%</td>\n"
+                   "<td class=\"right\">%.2f%%</td>\n"
+                   "<td class=\"right\">%.1fs</td>\n"
+                   "<td class=\"right\">%.1fs</td>\n"
+                   "<td class=\"right\">%.1fs</td>\n"
                    "</tr>\n",
                    uptime_name.c_str(),
-                   uptime->uptime_sum.mean() * 100.0 );
+                   uptime->uptime_sum.pretty_mean() * 100.0,
+                   uptime->uptime_sum.min() * 100.0,
+                   uptime->uptime_sum.max() * 100.0,
+                   uptime->uptime_instance.pretty_mean(),
+                   uptime->uptime_instance.min(),
+                   uptime->uptime_instance.max() );
       }
     }
     os << "</table>\n";
@@ -4075,13 +4110,13 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
   if ( range::count_if( p.proc_list, []( const proc_t* pr ) { return pr->count.mean() > 0; } ) == 0 )
     return;
 
-    // Procs Section
-    os << "<div class=\"player-section procs\">\n"
-       << "<h3 class=\"toggle open\">Procs</h3>\n"
-       << "<div class=\"toggle-content\">\n"
-       << "<table class=\"sc sort stripebody\">\n"
-       << "<thead>\n"
-       << "<tr>\n";
+  // Procs Section
+  os << "<div class=\"player-section procs\">\n"
+     << "<h3 class=\"toggle open\">Procs</h3>\n"
+     << "<div class=\"toggle-content\">\n"
+     << "<table class=\"sc sort stripebody\">\n"
+     << "<thead>\n"
+     << "<tr>\n";
 
   int columns = 5;  // Set number of columns to make distribution charts fill the table width
   sorttable_header( os, "Name", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
@@ -4139,9 +4174,12 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
         data = &proc->interval_sum;
         highchart::histogram_chart_t interval_chart( token_name + "_interval", *p.sim );
         if ( chart::generate_distribution( interval_chart, &p, data->distribution, name + " " + data->name_str,
-                                           data->mean(), data->min(), data->max(), true, "s" ) )
+                                           data->mean(), data->min(), data->max() ) )
         {
           interval_chart.set_toggle_id( token_name + "_toggle" );
+          interval_chart.set( "xAxis.labels.format", "{value}s" );
+          interval_chart.set( "yAxis.title.text", "# Occurances" );
+          interval_chart.set( "series.0.name", "Occurances" );
           os << interval_chart.to_target_div();
           p.sim->add_chart_data( interval_chart );
         }
