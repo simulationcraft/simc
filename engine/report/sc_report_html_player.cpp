@@ -4118,12 +4118,14 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
      << "<thead>\n"
      << "<tr>\n";
 
-  int columns = 5;  // Set number of columns to make distribution charts fill the table width
+  int columns = 7;  // Set number of columns to make distribution charts fill the table width
   sorttable_header( os, "Name", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_header( os, "Count" );
   sorttable_header( os, "Min" );
   sorttable_header( os, "Max" );
   sorttable_header( os, "Interval", SORT_FLAG_ASC );
+  sorttable_header( os, "Min" );
+  sorttable_header( os, "Max" );
 
   os << "</tr>\n"
      << "</thead>\n";
@@ -4148,12 +4150,16 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
                  "<td class=\"right\">%.1f</td>\n"
                  "<td class=\"right\">%.1f</td>\n"
                  "<td class=\"right\">%.1f</td>\n"
-                 "<td class=\"right\">%.1fsec</td>\n",
+                 "<td class=\"right\">%.1fs</td>\n"
+                 "<td class=\"right\">%.1fs</td>\n"
+                 "<td class=\"right\">%.1fs</td>\n",
                  span_str,
                  proc->count.mean(),
                  proc->count.min(),
                  proc->count.max(),
-                 proc->interval_sum.mean() );
+                 proc->interval_sum.mean(),
+                 proc->interval_sum.min(),
+                 proc->interval_sum.max() );
       os << "</tr>\n";
 
       if ( p.sim->report_details )
@@ -4171,7 +4177,7 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
           p.sim->add_chart_data( count_chart );
         }
 
-        data = &proc->interval_sum;
+        /*data = &proc->interval_sum;
         highchart::histogram_chart_t interval_chart( token_name + "_interval", *p.sim );
         if ( chart::generate_distribution( interval_chart, &p, data->distribution, name + " " + data->name_str,
                                            data->mean(), data->min(), data->max() ) )
@@ -4182,7 +4188,7 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
           interval_chart.set( "series.0.name", "Occurances" );
           os << interval_chart.to_target_div();
           p.sim->add_chart_data( interval_chart );
-        }
+        }*/
 
         os << "</td>\n"
            << "</tr>\n";
