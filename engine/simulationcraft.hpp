@@ -2517,7 +2517,7 @@ private:
   timespan_t last_proc; // track time of the last proc
 public:
   const std::string name_str;
-  extended_sample_data_t interval_sum;
+  simple_sample_data_with_min_max_t interval_sum;
   extended_sample_data_t count;
 
   proc_t( sim_t& s, const std::string& n ) :
@@ -2525,12 +2525,10 @@ public:
     iteration_count(),
     last_proc( timespan_t::min() ),
     name_str( n ),
-    interval_sum( "Interval", false ),
+    interval_sum(),
     count( "Count", false )
   {
-    unsigned size = std::min( as<unsigned>( sim.iterations ), 2048u );
-    count.reserve( size );
-    interval_sum.reserve( size );
+    count.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
   }
 
   void occur()
@@ -2561,10 +2559,7 @@ public:
   }
 
   void analyze()
-  {
-    count.analyze();
-    interval_sum.analyze();
-  }
+  { count.analyze(); }
 
   void datacollection_begin()
   { iteration_count = 0; }
