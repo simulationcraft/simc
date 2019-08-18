@@ -5118,7 +5118,7 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( "variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up" );
   apl_default->add_action( this, "Disrupt" );
   apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
-  apl_default->add_action( "pick_up_fragment,if=fury.deficit>=35" );
+  apl_default->add_action( "pick_up_fragment,if=fury.deficit>=35&(!azerite.eyes_of_rage.enabled|cooldown.eye_beam.remains>1.4)" );
   apl_default->add_action( "call_action_list,name=dark_slash,if=talent.dark_slash.enabled&(variable.waiting_for_dark_slash|debuff.dark_slash.up)" );
   apl_default->add_action( "run_action_list,name=demonic,if=talent.demonic.enabled" );
   apl_default->add_action( "run_action_list,name=normal" );
@@ -5132,7 +5132,7 @@ void demon_hunter_t::apl_havoc()
   add_havoc_use_items( this, apl_cooldown );
 
   action_priority_list_t* essences = get_action_priority_list( "essences" );
-  essences->add_action( "concentrated_flame" );
+  essences->add_action( "concentrated_flame,if=(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)" );
   essences->add_action( "blood_of_the_enemy,if=buff.metamorphosis.up|target.time_to_die<=10" );
   essences->add_action( "guardian_of_azeroth,if=buff.metamorphosis.up|target.time_to_die<=30" );
   essences->add_action( "focused_azerite_beam,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
@@ -5196,18 +5196,9 @@ void demon_hunter_t::apl_vengeance()
 
   apl_default->add_action( "auto_attack" );
   apl_default->add_action( this, "Consume Magic" );
-  
-  // On-use items
-  for ( auto& item : items )
-  {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      apl_default->add_action( "use_item,slot=" + std::string( item.slot_name() ), ",if=!raid_event.adds.exists|active_enemies>1" );
-    }
-  }
-
   apl_default->add_action( "call_action_list,name=brand,if=talent.charred_flesh.enabled" );
   apl_default->add_action( "call_action_list,name=defensives" );
+  apl_default->add_action( "call_action_list,name=cooldowns" );
   apl_default->add_action( "call_action_list,name=normal" );
 
   action_priority_list_t* apl_defensives = get_action_priority_list( "defensives", "Defensives" );
@@ -5215,6 +5206,16 @@ void demon_hunter_t::apl_vengeance()
   // apl_defensives->add_talent( this, "Soul Barrier" );
   apl_defensives->add_action( this, "Metamorphosis" );
   apl_defensives->add_action( this, "Fiery Brand" );
+
+  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+  cooldowns->add_action( "potion" );
+  cooldowns->add_action( "concentrated_flame,if=(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)" );
+  cooldowns->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
+  cooldowns->add_action( "memory_of_lucid_dreams" );
+  cooldowns->add_action( "heart_essence", "Default fallback for usable essences." );
+  cooldowns->add_action( "use_item,effect_name=cyclotronic_blast,if=buff.memory_of_lucid_dreams.down" );
+  cooldowns->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<31|target.time_to_die<20" );
+  cooldowns->add_action( "use_items", "Default fallback for usable items." );
 
   action_priority_list_t* apl_brand = get_action_priority_list( "brand", "Fiery Brand Rotation" );
   apl_brand->add_action( this, "Sigil of Flame", "if=cooldown.fiery_brand.remains<2" );

@@ -32,12 +32,9 @@ actions.precombat+=/use_item,name=azsharas_font_of_power
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/consume_magic
-# ,if=!raid_event.adds.exists|active_enemies>1
-actions+=/use_item,slot=trinket1
-# ,if=!raid_event.adds.exists|active_enemies>1
-actions+=/use_item,slot=trinket2
 actions+=/call_action_list,name=brand,if=talent.charred_flesh.enabled
 actions+=/call_action_list,name=defensives
+actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=normal
 
 # Fiery Brand Rotation
@@ -48,6 +45,17 @@ actions.brand+=/immolation_aura,if=dot.fiery_brand.ticking
 actions.brand+=/fel_devastation,if=dot.fiery_brand.ticking
 actions.brand+=/infernal_strike,if=dot.fiery_brand.ticking
 actions.brand+=/sigil_of_flame,if=dot.fiery_brand.ticking
+
+actions.cooldowns=potion
+actions.cooldowns+=/concentrated_flame,if=(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)
+actions.cooldowns+=/worldvein_resonance,if=buff.lifeblood.stack<3
+actions.cooldowns+=/memory_of_lucid_dreams
+# Default fallback for usable essences.
+actions.cooldowns+=/heart_essence
+actions.cooldowns+=/use_item,effect_name=cyclotronic_blast,if=buff.memory_of_lucid_dreams.down
+actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<31|target.time_to_die<20
+# Default fallback for usable items.
+actions.cooldowns+=/use_items
 
 # Defensives
 actions.defensives=demon_spikes
