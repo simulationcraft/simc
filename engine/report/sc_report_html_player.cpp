@@ -564,11 +564,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
         ( s.type == STATS_DMG ? "DPS" : "HPS" ) + " Distribution Chart\" />\n";
     }
     os << "<tr class=\"details hide\">\n"
-       << "<td colspan=\"" << ( n_columns > 0 ? ( 7 + n_columns ) : 3 )
-       << "\" class=\"filler\">\n";
+       << "<td colspan=\"" << ( n_columns > 0 ? ( 7 + n_columns ) : 3 ) << "\" class=\"filler\">\n";
 
     // Stat Details
-    os.printf( "<h4>Stats details: %s </h4>\n", util::encode_html( s.name_str ).c_str() );
+    os << "<h4>Stats Details: " << util::encode_html( util::inverse_tokenize( s.name_str ) ) << "</h4>\n";
 
     os << "<table class=\"details\">\n"
        << "<tr>\n";
@@ -820,8 +819,6 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
     os << "</table>\n";
 
-    os << "<div class=\"clear\">&#160;</div>\n";
-
     if ( s.has_direct_amount_results() || s.has_tick_amount_results() )
     {
       highchart::time_series_t ts( highchart::build_id( s ), *s.player->sim );
@@ -830,138 +827,206 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       s.player->sim->add_chart_data( ts );
     }
 
-    os << "<div class=\"clear\">&#160;</div>\n";
     // Action Details
     std::vector<std::string> processed_actions;
+    std::vector<std::string> expressions;
 
     for ( const auto& a : s.action_list )
     {
       bool found            = false;
       size_t size_processed = processed_actions.size();
+
       for ( size_t k = 0; k < size_processed && !found; k++ )
         if ( processed_actions[ k ] == a->name() )
           found = true;
+
+      // Grab expression strings first in case we have multiple APL lines
+      std::string expression_str;
+      if ( !a->option.if_expr_str.empty() )
+      {
+        expression_str += "<li><span class=\"label\">if_expr:</span>" +
+                          util::encode_html( a->option.if_expr_str.c_str() ) + "</li>\n";
+      }
+      if ( !a->option.target_if_str.empty() )
+      {
+        expression_str += "<li><span class=\"label\">target_if_expr:</span>" +
+                          util::encode_html( a->option.target_if_str.c_str() ) + "</li>\n";
+      }
+      if ( !a->option.interrupt_if_expr_str.empty() )
+      {
+        expression_str += "<li><span class=\"label\">interrupt_if_expr:</span>" +
+                          util::encode_html( a->option.interrupt_if_expr_str.c_str() ) + "</li>\n";
+      }
+      if ( !a->option.early_chain_if_expr_str.empty() )
+      {
+        expression_str += "<li><span class=\"label\">early_chain_if_expr:</span>" +
+                          util::encode_html( a->option.early_chain_if_expr_str.c_str() ) + "</li>\n";
+      }
+      if ( !a->option.cancel_if_expr_str.empty() )
+      {
+        expression_str += "<li><span class=\"label\">cancel_if_expr:</span>" +
+                          util::encode_html( a->option.cancel_if_expr_str.c_str() ) + "</li>\n";
+      }
+      if ( !a->option.sync_str.empty() )
+      {
+        expression_str += "<li><span class=\"label\">sync_expr:</span>" +
+                          util::encode_html( a->option.sync_str.c_str() ) + "</li>\n";
+      }
+      if ( !a->option.target_str.empty() )
+      {
+        expression_str += "<li><span class=\"label\">target_expr:</span>" +
+                          util::encode_html( a->option.target_str.c_str() ) + "</li>\n";
+      }
+
+      if ( !expression_str.empty() )
+        expressions.push_back( expression_str );
+
       if ( found )
         continue;
+
       processed_actions.push_back( a->name() );
 
-      os.printf( "<h4>Action details: %s </h4>\n", util::encode_html( a->name() ).c_str() );
+      os << "<div>\n"                  // Wrap everything
+         << "<div class=\"flex\">\n";  // Wrap details, damage/weapon, spell_data
 
-      os.printf(
-          "<div class=\"float\">\n"
-          "<h5>Static Values</h5>\n"
-          "<ul>\n"
-          "<li><span class=\"label\">id:</span>%i</li>\n"
-          "<li><span class=\"label\">school:</span>%s</li>\n"
-          "<li><span class=\"label\">resource:</span>%s</li>\n"
-          "<li><span class=\"label\">range:</span>%.1f</li>\n"
-          "<li><span class=\"label\">travel_speed:</span>%.4f</li>\n"
-          "<li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
-          "<li><span class=\"label\">min_gcd:</span>%.4f</li>\n"
-          "<li><span class=\"label\">base_cost:</span>%.1f</li>\n"
-          "<li><span class=\"label\">secondary_cost:</span>%.1f</li>\n"
-          "<li><span class=\"label\">cooldown:</span>%.3f</li>\n"
-          "<li><span class=\"label\">cooldown hasted:</span>%s</li>\n"
-          "<li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
-          "<li><span class=\"label\">base_crit:</span>%.2f</li>\n"
-          "<li><span class=\"label\">target:</span>%s</li>\n"
-          "<li><span class=\"label\">harmful:</span>%s</li>\n"
-          "<li><span class=\"label\">if_expr:</span>%s</li>\n"
-          "</ul>\n"
-          "</div>\n",
-          a->id, util::school_type_string( a->get_school() ),
-          util::resource_type_string( a->current_resource() ), a->range,
-          a->travel_speed, a->trigger_gcd.total_seconds(),
-          a->min_gcd.total_seconds(), a->base_costs[ a->current_resource() ],
-          a->secondary_costs[ a->current_resource() ],
-          a->cooldown->duration.total_seconds(),
-          a->cooldown->hasted ? "true" : "false",
-          a->base_execute_time.total_seconds(), a->base_crit,
-          a->target ? util::encode_html( a->target->name() ).c_str() : "", a->harmful ? "true" : "false",
-          util::encode_html( a->option.if_expr_str ).c_str() );
+      os.printf( "<div>\n"
+                 "<h4>Action Details: %s</h4>\n"
+                 "<ul>\n"
+                 "<li><span class=\"label\">id:</span>%i</li>\n"
+                 "<li><span class=\"label\">school:</span>%s</li>\n"
+                 "<li><span class=\"label\">resource:</span>%s</li>\n"
+                 "<li><span class=\"label\">range:</span>%.1f</li>\n"
+                 "<li><span class=\"label\">travel_speed:</span>%.4f</li>\n"
+                 "<li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
+                 "<li><span class=\"label\">min_gcd:</span>%.4f</li>\n"
+                 "<li><span class=\"label\">base_cost:</span>%.1f</li>\n"
+                 "<li><span class=\"label\">secondary_cost:</span>%.1f</li>\n"
+                 "<li><span class=\"label\">cooldown:</span>%.3f</li>\n"
+                 "<li><span class=\"label\">cooldown hasted:</span>%s</li>\n"
+                 "<li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
+                 "<li><span class=\"label\">base_crit:</span>%.2f</li>\n"
+                 "<li><span class=\"label\">target:</span>%s</li>\n"
+                 "<li><span class=\"label\">harmful:</span>%s</li>\n"
+                 "</ul>\n"
+                 "</div>\n",
+                 util::encode_html( util::inverse_tokenize( a->name() ) ).c_str(),
+                 a->id,
+                 util::school_type_string( a->get_school() ),
+                 util::resource_type_string( a->current_resource() ),
+                 a->range,
+                 a->travel_speed,
+                 a->trigger_gcd.total_seconds(),
+                 a->min_gcd.total_seconds(),
+                 a->base_costs[ a->current_resource() ],
+                 a->secondary_costs[ a->current_resource() ],
+                 a->cooldown->duration.total_seconds(),
+                 a->cooldown->hasted ? "true" : "false",
+                 a->base_execute_time.total_seconds(),
+                 a->base_crit,
+                 a->target ? util::encode_html( a->target->name() ).c_str() : "",
+                 a->harmful ? "true" : "false" );
 
-      // Spelldata
-      if ( a->data().ok() )
-      {
-        os.printf(
-            "<div class=\"float\">\n"
-            "<h5>Spelldata</h5>\n"
-            "<ul>\n"
-            "<li><span class=\"label\">id:</span>%i</li>\n"
-            "<li><span class=\"label\">name:</span>%s</li>\n"
-            "<li><span class=\"label\">school:</span>%s</li>\n"
-            "<li><span class=\"label\">tooltip:</span><span "
-            "class=\"tooltip\">%s</span></li>\n"
-            "<li><span class=\"label\">description:</span><span "
-            "class=\"tooltip\">%s</span></li>\n"
-            "</ul>\n"
-            "</div>\n",
-            a->data().id(), util::encode_html( a->data().name_cstr() ).c_str(),
-            util::school_type_string( a->data().get_school_type() ),
-            util::encode_html( report::pretty_spell_text( a->data(), a->data().tooltip(), p ) ).c_str(),
-            util::encode_html( report::pretty_spell_text( a->data(), a->data().desc(), p ) ).c_str() );
-      }
-
+      os << "<div>\n";  // Wrap damage/weapon
       if ( a->spell_power_mod.direct || a->base_dd_min || a->base_dd_max )
       {
-        os.printf(
-            "<div class=\"float\">\n"
-            "<h5>Direct Damage</h5>\n"
-            "<ul>\n"
-            "<li><span class=\"label\">may_crit:</span>%s</li>\n"
-            "<li><span "
-            "class=\"label\">attack_power_mod.direct:</span>%.6f</li>\n"
-            "<li><span "
-            "class=\"label\">spell_power_mod.direct:</span>%.6f</li>\n"
-            "<li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
-            "<li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
-            "<li><span class=\"label\">base_dd_mult:</span>%.2f</li>\n"
-            "</ul>\n"
-            "</div>\n",
-            a->may_crit ? "true" : "false", a->attack_power_mod.direct,
-            a->spell_power_mod.direct, a->base_dd_min, a->base_dd_max,
-            a->base_dd_multiplier );
+        os.printf( "<div>\n"
+                   "<h4>Direct Damage</h4>\n"
+                   "<ul>\n"
+                   "<li><span class=\"label\">may_crit:</span>%s</li>\n"
+                   "<li><span "
+                   "class=\"label\">attack_power_mod.direct:</span>%.6f</li>\n"
+                   "<li><span "
+                   "class=\"label\">spell_power_mod.direct:</span>%.6f</li>\n"
+                   "<li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
+                   "<li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
+                   "<li><span class=\"label\">base_dd_mult:</span>%.2f</li>\n"
+                   "</ul>\n"
+                   "</div>\n",
+                   a->may_crit ? "true" : "false",
+                   a->attack_power_mod.direct,
+                   a->spell_power_mod.direct,
+                   a->base_dd_min,
+                   a->base_dd_max,
+                   a->base_dd_multiplier );
       }
+
       if ( a->dot_duration > timespan_t::zero() )
       {
-        os.printf(
-            "<div class=\"float\">\n"
-            "<h5>Damage Over Time</h5>\n"
-            "<ul>\n"
-            "<li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
-            "<li><span class=\"label\">tick_zero:</span>%s</li>\n"
-            "<li><span class=\"label\">attack_power_mod.tick:</span>%.6f</li>\n"
-            "<li><span class=\"label\">spell_power_mod.tick:</span>%.6f</li>\n"
-            "<li><span class=\"label\">base_td:</span>%.2f</li>\n"
-            "<li><span class=\"label\">base_td_mult:</span>%.2f</li>\n"
-            "<li><span class=\"label\">dot_duration:</span>%.2f</li>\n"
-            "<li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
-            "<li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
-            "<li><span class=\"label\">dot_behavior:</span>%s</li>\n"
-            "</ul>\n"
-            "</div>\n",
-            a->tick_may_crit ? "true" : "false",
-            a->tick_zero ? "true" : "false", a->attack_power_mod.tick,
-            a->spell_power_mod.tick, a->base_td, a -> base_td_multiplier,
-            a->dot_duration.total_seconds(), a->base_tick_time.total_seconds(),
-            a->hasted_ticks ? "true" : "false",
-            util::dot_behavior_type_string( a->dot_behavior ) );
+        os.printf( "<div>\n"
+                   "<h4>Damage Over Time</h4>\n"
+                   "<ul>\n"
+                   "<li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
+                   "<li><span class=\"label\">tick_zero:</span>%s</li>\n"
+                   "<li><span class=\"label\">attack_power_mod.tick:</span>%.6f</li>\n"
+                   "<li><span class=\"label\">spell_power_mod.tick:</span>%.6f</li>\n"
+                   "<li><span class=\"label\">base_td:</span>%.2f</li>\n"
+                   "<li><span class=\"label\">base_td_mult:</span>%.2f</li>\n"
+                   "<li><span class=\"label\">dot_duration:</span>%.2f</li>\n"
+                   "<li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
+                   "<li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
+                   "<li><span class=\"label\">dot_behavior:</span>%s</li>\n"
+                   "</ul>\n"
+                   "</div>\n",
+                   a->tick_may_crit ? "true" : "false",
+                   a->tick_zero ? "true" : "false",
+                   a->attack_power_mod.tick,
+                   a->spell_power_mod.tick,
+                   a->base_td,
+                   a->base_td_multiplier,
+                   a->dot_duration.total_seconds(),
+                   a->base_tick_time.total_seconds(),
+                   a->hasted_ticks ? "true" : "false",
+                   util::dot_behavior_type_string( a->dot_behavior ) );
       }
       if ( a->weapon )
       {
-        os.printf(
-            "<div class=\"float\">\n"
-            "<h5>Weapon</h5>\n"
-            "<ul>\n"
-            "<li><span class=\"label\">normalized:</span>%s</li>\n"
-            "<li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
-            "<li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
-            "</ul>\n"
-            "</div>\n",
-            a->normalize_weapon_speed ? "true" : "false", a->weapon_power_mod,
-            a->weapon_multiplier );
+        os.printf( "<div>\n"
+                   "<h4>Weapon</h4>\n"
+                   "<ul>\n"
+                   "<li><span class=\"label\">normalized:</span>%s</li>\n"
+                   "<li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
+                   "<li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
+                   "</ul>\n"
+                   "</div>\n",
+                   a->normalize_weapon_speed ? "true" : "false",
+                   a->weapon_power_mod,
+                   a->weapon_multiplier );
       }
-      os << "<div class=\"clear\">&#160;</div>\n";
+      os << "</div>\n";  // Close damage/weapon
+
+      if ( a->data().ok() )
+      {
+        os.printf( "<div class=\"shrink\">\n"
+                   "<h4>Spelldata</h4>\n"
+                   "<ul>\n"
+                   "<li><span class=\"label\">id:</span>%i</li>\n"
+                   "<li><span class=\"label\">name:</span>%s</li>\n"
+                   "<li><span class=\"label\">school:</span>%s</li>\n"
+                   "<li><span class=\"label\">tooltip:</span><span "
+                   "class=\"tooltip\">%s</span></li>\n"
+                   "<li><span class=\"label\">description:</span><span "
+                   "class=\"tooltip\">%s</span></li>\n"
+                   "</ul>\n"
+                   "</div>\n",
+                   a->data().id(),
+                   util::encode_html( a->data().name_cstr() ).c_str(),
+                   util::school_type_string( a->data().get_school_type() ),
+                   util::encode_html( report::pretty_spell_text( a->data(), a->data().tooltip(), p ) ).c_str(),
+                   util::encode_html( report::pretty_spell_text( a->data(), a->data().desc(), p ) ).c_str() );
+      }
+      os << "</div>\n"   // Close details, damage/weapon, spell_data
+         << "</div>\n";  // Close everything
+    }
+
+    if ( expressions.size() )
+    {
+      os << "<div>\n"
+         << "<h4>APL Expressions</h4>\n";
+
+      for ( const auto& str : expressions )
+        os << "<ul>\n" << str << "</ul>\n";
+
+      os << "</div>\n";
     }
 
     os << "</td>\n"
@@ -2825,8 +2890,7 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
   // Spelldata
    if ( data.ok() )
    {
-     os.printf( "<td style=\"vertical-align: top;\" class=\"filler\">\n"
-                "<h4>%s details</h4>\n"
+     os.printf( "<h4>%s</h4>\n"
                 "<ul>\n"
                 "<li><span class=\"label\">id:</span>%i</li>\n"
                 "<li><span class=\"label\">name:</span>%s</li>\n"
@@ -2838,8 +2902,7 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
                 "<li><span class=\"label\">duration:</span>%.2f</li>\n"
                 "<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
                 "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
-                "</ul>\n"
-                "</td>\n",
+                "</ul>\n",
                 util::encode_html( data_name ).c_str(),
                 data.id(),
                 util::encode_html( data.name_cstr() ).c_str(),
@@ -2853,6 +2916,7 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
                 data.proc_chance() * 100 );
    }
 }
+
 // This function MUST accept non-player buffs as well!
 void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int report_details,
                              bool constant_buffs = false )
@@ -2869,10 +2933,13 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
 
   os << "<tr>\n";
 
+  std::string toggle_name = highchart::build_id( b, "_toggle" );
+  std::string span_str    = buff_name;
+
   if ( report_details )
-    os.printf( "<td class=\"left\"><span class=\"toggle-details\">%s</span></td>\n", buff_name.c_str() );
-  else
-    os.printf( "<td class=\"left\">%s</td>\n", buff_name.c_str() );
+    span_str = "<span id=\"" + toggle_name + "\" class=\"toggle-details\">" + buff_name + "</span>";
+
+  os << "<td class=\"left\">" << span_str << "</td>\n";
 
   if ( !constant_buffs )
     os.printf( "<td class=\"right\">%.1f</td>\n"
@@ -2896,15 +2963,27 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
 
   if ( report_details )
   {
-    os.printf( "<tr class=\"details hide\">\n"
-               "<td colspan=\"%d\" class=\"filler\">\n"
-               "<table><tr>\n"
-               "<td style=\"vertical-align: top;\" class=\"filler\">\n"
-               "<h4>Buff details</h4>\n"
-               "<ul>\n",
-               b.constant ? 1 : 9 );
+    const stat_buff_t* stat_buff = dynamic_cast<const stat_buff_t*>( &b );
 
-    os.printf( "<li><span class=\"label\">buff initial source:</span>%s</li>\n"
+    int first_rows    = 2 + b.item ? 16 : 15;  // # of rows in the first column incl 2 for header (buff details)
+    int second_rows   = ( b.rppm ? 5 : 0 ) + ( stat_buff ? 2 + 
+                        ( as<int>( stat_buff->stats.size() ) * 2 ) : 0 ) +
+                        ( b.trigger_pct.mean() > 0 ? 5 : 0 );
+    int stack_rows    = 2 + as<int>( range::count_if( b.stack_uptime, []( const uptime_common_t& up ) {
+                              return up.uptime_sum.mean() > 0;
+                            } ) );
+    bool break_first  = first_rows + second_rows > stack_rows;
+    bool break_second = !break_first && stack_rows + second_rows > first_rows;
+
+    os << "<tr class=\"details hide\">\n"
+       << "<td colspan=\"" << ( b.constant ? 1 : 9 ) << "\" class=\"filler\">\n";
+
+    os << "<div class=\"flex\">\n";  // Wrap everything
+
+    os << "<div>\n";  // First column
+    os.printf( "<h4>Buff Details</h4>\n"
+               "<ul>\n"
+               "<li><span class=\"label\">buff initial source:</span>%s</li>\n"
                "<li><span class=\"label\">cooldown name:</span>%s</li>\n"
                "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
                "<li><span class=\"label\">duration:</span>%.2f</li>\n"
@@ -2933,7 +3012,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                util::buff_stack_behavior_string( b.stack_behavior ),
                util::buff_tick_behavior_string( b.tick_behavior ),
                util::buff_tick_time_behavior_string( b.tick_time_behavior ),
-               b.buff_period.total_seconds() );
+               b.buff_period == timespan_t::min() ? 0 : b.buff_period.total_seconds() );
     if ( b.item )
     {
       os.printf( "<li><span class=\"label\">associated item:</span>%s</li>\n",
@@ -2941,101 +3020,108 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     }
     os << "</ul>\n";
 
-    if ( b.rppm )
+    if ( !constant_buffs )
     {
-      os << "<h4>RPPM Buff details</h4>\n"
-         << "<ul>\n";
-
-      os.printf( "<li><span class=\"label\">scaling:</span>%s</li>\n"
-                 "<li><span class=\"label\">frequency:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">modifier:</span>%.2f</li>\n",
-                 util::rppm_scaling_string( b.rppm->get_scaling() ).c_str(),
-                 b.rppm->get_frequency(),
-                 b.rppm->get_modifier() );
-      os << "</ul>\n";
-    }
-
-    if ( const stat_buff_t* stat_buff = dynamic_cast<const stat_buff_t*>( &b ) )
-    {
-      os << "<h4>Stat Buff details</h4>\n"
-         << "<ul>\n";
-
-      for ( size_t j = 0; j < stat_buff->stats.size(); ++j )
+      if ( break_first )  // if first + second rows will overflow past stack rows
       {
-        os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
-                   "<li><span class=\"label\">amount:</span>%.2f</li>\n",
-                   util::stat_type_string( stat_buff->stats[ j ].stat ),
-                   stat_buff->stats[ j ].amount );
+        os << "</div>\n"  // Close first column and open second column
+           << "<div>\n";
+      }
+
+      if ( b.rppm )
+      {
+        os.printf( "<h4>RPPM Details</h4>\n"
+                   "<ul>\n"
+                   "<li><span class=\"label\">scaling:</span>%s</li>\n"
+                   "<li><span class=\"label\">frequency:</span>%.2f</li>\n"
+                   "<li><span class=\"label\">modifier:</span>%.2f</li>\n"
+                   "</ul>\n",
+                   util::rppm_scaling_string( b.rppm->get_scaling() ).c_str(),
+                   b.rppm->get_frequency(),
+                   b.rppm->get_modifier() );
+      }
+
+      if ( stat_buff )
+      {
+        os << "<h4>Stat Details</h4>\n"
+           << "<ul>\n";
+        for ( size_t j = 0; j < stat_buff->stats.size(); ++j )
+        {
+          os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
+                     "<li><span class=\"label\">amount:</span>%.2f</li>\n",
+                     util::stat_type_string( stat_buff->stats[ j ].stat ),
+                     stat_buff->stats[ j ].amount );
+        }
+        os << "</ul>\n";
+      }
+
+      if ( b.trigger_pct.mean() > 0 )
+      {
+        os.printf( "<h4>Trigger Details</h4>\n"
+                   "<ul>\n"
+                   "<li><span class=\"label\">interval_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
+                   "<li><span class=\"label\">trigger_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
+                   "<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n"
+                   "</ul>\n",
+                   b.start_intervals.min(),
+                   b.start_intervals.max(),
+                   b.trigger_intervals.min(),
+                   b.trigger_intervals.max(),
+                   b.trigger_pct.mean() );
+      }
+
+      if ( break_second )  // if stack rows will overflow past first column
+      {
+        os << "</div>\n"  //  Close second column and start new column for stacks
+           << "<div>\n";
+      }
+
+      os << "<h4>Stack Uptimes</h4>\n"
+         << "<ul>\n";
+      for ( unsigned int j = 0; j < b.stack_uptime.size(); j++ )
+      {
+        double uptime = b.stack_uptime[ j ].uptime_sum.mean();
+        if ( uptime > 0 )
+        {
+          os.printf( "<li><span class=\"label\">%s_%d:</span>%.2f%%</li>\n",
+                     util::encode_html( b.name_str ).c_str(), j, uptime * 100.0 );
+        }
       }
       os << "</ul>\n";
     }
 
-    if ( b.trigger_pct.mean() > 0 )
-    {
-      os << "<h4>Trigger details</h4>\n"
-         << "<ul>\n";
+    os << "</div>\n";
 
-      os.printf( "<li><span class=\"label\">interval_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
-                 "<li><span class=\"label\">trigger_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
-                 "<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n",
-                 b.start_intervals.min(), b.start_intervals.max(),
-                 b.trigger_intervals.min(), b.trigger_intervals.max(),
-                 b.trigger_pct.mean() );
-      os << "</ul>\n";
-    }
-
-    if ( b.stack_uptime.size() > 20 )
-    {
-      os << "</td>\n"
-         << "<td style=\"vertical-align: top;\" class=\"filler\">\n";
-    }
-
-    os << "<h4>Stack uptimes</h4>\n"
-       << "<ul>\n";
-    for ( unsigned int j = 0; j < b.stack_uptime.size(); j++ )
-    {
-      double uptime = b.stack_uptime[ j ].uptime_sum.mean();
-      if ( uptime > 0 )
-      {
-        os.printf( "<li><span class=\"label\">%s_%d:</span>%.2f%%</li>\n",
-                   util::encode_html( b.name_str ).c_str(), j, uptime * 100.0 );
-      }
-    }
-    os << "</ul>\n"
-       << "</td>\n";
-
+    os << "<div class=\"shrink\">\n";
     print_html_player_buff_spelldata(os, b, b.data(), "Spelldata" );
 
     if ( b.get_trigger_data()->ok() && b.get_trigger_data()->id() != b.data().id() )
     {
-      print_html_player_buff_spelldata(os, b, *b.get_trigger_data(), "Trigger Spell" );
+      print_html_player_buff_spelldata(os, b, *b.get_trigger_data(), "Trigger Spelldata" );
     }
-
-    os << "</tr>";
+    os << "</div>\n"
+       << "</div>\n";  // Close everything
 
     if ( !b.constant && !b.overridden && b.sim->buff_uptime_timeline && b.uptime_array.mean() > 0 )
     {
-      highchart::time_series_t buff_uptime( highchart::build_id( b, "uptime" ), *b.sim );
+      highchart::time_series_t buff_uptime( highchart::build_id( b, "_uptime" ), *b.sim );
       buff_uptime.set_yaxis_title( "Average uptime" );
       buff_uptime.set_title( util::encode_html( b.name_str ) + " Uptime" );
       buff_uptime.add_simple_series( "area", "#FF0000", "Uptime", b.uptime_array.data() );
       buff_uptime.set_mean( b.uptime_array.mean() );
+
       if ( !b.player || !b.sim->single_actor_batch )
-      {
         buff_uptime.set_xaxis_max( b.sim->simulation_length.max() );
-      }
       else
-      {
         buff_uptime.set_xaxis_max( b.player->collected_data.fight_length.max() );
-      }
 
-      os << "<tr><td colspan=\"2\" class=\"filler\">\n";
-      os << buff_uptime.to_string();
-      os << "</td></tr>\n";
+      buff_uptime.set_toggle_id( toggle_name );
+      os << buff_uptime.to_target_div();
+      b.sim->add_chart_data( buff_uptime );
     }
-    os << "</table></td>\n";
 
-    os << "</tr>\n";
+    os << "</td>\n"
+       << "</tr>\n";
   }
 }
 
@@ -4144,7 +4230,7 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
          << "<tr>\n";
 
       if ( p.sim->report_details )
-        span_str = "<span id=\"" + token_name + "_toggle\" class=\"toggle-details\">" + name + "</span></td>\n";
+        span_str = "<span id=\"" + token_name + "_toggle\" class=\"toggle-details\">" + name + "</span>";
 
       os.printf( "<td class=\"left\">%s</td>\n"
                  "<td class=\"right\">%.1f</td>\n"
@@ -4153,7 +4239,7 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
                  "<td class=\"right\">%.1fs</td>\n"
                  "<td class=\"right\">%.1fs</td>\n"
                  "<td class=\"right\">%.1fs</td>\n",
-                 span_str,
+                 span_str.c_str(),
                  proc->count.mean(),
                  proc->count.min(),
                  proc->count.max(),

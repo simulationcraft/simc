@@ -28,6 +28,7 @@ h6 {
     color: #27a052;
     margin-top: 1em;
     margin-bottom: 0.5em;
+    white-space: nowrap;
 }
 h1,
 h2 {
@@ -525,43 +526,39 @@ table.sc tr.details td {
     background-color: #333;
     font-size: 11px;
 }
+table.sc tr.details h4 {
+    margin-bottom: 0.25em;
+}
 table.sc tr.details td ul {
-    padding: 0;
-    margin: 4px 0 8px 0;
+    border-top: 1px solid #555;
+    padding: 0.25em 0 0 0;
+}
+table.sc tr.details td ul:first-of-type {
+    padding: 0 0 0.25em 0;
 }
 table.sc tr.details td ul li {
-    clear: both;
-    padding: 2px;
+    display: table-row;
     list-style-type: none;
 }
 table.sc tr.details td ul li span.label {
-    display: block;
     padding: 2px;
-    float: left;
+    display: table-cell;
     width: 145px;
     margin-right: 4px;
     background: #222;
 }
 table.sc tr.details td ul li span.tooltip {
-    display: block;
-    float: left;
-    width: 190px;
-    word-wrap: break-word;
-}
-table.sc tr.details td ul li span.tooltip-wider {
-    display: block;
-    float: left;
-    width: 350px;
-    word-wrap: break-word;
+    white-space: pre-wrap;
 }
 table.sc tr.details td div.float {
     width: 350px;
 }
-table.sc tr.details td div.float h5 {
-    margin-top: 4px;
+table.sc tr.details div.flex {
+    display: flex;
 }
-table.sc tr.details td div.float ul {
-    margin: 0 0 12px 0;
+table.sc tr.details div.flex > div:not(.shrink) {
+    padding-right: 1em;
+    flex-shrink: 0;
 }
 table.sc td.filler {
     background-color: #333;
@@ -599,10 +596,10 @@ table.sort tbody td {
     transition: background-color 300ms ease-in;
 }
 table.sort tr.details td table.details {
-    width: 814px;
+    width: 80%;
 }
 table.sort tr.details td table.details tr th:first-of-type {
-    width: 5em;
+    width: 8%;
 }
 .player-thumbnail {
     float: right;
