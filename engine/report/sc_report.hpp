@@ -167,7 +167,8 @@ bool generate_raid_gear( highchart::bar_chart_t&, const sim_t& );
 bool generate_raid_downtime( highchart::bar_chart_t&, const sim_t& );
 bool generate_raid_aps( highchart::bar_chart_t&, const sim_t&, const std::string& type );
 bool generate_distribution( highchart::histogram_chart_t&, const player_t* p, const std::vector<size_t>& dist_data,
-                            const std::string& distribution_name, double avg, double min, double max );
+                            const std::string& distribution_name, double avg, double min, double max,
+                            bool percent = false );
 bool generate_gains( highchart::pie_chart_t&, const player_t&, resource_e );
 bool generate_spent_time( highchart::pie_chart_t&, const player_t& );
 bool generate_stats_sources( highchart::pie_chart_t&, const player_t&, const std::string title,

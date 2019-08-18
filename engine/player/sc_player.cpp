@@ -6896,7 +6896,7 @@ benefit_t* player_t::get_benefit( const std::string& name )
 
   if ( !u )
   {
-    u = new benefit_t( name );
+    u = new benefit_t( *sim, name );
 
     benefit_list.push_back( u );
   }
@@ -6910,7 +6910,7 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
   if ( !u )
   {
-    u = new uptime_t( name );
+    u = new uptime_t( *sim, name );
 
     uptime_list.push_back( u );
   }
@@ -11248,6 +11248,8 @@ void player_t::analyze( sim_t& s )
   range::for_each( buff_list, []( buff_t* b ) { b->analyze(); } );
 
   range::for_each( proc_list, []( proc_t* pr ) { pr->analyze(); } );
+  range::for_each( uptime_list, []( uptime_t* up ) { up->analyze(); } );
+  range::for_each( benefit_list, []( benefit_t* ben ) { ben->analyze(); } );
 
   range::sort( stats_list, []( const stats_t* l, const stats_t* r ) { return l->name_str < r->name_str; } );
 
