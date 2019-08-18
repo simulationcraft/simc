@@ -8987,40 +8987,31 @@ void druid_t::init_procs()
   player_t::init_procs();
 
   // General
-  proc.vision_of_perfection = get_proc( "Vision of Perfection" )->collect_count()->collect_interval();
+  proc.vision_of_perfection     = get_proc( "Vision of Perfection" )->collect_count()->collect_interval();
 
-  if ( specialization() == DRUID_BALANCE )
-  {
-    proc.arcanic_pulsar           = get_proc( "Arcanic Pulsar Proc" )->collect_interval();
-    proc.power_of_the_moon        = get_proc( "Power of the Moon" )->collect_count();
-    proc.starshards               = get_proc( "Starshards" );
-    proc.unempowered_solar_wrath  = get_proc( "Unempowered Solar Wrath" );
-    proc.unempowered_lunar_strike = get_proc( "Unempowered Lunar Strike" );
-    proc.wasted_streaking_star    = get_proc( "Wasted Streaking Stars" );
-  }
+  // Balance
+  proc.power_of_the_moon        = get_proc( "Power of the Moon" )->collect_count();
+  proc.arcanic_pulsar           = get_proc( "Arcanic Pulsar Proc" )->collect_interval();
+  proc.starshards               = get_proc( "Starshards" );
+  proc.unempowered_solar_wrath  = get_proc( "Unempowered Solar Wrath" );
+  proc.unempowered_lunar_strike = get_proc( "Unempowered Lunar Strike" );
+  proc.wasted_streaking_star    = get_proc( "Wasted Streaking Stars" );
 
-  if ( specialization() == DRUID_FERAL )
-  {
-    proc.the_wildshapers_clutch = get_proc( "the_wildshapers_clutch" );
-    proc.predator               = get_proc( "predator" );
-    proc.predator_wasted        = get_proc( "predator_wasted" );
-    proc.primal_fury            = get_proc( "primal_fury" );
-    proc.tier17_2pc_melee       = get_proc( "tier17_2pc_melee" );
-    proc.blood_mist             = get_proc( "blood_mist" );
-    proc.gushing_lacerations    = get_proc( "gushing_lacerations" );
-  }
+  // Feral
+  proc.the_wildshapers_clutch   = get_proc( "the_wildshapers_clutch" );
+  proc.predator                 = get_proc( "predator" );
+  proc.predator_wasted          = get_proc( "predator_wasted" );
+  proc.primal_fury              = get_proc( "primal_fury" );
+  proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee" );
+  proc.blood_mist               = get_proc( "blood_mist" );
+  proc.gushing_lacerations      = get_proc( "gushing_lacerations" );
 
-  if ( specialization() == DRUID_GUARDIAN )
-  {
-    proc.gore = get_proc( "gore" );
-  }
+  // Guardian
+  proc.gore                     = get_proc( "gore" );
 
-  // Multi-spec
-  if ( specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION )
-  {
-    proc.clearcasting        = get_proc( "clearcasting" );
-    proc.clearcasting_wasted = get_proc( "clearcasting_wasted" );
-  }
+  // Feral & Restoration
+  proc.clearcasting             = get_proc( "clearcasting" );
+  proc.clearcasting_wasted      = get_proc( "clearcasting_wasted" );
 }
 
 // druid_t::init_uptimes ====================================================
@@ -9029,20 +9020,17 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  if (specialization() == DRUID_BALANCE)
+  if ( talent.incarnation_moonkin->ok() )
   {
-    if ( talent.incarnation_moonkin->ok() )
-    {
-      uptime.arcanic_pulsar       = get_uptime( "Incarnation (Pulsar)" );
-      uptime.vision_of_perfection = get_uptime( "Incarnation (Vision)" )->collect_uptime();
-      uptime.combined_ca_inc      = get_uptime( "Incarnation (Total)" )->collect_uptime()->collect_duration();
-    }
-    else
-    {
-      uptime.arcanic_pulsar       = get_uptime( "Celestial Alignment (Pulsar)" );
-      uptime.vision_of_perfection = get_uptime( "Celestial Alignment (Vision)" )->collect_uptime();
-      uptime.combined_ca_inc      = get_uptime( "Celestial Alignment (Total)" )->collect_uptime()->collect_duration();
-    }
+    uptime.arcanic_pulsar       = get_uptime( "Incarnation (Pulsar)" );
+    uptime.vision_of_perfection = get_uptime( "Incarnation (Vision)" )->collect_uptime();
+    uptime.combined_ca_inc      = get_uptime( "Incarnation (Total)" )->collect_uptime()->collect_duration();
+  }
+  else
+  {
+    uptime.arcanic_pulsar       = get_uptime( "Celestial Alignment (Pulsar)" );
+    uptime.vision_of_perfection = get_uptime( "Celestial Alignment (Vision)" )->collect_uptime();
+    uptime.combined_ca_inc      = get_uptime( "Celestial Alignment (Total)" )->collect_uptime()->collect_duration();
   }
 }
 
