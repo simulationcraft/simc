@@ -41,7 +41,7 @@ actions.precombat+=/bestial_wrath,precast_time=1.5,if=azerite.primal_instincts.e
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/use_items
-actions+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.up&(prev_gcd.1.aspect_of_the_wild|!equipped.cyclotronic_blast&buff.aspect_of_the_wild.up)|(debuff.razor_coral_debuff.down|target.time_to_die<26)&target.time_to_die>(24*(cooldown.cyclotronic_blast.remains+4<target.time_to_die))
+actions+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.up&(prev_gcd.1.aspect_of_the_wild|!equipped.cyclotronic_blast&buff.aspect_of_the_wild.up)&target.health.pct<35|(debuff.razor_coral_debuff.down|target.time_to_die<26)&target.time_to_die>(24*(cooldown.cyclotronic_blast.remains+4<target.time_to_die))
 actions+=/use_item,effect_name=cyclotronic_blast,if=buff.bestial_wrath.down|target.time_to_die<5
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=st,if=active_enemies<2
