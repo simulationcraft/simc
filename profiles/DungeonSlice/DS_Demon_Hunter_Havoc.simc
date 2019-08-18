@@ -9,7 +9,7 @@ position=back
 talents=1310221
 
 # Default consumables
-potion=potion_of_focused_resolve
+potion=potion_of_unbridled_fury
 flask=greater_flask_of_the_currents
 food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
@@ -41,7 +41,7 @@ actions+=/variable,name=waiting_for_dark_slash,value=talent.dark_slash.enabled&!
 actions+=/variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up
 actions+=/disrupt
 actions+=/call_action_list,name=cooldown,if=gcd.remains=0
-actions+=/pick_up_fragment,if=fury.deficit>=35
+actions+=/pick_up_fragment,if=fury.deficit>=35&(!azerite.eyes_of_rage.enabled|cooldown.eye_beam.remains>1.4)
 actions+=/call_action_list,name=dark_slash,if=talent.dark_slash.enabled&(variable.waiting_for_dark_slash|debuff.dark_slash.up)
 actions+=/run_action_list,name=demonic,if=talent.demonic.enabled
 actions+=/run_action_list,name=normal
@@ -78,7 +78,7 @@ actions.demonic+=/fel_rush,if=movement.distance>15|buff.out_of_range.up
 actions.demonic+=/vengeful_retreat,if=movement.distance>15
 actions.demonic+=/throw_glaive,if=talent.demon_blades.enabled
 
-actions.essences=concentrated_flame
+actions.essences=concentrated_flame,if=(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)
 actions.essences+=/blood_of_the_enemy,if=buff.metamorphosis.up|target.time_to_die<=10
 actions.essences+=/guardian_of_azeroth,if=buff.metamorphosis.up|target.time_to_die<=30
 actions.essences+=/focused_azerite_beam,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60
