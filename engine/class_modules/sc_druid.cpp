@@ -832,11 +832,11 @@ public:
   virtual void      init_base_stats() override;
   virtual void      init_gains() override;
   virtual void      init_procs() override;
+  virtual void      init_uptimes() override;
   virtual void      init_resources( bool ) override;
   virtual void      init_rng() override;
   virtual void      init_spells() override;
   virtual void      init_scaling() override;
-  virtual void      init_uptimes() override;
   virtual void      create_buffs() override;
   std::string       default_flask() const override;
   std::string       default_potion() const override;
@@ -8902,20 +8902,6 @@ void druid_t::init_scaling()
   }
 }
 
-void druid_t::init_uptimes()
-{
-  player_t::init_uptimes();
-
-  if (specialization() == DRUID_BALANCE)
-  {
-    uptime.arcanic_pulsar = get_uptime( "Arcanic Pulsar Proc" );
-    uptime.vision_of_perfection = get_uptime( "Vision of Perfection" );
-    if ( talent.incarnation_moonkin->ok() )
-      uptime.combined_ca_inc = get_uptime( "Any Incarnation" );
-    else
-      uptime.combined_ca_inc = get_uptime( "Any Celestial Alignment" );
-  }
-}
 // druid_t::init ============================================================
 
 void druid_t::init()
@@ -8932,56 +8918,66 @@ void druid_t::init_gains()
 {
   player_t::init_gains();
 
-  // Multiple Specs / Forms
-  gain.clearcasting          = get_gain( "clearcasting"          ); // Feral & Restoration
-  gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    ); // Feral & Guardian
-  gain.lucid_dreams			     = get_gain( "lucid_dreams"          );
+  // General
+  gain.lucid_dreams = get_gain( "lucid_dreams" );
 
-  // Balance
-  gain.natures_balance       = get_gain( "natures_balance"       );
-  gain.force_of_nature       = get_gain( "force_of_nature"       );
-  gain.fury_of_elune         = get_gain( "fury_of_elune"         );
-  gain.stellar_flare         = get_gain( "stellar_flare"         );
-  gain.lunar_strike          = get_gain( "lunar_strike"          );
-  gain.moonfire              = get_gain( "moonfire"              );
-  gain.shooting_stars        = get_gain( "shooting_stars"        );
-  gain.solar_wrath           = get_gain( "solar_wrath"           );
-  gain.sunfire               = get_gain( "sunfire"               );
-  gain.celestial_alignment   = get_gain( "celestial_alignment"   );
-  gain.incarnation           = get_gain( "incarnation"           );
-  gain.arcanic_pulsar        = get_gain( "arcanic_pulsar"        );
-  gain.vision_of_perfection  = get_gain( "vision_of_perfection"  );
+  if ( specialization() == DRUID_BALANCE )
+  {
+    gain.natures_balance      = get_gain( "natures_balance" );
+    gain.force_of_nature      = get_gain( "force_of_nature" );
+    gain.fury_of_elune        = get_gain( "fury_of_elune" );
+    gain.stellar_flare        = get_gain( "stellar_flare" );
+    gain.lunar_strike         = get_gain( "lunar_strike" );
+    gain.moonfire             = get_gain( "moonfire" );
+    gain.shooting_stars       = get_gain( "shooting_stars" );
+    gain.solar_wrath          = get_gain( "solar_wrath" );
+    gain.sunfire              = get_gain( "sunfire" );
+    gain.celestial_alignment  = get_gain( "celestial_alignment" );
+    gain.incarnation          = get_gain( "incarnation" );
+    gain.arcanic_pulsar       = get_gain( "arcanic_pulsar" );
+    gain.vision_of_perfection = get_gain( "vision_of_perfection" );
+  }
 
-  // Feral 
-  gain.brutal_slash          = get_gain( "brutal_slash"          );
-  gain.energy_refund         = get_gain( "energy_refund"         );
-  gain.feral_frenzy          = get_gain( "feral_frenzy"          );
-  gain.primal_fury           = get_gain( "primal_fury"           );
-  gain.rake                  = get_gain( "rake"                  );
-  gain.shred                 = get_gain( "shred"                 );
-  gain.swipe_cat             = get_gain( "swipe_cat"             );
-  gain.tigers_fury           = get_gain( "tigers_fury"           );
+  if ( specialization() == DRUID_FERAL )
+  {
+    gain.brutal_slash     = get_gain( "brutal_slash" );
+    gain.energy_refund    = get_gain( "energy_refund" );
+    gain.feral_frenzy     = get_gain( "feral_frenzy" );
+    gain.primal_fury      = get_gain( "primal_fury" );
+    gain.rake             = get_gain( "rake" );
+    gain.shred            = get_gain( "shred" );
+    gain.swipe_cat        = get_gain( "swipe_cat" );
+    gain.tigers_fury      = get_gain( "tigers_fury" );
+    gain.feral_tier17_2pc = get_gain( "feral_tier17_2pc" );  // Set bonuses
+    gain.feral_tier18_4pc = get_gain( "feral_tier18_4pc" );
+    gain.feral_tier19_2pc = get_gain( "feral_tier19_2pc" );
+  }
 
-  // Guardian
-  gain.bear_form             = get_gain( "bear_form"             );
-  gain.blood_frenzy          = get_gain( "blood_frenzy"          );
-  gain.brambles              = get_gain( "brambles"              );
-  gain.bristling_fur         = get_gain( "bristling_fur"         );
-  gain.galactic_guardian     = get_gain( "galactic_guardian"     );
-  gain.gore                  = get_gain( "gore"                  );
-  gain.rage_refund           = get_gain( "rage_refund"           );
-  gain.stalwart_guardian     = get_gain( "stalwart_guardian"     );
-  gain.rage_from_melees      = get_gain( "rage_from_melees"      );
+  if ( specialization() == DRUID_GUARDIAN )
+  {
+    gain.bear_form            = get_gain( "bear_form" );
+    gain.blood_frenzy         = get_gain( "blood_frenzy" );
+    gain.brambles             = get_gain( "brambles" );
+    gain.bristling_fur        = get_gain( "bristling_fur" );
+    gain.galactic_guardian    = get_gain( "galactic_guardian" );
+    gain.gore                 = get_gain( "gore" );
+    gain.rage_refund          = get_gain( "rage_refund" );
+    gain.stalwart_guardian    = get_gain( "stalwart_guardian" );
+    gain.rage_from_melees     = get_gain( "rage_from_melees" );
+    gain.guardian_tier17_2pc  = get_gain( "guardian_tier17_2pc" );  // Set bonuses
+    gain.guardian_tier18_2pc  = get_gain( "guardian_tier18_2pc" );
+    gain.oakhearts_puny_quods = get_gain( "oakhearts_puny_quods" );  // Legendaries
+  }
 
-  // Set Bonuses
-  gain.feral_tier17_2pc      = get_gain( "feral_tier17_2pc"      );
-  gain.feral_tier18_4pc      = get_gain( "feral_tier18_4pc"      );
-  gain.feral_tier19_2pc      = get_gain( "feral_tier19_2pc"      );
-  gain.guardian_tier17_2pc   = get_gain( "guardian_tier17_2pc"   );
-  gain.guardian_tier18_2pc   = get_gain( "guardian_tier18_2pc"   );
-
-  // Legendaries
-  gain.oakhearts_puny_quods  = get_gain( "oakhearts_puny_quods"  );
+  // Multi-spec
+  if ( specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION )
+  {
+    gain.clearcasting = get_gain( "clearcasting" );  // Feral & Restoration
+  }
+  if ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN )
+  {
+    gain.soul_of_the_forest = get_gain( "soul_of_the_forest" );  // Feral & Guardian
+  }
 }
 
 // druid_t::init_procs ======================================================
@@ -8990,23 +8986,64 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.clearcasting             = get_proc( "clearcasting" );
-  proc.clearcasting_wasted      = get_proc( "clearcasting_wasted" );
-  proc.gore                     = get_proc( "gore" );
-  proc.gushing_lacerations      = get_proc( "gushing_lacerations" );
-  proc.blood_mist               = get_proc( "blood_mist" );
-  proc.the_wildshapers_clutch   = get_proc( "the_wildshapers_clutch" );
-  proc.predator                 = get_proc( "predator" );
-  proc.predator_wasted          = get_proc( "predator_wasted" );
-  proc.primal_fury              = get_proc( "primal_fury" );
-  proc.starshards               = get_proc( "Starshards" );
-  proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee" );
-  proc.power_of_the_moon        = get_proc( "Power of the Moon" );
-  proc.unempowered_solar_wrath  = get_proc( "unempowered_solar_wrath" );
-  proc.unempowered_lunar_strike = get_proc( "unempowered_lunar_strike" );
-  proc.wasted_streaking_star    = get_proc( "wasted_streaking_star" );
-  proc.arcanic_pulsar           = get_proc( "Arcanic Pulsar Proc" );
-  proc.vision_of_perfection     = get_proc( "Vision of Perfection" );
+  // General
+  proc.vision_of_perfection = get_proc( "Vision of Perfection" )->collect_count()->collect_interval();
+
+  if ( specialization() == DRUID_BALANCE )
+  {
+    proc.arcanic_pulsar           = get_proc( "Arcanic Pulsar Proc" )->collect_interval();
+    proc.power_of_the_moon        = get_proc( "Power of the Moon" )->collect_count();
+    proc.starshards               = get_proc( "Starshards" );
+    proc.unempowered_solar_wrath  = get_proc( "Unempowered Solar Wrath" );
+    proc.unempowered_lunar_strike = get_proc( "Unempowered Lunar Strike" );
+    proc.wasted_streaking_star    = get_proc( "Wasted Streaking Stars" );
+  }
+
+  if ( specialization() == DRUID_FERAL )
+  {
+    proc.the_wildshapers_clutch = get_proc( "the_wildshapers_clutch" );
+    proc.predator               = get_proc( "predator" );
+    proc.predator_wasted        = get_proc( "predator_wasted" );
+    proc.primal_fury            = get_proc( "primal_fury" );
+    proc.tier17_2pc_melee       = get_proc( "tier17_2pc_melee" );
+    proc.blood_mist             = get_proc( "blood_mist" );
+    proc.gushing_lacerations    = get_proc( "gushing_lacerations" );
+  }
+
+  if ( specialization() == DRUID_GUARDIAN )
+  {
+    proc.gore = get_proc( "gore" );
+  }
+
+  // Multi-spec
+  if ( specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION )
+  {
+    proc.clearcasting        = get_proc( "clearcasting" );
+    proc.clearcasting_wasted = get_proc( "clearcasting_wasted" );
+  }
+}
+
+// druid_t::init_uptimes ====================================================
+
+void druid_t::init_uptimes()
+{
+  player_t::init_uptimes();
+
+  if (specialization() == DRUID_BALANCE)
+  {
+    if ( talent.incarnation_moonkin->ok() )
+    {
+      uptime.arcanic_pulsar       = get_uptime( "Incarnation (Pulsar)" );
+      uptime.vision_of_perfection = get_uptime( "Incarnation (Vision)" )->collect_uptime();
+      uptime.combined_ca_inc      = get_uptime( "Incarnation (Total)" )->collect_uptime()->collect_duration();
+    }
+    else
+    {
+      uptime.arcanic_pulsar       = get_uptime( "Celestial Alignment (Pulsar)" );
+      uptime.vision_of_perfection = get_uptime( "Celestial Alignment (Vision)" )->collect_uptime();
+      uptime.combined_ca_inc      = get_uptime( "Celestial Alignment (Total)" )->collect_uptime()->collect_duration();
+    }
+  }
 }
 
 // druid_t::init_resources ==================================================
@@ -9027,9 +9064,11 @@ void druid_t::init_resources( bool force )
 void druid_t::init_rng()
 {
   // RPPM objects
-  rppm.predator           = get_rppm( "predator", predator_rppm_rate );  // Predator: optional RPPM approximation.
-  rppm.blood_mist         = get_rppm( "blood_mist", find_spell(azerite.blood_mist.spell()->effectN(1).trigger_spell_id())->real_ppm() ) ;
-  rppm.power_of_the_moon = get_rppm("power_of_the_moon", azerite.power_of_the_moon.spell()->effectN(1).trigger()->real_ppm());
+  rppm.predator          = get_rppm( "predator", predator_rppm_rate );  // Predator: optional RPPM approximation.
+  rppm.blood_mist        = get_rppm( "blood_mist", find_spell(azerite.blood_mist.spell()
+                             ->effectN(1).trigger_spell_id())->real_ppm() ) ;
+  rppm.power_of_the_moon = get_rppm("power_of_the_moon", azerite.power_of_the_moon.spell()
+                             ->effectN(1).trigger()->real_ppm());
 
   player_t::init_rng();
 }
