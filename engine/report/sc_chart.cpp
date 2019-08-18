@@ -684,7 +684,7 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
 
 bool chart::generate_distribution( highchart::histogram_chart_t& hc, const player_t* p,
                                    const std::vector<size_t>& dist_data, const std::string& distribution_name,
-                                   double avg, double min, double max )
+                                   double avg, double min, double max, bool percent )
 {
   int max_buckets = as<int>( dist_data.size() );
 
@@ -708,7 +708,7 @@ bool chart::generate_distribution( highchart::histogram_chart_t& hc, const playe
 
   std::vector<int> tick_indices;
   int mean_bucket = 0;
-  int sig = step < 1.0 ? 1 : 0;
+  int sig = step < ( percent ? 0.01 : 1.0 ) ? 1 : 0;
 
   for ( int i = 0; i < max_buckets; i++ )
   {
@@ -721,26 +721,26 @@ bool chart::generate_distribution( highchart::histogram_chart_t& hc, const playe
     if ( i == 0 )
     {
       tick_indices.push_back( i );
-      e.set( "name", "min=" + util::to_string( static_cast<unsigned>( min ) ) );
+      e.set( "name", "min=" + util::to_string( util::round( min * ( percent ? 100.0 : 1.0 ), sig ), sig ) );
       e.set( "color", color::YELLOW.dark().str() );
     }
     else if ( avg >= begin && avg <= end )
     {
       mean_bucket = i;
       tick_indices.push_back( i );
-      e.set( "name", "mean=" + util::to_string( static_cast<unsigned>( avg ) ) );
+      e.set( "name", "mean=" + util::to_string( util::round( avg * ( percent ? 100.0 : 1.0 ), sig ), sig ) );
       e.set( "color", color::YELLOW.dark().str() );
     }
     else if ( i == max_buckets - 1 )
     {
       tick_indices.push_back( i );
-      e.set( "name", "max=" + util::to_string( static_cast<unsigned>( max ) ) );
+      e.set( "name", "max=" + util::to_string( util::round( max * ( percent ? 100.0 : 1.0 ), sig ), sig ) );
       e.set( "color", color::YELLOW.dark().str() );
     }
     else
     {
-      e.set( "name", util::to_string( util::round( begin, sig ), sig ) + " to " +
-                       util::to_string( util::round( end, sig ), sig ) );
+      e.set( "name", util::to_string( util::round( begin * ( percent ? 100.0 : 1.0 ), sig ), sig ) + " to " +
+                     util::to_string( util::round( end * ( percent ? 100.0 : 1.0 ), sig ), sig ) );
     }
 
     hc.add( "series.0.data", e );

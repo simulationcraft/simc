@@ -2479,7 +2479,6 @@ struct item_t
 };
 std::ostream& operator<<(std::ostream&, const item_t&);
 
-
 // Benefit ==================================================================
 
 struct benefit_t : private noncopyable
@@ -2487,24 +2486,85 @@ struct benefit_t : private noncopyable
 private:
   int up, down;
 public:
-  simple_sample_data_with_min_max_t ratio;
+  // This is initialized in SIMPLE mode. Only change mode for infrequent procs to keep memory usage reasonable.
+  extended_sample_data_t ratio;
   const std::string name_str;
+  sim_t& sim;
 
-  explicit benefit_t( const std::string& n ) :
-    up( 0 ), down( 0 ),
-    ratio(), name_str( n ) {}
+  explicit benefit_t( sim_t& s, const std::string& n ) :
+    up( 0 ),
+    down( 0 ),
+    ratio( "Ratio", true ),
+    name_str( n ),
+    sim( s )
+  {}
 
   void update( bool is_up )
   { if ( is_up ) up++; else down++; }
+
+  void analyze()
+  { ratio.analyze(); }
+
   void datacollection_begin()
   { up = down = 0; }
+
   void datacollection_end()
   { ratio.add( up != 0 ? 100.0 * up / ( down + up ) : 0.0 ); }
+
   void merge( const benefit_t& other )
   { ratio.merge( other.ratio ); }
 
   const char* name() const
   { return name_str.c_str(); }
+
+  benefit_t* collect_ratio( bool collect = true )
+  {
+    if ( sim.report_details )
+    {
+      ratio.change_mode( !collect );
+      ratio.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
+    }
+
+    return this;
+  }
+
+};
+
+// Uptime ===================================================================
+
+struct uptime_t : public uptime_common_t
+{
+  std::string name_str;
+  sim_t& sim;
+
+  uptime_t( sim_t& s, const std::string& n ) :
+    uptime_common_t(), name_str( n ), sim( s )
+  {}
+
+  const char* name() const
+  { return name_str.c_str(); }
+
+  uptime_t* collect_uptime( bool collect = true )
+  {
+    if ( sim.report_details )
+    {
+      uptime_sum.change_mode( !collect );
+      uptime_sum.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
+    }
+
+    return this;
+  }
+
+  uptime_t* collect_duration( bool collect = true )
+  {
+    if ( sim.report_details )
+    {
+      uptime_instance.change_mode( !collect );
+      uptime_instance.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
+    }
+
+    return this;
+  }
 };
 
 // Proc =====================================================================
@@ -2517,7 +2577,8 @@ private:
   timespan_t last_proc; // track time of the last proc
 public:
   const std::string name_str;
-  simple_sample_data_with_min_max_t interval_sum;
+  // These are initialized in SIMPLE mode. Only change mode for infrequent procs to keep memory usage reasonable.
+  extended_sample_data_t interval_sum;
   extended_sample_data_t count;
 
   proc_t( sim_t& s, const std::string& n ) :
@@ -2525,11 +2586,9 @@ public:
     iteration_count(),
     last_proc( timespan_t::min() ),
     name_str( n ),
-    interval_sum(),
-    count( "Count", false )
-  {
-    count.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
-  }
+    interval_sum( "Interval", true ),
+    count( "Count", true )
+  {}
 
   void occur()
   {
@@ -2559,15 +2618,41 @@ public:
   }
 
   void analyze()
-  { count.analyze(); }
+  {
+    count.analyze();
+    interval_sum.analyze();
+  }
 
   void datacollection_begin()
   { iteration_count = 0; }
+
   void datacollection_end()
   { count.add( static_cast<double>( iteration_count ) ); }
 
   const char* name() const
   { return name_str.c_str(); }
+
+  proc_t* collect_count( bool collect = true )
+  {
+    if ( sim.report_details )
+    {
+      count.change_mode( !collect );
+      count.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
+    }
+
+    return this;
+  }
+
+  proc_t* collect_interval( bool collect = true )
+  {
+    if ( sim.report_details )
+    {
+      interval_sum.change_mode( !collect );
+      interval_sum.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
+    }
+
+    return this;
+  }
 };
 
 // Set Bonus ================================================================

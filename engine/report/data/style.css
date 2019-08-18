@@ -570,6 +570,10 @@ tr.details td table.details {
     padding: 0px;
     margin: 5px 0 10px 0;
 }
+tr.details td table.details:first-of-type {
+    border-top: 1px solid #555;
+    padding-top: 0.25em;
+}
 tr.details td table.details tr th {
     background-color: #222;
 }

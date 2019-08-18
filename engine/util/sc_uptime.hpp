@@ -17,15 +17,18 @@ private:
   timespan_t last_start;
   timespan_t iteration_uptime_sum;
 public:
-  simple_sample_data_with_min_max_t uptime_sum;
-  simple_sample_data_with_min_max_t uptime_instance;
+  // These are initialized in SIMPLE mode. Only change mode for infrequent procs to keep memory usage reasonable.
+  // Methods to toggle mode via 'collect_<metric>()' are only available for 'uptime_t' in "simulationcraft.hpp".
+  extended_sample_data_t uptime_sum;
+  extended_sample_data_t uptime_instance;
 
   uptime_common_t() :
     last_start( timespan_t::min() ),
     iteration_uptime_sum( timespan_t::zero() ),
-    uptime_sum(),
-    uptime_instance()
+    uptime_sum( "Uptime", true ),
+    uptime_instance( "Duration", true )
   { }
+
   void update( bool is_up, timespan_t current_time )
   {
     if ( is_up )
@@ -41,26 +44,25 @@ public:
       reset();
     }
   }
+
+  void analyze()
+  {
+    uptime_sum.analyze();
+    uptime_instance.analyze();
+  }
+
   void datacollection_begin()
   { iteration_uptime_sum = timespan_t::zero(); }
+
   void datacollection_end( timespan_t t )
   { uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 ); }
-  void reset() { last_start = timespan_t::min(); }
+
+  void reset()
+  { last_start = timespan_t::min(); }
+
   void merge( const uptime_common_t& other )
   {
     uptime_sum.merge( other.uptime_sum );
     uptime_instance.merge( other.uptime_instance );
   }
-};
-
-struct uptime_t : public uptime_common_t
-{
-  std::string name_str;
-
-  uptime_t( const std::string& n ) :
-    uptime_common_t(), name_str( n )
-  {}
-
-  const char* name() const
-  { return name_str.c_str(); }
 };

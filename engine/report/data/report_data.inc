@@ -1930,14 +1930,15 @@ static const char* __html_stylesheet[] = {
 "{ white-space: pre-wrap;}table.sc tr.details td div.float { width: 350px;}table.sc tr.details div.flex { display: fl",
 "ex;}table.sc tr.details div.flex > div:not(.shrink) { padding-right: 1em; flex-shrink: 0;}table.sc td.filler { backg",
 "round-color: #333;}table.sc .dynamic-buffs tr.details td ul li span.label { width: 120px;}tr.details td table.detail",
-"s { padding: 0px; margin: 5px 0 10px 0;}tr.details td table.details tr th { background-color: #222;}tr.details td ta",
-"ble.details tr td { background-color: #2d2d2d; padding: 1px 3px 1px 3px;}tr.details td table.details tr.odd td { bac",
-"kground-color: #292929;}tr.details td table.details tr td.right { text-align: right;}table.sort td.pulse,table.odd t",
-"r:hover:not(.petrow),table.even tr:hover:not(.petrow),table.stripebody tbody:not(.petrow) tr:hover,table.stripetopro",
-"w .toprow:hover,table.stripetoprow .toprow:hover + .childrow,table.stripetoprow .childrow:hover { background-color: ",
-"#444;}table.sort tbody td { transition: background-color 300ms ease-in;}table.sort tr.details td table.details { wid",
-"th: 80%;}table.sort tr.details td table.details tr th:first-of-type { width: 8%;}.player-thumbnail { float: right; m",
-"argin: 8px; -moz-border-radius: 12px; -khtml-border-radius: 12px; -webkit-border-radius: 12px; border-radius: 12px;}",
+"s { padding: 0px; margin: 5px 0 10px 0;}tr.details td table.details:first-of-type { border-top: 1px solid #555; padd",
+"ing-top: 0.25em;}tr.details td table.details tr th { background-color: #222;}tr.details td table.details tr td { bac",
+"kground-color: #2d2d2d; padding: 1px 3px 1px 3px;}tr.details td table.details tr.odd td { background-color: #292929;",
+"}tr.details td table.details tr td.right { text-align: right;}table.sort td.pulse,table.odd tr:hover:not(.petrow),ta",
+"ble.even tr:hover:not(.petrow),table.stripebody tbody:not(.petrow) tr:hover,table.stripetoprow .toprow:hover,table.s",
+"tripetoprow .toprow:hover + .childrow,table.stripetoprow .childrow:hover { background-color: #444;}table.sort tbody ",
+"td { transition: background-color 300ms ease-in;}table.sort tr.details td table.details { width: 80%;}table.sort tr.",
+"details td table.details tr th:first-of-type { width: 8%;}.player-thumbnail { float: right; margin: 8px; -moz-border",
+"-radius: 12px; -khtml-border-radius: 12px; -webkit-border-radius: 12px; border-radius: 12px;}",
 };
 
 // Automatically generated from file highcharts.inc
