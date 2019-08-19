@@ -2563,6 +2563,12 @@ struct uptime_t : public uptime_common_t
     }
   }
 
+  void analyze()
+  {
+    uptime_sum.analyze();
+    uptime_instance.analyze();
+  }
+
   void merge( const uptime_common_t& other ) override
   {
     uptime_sum.merge( dynamic_cast<const uptime_t&>( other ).uptime_sum );
@@ -2570,20 +2576,10 @@ struct uptime_t : public uptime_common_t
   }
 
   void datacollection_end( timespan_t t ) override
-  {
-    uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 );
-  }
-
-  void analyze()
-  {
-    uptime_sum.analyze();
-    uptime_instance.analyze();
-  }
+  { uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 ); }
 
   const char* name() const
-  {
-    return name_str.c_str();
-  }
+  { return name_str.c_str(); }
 
   uptime_t* collect_uptime( bool collect = true )
   {

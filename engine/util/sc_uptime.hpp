@@ -37,19 +37,15 @@ public:
     }
   }
 
-  virtual void merge( const uptime_common_t& other ) {}
+  virtual void merge( const uptime_common_t& ) {}
 
-  virtual void datacollection_end( timespan_t t ) {}
+  virtual void datacollection_end( timespan_t ) {}
 
   void datacollection_begin()
-  {
-    iteration_uptime_sum = timespan_t::zero();
-  }
+  { iteration_uptime_sum = timespan_t::zero(); }
 
   void reset()
-  {
-    last_start = timespan_t::min();
-  }
+  { last_start = timespan_t::min(); }
 };
 
 struct uptime_simple_t : public uptime_common_t
@@ -61,12 +57,8 @@ struct uptime_simple_t : public uptime_common_t
   {}
 
   void merge( const uptime_common_t& other ) override
-  {
-    uptime_sum.merge( dynamic_cast<const uptime_simple_t&>( other ).uptime_sum );
-  }
+  { uptime_sum.merge( dynamic_cast<const uptime_simple_t&>( other ).uptime_sum ); }
 
   void datacollection_end( timespan_t t ) override
-  {
-    uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 );
-  }
+  { uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 ); }
 };
