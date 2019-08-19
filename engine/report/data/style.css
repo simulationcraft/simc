@@ -540,21 +540,22 @@ table.sc tr.details td ul li {
     display: table-row;
     list-style-type: none;
 }
-table.sc tr.details td ul li span.label {
-    padding: 2px;
+table.sc tr.details .label {
+    padding: 2px 1em 2px 0.5em;
     display: table-cell;
-    width: 145px;
-    margin-right: 4px;
     background: #222;
+    min-width: 100px;
 }
-table.sc tr.details td ul li span.tooltip {
+table.sc tr.details .tooltip {
     white-space: pre-wrap;
 }
-table.sc tr.details td div.float {
-    width: 350px;
-}
-table.sc tr.details div.flex {
+table.sc tr.details .flex {
     display: flex;
+}
+table.sc tr.details .flex .flex {
+    align-items: center;
+    border-top: 2px solid #333;
+    border-bottom: 2px solid #333;
 }
 table.sc tr.details div.flex > div:not(.shrink) {
     padding-right: 1em;
@@ -562,9 +563,6 @@ table.sc tr.details div.flex > div:not(.shrink) {
 }
 table.sc td.filler {
     background-color: #333;
-}
-table.sc .dynamic-buffs tr.details td ul li span.label {
-    width: 120px;
 }
 tr.details td table.details {
     padding: 0px;
