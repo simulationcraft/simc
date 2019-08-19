@@ -498,7 +498,7 @@ table.sc td.small {
     font-size: 11px;
 }
 table.sc tr.odd,
-table.sc tr.odd + tr.childrow,
+table.sc tr.odd + tr.childrow:not(.toprow),
 table.even tbody tr:nth-of-type(even),
 table.odd tbody tr:nth-of-type(odd),
 table.stripebody tbody:nth-of-type(even) tr:first-of-type,
@@ -590,7 +590,8 @@ table.odd tr:hover:not(.petrow),
 table.even tr:hover:not(.petrow),
 table.stripebody tbody:not(.petrow) tr:hover,
 table.stripetoprow .toprow:hover,
-table.stripetoprow .toprow:hover + .childrow,
+table.stripetoprow .toprow:hover + .childrow:not(.toprow),
+table.stripetoprow .toprow + .childrow:hover,
 table.stripetoprow .childrow:hover {
     background-color: #444;
 }
