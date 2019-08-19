@@ -3001,7 +3001,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     int second_rows   = ( b.rppm ? 5 : 0 ) + ( stat_buff ? 2 + 
                         ( as<int>( stat_buff->stats.size() ) * 2 ) : 0 ) +
                         ( b.trigger_pct.mean() > 0 ? 5 : 0 );
-    int stack_rows    = 2 + as<int>( range::count_if( b.stack_uptime, []( const uptime_common_t& up ) {
+    int stack_rows    = 2 + as<int>( range::count_if( b.stack_uptime, []( const uptime_simple_t& up ) {
                               return up.uptime_sum.mean() > 0;
                             } ) );
     bool break_first  = first_rows + second_rows > stack_rows;

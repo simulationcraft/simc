@@ -13,23 +13,17 @@
 
 struct uptime_common_t
 {
-private:
+protected:
   timespan_t last_start;
   timespan_t iteration_uptime_sum;
-public:
-  // These are initialized in SIMPLE mode. Only change mode for infrequent procs to keep memory usage reasonable.
-  // Methods to toggle mode via 'collect_<metric>()' are only available for 'uptime_t' in "simulationcraft.hpp".
-  extended_sample_data_t uptime_sum;
-  extended_sample_data_t uptime_instance;
 
+public:
   uptime_common_t() :
     last_start( timespan_t::min() ),
-    iteration_uptime_sum( timespan_t::zero() ),
-    uptime_sum( "Uptime", true ),
-    uptime_instance( "Duration", true )
-  { }
+    iteration_uptime_sum( timespan_t::zero() )
+  {}
 
-  void update( bool is_up, timespan_t current_time )
+  virtual void update( bool is_up, timespan_t current_time )
   {
     if ( is_up )
     {
@@ -38,31 +32,41 @@ public:
     }
     else if ( last_start >= timespan_t::zero() )
     {
-      auto delta = current_time - last_start;
-      iteration_uptime_sum += delta;
-      uptime_instance.add( delta.total_seconds() );
+      iteration_uptime_sum += current_time - last_start;
       reset();
     }
   }
 
-  void analyze()
-  {
-    uptime_sum.analyze();
-    uptime_instance.analyze();
-  }
+  virtual void merge( const uptime_common_t& other ) {}
+
+  virtual void datacollection_end( timespan_t t ) {}
 
   void datacollection_begin()
-  { iteration_uptime_sum = timespan_t::zero(); }
-
-  void datacollection_end( timespan_t t )
-  { uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 ); }
+  {
+    iteration_uptime_sum = timespan_t::zero();
+  }
 
   void reset()
-  { last_start = timespan_t::min(); }
-
-  void merge( const uptime_common_t& other )
   {
-    uptime_sum.merge( other.uptime_sum );
-    uptime_instance.merge( other.uptime_instance );
+    last_start = timespan_t::min();
+  }
+};
+
+struct uptime_simple_t : public uptime_common_t
+{
+  simple_sample_data_t uptime_sum;
+
+  uptime_simple_t() : uptime_common_t(),
+    uptime_sum()
+  {}
+
+  void merge( const uptime_common_t& other ) override
+  {
+    uptime_sum.merge( dynamic_cast<const uptime_simple_t&>( other ).uptime_sum );
+  }
+
+  void datacollection_end( timespan_t t ) override
+  {
+    uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 );
   }
 };
