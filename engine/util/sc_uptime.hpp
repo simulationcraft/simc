@@ -23,6 +23,8 @@ public:
     iteration_uptime_sum( timespan_t::zero() )
   {}
 
+  virtual ~uptime_common_t() {}
+
   virtual void update( bool is_up, timespan_t current_time )
   {
     if ( is_up )
