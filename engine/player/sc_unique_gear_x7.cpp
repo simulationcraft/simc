@@ -4518,7 +4518,7 @@ void items::dreams_end( special_effect_t& effect )
  * id=303580 buff spell (driver->trigger), stores damage
  * id=303583 discharge damage spell
  * id=303621 driver for discharge
- * TODO: What happens when the main buff stacks? Can you proc the main buff again from the AA that procs the discharge?
+ * TODO: Can you proc the main buff again from the AA that procs the discharge?
  */
 
 void items::divers_folly( special_effect_t& effect )
@@ -4528,6 +4528,15 @@ void items::divers_folly( special_effect_t& effect )
   {
     divers_folly_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {}
+
+    void trigger( action_t* a, void* s ) override
+    {
+      // Doesn't proc when buff is up, and doesn't seem to trigger rppm neither
+      if ( listener->buffs.bioelectric_charge->check() )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
 
     void execute( action_t*, action_state_t* ) override
     {
