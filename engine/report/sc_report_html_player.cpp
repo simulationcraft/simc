@@ -374,7 +374,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   // Create Merged Stat
   if ( s.children.size() )
   {
-    auto compound_stats = new stats_t( s.name_str + "_compound", s.player );
+    auto compound_stats = std::make_unique<stats_t>( s.name_str + "_compound", s.player );
     compound_stats->merge( s );
 
     double compound_count = count;
@@ -396,8 +396,6 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
                                                : pct_value<full_result_t, full_result_e>( compound_dr,
                                                  { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } );
     critpct_str = "&#160;(" + util::to_string( compound_critpct, 1 ) + "%)";
-
-    delete compound_stats;
   }
 
   // Result type
