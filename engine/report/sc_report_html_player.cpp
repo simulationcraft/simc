@@ -909,7 +909,12 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       }
 
       if ( !expression_str.empty() )
+      {
+        std::string apl_name = util::encode_html(
+            a->action_list && !a->action_list->name_str.empty() ? a->action_list->name_str : "Invalid" );
+        expression_str = "<div class=\"flex label\">" + apl_name + "</div>\n<div>" + expression_str + "</div>\n";
         expressions.push_back( expression_str );
+      }
 
       if ( found )
         continue;
@@ -1054,7 +1059,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
          << "<h4>APL Expressions</h4>\n";
 
       for ( const auto& str : expressions )
-        os << "<ul>\n" << str << "</ul>\n";
+        os << "<ul class=\"flex\">\n" << str << "</ul>\n";
 
       os << "</div>\n";
     }
@@ -2995,9 +3000,9 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
   {
     const stat_buff_t* stat_buff = dynamic_cast<const stat_buff_t*>( &b );
 
-    int first_rows    = 2 + b.item ? 16 : 15;  // # of rows in the first column incl 2 for header (buff details)
-    int second_rows   = ( b.rppm ? 5 : 0 ) + ( stat_buff ? 2 + 
-                        ( as<int>( stat_buff->stats.size() ) * 2 ) : 0 ) +
+    int first_rows    = 2 + ( b.item ? 16 : 15 );  // # of rows in the first column incl 2 for header (buff details)
+    int second_rows   = ( b.rppm ? 5 : 0 ) +
+                        ( stat_buff ? 2 + ( as<int>( stat_buff->stats.size() ) * 2 ) : 0 ) +
                         ( b.trigger_pct.mean() > 0 ? 5 : 0 );
     int stack_rows    = 2 + as<int>( range::count_if( b.stack_uptime, []( const uptime_simple_t& up ) {
                               return up.uptime_sum.mean() > 0;
@@ -4082,13 +4087,13 @@ void print_html_player_abilities( report::sc_html_stream& os, const player_t& p 
 
 void print_html_player_benefits_uptimes( report::sc_html_stream& os, const player_t& p )
 {
-  auto benefit_count = p.benefit_list.size();
+  auto benefit_count = range::count_if( p.benefit_list, []( const benefit_t* b ) { return b->ratio.mean() > 0; } );
   for ( const auto& pet : p.pet_list )
-    benefit_count += pet->benefit_list.size();
+    benefit_count += range::count_if( pet->benefit_list, []( const benefit_t* b ) { return b->ratio.mean() > 0; } );
 
-  auto uptime_count = p.uptime_list.size();
+  auto uptime_count = range::count_if( p.uptime_list, []( const uptime_t* u ) { return u->uptime_sum.mean() > 0; } );
   for ( const auto& pet : p.pet_list )
-    uptime_count += pet->uptime_list.size();
+    uptime_count += range::count_if( pet->uptime_list, []( const uptime_t* u ) { return u->uptime_sum.mean() > 0; } );
 
   if ( !benefit_count && !uptime_count )
     return;
@@ -4114,6 +4119,9 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
 
     for ( const auto& benefit : p.benefit_list )
     {
+      if ( !benefit->ratio.mean() )
+        continue;
+
       bool show_ratio = !benefit->ratio.simple;
 
       std::string name  = util::encode_html( benefit->name_str );
@@ -4153,6 +4161,9 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
     {
       for ( const auto& benefit : pet->benefit_list )
       {
+        if ( !benefit->ratio.mean() )
+          continue;
+
         bool show_ratio = !benefit->ratio.simple;
 
         std::string name  = util::encode_html( pet->name_str + " - " + benefit->name_str );
@@ -4212,6 +4223,9 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
 
     for ( const auto& uptime : p.uptime_list )
     {
+      if ( !uptime->uptime_sum.mean() )
+        continue;
+
       bool show_uptime   = !uptime->uptime_sum.simple;
       bool show_duration = !uptime->uptime_instance.simple;
 
@@ -4262,6 +4276,9 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, const playe
     {
       for ( const auto& uptime : pet->uptime_list )
       {
+        if ( !uptime->uptime_sum.mean() )
+          continue;
+
         bool show_uptime = !uptime->uptime_sum.simple;
         bool show_duration = !uptime->uptime_instance.simple;
 
