@@ -124,8 +124,7 @@ public:
   simple_sample_data_t avg_overflow_count, avg_overflow_total;
   simple_sample_data_t uptime_pct;
   simple_sample_data_with_min_max_t start_intervals, trigger_intervals;
-  std::vector<uptime_common_t> stack_uptime; // These have no built-in method to toggle to extended mode, unlike
-                                             // 'uptime_t' in "simulationcraft.hpp"
+  std::vector<uptime_simple_t> stack_uptime;
 
   virtual ~buff_t() {}
 
