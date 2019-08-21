@@ -559,13 +559,14 @@ table.stripebody tbody:nth-of-type(even) tr:first-of-type + tr.childrow {
     border-bottom-color: inherit;
 }
 table.sc tr.details td {
-    padding: 0 15px 15px 15px;
+    padding: 5px 15px 15px 15px;
     text-align: left;
     background-color: #333;
     font-size: 11px;
 }
 table.sc tr.details h4 {
     margin-bottom: 0.25em;
+    margin-top: 0.25em;
 }
 table.sc tr.details td ul {
     border-top: 1px solid #555;
@@ -629,9 +630,8 @@ table.even tr:hover:not(.petrow),
 table.stripebody tbody:not(.petrow) tr:hover,
 table.stripetoprow .toprow:hover,
 table.stripetoprow .toprow:hover + .childrow:not(.toprow),
-table.stripetoprow .toprow + .childrow:hover,
 table.stripetoprow .childrow:hover {
-    background-color: #444;
+    background-color: #444 !important;
 }
 table.sort tbody td {
     transition: background-color 300ms ease-in;
