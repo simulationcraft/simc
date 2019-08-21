@@ -707,6 +707,18 @@ expr_t* azerite_state_t::create_expression( const std::vector<std::string>& expr
   {
     return expr_t::create_constant( "azerite_rank", as<double>( rank( power.id ) ) );
   }
+  else if ( util::str_compare_ci( expr_str[ 2 ], "trait_value" ) )
+  {
+    unsigned idx = 1;
+
+    if ( expr_str.size() > 3 )
+    {
+      idx = util::to_unsigned( expr_str[ 3 ] );
+    }
+
+    return expr_t::create_constant( "azerite_trait_value",
+                                    as<double>( m_player->azerite->get_power( power.id ).value( idx) ) );
+  }
   else
   {
     throw std::invalid_argument( fmt::format( "Unsupported azerite expression '{}'.", expr_str[ 2 ] ) );
