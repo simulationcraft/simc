@@ -137,11 +137,11 @@ chart_t::chart_t( const std::string& id_str, const sim_t& sim )
 
 std::string chart_t::to_target_div() const
 {
-  std::string str_ = "<div id=\"" + id_str_ + "\"";
+  std::string str_ = "<div class=\"charts\" id=\"" + id_str_ + "\"";
   str_ += " style=\"min-width: " + util::to_string( width_ ) + "px;";
   if ( height_ > 0 )
     str_ += " min-height: " + util::to_string( height_ ) + "px;";
-  str_ += "margin: 5px;\"></div>\n";
+  str_ += "\"></div>\n";
 
   return str_;
 }
@@ -195,18 +195,17 @@ std::string chart_t::to_string() const
   std::string javascript = b.GetString();
   javascript.erase( std::remove( javascript.begin(), javascript.end(), '\n' ),
                     javascript.end() );
-  std::string str_ = "<div id=\"" + id_str_ + "\"";
+  std::string str_ = "<div class=\"charts\" id=\"" + id_str_ + "\"";
   str_ += " style=\"min-width: " + util::to_string( width_ ) + "px;";
   if ( height_ > 0 )
     str_ += " height: " + util::to_string( height_ ) + "px;";
-  str_ += "margin: 5px;\"></div>\n";
+  str_ += "\"></div>\n";
   str_ += "<script type=\"text/javascript\">\n";
   if ( !toggle_id_str_.empty() )
   {
     str_ += "jQuery( document ).ready( function( $ ) {\n";
     str_ += "$('#" + toggle_id_str_ + "').on('click', function() {\n";
-    str_ += "console.log(\"Loading " + id_str_ + ": " + toggle_id_str_ +
-            " ...\" );\n";
+    str_ += "console.log(\"Loading " + id_str_ + ": " + toggle_id_str_ + " ...\" );\n";
     str_ += "$('#" + id_str_ + "').highcharts(";
     str_ += javascript;
     str_ += ");\n});\n});\n";

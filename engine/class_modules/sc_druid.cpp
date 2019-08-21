@@ -6850,7 +6850,7 @@ struct starsurge_t : public druid_spell_t
 
   timespan_t travel_time() const override  // hack to allow bypassing of action_t::init() precombat check
   {
-    return action_list && action_list->name_str == "precombat" ? 1_ms : druid_spell_t::travel_time();
+    return action_list && action_list->name_str == "precombat" ? 100_ms : druid_spell_t::travel_time();
   }
 
   bool ready() override
