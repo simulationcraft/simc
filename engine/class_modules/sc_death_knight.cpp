@@ -6439,7 +6439,7 @@ void death_knight_t::create_options()
   player_t::create_options();
 
   add_option( opt_float( "lucid_dreams_rune_proc_chance", options.lucid_dreams_minor_proc_chance, 0.0, 1.0 ) );
-  add_option( opt_bool( "death_knight.disable_aotd", options.disable_aotd ) );
+  add_option( opt_bool( "disable_aotd", options.disable_aotd ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
