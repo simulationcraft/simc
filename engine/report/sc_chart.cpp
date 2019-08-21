@@ -944,7 +944,7 @@ bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart, const 
 
   range::sort( stats_list, compare_stats_by_mean );
 
-  if ( stats_list.empty() )
+  if ( stats_list.size() <= 1 ) // Don't display chart for single source
     return false;
 
   generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Damage Sources", stats_list );
@@ -978,12 +978,12 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart, const pl
     range::copy_if( pet->stats_list, std::back_inserter( stats_list ), stats_filter );
   }
 
-  if ( stats_list.empty() )
+  if ( stats_list.size() <= 1 ) // Don't display a chart for single source
     return false;
 
   range::sort( stats_list, compare_stats_by_mean );
 
-  generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Healing Sources", stats_list );
+  generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Healing & Absorb Sources", stats_list );
   chart.set( "plotOptions.pie.events.click", "open_details_from_chart" );
   chart.value( "plotOptions.pie.events.click" ).SetRawOutput( true );
 

@@ -2172,7 +2172,7 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
                data.wait_time.total_seconds() );
   }
 
-  os.printf( "<td class=\"left\">" );
+  os.printf( "<td class=\"left nowrap\">" );
 
   bool first    = true;
   resource_e pr = p.primary_resource();
@@ -2387,13 +2387,13 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
     os << "<table class=\"sc\">\n"
        << "<thead>\n"
        << "<tr>\n"
-       << "<th class=\"center\">Time</th>\n"
-       << "<th class=\"center\">List</th>\n"
-       << "<th class=\"center\">#</th>\n"
-       << "<th class=\"center\">Name</th>\n"
-       << "<th class=\"center\">Target</th>\n"
-       << "<th class=\"center\">Resources</th>\n"
-       << "<th class=\"center\">Buffs</th>\n"
+       << "<th>Time</th>\n"
+       << "<th>List</th>\n"
+       << "<th>#</th>\n"
+       << "<th>Name</th>\n"
+       << "<th>Target</th>\n"
+       << "<th>Resources</th>\n"
+       << "<th>Buffs</th>\n"
        << "</tr>\n"
        << "</thead>\n";
 
@@ -2466,7 +2466,7 @@ void print_html_gain( report::sc_html_stream& os, const gain_t& g, std::array<do
     {
       os << "<tr>\n"
          << "<td class=\"left\">" << util::encode_html( g.name() ) << "</td>\n"
-         << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( i ) ) << "</td>\n"
+         << "<td class=\"left nowrap\">" << util::inverse_tokenize( util::resource_type_string( i ) ) << "</td>\n"
          << "<td class=\"right\">" << g.count[ i ] << "</td>\n"
          << "<td class=\"right\">" << g.actual[ i ] << "</td>\n"
          << "<td class=\"right\">" << ( g.actual[ i ] ? g.actual[ i ] / total_gains[ i ] * 100.0 : 0.0 ) << "%</td>\n"
@@ -2811,6 +2811,13 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
      << "<h3 class=\"toggle open\">Charts</h3>\n"
      << "<div class=\"toggle-content column-charts\">\n";
 
+  highchart::time_series_t dps( highchart::build_id( p, "dps" ), *p.sim );
+  if ( chart::generate_actor_dps_series( dps, p ) )
+  {
+    os << dps.to_target_div();
+    p.sim->add_chart_data( dps );
+  }
+
   highchart::bar_chart_t dpet( highchart::build_id( p, "dpet" ), *p.sim );
   if ( chart::generate_action_dpet( dpet, p ) )
   {
@@ -2825,13 +2832,6 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     p.sim->add_chart_data( damage_pie );
   }
 
-  highchart::time_series_t dps( highchart::build_id( p, "dps" ), *p.sim );
-  if ( chart::generate_actor_dps_series( dps, p ) )
-  {
-    os << dps.to_target_div();
-    p.sim->add_chart_data( dps );
-  }
-
   highchart::histogram_chart_t dps_dist( highchart::build_id( p, "dps_dist" ), *p.sim );
   if ( chart::generate_distribution( dps_dist, &p, p.collected_data.dps.distribution,
                                     util::encode_html( p.name_str ) + " DPS", p.collected_data.dps.mean(),
@@ -2840,20 +2840,6 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     dps_dist.set( "tooltip.headerFormat", "<b>{point.key}</b> DPS<br/>" );
     os << dps_dist.to_target_div();
     p.sim->add_chart_data( dps_dist );
-  }
-
-  highchart::pie_chart_t time_spent( highchart::build_id( p, "time_spent" ), *p.sim );
-  if ( chart::generate_spent_time( time_spent, p ) )
-  {
-    os << time_spent.to_target_div();
-    p.sim->add_chart_data( time_spent );
-  }
-
-  highchart::pie_chart_t heal_pie( highchart::build_id( p, "hps_sources" ), *p.sim );
-  if ( chart::generate_heal_stats_sources( heal_pie, p ) )
-  {
-    os << heal_pie.to_target_div();
-    p.sim->add_chart_data( heal_pie );
   }
 
   if ( p.collected_data.timeline_dmg_taken.mean() > 0 )
@@ -2873,6 +2859,20 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
 
     os << dps_taken.to_target_div();
     p.sim->add_chart_data( dps_taken );
+  }
+
+  highchart::pie_chart_t time_spent( highchart::build_id( p, "time_spent" ), *p.sim );
+  if ( chart::generate_spent_time( time_spent, p ) )
+  {
+    os << time_spent.to_target_div();
+    p.sim->add_chart_data( time_spent );
+  }
+
+  highchart::pie_chart_t heal_pie( highchart::build_id( p, "hps_sources" ), *p.sim );
+  if ( chart::generate_heal_stats_sources( heal_pie, p ) )
+  {
+    os << heal_pie.to_target_div();
+    p.sim->add_chart_data( heal_pie );
   }
 
   if ( p.collected_data.hps.mean() > 0 || p.collected_data.aps.mean() > 0 )
@@ -3938,7 +3938,7 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
   else
     os << "<tr>\n";
 
-  sorttable_header( os, "Healing and Absorb Stats", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
+  sorttable_header( os, "Healing & Absorb Stats", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_help_header( os, "HPS", "help-hps" );
   sorttable_help_header( os, "HPS%", "help-hps-pct" );
   sorttable_help_header( os, "Execute", "help-execute" );
