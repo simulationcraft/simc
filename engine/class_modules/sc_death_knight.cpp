@@ -7827,7 +7827,7 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "berserking,if=buff.unholy_frenzy.up|pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
   def -> add_action( "use_items,if=time>20|!equipped.ramping_amplitude_gigavolt_engine|!equipped.vision_of_demise", "Custom trinkets usage" );
   def -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack<1" );
-  def -> add_action( "use_item,name=ashvanes_razor_coral,if=pet.guardian_of_azeroth.active|(buff.unholy_frenzy.up&!essence.condensed_lifeforce.enabled)|(cooldown.apocalypse.remains<2&cooldown.army_of_the_dead.remains<360)" );
+  def -> add_action( "use_item,name=ashvanes_razor_coral,if=(pet.guardian_of_azeroth.active&pet.apoc_ghoul.active)|(cooldown.apocalypse.remains<gcd&!essence.condensed_lifeforce.enabled&!talent.unholy_frenzy.enabled)|(target.1.time_to_die<cooldown.apocalypse.remains+20)|(cooldown.apocalypse.remains<gcd&target.1.time_to_die<cooldown.condensed_lifeforce.remains+20)|(buff.unholy_frenzy.up&!essence.condensed_lifeforce.enabled)" );
   def -> add_action( "use_item,name=vision_of_demise,if=(cooldown.apocalypse.ready&debuff.festering_wound.stack>=4&essence.vision_of_perfection.enabled)|buff.unholy_frenzy.up|pet.gargoyle.active" );
   def -> add_action( "use_item,name=ramping_amplitude_gigavolt_engine,if=cooldown.apocalypse.remains<2|talent.army_of_the_damned.enabled|raid_event.adds.in<5" );
   def -> add_action( "use_item,name=bygone_bee_almanac,if=cooldown.summon_gargoyle.remains>60|!talent.summon_gargoyle.enabled&time>20|!equipped.ramping_amplitude_gigavolt_engine" );
@@ -7858,7 +7858,7 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4" );
   cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists|raid_event.adds.in>15" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
-  cooldowns -> add_talent( this, "Unholy Frenzy", "if=essence.vision_of_perfection.enabled|debuff.festering_wound.stack<4&!(equipped.ramping_amplitude_gigavolt_engine|azerite.magus_of_the_dead.enabled)|cooldown.apocalypse.remains<2&(equipped.ramping_amplitude_gigavolt_engine|azerite.magus_of_the_dead.enabled)" );
+  cooldowns -> add_talent( this, "Unholy Frenzy", "if=essence.vision_of_perfection.enabled|(essence.condensed_lifeforce.enabled&pet.apoc_ghoul.active)|debuff.festering_wound.stack<4&!(equipped.ramping_amplitude_gigavolt_engine|azerite.magus_of_the_dead.enabled)|cooldown.apocalypse.remains<2&(equipped.ramping_amplitude_gigavolt_engine|azerite.magus_of_the_dead.enabled)" );
   cooldowns -> add_talent( this, "Unholy Frenzy", "if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))" );
   cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.time_to_die<8&target.time_to_die>4" );
   cooldowns -> add_talent( this, "Soul Reaper", "if=(!raid_event.adds.exists|raid_event.adds.in>20)&rune<=(1-buff.unholy_frenzy.up)" );
