@@ -4571,12 +4571,13 @@ void items::divers_folly( special_effect_t& effect )
       dbc_proc_callback_t( e.player, e ), duration( e.driver()->duration() )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void trigger( action_t* a, void * s ) override
     {
-      listener->sim->print_debug(
-        "Bioelectric Charge (Diver's Folly) discharged for {} damage!", proc_action->base_dd_min );
-      dbc_proc_callback_t::execute( a, s );
-      deactivate();
+      listener->sim->print_debug( "Bioelectric Charge (Diver's Folly) discharged for {} damage!",
+                                  proc_action->base_dd_min );
+
+      dbc_proc_callback_t::trigger( a, s );
+      deactivate(); // trigger should always be a success, so deactivate immediately on trigger
     }
   };
 
