@@ -9546,7 +9546,7 @@ std::string monk_t::default_potion() const
   {
     case MONK_BREWMASTER:
       if ( true_level > 110 )
-        return "battle_potion_of_agility";
+        return "superior_battle_potion_of_agility";
       else if ( true_level > 100 )
         return "prolonged_power";
       else if ( true_level > 90 )
@@ -9564,7 +9564,7 @@ std::string monk_t::default_potion() const
       break;
     case MONK_MISTWEAVER:
       if ( true_level > 110 )
-        return "battle_potion_of_intellect";
+        return "superior_battle_potion_of_intellect";
       else if ( true_level > 100 )
         return "prolonged_power";
       else if ( true_level > 90 )
@@ -9611,7 +9611,7 @@ std::string monk_t::default_food() const
   {
     case MONK_BREWMASTER:
       if ( true_level > 110 )
-        return "bountiful_captains_feast";
+        return "famine_evaluator_and_snack_table";
       else if ( true_level > 100 )
         return "fishbrul_special";
       else if ( true_level > 90 )
@@ -9629,7 +9629,7 @@ std::string monk_t::default_food() const
       break;
     case MONK_MISTWEAVER:
       if ( true_level > 110 )
-        return "bountiful_captains_feast";
+        return "famine_evaluator_and_snack_table";
       else if ( true_level > 100 )
         return "lavish_suramar_feast";
       else if ( true_level > 90 )
@@ -9647,7 +9647,7 @@ std::string monk_t::default_food() const
       break;
     case MONK_WINDWALKER:
       if ( true_level > 110 )
-        return "bountiful_captains_feast";
+        return "biltong";
       else if ( true_level > 100 )
         return "lavish_suramar_feast";
       else if ( true_level > 90 )
@@ -9840,13 +9840,13 @@ void monk_t::apl_combat_windwalker()
   action_priority_list_t* cd              = get_action_priority_list( "cd" );
   action_priority_list_t* serenity        = get_action_priority_list( "serenity" );
   action_priority_list_t* aoe             = get_action_priority_list( "aoe" );
+  action_priority_list_t* rskless         = get_action_priority_list( "rskless" );
   action_priority_list_t* st              = get_action_priority_list( "st" );
   action_priority_list_t* essences        = get_action_priority_list( "essences" );
 
   def->add_action( "auto_attack" );
   def->add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
-  def->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5",
-                   "Touch of Karma on cooldown, if Good Karma is enabled equal to 100% of maximum health" );
+  def->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
 
   if ( sim->allow_potions )
   {
@@ -9867,11 +9867,14 @@ void monk_t::apl_combat_windwalker()
   def->add_action( this, "Reverse Harm",
                    "if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=2" );
   def->add_talent( this, "Fist of the White Tiger",
-                   "if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=3" );
+                   "if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=3" );
   def->add_action( this, "Tiger Palm",
-                   "target_if=min:debuff.mark_of_the_crane.remains,if=(energy.time_to_max<1|(talent.serenity.enabled&"
-                   "cooldown.serenity.remains<2))&chi.max-chi>=2&!prev_gcd.1.tiger_palm" );
+                   ",target_if=min:debuff.mark_of_the_crane.remains,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=2&!prev_gcd.1.tiger_palm" );
   def->add_action( "call_action_list,name=cd" );
+  def->add_action( "call_action_list,name=rskless,if=active_enemies<3&azerite.open_palm_strikes.enabled&!azerite.glory_of_the_dawn.enabled",
+                   "Call the RSKLess action list if Open Palm Strikes' is enabled, and Glory of the Dawm's rank is not enabled" );
+  def->add_action( "call_action_list,name=st,if=active_enemies<3",
+                   "Call the ST action list if there are 2 or less enemies" );
   def->add_action( "call_action_list,name=st,if=active_enemies<3",
                    "Call the ST action list if there are 2 or less enemies" );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>=3",
@@ -9976,6 +9979,25 @@ void monk_t::apl_combat_windwalker()
                    "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(buff.bok_proc.up|("
                    "talent.hit_combo.enabled&prev_gcd.1.tiger_palm&chi<4))" );
 
+  // RSK-less Target
+  rskless->add_talent( this, "Whirling Dragon Punch" );
+  rskless->add_action( this, "Fists of Fury" );
+  rskless->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=buff.storm_earth_and_fire.up|cooldown.whirling_dragon_punch.remains<4" );
+  rskless->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down&active_enemies>1" );
+  rskless->add_action( this, "Reverse Harm", "if=chi.max-chi>=2" );
+  rskless->add_talent( this, "Fist of the White Tiger", "if=chi<=2" );
+  rskless->add_talent( this, "Energizing Elixir", "if=chi<=3&energy<50" );
+  rskless->add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick&buff.dance_of_chiji.up" );
+  rskless->add_action( this, "Blackout Kick",
+      "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))" );
+  rskless->add_talent( this, "Chi Wave" );
+  rskless->add_talent( this, "Chi Burst", "if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2" );
+  rskless->add_action( this, "Flying Serpent Kick", "if=prev_gcd.1.blackout_kick&chi>3,interrupt=1" );
+  rskless->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi<2" );
+  rskless->add_action( this, "Tiger Palm",
+                  "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2" );
+  rskless->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
+
   // Single Target
   st->add_talent( this, "Whirling Dragon Punch" );
   st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=chi>=5" );
@@ -9986,16 +10008,14 @@ void monk_t::apl_combat_windwalker()
   st->add_talent( this, "Fist of the White Tiger", "if=chi<=2" );
   st->add_talent( this, "Energizing Elixir", "if=chi<=3&energy<50" );
   st->add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick&buff.dance_of_chiji.up" );
-  st->add_action(
-      this, "Blackout Kick",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>3|"
-      "chi>=3)&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))&buff.swift_roundhouse.stack<2" );
+  st->add_action( this, "Blackout Kick",
+      "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>3|chi>=3)&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))" );
   st->add_talent( this, "Chi Wave" );
   st->add_talent( this, "Chi Burst", "if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2" );
   st->add_action( this, "Tiger Palm",
                   "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2" );
   st->add_action( this, "Flying Serpent Kick",
-                  "if=prev_gcd.1.blackout_kick&chi>3&buff.swift_roundhouse.stack<2,interrupt=1" );
+                  "if=prev_gcd.1.blackout_kick&chi>3,interrupt=1" );
 }
 
 // Mistweaver Combat Action Priority List ==================================
