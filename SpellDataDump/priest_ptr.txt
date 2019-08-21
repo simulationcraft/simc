@@ -11,7 +11,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x08000000
 Mechanic         : Shield
-Affecting spells : Priest (137030 effect#1), Shadow Priest (137033 effect#8), Clear Thoughts (167695 effect#1), Surrender to Madness (193223 effect#2)
+Affecting spells : Improved Power Word: Shield (24191 effect#1), Priest (137030 effect#1), Shadow Priest (137033 effect#8), Clear Thoughts (167695 effect#1), Surrender to Madness (193223 effect#2), Kam Xi'raff (281457 effect#1)
 Family Flags     : 0
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.x.. ........   ........ ........ ........ ........ 
@@ -39,7 +39,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x88000000
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 6, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... x....... ...x.... ........   .......x ........ ........ ........ 
@@ -120,7 +120,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effect#4), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Smite (262861 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effect#4), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Muze's Unwavering Will (210632 effect#1), Shadowform (232698 effect#1), Smite (262861 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
 Family Flags     : 7, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -200,7 +200,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Everlasting Hope (253443 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Everlasting Hope (253443 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 9, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -284,7 +284,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1673
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Rammal's Ulterior Motive (234711 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 10, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -312,7 +312,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Promise of Deliverance (287340 effect#1)
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Complete Healing (184914 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1)
 Family Flags     : 12, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -336,7 +336,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Spirit Shell (109964 effect#1), Surge of Light (114255 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Promise of Deliverance (287340 effect#1)
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Spirit Shell (109964 effect#1), Surge of Light (114255 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Complete Healing (184914 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1)
 Triggered by     : Surge of Light (114255)
 Family Flags     : 11, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -436,7 +436,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (7.5 seconds cooldown)
 Category         : 1602: Priest (137030 effect#2)
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Shadowy Insight (124430 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Fortress of the Mind (193195 effect#2), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Empty Mind (247226 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effect#1), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Shadowy Insight (124430 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#2), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Empty Mind (247226 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effect#1), 
 Family Flags     : 13, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -468,7 +468,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Surrender to Madness (193223 effect#2), Psychic Voice (196704 effect#1)
+Affecting spells : Improved Psychic Scream (44297 effect#1), Surrender to Madness (193223 effect#2), Psychic Voice (196704 effect#1)
 Family Flags     : 16
 Attributes       : ........ ........ x.x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
@@ -582,7 +582,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Fortress of the Mind (193195 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
 Family Flags     : 70, 72
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -857,7 +857,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 2 (9 seconds cooldown)
 Category         : 1169
-Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Zeks Exterminatus (236546 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
 Family Flags     : 33, 44, 72, 105
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -889,7 +889,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 34, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ...x.... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -946,7 +946,7 @@ Cooldown         : 12 seconds
 Category         : 1181
 Category Cooldown: 12 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Priest (137030 effect#1), Surrender to Madness (193223 effect#2)
+Affecting spells : Healing Trance (37706 effect#1), Priest (137030 effect#1), Surrender to Madness (193223 effect#2), Kam Xi'raff (281457 effect#1)
 Family Flags     : 37, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
@@ -971,7 +971,7 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Word of Mending (278645 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Word of Mending (278645 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 117, 126
 Attributes       : ........ ........ ..x..... ...x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -1057,7 +1057,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 28, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
@@ -1242,7 +1242,7 @@ GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Category         : 1230
 Category Cooldown: 9 seconds
-Affecting spells : Surrender to Madness (193223 effect#2), Penitent (246519 effect#1), 
+Affecting spells : Surrender to Madness (193223 effect#2), Penitent (246519 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 55
 Attributes       : ........ ........ x....... .....x..   ..x....x ..x...x. ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1333,7 +1333,7 @@ Spell Type       : Magic
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Reparation (186478 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Radiant Focus (252848 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Reparation (186478 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Radiant Focus (252848 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 48, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ......x. ........   ........ .x...... ........ ........ 
@@ -1402,7 +1402,7 @@ Range            : 40 yards
 Duration         : 10 seconds
 Cooldown         : 180 seconds
 Stance Mask      : 0x88000000
-Affecting spells : Item - Priest WoD PvP Holy4P Bonus (171142 effect#1), Surrender to Madness (193223 effect#2)
+Affecting spells : Item - Priest WoD PvP Holy4P Bonus (171142 effect#1), Surrender to Madness (193223 effect#2), Phyrix's Embrace (234689 effect#1), 
 Family Flags     : 75
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ...x.... x....... ...x.... ........   ........ ........ ........ ........ 
@@ -1685,7 +1685,7 @@ Duration         : 8 seconds
 Cooldown         : 180 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Stance Mask      : 0x80000000
-Affecting spells : Surrender to Madness (193223 effect#2)
+Affecting spells : Surrender to Madness (193223 effect#2), Kam Xi'raff (281457 effect#1)
 Family Flags     : 54
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ .....x.. 
                  : ..x..... ........ ...x.... ......x.   ........ ........ ........ ......x. 
@@ -1714,7 +1714,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 8 seconds
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Triggered by     : Divine Hymn (64843)
 Family Flags     : 66, 126
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -1898,7 +1898,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Surrender to Madness (193223 effect#2)
+Affecting spells : Mental Fatigue (185104 effect#1), Surrender to Madness (193223 effect#2)
 Family Flags     : 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2179,7 +2179,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Stance Mask      : 0x80000000
-Affecting spells : Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1)
+Affecting spells : Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Dejahna's Inspiration (281456 effect#1), 
 Family Flags     : 74
 Attributes       : ........ ........ x....... x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -2297,7 +2297,7 @@ Spell Level      : 28
 Duration         : 10 seconds
 Cooldown         : 60 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Surrender to Madness (193223 effect#2)
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surrender to Madness (193223 effect#2)
 Family Flags     : 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2346,7 +2346,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 98, 126
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -2509,7 +2509,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 97, 126
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ ........ ........ ......xx 
@@ -3136,6 +3136,7 @@ GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 90 seconds
 Stance Mask      : 0x08000000
+Triggered by     : Codex of Ascension (168803)
 Attributes       : ........ .....x.. x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3250,7 +3251,7 @@ Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Shadow Priest (137033 effect#7), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Depth of the Shadows (275544 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Shadow Priest (137033 effect#7), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Depth of the Shadows (275544 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 52, 126
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3577,7 +3578,7 @@ Spell Level      : 10
 Duration         : Aura (infinite)
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Affecting spells : Surrender to Madness (193223 effect#2)
+Affecting spells : Surrender to Madness (193223 effect#2), Iridi's Empowerment (224999 effect#2), 
 Triggered by     : Insanity (194251)
 Family Flags     : 89
 Attributes       : ........ ........ ..x..... x..x.x.x   .....x.. ..x..... ........ ........ 
@@ -3689,7 +3690,7 @@ GCD              : 1.5 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1690
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1)
+Affecting spells : Rapid Healing (24546 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 22, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4033,7 +4034,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 2 (9 seconds cooldown)
 Category         : 1169
-Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Zeks Exterminatus (236546 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
 Family Flags     : 33, 44, 72, 105
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4286,7 +4287,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 104, 126
 Attributes       : ........ ........ x....... ..x....x   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4390,7 +4391,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 86, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4981,7 +4982,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Category         : 1660
-Affecting spells : Mastery: Madness (77486 effect#1), Priest (137030 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#1), Voidform (194249 effect#12)
+Affecting spells : Mastery: Madness (77486 effect#1), Priest (137030 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#1), Voidform (194249 effect#12), Heart of the Void (248296 effect#1)
 Family Flags     : 36
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5050,7 +5051,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 35 yards/sec
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Heart of the Void (248296 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
 Family Flags     : 36, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -5296,7 +5297,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 1
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 93, 126
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -5583,7 +5584,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Mental Fatigue (185104 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
 Family Flags     : 51, 72
 Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5827,7 +5828,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 720 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -6357,7 +6358,7 @@ School           : Holy
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 76, 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -6383,7 +6384,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
 Proc Chance      : 101%
-Affecting spells : Surrender to Madness (193223 effect#2), Dome of Light (197590 effect#2), Light of T'uure (208065 effect#1)
+Affecting spells : Surrender to Madness (193223 effect#2), Dome of Light (197590 effect#2), Light of T'uure (208065 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 99
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -7750,7 +7751,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 27 yards/sec
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Heart of the Void (248296 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
 Family Flags     : 36, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -7769,7 +7770,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Spell Level      : 33
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Triggered by     : Holy Nova (132157)
 Family Flags     : 126
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 

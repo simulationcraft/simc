@@ -29,6 +29,7 @@ Duration         : 3 seconds
 Cooldown         : 300 seconds
 Category         : 1162
 Category Cooldown: 300 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31, 50
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -96,7 +97,7 @@ Range            : 40 yards
 Cooldown         : 600 seconds
 Category         : 56
 Category Cooldown: 600 seconds
-Affecting spells : Sanctuary (105805 effect#5), Unbreakable Spirit (114154 effect#1), Rule of Law (214202 effect#1)
+Affecting spells : Sanctuary (105805 effect#5), Unbreakable Spirit (114154 effect#1), Tyr's Hand of Faith (206380 effect#1), Rule of Law (214202 effect#1)
 Family Flags     : 15
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -156,6 +157,7 @@ Category         : 32
 Category Cooldown: 60 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
+Affecting spells : Improved Hammer of Justice (24188 effect#1)
 Family Flags     : 11
 Attributes       : ........ ........ x.x..... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -187,6 +189,7 @@ Cooldown         : 1.5 seconds
 Charges          : 1 (300 seconds cooldown)
 Category         : 1392
 Mechanic         : Invulneraility
+Affecting spells : Uther's Guard (207558 effect#2)
 Family Flags     : 7
 Attributes       : ........ ........ x.x..... ........   ........ .......x ........ ........ 
                  : ...x.... x....... .....x.. ........   ........ ........ ........ ........ 
@@ -219,7 +222,7 @@ Duration         : 8 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (25 seconds cooldown)
 Category         : 1390
-Affecting spells : Unbound Freedom (199325 effect#1), Unbound Freedom (305394 effect#1)
+Affecting spells : Unbound Freedom (199325 effect#1), Uther's Guard (207558 effect#2), Unbound Freedom (305394 effect#1)
 Family Flags     : 4
 Attributes       : ........ ........ x.x..... ........   ........ .......x .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -279,7 +282,7 @@ Duration         : 12 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (120 seconds cooldown)
 Category         : 1186
-Affecting spells : Blessing of Sacrifice (200327 effect#1)
+Affecting spells : Blessing of Sacrifice (200327 effect#1), Uther's Guard (207558 effect#2)
 Family Flags     : 13
 Attributes       : ........ ........ x.x..... .......x   ........ ........ ...x.... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -310,7 +313,7 @@ Spell Level      : 5
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#2), Sanctuary (105805 effect#5), Selfless Healer (114250 effect#1), Retribution Paladin (137027 effect#8), Protection Paladin (137028 effect#10), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Purity of Light (254332 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#2), Sanctuary (105805 effect#5), Selfless Healer (114250 effect#1), Retribution Paladin (137027 effect#8), Protection Paladin (137028 effect#10), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Purity of Light (254332 effect#1)
 Family Flags     : 30, 46
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -679,7 +682,7 @@ Spell Type       : Magic
 Spell Level      : 50
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Affecting spells : Unbreakable Spirit (114154 effect#1), Item - Paladin WoD PvP Protection 4P Bonus (171427 effect#1)
+Affecting spells : Unbreakable Spirit (114154 effect#1), Item - Paladin WoD PvP Protection 4P Bonus (171427 effect#1), Pillars of Inmost Ligiht (281291 effect#1)
 Family Flags     : 87
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -759,7 +762,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Grand Crusader (85416 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Soaring Shield (278951 effect#2), Redoubt (280373 effect#2)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Grand Crusader (85416 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Last Defender (203791 effect#5), Ferren Marcus's Strength (207614 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Soaring Shield (278951 effect#2), Redoubt (280373 effect#2)
 Family Flags     : 14, 65
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -811,6 +814,7 @@ School           : Arcane
 Spell Type       : None
 Spell Level      : 42
 Duration         : 20 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31, 54, 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -840,7 +844,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (6 seconds cooldown)
 Category         : 1627: Retribution Paladin (137027 effect#5), Paladin (137026 effect#5)
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Last Defender (203791 effect#5), Judgment (214222 effect#1), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
+Affecting spells : Avenging Wrath (31884 effect#1), Improved Crusader Strike (44300 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Last Defender (203791 effect#5), Judgment (214222 effect#1), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
 Family Flags     : 47, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -907,7 +911,7 @@ Resource         : 3 Holy Power (9) (id=2444)
 Spell Level      : 40
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#5), Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), Sacred Judgment (253806 effect#1), Empyrean Power (286393 effect#1), 
+Affecting spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#5), Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), Scarlet Inquisitor's Expurgation (248289 effect#1), Sacred Judgment (253806 effect#1), Empyrean Power (286393 effect#1), 
 Family Flags     : 49
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1291,7 +1295,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : None
 Spell Level      : 40
-Affecting spells : Unbreakable Spirit (114154 effect#1), Item - Paladin WoD PvP Protection 4P Bonus (171427 effect#1)
+Affecting spells : Unbreakable Spirit (114154 effect#1), Item - Paladin WoD PvP Protection 4P Bonus (171427 effect#1), Pillars of Inmost Ligiht (281291 effect#1)
 Family Flags     : 87
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -1442,7 +1446,7 @@ Spell Level      : 25
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Purity of Light (254332 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Purity of Light (254332 effect#1)
 Family Flags     : 46, 74
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2846,6 +2850,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 180 seconds
 Mechanic         : Stun
+Triggered by     : The Jailer's Libram (168802)
 Attributes       : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3976,6 +3981,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
 Mechanic         : Invulneraility
+Affecting spells : Uther's Guard (207558 effect#2)
 Family Flags     : 28
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... .....x.. ........   ........ ........ ........ ........ 
@@ -4872,7 +4878,7 @@ Spell Type       : Melee
 Spell Level      : 32
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Judgment (197277 effect#1), Last Defender (203791 effect#5), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Empyrean Power (286393 effect#1), Avenging Wrath (294027 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Judgment (197277 effect#1), Last Defender (203791 effect#5), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Scarlet Inquisitor's Expurgation (248289 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Empyrean Power (286393 effect#1), Avenging Wrath (294027 effect#1)
 Family Flags     : 27, 65, 91
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4893,7 +4899,7 @@ Spell Type       : Melee
 Spell Level      : 10
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Judgment (197277 effect#1), Last Defender (203791 effect#5), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Righteous Verdict (267611 effect#1), Execution Sentence (267799 effect#1), Avenging Wrath (294027 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Judgment (197277 effect#1), Last Defender (203791 effect#5), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Righteous Verdict (267611 effect#1), Execution Sentence (267799 effect#1), Avenging Wrath (294027 effect#1)
 Family Flags     : 27, 44, 65
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5458,7 +5464,7 @@ Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Ashes to Dust (236106 effect#1), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1)
 Family Flags     : 27, 65, 68
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
