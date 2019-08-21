@@ -586,6 +586,7 @@ table.sc tr.details .label {
 }
 table.sc tr.details .tooltip {
     white-space: pre-wrap;
+    word-break: break-word;
 }
 table.sc tr.details .flex:not(.label) {
     width: 900px;
