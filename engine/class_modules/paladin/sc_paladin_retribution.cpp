@@ -99,18 +99,21 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
 
   virtual void execute() override
   {
+    double hp_used = cost();
+
     paladin_melee_attack_t::execute();
 
     // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ
     if ( p() -> buffs.crusade -> check() )
     {
-      int num_stacks = as<int>( cost() == 0 ? base_costs[ RESOURCE_HOLY_POWER ] : cost() );
+      int num_stacks = as<int>( hp_used == 0 ? base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
       p() -> buffs.crusade -> trigger( num_stacks );
     }
 
     if ( p() -> azerite.relentless_inquisitor.ok() )
     {
-      int num_stacks = as<int>( cost() == 0 ? base_costs[ RESOURCE_HOLY_POWER ] : cost() );
+      int num_stacks = as<int>( hp_used == 0 ? base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
+
       p() -> buffs.relentless_inquisitor -> trigger( num_stacks );
     }
 
@@ -143,7 +146,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
            p() -> azerite.lights_decree.ok() )
     {
       lights_decree_t* ld = debug_cast<lights_decree_t*>( p() -> active.lights_decree );
-      // Light's Decree deals damage based on the base cost of the spell
+      // Light's Decree deals damage based on the base cost of the spell (=1 for Inquisition)
       ld -> last_holy_power_cost = as<int>( base_costs[ RESOURCE_HOLY_POWER ] );
       ld -> execute();
     }
