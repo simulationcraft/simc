@@ -456,12 +456,9 @@ bool chart::generate_raid_downtime( highchart::bar_chart_t& bc,
                                     const sim_t& sim )
 {
   std::vector<const player_t*> players;
-  range::copy_if( sim.players_by_name, std::back_inserter( players ),
-                  []( const player_t* player ) {
-                    return ( player->collected_data.waiting_time.mean() /
-                             player->collected_data.fight_length.mean() ) >
-                           0.01;
-                  } );
+  range::copy_if( sim.players_by_name, std::back_inserter( players ), []( const player_t* player ) {
+    return ( player->collected_data.waiting_time.mean() / player->collected_data.fight_length.mean() ) > 0.01;
+  } );
 
   if ( players.empty() )
   {
@@ -481,8 +478,7 @@ bool chart::generate_raid_downtime( highchart::bar_chart_t& bc,
   for ( const auto p : players )
   {
     const auto& c      = color::class_color( p->type );
-    double waiting_pct = ( 100.0 * p->collected_data.waiting_time.mean() /
-                           p->collected_data.fight_length.mean() );
+    double waiting_pct = ( 100.0 * p->collected_data.waiting_time.mean() / p->collected_data.fight_length.mean() );
     sc_js_t e;
     e.set( "name", report::decorate_html_string( util::encode_html( p->name_str ), c ) );
     e.set( "color", c.str() );
@@ -493,12 +489,11 @@ bool chart::generate_raid_downtime( highchart::bar_chart_t& bc,
 
   bc.set( "series.0.name", "Downtime" );
   bc.set( "series.0.tooltip.pointFormat",
-          "<span style=\"color:{point.color}\">\xE2\x97\x8F</span> "
-          "{series.name}: <b>{point.y}</b>%<br/>" );
+          "<span style=\"color:{point.color}\">\xE2\x97\x8F</span> {series.name}: <b>{point.y}</b>%<br/>" );
 
   bc.set_title( "Raid downtime" );
   bc.set_yaxis_title( "Downtime% (of total fight length)" );
-  bc.height_ = 108 + players.size() * 20;
+  bc.height_ = 111 + players.size() * 24;
 
   return true;
 }
@@ -760,17 +755,15 @@ bool chart::generate_distribution( highchart::histogram_chart_t& hc, const playe
   return true;
 }
 
-bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p,
-                            resource_e type )
+bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p, resource_e type )
 {
-  std::string resource_name =
-      util::inverse_tokenize( util::resource_type_string( type ) );
+  std::string resource_name = util::inverse_tokenize( util::resource_type_string( type ) );
 
   // Build gains List
   std::vector<gain_t*> gains_list;
-  range::copy_if(
-      p.gain_list, std::back_inserter( gains_list ),
-      [type]( const gain_t* gain ) { return gain->actual[ type ] > 0; } );
+  range::copy_if( p.gain_list, std::back_inserter( gains_list ), [type]( const gain_t* gain ) {
+    return gain->actual[ type ] > 0;
+  } );
 
   range::sort( gains_list, []( const gain_t* l, const gain_t* r ) {
     if ( l->actual == r->actual )
@@ -787,8 +780,7 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p,
   }
 
   pc.set_title( util::encode_html( p.name_str ) + " " + resource_name + " Gains" );
-  pc.set( "plotOptions.pie.dataLabels.format",
-          "<b>{point.name}</b>: {point.y:.1f}" );
+  pc.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.y:.1f}" );
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
     pc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
@@ -800,9 +792,7 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p,
 
     sc_js_t e;
 
-    e.set( "color", color::resource_color( type )
-                        .dark( i * ( 0.75 / gains_list.size() ) )
-                        .str() );
+    e.set( "color", color::resource_color( type ).dark( i * ( 0.75 / gains_list.size() ) ).str() );
     e.set( "y", util::round( gain->actual[ type ], p.sim->report_precision ) );
     e.set( "name", util::encode_html( gain->name_str ) );
 
@@ -1161,7 +1151,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
     n_chars += 2;
   }
 
-  bc.set( "chart.marginLeft", 280 );
+  bc.set( "chart.marginLeft", 300 );
 
   bc.set( "xAxis.lineWidth", 0 );
   bc.set( "xAxis.offset", 10 * n_chars );
@@ -1263,17 +1253,13 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
 bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
 {
   bc.set_title( "Raid Damage per Execute Time" );
-  bc.set( "plotOptions.bar.pointWidth", 30 );
-  bc.set( "xAxis.labels.y", -4 );
 
   // Prepare stats list
   std::vector<stats_t*> stats_list;
   for ( const auto& player : s.players_by_dps )
   {
-    // Copy all stats* from p -> stats_list to stats_list, which satisfy the
-    // filter
-    range::remove_copy_if( player->stats_list, back_inserter( stats_list ),
-                           filter_stats_dpet( *player ) );
+    // Copy all stats* from p -> stats_list to stats_list, which satisfy the filter
+    range::remove_copy_if( player->stats_list, back_inserter( stats_list ), filter_stats_dpet( *player ) );
   }
   range::sort( stats_list, []( const stats_t* l, const stats_t* r ) {
     if ( l->apet == r->apet )
@@ -1306,7 +1292,7 @@ bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
 
   bool ret = generate_apet( bc, stats_list );
 
-  bc.height_ = 111 + stats_list.size() * 40;
+  bc.height_ = 111 + stats_list.size() * 24;
 
   return ret;
 }
@@ -1345,9 +1331,7 @@ bool chart::generate_apet( highchart::bar_chart_t& bc, const std::vector<stats_t
     std::string name_str = report::decorate_html_string( util::encode_html( stats->name_str ), c );
     if ( players.size() > 1 )
     {
-      name_str += "<br/>(";
-      name_str += util::encode_html( stats->player->name() );
-      name_str += ")";
+      name_str += " (" + util::encode_html( stats->player->name() )+ ")";
     }
     e.set( "name", name_str );
     e.set( "y", util::round( stats->apet, 1 ) );

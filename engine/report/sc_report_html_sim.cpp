@@ -379,14 +379,14 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
 
 void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
 {
-  os << "<div id=\"sim-info\" class=\"section\">\n";
-
-  os << "<h2 id=\"sim-info-toggle\" class=\"toggle\">Simulation & Raid Information</h2>\n"
+  os << "<div id=\"sim-info\" class=\"section\">\n"
+     << "<h2 id=\"sim-info-toggle\" class=\"toggle\" style=\"margin-bottom: 0;\">Simulation & Raid Information</h2>\n"
      << "<div class=\"toggle-content hide\">\n";
 
-  os << "<table class=\"sc mt\">\n";
+  os << "<div class=\"flexwrap\">\n";
 
-  os << "<tr class=\"left\">\n"
+  os << "<table class=\"sc\">\n"
+     << "<tr class=\"left\">\n"
      << "<th>Iterations:</th>\n"
      << "<td>" << sim.iterations << "</td>\n"
      << "</tr>\n";
@@ -401,105 +401,98 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
      << "<td>" << sim.confidence * 100.0 << "%</td>\n"
      << "</tr>\n";
 
-  os.printf(
-      "<tr class=\"left\">\n"
-      "<th class=\"help\" data-help=\"#help-fight-length\">Fight Length%s:</th>\n"
-      "<td>%.0f - %.0f ( %.1f )</td>\n"
-      "</tr>\n",
-      ( sim.fixed_time ? " (fixed time)" : "" ), sim.simulation_length.min(),
-      sim.simulation_length.max(), sim.simulation_length.mean() );
+  os.printf( "<tr class=\"left\">\n"
+             "<th class=\"help\" data-help=\"#help-fight-length\">Fight Length%s:</th>\n"
+             "<td>%.0f - %.0f ( %.1f )</td>\n"
+             "</tr>\n",
+             ( sim.fixed_time ? " (fixed time)" : "" ),
+             sim.simulation_length.min(),
+             sim.simulation_length.max(),
+             sim.simulation_length.mean() );
 
   os << "<tr class=\"left\">\n"
      << "<td colspan=\"2\"><h3>Performance:</h3></td>\n"
      << "</tr>\n";
 
-  os.printf(
-      "<tr class=\"left\">\n"
-      "<th>Total Events Processed:</th>\n"
-      "<td>%lu</td>\n"
-      "</tr>\n",
-      sim.event_mgr.total_events_processed );
+  os.printf( "<tr class=\"left\">\n"
+             "<th>Total Events Processed:</th>\n"
+             "<td>%lu</td>\n"
+             "</tr>\n",
+             sim.event_mgr.total_events_processed );
 
-  os.printf(
-      "<tr class=\"left\">\n"
-      "<th>Max Event Queue:</th>\n"
-      "<td>%ld</td>\n"
-      "</tr>\n",
-      (long)sim.event_mgr.max_events_remaining );
+  os.printf( "<tr class=\"left\">\n"
+             "<th>Max Event Queue:</th>\n"
+             "<td>%ld</td>\n"
+             "</tr>\n",
+             as<long>( sim.event_mgr.max_events_remaining ) );
 
-  os.printf(
-      "<tr class=\"left\">\n"
-      "<th>Sim Seconds:</th>\n"
-      "<td>%.0f</td>\n"
-      "</tr>\n",
-      sim.iterations * sim.simulation_length.mean() );
-  os.printf(
-      "<tr class=\"left\">\n"
-      "<th>CPU Seconds:</th>\n"
-      "<td>%.4f</td>\n"
-      "</tr>\n",
-      sim.elapsed_cpu );
-  os.printf(
-      "<tr class=\"left\">\n"
-      "<th>Physical Seconds:</th>\n"
-      "<td>%.4f</td>\n"
-      "</tr>\n",
-      sim.elapsed_time );
-  os.printf(
-      "<tr class=\"left\">\n"
-      "<th>Speed Up:</th>\n"
-      "<td>%.0f</td>\n"
-      "</tr>\n",
-      sim.iterations * sim.simulation_length.mean() / sim.elapsed_cpu );
+  os.printf( "<tr class=\"left\">\n"
+             "<th>Sim Seconds:</th>\n"
+             "<td>%.0f</td>\n"
+             "</tr>\n",
+             sim.iterations * sim.simulation_length.mean() );
+
+  os.printf( "<tr class=\"left\">\n"
+             "<th>CPU Seconds:</th>\n"
+             "<td>%.4f</td>\n"
+             "</tr>\n",
+             sim.elapsed_cpu );
+
+  os.printf( "<tr class=\"left\">\n"
+             "<th>Physical Seconds:</th>\n"
+             "<td>%.4f</td>\n"
+             "</tr>\n",
+             sim.elapsed_time );
+
+  os.printf( "<tr class=\"left\">\n"
+             "<th>Speed Up:</th>\n"
+             "<td>%.0f</td>\n"
+             "</tr>\n",
+             sim.iterations * sim.simulation_length.mean() / sim.elapsed_cpu );
 
   os << "<tr class=\"left\">\n"
      << "<td colspan=\"2\"><h3>Settings:</h3></td>\n"
      << "</tr>\n";
 
-  os.printf(
-      "<tr class=\"left\">\n"
-      "<th>World Lag:</th>\n"
-      "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
-      "</tr>\n",
-      (double)sim.world_lag.total_millis(),
-      (double)sim.world_lag_stddev.total_millis() );
-  os.printf(
-      "<tr class=\"left\">\n"
-      "<th>Queue Lag:</th>\n"
-      "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
-      "</tr>\n",
-      (double)sim.queue_lag.total_millis(),
-      (double)sim.queue_lag_stddev.total_millis() );
+  os.printf( "<tr class=\"left\">\n"
+             "<th>World Lag:</th>\n"
+             "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+             "</tr>\n",
+             as<double>( sim.world_lag.total_millis() ),
+             as<double>( sim.world_lag_stddev.total_millis() ) );
+
+  os.printf( "<tr class=\"left\">\n"
+             "<th>Queue Lag:</th>\n"
+             "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+             "</tr>\n",
+             as<double>( sim.queue_lag.total_millis() ),
+             as<double>( sim.queue_lag_stddev.total_millis() ) );
 
   if ( sim.strict_gcd_queue )
   {
-    os.printf(
-        "<tr class=\"left\">\n"
-        "<th>GCD Lag:</th>\n"
-        "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
-        "</tr>\n",
-        (double)sim.gcd_lag.total_millis(),
-        (double)sim.gcd_lag_stddev.total_millis() );
-    os.printf(
-        "<tr class=\"left\">\n"
-        "<th>Channel Lag:</th>\n"
-        "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
-        "</tr>\n",
-        (double)sim.channel_lag.total_millis(),
-        (double)sim.channel_lag_stddev.total_millis() );
-    os.printf(
-        "<tr class=\"left\">\n"
-        "<th>Queue GCD Reduction:</th>\n"
-        "<td>%.0f ms</td>\n"
-        "</tr>\n",
-        (double)sim.queue_gcd_reduction.total_millis() );
+    os.printf( "<tr class=\"left\">\n"
+               "<th>GCD Lag:</th>\n"
+               "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+               "</tr>\n",
+               (double)sim.gcd_lag.total_millis(),
+               (double)sim.gcd_lag_stddev.total_millis() );
+
+    os.printf( "<tr class=\"left\">\n"
+               "<th>Channel Lag:</th>\n"
+               "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+               "</tr>\n",
+               (double)sim.channel_lag.total_millis(),
+               (double)sim.channel_lag_stddev.total_millis() );
+
+    os.printf( "<tr class=\"left\">\n"
+               "<th>Queue GCD Reduction:</th>\n"
+               "<td>%.0f ms</td>\n"
+               "</tr>\n",
+               (double)sim.queue_gcd_reduction.total_millis() );
   }
 
   os << "</table>\n";
 
-  // Left side charts: dps, gear, timeline, raid events
-
-  os << "<div class=\"charts charts-left\">\n";
   // Timeline Distribution Chart
   if ( sim.iterations > 1 )
   {
@@ -514,6 +507,8 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
     }
   }
 
+  os << "</div>\n";
+
   // Gear Charts
   highchart::bar_chart_t gear( "raid_gear", sim );
   if ( chart::generate_raid_gear( gear, sim ) )
@@ -523,18 +518,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
     sim.add_chart_data( gear );
   }
 
-  // Raid Downtime Chart
-  highchart::bar_chart_t waiting( "raid_waiting", sim );
-  if ( chart::generate_raid_downtime( waiting, sim ) )
-  {
-    waiting.set_toggle_id( "sim-info-toggle" );
-    os << waiting.to_target_div();
-    sim.add_chart_data( waiting );
-  }
-  os << "</div>\n";
-
-  // Right side charts: dpet
-  os << "<div class=\"charts\">\n";
+  // Raid DPET Chart
   highchart::bar_chart_t dpet( "raid_dpet", sim );
   if ( chart::generate_raid_dpet( dpet, sim ) )
   {
@@ -542,11 +526,9 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
     os << dpet.to_target_div();
     sim.add_chart_data( dpet );
   }
-  os << "</div>\n";
 
   // closure
-  os << "<div class=\"clear\"></div>\n"
-     << "</div>\n"
+  os << "</div>\n"
      << "</div>\n\n";
 }
 
@@ -554,45 +536,60 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
 
 void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
 {
-  os << "<div id=\"raid-summary\" class=\"section\">\n\n";
-
-  os << "<h2 class=\"toggle open\">Raid Summary</h2>\n";
-
-  os << "<div class=\"toggle-content\">\n";
+  os << "<div id=\"raid-summary\" class=\"section\">\n\n"
+     << "<h2 class=\"toggle open\">Raid Summary</h2>\n"
+     << "<div class=\"toggle-content\">\n";
 
   os << "<ul class=\"params\">\n";
-
-  os.format( "<li><b>Raid Damage:</b> {:n}</li>\n", static_cast<int64_t>(sim.total_dmg.mean()) );
+  os.format( "<li><b>Raid Damage:</b> {:n}</li>\n", static_cast<int64_t>( sim.total_dmg.mean() ) );
   os.format( "<li><b>Raid DPS:</b> {:n}</li>\n", static_cast<int64_t>(sim.raid_dps.mean()) );
   if ( sim.total_heal.mean() > 0 )
   {
     os.format( "<li><b>Raid Heal+Absorb:</b> {:n}</li>\n",
-        static_cast<int64_t>(sim.total_heal.mean() + sim.total_absorb.mean()) );
+               static_cast<int64_t>( sim.total_heal.mean() + sim.total_absorb.mean() ) );
     os.format( "<li><b>Raid HPS+APS:</b> {:n}</li>\n",
         static_cast<int64_t>(sim.raid_hps.mean() + sim.raid_aps.mean()) );
   }
-  os << "</ul><p>&#160;</p>\n";
+  os << "</ul>\n";
 
-  // Left side charts: dps, raid events
-  os << "<div class=\"charts charts-left\">\n";
+  os << "<div class=\"column-charts\">\n"; // Open DIV for charts
 
   highchart::bar_chart_t raid_dps( "raid_dps", sim );
   if ( chart::generate_raid_aps( raid_dps, sim, "dps" ) )
-    os << raid_dps.to_string();
-
-  bool dtps_chart_printed = false;
-  if ( sim.num_enemies > 1 || ( ( ( sim.num_tanks * 2 ) >= sim.num_players ) && sim.num_enemies == 1 ) )
-  {  // Put this chart on the left side to prevent blank space.
-    dtps_chart_printed = true;
-
-    highchart::bar_chart_t raid_dtps( "raid_dtps", sim );
-    if ( chart::generate_raid_aps( raid_dtps, sim, "dtps" ) )
-      os << raid_dtps.to_string();
+  {
+    os << raid_dps.to_target_div();
+    sim.add_chart_data( raid_dps );
   }
+
+  if ( sim.num_enemies > 1 )
+  {
+    highchart::bar_chart_t priority_dps( "priority_dps", sim );
+    if ( chart::generate_raid_aps( priority_dps, sim, "prioritydps" ) )
+    {
+      os << priority_dps.to_target_div();
+      sim.add_chart_data( priority_dps );
+    }
+  }
+
+  highchart::bar_chart_t raid_dtps( "raid_dtps", sim );
+  if ( chart::generate_raid_aps( raid_dtps, sim, "dtps" ) )
+  {
+    os << raid_dtps.to_target_div();
+    sim.add_chart_data( raid_dtps );
+  }
+
+  highchart::bar_chart_t raid_hps( "raid_hps", sim );
+  if ( chart::generate_raid_aps( raid_hps, sim, "hps" ) )
+  {
+    os << raid_hps.to_target_div();
+    sim.add_chart_data( raid_hps );
+  }
+
+  os << "</div>\n"; // Close DIV for charts
 
   if ( !sim.raid_events_str.empty() )
   {
-    os << "<table>\n"
+    os << "<table class=\"sc even\">\n"
        << "<tr>\n"
        << "<th></th>\n"
        << "<th class=\"left\">Raid Event List</th>\n"
@@ -601,86 +598,68 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
     std::vector<std::string> raid_event_names = util::string_split( sim.raid_events_str, "/" );
     for ( size_t i = 0; i < raid_event_names.size(); i++ )
     {
-      os << "<tr";
-      if ( ( i & 1 ) )
-      {
-        os << " class=\"odd\"";
-      }
-      os << ">\n";
-
-      os.printf(
-          "<th class=\"right\">%d</th>\n"
-          "<td class=\"left\">%s</td>\n"
-          "</tr>\n",
-          (int)i, util::encode_html( raid_event_names[ i ] ).c_str() );
+      os.printf( "<tr>\n"
+                 "<th class=\"right\">%d</th>\n"
+                 "<td class=\"left\">%s</td>\n"
+                 "</tr>\n",
+                 as<int>( i ),
+                 util::encode_html( raid_event_names[ i ] ).c_str() );
     }
     os << "</table>\n";
   }
-  os << "</div>\n";
-
-  // Right side charts: hps+aps
-  os << "<div class=\"charts\">\n";
-
-  if ( sim.num_enemies > 1 )
-  {
-    highchart::bar_chart_t priority_dps( "priority_dps", sim );
-    if ( chart::generate_raid_aps( priority_dps, sim, "prioritydps" ) )
-      os << priority_dps.to_string();
-  }
-  else if ( !dtps_chart_printed )
-  {
-    highchart::bar_chart_t raid_dtps( "raid_dtps", sim );
-    if ( chart::generate_raid_aps( raid_dtps, sim, "dtps" ) )
-      os << raid_dtps.to_string();
-  }
-
-  highchart::bar_chart_t raid_hps( "raid_hps", sim );
-  if ( chart::generate_raid_aps( raid_hps, sim, "hps" ) )
-    os << raid_hps.to_string();
-
-  highchart::bar_chart_t raid_tmi( "raid_tmi", sim );
-  if ( chart::generate_raid_aps( raid_tmi, sim, "tmi" ) )
-    os << raid_tmi.to_string();
 
   // RNG chart
   if ( sim.report_rng )
   {
-    os << "<ul>\n";
+    os << "<table class =\"sc even\">\n"
+      << "<thead>\n"
+      << "<tr>\n"
+      << "<th>RNG Report</th>\n"
+      << "<th>+/- of 90% Interval</th>\n"
+      << "<th>% of Mean</th>\n"
+      << "</tr>\n"
+      << "</thead>\n";
+
     for ( size_t i = 0; i < sim.players_by_name.size(); i++ )
     {
       player_t* p  = sim.players_by_name[ i ];
       double range = ( p->collected_data.dps.percentile( 0.95 ) - p->collected_data.dps.percentile( 0.05 ) ) / 2.0;
-      os.printf( "<li>%s: %.1f / %.1f%%</li>\n",
-                 util::encode_html( p->name() ).c_str(), range,
-                 p->collected_data.dps.mean() ? ( range * 100 / p->collected_data.dps.mean() ) : 0 );
+
+      os.printf( "<tr>\n"
+                "<td class=\"left\">%s</td>\n"
+                "<td>%.1f</td>\n"
+                "<td>%.1f%%</td>\n"
+                "</td>\n"
+                "</tr>\n",
+                util::encode_html( p->name() ).c_str(),
+                range,
+                p->collected_data.dps.mean() ? ( range * 100 / p->collected_data.dps.mean() ) : 0 );
     }
-    os << "</ul>\n";
+    os << "</table>\n";
   }
 
-  os << "</div>\n";
-
   // closure
-  os << "<div class=\"clear\"></div>\n"
-     << "</div>\n"
-     << "</div>\n\n";
+  os << "</div>\n"
+     << "</div>\n";
 
-  // Check if actions section is even needed
+  // Check if extra section is even needed
   highchart::bar_chart_t raid_apm( "raid_apm", sim );
   bool has_aps = chart::generate_raid_aps( raid_apm, sim, "apm" );
 
   highchart::bar_chart_t raid_variance( "raid_variance", sim );
   bool has_variance = chart::generate_raid_aps( raid_variance, sim, "variance" );
 
-  if ( has_aps || has_variance )
+  highchart::bar_chart_t raid_tmi( "raid_tmi", sim );
+  bool has_tmi = chart::generate_raid_aps( raid_tmi, sim, "tmi" );
+
+  highchart::bar_chart_t raid_waiting( "raid_waiting", sim );
+  bool has_waiting = chart::generate_raid_downtime( raid_waiting, sim );
+
+  if ( has_aps || has_variance || has_tmi || has_waiting )
   {
-    os << "<div id=\"apm-summary\" class=\"section\">\n\n";
-
-    os << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Actions per Minute / DPS Variance Summary</h2>\n"
-       << "<div class=\"toggle-content hide\">\n"
-       << "<ul class=\"params\">\n";
-
-    // Left side charts: dps, raid events
-    os << "<div class=\"charts charts-left\">\n";
+    os << "<div id=\"apm-summary\" class=\"section\">\n"
+       << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Additional Raid Information</h2>\n"
+       << "<div class=\"toggle-content column-charts hide\">\n";
 
     if ( has_aps )
     {
@@ -688,8 +667,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
       os << raid_apm.to_target_div();
       sim.add_chart_data( raid_apm );
     }
-    os << "</div>\n";
-    os << "<div class=\"charts\">\n";
+
     if ( has_variance )
     {
       raid_variance.set_toggle_id( "apm-summary-toggle" );
@@ -697,12 +675,22 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
       sim.add_chart_data( raid_variance );
     }
 
-    os << "</div>\n";
-    os << "</ul>\n";
+    if ( has_tmi )
+    {
+      raid_tmi.set_toggle_id( "apm-summary-toggle" );
+      os << raid_tmi.to_target_div();
+      sim.add_chart_data( raid_tmi );
+    }
 
-    os << "<div class=\"clear\"></div>\n"
-       << "</div>\n"
-       << "</div>\n\n";
+    if ( has_waiting )
+    {
+      raid_waiting.set_toggle_id( "apm-summary-toggle" );
+      os << raid_waiting.to_target_div();
+      sim.add_chart_data( raid_waiting );
+    }
+
+    os << "</div>\n"
+       << "</div>\n";
   }
 }
 
@@ -720,7 +708,7 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
      << "<h2 class=\"toggle\">" << SF << " Scale Factors (" << sf << " increase per unit stat)</h2>\n"
      << "<div class=\"toggle-content hide\">\n";
 
-  os << "<table class=\"sc\">\n";
+  os << "<table class=\"sc even\">\n";
 
   // this next part is used to determine which columns to suppress
   std::vector<double> stat_effect_is_nonzero;
@@ -757,7 +745,8 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
     {
       prev_type = p->type;
 
-      os << "<tr>\n"
+      os << "<thead>\n"
+         << "<tr>\n"
          << "<th class=\"left small\">Profile</th>\n";
       for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
       {
@@ -771,16 +760,13 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
 #if LOOTRANK_ENABLED == 1
          << "<th class=\"small\">lootrank</th>\n"
 #endif
-         << "</tr>\n";
+         << "</tr>\n"
+         << "</thead>\n";
     }
 
-    os << "<tr";
-    if ( ( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os.printf( "<td class=\"left small\">%s</td>\n", util::encode_html( p->name() ).c_str() );
+    os.printf( "<tr>\n"
+               "<td class=\"left small\">%s</td>\n",
+               util::encode_html( p->name() ).c_str() );
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( sim.scaling->stats.get_stat( j ) != 0 &&
@@ -796,10 +782,9 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
         }
       }
     }
-    os.printf(
-        "<td class=\"small\"><a href=\"%s\" class=\"ext\"> wowhead </a></td>\n",
-        p->report_information.gear_weights_wowhead_std_link[ sm ].c_str() );
-    os.printf( "</tr>\n" );
+    os.printf( "<td class=\"small\"><a href=\"%s\" class=\"ext\"> wowhead </a></td>\n"
+               "</tr>\n",
+               p->report_information.gear_weights_wowhead_std_link[ sm ].c_str() );
   }
   os << "</table>\n";
 
