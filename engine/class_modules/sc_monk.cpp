@@ -9875,8 +9875,6 @@ void monk_t::apl_combat_windwalker()
                    "Call the RSKLess action list if Open Palm Strikes' is enabled, and Glory of the Dawm's rank is not enabled" );
   def->add_action( "call_action_list,name=st,if=active_enemies<3",
                    "Call the ST action list if there are 2 or less enemies" );
-  def->add_action( "call_action_list,name=st,if=active_enemies<3",
-                   "Call the ST action list if there are 2 or less enemies" );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>=3",
                    "Call the AoE action list if there are 3 or more enemies" );
 
