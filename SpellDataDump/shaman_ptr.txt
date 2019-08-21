@@ -93,7 +93,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1), Tectonic Thunder (286976 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1), Tectonic Thunder (286976 effect#1)
 Family Flags     : 1, 39
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -151,7 +151,7 @@ Spell Level      : 20
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Earth Shield (974 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Harmony of the Elements (167703 effect#1), Chain Heal (231780 effect#1), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1), High Tide (288675 effect#1), 
+Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Harmony of the Elements (167703 effect#1), Jonat's Focus (210607 effect#1), Chain Heal (231780 effect#1), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1), High Tide (288675 effect#1), 
 Family Flags     : 8, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -199,7 +199,8 @@ Spell Type       : Magic
 Spell Level      : 16
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Spiritwalker's Grace (79206 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Tablet of Ghost Wolf (168799 effect#1)
+Triggered by     : Retrieving the Doomhammer (193749), Retrieving the Weapons of Storm (199859)
 Family Flags     : 11
 Attributes       : ........ ........ x......x ........   ........ ..x..... .x...... ........ 
                  : .x...... x....... ........ ........   ........ ........ ........ ........ 
@@ -281,6 +282,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1569
+Affecting spells : Praetorian's Tidecallers (210604 effect#1)
 Family Flags     : 6, 15, 19
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -308,7 +310,7 @@ Duration         : 15 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : Generic Heal, Magic Heal, Trap Triggered
-Affecting spells : Rushing Streams (147074 effect#1)
+Affecting spells : Rushing Streams (147074 effect#1), Praetorian's Tidecallers (210604 effect#1)
 Family Flags     : 13
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -361,7 +363,7 @@ Spell Level      : 5
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#2), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#4), Healing Surge (190900 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#2), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#4), Healing Surge (190900 effect#1), Nobundo's Redemption (208764 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1)
 Family Flags     : 7, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -383,7 +385,7 @@ Resource         : 60 Maelstrom (11) (id=191554)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Earthen Strength (252141 effect#1), Call the Thunder (260897 effect#1), Lava Shock (273453 effect#1)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Earthen Strength (252141 effect#1), Call the Thunder (260897 effect#1), Lava Shock (273453 effect#1)
 Family Flags     : 20, 39
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -628,7 +630,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Doom Winds (204945 effect#2), Crackling Surge (224127 effect#2), Lightning Crash (242284 effect#1), Forceful Winds (262652 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Furious Winds (184920 effect#1), Doom Winds (204945 effect#2), Crackling Surge (224127 effect#2), Lightning Crash (242284 effect#1), Forceful Winds (262652 effect#1)
 Family Flags     : 23, 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -838,7 +840,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Doom Winds (204945 effect#2), Crackling Surge (224127 effect#2), Lightning Crash (242284 effect#1), Forceful Winds (262652 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Furious Winds (184920 effect#1), Doom Winds (204945 effect#2), Crackling Surge (224127 effect#2), Lightning Crash (242284 effect#1), Forceful Winds (262652 effect#1)
 Family Flags     : 23, 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -939,7 +941,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 32 (max 37)
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 63, 79
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1146,7 +1148,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Rushing Streams (147074 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Rushing Streams (147074 effect#1), Praetorian's Tidecallers (210604 effect#1)
 Triggered by     : Healing Stream (5672)
 Family Flags     : 13, 41
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ...x.... ........ 
@@ -1286,6 +1288,7 @@ Spell Level      : 18
 Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 12 seconds
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1)
 Family Flags     : 59
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -1499,7 +1502,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 1228
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Item - Shaman T18 Restoration 2P Bonus (185873 effect#1), Torrent (200072 effect#1), Riptide (231725 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Item - Shaman T18 Restoration 2P Bonus (185873 effect#1), Torrent (200072 effect#1), Riptide (231725 effect#1)
 Family Flags     : 41, 68
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -1527,7 +1530,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Proc Chance      : 100%
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Call the Thunder (260897 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Call the Thunder (260897 effect#1)
 Family Flags     : 83
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -1860,7 +1863,7 @@ Spell Level      : 24
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1)
 Family Flags     : 41, 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1880,7 +1883,7 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 50
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Call the Thunder (260897 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Echoes of the Great Sundering (208723 effect#1), Lightning Crash (242284 effect#1), Call the Thunder (260897 effect#1)
 Family Flags     : 39, 83
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
@@ -1986,7 +1989,7 @@ Class            : Shaman, Warlock
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Dirty Hands (211105 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Dirty Hands (211105 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
 Family Flags     : 49, 86
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
@@ -2118,7 +2121,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 30
-Affecting spells : Spouting Spirits (279504 effect#1)
+Affecting spells : Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1)
 Family Flags     : 116
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2146,7 +2149,7 @@ GCD              : 1 seconds
 Duration         : 6 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 1540
-Affecting spells : Spouting Spirits (279504 effect#1)
+Affecting spells : Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1)
 Family Flags     : 29, 116
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2185,7 +2188,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Spell Level      : 30
-Affecting spells : Spouting Spirits (279504 effect#1)
+Affecting spells : Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1)
 Triggered by     : Spirit Link (98017)
 Family Flags     : 116
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2277,6 +2280,7 @@ GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Affecting spells : Praetorian's Tidecallers (210604 effect#1)
 Family Flags     : 29, 113
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2441,7 +2445,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Tectonic Thunder (286976 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Tectonic Thunder (286976 effect#1)
 Family Flags     : 34, 39
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2524,7 +2528,7 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 28
 Range            : 40 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 79, 101
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3845,7 +3849,7 @@ Spell Level      : 5
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#2), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#4), Healing Surge (190900 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#2), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#4), Healing Surge (190900 effect#1), Nobundo's Redemption (208764 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1)
 Family Flags     : 7, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3923,7 +3927,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Cooldown         : 6 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Ember Totem (210658 effect#1), Lightning Crash (242284 effect#1), Focused Elements (246594 effect#1), 
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Elemental Bellows (184919 effect#1), Ember Totem (210658 effect#1), Lightning Crash (242284 effect#1), Focused Elements (246594 effect#1), 
 Family Flags     : 28, 39
 Attributes       : ........ ........ x.x..... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3952,7 +3956,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1), Tectonic Thunder (286976 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1), Tectonic Thunder (286976 effect#1)
 Family Flags     : 1, 39
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4031,7 +4035,7 @@ Duration         : 21 seconds
 Cooldown         : 6 seconds
 Category         : 19
 Category Cooldown: 6 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Ember Totem (210658 effect#1), Lightning Crash (242284 effect#1), Focused Elements (246594 effect#1), 
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Elemental Bellows (184919 effect#1), Ember Totem (210658 effect#1), Lightning Crash (242284 effect#1), Focused Elements (246594 effect#1), 
 Family Flags     : 28, 39
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4453,7 +4457,7 @@ Stacks           : 20 maximum
 Proc Chance      : 100%
 Proc Flags       : ...xxx.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee, Yellow Melee Taken
-Affecting spells : Elemental Fury (60188 effect#1)
+Affecting spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1)
 Family Flags     : 10
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx..x... ........ 
@@ -4482,7 +4486,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 10 yards
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Affecting spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Triggered by     : Lightning Shield (192106)
 Family Flags     : 10, 39, 56
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -4900,7 +4904,7 @@ Spell Level      : 38
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Icefury (210714 effect#3), Lightning Crash (242284 effect#1), Earthen Strength (252141 effect#2)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Icefury (210714 effect#3), Lightning Crash (242284 effect#1), Earthen Strength (252141 effect#2)
 Family Flags     : 31, 39
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8824,7 +8828,7 @@ Duration         : 10 seconds
 Proc Chance      : 101%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
-Affecting spells : Elemental Fury (60188 effect#1)
+Affecting spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1)
 Family Flags     : 10
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx..x... ........ 
@@ -8846,7 +8850,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Affecting spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Triggered by     : Lightning Shield Overcharge (273323)
 Family Flags     : 10, 39, 56
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
