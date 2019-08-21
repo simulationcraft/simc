@@ -9869,7 +9869,7 @@ void monk_t::apl_combat_windwalker()
   def->add_talent( this, "Fist of the White Tiger",
                    "if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=3" );
   def->add_action( this, "Tiger Palm",
-                   ",target_if=min:debuff.mark_of_the_crane.remains,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=2&!prev_gcd.1.tiger_palm" );
+                   "target_if=min:debuff.mark_of_the_crane.remains,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=2&!prev_gcd.1.tiger_palm" );
   def->add_action( "call_action_list,name=cd" );
   def->add_action( "call_action_list,name=rskless,if=active_enemies<3&azerite.open_palm_strikes.enabled&!azerite.glory_of_the_dawn.enabled",
                    "Call the RSKLess action list if Open Palm Strikes' is enabled, and Glory of the Dawm's rank is not enabled" );
