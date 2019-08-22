@@ -64,6 +64,7 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
 
   json.set( "title.style.fontSize", "15px" );
   json.set( "title.style.color", _text_color );
+  json.set( "title.style.textOverflow", "ellipsis" );
   // json.set( "title.style.textShadow", TEXT_OUTLINE );
 
   json.set( "subtitle.style.fontSize", "13px" );

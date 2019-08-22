@@ -3255,7 +3255,8 @@ struct player_collected_data_t
   // Druid requires 4 resource timelines health/mana/energy/rage
   std::vector<resource_timeline_t> resource_timelines;
 
-  std::vector<simple_sample_data_with_min_max_t > combat_end_resource;
+  std::vector<simple_sample_data_t> combat_start_resource;
+  std::vector<simple_sample_data_with_min_max_t> combat_end_resource;
 
   struct stat_timeline_t
   {
