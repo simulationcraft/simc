@@ -11,7 +11,7 @@ azerite_essences=14:3/4:3/5:3
 # Default consumables
 potion=unbridled_fury
 flask=greater_flask_of_the_currents
-food=mech-dowels_big_mech
+food=mechdowels_big_mech
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
