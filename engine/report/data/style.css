@@ -29,6 +29,8 @@ h6 {
     color: #27a052;
     margin-top: 1em;
     margin-bottom: 0.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 h1,
@@ -454,6 +456,9 @@ ul.params li a:hover {
 tr.details .charts {
     padding: 0;
 }
+.player-section .column-charts .charts {
+    margin-bottom: 0;
+}
 .charts img {
     background-color: #333;
     padding: 5px;
@@ -496,6 +501,10 @@ table.sc th {
 }
 table.sc th.name {
     font-weight: lighter;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 table.sc td {
     padding: 2px;

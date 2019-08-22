@@ -2172,7 +2172,7 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
                data.wait_time.total_seconds() );
   }
 
-  os.printf( "<td class=\"left nowrap\">" );
+  os.printf( "<td class=\"left\">" );
 
   bool first    = true;
   resource_e pr = p.primary_resource();
@@ -2182,7 +2182,7 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
     if ( first )
       first = false;
 
-    os.printf( " %.1f/%.0f: <b>%.0f%%</b> %s",
+    os.printf( " %.1f/%.0f: <b>%.0f%%</b>&#160;%s",
                data.resource_snapshot[ pr ],
                data.resource_max_snapshot[ pr ],
                data.resource_snapshot[ pr ] / data.resource_max_snapshot[ pr ] * 100.0,
@@ -2465,7 +2465,7 @@ void print_html_gain( report::sc_html_stream& os, const gain_t& g, std::array<do
     if ( g.actual[ i ] != 0 || g.overflow[ i ] != 0 )
     {
       os << "<tr>\n"
-         << "<td class=\"left\">" << util::encode_html( g.name() ) << "</td>\n"
+         << "<td class=\"left nowrap\">" << util::encode_html( g.name() ) << "</td>\n"
          << "<td class=\"left nowrap\">" << util::inverse_tokenize( util::resource_type_string( i ) ) << "</td>\n"
          << "<td class=\"right\">" << g.count[ i ] << "</td>\n"
          << "<td class=\"right\">" << g.actual[ i ] << "</td>\n"
@@ -2493,97 +2493,77 @@ void get_total_player_gains( const player_t& p, std::array<double, RESOURCE_MAX>
       total_gains[ j ] += gain->actual[ j ];
   }
 }
-// print_html_player_resources ==============================================
 
-void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
-                                  const player_processed_report_information_t& )
+void print_html_resource_gains_table( report::sc_html_stream& os, const player_t& p )
 {
-  // Resources Section
-  os << "<div class=\"player-section gains\">\n"
-     << "<h3 class=\"toggle open\">Resources</h3>\n"
-     << "<div class=\"toggle-content\">\n";
-
-  os << "<div class=\"column-tables\">\n"; // Open DIV for tables
-
-  // Resource Gains Section
   std::array<double, RESOURCE_MAX> total_player_gains = std::array<double, RESOURCE_MAX>();
   get_total_player_gains( p, total_player_gains );
-  bool has_gains = false;
-  for ( size_t i = 0; i < RESOURCE_MAX; i++ )
+
+  os << "<table class=\"sc sort even\">\n"
+      << "<thead>\n"
+      << "<tr>\n";
+
+  sorttable_header( os, "Resource Gains", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
+  sorttable_header( os, "Type", SORT_FLAG_ASC | SORT_FLAG_ALPHA );
+  sorttable_header( os, "Count" );
+  sorttable_header( os, "Total" );
+  sorttable_header( os, "Tot%" );
+  sorttable_header( os, "Avg" );
+  sorttable_header( os, "Overflow" );
+  sorttable_header( os, "Ovr%" );
+
+  os << "</tr>\n"
+      << "<tr>\n"
+      << "<th colspan=\"8\" class=\"left name\">" << util::encode_html( p.name() ) << "</th>\n"
+      << "</tr>\n"
+      << "</thead>\n";
+
+  os << "<tbody>\n";
+  for ( const auto& gain : p.gain_list )
   {
-    if ( total_player_gains[ i ] > 0 )
-    {
-      has_gains = true;
-      break;
-    }
+    print_html_gain( os, *gain, total_player_gains );
   }
 
-  if ( has_gains )
+  for ( const auto& pet : p.pet_list )
   {
-    os << "<table class=\"sc sort even\">\n"
-       << "<thead>\n"
-       << "<tr>\n";
-
-    sorttable_header( os, "Resource Gains", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
-    sorttable_header( os, "Type", SORT_FLAG_ASC | SORT_FLAG_ALPHA );
-    sorttable_header( os, "Count" );
-    sorttable_header( os, "Total" );
-    sorttable_header( os, "Tot%" );
-    sorttable_header( os, "Avg" );
-    sorttable_header( os, "Overflow" );
-    sorttable_header( os, "Ovr%" );
-
-    os << "</tr>\n"
-       << "<tr>\n"
-       << "<th colspan=\"8\" class=\"left name\">" << util::encode_html( p.name() ) << "</th>\n"
-       << "</tr>\n"
-       << "</thead>\n";
-
-    os << "<tbody>\n";
-    for ( const auto& gain : p.gain_list )
+    if ( pet->collected_data.fight_length.mean() <= 0 )
+      continue;
+    bool first = true;
+    std::array<double, RESOURCE_MAX> total_pet_gains = std::array<double, RESOURCE_MAX>();
+    get_total_player_gains( *pet, total_pet_gains );
+    for ( const auto& gain : pet->gain_list )
     {
-      print_html_gain( os, *gain, total_player_gains );
-    }
-
-    for ( const auto& pet : p.pet_list )
-    {
-      if ( pet->collected_data.fight_length.mean() <= 0 )
-        continue;
-      bool first = true;
-      std::array<double, RESOURCE_MAX> total_pet_gains = std::array<double, RESOURCE_MAX>();
-      get_total_player_gains( *pet, total_pet_gains );
-      for ( const auto& gain : pet->gain_list )
+      if ( first )
       {
-        if ( first )
+        bool found = false;
+        for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; r++ )
         {
-          bool found = false;
-          for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; r++ )
+          if ( gain->actual[ r ] != 0 || gain->overflow[ r ] != 0 )
           {
-            if ( gain->actual[ r ] != 0 || gain->overflow[ r ] != 0 )
-            {
-              found = true;
-              break;
-            }
-          }
-          if ( found )
-          {
-            first = false;
-            os << "<tr class=\"petrow\">\n"
-               << "<th colspan=\"8\" class=\"left small\">pet - " << util::encode_html( pet->name_str ) << "</th>\n"
-               << "</tr>\n";
+            found = true;
+            break;
           }
         }
-        print_html_gain( os, *gain, total_pet_gains );
+        if ( found )
+        {
+          first = false;
+          os << "<tr class=\"petrow\">\n"
+              << "<th colspan=\"8\" class=\"left small\">pet - " << util::encode_html( pet->name_str ) << "</th>\n"
+              << "</tr>\n";
+        }
       }
+      print_html_gain( os, *gain, total_pet_gains );
     }
-    os << "</tbody>\n"
-       << "</table>\n";
   }
+  os << "</tbody>\n"
+     << "</table>\n";
+}
 
-  // Resource Usage Section
+void print_html_resource_usage_table( report::sc_html_stream& os, const player_t& p )
+{
   os << "<table class=\"sc sort even\">\n"
-     << "<thead>\n"
-     << "<tr>\n";
+    << "<thead>\n"
+    << "<tr>\n";
 
   sorttable_header( os, "Resource Usage", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_header( os, "Type", SORT_FLAG_ASC | SORT_FLAG_ALPHA );
@@ -2629,72 +2609,113 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
   }
   os << "</tbody>\n"
      << "</table>\n";
+}
 
-  // Resource Rate Section
+void print_html_resource_changes_table( report::sc_html_stream& os, const player_t& p )
+{
   os << "<table class=\"sc even\">\n"
      << "<thead>\n"
      << "<tr>\n"
-     << "<th class=\"left\">Rate (per Second)</th>\n"
-     << "<th>Gain</th>\n"
-     << "<th>Loss</th>\n"
+     << "<th class=\"left\">Resource Change</th>\n"
+     << "<th>Start</th>\n"
+     << "<th>Gain/s</th>\n"
+     << "<th>Loss/s</th>\n"
+     << "<th>End (Avg)</th>\n"
+     << "<th>Min</th>\n"
+     << "<th>Max</th>\n"
      << "</tr>\n"
      << "</thead>\n";
 
   os << "<tbody>\n";
-  for ( size_t i = 0, end = p.collected_data.resource_gained.size(); i < end; ++i )
+  for ( size_t i = 0, end = p.collected_data.resource_lost.size(); i < end; ++i )
   {
-    auto rt         = static_cast<resource_e>( i );
-    double rps_gain = p.collected_data.resource_gained[ rt ].mean() / p.collected_data.fight_length.mean();
-    double rps_loss = p.collected_data.resource_lost[ rt ].mean() / p.collected_data.fight_length.mean();
-    if ( rps_gain <= 0 && rps_loss <= 0 )
+    if ( i >= p.collected_data.combat_start_resource.size() )
       continue;
 
-    os << "<tr>\n"
-       << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( rt ) ) << "</td>\n"
-       << "<td class=\"right\">" << rps_gain << "</td>\n"
-       << "<td class=\"right\">" << rps_loss << "</td>\n"
-       << "</tr>\n";
-  }
-  os << "</tbody>\n"
-     << "</table>\n";
-
-  // Resource End Section
-  os << "<table class=\"sc even\">\n"
-     << "<thead>\n"
-     << "<tr>\n"
-     << "<th>Combat End Level</th>\n"
-     << "<th> Mean </th>\n"
-     << "<th> Min </th>\n"
-     << "<th> Max </th>\n"
-     << "</tr>\n"
-     << "</thead>\n";
-
-  os << "<tbody>\n";
-  for ( size_t i = 0, end = p.collected_data.combat_end_resource.size(); i < end; ++i )
-  {
     auto rt = static_cast<resource_e>( i );
 
-    if ( p.resources.base[ rt ] <= 0 )
+    if ( p.collected_data.resource_lost[ rt ].mean() <= 0 )
       continue;
 
-    if ( !p.resources.is_active( rt ) )  // don't display disabled resources
-      continue;
-
-    os << "<tr>\n"
-       << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( rt ) ) << "</td>\n"
-       << "<td class=\"right\">" << p.collected_data.combat_end_resource[ rt ].mean() << "</td>\n"
-       << "<td class=\"right\">" << p.collected_data.combat_end_resource[ rt ].min() << "</td>\n"
-       << "<td class=\"right\">" << p.collected_data.combat_end_resource[ rt ].max() << "</td>\n"
-       << "</tr>\n";
+    os.printf( "<tr>\n"
+                "<td class=\"left\">%s</td>\n"
+                "<td class=\"right\">%.1f</td>\n"
+                "<td class=\"right\">%.2f</td>\n"
+                "<td class=\"right\">%.2f</td>\n"
+                "<td class=\"right\">%.1f</td>\n"
+                "<td class=\"right\">%.1f</td>\n"
+                "<td class=\"right\">%.1f</td>\n"
+                "</tr>\n",
+                util::inverse_tokenize( util::resource_type_string( rt ) ),
+                p.collected_data.combat_start_resource[ rt ].mean(),
+                p.collected_data.resource_gained[ rt ].mean() / p.collected_data.fight_length.mean(),
+                p.collected_data.resource_lost[ rt ].mean() / p.collected_data.fight_length.mean(),
+                p.collected_data.combat_end_resource[ rt ].mean(),
+                p.collected_data.combat_end_resource[ rt ].min(),
+                p.collected_data.combat_end_resource[ rt ].max() );
   }
   os << "</tbody>\n"
      << "</table>\n";
+}
+
+// print_html_player_resources ==============================================
+
+void print_html_player_resources( report::sc_html_stream& os, const player_t& p )
+{
+  // Resources Section
+  os << "<div class=\"player-section gains\">\n"
+     << "<h3 class=\"toggle open\">Resources</h3>\n"
+     << "<div class=\"toggle-content\">\n";
+
+  os << "<div class=\"column-tables\">\n"; // Open DIV for tables
+
+  int count_gains = 0;
+  for ( const auto& g : p.gain_list )
+  {
+    for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; r++ )
+    {
+      if ( g->actual[ r ] != 0 || g->overflow[ r ] != 0 )
+        count_gains++;
+    }
+  }
+
+  int count_usage = 0;
+  for ( const auto& s : p.stats_list )
+  {
+    if ( s->rpe_sum > 0 )
+      count_usage++;
+  }
+
+  int count_changes = 0;
+  for ( const auto& d : p.collected_data.resource_lost )
+  {
+    if ( d.mean() > 0.0 )
+      count_changes++;
+  }
+
+  if ( count_gains )
+    print_html_resource_gains_table( os, p );
+
+  if ( count_gains <= count_usage + 1 )
+  {
+    if ( count_changes )
+      print_html_resource_changes_table( os, p );
+    if ( count_usage )
+      print_html_resource_usage_table( os, p );
+  }
+  else
+  {
+    if ( count_usage )
+      print_html_resource_usage_table( os, p );
+    if ( count_changes )
+      print_html_resource_changes_table( os, p );
+  }
 
   os << "</div>\n"; // Close DIV for tables
 
   os << "<div class=\"column-charts\">\n"; // Open DIV for charts
 
-  for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+  for ( resource_e r = RESOURCE_MAX; --r > RESOURCE_NONE; )
   {
     double total_gain = 0;
     size_t n_gains    = 0;
@@ -2719,8 +2740,10 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
     }
   }
 
-  for ( const auto& timeline : p.collected_data.resource_timelines )
+  for ( auto it = p.collected_data.resource_timelines.end(); it-- != p.collected_data.resource_timelines.begin(); )
   {
+    auto& timeline = *it;
+
     if ( p.resources.max[ timeline.type ] == 0 )
       continue;
 
@@ -2759,6 +2782,7 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
     os << ts.to_target_div();
     p.sim->add_chart_data( ts );
   }
+
   if ( p.primary_role() == ROLE_TANK && !p.is_enemy() )  // Experimental, restrict to tanks for now
   {
     highchart::time_series_t chart( highchart::build_id( p, "health_change" ), *p.sim );
@@ -2791,7 +2815,6 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
       p.sim->add_chart_data( tmi_chart );
     }
   }
-  os << "<div class=\"clear\">&#160;</div>\n"; // Spacer to prevent re-column stutter
 
   os << "</div>\n"; // Close DIV for charts
 
@@ -2830,6 +2853,16 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
   {
     os << damage_pie.to_target_div();
     p.sim->add_chart_data( damage_pie );
+  }
+
+  scaling_metric_data_t scaling_data = p.scaling_for_metric( p.sim->scaling->scaling_metric );
+  std::string scale_factor_id = "scale_factor_";
+  scale_factor_id += util::scale_metric_type_abbrev( scaling_data.metric );
+  highchart::bar_chart_t scale_factor( highchart::build_id( p, scale_factor_id ), *p.sim );
+  if ( chart::generate_scale_factors( scale_factor, p, scaling_data.metric ) )
+  {
+    os << scale_factor.to_target_div();
+    p.sim->add_chart_data( scale_factor );
   }
 
   highchart::histogram_chart_t dps_dist( highchart::build_id( p, "dps_dist" ), *p.sim );
@@ -2901,16 +2934,6 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     p.sim->add_chart_data( reforge_plot );
   }
 
-  scaling_metric_data_t scaling_data = p.scaling_for_metric( p.sim->scaling->scaling_metric );
-  std::string scale_factor_id = "scale_factor_";
-  scale_factor_id += util::scale_metric_type_abbrev( scaling_data.metric );
-  highchart::bar_chart_t scale_factor( highchart::build_id( p, scale_factor_id ), *p.sim );
-  if ( chart::generate_scale_factors( scale_factor, p, scaling_data.metric ) )
-  {
-    os << scale_factor.to_target_div();
-    p.sim->add_chart_data( scale_factor );
-  }
-
   for ( const auto& timeline : p.collected_data.stat_timelines )
   {
     if ( timeline.timeline.mean() == 0 )
@@ -2924,7 +2947,6 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     os << stat_timeline.to_target_div();
     p.sim->add_chart_data( stat_timeline );
   }
-  os << "<div class=\"clear\">&#160;</div>\n"; // Spacer to prevent re-column stutter
 
   os << "</div>\n"
      << "</div>\n";
@@ -4109,127 +4131,149 @@ void print_html_player_abilities( report::sc_html_stream& os, const player_t& p 
      << "</div>\n";
 }
 
-// print_html_player_procs ==================================================
-
-void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
+void print_html_proc_table( report::sc_html_stream& os, const player_t& p )
 {
-  auto proc_count = range::count_if( p.proc_list, []( const proc_t* pr ) { return pr->count.mean() > 0; } );
+  os << "<table class=\"sc sort stripebody\">\n"
+     << "<thead>\n"
+     << "<tr>\n";
 
-  auto benefit_count = range::count_if( p.benefit_list, []( const benefit_t* b ) { return b->ratio.mean() > 0; } );
-  for ( const auto& pet : p.pet_list )
-    benefit_count += range::count_if( pet->benefit_list, []( const benefit_t* b ) { return b->ratio.mean() > 0; } );
+  int columns = 7; // Set number of columns to make distribution charts fill the table width
+  sorttable_header( os, "Proc", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
+  sorttable_header( os, "Count" );
+  sorttable_header( os, "Min" );
+  sorttable_header( os, "Max" );
+  sorttable_header( os, "Interval", SORT_FLAG_ASC );
+  sorttable_header( os, "Min", SORT_FLAG_ASC );
+  sorttable_header( os, "Max", SORT_FLAG_ASC );
 
-  auto uptime_count = range::count_if( p.uptime_list, []( const uptime_t* u ) { return u->uptime_sum.mean() > 0; } );
-  for ( const auto& pet : p.pet_list )
-    uptime_count += range::count_if( pet->uptime_list, []( const uptime_t* u ) { return u->uptime_sum.mean() > 0; } );
+  os << "</tr>\n"
+     << "</thead>\n";
 
-  if ( !benefit_count && !uptime_count && !proc_count )
-    return;
-
-  os << "<div class=\"player-section procs\">\n"
-     << "<h3 class=\"toggle open\">Procs, Uptimes & Benefits</h3>\n"
-     << "<div class=\"toggle-content flexwrap\">\n"; // Can't use columns as detail toggle will change widths
-
-  os << "<div>\n"; // Open DIV for left side
-
-  // Procs
-  if ( proc_count )
+  for ( const auto& proc : p.proc_list )
   {
-    os << "<table class=\"sc sort stripebody\">\n"
-       << "<thead>\n"
-       << "<tr>\n";
-
-    int columns = 7; // Set number of columns to make distribution charts fill the table width
-    sorttable_header( os, "Proc", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
-    sorttable_header( os, "Count" );
-    sorttable_header( os, "Min" );
-    sorttable_header( os, "Max" );
-    sorttable_header( os, "Interval", SORT_FLAG_ASC );
-    sorttable_header( os, "Min", SORT_FLAG_ASC );
-    sorttable_header( os, "Max", SORT_FLAG_ASC );
-
-    os << "</tr>\n"
-       << "</thead>\n";
-
-    for ( const auto& proc : p.proc_list )
+    if ( proc->count.mean() > 0 )
     {
-      if ( proc->count.mean() > 0 )
+      bool show_count    = !proc->count.simple;
+      bool show_interval = !proc->interval_sum.simple;
+
+      std::string name  = util::encode_html( proc->name_str );
+      std::string span  = name;
+      std::string token = highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_proc" );
+      util::tokenize( token );
+
+      os << "<tbody>\n";
+      if ( p.sim->report_details && ( show_count || show_interval ) )
+        span = "<span id=\"" + token + "_toggle\" class=\"toggle-details\">" + name + "</span>";
+
+      os.printf( "<tr>\n"
+                 "<td class=\"left\">%s</td>\n"
+                 "<td class=\"right\">%.1f</td>\n"
+                 "<td class=\"right\">%.1f</td>\n"
+                 "<td class=\"right\">%.1f</td>\n"
+                 "<td class=\"right\">%.1fs</td>\n"
+                 "<td class=\"right\">%.1fs</td>\n"
+                 "<td class=\"right\">%.1fs</td>\n"
+                 "</tr>\n",
+                 span.c_str(),
+                 proc->count.mean(),
+                 proc->count.min(),
+                 proc->count.max(),
+                 proc->interval_sum.mean(),
+                 proc->interval_sum.min(),
+                 proc->interval_sum.max() );
+
+      if ( p.sim->report_details && ( show_count || show_interval ) )
       {
-        bool show_count    = !proc->count.simple;
-        bool show_interval = !proc->interval_sum.simple;
+        os << "<tr class=\"details hide\">\n"
+           << "<td colspan=\"" << columns << "\">\n";
 
-        std::string name  = util::encode_html( proc->name_str );
-        std::string span  = name;
-        std::string token = highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_proc" );
-        util::tokenize( token );
+        if ( show_count )
+          print_distribution_chart( os, p, &proc->count, name, token, "_proc" );
 
-        os << "<tbody>\n";
-        if ( p.sim->report_details && ( show_count || show_interval ) )
-          span = "<span id=\"" + token + "_toggle\" class=\"toggle-details\">" + name + "</span>";
+        if ( show_interval )
+          print_distribution_chart( os, p, &proc->interval_sum, name, token, "_interval", true );
 
-        os.printf( "<tr>\n"
-                   "<td class=\"left\">%s</td>\n"
-                   "<td class=\"right\">%.1f</td>\n"
-                   "<td class=\"right\">%.1f</td>\n"
-                   "<td class=\"right\">%.1f</td>\n"
-                   "<td class=\"right\">%.1fs</td>\n"
-                   "<td class=\"right\">%.1fs</td>\n"
-                   "<td class=\"right\">%.1fs</td>\n"
-                   "</tr>\n",
-                   span.c_str(),
-                   proc->count.mean(),
-                   proc->count.min(),
-                   proc->count.max(),
-                   proc->interval_sum.mean(),
-                   proc->interval_sum.min(),
-                   proc->interval_sum.max() );
-
-        if ( p.sim->report_details && ( show_count || show_interval ) )
-        {
-          os << "<tr class=\"details hide\">\n"
-             << "<td colspan=\"" << columns << "\">\n";
-
-          if ( show_count )
-            print_distribution_chart( os, p, &proc->count, name, token, "_proc" );
-
-          if ( show_interval )
-            print_distribution_chart( os, p, &proc->interval_sum, name, token, "_interval", true );
-
-          os << "</td>\n"
-             << "</tr>\n";
-        }
-        os << "</tbody>\n";
+        os << "</td>\n"
+           << "</tr>\n";
       }
-    }
-    os << "</table>\n";
-
-    if ( proc_count > benefit_count )
-    {
-      os << "</div>\n"
-         << "<div>\n";
+      os << "</tbody>\n";
     }
   }
+  os << "</table>\n";
+}
 
-  // Uptime
-  if ( uptime_count )
+void print_html_uptime_table( report::sc_html_stream& os, const player_t& p )
+{
+  os << "<table class=\"sc sort stripebody\">\n"
+      << "<thead>\n"
+      << "<tr>\n";
+
+  int columns = 7;
+  sorttable_header( os, "Uptime", SORT_FLAG_ALPHA | SORT_FLAG_ASC | SORT_FLAG_LEFT );
+  sorttable_header( os, "Avg %" );
+  sorttable_header( os, "Min" );
+  sorttable_header( os, "Max" );
+  sorttable_help_header( os, "Avg Dur", "help-uptime-average-duration" );
+  sorttable_header( os, "Min" );
+  sorttable_header( os, "Max" );
+
+  os << "</tr>\n"
+     << "</thead>\n";
+
+  for ( const auto& uptime : p.uptime_list )
   {
-    os << "<table class=\"sc sort stripebody\">\n"
-       << "<thead>\n"
-       << "<tr>\n";
+    if ( !uptime->uptime_sum.mean() )
+      continue;
 
-    int columns = 7;
-    sorttable_header( os, "Uptime", SORT_FLAG_ALPHA | SORT_FLAG_ASC | SORT_FLAG_LEFT );
-    sorttable_header( os, "Avg %" );
-    sorttable_header( os, "Min" );
-    sorttable_header( os, "Max" );
-    sorttable_help_header( os, "Avg Dur", "help-uptime-average-duration" );
-    sorttable_header( os, "Min" );
-    sorttable_header( os, "Max" );
+    bool show_uptime   = !uptime->uptime_sum.simple;
+    bool show_duration = !uptime->uptime_instance.simple;
 
-    os << "</tr>\n"
-       << "</thead>\n";
+    std::string name  = util::encode_html( uptime->name_str );
+    std::string span  = name;
+    std::string token = highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_benefit" );
+    util::tokenize( token );
 
-    for ( const auto& uptime : p.uptime_list )
+    os << "<tbody>\n";
+    if ( p.sim->report_details && ( show_uptime || show_duration ) )
+      span = "<span id=\"" + token + "_toggle\" class=\"toggle-details\">" + name + "</span>";
+
+    os.printf( "<tr>\n"
+               "<td class=\"left\">%s</td>\n"
+               "<td class=\"right\">%.2f%%</td>\n"
+               "<td class=\"right\">%.2f%%</td>\n"
+               "<td class=\"right\">%.2f%%</td>\n"
+               "<td class=\"right\">%.1fs</td>\n"
+               "<td class=\"right\">%.1fs</td>\n"
+               "<td class=\"right\">%.1fs</td>\n"
+               "</tr>\n",
+               span.c_str(),
+               uptime->uptime_sum.pretty_mean() * 100.0,
+               uptime->uptime_sum.min() * 100.0,
+               uptime->uptime_sum.max() * 100.0,
+               uptime->uptime_instance.pretty_mean(),
+               uptime->uptime_instance.min(),
+               uptime->uptime_instance.max() );
+
+    if ( p.sim->report_details && ( show_uptime || show_duration ) )
+    {
+      os << "<tr class=\"details hide\">\n"
+         << "<td colspan=\"" << columns << "\">\n";
+
+      if ( show_uptime )
+        print_distribution_chart( os, p, &uptime->uptime_sum, name, token, "_uptime" );
+
+      if ( show_duration )
+        print_distribution_chart( os, p, &uptime->uptime_instance, name, token, "_duration", true );
+
+      os << "</td>\n"
+         << "</tr>\n";
+    }
+    os << "</tbody>\n";
+  }
+
+  for ( const auto& pet : p.pet_list )
+  {
+    for ( const auto& uptime : pet->uptime_list )
     {
       if ( !uptime->uptime_sum.mean() )
         continue;
@@ -4237,9 +4281,10 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
       bool show_uptime   = !uptime->uptime_sum.simple;
       bool show_duration = !uptime->uptime_instance.simple;
 
-      std::string name  = util::encode_html( uptime->name_str );
+      std::string name  = util::encode_html( pet->name_str + " - " + uptime->name_str );
       std::string span  = name;
-      std::string token = highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_benefit" );
+      std::string token = highchart::build_id( p, "_pet" + util::to_string( pet->index ) + "_" +
+                                                    util::remove_special_chars( uptime->name_str ) + "_uptime" );
       util::tokenize( token );
 
       os << "<tbody>\n";
@@ -4279,96 +4324,78 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
       }
       os << "</tbody>\n";
     }
+  }
+  os << "</table>\n";
+}
 
-    for ( const auto& pet : p.pet_list )
+void print_html_benefit_table( report::sc_html_stream& os, const player_t& p )
+{
+  os << "<table class=\"sc sort stripebody\">\n"
+     << "<thead>\n"
+     << "<tr>\n";
+
+  int columns = 4;
+  sorttable_header( os, "Benefit", SORT_FLAG_ALPHA | SORT_FLAG_ASC | SORT_FLAG_LEFT );
+  sorttable_header( os, "Avg %" );
+  sorttable_header( os, "Min" );
+  sorttable_header( os, "Max" );
+
+  os << "</tr>\n"
+     << "</thead>\n";
+
+  for ( const auto& benefit : p.benefit_list )
+  {
+    if ( !benefit->ratio.mean() )
+      continue;
+
+    bool show_ratio = !benefit->ratio.simple;
+
+    std::string name  = util::encode_html( benefit->name_str );
+    std::string span  = name;
+    std::string token = highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_benefit" );
+    util::tokenize( token );
+
+    os << "<tbody>\n";
+    if ( p.sim->report_details && show_ratio )
+      span = "<span id=\"" + token + "_toggle\" class=\"toggle-details\">" + name + "</span>";
+
+    os.printf( "<tr>\n"
+               "<td class=\"left\">%s</td>\n"
+               "<td class=\"right\">%.2f%%</td>\n"
+               "<td class=\"right\">%.2f%%</td>\n"
+               "<td class=\"right\">%.2f%%</td>\n"
+               "</tr>\n",
+               span.c_str(),
+               benefit->ratio.pretty_mean(),
+               benefit->ratio.min(),
+               benefit->ratio.max() );
+
+    if ( p.sim->report_details && show_ratio )
     {
-      for ( const auto& uptime : pet->uptime_list )
-      {
-        if ( !uptime->uptime_sum.mean() )
-          continue;
+      os << "<tr class=\"details hide\">\n"
+         << "<td colspan=\"" << columns << "\">\n";
 
-        bool show_uptime   = !uptime->uptime_sum.simple;
-        bool show_duration = !uptime->uptime_instance.simple;
+      print_distribution_chart( os, p, &benefit->ratio, name, token, "_ratio" );
 
-        std::string name  = util::encode_html( pet->name_str + " - " + uptime->name_str );
-        std::string span  = name;
-        std::string token = highchart::build_id( p, "_pet" + util::to_string( pet->index ) + "_" +
-                                                      util::remove_special_chars( uptime->name_str ) + "_uptime" );
-        util::tokenize( token );
-
-        os << "<tbody>\n";
-        if ( p.sim->report_details && ( show_uptime || show_duration ) )
-          span = "<span id=\"" + token + "_toggle\" class=\"toggle-details\">" + name + "</span>";
-
-        os.printf( "<tr>\n"
-                   "<td class=\"left\">%s</td>\n"
-                   "<td class=\"right\">%.2f%%</td>\n"
-                   "<td class=\"right\">%.2f%%</td>\n"
-                   "<td class=\"right\">%.2f%%</td>\n"
-                   "<td class=\"right\">%.1fs</td>\n"
-                   "<td class=\"right\">%.1fs</td>\n"
-                   "<td class=\"right\">%.1fs</td>\n"
-                   "</tr>\n",
-                   span.c_str(),
-                   uptime->uptime_sum.pretty_mean() * 100.0,
-                   uptime->uptime_sum.min() * 100.0,
-                   uptime->uptime_sum.max() * 100.0,
-                   uptime->uptime_instance.pretty_mean(),
-                   uptime->uptime_instance.min(),
-                   uptime->uptime_instance.max() );
-
-        if ( p.sim->report_details && ( show_uptime || show_duration ) )
-        {
-          os << "<tr class=\"details hide\">\n"
-             << "<td colspan=\"" << columns << "\">\n";
-
-          if ( show_uptime )
-            print_distribution_chart( os, p, &uptime->uptime_sum, name, token, "_uptime" );
-
-          if ( show_duration )
-            print_distribution_chart( os, p, &uptime->uptime_instance, name, token, "_duration", true );
-
-          os << "</td>\n"
-             << "</tr>\n";
-        }
-        os << "</tbody>\n";
-      }
+      os << "</td>\n"
+         << "</tr>\n";
     }
-    os << "</table>\n";
-
-    if ( proc_count <= benefit_count )
-    {
-      os << "</div>\n"
-         << "<div>\n";
-    }
+    os << "</tbody>\n";
   }
 
-  // Benefit
-  if ( benefit_count )
+  for ( const auto& pet : p.pet_list )
   {
-    os << "<table class=\"sc sort stripebody\">\n"
-       << "<thead>\n"
-       << "<tr>\n";
-
-    int columns = 4;
-    sorttable_header( os, "Benefit", SORT_FLAG_ALPHA | SORT_FLAG_ASC | SORT_FLAG_LEFT );
-    sorttable_header( os, "Avg %" );
-    sorttable_header( os, "Min" );
-    sorttable_header( os, "Max" );
-
-    os << "</tr>\n"
-       << "</thead>\n";
-
-    for ( const auto& benefit : p.benefit_list )
+    for ( const auto& benefit : pet->benefit_list )
     {
       if ( !benefit->ratio.mean() )
         continue;
 
       bool show_ratio = !benefit->ratio.simple;
 
-      std::string name  = util::encode_html( benefit->name_str );
+      std::string name  = util::encode_html( pet->name_str + " - " + benefit->name_str );
       std::string span  = name;
-      std::string token = highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_benefit" );
+      std::string token = highchart::build_id( p, "_pet" + util::to_string( pet->index ) + "_" +
+                                                    util::remove_special_chars( benefit->name_str ) + "_benefit" );
       util::tokenize( token );
 
       os << "<tbody>\n";
@@ -4398,51 +4425,67 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
       }
       os << "</tbody>\n";
     }
+  }
+  os << "</table>\n";
+}
 
-    for ( const auto& pet : p.pet_list )
+// print_html_player_procs ==================================================
+
+void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
+{
+  auto proc_count = range::count_if( p.proc_list, []( const proc_t* pr ) { return pr->count.mean() > 0; } );
+
+  auto benefit_count = range::count_if( p.benefit_list, []( const benefit_t* b ) { return b->ratio.mean() > 0; } );
+  for ( const auto& pet : p.pet_list )
+    benefit_count += range::count_if( pet->benefit_list, []( const benefit_t* b ) { return b->ratio.mean() > 0; } );
+
+  auto uptime_count = range::count_if( p.uptime_list, []( const uptime_t* u ) { return u->uptime_sum.mean() > 0; } );
+  for ( const auto& pet : p.pet_list )
+    uptime_count += range::count_if( pet->uptime_list, []( const uptime_t* u ) { return u->uptime_sum.mean() > 0; } );
+
+  if ( !benefit_count && !uptime_count && !proc_count )
+    return;
+
+  os << "<div class=\"player-section procs\">\n"
+     << "<h3 class=\"toggle open\">Procs, Uptimes & Benefits</h3>\n"
+     << "<div class=\"toggle-content flexwrap\">\n"; // Can't use columns as detail toggle will change widths
+
+  bool new_div = false;
+
+  os << "<div>\n"; // Open DIV#1
+
+  // Procs
+  if ( proc_count )
+  {
+    print_html_proc_table( os, p );
+    if ( proc_count > benefit_count + uptime_count )
     {
-      for ( const auto& benefit : pet->benefit_list )
-      {
-        if ( !benefit->ratio.mean() )
-          continue;
-
-        bool show_ratio = !benefit->ratio.simple;
-
-        std::string name  = util::encode_html( pet->name_str + " - " + benefit->name_str );
-        std::string span  = name;
-        std::string token = highchart::build_id( p, "_pet" + util::to_string( pet->index ) + "_" +
-                                                      util::remove_special_chars( benefit->name_str ) + "_benefit" );
-        util::tokenize( token );
-
-        os << "<tbody>\n";
-        if ( p.sim->report_details && show_ratio )
-          span = "<span id=\"" + token + "_toggle\" class=\"toggle-details\">" + name + "</span>";
-
-        os.printf( "<tr>\n"
-                   "<td class=\"left\">%s</td>\n"
-                   "<td class=\"right\">%.2f%%</td>\n"
-                   "<td class=\"right\">%.2f%%</td>\n"
-                   "<td class=\"right\">%.2f%%</td>\n"
-                   "</tr>\n",
-                   span.c_str(),
-                   benefit->ratio.pretty_mean(),
-                   benefit->ratio.min(),
-                   benefit->ratio.max() );
-
-        if ( p.sim->report_details && show_ratio )
-        {
-          os << "<tr class=\"details hide\">\n"
-             << "<td colspan=\"" << columns << "\">\n";
-
-          print_distribution_chart( os, p, &benefit->ratio, name, token, "_ratio" );
-
-          os << "</td>\n"
-             << "</tr>\n";
-        }
-        os << "</tbody>\n";
-      }
+      new_div = true;
+      os << "</div>\n<div>\n";
     }
-    os << "</table>\n";
+  }
+
+  if ( uptime_count <= benefit_count && proc_count )
+  {
+    if ( uptime_count )
+      print_html_uptime_table( os, p );
+
+    if ( !new_div )
+      os << "</div>\n<div>\n";
+
+    if ( benefit_count )
+      print_html_benefit_table( os, p );
+  }
+  else
+  {
+    if ( benefit_count )
+      print_html_benefit_table( os, p );
+
+    if ( !new_div )
+      os << "</div>\n<div>\n";
+
+    if ( uptime_count )
+      print_html_uptime_table( os, p );
   }
 
   os << "</div>\n"; // Close DIV for all
@@ -4539,7 +4582,7 @@ void print_html_player_( report::sc_html_stream& os, const player_t& p )
 
   print_html_player_custom_section( os, p, p.report_information );
 
-  print_html_player_resources( os, p, p.report_information );
+  print_html_player_resources( os, p );
 
   print_html_player_deaths( os, p, p.report_information );
 

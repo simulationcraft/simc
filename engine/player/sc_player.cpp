@@ -4393,6 +4393,11 @@ void player_t::combat_begin()
   collected_data.health_changes.previous_loss_level     = 0.0;
   collected_data.health_changes_tmi.previous_gain_level = 0.0;
 
+  for ( size_t i = 0, end = collected_data.combat_start_resource.size(); i < end; ++i )
+  {
+    collected_data.combat_start_resource[ i ].add( resources.current[ i ] );
+  }
+
   if ( buffs.cooldown_reduction )
     buffs.cooldown_reduction->trigger();
 
@@ -12367,8 +12372,10 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   max_spike_amount( player->name_str + " Max Spike Value", tank_container_type( player, 2 ) ),
   target_metric( player->name_str + " Target Metric", generic_container_type( player, 1 ) ),
   resource_timelines(),
+  combat_start_resource(
+    ( !player->is_enemy() && ( !player->is_pet() || player->sim->report_pets_separately ) ) ? RESOURCE_MAX : 0 ),
   combat_end_resource(
-      ( !player->is_enemy() && ( !player->is_pet() || player->sim->report_pets_separately ) ) ? RESOURCE_MAX : 0 ),
+    ( !player->is_enemy() && ( !player->is_pet() || player->sim->report_pets_separately ) ) ? RESOURCE_MAX : 0 ),
   stat_timelines(),
   health_changes(),
   health_changes_tmi(),
@@ -12469,6 +12476,12 @@ void player_collected_data_t::merge( const player_t& other_player )
       assert( resource_timelines[ i ].type != RESOURCE_NONE );
       resource_timelines[ i ].timeline.merge( other.resource_timelines[ i ].timeline );
     }
+  }
+
+  for ( size_t i = 0, end = combat_start_resource.size(); i < end; ++i )
+  {
+    combat_start_resource[ i ].merge( other.combat_start_resource[ i ] );
+    combat_end_resource[ i ].merge( other.combat_end_resource[ i ] );
   }
 
   assert( stat_timelines.size() == other.stat_timelines.size() );
