@@ -594,6 +594,10 @@ table.sc tr.details .label {
     background: #222;
     min-width: 90px;
 }
+table.sc tr.details .label.short {
+    padding-right: 0.5em;
+    min-width: 45px;
+}
 table.sc tr.details .tooltip {
     white-space: pre-wrap;
     word-break: break-word;

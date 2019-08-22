@@ -1289,6 +1289,7 @@ struct sim_t : private sc_thread_t
   int separate_stats_by_actions;
   int report_raid_summary;
   int buff_uptime_timeline;
+  int buff_stack_uptime_timeline;
   int json_full_states;
   int decorated_tooltips;
 

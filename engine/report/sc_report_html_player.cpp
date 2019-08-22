@@ -912,14 +912,15 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       {
         std::string apl_name = util::encode_html(
           a->action_list && !a->action_list->name_str.empty() ? a->action_list->name_str : "unknown" );
-        apl_name += " [";
-        apl_name += a->marker ? a->marker : ' ';
-        apl_name += "]:";
-        apl_name += util::to_string( a->total_executions /
-                                     as<double>( p.sim->single_actor_batch
-                                                   ? a->player->collected_data.total_iterations + p.sim->threads
-                                                   : p.sim->iterations ) );
-        expression_str = "<div class=\"flex label\">" + apl_name + "</div>\n<div>" + expression_str + "</div>\n";
+        std::string marker_str = "<div class=\"flex label short\">[";
+        if ( a->marker ) marker_str += a->marker;
+        else marker_str += "&#160;";
+        marker_str += "]:";
+        marker_str += util::to_string( a->total_executions /
+            as<double>( p.sim->single_actor_batch ? a->player->collected_data.total_iterations + p.sim->threads
+                                                  : p.sim->iterations ), 2 );
+        marker_str += "</div>\n";
+        expression_str = "<div class=\"flex label\">" + apl_name + "</div>" + ( marker_str.empty() ? "\n" : marker_str ) + "<div>" + expression_str + "</div>\n";
         expressions.push_back( expression_str );
       }
 
@@ -3179,10 +3180,12 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
 
     if ( !b.constant && !b.overridden && b.sim->buff_uptime_timeline && b.uptime_array.mean() > 0 )
     {
+      std::string title = b.sim->buff_stack_uptime_timeline ? "Stack Uptime" : "Uptime";
+
       highchart::time_series_t buff_uptime( highchart::build_id( b, "_uptime" ), *b.sim );
       buff_uptime.set_yaxis_title( "Average uptime" );
-      buff_uptime.set_title( util::encode_html( b.name_str ) + " Uptime" );
-      buff_uptime.add_simple_series( "area", "#FF0000", "Uptime", b.uptime_array.data() );
+      buff_uptime.set_title( util::encode_html( b.name_str ) + " " + title );
+      buff_uptime.add_simple_series( "area", "#FF0000", title, b.uptime_array.data() );
       buff_uptime.set_mean( b.uptime_array.mean() );
 
       if ( !b.player || !b.sim->single_actor_batch )
