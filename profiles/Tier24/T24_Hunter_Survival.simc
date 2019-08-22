@@ -6,12 +6,12 @@ race=gnome
 role=attack
 position=back
 talents=1101021
-azerite_essences=14:3/5:3/4:3
+azerite_essences=14:3/4:3/5:3
 
 # Default consumables
 potion=unbridled_fury
 flask=greater_flask_of_the_currents
-food=famine_evaluator_and_snack_table
+food=baked_port_tato
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -170,18 +170,18 @@ hands=poens_deepsea_handgrips,id=170335,bonus_id=1512
 waist=vims_scalecrusher_chain,id=170369,bonus_id=1512
 legs=pelagos_predators_legguards,id=168383,bonus_id=4800/1517
 feet=akanas_reefstrider_treads,id=170142,bonus_id=1512
-finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_critical_strike
-finger2=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_critical_strike
+finger1=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=accord_of_haste
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=1602/4779,enchant=accord_of_haste
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 main_hand=shiver_venom_lance,id=168306,bonus_id=4800/1517,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=441.87
+# gear_ilvl=440.87
 # gear_agility=6892
-# gear_stamina=13191
-# gear_crit_rating=1496
-# gear_haste_rating=1108
-# gear_mastery_rating=618
+# gear_stamina=13103
+# gear_crit_rating=1438
+# gear_haste_rating=1578
+# gear_mastery_rating=418
 # gear_versatility_rating=597
 # gear_armor=4044
