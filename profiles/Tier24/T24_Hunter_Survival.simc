@@ -11,7 +11,7 @@ azerite_essences=14:3/4:3/5:3
 # Default consumables
 potion=unbridled_fury
 flask=greater_flask_of_the_currents
-food=baked_port_tato
+food=mechdowels_big_mech
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -180,7 +180,7 @@ main_hand=shiver_venom_lance,id=168306,bonus_id=4800/1517,enchant=quick_navigati
 # gear_ilvl=440.87
 # gear_agility=6892
 # gear_stamina=13103
-# gear_crit_rating=1438
+# gear_crit_rating=1198
 # gear_haste_rating=1578
 # gear_mastery_rating=418
 # gear_versatility_rating=597

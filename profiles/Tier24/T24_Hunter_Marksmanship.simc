@@ -11,7 +11,7 @@ azerite_essences=14:3/4:3/32:3
 # Default consumables
 potion=unbridled_fury
 flask=greater_flask_of_the_currents
-food=abyssalfried_rissole
+food=mechdowels_big_mech
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -116,8 +116,8 @@ main_hand=shiver_venom_crossbow,id=168273,bonus_id=4800/1517,enchant=versatile_n
 # gear_ilvl=441.87
 # gear_agility=6892
 # gear_stamina=13191
-# gear_crit_rating=1496
-# gear_haste_rating=1108
-# gear_mastery_rating=618
-# gear_versatility_rating=597
+# gear_crit_rating=999
+# gear_haste_rating=1001
+# gear_mastery_rating=1145
+# gear_versatility_rating=675
 # gear_armor=4044
