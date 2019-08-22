@@ -8681,7 +8681,7 @@ void druid_t::apl_balance()
                               "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "use_item,effect_name=cyclotronic_blast,if=!buff.ca_inc.up,"
                               "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
-  default_list->add_action( "use_item,name=shiver_venom_relic,if=!buff.ca_inc.up,"
+  default_list->add_action( "use_item,name=shiver_venom_relic,if=!buff.ca_inc.up&!buff.bloodlust.up,"
                               "target_if=dot.shiver_venom.stack>=5" );
   default_list->add_action( "blood_of_the_enemy,if=cooldown.ca_inc.remains>30" );
   default_list->add_action( "memory_of_lucid_dreams,if=!buff.ca_inc.up&(astral_power<25|cooldown.ca_inc.remains>30),"
