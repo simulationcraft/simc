@@ -108,6 +108,7 @@ public:
 protected:
   timespan_t last_start;
   timespan_t last_trigger;
+  timespan_t last_stack_change;
   timespan_t iteration_uptime_sum;
   timespan_t last_benefite_update;
   unsigned int up_count, down_count, start_count, refresh_count, expire_count;
@@ -315,6 +316,8 @@ private:
   void adjust_haste();
   void init_haste_type();
 
+protected:
+  void update_stack_uptime_array( timespan_t current_time, int old_stacks );
 };
 
 std::ostream& operator<<(std::ostream &os, const buff_t& p);

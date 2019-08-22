@@ -1320,9 +1320,15 @@ void buff_t::decrement( int stacks, double value )
 
     sim->print_debug( "{} decremented by {} to {} stacks.", *this, stacks, current_stack );
 
-    if ( old_stack != current_stack && stack_change_callback )
+    if ( old_stack != current_stack )
     {
-      stack_change_callback( this, old_stack, current_stack );
+      if ( sim->buff_stack_uptime_timeline )
+        update_stack_uptime_array( sim->current_time(), old_stack );
+
+      last_stack_change = sim->current_time();
+
+      if ( stack_change_callback )
+        stack_change_callback( this, old_stack, current_stack );
     }
   }
 }
@@ -1645,9 +1651,15 @@ void buff_t::bump( int stacks, double value )
     overflow_total += stacks;
   }
 
-  if ( old_stack != current_stack && stack_change_callback )
+  if ( old_stack != current_stack )
   {
-    stack_change_callback( this, old_stack, current_stack );
+    if ( sim->buff_stack_uptime_timeline )
+      update_stack_uptime_array( sim->current_time(), old_stack );
+
+    last_stack_change = sim->current_time();
+
+    if ( stack_change_callback )
+      stack_change_callback( this, old_stack, current_stack );
   }
 
   if (haste_to_be_adjusted)
@@ -1745,28 +1757,12 @@ void buff_t::expire( timespan_t delay )
   current_stack = 0;
   if ( requires_invalidation )
     invalidate_cache();
+
   if ( last_start >= timespan_t::zero() )
-  {
     iteration_uptime_sum += sim->current_time() - last_start;
-    if ( !constant && !overridden && sim->buff_uptime_timeline )
-    {
-      timespan_t start_time   = timespan_t::from_seconds( last_start.total_millis() / 1000 );
-      timespan_t end_time     = timespan_t::from_seconds( sim->current_time().total_millis() / 1000 );
-      timespan_t begin_uptime = ( ( timespan_t::from_seconds( 1 ) - last_start ) % timespan_t::from_seconds( 1 ) );
-      timespan_t end_uptime   = ( sim->current_time() % timespan_t::from_seconds( 1 ) );
 
-      if ( last_start % timespan_t::from_seconds( 1 ) == timespan_t::zero() )
-        begin_uptime = timespan_t::from_seconds( 1 );
-
-      uptime_array.add( start_time, begin_uptime.total_seconds() );
-      for ( timespan_t i = start_time + timespan_t::from_millis( 1000 ); i < end_time;
-            i            = i + timespan_t::from_millis( 1000 ) )
-        uptime_array.add( i, 1 );
-
-      if ( end_uptime != timespan_t::zero() )
-        uptime_array.add( end_time, end_uptime.total_seconds() );
-    }
-  }
+  update_stack_uptime_array( sim->current_time(), old_stack );
+  last_stack_change = sim->current_time();
 
   if ( sim->target->resources.base[ RESOURCE_HEALTH ] == 0 || sim->target->resources.current[ RESOURCE_HEALTH ] > 0 )
     if ( !overridden )
@@ -1849,8 +1845,9 @@ void buff_t::reset()
   event_t::cancel( tick_event );
   cooldown->reset( false );
   expire();
-  last_start   = timespan_t::min();
-  last_trigger = timespan_t::min();
+  last_start        = timespan_t::min();
+  last_trigger      = timespan_t::min();
+  last_stack_change = timespan_t::min();
 }
 
 void buff_t::merge( const buff_t& other )
@@ -2084,6 +2081,39 @@ void buff_t::init_haste_type()
   }
 }
 
+void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks )
+{
+  if ( !sim->buff_uptime_timeline )
+    return;
+
+  if ( constant || overridden || old_stacks <= 0 )
+    return;
+
+  timespan_t last_time = sim->buff_stack_uptime_timeline ? last_stack_change : last_start;
+  int mul = sim->buff_stack_uptime_timeline ? old_stacks : 1;
+
+  timespan_t start_time    = timespan_t::from_seconds( last_time.total_millis() / 1000 );
+  timespan_t end_time      = timespan_t::from_seconds( sim->current_time().total_millis() / 1000 );
+  timespan_t begin_partial = 1_s - ( last_time % 1_s );
+  timespan_t end_partial   = ( sim->current_time() % 1_s );
+
+  if ( last_time % 1_s == timespan_t::zero() )
+    begin_partial = 1_s;
+
+  if ( start_time == end_time )
+  {
+    uptime_array.add( start_time, ( sim->current_time().total_seconds() - last_time.total_seconds() ) * mul );
+    return;
+  }
+
+  uptime_array.add( start_time, begin_partial.total_seconds() * mul );
+
+  for ( timespan_t i = start_time + 1000_ms; i < end_time; i = i + 1000_ms )
+    uptime_array.add( i, mul );
+
+  uptime_array.add( end_time, end_partial.total_seconds() * mul );
+}
+
 std::ostream& operator<<(std::ostream &os, const buff_t& b)
 {
   fmt::print(os, "Buff {}", b.name() );
@@ -2239,9 +2269,15 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
     sim->print_debug( "{} decremented by {} to {} stacks.", *this, stacks, current_stack );
 
-    if ( old_stack != current_stack && stack_change_callback )
+    if ( old_stack != current_stack )
     {
-      stack_change_callback( this, old_stack, current_stack );
+      if ( sim->buff_stack_uptime_timeline )
+        update_stack_uptime_array( sim->current_time(), old_stack );
+
+      last_stack_change = sim->current_time();
+
+      if ( stack_change_callback )
+        stack_change_callback( this, old_stack, current_stack );
     }
 
     if ( player )
