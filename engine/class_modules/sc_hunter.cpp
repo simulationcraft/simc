@@ -5252,7 +5252,7 @@ std::string hunter_t::default_flask() const
 
 std::string hunter_t::default_food() const
 {
-  return ( true_level >  110 ) ? "mech-dowels_big_mech" :
+  return ( true_level >  110 ) ? "mechdowels_big_mech" :
          ( true_level >  100 ) ? "lavish_suramar_feast" :
          ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
          ( true_level >= 80  ) ? "seafood_magnifique_feast" :
