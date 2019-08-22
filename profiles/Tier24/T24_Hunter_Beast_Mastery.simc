@@ -99,9 +99,9 @@ actions.st+=/cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remain
 actions.st+=/spitting_cobra
 actions.st+=/barbed_shot,if=charges_fractional>1.4
 
-head=soulscarred_headgear,id=159398,bonus_id=1617/4819,azerite_powers=211/193/459/15/13
+head=soulscarred_headgear,id=159398,bonus_id=1617/4819/4775,azerite_powers=211/193/459/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=cannoneers_mantle,id=159393,bonus_id=1617/4819,azerite_powers=211/366/31/85/13
+shoulders=cannoneers_mantle,id=159393,bonus_id=1617/4819/4775,azerite_powers=211/366/31/85/13
 back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
 chest=scalemail_of_unnatural_selection,id=168352,bonus_id=4824/1517/4775,azerite_powers=211/161/30/87/13
 wrists=oris_tidal_bracers,id=170304,bonus_id=1512
@@ -119,7 +119,7 @@ main_hand=shiver_venom_crossbow,id=168273,bonus_id=4800/1517,enchant=crows_nest_
 # gear_ilvl=440.87
 # gear_agility=6892
 # gear_stamina=13103
-# gear_crit_rating=2101
+# gear_crit_rating=1861
 # gear_haste_rating=801
 # gear_mastery_rating=764
 # gear_versatility_rating=367
