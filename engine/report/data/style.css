@@ -592,7 +592,7 @@ table.sc tr.details .label {
     padding: 2px 1em 2px 0.5em;
     display: table-cell;
     background: #222;
-    min-width: 100px;
+    min-width: 90px;
 }
 table.sc tr.details .tooltip {
     white-space: pre-wrap;
