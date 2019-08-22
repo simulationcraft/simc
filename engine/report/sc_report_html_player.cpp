@@ -911,7 +911,14 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       if ( !expression_str.empty() )
       {
         std::string apl_name = util::encode_html(
-            a->action_list && !a->action_list->name_str.empty() ? a->action_list->name_str : "unknown" );
+          a->action_list && !a->action_list->name_str.empty() ? a->action_list->name_str : "unknown" );
+        apl_name += " [";
+        apl_name += a->marker ? a->marker : ' ';
+        apl_name += "]:";
+        apl_name += util::to_string( a->total_executions /
+                                     as<double>( p.sim->single_actor_batch
+                                                   ? a->player->collected_data.total_iterations + p.sim->threads
+                                                   : p.sim->iterations ) );
         expression_str = "<div class=\"flex label\">" + apl_name + "</div>\n<div>" + expression_str + "</div>\n";
         expressions.push_back( expression_str );
       }
