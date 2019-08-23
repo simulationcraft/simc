@@ -3825,15 +3825,7 @@ void sim_t::setup( sim_control_t* c )
 
   if ( single_actor_batch )
   {
-    if ( buff_uptime_timeline )
-    {
-      single_actor_batch = false;
-      error_list.push_back( "WARNING: single_actor_batch is currently incompatible with buff_uptime_timeline and was disabled." );
-    }
-    else
-    {
-      work_queue->batches( player_no_pet_list.size() );
-    }
+    work_queue -> batches( player_no_pet_list.size() );
   }
   work_queue -> init( iterations );
   if ( thread_index == 0 )
