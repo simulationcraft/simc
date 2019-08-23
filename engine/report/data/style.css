@@ -596,6 +596,7 @@ table.sc tr.details .label {
 }
 table.sc tr.details .label.short {
     padding-right: 0.5em;
+    margin-left: 2px;
     min-width: 45px;
 }
 table.sc tr.details .tooltip {
