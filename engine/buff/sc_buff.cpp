@@ -2093,16 +2093,16 @@ void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks 
   int mul = sim->buff_stack_uptime_timeline ? old_stacks : 1;
 
   timespan_t start_time    = timespan_t::from_seconds( last_time.total_millis() / 1000 );
-  timespan_t end_time      = timespan_t::from_seconds( sim->current_time().total_millis() / 1000 );
+  timespan_t end_time      = timespan_t::from_seconds( current_time.total_millis() / 1000 );
   timespan_t begin_partial = 1_s - ( last_time % 1_s );
-  timespan_t end_partial   = ( sim->current_time() % 1_s );
+  timespan_t end_partial   = ( current_time % 1_s );
 
   if ( last_time % 1_s == timespan_t::zero() )
     begin_partial = 1_s;
 
   if ( start_time == end_time )
   {
-    uptime_array.add( start_time, ( sim->current_time().total_seconds() - last_time.total_seconds() ) * mul );
+    uptime_array.add( start_time, ( current_time.total_seconds() - last_time.total_seconds() ) * mul );
     return;
   }
 
