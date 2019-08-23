@@ -1881,7 +1881,10 @@ void buff_t::merge( const buff_t& other )
 
 void buff_t::analyze()
 {
-  if ( sim->buff_uptime_timeline )
+  // Aura with no uptime_array data will return uptime_array.mean() == 0 and are not reported in neither the JSON nor
+  // HTML outputs, so no need to adjust them. This also resolves the issue of sim-wide auras like arcane intellect not
+  // having a valid source to get fight_length from in order to adjust when single_actor_batch=1.
+  if ( sim->buff_uptime_timeline && uptime_array.mean() != 0 )
   {
     if ( !sim->single_actor_batch )
     {
@@ -1889,6 +1892,7 @@ void buff_t::analyze()
     }
     else
     {
+      assert( source );
       uptime_array.adjust( source->collected_data.fight_length );
     }
   }
