@@ -6490,6 +6490,7 @@ struct sequence_t : public action_t
   int current_action;
   bool restarted;
   timespan_t last_restart;
+  bool has_option;
 
   sequence_t( player_t*, const std::string& sub_action_str );
 
