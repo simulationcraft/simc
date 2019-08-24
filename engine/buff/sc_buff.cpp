@@ -1882,17 +1882,18 @@ void buff_t::merge( const buff_t& other )
 void buff_t::analyze()
 {
   // Aura with no uptime_array data will return uptime_array.mean() == 0 and are not reported in neither the JSON nor
-  // HTML outputs, so no need to adjust them. This also resolves the issue of sim-wide auras like arcane intellect not
-  // having a valid source to get fight_length from in order to adjust when single_actor_batch=1.
+  // HTML outputs, so no need to adjust them.
   if ( sim->buff_uptime_timeline && uptime_array.mean() != 0 )
   {
-    if ( !sim->single_actor_batch )
+    // If the source is null, e.g. sim-wide auras, use the sim's timeline divisor, even for single_actor_batch. This
+    // situation should only arise if you disable the sim-wide aura override, sim an actor that can cast one of the
+    // buffs, and the fight length extends over an hour so the buff expires.
+    if ( !sim->single_actor_batch || !source )
     {
       uptime_array.adjust( *sim );
     }
     else
     {
-      assert( source );
       uptime_array.adjust( source->collected_data.fight_length );
     }
   }
@@ -2088,6 +2089,10 @@ void buff_t::init_haste_type()
 void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks )
 {
   if ( !sim->buff_uptime_timeline )
+    return;
+
+  // No data collection done on first iteration of multi-iteration sim, as per sim_t::combat_end()
+  if ( sim->iterations > 1 && sim->current_iteration == 0 )
     return;
 
   if ( constant || overridden || old_stacks <= 0 )
