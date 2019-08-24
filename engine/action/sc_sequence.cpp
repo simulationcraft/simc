@@ -14,19 +14,20 @@
 sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
   action_t( ACTION_SEQUENCE, "default", p ),
   waiting( false ), sequence_wait_on_ready( -1 ),
-  current_action( -1 ), restarted( false ), last_restart( timespan_t::min() )
+  current_action( -1 ), restarted( false ), last_restart( timespan_t::min() ), has_option( false )
 {
   trigger_gcd = timespan_t::zero();
 
   std::vector<std::string> splits = util::string_split( sub_action_str, ":" );
-  if ( ! splits.empty() )
+  if ( !splits.empty() && splits[ 0 ].find( '=' ) != std::string::npos )
   {
     add_option( opt_string( "name", name_str ) );
     parse_options( splits[ 0 ] );
+    has_option = true;
   }
 
-  // First token is sequence options, so skip
-  for ( size_t i = 1; i < splits.size(); ++i )
+  // Skip first token if it's an option
+  for ( size_t i = as<size_t>( has_option ); i < splits.size(); ++i )
   {
     std::string::size_type cut_pt = splits[ i ].find( ',' );
     std::string action_name( splits[ i ], 0, cut_pt );
