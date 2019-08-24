@@ -139,7 +139,7 @@ ol.float li {
 }
 .mono {
     font-family: "Lucida Console", Monaco, monospace;
-    font-size: 12px;
+    font-size: 0.9em;
 }
 .toggle,
 .toggle-details {
@@ -592,12 +592,12 @@ table.sc tr.details .label {
     padding: 2px 1em 2px 0.5em;
     display: table-cell;
     background: #222;
-    min-width: 90px;
+    min-width: 100px;
 }
 table.sc tr.details .label.short {
     padding-right: 0.5em;
     margin-left: 2px;
-    min-width: 45px;
+    min-width: 50px;
 }
 table.sc tr.details .tooltip {
     white-space: pre-wrap;

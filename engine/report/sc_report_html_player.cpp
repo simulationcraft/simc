@@ -860,6 +860,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     // Action Details
     std::vector<std::string> processed_actions;
     std::vector<std::string> expressions;
+    bool long_expr_label = false;
 
     for ( const auto& a : s.action_list )
     {
@@ -871,56 +872,67 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
           found = true;
 
       // Grab expression strings first in case we have multiple APL lines
-      std::string expression_str;
-      if ( !a->option.if_expr_str.empty() )
+      double action_count = a->total_executions /
+        as<double>( p.sim->single_actor_batch ? a->player->collected_data.total_iterations + p.sim->threads
+                                              : p.sim->iterations );
+      if ( action_count > 0.0 )
       {
-        expression_str += "<li><span class=\"label\">if_expr:</span>" +
-                          util::encode_html( a->option.if_expr_str.c_str() ) + "</li>\n";
-      }
-      if ( !a->option.target_if_str.empty() )
-      {
-        expression_str += "<li><span class=\"label\">target_if_expr:</span>" +
-                          util::encode_html( a->option.target_if_str.c_str() ) + "</li>\n";
-      }
-      if ( !a->option.interrupt_if_expr_str.empty() )
-      {
-        expression_str += "<li><span class=\"label\">interrupt_if_expr:</span>" +
-                          util::encode_html( a->option.interrupt_if_expr_str.c_str() ) + "</li>\n";
-      }
-      if ( !a->option.early_chain_if_expr_str.empty() )
-      {
-        expression_str += "<li><span class=\"label\">early_chain_if_expr:</span>" +
-                          util::encode_html( a->option.early_chain_if_expr_str.c_str() ) + "</li>\n";
-      }
-      if ( !a->option.cancel_if_expr_str.empty() )
-      {
-        expression_str += "<li><span class=\"label\">cancel_if_expr:</span>" +
-                          util::encode_html( a->option.cancel_if_expr_str.c_str() ) + "</li>\n";
-      }
-      if ( !a->option.sync_str.empty() )
-      {
-        expression_str += "<li><span class=\"label\">sync_expr:</span>" +
-                          util::encode_html( a->option.sync_str.c_str() ) + "</li>\n";
-      }
-      if ( !a->option.target_str.empty() )
-      {
-        expression_str += "<li><span class=\"label\">target_expr:</span>" +
-                          util::encode_html( a->option.target_str.c_str() ) + "</li>\n";
-      }
+        std::string expression_str;
 
-      if ( !expression_str.empty() )
-      {
+        if ( !a->option.if_expr_str.empty() )
+        {
+          expression_str += "<li><span class=\"label$SHORT$\">if_expr:</span><span class=\"tooltip\">" +
+                            util::encode_html( a->option.if_expr_str ) + "</span></li>\n";
+        }
+        if ( !a->option.target_if_str.empty() )
+        {
+          long_expr_label = true;
+          expression_str += "<li><span class=\"label\">target_if_expr:</span><span class=\"tooltip\">" +
+                            util::encode_html( a->option.target_if_str ) + "</span></li>\n";
+        }
+        if ( !a->option.interrupt_if_expr_str.empty() )
+        {
+          long_expr_label = true;
+          expression_str += "<li><span class=\"label\">interrupt_if_expr:</span><span class=\"tooltip\">" +
+                            util::encode_html( a->option.interrupt_if_expr_str ) + "</span></li>\n";
+        }
+        if ( !a->option.early_chain_if_expr_str.empty() )
+        {
+          long_expr_label = true;
+          expression_str += "<li><span class=\"label\">early_chain_if_expr:</span><span class=\"tooltip\">" +
+                            util::encode_html( a->option.early_chain_if_expr_str ) + "</span></li>\n";
+        }
+        if ( !a->option.cancel_if_expr_str.empty() )
+        {
+          long_expr_label = true;
+          expression_str += "<li><span class=\"label\">cancel_if_expr:</span><span class=\"tooltip\">" +
+                            util::encode_html( a->option.cancel_if_expr_str ) + "</span></li>\n";
+        }
+        if ( !a->option.sync_str.empty() )
+        {
+          long_expr_label = true;
+          expression_str += "<li><span class=\"label\">sync_expr:</span><span class=\"tooltip\">" +
+                            util::encode_html( a->option.sync_str ) + "</span></li>\n";
+        }
+        if ( !a->option.target_str.empty() )
+        {
+          long_expr_label = true;
+          expression_str += "<li><span class=\"label\">target_expr:</span><span class=\"tooltip\">" +
+                            util::encode_html( a->option.target_str ) + "</span></li>\n";
+        }
+
         std::string apl_name = util::encode_html(
           a->action_list && !a->action_list->name_str.empty() ? a->action_list->name_str : "unknown" );
-        std::string marker_str = "<div class=\"flex label short\">[";
-        if ( a->marker ) marker_str += a->marker;
-        else marker_str += "&#160;";
-        marker_str += "]:";
-        marker_str += util::to_string( a->total_executions /
-            as<double>( p.sim->single_actor_batch ? a->player->collected_data.total_iterations + p.sim->threads
-                                                  : p.sim->iterations ), 2 );
+        std::string marker_str = "<div class=\"flex label short\"><span class=\"mono\">[";
+        if ( a->marker )
+          marker_str += a->marker;
+        else
+          marker_str += "&#160;";
+        marker_str += "]</span>:";
+        marker_str += util::to_string( action_count, 2 );
         marker_str += "</div>\n";
-        expression_str = "<div class=\"flex label\">" + apl_name + "</div>" + ( marker_str.empty() ? "\n" : marker_str ) + "<div>" + expression_str + "</div>\n";
+        expression_str = "<div class=\"flex label\">" + apl_name + "</div>" +
+                         ( marker_str.empty() ? "\n" : marker_str ) + "<div>" + expression_str + "</div>\n";
         expressions.push_back( expression_str );
       }
 
@@ -1062,10 +1074,17 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     if ( expressions.size() )
     {
       os << "<div>\n"
-         << "<h4>APL Expressions</h4>\n";
+         << "<h4>Action Priority List</h4>\n";
 
-      for ( const auto& str : expressions )
+      for ( auto& str : expressions )
+      {
+        if ( long_expr_label )
+          util::erase_all( str, "$SHORT$" );
+        else
+          util::replace_all( str, "$SHORT$", " short" );
+
         os << "<ul class=\"flex\">\n" << str << "</ul>\n";
+      }
 
       os << "</div>\n";
     }
