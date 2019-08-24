@@ -2994,7 +2994,7 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
 }
 
 // This function MUST accept non-player buffs as well!
-void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int report_details,
+void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int report_details, const player_t& p,
                              bool constant_buffs = false )
 {
   std::string buff_name;
@@ -3178,11 +3178,14 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     os << "</div>\n"
        << "</div>\n";  // Close everything
 
-    if ( !b.constant && !b.overridden && b.sim->buff_uptime_timeline && b.uptime_array.mean() > 0 )
+    if ( !b.constant && !b.overridden && b.sim->buff_uptime_timeline && b.uptime_array.mean() != 0 )
     {
       std::string title = b.sim->buff_stack_uptime_timeline ? "Stack Uptime" : "Uptime";
+      std::string chart_id = b.source ? highchart::build_id( b, "_uptime" )
+                                      : "buff_" + util::remove_special_chars( b.name_str ) + "_actor" +
+                                          util::to_string( p.index ) + "_uptime";
 
-      highchart::time_series_t buff_uptime( highchart::build_id( b, "_uptime" ), *b.sim );
+      highchart::time_series_t buff_uptime( chart_id, *b.sim );
       buff_uptime.set_yaxis_title( "Average uptime" );
       buff_uptime.set_title( util::encode_html( b.name_str ) + " " + title );
       buff_uptime.add_simple_series( "area", "#FF0000", title, b.uptime_array.data() );
@@ -3236,13 +3239,13 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
     buff_t* b = ri.dynamic_buffs[ i ];
 
     os << "<tbody>\n";
-    print_html_player_buff( os, *b, p.sim->report_details );
+    print_html_player_buff( os, *b, p.sim->report_details, p );
     os << "</tbody>\n";
   }
   os << "</table>\n";
 
   // constant buffs
-  if ( !p.is_pet() )
+  if ( !p.is_pet() && ri.constant_buffs.size() )
   {
     os << "<table class=\"sc stripebody\">\n"
        << "<thead>\n"
@@ -3256,7 +3259,7 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
       buff_t* b = ri.constant_buffs[ i ];
 
       os << "<tbody>\n";
-      print_html_player_buff( os, *b, p.sim->report_details, true );
+      print_html_player_buff( os, *b, p.sim->report_details, p, true );
       os << "</tbody>\n";
     }
     os << "</table>\n";
