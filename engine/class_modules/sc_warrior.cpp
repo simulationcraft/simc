@@ -5476,7 +5476,7 @@ void warrior_t::apl_prot()
   default_list -> add_action( "worldvein_resonance,if=cooldown.avatar.remains<=2");
   default_list -> add_action( "ripple_in_space" );
   default_list -> add_action( "memory_of_lucid_dreams" );
-  default_list -> add_action( "concentrated_flame,if=buff.avatar.down");
+  default_list -> add_action( "concentrated_flame,if=buff.avatar.down&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3");
   default_list -> add_action( this, "Last Stand", "if=cooldown.anima_of_death.remains<=2" );
   default_list -> add_action( this, "Avatar" );
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
