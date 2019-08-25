@@ -556,6 +556,7 @@ public:
     proc_t* power_of_the_moon;
     proc_t* unempowered_solar_wrath;
     proc_t* unempowered_lunar_strike;
+    proc_t* streaking_star;
     proc_t* wasted_streaking_star;
     proc_t* arcanic_pulsar;
 
@@ -1726,6 +1727,7 @@ public:
         }
         p()->active.streaking_stars->snapshot_state( ss_s, DMG_DIRECT );
         p()->active.streaking_stars->schedule_execute( ss_s );
+        p()->proc.streaking_star->occur();
       }
       p()->previous_streaking_stars = new_ability;
     }
@@ -8991,10 +8993,11 @@ void druid_t::init_procs()
 
   // Balance
   proc.power_of_the_moon        = get_proc( "Power of the Moon" )->collect_count();
-  proc.arcanic_pulsar           = get_proc( "Arcanic Pulsar Proc" )->collect_interval();
   proc.starshards               = get_proc( "Starshards" );
   proc.unempowered_solar_wrath  = get_proc( "Unempowered Solar Wrath" );
   proc.unempowered_lunar_strike = get_proc( "Unempowered Lunar Strike" );
+  proc.arcanic_pulsar           = get_proc( "Arcanic Pulsar Proc" )->collect_interval();
+  proc.streaking_star           = get_proc( "Streaking Stars" )->collect_count();
   proc.wasted_streaking_star    = get_proc( "Wasted Streaking Stars" );
 
   // Feral
