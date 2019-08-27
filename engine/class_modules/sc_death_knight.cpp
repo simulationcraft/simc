@@ -7669,9 +7669,9 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "call_action_list,name=standard" );
 
   // Hearth of Azeroth Essences
-  essences -> add_action( "blood_of_the_enemy,if=buff.pillar_of_frost.remains<10&cooldown.breath_of_sindragosa.remains|buff.pillar_of_frost.remains<10&!talent.breath_of_sindragosa.enabled" );
+  essences -> add_action( "blood_of_the_enemy,if=buff.pillar_of_frost.remains<10&buff.breath_of_sindragosa.up|buff.pillar_of_frost.remains<10&!talent.breath_of_sindragosa.enabled" );
   essences -> add_action( "guardian_of_azeroth" );
-  essences -> add_action( "chill_streak,if=buff.pillar_of_frost.remains<5|target.1.time_to_die<5" );
+  essences -> add_action( "chill_streak,if=buff.pillar_of_frost.remains<5&buff.pillar_of_frost.up|target.1.time_to_die<5" );
   essences -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<11" );
   essences -> add_action( "focused_azerite_beam,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
   essences -> add_action( "concentrated_flame,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&dot.concentrated_flame_burn.remains=0" );
@@ -7708,16 +7708,17 @@ void death_knight_t::default_apl_frost()
 
   // Cold Heart and Frostwyrm's Fury
   cooldowns -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.1.time_to_die<=gcd)" );
-  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.pillar_of_frost.remains<=gcd|(buff.pillar_of_frost.remains<8&buff.unholy_strength.remains<=gcd&buff.unholy_strength.up))&buff.pillar_of_frost.up&azerite.icy_citadel.rank<=2" );
-  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.icy_citadel.remains<=gcd|(buff.icy_citadel.remains<8&buff.unholy_strength.remains<=gcd&buff.unholy_strength.up))&buff.icy_citadel.up&azerite.icy_citadel.rank>2" );
+  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.pillar_of_frost.remains<=gcd|(buff.pillar_of_frost.remains<8&buff.unholy_strength.remains<=gcd&buff.unholy_strength.up))&buff.pillar_of_frost.up&azerite.icy_citadel.rank<=1" );
+  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.icy_citadel.remains<=gcd|(buff.icy_citadel.remains<8&buff.unholy_strength.remains<=gcd&buff.unholy_strength.up))&buff.icy_citadel.up&azerite.icy_citadel.rank>=2" );
   cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=target.1.time_to_die<gcd|(target.1.time_to_die<cooldown.pillar_of_frost.remains&buff.unholy_strength.up)" );
 
   // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>5&target.1.time_to_die<gcd", "Cold heart conditions" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.pillar_of_frost.remains<=gcd*(1+cooldown.frostwyrms_fury.ready)|buff.pillar_of_frost.remains<rune.time_to_3)&buff.pillar_of_frost.up&azerite.icy_citadel.rank<=2" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.remains<8&buff.unholy_strength.remains<gcd*(1+cooldown.frostwyrms_fury.ready)&buff.unholy_strength.remains&buff.pillar_of_frost.up&azerite.icy_citadel.rank<=2" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.icy_citadel.remains<4|buff.icy_citadel.remains<rune.time_to_3)&buff.icy_citadel.up&azerite.icy_citadel.rank>2" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.icy_citadel.up&buff.unholy_strength.up&azerite.icy_citadel.rank>2" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.seething_rage.remains<gcd)&buff.seething_rage.up" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.pillar_of_frost.remains<=gcd*(1+cooldown.frostwyrms_fury.ready)|buff.pillar_of_frost.remains<rune.time_to_3)&buff.pillar_of_frost.up&(azerite.icy_citadel.rank<=1|buff.breath_of_sindragosa.up)" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.remains<8&buff.unholy_strength.remains<gcd*(1+cooldown.frostwyrms_fury.ready)&buff.unholy_strength.remains&buff.pillar_of_frost.up&(azerite.icy_citadel.rank<=1|buff.breath_of_sindragosa.up)" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.icy_citadel.remains<4|buff.icy_citadel.remains<rune.time_to_3)&buff.icy_citadel.up&azerite.icy_citadel.rank>=2&!buff.breath_of_sindragosa.up" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.icy_citadel.up&buff.unholy_strength.up&azerite.icy_citadel.rank>=2&!buff.breath_of_sindragosa.up" );
 
 
   // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
