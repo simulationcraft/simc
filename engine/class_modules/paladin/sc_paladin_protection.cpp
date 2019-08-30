@@ -993,7 +993,7 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_talent( this, "Blessed Hammer", "strikes=3" );
   def -> add_action( this, "Hammer of the Righteous" );
   def -> add_action( this, "Consecration" );
-  def -> add_action( "heart_essence,if=!essence.the_crucible_of_flame.major|!essence.worldvein_resonance.major|!essence.anima_of_life_and_death.major|!essence.memory_of_lucid_dreams.major" );
+  def -> add_action( "heart_essence,if=!(essence.the_crucible_of_flame.major|essence.worldvein_resonance.major|essence.anima_of_life_and_death.major|essence.memory_of_lucid_dreams.major)" );
 
 
 }
