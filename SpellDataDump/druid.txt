@@ -1,4 +1,4 @@
-SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31429)
+SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31478)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid

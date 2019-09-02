@@ -1,4 +1,4 @@
-SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31429)
+SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31478)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Paladin, Mage

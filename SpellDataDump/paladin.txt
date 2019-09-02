@@ -1,4 +1,4 @@
-SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31429)
+SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31478)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
