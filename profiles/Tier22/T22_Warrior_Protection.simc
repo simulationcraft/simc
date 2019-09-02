@@ -46,7 +46,7 @@ actions+=/ignore_pain,if=rage.deficit<25+20*talent.booming_voice.enabled*cooldow
 actions+=/worldvein_resonance,if=cooldown.avatar.remains<=2
 actions+=/ripple_in_space
 actions+=/memory_of_lucid_dreams
-actions+=/concentrated_flame,if=buff.avatar.down
+actions+=/concentrated_flame,if=buff.avatar.down&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3
 actions+=/last_stand,if=cooldown.anima_of_death.remains<=2
 actions+=/avatar
 actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3
