@@ -42,13 +42,13 @@ actions+=/consecration,if=!consecration.up
 actions+=/judgment,if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled
 actions+=/avengers_shield,if=cooldown_react
 actions+=/judgment,if=cooldown_react|!talent.crusaders_judgment.enabled
-actions+=/concentrated_flame,if=buff.seraphim.up&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3
+actions+=/concentrated_flame,if=(!talent.seraphim.enabled|buff.seraphim.up)&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3
 actions+=/lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up
 actions+=/anima_of_death
 actions+=/blessed_hammer,strikes=3
 actions+=/hammer_of_the_righteous
 actions+=/consecration
-actions+=/heart_essence,if=!essence.the_crucible_of_flame.major|!essence.worldvein_resonance.major|!essence.anima_of_life_and_death.major|!essence.memory_of_lucid_dreams.major
+actions+=/heart_essence,if=!(essence.the_crucible_of_flame.major|essence.worldvein_resonance.major|essence.anima_of_life_and_death.major|essence.memory_of_lucid_dreams.major)
 
 actions.cooldowns=fireblood,if=buff.avenging_wrath.up
 actions.cooldowns+=/use_item,name=azsharas_font_of_power,if=cooldown.seraphim.remains<=10|!talent.seraphim.enabled
