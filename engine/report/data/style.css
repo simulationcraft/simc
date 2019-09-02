@@ -658,7 +658,9 @@ table.sort tr.details td table.details tr th:first-of-type {
 }
 .player-thumbnail {
     float: right;
-    margin: 8px;
+    position: absolute;
+    right: 8px;
+    top: 8px;
     -moz-border-radius: 12px;
     -khtml-border-radius: 12px;
     -webkit-border-radius: 12px;

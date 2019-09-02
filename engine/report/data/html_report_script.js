@@ -69,7 +69,6 @@ jQuery(document).ready(function ($) {
         var $me = $(this);
         $me.toggleClass('open');
         $me.next('.toggle-content').slideToggle(150);
-        $me.prev('.toggle-thumbnail').toggleClass('hide');
         var section = $me.parent('.section');
         if (section.length) {
             section.validate_section();
