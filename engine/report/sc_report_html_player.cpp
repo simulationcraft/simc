@@ -3304,14 +3304,6 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   // Player Description
   os << "<div id=\"player" << p.index << "\" class=\"player section\">\n";
 
-  if ( !p.report_information.thumbnail_url.empty() )
-  {
-    os.printf( "<class=\"toggle-thumbnail ext%s\"><img src=\"%s\" alt=\"%s\" class=\"player-thumbnail\"/>\n",
-               ( one_player ) ? "" : " hide",
-               p.report_information.thumbnail_url.c_str(),
-               util::remove_special_chars( p.name_str ).c_str() );
-  }
-
   os << "<h2 id=\"player" << p.index << "toggle\" class=\"toggle";
   if ( one_player )
   {
@@ -3428,6 +3420,13 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
              util::inverse_tokenize( util::role_type_string( p.primary_role() ) ).c_str(),
              util::encode_html( p.position_str ).c_str(),
              util::profile_source_string( p.profile_source_ ) );
+
+  if ( !p.report_information.thumbnail_url.empty() )
+  {
+    os.printf( "<img src=\"%s\" alt=\"%s\" class=\"player-thumbnail\"/>\n",
+               p.report_information.thumbnail_url.c_str(),
+               util::remove_special_chars( p.name_str ).c_str() );
+  }
 }
 
 // print_html_player_results_spec_gear ======================================
