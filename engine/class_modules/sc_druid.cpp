@@ -8845,7 +8845,7 @@ void druid_t::apl_restoration()
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
-  default_list->add_action( "use_item,,effect_name=cyclotronic_blast,if=!buff.prowl.up&!buff.shadowmeld.up" );
+  default_list->add_action( "use_item,effect_name=cyclotronic_blast,if=!buff.prowl.up&!buff.shadowmeld.up" );
   default_list->add_action( "use_items" );
   default_list->add_action( "potion" );
   default_list->add_action(
@@ -8896,6 +8896,14 @@ void druid_t::init_scaling()
   equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time.total_seconds();
 
   scaling -> disable( STAT_STRENGTH );
+
+  //workaround for resto dps scaling
+  if ( specialization() == DRUID_RESTORATION && role==ROLE_ATTACK)
+  {
+    scaling->disable( STAT_AGILITY );
+    scaling->disable( STAT_MASTERY_RATING );
+    scaling->enable( STAT_INTELLECT );
+  }
 
   // Save a copy of the weapon
   caster_form_weapon = main_hand_weapon;
