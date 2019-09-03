@@ -8196,6 +8196,8 @@ std::string druid_t::default_flask() const
                                (true_level >= 80) ? "winds" :
                                "disabled";
 
+  std::string resto_flask = ( true_level > 100 ) ? "greater_flask_of_endless_fathoms" : "disabled";
+
   std::string guardian_flask = (true_level > 110) ? "greater_flask_of_the_currents" :
                                (true_level > 100) ? "seventh_demon" :
                                (true_level >= 90) ? "greater_draenic_agility_flask" :
@@ -8209,6 +8211,8 @@ std::string druid_t::default_flask() const
     return feral_flask;
   case DRUID_BALANCE:
     return balance_flask;
+  case DRUID_RESTORATION:
+    return resto_flask;
   case DRUID_GUARDIAN:
     return guardian_flask;
   default:
@@ -8231,6 +8235,8 @@ std::string druid_t::default_potion() const
                              (true_level >= 80) ? "tolvir" :
                              "disabled";
 
+  std::string resto_pot = ( true_level > 110 ) ? "unbridled_fury" : "disabled";
+
   std::string guardian_pot = (true_level > 110) ? "focused_resolve" :
                              (true_level > 100) ? "old_war" :
                              (true_level >= 90) ? "draenic_agility" :
@@ -8245,6 +8251,8 @@ std::string druid_t::default_potion() const
     return feral_pot;
   case DRUID_BALANCE:
     return balance_pot;
+  case DRUID_RESTORATION:
+    return resto_pot;
   case DRUID_GUARDIAN:
     return guardian_pot;
   default:
@@ -8261,6 +8269,8 @@ std::string druid_t::default_food() const
       case DRUID_BALANCE:
         return "baked_port_tato";
       case DRUID_FERAL:
+        return "mechdowels_big_mech";
+      case DRUID_RESTORATION:
         return "mechdowels_big_mech";
       case DRUID_GUARDIAN:
       default:
@@ -8835,8 +8845,14 @@ void druid_t::apl_restoration()
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
+  default_list->add_action( "use_item,,effect_name=cyclotronic_blast,if=!buff.prowl.up&!buff.shadowmeld.up" );
   default_list->add_action( "use_items" );
-  default_list->add_action( "heart_essence,if=!buff.shadowmeld.up&!buff.prowl.up" );
+  default_list->add_action( "potion" );
+  default_list->add_action(
+      "memory_of_lucid_dreams,if=buff.cat_form.up&energy<50&dot.sunfire.remains>5&dot.moonfire.remains>5" );
+  default_list->add_action(
+      "concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight&!buff."
+      "shadowmeld.up&!buff.prowl.up" );
   default_list->add_action( "run_action_list,name=feral,if=talent.feral_affinity.enabled" );
   default_list->add_action( "run_action_list,name=balance,if=talent.balance_affinity.enabled" );
   default_list->add_action( "sunfire,target_if=refreshable" );
@@ -8846,18 +8862,23 @@ void druid_t::apl_restoration()
   
   feral->add_action( "rake,if=buff.shadowmeld.up|buff.prowl.up" );
   feral->add_action( "auto_attack" );
-  feral->add_action( "moonfire,target_if=refreshable|(prev_gcd.1.sunfire&remains<duration*0.8&spell_targets.sunfire=1)" );
-  feral->add_action( "sunfire,target_if=refreshable|(prev_gcd.1.moonfire&remains<duration*0.8)" );
-  feral->add_action( "solar_wrath,if=energy<=50&!buff.cat_form.up" );
-  feral->add_action( "cat_form,if=!buff.cat_form.up&energy>50" );
+  feral->add_action( "sunfire,target_if=refreshable" );
   feral->add_action(
-      "ferocious_bite,if=(combo_points>3&target.time_to_die<3)|(combo_points=5&energy>=50&dot.rip.remains>14)&spell_"
+      "moonfire,target_if=refreshable&time_to_die>12&(spell_targets.swipe_cat<=4|energy<50)&(!buff.memory_of_lucid_"
+      "dreams.up|(!ticking&spell_targets.swipe_cat<3))|(prev_gcd.1.sunfire&remains<duration*0.8&spell_targets.sunfire="
+      "1)" );
+  feral->add_action( "sunfire,if=prev_gcd.1.moonfire&remains<duration*0.8" );
+  feral->add_action( "cat_form,if=!buff.cat_form.up&energy>50" );
+  feral->add_action( "solar_wrath,if=!buff.cat_form.up" );
+  feral->add_action(
+      "ferocious_bite,if=(combo_points>3&target.1.time_to_die<3)|(combo_points=5&energy>=50&dot.rip.remains>10)&spell_"
       "targets.swipe_cat<5" );
-  feral->add_action( "swipe_cat,if=spell_targets.swipe_cat>=6" );
-  feral->add_action( "rip,target_if=refreshable&combo_points=5" );
-  feral->add_action( "rake,target_if=refreshable" );
+  feral->add_action(
+      "rip,target_if=(refreshable&(combo_points=5&time_to_die>remains+24|(remains+combo_points*4<time_to_die&remains+4+"
+      "combo_points*4>time_to_die)))|combo_points=5&energy>90&remains<=10" );
+  feral->add_action( "rake,target_if=refreshable&time_to_die>10&(combo_points<5|remains<1)&spell_targets.swipe_cat<4" );
   feral->add_action( "swipe_cat,if=spell_targets.swipe_cat>=2" );
-  feral->add_action( "shred" );
+  feral->add_action( "shred,if=combo_points<5|energy>90" );
 
   balance->add_action( "sunfire,target_if=refreshable" );
   balance->add_action( "moonfire,target_if=refreshable&spell_targets.lunar_strike<7" );
