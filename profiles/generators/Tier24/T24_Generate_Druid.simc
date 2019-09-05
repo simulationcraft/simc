@@ -54,6 +54,33 @@ main_hand=",id=168306,bonus_id=4800/1517,enchant_id=5965"
 
 save=T24_Druid_Feral.simc
 
+druid="T24_Druid_Restoration"
+level=120
+race=highmountain_tauren
+spec=restoration
+role=attack
+position=back
+talents=0020000
+azerite_essences=12:3/32:3/4:3
+
+head=helm_of_the_inexorable_tide,id=168345,bonus_id=4824/1517,azerite_powers=358/575/20/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
+shoulder=gorak_tuls_mantle,id=159339,bonus_id=4786/1617/4819/4775,azerite_powers=111/193/459/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=tunic_of_the_sycophant,id=168350,bonus_id=4824/1517/4775,azerite_powers=111/575/31/13
+wrist=oris_tidal_wristwraps,id=170305,bonus_id=1512
+hands=gloves_of_incomparable_beauty,id=168887,bonus_id=4800/1517
+waist=vims_scalecrusher_clasp,id=170368,bonus_id=1512
+legs=leggings_of_the_stormborn,id=168378,bonus_id=4800/1517
+feet=ardent_worshippers_boots,id=168879,bonus_id=4800/1517
+finger1=shorting_bit_band,id=169160,bonus_id=3524,enchant=accord_of_critical_strike
+finger2=logic_loop_of_division,id=169157,bonus_id=3524,enchant=accord_of_critical_strike
+trinket1=shiver_venom_relic,id=168905,bonus_id=4800/1517
+trinket2=leviathans_lure,id=169304,bonus_id=4800/1517
+main_hand=anuazshara_staff_of_the_eternal,id=168275,bonus_id=4800/1517,enchant=deadly_navigation
+
+save=T24_Druid_Restoration.simc
+
 druid="T24_Druid_Guardian"
 level=120
 race=troll
