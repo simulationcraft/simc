@@ -7113,6 +7113,11 @@ void rogue_t::init_special_effects()
         options.memory_of_lucid_dreams_proc_chance = 0.15;
         break;
     }
+    default:
+    {
+      // 2019-09-09  - do nothing if non-rouge spec is given. junk in = junk out.
+      break;
+    }
   }
 }
 
@@ -7479,6 +7484,11 @@ void rogue_t::vision_of_perfection_proc()
       {
         this->buffs.adrenaline_rush->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
       }
+      break;
+    }
+    default:
+    {
+      // 2019-09-09  - do nothing if non-rouge spec is given. junk in = junk out.
       break;
     }
   }
