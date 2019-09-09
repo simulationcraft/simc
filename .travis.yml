@@ -32,6 +32,10 @@ addons:
       - libcurl3
       - libcurl4-gnutls-dev
 
+osx_image:
+  - xcode8.3
+  - xcode10
+
 #env:
   # Each line is a separate build in the build matrix. A build in the build
   # matrix is defined by the environment variables defined on the line, which
