@@ -586,7 +586,7 @@ public:
   void combat_begin() override;
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
   void interrupt() override;
-  double resource_gain( resource_e, double, gain_t* g = nullptr, action_t* a = nullptr );
+  double resource_gain( resource_e, double, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void recalculate_resource_max( resource_e ) override;
   void reset() override;
   void merge( player_t& other ) override;
