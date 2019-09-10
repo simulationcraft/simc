@@ -1208,7 +1208,8 @@ std::string priest_t::default_potion() const
 {
   std::string lvl120_potion =
     ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" :
-                                            "battle_potion_of_intellect";
+    ( primary_role() != ROLE_HEAL ) ? "potion_of_wild_mending" : /* id 300741 - healers */
+                                      "superior_battle_potion_of_intellect";
 
   return ( true_level >  110 ) ? lvl120_potion :
          ( true_level >= 100 ) ? "prolonged_power" :
@@ -1269,7 +1270,12 @@ void priest_t::create_apl_default()
   {
     def->add_action( "arcane_torrent,if=mana.pct<=90" );
   }
-  def->add_action( this, "Shadow Word: Pain", ",if=remains<tick_time|!ticking" );
+  if ( find_class_spell( "Shadow Word: Pain" )->ok() )
+  {
+    // THIS MUST be skipped by holy priest healers who can not use this spell
+    // as of at least 2019-09-01, but likly much earlyer
+    def->add_action( this, "Shadow Word: Pain", ",if=remains<tick_time|!ticking" );
+  }
   def->add_action( this, "Smite" );
 }
 

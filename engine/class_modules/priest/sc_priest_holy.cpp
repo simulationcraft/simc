@@ -381,7 +381,45 @@ void priest_t::generate_apl_holy_d()
 /** Holy Heal Combat Action Priority List */
 void priest_t::generate_apl_holy_h()
 {
-  create_apl_default();
+  action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
+
+  // Precombat actions
+  precombat->add_action( "potion" );
+  // should implement prayer of mending too
+  precombat->add_action( this, "Renew" );
+
+  // On-Use Items
+  default_list->add_action( "use_items" );
+
+  // Professions
+  for ( const std::string& profession_action : get_profession_actions() )
+  {
+    default_list->add_action( profession_action );
+  }
+
+  // Potions
+  default_list->add_action(
+      "potion,if=buff.bloodlust.react|(raid_event.adds.up&(raid_event.adds.remains>20|raid_event.adds.duration<20))|"
+      "target.time_to_die<=30" );
+
+  // Default APL
+  default_list->add_action( this, "Renew", "cycle_targets=1,max_cycle_targets=15,if=!ticking&target.health.pct<=99&mana.pct>20" );
+  default_list->add_action( this, "Renew", "cycle_targets=1,max_cycle_targets=15,if=!ticking&target.health.pct<=80" );
+  default_list->add_action( this, "Flash Heal", "if=target.health.pct>=1&target.health.pct<50&cooldown.holy_word_serenity.remains>=0.2,cycle_targets=1,max_cycle_targets=5" );
+  default_list->add_action( this, "Holy Word: Serenity", "if=target.health.pct>=1&target.health.pct<50,cycle_targets=1,max_cycle_targets=5" );
+  default_list->add_action( this, "Heal", "if=target.health.pct>49&target.health.pct<98,cycle_targets=1" );
+  default_list->add_action( "stop_moving", "if=self.mana.pct>14&cooldown.holy_word_serenity.remains>=0.3" );
+  default_list->add_action( "start_moving", "if=self.mana.pct<=5" );
+
+
+  // offence to reduce incoming damage APL
+  default_list->add_action( this, "Holy Fire", "if=!dot.holy_fire.ticking&spell_targets.holy_nova<7" );
+  default_list->add_action( this, "Holy Nova", "if=spell_targets.holy_nova>3" );
+  default_list->add_talent(
+      this, "Apotheosis", "if=active_enemies<5&(raid_event.adds.in>15|raid_event.adds.in>raid_event.adds.cooldown-5)" );
+  default_list->add_action( this, "Smite" );
+  default_list->add_action( this, "Holy Fire" );
 }
 
 }  // namespace priestspace
