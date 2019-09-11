@@ -8015,6 +8015,8 @@ std::string shaman_t::default_flask() const
 }
 
 // shaman_t::default_food ===================================================
+// 2019-09-10 resolve merge for PR4852 by using upstream choice "mechdowels_big_mech" for elemental (secondary over primary)
+// 2019-09-10 resolve merge for PR4852 by using upstream choice "baked_port_tato" for enchance (secondary over primary)
 
 std::string shaman_t::default_food() const
 {

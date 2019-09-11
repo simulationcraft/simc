@@ -7517,6 +7517,9 @@ std::string death_knight_t::default_potion() const
 }
 
 // death_knight_t::default_food ========================================
+// 2019-09-10 resolve PR#4852 conflict use
+// [Death Knight] Update T24 profiles and consumables for frost and unholy (#4915)
+
 
 std::string death_knight_t::default_food() const
 {
@@ -7534,8 +7537,8 @@ std::string death_knight_t::default_food() const
                             ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                             "disabled";
 
-  std::string blood_food =  ( true_level > 110 ) ? "bountiful_captains_feast" :
-	                          ( true_level > 100 ) ? "lavish_suramar_feast" :
+  std::string blood_food =  ( true_level > 110 ) ? "famine_evaluator_and_snack_table" :
+	                    ( true_level > 100 ) ? "lavish_suramar_feast" :
                             ( true_level >  90 ) ? "pickled_eel" :
                             ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                             ( true_level >= 80 ) ? "seafood_magnifique_feast" :
