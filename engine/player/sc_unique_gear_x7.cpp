@@ -4334,7 +4334,7 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
 /**Dribbling Inkpod
  * Apply debuff to enemy over 30% hp, when enemy falls below deal damage per debuff
  * id=296963 driver, effect#3 is hp threshold, effect#1 is damage value
- * id=296964 unknown, possibly to trigger damage
+ * id=296964 proc aura which procs the damage effect when dropping below 30%, possibly to trigger damage
  * id=302491 damage spell
  * id=302565 stacking debuff
  * id=302597 unknown
@@ -4375,7 +4375,8 @@ void items::dribbling_inkpod( special_effect_t& effect )
     {
       auto s = static_cast<action_state_t*>( cd );
 
-      if ( s->target->health_percentage() > hp_pct )
+      // Conductive Ink shouldn't be able to proc on the caster (happens when a positive effect like a heal hits the player)
+      if ( s->target->health_percentage() > hp_pct && s->target != a->player )
       {
         dbc_proc_callback_t::trigger( a, cd );
       }
