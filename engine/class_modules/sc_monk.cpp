@@ -9500,7 +9500,9 @@ std::string monk_t::default_flask() const
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( true_level > 110 )
+      if ( true_level > 119 )
+        return "greater_flask_of_endless_fathoms"; // lvl 120 should use best flask
+      else if ( true_level > 110 )
         return "endless_fathoms";
       else if ( true_level > 100 )
         return "whispered_pact";

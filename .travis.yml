@@ -32,6 +32,10 @@ addons:
       - libcurl3
       - libcurl4-gnutls-dev
 
+osx_image:
+  - xcode8.3
+  - xcode10
+
 #env:
   # Each line is a separate build in the build matrix. A build in the build
   # matrix is defined by the environment variables defined on the line, which
@@ -47,7 +51,8 @@ matrix:
 
 before_install:
   # Install bats on OSX through brew
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update && brew install bats; fi
+  # retry via travis_retry because brew sometimes hangs
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then travis_retry brew update && travis_retry brew install bats; fi
 
 notifications:
   irc:
