@@ -7825,7 +7825,7 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "berserking,if=buff.unholy_frenzy.up|pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
   def -> add_action( "use_items,if=time>20|!equipped.ramping_amplitude_gigavolt_engine|!equipped.vision_of_demise", "Custom trinkets usage" );
   def -> add_action( "use_item,name=azsharas_font_of_power,if=(essence.vision_of_perfection.major&!talent.unholy_frenzy.enabled)|(!essence.condensed_lifeforce.major&!essence.vision_of_perfection.major)" );
-  def -> add_action( "use_item,name=azsharas_font_of_power,if=use_item,name=azsharas_font_of_power,if=cooldown.apocalypse.remains<14&(essence.condensed_lifeforce.major|essence.vision_of_perfection.major&talent.unholy_frenzy.enabled)" );
+  def -> add_action( "use_item,name=azsharas_font_of_power,if=cooldown.apocalypse.remains<14&(essence.condensed_lifeforce.major|essence.vision_of_perfection.major&talent.unholy_frenzy.enabled)" );
   def -> add_action( "use_item,name=azsharas_font_of_power,if=target.1.time_to_die<cooldown.apocalypse.remains+34" );
   def -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack<1" );
   def -> add_action( "use_item,name=ashvanes_razor_coral,if=pet.guardian_of_azeroth.active&pet.apoc_ghoul.active" );
