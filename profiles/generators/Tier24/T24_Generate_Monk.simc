@@ -18,7 +18,7 @@ waist=vims_scalecrusher_clasp,id=170368,bonus_id=6300/1512
 legs=leggings_of_the_stormborn,id=168378,bonus_id=4800/1517/4786
 feet=akanas_reefstrider_footwraps,id=170141,bonus_id=6300/1512
 finger1=band_of_multi-sided_strikes,id=165565,bonus_id=1537/4786,enchant=accord_of_versatility
-finger2=lord_waycrests_signet,id=158362,ilevel=430,enchant=accord_of_versatility
+finger2=lord_waycrests_signet,id=158362,bonus_id=5010/1602/4786,enchant=accord_of_versatility
 trinket1=pocketsized_computation_device,id=167555,ilevel=415,gem_id=167672/168751,gem_ilevel=415/415
 trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=shiver_venom_lance,id=168306,bonus_id=4800/1517,enchant=versatile_navigation
