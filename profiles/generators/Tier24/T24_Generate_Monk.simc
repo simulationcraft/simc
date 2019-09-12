@@ -4,23 +4,24 @@ race=undead
 spec=brewmaster
 role=tank
 position=front
-talents=1030021
+talents=1010021
+azerite_essences=12:3/300573/13:3/300575/300576/32:3
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=1587/4786/5481/4775,azerite_powers=383/478/22/85/13
+head=helm_of_the_inexorable_tide,id=168345,bonus_id=4824/1517,azerite_powers=383/575/18/83/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulder=pistoleers_spaulders,id=159331,bonus_id=1587/4786/5480/4775,azerite_powers=384/383/31/85/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537/4786,
-chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1587/4786/5482/4775,context=57,azerite_powers=384/383/31/44/13
-wrist=bracers_of_regal_devotion,id=165517,bonus_id=1537/4786
-hands=gloves_of_spiritual_grace,id=165514,bonus_id=1537/4786
-waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
-legs=cranedancer_leggings,id=165521,bonus_id=1537/4786
-feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=1537/4786,enchant=pact_of_versatility
-finger2=band_of_multi-sided_strikes,id=165565,bonus_id=1537/4786,enchant=pact_of_critical_strike
-trinket1=invocation_of_yulon,id=165568,bonus_id=4800/1537
-trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
-main_hand=hornridged_crusher,id=165589,bonus_id=1537/4786,enchant=deadly_navigation
+shoulder=gorak_tuls_mantle,id=159339,bonus_id=1617/4786/5480/4775,azerite_powers=384/193/459/87/13
+back=drape_of_the_hatcher,id=168604,bonus_id=4800/1517
+chest=tunic_of_the_sycophant,id=168350,bonus_id=4824/1517,azerite_powers=116/575/31/85/13
+wrist=oris_tidal_wristwraps,id=170305,bonus_id=6300/1512
+hands=gloves_of_incomparable_beauty,id=168887,bonus_id=4800/1517
+waist=vims_scalecrusher_clasp,id=170368,bonus_id=6300/1512
+legs=leggings_of_the_stormborn,id=168378,bonus_id=4800/1517/4786
+feet=akanas_reefstrider_footwraps,id=170141,bonus_id=6300/1512
+finger1=band_of_multi-sided_strikes,id=165565,bonus_id=1537/4786,enchant=accord_of_versatility
+finger2=lord_waycrests_signet,id=158362,ilevel=430,enchant=accord_of_versatility
+trinket1=pocketsized_computation_device,id=167555,ilevel=415,gem_id=167672/168751,gem_ilevel=415/415
+trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+main_hand=shiver_venom_lance,id=168306,bonus_id=4800/1517,enchant=versatile_navigation
 
 save=T24_Monk_Brewmaster.simc
 
