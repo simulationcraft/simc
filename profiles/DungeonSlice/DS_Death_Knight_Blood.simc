@@ -10,7 +10,7 @@ talents=2220023
 # Default consumables
 potion=potion_of_unbridled_fury
 flask=greater_flask_of_the_undertow
-food=bountiful_captains_feast
+food=mechdowels_big_mech
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -34,6 +34,8 @@ actions+=/berserking
 actions+=/use_items,if=cooldown.dancing_rune_weapon.remains>90
 actions+=/use_item,name=razdunks_big_red_button
 actions+=/use_item,name=merekthas_fang
+actions+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down
+actions+=/use_item,name=ashvanes_razor_coral,if=buff.dancing_rune_weapon.up&debuff.razor_coral_debuff.up
 actions+=/potion,if=buff.dancing_rune_weapon.up
 actions+=/dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
 actions+=/tombstone,if=buff.bone_shield.stack>=7
