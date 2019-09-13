@@ -829,6 +829,7 @@ public:
   virtual void create_buffs() override;
   virtual void init_gains() override;
   virtual void init_procs() override;
+  virtual void init_assessors() override;
   virtual void init_rng() override;
   virtual void init_resources( bool ) override;
   virtual void regen( timespan_t periodicity ) override;
@@ -892,6 +893,8 @@ public:
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
   void retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& targets, size_t n_targets ) const;
   void retarget_storm_earth_and_fire_pets() const;
+
+  void accumulate_gale_burst_damage( action_state_t* );
 };
 
 // ==========================================================================
@@ -2859,32 +2862,6 @@ public:
         {
           p()->active_actions.sunrise_technique->target = s->target;
           p()->active_actions.sunrise_technique->execute();
-        }
-      }
-    }
-
-    if ( td( s->target )->dots.touch_of_death->is_ticking() && s->action->name_str != "touch_of_death_amplifier" )
-    {
-      if ( s->action->harmful )
-      {
-        double touch_of_death_amplifier = s->result_amount;
-
-        // Having Storm, Earth and Fire out increases the amplifier by 3 which is hard coded and not in any spell
-        // effect. This is due to the fact that the SEF clones don't contribute to the amplifier.
-        if ( p()->buff.storm_earth_and_fire->up() )
-          touch_of_death_amplifier *= 3;
-
-        if ( td( s->target )->debuff.touch_of_death_amplifier->up() )
-        {
-          td( s->target )->debuff.touch_of_death_amplifier->current_value += touch_of_death_amplifier;
-
-          if ( ab::sim->debug )
-          {
-            ab::sim->out_debug.printf(
-                "%s added %.2f towards Gale Burst. Current Gale Burst amount that is saved up is %.2f.",
-                ab::player->name(), touch_of_death_amplifier,
-                td( s->target )->debuff.touch_of_death_amplifier->current_value );
-          }
         }
       }
     }
@@ -8588,6 +8565,18 @@ void monk_t::init_procs()
   proc.bok_proc = get_proc( "bok_proc" );
 }
 
+// monk_t::init_assessors ===================================================
+
+void monk_t::init_assessors()
+{
+  base_t::init_assessors();
+
+  assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [this]( dmg_e, action_state_t* s ) {
+    accumulate_gale_burst_damage( s );
+    return assessor::CONTINUE;
+  } );
+}
+
 // monk_t::init_rng =======================================================
 
 void monk_t::init_rng()
@@ -8718,6 +8707,38 @@ std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
   }
 
   return l;
+}
+
+void monk_t::accumulate_gale_burst_damage( action_state_t* s)
+{
+  if ( !get_target_data( s->target )->dots.touch_of_death->is_ticking() )
+    return;
+
+  if ( !s->action->harmful )
+    return;
+
+  if ( s->action->name_str == "touch_of_death_amplifier" )
+    return;
+
+  if ( !get_target_data( s->target )->debuff.touch_of_death_amplifier->up() )
+    return;
+
+  double touch_of_death_amplifier = s->result_amount;
+
+  // Having Storm, Earth and Fire out increases the amplifier by 3 which is hard coded and not in any spell
+  // effect. This is due to the fact that the SEF clones don't contribute to the amplifier.
+  if ( buff.storm_earth_and_fire->up() )
+    touch_of_death_amplifier *= 3;
+
+  get_target_data( s->target )->debuff.touch_of_death_amplifier->current_value += touch_of_death_amplifier;
+
+  if ( sim->debug )
+  {
+    sim->out_debug.printf(
+        "%s's %s added %.2f towards Gale Burst. Current Gale Burst amount that is saved up is %.2f.",
+        name(), s->action->name_str, touch_of_death_amplifier,
+        get_target_data( s->target )->debuff.touch_of_death_amplifier->current_value );
+  }
 }
 
 // monk_t::retarget_storm_earth_and_fire ====================================
