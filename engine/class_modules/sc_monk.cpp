@@ -9902,7 +9902,7 @@ void monk_t::apl_combat_windwalker()
                    "Call the AoE action list if there are 3 or more enemies" );
 
   // Essences
-  essences->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains<=2" );
+  essences->add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains<=2" );
   essences->add_action( "blood_of_the_enemy" );
   essences->add_action( "guardian_of_azeroth" );
   essences->add_action( "focused_azerite_beam" );
