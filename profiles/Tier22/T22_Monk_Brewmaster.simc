@@ -34,6 +34,8 @@ actions=auto_attack
 actions+=/gift_of_the_ox,if=health<health.max*0.65
 actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down
 actions+=/fortifying_brew,if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)
+actions+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<31|target.time_to_die<20
+actions+=/use_items
 actions+=/potion
 actions+=/blood_fury
 actions+=/berserking
