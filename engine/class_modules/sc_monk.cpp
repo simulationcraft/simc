@@ -6536,7 +6536,7 @@ struct expel_harm_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    // like other BrM spells, this has fixed 1.0 second GCD. 
+    // like other BrM spells, this has fixed 1.0 second GCD.
     trigger_gcd        = timespan_t::from_seconds( 1.0 );
   }
 
@@ -8477,7 +8477,7 @@ void monk_t::create_buffs()
 
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
-  
+
   buff.storm_earth_and_fire =
       make_buff( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -9783,15 +9783,8 @@ void monk_t::apl_combat_brewmaster()
   def->add_action( this, "Fortifying Brew",
                    "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
 
-  int num_items = (int)items.size();
-
-  for ( int i = 0; i < num_items; i++ )
-  {
-    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      def->add_action( "use_item,name=" + items[ i ].name_str );
-    }
-  }
+  def->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<31|target.time_to_die<20" );
+  def->add_action( "use_items" );
   def->add_action( "potion" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
