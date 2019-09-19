@@ -1927,7 +1927,9 @@ struct potion_spell_filter
 
   bool operator()( const item_data_t* item ) const
   {
-    return range::contains_value(item->id_spell, spell_id);
+    // Augment runes and other things look like potions. Only match things
+    // that trigger the potion shared cooldown.
+    return item->cooldown_group[0] == 4 && range::contains_value(item->id_spell, spell_id);
   }
 };
 }  // namespace
@@ -1948,7 +1950,7 @@ static buff_t* find_potion_buff( const std::vector<buff_t*>& buffs, player_t* so
 
     auto item =
         dbc::find_consumable( ITEM_SUBCLASS_POTION, maybe_ptr( b->player->dbc.ptr ), potion_spell_filter( b->data().id() ) );
-    if ( item )
+    if ( item && item->id != 0 )
     {
       return b;
     }
