@@ -530,6 +530,11 @@ enum item_mod_type {
   ITEM_MOD_STRENGTH_INTELLECT       = 74,
 };
 
+enum item_cooldown_group {
+  ITEM_COOLDOWN_GROUP_NONE          = 0,
+  ITEM_COOLDOWN_GROUP_POTION        = 4,
+};
+
 enum rating_mod_type {
   RATING_MOD_DODGE        = 0x00000004,
   RATING_MOD_PARRY        = 0x00000008,
