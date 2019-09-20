@@ -9860,6 +9860,7 @@ void monk_t::apl_combat_windwalker()
   action_priority_list_t* aoe             = get_action_priority_list( "aoe" );
   action_priority_list_t* rskless         = get_action_priority_list( "rskless" );
   action_priority_list_t* st              = get_action_priority_list( "st" );
+  action_priority_list_t* tod             = get_action_priority_list( "tod" );
 
   def->add_action( "auto_attack" );
   def->add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
@@ -9897,7 +9898,6 @@ void monk_t::apl_combat_windwalker()
 
   // Cooldowns
   cd->add_talent( this, "Invoke Xuen, the White Tiger", "", "Cooldowns" );
-
   cd->add_action( "guardian_of_azeroth" );
   cd->add_action( "worldvein_resonance" );
 
@@ -9911,9 +9911,9 @@ void monk_t::apl_combat_windwalker()
       cd->add_action( racial_actions[ i ] );
   }
 
-  // Touch of Death
-  cd->add_action( this, "Touch of Death", "if=equipped.cyclotronic_blast&target.time_to_die>9&cooldown.cyclotronic_blast.remains<=1" );
-  cd->add_action( this, "Touch of Death", "if=!equipped.cyclotronic_blast&target.time_to_die>9" );
+  cd->add_action( "call_action_list,name=tod" );
+  cd->add_action( this, "Storm, Earth, and Fire",
+                  "if=cooldown.storm_earth_and_fire.charges=2|(cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=14&cooldown.touch_of_death.remains>=90)|target.time_to_die<=15|dot.touch_of_death.remains" );
 
   // Essences
   cd->add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains<=2" );
@@ -9922,12 +9922,8 @@ void monk_t::apl_combat_windwalker()
   cd->add_action( "purifying_blast" );
   cd->add_action( "focused_azerite_beam" );
 
-  cd->add_action( this, "Storm, Earth, and Fire",
-                  "if=cooldown.storm_earth_and_fire.charges=2|(cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=14&cooldown.touch_of_death.remains>=90)|cooldown.touch_of_death.remains<=5|target.time_to_die<=15" );
-
   cd->add_action( "use_item,name=pocketsized_computation_device,if=dot.touch_of_death.remains" );
-  cd->add_action( "use_item,name=ashvanes_razor_coral,if=cooldown.cyclotronic_blast.remains>20&(debuff.razor_coral_debuff.down|buff.storm_earth_and_fire.remains>13|target.time_to_die<21)" );
-
+  cd->add_action( "use_item,name=ashvanes_razor_coral,if=((equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains>=20)|!equipped.cyclotronic_blast)&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&buff.storm_earth_and_fire.remains>13|target.time_to_die<21)" );
   cd->add_talent( this, "Serenity", "if=cooldown.rising_sun_kick.remains<=2|target.time_to_die<=12" );
   cd->add_action( "memory_of_lucid_dreams,if=energy<40&buff.storm_earth_and_fire.up" );
   cd->add_action( "ripple_in_space" );
@@ -9962,6 +9958,10 @@ void monk_t::apl_combat_windwalker()
   }
   cd->add_action( "use_items,if=(equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains<=20)|!equipped.cyclotronic_blast" );
 
+  // Touch of Death
+  tod->add_action( this, "Touch of Death", "if=equipped.cyclotronic_blast&target.time_to_die>9&cooldown.cyclotronic_blast.remains<=2" );
+  tod->add_action( this, "Touch of Death", "if=!equipped.cyclotronic_blast&equipped.dribbling_inkpod&target.time_to_die>9&(target.time_to_pct_30.remains>=130|target.time_to_pct_30.remains<8)" );
+  tod->add_action( this, "Touch of Death", "if=!equipped.cyclotronic_blast&!equipped.dribbling_inkpod&target.time_to_die>9" );
 
   // Serenity
   serenity->add_action(
