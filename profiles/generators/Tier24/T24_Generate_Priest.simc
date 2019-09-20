@@ -26,3 +26,64 @@ trinket2=zaquls_portal_key,id=169306,bonus_id=4800/1517
 main_hand=anuazshara_staff_of_the_eternal,id=168275,bonus_id=4800/1517,enchant=machinists_brilliance
 
 save=T24_Priest_Shadow.simc
+
+priest="T24_Priest_Holy"
+spec=holy
+level=120
+race=human
+role=heal
+position=back
+talents=2300033
+azerite_essences=20:3:1/27:1:0
+
+# Default consumables
+potion=battle_potion_of_intellect
+flask=greater_flask_of_endless_fathoms
+food=baked_port_tato
+augmentation=battle_scarred
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+# Executed every time the actor is available.
+actions=mana_potion,if=mana.pct<=50
+actions+=/renew,cycle_targets=1,max_cycle_targets=15,if=!ticking&target.health.pct<=99&mana.pct>20&target.health.pct>0
+actions+=/renew,cycle_targets=1,max_cycle_targets=15,if=!ticking&target.health.pct<=80&target.health.pct>0
+actions+=/flash_heal,if=target.health.pct>0&target.health.pct<50&cooldown.holy_word_serenity.remains>=0.2,cycle_targets=1,max_cycle_targets=5
+actions+=/holy_word_serenity,if=target.health.pct>0&target.health.pct<50,cycle_targets=1,max_cycle_targets=5
+actions+=/heal,if=target.health.pct>49&target.health.pct<98,cycle_targets=1
+actions+=/stop_moving,if=self.mana.pct>14&cooldown.holy_word_serenity.remains>=0.3
+actions+=/start_moving,if=self.mana.pct<=5
+actions+=/holy_fire,if=mana.pct>20
+actions+=/smite,if=mana.pct>19
+
+head=grasping_crown_of_the_deep,id=159252,bonus_id=5448/1617/4786/6270,azerite_powers=0/15/18/228/165
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/6316,azerite_level=62
+shoulders=fathomfeeders_mantle,id=168342,bonus_id=4822/1487/4786/6265/4775,azerite_powers=13/15/103/576/114
+back=sporecallers_shroud,id=159292,bonus_id=5010/1612/4783
+chest=vestments_of_creeping_terror,id=168337,bonus_id=4823/1502/4786/6266/4775,azerite_powers=13/15/103/228/114
+shirt=artisan_officers_shirt,id=89195
+tabard=renowned_guild_tabard,id=69210
+wrists=silk_cuffs_of_the_skycapn,id=159227,bonus_id=5010/1612/4783
+hands=handwraps_of_oscillating_polarity,id=159247,bonus_id=5010/43/1602/4786
+waist=redhooks_cummerbund,id=159965,bonus_id=5010/4802/1602/4786
+legs=downlined_breeches,id=159234,bonus_id=5010/1602/5860/4784
+feet=blood_warders_moccasins,id=159270,bonus_id=5010/1612/4783
+finger1=band_of_the_ancient_dredger,id=159461,bonus_id=5010/1612/5850/4784,enchant=60haste
+finger2=band_of_the_roving_scalawag,id=162541,bonus_id=5008/1587/5860/4784,enchant=60haste
+trinket1=zoatroid_egg_sac,id=169309,bonus_id=4799/1502/4786
+trinket2=luminous_jellyweed,id=169312,bonus_id=4799/1502/4786
+main_hand=g3t00t,id=159641,bonus_id=5010/4802/41/1602/5850/4783,enchant=oceanic_restoration
+off_hand=tidebinders_driftglobe,id=168477,bonus_id=4799/1502/4786
+
+# Gear Summary
+# gear_ilvl=436.38
+# gear_stamina=13336
+# gear_intellect=8893
+# gear_crit_rating=1342
+# gear_haste_rating=888
+# gear_mastery_rating=1145
+# gear_versatility_rating=345
+# gear_leech_rating=63
+# gear_armor=1668
+
+save=T24_Priest_Holy.simc

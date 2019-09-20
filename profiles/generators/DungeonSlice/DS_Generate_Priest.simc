@@ -26,3 +26,52 @@ main_hand=goblet_of_glittering_favor,id=165592,bonus_id=4800/1537,enchant=quick_
 off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
 
 save=DS_Priest_Shadow.simc
+
+priest="PR_Priest_Holy"
+source=default
+spec=holy
+level=120
+race=human
+role=heal
+position=ranged_back
+talents=1300031
+
+# Default consumables
+potion=battle_potion_of_intellect
+flask=greater_flask_of_endless_fathoms
+food=baked_port_tato
+augmentation=battle_scarred
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+# Executed every time the actor is available.
+actions=use_item
+actions=mana_potion,if=mana.pct<=50
+actions+=/renew,cycle_targets=1,max_cycle_targets=15,if=!ticking&target.health.pct<=99&mana.pct>20&target.health.pct>0
+actions+=/renew,cycle_targets=1,max_cycle_targets=15,if=!ticking&target.health.pct<=80&target.health.pct>0
+actions+=/flash_heal,if=target.health.pct>0&target.health.pct<50&cooldown.holy_word_serenity.remains>=0.2,cycle_targets=1,max_cycle_targets=5
+actions+=/holy_word_serenity,if=target.health.pct>0&target.health.pct<50,cycle_targets=1,max_cycle_targets=5
+actions+=/heal,if=target.health.pct>49&target.health.pct<98,cycle_targets=1
+actions+=/stop_moving,if=self.mana.pct>14&cooldown.holy_word_serenity.remains>=0.3
+actions+=/start_moving,if=self.mana.pct<=5
+actions+=/holy_fire,if=mana.pct>20
+actions+=/smite,if=mana.pct>19
+
+head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=479/18/15/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=exquisitely_aerodynamic_shoulderpads,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=504/31/86/13
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=479/22/472/13
+wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
+hands=clawslit_brawlers_handwraps,id=159266,bonus_id=4779/1512/4786
+waist=sailcloth_waistband,id=158346,bonus_id=4779/1512/4786
+legs=rowdy_revelers_legwraps,id=158350,bonus_id=4779/1512/4786
+feet=sandswept_sandals,id=159259,bonus_id=4779/1512/4786
+finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=ignition_mages_fuse,id=159615,bonus_id=4779/1512/4786
+trinket2=vessel_of_skittering_shadows,id=159610,bonus_id=4779/1512/4786
+main_hand=leaxas_thoughtpiercer,id=159652,bonus_id=4779/1512/4786,enchant=deadly_navigation
+off_hand=rattling_jar_of_eyes,id=159668,bonus_id=4779/1512/4786
+
+save=DS_Priest_Holy.simc
