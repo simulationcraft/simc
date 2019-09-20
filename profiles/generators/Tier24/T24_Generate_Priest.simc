@@ -33,7 +33,7 @@ level=120
 race=human
 role=heal
 position=back
-talents=2300033
+talents=2300032
 azerite_essences=20:3:1/27:1:0
 
 # Default consumables

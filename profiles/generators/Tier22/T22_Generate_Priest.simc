@@ -33,7 +33,7 @@ level=120
 race=undead
 role=spell
 position=ranged_back
-talents=1300031
+talents=1300032
 
 head=visage_of_the_ascended_prophet,id=160719,bonus_id=4824/1507/4775,azerite_powers=485/21/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
