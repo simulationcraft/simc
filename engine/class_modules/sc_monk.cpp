@@ -2614,9 +2614,6 @@ public:
             timespan_t::from_seconds( -1 * ( p()->azerite.meridian_strikes.spell_ref().effectN( 2 ).base_value() / 100 ) ),
             true );  // Saved as 10
 
-      if ( p()->azerite.dance_of_chiji.ok() && p()->rppm.dance_of_chiji->trigger() )
-        p()->buff.dance_of_chiji->trigger();
-
       if ( p()->azerite.fury_of_xuen.ok() )
         p()->buff.fury_of_xuen_stacks->trigger();
     }
@@ -2755,6 +2752,10 @@ public:
         if ( p()->legendary.the_emperors_capacitor )
           p()->buff.the_emperors_capacitor->trigger();
       }
+      // Dance of Chi-Ji azerite trait triggers from spending chi
+      if ( p()->azerite.dance_of_chiji.ok() && p()->rppm.dance_of_chiji->trigger() )
+        p()->buff.dance_of_chiji->trigger();
+
       // Chi Savings on Dodge & Parry & Miss
       if ( ab::last_resource_cost > 0 )
       {
