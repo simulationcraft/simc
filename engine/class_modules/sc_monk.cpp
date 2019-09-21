@@ -2281,6 +2281,7 @@ struct monk_action_t : public Base
 {
   sef_ability_e sef_ability;
   bool ww_mastery;
+  bool may_combo_strike;
 
   // Affect flags for various dynamic effects
   struct
@@ -2332,6 +2333,7 @@ public:
     : ab( n, player, s ),
       sef_ability( SEF_NONE ),
       ww_mastery( false ),
+      may_combo_strike( false ),
 
       affected_by()
   {
@@ -2776,6 +2778,9 @@ public:
 
   void execute() override
   {
+    if ( may_combo_strike )
+      combo_strikes_trigger();
+
     ab::execute();
 
     trigger_storm_earth_and_fire( this );
@@ -3496,6 +3501,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     parse_options( options_str );
 
     ww_mastery                    = true;
+    may_combo_strike              = true;
     sef_ability                   = SEF_TIGER_PALM;
     affected_by.sunrise_technique = true;
 
@@ -3551,10 +3557,6 @@ struct tiger_palm_t : public monk_melee_attack_t
 
   virtual void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
-
     monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state->result ) )
@@ -3786,6 +3788,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     if ( p->sets->has_set_bonus( MONK_WINDWALKER, T19, B2 ) )
       cooldown->duration += p->sets->set( MONK_WINDWALKER, T19, B2 )->effectN( 1 ).time_value();
 
+    may_combo_strike     = true;
     sef_ability          = SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
 
@@ -3825,10 +3828,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
   virtual void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
-
     monk_melee_attack_t::execute();
 
     trigger_attack->set_target( target );
@@ -3935,6 +3934,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     parse_options( options_str );
     sef_ability                   = SEF_BLACKOUT_KICK;
     affected_by.sunrise_technique = true;
+    may_combo_strike              = true;
 
     switch ( p->specialization() )
     {
@@ -4031,10 +4031,6 @@ struct blackout_kick_t : public monk_melee_attack_t
 
   void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
-
     monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state->result ) )
@@ -4189,6 +4185,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   {
     parse_options( options_str );
     sef_ability = SEF_RUSHING_JADE_WIND;
+    may_combo_strike = true;
 
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
@@ -4215,10 +4212,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
   void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
-
     monk_melee_attack_t::execute();
 
     p()->buff.rushing_jade_wind->trigger();
@@ -4301,6 +4294,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     parse_options( options_str );
 
     sef_ability = SEF_SPINNING_CRANE_KICK;
+    may_combo_strike = true;
 
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
     tick_zero = hasted_ticks = interrupt_auto_attack = true;
@@ -4341,10 +4335,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
   void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
-
     monk_melee_attack_t::execute();
 
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, composite_dot_duration( execute_state ) );
@@ -4419,6 +4409,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     parse_options( options_str );
 
     sef_ability          = SEF_FISTS_OF_FURY;
+    may_combo_strike     = true;
     affected_by.serenity = true;
 
     channeled = tick_zero = true;
@@ -4484,10 +4475,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
       }
     }
 
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
-
     monk_melee_attack_t::execute();
 
     // Get the number of targets from the non sleeping target list
@@ -4536,6 +4523,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     channeled                         = true;
     dot_duration                      = data().duration();
     tick_zero                         = false;
+    may_combo_strike                  = true;
 
     spell_power_mod.direct = 0.0;
     // Forcing the minimum GCD to 750 milliseconds
@@ -4559,15 +4547,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
   {
     timespan_t tt = tick_time( s );
     return tt * 3;
-  }
-
-  void execute() override
-  {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
-
-    monk_melee_attack_t::execute();
   }
 };
 
@@ -4603,6 +4582,7 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
   {
     sef_ability                   = SEF_FIST_OF_THE_WHITE_TIGER_OH;
     ww_mastery                    = true;
+    may_combo_strike              = true;
     affected_by.sunrise_technique = true;
     affected_by.serenity          = false;
     cooldown->hasted              = false;
@@ -4620,10 +4600,6 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
 
   void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
-
     monk_melee_attack_t::execute();
 
     if ( result_is_hit( execute_state->result ) )
@@ -4872,6 +4848,7 @@ struct touch_of_death_t : public monk_spell_t
       touch_of_death_amplifier( new touch_of_death_amplifier_t( p ) )
   {
     may_crit = hasted_ticks = false;
+    may_combo_strike   = true;
     parse_options( options_str );
     school             = SCHOOL_PHYSICAL;
     ap_type            = AP_NO_WEAPON;
@@ -4952,10 +4929,6 @@ struct touch_of_death_t : public monk_spell_t
 
   virtual void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
-
     monk_spell_t::execute();
 
     if ( p()->legendary.hidden_masters_forbidden_touch )
@@ -5195,6 +5168,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
     affected_by.sunrise_technique   = true;
+    may_combo_strike                = true;
     ignore_false_positive           = true;
     movement_directionality         = MOVEMENT_OMNI;
     attack_power_mod.direct         = p->passives.flying_serpent_kick_damage->effectN( 1 ).ap_coeff();
@@ -5236,10 +5210,6 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
               ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() + movement_speed_increase ) ) ) );
       p()->current.moving_away = 0;
     }
-
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
 
     monk_melee_attack_t::execute();
 
@@ -5399,6 +5369,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     : monk_spell_t( "crackling_jade_lightning", &p, p.spec.crackling_jade_lightning )
   {
     sef_ability = SEF_CRACKLING_JADE_LIGHTNING;
+    may_combo_strike = true;
 
     parse_options( options_str );
 
@@ -5450,13 +5421,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
     am *= 1 + p()->spec.mistweaver_monk->effectN( 15 ).percent();
 
     return am;
-  }
-
-  virtual void execute() override
-  {
-    combo_strikes_trigger();
-
-    monk_spell_t::execute();
   }
 
   void last_tick( dot_t* dot ) override
@@ -6601,7 +6565,7 @@ struct chi_wave_t : public monk_spell_t
       dmg( true )
   {
     sef_ability = SEF_CHI_WAVE;
-
+    may_combo_strike       = true;
     parse_options( options_str );
     hasted_ticks = harmful = false;
     cooldown->hasted       = false;
@@ -6614,15 +6578,6 @@ struct chi_wave_t : public monk_spell_t
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd   = timespan_t::from_millis( 750 );
     gcd_haste = HASTE_SPELL;
-  }
-
-  virtual void execute() override
-  {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
-
-    monk_spell_t::execute();
   }
 
   void impact( action_state_t* s ) override
@@ -6677,6 +6632,7 @@ struct chi_burst_t : public monk_spell_t
     : monk_spell_t( "chi_burst", player, player->talent.chi_burst ), heal( nullptr )
   {
     parse_options( options_str );
+    may_combo_strike = true;
     heal             = new chi_burst_heal_t( *player );
     heal->stats      = stats;
     damage           = new chi_burst_damage_t( *player );
@@ -6699,10 +6655,6 @@ struct chi_burst_t : public monk_spell_t
 
   virtual void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
-
     monk_spell_t::execute();
 
     heal->execute();
@@ -6758,6 +6710,7 @@ struct reverse_harm_t : public monk_heal_t
     cooldown->hasted = false;
     target           = &player;
     may_crit         = false;
+    may_combo_strike = true;
     essence_equipped = player.find_azerite_essence( "Conflict and Strife" ).is_major();
 
     base_dd_min = static_cast<int>( player.resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
@@ -6779,10 +6732,6 @@ struct reverse_harm_t : public monk_heal_t
 
   virtual void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger();
-
     monk_heal_t::execute();
 
     // p()->resource_gain( RESOURCE_CHI, p()->spec.reverse_harm->effectN( 3 ).base_value(), p()->gain.reverse_harm );
