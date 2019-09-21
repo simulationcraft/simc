@@ -5,8 +5,13 @@
 // ==========================================================================
 /*
 NOTES:
-- to evaluate Combo Strikes in the APL, use "!prev_gcd.[ability]"
-- To show CJL can be interupted in the APL, use "&!prev_gcd.crackling_jade_lightning,interrupt=1"
+
+- To evaluate Combo Strikes in the APL, use:
+    if=combo_break     true if this action is a repeat
+    if=combo_strike    true if this action is not a repeat
+
+- To show CJL can be interupted in the APL, use:
+     &!prev_gcd.crackling_jade_lightning,interrupt=1
 
 TODO:
 
@@ -2484,12 +2489,18 @@ public:
     return p()->get_target_data( t );
   }
 
+  expr_t* create_expression( const std::string& name_str ) override
+  {
+    if ( name_str == "combo_strike" )
+      return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_strike );
+    else if ( name_str == "combo_break" )
+      return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_break );
+    return ab::create_expression( name_str );
+  }
+
   bool ready() override
   {
-    if ( !ab::ready() )
-      return false;
-
-    return true;
+    return ab::ready();
   }
 
   void init() override
@@ -2559,25 +2570,31 @@ public:
   }
 
   // Check if the combo ability under consideration is different from the last
-  bool combo_ok()
+  bool is_combo_strike()
   {
+    if ( !may_combo_strike )
+      return false;
+
     if ( p()->combo_strike_actions.empty() )
       return true;
 
-    // We are only putting actions with s_data into the vector so this is safe
-    if (p()->combo_strike_actions.back()->s_data->id() != this->s_data->id() )
+    if (p()->combo_strike_actions.back()->id != this->id )
       return true;
 
     return false;
   }
 
-  // The set bonus checks the last 3 unique combo strike triggering abilities before triggering a spell
-  // This is an ongoing check; so theoretically it can trigger 2 times from 4 unique CS spells in a row
-  // If a spell is used and it is one of the last 3 combo stirke saved, it will not trigger the buff
-  // IE: Energizing Elixir -> Strike of the Windlord -> Fists of Fury -> Tiger Palm (trigger) -> Blackout Kick
-  // (trigger) -> Tiger Palm -> Rising Sun Kick (trigger) The triggering CAN reset if the player casts the same
-  // ability two times in a row. IE: Energizing Elixir -> Blackout Kick -> Blackout Kick -> Rising Sun Kick ->
-  // Blackout Kick -> Tiger Palm (trigger)
+  // This differs from combo_strike when the ability can't combo strike. In
+  // that case both is_combo_strike and is_combo_break are false.
+  bool is_combo_break()
+  {
+    if ( !may_combo_strike )
+      return false;
+
+    return !is_combo_strike();
+  }
+
+  // The set bonus checks for last 3 unique combo strike triggering abilities
   void t19_4pc_bonus_trigger()
   {
     int n = p()->combo_strike_actions.size();
@@ -2587,24 +2604,24 @@ public:
       return;
 
     // Three different abilities in a row
-    auto a = p()->combo_strike_actions[n-3]->s_data->id();
-    auto b = p()->combo_strike_actions[n-2]->s_data->id();
-    auto c = p()->combo_strike_actions[n-1]->s_data->id();
+    auto a = p()->combo_strike_actions[n-3]->id;
+    auto b = p()->combo_strike_actions[n-2]->id;
+    auto c = p()->combo_strike_actions[n-1]->id;
 
     if ( a != b && a != c && b != c )
       p()->buff.combo_master->trigger();
   }
 
-  // Trigger Windwalker's Combo Strike Mastery, and the Hit Combo talent, and other
-  // effects that trigger from combo strikes.
-  // Triggers from execute() on abilities that are affected by it.
-  // Side effect: appends the current ability onto the combo_strike_actions list.
+  // Trigger Windwalker's Combo Strike Mastery, the Hit Combo talent,
+  // and other effects that trigger from combo strikes.
+  // Triggers from execute() on abilities with may_combo_strike = true
+  // Side effect: modifies combo_strike_actions
   void combo_strikes_trigger()
   {
     if ( !p()->mastery.combo_strikes->ok() )
       return;
 
-    if ( combo_ok() )
+    if ( is_combo_strike() )
     {
       p()->buff.combo_strikes->trigger();
 
