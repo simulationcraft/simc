@@ -7,8 +7,8 @@
 NOTES:
 
 - To evaluate Combo Strikes in the APL, use:
-    if=combo_break     true if this action is a repeat
-    if=combo_strike    true if this action is not a repeat
+    if=combo_break    true if action is a repeat and can combo strike
+    if=combo_strike   true if action is not a repeat or can't combo strike
 
 - To show CJL can be interupted in the APL, use:
      &!prev_gcd.crackling_jade_lightning,interrupt=1
@@ -2575,6 +2575,9 @@ public:
     if ( !may_combo_strike )
       return false;
 
+    // We don't know if the first attack is a combo or not, so assume it
+    // is. If you change this, also change is_combo_break so that it
+    // doesn't combo break on the first attack.
     if ( p()->combo_strike_actions.empty() )
       return true;
 
@@ -9769,8 +9772,7 @@ void monk_t::apl_combat_windwalker()
           "procs, or you are under the effect of bloodlust, or target time to die is greater or equal to 60" );
     else
       def->add_action(
-          "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility."
-          "react)"
+          "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)"
           "|buff.bloodlust.react|target.time_to_die<=60" );
   }
 
@@ -9780,7 +9782,7 @@ void monk_t::apl_combat_windwalker()
   def->add_talent( this, "Fist of the White Tiger",
                    "if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=3" );
   def->add_action( this, "Tiger Palm",
-                   "target_if=min:debuff.mark_of_the_crane.remains,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=2&!dot.touch_of_death.remains&!prev_gcd.1.tiger_palm" );
+                   "target_if=min:debuff.mark_of_the_crane.remains,if=!combo_break&(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=2&!dot.touch_of_death.remains" );
   def->add_talent( this, "Chi Wave", "if=!talent.fist_of_the_white_tiger.enabled&time<=3" );
   def->add_action( "call_action_list,name=cd" );
   def->add_action( "call_action_list,name=rskless,if=active_enemies<3&azerite.open_palm_strikes.enabled&!azerite.glory_of_the_dawn.enabled",
@@ -9867,7 +9869,7 @@ void monk_t::apl_combat_windwalker()
       "if=(buff.bloodlust.up&prev_gcd.1.rising_sun_kick)|buff.serenity.remains<1|(active_enemies>1&active_enemies<5)" );
   serenity->add_action(
       this, "Spinning Crane Kick",
-      "if=!prev_gcd.1.spinning_crane_kick&(active_enemies>=3|(active_enemies=2&prev_gcd.1.blackout_kick))" );
+      "if=combo_strike&(active_enemies>=3|(active_enemies=2&prev_gcd.1.blackout_kick))" );
   serenity->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
 
   // Multiple Targets
@@ -9879,16 +9881,16 @@ void monk_t::apl_combat_windwalker()
   aoe->add_action( this, "Fists of Fury", "if=energy.time_to_max>3" );
   aoe->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   aoe->add_action( this, "Spinning Crane Kick",
-                   "if=!prev_gcd.1.spinning_crane_kick&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3)" );
+                   "if=combo_strike&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3)" );
   aoe->add_action( this, "Reverse Harm", "if=chi.max-chi>=2" );
   aoe->add_talent( this, "Chi Burst", "if=chi<=3" );
   aoe->add_talent( this, "Fist of the White Tiger", "if=chi.max-chi>=3" );
   aoe->add_action( this, "Tiger Palm",
-                   "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|!prev_gcd.1.tiger_palm)" );
-  aoe->add_talent( this, "Chi Wave" );
+                   "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|!combo_break)" );
+  aoe->add_talent( this, "Chi Wave", "if=!combo_break" );
   aoe->add_action( this, "Flying Serpent Kick", "if=buff.bok_proc.down,interrupt=1" );
   aoe->add_action( this, "Blackout Kick",
-                   "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(buff.bok_proc.up|(talent.hit_combo.enabled&prev_gcd.1.tiger_palm&chi<4))" );
+                   "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|(talent.hit_combo.enabled&prev_gcd.1.tiger_palm&chi<4))" );
 
   // RSK-less Target
   rskless->add_talent( this, "Whirling Dragon Punch" );
@@ -9898,15 +9900,14 @@ void monk_t::apl_combat_windwalker()
   rskless->add_action( this, "Reverse Harm", "if=chi.max-chi>=2" );
   rskless->add_talent( this, "Fist of the White Tiger", "if=chi<=2" );
   rskless->add_talent( this, "Energizing Elixir", "if=chi<=3&energy<50" );
-  rskless->add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick&buff.dance_of_chiji.up" );
+  rskless->add_action( this, "Spinning Crane Kick", "if=combo_strike&buff.dance_of_chiji.react" );
   rskless->add_action( this, "Blackout Kick",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))" );
+      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))" );
   rskless->add_talent( this, "Chi Wave" );
   rskless->add_talent( this, "Chi Burst", "if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2" );
   rskless->add_action( this, "Flying Serpent Kick", "if=prev_gcd.1.blackout_kick&chi>3,interrupt=1" );
   rskless->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi<2" );
-  rskless->add_action( this, "Tiger Palm",
-                  "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2" );
+  rskless->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2" );
   rskless->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
 
   // Single Target
@@ -9918,13 +9919,12 @@ void monk_t::apl_combat_windwalker()
   st->add_action( this, "Reverse Harm", "if=chi.max-chi>=2" );
   st->add_talent( this, "Fist of the White Tiger", "if=chi<=2" );
   st->add_talent( this, "Energizing Elixir", "if=chi<=3&energy<50" );
-  st->add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick&buff.dance_of_chiji.up" );
-  st->add_action( this, "Blackout Kick",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>3|chi>=3)&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))" );
+  st->add_action( this, "Spinning Crane Kick", "if=combo_strike&buff.dance_of_chiji.react" );
+  st->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(cooldown.rising_sun_kick.remains>3|chi>=3)&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))" );
   st->add_talent( this, "Chi Wave" );
   st->add_talent( this, "Chi Burst", "if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2" );
   st->add_action( this, "Tiger Palm",
-                  "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2" );
+                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2" );
   st->add_action( this, "Flying Serpent Kick",
                   "if=prev_gcd.1.blackout_kick&chi>3,interrupt=1" );
 }
