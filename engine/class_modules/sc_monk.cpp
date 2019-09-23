@@ -3499,7 +3499,6 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
     : monk_spell_t( name, player, player->talent.eye_of_the_tiger->effectN( 1 ).trigger() )
   {
     background   = true;
-    ww_mastery   = true;
     hasted_ticks = false;
     may_crit = tick_may_crit = true;
     attack_power_mod.direct  = 0;
