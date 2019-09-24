@@ -7826,8 +7826,13 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "blood_fury,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
   def -> add_action( "berserking,if=buff.unholy_frenzy.up|pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
   def -> add_action( "use_items,if=time>20|!equipped.ramping_amplitude_gigavolt_engine|!equipped.vision_of_demise", "Custom trinkets usage" );
+  def -> add_action( "use_item,name=azsharas_font_of_power,if=(essence.vision_of_perfection.major&!talent.unholy_frenzy.enabled)|(!essence.condensed_lifeforce.major&!essence.vision_of_perfection.major)" );
+  def -> add_action( "use_item,name=azsharas_font_of_power,if=cooldown.apocalypse.remains<14&(essence.condensed_lifeforce.major|essence.vision_of_perfection.major&talent.unholy_frenzy.enabled)" );
+  def -> add_action( "use_item,name=azsharas_font_of_power,if=target.1.time_to_die<cooldown.apocalypse.remains+34" );
   def -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack<1" );
-  def -> add_action( "use_item,name=ashvanes_razor_coral,if=(pet.guardian_of_azeroth.active&pet.apoc_ghoul.active)|(cooldown.apocalypse.remains<gcd&!essence.condensed_lifeforce.enabled&!talent.unholy_frenzy.enabled)|(target.1.time_to_die<cooldown.apocalypse.remains+20)|(cooldown.apocalypse.remains<gcd&target.1.time_to_die<cooldown.condensed_lifeforce.remains+20)|(buff.unholy_frenzy.up&!essence.condensed_lifeforce.enabled)" );
+  def -> add_action( "use_item,name=ashvanes_razor_coral,if=pet.guardian_of_azeroth.active&pet.apoc_ghoul.active" );
+  def -> add_action( "use_item,name=ashvanes_razor_coral,if=cooldown.apocalypse.ready&(essence.condensed_lifeforce.major&target.1.time_to_die<cooldown.condensed_lifeforce.remains+20|!essence.condensed_lifeforce.major)" );
+  def -> add_action( "use_item,name=ashvanes_razor_coral,if=target.1.time_to_die<cooldown.apocalypse.remains+20" );
   def -> add_action( "use_item,name=vision_of_demise,if=(cooldown.apocalypse.ready&debuff.festering_wound.stack>=4&essence.vision_of_perfection.enabled)|buff.unholy_frenzy.up|pet.gargoyle.active" );
   def -> add_action( "use_item,name=ramping_amplitude_gigavolt_engine,if=cooldown.apocalypse.remains<2|talent.army_of_the_damned.enabled|raid_event.adds.in<5" );
   def -> add_action( "use_item,name=bygone_bee_almanac,if=cooldown.summon_gargoyle.remains>60|!talent.summon_gargoyle.enabled&time>20|!equipped.ramping_amplitude_gigavolt_engine" );
@@ -7846,7 +7851,7 @@ void death_knight_t::default_apl_unholy()
   // Heart of Azeroth Essences
   essences -> add_action( "memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40" );
   essences -> add_action( "blood_of_the_enemy,if=(cooldown.death_and_decay.remains&spell_targets.death_and_decay>1)|(cooldown.defile.remains&spell_targets.defile>1)|(cooldown.apocalypse.remains&cooldown.death_and_decay.ready)" );
-  essences -> add_action( "guardian_of_azeroth,if=cooldown.apocalypse.remains<6" );
+  essences -> add_action( "guardian_of_azeroth,if=(cooldown.apocalypse.remains<6&cooldown.army_of_the_dead.remains>cooldown.condensed_lifeforce.remains)|cooldown.army_of_the_dead.remains<2" );
   essences -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<11" );
   essences -> add_action( "focused_azerite_beam,if=!death_and_decay.ticking" );
   essences -> add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains=0" );
