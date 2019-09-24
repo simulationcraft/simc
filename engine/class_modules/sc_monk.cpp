@@ -5,8 +5,13 @@
 // ==========================================================================
 /*
 NOTES:
-- to evaluate Combo Strikes in the APL, use "!prev_gcd.[ability]"
-- To show CJL can be interupted in the APL, use "&!prev_gcd.crackling_jade_lightning,interrupt=1"
+
+- To evaluate Combo Strikes in the APL, use:
+    if=combo_break    true if action is a repeat and can combo strike
+    if=combo_strike   true if action is not a repeat or can't combo strike
+
+- To show CJL can be interupted in the APL, use:
+     &!prev_gcd.crackling_jade_lightning,interrupt=1
 
 TODO:
 
@@ -55,42 +60,13 @@ struct storm_earth_and_fire_pet_t;
 }
 struct monk_t;
 
-enum combo_strikes_e
-{
-  CS_NONE = -1,
-  // Attacks begin here
-  CS_TIGER_PALM,
-  CS_BLACKOUT_KICK,
-  CS_RISING_SUN_KICK,
-  CS_RISING_SUN_KICK_TRINKET,
-  CS_FISTS_OF_FURY,
-  CS_SPINNING_CRANE_KICK,
-  CS_RUSHING_JADE_WIND,
-  CS_WHIRLING_DRAGON_PUNCH,
-  CS_FIST_OF_THE_WHITE_TIGER,
-  CS_ATTACK_MAX,
-
-  // Spells begin here
-  CS_CHI_BURST,
-  CS_CHI_WAVE,
-  CS_CRACKLING_JADE_LIGHTNING,
-  CS_REVERSE_HARM,
-  CS_TOUCH_OF_DEATH,
-  CS_FLYING_SERPENT_KICK,
-  CS_SPELL_MAX,
-
-  // Misc
-  CS_SPELL_MIN  = CS_CHI_BURST,
-  CS_ATTACK_MIN = CS_TIGER_PALM,
-  CS_MAX,
-};
-
 enum sef_pet_e
 {
   SEF_FIRE = 0,
   SEF_EARTH,
   SEF_PET_MAX
 };  // Player becomes storm spirit.
+
 enum sef_ability_e
 {
   SEF_NONE = -1,
@@ -192,7 +168,7 @@ public:
     action_t* fit_to_burst;
   } active_actions;
 
-  combo_strikes_e previous_combo_strike;
+  std::vector<action_t*> combo_strike_actions;
   double spiritual_focus_count;
 
   // Blurred time cooldown shenanigans
@@ -205,10 +181,6 @@ public:
   std::vector<stagger_tick_entry_t> stagger_tick_damage;  // record stagger tick damage for expression
 
   double gift_of_the_ox_proc_chance;
-  // Containers for when to start the trigger for the 19 4-piece Windwalker Combo Master buff
-  combo_strikes_e t19_melee_4_piece_container_1;
-  combo_strikes_e t19_melee_4_piece_container_2;
-  combo_strikes_e t19_melee_4_piece_container_3;
 
   // Legion Artifact effects
   const special_effect_t* fu_zan_the_wanderers_companion;
@@ -708,12 +680,8 @@ public:
   monk_t( sim_t* sim, const std::string& name, race_e r )
     : player_t( sim, MONK, name, r ),
       active_actions( active_actions_t() ),
-      previous_combo_strike( CS_NONE ),
       spiritual_focus_count( 0 ),
       gift_of_the_ox_proc_chance(),
-      t19_melee_4_piece_container_1( CS_NONE ),
-      t19_melee_4_piece_container_2( CS_NONE ),
-      t19_melee_4_piece_container_3( CS_NONE ),
       fu_zan_the_wanderers_companion( nullptr ),
       sheilun_staff_of_the_mists( nullptr ),
       fists_of_the_heavens( nullptr ),
@@ -2318,6 +2286,7 @@ struct monk_action_t : public Base
 {
   sef_ability_e sef_ability;
   bool ww_mastery;
+  bool may_combo_strike;
 
   // Affect flags for various dynamic effects
   struct
@@ -2369,6 +2338,7 @@ public:
     : ab( n, player, s ),
       sef_ability( SEF_NONE ),
       ww_mastery( false ),
+      may_combo_strike( false ),
 
       affected_by()
   {
@@ -2519,12 +2489,18 @@ public:
     return p()->get_target_data( t );
   }
 
+  expr_t* create_expression( const std::string& name_str ) override
+  {
+    if ( name_str == "combo_strike" )
+      return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_strike );
+    else if ( name_str == "combo_break" )
+      return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_break );
+    return ab::create_expression( name_str );
+  }
+
   bool ready() override
   {
-    if ( !ab::ready() )
-      return false;
-
-    return true;
+    return ab::ready();
   }
 
   void init() override
@@ -2593,114 +2569,88 @@ public:
     return resource_by_stance;
   }
 
-  // Make sure the current combo strike ability is not the same as the previous ability used
-  virtual bool compare_previous_combo_strikes( combo_strikes_e new_ability )
+  // Check if the combo ability under consideration is different from the last
+  bool is_combo_strike()
   {
-    return p()->previous_combo_strike == new_ability;
+    if ( !may_combo_strike )
+      return false;
+
+    // We don't know if the first attack is a combo or not, so assume it
+    // is. If you change this, also change is_combo_break so that it
+    // doesn't combo break on the first attack.
+    if ( p()->combo_strike_actions.empty() )
+      return true;
+
+    if (p()->combo_strike_actions.back()->id != this->id )
+      return true;
+
+    return false;
   }
 
-  // Used to trigger Windwalker's Combo Strike Mastery; Triggers prior to calculating damage
-  void combo_strikes_trigger( combo_strikes_e new_ability )
+  // This differs from combo_strike when the ability can't combo strike. In
+  // that case both is_combo_strike and is_combo_break are false.
+  bool is_combo_break()
   {
-    if ( p()->mastery.combo_strikes->ok() )
+    if ( !may_combo_strike )
+      return false;
+
+    return !is_combo_strike();
+  }
+
+  // The set bonus checks for last 3 unique combo strike triggering abilities
+  void t19_4pc_bonus_trigger()
+  {
+    int n = p()->combo_strike_actions.size();
+
+    // Note that this must be called after the current action has been appended
+    if ( n < 3 )
+      return;
+
+    // Three different abilities in a row
+    auto a = p()->combo_strike_actions[n-3]->id;
+    auto b = p()->combo_strike_actions[n-2]->id;
+    auto c = p()->combo_strike_actions[n-1]->id;
+
+    if ( a != b && a != c && b != c )
+      p()->buff.combo_master->trigger();
+  }
+
+  // Trigger Windwalker's Combo Strike Mastery, the Hit Combo talent,
+  // and other effects that trigger from combo strikes.
+  // Triggers from execute() on abilities with may_combo_strike = true
+  // Side effect: modifies combo_strike_actions
+  void combo_strikes_trigger()
+  {
+    if ( !p()->mastery.combo_strikes->ok() )
+      return;
+
+    if ( is_combo_strike() )
     {
-      if ( !compare_previous_combo_strikes( new_ability ) )
-      {
-        p()->buff.combo_strikes->trigger();
+      p()->buff.combo_strikes->trigger();
 
-        if ( p()->talent.hit_combo->ok() )
-          p()->buff.hit_combo->trigger();
+      if ( p()->talent.hit_combo->ok() )
+        p()->buff.hit_combo->trigger();
 
-        if ( p()->azerite.meridian_strikes.ok() && p()->cooldown.touch_of_death->remains() > timespan_t::zero() )
-          p()->cooldown.touch_of_death->adjust(
-              timespan_t::from_seconds( -1 *
-                                        ( p()->azerite.meridian_strikes.spell_ref().effectN( 2 ).base_value() / 100 ) ),
-              true );  // Saved as 10
+      if ( p()->azerite.meridian_strikes.ok() && p()->cooldown.touch_of_death->remains() > timespan_t::zero() )
+        p()->cooldown.touch_of_death->adjust(
+            timespan_t::from_seconds( -1 * ( p()->azerite.meridian_strikes.spell_ref().effectN( 2 ).base_value() / 100 ) ),
+            true );  // Saved as 10
 
-        if ( p()->azerite.dance_of_chiji.ok() && p()->rppm.dance_of_chiji->trigger() )
-          p()->buff.dance_of_chiji->trigger();
-
-        if ( p()->azerite.fury_of_xuen.ok() )
-          p()->buff.fury_of_xuen_stacks->trigger();
-      }
-      else
-      {
-        p()->buff.combo_strikes->expire();
-        p()->buff.hit_combo->expire();
-      }
-      p()->previous_combo_strike = new_ability;
-
-      // The set bonus checks the last 3 unique combo strike triggering abilities before triggering a spell
-      // This is an ongoing check; so theoretically it can trigger 2 times from 4 unique CS spells in a row
-      // If a spell is used and it is one of the last 3 combo stirke saved, it will not trigger the buff
-      // IE: Energizing Elixir -> Strike of the Windlord -> Fists of Fury -> Tiger Palm (trigger) -> Blackout Kick
-      // (trigger) -> Tiger Palm -> Rising Sun Kick (trigger) The triggering CAN reset if the player casts the same
-      // ability two times in a row. IE: Energizing Elixir -> Blackout Kick -> Blackout Kick -> Rising Sun Kick ->
-      // Blackout Kick -> Tiger Palm (trigger)
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
-      {
-        if ( p()->t19_melee_4_piece_container_3 != CS_NONE )
-        {
-          // Check if the last two containers are not the same as the new ability
-          if ( p()->t19_melee_4_piece_container_3 != new_ability )
-          {
-            if ( p()->t19_melee_4_piece_container_2 != new_ability )
-            {
-              // if they are not the same adjust containers and trigger the buff
-              p()->t19_melee_4_piece_container_1 = p()->t19_melee_4_piece_container_2;
-              p()->t19_melee_4_piece_container_2 = p()->t19_melee_4_piece_container_3;
-              p()->t19_melee_4_piece_container_3 = new_ability;
-              p()->buff.combo_master->trigger();
-            }
-            // Don't do anything if the second container is the same
-          }
-          // semi-reset if the last ability is the same as the new ability
-          else
-          {
-            p()->t19_melee_4_piece_container_1 = new_ability;
-            p()->t19_melee_4_piece_container_2 = CS_NONE;
-            p()->t19_melee_4_piece_container_3 = CS_NONE;
-          }
-        }
-        else if ( p()->t19_melee_4_piece_container_2 != CS_NONE )
-        {
-          // If the 3rd container is blank check if the first two containers are not the same
-          if ( p()->t19_melee_4_piece_container_2 != new_ability )
-          {
-            if ( p()->t19_melee_4_piece_container_1 != new_ability )
-            {
-              // Assign the 3rd container and trigger the buff
-              p()->t19_melee_4_piece_container_3 = new_ability;
-              p()->buff.combo_master->trigger();
-            }
-            // Don't do anything if the first container is the same
-          }
-          // semi-reset if the last ability is the same as the new ability
-          else
-          {
-            p()->t19_melee_4_piece_container_1 = new_ability;
-            p()->t19_melee_4_piece_container_2 = CS_NONE;
-            p()->t19_melee_4_piece_container_3 = CS_NONE;
-          }
-        }
-        else if ( p()->t19_melee_4_piece_container_1 != CS_NONE )
-        {
-          // If the 2nd and 3rd container is blank, check if the first container is not the same
-          if ( p()->t19_melee_4_piece_container_1 != new_ability )
-            // Assign the second container
-            p()->t19_melee_4_piece_container_2 = new_ability;
-          // semi-reset if the last ability is the same as the new ability
-          else
-          {
-            p()->t19_melee_4_piece_container_1 = new_ability;
-            p()->t19_melee_4_piece_container_2 = CS_NONE;
-            p()->t19_melee_4_piece_container_3 = CS_NONE;
-          }
-        }
-        else
-          p()->t19_melee_4_piece_container_1 = new_ability;
-      }
+      if ( p()->azerite.fury_of_xuen.ok() )
+        p()->buff.fury_of_xuen_stacks->trigger();
     }
+    else
+    {
+      p()->combo_strike_actions.clear();
+      p()->buff.combo_strikes->expire();
+      p()->buff.hit_combo->expire();
+    }
+
+    // Record the current action in the history.
+    p()->combo_strike_actions.push_back(this);
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
+      t19_4pc_bonus_trigger();
   }
 
   // Reduces Brewmaster Brew cooldowns by the time given
@@ -2824,6 +2774,10 @@ public:
         if ( p()->legendary.the_emperors_capacitor )
           p()->buff.the_emperors_capacitor->trigger();
       }
+      // Dance of Chi-Ji azerite trait triggers from spending chi
+      if ( p()->azerite.dance_of_chiji.ok() && p()->rppm.dance_of_chiji->trigger() )
+        p()->buff.dance_of_chiji->trigger();
+
       // Chi Savings on Dodge & Parry & Miss
       if ( ab::last_resource_cost > 0 )
       {
@@ -2844,6 +2798,9 @@ public:
 
   void execute() override
   {
+    if ( may_combo_strike )
+      combo_strikes_trigger();
+
     ab::execute();
 
     trigger_storm_earth_and_fire( this );
@@ -3542,7 +3499,6 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
     : monk_spell_t( name, player, player->talent.eye_of_the_tiger->effectN( 1 ).trigger() )
   {
     background   = true;
-    ww_mastery   = true;
     hasted_ticks = false;
     may_crit = tick_may_crit = true;
     attack_power_mod.direct  = 0;
@@ -3564,6 +3520,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     parse_options( options_str );
 
     ww_mastery                    = true;
+    may_combo_strike              = true;
     sef_ability                   = SEF_TIGER_PALM;
     affected_by.sunrise_technique = true;
 
@@ -3619,10 +3576,6 @@ struct tiger_palm_t : public monk_melee_attack_t
 
   virtual void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_TIGER_PALM );
-
     monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state->result ) )
@@ -3854,6 +3807,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     if ( p->sets->has_set_bonus( MONK_WINDWALKER, T19, B2 ) )
       cooldown->duration += p->sets->set( MONK_WINDWALKER, T19, B2 )->effectN( 1 ).time_value();
 
+    may_combo_strike     = true;
     sef_ability          = SEF_RISING_SUN_KICK;
     affected_by.serenity = true;
 
@@ -3893,10 +3847,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
   virtual void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_RISING_SUN_KICK );
-
     monk_melee_attack_t::execute();
 
     trigger_attack->set_target( target );
@@ -4003,6 +3953,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     parse_options( options_str );
     sef_ability                   = SEF_BLACKOUT_KICK;
     affected_by.sunrise_technique = true;
+    may_combo_strike              = true;
 
     switch ( p->specialization() )
     {
@@ -4099,10 +4050,6 @@ struct blackout_kick_t : public monk_melee_attack_t
 
   void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_BLACKOUT_KICK );
-
     monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state->result ) )
@@ -4257,6 +4204,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   {
     parse_options( options_str );
     sef_ability = SEF_RUSHING_JADE_WIND;
+    may_combo_strike = true;
 
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
@@ -4283,10 +4231,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
   void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_RUSHING_JADE_WIND );
-
     monk_melee_attack_t::execute();
 
     p()->buff.rushing_jade_wind->trigger();
@@ -4369,6 +4313,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     parse_options( options_str );
 
     sef_ability = SEF_SPINNING_CRANE_KICK;
+    may_combo_strike = true;
 
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
     tick_zero = hasted_ticks = interrupt_auto_attack = true;
@@ -4409,10 +4354,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
   void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_SPINNING_CRANE_KICK );
-
     monk_melee_attack_t::execute();
 
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, composite_dot_duration( execute_state ) );
@@ -4487,6 +4428,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     parse_options( options_str );
 
     sef_ability          = SEF_FISTS_OF_FURY;
+    may_combo_strike     = true;
     affected_by.serenity = true;
 
     channeled = tick_zero = true;
@@ -4552,10 +4494,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
       }
     }
 
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_FISTS_OF_FURY );
-
     monk_melee_attack_t::execute();
 
     // Get the number of targets from the non sleeping target list
@@ -4604,6 +4542,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     channeled                         = true;
     dot_duration                      = data().duration();
     tick_zero                         = false;
+    may_combo_strike                  = true;
 
     spell_power_mod.direct = 0.0;
     // Forcing the minimum GCD to 750 milliseconds
@@ -4627,15 +4566,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
   {
     timespan_t tt = tick_time( s );
     return tt * 3;
-  }
-
-  void execute() override
-  {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_WHIRLING_DRAGON_PUNCH );
-
-    monk_melee_attack_t::execute();
   }
 };
 
@@ -4671,6 +4601,7 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
   {
     sef_ability                   = SEF_FIST_OF_THE_WHITE_TIGER_OH;
     ww_mastery                    = true;
+    may_combo_strike              = true;
     affected_by.sunrise_technique = true;
     affected_by.serenity          = false;
     cooldown->hasted              = false;
@@ -4688,10 +4619,6 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
 
   void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_FIST_OF_THE_WHITE_TIGER );
-
     monk_melee_attack_t::execute();
 
     if ( result_is_hit( execute_state->result ) )
@@ -4940,6 +4867,7 @@ struct touch_of_death_t : public monk_spell_t
       touch_of_death_amplifier( new touch_of_death_amplifier_t( p ) )
   {
     may_crit = hasted_ticks = false;
+    may_combo_strike   = true;
     parse_options( options_str );
     school             = SCHOOL_PHYSICAL;
     ap_type            = AP_NO_WEAPON;
@@ -5020,10 +4948,6 @@ struct touch_of_death_t : public monk_spell_t
 
   virtual void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_TOUCH_OF_DEATH );
-
     monk_spell_t::execute();
 
     if ( p()->legendary.hidden_masters_forbidden_touch )
@@ -5263,6 +5187,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
     affected_by.sunrise_technique   = true;
+    may_combo_strike                = true;
     ignore_false_positive           = true;
     movement_directionality         = MOVEMENT_OMNI;
     attack_power_mod.direct         = p->passives.flying_serpent_kick_damage->effectN( 1 ).ap_coeff();
@@ -5304,10 +5229,6 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
               ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() + movement_speed_increase ) ) ) );
       p()->current.moving_away = 0;
     }
-
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_FLYING_SERPENT_KICK );
 
     monk_melee_attack_t::execute();
 
@@ -5467,6 +5388,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     : monk_spell_t( "crackling_jade_lightning", &p, p.spec.crackling_jade_lightning )
   {
     sef_ability = SEF_CRACKLING_JADE_LIGHTNING;
+    may_combo_strike = true;
 
     parse_options( options_str );
 
@@ -5518,13 +5440,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
     am *= 1 + p()->spec.mistweaver_monk->effectN( 15 ).percent();
 
     return am;
-  }
-
-  virtual void execute() override
-  {
-    combo_strikes_trigger( CS_CRACKLING_JADE_LIGHTNING );
-
-    monk_spell_t::execute();
   }
 
   void last_tick( dot_t* dot ) override
@@ -6669,7 +6584,7 @@ struct chi_wave_t : public monk_spell_t
       dmg( true )
   {
     sef_ability = SEF_CHI_WAVE;
-
+    may_combo_strike       = true;
     parse_options( options_str );
     hasted_ticks = harmful = false;
     cooldown->hasted       = false;
@@ -6682,15 +6597,6 @@ struct chi_wave_t : public monk_spell_t
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd   = timespan_t::from_millis( 750 );
     gcd_haste = HASTE_SPELL;
-  }
-
-  virtual void execute() override
-  {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_CHI_WAVE );
-
-    monk_spell_t::execute();
   }
 
   void impact( action_state_t* s ) override
@@ -6745,6 +6651,7 @@ struct chi_burst_t : public monk_spell_t
     : monk_spell_t( "chi_burst", player, player->talent.chi_burst ), heal( nullptr )
   {
     parse_options( options_str );
+    may_combo_strike = true;
     heal             = new chi_burst_heal_t( *player );
     heal->stats      = stats;
     damage           = new chi_burst_damage_t( *player );
@@ -6767,10 +6674,6 @@ struct chi_burst_t : public monk_spell_t
 
   virtual void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_CHI_BURST );
-
     monk_spell_t::execute();
 
     heal->execute();
@@ -6826,6 +6729,7 @@ struct reverse_harm_t : public monk_heal_t
     cooldown->hasted = false;
     target           = &player;
     may_crit         = false;
+    may_combo_strike = true;
     essence_equipped = player.find_azerite_essence( "Conflict and Strife" ).is_major();
 
     base_dd_min = static_cast<int>( player.resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
@@ -6847,10 +6751,6 @@ struct reverse_harm_t : public monk_heal_t
 
   virtual void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_REVERSE_HARM );
-
     monk_heal_t::execute();
 
     // p()->resource_gain( RESOURCE_CHI, p()->spec.reverse_harm->effectN( 3 ).base_value(), p()->gain.reverse_harm );
@@ -8602,12 +8502,8 @@ void monk_t::reset()
 {
   base_t::reset();
 
-  previous_combo_strike         = CS_NONE;
-  t19_melee_4_piece_container_1 = CS_NONE;
-  t19_melee_4_piece_container_2 = CS_NONE;
-  t19_melee_4_piece_container_3 = CS_NONE;
   spiritual_focus_count         = 0;
-
+  combo_strike_actions.clear();
   stagger_tick_damage.clear();
 }
 
@@ -9875,8 +9771,7 @@ void monk_t::apl_combat_windwalker()
           "procs, or you are under the effect of bloodlust, or target time to die is greater or equal to 60" );
     else
       def->add_action(
-          "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility."
-          "react)"
+          "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)"
           "|buff.bloodlust.react|target.time_to_die<=60" );
   }
 
@@ -9886,7 +9781,7 @@ void monk_t::apl_combat_windwalker()
   def->add_talent( this, "Fist of the White Tiger",
                    "if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=3" );
   def->add_action( this, "Tiger Palm",
-                   "target_if=min:debuff.mark_of_the_crane.remains,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=2&!dot.touch_of_death.remains&!prev_gcd.1.tiger_palm" );
+                   "target_if=min:debuff.mark_of_the_crane.remains,if=!combo_break&(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=2&!dot.touch_of_death.remains" );
   def->add_talent( this, "Chi Wave", "if=!talent.fist_of_the_white_tiger.enabled&time<=3" );
   def->add_action( "call_action_list,name=cd" );
   def->add_action( "call_action_list,name=rskless,if=active_enemies<3&azerite.open_palm_strikes.enabled&!azerite.glory_of_the_dawn.enabled",
@@ -9973,7 +9868,7 @@ void monk_t::apl_combat_windwalker()
       "if=(buff.bloodlust.up&prev_gcd.1.rising_sun_kick)|buff.serenity.remains<1|(active_enemies>1&active_enemies<5)" );
   serenity->add_action(
       this, "Spinning Crane Kick",
-      "if=!prev_gcd.1.spinning_crane_kick&(active_enemies>=3|(active_enemies=2&prev_gcd.1.blackout_kick))" );
+      "if=combo_strike&(active_enemies>=3|(active_enemies=2&prev_gcd.1.blackout_kick))" );
   serenity->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
 
   // Multiple Targets
@@ -9985,16 +9880,16 @@ void monk_t::apl_combat_windwalker()
   aoe->add_action( this, "Fists of Fury", "if=energy.time_to_max>3" );
   aoe->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   aoe->add_action( this, "Spinning Crane Kick",
-                   "if=!prev_gcd.1.spinning_crane_kick&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3)" );
+                   "if=combo_strike&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3)" );
   aoe->add_action( this, "Reverse Harm", "if=chi.max-chi>=2" );
   aoe->add_talent( this, "Chi Burst", "if=chi<=3" );
   aoe->add_talent( this, "Fist of the White Tiger", "if=chi.max-chi>=3" );
   aoe->add_action( this, "Tiger Palm",
-                   "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|!prev_gcd.1.tiger_palm)" );
-  aoe->add_talent( this, "Chi Wave" );
+                   "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|!combo_break)" );
+  aoe->add_talent( this, "Chi Wave", "if=!combo_break" );
   aoe->add_action( this, "Flying Serpent Kick", "if=buff.bok_proc.down,interrupt=1" );
   aoe->add_action( this, "Blackout Kick",
-                   "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(buff.bok_proc.up|(talent.hit_combo.enabled&prev_gcd.1.tiger_palm&chi<4))" );
+                   "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|(talent.hit_combo.enabled&prev_gcd.1.tiger_palm&chi<4))" );
 
   // RSK-less Target
   rskless->add_talent( this, "Whirling Dragon Punch" );
@@ -10004,15 +9899,14 @@ void monk_t::apl_combat_windwalker()
   rskless->add_action( this, "Reverse Harm", "if=chi.max-chi>=2" );
   rskless->add_talent( this, "Fist of the White Tiger", "if=chi<=2" );
   rskless->add_talent( this, "Energizing Elixir", "if=chi<=3&energy<50" );
-  rskless->add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick&buff.dance_of_chiji.up" );
+  rskless->add_action( this, "Spinning Crane Kick", "if=combo_strike&buff.dance_of_chiji.react" );
   rskless->add_action( this, "Blackout Kick",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))" );
+      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))" );
   rskless->add_talent( this, "Chi Wave" );
   rskless->add_talent( this, "Chi Burst", "if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2" );
   rskless->add_action( this, "Flying Serpent Kick", "if=prev_gcd.1.blackout_kick&chi>3,interrupt=1" );
   rskless->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi<2" );
-  rskless->add_action( this, "Tiger Palm",
-                  "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2" );
+  rskless->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2" );
   rskless->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
 
   // Single Target
@@ -10024,13 +9918,12 @@ void monk_t::apl_combat_windwalker()
   st->add_action( this, "Reverse Harm", "if=chi.max-chi>=2" );
   st->add_talent( this, "Fist of the White Tiger", "if=chi<=2" );
   st->add_talent( this, "Energizing Elixir", "if=chi<=3&energy<50" );
-  st->add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick&buff.dance_of_chiji.up" );
-  st->add_action( this, "Blackout Kick",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>3|chi>=3)&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))" );
+  st->add_action( this, "Spinning Crane Kick", "if=combo_strike&buff.dance_of_chiji.react" );
+  st->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(cooldown.rising_sun_kick.remains>3|chi>=3)&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))" );
   st->add_talent( this, "Chi Wave" );
   st->add_talent( this, "Chi Burst", "if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2" );
   st->add_action( this, "Tiger Palm",
-                  "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2" );
+                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2" );
   st->add_action( this, "Flying Serpent Kick",
                   "if=prev_gcd.1.blackout_kick&chi>3,interrupt=1" );
 }
