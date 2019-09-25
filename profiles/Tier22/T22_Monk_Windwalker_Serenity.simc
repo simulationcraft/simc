@@ -27,7 +27,9 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/chi_burst,if=(!talent.serenity.enabled|!talent.fist_of_the_white_tiger.enabled)
-actions.precombat+=/chi_wave
+actions.precombat+=/chi_wave,if=talent.fist_of_the_white_tiger.enabled
+actions.precombat+=/invoke_xuen_the_white_tiger
+actions.precombat+=/guardian_of_azeroth
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -38,7 +40,8 @@ actions+=/potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.seren
 actions+=/call_action_list,name=serenity,if=buff.serenity.up
 actions+=/reverse_harm,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=2
 actions+=/fist_of_the_white_tiger,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=3
-actions+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=2&!prev_gcd.1.tiger_palm
+actions+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!combo_break&(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=2&!dot.touch_of_death.remains
+actions+=/chi_wave,if=!talent.fist_of_the_white_tiger.enabled&time<=3
 actions+=/call_action_list,name=cd
 # Call the RSKLess action list if Open Palm Strikes' is enabled, and Glory of the Dawm's rank is not enabled
 actions+=/call_action_list,name=rskless,if=active_enemies<3&azerite.open_palm_strikes.enabled&!azerite.glory_of_the_dawn.enabled
@@ -53,19 +56,19 @@ actions.aoe+=/whirling_dragon_punch
 actions.aoe+=/energizing_elixir,if=!prev_gcd.1.tiger_palm&chi<=1&energy<50
 actions.aoe+=/fists_of_fury,if=energy.time_to_max>3
 actions.aoe+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
-actions.aoe+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3)
+actions.aoe+=/spinning_crane_kick,if=combo_strike&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3)
 actions.aoe+=/reverse_harm,if=chi.max-chi>=2
 actions.aoe+=/chi_burst,if=chi<=3
 actions.aoe+=/fist_of_the_white_tiger,if=chi.max-chi>=3
-actions.aoe+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|!prev_gcd.1.tiger_palm)
-actions.aoe+=/chi_wave
+actions.aoe+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|!combo_break)
+actions.aoe+=/chi_wave,if=!combo_break
 actions.aoe+=/flying_serpent_kick,if=buff.bok_proc.down,interrupt=1
-actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(buff.bok_proc.up|(talent.hit_combo.enabled&prev_gcd.1.tiger_palm&chi<4))
+actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|(talent.hit_combo.enabled&prev_gcd.1.tiger_palm&chi<4))
 
 # Cooldowns
 actions.cd=invoke_xuen_the_white_tiger
-actions.cd+=//use_item,slot=trinket1
-actions.cd+=//use_item,slot=trinket2
+actions.cd+=/guardian_of_azeroth
+actions.cd+=/worldvein_resonance
 actions.cd+=/blood_fury
 actions.cd+=/berserking
 # Use Arcane Torrent if you are missing at least 1 Chi and won't cap energy within 0.5 seconds
@@ -73,20 +76,19 @@ actions.cd+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
 actions.cd+=/lights_judgment
 actions.cd+=/fireblood
 actions.cd+=/ancestral_call
-actions.cd+=/touch_of_death,if=target.time_to_die>9
-actions.cd+=/storm_earth_and_fire,if=cooldown.storm_earth_and_fire.charges=2|(cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=15
+actions.cd+=/call_action_list,name=tod
+actions.cd+=/storm_earth_and_fire,if=cooldown.storm_earth_and_fire.charges=2|(cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=14&cooldown.touch_of_death.remains>=90)|target.time_to_die<=15|dot.touch_of_death.remains
+actions.cd+=/concentrated_flame,if=dot.concentrated_flame_burn.remains<=2
+actions.cd+=/blood_of_the_enemy
+actions.cd+=/the_unbound_force
+actions.cd+=/purifying_blast
+actions.cd+=/focused_azerite_beam
+actions.cd+=/use_item,name=pocketsized_computation_device,if=dot.touch_of_death.remains
+actions.cd+=/use_item,name=ashvanes_razor_coral,if=((equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains>=20)|!equipped.cyclotronic_blast)&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&buff.storm_earth_and_fire.remains>13|target.time_to_die<21)
 actions.cd+=/serenity,if=cooldown.rising_sun_kick.remains<=2|target.time_to_die<=12
-actions.cd+=/call_action_list,name=essences
-
-actions.essences=concentrated_flame
-actions.essences+=/blood_of_the_enemy
-actions.essences+=/guardian_of_azeroth
-actions.essences+=/focused_azerite_beam
-actions.essences+=/purifying_blast
-actions.essences+=/the_unbound_force
-actions.essences+=/ripple_in_space
-actions.essences+=/worldvein_resonance
-actions.essences+=/memory_of_lucid_dreams,if=energy<40&buff.storm_earth_and_fire.up
+actions.cd+=/memory_of_lucid_dreams,if=energy<40&buff.storm_earth_and_fire.up
+actions.cd+=/ripple_in_space
+actions.cd+=/use_items,if=(equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains<=20)|!equipped.cyclotronic_blast
 
 actions.rskless=whirling_dragon_punch
 actions.rskless+=/fists_of_fury
@@ -95,19 +97,19 @@ actions.rskless+=/rushing_jade_wind,if=buff.rushing_jade_wind.down&active_enemie
 actions.rskless+=/reverse_harm,if=chi.max-chi>=2
 actions.rskless+=/fist_of_the_white_tiger,if=chi<=2
 actions.rskless+=/energizing_elixir,if=chi<=3&energy<50
-actions.rskless+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&buff.dance_of_chiji.up
-actions.rskless+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))
+actions.rskless+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.react
+actions.rskless+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))
 actions.rskless+=/chi_wave
 actions.rskless+=/chi_burst,if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2
 actions.rskless+=/flying_serpent_kick,if=prev_gcd.1.blackout_kick&chi>3,interrupt=1
 actions.rskless+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi<2
-actions.rskless+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2
+actions.rskless+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2
 actions.rskless+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
 
 # Serenity priority
 actions.serenity=rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3|prev_gcd.1.spinning_crane_kick
 actions.serenity+=/fists_of_fury,if=(buff.bloodlust.up&prev_gcd.1.rising_sun_kick)|buff.serenity.remains<1|(active_enemies>1&active_enemies<5)
-actions.serenity+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&(active_enemies>=3|(active_enemies=2&prev_gcd.1.blackout_kick))
+actions.serenity+=/spinning_crane_kick,if=combo_strike&(active_enemies>=3|(active_enemies=2&prev_gcd.1.blackout_kick))
 actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains
 
 actions.st=whirling_dragon_punch
@@ -118,12 +120,16 @@ actions.st+=/rushing_jade_wind,if=buff.rushing_jade_wind.down&active_enemies>1
 actions.st+=/reverse_harm,if=chi.max-chi>=2
 actions.st+=/fist_of_the_white_tiger,if=chi<=2
 actions.st+=/energizing_elixir,if=chi<=3&energy<50
-actions.st+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&buff.dance_of_chiji.up
-actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>3|chi>=3)&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))
+actions.st+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.react
+actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(cooldown.rising_sun_kick.remains>3|chi>=3)&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))
 actions.st+=/chi_wave
 actions.st+=/chi_burst,if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2
-actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2
+actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2
 actions.st+=/flying_serpent_kick,if=prev_gcd.1.blackout_kick&chi>3,interrupt=1
+
+actions.tod=touch_of_death,if=equipped.cyclotronic_blast&target.time_to_die>9&cooldown.cyclotronic_blast.remains<=2
+actions.tod+=/touch_of_death,if=!equipped.cyclotronic_blast&equipped.dribbling_inkpod&target.time_to_die>9&(target.time_to_pct_30.remains>=130|target.time_to_pct_30.remains<8)
+actions.tod+=/touch_of_death,if=!equipped.cyclotronic_blast&!equipped.dribbling_inkpod&target.time_to_die>9
 
 head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=389/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
