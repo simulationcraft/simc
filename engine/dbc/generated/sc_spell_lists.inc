@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 8.2.0.31478
+// Class based active abilities, wow build 8.2.5.31960
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -615,7 +615,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 21 abilities
+    // General tree, 22 abilities
     {
       114911, // Ancestral Guidance
       108271, // Astral Shift
@@ -634,6 +634,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       269352, // Hex (Skeletal Hatchling)
       277778, // Hex (Zandalari Tendonripper)
       277784, // Hex (Wicker Mongrel)
+      309328, // Hex (Living Honey)
          370, // Purge
       205495, // Stormkeeper (Artifact)
         8143, // Tremor Totem (Earth Totem)
@@ -1265,7 +1266,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 8.2.0.31478
+// Talent tree specialization abilities, wow build 8.2.5.31960
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1583,7 +1584,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        32645, // Envenom
        14190, // Seal Fate
        79134, // Venomous Wounds
-       51667, // Cut to the Chase
        79140, // Vendetta
        76803, // Mastery: Potent Assassin
       137037, // Assassination Rogue
@@ -2387,7 +2387,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 8.2.0.31478
+// Class mastery abilities, wow build 8.2.5.31960
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2626,7 +2626,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (33)
 #endif
 
-// Racial abilities, wow build 8.2.0.31478
+// Racial abilities, wow build 8.2.5.31960
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3600,7 +3600,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (724)
 
-// Set bonus data, wow build 8.2.0.31478
+// Set bonus data, wow build 8.2.5.31960
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4356,9 +4356,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  11,   -1, 290362, { 165604, 165566,  0 } },
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  12,   -1, 290362, { 165604, 165566,  0 } },
 };
-#define RPPMMOD_SIZE (997)
+#define RPPMMOD_SIZE (1000)
 
-// 997 RPPM Modifiers, wow build level 8.2.0.31478
+// 1000 RPPM Modifiers, wow build level 8.2.5.31960
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5357,5 +5357,8 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 304711,    4,  1,  1.0000 },
   { 304715,    4,  1,  1.0000 },
   { 305271,    4,  1,  1.0000 },
+  { 308688,    4,  1,  1.0000 },
+  { 308690,    4,  1,  1.0000 },
+  { 308776,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
