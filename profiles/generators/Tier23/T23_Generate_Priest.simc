@@ -6,8 +6,6 @@ role=spell
 position=ranged_back
 talents=3111111
 
-initial_resource=insanity=25
-
 head=crown_of_the_seducer,id=165818,bonus_id=4824/1537,azerite_powers=403/405/18/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=pauldrons_of_vile_corruption,id=159267,bonus_id=1587/4819,azerite_powers=236/403/459/13

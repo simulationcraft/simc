@@ -6,7 +6,6 @@ role=spell
 position=ranged_back
 talents=3111111
 
-initial_resource=insanity=25
 azerite_essences=27:3:1/5:3:0/12:3:0
 
 head=handmaidens_cowl_of_sacrifice,id=168336,bonus_id=4824/1517,azerite_powers=403/405/30/13
