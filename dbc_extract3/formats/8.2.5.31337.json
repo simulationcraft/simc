@@ -298,6 +298,7 @@
   ],
   "ItemAppearance": [
     { "data_type": "B", "field": "f4"},
+    { "data_type": "i", "field": "f5"},
     { "data_type": "i", "field": "id_display_info"},
     { "data_type": "i", "field": "id_icon"},
     { "data_type": "i", "field": "f3"}
