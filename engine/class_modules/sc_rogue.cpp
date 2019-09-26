@@ -2479,7 +2479,8 @@ struct fan_of_knives_t: public rogue_attack_t
     aoe = -1;
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
-    energize_amount   = data().effectN( 2 ).base_value();
+    // 09/25/2019 - 8.2.5 Spelldata seemingly erroneously removed this effect from the spell data
+    energize_amount   = 1; // data().effectN( 2 ).base_value();
 
     if ( p -> azerite.echoing_blades.ok() )
     {
