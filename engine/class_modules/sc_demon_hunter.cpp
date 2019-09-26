@@ -1114,6 +1114,10 @@ public:
       if ( ab::data().affected_by( p->spec.havoc->effectN( 4 ) ) )
         ab::cooldown->hasted = true;
 
+      // Critical Chance
+      if ( ab::data().affected_by( p->spec.havoc->effectN( 5 ) ) )
+        ab::base_crit += p->spec.havoc->effectN( 5 ).percent();
+
       // Hasted Category Cooldowns
       if ( as<int>( ab::data().category() ) == p->spec.havoc->effectN( 6 ).misc_value1() )
         ab::cooldown->hasted = true;
@@ -1837,7 +1841,6 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       background = dual = true;
       aoe = -1;
-      base_crit += p->spec.havoc->effectN( 3 ).percent();
     }
 
     virtual double composite_target_multiplier( player_t* target ) const override
