@@ -5583,7 +5583,7 @@ void hunter_t::apl_surv()
   st -> add_action( this, "Serpent_Sting", "if=buff.vipers_venom.up&buff.vipers_venom.remains<1.5*gcd" );
   st -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max" );
   st -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
-  st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up)" );
+  st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)" );
   st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.stack>5&!cooldown.coordinated_assault.remains" );
   st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|dot.serpent_sting.refreshable&!buff.coordinated_assault.up" );
   st -> add_talent( this, "A Murder of Crows", "if=!buff.coordinated_assault.up" );
@@ -5599,7 +5599,7 @@ void hunter_t::apl_surv()
   apst -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
   apst -> add_action( this, "Kill Command", "if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-10" );
   apst -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
-  apst -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up)" );
+  apst -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)" );
   apst -> add_action( this, "Serpent Sting", "if=!dot.serpent_sting.ticking&!buff.coordinated_assault.up" );
   apst -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)" );
   apst -> add_action( this, "Serpent Sting", "if=refreshable&!buff.coordinated_assault.up&buff.mongoose_fury.stack<5" );
