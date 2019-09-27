@@ -723,14 +723,6 @@ namespace warlock
         dual = true;
         aoe = -1;
       }
-
-      result_e calculate_result( action_state_t* s) const
-      {
-        //TOCHECK Bug - Phantom Singularity does not crit it's primary target. Live as of 10-19-2018.
-        if (s->chain_target == 0)
-          return RESULT_HIT;
-        return affliction_spell_t::calculate_result(s);
-      }
     };
 
     struct phantom_singularity_t : public affliction_spell_t
@@ -960,6 +952,7 @@ namespace warlock
     buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
       ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
       ->set_trigger_spell( talents.nightfall );
+      //->set_rppm( rppm_scale_e::RPPM_HASTE );
     //azerite
     buffs.cascading_calamity = make_buff<stat_buff_t>(this, "cascading_calamity", azerite.cascading_calamity)
       ->add_stat(STAT_HASTE_RATING, azerite.cascading_calamity.value())
