@@ -5838,8 +5838,8 @@ void mage_t::apl_fire()
     "Additionally with Blaster Master and Flame On, Fire Blasts should not be used unless Blaster Master is about to expire "
     "or there are more than enough Fire Blasts to extend Blaster Master to the end of Combustion." ); 
   combustion_phase->add_talent( this, "Rune of Power", "if=buff.combustion.down" );
-  combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,if=azerite.blaster_master.enabled&talent.flame_on.enabled&buff.blaster_master.down&(talent.rune_of_power.enabled&action.rune_of_power.executing&action.rune_of_power.execute_remains<0.6|(cooldown.combustion.ready|buff.combustion.up)&!talent.rune_of_power.enabled&!action.pyroblast.in_flight&!action.fireball.in_flight)",
-    "With Blaster Master, a Fire Blast should be used while casting Rune of Power." );
+  combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,if=azerite.blaster_master.enabled&essence.memory_of_lucid_dreams.major&talent.meteor.enabled&talent.flame_on.enabled&buff.blaster_master.down&(talent.rune_of_power.enabled&action.rune_of_power.executing&action.rune_of_power.execute_remains<0.6|(cooldown.combustion.ready|buff.combustion.up)&!talent.rune_of_power.enabled&!action.pyroblast.in_flight&!action.fireball.in_flight)",
+    "A Fire Blast should be used to apply Blaster Master while casting Rune of Power when using Blaster Master, Memory of Lucid Dreams Major, Flame On, and Meteor." );
   combustion_phase->add_action( "call_action_list,name=active_talents" );
   combustion_phase->add_action( this, "Combustion", "use_off_gcd=1,use_while_casting=1,if=((action.meteor.in_flight&action.meteor.in_flight_remains<=0.5)|!talent.meteor.enabled)&(buff.rune_of_power.up|!talent.rune_of_power.enabled)" );
   combustion_phase->add_action( "potion" );
