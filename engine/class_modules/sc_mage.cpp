@@ -5719,6 +5719,7 @@ void mage_t::apl_arcane()
 
   default_list->add_action( this, "Counterspell" );
   default_list->add_action( "call_action_list,name=essences" );
+  default_list->add_action( "use_item,name=azsharas_font_of_power,if=buff.rune_of_power.down&buff.arcane_power.down&(cooldown.arcane_power.remains<=5&cooldown.evocation.remains<=variable.average_burn_length+5|time_to_die<cooldown.arcane_power.remains)" );
   default_list->add_action( "call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length", "Go to Burn Phase when already burning, or when boss will die soon." );
   default_list->add_action( "call_action_list,name=burn,if=(cooldown.arcane_power.remains=0&cooldown.evocation.remains<=variable.average_burn_length&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0&buff.arcane_charge.stack<=1)))", "Start Burn Phase when Arcane Power is ready and Evocation will be ready (on average) before the burn phase is over. Also make sure we got 4 Arcane Charges, or can get 4 Arcane Charges with Charged Up." );
   default_list->add_action( "call_action_list,name=conserve,if=!burn_phase" );
@@ -5745,7 +5746,6 @@ void mage_t::apl_arcane()
     "Charged Up), use it before using RoP+AP, because the mana reduction is otherwise largely wasted "
     "since the AB was free anyway." );
   burn->add_action( "lights_judgment,if=buff.arcane_power.down" );
-  burn->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.arcane_power.remains<5|time_to_die<cooldown.arcane_power.remains" );
   burn->add_talent( this, "Rune of Power", "if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
   burn->add_action( "berserking" );
   burn->add_action( this, "Arcane Power" );
