@@ -2767,7 +2767,7 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p 
     }
   }
 
-  for ( auto it = p.collected_data.resource_timelines.end(); it-- != p.collected_data.resource_timelines.begin(); )
+  for ( auto it = p.collected_data.resource_timelines.rbegin(); it != p.collected_data.resource_timelines.rend(); ++it )
   {
     auto& timeline = *it;
 
