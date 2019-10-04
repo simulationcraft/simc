@@ -250,18 +250,22 @@ namespace timespan_adl_barrier
       return timespan_t(t);
     }
 
-    static constexpr timespan_t zero()
+    static timespan_t zero()
     {
-      return timespan_t();
+      static constexpr timespan_t cached_zero = timespan_t();
+      return cached_zero;
     }
-    static constexpr timespan_t max()
+    static timespan_t max()
     {
-      return timespan_t(std::numeric_limits<time_t>::max());
+      static constexpr timespan_t cached_max = timespan_t( std::numeric_limits<time_t>::max() );
+      return cached_max;
     }
-    static constexpr timespan_t min()
+    static timespan_t min()
     {
-      return std::is_floating_point<time_t>::value ? timespan_t(-std::numeric_limits<time_t>::max()) :
-          timespan_t(std::numeric_limits<time_t>::min());
+      static constexpr timespan_t cached_min = std::is_floating_point<time_t>::value
+                                                   ? timespan_t( -std::numeric_limits<time_t>::max() )
+                                                   : timespan_t( std::numeric_limits<time_t>::min() );
+      return cached_min;
     }
   };
 
