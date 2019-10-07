@@ -42,6 +42,7 @@ cli/simc
 # Cast extract
 casc_extract/cache/
 casc_extract/wow/
+casc_extract/wow_ptr/
 casc_extract/__pycache__/
 
 # Documentation
@@ -123,6 +124,7 @@ gui/*_resource*
 .idea/
 .ycm_*
 dbc_extract3/cache/live/DBCache.bin
+dbc_extract3/cache/ptr/DBCache.bin
 
 apikey.txt
 

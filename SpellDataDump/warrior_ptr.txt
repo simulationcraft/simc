@@ -810,12 +810,8 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 55
-Internal Cooldown: 0.5 seconds
-Proc Chance      : 100%
-Proc Flags       : ....x... ....x... ........ ........ 
-                 : Yellow Melee, Generic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2638,6 +2634,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 20
 Duration         : 6 seconds
+Labels           : 824: Will to Survive (312922 effect#1)
 Affecting spells : Shield Mastery (184927 effect#1), Heavy Repercussions (203177 effect#2)
 Family Flags     : 83
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -3479,7 +3476,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unleashes a whirlwind of steel, striking all enemies within $199658A1 yards for ${3*($199667sw2+$44949sw2)} Physical damage.$?a12950[
 
-Causes your next $s7 single-target $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.][]
+Causes your next $s7 single-target melee $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.][]
 
 |cFFFFFFFFGenerates ${$m8} Rage, plus an additional $m9 per target hit. Maximum $m10 Rage.|r
 

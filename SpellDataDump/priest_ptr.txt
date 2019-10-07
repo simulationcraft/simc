@@ -180,9 +180,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=242)      : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
@@ -1103,7 +1103,7 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.27500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.25300 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals you for ${$e2*100}% of damage dealt.
@@ -2032,7 +2032,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 Description      : Power Word: Shield, Shadow Mend, and Power Word: Radiance apply Atonement to your target for $194384s3 sec.
@@ -2923,11 +2923,11 @@ Effects          :
                    Affected Spells: Smite (585)
                    Family Flags: 7
 #5 (id=733880)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
-#6 (id=733881)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+#6 (id=733881)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
 #7 (id=743448)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -3096,7 +3096,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=215755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadowy Apparition (148859)
                    Family Flags: 90
 #2 (id=315218)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -6415,7 +6415,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=721830)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.35000 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
 Description      : Your healing and absorption is increased by ${$s1}.1% on targets with Atonement.
 
 Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive] 
@@ -6885,7 +6885,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734461)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Trigger Spell: 278902 | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Trigger Spell: 313267 | Target: Self (1)
 #2 (id=734462)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 139.95 (coefficient=1.8) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Penance (47666)
@@ -6975,7 +6975,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734503)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.0836) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.0627) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : When Voidform ends, gain $s1 Critical Strike for each stack of Voidform. This effect decays every $279572t3 sec.
 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
@@ -7724,7 +7724,7 @@ Description      : Immediately activates a new Voidform, then releases an explos
 
 |cFFFFFFFFGenerates ${$s2/100} Insanity.|r
 
-Name             : Hallucinations (id=280752) [Spell Family (6), Passive] 
+Name             : Hallucinations (id=280752) [Scaling Spell (-3), Spell Family (6), Passive] 
 Class            : Shadow Priest
 School           : Physical
 Spell Type       : None
@@ -7743,7 +7743,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #2 (id=739157)   : Apply Aura (6) | Proc Trigger Spell (42): Hallucinations
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 199579 | Target: Self (1)
-Description      : Your successful Dispel Magic, Mass Dispel, Purify Disease, Vampiric Embrace, and Power Word: Shield casts generate $s1 Insanity.
+Description      : Your successful Dispel Magic, Mass Dispel, Purify Disease, Vampiric Embrace, and Power Word: Shield casts generate $s1 Insanity during combat.
 
 Name             : Dark Ascension (id=280800) [Spell Family (6)] 
 Class            : Priest

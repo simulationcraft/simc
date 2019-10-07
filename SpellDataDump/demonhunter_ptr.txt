@@ -1940,6 +1940,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 100
 Duration         : 6 seconds
+Labels           : 824: Will to Survive (312922 effect#1)
 Affecting spells : Mastery: Fel Blood (203747 effect#3), Razor Spikes (209400 effect#1), Item - Demon Hunter T21 Vengeance 2P Bonus (251770 effect#1)
 Family Flags     : 7
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 

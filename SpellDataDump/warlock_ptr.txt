@@ -814,7 +814,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=169199)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 0x744 | Target: Self (1)
-Description      : Temporarilty increases current and maximum health by $s1% for $d.
+Description      : Temporarily increases current and maximum health by $s1% for $d.
 
 |cFFFFFFFFAuto-Cast:|r
 Use this ability when below 20% health.
@@ -5557,7 +5557,7 @@ Effects          :
 #1 (id=707289)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=707290)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=707411)   : Dummy (3)
                    Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000
 Description      : Launches a bolt of death at the target, dealing $s2% of the total remaining damage of your damage over time effects on the target.$?s196103[

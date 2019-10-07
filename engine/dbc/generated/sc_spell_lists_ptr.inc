@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 8.2.5.31812
+// Class based active abilities, wow build 8.3.0.32044
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1266,7 +1266,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 8.2.5.31812
+// Talent tree specialization abilities, wow build 8.3.0.32044
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2387,7 +2387,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 8.2.5.31812
+// Class mastery abilities, wow build 8.3.0.32044
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2626,7 +2626,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (33)
 #endif
 
-// Racial abilities, wow build 8.2.5.31812
+// Racial abilities, wow build 8.3.0.32044
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3600,7 +3600,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (724)
 
-// Set bonus data, wow build 8.2.5.31812
+// Set bonus data, wow build 8.3.0.32044
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4356,9 +4356,9 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  11,   -1, 290362, { 165604, 165566,  0 } },
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  12,   -1, 290362, { 165604, 165566,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (1000)
+#define PTR_RPPMMOD_SIZE (1010)
 
-// 1000 RPPM Modifiers, wow build level 8.2.5.31812
+// 1010 RPPM Modifiers, wow build level 8.3.0.32044
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5360,5 +5360,15 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 308688,    4,  1,  1.0000 },
   { 308690,    4,  1,  1.0000 },
   { 308776,    4,  1,  1.0000 },
+  { 310712,    4,  1,  1.0000 },
+  { 311197,    4,  1,  1.0000 },
+  { 311198,    4,  1,  1.0000 },
+  { 311210,    4,  1,  1.0000 },
+  { 311304,    4,  1,  1.0000 },
+  { 311306,    4,  1,  1.0000 },
+  { 313087,    4,  1,  1.0000 },
+  { 313568,    4,  1,  1.0000 },
+  { 313640,    4,  1,  1.0000 },
+  { 314070,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
