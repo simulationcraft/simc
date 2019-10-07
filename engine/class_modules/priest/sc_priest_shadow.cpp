@@ -566,7 +566,10 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     // Hardcoded value. This is the behavior announced and tested in game
     // However the value doesn't show up anywhere in the known spelldata
     // Anshlun 2018-10-02
-    if ( spiteful_apparitions_bonus > 0.0 && !priest().talents.auspicious_spirits->ok() )
+
+    // They removed this in PTR for some reason
+    // Publik 2019-10-07
+    if ( spiteful_apparitions_bonus > 0.0 && !priest().talents.auspicious_spirits->ok() && !maybe_ptr( priest().dbc.ptr ) )
     {
       spiteful_apparitions_bonus *= 1.75;
     }
