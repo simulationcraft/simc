@@ -9792,7 +9792,7 @@ void monk_t::apl_combat_windwalker()
   def->add_talent( this, "Chi Wave", "if=!talent.fist_of_the_white_tiger.enabled&time<=3" );
   def->add_action( "call_action_list,name=cd" );
   def->add_action(
-      "call_action_list,name=rskless,if=active_enemies<3&azerite.open_palm_strikes.enabled&!azerite.glory_of_the_dawn."
+      "call_action_list,name=rskless,if=!ptr&active_enemies<3&azerite.open_palm_strikes.enabled&!azerite.glory_of_the_dawn."
       "enabled",
       "Call the RSKLess action list if Open Palm Strikes' is enabled, and Glory of the Dawm's rank is not enabled" );
   def->add_action( "call_action_list,name=st,if=active_enemies<3",
