@@ -3371,9 +3371,26 @@ struct glacial_spike_t : public frost_mage_spell_t
     return frost_mage_spell_t::ready();
   }
 
+  double spell_direct_power_coefficient( const action_state_t* s ) const override
+  {
+    double coef = frost_mage_spell_t::spell_direct_power_coefficient( s );
+    if ( p()->bugs )
+      return coef;
+
+    double icicle_coef = icicle_sp_coefficient();
+    icicle_coef *=       p()->spec.icicles->effectN( 2 ).base_value();
+    icicle_coef *= 1.0 + p()->talents.splitting_ice->effectN( 3 ).percent();
+
+    coef += icicle_coef;
+
+    return coef;
+  }
+
   double action_multiplier() const override
   {
     double am = frost_mage_spell_t::action_multiplier();
+    if ( !p()->bugs )
+      return am;
 
     double icicle_coef = icicle_sp_coefficient();
     icicle_coef *=       p()->spec.icicles->effectN( 2 ).base_value();
@@ -3381,9 +3398,6 @@ struct glacial_spike_t : public frost_mage_spell_t
 
     // The damage from Icicles is added as multiplier that corresponds to
     // 1 + Icicle damage / base damage, for some reason.
-    //
-    // TODO: This causes mastery to affect Flash Freeze bonus damage and
-    // therefore might not be intended.
     am *= 1.0 + icicle_coef / spell_power_mod.direct;
 
     return am;
