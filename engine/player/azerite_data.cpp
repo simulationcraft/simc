@@ -1348,6 +1348,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 295750, azerite_essences::nullification_dynamo );
   unique_gear::register_special_effect( 298193, azerite_essences::aegis_of_the_deep );
   unique_gear::register_special_effect( 294910, azerite_essences::sphere_of_suppression );
+  unique_gear::register_special_effect( 310712, azerite_essences::breath_of_the_dying ); // lethal strikes
   // Vision of Perfection major Azerite Essence
   unique_gear::register_special_effect( 296325, azerite_essences::vision_of_perfection );
 }
@@ -5064,6 +5065,107 @@ void sphere_of_suppression( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Breath of the Dying
+// Minor: Lethal Strikes
+// id=310712 R1 minor base, driver
+// id=311192 minor damage spell
+// id=311201 R2 minor heal spell
+// R1: proc for damage
+// R2: heal for 50% (not implemented)
+// R3: 400% more proc when target below 20%
+void breath_of_the_dying( special_effect_t& effect )
+{
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
+    return;
+
+  struct lethal_strikes_t : public unique_gear::proc_spell_t
+  {
+    lethal_strikes_t( const special_effect_t& e, const std::string& n, const azerite_essence_t& ess ) :
+      proc_spell_t( n, e.player, e.player->find_spell( 311192 ), ess.item() )
+    {
+      base_dd_min = base_dd_max = ess.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( ess.item() );
+    }
+  };
+
+  struct lethal_strikes_cb_t : public dbc_proc_callback_t
+  {
+    double r3_lo_hp; // note this will be base_value, NOT percent
+    double r3_mul;
+
+    lethal_strikes_cb_t( const special_effect_t& e, const azerite_essence_t& ess ) :
+      dbc_proc_callback_t( e.player, e )
+    {
+      r3_lo_hp = ess.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 2 ).base_value();
+      r3_mul   = ess.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+    }
+
+    void trigger( action_t* a, void* cd ) override
+    {
+      auto s     = static_cast<action_state_t*>( cd );
+      double mod = 1.0;
+
+      // TODO: confirm '400% more' means 5x multiplier
+      if ( s->target->health_percentage() < r3_lo_hp )
+        mod += r3_mul;
+
+      rppm->set_modifier( mod );
+
+      dbc_proc_callback_t::trigger( a, cd );
+    }
+  };
+
+  auto action =
+      unique_gear::create_proc_action<lethal_strikes_t>( "lethal_strikes", effect, "lethal_strikes", essence );
+
+  effect.type           = SPECIAL_EFFECT_EQUIP;
+  effect.execute_action = action;
+  effect.ppm_           = -2.0; // RPPM of 10 hasted in spell data seems to be the buffed rppm, assuming base is 2
+
+  new lethal_strikes_cb_t( effect, essence );
+}
+
+// Major: Reaping Flames
+// id=310690 R1 major base, damage spell
+// id=311202 R3 buff after kill
+// R1: damage, -30s cd if target < 20%
+// R2: -30s cd if target > 80%
+// R3: reset cd if target dies + 100% more damage on next (NYI)
+// TODO: Implement R3
+struct reaping_flames_t : public azerite_essence_major_t
+{
+  double lo_hp; // note these are base_value and NOT percent
+  double hi_hp;
+  double cd_mod;
+
+  reaping_flames_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "reaping_flames", p->find_spell( 310690 ) )
+  {
+    parse_options( options_str );
+    // Damage stored in R1 MINOR
+    base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() );
+
+    lo_hp  = essence.spell_ref( 1u ).effectN( 2 ).base_value();
+    hi_hp  = essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value();
+    cd_mod = -essence.spell_ref( 1u ).effectN( 3 ).base_value();
+  }
+
+  void execute() override
+  {
+    bool reduce = false;
+    double tar_hp = target->health_percentage();
+
+    if ( tar_hp < lo_hp || ( hi_hp && tar_hp > hi_hp ) )
+      reduce = true;
+
+    azerite_essence_major_t::execute();
+
+    if ( reduce )
+      cooldown->adjust( timespan_t::from_seconds ( cd_mod ) );
+  }
+};
+// End Breath of the Dying
+
 } // Namespace azerite essences ends
 
 action_t* create_action( player_t* player, const std::string& name, const std::string& options )
@@ -5092,21 +5194,25 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
   {
     return new azerite_essences::ripple_in_space_t( player, options );
   }
-  else if ( util::str_compare_ci( name, "concentrated_flame"))
+  else if ( util::str_compare_ci( name, "concentrated_flame" ) )
   {
     return new azerite_essences::concentrated_flame_t( player, options );
   }
-  else if ( util::str_compare_ci( name, "the_unbound_force"))
+  else if ( util::str_compare_ci( name, "the_unbound_force" ) )
   {
     return new azerite_essences::the_unbound_force_t( player, options );
   }
-  else if (util::str_compare_ci(name, "worldvein_resonance"))
+  else if ( util::str_compare_ci( name, "worldvein_resonance" ) )
   {
     return new azerite_essences::worldvein_resonance_t( player, options );
   }
   else if ( util::str_compare_ci( name, "anima_of_death" ) )
   {
     return new azerite_essences::anima_of_death_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "reaping_flames" ) )
+  {
+    return new azerite_essences::reaping_flames_t( player, options );
   }
   // "Heart Essence" is a proxy action, generating whatever the user has for the major action
   // selected
@@ -5122,6 +5228,7 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
     azerite_essence_t the_unbound_force      = player->find_azerite_essence( "The Unbound Force" );
     azerite_essence_t worldvein_resonance    = player->find_azerite_essence( "Worldvein Resonance" );
     azerite_essence_t anima_of_death         = player->find_azerite_essence( "Anima of Life and Death" );
+    azerite_essence_t reaping_flames         = player->find_azerite_essence( "Breath of the Dying" );
 
     if ( focused_azerite_beam.is_major() )
     {
@@ -5162,6 +5269,10 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
     else if ( anima_of_death.is_major() )
     {
       return new azerite_essences::anima_of_death_t( player, options );
+    }
+    else if ( reaping_flames.is_major() )
+    {
+      return new azerite_essences::reaping_flames_t( player, options );
     }
     // Construct a dummy action so that "heart_essence" still works in the APL even without a major
     // essence

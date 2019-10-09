@@ -1298,6 +1298,13 @@ class SpellDataGenerator(DataGenerator):
          306474, 301886, 301887,
          # Anu-Azshara lockout debuff
          304482,
+         # 8.3.0 Essences
+         # Breath of the Dying (minor damage spell, R2 minor heal spell, R3 major buff on kill)
+         311192, 311201, 311202,
+         # Spark of Inspiration (minor buff)
+         313643,
+         # The Formless Void (major unknown buff)
+         312734,
         ),
 
         # Warrior:
