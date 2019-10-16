@@ -748,6 +748,7 @@ struct rogue_attack_t : public melee_attack_t
     bool broadside;
     bool master_assassin;
     bool toxic_blade;
+    bool ruthless_precision;
   } affected_by;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
@@ -860,7 +861,6 @@ struct rogue_attack_t : public melee_attack_t
     // Figure out the affected flags
     affected_by.shadow_blades = data().affected_by( p() -> spec.shadow_blades -> effectN( 2 ) ) ||
                                 data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) );
-
     affected_by.ruthlessness = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.relentless_strikes = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.deepening_shadows = base_costs[ RESOURCE_COMBO_POINT ] > 0;
@@ -870,6 +870,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.broadside = data().affected_by( p() -> buffs.broadside -> data().effectN( 4 ) );
     affected_by.master_assassin = data().affected_by( p() -> spec.master_assassin -> effectN( 1 ) );
     affected_by.toxic_blade = data().affected_by( p() -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ) );
+    affected_by.ruthless_precision = data().affected_by( p()->buffs.ruthless_precision->data().effectN( 1 ) );
   }
 
   void snapshot_state( action_state_t* state, dmg_e rt ) override
@@ -1121,6 +1122,11 @@ struct rogue_attack_t : public melee_attack_t
     {
       c += p() -> buffs.master_assassin -> stack_value();
       c += p() -> buffs.master_assassin_aura -> stack_value();
+    }
+
+    if ( affected_by.ruthless_precision )
+    {
+      c += p()->buffs.ruthless_precision->stack_value();
     }
 
     return c;
@@ -5532,8 +5538,6 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += spell.critical_strikes -> effectN( 1 ).percent();
 
-  crit += buffs.ruthless_precision -> stack_value();
-
   return crit;
 }
 
@@ -5558,8 +5562,6 @@ double rogue_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += spell.critical_strikes -> effectN( 1 ).percent();
-
-  crit += buffs.ruthless_precision -> stack_value();
 
   return crit;
 }
@@ -7104,8 +7106,7 @@ void rogue_t::init_special_effects()
     switch ( specialization() )
     {
       case ROGUE_ASSASSINATION:
-        // 6/22/2019 - PTR testing seems to indicate Assassination has a reduced proc chance
-        options.memory_of_lucid_dreams_proc_chance = 0.135;
+        options.memory_of_lucid_dreams_proc_chance = 0.15;
         break;
       case ROGUE_OUTLAW:
         options.memory_of_lucid_dreams_proc_chance = 0.15;
