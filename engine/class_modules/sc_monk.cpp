@@ -9885,8 +9885,14 @@ void monk_t::apl_combat_windwalker()
   serenity->add_action(
       this, "Fists of Fury",
       "if=(buff.bloodlust.up&prev_gcd.1.rising_sun_kick)|buff.serenity.remains<1|(active_enemies>1&active_enemies<5)" );
+  serenity->add_talent(
+      this, "Fist of the White Tiger",
+      "if=talent.hit_combo.enabled&energy.time_to_max<2&prev_gcd.1.blackout_kick&chi<=2" );
+  serenity->add_action(
+      this, "Tiger Palm",
+      "if=talent.hit_combo.enabled&energy.time_to_max<1&prev_gcd.1.blackout_kick&chi.max-chi>=2" );
   serenity->add_action( this, "Spinning Crane Kick",
-                        "if=combo_strike&(active_enemies>=3|(active_enemies=2&prev_gcd.1.blackout_kick))" );
+                        "if=combo_strike&(active_enemies>=3|(talent.hit_combo.enabled&prev_gcd.1.blackout_kick)|(active_enemies=2&prev_gcd.1.blackout_kick))" );
   serenity->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
 
   // Multiple Targets
