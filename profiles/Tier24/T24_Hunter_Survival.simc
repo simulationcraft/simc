@@ -53,7 +53,7 @@ actions.apst+=/raptor_strike,if=buff.coordinated_assault.up&(buff.coordinated_as
 actions.apst+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.apst+=/kill_command,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-10
 actions.apst+=/steel_trap,if=focus+cast_regen<focus.max
-actions.apst+=/wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up)
+actions.apst+=/wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)
 actions.apst+=/serpent_sting,if=!dot.serpent_sting.ticking&!buff.coordinated_assault.up
 actions.apst+=/kill_command,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
 actions.apst+=/serpent_sting,if=refreshable&!buff.coordinated_assault.up&buff.mongoose_fury.stack<5
@@ -130,7 +130,7 @@ actions.st+=/raptor_strike,if=buff.coordinated_assault.up&(buff.coordinated_assa
 actions.st+=/mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
 actions.st+=/kill_command,if=focus+cast_regen<focus.max
 actions.st+=/steel_trap,if=focus+cast_regen<focus.max
-actions.st+=/wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up)
+actions.st+=/wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)
 actions.st+=/mongoose_bite,if=buff.mongoose_fury.stack>5&!cooldown.coordinated_assault.remains
 actions.st+=/serpent_sting,if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|dot.serpent_sting.refreshable&!buff.coordinated_assault.up
 actions.st+=/a_murder_of_crows,if=!buff.coordinated_assault.up

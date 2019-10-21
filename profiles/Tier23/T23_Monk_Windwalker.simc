@@ -44,7 +44,7 @@ actions+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!combo_br
 actions+=/chi_wave,if=!talent.fist_of_the_white_tiger.enabled&time<=3
 actions+=/call_action_list,name=cd
 # Call the RSKLess action list if Open Palm Strikes' is enabled, and Glory of the Dawm's rank is not enabled
-actions+=/call_action_list,name=rskless,if=active_enemies<3&azerite.open_palm_strikes.enabled&!azerite.glory_of_the_dawn.enabled
+actions+=/call_action_list,name=rskless,if=!ptr&active_enemies<3&azerite.open_palm_strikes.enabled&!azerite.glory_of_the_dawn.enabled
 # Call the ST action list if there are 2 or less enemies
 actions+=/call_action_list,name=st,if=active_enemies<3
 # Call the AoE action list if there are 3 or more enemies
@@ -109,7 +109,9 @@ actions.rskless+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
 # Serenity priority
 actions.serenity=rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3|prev_gcd.1.spinning_crane_kick
 actions.serenity+=/fists_of_fury,if=(buff.bloodlust.up&prev_gcd.1.rising_sun_kick)|buff.serenity.remains<1|(active_enemies>1&active_enemies<5)
-actions.serenity+=/spinning_crane_kick,if=combo_strike&(active_enemies>=3|(active_enemies=2&prev_gcd.1.blackout_kick))
+actions.serenity+=/fist_of_the_white_tiger,if=talent.hit_combo.enabled&energy.time_to_max<2&prev_gcd.1.blackout_kick&chi<=2
+actions.serenity+=/tiger_palm,if=talent.hit_combo.enabled&energy.time_to_max<1&prev_gcd.1.blackout_kick&chi.max-chi>=2
+actions.serenity+=/spinning_crane_kick,if=combo_strike&(active_enemies>=3|(talent.hit_combo.enabled&prev_gcd.1.blackout_kick)|(active_enemies=2&prev_gcd.1.blackout_kick))
 actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains
 
 actions.st=whirling_dragon_punch

@@ -27,6 +27,7 @@ actions.precombat+=/arcane_intellect
 actions.precombat+=/arcane_familiar
 # conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP.
 actions.precombat+=/variable,name=conserve_mana,op=set,value=60+20*azerite.equipoise.enabled
+actions.precombat+=/variable,name=font_double_on_use,op=set,value=equipped.azsharas_font_of_power&(equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch)
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/mirror_image
@@ -36,6 +37,7 @@ actions.precombat+=/arcane_blast
 # Executed every time the actor is available.
 actions=counterspell
 actions+=/call_action_list,name=essences
+actions+=/use_item,name=azsharas_font_of_power,if=buff.rune_of_power.down&buff.arcane_power.down&(cooldown.arcane_power.remains<=4+10*variable.font_double_on_use&cooldown.evocation.remains<=variable.average_burn_length+4+10*variable.font_double_on_use|time_to_die<cooldown.arcane_power.remains)
 # Go to Burn Phase when already burning, or when boss will die soon.
 actions+=/call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length
 # Start Burn Phase when Arcane Power is ready and Evocation will be ready (on average) before the burn phase is over. Also make sure we got 4 Arcane Charges, or can get 4 Arcane Charges with Charged Up.
@@ -55,7 +57,6 @@ actions.burn+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack
 # When running Overpowered, and we got a Rule of Threes proc (AKA we got our 4th Arcane Charge via Charged Up), use it before using RoP+AP, because the mana reduction is otherwise largely wasted since the AB was free anyway.
 actions.burn+=/arcane_blast,if=buff.rule_of_threes.up&talent.overpowered.enabled&active_enemies<3
 actions.burn+=/lights_judgment,if=buff.arcane_power.down
-actions.burn+=/use_item,name=azsharas_font_of_power,if=cooldown.arcane_power.remains<5|time_to_die<cooldown.arcane_power.remains
 actions.burn+=/rune_of_power,if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)
 actions.burn+=/berserking
 actions.burn+=/arcane_power

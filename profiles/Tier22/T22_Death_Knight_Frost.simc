@@ -77,7 +77,7 @@ actions.bos_pooling+=/glacial_advance,if=cooldown.pillar_of_frost.remains>rune.t
 actions.bos_pooling+=/frost_strike,target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40&!talent.frostscythe.enabled
 actions.bos_pooling+=/frost_strike,if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40
 
-actions.bos_ticking=obliterate,target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power<=30&!talent.frostscythe.enabled
+actions.bos_ticking=obliterate,target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power<=32&!talent.frostscythe.enabled
 actions.bos_ticking+=/obliterate,if=runic_power<=32
 actions.bos_ticking+=/remorseless_winter,if=talent.gathering_storm.enabled
 actions.bos_ticking+=/howling_blast,if=buff.rime.up
@@ -89,7 +89,7 @@ actions.bos_ticking+=/remorseless_winter
 actions.bos_ticking+=/frostscythe,if=spell_targets.frostscythe>=2
 actions.bos_ticking+=/obliterate,target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power.deficit>25|rune>3&!talent.frostscythe.enabled
 actions.bos_ticking+=/obliterate,if=runic_power.deficit>25|rune>3
-actions.bos_ticking+=/arcane_torrent,if=runic_power.deficit>20
+actions.bos_ticking+=/arcane_torrent,if=runic_power.deficit>50
 
 # Cold heart conditions
 actions.cold_heart=chains_of_ice,if=buff.cold_heart.stack>5&target.1.time_to_die<gcd

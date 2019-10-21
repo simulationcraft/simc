@@ -57,6 +57,7 @@ actions.cooldowns+=/barkskin,if=buff.bear_form.up
 actions.cooldowns+=/lunar_beam,if=buff.bear_form.up
 actions.cooldowns+=/bristling_fur,if=buff.bear_form.up
 actions.cooldowns+=/incarnation,if=(dot.moonfire.ticking|active_enemies>1)&dot.thrash_bear.ticking
+actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<31|target.time_to_die<20
 actions.cooldowns+=/use_items
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=359/241/461/87/13
