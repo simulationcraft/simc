@@ -7736,7 +7736,7 @@ void death_knight_t::default_apl_frost()
   bos_pooling -> add_action( this, "Frost Strike", "if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40" );
 
   // Breath of Sindragosa uptime rotation
-  bos_ticking -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power<=30&!talent.frostscythe.enabled" );
+  bos_ticking -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power<=32&!talent.frostscythe.enabled" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=32" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled" );
   bos_ticking -> add_action( this, "Howling Blast", "if=buff.rime.up" );
@@ -7748,7 +7748,7 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=2" );
   bos_ticking -> add_action( this, "Obliterate", "target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&runic_power.deficit>25|rune>3&!talent.frostscythe.enabled" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power.deficit>25|rune>3" );
-  bos_ticking -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
+  bos_ticking -> add_action( "arcane_torrent,if=runic_power.deficit>50" );
 
   // Obliteration rotation
   obliteration -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled", "Obliteration rotation" );
