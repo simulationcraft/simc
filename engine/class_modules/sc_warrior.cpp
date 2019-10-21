@@ -6124,7 +6124,7 @@ std::string warrior_t::default_food() const
                                                 : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   std::string protection_food = ( true_level > 110 )
-                              ? "bountiful_captains_feast"
+                              ? "mechdowels_big_mech"
                               : ( true_level > 100 )
                                     ? "the_hungry_magister"
                                     : ( true_level > 90 )
