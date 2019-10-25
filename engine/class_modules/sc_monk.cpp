@@ -276,6 +276,7 @@ public:
     gain_t* glory_of_the_dawn;
     gain_t* open_palm_strikes;
     gain_t* reverse_harm;
+    gain_t* memory_of_lucid_dreams;
   } gain;
 
   struct procs_t
@@ -643,9 +644,16 @@ public:
     // Spending Chi has a chance to make your next Spinning Crane Kick free and deal 1274 additional damage.
     azerite_power_t dance_of_chiji;
 
+	azerite_essence_t memory_of_lucid_dreams;
     azerite_essence_t vision_of_perfection;
     double vision_of_perfection_percentage;
   } azerite;
+
+  struct azerite_spells_t
+  {
+    // General
+    const spell_data_t* memory_of_lucid_dreams;
+  } azerite_spells;
 
   struct pets_t
   {
@@ -664,6 +672,7 @@ public:
   struct options_t
   {
     int initial_chi;
+    double memory_of_lucid_dreams_proc_chance = 0.15;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
@@ -695,6 +704,7 @@ public:
       rppm(),
       legendary( legendary_t() ),
       azerite( azerite_powers_t() ),
+      azerite_spells( azerite_spells_t() ),
       pet( pets_t() ),
       //      pet_spawner( pets_t() ),
       user_options( options_t() ),
@@ -787,6 +797,7 @@ public:
   virtual double composite_mastery_rating() const override;
   virtual double composite_crit_avoidance() const override;
   virtual double composite_rating_multiplier( rating_e rating ) const override;
+  virtual double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   virtual double temporary_movement_modifier() const override;
   virtual double passive_movement_modifier() const override;
   virtual pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
@@ -2794,6 +2805,27 @@ public:
       double energy_restored = ab::last_resource_cost * 0.8;
 
       p()->resource_gain( RESOURCE_ENERGY, energy_restored, p()->gain.energy_refund );
+    }
+
+	// Memory of Lucid Dreams Essence
+    if ( p()->azerite.memory_of_lucid_dreams.enabled() && ab::last_resource_cost > 0 )
+    {
+      resource_e cr = ab::current_resource();
+      if ( cr == RESOURCE_CHI || cr == RESOURCE_ENERGY || cr == RESOURCE_MANA )
+      {
+        if ( p()->rng().roll( p()->user_options.memory_of_lucid_dreams_proc_chance ) )
+        {
+          // Gains are rounded up to the nearest whole value, which can be seen with the Lucid Dreams active up
+          const double amount =
+              ceil( ab::last_resource_cost * p()->azerite_spells.memory_of_lucid_dreams->effectN( 1 ).percent() );
+          p()->resource_gain( cr, amount, p()->gain.memory_of_lucid_dreams );
+
+          if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
+          {
+            p()->buffs.lucid_dreams->trigger();
+          }
+        }
+      }
     }
   }
 
@@ -8072,6 +8104,8 @@ void monk_t::init_spells()
   azerite.pressure_point    = find_azerite_spell( "Pressure Point" );
   azerite.swift_roundhouse  = find_azerite_spell( "Swift Roundhouse" );
 
+  azerite.memory_of_lucid_dreams        = find_azerite_essence( "Memory of Lucid Dreams" );
+  azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
   azerite.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
   azerite.vision_of_perfection_percentage =
       azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
@@ -8458,6 +8492,7 @@ void monk_t::init_gains()
 
   // Azerite Traits
   gain.open_palm_strikes = get_gain( "open_palm_strikes" );
+  gain.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams_proc" );
 }
 
 // monk_t::init_procs =======================================================
@@ -9005,6 +9040,19 @@ double monk_t::composite_base_armor_multiplier() const
   return a;
 }
 
+// monk_t::resource_gain ================================================
+
+double monk_t::resource_gain( resource_e r, double a, gain_t* g, action_t* action )
+{
+  // Memory of Lucid Dreams
+  if ( buffs.memory_of_lucid_dreams->up() )
+  {
+    a *= 1.0 + buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+  }
+
+  return player_t::resource_gain( r, a, g, action );
+}
+
 // monk_t::temporary_movement_modifier =====================================
 
 double monk_t::temporary_movement_modifier() const
@@ -9069,6 +9117,7 @@ void monk_t::create_options()
   base_t::create_options();
 
   add_option( opt_int( "initial_chi", user_options.initial_chi ) );
+  add_option( opt_float( "memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
 }
 
 // monk_t::copy_from =========================================================
