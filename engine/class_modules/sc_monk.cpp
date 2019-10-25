@@ -9225,8 +9225,6 @@ double monk_t::resource_regen_per_second( resource_e r ) const
   if ( r == RESOURCE_ENERGY )
   {
     reg *= 1.0 + talent.ascension->effectN( 2 ).percent();
-    if ( player_t::buffs.memory_of_lucid_dreams->check() )
-      reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
   }
 
   return reg;
