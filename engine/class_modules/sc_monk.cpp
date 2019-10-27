@@ -2810,15 +2810,14 @@ public:
 	// Memory of Lucid Dreams Essence
     if ( p()->azerite.memory_of_lucid_dreams.enabled() && ab::last_resource_cost > 0 )
     {
-      resource_e cr = ab::current_resource();
-      if ( cr == RESOURCE_CHI || cr == RESOURCE_ENERGY || cr == RESOURCE_MANA )
+      if ( ab::current_resource() == RESOURCE_ENERGY )
       {
         if ( p()->rng().roll( p()->user_options.memory_of_lucid_dreams_proc_chance ) )
         {
           // Gains are rounded up to the nearest whole value, which can be seen with the Lucid Dreams active up
           const double amount =
               ceil( ab::last_resource_cost * p()->azerite_spells.memory_of_lucid_dreams->effectN( 1 ).percent() );
-          p()->resource_gain( cr, amount, p()->gain.memory_of_lucid_dreams );
+          p()->resource_gain( RESOURCE_ENERGY, amount, p()->gain.memory_of_lucid_dreams );
 
           if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
           {
@@ -9045,7 +9044,7 @@ double monk_t::composite_base_armor_multiplier() const
 double monk_t::resource_gain( resource_e r, double a, gain_t* g, action_t* action )
 {
   // Memory of Lucid Dreams
-  if ( buffs.memory_of_lucid_dreams->up() )
+  if ( r == RESOURCE_ENERGY && buffs.memory_of_lucid_dreams->up() )
   {
     a *= 1.0 + buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
   }
