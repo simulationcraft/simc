@@ -2811,7 +2811,7 @@ public:
     if ( p()->azerite.memory_of_lucid_dreams.enabled() && ab::last_resource_cost > 0 )
     {
       resource_e cr = ab::current_resource();
-      if ( cr == RESOURCE_CHI || cr == RESOURCE_ENERGY || cr == RESOURCE_MANA )
+      if ( cr == RESOURCE_ENERGY || cr == RESOURCE_MANA )
       {
         if ( p()->rng().roll( p()->user_options.memory_of_lucid_dreams_proc_chance ) )
         {
@@ -9045,7 +9045,7 @@ double monk_t::composite_base_armor_multiplier() const
 double monk_t::resource_gain( resource_e r, double a, gain_t* g, action_t* action )
 {
   // Memory of Lucid Dreams
-  if ( buffs.memory_of_lucid_dreams->up() )
+  if ( ( r == RESOURCE_ENERGY || r == RESOURCE_MANA ) && buffs.memory_of_lucid_dreams->up() )
   {
     a *= 1.0 + buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
   }
