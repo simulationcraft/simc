@@ -277,6 +277,7 @@ public:
     gain_t* open_palm_strikes;
     gain_t* reverse_harm;
     gain_t* memory_of_lucid_dreams;
+    gain_t* lucid_dreams;
   } gain;
 
   struct procs_t
@@ -2822,7 +2823,7 @@ public:
 
           if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
           {
-            p()->buffs.lucid_dreams->trigger();
+            p()->player_t::buffs.lucid_dreams->trigger();
           }
         }
       }
@@ -8441,6 +8442,9 @@ void monk_t::create_buffs()
   buff.swift_roundhouse = make_buff( this, "swift_roundhouse", find_spell( 278710 ) )
                               ->set_default_value( azerite.swift_roundhouse.value() );
 
+  // Azerite Essences
+  player_t::buffs.memory_of_lucid_dreams->set_affects_regen( true );
+
   // Brewmaster
   buff.fit_to_burst = make_buff( this, "fit_to_burst", find_spell( 275893 ) )
                           ->set_trigger_spell( azerite.fit_to_burst.spell() )
@@ -8493,6 +8497,7 @@ void monk_t::init_gains()
   // Azerite Traits
   gain.open_palm_strikes = get_gain( "open_palm_strikes" );
   gain.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams_proc" );
+  gain.lucid_dreams           = get_gain( "lucid_dreams" );
 }
 
 // monk_t::init_procs =======================================================
@@ -9044,12 +9049,7 @@ double monk_t::composite_base_armor_multiplier() const
 
 double monk_t::resource_gain( resource_e r, double a, gain_t* g, action_t* action )
 {
-  // Memory of Lucid Dreams
-  if ( ( r == RESOURCE_ENERGY || r == RESOURCE_MANA ) && buffs.memory_of_lucid_dreams->up() )
-  {
-    a *= 1.0 + buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
-  }
-
+  
   return player_t::resource_gain( r, a, g, action );
 }
 
@@ -9225,6 +9225,9 @@ double monk_t::resource_regen_per_second( resource_e r ) const
   if ( r == RESOURCE_ENERGY )
   {
     reg *= 1.0 + talent.ascension->effectN( 2 ).percent();
+    // Memory of Lucid Dreams
+    if ( player_t::buffs.memory_of_lucid_dreams->check() )
+      reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
   }
 
   return reg;
