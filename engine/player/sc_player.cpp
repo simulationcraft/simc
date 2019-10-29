@@ -7252,6 +7252,19 @@ struct variable_t : public action_t
     add_option( opt_string( "value_else", value_else_str ) );
     parse_options( options_str );
 
+    auto option_default = player->apl_variable_map.find( name_str );
+    if ( option_default != player->apl_variable_map.end() )
+    {
+      try
+      {
+        default_ = std::stod( option_default->second );
+      }
+      catch ( const std::exception& )
+      {
+        std::throw_with_nested(std::runtime_error(fmt::format( "Failed to parse player option for variable '{}'", name_str )));
+      }
+    }
+
     if ( name_str.empty() )
     {
       sim->errorf( "Player %s unnamed 'variable' action used", player->name() );
@@ -11073,6 +11086,7 @@ void player_t::create_options()
   add_option( opt_string( "actions", action_list_str ) );
   add_option( opt_append( "actions+", action_list_str ) );
   add_option( opt_map( "actions.", alist_map ) );
+  add_option( opt_map( "apl_variable.", apl_variable_map ) );
   add_option( opt_string( "action_list", choose_action_list ) );
   add_option( opt_bool( "sleeping", initial.sleeping ) );
   add_option( opt_bool( "quiet", quiet ) );

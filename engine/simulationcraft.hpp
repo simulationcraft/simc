@@ -3850,6 +3850,7 @@ struct player_t : public actor_t
   std::unordered_map<std::string, std::string> alist_map;
   std::string action_list_information; // comment displayed in profile
   bool no_action_list_provided;
+  std::unordered_map<std::string, std::string> apl_variable_map;
 
   bool quiet;
   // Reporting
