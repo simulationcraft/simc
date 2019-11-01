@@ -11036,6 +11036,7 @@ void player_t::copy_from( player_t* source )
   action_list_str      = source->action_list_str;
   alist_map            = source->alist_map;
   use_apl              = source->use_apl;
+  apl_variable_map     = source->apl_variable_map;
 
   meta_gem = source->meta_gem;
   for ( size_t i = 0; i < items.size(); i++ )
