@@ -1346,6 +1346,9 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_SPEED_RATING: return "speed_rating";
     case STAT_AVOIDANCE_RATING: return "avoidance_rating";
 
+    case STAT_CORRUPTION: return "corruption";
+    case STAT_CORRUPTION_RESISTANCE: return "corruption_resistance";
+
     case STAT_ALL: return "all";
 
     default: return "unknown";
@@ -1414,6 +1417,9 @@ const char* util::stat_type_abbrev( stat_e stat )
     case STAT_LEECH_RATING: return "Leech";
     case STAT_SPEED_RATING: return "RunSpeed";
     case STAT_AVOIDANCE_RATING: return "Avoidance";
+
+    case STAT_CORRUPTION: return "Cor";
+    case STAT_CORRUPTION_RESISTANCE: return "Rcor";
 
     case STAT_ALL: return "All";
 
@@ -1962,6 +1968,8 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_LEECH_RATING:        return STAT_LEECH_RATING;
     case ITEM_MOD_SPEED_RATING:        return STAT_SPEED_RATING;
     case ITEM_MOD_AVOIDANCE_RATING:    return STAT_AVOIDANCE_RATING;
+    case ITEM_MOD_CORRUPTION:          return STAT_CORRUPTION;
+    case ITEM_MOD_CORRUPTION_RESISTANCE: return STAT_CORRUPTION_RESISTANCE;
     default:                           return STAT_NONE;
   }
 }
@@ -1995,6 +2003,8 @@ int util::translate_stat( stat_e stat )
     case STAT_LEECH_RATING:       return ITEM_MOD_LEECH_RATING;
     case STAT_SPEED_RATING:       return ITEM_MOD_SPEED_RATING;
     case STAT_AVOIDANCE_RATING:   return ITEM_MOD_AVOIDANCE_RATING;
+    case STAT_CORRUPTION:         return ITEM_MOD_CORRUPTION;
+    case STAT_CORRUPTION_RESISTANCE: return ITEM_MOD_CORRUPTION_RESISTANCE;
     default:                      return ITEM_MOD_NONE;
   }
 }
@@ -2082,6 +2092,10 @@ rating_e util::stat_to_rating( stat_e s )
       return RATING_PARRY;
     case STAT_BLOCK_RATING:
       return RATING_BLOCK;
+    case STAT_CORRUPTION:
+      return RATING_CORRUPTION;
+    case STAT_CORRUPTION_RESISTANCE:
+      return RATING_CORRUPTION_RESISTANCE;
     default:
       return RATING_MAX;
   }
@@ -2756,9 +2770,6 @@ bool util::is_combat_rating( item_mod_type t )
     case ITEM_MOD_CRIT_MELEE_RATING:
     case ITEM_MOD_CRIT_RANGED_RATING:
     case ITEM_MOD_CRIT_SPELL_RATING:
-    case ITEM_MOD_HIT_TAKEN_MELEE_RATING:
-    case ITEM_MOD_HIT_TAKEN_RANGED_RATING:
-    case ITEM_MOD_HIT_TAKEN_SPELL_RATING:
     case ITEM_MOD_CRIT_TAKEN_MELEE_RATING:
     case ITEM_MOD_CRIT_TAKEN_RANGED_RATING:
     case ITEM_MOD_CRIT_TAKEN_SPELL_RATING:

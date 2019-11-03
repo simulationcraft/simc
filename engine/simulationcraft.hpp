@@ -399,6 +399,8 @@ struct gear_stats_t
   double leech_rating;
   double speed_rating;
   double avoidance_rating;
+  double corruption;
+  double corruption_resistance;
 
   gear_stats_t() :
     default_value( 0.0 ), attribute(), resource(),
@@ -407,7 +409,7 @@ struct gear_stats_t
     weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
     parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 ),
     versatility_rating( 0.0 ), leech_rating( 0.0 ), speed_rating( 0.0 ),
-    avoidance_rating( 0.0 )
+    avoidance_rating( 0.0 ), corruption( 0.0 ), corruption_resistance( 0.0 )
   { }
 
   void initialize( double initializer )
@@ -441,6 +443,8 @@ struct gear_stats_t
     leech_rating = initializer;
     speed_rating = initializer;
     avoidance_rating = initializer;
+    corruption = initializer;
+    corruption_resistance = initializer;
   }
 
   friend gear_stats_t operator+( const gear_stats_t& left, const gear_stats_t& right )
@@ -476,6 +480,8 @@ struct gear_stats_t
     leech_rating += right.leech_rating;
     speed_rating += right.speed_rating;
     avoidance_rating += right.avoidance_rating;
+    corruption += right.corruption;
+    corruption_resistance += right.corruption_resistance;
     range::transform ( attribute, right.attribute, attribute.begin(), std::plus<double>() );
     range::transform ( resource, right.resource, resource.begin(), std::plus<double>() );
     return *this;
