@@ -1657,8 +1657,6 @@ void sim_t::reset()
 
   expected_iteration_time = max_time * iteration_time_adjust();
 
-  analyze_number = 0;
-
   for ( auto& buff : buff_list )
     buff -> reset();
 
@@ -4153,6 +4151,7 @@ void sim_t::activate_actors()
   progress_bar.progress();
 
   current_iteration = -1;
+  analyze_number = 0;
 }
 
 bool sim_t::has_raid_event( const std::string& type ) const
