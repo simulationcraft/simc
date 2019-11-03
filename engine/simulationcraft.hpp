@@ -1972,6 +1972,8 @@ inline cache_e cache_from_rating( rating_e r )
     case RATING_LEECH: return CACHE_LEECH;
     case RATING_SPEED: return CACHE_RUN_SPEED;
     case RATING_AVOIDANCE: return CACHE_AVOIDANCE;
+    case RATING_CORRUPTION: return CACHE_CORRUPTION;
+    case RATING_CORRUPTION_RESISTANCE: return CACHE_CORRUPTION_RESISTANCE;
     default: break;
   }
   assert( false ); return CACHE_NONE;
