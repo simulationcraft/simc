@@ -4500,11 +4500,12 @@ class AzeriteDataGenerator(DataGenerator):
 
         for id in sorted(ids):
             entry = self._azeritepower_db[id]
+            spell = self._spellname_db[entry.id_spell]
             fields = entry.field('id', 'id_spell', 'id_bonus')
-            fields += self._spellname_db[entry.id_spell].field('name')
+            fields += spell.field('name')
             # Azerite essence stuff needs special handling, fake a tier 0 for
             # them since they are not "real" azerite powers
-            if id >= 570 and id <= 574:
+            if spell.name == 'Perseverance':
                 fields += self._azeritepowersetmember_db[0].field('tier')
             else:
                 for id, data in self._azeritepowersetmember_db.items():
