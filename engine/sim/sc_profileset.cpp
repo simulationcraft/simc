@@ -12,22 +12,6 @@
 
 namespace
 {
-// Options that allow "appending" or "mapping" cannot really be overridden in the current
-// climate. Note that this does not take into account class module options, and there's no
-// easy way to do that, short of iterating over defined option parsers every single time.
-// The simc option system really needs the "scoping" system fleshed out to understand
-// where a specific option (i.e., a name, value tuple) is defined.
-//
-// Also, any "function" option is going to be undefined behavior whether it can be merged
-// or not, but typically the function option semantics work as such that the next parsing
-// of the same option will override whatever is being done.
-bool overridable_option( const option_tuple_t& tuple )
-{
-  return tuple.name.rfind( "actions", 0 ) == std::string::npos &&
-         tuple.name.rfind( "items", 0 ) == std::string::npos &&
-         tuple.name.rfind( "raid_events", 0 ) == std::string::npos;
-}
-
 std::string format_time( double seconds, bool milliseconds = true )
 {
   std::stringstream s;
@@ -325,46 +309,18 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
   }
 
   auto options_copy = new sim_control_t( *original );
-  std::vector<option_tuple_t> filtered_opts;
 
-  // Filter profileset options so that any option overridable in the base options is
-  // overriden, and the rest are inserted at the correct position
-  range::for_each( new_options.options, [&filtered_opts, options_copy]( const option_tuple_t& t ) {
-    if ( !overridable_option( t ) )
-    {
-      filtered_opts.push_back( t );
-    }
-    // Option that can be overridden in the copy, check if it exists in the base options
-    // set and replace if so
-    else
-    {
-      auto it = range::find_if( options_copy -> options, [&t]( const option_tuple_t& orig_t ) {
-        return orig_t.name == t.name;
-      } );
-
-      if ( it != options_copy -> options.end() )
-      {
-        it->value = t.value;
-      }
-      else
-      {
-        filtered_opts.push_back( t );
-      }
-    }
-  } );
-
-  // No enemy option defined, insert filtered profileset options to the end of the
-  // original options
+  // No enemy option defined, insert profileset to the end of the original options
   if ( m_insert_index == 0 )
   {
     options_copy -> options.insert( options_copy -> options.end(),
-                                    filtered_opts.begin(), filtered_opts.end() );
+                                    new_options.options.begin(), new_options.options.end() );
   }
-  // Enemy option found, insert filtered profileset options just before the enemy option
+  // Enemy option found, insert profileset options just before the enemy option
   else
   {
     options_copy -> options.insert( options_copy -> options.begin() + m_insert_index,
-                                    filtered_opts.begin(), filtered_opts.end() );
+                                    new_options.options.begin(), new_options.options.end() );
   }
 
   return options_copy;
