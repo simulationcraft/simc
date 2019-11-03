@@ -368,7 +368,7 @@ elif options.type == 'scale':
         sys.exit(1)
     g.generate()
 
-    g = CSVDataGenerator(options, {
+    args = {
         'file': 'CombatRatings.txt',
         'comment': '// Combat rating values for level 1 - %d, wow build %s\n' % (
             options.level, options.build),
@@ -378,7 +378,14 @@ elif options.type == 'scale':
                     'Haste - Spell', 'Expertise', 'Mastery', 'PvP Power',
                     'Versatility - Damage Done', 'Versatility - Healing Done',
                     'Versatility - Damage Taken', 'Speed', 'Avoidance' ]
-    })
+    }
+
+    if options.build >= dbc.WowVersion(8, 3, 0, 0):
+        args['values'] += ['Corruption', 'Corruption Resistance']
+    else:
+        args['values'] += ['Multi-Strike', 'Readiness']
+
+    g = CSVDataGenerator(options, args)
     if not g.initialize():
         sys.exit(1)
     g.generate()

@@ -4505,7 +4505,7 @@ class AzeriteDataGenerator(DataGenerator):
             fields += spell.field('name')
             # Azerite essence stuff needs special handling, fake a tier 0 for
             # them since they are not "real" azerite powers
-            if spell.name == 'Perseverance':
+            if spell.name == 'Perseverance' or id in [574, 581]:
                 fields += self._azeritepowersetmember_db[0].field('tier')
             else:
                 for id, data in self._azeritepowersetmember_db.items():

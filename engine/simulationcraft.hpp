@@ -1988,6 +1988,7 @@ struct rating_t
   double pvp_resilience, pvp_power;
   double damage_versatility, heal_versatility, mitigation_versatility;
   double leech, speed, avoidance;
+  double corruption, corruption_resistance;
 
   double& get( rating_e r )
   {
@@ -2015,6 +2016,8 @@ struct rating_t
       case RATING_LEECH: return leech;
       case RATING_SPEED: return speed;
       case RATING_AVOIDANCE: return avoidance;
+      case RATING_CORRUPTION: return corruption;
+      case RATING_CORRUPTION_RESISTANCE: return corruption_resistance;
       default: break;
     }
     assert( false ); return mastery;
