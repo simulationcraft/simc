@@ -442,6 +442,9 @@ class CASCObject(object):
 
 		if not os.path.exists(file):
 			handle = self.get_url(url, headers)
+			if handle.status_code < 200 and handle.status_code > 299:
+				return None
+
 			data = handle.content
 			with open(file, 'wb') as f:
 				f.write(data)
@@ -596,7 +599,11 @@ class CDNIndex(CASCObject):
 		path = os.path.join(self.cache_dir('config'), self.cdn_hash)
 		url = self.cdn_url('config', self.cdn_hash)
 
-		for line in self.cached_open(path, url):
+		handle = self.cached_open(path, url)
+		if not handle:
+			self.options.parser.error('Unable to fetch CDN configuration')
+
+		for line in handle:
 			mobj = re.match('^archives = (.+)', line.decode('utf-8'))
 			if mobj:
 				self.archives = mobj.group(1).split(' ')
@@ -612,8 +619,11 @@ class CDNIndex(CASCObject):
 		for cfg in self.build_cfg_hash:
 			path = os.path.join(self.cache_dir('config'), cfg)
 			url = self.cdn_url('config', cfg)
+			handle = self.cached_open(path, url)
+			if not handle:
+				self.options.parser.error('Unable to fetch build configuration')
 
-			self.builds.append(BuildCfg(self.cached_open(path, url)))
+			self.builds.append(BuildCfg(handle))
 
 	def open_archives(self):
 		sys.stdout.write('Parsing CDN index files ... ')
@@ -682,6 +692,9 @@ class CDNIndex(CASCObject):
 			handle = self.cached_open(key_file_path, key_file_url, {'Range': 'bytes=%d-%d' % (key_info.offset, key_info.offset + key_info.size - 1)})
 		else:
 			handle = self.cached_open(key_file_path, self.cdn_url('data', codecs.encode(key, 'hex').decode('utf-8')))
+
+		if not handle:
+			return None
 
 		return handle.read()
 
@@ -803,7 +816,17 @@ class CASCEncodingFile(CASCObject):
 		self.md5_map = { }
 
 	def encoding_path(self):
-		return os.path.join(self.cache_dir(), 'encoding')
+		base_cached_name = 'encoding'
+		if self.options.ptr:
+			base_cached_name += '.ptr'
+		elif self.options.beta:
+			base_cached_name += '.beta'
+		elif self.options.alpha:
+			base_cached_name += '.alpha'
+		elif self.options.classic:
+			base_cached_name += '.classic'
+
+		return os.path.join(self.cache_dir(), base_cached_name)
 
 	def __bootstrap(self):
 		if not os.access(self.cache_dir(), os.W_OK):
@@ -812,6 +835,8 @@ class CASCEncodingFile(CASCObject):
 		encoding_file_path = os.path.join(self.cache_dir('data'), self.build.encoding_file())
 		handle = self.cached_open(encoding_file_path, self.build.encoding_blte_url())
 		#handle = self.get_url(self.build.encoding_blte_url())
+		if not handle:
+			self.options.parser.error('Unable to fetch encoding file')
 
 		blte = BLTEFile(handle.read())
 		if not blte.extract():
@@ -966,7 +991,10 @@ class CASCRootFile(CASCObject):
 		self.build = build
 		self.index = index
 		self.encoding = encoding
+		# FileDataID to md5sum map
 		self.hash_map = {}
+		# FilePathHash to md5sum map
+		self.path_hash_map = {}
 
 		if options.locale not in CASCRootFile._locale:
 			self.options.parser.error('Invalid locale, valid values are %s' % (', '.join(CASCRootFile._locale.keys())))
@@ -974,7 +1002,17 @@ class CASCRootFile(CASCObject):
 		self.locale = CASCRootFile._locale[self.options.locale]
 
 	def root_path(self):
-		return os.path.join(self.cache_dir(), 'root')
+		base_cached_name = 'root'
+		if self.options.ptr:
+			base_cached_name += '.ptr'
+		elif self.options.beta:
+			base_cached_name += '.beta'
+		elif self.options.alpha:
+			base_cached_name += '.alpha'
+		elif self.options.classic:
+			base_cached_name += '.classic'
+
+		return os.path.join(self.cache_dir(), base_cached_name)
 
 	def __bootstrap(self):
 		if not os.access(self.cache_dir(), os.W_OK):
@@ -1008,6 +1046,9 @@ class CASCRootFile(CASCObject):
 				self.build.cdn_url('data', codecs.encode(keys[0], 'hex').decode('utf-8')))
 			#handle = self.get_url(self.build.cdn_url('data', codecs.encode(keys[0], 'hex').decode('utf-8')))
 
+			if not handle:
+				self.options.parser.error('Unable to fetch root file')
+
 			blte = BLTEFile(handle.read())
 			if not blte.extract():
 				self.options.parser.error('Unable to uncompress BLTE data for root file')
@@ -1025,6 +1066,9 @@ class CASCRootFile(CASCObject):
 
 	def GetFileDataIdMD5(self, file_data_id):
 		return self.hash_map.get(file_data_id, [])
+
+	def GetFilePathMD5(self, hash):
+		return self.path_hash_map.get(hash, [])
 
 	def GetLocale(self):
 		if self.options.locale not in CASCRootFile._locale:
@@ -1051,17 +1095,22 @@ class CASCRootFile(CASCObject):
 		offset = 0
 		n_md5s = 0
 
-		magic, unk_h1, unk_h2 = _ROOT_HEADER.unpack_from(data, offset)
+		# Classic uses name-based lookups, apparently?
+		if not self.options.classic:
+			magic, unk_h1, unk_h2 = _ROOT_HEADER.unpack_from(data, offset)
 
-		if magic != _ROOT_MAGIC:
-			print('Invalid magic in file, expected "{:s}", got "{:s}"'.format(
-				_ROOT_MAGIC.decode('ascii'), magic.decode('ascii')))
-			return False
-		offset += _ROOT_HEADER.size
+			if magic != _ROOT_MAGIC:
+				print('Invalid magic in file, expected "{:s}", got "{:s}"'.format(
+					_ROOT_MAGIC.decode('ascii'), magic.decode('ascii')))
+				return False
+			offset += _ROOT_HEADER.size
+
 		#print(magic, unk_h1, unk_h2)
 
+		_PATH_HASH = struct.Struct('<Q')
+
 		while offset < len(data):
-			n_entries, unk_1, flags = struct.unpack_from('<iII', data, offset)
+			n_entries, flags, locale = struct.unpack_from('<iII', data, offset)
 			#print('offset', offset, 'n-entries', n_entries, 'content_flags', '{:#8x}'.format(unk_1), 'flags', '{:#8x}'.format(flags))
 			#if flags == 0xFFFFFFFF or flags & 0x2:
 			#	print('%u %d, unk_1=%#.8x, flags=%#.8x' % (offset, n_entries, unk_1, flags))
@@ -1074,6 +1123,8 @@ class CASCRootFile(CASCObject):
 
 			csum_file_id = 0
 			for entry_idx in range(0, n_entries):
+				file_path_hash = None
+
 				md5s = data[offset:offset + 16]
 				offset += 16
 
@@ -1084,7 +1135,14 @@ class CASCRootFile(CASCObject):
 					file_data_id = csum_file_id + 1 + findex[entry_idx]
 				csum_file_id = file_data_id
 
-				if flags != CASCRootFile.LOCALE_ALL and not (flags & self.GetLocale()):
+				# If the flags does not include the "no name hashes", or we're
+				# parsing a classic root file, the next 8 bytes will be the
+				# file path jenkins hash
+				if flags & 0x10000000 == 0 or self.options.classic:
+					file_path_hash = _PATH_HASH.unpack_from(data, offset)[0]
+					offset += _PATH_HASH.size
+
+				if locale != CASCRootFile.LOCALE_ALL and not (locale & self.GetLocale()):
 					continue
 
 				if not file_data_id in self.hash_map:
@@ -1092,12 +1150,13 @@ class CASCRootFile(CASCObject):
 
 				self.hash_map[file_data_id].append(md5s)
 
-				n_md5s += 1
+				if file_path_hash:
+					if file_path_hash not in self.path_hash_map:
+						self.path_hash_map[file_path_hash] = []
 
-			# Skip 8 * n_entries amount of bytes if the PTR root file contains
-			# the "contains name hashes" flag
-			if unk_1 & 0x10000000 == 0:
-				offset += 8 * n_entries
+					self.path_hash_map[file_path_hash].append(md5s)
+
+				n_md5s += 1
 
 		sys.stdout.write('%u entries\n' % n_md5s)
 		return True
