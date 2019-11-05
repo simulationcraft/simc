@@ -8,7 +8,7 @@
 #include "data/report_data.inc"
 #include "interfaces/sc_js.hpp"
 #include "util/git_info.hpp"
-#include "fmt/time.h"
+#include "fmt/chrono.h"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================

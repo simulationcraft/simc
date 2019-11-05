@@ -3,9 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_report.hpp"
 #include "simulationcraft.hpp"
-#include "util/fmt/time.h"
+#include "sc_report.hpp"
+#include "fmt/chrono.h"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
