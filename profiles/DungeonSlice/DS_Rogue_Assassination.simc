@@ -82,8 +82,8 @@ actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.do
 actions.cds+=/use_item,effect_name=cyclotronic_blast,if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.toxic_blade.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4
 actions.cds+=/use_item,name=lurkers_insidious_gift,if=debuff.vendetta.up
 actions.cds+=/use_item,name=lustrous_golden_plumage,if=debuff.vendetta.up
-actions.cds+=/use_item,name=gladiators_medallion,if=debuff.vendetta.up
-actions.cds+=/use_item,name=gladiators_badge,if=debuff.vendetta.up
+actions.cds+=/use_item,effect_name=gladiators_medallion,if=debuff.vendetta.up
+actions.cds+=/use_item,effect_name=gladiators_badge,if=debuff.vendetta.up
 # Default fallback for usable items: Use on cooldown.
 actions.cds+=/use_items
 

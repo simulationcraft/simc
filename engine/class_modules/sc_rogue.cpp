@@ -5741,8 +5741,8 @@ void rogue_t::init_action_list()
     cds -> add_action( "use_item,effect_name=cyclotronic_blast,if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.toxic_blade.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4" );
     cds -> add_action( "use_item,name=lurkers_insidious_gift,if=debuff.vendetta.up" );
     cds -> add_action( "use_item,name=lustrous_golden_plumage,if=debuff.vendetta.up" );
-    cds -> add_action( "use_item,name=gladiators_medallion,if=debuff.vendetta.up" );
-    cds -> add_action( "use_item,name=gladiators_badge,if=debuff.vendetta.up" );
+    cds -> add_action( "use_item,effect_name=gladiators_medallion,if=debuff.vendetta.up" );
+    cds -> add_action( "use_item,effect_name=gladiators_badge,if=debuff.vendetta.up" );
     cds -> add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
     // Azerite Essences
