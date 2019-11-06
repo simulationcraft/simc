@@ -1080,38 +1080,89 @@ class CASCRootFile(CASCObject):
 
 		return flags
 
-	def open(self):
-		if not os.access(self.root_path(), os.R_OK):
-			data = self.__bootstrap()
-		else:
-			with open(self.root_path(), 'rb') as root_file:
-				data = root_file.read()
-
-			md5str = hashlib.md5(data).hexdigest()
-			if md5str != self.build.root_file():
-				data = self.__bootstrap()
-
-		sys.stdout.write('Parsing root file %s ... ' % self.build.root_file())
+	def __parse_default(self, data):
 		offset = 0
 		n_md5s = 0
 
-		# Classic uses name-based lookups, apparently?
-		if not self.options.classic:
-			magic, unk_h1, unk_h2 = _ROOT_HEADER.unpack_from(data, offset)
+		magic, unk_h1, unk_h2 = _ROOT_HEADER.unpack_from(data, offset)
 
-			if magic != _ROOT_MAGIC:
-				print('Invalid magic in file, expected "{:s}", got "{:s}"'.format(
-					_ROOT_MAGIC.decode('ascii'), magic.decode('ascii')))
-				return False
-			offset += _ROOT_HEADER.size
+		if magic != _ROOT_MAGIC:
+			print('Invalid magic in file, expected "{:s}", got "{:s}"'.format(
+				_ROOT_MAGIC.decode('ascii'), magic.decode('ascii')))
+			return False
+		offset += _ROOT_HEADER.size
 
 		#print(magic, unk_h1, unk_h2)
+
+		while offset < len(data):
+			n_entries, flags, locale = struct.unpack_from('<iII', data, offset)
+			#print('offset', offset, 'n-entries', n_entries, 'content_flags', '{:#8x}'.format(flags), 'locale', '{:#8x}'.format(locale))
+			#if flags == 0xFFFFFFFF or flags & 0x2:
+			#	print('%u %d, unk_1=%#.8x, flags=%#.8x' % (offset, n_entries, unk_1, flags))
+			offset += 12
+			if n_entries == 0:
+				continue
+
+			findex = struct.unpack_from('<{}I'.format(n_entries), data, offset)
+			offset += 4 * n_entries
+
+			csum_file_id = 0
+			file_ids = []
+			for entry_idx in range(0, n_entries):
+				file_path_hash = None
+
+				md5s = data[offset:offset + 16]
+				offset += 16
+
+				file_data_id = 0
+				if entry_idx == 0:
+					file_data_id = findex[entry_idx]
+				else:
+					file_data_id = csum_file_id + 1 + findex[entry_idx]
+				csum_file_id = file_data_id
+
+				if locale != CASCRootFile.LOCALE_ALL and not (locale & self.GetLocale()):
+					file_ids.append(None)
+					continue
+
+				if not file_data_id in self.hash_map:
+					self.hash_map[file_data_id] = []
+
+				self.hash_map[file_data_id].append(md5s)
+				file_ids.append(file_data_id)
+
+				n_md5s += 1
+
+			# If the flags does not include the "no name hashes", or we're
+			# parsing a classic root file, the next 8 bytes will be the
+			# file path jenkins hash
+			if flags & 0x10000000 == 0:
+				_PATH_HASH = struct.Struct('<{}Q'.format(n_entries))
+				hashes = _PATH_HASH.unpack_from(data, offset)
+				for entry_idx in range(0, n_entries):
+					if file_ids[entry_idx] == None:
+						continue
+
+					if hashes[entry_idx] not in self.path_hash_map:
+						self.path_hash_map[hashes[entry_idx]] = []
+						self.path_hash_map[hashes[entry_idx]] += self.hash_map[file_data_id]
+
+				#file_path_hash = _PATH_HASH.unpack_from(data, offset)[0]
+				offset += _PATH_HASH.size
+
+		sys.stdout.write('%u entries\n' % n_md5s)
+
+		return True
+
+	def __parse_classic(self, data):
+		offset = 0
+		n_md5s = 0
 
 		_PATH_HASH = struct.Struct('<Q')
 
 		while offset < len(data):
 			n_entries, flags, locale = struct.unpack_from('<iII', data, offset)
-			#print('offset', offset, 'n-entries', n_entries, 'content_flags', '{:#8x}'.format(unk_1), 'flags', '{:#8x}'.format(flags))
+			#print('offset', offset, 'n-entries', n_entries, 'content_flags', '{:#8x}'.format(flags), 'locale', '{:#8x}'.format(locale))
 			#if flags == 0xFFFFFFFF or flags & 0x2:
 			#	print('%u %d, unk_1=%#.8x, flags=%#.8x' % (offset, n_entries, unk_1, flags))
 			offset += 12
@@ -1135,12 +1186,8 @@ class CASCRootFile(CASCObject):
 					file_data_id = csum_file_id + 1 + findex[entry_idx]
 				csum_file_id = file_data_id
 
-				# If the flags does not include the "no name hashes", or we're
-				# parsing a classic root file, the next 8 bytes will be the
-				# file path jenkins hash
-				if flags & 0x10000000 == 0 or self.options.classic:
-					file_path_hash = _PATH_HASH.unpack_from(data, offset)[0]
-					offset += _PATH_HASH.size
+				hash_ = _PATH_HASH.unpack_from(data, offset)[0]
+				offset += _PATH_HASH.size
 
 				if locale != CASCRootFile.LOCALE_ALL and not (locale & self.GetLocale()):
 					continue
@@ -1150,14 +1197,35 @@ class CASCRootFile(CASCObject):
 
 				self.hash_map[file_data_id].append(md5s)
 
-				if file_path_hash:
-					if file_path_hash not in self.path_hash_map:
-						self.path_hash_map[file_path_hash] = []
+				if not hash_ in self.path_hash_map:
+					self.path_hash_map[hash_] = []
 
-					self.path_hash_map[file_path_hash].append(md5s)
+				self.path_hash_map[hash_].append(md5s)
 
 				n_md5s += 1
 
 		sys.stdout.write('%u entries\n' % n_md5s)
 		return True
+
+	def open(self):
+		if not os.access(self.root_path(), os.R_OK):
+			data = self.__bootstrap()
+		else:
+			with open(self.root_path(), 'rb') as root_file:
+				data = root_file.read()
+
+			md5str = hashlib.md5(data).hexdigest()
+			if md5str != self.build.root_file():
+				data = self.__bootstrap()
+
+		sys.stdout.write('Parsing root file %s ... ' % self.build.root_file())
+
+		if len(data) < 4:
+			sys.stdout.write('Root file too small (%d bytes)' % len(data))
+			return False
+
+		if data[:4] == b'TSFM':
+			return self.__parse_default(data)
+		else:
+			return self.__parse_classic(data)
 
