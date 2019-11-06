@@ -3746,7 +3746,7 @@ void the_crucible_of_flame( special_effect_t& effect )
       "ancient_flame", essence );
   // Add rank 3 upgrade that increases stack count of the dot by some value
   action->dot_max_stack +=
-    essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value();
+    as<int>(essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value());
 
   effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_SPELL | PF_MAGIC_SPELL | PF_PERIODIC;
   effect.type = SPECIAL_EFFECT_EQUIP;
@@ -3814,7 +3814,7 @@ struct concentrated_flame_t : public azerite_essence_major_t
     missile = new missile_t( p, essence );
     add_child( missile );
 
-    cooldown->charges += essence.spell_ref( 3u, essence_spell::UPGRADE ).effectN( 1 ).base_value();
+    cooldown->charges += as<int>(essence.spell_ref( 3u, essence_spell::UPGRADE ).effectN( 1 ).base_value());
 
     if ( essence.rank() >= 2 )
     {
@@ -3895,10 +3895,10 @@ void blood_of_the_enemy( special_effect_t& effect )
   {
     buff_t* haste_buff;
     double chance;
-    int dec;
+    int decrement_stacks;
 
-    bloodsoaked_callback_t( player_t* p, special_effect_t& e, buff_t* b, double c, int d ) :
-      dbc_proc_callback_t( p, e ), haste_buff( b ), chance( c ), dec( d )
+    bloodsoaked_callback_t( player_t* p, special_effect_t& e, buff_t* b, double c, int decrement_stacks) :
+      dbc_proc_callback_t( p, e ), haste_buff( b ), chance( c ), decrement_stacks(decrement_stacks)
     {}
 
     void execute( action_t*, action_state_t* ) override
@@ -3911,7 +3911,7 @@ void blood_of_the_enemy( special_effect_t& effect )
       {
         haste_buff->trigger();
         if ( rng().roll( chance ) )
-          proc_buff->decrement( dec );
+          proc_buff->decrement(decrement_stacks);
         else
           proc_buff->expire();
       }
@@ -3943,16 +3943,16 @@ void blood_of_the_enemy( special_effect_t& effect )
   }
 
   double chance = 0;
-  int dec = 0;
+  int decrement_stacks = 0;
   if ( essence.rank() >= 3 )
   {
     // 25% chance to...
     chance = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
     // only lose 30 stacks
-    dec = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 2 ).base_value();
+	decrement_stacks = as<int>(essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(2).base_value());
   }
 
-  new bloodsoaked_callback_t( effect.player, effect, haste_buff, chance, dec );
+  new bloodsoaked_callback_t( effect.player, effect, haste_buff, chance, decrement_stacks );
 }
 
 // Major Power: Blood of the Enemy
@@ -4022,10 +4022,10 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
     player_t* trigger_target;
     int init_stacks;
 
-    focused_energy_driver_t( const special_effect_t& effect, int is ) :
+    focused_energy_driver_t( const special_effect_t& effect, int init_stacks ) :
       dbc_proc_callback_t( effect.player, effect ),
       trigger_target(),
-      init_stacks( is )
+      init_stacks( init_stacks )
     { }
 
     void execute( action_t*, action_state_t* s ) override
@@ -4054,9 +4054,9 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
 
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  int is = 1;
+  int init_stacks = 1;
   if ( essence.rank() >= 3 )
-    is = essence.spell_ref( 3u, essence_type::MINOR ).effectN( 1 ).base_value();
+    init_stacks = as<int>(essence.spell_ref( 3u, essence_type::MINOR ).effectN( 1 ).base_value());
 
   double haste = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
   if ( essence.rank() >= 2 )
@@ -4066,7 +4066,7 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
       effect.player->find_spell( 295248 ) )
     ->add_stat( STAT_HASTE_RATING, haste );
 
-  new focused_energy_driver_t( effect, is );
+  new focused_energy_driver_t( effect, init_stacks );
 }
 
 struct focused_azerite_beam_tick_t : public spell_t
@@ -4333,7 +4333,7 @@ void conflict_and_strife( special_effect_t& effect )
     buff = make_buff<stat_buff_t>( effect.player, "strife", strife )
       ->add_stat( STAT_VERSATILITY_RATING, strife->effectN( 1 ).average( essence.item() ) )
       ->set_max_stack( strife->max_stacks()
-        + essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() )
+        + as<int>(essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value()) )
       ->set_duration( strife->duration()
         + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).time_value() );
   }
@@ -4465,7 +4465,7 @@ struct purifying_blast_t : public azerite_essence_major_t
   {
     azerite_essence_major_t::execute();
 
-    int pulse_count = essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 2 ).base_value();
+    int pulse_count = as<int>(essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 2 ).base_value());
     timespan_t pulse_interval = essence.spell_ref( 1u, essence_type::MAJOR ).duration() / (pulse_count - 1);
 
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()

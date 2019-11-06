@@ -2510,7 +2510,7 @@ struct vigor_engaged_t : public special_effect_t
         oscillation::ASCENDING, oscillation::MAX_STATES ) ) );
     double used_time = player->rng().range( 0, max_ticks[ phase ] *
         driver()->effectN( 1 ).period().total_seconds() );
-    int ticks = used_time / driver()->effectN( 1 ).period().total_seconds();
+    int ticks = static_cast<int>(used_time / driver()->effectN( 1 ).period().total_seconds());
     double elapsed_tick_time = used_time - ticks * driver()->effectN( 1 ).period().total_seconds();
     double time_to_next_tick = driver()->effectN( 1 ).period().total_seconds() - elapsed_tick_time;
 
@@ -3738,7 +3738,7 @@ void items::vision_of_demise( special_effect_t& effect )
 
     vision_of_demise_t( const special_effect_t& effect, stat_buff_t* b ) :
       proc_spell_t( "vision_of_demise", effect.player, effect.driver() ),
-      divisor( effect.driver()->effectN( 1 ).base_value() ), buff( b ),
+      divisor( as<int>(effect.driver()->effectN( 1 ).base_value()) ), buff( b ),
       bonus( effect.player->find_spell( 303455 )->effectN( 2 ).average( effect.item ) )
     { }
 
@@ -3806,14 +3806,14 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     {
       timespan_t time = sim->bfa_opts.font_of_power_precombat_channel;
 
-      if ( time == 0_ms )  // No options override, first apply any spec-based hardcoded timings
-      {
-        switch ( player->specialization() )
-        {
-          // case DRUID_BALANCE: time = 7.5_s; break;
-          default: break;
-        }
-      }
+      //if ( time == 0_ms )  // No options override, first apply any spec-based hardcoded timings
+      //{
+      //  switch ( player->specialization() )
+      //  {
+      //    // case DRUID_BALANCE: time = 7.5_s; break;
+      //    default: break;
+      //  }
+      //}
 
       // shared cd (other trinkets & on-use items)
       auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );

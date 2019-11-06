@@ -5099,7 +5099,7 @@ void demon_hunter_t::apl_default()
 
 // demon_hunter_t::apl_havoc ================================================
 
-void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
+void add_havoc_use_items( demon_hunter_t*, action_priority_list_t* apl )
 {
   apl->add_action( "use_item,name=galecallers_boon,if=!talent.fel_barrage.enabled|cooldown.fel_barrage.ready" );
   apl->add_action( "use_item,effect_name=cyclotronic_blast,if=buff.metamorphosis.up&buff.memory_of_lucid_dreams.down&(!variable.blade_dance|!cooldown.blade_dance.ready)" );

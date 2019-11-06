@@ -2612,7 +2612,7 @@ public:
   // The set bonus checks for last 3 unique combo strike triggering abilities
   void t19_4pc_bonus_trigger()
   {
-    int n = p()->combo_strike_actions.size();
+    auto n = p()->combo_strike_actions.size();
 
     // Note that this must be called after the current action has been appended
     if ( n < 3 )

@@ -600,7 +600,7 @@ struct rogue_t : public player_t
   action_t*   create_action( const std::string& name, const std::string& options ) override;
   expr_t*     create_expression( const std::string& name_str ) override;
   void        regen( timespan_t periodicity ) override;
-  double      resource_gain( resource_e, double, gain_t* g = nullptr, action_t* a = nullptr );
+  double      resource_gain( resource_e, double, gain_t* g = nullptr, action_t* a = nullptr ) override;
   resource_e  primary_resource() const override { return RESOURCE_ENERGY; }
   role_e      primary_role() const override  { return ROLE_ATTACK; }
   stat_e      convert_hybrid_stat( stat_e s ) const override;
@@ -7116,6 +7116,8 @@ void rogue_t::init_special_effects()
       case ROGUE_SUBTLETY:
         options.memory_of_lucid_dreams_proc_chance = 0.15;
         break;
+	  default:
+		  break;
     }
   }
 }
@@ -7485,6 +7487,8 @@ void rogue_t::vision_of_perfection_proc()
       }
       break;
     }
+	default:
+		break;
   }
 }
 

@@ -1332,6 +1332,8 @@ struct warlock_module_t : public module_t
 warlock::warlock_t::pets_t::pets_t( warlock_t* w ) :
   active( nullptr ),
   last( nullptr ),
+  vop_infernals("vop_infernal", w),
+  vop_darkglares("vop_darkglare", w),
   dreadstalkers( "dreadstalker", w ),
   vilefiends( "vilefiend", w ),
   demonic_tyrants( "demonic_tyrant", w ),
@@ -1345,9 +1347,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w ) :
   vicious_hellhounds( "vicious_hellhound", w ),
   illidari_satyrs( "illidari_satyr", w ),
   eyes_of_guldan( "eye_of_guldan", w ),
-  prince_malchezaar( "prince_malchezaar", w ),
-  vop_darkglares( "vop_darkglare", w ),
-  vop_infernals( "vop_infernal", w )
+  prince_malchezaar( "prince_malchezaar", w )
 { }
 }
 

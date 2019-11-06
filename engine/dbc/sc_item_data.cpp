@@ -867,16 +867,16 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
     double v_socket_penalty = item.parsed.data.stat_socket_mul[ idx ] *
                               dbc.item_socket_cost( item.base_item_level() );
 
-    int v_raw = item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty + 0.5;
+    int v_raw = static_cast<int>(item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty + 0.5);
     auto stat_type = static_cast<item_mod_type>( item.parsed.data.stat_type_e[ idx ] );
 
     if ( util::is_combat_rating( stat_type ) )
     {
-      v_raw = apply_combat_rating_multiplier( item, as<double>( v_raw ) );
+      v_raw = static_cast<int>(apply_combat_rating_multiplier( item, as<double>( v_raw ) ));
     }
     else if ( stat_type == ITEM_MOD_STAMINA )
     {
-      v_raw = apply_stamina_multiplier( item, as<double>( v_raw ) );
+      v_raw = static_cast<int>(apply_stamina_multiplier( item, as<double>( v_raw ) ));
     }
 
     return v_raw;

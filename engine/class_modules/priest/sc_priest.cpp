@@ -602,9 +602,9 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     active_items(),
     pets(),
     options(),
-    insanity( *this ),
     azerite(),
-    azerite_essence()
+    azerite_essence(),
+    insanity(*this)
 {
   create_cooldowns();
   create_gains();

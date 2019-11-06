@@ -6878,7 +6878,7 @@ struct starsurge_t : public druid_spell_t
 
     // emulate performing check_form_restriction()
     auto it =
-      range::find_if( apl, [this]( action_t* a ) { return util::str_compare_ci( a->name(), "moonkin_form" ); } );
+      range::find_if( apl, []( action_t* a ) { return util::str_compare_ci( a->name(), "moonkin_form" ); } );
     if ( it == apl.end() )
       return false;
 

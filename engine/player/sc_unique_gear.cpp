@@ -2722,7 +2722,7 @@ struct felmouth_frenzy_driver_t : public spell_t
   felmouth_frenzy_driver_t( const special_effect_t& effect ) :
     spell_t( "felmouth_frenzy", effect.player, effect.player -> find_spell( 188512 ) ),
     bolt_avg( as<int>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) ),
-    bolt_magnitude( bolt_avg * effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).m_delta() / 2.0 ),
+    bolt_magnitude( as<int>(bolt_avg * effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).m_delta() / 2.0) ),
     p( effect.player )
   {
     background = true;
