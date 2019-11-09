@@ -1163,6 +1163,8 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
   void init_spells() override;
 
+  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+
   void moving() override
   { return; }
 };
@@ -1327,14 +1329,15 @@ struct animal_companion_t : public hunter_main_pet_base_t
     regen_type = REGEN_DISABLED;
   }
 
-  void init_spells() override;
-
-  void summon( timespan_t duration = 0_ms ) override
+  void init_action_list() override
   {
-    hunter_main_pet_base_t::summon( duration );
+    if ( action_list_str.empty() )
+    {
+      action_list_str += "/auto_attack";
+      use_default_action_list = true;
+    }
 
-    if ( main_hand_attack )
-      main_hand_attack -> schedule_execute();
+    hunter_main_pet_base_t::init_action_list();
   }
 };
 
@@ -1727,7 +1730,7 @@ struct pet_melee_t : public hunter_pet_melee_t<hunter_main_pet_base_t>
 
 struct pet_auto_attack_t: public action_t
 {
-  pet_auto_attack_t( hunter_main_pet_t* player, const std::string& options_str ):
+  pet_auto_attack_t( hunter_main_pet_base_t* player, const std::string& options_str ):
     action_t( ACTION_OTHER, "auto_attack", player )
   {
     parse_options( options_str );
@@ -1867,15 +1870,23 @@ hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t*
 
 // hunter_pet_t::create_action ==============================================
 
+action_t* hunter_main_pet_base_t::create_action( const std::string& name, const std::string& options_str )
+{
+  if ( name == "auto_attack" )
+    return new actions::pet_auto_attack_t( this, options_str );
+
+  return hunter_pet_t::create_action( name, options_str );
+}
+
 action_t* hunter_main_pet_t::create_action( const std::string& name,
                                             const std::string& options_str )
 {
   using namespace actions;
 
-  if ( name == "auto_attack" ) return new          pet_auto_attack_t( this, options_str );
   if ( name == "claw" ) return new                 basic_attack_t( this, "Claw", options_str );
   if ( name == "bite" ) return new                 basic_attack_t( this, "Bite", options_str );
   if ( name == "smack" ) return new                basic_attack_t( this, "Smack", options_str );
+
   return hunter_main_pet_base_t::create_action( name, options_str );
 }
 
@@ -1903,13 +1914,6 @@ void hunter_main_pet_t::init_spells()
 
   if ( o() -> talents.flanking_strike -> ok() )
     active.flanking_strike = new actions::flanking_strike_t( this );
-}
-
-void animal_companion_t::init_spells()
-{
-  hunter_main_pet_base_t::init_spells();
-
-  main_hand_attack = new actions::pet_melee_t( "animal_companion_melee", this );
 }
 
 void dire_critter_t::init_spells()
