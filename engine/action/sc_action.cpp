@@ -1010,6 +1010,9 @@ timespan_t action_t::gcd() const
     case gcd_type::ATTACK_SPEED:
       gcd_ *= player->cache.attack_speed();
       break;
+    case gcd_type::NONE:
+    default:
+      break;
   }
 
   if ( gcd_ < min_gcd )
