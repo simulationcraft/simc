@@ -678,9 +678,9 @@ public:
     lightning_conduit = nullptr;
 
     if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
-      regen_type = regen_type::DISABLED;
+      resource_regeneration = regen_type::DISABLED;
     else
-      regen_type = regen_type::DYNAMIC;
+      resource_regeneration = regen_type::DYNAMIC;
   }
 
   virtual ~shaman_t();
@@ -1977,7 +1977,7 @@ struct shaman_pet_t : public pet_t
   shaman_pet_t( shaman_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true )
     : pet_t( owner->sim, owner, name, guardian ), use_auto_attack( auto_attack )
   {
-    regen_type = regen_type::DISABLED;
+    resource_regeneration = regen_type::DISABLED;
 
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
@@ -5982,7 +5982,7 @@ struct shaman_totem_pet_t : public pet_t
       pulse_amplitude( timespan_t::zero() ),
       summon_pet( nullptr )
   {
-    regen_type = regen_type::DISABLED;
+    resource_regeneration = regen_type::DISABLED;
   }
 
   virtual void summon( timespan_t = timespan_t::zero() ) override;

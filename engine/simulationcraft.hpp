@@ -4145,7 +4145,7 @@ struct player_t : public actor_t
   auto_dispose<std::vector<action_variable_t*>> variables;
   std::vector<std::string> action_map;
 
-  regen_type regen_type;
+  regen_type resource_regeneration;
 
   /// Last iteration time regeneration occurred. Set at player_t::arise()
   timespan_t last_regen;
@@ -5872,11 +5872,11 @@ public:
   virtual double composite_haste() const
   { return 1.0; }
 
-  virtual attack_power_type attack_power_type() const
+  virtual attack_power_type get_attack_power_type() const
   { return ap_type; }
 
   virtual double composite_attack_power() const
-  { return player -> composite_melee_attack_power( attack_power_type() ); }
+  { return player -> composite_melee_attack_power(get_attack_power_type() ); }
 
   virtual double composite_spell_power() const
   {
@@ -8094,7 +8094,7 @@ inline void player_t::do_dynamic_regen()
   {
     for (auto & elem : active_pets)
     {
-      if ( elem -> regen_type == regen_type::DYNAMIC)
+      if ( elem -> resource_regeneration == regen_type::DYNAMIC)
         elem -> do_dynamic_regen();
     }
   }

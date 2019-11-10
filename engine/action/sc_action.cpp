@@ -1552,7 +1552,7 @@ void action_t::execute()
     schedule_travel( s );
   }
 
-  if ( player->regen_type == regen_type::DYNAMIC)
+  if ( player->resource_regeneration == regen_type::DYNAMIC)
   {
     player->do_dynamic_regen();
   }

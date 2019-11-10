@@ -611,7 +611,7 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
   create_procs();
   create_benefits();
 
-  regen_type = regen_type::DYNAMIC;
+  resource_regeneration = regen_type::DYNAMIC;
 }
 
 /** Construct priest cooldowns */

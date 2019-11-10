@@ -162,7 +162,7 @@ double warlock_pet_t::composite_player_multiplier(school_e school) const
 warlock_simple_pet_t::warlock_simple_pet_t( warlock_t* owner, const std::string& pet_name, pet_e pt ) :
   warlock_pet_t( owner, pet_name, pt, true ), special_ability( nullptr )
 {
-  regen_type = regen_type::DISABLED;
+  resource_regeneration = regen_type::DISABLED;
 }
 
 timespan_t warlock_simple_pet_t::available() const
@@ -654,7 +654,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
   : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP ), firebolt( nullptr ), power_siphon( false ), demonic_consumption( false )
 {
-  regen_type = regen_type::DISABLED;
+  resource_regeneration = regen_type::DISABLED;
 }
 
 void wild_imp_pet_t::create_actions()
@@ -798,7 +798,7 @@ dreadstalker_t::dreadstalker_t(warlock_t* owner) :
   warlock_pet_t(owner, "dreadstalker", PET_DREADSTALKER)
 {
   action_list_str = "travel/dreadbite";
-  regen_type = regen_type::DISABLED;
+  resource_regeneration = regen_type::DISABLED;
   owner_coeff.ap_from_sp = 0.4;
   //TOCHECK hotfix live as of 10-02-2018. https://us.battle.net/forums/en/wow/topic/20769527059
   owner_coeff.ap_from_sp *= 1.15;
@@ -924,7 +924,7 @@ struct demonfire_t : public warlock_pet_spell_t
 
 demonic_tyrant_t::demonic_tyrant_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_DEMONIC_TYRANT, name != "demonic_tyrant") {
-  regen_type = regen_type::DISABLED;
+  resource_regeneration = regen_type::DISABLED;
   action_list_str += "/demonfire";
 }
 
@@ -1415,7 +1415,7 @@ infernal_t::infernal_t( warlock_t* owner, const std::string& name ) :
   warlock_pet_t( owner, name, PET_INFERNAL, name != "infernal" ),
   immolation( nullptr )
 {
-  regen_type = regen_type::DISABLED;
+  resource_regeneration = regen_type::DISABLED;
 }
 
 void infernal_t::init_base_stats()

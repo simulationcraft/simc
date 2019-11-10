@@ -281,7 +281,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     cooldowns.darkglare = get_cooldown("summon_darkglare");
     cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
 
-    regen_type = regen_type::DYNAMIC;
+    resource_regeneration = regen_type::DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_SPELL_HASTE] = true;
 

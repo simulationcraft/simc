@@ -63,7 +63,7 @@ pet_t::pet_t( sim_t*             sim,
   owner -> pet_list.push_back( this );
 
   party = owner -> party;
-  regen_type = owner -> regen_type;
+  resource_regeneration = owner ->resource_regeneration;
 
   // Inherit owner's dbc state
   dbc.ptr = owner -> dbc.ptr;
@@ -117,10 +117,10 @@ void pet_t::init()
 {
   player_t::init();
 
-  if ( regen_type == regen_type::DYNAMIC && owner -> regen_type == regen_type::DISABLED )
+  if (resource_regeneration == regen_type::DYNAMIC && owner ->resource_regeneration == regen_type::DISABLED )
   {
     sim -> errorf( "Pet %s has dynamic regen, while owner has disabled regen. Disabling pet regeneration also.", name() );
-    regen_type = regen_type::DISABLED;
+    resource_regeneration = regen_type::DISABLED;
   }
 }
 

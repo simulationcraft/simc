@@ -117,7 +117,7 @@ struct special_execute_event_t : public player_event_t
   {
     // Dynamically regenerating actors must be regenerated before selecting an action, otherwise
     // resource-specific expressions may not function properly.
-    if ( p()->regen_type == regen_type::DYNAMIC)
+    if ( p()->resource_regeneration == regen_type::DYNAMIC)
     {
       p()->do_dynamic_regen();
     }
@@ -1088,7 +1088,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ):
   active_during_iteration( false ),
   _mastery( spelleffect_data_t::nil() ),
   cache( this ),
-  regen_type( regen_type::STATIC ),
+  resource_regeneration( regen_type::STATIC ),
   last_regen( timespan_t::zero() ),
   regen_caches( CACHE_MAX ),
   dynamic_regen_pets( false ),
@@ -1289,11 +1289,11 @@ void player_t::init()
   // no dynamically regenerating pets, we do not need to go through extra work
   // in do_dynamic_regen() to call the pets do_dynamic_regen(), saving some cpu
   // cycles.
-  if ( regen_type == regen_type::DYNAMIC)
+  if (resource_regeneration == regen_type::DYNAMIC)
   {
     for ( auto pet : pet_list )
     {
-      if ( pet->regen_type != regen_type::DYNAMIC)
+      if ( pet->resource_regeneration != regen_type::DYNAMIC)
         continue;
 
       for ( cache_e c = CACHE_NONE; c < CACHE_MAX; c++ )
@@ -5478,7 +5478,7 @@ action_t* player_t::execute_action()
 
   action_t* action = 0;
 
-  if ( regen_type == regen_type::DYNAMIC)
+  if (resource_regeneration == regen_type::DYNAMIC)
     do_dynamic_regen();
 
   if ( !strict_sequence )
@@ -5525,7 +5525,7 @@ action_t* player_t::execute_action()
 
 void player_t::regen( timespan_t periodicity )
 {
-  if ( regen_type == regen_type::DYNAMIC&& sim->debug )
+  if (resource_regeneration == regen_type::DYNAMIC&& sim->debug )
     sim->out_debug.printf( "%s dynamic regen, last=%.3f interval=%.3f", name(), last_regen.total_seconds(),
                            periodicity.total_seconds() );
 
@@ -5801,7 +5801,7 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
   int temp_value = temporary_stat ? 1 : 0;
 
   cache_e cache_type = cache_from_stat( stat );
-  if ( regen_type == regen_type::DYNAMIC&& regen_caches[ cache_type ] )
+  if (resource_regeneration == regen_type::DYNAMIC&& regen_caches[ cache_type ] )
     do_dynamic_regen();
 
   if ( sim->log )
@@ -5939,7 +5939,7 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
     return;
 
   cache_e cache_type = cache_from_stat( stat );
-  if ( regen_type == regen_type::DYNAMIC&& regen_caches[ cache_type ] )
+  if (resource_regeneration == regen_type::DYNAMIC&& regen_caches[ cache_type ] )
     do_dynamic_regen();
 
   if ( sim->log )

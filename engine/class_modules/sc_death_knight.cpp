@@ -857,7 +857,7 @@ public:
     cooldown.rune_strike         = get_cooldown( "rune_strike" );
     cooldown.vampiric_blood      = get_cooldown( "vampiric_blood" );
 
-    regen_type = regen_type::DYNAMIC;
+    resource_regeneration = regen_type::DYNAMIC;
   }
 
   // Character Definition
@@ -1902,7 +1902,9 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
   gargoyle_pet_t( death_knight_t* owner ) :
     death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr )
-  { regen_type = regen_type::DISABLED; }
+  {
+    resource_regeneration = regen_type::DISABLED;
+  }
 
   void init_base_stats() override
   {
@@ -1987,7 +1989,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 
   risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "risen_skulker", true, false )
   {
-    regen_type = regen_type::DISABLED;
+    resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
     main_hand_weapon.swing_time = 2.7_s;
   }
@@ -2231,7 +2233,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time = 3.5_s;
 
     owner_coeff.ap_from_ap = 1 / 3.0;
-    regen_type = regen_type::DISABLED;
+    resource_regeneration = regen_type::DISABLED;
 
     memset( &ability, 0, sizeof( ability ) );
   }
@@ -2272,7 +2274,7 @@ struct bloodworm_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time = 1.4_s;
 
     owner_coeff.ap_from_ap = 0.25;
-    regen_type = regen_type::DISABLED;
+    resource_regeneration = regen_type::DISABLED;
   }
 
   attack_t* create_auto_attack() override
@@ -2374,7 +2376,7 @@ struct magus_pet_t : public death_knight_pet_t
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
-    regen_type = regen_type::DISABLED;
+    resource_regeneration = regen_type::DISABLED;
   }
 
   void init_base_stats() override

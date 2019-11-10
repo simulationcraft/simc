@@ -49,7 +49,7 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.blade_of_justice        = get_cooldown( "blade_of_justice" );
 
   beacon_target = nullptr;
-  regen_type = regen_type::DYNAMIC;
+  resource_regeneration = regen_type::DYNAMIC;
 }
 
 paladin_td_t* paladin_t::get_target_data( player_t* target ) const

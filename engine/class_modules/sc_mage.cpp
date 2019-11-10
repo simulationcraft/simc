@@ -4836,7 +4836,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
 
   // Options
-  regen_type = regen_type::DYNAMIC;
+  resource_regeneration = regen_type::DYNAMIC;
 }
 
 bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type )
