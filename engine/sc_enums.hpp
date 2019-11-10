@@ -49,10 +49,10 @@ enum class attack_power_type
 };
 
 
-// Retargeting request event sources. Context in ACTOR_ is the actor that triggered the event
-enum retarget_event_e
+// Retargeting request (event) sources. Context in ACTOR_ is the actor that triggered the event
+enum class retarget_source
 {
-  ACTOR_ARISE = 0U,     // Any actor arises
+  ACTOR_ARISE,          // Any actor arises
   ACTOR_DEMISE,         // Any actor demises
   ACTOR_INVULNERABLE,   // Actor becomes invulnerable
   ACTOR_VULNERABLE,     // Actor becomes vulnerable (after becoming invulnerable)
@@ -62,10 +62,16 @@ enum retarget_event_e
 // Misc Constants
 enum
 {
-  MAX_ARTIFACT_POWER = 29, /// Maximum number of artifact perks per weapon. Looks like max is 17 on weapons but setting higher just in case -- 2016/04/04 - Twintop. Increase to 25 to encompass new traits.
+  /**
+  * Maximum number of artifact perks per weapon. 
+  * Looks like max is 17 on weapons but setting higher just in case -- 2016-04-04 - Twintop. Increase to 25 to encompass new traits.
+  */
+  MAX_ARTIFACT_POWER = 29, 
 
   MAX_ARTIFACT_RELIC = 4,
-  RELIC_ILEVEL_BONUS_CURVE = 1718, /// Seemingly hard coded CurvePoint identifier for the data that returns the item level increase of a relic, based on the relic's own item level
+
+  // Seemingly hard coded CurvePoint identifier for the data that returns the item level increase of a relic, based on the relic's own item level
+  RELIC_ILEVEL_BONUS_CURVE = 1718,
 
   ITEM_TRINKET_BURST_CATEGORY = 1141, /// Trinket On-Use effect default category (for shared CD)
   MAX_GEM_SLOTS = 4, /// Global maximum number of gem slots in any specific item

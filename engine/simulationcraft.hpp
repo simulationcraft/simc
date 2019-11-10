@@ -4606,7 +4606,7 @@ public:
   
   virtual void reset_auto_attacks( timespan_t delay = timespan_t::zero() );
 
-  virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */ = nullptr );
+  virtual void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr );
 
   // Various default values for the actor
   virtual std::string default_potion() const
@@ -4913,7 +4913,7 @@ public:
 
   timespan_t composite_active_time() const override;
 
-  void acquire_target( retarget_event_e /* event */, player_t* /* context */ = nullptr ) override;
+  void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr ) override;
 };
 
 
@@ -6125,7 +6125,7 @@ public:
 
   virtual dot_t* get_dot( player_t* = nullptr );
 
-  virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */, player_t* /* candidate_target */ );
+  virtual void acquire_target( retarget_source /* event */, player_t* /* context */, player_t* /* candidate_target */ );
 
   virtual void set_target( player_t* target );
 

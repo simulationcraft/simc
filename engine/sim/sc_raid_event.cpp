@@ -481,7 +481,7 @@ struct invulnerable_event_t : public raid_event_t
     if ( retarget )
     {
       range::for_each( sim->player_non_sleeping_list,
-                       [this]( player_t* p ) { p->acquire_target( ACTOR_INVULNERABLE, target ); } );
+                       [this]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_INVULNERABLE, target ); } );
     }
   }
 
@@ -492,7 +492,7 @@ struct invulnerable_event_t : public raid_event_t
     if ( retarget )
     {
       range::for_each( sim->player_non_sleeping_list,
-                       [this]( player_t* p ) { p->acquire_target( ACTOR_VULNERABLE, target ); } );
+                       [this]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_VULNERABLE, target ); } );
     }
   }
 };

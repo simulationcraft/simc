@@ -72,7 +72,7 @@ const char* specialization_string     ( specialization_e spec );
 const char* movement_direction_string( movement_direction_e );
 const char* class_id_string( player_e type );
 const char* spec_string_no_class( const player_t&p );
-const char* retarget_event_string     ( retarget_event_e );
+const char* retarget_event_string     ( retarget_source );
 const char* buff_refresh_behavior_string   ( buff_refresh_behavior );
 const char* buff_stack_behavior_string   ( buff_stack_behavior );
 const char* buff_tick_behavior_string   ( buff_tick_behavior );

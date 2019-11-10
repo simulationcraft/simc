@@ -2330,15 +2330,15 @@ const char* util::item_quality_string( int quality )
 }
 
 // retarget_event_string ====================================================
-const char* util::retarget_event_string( retarget_event_e event )
+const char* util::retarget_event_string( retarget_source event )
 {
   switch ( event )
   {
-    case ACTOR_ARISE: return "actor_arise";
-    case ACTOR_DEMISE: return "actor_demise";
-    case ACTOR_INVULNERABLE: return "actor_invulnerable";
-    case ACTOR_VULNERABLE: return "actor_vulnnerable";
-    case SELF_ARISE: return "self_arise";
+    case retarget_source::ACTOR_ARISE: return "actor_arise";
+    case retarget_source::ACTOR_DEMISE: return "actor_demise";
+    case retarget_source::ACTOR_INVULNERABLE: return "actor_invulnerable";
+    case retarget_source::ACTOR_VULNERABLE: return "actor_vulnnerable";
+    case retarget_source::SELF_ARISE: return "self_arise";
     default: return "unknown";
   }
 }

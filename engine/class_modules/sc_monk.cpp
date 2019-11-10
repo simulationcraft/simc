@@ -8761,7 +8761,7 @@ void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& 
                            pet->target->name(), original_target->name() );
   }
 
-  range::for_each( pet->action_list, [pet]( action_t* a ) { a->acquire_target( SELF_ARISE, nullptr, pet->target ); } );
+  range::for_each( pet->action_list, [pet]( action_t* a ) { a->acquire_target( retarget_source::SELF_ARISE, nullptr, pet->target ); } );
 }
 
 // monk_t::retarget_storm_earth_and_fire_pets =======================================

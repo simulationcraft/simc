@@ -5252,7 +5252,7 @@ void player_t::arise()
     sim->target_non_sleeping_list.push_back( this );
 
     // When an enemy arises, trigger players to potentially acquire a new target
-    range::for_each( sim->player_non_sleeping_list, [this]( player_t* p ) { p->acquire_target( ACTOR_ARISE, this ); } );
+    range::for_each( sim->player_non_sleeping_list, [this]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_ARISE, this ); } );
 
     if ( sim->overrides.chaos_brand && debuffs.chaos_brand )
       debuffs.chaos_brand->override_buff();
@@ -5271,7 +5271,7 @@ void player_t::arise()
     // Find a target to shoot on. This is to ensure that transient friendly allies (such as dynamic
     // pets) can cope with a situation, where the primary target for example is invulnerable, so
     // they need to figure out a (more valid) target to shoot spells on.
-    acquire_target( SELF_ARISE );
+    acquire_target( retarget_source::SELF_ARISE );
   }
 
   if ( has_foreground_actions( *this ) )
@@ -5361,7 +5361,7 @@ void player_t::demise()
 
     // When an enemy dies, trigger players to acquire a new target
     range::for_each( sim->player_non_sleeping_list,
-                     [this]( player_t* p ) { p->acquire_target( ACTOR_DEMISE, this ); } );
+                     [this]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_DEMISE, this ); } );
   }
   else
   {
@@ -13299,7 +13299,7 @@ void player_t::reset_auto_attacks( timespan_t delay )
  * Context contains the triggering entity (if relevant). Figures out a target out of all non-sleeping targets.
  * Skip "invulnerable" ones for now, anything else is fair game.
  */
-void player_t::acquire_target( retarget_event_e event, player_t* context )
+void player_t::acquire_target( retarget_source event, player_t* context )
 {
   // TODO: This skips certain very custom targets (such as Soul Effigy), is it a problem (since those
   // usually are handled in action target cache regeneration)?

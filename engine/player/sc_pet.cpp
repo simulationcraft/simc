@@ -358,12 +358,12 @@ timespan_t pet_t::composite_active_time() const
   return ptr -> iteration_uptime();
 }
 
-void pet_t::acquire_target( retarget_event_e event, player_t* context )
+void pet_t::acquire_target( retarget_source event, player_t* context )
 {
   player_t::acquire_target( event, context );
 
   // Dynamic pets have to retarget all actions at this point, if they arise during iteration
-  if ( dynamic && event == SELF_ARISE )
+  if ( dynamic && event == retarget_source::SELF_ARISE )
   {
     range::for_each( action_list, [this, event, context]( action_t* action ) {
       action->acquire_target( event, context, target );

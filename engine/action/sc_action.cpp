@@ -4116,7 +4116,7 @@ void action_t::reschedule_queue_event()
  * actor-selected candidate target to the current target. Event contains the retarget event type, context contains the
  * (optional) actor that triggered the event.
  */
-void action_t::acquire_target( retarget_event_e /* event */, player_t* /* context */, player_t* candidate_target )
+void action_t::acquire_target( retarget_source /* event */, player_t* /* context */, player_t* candidate_target )
 {
   // Don't change targets if they are not of the same generic type (both enemies, or both friendlies)
   if ( target && candidate_target && target->is_enemy() != candidate_target->is_enemy() )
