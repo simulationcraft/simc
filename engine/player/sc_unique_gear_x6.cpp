@@ -307,7 +307,7 @@ struct mark_of_the_distant_army_t : public proc_spell_t
     // for attack power calculations. Weird
 
     // Hardcoded somewhere in the bowels of the server
-    ap_type = AP_NO_WEAPON;
+    ap_type = attack_power_type::NO_WEAPON;
     tick_may_crit = false;
     attack_power_mod.tick = ( 0.6375 / 3.0 );
     spell_power_mod.tick = ( 0.51 / 3.0 );
@@ -380,7 +380,7 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
       // for attack power calculations. Weird
 
       // Hardcoded somewhere in the bowels of the server
-      ap_type = AP_NO_WEAPON;
+      ap_type = attack_power_type::NO_WEAPON;
       attack_power_mod.direct = 0.653;
       spell_power_mod.direct = 0.522;
     }

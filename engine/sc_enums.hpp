@@ -28,14 +28,24 @@ enum class profile_source
 };
 
 // Attack power computation modes for Battle for Azeroth+
-enum attack_power_e
+enum class attack_power_type
 {
-  AP_NONE = -1,         /// Unset value
-  AP_WEAPON_MH = 0,     /// Default mode, Attack power is a composite of power and mainhand weapon dps
-  AP_WEAPON_OH,         /// Attack power is a composite of power and offhand weapon dps
-  AP_WEAPON_BOTH,       /// Attack power is a composite of power and both weapon dps
-  AP_NO_WEAPON,         /// Attack power is purely based on player power (main stat)
-  AP_DEFAULT = AP_WEAPON_MH,
+  // Let SimC figure out BfA attack power mode based on information assigned to the action object.
+  NONE = -1,
+
+  // Default mode, Attack power is a composite of power and mainhand weapon dps
+  WEAPON_MAINHAND = 0,
+
+  // Attack power is a composite of power and offhand weapon dps
+  WEAPON_OFFHAND,
+
+  // Attack power is a composite of power and both weapon dps
+  WEAPON_BOTH,
+
+  // Attack power is purely based on player power (main stat)
+  NO_WEAPON,
+
+  DEFAULT = WEAPON_MAINHAND,
 };
 
 

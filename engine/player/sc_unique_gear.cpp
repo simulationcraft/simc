@@ -3615,7 +3615,7 @@ struct touch_of_the_grave_t : public spell_t
   {
     background = may_crit = true;
     base_dd_min = base_dd_max = 0;
-    ap_type = AP_NO_WEAPON;
+    ap_type = attack_power_type::NO_WEAPON;
     // these are sadly hardcoded in the tooltip
     attack_power_mod.direct = 1.25 * .25;
     spell_power_mod.direct = 1.0 * .25;
@@ -3731,7 +3731,7 @@ struct embrace_of_bwonsamdi_t : public spell_t
     spell_t("embrace_of_bwonsamdi", p, sd)
   {
     background = true;
-    ap_type = AP_NO_WEAPON; //TOCHECK: Is this true? Based off of Touch of the Grave right now.
+    ap_type = attack_power_type::NO_WEAPON; //TOCHECK: Is this true? Based off of Touch of the Grave right now.
     base_dd_min = base_dd_max = 0;
     //Hardcoded tooltip values
     attack_power_mod.direct = 0.22;
@@ -3769,7 +3769,7 @@ struct embrace_of_kimbul_t : public spell_t
     hasted_ticks = false;
     dot_max_stack = sd->max_stacks();
     dot_behavior = DOT_REFRESH; //TOCHECK: Does the dot pandemic or should it be clipped?
-    ap_type = AP_NO_WEAPON;
+    ap_type = attack_power_type::NO_WEAPON;
     attack_power_mod.tick = 0.075; //Hardcoded in tooltip
     spell_power_mod.tick = 0.075;
   }

@@ -3940,7 +3940,7 @@ struct crash_lightning_t : public shaman_attack_t
 
     aoe     = -1;
     weapon  = &( p()->main_hand_weapon );
-    ap_type = AP_WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
 
     if ( player->action.crashing_storm )
     {
@@ -4082,7 +4082,7 @@ struct fury_of_air_aoe_t : public shaman_attack_t
     background = true;
     aoe        = -1;
     school     = SCHOOL_NATURE;
-    ap_type    = AP_WEAPON_BOTH;
+    ap_type    = attack_power_type::WEAPON_BOTH;
   }
 
   void init() override

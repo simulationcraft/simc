@@ -2185,7 +2185,7 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t( "between_the_eyes", p, p -> find_specialization_spell( "Between the Eyes" ),
                     options_str )
   {
-    ap_type = AP_WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
     crit_bonus_multiplier *= 1.0 + p -> find_specialization_spell( 235484 ) -> effectN( 1 ).percent();
   }
 
@@ -2871,7 +2871,7 @@ struct pistol_shot_t : public rogue_attack_t
   pistol_shot_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "pistol_shot", p, p -> find_specialization_spell( "Pistol Shot" ), options_str )
   {
-    ap_type = AP_WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
   }
 
   double cost() const override
@@ -3091,7 +3091,7 @@ struct nightblade_t : public rogue_attack_t
   {
     may_crit = false;
     hasted_ticks = true;
-    ap_type = AP_WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
 
     if ( p ->  replicating_shadows )
       add_child( p ->  replicating_shadows );
@@ -3584,7 +3584,7 @@ struct shuriken_storm_t: public rogue_attack_t
     energize_type = ENERGIZE_PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 1;
-    ap_type = AP_WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
   }
 
   void init() override
@@ -3636,7 +3636,7 @@ struct shuriken_toss_t : public rogue_attack_t
   shuriken_toss_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shuriken_toss", p, p -> find_specialization_spell( "Shuriken Toss" ), options_str )
   {
-    ap_type = AP_WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
   }
 };
 

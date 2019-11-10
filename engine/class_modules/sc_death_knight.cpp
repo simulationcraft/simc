@@ -4836,7 +4836,7 @@ struct glacial_advance_damage_t : public death_knight_spell_t
     parse_options( options_str );
     aoe = -1; // TODO: Fancier targeting .. make it aoe for now
     background = true;
-    ap_type = AP_WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
   }
 
   void impact( action_state_t* state ) override
@@ -4971,7 +4971,7 @@ struct frost_fever_t : public death_knight_spell_t
   frost_fever_t( death_knight_t* p ) :
     death_knight_spell_t( "frost_fever", p, p -> spell.frost_fever )
   {
-    ap_type = AP_WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
 
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
@@ -5011,7 +5011,7 @@ struct howling_blast_aoe_t : public death_knight_spell_t
     frost_fever( frf )
   {
     parse_options( options_str );
-    ap_type = AP_WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
 
     aoe = -1;
     background = true;
@@ -5082,7 +5082,7 @@ struct howling_blast_t : public death_knight_spell_t
     aoe = 0;
     add_child( aoe_damage );
     add_child( frost_fever );
-    ap_type = AP_WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
 
     if ( p -> talent.avalanche -> ok() )
     {
@@ -5683,7 +5683,7 @@ struct remorseless_winter_t : public death_knight_spell_t
     // Periodic behavior handled by the buff
     dot_duration = base_tick_time = 0_ms;
 
-    ap_type = AP_WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
 
     if ( action_t* rw_damage = p -> find_action( "remorseless_winter_damage" ) )
     {

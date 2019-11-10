@@ -788,7 +788,7 @@ public:
   virtual double composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double composite_melee_expertise( const weapon_t* weapon ) const override;
   virtual double composite_melee_attack_power() const override;
-  virtual double composite_melee_attack_power( attack_power_e ap_type ) const override;
+  virtual double composite_melee_attack_power(attack_power_type ap_type ) const override;
   virtual double composite_spell_haste() const override;
   virtual double composite_melee_haste() const override;
   virtual double composite_attack_power_multiplier() const override;
@@ -2933,7 +2933,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
   monk_spell_t( const std::string& n, monk_t* player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, player, s )
   {
-    ap_type = AP_WEAPON_MH;
+    ap_type = attack_power_type::WEAPON_MAINHAND;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -2991,7 +2991,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
   monk_heal_t( const std::string& n, monk_t& p, const spell_data_t* s = spell_data_t::nil() ) : base_t( n, &p, s )
   {
     harmful = false;
-    ap_type = AP_WEAPON_MH;
+    ap_type = attack_power_type::WEAPON_MAINHAND;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -3761,7 +3761,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     monk_melee_attack_t::init();
 
     if ( p()->specialization() == MONK_WINDWALKER )
-      ap_type = AP_WEAPON_BOTH;
+      ap_type = attack_power_type::WEAPON_BOTH;
   }
 
   virtual void execute() override
@@ -3858,7 +3858,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::init();
 
-    ap_type = AP_NONE;
+    ap_type = attack_power_type::NONE;
   }
 
   virtual double composite_crit_chance() const override
@@ -4019,7 +4019,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::init();
 
     if ( p()->specialization() == MONK_WINDWALKER )
-      ap_type = AP_WEAPON_BOTH;
+      ap_type = attack_power_type::WEAPON_BOTH;
   }
 
   virtual double cost() const override
@@ -4299,7 +4299,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     monk_melee_attack_t::init();
 
     if ( p()->specialization() == MONK_WINDWALKER )
-      ap_type = AP_WEAPON_BOTH;
+      ap_type = attack_power_type::WEAPON_BOTH;
   }
 
   int mark_of_the_crane_counter() const
@@ -4417,7 +4417,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     affected_by.sunrise_technique = true;
 
     attack_power_mod.direct    = p->spec.fists_of_fury->effectN( 5 ).ap_coeff();
-    ap_type                    = AP_WEAPON_MH;
+    ap_type                    = attack_power_type::WEAPON_MAINHAND;
     base_costs[ RESOURCE_CHI ] = 0;
     dot_duration               = timespan_t::zero();
     trigger_gcd                = timespan_t::zero();
@@ -4880,7 +4880,7 @@ struct touch_of_death_amplifier_t : public monk_spell_t
     background                    = true;
     may_crit                      = false;
     school                        = SCHOOL_PHYSICAL;
-    ap_type                       = AP_NO_WEAPON;
+    ap_type                       = attack_power_type::NO_WEAPON;
     affected_by.sunrise_technique = true;
   }
 
@@ -4904,7 +4904,7 @@ struct touch_of_death_t : public monk_spell_t
     may_combo_strike        = true;
     parse_options( options_str );
     school             = SCHOOL_PHYSICAL;
-    ap_type            = AP_NO_WEAPON;
+    ap_type            = attack_power_type::NO_WEAPON;
     cooldown->duration = data().cooldown();
 
     add_child( touch_of_death_amplifier );
@@ -5026,7 +5026,7 @@ struct touch_of_karma_dot_t : public residual_action::residual_periodic_action_t
   {
     may_miss = may_crit = false;
     dual                = true;
-    ap_type             = AP_NO_WEAPON;
+    ap_type             = attack_power_type::NO_WEAPON;
   }
 
   // Need to disable multipliers in init() so that it doesn't double-dip on anything
@@ -5060,7 +5060,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
     parse_options( options_str );
     cooldown->duration = data().cooldown();
     base_dd_min = base_dd_max = 0;
-    ap_type                   = AP_NO_WEAPON;
+    ap_type                   = attack_power_type::NO_WEAPON;
 
     double max_pct = data().effectN( 3 ).percent();
 
@@ -6513,7 +6513,7 @@ struct expel_harm_t : public monk_spell_t
     // variance but with enough iterations will have the same mean.
     double coeff =
         p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff() * p()->spec.expel_harm->effectN( 2 ).percent();
-    double ap     = p()->composite_melee_attack_power( AP_WEAPON_MH ) * p()->composite_attack_power_multiplier();
+    double ap     = p()->composite_melee_attack_power( attack_power_type::WEAPON_MAINHAND ) * p()->composite_attack_power_multiplier();
     double stacks = p()->buff.gift_of_the_ox->stack();
 
     dmg->base_dd_min = ap * coeff * stacks;
@@ -8955,7 +8955,7 @@ double monk_t::composite_melee_attack_power() const
   return player_t::composite_melee_attack_power();
 }
 
-double monk_t::composite_melee_attack_power( attack_power_e ap_type ) const
+double monk_t::composite_melee_attack_power( attack_power_type ap_type ) const
 {
   return player_t::composite_melee_attack_power( ap_type );
 }

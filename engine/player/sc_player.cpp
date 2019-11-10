@@ -3323,7 +3323,7 @@ double player_t::composite_melee_attack_power() const
   return ap;
 }
 
-double player_t::composite_melee_attack_power( attack_power_e type ) const
+double player_t::composite_melee_attack_power( attack_power_type type ) const
 {
   double base_ap = cache.attack_power();
   double ap = 0;
@@ -3332,7 +3332,7 @@ double player_t::composite_melee_attack_power( attack_power_e type ) const
 
   switch ( type )
   {
-    case AP_WEAPON_MH:
+    case attack_power_type::WEAPON_MAINHAND:
       if ( has_mh )
       {
         ap = base_ap + main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
@@ -3343,7 +3343,7 @@ double player_t::composite_melee_attack_power( attack_power_e type ) const
         ap = base_ap + .5 * WEAPON_POWER_COEFFICIENT;
       }
       break;
-    case AP_WEAPON_OH:
+    case attack_power_type::WEAPON_OFFHAND:
       if ( has_oh )
       {
         ap = base_ap + off_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
@@ -3353,7 +3353,7 @@ double player_t::composite_melee_attack_power( attack_power_e type ) const
         ap = base_ap + .5 * WEAPON_POWER_COEFFICIENT;
       }
       break;
-    case AP_WEAPON_BOTH:
+    case attack_power_type::WEAPON_BOTH:
     {
       // Don't use with weapon = player -> off_hand_weapon or the OH penalty will be applied to the whole spell
       ap = ( has_mh ? main_hand_weapon.dps : .5 ) + ( has_oh ? off_hand_weapon.dps : .5 ) / 2;

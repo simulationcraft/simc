@@ -4393,7 +4393,7 @@ public:
   virtual double composite_melee_haste() const;
   virtual double composite_melee_speed() const;
   virtual double composite_melee_attack_power() const;
-  virtual double composite_melee_attack_power( attack_power_e type ) const;
+  virtual double composite_melee_attack_power(attack_power_type type ) const;
   virtual double composite_melee_hit() const;
   virtual double composite_melee_crit_chance() const;
   virtual double composite_melee_crit_chance_multiplier() const
@@ -4625,8 +4625,8 @@ public:
    * class modules. Used by actions as a "last resort" to determine what attack power type drives
    * the value calculation of the ability.
    */
-  virtual attack_power_e default_ap_type() const
-  { return AP_DEFAULT; }
+  virtual attack_power_type default_ap_type() const
+  { return attack_power_type::DEFAULT; }
 
   // JSON Report extension. Overridable in class methods. Root element is an object assigned for
   // each JSON player object under "custom" property.
@@ -5311,7 +5311,7 @@ public:
   bool dynamic_tick_action;
 
   /// Type of attack power used by the ability
-  attack_power_e ap_type;
+  attack_power_type ap_type;
 
   /// Did a channel action have an interrupt_immediate used to cancel it on it
   bool interrupt_immediate_occurred;
@@ -5872,7 +5872,7 @@ public:
   virtual double composite_haste() const
   { return 1.0; }
 
-  virtual attack_power_e attack_power_type() const
+  virtual attack_power_type attack_power_type() const
   { return ap_type; }
 
   virtual double composite_attack_power() const
