@@ -1026,7 +1026,7 @@ struct sim_t : private sc_thread_t
   stat_e      normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str, save_suffix_str;
   int         save_talent_str;
-  talent_format_e talent_format;
+  talent_format talent_input_format;
   auto_dispose< std::vector<player_t*> > actor_list;
   std::string main_target_str;
   int         stat_cache;
@@ -4547,7 +4547,7 @@ public:
   virtual expr_t* create_action_expression( action_t&, const std::string& name );
 
   virtual void create_options();
-  void recreate_talent_str( talent_format_e format = TALENT_FORMAT_NUMBERS );
+  void recreate_talent_str( talent_format format = talent_format::NUMBERS );
   virtual std::string create_profile( save_e = SAVE_ALL );
 
   virtual void copy_from( player_t* source );

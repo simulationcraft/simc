@@ -176,13 +176,12 @@ enum class movement_direction_type : int
   MAX,
 };
 
-enum talent_format_e
+enum class talent_format
 {
-  TALENT_FORMAT_NUMBERS = 0,
-  TALENT_FORMAT_ARMORY,
-  TALENT_FORMAT_WOWHEAD,
-  TALENT_FORMAT_UNCHANGED,
-  TALENT_FORMAT_MAX
+  NUMBERS,
+  ARMORY,
+  WOWHEAD,
+  UNCHANGED
 };
 
 enum race_e

@@ -504,20 +504,20 @@ bool parse_talent_url( sim_t* sim, const std::string& name, const std::string& u
     ++cut_pt;
     if ( url.find( ".battle.net" ) != url.npos || url.find( ".battlenet.com" ) != url.npos )
     {
-      if ( sim->talent_format == TALENT_FORMAT_UNCHANGED )
-        sim->talent_format = TALENT_FORMAT_ARMORY;
+      if ( sim->talent_input_format == talent_format::UNCHANGED )
+        sim->talent_input_format = talent_format::ARMORY;
       return p->parse_talents_armory( url.substr( cut_pt ) );
     }
     else if ( url.find( "worldofwarcraft.com" ) != url.npos || url.find( "www.wowchina.com" ) != url.npos )
     {
-      if ( sim->talent_format == TALENT_FORMAT_UNCHANGED )
-        sim->talent_format = TALENT_FORMAT_ARMORY;
+      if ( sim->talent_input_format == talent_format::UNCHANGED )
+        sim->talent_input_format = talent_format::ARMORY;
       return p->parse_talents_armory2( url );
     }
     else if ( url.find( ".wowhead.com" ) != url.npos )
     {
-      if ( sim->talent_format == TALENT_FORMAT_UNCHANGED )
-        sim->talent_format = TALENT_FORMAT_WOWHEAD;
+      if ( sim->talent_input_format == talent_format::UNCHANGED )
+        sim->talent_input_format = talent_format::WOWHEAD;
       std::string::size_type end = url.find( '|', cut_pt );
       return p->parse_talents_wowhead( url.substr( cut_pt, end - cut_pt ) );
     }
@@ -531,8 +531,8 @@ bool parse_talent_url( sim_t* sim, const std::string& name, const std::string& u
 
     if ( all_digits )
     {
-      if ( sim->talent_format == TALENT_FORMAT_UNCHANGED )
-        sim->talent_format = TALENT_FORMAT_NUMBERS;
+      if ( sim->talent_input_format == talent_format::UNCHANGED )
+        sim->talent_input_format = talent_format::NUMBERS;
       p->parse_talents_numbers( url );
       return true;
     }
@@ -10692,16 +10692,16 @@ double player_t::calculate_time_to_bloodlust() const
   return 3 * sim->expected_iteration_time.total_seconds();
 }
 
-void player_t::recreate_talent_str( talent_format_e format )
+void player_t::recreate_talent_str( talent_format format )
 {
   switch ( format )
   {
-    case TALENT_FORMAT_UNCHANGED:
+    case talent_format::UNCHANGED:
       break;
-    case TALENT_FORMAT_ARMORY:
+    case talent_format::ARMORY:
       create_talents_armory();
       break;
-    case TALENT_FORMAT_WOWHEAD:
+    case talent_format::WOWHEAD:
       create_talents_wowhead();
       break;
     default:
@@ -10760,7 +10760,7 @@ std::string player_t::create_profile( save_e stype )
   {
     if ( !talents_str.empty() )
     {
-      recreate_talent_str( sim->talent_format );
+      recreate_talent_str( sim->talent_input_format );
       profile_str += "talents=" + talents_str + term;
     }
 
@@ -11016,7 +11016,7 @@ void player_t::copy_from( player_t* source )
   _spec           = source->_spec;
   position_str    = source->position_str;
   professions_str = source->professions_str;
-  source->recreate_talent_str( TALENT_FORMAT_UNCHANGED );
+  source->recreate_talent_str(talent_format::UNCHANGED );
   parse_talent_url( sim, "talents", source->talents_str );
 
   if ( azerite )
@@ -11411,7 +11411,7 @@ void player_t::analyze( sim_t& s )
     }
   }
 
-  recreate_talent_str( s.talent_format );
+  recreate_talent_str( s.talent_input_format );
 }
 
 /**

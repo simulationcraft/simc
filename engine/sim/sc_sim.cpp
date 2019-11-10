@@ -319,19 +319,19 @@ bool parse_talent_format( sim_t*             sim,
 
   if ( util::str_compare_ci( value, "unchanged" ) )
   {
-    sim -> talent_format = TALENT_FORMAT_UNCHANGED;
+    sim -> talent_input_format = talent_format::UNCHANGED;
   }
   else if ( util::str_compare_ci( value, "armory" ) )
   {
-    sim -> talent_format = TALENT_FORMAT_ARMORY;
+    sim -> talent_input_format = talent_format::ARMORY;
   }
   else if ( util::str_compare_ci( value, "wowhead" ) )
   {
-    sim -> talent_format = TALENT_FORMAT_WOWHEAD;
+    sim -> talent_input_format = talent_format::WOWHEAD;
   }
   else if ( util::str_compare_ci( value, "numbers" ) || util::str_compare_ci( value, "default" ) )
   {
-    sim -> talent_format = TALENT_FORMAT_NUMBERS;
+    sim -> talent_input_format = talent_format::NUMBERS;
   }
 
   return true;
@@ -1354,7 +1354,7 @@ sim_t::sim_t() :
   default_region_str( "us" ),
   save_prefix_str( "save_" ),
   save_talent_str( 0 ),
-  talent_format( TALENT_FORMAT_UNCHANGED ),
+  talent_input_format(talent_format::UNCHANGED ),
   stat_cache( 1 ),
   max_aoe_enemies( 20 ),
   show_etmi( 0 ),

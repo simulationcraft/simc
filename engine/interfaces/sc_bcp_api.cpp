@@ -467,7 +467,7 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
     }
   }
 
-  p->recreate_talent_str( TALENT_FORMAT_ARMORY );
+  p->recreate_talent_str(talent_format::ARMORY );
 }
 
 // parse_items ==============================================================
