@@ -755,10 +755,10 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           case E_APPLY_AURA:
             switch ( spelleffect_data.subtype() )
             {
-              case P_CRIT:
+              case A_MOD_CRIT_PERCENT:
                 base_crit += 0.01 * spelleffect_data.base_value();
                 break;
-              case P_COOLDOWN:
+              case A_MOD_COOLDOWN:
                 cooldown->duration += spelleffect_data.time_value();
                 break;
               default:
