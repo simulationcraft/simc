@@ -407,7 +407,7 @@ void azerite_state_t::initialize()
 azerite_power_t azerite_state_t::get_power( unsigned id )
 {
   // All azerite disabled
-  if ( m_player -> sim -> azerite_status == AZERITE_DISABLED_ALL )
+  if ( m_player -> sim -> azerite_status == azerite_control::DISABLED_ALL )
   {
     return {};
   }
@@ -457,7 +457,7 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
   {
     // Item-related azerite effects are only enabled when "all" is defined
     if ( m_spell_items[ power.spell_id ].size() > 0 &&
-         m_player -> sim -> azerite_status == AZERITE_ENABLED )
+         m_player -> sim -> azerite_status == azerite_control::ENABLED )
     {
       if ( m_player -> sim -> debug )
       {
@@ -628,7 +628,7 @@ bool azerite_state_t::parse_override( sim_t* sim, const std::string&, const std:
 size_t azerite_state_t::rank( unsigned id ) const
 {
   // All azerite-related effects disabled
-  if ( m_player -> sim -> azerite_status == AZERITE_DISABLED_ALL )
+  if ( m_player -> sim -> azerite_status == azerite_control::DISABLED_ALL )
   {
     return 0u;
   }
@@ -646,7 +646,7 @@ size_t azerite_state_t::rank( unsigned id ) const
   }
 
   // Only look at item-based azerite, if all azerite is enabled
-  if ( m_player -> sim -> azerite_status == AZERITE_ENABLED )
+  if ( m_player -> sim -> azerite_status == azerite_control::ENABLED )
   {
     auto it = m_items.find( id );
     if ( it != m_items.end() )
@@ -776,7 +776,7 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
   // Heart of Azeroth
   const item_t& hoa = m_player->items[ SLOT_NECK ];
 
-  if ( !hoa.active() || hoa.parsed.data.id != 158075 || m_player->sim->azerite_status == AZERITE_DISABLED_ALL )
+  if ( !hoa.active() || hoa.parsed.data.id != 158075 || m_player->sim->azerite_status == azerite_control::DISABLED_ALL )
     return root;
 
   size_t n_traits = m_overrides.size();

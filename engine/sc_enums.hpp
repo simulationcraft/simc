@@ -62,12 +62,6 @@ enum class retarget_source
 // Misc Constants
 enum
 {
-  /**
-  * Maximum number of artifact perks per weapon. 
-  * Looks like max is 17 on weapons but setting higher just in case -- 2016-04-04 - Twintop. Increase to 25 to encompass new traits.
-  */
-  MAX_ARTIFACT_POWER = 29, 
-
   MAX_ARTIFACT_RELIC = 4,
 
   // Seemingly hard coded CurvePoint identifier for the data that returns the item level increase of a relic, based on the relic's own item level
@@ -84,11 +78,11 @@ enum
 };
 
 // Azerite control
-enum azerite_control
+enum class azerite_control
 {
-  AZERITE_ENABLED = 0,          /// All azerite-related effects enabled (default)
-  AZERITE_DISABLED_ITEMS,       /// Azerite effects from items are disabled
-  AZERITE_DISABLED_ALL          /// All azerite-related effects disabled
+  ENABLED,          // All azerite-related effects enabled (default)
+  DISABLED_ITEMS,   // Azerite effects from items are disabled
+  DISABLED_ALL      // All azerite-related effects disabled
 };
 
 enum regen_type_e
