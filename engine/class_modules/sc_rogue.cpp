@@ -572,7 +572,7 @@ struct rogue_t : public player_t
     cooldowns.secret_technique         = get_cooldown( "secret_technique"         );
     cooldowns.shadow_blades            = get_cooldown( "shadow_blades"            );
 
-    regen_type = REGEN_DYNAMIC;
+    regen_type = regen_type::DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_ATTACK_HASTE] = true;
   }

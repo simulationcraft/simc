@@ -77,7 +77,7 @@ enum
   MAX_AZERITE_ESSENCE_RANK = 4u, // Maximum Azerite Essence power rank for patch BfA 8.2.0
 };
 
-// Azerite control
+// Enable/Disable azerite effects
 enum class azerite_control
 {
   ENABLED,          // All azerite-related effects enabled (default)
@@ -85,30 +85,30 @@ enum class azerite_control
   DISABLED_ALL      // All azerite-related effects disabled
 };
 
-enum regen_type_e
+enum class regen_type
 {
-  /**
-   * @brief Old resource regeneration model.
-   *
-   * Actors regen every 'periodicity' seconds through a single global event.
-   * Default.
+  /*
+   Old resource regeneration model.
+  
+   Actors regen every 'periodicity' seconds through a single global event.
+   Default.
    */
-  REGEN_STATIC,
+   STATIC,
 
-  /**
-   * @brief Dynamic resource regeneration model.
-   *
-   * Resources are regenerated at dynamic intervals when an actor is about to
-   * execute an action, and when the state of the actor changes in a way that
-   * affects resource regeneration.
-   *
-   * See comment on player_t::regen_caches how to define what state changes
-   * affect resource regneration.
+  /*
+   Dynamic resource regeneration model.
+   
+   Resources are regenerated at dynamic intervals when an actor is about to
+   execute an action, and when the state of the actor changes in a way that
+   affects resource regeneration.
+   
+   See comment on player_t::regen_caches how to define what state changes
+   affect resource regneration.
    */
-  REGEN_DYNAMIC,
+  DYNAMIC,
 
-  /// Resource regeneration is disabled for the actor
-  REGEN_DISABLED
+  // Resource regeneration is disabled for the actor
+  DISABLED
 };
 
 enum class buff_tick_behavior

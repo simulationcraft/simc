@@ -1411,7 +1411,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
     for ( size_t i = 0, end = sim->player_non_sleeping_list.size(); i < end; i++ )
     {
       player_t* actor = sim->player_non_sleeping_list[ i ];
-      if ( actor->regen_type != REGEN_DYNAMIC || actor->is_pet() )
+      if ( actor->regen_type != regen_type::DYNAMIC|| actor->is_pet() )
         continue;
 
       for ( auto& elem : invalidate_list )
@@ -1738,7 +1738,7 @@ void buff_t::expire( timespan_t delay )
     for ( size_t i = 0, end = sim->player_non_sleeping_list.size(); i < end; i++ )
     {
       player_t* actor = sim->player_non_sleeping_list[ i ];
-      if ( actor->regen_type != REGEN_DYNAMIC || actor->is_pet() )
+      if ( actor->regen_type != regen_type::DYNAMIC|| actor->is_pet() )
         continue;
 
       for ( auto& elem : invalidate_list )

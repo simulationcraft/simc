@@ -998,7 +998,7 @@ struct regen_event_t : public event_t
       {
         player_t* p = sim().player_non_sleeping_list[ i ];
         if ( p -> primary_resource() == RESOURCE_NONE ) continue;
-        if ( p -> regen_type != REGEN_STATIC ) continue;
+        if ( p -> regen_type !=  regen_type::STATIC ) continue;
 
         p -> regen( sim().regen_periodicity );
       }
@@ -1006,13 +1006,13 @@ struct regen_event_t : public event_t
     else
     {
       auto p = sim().player_no_pet_list[ sim().current_index ];
-      if ( p && p -> primary_resource() != RESOURCE_NONE && p -> regen_type == REGEN_STATIC )
+      if ( p && p -> primary_resource() != RESOURCE_NONE && p -> regen_type ==  regen_type::STATIC )
       {
         p -> regen( sim().regen_periodicity );
         for ( auto pet : p -> pet_list )
         {
           if ( ! pet -> is_sleeping() && p -> primary_resource() != RESOURCE_NONE &&
-            p -> regen_type == REGEN_STATIC )
+            p -> regen_type ==  regen_type::STATIC )
           {
             pet -> regen( sim().regen_periodicity );
           }
@@ -2606,7 +2606,7 @@ void sim_t::init()
 
   for ( const auto& player : player_list )
   {
-    if ( player -> regen_type == REGEN_STATIC )
+    if ( player -> regen_type ==  regen_type::STATIC )
     {
       requires_regen_event = true;
       break;

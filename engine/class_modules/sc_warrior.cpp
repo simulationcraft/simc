@@ -495,7 +495,7 @@ public:
     never_surrender_percentage = 70;
     expected_max_health   = 0;
 
-    regen_type = REGEN_DISABLED;
+    regen_type = regen_type::DISABLED;
 
     talent_points.register_validity_fn( [this]( const spell_data_t* spell ) {
       // Soul of the Battlelord

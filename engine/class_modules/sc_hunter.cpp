@@ -561,7 +561,7 @@ public:
 
     base_gcd = 1.5_s;
 
-    regen_type = REGEN_DYNAMIC;
+    regen_type = regen_type::DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
@@ -1326,7 +1326,7 @@ struct animal_companion_t : public hunter_main_pet_base_t
   animal_companion_t( hunter_t* owner ):
     hunter_main_pet_base_t( owner, "animal_companion", PET_HUNTER )
   {
-    regen_type = REGEN_DISABLED;
+    regen_type = regen_type::DISABLED;
   }
 
   void init_action_list() override
@@ -1363,7 +1363,7 @@ struct dire_critter_t: public hunter_pet_t
     hunter_pet_t( owner, n, PET_HUNTER, true /*GUARDIAN*/ )
   {
     owner_coeff.ap_from_ap = 0.15;
-    regen_type = REGEN_DISABLED;
+    regen_type = regen_type::DISABLED;
   }
 
   void init_spells() override;
@@ -1437,7 +1437,7 @@ struct spitting_cobra_t: public hunter_pet_t
     hunter_pet_t( o, "spitting_cobra", PET_HUNTER, true )
   {
     owner_coeff.ap_from_ap = 0.15;
-    regen_type = REGEN_DISABLED;
+    regen_type = regen_type::DISABLED;
 
     action_list_str = "cobra_spit";
   }
@@ -1549,7 +1549,7 @@ struct kill_command_base_t: public hunter_pet_action_t<hunter_main_pet_base_t, m
       serrated_jaws.chance = o() -> azerite.serrated_jaws.spell() -> effectN( 3 ).percent();
       serrated_jaws.energize_amount = o() -> azerite.serrated_jaws.spell() -> effectN( 2 ).base_value();
       serrated_jaws.bonus_da = o() -> azerite.serrated_jaws.value( 1 );
-      serrated_jaws.gain = p -> regen_type != REGEN_DISABLED ? p -> get_gain( "serrated_jaws" ) : nullptr;
+      serrated_jaws.gain = p -> regen_type != regen_type::DISABLED ? p -> get_gain( "serrated_jaws" ) : nullptr;
     }
   }
 

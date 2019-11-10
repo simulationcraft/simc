@@ -1021,7 +1021,7 @@ void dot_t::tick()
   {
     // If the ability has an interrupt or chain-based option enabled, we need to dynamically regen
     // resources for the actor before the chain/interrupt processing is done.
-    if ( current_action->player->regen_type == REGEN_DYNAMIC &&
+    if ( current_action->player->regen_type == regen_type::DYNAMIC&&
          ( current_action->option.chain || current_action->option.interrupt ||
            current_action->interrupt_if_expr || current_action->early_chain_if_expr ) )
     {

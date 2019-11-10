@@ -117,10 +117,10 @@ void pet_t::init()
 {
   player_t::init();
 
-  if ( regen_type == REGEN_DYNAMIC && owner -> regen_type == REGEN_DISABLED )
+  if ( regen_type == regen_type::DYNAMIC && owner -> regen_type == regen_type::DISABLED )
   {
     sim -> errorf( "Pet %s has dynamic regen, while owner has disabled regen. Disabling pet regeneration also.", name() );
-    regen_type = REGEN_DISABLED;
+    regen_type = regen_type::DISABLED;
   }
 }
 

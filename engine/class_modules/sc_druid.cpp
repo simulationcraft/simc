@@ -814,7 +814,7 @@ public:
     sylvan_walker = 0;
     equipped_weapon_dps = 0;
 
-    regen_type = REGEN_DYNAMIC;
+    regen_type = regen_type::DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
 
@@ -1066,7 +1066,7 @@ struct force_of_nature_t : public pet_t
     pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
     owner_coeff.ap_from_sp = 0.6; //not confirmed
-    regen_type = REGEN_DISABLED;
+    regen_type = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST;
   }
 

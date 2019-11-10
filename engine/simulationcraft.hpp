@@ -4145,7 +4145,7 @@ struct player_t : public actor_t
   auto_dispose<std::vector<action_variable_t*>> variables;
   std::vector<std::string> action_map;
 
-  regen_type_e regen_type;
+  regen_type regen_type;
 
   /// Last iteration time regeneration occurred. Set at player_t::arise()
   timespan_t last_regen;
@@ -8094,7 +8094,7 @@ inline void player_t::do_dynamic_regen()
   {
     for (auto & elem : active_pets)
     {
-      if ( elem -> regen_type == REGEN_DYNAMIC )
+      if ( elem -> regen_type == regen_type::DYNAMIC)
         elem -> do_dynamic_regen();
     }
   }

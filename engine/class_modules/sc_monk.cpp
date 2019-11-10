@@ -737,7 +737,7 @@ public:
     cooldown.touch_of_death               = get_cooldown( "touch_of_death" );
     cooldown.serenity                     = get_cooldown( "serenity" );
 
-    regen_type = REGEN_DYNAMIC;
+    regen_type = regen_type::DYNAMIC;
     if ( specialization() != MONK_MISTWEAVER )
     {
       regen_caches[ CACHE_HASTE ]        = true;

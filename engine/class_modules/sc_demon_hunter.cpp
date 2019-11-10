@@ -4163,7 +4163,7 @@ demon_hunter_t::demon_hunter_t(sim_t* sim, const std::string& name, race_e r)
   create_gains();
   create_benefits();
 
-  regen_type = REGEN_DISABLED;
+  regen_type = regen_type::DISABLED;
 }
 
 // ==========================================================================
