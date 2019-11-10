@@ -2562,7 +2562,7 @@ struct death_knight_action_t : public Base
 
     if ( this -> data().affected_by( p() -> spec.death_knight -> effectN( 2 ) ) )
     {
-      this -> gcd_type = gcd_type::ATTACK_HASTE;
+      this -> gcd_type = gcd_haste_type::ATTACK_HASTE;
     }
   }
 

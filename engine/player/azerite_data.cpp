@@ -4195,7 +4195,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
         // Hotfix per https://us.forums.blizzard.com/en/wow/t/essences-feedback-damage-essences/181165/41
         dam *= 0.65;
         base_dd_min = base_dd_max = dam;
-        gcd_type = gcd_type::NONE;
+        gcd_type = gcd_haste_type::NONE;
       }
 
       void execute() override

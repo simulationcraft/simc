@@ -1292,10 +1292,8 @@ enum action_energize_e
   ENERGIZE_PER_TICK
 };
 
-/**
-* Global cooldown speed-up type
-*/
-enum class gcd_type
+// Global cooldown speed-up type
+enum class gcd_haste_type
 {
   NONE,
   // any (all) haste types

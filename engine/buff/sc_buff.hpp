@@ -116,7 +116,7 @@ protected:
   int trigger_attempts, trigger_successes;
   int simulation_max_stack;
   std::vector<cache_e> invalidate_list;
-  gcd_type gcd_type;
+  gcd_haste_type gcd_type;
 
   // report data
 public:

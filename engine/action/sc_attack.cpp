@@ -445,10 +445,10 @@ void ranged_attack_t::schedule_execute( action_state_t* execute_state )
     player->gcd_type = gcd_type;
     switch ( gcd_type )
     {
-    case gcd_type::SPELL_HASTE:
+    case gcd_haste_type::SPELL_HASTE:
         player->gcd_current_haste_value = player->cache.spell_haste();
         break;
-      case gcd_type::ATTACK_HASTE:
+      case gcd_haste_type::ATTACK_HASTE:
         player->gcd_current_haste_value = player->cache.attack_haste();
         break;
       default:

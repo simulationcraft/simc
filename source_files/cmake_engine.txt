@@ -6,6 +6,7 @@ util/sc_resourcepaths.hpp
 util/sample_data.hpp
 util/rng.hpp
 util/io.hpp
+buff/sc_buff.hpp
 util/generic.hpp
 util/concurrency.hpp
 util/cache.hpp

@@ -3706,7 +3706,7 @@ struct player_t : public actor_t
 
   // GCD Related attributes
   timespan_t  gcd_ready, base_gcd, min_gcd; // When is GCD ready, default base and minimum GCD times.
-  gcd_type gcd_type; // If the current GCD is hasted, what haste type is used
+  gcd_haste_type gcd_type; // If the current GCD is hasted, what haste type is used
   double gcd_current_haste_value; // The currently used haste value for GCD speedup
 
   timespan_t started_waiting;
@@ -4666,8 +4666,8 @@ public:
 
   virtual void adjust_dynamic_cooldowns()
   { range::for_each( dynamic_cooldown_list, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } ); }
-  virtual void adjust_global_cooldown(enum gcd_type gcd_type );
-  virtual void adjust_auto_attack(enum gcd_type gcd_type );
+  virtual void adjust_global_cooldown(gcd_haste_type type );
+  virtual void adjust_auto_attack(gcd_haste_type type );
 
   // 8.2 Vision of Perfection essence
   virtual void vision_of_perfection_proc();
@@ -5335,7 +5335,7 @@ public:
   timespan_t min_gcd;
 
   /// Hasted GCD stat type. One of HASTE_NONE, HASTE_ATTACK, HASTE_SPELL, SPEED_ATTACK, SPEED_SPELL
-  gcd_type gcd_type;
+  gcd_haste_type gcd_type;
 
   /// Length of unhasted gcd triggered when used.
   timespan_t trigger_gcd;
