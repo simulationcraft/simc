@@ -1184,7 +1184,7 @@ struct mental_fortitude_t final : public priest_absorb_t
     priest_absorb_t::impact( s );
   }
 
-  void assess_damage( dmg_e, action_state_t* s ) override
+  void assess_damage( result_amount_type, action_state_t* s ) override
   {
     // Add stacking of buff value, and limit by players health factor.
     auto& buff            = target_specific[ s->target ];
@@ -1213,7 +1213,7 @@ struct mental_fortitude_t final : public priest_absorb_t
                              util::result_type_string( s->result ) );
     }
 
-    stats->add_result( 0.0, s->result_total, ABSORB, s->result, s->block_result, s->target );
+    stats->add_result( 0.0, s->result_total, result_amount_type::ABSORB, s->result, s->block_result, s->target );
   }
 };
 

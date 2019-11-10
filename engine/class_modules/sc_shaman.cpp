@@ -1830,7 +1830,7 @@ public:
     for ( size_t i = 0, end = overloads; i < end; ++i )
     {
       action_state_t* s = overload->get_state();
-      overload->snapshot_state( s, DMG_DIRECT );
+      overload->snapshot_state( s, result_amount_type::DMG_DIRECT );
       s->target = source_state->target;
 
       make_event<elemental_overload_event_t>( *sim, s );
@@ -4507,7 +4507,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     std::swap( snapshot_flags, impact_flags );
   }
 
-  void snapshot_impact_state( action_state_t* s, dmg_e rt )
+  void snapshot_impact_state( action_state_t* s, result_amount_type rt )
   {
     snapshot_internal( s, impact_flags, rt );
   }
@@ -4742,7 +4742,7 @@ struct lava_burst_t : public shaman_spell_t
     }
   }
 
-  void snapshot_impact_state( action_state_t* s, dmg_e rt )
+  void snapshot_impact_state( action_state_t* s, result_amount_type rt )
   {
     snapshot_internal( s, impact_flags, rt );
   }

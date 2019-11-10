@@ -40,24 +40,24 @@ timespan_t attack_t::execute_time() const
   return base_execute_time * player->cache.attack_speed();
 }
 
-dmg_e attack_t::amount_type( const action_state_t*, bool periodic ) const
+result_amount_type attack_t::amount_type( const action_state_t*, bool periodic ) const
 {
   if ( periodic )
-    return DMG_OVER_TIME;
+    return result_amount_type::DMG_OVER_TIME;
   else
-    return DMG_DIRECT;
+    return result_amount_type::DMG_DIRECT;
 }
 
-dmg_e attack_t::report_amount_type( const action_state_t* state ) const
+result_amount_type attack_t::report_amount_type( const action_state_t* state ) const
 {
-  dmg_e result_type = state->result_type;
+  auto result_type = state->result_type;
 
-  if ( result_type == DMG_DIRECT )
+  if ( result_type == result_amount_type::DMG_DIRECT )
   {
     // Direct ticks are direct damage, that are recorded as ticks
     if ( direct_tick )
     {
-      result_type = DMG_OVER_TIME;
+      result_type = result_amount_type::DMG_OVER_TIME;
     }
     else
     {
@@ -65,7 +65,7 @@ dmg_e attack_t::report_amount_type( const action_state_t* state ) const
       // someone. If so, then the damage should be recorded as periodic.
       if ( stats->action_list.front()->tick_action == this )
       {
-        result_type = DMG_OVER_TIME;
+        result_type = result_amount_type::DMG_OVER_TIME;
       }
     }
   }

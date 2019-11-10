@@ -2086,7 +2086,7 @@ void item::legendary_ring( special_effect_t& effect )
     }
 
     // Make legendary ring do it's accounting after target has been damaged
-    p -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ buff ]( dmg_e, action_state_t* state )
+    p -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ buff ]( result_amount_type, action_state_t* state )
     {
       if ( ! buff -> up() )
       {
@@ -2113,7 +2113,7 @@ void item::legendary_ring( special_effect_t& effect )
         continue;
       }
 
-      pet -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ buff ]( dmg_e, action_state_t* state )
+      pet -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ buff ]( result_amount_type, action_state_t* state )
       {
         if ( ! buff -> check() )
         {
@@ -3320,7 +3320,7 @@ void item::soul_capacitor( special_effect_t& effect )
   effect.custom_buff = b;
   // Perform Spirit Shift accounting just before the target actor is damaged. Spirit Shift will stop
   // the assessing of the state object.
-  effect.player -> assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [ b ]( dmg_e, action_state_t* state ) {
+  effect.player -> assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [ b ]( result_amount_type, action_state_t* state ) {
     player_t* p = state -> action -> player;
     if ( ! b -> up() || ! state -> target -> is_enemy() )
     {

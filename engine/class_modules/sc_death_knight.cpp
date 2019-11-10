@@ -891,9 +891,9 @@ public:
   void      reset() override;
   void      arise() override;
   void      adjust_dynamic_cooldowns() override;
-  void      assess_heal( school_e, dmg_e, action_state_t* ) override;
-  void      assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
-  void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  void      assess_heal( school_e, result_amount_type, action_state_t* ) override;
+  void      assess_damage_imminent( school_e, result_amount_type, action_state_t* ) override;
+  void      target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void      do_damage( action_state_t* ) override;
   void      create_actions() override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
@@ -8250,7 +8250,7 @@ void death_knight_t::reset()
 
 // death_knight_t::assess_heal ==============================================
 
-void death_knight_t::assess_heal( school_e school, dmg_e t, action_state_t* s )
+void death_knight_t::assess_heal( school_e school, result_amount_type t, action_state_t* s )
 {
   if ( buffs.vampiric_blood -> up() )
     s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent();
@@ -8278,7 +8278,7 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
   }
 }
 
-void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s )
+void death_knight_t::assess_damage_imminent( school_e school, result_amount_type, action_state_t* s )
 {
   bone_shield_handler( s );
 
@@ -8294,7 +8294,7 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
       iteration_absorb_taken += damage_absorbed;
 
       if ( antimagic_shell )
-        antimagic_shell -> add_result( damage_absorbed, damage_absorbed, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, this );
+        antimagic_shell -> add_result( damage_absorbed, damage_absorbed, result_amount_type::ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, this );
 
       // Generates 1 RP for every 1% max hp absorbed
       double rp_generated = damage_absorbed / resources.max[ RESOURCE_HEALTH ] * 100;
@@ -8319,7 +8319,7 @@ void death_knight_t::do_damage( action_state_t* state )
 
 // death_knight_t::target_mitigation ========================================
 
-void death_knight_t::target_mitigation( school_e school, dmg_e type, action_state_t* state )
+void death_knight_t::target_mitigation( school_e school, result_amount_type type, action_state_t* state )
 {
   if ( buffs.rune_tap -> up() )
     state -> result_amount *= 1.0 + buffs.rune_tap -> data().effectN( 1 ).percent();

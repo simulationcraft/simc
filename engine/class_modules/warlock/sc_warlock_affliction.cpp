@@ -762,7 +762,7 @@ namespace warlock
         // Then calculate damage based on the tick action
         action_state_t* damage_action_state = tick_action->get_state();
         damage_action_state->target = dot->target;
-        tick_action->snapshot_state( damage_action_state, DMG_DIRECT );
+        tick_action->snapshot_state( damage_action_state, result_amount_type::DMG_DIRECT );
         tick_action->calculate_direct_amount( damage_action_state );
 
         // Recreate the db state object with the calculated tick action damage, and the base db

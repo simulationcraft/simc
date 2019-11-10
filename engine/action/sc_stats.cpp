@@ -129,13 +129,13 @@ full_result_e stats_t::translate_result( result_e result, block_result_e block_r
 
 void stats_t::add_result( double act_amount,
                           double tot_amount,
-                          dmg_e dmg_type,
+                          result_amount_type dmg_type,
                           result_e result,
                           block_result_e block_result,
                           player_t* /* target */ )
 {
   stats_results_t* r = nullptr;
-  if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
+  if ( dmg_type == result_amount_type::DMG_DIRECT || dmg_type == result_amount_type::HEAL_DIRECT || dmg_type == result_amount_type::ABSORB )
   {
     r = &( direct_results[ translate_result( result, block_result ) ] );
   }

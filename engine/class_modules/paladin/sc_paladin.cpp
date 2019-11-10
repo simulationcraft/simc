@@ -1784,7 +1784,7 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
 // paladin_t::assess_damage =================================================
 
 void paladin_t::assess_damage( school_e school,
-                               dmg_e    dtype,
+                               result_amount_type    dtype,
                                action_state_t* s )
 {
   if ( buffs.divine_shield -> up() )

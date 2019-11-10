@@ -4606,7 +4606,7 @@ void items::divers_folly( special_effect_t& effect )
     auto buff  = make_buff<bioelectric_charge_buff_t>( effect, proc2 );
 
     effect.player->buffs.bioelectric_charge = buff;
-    effect.player->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [buff, pct]( dmg_e, action_state_t* s ) {
+    effect.player->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [buff, pct](result_amount_type, action_state_t* s ) {
       if ( !buff->check() )
         return assessor::CONTINUE;
 

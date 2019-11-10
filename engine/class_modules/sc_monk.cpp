@@ -824,10 +824,10 @@ public:
   virtual stat_e convert_hybrid_stat( stat_e s ) const override;
   virtual void pre_analyze_hook() override;
   virtual void combat_begin() override;
-  virtual void target_mitigation( school_e, dmg_e, action_state_t* ) override;
-  virtual void assess_damage( school_e, dmg_e, action_state_t* s ) override;
-  virtual void assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s ) override;
-  virtual void assess_heal( school_e, dmg_e, action_state_t* s ) override;
+  virtual void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
+  virtual void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
+  virtual void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* s ) override;
+  virtual void assess_heal( school_e, result_amount_type, action_state_t* s ) override;
   virtual void invalidate_cache( cache_e ) override;
   virtual void init_action_list() override;
   void activate() override;
@@ -1077,7 +1077,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       super_t::execute();
     }
 
-    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
+    void snapshot_internal( action_state_t* state, uint32_t flags, result_amount_type rt )
     {
       super_t::snapshot_internal( state, flags, rt );
 
@@ -1085,13 +1085,13 @@ struct storm_earth_and_fire_pet_t : public pet_t
       // multipliers in the first place.
       /*      if ( o() -> talent.hit_combo -> ok() )
             {
-              if ( rt == DMG_DIRECT && ( flags & STATE_MUL_DA ) )
+              if ( rt == result_amount_type::DMG_DIRECT && ( flags & STATE_MUL_DA ) )
               {
                 state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
                 state -> da_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
               }
 
-              if ( rt == DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
+              if ( rt == result_amount_type::DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
               {
                 state -> ta_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
                 state -> ta_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
@@ -1122,11 +1122,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     // Physical tick_action abilities need amount_type() override, so the
     // tick_action multistrikes are properly physically mitigated.
-    dmg_e amount_type( const action_state_t* state, bool periodic ) const override
+    result_amount_type amount_type( const action_state_t* state, bool periodic ) const override
     {
       if ( tick_action && tick_action->school == SCHOOL_PHYSICAL )
       {
-        return DMG_DIRECT;
+        return result_amount_type::DMG_DIRECT;
       }
       else
       {
@@ -3414,11 +3414,11 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
   // Physical tick_action abilities need amount_type() override, so the
   // tick_action are properly physically mitigated.
-  dmg_e amount_type( const action_state_t* state, bool periodic ) const override
+  result_amount_type amount_type( const action_state_t* state, bool periodic ) const override
   {
     if ( tick_action && tick_action->school == SCHOOL_PHYSICAL )
     {
-      return DMG_DIRECT;
+      return result_amount_type::DMG_DIRECT;
     }
     else
     {
@@ -5643,7 +5643,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     p()->stagger_damage_changed();
   }
 
-  void assess_damage( dmg_e type, action_state_t* s ) override
+  void assess_damage( result_amount_type type, action_state_t* s ) override
   {
     base_t::assess_damage( type, s );
 
@@ -6918,7 +6918,7 @@ struct life_cocoon_t : public monk_absorb_t
   virtual void impact( action_state_t* s ) override
   {
     p()->buff.life_cocoon->trigger( 1, s->result_amount );
-    stats->add_result( 0.0, s->result_amount, ABSORB, s->result, s->block_result, s->target );
+    stats->add_result( 0.0, s->result_amount, result_amount_type::ABSORB, s->result, s->block_result, s->target );
   }
 };
 }  // end namespace absorbs
@@ -7739,8 +7739,8 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
   if ( s->action->type == ACTION_HEAL )
   {
     heal_t* heal_cast = debug_cast<heal_t*>( s->action );
-    if ( ( s->result_type == HEAL_DIRECT && heal_cast->base_pct_heal > 0 ) ||
-         ( s->result_type == HEAL_OVER_TIME && heal_cast->tick_pct_heal > 0 ) )
+    if ( ( s->result_type == result_amount_type::HEAL_DIRECT && heal_cast->base_pct_heal > 0 ) ||
+         ( s->result_type == result_amount_type::HEAL_OVER_TIME && heal_cast->tick_pct_heal > 0 ) )
       return;
   }
 
@@ -8515,7 +8515,7 @@ void monk_t::init_assessors()
 {
   base_t::init_assessors();
 
-  assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [this]( dmg_e, action_state_t* s ) {
+  assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [this]( result_amount_type, action_state_t* s ) {
     accumulate_gale_burst_damage( s );
     return assessor::CONTINUE;
   } );
@@ -9263,7 +9263,7 @@ void monk_t::combat_begin()
 
 // monk_t::assess_damage ====================================================
 
-void monk_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )
+void monk_t::assess_damage( school_e school, result_amount_type dtype, action_state_t* s )
 {
   buff.fortifying_brew->up();
   if ( specialization() == MONK_BREWMASTER )
@@ -9302,7 +9302,7 @@ void monk_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )
 
 // monk_t::target_mitigation ====================================================
 
-void monk_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
+void monk_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
 {
   // Gift of the Ox Trigger Calculations ===========================================================
 
@@ -9385,7 +9385,7 @@ void monk_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
 
 // monk_t::assess_damage_imminent_pre_absorb ==============================
 
-void monk_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dtype, action_state_t* s )
+void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_type dtype, action_state_t* s )
 {
   base_t::assess_damage_imminent_pre_absorb( school, dtype, s );
 
@@ -9434,7 +9434,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dtype, ac
 
 // monk_t::assess_heal ===================================================
 
-void monk_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
+void monk_t::assess_heal( school_e school, result_amount_type dmg_type, action_state_t* s )
 {
   player_t::assess_heal( school, dmg_type, s );
 

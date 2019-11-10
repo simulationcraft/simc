@@ -579,10 +579,10 @@ public:
   }
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
-  // void assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s ) override;
-  // void assess_damage_imminent( school_e, dmg_e, action_state_t* s ) override;
-  void assess_damage( school_e, dmg_e, action_state_t* ) override;
-  void target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  // void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* s ) override;
+  // void assess_damage_imminent( school_e, result_amount_type, action_state_t* s ) override;
+  void assess_damage( school_e, result_amount_type, action_state_t* ) override;
+  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
 
@@ -6822,7 +6822,7 @@ stat_e warrior_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-void warrior_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
+void warrior_t::assess_damage( school_e school, result_amount_type type, action_state_t* s )
 {
   player_t::assess_damage( school, type, s );
 
@@ -6857,7 +6857,7 @@ void warrior_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
 
 // warrior_t::target_mitigation ============================================
 
-void warrior_t::target_mitigation( school_e school, dmg_e dtype, action_state_t* s )
+void warrior_t::target_mitigation( school_e school, result_amount_type dtype, action_state_t* s )
 {
   player_t::target_mitigation( school, dtype, s );
 

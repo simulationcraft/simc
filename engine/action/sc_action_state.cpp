@@ -49,7 +49,7 @@ void action_t::release_state( action_state_t* s )
 void action_state_t::initialize()
 {
   result       = RESULT_NONE;
-  result_type  = RESULT_TYPE_NONE;
+  result_type  = result_amount_type::NONE;
   block_result = BLOCK_RESULT_UNBLOCKED;
   result_raw = result_total = result_mitigated = result_absorbed =
       result_amount = blocked_amount = self_absorb_amount = 0;
@@ -116,7 +116,7 @@ action_state_t::action_state_t( action_t* a, player_t* t )
     chain_target( 0 ),
     original_x( 0 ),
     original_y( 0 ),
-    result_type( RESULT_TYPE_NONE ),
+    result_type( result_amount_type::NONE ),
     result( RESULT_NONE ),
     block_result( BLOCK_RESULT_UNKNOWN ),
     result_raw( 0 ),

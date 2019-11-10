@@ -61,7 +61,7 @@ void dot_t::extend_duration( timespan_t extra_seconds,
   assert( state );
   current_action->snapshot_internal(
       state, state_flags,
-      current_action->type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+      current_action->type == ACTION_HEAL ? result_amount_type::HEAL_OVER_TIME : result_amount_type::DMG_OVER_TIME );
 
   if ( max_total_time > timespan_t::zero() )
   {
@@ -108,7 +108,7 @@ void dot_t::reduce_duration( timespan_t remove_seconds, uint32_t state_flags )
   assert( state );
   current_action->snapshot_internal(
       state, state_flags,
-      current_action->type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+      current_action->type == ACTION_HEAL ? result_amount_type::HEAL_OVER_TIME : result_amount_type::DMG_OVER_TIME );
 
   if ( remove_seconds >= remains() )
   {
@@ -162,7 +162,7 @@ void dot_t::refresh_duration( uint32_t state_flags )
 
   current_action->snapshot_internal(
       state, state_flags,
-      current_action->type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+      current_action->type == ACTION_HEAL ? result_amount_type::HEAL_OVER_TIME : result_amount_type::DMG_OVER_TIME );
 
   refresh( current_action->composite_dot_duration( state ) );
 
@@ -618,7 +618,7 @@ expr_t* dot_t::create_expression( dot_t* dot, action_t* action, action_t* source
           state = d->current_action->get_state();
         }
 
-        d->current_action->snapshot_state( state, DMG_OVER_TIME );
+        d->current_action->snapshot_state( state, result_amount_type::DMG_OVER_TIME );
         timespan_t new_duration =
             d->current_action->composite_dot_duration( state );
 
@@ -645,11 +645,11 @@ expr_t* dot_t::create_expression( dot_t* dot, action_t* action, action_t* source
   }
   else if ( name_str == "tick_dmg" )
   {
-    struct tick_dmg_expr_t : public dot_expr_t
+    struct tick_result_amount_typexpr_t : public dot_expr_t
     {
       action_state_t* s;
 
-      tick_dmg_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
+      tick_result_amount_typexpr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
         : dot_expr_t( "dot_tick_dmg", d, a, sa, dynamic ), s( nullptr )
       {
       }
@@ -669,20 +669,20 @@ expr_t* dot_t::create_expression( dot_t* dot, action_t* action, action_t* source
         return 0.0;
       }
 
-      virtual ~tick_dmg_expr_t()
+      virtual ~tick_result_amount_typexpr_t()
       {
         delete s;
       }
     };
-    return new tick_dmg_expr_t( dot, action, source_action, dynamic );
+    return new tick_result_amount_typexpr_t( dot, action, source_action, dynamic );
   }
   else if ( name_str == "crit_dmg" )
   {
-    struct crit_dmg_expr_t : public dot_expr_t
+    struct crit_result_amount_typexpr_t : public dot_expr_t
     {
       action_state_t* s;
 
-      crit_dmg_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
+      crit_result_amount_typexpr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
         : dot_expr_t( "dot_crit_dmg", d, a, sa, dynamic ), s( nullptr )
       {
       }
@@ -702,7 +702,7 @@ expr_t* dot_t::create_expression( dot_t* dot, action_t* action, action_t* source
         return 0.0;
       }
     };
-    return new crit_dmg_expr_t( dot, action, source_action, dynamic );
+    return new crit_result_amount_typexpr_t( dot, action, source_action, dynamic );
   }
   else if ( name_str == "tick_time_remains" )
   {

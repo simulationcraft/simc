@@ -241,7 +241,7 @@ void pet_t::create_buffs()
 }
 
 void pet_t::assess_damage( school_e       school,
-                           dmg_e          type,
+                           result_amount_type          type,
                            action_state_t* s )
 {
   if ( ! is_add() && ( ! s -> action || s -> action -> aoe ) )

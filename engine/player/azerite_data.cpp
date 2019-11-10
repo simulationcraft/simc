@@ -3569,7 +3569,7 @@ void arcane_heart( special_effect_t& effect )
   // * Passive absorb effects & 'absorb-like' effects such has the Guardian Druid talent Earthwarden
   //    do not seem to count. Unknown if active shields do.
   // * Leech does not seem to count.
-  effect.player->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [buff, omni]( dmg_e, action_state_t* state ) {
+  effect.player->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [buff, omni]( result_amount_type, action_state_t* state ) {
     double amount = state->result_amount;
 
     if ( amount <= 0 || omni->check() )  // doesn't count damage while omnipotence is up
@@ -4081,9 +4081,9 @@ struct focused_azerite_beam_tick_t : public spell_t
     base_dd_min = base_dd_max = td;
   }
 
-  dmg_e amount_type( const action_state_t* /* s */, bool ) const override
+  result_amount_type amount_type( const action_state_t* /* s */, bool ) const override
   {
-    return DMG_OVER_TIME;
+    return result_amount_type::DMG_OVER_TIME;
   }
 };
 
@@ -4442,9 +4442,9 @@ struct purifying_blast_t : public azerite_essence_major_t
       base_dd_min = base_dd_max = ta;
     }
 
-    dmg_e amount_type( const action_state_t* /* s */, bool ) const override
+    result_amount_type amount_type( const action_state_t* /* s */, bool ) const override
     {
-      return DMG_OVER_TIME;
+      return result_amount_type::DMG_OVER_TIME;
     }
   };
 

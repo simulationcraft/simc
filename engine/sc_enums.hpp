@@ -365,9 +365,9 @@ enum pet_e
   PET_MAX
 };
 
-enum dmg_e
+enum class result_amount_type
 {
-  RESULT_TYPE_NONE = -1,
+  NONE = -1,
   DMG_DIRECT       = 0,
   DMG_OVER_TIME    = 1,
   HEAL_DIRECT,

@@ -884,10 +884,10 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual double    resource_regen_per_second( resource_e ) const override;
   virtual double    resource_gain( resource_e, double, gain_t*, action_t* a = nullptr ) override;
-  virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
-  virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
-  virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* ) override;
-  virtual void      assess_heal( school_e, dmg_e, action_state_t* ) override;
+  virtual void      target_mitigation( school_e, result_amount_type, action_state_t* ) override;
+  virtual void      assess_damage( school_e, result_amount_type, action_state_t* ) override;
+  virtual void      assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* ) override;
+  virtual void      assess_heal( school_e, result_amount_type, action_state_t* ) override;
   virtual void      recalculate_resource_max( resource_e ) override;
   virtual void      create_options() override;
   virtual std::string      create_profile( save_e type ) override;
@@ -1705,7 +1705,7 @@ public:
       // Trigger Moonfire
       action_state_t* gg_s = p() -> active.galactic_guardian -> get_state();
       gg_s -> target = s -> target;
-      p() -> active.galactic_guardian -> snapshot_state( gg_s, DMG_DIRECT );
+      p() -> active.galactic_guardian -> snapshot_state( gg_s, result_amount_type::DMG_DIRECT );
       p() -> active.galactic_guardian -> schedule_execute( gg_s );
 
       // Buff is triggered in galactic_guardian_damage_t::execute()
@@ -1738,7 +1738,7 @@ public:
         {
           ss_s->target = ab::target;
         }
-        p()->active.streaking_stars->snapshot_state( ss_s, DMG_DIRECT );
+        p()->active.streaking_stars->snapshot_state( ss_s, result_amount_type::DMG_DIRECT );
         p()->active.streaking_stars->schedule_execute( ss_s );
         p()->proc.streaking_star->occur();
       }
@@ -1812,7 +1812,7 @@ public:
             {
               action_state_t* state = rip->get_state();
 
-              pw->snapshot_state(state, RESULT_TYPE_NONE);
+              pw->snapshot_state(state, result_amount_type::NONE);
               state->target = pw_target;
 
               pmult = pw->composite_persistent_multiplier(state);
@@ -1858,7 +1858,7 @@ public:
             {
               action_state_t* state = tc->get_state();
 
-              tc->snapshot_state(state, RESULT_TYPE_NONE);
+              tc->snapshot_state(state, result_amount_type::NONE);
               state->target = tc_target;
 
               pmult = tc->composite_persistent_multiplier(state);
@@ -1894,7 +1894,7 @@ public:
 
         if (pmult_adjusted)
         {
-          action->snapshot_state(state, RESULT_TYPE_NONE);
+          action->snapshot_state(state, result_amount_type::NONE);
           state->target = action->target;
 
           pmult = action->composite_persistent_multiplier(state);
@@ -3425,9 +3425,9 @@ struct feral_frenzy_driver_t : public cat_attack_t
     }
 
     //Small hack to properly distinguish instant ticks from the driver, from actual periodic ticks from the bleed
-    dmg_e report_amount_type(const action_state_t* state) const override
+    result_amount_type report_amount_type(const action_state_t* state) const override
     {
-      if (is_direct_damage) return DMG_DIRECT;
+      if (is_direct_damage) return result_amount_type::DMG_DIRECT;
 
       return state->result_type;
     }
@@ -3909,7 +3909,7 @@ struct rake_t : public cat_attack_t
 
     action_state_t* b_state = bleed -> get_state();
     b_state -> target = s -> target;
-    bleed -> snapshot_state( b_state, DMG_OVER_TIME );
+    bleed -> snapshot_state( b_state, result_amount_type::DMG_OVER_TIME );
     // Copy persistent multipliers from the direct attack.
     b_state -> persistent_multiplier = s -> persistent_multiplier;
     bleed -> schedule_execute( b_state );
@@ -4133,7 +4133,7 @@ struct primal_wrath_t : public cat_attack_t
 
     auto b_state = rip->get_state();
     b_state->target      = s->target;
-    rip->snapshot_state( b_state, DMG_OVER_TIME );
+    rip->snapshot_state( b_state, result_amount_type::DMG_OVER_TIME );
     // Copy persistent multipliers from the direct attack.
     b_state->persistent_multiplier = s->persistent_multiplier;
 
@@ -6606,7 +6606,7 @@ struct solar_wrath_t : public druid_spell_t
     return new solar_wrath_state_t( this, target );
   }
 
-  void snapshot_state( action_state_t* state, dmg_e type ) override
+  void snapshot_state( action_state_t* state, result_amount_type type ) override
   {
     druid_spell_t::snapshot_state( state, type );
 
@@ -7334,7 +7334,7 @@ double brambles_handler( const action_state_t* s )
       amount_absorbed;
     action_state_t* ref_s = p -> active.brambles -> get_state();
     ref_s -> target = s -> action -> player;
-    p -> active.brambles -> snapshot_state( ref_s, DMG_DIRECT );
+    p -> active.brambles -> snapshot_state( ref_s, result_amount_type::DMG_DIRECT );
     p -> active.brambles -> schedule_execute( ref_s );
   }
 
@@ -9758,7 +9758,7 @@ expr_t* druid_t::create_expression( const std::string& name_str )
         state->target = action->target = action->player->target;
         timespan_t ttd         = action->target->time_to_percent( 0 );
         double pmult = 0;
-        //action->snapshot_state(state, DMG_OVER_TIME);
+        //action->snapshot_state(state, result_amount_type::DMG_OVER_TIME);
 
         if ( dot->is_ticking() )
         {
@@ -9769,7 +9769,7 @@ expr_t* druid_t::create_expression( const std::string& name_str )
 
         if (pmult_adjusted)
         {
-          action->snapshot_state(state, RESULT_TYPE_NONE);
+          action->snapshot_state(state, result_amount_type::NONE);
           state->target = action->target;
 
           pmult = action->composite_persistent_multiplier(state);
@@ -9794,7 +9794,7 @@ expr_t* druid_t::create_expression( const std::string& name_str )
       state->chain_target   = 0;
       state->result         = RESULT_HIT;
 
-      action->snapshot_state( state, DMG_DIRECT );
+      action->snapshot_state( state, result_amount_type::DMG_DIRECT );
       state->target = action->target;
     //  (p()->resources.current[RESOURCE_ENERGY] - cat_attack_t::cost()));
 
@@ -9806,7 +9806,7 @@ expr_t* druid_t::create_expression( const std::string& name_str )
 
       double amount;
       state->result_amount = action->calculate_direct_amount(state);
-      state->target->target_mitigation( action->get_school(), DMG_DIRECT, state );
+      state->target->target_mitigation( action->get_school(), result_amount_type::DMG_DIRECT, state );
       amount = state->result_amount;
       amount *= 1.0 + clamp( state->crit_chance + state->target_crit_chance, 0.0, 1.0 ) *
                           action->composite_player_critical_multiplier( state );
@@ -10040,7 +10040,7 @@ void druid_t::init_absorb_priority()
 
 // druid_t::target_mitigation ===============================================
 
-void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s )
+void druid_t::target_mitigation( school_e school, result_amount_type type, action_state_t* s )
 {
   s -> result_amount *= 1.0 + buff.barkskin -> value();
 
@@ -10061,10 +10061,10 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
 // druid_t::assess_damage ===================================================
 
 void druid_t::assess_damage( school_e school,
-                             dmg_e    dtype,
+                             result_amount_type    dtype,
                              action_state_t* s )
 {
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && dtype == DMG_DIRECT &&
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && dtype == result_amount_type::DMG_DIRECT &&
     s -> result == RESULT_HIT )
   {
     buff.ironfur -> up();
@@ -10077,7 +10077,7 @@ void druid_t::assess_damage( school_e school,
 
 // Trigger effects based on being hit or taking damage.
 
-void druid_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, action_state_t* s )
+void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_type dmg, action_state_t* s )
 {
   player_t::assess_damage_imminent_pre_absorb( school, dmg, s);
 
@@ -10112,7 +10112,7 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, act
 // druid_t::assess_heal =====================================================
 
 void druid_t::assess_heal( school_e school,
-                           dmg_e    dmg_type,
+                           result_amount_type    dmg_type,
                            action_state_t* s )
 {
   if ( sets -> has_set_bonus( DRUID_GUARDIAN, T18, B2 ) && buff.ironfur -> check() )
@@ -10269,7 +10269,7 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
     trigger_state -> result_total * cache.mastery_value();
   action_state_t* s = active.natures_guardian -> get_state();
   s -> target = this;
-  active.natures_guardian -> snapshot_state( s, HEAL_DIRECT );
+  active.natures_guardian -> snapshot_state( s, result_amount_type::HEAL_DIRECT );
   active.natures_guardian -> schedule_execute( s );
 }
 

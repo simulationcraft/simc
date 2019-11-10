@@ -437,7 +437,7 @@ public:
   }
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
-  void assess_damage( school_e school, dmg_e dtype, action_state_t* s ) override;
+  void assess_damage( school_e school, result_amount_type dtype, action_state_t* s ) override;
   double composite_melee_haste() const override;
   double composite_melee_speed() const override;
   double composite_spell_haste() const override;
@@ -447,7 +447,7 @@ public:
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
-  void target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void pre_analyze_hook() override;
   void init_action_list() override;
   void combat_begin() override;
@@ -1256,7 +1256,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
-  void assess_damage( dmg_e type, action_state_t* s ) override
+  void assess_damage( result_amount_type type, action_state_t* s ) override
   {
     base_t::assess_damage( type, s );
 

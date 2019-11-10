@@ -919,7 +919,7 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
       action_state_t* s = action->get_state();
       s->target         = target;
       s->result         = RESULT_HIT;
-      action->snapshot_state( s, action->type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+      action->snapshot_state( s, action->type == ACTION_HEAL ? result_amount_type::HEAL_OVER_TIME : result_amount_type::DMG_OVER_TIME );
       s->result_amount = additional_residual_amount;
       action->schedule_travel( s );
       if ( !action->dual )
@@ -2788,13 +2788,13 @@ void player_t::init_actions()
 void player_t::init_assessors()
 {
   // Target related mitigation
-  assessor_out_damage.add( assessor::TARGET_MITIGATION, []( dmg_e dmg_type, action_state_t* state ) {
+  assessor_out_damage.add( assessor::TARGET_MITIGATION, []( result_amount_type dmg_type, action_state_t* state ) {
     state->target->assess_damage( state->action->get_school(), dmg_type, state );
     return assessor::CONTINUE;
   } );
 
   // Target damage
-  assessor_out_damage.add( assessor::TARGET_DAMAGE, []( dmg_e, action_state_t* state ) {
+  assessor_out_damage.add( assessor::TARGET_DAMAGE, []( result_amount_type, action_state_t* state ) {
     state->target->do_damage( state );
     return assessor::CONTINUE;
   } );
@@ -2804,7 +2804,7 @@ void player_t::init_assessors()
   // completely from there, and only conditionally include it if logging/debugging is enabled.
   if ( sim->log || sim->debug || sim->debug_seed.size() > 0 )
   {
-    assessor_out_damage.add( assessor::LOG, [this]( dmg_e type, action_state_t* state ) {
+    assessor_out_damage.add( assessor::LOG, [this]( result_amount_type type, action_state_t* state ) {
       if ( sim->debug )
       {
         state->debug();
@@ -2812,14 +2812,14 @@ void player_t::init_assessors()
 
       if ( sim->log )
       {
-        if ( type == DMG_DIRECT )
+        if ( type == result_amount_type::DMG_DIRECT )
         {
           sim->print_log( "{} {} hits {} for {} {} damage ({})", *this, state->action->name(),
                                *state->target, state->result_amount,
                                util::school_type_string( state->action->get_school() ),
                                util::result_type_string( state->result ) );
         }
-        else  // DMG_OVER_TIME
+        else  // result_amount_type::DMG_OVER_TIME
         {
           dot_t* dot = state->action->get_dot( state->target );
           sim->print_log( "{} {} ticks ({} of {}) on {} for {} {} damage ({})", *this, state->action->name(),
@@ -2835,11 +2835,11 @@ void player_t::init_assessors()
   // Leech, if the player has leeching enabled (disabled by default)
   if ( spells.leech )
   {
-    assessor_out_damage.add( assessor::LEECH, [this]( dmg_e, action_state_t* state ) {
+    assessor_out_damage.add( assessor::LEECH, [this]( result_amount_type, action_state_t* state ) {
       // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
       // break in the future if we ever decide to not separate heal and damage assessing.
       double leech_pct = 0;
-      if ( ( state->result_type == DMG_DIRECT || state->result_type == DMG_OVER_TIME ) && state->result_amount > 0 &&
+      if ( ( state->result_type == result_amount_type::DMG_DIRECT || state->result_type == result_amount_type::DMG_OVER_TIME ) && state->result_amount > 0 &&
            ( leech_pct = state->action->composite_leech( state ) ) > 0 )
       {
         double leech_amount       = leech_pct * state->result_amount;
@@ -2851,7 +2851,7 @@ void player_t::init_assessors()
   }
 
   // Generic actor callbacks
-  assessor_out_damage.add( assessor::CALLBACKS, [this]( dmg_e, action_state_t* state ) {
+  assessor_out_damage.add( assessor::CALLBACKS, [this]( result_amount_type, action_state_t* state ) {
     if ( !state->action->callbacks )
     {
       return assessor::CONTINUE;
@@ -6424,7 +6424,7 @@ bool try_guardian_spirit( player_t& p, double actual_amount )
     // stats_t* stat = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit"
     // ) : 0; double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> data().effectN( 2
     // ).percent(); resource_gain( RESOURCE_HEALTH, s -> result_amount ); if ( stat ) stat -> add_result( gs_amount,
-    // gs_amount, HEAL_DIRECT, RESULT_HIT );
+    // gs_amount, result_amount_type::HEAL_DIRECT, RESULT_HIT );
     p.buffs.guardian_spirit->expire();
     return true;
   }
@@ -6436,7 +6436,7 @@ bool try_guardian_spirit( player_t& p, double actual_amount )
 
 }
 
-void player_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
+void player_t::assess_damage( school_e school, result_amount_type type, action_state_t* s )
 {
   using namespace assess_dmg_helper_functions;
 
@@ -6509,15 +6509,15 @@ void player_t::do_damage( action_state_t* incoming_state )
   }
 }
 
-void player_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* )
+void player_t::assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* )
 {
 }
 
-void player_t::assess_damage_imminent( school_e, dmg_e, action_state_t* )
+void player_t::assess_damage_imminent( school_e, result_amount_type, action_state_t* )
 {
 }
 
-void player_t::target_mitigation( school_e school, dmg_e dmg_type, action_state_t* s )
+void player_t::target_mitigation( school_e school, result_amount_type dmg_type, action_state_t* s )
 {
   if ( s->result_amount == 0 )
     return;
@@ -6545,7 +6545,7 @@ void player_t::target_mitigation( school_e school, dmg_e dmg_type, action_state_
     s->result_amount = 0;
   }
 
-  if ( school == SCHOOL_PHYSICAL && dmg_type == DMG_DIRECT )
+  if ( school == SCHOOL_PHYSICAL && dmg_type == result_amount_type::DMG_DIRECT )
   {
     if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
       sim->out_debug.printf( "Damage to %s before armor mitigation is %f", s->target->name(), s->result_amount );
@@ -6591,7 +6591,7 @@ void player_t::target_mitigation( school_e school, dmg_e dmg_type, action_state_
   }
 }
 
-void player_t::assess_heal( school_e, dmg_e, action_state_t* s )
+void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
 {
   // Increases to healing taken should modify result_total in order to correctly calculate overhealing
   // and other effects based on raw healing.

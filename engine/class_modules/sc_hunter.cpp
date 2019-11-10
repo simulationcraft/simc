@@ -863,7 +863,7 @@ public:
 
         double evaluate() override
         {
-          action.snapshot_state( state.get(), RESULT_TYPE_NONE );
+          action.snapshot_state( state.get(), result_amount_type::NONE );
           state -> target = action.target;
           return action.cast_regen( state.get() );
         }
@@ -2941,7 +2941,7 @@ struct rapid_fire_t: public hunter_spell_t
     return new rapid_fire_state_t( this, target );
   }
 
-  void snapshot_state( action_state_t* s, dmg_e type ) override
+  void snapshot_state( action_state_t* s, result_amount_type type ) override
   {
     hunter_spell_t::snapshot_state( s, type );
     debug_cast<rapid_fire_state_t*>( s ) -> double_tapped = p() -> buffs.double_tap -> check();
@@ -3489,7 +3489,7 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
     return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
-  void assess_damage( dmg_e type, action_state_t* s ) override
+  void assess_damage( result_amount_type type, action_state_t* s ) override
   {
     hunter_ranged_attack_t::assess_damage( type, s );
 
@@ -5221,7 +5221,7 @@ void hunter_t::init_assessors()
 
   if ( talents.terms_of_engagement -> ok() )
   {
-    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [this]( dmg_e, action_state_t* s ) {
+    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [this]( result_amount_type, action_state_t* s ) {
       if ( s -> result_amount > 0 )
         get_target_data( s -> target ) -> damaged = true;
       return assessor::CONTINUE;

@@ -582,7 +582,7 @@ public:
   double temporary_movement_modifier() const override;
 
   // overridden player_t combat functions
-  void assess_damage( school_e, dmg_e, action_state_t* s ) override;
+  void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
   void combat_begin() override;
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
   void interrupt() override;
@@ -592,7 +592,7 @@ public:
   void merge( player_t& other ) override;
   void datacollection_begin() override;
   void datacollection_end() override;
-  void target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
 
   // custom demon_hunter_t functions
   void set_out_of_range( timespan_t duration );
@@ -2156,7 +2156,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
        to nearby targets when Burning Alive is talented. */
     fiery_brand_state_t* fb_state = debug_cast<fiery_brand_state_t*>( dot->get_state() );
     fb_state->target = s->target;
-    dot->snapshot_state( fb_state, DMG_DIRECT );
+    dot->snapshot_state( fb_state, result_amount_type::DMG_DIRECT );
     fb_state->primary = true;
     dot->schedule_execute( fb_state );
   }
@@ -2369,9 +2369,9 @@ struct immolation_aura_t : public demon_hunter_spell_t
       }
     }
 
-    dmg_e amount_type( const action_state_t*, bool ) const override
+    result_amount_type amount_type( const action_state_t*, bool ) const override
     {
-      return initial ? DMG_DIRECT : DMG_OVER_TIME; // TOCHECK
+      return initial ? result_amount_type::DMG_DIRECT : result_amount_type::DMG_OVER_TIME; // TOCHECK
     }
   };
 
@@ -2770,7 +2770,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
 
     damage->set_target( target );
     action_state_t* damage_state = damage->get_state();
-    damage->snapshot_state( damage_state, DMG_DIRECT );
+    damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
     damage_state->da_multiplier *= fragments_consumed;
     damage->schedule_execute( damage_state );
     damage->execute_event->reschedule( timespan_t::from_seconds( 1.0 ) );
@@ -5669,7 +5669,7 @@ double demon_hunter_t::calculate_expected_max_health() const
 
 // demon_hunter_t::assess_damage ============================================
 
-void demon_hunter_t::assess_damage( school_e school, dmg_e dt,
+void demon_hunter_t::assess_damage( school_e school, result_amount_type dt,
                                     action_state_t* s )
 {
   player_t::assess_damage( school, dt, s );
@@ -5765,7 +5765,7 @@ void demon_hunter_t::recalculate_resource_max( resource_e r )
 
 // demon_hunter_t::target_mitigation ========================================
 
-void demon_hunter_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
+void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
 {
   base_t::target_mitigation( school, dt, s );
 

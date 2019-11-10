@@ -441,8 +441,8 @@ public:
   virtual double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
 
   // combat outcome functions
-  virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
-  virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  virtual void      assess_damage( school_e, result_amount_type, action_state_t* ) override;
+  virtual void      target_mitigation( school_e, result_amount_type, action_state_t* ) override;
 
   virtual void      invalidate_cache( cache_e ) override;
   virtual void      create_options() override;

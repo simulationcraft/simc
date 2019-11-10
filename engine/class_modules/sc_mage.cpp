@@ -1411,7 +1411,7 @@ public:
   virtual double frozen_multiplier( const action_state_t* ) const
   { return 1.0; }
 
-  void snapshot_internal( action_state_t* s, unsigned flags, dmg_e rt ) override
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
   {
     spell_t::snapshot_internal( s, flags, rt );
 
@@ -1798,7 +1798,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     return fire_mage_spell_t::execute_time();
   }
 
-  void snapshot_state( action_state_t* s, dmg_e rt ) override
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     fire_mage_spell_t::snapshot_state( s, rt );
     debug_cast<hot_streak_state_t*>( s )->hot_streak = last_hot_streak;
@@ -1897,7 +1897,7 @@ struct frost_mage_spell_t : public mage_spell_t
     return p()->cache.mastery() * p()->spec.icicles->effectN( 3 ).sp_coeff();
   }
 
-  virtual void snapshot_impact_state( action_state_t* s, dmg_e rt )
+  virtual void snapshot_impact_state( action_state_t* s, result_amount_type rt )
   { snapshot_internal( s, impact_flags, rt ); }
 
   double calculate_direct_amount( action_state_t* s ) const override
@@ -2407,9 +2407,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     cc_tick_time_reduction = cc_data.effectN( 2 ).percent() + p->talents.amplification->effectN( 1 ).percent();
   }
 
-  dmg_e amount_type( const action_state_t*, bool ) const override
+  result_amount_type amount_type( const action_state_t*, bool ) const override
   {
-    return DMG_DIRECT;
+    return result_amount_type::DMG_DIRECT;
   }
 
   action_state_t* new_state() override
@@ -2417,7 +2417,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   // We need to snapshot any tick time reduction effect here so that it correctly affects the whole
   // channel.
-  void snapshot_state( action_state_t* s, dmg_e rt ) override
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     arcane_mage_spell_t::snapshot_state( s, rt );
 
@@ -2573,9 +2573,9 @@ struct blizzard_shard_t : public frost_mage_spell_t
     background = ground_aoe = chills = true;
   }
 
-  dmg_e amount_type( const action_state_t*, bool ) const override
+  result_amount_type amount_type( const action_state_t*, bool ) const override
   {
-    return DMG_OVER_TIME;
+    return result_amount_type::DMG_OVER_TIME;
   }
 
   void execute() override
@@ -2990,9 +2990,9 @@ struct flame_patch_t : public fire_mage_spell_t
     ground_aoe = background = true;
   }
 
-  dmg_e amount_type( const action_state_t*, bool ) const override
+  result_amount_type amount_type( const action_state_t*, bool ) const override
   {
-    return DMG_OVER_TIME;
+    return result_amount_type::DMG_OVER_TIME;
   }
 };
 
@@ -3564,7 +3564,7 @@ struct ice_lance_t : public frost_mage_spell_t
     }
   }
 
-  void snapshot_state( action_state_t* s, dmg_e rt ) override
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     debug_cast<ice_lance_state_t*>( s )->fingers_of_frost = p()->buffs.fingers_of_frost->check() != 0;
     frost_mage_spell_t::snapshot_state( s, rt );
@@ -3874,9 +3874,9 @@ struct meteor_burn_t : public fire_mage_spell_t
     radius = p->find_spell( 153564 )->effectN( 1 ).radius_max();
   }
 
-  dmg_e amount_type( const action_state_t*, bool ) const override
+  result_amount_type amount_type( const action_state_t*, bool ) const override
   {
-    return DMG_OVER_TIME;
+    return result_amount_type::DMG_OVER_TIME;
   }
 };
 
@@ -3985,9 +3985,9 @@ struct nether_tempest_aoe_t : public arcane_mage_spell_t
     background = true;
   }
 
-  dmg_e amount_type( const action_state_t*, bool ) const override
+  result_amount_type amount_type( const action_state_t*, bool ) const override
   {
-    return DMG_OVER_TIME;
+    return result_amount_type::DMG_OVER_TIME;
   }
 
   timespan_t travel_time() const override
@@ -5535,7 +5535,7 @@ void mage_t::init_assessors()
 
   if ( talents.touch_of_the_magi->ok() )
   {
-    auto assessor_fn = [ this ] ( dmg_e, action_state_t* s )
+    auto assessor_fn = [ this ] ( result_amount_type, action_state_t* s )
     {
       if ( auto td = target_data[ s->target ] )
       {

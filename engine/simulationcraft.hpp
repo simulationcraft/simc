@@ -3495,7 +3495,7 @@ namespace assessor
   };
 
   // State assessor callback type
-  using state_assessor_t = std::function<command(dmg_e, action_state_t*)>;
+  using state_assessor_t = std::function<command(result_amount_type, action_state_t*)>;
 
   // A simple entry that defines a state assessor
   struct state_assessor_entry_t
@@ -3513,7 +3513,7 @@ namespace assessor
   // late in the actor initialization order, and can take advantage of conditional registration
   // based on talents, items, special effects, specialization and other actor-related state.
   //
-  // An assessor function takes two parameters, dmg_e indicating the "damage type", and
+  // An assessor function takes two parameters, result_amount_type indicating the "damage type", and
   // action_state_t pointer to the state being assessed. The state object can be manipulated by the
   // function, but it may not be freed. The function must return one of priority enum values,
   // typically priority::CONTINUE to continue the pipeline.
@@ -3533,7 +3533,7 @@ namespace assessor
       { return a.priority < b.priority; } );
     }
 
-    void execute( dmg_e type, action_state_t* state )
+    void execute( result_amount_type type, action_state_t* state )
     {
       for ( const auto& a: assessors )
       {
@@ -4531,12 +4531,12 @@ public:
   virtual void cost_reduction_gain( school_e school, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a = nullptr );
 
-  virtual void assess_damage( school_e, dmg_e, action_state_t* );
-  virtual void target_mitigation( school_e, dmg_e, action_state_t* );
-  virtual void assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* );
-  virtual void assess_damage_imminent( school_e, dmg_e, action_state_t* );
+  virtual void assess_damage( school_e, result_amount_type, action_state_t* );
+  virtual void target_mitigation( school_e, result_amount_type, action_state_t* );
+  virtual void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* );
+  virtual void assess_damage_imminent( school_e, result_amount_type, action_state_t* );
   virtual void do_damage( action_state_t* );
-  virtual void assess_heal( school_e, dmg_e, action_state_t* );
+  virtual void assess_heal( school_e, result_amount_type, action_state_t* );
 
   virtual bool taunt( player_t* /* source */ ) { return false; }
 
@@ -4829,7 +4829,7 @@ public:
   void init_target() override;
   void init_finished() override;
   void reset() override;
-  void assess_damage( school_e, dmg_e, action_state_t* s ) override;
+  void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
 
   virtual void summon( timespan_t duration = timespan_t::zero() );
   virtual void dismiss( bool expired = false );
@@ -5021,7 +5021,7 @@ public:
   void add_child( stats_t* child );
   void consume_resource( resource_e resource_type, double resource_amount );
   full_result_e translate_result( result_e result, block_result_e block_result );
-  void add_result( double act_amount, double tot_amount, dmg_e dmg_type, result_e result, block_result_e block_result, player_t* target );
+  void add_result( double act_amount, double tot_amount, result_amount_type dmg_type, result_e result, block_result_e block_result, player_t* target );
   void add_execute( timespan_t time, player_t* target );
   void add_tick   ( timespan_t time, player_t* target );
   void add_refresh( player_t* target );
@@ -5048,7 +5048,7 @@ struct action_state_t : private noncopyable
   double original_x;
   double original_y;
   // Execution results
-  dmg_e           result_type;
+  result_amount_type           result_type;
   result_e        result;
   block_result_e  block_result;
   double          result_raw;             // Base result value, without crit/glance etc.
@@ -5762,10 +5762,10 @@ public:
 
   virtual double last_tick_factor( const dot_t* d, const timespan_t& time_to_tick, const timespan_t& duration ) const;
 
-  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const
-  { return RESULT_TYPE_NONE; }
+  virtual result_amount_type amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const
+  { return result_amount_type::NONE; }
 
-  virtual dmg_e report_amount_type( const action_state_t* state ) const
+  virtual result_amount_type report_amount_type( const action_state_t* state ) const
   { return state -> result_type; }
 
   /// Use when damage schools change during runtime.
@@ -6049,7 +6049,7 @@ public:
 
   virtual void last_tick(dot_t* d);
 
-  virtual void assess_damage(dmg_e, action_state_t* assess_state);
+  virtual void assess_damage(result_amount_type, action_state_t* assess_state);
 
   virtual void record_data(action_state_t* data);
 
@@ -6109,12 +6109,12 @@ public:
 
   virtual void trigger_dot( action_state_t* );
 
-  virtual void snapshot_internal( action_state_t*, unsigned flags, dmg_e );
+  virtual void snapshot_internal( action_state_t*, unsigned flags, result_amount_type );
 
-  virtual void snapshot_state( action_state_t* s, dmg_e rt )
+  virtual void snapshot_state( action_state_t* s, result_amount_type rt )
   { snapshot_internal( s, snapshot_flags, rt ); }
 
-  virtual void update_state( action_state_t* s, dmg_e rt )
+  virtual void update_state( action_state_t* s, result_amount_type rt )
   { snapshot_internal( s, update_flags, rt ); }
 
   event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = nullptr );
@@ -6197,8 +6197,8 @@ struct attack_t : public action_t
   virtual result_e calculate_result( action_state_t* ) const override;
   virtual void   init() override;
 
-  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
-  virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const override;
+  virtual result_amount_type amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
+  virtual result_amount_type report_amount_type( const action_state_t* /* state */ ) const override;
 
   virtual double  miss_chance( double hit, player_t* t ) const override;
   virtual double  dodge_chance( double /* expertise */, player_t* t ) const override;
@@ -6361,8 +6361,8 @@ public:
   spell_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Harmful Spell Overrides
-  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
-  virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const override;
+  virtual result_amount_type amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
+  virtual result_amount_type report_amount_type( const action_state_t* /* state */ ) const override;
   virtual double miss_chance( double hit, player_t* t ) const override;
   virtual void   init() override;
   virtual double composite_hit() const override
@@ -6395,9 +6395,9 @@ public:
   heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   virtual double composite_pct_heal( const action_state_t* ) const;
-  virtual void assess_damage( dmg_e, action_state_t* ) override;
-  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
-  virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const override;
+  virtual void assess_damage( result_amount_type, action_state_t* ) override;
+  virtual result_amount_type amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
+  virtual result_amount_type report_amount_type( const action_state_t* /* state */ ) const override;
   virtual size_t available_targets( std::vector< player_t* >& ) const override;
   void activate() override;
   virtual double calculate_direct_amount( action_state_t* state ) const override;
@@ -6466,9 +6466,9 @@ struct absorb_t : public spell_base_t
     return buff;
   }
 
-  virtual void assess_damage( dmg_e, action_state_t* ) override;
-  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override
-  { return ABSORB; }
+  virtual void assess_damage( result_amount_type, action_state_t* ) override;
+  virtual result_amount_type amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override
+  { return result_amount_type::ABSORB; }
   virtual void impact( action_state_t* ) override;
   virtual void activate() override;
   virtual size_t available_targets( std::vector< player_t* >& ) const override;
@@ -6536,11 +6536,11 @@ struct strict_sequence_t : public action_t
 // damage/heal)
 inline proc_types action_state_t::proc_type() const
 {
-  if ( result_type == DMG_DIRECT || result_type == HEAL_DIRECT )
+  if ( result_type == result_amount_type::DMG_DIRECT || result_type == result_amount_type::HEAL_DIRECT )
     return action -> proc_type();
-  else if ( result_type == DMG_OVER_TIME )
+  else if ( result_type == result_amount_type::DMG_OVER_TIME )
     return PROC1_PERIODIC;
-  else if ( result_type == HEAL_OVER_TIME )
+  else if ( result_type == result_amount_type::HEAL_OVER_TIME )
     return PROC1_PERIODIC_HEAL;
 
   return PROC1_INVALID;
@@ -8284,7 +8284,7 @@ public:
 
     if ( amount > 0 )
     {
-      absorb_stats -> add_result( amount, 0, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
+      absorb_stats -> add_result( amount, 0, result_amount_type::ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
       absorb_stats -> add_execute( timespan_t::zero(), player );
       absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
 

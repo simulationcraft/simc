@@ -759,7 +759,7 @@ expr_t* priest_t::create_expression( const std::string& name_str )
   return player_t::create_expression( name_str );
 }
 
-void priest_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )
+void priest_t::assess_damage( school_e school, result_amount_type dtype, action_state_t* s )
 {
   player_t::assess_damage( school, dtype, s );
 }
@@ -1377,7 +1377,7 @@ void priest_t::pre_analyze_hook()
   }
 }
 
-void priest_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
+void priest_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
 {
   base_t::target_mitigation( school, dt, s );
 

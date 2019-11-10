@@ -2431,7 +2431,7 @@ double absorb_buff_t::consume( double amount )
   amount = std::min( amount, current_value );
 
   if ( absorb_source )
-    absorb_source->add_result( amount, 0, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
+    absorb_source->add_result( amount, 0, result_amount_type::ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
 
   if ( absorb_gain )
     absorb_gain->add( RESOURCE_HEALTH, amount, 0 );

@@ -341,8 +341,8 @@ struct mark_of_the_distant_army_t : public proc_spell_t
   }
 
   // Hack to force defender to mitigate the damage with armor.
-  void assess_damage( dmg_e, action_state_t* s ) override
-  { proc_spell_t::assess_damage( DMG_DIRECT, s ); }
+  void assess_damage( result_amount_type, action_state_t* s ) override
+  { proc_spell_t::assess_damage( result_amount_type::DMG_DIRECT, s ); }
 };
 
 void enchants::mark_of_the_distant_army( special_effect_t& effect )
@@ -3815,15 +3815,15 @@ void item::tirathons_betrayal( special_effect_t& effect )
   }
 
   // Special effect to drive the AOE damage callback
-  special_effect_t* dmg_effect = new special_effect_t( effect.item );
-  dmg_effect -> source = SPECIAL_EFFECT_SOURCE_ITEM;
-  dmg_effect -> name_str = "darkstrikes_driver";
-  dmg_effect -> spell_id = effect.driver() -> id();
-  dmg_effect -> cooldown_ = timespan_t::zero();
-  effect.player -> special_effects.push_back( dmg_effect );
+  special_effect_t* result_amount_typeffect = new special_effect_t( effect.item );
+  result_amount_typeffect -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+  result_amount_typeffect -> name_str = "darkstrikes_driver";
+  result_amount_typeffect -> spell_id = effect.driver() -> id();
+  result_amount_typeffect -> cooldown_ = timespan_t::zero();
+  effect.player -> special_effects.push_back( result_amount_typeffect );
 
   // And create, initialized and deactivate the callback
-  dbc_proc_callback_t* callback = new darkstrikes_driver_t( *dmg_effect );
+  dbc_proc_callback_t* callback = new darkstrikes_driver_t( *result_amount_typeffect );
   callback -> initialize();
   callback -> deactivate();
 
@@ -5327,7 +5327,7 @@ struct wriggling_sinew_constructor_t : public item_targetdata_initializer_t
       // Schedule an execute, but snapshot state right now so we can apply the stack multiplier.
       action_state_t* s   = action -> get_state();
       s -> target         = player;
-      action -> snapshot_state( s, DMG_DIRECT );
+      action -> snapshot_state( s, result_amount_type::DMG_DIRECT );
       s -> target_da_multiplier *= stacks;
       action -> schedule_execute( s );
     }
@@ -5781,7 +5781,7 @@ struct cinidaria_the_symbiote_t : public class_scoped_callback_t
     // also resolved, and that state -> result_amount will hold the "final actual damage" of the
     // ability.
     effect.player -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1,
-      [ spell_blacklist, threshold, multiplier, spell ]( dmg_e, action_state_t* state )
+      [ spell_blacklist, threshold, multiplier, spell ](result_amount_type, action_state_t* state )
       {
         const auto source_action = state -> action;
         const auto target = state -> target;

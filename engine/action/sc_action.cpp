@@ -1732,7 +1732,7 @@ void action_t::last_tick( dot_t* d )
   }
 }
 
-void action_t::assess_damage( dmg_e type, action_state_t* s )
+void action_t::assess_damage( result_amount_type type, action_state_t* s )
 {
   // Execute outbound damage assessor pipeline on the state object
   player->assessor_out_damage.execute( type, s );
@@ -2687,11 +2687,11 @@ expr_t* action_t::create_expression( const std::string& name_str )
   class amount_expr_t : public action_state_expr_t
   {
   public:
-    dmg_e amount_type;
+    result_amount_type amount_type;
     result_e result_type;
     bool average_crit;
 
-    amount_expr_t( const std::string& name, dmg_e at, action_t& a, result_e rt = RESULT_NONE )
+    amount_expr_t( const std::string& name, result_amount_type at, action_t& a, result_e rt = RESULT_NONE )
       : action_state_expr_t( name, a ), amount_type( at ), result_type( rt ), average_crit( false )
     {
       if ( result_type == RESULT_NONE )
@@ -2710,7 +2710,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       action.snapshot_state( state, amount_type );
       state->target = action.target;
       double a;
-      if ( amount_type == DMG_OVER_TIME || amount_type == HEAL_OVER_TIME )
+      if ( amount_type == result_amount_type::DMG_OVER_TIME || amount_type == result_amount_type::HEAL_OVER_TIME )
         a = action.calculate_tick_amount( state, 1.0 /* Assumes full tick & one stack */ );
       else
       {
@@ -2719,7 +2719,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         {
           state->result_amount = action.calculate_crit_damage_bonus( state );
         }
-        if ( amount_type == DMG_DIRECT )
+        if ( amount_type == result_amount_type::DMG_DIRECT )
           state->target->target_mitigation( action.get_school(), amount_type, state );
         a = state->result_amount;
       }
@@ -2785,7 +2785,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
         if ( action.channeled )
         {
-          action.snapshot_state( state, RESULT_TYPE_NONE );
+          action.snapshot_state( state, result_amount_type::NONE );
           state->target = action.target;
           return action.composite_dot_duration( state ).total_seconds() + action.execute_time().total_seconds();
         }
@@ -2824,7 +2824,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       }
       virtual double evaluate() override
       {
-        action.snapshot_state( state, DMG_OVER_TIME );
+        action.snapshot_state( state, result_amount_type::DMG_OVER_TIME );
         return action.tick_time( state ).total_seconds();
       }
     };
@@ -2898,7 +2898,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
       virtual double evaluate() override
       {
-        action.snapshot_state( state, RESULT_TYPE_NONE );
+        action.snapshot_state( state, result_amount_type::NONE );
         state->target = action.target;
 
         return action.composite_ta_multiplier( state );
@@ -2919,7 +2919,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
       virtual double evaluate() override
       {
-        action.snapshot_state( state, RESULT_TYPE_NONE );
+        action.snapshot_state( state, result_amount_type::NONE );
         state->target = action.target;
 
         return action.composite_persistent_multiplier( state );
@@ -2935,25 +2935,25 @@ expr_t* action_t::create_expression( const std::string& name_str )
   }
 
   if ( name_str == "damage" )
-    return new amount_expr_t( name_str, DMG_DIRECT, *this );
+    return new amount_expr_t( name_str, result_amount_type::DMG_DIRECT, *this );
   else if ( name_str == "hit_damage" )
-    return new amount_expr_t( name_str, DMG_DIRECT, *this, RESULT_HIT );
+    return new amount_expr_t( name_str, result_amount_type::DMG_DIRECT, *this, RESULT_HIT );
   else if ( name_str == "crit_damage" )
-    return new amount_expr_t( name_str, DMG_DIRECT, *this, RESULT_CRIT );
+    return new amount_expr_t( name_str, result_amount_type::DMG_DIRECT, *this, RESULT_CRIT );
   else if ( name_str == "hit_heal" )
-    return new amount_expr_t( name_str, HEAL_DIRECT, *this, RESULT_HIT );
+    return new amount_expr_t( name_str, result_amount_type::HEAL_DIRECT, *this, RESULT_HIT );
   else if ( name_str == "crit_heal" )
-    return new amount_expr_t( name_str, HEAL_DIRECT, *this, RESULT_CRIT );
+    return new amount_expr_t( name_str, result_amount_type::HEAL_DIRECT, *this, RESULT_CRIT );
   else if ( name_str == "tick_damage" )
-    return new amount_expr_t( name_str, DMG_OVER_TIME, *this );
+    return new amount_expr_t( name_str, result_amount_type::DMG_OVER_TIME, *this );
   else if ( name_str == "hit_tick_damage" )
-    return new amount_expr_t( name_str, DMG_OVER_TIME, *this, RESULT_HIT );
+    return new amount_expr_t( name_str, result_amount_type::DMG_OVER_TIME, *this, RESULT_HIT );
   else if ( name_str == "crit_tick_damage" )
-    return new amount_expr_t( name_str, DMG_OVER_TIME, *this, RESULT_CRIT );
+    return new amount_expr_t( name_str, result_amount_type::DMG_OVER_TIME, *this, RESULT_CRIT );
   else if ( name_str == "tick_heal" )
-    return new amount_expr_t( name_str, HEAL_OVER_TIME, *this, RESULT_HIT );
+    return new amount_expr_t( name_str, result_amount_type::HEAL_OVER_TIME, *this, RESULT_HIT );
   else if ( name_str == "crit_tick_heal" )
-    return new amount_expr_t( name_str, HEAL_OVER_TIME, *this, RESULT_CRIT );
+    return new amount_expr_t( name_str, result_amount_type::HEAL_OVER_TIME, *this, RESULT_CRIT );
 
   if ( name_str == "crit_pct_current" )
   {
@@ -2968,7 +2968,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       virtual double evaluate() override
       {
         state->target = action.target;
-        action.snapshot_state( state, RESULT_TYPE_NONE );
+        action.snapshot_state( state, result_amount_type::NONE );
 
         return std::min( 100.0, state->composite_crit_chance() * 100.0 );
       }
@@ -3607,7 +3607,7 @@ timespan_t action_t::tick_time( const action_state_t* state ) const
   return t;
 }
 
-void action_t::snapshot_internal( action_state_t* state, unsigned flags, dmg_e rt )
+void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_amount_type rt )
 {
   assert( state );
 
@@ -3715,7 +3715,7 @@ void action_t::impact( action_state_t* s )
   // Note, Critical damage bonus for direct amounts is computed on impact, instead of cast finish.
   s->result_amount = calculate_crit_damage_bonus( s );
 
-  assess_damage( ( type == ACTION_HEAL || type == ACTION_ABSORB ) ? HEAL_DIRECT : DMG_DIRECT, s );
+  assess_damage( ( type == ACTION_HEAL || type == ACTION_ABSORB ) ? result_amount_type::HEAL_DIRECT : result_amount_type::DMG_DIRECT, s );
 
   if ( result_is_hit( s->result ) )
   {

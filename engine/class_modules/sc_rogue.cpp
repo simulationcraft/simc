@@ -873,7 +873,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.ruthless_precision = data().affected_by( p()->buffs.ruthless_precision->data().effectN( 1 ) );
   }
 
-  void snapshot_state( action_state_t* state, dmg_e rt ) override
+  void snapshot_state( action_state_t* state, result_amount_type rt ) override
   {
     double max_cp = std::min( player -> resources.current[ RESOURCE_COMBO_POINT ], p() -> consume_cp_max() );
     cast_state( state ) -> cp = static_cast<int>( max_cp );
@@ -1151,7 +1151,7 @@ struct rogue_attack_t : public melee_attack_t
     return tt;
   }
 
-  void snapshot_internal( action_state_t* state, unsigned flags, dmg_e rt ) override
+  void snapshot_internal( action_state_t* state, unsigned flags, result_amount_type rt ) override
   {
     // Exsanguinated bleeds snapshot hasted tick time when the ticks are rescheduled.
     // This will make snapshot_internal on haste updates discard the new value.
@@ -2602,7 +2602,7 @@ struct garrote_t : public rogue_attack_t
   action_state_t* new_state() override
   { return new garrote_state_t( this, target ); }
 
-  void snapshot_state( action_state_t* state, dmg_e type ) override
+  void snapshot_state( action_state_t* state, result_amount_type type ) override
   {
     rogue_attack_t::snapshot_state( state, type );
 

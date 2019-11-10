@@ -1748,9 +1748,9 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
 
   if ( filter == "amount" )
   {
-    if ( auto dmg_event = dynamic_cast<damage_event_t*>( e ) )
+    if ( auto result_amount_typevent = dynamic_cast<damage_event_t*>( e ) )
     {
-      return dmg_event->amount;
+      return result_amount_typevent->amount;
     }
     else
     {

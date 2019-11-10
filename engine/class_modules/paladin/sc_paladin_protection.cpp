@@ -626,7 +626,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 // paladin_t::target_mitigation ===============================================
 
 void paladin_t::target_mitigation( school_e school,
-                                   dmg_e    dt,
+                                   result_amount_type    dt,
                                    action_state_t* s )
 {
   player_t::target_mitigation( school, dt, s );

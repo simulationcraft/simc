@@ -48,7 +48,7 @@ const char* resource_type_string      ( resource_e );
 const char* result_type_string        ( result_e type );
 const char* block_result_type_string  ( block_result_e type );
 const char* full_result_type_string   ( full_result_e fulltype );
-const char* amount_type_string        ( dmg_e type );
+const char* amount_type_string        ( result_amount_type type );
 const char* school_type_string        ( school_e school );
 const char* armor_type_string         ( int type );
 const char* armor_type_string         ( item_subclass_armor type );
@@ -87,7 +87,7 @@ resource_e  translate_power_type      ( power_e );
 stat_e      power_type_to_stat        ( power_e );
 
 attribute_e parse_attribute_type ( const std::string& name );
-dmg_e parse_dmg_type             ( const std::string& name );
+result_amount_type parse_dmg_type ( const std::string& name );
 meta_gem_e parse_meta_gem_type   ( const std::string& name );
 player_e parse_player_type       ( const std::string& name );
 pet_e parse_pet_type             ( const std::string& name );

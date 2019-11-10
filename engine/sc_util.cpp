@@ -786,16 +786,16 @@ const char* util::full_result_type_string( full_result_e fulltype )
 
 // amount_type_string =======================================================
 
-const char* util::amount_type_string( dmg_e type )
+const char* util::amount_type_string( result_amount_type type )
 {
   switch ( type )
   {
-    case RESULT_TYPE_NONE: return "none";
-    case DMG_DIRECT:       return "direct_damage";
-    case DMG_OVER_TIME:    return "tick_damage";
-    case HEAL_DIRECT:      return "direct_heal";
-    case HEAL_OVER_TIME:   return "tick_heal";
-    case ABSORB:           return "absorb";
+    case result_amount_type::NONE: return "none";
+    case result_amount_type::DMG_DIRECT:       return "direct_damage";
+    case result_amount_type::DMG_OVER_TIME:    return "tick_damage";
+    case result_amount_type::HEAL_DIRECT:      return "direct_heal";
+    case result_amount_type::HEAL_OVER_TIME:   return "tick_heal";
+    case result_amount_type::ABSORB:           return "absorb";
     default:               return "unknown";
   }
 }

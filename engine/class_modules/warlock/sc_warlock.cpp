@@ -680,7 +680,7 @@ void warlock_t::init_assessors()
 {
   player_t::init_assessors();
 
-  auto assessor_fn = [ this ] ( dmg_e, action_state_t* s )
+  auto assessor_fn = [ this ] ( result_amount_type, action_state_t* s )
   {
     if ( get_target_data(s->target)->dots_seed_of_corruption->is_ticking() )
     {

@@ -146,30 +146,30 @@ double spell_t::miss_chance( double hit, player_t* t ) const
   return miss;
 }
 
-dmg_e spell_t::amount_type( const action_state_t* /* state */, bool periodic ) const
+result_amount_type spell_t::amount_type( const action_state_t* /* state */, bool periodic ) const
 {
   if ( periodic )
-    return DMG_OVER_TIME;
+    return result_amount_type::DMG_OVER_TIME;
   else
-    return DMG_DIRECT;
+    return result_amount_type::DMG_DIRECT;
 }
 
-dmg_e spell_t::report_amount_type( const action_state_t* state ) const
+result_amount_type spell_t::report_amount_type( const action_state_t* state ) const
 {
-  dmg_e result_type = state -> result_type;
+  result_amount_type result_type = state -> result_type;
 
-  if ( result_type == DMG_DIRECT )
+  if ( result_type == result_amount_type::DMG_DIRECT )
   {
     // Direct ticks are direct damage, that are recorded as ticks
     if ( direct_tick )
-      result_type = DMG_OVER_TIME;
+      result_type = result_amount_type::DMG_OVER_TIME;
     // With direct damage, we need to check if this action is a tick action of
     // someone. If so, then the damage should be recorded as periodic.
     else
     {
       if ( !stats -> action_list.empty() && stats -> action_list.front() -> tick_action == this )
       {
-        result_type = DMG_OVER_TIME;
+        result_type = result_amount_type::DMG_OVER_TIME;
       }
     }
   }
@@ -237,30 +237,30 @@ void heal_t::parse_effect_data( const spelleffect_data_t& e )
   }
 }
 
-dmg_e heal_t::amount_type( const action_state_t* /* state */, bool periodic ) const
+result_amount_type heal_t::amount_type( const action_state_t* /* state */, bool periodic ) const
 {
   if ( periodic )
-    return HEAL_OVER_TIME;
+    return result_amount_type::HEAL_OVER_TIME;
   else
-    return HEAL_DIRECT;
+    return result_amount_type::HEAL_DIRECT;
 }
 
-dmg_e heal_t::report_amount_type( const action_state_t* state ) const
+result_amount_type heal_t::report_amount_type( const action_state_t* state ) const
 {
-  dmg_e result_type = state -> result_type;
+  result_amount_type result_type = state -> result_type;
 
   // With direct healing, we need to check if this action is a tick action of
   // someone. If so, then the healing should be recorded as periodic.
-  if ( result_type == HEAL_DIRECT )
+  if ( result_type == result_amount_type::HEAL_DIRECT )
   {
     // Direct ticks are direct damage, that are recorded as ticks
     if ( direct_tick )
-      result_type = HEAL_OVER_TIME;
+      result_type = result_amount_type::HEAL_OVER_TIME;
     else
     {
       if ( stats -> action_list.front() -> tick_action == this )
       {
-        result_type = HEAL_OVER_TIME;
+        result_type = result_amount_type::HEAL_OVER_TIME;
       }
     }
   }
@@ -333,17 +333,17 @@ double heal_t::calculate_tick_amount( action_state_t* state, double dmg_multipli
   return base_t::calculate_tick_amount( state, dmg_multiplier );
 }
 
-void heal_t::assess_damage( dmg_e heal_type, action_state_t* s )
+void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
 {
   s -> target -> assess_heal( get_school() , heal_type, s );
 
-  if ( heal_type == HEAL_DIRECT )
+  if ( heal_type == result_amount_type::HEAL_DIRECT )
   {
     sim->print_log("{} {} heals {} for {} ({}) ({})",
         player -> name(), name(), s -> target -> name(), s -> result_total, s -> result_amount,
         util::result_type_string( s -> result ) );
   }
-  else // HEAL_OVER_TIME
+  else // result_amount_type::HEAL_OVER_TIME
   {
     if ( sim -> log )
     {
@@ -368,7 +368,7 @@ void heal_t::assess_damage( dmg_e heal_type, action_state_t* s )
 
   if ( player -> record_healing() )
   {
-    stats -> add_result( s -> result_amount, s -> result_total, ( direct_tick ? HEAL_OVER_TIME : heal_type ),
+    stats -> add_result( s -> result_amount, s -> result_total, ( direct_tick ? result_amount_type::HEAL_OVER_TIME : heal_type ),
         s -> result, s -> block_result, s -> target );
 
     // Record external healing too
@@ -559,10 +559,10 @@ void absorb_t::activate()
 void absorb_t::impact( action_state_t* s )
 {
   s -> result_amount = calculate_crit_damage_bonus( s );
-  assess_damage( type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, s );
+  assess_damage( type == ACTION_HEAL ? result_amount_type::HEAL_DIRECT : result_amount_type::DMG_DIRECT, s );
 }
 
-void absorb_t::assess_damage( dmg_e  /*heal_type*/, action_state_t* s )
+void absorb_t::assess_damage( result_amount_type  /*heal_type*/, action_state_t* s )
 {
   if ( target_specific[ s -> target ] == nullptr )
   {
@@ -578,7 +578,7 @@ void absorb_t::assess_damage( dmg_e  /*heal_type*/, action_state_t* s )
         util::result_type_string( s -> result ) );
   }
 
-  stats -> add_result( 0.0, s -> result_total, ABSORB, s -> result, s -> block_result, s -> target );
+  stats -> add_result( 0.0, s -> result_total, result_amount_type::ABSORB, s -> result, s -> block_result, s -> target );
 }
 
 int absorb_t::num_targets() const
