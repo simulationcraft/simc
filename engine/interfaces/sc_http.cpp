@@ -50,10 +50,10 @@ struct url_cache_entry_t
   // Not necessarily UTF-8; may contain zero bytes. Should really be vector<uint8_t>.
   std::string result;
   std::string last_modified_header;
-  cache::era_t modified, validated;
+  cache::cache_era modified, validated;
 
   url_cache_entry_t() :
-    modified( cache::era_t::INVALID_ERA ), validated( cache::era_t::INVALID_ERA )
+    modified( cache::cache_era::INVALID ), validated( cache::cache_era::INVALID )
   {}
 };
 
@@ -424,7 +424,7 @@ void http::cache_load( const std::string& file_name )
       url_cache_entry_t& c = url_db[ url ];
       c.result = content;
       c.last_modified_header = last_modified;
-      c.modified = c.validated = cache::era_t::IN_THE_BEGINNING;
+      c.modified = c.validated = cache::cache_era::IN_THE_BEGINNING;
     }
   }
   catch ( ... )
@@ -448,7 +448,7 @@ void http::cache_save( const std::string& file_name )
 
     for ( url_db_t::const_iterator p = url_db.begin(), e = url_db.end(); p != e; ++p )
     {
-      if ( p -> second.validated == cache::era_t::INVALID_ERA )
+      if ( p -> second.validated == cache::cache_era::INVALID )
         continue;
 
       cache_put( file, p -> first );
@@ -490,7 +490,7 @@ int http::get( std::string&       result,
     {
       http_log << cache::era() << ": get(\"" << url << "\") [";
 
-      if ( entry.validated != cache::era_t::INVALID_ERA )
+      if ( entry.validated != cache::cache_era::INVALID )
       {
         if ( entry.validated >= cache::era() )
           http_log << "hot";
@@ -503,14 +503,14 @@ int http::get( std::string&       result,
       else
         http_log << "miss";
       if ( caching != cache::ONLY &&
-           ( entry.validated == cache::era_t::INVALID_ERA ||
+           ( entry.validated == cache::cache_era::INVALID ||
              ( caching == cache::CURRENT && entry.validated < cache::era() ) ) )
         http_log << " download";
       http_log << "]\n";
     }
   }
 
-  if ( entry.validated < cache::era() && ( caching == cache::CURRENT || entry.validated == cache::era_t::INVALID_ERA ) )
+  if ( entry.validated < cache::era() && ( caching == cache::CURRENT || entry.validated == cache::cache_era::INVALID ) )
   {
     if ( caching == cache::ONLY )
       return 404;
