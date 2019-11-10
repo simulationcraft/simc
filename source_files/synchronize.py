@@ -18,14 +18,13 @@ def parse_qt(filename):
     out = []
     with open(filename, "r") as f:
         for line in f:
-            match = re.search(r"(\s*)(SOURCES|HEADERS|PRECOMPILED_HEADER)(\s*\+?\=\s*)([\w\/-]*?)([\w]*)(\.\w*)", line)
+            match = re.search(r"(\s*)(SOURCES|HEADERS|PRECOMPILED_HEADER)(\s*\+?\=\s*)([\.\w\/-]*)(\.\w*)", line)
             if match:
                 file_type = match.group(2)
-                fullpath = match.group(4) + match.group(5) + match.group(6)
+                fullpath = match.group(4) + match.group(5)
                 dirname = match.group(4)
-                corename = match.group(5)
-                ending = match.group(6)
-                result = (file_type, fullpath, dirname, corename, ending)
+                ending = match.group(5)
+                result = (file_type, fullpath, dirname, ending)
                 out.append(result)
     return out
 
@@ -162,7 +161,7 @@ def create_vs_str(entries, gui=False):
 
 def create_cmake_str(entries):
     engine_source = list(entries)
-    engine_cpp_files = [fullpath for file_type, fullpath, dirname, corename, ending in engine_source if file_type == "SOURCES" or file_type == "HEADERS"]
+    engine_cpp_files = [fullpath for file_type, fullpath, dirname, ending in engine_source if file_type == "SOURCES" or file_type == "HEADERS"]
     engine_cpp_files = [pathlib.Path(f) for f in engine_cpp_files]
     engine_cpp_files = ["/".join(p.parts[1:]) for p in engine_cpp_files]
     output = "set(source_files\n{}\n)".format("\n".join(engine_cpp_files))

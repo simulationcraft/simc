@@ -2,6 +2,7 @@
 # To change the list of source files for the simc engine lib, update this file and run synchronize.py
 
 
+ HEADERS += engine/buff/sc_buff.hpp
  HEADERS += engine/util/xml.hpp
  HEADERS += engine/util/timeline.hpp
  HEADERS += engine/util/stopwatch.hpp
@@ -9,10 +10,14 @@
  HEADERS += engine/util/sample_data.hpp
  HEADERS += engine/util/rng.hpp
  HEADERS += engine/util/io.hpp
- HEADERS += engine/buff/sc_buff.hpp
  HEADERS += engine/util/generic.hpp
  HEADERS += engine/util/concurrency.hpp
  HEADERS += engine/util/cache.hpp
+ HEADERS += engine/util/utf8-cpp/utf8/unchecked.h
+ HEADERS += engine/util/utf8-cpp/utf8/core.h
+ HEADERS += engine/util/utf8-cpp/utf8/checked.h
+ HEADERS += engine/util/utf8-cpp/utf8.h
+ HEADERS += engine/util/utf8.h/utf8.h
  HEADERS += engine/sim/x6_pantheon.hpp
  HEADERS += engine/sim/sc_profileset.hpp
  HEADERS += engine/sim/sc_option.hpp
@@ -33,10 +38,6 @@
  HEADERS += engine/config.hpp
  HEADERS += engine/dbc/data_enums.hh
  HEADERS += engine/dbc/data_definitions.hh
- HEADERS += engine/util/utf8-cpp/utf8/unchecked.h
- HEADERS += engine/util/utf8-cpp/utf8/core.h
- HEADERS += engine/util/utf8-cpp/utf8/checked.h
- HEADERS += engine/util/utf8-cpp/utf8.h
  HEADERS += engine/class_modules/paladin/sc_paladin.hpp
  HEADERS += engine/class_modules/warlock/sc_warlock.hpp
  HEADERS += engine/class_modules/priest/sc_priest.hpp

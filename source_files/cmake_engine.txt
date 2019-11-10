@@ -1,4 +1,5 @@
 set(source_files
+buff/sc_buff.hpp
 util/xml.hpp
 util/timeline.hpp
 util/stopwatch.hpp
@@ -6,10 +7,14 @@ util/sc_resourcepaths.hpp
 util/sample_data.hpp
 util/rng.hpp
 util/io.hpp
-buff/sc_buff.hpp
 util/generic.hpp
 util/concurrency.hpp
 util/cache.hpp
+util/utf8-cpp/utf8/unchecked.h
+util/utf8-cpp/utf8/core.h
+util/utf8-cpp/utf8/checked.h
+util/utf8-cpp/utf8.h
+util/utf8.h/utf8.h
 sim/x6_pantheon.hpp
 sim/sc_profileset.hpp
 sim/sc_option.hpp
@@ -29,10 +34,6 @@ sc_enums.hpp
 config.hpp
 dbc/data_enums.hh
 dbc/data_definitions.hh
-util/utf8-cpp/utf8/unchecked.h
-util/utf8-cpp/utf8/core.h
-util/utf8-cpp/utf8/checked.h
-util/utf8-cpp/utf8.h
 class_modules/paladin/sc_paladin.hpp
 class_modules/warlock/sc_warlock.hpp
 class_modules/priest/sc_priest.hpp

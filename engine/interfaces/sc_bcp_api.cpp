@@ -13,7 +13,7 @@
 #include <curl/curl.h>
 #endif
 
-#include "util/utf8-2.h"
+#include "util/utf8.h/utf8.h"
 
 // ==========================================================================
 // Blizzard Community Platform API
