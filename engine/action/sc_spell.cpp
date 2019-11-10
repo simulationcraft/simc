@@ -17,7 +17,7 @@ spell_base_t::spell_base_t( action_e at,
   procs_courageous_primal_diamond( true )
 {
   min_gcd = p -> min_gcd;
-  gcd_type = gcd_type_e::SPELL_SPEED; // Hasten spell GCDs by default
+  gcd_type = gcd_type::SPELL_SPEED; // Hasten spell GCDs by default
   //min_gcd = timespan_t::from_seconds( 1.0 );
   hasted_ticks = true;
   special = true;

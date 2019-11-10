@@ -376,7 +376,7 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
     ability_lag_stddev(),
     rp_gain(),
     min_gcd(),
-    gcd_type(gcd_type_e::NONE ),
+    gcd_type(gcd_type::NONE ),
     trigger_gcd( p->base_gcd ),
     range( -1.0 ),
     radius( -1.0 ),
@@ -999,15 +999,15 @@ timespan_t action_t::gcd() const
   {
     // Note, HASTE_ANY should never be used for actions. It does work as a crutch though, since
     // action_t::composite_haste will return the correct haste value.
-    case gcd_type_e::HASTE:
-    case gcd_type_e::SPELL_HASTE:
-    case gcd_type_e::ATTACK_HASTE:
+    case gcd_type::HASTE:
+    case gcd_type::SPELL_HASTE:
+    case gcd_type::ATTACK_HASTE:
       gcd_ *= composite_haste();
       break;
-    case gcd_type_e::SPELL_SPEED:
+    case gcd_type::SPELL_SPEED:
       gcd_ *= player->cache.spell_speed();
       break;
-    case gcd_type_e::ATTACK_SPEED:
+    case gcd_type::ATTACK_SPEED:
       gcd_ *= player->cache.attack_speed();
       break;
   }
@@ -1804,16 +1804,16 @@ void action_t::start_gcd()
   player->gcd_type = gcd_type;
   switch ( gcd_type )
   {
-    case gcd_type_e::SPELL_HASTE:
+    case gcd_type::SPELL_HASTE:
       player->gcd_current_haste_value = player->cache.spell_haste();
       break;
-    case gcd_type_e::ATTACK_HASTE:
+    case gcd_type::ATTACK_HASTE:
       player->gcd_current_haste_value = player->cache.attack_haste();
       break;
-    case gcd_type_e::SPELL_SPEED:
+    case gcd_type::SPELL_SPEED:
       player->gcd_current_haste_value = player->cache.spell_speed();
       break;
-    case gcd_type_e::ATTACK_SPEED:
+    case gcd_type::ATTACK_SPEED:
       player->gcd_current_haste_value = player->cache.attack_speed();
       break;
     default:

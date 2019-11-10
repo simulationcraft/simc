@@ -9,20 +9,20 @@
 
 namespace cache {
 
-enum class era_t {
-  INVALID_ERA = -1,
+enum class cache_era {
+  INVALID = -1,
   IN_THE_BEGINNING = 0  // A time before any other possible era;
 // used to mark persistent caches at load.
 };
 
-inline std::ostream& operator<<(std::ostream &os, const era_t& x)
+inline std::ostream& operator<<(std::ostream &os, const cache_era& x)
 {
   switch ( x )
   {
-  case era_t::INVALID_ERA:
+  case cache_era::INVALID:
     os << "invalid era";
     break;
-  case era_t::IN_THE_BEGINNING:
+  case cache_era::IN_THE_BEGINNING:
     os << "in the beginning";
     break;
   default:
@@ -41,18 +41,18 @@ enum behavior_e
 class cache_control_t
 {
 private:
-  era_t current_era;
+  cache_era current_era;
   behavior_e player_cache_behavior;
   behavior_e item_cache_behavior;
 
 public:
   cache_control_t() :
-    current_era( era_t::IN_THE_BEGINNING ),
+    current_era( cache_era::IN_THE_BEGINNING ),
     player_cache_behavior( CURRENT ),
     item_cache_behavior( ANY )
   {}
 
-  era_t era() const { return current_era; }
+  cache_era era() const { return current_era; }
   void advance_era() { ++current_era; }
 
   behavior_e cache_players() const { return player_cache_behavior; }
@@ -65,7 +65,7 @@ public:
 };
 
 // Caching system's global notion of the current time.
-inline era_t era()
+inline cache_era era()
 { return cache_control_t::singleton.era(); }
 
 // Time marches on.

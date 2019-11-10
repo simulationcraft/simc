@@ -1295,7 +1295,7 @@ enum action_energize_e
 /**
 * Global cooldown speed-up type
 */
-enum class gcd_type_e
+enum class gcd_type
 {
   NONE,
   // any (all) haste types

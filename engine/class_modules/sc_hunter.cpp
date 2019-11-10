@@ -44,7 +44,7 @@ void parse_affecting_aura( action_t *const action, const spell_data_t *const spe
       switch ( effect.subtype() )
       {
       case A_HASTED_GCD:
-        action -> gcd_type = gcd_type_e::ATTACK_HASTE;
+        action -> gcd_type = gcd_type::ATTACK_HASTE;
         break;
 
       case A_HASTED_COOLDOWN:
@@ -688,7 +688,7 @@ public:
     affected_by()
   {
     ab::special = true;
-    ab::gcd_type = gcd_type_e::NONE;
+    ab::gcd_type = gcd_type::NONE;
     ab::may_crit = true;
     ab::tick_may_crit = true;
 
@@ -745,7 +745,7 @@ public:
     {
       g = ab::trigger_gcd;
       g += p() -> specs.aspect_of_the_wild -> effectN( 3 ).time_value();
-      if ( ab::gcd_type != gcd_type_e::NONE )
+      if ( ab::gcd_type != gcd_type::NONE )
         g *= ab::composite_haste();
     }
 

@@ -762,7 +762,7 @@ namespace warlock {
 
     struct summon_random_demon_t : public demonology_spell_t {
 
-      enum class random_pet_e : int
+      enum class random_pet_type : int
       {
         shivarra = 0,
         darkhounds = 1,
@@ -807,38 +807,38 @@ namespace warlock {
       /**
        * Summon the random pet(s) specified.
        */
-      void summon_random_pet(random_pet_e random_pet)
+      void summon_random_pet(random_pet_type random_pet)
       {
         switch (random_pet) {
-          case random_pet_e::prince_malchezaar:
+          case random_pet_type::prince_malchezaar:
             summon_random_pet_helper(p()->warlock_pet_list.prince_malchezaar);
             break;
-          case random_pet_e::eyes_of_guldan: {
+          case random_pet_type::eyes_of_guldan: {
             // eyes summon in groups of 4. Confirmed by pip 2018-06-23.
             summon_random_pet_helper(p()->warlock_pet_list.eyes_of_guldan, 4);
             break;
-          case random_pet_e::shivarra:
+          case random_pet_type::shivarra:
             summon_random_pet_helper(p()->warlock_pet_list.shivarra);
             break;
-          case random_pet_e::darkhounds:
+          case random_pet_type::darkhounds:
             summon_random_pet_helper(p()->warlock_pet_list.darkhounds);
             break;
-          case random_pet_e::bilescourges:
+          case random_pet_type::bilescourges:
             summon_random_pet_helper(p()->warlock_pet_list.bilescourges);
             break;
-          case random_pet_e::urzuls:
+          case random_pet_type::urzuls:
             summon_random_pet_helper(p()->warlock_pet_list.urzuls);
             break;
-          case random_pet_e::void_terrors:
+          case random_pet_type::void_terrors:
             summon_random_pet_helper(p()->warlock_pet_list.void_terrors);
             break;
-          case random_pet_e::wrathguards:
+          case random_pet_type::wrathguards:
             summon_random_pet_helper(p()->warlock_pet_list.wrathguards);
             break;
-          case random_pet_e::vicious_hellhounds:
+          case random_pet_type::vicious_hellhounds:
             summon_random_pet_helper(p()->warlock_pet_list.vicious_hellhounds);
             break;
-          case random_pet_e::illidari_satyrs:
+          case random_pet_type::illidari_satyrs:
             summon_random_pet_helper(p()->warlock_pet_list.illidari_satyrs);
             break;
           default:
@@ -851,7 +851,7 @@ namespace warlock {
       /**
        * Roll the dice and determine which random pet(s) to summon.
        */
-      random_pet_e roll_random_pet()
+      random_pet_type roll_random_pet()
       {
         int demon_int = rng().range(10);
         int rare_check;
@@ -864,7 +864,7 @@ namespace warlock {
           }
         }
         assert( demon_int >= 0 && demon_int <= 9);
-        return static_cast<random_pet_e>(demon_int);
+        return static_cast<random_pet_type>(demon_int);
       }
     };
 

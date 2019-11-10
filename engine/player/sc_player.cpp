@@ -964,7 +964,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ):
   gcd_ready( timespan_t::zero() ),
   base_gcd( timespan_t::from_seconds( 1.5 ) ),
   min_gcd( timespan_t::from_millis( 750 ) ),
-  gcd_type(gcd_type_e::NONE ),
+  gcd_type(gcd_type::NONE ),
   gcd_current_haste_value( 1.0 ),
   started_waiting( timespan_t::min() ),
   pet_list(),
@@ -4875,7 +4875,7 @@ void player_t::reset()
 
   current_attack_speed    = 1.0;
   gcd_current_haste_value = 1.0;
-  gcd_type          = gcd_type_e::NONE;
+  gcd_type          = gcd_type::NONE;
 
   cast_delay_reaction = timespan_t::zero();
   cast_delay_occurred = timespan_t::zero();
@@ -5841,7 +5841,7 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
 
       adjust_dynamic_cooldowns();
       // adjust_global_cooldown( gcd_type::HASTE_ANY );
-      adjust_auto_attack(gcd_type_e::HASTE );
+      adjust_auto_attack(gcd_type::HASTE );
       break;
     }
 
@@ -6033,7 +6033,7 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
 
       adjust_dynamic_cooldowns();
       // adjust_global_cooldown( gcd_type::HASTE_ANY );
-      adjust_auto_attack(gcd_type_e::HASTE );
+      adjust_auto_attack(gcd_type::HASTE );
       break;
     }
 
@@ -13048,16 +13048,16 @@ slot_e player_t::child_item_slot( const item_t& item ) const
 }
 
 // TODO: This currently does not take minimum GCD into account, should it?
-void player_t::adjust_global_cooldown( gcd_type_e gcd_type )
+void player_t::adjust_global_cooldown( enum gcd_type gcd_type )
 {
   // Don't adjust if the current gcd isnt hasted
-  if ( gcd_type == gcd_type_e::NONE )
+  if ( gcd_type == gcd_type::NONE )
   {
     return;
   }
 
   // Don't adjust if the changed haste type isnt current GCD haste scaling type
-  if ( gcd_type != gcd_type_e::HASTE && gcd_type != this ->gcd_type )
+  if ( gcd_type != gcd_type::HASTE && gcd_type != this ->gcd_type )
   {
     return;
   }
@@ -13071,16 +13071,16 @@ void player_t::adjust_global_cooldown( gcd_type_e gcd_type )
   double new_haste = 0;
   switch ( gcd_type )
   {
-    case gcd_type_e::SPELL_HASTE:
+    case gcd_type::SPELL_HASTE:
       new_haste = cache.spell_haste();
       break;
-    case gcd_type_e::ATTACK_HASTE:
+    case gcd_type::ATTACK_HASTE:
       new_haste = cache.attack_haste();
       break;
-    case gcd_type_e::SPELL_SPEED:
+    case gcd_type::SPELL_SPEED:
       new_haste = cache.spell_speed();
       break;
-    case gcd_type_e::ATTACK_SPEED:
+    case gcd_type::ATTACK_SPEED:
       new_haste = cache.attack_speed();
       break;
     // SPEED_ANY and HASTE_ANY are nonsensical, actions have to have a correct GCD haste type so
@@ -13134,10 +13134,10 @@ void player_t::adjust_global_cooldown( gcd_type_e gcd_type )
   gcd_current_haste_value = new_haste;
 }
 
-void player_t::adjust_auto_attack(gcd_type_e haste_type )
+void player_t::adjust_auto_attack(enum gcd_type type )
 {
   // Don't adjust autoattacks on spell-derived haste
-  if ( haste_type == gcd_type_e::SPELL_SPEED || haste_type == gcd_type_e::SPELL_HASTE )
+  if ( type == gcd_type::SPELL_SPEED || type == gcd_type::SPELL_HASTE )
   {
     return;
   }

@@ -706,7 +706,7 @@ public:
     if ( ab::cooldown->hasted == false )  // Shield block is on a different effect for some reason.
       ab::cooldown->hasted = ab::data().affected_by( p()->spell.headlong_rush->effectN( 3 ) );
     if ( ab::data().affected_by( p()->spell.headlong_rush->effectN( 2 ) ) )
-      ab::gcd_type = gcd_type_e::ATTACK_HASTE;
+      ab::gcd_type = gcd_type::ATTACK_HASTE;
 
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
     affected_by.deadly_calm         = ab::data().affected_by( p()->talents.deadly_calm->effectN( 1 ) );
