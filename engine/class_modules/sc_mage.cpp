@@ -2556,7 +2556,7 @@ struct blink_t : public mage_spell_t
     harmful = false;
     ignore_false_positive = true;
     base_teleport_distance = data().effectN( 1 ).radius_max();
-    movement_directionality = MOVEMENT_OMNI;
+    movement_directionality = movement_direction::OMNI;
 
     background = p->talents.shimmer->ok();
   }
@@ -4298,7 +4298,7 @@ struct shimmer_t : public mage_spell_t
     harmful = false;
     ignore_false_positive = usable_while_casting = true;
     base_teleport_distance = data().effectN( 1 ).radius_max();
-    movement_directionality = MOVEMENT_OMNI;
+    movement_directionality = movement_direction::OMNI;
   }
 
   void execute() override

@@ -1119,7 +1119,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ):
 
   base.skill              = sim->default_skill;
   base.mastery            = 8.0;
-  base.movement_direction = MOVEMENT_NONE;
+  base.movement_direction = movement_direction::NONE;
 
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
@@ -11587,14 +11587,14 @@ timespan_t player_t::time_to_move() const
     return timespan_t::zero();
 }
 
-void player_t::trigger_movement( double distance, movement_direction_e direction )
+void player_t::trigger_movement( double distance, enum movement_direction direction )
 {
   // Distance of 0 disables movement
   if ( distance == 0 )
     do_update_movement( 9999 );
   else
   {
-    if ( direction == MOVEMENT_AWAY )
+    if ( direction == movement_direction::AWAY )
       current.moving_away = distance;
     else
       current.distance_to_move = distance;
@@ -11617,7 +11617,7 @@ void player_t::update_movement( timespan_t duration )
 
   if ( sim->debug )
   {
-    if ( current.movement_direction == MOVEMENT_TOWARDS )
+    if ( current.movement_direction == movement_direction::TOWARDS )
     {
       sim->out_debug.printf(
           "Player %s movement towards target, direction=%s speed=%f distance_covered=%f to_go=%f duration=%f", name(),
@@ -11656,7 +11656,7 @@ void player_t::do_update_movement( double yards )
   {
     // x_position += current.distance_to_move;
     current.distance_to_move   = 0;
-    current.movement_direction = MOVEMENT_NONE;
+    current.movement_direction = movement_direction::NONE;
     if ( buffs.movement )
     {
       buffs.movement->expire();
@@ -11674,7 +11674,7 @@ void player_t::do_update_movement( double yards )
     {
       // x_position += yards;
       current.moving_away        = 0;
-      current.movement_direction = MOVEMENT_TOWARDS;
+      current.movement_direction = movement_direction::TOWARDS;
       current.distance_to_move -= yards;
     }
   }

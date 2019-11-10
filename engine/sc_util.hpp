@@ -69,7 +69,7 @@ const char* weapon_class_string       ( int weapon_class );
 const char* weapon_subclass_string    ( int subclass );
 const char* item_quality_string       ( int quality );
 const char* specialization_string     ( specialization_e spec );
-const char* movement_direction_string( movement_direction_e );
+const char* movement_direction_string( movement_direction );
 const char* class_id_string( player_e type );
 const char* spec_string_no_class( const player_t&p );
 const char* retarget_event_string     ( retarget_source );
@@ -103,7 +103,7 @@ stat_e parse_stat_type           ( const std::string& name );
 scale_metric_e parse_scale_metric( const std::string& name );
 profile_source parse_profile_source( const std::string& name );
 specialization_e parse_specialization_type( const std::string &name );
-movement_direction_e parse_movement_direction( const std::string& name );
+movement_direction parse_movement_direction( const std::string& name );
 item_subclass_armor parse_armor_type( const std::string& name );
 weapon_e parse_weapon_type       ( const std::string& name );
 

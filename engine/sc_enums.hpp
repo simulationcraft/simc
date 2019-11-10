@@ -129,34 +129,32 @@ enum class buff_tick_time_behavior
   CUSTOM
 };
 
-/**
- * @brief Buff refresh mechanism during trigger.
- *
- * Defaults to _PANDEMIC for ticking buffs,
- * _DURATION for normal buffs.
+/*
+ Buff refresh mechanism during trigger.
+
+ Defaults to _PANDEMIC for ticking buffs, DURATION for normal buffs.
  */
 enum class buff_refresh_behavior
 {
-  /// Constructor default, determines "autodetection" in buff_t::buff_t
+  // Constructor default, determines "autodetection" in buff_t::buff_t
   NONE = -1,
 
-  /// Disable refresh by triggering
+  // Disable refresh by triggering
   DISABLED,
 
-  /// Refresh to given duration
+  // Refresh to given duration
   DURATION,
 
-  /// Refresh to given duration plus remaining duration
+  // Refresh to given duration plus remaining duration
   EXTEND,
 
-  /// Refresh to given duration plus min( 0.3 * new_duration, remaining_duration
-  /// )
+  // Refresh to given duration plus min(0.3 * new_duration, remaining_duration)
   PANDEMIC,
 
-  /// Refresh to given duration plus ongoing tick time
+  // Refresh to given duration plus ongoing tick time
   TICK,
 
-  /// Refresh to duration returned by the custom callback
+  // Refresh to duration returned by the custom callback
   CUSTOM,
 };
 
@@ -164,24 +162,18 @@ enum class buff_stack_behavior
 {
   DEFAULT,
 
-  /**
-   * Asynchronous buffs use separate duration for each stack application.
-   * -> Each stack expires on its own.
-   */
+  // Asynchronous buffs use separate duration for each stack application. This means that each stack expires on its own.
   ASYNCHRONOUS,
 };
 
-enum movement_direction_e
+enum class movement_direction : int
 {
-  MOVEMENT_UNKNOWN = -1,
-  MOVEMENT_NONE,
-  MOVEMENT_OMNI,
-  MOVEMENT_TOWARDS,
-  MOVEMENT_AWAY,
-  MOVEMENT_RANDOM,  // Reserved for raid event
-  MOVEMENT_DIRECTION_MAX,
-  MOVEMENT_RANDOM_MIN = MOVEMENT_OMNI,
-  MOVEMENT_RANDOM_MAX = MOVEMENT_RANDOM
+  NONE,
+  OMNI,
+  TOWARDS,
+  AWAY,
+  RANDOM, // Reserved for raid event. Chooses random direction from {OMNI, TOWARDS, AWAY}
+  MAX,
 };
 
 enum talent_format_e

@@ -554,7 +554,7 @@ public:
   // double composite_leech() const override;
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   void teleport( double yards, timespan_t duration ) override;
-  void trigger_movement( double distance, movement_direction_e direction ) override;
+  void trigger_movement( double distance, enum movement_direction direction ) override;
   void interrupt() override;
   void reset() override;
   void moving() override;
@@ -1844,7 +1844,7 @@ struct charge_t : public warrior_attack_t
   {
     parse_options( options_str );
     ignore_false_positive   = true;
-    movement_directionality = MOVEMENT_OMNI;
+    movement_directionality = movement_direction::OMNI;
     energize_resource       = RESOURCE_RAGE;
     energize_type           = ENERGIZE_ON_CAST;
     attack_power_mod.direct = charge_damage->effectN( 2 ).ap_coeff();
@@ -1919,7 +1919,7 @@ struct intercept_t : public warrior_attack_t
   {
     parse_options( options_str );
     ignore_false_positive   = true;
-    movement_directionality = MOVEMENT_OMNI;
+    movement_directionality = movement_direction::OMNI;
     energize_type           = ENERGIZE_ON_CAST;
     energize_resource       = RESOURCE_RAGE;
 
@@ -2403,7 +2403,7 @@ struct heroic_leap_t : public warrior_attack_t
     ignore_false_positive = true;
     aoe                   = -1;
     may_dodge = may_parry = may_miss = may_block = false;
-    movement_directionality                      = MOVEMENT_OMNI;
+    movement_directionality                      = movement_direction::OMNI;
     base_teleport_distance                       = data().max_range();
     range                                        = -1;
     attack_power_mod.direct                      = heroic_leap_damage->effectN( 1 ).ap_coeff();
@@ -2510,7 +2510,7 @@ struct intervene_t : public warrior_attack_t
   {
     parse_options( options_str );
     ignore_false_positive   = true;
-    movement_directionality = MOVEMENT_OMNI;
+    movement_directionality = movement_direction::OMNI;
   }
 
   void execute() override
@@ -2680,12 +2680,12 @@ struct heroic_charge_t : public warrior_attack_t
       p()->buff.heroic_leap_movement->trigger( 1, speed, 1, timespan_t::from_millis( 500 ) );
       leap->execute();
       p()->trigger_movement(
-          10.0, MOVEMENT_AWAY );  // Leap 10 yards out, because it's impossible to precisely land 8 yards away.
+          10.0, movement_direction::AWAY );  // Leap 10 yards out, because it's impossible to precisely land 8 yards away.
       p()->heroic_charge = make_event<heroic_charge_movement_ticker_t>( *sim, *sim, p() );
     }
     else
     {
-      p()->trigger_movement( 9.0, MOVEMENT_AWAY );
+      p()->trigger_movement( 9.0, movement_direction::AWAY );
       p()->heroic_charge = make_event<heroic_charge_movement_ticker_t>( *sim, *sim, p() );
     }
   }
@@ -6319,7 +6319,7 @@ void warrior_t::teleport( double, timespan_t )
   // All movement "teleports" are modeled.
 }
 
-void warrior_t::trigger_movement( double distance, movement_direction_e direction )
+void warrior_t::trigger_movement( double distance, enum movement_direction direction )
 {
   if ( talents.into_the_fray->ok() && into_the_fray_friends >= 0 )
   {

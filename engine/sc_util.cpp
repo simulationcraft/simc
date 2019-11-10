@@ -1129,24 +1129,24 @@ slot_e util::parse_slot_type( const std::string& name )
 
 // movement_direction_string ================================================
 
-const char* util::movement_direction_string( movement_direction_e m )
+const char* util::movement_direction_string( movement_direction m )
 {
   switch ( m )
   {
-    case MOVEMENT_OMNI: return "omni";
-    case MOVEMENT_TOWARDS: return "towards";
-    case MOVEMENT_AWAY: return "away";
-    case MOVEMENT_RANDOM: return "random";
-    case MOVEMENT_NONE: return "none";
+    case movement_direction::OMNI: return "omni";
+    case movement_direction::TOWARDS: return "towards";
+    case movement_direction::AWAY: return "away";
+    case movement_direction::RANDOM: return "random";
+    case movement_direction::NONE: return "none";
     default: return "";
   }
 }
 
 // parse_movement_type ======================================================
 
-movement_direction_e util::parse_movement_direction( const std::string& name )
+movement_direction util::parse_movement_direction( const std::string& name )
 {
-  return parse_enum<movement_direction_e, MOVEMENT_UNKNOWN, MOVEMENT_DIRECTION_MAX, movement_direction_string>( name );
+  return parse_enum<movement_direction, movement_direction::NONE, movement_direction::MAX, movement_direction_string>( name );
 }
 
 // cache_type_string ========================================================

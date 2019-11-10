@@ -3212,7 +3212,7 @@ struct flanking_strike_t: hunter_melee_attack_t
     parse_options( options_str );
 
     base_teleport_distance  = data().max_range();
-    movement_directionality = MOVEMENT_OMNI;
+    movement_directionality = movement_direction::OMNI;
     may_parry = may_dodge = may_block = false;
 
     add_child( damage );
@@ -3391,7 +3391,7 @@ struct harpoon_t: public hunter_melee_attack_t
 
     harmful = false;
     base_teleport_distance  = data().max_range();
-    movement_directionality = MOVEMENT_OMNI;
+    movement_directionality = movement_direction::OMNI;
     may_parry = may_dodge = may_block = false;
 
     cooldown -> duration += p -> find_spell( 231550 ) -> effectN( 1 ).time_value(); // Harpoon (Rank 2)
