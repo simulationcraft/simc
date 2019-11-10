@@ -588,7 +588,7 @@ struct movement_ticker_t : public event_t
 struct movement_event_t : public raid_event_t
 {
   double move_distance;
-  movement_direction direction;
+  movement_direction_type direction;
   std::string move_direction;
   double distance_range;
   double move;
@@ -599,7 +599,7 @@ struct movement_event_t : public raid_event_t
   movement_event_t( sim_t* s, const std::string& options_str )
     : raid_event_t( s, "movement" ),
       move_distance( 0 ),
-      direction( movement_direction::TOWARDS ),
+      direction( movement_direction_type::TOWARDS ),
       distance_range( 0 ),
       move(),
       distance_min( 0 ),
@@ -660,12 +660,12 @@ struct movement_event_t : public raid_event_t
 
   virtual void _start() override
   {
-    movement_direction m = direction;
-    if ( direction == movement_direction::RANDOM )
+    movement_direction_type m = direction;
+    if ( direction == movement_direction_type::RANDOM )
     {
-      auto min = static_cast<int>(movement_direction::OMNI);
-      auto max_exclusive = static_cast<int>(movement_direction::RANDOM);
-      m = static_cast<movement_direction>( int( sim->rng().range(min, max_exclusive) ) );
+      auto min = static_cast<int>(movement_direction_type::OMNI);
+      auto max_exclusive = static_cast<int>(movement_direction_type::RANDOM);
+      m = static_cast<movement_direction_type>( int( sim->rng().range(min, max_exclusive) ) );
     }
 
     if ( distance_range > 0 )

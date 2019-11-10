@@ -2282,7 +2282,7 @@ struct infernal_strike_t : public demon_hunter_spell_t
   {
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
     base_teleport_distance  = data().max_range();
-    movement_directionality = movement_direction::OMNI;
+    movement_directionality = movement_direction_type::OMNI;
     travel_speed = 1.0;  // allows use precombat
 
     damage = p->find_action( "infernal_strike_impact" );
@@ -2430,7 +2430,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
     {
       base_teleport_distance  = data().max_range();
-      movement_directionality = movement_direction::OMNI;
+      movement_directionality = movement_direction_type::OMNI;
       min_gcd                 = timespan_t::from_seconds( 1.0 );  // Cannot use skills during travel time
       travel_speed            = 1.0;                              // Allows use in the precombat list
 
@@ -3495,7 +3495,7 @@ struct felblade_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "felblade", p, p->talent.felblade, options_str )
   {
     may_crit = may_block = false;
-    movement_directionality = movement_direction::TOWARDS;
+    movement_directionality = movement_direction_type::TOWARDS;
 
     execute_action = new felblade_damage_t( p );
     execute_action->stats = stats;
@@ -3548,7 +3548,7 @@ struct fel_rush_t : public demon_hunter_attack_t
     {
       // Fel Rush does damage in a further line than it moves you
       base_teleport_distance = execute_action->radius - 5;
-      movement_directionality = movement_direction::OMNI;
+      movement_directionality = movement_direction_type::OMNI;
       p->buff.fel_rush_move->distance_moved = base_teleport_distance;
     }
 
@@ -3807,7 +3807,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     execute_action->stats = stats;
 
     base_teleport_distance = VENGEFUL_RETREAT_DISTANCE;
-    movement_directionality = movement_direction::OMNI;
+    movement_directionality = movement_direction_type::OMNI;
     p->buff.vengeful_retreat_move->distance_moved = base_teleport_distance;
     
     cooldown->duration += p->talent.momentum->effectN( 1 ).time_value();

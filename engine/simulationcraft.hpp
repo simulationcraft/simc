@@ -3768,7 +3768,7 @@ struct player_t : public actor_t
     double skill, skill_debuff, distance;
     double distance_to_move;
     double moving_away;
-    movement_direction movement_direction;
+    movement_direction_type movement_direction;
     double armor_coeff;
     bool sleeping;
     rating_t rating;
@@ -4598,10 +4598,10 @@ public:
   rng::rng_t& rng() { return sim -> rng(); }
   rng::rng_t& rng() const { return sim -> rng(); }
   virtual timespan_t time_to_move() const;
-  virtual void trigger_movement( double distance, movement_direction);
+  virtual void trigger_movement( double distance, movement_direction_type);
   virtual void update_movement( timespan_t duration );
   virtual void teleport( double yards, timespan_t duration = timespan_t::zero() );
-  virtual movement_direction movement_direction() const
+  virtual movement_direction_type movement_direction() const
   { return current.movement_direction; }
   
   virtual void reset_auto_attacks( timespan_t delay = timespan_t::zero() );
@@ -5443,7 +5443,7 @@ public:
    * movement_directionality = movement_direction::MOVEMENT_AWAY; // Can only be used away from target. Ex: ????
    * @endcode
    */
-  movement_direction movement_directionality;
+  movement_direction_type movement_directionality;
 
   /// This is used to cache/track spells that have a parent driver, such as most channeled/ground aoe abilities.
   dot_t* parent_dot;

@@ -3482,7 +3482,7 @@ struct shadowstep_t : public rogue_attack_t
     harmful = false;
     dot_duration = timespan_t::zero();
     base_teleport_distance = data().max_range();
-    movement_directionality = movement_direction::OMNI;
+    movement_directionality = movement_direction_type::OMNI;
   }
 
   void execute() override

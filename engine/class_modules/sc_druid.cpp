@@ -7231,7 +7231,7 @@ struct wild_charge_t : public druid_spell_t
     harmful = may_crit = may_miss = false;
     ignore_false_positive = true;
     range = data().max_range();
-    movement_directionality = movement_direction::OMNI;
+    movement_directionality = movement_direction_type::OMNI;
     trigger_gcd = timespan_t::zero();
   }
 
@@ -7242,7 +7242,7 @@ struct wild_charge_t : public druid_spell_t
     /* Since Cat/Bear charge is limited to moving towards a target,
        cancel form if the druid wants to move away.
        Other forms can already move in any direction they want so they're fine. */
-    if ( p() -> current.movement_direction == movement_direction::AWAY )
+    if ( p() -> current.movement_direction == movement_direction_type::AWAY )
       p() -> shapeshift( NO_FORM );
   }
 

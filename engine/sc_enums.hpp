@@ -166,7 +166,7 @@ enum class buff_stack_behavior
   ASYNCHRONOUS,
 };
 
-enum class movement_direction : int
+enum class movement_direction_type : int
 {
   NONE,
   OMNI,

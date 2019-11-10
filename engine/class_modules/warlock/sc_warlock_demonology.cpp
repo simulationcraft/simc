@@ -388,7 +388,7 @@ namespace warlock {
             player_t* tar = this->target;
             double dist = p()->get_player_distance(*tar);
 
-            imp->trigger_movement(dist, movement_direction::TOWARDS);
+            imp->trigger_movement(dist, movement_direction_type::TOWARDS);
             imp->interrupt();
 
             //Imps launched with Implosion appear to be staggered and snapshot when they impact

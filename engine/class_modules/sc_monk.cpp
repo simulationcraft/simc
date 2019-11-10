@@ -5223,7 +5223,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
     affected_by.sunrise_technique   = true;
     may_combo_strike                = true;
     ignore_false_positive           = true;
-    movement_directionality         = movement_direction::OMNI;
+    movement_directionality         = movement_direction_type::OMNI;
     attack_power_mod.direct         = p->passives.flying_serpent_kick_damage->effectN( 1 ).ap_coeff();
     aoe                             = -1;
     p->cooldown.flying_serpent_kick = cooldown;

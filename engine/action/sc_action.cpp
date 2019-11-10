@@ -412,7 +412,7 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
     base_teleport_distance(),
     travel_speed(),
     energize_amount(),
-    movement_directionality( movement_direction::NONE ),
+    movement_directionality( movement_direction_type::NONE ),
     parent_dot(),
     child_action(),
     tick_action(),
@@ -4067,14 +4067,14 @@ void action_t::add_child( action_t* child )
 bool action_t::has_movement_directionality() const
 {
   // If ability has no movement restrictions, it'll be usable
-  if ( movement_directionality == movement_direction::NONE || movement_directionality == movement_direction::OMNI )
+  if ( movement_directionality == movement_direction_type::NONE || movement_directionality == movement_direction_type::OMNI )
     return true;
   else
   {
-    movement_direction m = player->movement_direction();
+    movement_direction_type m = player->movement_direction();
 
     // If player isnt moving, allow everything
-    if ( m == movement_direction::NONE )
+    if ( m == movement_direction_type::NONE )
       return true;
     else
       return m == movement_directionality;
