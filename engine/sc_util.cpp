@@ -1175,7 +1175,6 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_HASTE:        return "haste";
     case CACHE_ATTACK_HASTE: return "attack_haste";
     case CACHE_SPELL_HASTE:  return "spell_haste";
-    case CACHE_SPEED:        return "speed";
     case CACHE_ATTACK_SPEED: return "attack_speed";
     case CACHE_SPELL_SPEED:  return "spell_speed";
     case CACHE_MASTERY:      return "mastery";

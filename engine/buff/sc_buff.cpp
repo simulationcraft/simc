@@ -531,7 +531,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, const std::strin
     trigger_successes(),
     simulation_max_stack( 0 ),
     invalidate_list(),
-    haste_type( HASTE_NONE ),
+    gcd_type(gcd_type_e::NONE ),
     benefit_pct(),
     trigger_pct(),
     avg_start(),
@@ -2043,7 +2043,7 @@ rng::rng_t& buff_t::rng()
  */
 void buff_t::adjust_haste()
 {
-  if ( haste_type == HASTE_NONE )
+  if ( gcd_type == gcd_type_e::NONE )
   {
     return;
   }
@@ -2051,7 +2051,7 @@ void buff_t::adjust_haste()
 
   player->adjust_dynamic_cooldowns();
   // player->adjust_global_cooldown( haste_type );
-  player->adjust_auto_attack( haste_type );
+  player->adjust_auto_attack( gcd_type );
 }
 
 void buff_t::init_haste_type()
@@ -2059,31 +2059,27 @@ void buff_t::init_haste_type()
   // All haste > everything
   if ( range::find( invalidate_list, CACHE_HASTE ) != invalidate_list.end() )
   {
-    haste_type = HASTE_ANY;
+    gcd_type = gcd_type_e::HASTE;
   }
 
   // Select one of the specific types
-  if ( haste_type == HASTE_NONE )
+  if ( gcd_type == gcd_type_e::NONE )
   {
     if ( range::find( invalidate_list, CACHE_SPELL_HASTE ) != invalidate_list.end() )
     {
-      haste_type = HASTE_SPELL;
+      gcd_type = gcd_type_e::SPELL_HASTE;
     }
     else if ( range::find( invalidate_list, CACHE_ATTACK_HASTE ) != invalidate_list.end() )
     {
-      haste_type = HASTE_ATTACK;
-    }
-    else if ( range::find( invalidate_list, CACHE_SPEED ) != invalidate_list.end() )
-    {
-      haste_type = SPEED_ANY;
+      gcd_type = gcd_type_e::ATTACK_HASTE;
     }
     else if ( range::find( invalidate_list, CACHE_SPELL_SPEED ) != invalidate_list.end() )
     {
-      haste_type = SPEED_SPELL;
+      gcd_type = gcd_type_e::SPELL_SPEED;
     }
     else if ( range::find( invalidate_list, CACHE_ATTACK_SPEED ) != invalidate_list.end() )
     {
-      haste_type = SPEED_ATTACK;
+      gcd_type = gcd_type_e::ATTACK_SPEED;
     }
   }
 }

@@ -850,7 +850,7 @@ struct waterbolt_t : public mage_pet_spell_t
     mage_pet_spell_t( n, p, p->find_pet_spell( "Waterbolt" ) )
   {
     parse_options( options_str );
-    gcd_haste = HASTE_NONE;
+    gcd_type = gcd_type_e::NONE;
   }
 };
 

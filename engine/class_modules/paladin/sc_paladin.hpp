@@ -741,11 +741,11 @@ public:
     {
       if ( p() -> specialization() == PALADIN_HOLY )
       {
-        ab::gcd_haste = HASTE_SPELL;
+        ab::gcd_type = gcd_type_e::SPELL_HASTE;
       }
       else
       {
-        ab::gcd_haste = HASTE_ATTACK;
+        ab::gcd_type = gcd_type_e::ATTACK_HASTE;
       }
     }
   }

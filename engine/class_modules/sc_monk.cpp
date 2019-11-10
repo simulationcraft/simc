@@ -3127,7 +3127,7 @@ struct xuen_spell_t : public summon_pet_t
     summoning_duration = data().duration();
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
-    gcd_haste = HASTE_SPELL;
+    gcd_type = gcd_type_e::SPELL_HASTE;
   }
 };
 
@@ -3162,7 +3162,7 @@ struct niuzao_spell_t : public summon_pet_t
     summoning_duration = data().duration();
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
-    gcd_haste = HASTE_SPELL;
+    gcd_type = gcd_type_e::SPELL_HASTE;
   }
 };
 
@@ -3182,7 +3182,7 @@ struct storm_earth_and_fire_t : public monk_spell_t
     trigger_gcd = timespan_t::from_seconds( 1 );
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
-    gcd_haste = HASTE_ATTACK;
+    gcd_type = gcd_type_e::ATTACK_HASTE;
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
 
     cooldown->charges += (int)p->spec.storm_earth_and_fire_2->effectN( 1 ).base_value();
@@ -4242,7 +4242,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
-    gcd_haste = HASTE_ATTACK;
+    gcd_type = gcd_type_e::ATTACK_HASTE;
 
     // Set dot data to 0, since we handle everything through the buff.
     base_tick_time = timespan_t::zero();
@@ -4581,7 +4581,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
-    gcd_haste = HASTE_ATTACK;
+    gcd_type = gcd_type_e::ATTACK_HASTE;
 
     tick_action =
         new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p->passives.whirling_dragon_punch_tick );
@@ -5396,7 +5396,7 @@ struct serenity_t : public monk_spell_t
     trigger_gcd = timespan_t::from_seconds( 1 );
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd   = timespan_t::from_millis( 750 );
-    gcd_haste = HASTE_SPELL;
+    gcd_type = gcd_type_e::SPELL_HASTE;
 
     if ( player->azerite.vision_of_perfection.enabled() )
     {
@@ -5432,7 +5432,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     interrupt_auto_attack = true;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd   = timespan_t::from_millis( 750 );
-    gcd_haste = HASTE_SPELL;
+    gcd_type = gcd_type_e::SPELL_HASTE;
   }
 
   virtual double cost_per_tick( resource_e resource ) const override
@@ -6631,7 +6631,7 @@ struct chi_wave_t : public monk_spell_t
     radius    = player->find_spell( 132466 )->effectN( 2 ).base_value();
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd   = timespan_t::from_millis( 750 );
-    gcd_haste = HASTE_SPELL;
+    gcd_type = gcd_type_e::SPELL_HASTE;
   }
 
   void impact( action_state_t* s ) override
@@ -6696,7 +6696,7 @@ struct chi_burst_t : public monk_spell_t
     interrupt_auto_attack = false;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd   = timespan_t::from_millis( 750 );
-    gcd_haste = HASTE_SPELL;
+    gcd_type = gcd_type_e::SPELL_HASTE;
   }
 
   virtual bool ready() override

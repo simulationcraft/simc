@@ -376,7 +376,7 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
     ability_lag_stddev(),
     rp_gain(),
     min_gcd(),
-    gcd_haste( HASTE_NONE ),
+    gcd_type(gcd_type_e::NONE ),
     trigger_gcd( p->base_gcd ),
     range( -1.0 ),
     radius( -1.0 ),
@@ -995,25 +995,20 @@ timespan_t action_t::gcd() const
     return timespan_t::zero();
 
   timespan_t gcd_ = trigger_gcd;
-  switch ( gcd_haste )
+  switch ( gcd_type )
   {
     // Note, HASTE_ANY should never be used for actions. It does work as a crutch though, since
     // action_t::composite_haste will return the correct haste value.
-    case HASTE_ANY:
-    case HASTE_SPELL:
-    case HASTE_ATTACK:
+    case gcd_type_e::HASTE:
+    case gcd_type_e::SPELL_HASTE:
+    case gcd_type_e::ATTACK_HASTE:
       gcd_ *= composite_haste();
       break;
-    case SPEED_SPELL:
+    case gcd_type_e::SPELL_SPEED:
       gcd_ *= player->cache.spell_speed();
       break;
-    case SPEED_ATTACK:
+    case gcd_type_e::ATTACK_SPEED:
       gcd_ *= player->cache.attack_speed();
-      break;
-    // SPEED_ANY is nonsensical for GCD reduction, since we don't have action_t::composite_speed()
-    // to give the correct speed value.
-    case SPEED_ANY:
-    default:
       break;
   }
 
@@ -1806,19 +1801,19 @@ void action_t::start_gcd()
 
   // Setup the GCD ready time, and associated haste-related values
   player->gcd_ready      = sim->current_time() + current_gcd;
-  player->gcd_haste_type = gcd_haste;
-  switch ( gcd_haste )
+  player->gcd_type = gcd_type;
+  switch ( gcd_type )
   {
-    case HASTE_SPELL:
+    case gcd_type_e::SPELL_HASTE:
       player->gcd_current_haste_value = player->cache.spell_haste();
       break;
-    case HASTE_ATTACK:
+    case gcd_type_e::ATTACK_HASTE:
       player->gcd_current_haste_value = player->cache.attack_haste();
       break;
-    case SPEED_SPELL:
+    case gcd_type_e::SPELL_SPEED:
       player->gcd_current_haste_value = player->cache.spell_speed();
       break;
-    case SPEED_ATTACK:
+    case gcd_type_e::ATTACK_SPEED:
       player->gcd_current_haste_value = player->cache.attack_speed();
       break;
     default:

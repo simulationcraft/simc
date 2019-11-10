@@ -442,13 +442,13 @@ void ranged_attack_t::schedule_execute( action_state_t* execute_state )
 
     player->executing      = this;
     player->gcd_ready      = sim->current_time() + gcd();
-    player->gcd_haste_type = gcd_haste;
-    switch ( gcd_haste )
+    player->gcd_type = gcd_type;
+    switch ( gcd_type )
     {
-      case HASTE_SPELL:
+    case gcd_type_e::SPELL_HASTE:
         player->gcd_current_haste_value = player->cache.spell_haste();
         break;
-      case HASTE_ATTACK:
+      case gcd_type_e::ATTACK_HASTE:
         player->gcd_current_haste_value = player->cache.attack_haste();
         break;
       default:

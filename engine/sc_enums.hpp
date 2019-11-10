@@ -1049,7 +1049,6 @@ enum cache_e
   CACHE_ATTACK_HASTE,
   CACHE_SPELL_HASTE,
   CACHE_RPPM_HASTE,
-  CACHE_SPEED,
   CACHE_ATTACK_SPEED,
   CACHE_SPELL_SPEED,
   CACHE_VERSATILITY,
@@ -1291,14 +1290,16 @@ enum action_energize_e
   ENERGIZE_PER_TICK
 };
 
-// A simple enumeration to indicate a broad haste stat type for various things in the simulator
-enum haste_type_e
+/**
+* Global cooldown speed-up type
+*/
+enum class gcd_type_e
 {
-  HASTE_NONE = 0U,
-  HASTE_SPELL,
-  HASTE_ATTACK, // TODO: This should probably be Range/Melee
-  SPEED_SPELL,
-  SPEED_ATTACK,
-  HASTE_ANY, // Special value to indicate any (all) haste types
-  SPEED_ANY,
+  NONE,
+  // any (all) haste types
+  HASTE,
+  SPELL_HASTE,
+  ATTACK_HASTE, // TODO: This should probably be Range/Melee
+  SPELL_SPEED,
+  ATTACK_SPEED,
 };

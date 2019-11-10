@@ -1203,7 +1203,7 @@ public:
     // Setup Hasted GCD for Enhancement
     if ( ab::data().affected_by( p()->spec.shaman->effectN( 3 ) ) )
     {
-      ab::gcd_haste = HASTE_ATTACK;
+      ab::gcd_type = gcd_type_e::ATTACK_HASTE;
     }
   }
 
