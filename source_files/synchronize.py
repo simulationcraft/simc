@@ -18,7 +18,7 @@ def parse_qt(filename):
     out = []
     with open(filename, "r") as f:
         for line in f:
-            match = re.search(r"(\s*)(SOURCES|HEADERS|PRECOMPILED_HEADER)(\s*\+?\=\s*)([\w\/]*?)([\w]*)(\.\w*)", line)
+            match = re.search(r"(\s*)(SOURCES|HEADERS|PRECOMPILED_HEADER)(\s*\+?\=\s*)([\w\/-]*?)([\w]*)(\.\w*)", line)
             if match:
                 file_type = match.group(2)
                 fullpath = match.group(4) + match.group(5) + match.group(6)

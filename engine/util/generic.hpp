@@ -17,7 +17,7 @@
 #include <cassert>
 #include <cmath>
 #include <type_traits>
-#include "utf8.h"
+#include "utf8-cpp/utf8.h"
 
 // Type traits and metaprogramming tools ====================================
 

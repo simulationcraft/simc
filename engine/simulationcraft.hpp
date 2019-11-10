@@ -117,7 +117,7 @@ namespace highchart {
 
 #include "dbc/data_enums.hh"
 #include "dbc/data_definitions.hh"
-#include "util/utf8.h"
+#include "util/utf8-cpp/utf8.h"
 
 // string formatting library
 #include "util/fmt/format.h"

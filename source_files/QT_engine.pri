@@ -33,10 +33,10 @@
  HEADERS += engine/config.hpp
  HEADERS += engine/dbc/data_enums.hh
  HEADERS += engine/dbc/data_definitions.hh
- HEADERS += engine/util/utf8/unchecked.h
- HEADERS += engine/util/utf8/core.h
- HEADERS += engine/util/utf8/checked.h
- HEADERS += engine/util/utf8.h
+ HEADERS += engine/util/utf8-cpp/utf8/unchecked.h
+ HEADERS += engine/util/utf8-cpp/utf8/core.h
+ HEADERS += engine/util/utf8-cpp/utf8/checked.h
+ HEADERS += engine/util/utf8-cpp/utf8.h
  HEADERS += engine/class_modules/paladin/sc_paladin.hpp
  HEADERS += engine/class_modules/warlock/sc_warlock.hpp
  HEADERS += engine/class_modules/priest/sc_priest.hpp
