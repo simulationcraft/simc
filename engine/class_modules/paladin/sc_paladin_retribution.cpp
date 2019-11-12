@@ -664,6 +664,8 @@ void paladin_t::init_rng_retribution()
 {
   art_of_war_rppm = get_rppm( "art_of_war", find_spell( 267344 ) );
 
+  art_of_war_rppm -> set_scaling( RPPM_ATTACK_SPEED );
+
   // The base RPPM of Art of War in spelldata is 4+haste, reduced by half when BoW isn't talented
   // Have to call the BoW talent spell ID's directly because it's not talented
   if ( ! talents.blade_of_wrath -> ok() )
