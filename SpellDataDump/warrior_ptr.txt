@@ -8533,4 +8533,30 @@ Description      : Your damaging spells and abilities have a chance to crash a w
 
 When your health drops below $s2%, gain a shield absorbing $s3 damage within $303390d. When this occurs, Undulating Tides cannot trigger again for $s4 sec.
 
+Name             : Heart of Darkness (id=316101) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Shadow
+Spell Type       : None
+Azerite Power Id : 582
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=800329)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 54.16718 (coefficient=0.174171) | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
+#2 (id=800330)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 54.16718 (coefficient=0.174171) | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
+#3 (id=800331)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 54.16718 (coefficient=0.174171) | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+#4 (id=800332)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 54.16718 (coefficient=0.174171) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+#5 (id=800508)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 54.16718 (coefficient=0.174171) | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
+
 
