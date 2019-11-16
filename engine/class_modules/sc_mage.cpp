@@ -805,6 +805,7 @@ struct mage_pet_spell_t : public spell_t
   {
     may_crit = tick_may_crit = true;
     weapon_multiplier = 0.0;
+    gcd_type = gcd_haste_type::NONE;
   }
 
   mage_t* o()
@@ -850,7 +851,6 @@ struct waterbolt_t : public mage_pet_spell_t
     mage_pet_spell_t( n, p, p->find_pet_spell( "Waterbolt" ) )
   {
     parse_options( options_str );
-    gcd_type = gcd_haste_type::NONE;
   }
 };
 
