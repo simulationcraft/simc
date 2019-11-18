@@ -5624,7 +5624,7 @@ void mage_t::apl_precombat()
   }
 
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "use_item,name=azsharas_font_of_power" );
+  precombat->add_action( specialization() == MAGE_FIRE ? "use_item,name=azsharas_font_of_power,if=!variable.disable_combustion" : "use_item,name=azsharas_font_of_power" );
   precombat->add_talent( this, "Mirror Image" );
   precombat->add_action( "potion" );
 
@@ -5822,7 +5822,7 @@ void mage_t::apl_fire()
   default_list->add_action( this, "Counterspell" );
   default_list->add_action( "call_action_list,name=items_high_priority" );
   default_list->add_talent( this, "Mirror Image", "if=buff.combustion.down" );
-  default_list->add_action( "guardian_of_azeroth,if=cooldown.combustion.remains<10|target.time_to_die<cooldown.combustion.remains" );
+  default_list->add_action( "guardian_of_azeroth,if=(cooldown.combustion.remains<10|target.time_to_die<cooldown.combustion.remains)&!variable.disable_combustion" );
   default_list->add_action( "concentrated_flame" );
   default_list->add_action( "focused_azerite_beam" );
   default_list->add_action( "purifying_blast" );
@@ -5844,6 +5844,7 @@ void mage_t::apl_fire()
   active_talents->add_talent( this, "Dragon's Breath", "if=talent.alexstraszas_fury.enabled&(buff.combustion.down&!buff.hot_streak.react|buff.combustion.up&action.fire_blast.charges<action.fire_blast.max_charges&!buff.hot_streak.react)" );
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down", "Combustion phase prepares abilities with a delay, then launches into the Combustion sequence" );
+  combustion_phase->add_talent( this, "Living Bomb", "if=active_enemies>1&buff.combustion.down" );
   combustion_phase->add_action( "blood_of_the_enemy" );
   combustion_phase->add_action( "memory_of_lucid_dreams" );
   combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,use_off_gcd=1,if=charges>=1&((action.fire_blast.charges_fractional+(buff.combustion.remains-buff.blaster_master.duration)%cooldown.fire_blast.duration-(buff.combustion.remains)%(buff.blaster_master.duration-0.5))>=0|!azerite.blaster_master.enabled|!talent.flame_on.enabled|buff.combustion.remains<=buff.blaster_master.duration|buff.blaster_master.remains<0.5|equipped.hyperthread_wristwraps&cooldown.hyperthread_wristwraps_300142.remains<5)&buff.combustion.up&(!action.scorch.executing&!action.pyroblast.in_flight&buff.heating_up.up|action.scorch.executing&buff.hot_streak.down&(buff.heating_up.down|azerite.blaster_master.enabled)|azerite.blaster_master.enabled&talent.flame_on.enabled&action.pyroblast.in_flight&buff.heating_up.down&buff.hot_streak.down)",
@@ -5854,8 +5855,8 @@ void mage_t::apl_fire()
     "Additionally with Blaster Master and Flame On, Fire Blasts should not be used unless Blaster Master is about to expire "
     "or there are more than enough Fire Blasts to extend Blaster Master to the end of Combustion." ); 
   combustion_phase->add_talent( this, "Rune of Power", "if=buff.combustion.down" );
-  combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,if=azerite.blaster_master.enabled&essence.memory_of_lucid_dreams.major&talent.meteor.enabled&talent.flame_on.enabled&buff.blaster_master.down&(talent.rune_of_power.enabled&action.rune_of_power.executing&action.rune_of_power.execute_remains<0.6|(cooldown.combustion.ready|buff.combustion.up)&!talent.rune_of_power.enabled&!action.pyroblast.in_flight&!action.fireball.in_flight)",
-    "A Fire Blast should be used to apply Blaster Master while casting Rune of Power when using Blaster Master, Memory of Lucid Dreams Major, Flame On, and Meteor." );
+  combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,if=azerite.blaster_master.enabled&(essence.memory_of_lucid_dreams.major|!essence.memory_of_lucid_dreams.minor)&talent.meteor.enabled&talent.flame_on.enabled&buff.blaster_master.down&(talent.rune_of_power.enabled&action.rune_of_power.executing&action.rune_of_power.execute_remains<0.6|(cooldown.combustion.ready|buff.combustion.up)&!talent.rune_of_power.enabled&!action.pyroblast.in_flight&!action.fireball.in_flight)",
+    "A Fire Blast should be used to apply Blaster Master while casting Rune of Power when using Blaster Master, Flame On, and Meteor. If only Memory of Lucid Dreams Minor is equipped, this line is ignored because it will sometimes result in going into Combustion with few Fire Blast charges." );
   combustion_phase->add_action( "call_action_list,name=active_talents" );
   combustion_phase->add_action( this, "Combustion", "use_off_gcd=1,use_while_casting=1,if=((action.meteor.in_flight&action.meteor.in_flight_remains<=0.5)|!talent.meteor.enabled)&(buff.rune_of_power.up|!talent.rune_of_power.enabled)" );
   combustion_phase->add_action( "potion" );
@@ -5907,7 +5908,7 @@ void mage_t::apl_fire()
   standard->add_action( this, "Dragon's Breath", "if=active_enemies>1" );
   standard->add_action( "call_action_list,name=items_low_priority" );
   standard->add_action( this, "Scorch", "if=target.health.pct<=30&talent.searing_touch.enabled" );
-  standard->add_action( this, "Fire Blast", "use_off_gcd=1,use_while_casting=1,if=(talent.flame_patch.enabled&active_enemies>2|active_enemies>9)&((cooldown.combustion.remains>0|variable.disable_combustion)&!firestarter.active)&buff.hot_streak.down&(!azerite.blaster_master.enabled|buff.blaster_master.remains<0.5)",
+  standard->add_action( this, "Fire Blast", "use_off_gcd=1,use_while_casting=1,if=!variable.fire_blast_pooling&(talent.flame_patch.enabled&active_enemies>2|active_enemies>9)&((cooldown.combustion.remains>0|variable.disable_combustion)&!firestarter.active)&buff.hot_streak.down&(!azerite.blaster_master.enabled|buff.blaster_master.remains<0.5)",
     "When Hardcasting Flame Strike, Fire Blasts should be used to generate Hot Streaks and to extend Blaster Master." );
   standard->add_action( this, "Flamestrike", "if=talent.flame_patch.enabled&active_enemies>2|active_enemies>9",
     "With enough targets, it is a gain to cast Flamestrike as filler instead of Fireball." );
