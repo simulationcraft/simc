@@ -727,9 +727,6 @@ public:
     initialized = true;
   }
 
-  ~warrior_action_t() override
-  {
-  }
 
   warrior_t* p()
   {

@@ -2484,10 +2484,6 @@ public:
     }
   }
 
-  ~monk_action_t() override
-  {
-  }
-
   monk_t* p()
   {
     return debug_cast<monk_t*>( ab::player );
