@@ -1,5 +1,7 @@
 #include "x6_pantheon.hpp"
+
 #include "simulationcraft.hpp"
+#include <memory>
 
 namespace
 {
@@ -35,7 +37,7 @@ void initialize_pantheon( player_t* proxy_player )
   if ( ! proxy_player -> sim -> legion_data.pantheon_proxy )
   {
     proxy_player -> sim -> legion_data.pantheon_proxy =
-      std::unique_ptr<pantheon_state_t>( new pantheon_state_t( proxy_player ) );
+      std::make_unique<pantheon_state_t>( proxy_player );
   }
 }
 

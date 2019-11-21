@@ -18,8 +18,9 @@
 #if defined( Q_OS_MAC )
 #include <CoreFoundation/CoreFoundation.h>
 #endif
-#include <QStandardPaths>
 #include <QDateTime>
+#include <QStandardPaths>
+#include <memory>
 
 
 namespace { // UNNAMED NAMESPACE
@@ -520,7 +521,7 @@ void SC_MainWindow::updateWebView( SC_WebView* wv )
 std::shared_ptr<sim_t> SC_MainWindow::initSim()
 {
   auto sim = std::make_shared<sim_t>();
-  sim -> pause_mutex = std::unique_ptr<mutex_t>(new mutex_t());
+  sim -> pause_mutex = std::make_unique<mutex_t>();
   sim -> report_progress = 0;
 #if SC_USE_PTR
   sim -> parse_option( "ptr", ( ( optionsTab -> choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );

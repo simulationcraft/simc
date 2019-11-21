@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include <cerrno>
+#include <memory>
 
 #include "simulationcraft.hpp"
 
@@ -11015,7 +11016,7 @@ void player_t::copy_from( player_t* source )
 
   if ( sets != nullptr )
   {
-    sets        = std::unique_ptr<set_bonus_t>( new set_bonus_t( *source->sets ) );
+    sets        = std::make_unique<set_bonus_t>( *source->sets );
     sets->actor = this;
   }
 

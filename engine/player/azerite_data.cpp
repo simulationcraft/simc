@@ -330,7 +330,7 @@ namespace azerite
 {
 std::unique_ptr<azerite_state_t> create_state( player_t* p )
 {
-  return std::unique_ptr<azerite_state_t>( new azerite_state_t( p ) );
+  return std::make_unique<azerite_state_t>( p );
 }
 
 void initialize_azerite_powers( player_t* actor )
@@ -904,7 +904,7 @@ report::sc_html_stream& azerite_essence_state_t::generate_report( report::sc_htm
 
 std::unique_ptr<azerite_essence_state_t> create_essence_state( player_t* p )
 {
-  return std::unique_ptr<azerite_essence_state_t>( new azerite_essence_state_t( p ) );
+  return std::make_unique<azerite_essence_state_t>( p );
 }
 
 // These are hardcoded, based on AzeriteItemMilestonePower.db2

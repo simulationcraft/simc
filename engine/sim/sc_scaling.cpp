@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include <memory>
+
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE ==========================================
@@ -365,7 +367,7 @@ void scaling_t::analyze_ability_stats( stat_e stat, double delta, player_t* p, p
     assert( ref_s && delta_s );
     double score = ( delta_s -> portion_aps.mean() - ref_s -> portion_aps.mean() ) / delta;
     if ( !s -> scaling ) {
-      s -> scaling = std::unique_ptr<stats_t::stats_scaling_t>( new stats_t::stats_scaling_t() );
+      s -> scaling = std::make_unique<stats_t::stats_scaling_t>( );
     }
     s -> scaling -> value.set_stat( stat, score );
     double x = p -> sim -> confidence_estimator;

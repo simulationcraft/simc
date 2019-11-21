@@ -4,10 +4,11 @@
 // ==========================================================================
 
 #include "concurrency.hpp"
-#include <iostream>
-#include <thread>
-#include <mutex>
 #include <chrono>
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <thread>
 
 #if defined( SC_WINDOWS )
 #define NOMINMAX
@@ -54,7 +55,7 @@ public:
 
   void launch( sc_thread_t* thr)
   {
-    t = std::unique_ptr<std::thread>( new std::thread( &sc_thread_t::native_t::execute, thr ) );
+    t = std::make_unique<std::thread>( &sc_thread_t::native_t::execute, thr );
   }
 
   void join() {

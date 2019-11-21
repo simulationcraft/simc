@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include <memory>
+
 #include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
 
@@ -139,7 +141,7 @@ struct player_data_t
     if ( it != data_.cend() )
       return it -> second.get();
 
-    data_.push_back( record_t( a -> name_str, std::unique_ptr<action_data_t>( new action_data_t() ) ) );
+    data_.push_back( record_t( a -> name_str, std::make_unique<action_data_t>( ) ) );
     return data_.back().second.get();
   }
 

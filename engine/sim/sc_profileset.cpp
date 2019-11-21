@@ -9,6 +9,7 @@
 #ifndef SC_NO_THREADING
 
 #include <future>
+#include <memory>
 
 namespace
 {
@@ -584,7 +585,7 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
       // Output profileset progressbar whenever we finish anything
       output_progressbar( parent );
 
-      m_current_work.push_back( std::unique_ptr<worker_t>( new worker_t { this, parent, ptr_set.get() } ) );
+      m_current_work.push_back( std::make_unique<worker_t>( this, parent, ptr_set.get() ) );
     }
 
     m_work_lock.unlock();
@@ -655,7 +656,7 @@ bool profilesets_t::parse( sim_t* sim )
     // Test that profileset options are OK, up to the simulation initialization
     try
     {
-      std::unique_ptr<sim_t> test_sim = std::unique_ptr<sim_t>(new sim_t());
+      std::unique_ptr<sim_t> test_sim = std::make_unique<sim_t>();
       test_sim -> profileset_enabled = true;
 
       test_sim -> setup( control );
@@ -673,8 +674,8 @@ bool profilesets_t::parse( sim_t* sim )
     }
 
     m_mutex.lock();
-    m_profilesets.push_back( std::unique_ptr<profile_set_t>(
-        new profile_set_t( profileset_name, control, has_output_opts ) ) );
+    m_profilesets.push_back( std::make_unique<profile_set_t>(
+        profileset_name, control, has_output_opts ) );
     m_control.notify_one();
     m_mutex.unlock();
   }
@@ -732,7 +733,7 @@ void profilesets_t::initialize( sim_t* sim )
   m_profilesets.reserve( sim -> profileset_map.size() + 1 );
 
   // Generate a copy of the original control, and remove any and all profileset. options from it
-  m_original = std::unique_ptr<sim_control_t>( new sim_control_t() );
+  m_original = std::make_unique<sim_control_t>( );
 
   // Copy non-profileset. options to use as a base option setup for each profileset
   range::copy_if( sim -> control -> options, std::back_inserter( m_original -> options ),

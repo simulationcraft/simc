@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include <memory>
+
 #include "simulationcraft.hpp"
 
 // stats_t::stats_t =========================================================
@@ -51,7 +53,7 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
 
   if ( sim.report_details != 0 )
   {
-    timeline_amount = std::unique_ptr<sc_timeline_t>( new sc_timeline_t() );
+    timeline_amount = std::make_unique<sc_timeline_t>( );
   }
 }
 
