@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include <memory>
+
 #include "simulationcraft.hpp"
 #include "rapidxml/rapidxml_print.hpp"
 
@@ -346,7 +348,7 @@ std::shared_ptr<xml_node_t> xml_node_t::get( sim_t*             sim,
 std::shared_ptr<xml_node_t> xml_node_t::create( sim_t* sim,
                                                 const std::string& input )
 {
-  std::shared_ptr<xml_node_t> root = std::shared_ptr<xml_node_t>( new xml_node_t( "root" ) );
+  std::shared_ptr<xml_node_t> root = std::make_shared<xml_node_t>( "root" );
 
   std::string buffer = input;
   std::string::size_type index = 0;
@@ -1193,7 +1195,7 @@ sc_xml_t sc_xml_t::create( sim_t* sim,
   }
 
   new_xml_cache_entry_t& c = new_xml_cache[ cache_key ];
-  c.root = std::shared_ptr<sc_xml_t>( new sc_xml_t( document, tmp_buf ) );
+  c.root = std::make_shared<sc_xml_t>( document, tmp_buf );
   c.era = cache::era();
 
   return *c.root;
