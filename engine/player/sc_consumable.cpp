@@ -79,7 +79,7 @@ struct elixir_t : public action_t
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     player_t& p = *player;
 
@@ -100,7 +100,7 @@ struct elixir_t : public action_t
     sim->print_log( "{} uses elixir {}.", p.name(), data -> name );
 
   }
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ! player -> sim -> allow_flasks )
       return false;
@@ -171,7 +171,7 @@ struct mana_potion_t : public action_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     sim -> print_log( "{} uses Mana potion", player -> name() );
     double gain = rng().range( min, max );
@@ -179,7 +179,7 @@ struct mana_potion_t : public action_t
     player -> potion_used = true;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( player -> potion_used )
       return false;
@@ -217,17 +217,17 @@ struct health_stone_t : public heal_t
     target = player;
   }
 
-  virtual void reset() override
+  void reset() override
   { charges = 3; }
 
-  virtual void execute() override
+  void execute() override
   {
     assert( charges > 0 );
     --charges;
     heal_t::execute();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( charges <= 0 )
       return false;

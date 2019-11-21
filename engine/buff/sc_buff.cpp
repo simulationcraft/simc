@@ -83,7 +83,7 @@ struct react_ready_trigger_t : public buff_event_t
   {
   }
 
-  virtual const char* name() const override
+  const char* name() const override
   {
     return "react_ready_trigger";
   }
@@ -241,7 +241,7 @@ struct buff_delay_t : public buff_event_t
     return "buff_delay_event";
   }
 
-  virtual void execute() override
+  void execute() override
   {
     // Add a Cooldown check here to avoid extra processing due to delays
     if ( buff->cooldown->remains() == timespan_t::zero() )
@@ -256,7 +256,7 @@ struct expiration_delay_t : public buff_event_t
   {
   }
 
-  virtual void execute() override
+  void execute() override
   {
     buff->expiration_delay = nullptr;
     // Call real expire after a delay

@@ -542,7 +542,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_ticks", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->current_tick;
       }
@@ -557,7 +557,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "extended_time", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->extended_time.total_seconds();
       }
@@ -573,7 +573,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_duration", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         dot_t* dot = this->dot();
         if ( !dot->state )
@@ -598,7 +598,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
 
       // Don't recycle the event here, since initialization order can break
       // things
-      ~refresh_expr_t()
+      ~refresh_expr_t() override
       {
         delete state;
       }
@@ -636,7 +636,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_remains", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->remains().total_seconds();
       }
@@ -654,7 +654,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
       {
       }
 
-      virtual double evaluate() override
+      double evaluate() override
       {
         if ( dot()->state )
         {
@@ -669,7 +669,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         return 0.0;
       }
 
-      virtual ~tick_result_amount_typexpr_t()
+      ~tick_result_amount_typexpr_t() override
       {
         delete s;
       }
@@ -687,7 +687,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
       {
       }
 
-      virtual double evaluate() override
+      double evaluate() override
       {
         if ( dot()->state )
         {
@@ -712,7 +712,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_tick_time_remain", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->is_ticking()
                    ? dot()->tick_event->remains().total_seconds()
@@ -729,7 +729,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_ticks_remain", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->ticks_left();
       }
@@ -744,7 +744,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t("dot_ticks_remain_fractional", d, a, sa, dynamic)
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         dot_t* dt = dot();
 
@@ -766,7 +766,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_ticking", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->ticking;
       }
@@ -781,7 +781,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_spell_power", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->state ? dot()->state->composite_spell_power() : 0;
       }
@@ -796,7 +796,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_attack_power", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->state ? dot()->state->composite_attack_power() : 0;
       }
@@ -811,7 +811,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_multiplier", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->state ? dot()->state->ta_multiplier : 0;
       }
@@ -826,7 +826,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_pmultiplier", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->state ? dot()->state->persistent_multiplier : 0;
       }
@@ -841,7 +841,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_haste_pct", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->state ? ( 1.0 / dot()->state->haste - 1.0 ) * 100 : 0;
       }
@@ -856,7 +856,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_current_ticks", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->num_ticks;
       }
@@ -871,7 +871,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_crit_pct", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->state ? dot()->state->crit_chance * 100.0 : 0;
       }
@@ -886,7 +886,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t( "dot_stack", d, a, sa, dynamic )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->current_stack();
       }
@@ -901,7 +901,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         : dot_expr_t("dot_max_stacks", d, a, sa, dynamic)
       {}
 
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dot()->max_stack;
       }

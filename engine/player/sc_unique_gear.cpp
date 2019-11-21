@@ -739,7 +739,7 @@ void profession::zen_alchemist_stone( special_effect_t& effect )
       buff_int = make_buff<common_buff_t>( listener, "int", STAT_INTELLECT, spell, effect.item );
     }
 
-    virtual void execute( action_t* a, action_state_t* /* state */ ) override
+    void execute( action_t* a, action_state_t* /* state */ ) override
     {
       player_t* p = a -> player;
 
@@ -794,7 +794,7 @@ void profession::draenor_philosophers_stone( special_effect_t& effect )
       buff_int = make_buff<common_buff_t>( listener, "int", STAT_INTELLECT, spell, data.item );
     }
 
-    virtual void execute( action_t* a, action_state_t* /* state */ ) override
+    void execute( action_t* a, action_state_t* /* state */ ) override
     {
       player_t* p = a -> player;
 
@@ -865,7 +865,7 @@ void gem::capacitive_primal( special_effect_t& effect )
       dbc_proc_callback_t( i, data )
     { }
 
-    virtual void initialize() override
+    void initialize() override
     {
       dbc_proc_callback_t::initialize();
       // Unfortunately the weapon-based RPPM modifiers have to be hardcoded,
@@ -917,7 +917,7 @@ void gem::courageous_primal( special_effect_t& effect )
       dbc_proc_callback_t( data.player, data )
     { }
 
-    virtual void trigger( action_t* action, void* call_data ) override
+    void trigger( action_t* action, void* call_data ) override
     {
       spell_base_t* spell = debug_cast<spell_base_t*>( action );
       if ( ! spell -> procs_courageous_primal_diamond )
@@ -1110,7 +1110,7 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
       aoe( a ), target( t ), pulse_id( pulse )
     {
     }
-    virtual const char* name() const override
+    const char* name() const override
     { return "electric_orb_event"; }
     void execute() override
     {
@@ -1358,7 +1358,7 @@ void item::rune_of_reorigination( special_effect_t& effect )
       buff = static_cast< stat_buff_t* >( effect.custom_buff );
     }
 
-    virtual void execute( action_t* action, action_state_t* /* state */ ) override
+    void execute( action_t* action, action_state_t* /* state */ ) override
     {
       // We can never allow this trinket to refresh, so force the trinket to 
       // always expire, before we proc a new one.
@@ -1642,7 +1642,7 @@ void item::darkmoon_card_greatness( special_effect_t& effect )
       buff_spi = make_buff<common_buff_t>( listener, i, "spi", STAT_SPIRIT, 60235 );
     }
 
-    virtual void execute( action_t* a, action_state_t* /* state */ ) override
+    void execute( action_t* a, action_state_t* /* state */ ) override
     {
       player_t* p = a -> player;
 
@@ -1802,7 +1802,7 @@ void item::deathbringers_will( special_effect_t& effect )
       }
     }
 
-    virtual void execute( action_t* a, action_state_t* /* state */ ) override
+    void execute( action_t* a, action_state_t* /* state */ ) override
     {
       player_t* p = a -> player;
 
@@ -2543,14 +2543,14 @@ struct cleave_t : public T
     }
   }
 
-  void init()
+  void init() override
   {
     T::init();
 
     this -> snapshot_flags = 0;
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     tl.clear();
 
@@ -2565,7 +2565,7 @@ struct cleave_t : public T
     return tl.size();
   }
 
-  double target_armor( player_t* ) const
+  double target_armor( player_t* ) const override
   { return 0.0; }
 };
 
@@ -3550,7 +3550,7 @@ void item::tyrants_decree( special_effect_t& effect )
       cancel_threshold = effect.driver() -> effectN( 2 ).percent();
     }
 
-    virtual void trigger( action_t* , void* ) override
+    void trigger( action_t* , void* ) override
     {
       if ( p -> resources.pct( RESOURCE_HEALTH ) < cancel_threshold )
         p -> buffs.tyrants_immortality -> expire();

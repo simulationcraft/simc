@@ -217,7 +217,7 @@ struct power_word_fortitude_t final : public priest_spell_t
     background = sim -> overrides.power_word_fortitude != 0;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 

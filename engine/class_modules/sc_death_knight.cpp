@@ -943,7 +943,7 @@ public:
 
   target_specific_t<death_knight_td_t> target_data;
 
-  virtual death_knight_td_t* get_target_data( player_t* target ) const override
+  death_knight_td_t* get_target_data( player_t* target ) const override
   {
     death_knight_td_t*& td = target_data[ target ];
     if ( ! td )
@@ -2300,7 +2300,7 @@ struct magus_pet_t : public death_knight_pet_t
 
   target_specific_t<magus_td_t> target_data;
 
-  virtual magus_td_t* get_target_data( player_t* target ) const override
+  magus_td_t* get_target_data( player_t* target ) const override
   {
     magus_td_t*& td = target_data[ target ];
     if ( ! td )
@@ -2498,7 +2498,7 @@ struct death_knight_action_t : public Base
     return 1.0;
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = Base::composite_da_multiplier( state );
 
@@ -2510,7 +2510,7 @@ struct death_knight_action_t : public Base
     return m;
   }
 
-  virtual double composite_ta_multiplier( const action_state_t* state ) const override
+  double composite_ta_multiplier( const action_state_t* state ) const override
   {
     double m = Base::composite_ta_multiplier( state );
 
@@ -3015,7 +3015,7 @@ struct auto_attack_t : public death_knight_melee_attack_t
     trigger_gcd = 0_ms;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     player -> main_hand_attack -> schedule_execute();
     if ( player -> off_hand_attack )
@@ -3024,7 +3024,7 @@ struct auto_attack_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( player -> is_moving() )
       return false;
@@ -3076,7 +3076,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* candidate_target ) override
   {
     death_knight_td_t* td = p() -> get_target_data( candidate_target );
 
@@ -3232,7 +3232,7 @@ struct blood_plague_t : public death_knight_spell_t
     base_tick_time *= 1.0 + p -> talent.rapid_decomposition -> effectN( 1 ).percent();
   }
 
-  virtual double bonus_ta( const action_state_t* state ) const override
+  double bonus_ta( const action_state_t* state ) const override
   {
     double ta = death_knight_spell_t::bonus_ta( state );
 
@@ -3686,7 +3686,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     parse_options( options_str );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -3708,7 +3708,7 @@ struct dark_command_t: public death_knight_spell_t
     use_off_gcd = true;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     if ( s -> target -> is_enemy() )
       target -> taunt( player );
@@ -4051,7 +4051,7 @@ struct deaths_caress_t : public death_knight_spell_t
     parse_options( options_str );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     death_knight_spell_t::execute();
 

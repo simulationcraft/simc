@@ -130,12 +130,12 @@ struct action_execute_event_t : public player_event_t
             ( a->marker ) ? a->marker : '0' );
   }
 
-  virtual const char* name() const override
+  const char* name() const override
   {
     return "Action-Execute";
   }
 
-  ~action_execute_event_t()
+  ~action_execute_event_t() override
   {
     // Ensure we properly release the carried execute_state even if this event
     // is never executed.
@@ -2669,7 +2669,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
     {
     }
 
-    virtual ~action_state_expr_t()
+    ~action_state_expr_t() override
     {
       delete state;
     }
@@ -2696,7 +2696,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
       state->result       = result_type;
     }
 
-    virtual double evaluate() override
+    double evaluate() override
     {
       action.snapshot_state( state, amount_type );
       state->target = action.target;
@@ -2794,7 +2794,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
       tick_time_expr_t( action_t& a ) : action_expr_t( "tick_time", a )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         dot_t* dot = action.find_dot( action.target );
         if ( dot && dot->is_ticking() )
@@ -2813,7 +2813,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
       new_tick_time_expr_t( action_t& a ) : action_state_expr_t( "new_tick_time", a )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         action.snapshot_state( state, result_amount_type::DMG_OVER_TIME );
         return action.tick_time( state ).total_seconds();
@@ -2832,7 +2832,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
       miss_react_expr_t( action_t& a ) : action_expr_t( "miss_react", a )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         dot_t* dot = action.find_dot( action.target );
         if ( dot && ( dot->miss_time < timespan_t::zero() || action.sim->current_time() >= ( dot->miss_time ) ) )
@@ -2857,7 +2857,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
       cast_delay_expr_t( action_t& a ) : action_expr_t( "cast_delay", a )
       {
       }
-      virtual double evaluate() override
+      double evaluate() override
       {
         if ( action.sim->debug )
         {
@@ -2888,7 +2888,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
         state->chain_target = 0;
       }
 
-      virtual double evaluate() override
+      double evaluate() override
       {
         action.snapshot_state( state, result_amount_type::NONE );
         state->target = action.target;
@@ -2909,7 +2909,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
         state->chain_target = 0;
       }
 
-      virtual double evaluate() override
+      double evaluate() override
       {
         action.snapshot_state( state, result_amount_type::NONE );
         state->target = action.target;
@@ -2957,7 +2957,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
         state->chain_target = 0;
       }
 
-      virtual double evaluate() override
+      double evaluate() override
       {
         state->target = action.target;
         action.snapshot_state( state, result_amount_type::NONE );
@@ -3102,7 +3102,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
           : action_expr_t( "prev", a ), prev( a.player->find_action( prev_action ) )
         {
         }
-        virtual double evaluate() override
+        double evaluate() override
         {
           if ( prev && action.player->last_foreground_action )
             return action.player->last_foreground_action->internal_id == prev->internal_id;
@@ -3120,7 +3120,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
           : action_expr_t( "prev_off_gcd", a ), previously_off_gcd( a.player->find_action( offgcdaction ) )
         {
         }
-        virtual double evaluate() override
+        double evaluate() override
         {
           if ( previously_off_gcd != nullptr && action.player->off_gcdactions.size() > 0 )
           {
@@ -3285,7 +3285,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
         }
       }
 
-      virtual double evaluate() override
+      double evaluate() override
       {
         if ( !previously_used )
           return false;
@@ -3480,7 +3480,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
           in_flight_multi_expr_t( const std::vector<action_t*>& al ) : expr_t( "in_flight" ), action_list( al )
           {
           }
-          virtual double evaluate() override
+          double evaluate() override
           {
             for ( size_t i = 0; i < action_list.size(); i++ )
             {
@@ -3504,7 +3504,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
             : expr_t( "in_flight_to_target" ), action_list( al ), action( a )
           {
           }
-          virtual double evaluate() override
+          double evaluate() override
           {
             for ( size_t i = 0; i < action_list.size(); i++ )
             {
@@ -3527,7 +3527,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
             action_list( al )
           { }
 
-          virtual double evaluate() override
+          double evaluate() override
           {
             bool event_found = false;
             timespan_t t = timespan_t::max();

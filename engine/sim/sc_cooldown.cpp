@@ -71,7 +71,7 @@ struct ready_trigger_event_t : public player_event_t
     cooldown( cd )
   { }
 
-  virtual const char* name() const override
+  const char* name() const override
   { return "ready_trigger_event"; }
 
   void execute() override

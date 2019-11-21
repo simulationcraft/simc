@@ -655,7 +655,7 @@ struct rogue_t : public player_t
 
   target_specific_t<rogue_td_t> target_data;
 
-  virtual rogue_td_t* get_target_data( player_t* target ) const override
+  rogue_td_t* get_target_data( player_t* target ) const override
   {
     rogue_td_t*& td = target_data[ target ];
     if ( ! td )
@@ -1223,7 +1223,7 @@ struct secondary_ability_trigger_t : public event_t
     state = nullptr;
   }
 
-  ~secondary_ability_trigger_t()
+  ~secondary_ability_trigger_t() override
   { if ( state ) action_state_t::release( state ); }
 };
 
@@ -1680,7 +1680,7 @@ struct apply_poison_t : public action_t
     executed = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     executed = true;
 
@@ -1688,7 +1688,7 @@ struct apply_poison_t : public action_t
       sim -> out_log.printf( "%s performs %s", player -> name(), name() );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( player -> specialization() != ROGUE_ASSASSINATION )
     {
@@ -1904,7 +1904,7 @@ struct melee_t : public rogue_attack_t
     first = true;
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     timespan_t t = rogue_attack_t::execute_time();
     if ( first )
@@ -1914,7 +1914,7 @@ struct melee_t : public rogue_attack_t
     return t;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     if ( first )
     {
@@ -2026,7 +2026,7 @@ struct auto_melee_attack_t : public action_t
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     player -> main_hand_attack -> schedule_execute();
 
@@ -2034,7 +2034,7 @@ struct auto_melee_attack_t : public action_t
       player -> off_hand_attack -> schedule_execute();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( player -> is_moving() )
       return false;
@@ -2397,7 +2397,7 @@ struct envenom_t : public rogue_attack_t
     return b;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -2842,14 +2842,14 @@ struct killing_spree_t : public rogue_attack_t
   timespan_t tick_time( const action_state_t* ) const override
   { return base_tick_time; }
 
-  virtual void execute() override
+  void execute() override
   {
     p() -> buffs.killing_spree -> trigger();
 
     rogue_attack_t::execute();
   }
 
-  virtual void tick( dot_t* d ) override
+  void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
 
@@ -3933,7 +3933,7 @@ struct stealth_t : public rogue_attack_t
     parse_options( options_str );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -3950,7 +3950,7 @@ struct stealth_t : public rogue_attack_t
       event_t::cancel( p() -> off_hand_attack -> execute_event );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p() -> stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
       return false;
@@ -7502,7 +7502,7 @@ public:
   {
   }
 
-  virtual void html_customsection( report::sc_html_stream& ) override
+  void html_customsection( report::sc_html_stream& ) override
   {
     // Custom Class Section can be added here
     ( void )p;
@@ -7517,17 +7517,17 @@ struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto p = new rogue_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new rogue_report_t( *p ) );
     return p;
   }
 
-  virtual bool valid() const override
+  bool valid() const override
   { return true; }
 
-  virtual void static_init() const override
+  void static_init() const override
   {
   }
 
@@ -7535,9 +7535,9 @@ struct rogue_module_t : public module_t
   {
   }
 
-  virtual void init( player_t* ) const override {}
-  virtual void combat_begin( sim_t* ) const override {}
-  virtual void combat_end( sim_t* ) const override {}
+  void init( player_t* ) const override {}
+  void combat_begin( sim_t* ) const override {}
+  void combat_end( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE

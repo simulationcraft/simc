@@ -947,7 +947,7 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
                           hunter_action_t( n, p, s )
   {}
 
-  void init()
+  void init() override
   {
     hunter_action_t::init();
 

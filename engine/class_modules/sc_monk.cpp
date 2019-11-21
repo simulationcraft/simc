@@ -776,63 +776,63 @@ public:
   std::string default_rune() const override;
 
   // player_t overrides
-  virtual action_t* create_action( const std::string& name, const std::string& options ) override;
-  virtual double composite_base_armor_multiplier() const override;
-  virtual double composite_melee_crit_chance() const override;
-  virtual double composite_melee_crit_chance_multiplier() const override;
-  virtual double composite_spell_crit_chance() const override;
-  virtual double composite_spell_crit_chance_multiplier() const override;
-  virtual double resource_regen_per_second( resource_e ) const override;
-  virtual double composite_attribute_multiplier( attribute_e attr ) const override;
-  virtual double composite_player_multiplier( school_e school ) const override;
-  virtual double composite_player_heal_multiplier( const action_state_t* s ) const override;
-  virtual double composite_melee_expertise( const weapon_t* weapon ) const override;
-  virtual double composite_melee_attack_power() const override;
-  virtual double composite_melee_attack_power(attack_power_type ap_type ) const override;
-  virtual double composite_spell_haste() const override;
-  virtual double composite_melee_haste() const override;
-  virtual double composite_attack_power_multiplier() const override;
-  virtual double composite_parry() const override;
-  virtual double composite_dodge() const override;
-  virtual double composite_mastery() const override;
-  virtual double composite_mastery_rating() const override;
-  virtual double composite_crit_avoidance() const override;
-  virtual double composite_rating_multiplier( rating_e rating ) const override;
-  virtual double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
-  virtual double temporary_movement_modifier() const override;
-  virtual double passive_movement_modifier() const override;
-  virtual pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
-  virtual void create_pets() override;
-  virtual void init_spells() override;
-  virtual void init_base_stats() override;
-  virtual void init_scaling() override;
-  virtual void create_buffs() override;
-  virtual void init_gains() override;
-  virtual void init_procs() override;
-  virtual void init_assessors() override;
-  virtual void init_rng() override;
-  virtual void init_resources( bool ) override;
-  virtual void regen( timespan_t periodicity ) override;
-  virtual void reset() override;
-  virtual void interrupt() override;
-  virtual double matching_gear_multiplier( attribute_e attr ) const override;
-  virtual void recalculate_resource_max( resource_e ) override;
-  virtual void create_options() override;
-  virtual void copy_from( player_t* ) override;
-  virtual resource_e primary_resource() const override;
-  virtual role_e primary_role() const override;
-  virtual stat_e convert_hybrid_stat( stat_e s ) const override;
-  virtual void pre_analyze_hook() override;
-  virtual void combat_begin() override;
-  virtual void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
-  virtual void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
-  virtual void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* s ) override;
-  virtual void assess_heal( school_e, result_amount_type, action_state_t* s ) override;
-  virtual void invalidate_cache( cache_e ) override;
-  virtual void init_action_list() override;
+  action_t* create_action( const std::string& name, const std::string& options ) override;
+  double composite_base_armor_multiplier() const override;
+  double composite_melee_crit_chance() const override;
+  double composite_melee_crit_chance_multiplier() const override;
+  double composite_spell_crit_chance() const override;
+  double composite_spell_crit_chance_multiplier() const override;
+  double resource_regen_per_second( resource_e ) const override;
+  double composite_attribute_multiplier( attribute_e attr ) const override;
+  double composite_player_multiplier( school_e school ) const override;
+  double composite_player_heal_multiplier( const action_state_t* s ) const override;
+  double composite_melee_expertise( const weapon_t* weapon ) const override;
+  double composite_melee_attack_power() const override;
+  double composite_melee_attack_power(attack_power_type ap_type ) const override;
+  double composite_spell_haste() const override;
+  double composite_melee_haste() const override;
+  double composite_attack_power_multiplier() const override;
+  double composite_parry() const override;
+  double composite_dodge() const override;
+  double composite_mastery() const override;
+  double composite_mastery_rating() const override;
+  double composite_crit_avoidance() const override;
+  double composite_rating_multiplier( rating_e rating ) const override;
+  double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
+  double temporary_movement_modifier() const override;
+  double passive_movement_modifier() const override;
+  pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
+  void create_pets() override;
+  void init_spells() override;
+  void init_base_stats() override;
+  void init_scaling() override;
+  void create_buffs() override;
+  void init_gains() override;
+  void init_procs() override;
+  void init_assessors() override;
+  void init_rng() override;
+  void init_resources( bool ) override;
+  void regen( timespan_t periodicity ) override;
+  void reset() override;
+  void interrupt() override;
+  double matching_gear_multiplier( attribute_e attr ) const override;
+  void recalculate_resource_max( resource_e ) override;
+  void create_options() override;
+  void copy_from( player_t* ) override;
+  resource_e primary_resource() const override;
+  role_e primary_role() const override;
+  stat_e convert_hybrid_stat( stat_e s ) const override;
+  void pre_analyze_hook() override;
+  void combat_begin() override;
+  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
+  void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
+  void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* s ) override;
+  void assess_heal( school_e, result_amount_type, action_state_t* s ) override;
+  void invalidate_cache( cache_e ) override;
+  void init_action_list() override;
   void activate() override;
-  virtual std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
-  virtual monk_td_t* get_target_data( player_t* target ) const override
+  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
+  monk_td_t* get_target_data( player_t* target ) const override
   {
     monk_td_t*& td = target_data[ target ];
     if ( !td )
@@ -943,7 +943,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       this->base_costs[ RESOURCE_CHI ]    = 0;
     }
 
-    void init()
+    void init() override
     {
       super_t::init();
 
@@ -1000,7 +1000,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     // the state-related stuff is actually mapped to the source (owner) action
     // below.
 
-    double composite_target_multiplier( player_t* t ) const
+    double composite_target_multiplier( player_t* t ) const override
     {
       double m = super_t::composite_target_multiplier( t );
 
@@ -1013,62 +1013,62 @@ struct storm_earth_and_fire_pet_t : public pet_t
     // AP through the pet's own AP system. This allows us to override the
     // inheritance coefficient if need be in an easy way.
 
-    double attack_direct_power_coefficient( const action_state_t* state ) const
+    double attack_direct_power_coefficient( const action_state_t* state ) const override
     {
       return source_action->attack_direct_power_coefficient( state );
     }
 
-    double attack_tick_power_coefficient( const action_state_t* state ) const
+    double attack_tick_power_coefficient( const action_state_t* state ) const override
     {
       return source_action->attack_tick_power_coefficient( state );
     }
 
-    timespan_t composite_dot_duration( const action_state_t* s ) const
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
     {
       return source_action->composite_dot_duration( s );
     }
 
-    timespan_t tick_time( const action_state_t* s ) const
+    timespan_t tick_time( const action_state_t* s ) const override
     {
       return source_action->tick_time( s );
     }
 
-    double composite_da_multiplier( const action_state_t* s ) const
+    double composite_da_multiplier( const action_state_t* s ) const override
     {
       return source_action->composite_da_multiplier( s );
     }
 
-    double composite_ta_multiplier( const action_state_t* s ) const
+    double composite_ta_multiplier( const action_state_t* s ) const override
     {
       return source_action->composite_ta_multiplier( s );
     }
 
-    double composite_persistent_multiplier( const action_state_t* s ) const
+    double composite_persistent_multiplier( const action_state_t* s ) const override
     {
       return source_action->composite_persistent_multiplier( s );
     }
 
-    double composite_versatility( const action_state_t* s ) const
+    double composite_versatility( const action_state_t* s ) const override
     {
       return source_action->composite_versatility( s );
     }
 
-    double composite_haste() const
+    double composite_haste() const override
     {
       return source_action->composite_haste();
     }
 
-    timespan_t travel_time() const
+    timespan_t travel_time() const override
     {
       return source_action->travel_time();
     }
 
-    int n_targets() const
+    int n_targets() const override
     {
       return source_action ? source_action->n_targets() : super_t::n_targets();
     }
 
-    void execute()
+    void execute() override
     {
       // Target always follows the SEF clone's target, which is assigned during
       // summon time
@@ -1077,7 +1077,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       super_t::execute();
     }
 
-    void snapshot_internal( action_state_t* state, uint32_t flags, result_amount_type rt )
+    void snapshot_internal( action_state_t* state, uint32_t flags, result_amount_type rt ) override
     {
       super_t::snapshot_internal( state, flags, rt );
 
@@ -1308,7 +1308,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       }
     }
 
-    virtual bool ready() override
+    bool ready() override
     {
       if ( player->is_moving() )
         return false;
@@ -1316,7 +1316,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
     }
 
-    virtual void execute() override
+    void execute() override
     {
       player->main_hand_attack->schedule_execute();
 
@@ -1407,7 +1407,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return b;
     }
 
-    virtual double composite_crit_chance() const override
+    double composite_crit_chance() const override
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
@@ -1441,7 +1441,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
     }
 
-    virtual void execute() override
+    void execute() override
     {
       sef_melee_attack_t::execute();
 
@@ -1944,7 +1944,7 @@ private:
       trigger_gcd = timespan_t::zero();
     }
 
-    virtual bool ready() override
+    bool ready() override
     {
       if ( player->is_moving() )
         return false;
@@ -1952,7 +1952,7 @@ private:
       return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
     }
 
-    virtual void execute() override
+    void execute() override
     {
       player->main_hand_attack->schedule_execute();
 
@@ -1982,7 +1982,7 @@ public:
     return static_cast<monk_t*>( owner );
   }
 
-  virtual void init_action_list() override
+  void init_action_list() override
   {
     action_list_str = "auto_attack";
     action_list_str += "/crackling_tiger_lightning";
@@ -2085,7 +2085,7 @@ private:
       trigger_gcd = timespan_t::zero();
     }
 
-    virtual bool ready() override
+    bool ready() override
     {
       if ( player->is_moving() )
         return false;
@@ -2093,7 +2093,7 @@ private:
       return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
     }
 
-    virtual void execute() override
+    void execute() override
     {
       player->main_hand_attack->schedule_execute();
 
@@ -2123,7 +2123,7 @@ public:
     return static_cast<monk_t*>( owner );
   }
 
-  virtual void init_action_list() override
+  void init_action_list() override
   {
     action_list_str = "auto_attack";
     action_list_str += "/crackling_tiger_lightning";
@@ -2222,7 +2222,7 @@ private:
       trigger_gcd = timespan_t::zero();
     }
 
-    virtual bool ready() override
+    bool ready() override
     {
       if ( player->is_moving() )
         return false;
@@ -2230,7 +2230,7 @@ private:
       return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
     }
 
-    virtual void execute() override
+    void execute() override
     {
       player->main_hand_attack->schedule_execute();
 
@@ -2265,7 +2265,7 @@ public:
     return m;
   }
 
-  virtual void init_action_list() override
+  void init_action_list() override
   {
     action_list_str = "auto_attack";
     action_list_str += "/stomp";
@@ -2484,7 +2484,7 @@ public:
     }
   }
 
-  virtual ~monk_action_t()
+  ~monk_action_t() override
   {
   }
 
@@ -2712,7 +2712,7 @@ public:
     return c;
   }
 
-  virtual void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
     timespan_t cd = cd_duration;
     // Only adjust cooldown (through serenity) if it's non zero.
@@ -2840,7 +2840,7 @@ public:
     trigger_storm_earth_and_fire( this );
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     if ( s->action->school == SCHOOL_PHYSICAL )
     {
@@ -2936,7 +2936,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
     ap_type = attack_power_type::WEAPON_MAINHAND;
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
     double m = base_t::composite_target_multiplier( t );
 
@@ -2994,7 +2994,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
     ap_type = attack_power_type::WEAPON_MAINHAND;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = base_t::composite_target_multiplier( target );
 
@@ -3095,7 +3095,7 @@ public:
     monk_spell_t::init_finished();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     pet->summon( summoning_duration );
 
@@ -3363,7 +3363,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     return rm;
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
     double m = base_t::composite_target_multiplier( t );
 
@@ -3426,7 +3426,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     }
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     base_t::impact( s );
 
@@ -3608,7 +3608,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     return b;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_melee_attack_t::execute();
 
@@ -3679,7 +3679,7 @@ struct tiger_palm_t : public monk_melee_attack_t
       p()->buff.tier19_oh_8pc->trigger();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
 
@@ -3735,7 +3735,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     affected_by.sunrise_technique = true;
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -3764,7 +3764,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       ap_type = attack_power_type::WEAPON_BOTH;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_melee_attack_t::execute();
 
@@ -3781,7 +3781,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     }
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
 
@@ -3861,7 +3861,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     ap_type = attack_power_type::NONE;
   }
 
-  virtual double composite_crit_chance() const override
+  double composite_crit_chance() const override
   {
     double c = monk_melee_attack_t::composite_crit_chance();
 
@@ -3871,7 +3871,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     return c;
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
 
@@ -3879,7 +3879,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_melee_attack_t::execute();
 
@@ -3943,12 +3943,12 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     return am;
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     return 0;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_melee_attack_t::execute();
 
@@ -3962,7 +3962,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
       p()->buff.swift_roundhouse->trigger();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
 
@@ -4022,7 +4022,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       ap_type = attack_power_type::WEAPON_BOTH;
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = monk_melee_attack_t::cost();
 
@@ -4032,7 +4032,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     return c;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p()->specialization() == MONK_BREWMASTER )
       return false;
@@ -4040,7 +4040,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     return monk_melee_attack_t::ready();
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -4063,7 +4063,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     return am;
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
 
@@ -4111,7 +4111,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       p()->buff.swift_roundhouse->trigger();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
 
@@ -4147,7 +4147,7 @@ struct blackout_strike_t : public monk_melee_attack_t
     cooldown->duration     = data().cooldown();
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -4168,7 +4168,7 @@ struct blackout_strike_t : public monk_melee_attack_t
     return b;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     // Only usable with 2-handed weapons
     if ( p()->main_hand_weapon.type <= WEAPON_1H || p()->main_hand_weapon.type == WEAPON_NONE )
@@ -4188,7 +4188,7 @@ struct blackout_strike_t : public monk_melee_attack_t
       p()->buff.swift_roundhouse->trigger();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
 
@@ -4318,7 +4318,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     return mark_of_the_crane_counter;
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -4368,7 +4368,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = monk_melee_attack_t::cost();
 
@@ -4378,7 +4378,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     return c;
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
 
@@ -4393,7 +4393,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, composite_dot_duration( execute_state ) );
   }
 
-  virtual void last_tick( dot_t* dot ) override
+  void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
 
@@ -4480,7 +4480,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     xuen = new actions::pet_summon::fury_of_xuen_spell_t( p );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     // Only usable with 1-handed weapons
     if ( p()->main_hand_weapon.type > WEAPON_1H || p()->main_hand_weapon.type == WEAPON_NONE )
@@ -4489,7 +4489,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     return monk_melee_attack_t::ready();
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = monk_melee_attack_t::cost();
 
@@ -4499,7 +4499,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     return c;
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
 
@@ -4537,7 +4537,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
       p()->buff.iron_fists->trigger();
   }
 
-  virtual void last_tick( dot_t* dot ) override
+  void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
 
@@ -4587,7 +4587,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
         new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p->passives.whirling_dragon_punch_tick );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     // Only usable while Fists of Fury and Rising Sun Kick are on cooldown.
     if ( p()->cooldown.fists_of_fury->down() && p()->cooldown.rising_sun_kick->down() )
@@ -4695,7 +4695,7 @@ struct melee_t : public monk_melee_attack_t
     }
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -4720,7 +4720,7 @@ struct melee_t : public monk_melee_attack_t
     first = true;
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     timespan_t t = monk_melee_attack_t::execute_time();
 
@@ -4794,7 +4794,7 @@ struct auto_attack_t : public monk_melee_attack_t
     return ( p()->main_hand_attack->execute_event == nullptr );  // not swinging
   }
 
-  virtual void execute() override
+  void execute() override
   {
     if ( player->main_hand_attack )
       p()->main_hand_attack->schedule_execute();
@@ -4828,7 +4828,7 @@ struct keg_smash_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -4838,14 +4838,14 @@ struct keg_smash_t : public monk_melee_attack_t
     return am;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
 
     td( s->target )->debuff.keg_smash->trigger();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_melee_attack_t::execute();
 
@@ -4910,7 +4910,7 @@ struct touch_of_death_t : public monk_spell_t
     add_child( touch_of_death_amplifier );
   }
 
-  virtual bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* candidate_target ) override
   {
     // Cannot be used on a target that has Touch of Death on them already
     if ( td( candidate_target )->dots.touch_of_death->is_ticking() )
@@ -4980,7 +4980,7 @@ struct touch_of_death_t : public monk_spell_t
     monk_spell_t::last_tick( dot );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_spell_t::execute();
 
@@ -4996,7 +4996,7 @@ struct touch_of_death_t : public monk_spell_t
     }
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     monk_spell_t::impact( s );
 
@@ -5030,7 +5030,7 @@ struct touch_of_karma_dot_t : public residual_action::residual_periodic_action_t
   }
 
   // Need to disable multipliers in init() so that it doesn't double-dip on anything
-  virtual void init() override
+  void init() override
   {
     monk_melee_attack_t::init();
     // disable the snapshot_flags for all multipliers
@@ -5084,7 +5084,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
   }
 
   // Need to disable multipliers in init() so that it doesn't double-dip on anything
-  virtual void init() override
+  void init() override
   {
     monk_melee_attack_t::init();
     // disable the snapshot_flags for all multipliers
@@ -5153,7 +5153,7 @@ struct spear_hand_strike_t : public monk_melee_attack_t
     may_miss = may_block = may_dodge = may_parry = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_melee_attack_t::execute();
 
@@ -5175,7 +5175,7 @@ struct leg_sweep_t : public monk_melee_attack_t
     may_miss = may_block = may_dodge = may_parry = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_melee_attack_t::execute();
 
@@ -5197,7 +5197,7 @@ struct paralysis_t : public monk_melee_attack_t
     may_miss = may_block = may_dodge = may_parry = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_melee_attack_t::execute();
 
@@ -5243,7 +5243,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
     return monk_melee_attack_t::ready();
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -5303,7 +5303,7 @@ struct energizing_elixir_t : public monk_spell_t
     energize_type                 = ENERGIZE_NONE;  // disable resource gain from spell data
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_spell_t::execute();
 
@@ -5331,7 +5331,7 @@ struct black_ox_brew_t : public monk_spell_t
     energize_type = ENERGIZE_NONE;  // disable resource gain from spell data
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_spell_t::execute();
 
@@ -5435,7 +5435,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     gcd_type = gcd_haste_type::SPELL_HASTE;
   }
 
-  virtual double cost_per_tick( resource_e resource ) const override
+  double cost_per_tick( resource_e resource ) const override
   {
     double c = monk_spell_t::cost_per_tick( resource );
 
@@ -5446,7 +5446,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     return c;
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = monk_spell_t::cost();
 
@@ -5467,7 +5467,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     return pm;
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = monk_spell_t::action_multiplier();
 
@@ -5529,7 +5529,7 @@ struct breath_of_fire_t : public monk_spell_t
       return b;
     }
 
-    virtual void impact( action_state_t* s ) override
+    void impact( action_state_t* s ) override
     {
       monk_spell_t::impact( s );
 
@@ -5550,7 +5550,7 @@ struct breath_of_fire_t : public monk_spell_t
     add_child( dot_action );
   }
 
-  virtual void update_ready( timespan_t ) override
+  void update_ready( timespan_t ) override
   {
     timespan_t cd = cooldown->duration;
 
@@ -5564,7 +5564,7 @@ struct breath_of_fire_t : public monk_spell_t
     monk_spell_t::update_ready( cd );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_spell_t::execute();
 
@@ -5572,7 +5572,7 @@ struct breath_of_fire_t : public monk_spell_t
       p()->buff.spitfire->expire();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     monk_spell_t::impact( s );
 
@@ -5611,7 +5611,7 @@ struct fortifying_brew_t : public monk_spell_t
     trigger_gcd        = timespan_t::zero();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_spell_t::execute();
 
@@ -5660,7 +5660,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     return PROC1_ANY_DAMAGE_TAKEN;
   }
 
-  virtual void init() override
+  void init() override
   {
     base_t::init();
 
@@ -5787,7 +5787,7 @@ struct special_delivery_t : public monk_spell_t
     radius                            = data().effectN( 1 ).radius();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     return p()->talent.special_delivery->ok();
   }
@@ -5797,7 +5797,7 @@ struct special_delivery_t : public monk_spell_t
     return timespan_t::from_seconds( p()->talent.special_delivery->effectN( 1 ).base_value() );
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     return 0;
   }
@@ -5998,7 +5998,7 @@ struct dampen_harm_t : public monk_spell_t
     base_dd_max = 0;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_spell_t::execute();
 
@@ -6022,7 +6022,7 @@ struct diffuse_magic_t : public monk_spell_t
     base_dd_max = 0;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     p()->buff.diffuse_magic->trigger();
     monk_spell_t::execute();
@@ -6045,7 +6045,7 @@ struct soothing_mist_t : public monk_heal_t
     tick_zero = true;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p()->buff.channeling_soothing_mist->check() )
       return false;
@@ -6053,14 +6053,14 @@ struct soothing_mist_t : public monk_heal_t
     return monk_heal_t::ready();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     monk_heal_t::impact( s );
 
     p()->buff.channeling_soothing_mist->trigger();
   }
 
-  virtual void last_tick( dot_t* d ) override
+  void last_tick( dot_t* d ) override
   {
     monk_heal_t::last_tick( d );
 
@@ -6131,7 +6131,7 @@ struct effuse_t : public monk_heal_t
     return am;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_heal_t::execute();
 
@@ -6167,7 +6167,7 @@ struct enveloping_mist_t : public monk_heal_t
     mastery = new gust_of_mists_t( p );
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = monk_heal_t::cost();
 
@@ -6177,7 +6177,7 @@ struct enveloping_mist_t : public monk_heal_t
     return c;
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     timespan_t et = monk_heal_t::execute_time();
 
@@ -6187,7 +6187,7 @@ struct enveloping_mist_t : public monk_heal_t
     return et;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_heal_t::execute();
 
@@ -6231,7 +6231,7 @@ struct renewing_mist_t : public monk_heal_t
     monk_heal_t::update_ready( cd );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_heal_t::execute();
 
@@ -6280,7 +6280,7 @@ struct vivify_t : public monk_heal_t
     return am;
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = monk_heal_t::cost();
 
@@ -6294,7 +6294,7 @@ struct vivify_t : public monk_heal_t
     return c;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_heal_t::execute();
 
@@ -6397,7 +6397,7 @@ struct gift_of_the_ox_t : public monk_heal_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p()->specialization() != MONK_BREWMASTER )
       return false;
@@ -6405,7 +6405,7 @@ struct gift_of_the_ox_t : public monk_heal_t
     return p()->buff.gift_of_the_ox->check();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_heal_t::execute();
 
@@ -6425,7 +6425,7 @@ struct gift_of_the_ox_trigger_t : public monk_heal_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_heal_t::execute();
 
@@ -6443,7 +6443,7 @@ struct gift_of_the_ox_expire_t : public monk_heal_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_heal_t::execute();
 
@@ -6489,12 +6489,12 @@ struct expel_harm_t : public monk_spell_t
     trigger_gcd = timespan_t::from_seconds( 1.0 );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     return p()->buff.gift_of_the_ox->check();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_spell_t::execute();
 
@@ -6552,7 +6552,7 @@ struct zen_pulse_dmg_t : public monk_spell_t
     heal = new zen_pulse_heal_t( *player );
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     monk_spell_t::impact( s );
 
@@ -6571,7 +6571,7 @@ struct zen_pulse_t : public monk_spell_t
     damage                           = new zen_pulse_dmg_t( player );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_spell_t::execute();
 
@@ -6699,7 +6699,7 @@ struct chi_burst_t : public monk_spell_t
     gcd_type = gcd_haste_type::SPELL_HASTE;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p()->talent.chi_burst->ok() )
       return monk_spell_t::ready();
@@ -6707,7 +6707,7 @@ struct chi_burst_t : public monk_spell_t
     return false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_spell_t::execute();
 
@@ -6742,7 +6742,7 @@ struct reverse_harm_damage_t : public monk_spell_t
     may_crit   = false;
   }
 
-  virtual void init() override
+  void init() override
   {
     monk_spell_t::init();
     // disable the snapshot_flags for all multipliers, but specifically allow
@@ -6771,7 +6771,7 @@ struct reverse_harm_t : public monk_heal_t
     base_dd_max = static_cast<int>( player.resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
   }
 
-  virtual void init() override
+  void init() override
   {
     monk_heal_t::init();
     // disable the snapshot_flags for all multipliers except for Versatility
@@ -6784,7 +6784,7 @@ struct reverse_harm_t : public monk_heal_t
     return essence_equipped && p()->specialization() == MONK_WINDWALKER ? monk_heal_t::ready() : false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_heal_t::execute();
 
@@ -6865,7 +6865,7 @@ struct celestial_fortune_t : public monk_heal_t
   }
 
   // Need to disable multipliers in init() so that it doesn't double-dip on anything
-  virtual void init() override
+  void init() override
   {
     monk_heal_t::init();
     // disable the snapshot_flags for all multipliers, but specifically allow
@@ -6915,7 +6915,7 @@ struct life_cocoon_t : public monk_absorb_t
     spell_power_mod.direct = 31.164;  // Hard Code 2015-Dec-29
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     p()->buff.life_cocoon->trigger( 1, s->result_amount );
     stats->add_result( 0.0, s->result_amount, result_amount_type::ABSORB, s->result, s->block_result, s->target );
@@ -10325,7 +10325,7 @@ std::unique_ptr<expr_t> monk_t::create_expression( const std::string& name_str )
       {
       }
 
-      virtual double evaluate() override
+      double evaluate() override
       {
         return player.current_stagger_tick_dmg_percent() > stagger_health_pct;
       }
@@ -10337,7 +10337,7 @@ std::unique_ptr<expr_t> monk_t::create_expression( const std::string& name_str )
       {
       }
 
-      virtual double evaluate() override
+      double evaluate() override
       {
         return player.current_stagger_tick_dmg();
       }
@@ -10349,7 +10349,7 @@ std::unique_ptr<expr_t> monk_t::create_expression( const std::string& name_str )
       {
       }
 
-      virtual double evaluate() override
+      double evaluate() override
       {
         return player.current_stagger_tick_dmg_percent() * 100;
       }
@@ -10404,7 +10404,7 @@ std::unique_ptr<expr_t> monk_t::create_expression( const std::string& name_str )
       {
       }
 
-      virtual double evaluate() override
+      double evaluate() override
       {
         return player.mark_of_the_crane_counter();
       }
@@ -10429,7 +10429,7 @@ public:
   {
   }
 
-  virtual void html_customsection( report::sc_html_stream& os ) override
+  void html_customsection( report::sc_html_stream& os ) override
   {
     // Custom Class Section
     if ( p.specialization() == MONK_BREWMASTER )
@@ -10553,23 +10553,23 @@ struct monk_module_t : public module_t
   {
   }
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto p              = new monk_t( sim, name, r );
     p->report_extension = std::unique_ptr<player_report_extension_t>( new monk_report_t( *p ) );
     return p;
   }
-  virtual bool valid() const override
+  bool valid() const override
   {
     return true;
   }
 
-  virtual void static_init() const override
+  void static_init() const override
   {
     items::init();
   }
 
-  virtual void register_hotfixes() const override
+  void register_hotfixes() const override
   {
     /*    hotfix::register_effect( "Monk", "2018-07-14", "Fists of Fury increased by 18.5%.", 303680 )
           .field( "ap_coeff" )
@@ -10586,15 +10586,15 @@ struct monk_module_t : public module_t
     */
   }
 
-  virtual void init( player_t* p ) const override
+  void init( player_t* p ) const override
   {
     p->buffs.windwalking_movement_aura =
         make_buff( p, "windwalking_movement_aura", p->find_spell( 166646 ) )->add_invalidate( CACHE_RUN_SPEED );
   }
-  virtual void combat_begin( sim_t* ) const override
+  void combat_begin( sim_t* ) const override
   {
   }
-  virtual void combat_end( sim_t* ) const override
+  void combat_end( sim_t* ) const override
   {
   }
 };

@@ -16,10 +16,10 @@ struct expiration_t : public event_t
   {
   }
 
-  virtual const char* name() const override
+  const char* name() const override
   { return "pet_expiration"; }
 
-  virtual void execute() override
+  void execute() override
   {
     pet.expiration = nullptr;
 

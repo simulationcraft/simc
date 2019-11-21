@@ -861,7 +861,7 @@ struct void_bolt_t final : public priest_spell_t
       background = dual = true;
     }
 
-    virtual timespan_t travel_time() const override
+    timespan_t travel_time() const override
     {
       return timespan_t::zero();
     }

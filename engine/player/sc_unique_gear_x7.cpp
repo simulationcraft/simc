@@ -50,7 +50,7 @@ struct base_bfa_aoe_proc_t : public base_bfa_proc_t<BASE>
     this->split_aoe_damage = true;
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = base_bfa_proc_t<BASE>::action_multiplier();
 
@@ -1655,7 +1655,7 @@ void items::briny_barnacle( special_effect_t& effect )
       aoe = -1;
     }
 
-    void impact( action_state_t* s )
+    void impact( action_state_t* s ) override
     {
       proc_t::impact( s );
       damage -> set_target( s -> target );
@@ -2153,7 +2153,7 @@ void items::berserkers_juju( special_effect_t& effect )
       proc_spell_t::init( );
     }
 
-    virtual void execute( ) override
+    void execute( ) override
     {
       //Testing indicates buff amount is +-15% of spelldata (scaled with -7 type) amount
       double health_percent = ( std::max( player -> resources.current[ RESOURCE_HEALTH ] * 1.0, 0.0 ) ) / player -> resources.max[ RESOURCE_HEALTH ] * 1.0;

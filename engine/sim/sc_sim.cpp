@@ -841,13 +841,13 @@ struct proxy_cast_check_t : public event_t
     uses( u ), _override( o ), start_time( st ), cooldown( cd ), duration( d )
   {
   }
-  virtual const char* name() const override
+  const char* name() const override
   { return "proxy_cast_check"; }
   virtual bool proxy_check() = 0;
   virtual void proxy_execute() = 0;
   virtual proxy_cast_check_t* proxy_schedule( timespan_t interval ) = 0;
 
-  virtual void execute() override
+  void execute() override
   {
     timespan_t interval = timespan_t::from_seconds( 0.25 );
 
@@ -891,9 +891,9 @@ struct sim_end_event_t : event_t
     event_t( s, end_time )
   {
   }
-  virtual const char* name() const override
+  const char* name() const override
   { return "sim_end_expected_time"; }
-  virtual void execute() override
+  void execute() override
   {
     sim().cancel_iteration();
   }
@@ -930,9 +930,9 @@ struct resource_timeline_collect_event_t : public event_t
     event_t( s, timespan_t::from_seconds( 1 ) )
   {
   }
-  virtual const char* name() const override
+  const char* name() const override
   { return "resource_timeline_collect_event_t"; }
-  virtual void execute() override
+  void execute() override
   {
     if ( sim().iterations == 1 || sim().current_iteration > 0 )
     {
@@ -986,10 +986,10 @@ struct regen_event_t : public event_t
     }
   }
 
-  virtual const char* name() const override
+  const char* name() const override
   { return "Regen Event"; }
 
-  virtual void execute() override
+  void execute() override
   {
     if ( ! sim().single_actor_batch )
     {
@@ -1110,10 +1110,10 @@ struct bloodlust_check_t : public event_t
    {
    }
 
-   virtual const char* name() const override
+   const char* name() const override
    { return "Bloodlust Check"; }
 
-   virtual void execute() override
+   void execute() override
    {
      sim_t& sim = this -> sim();
      player_t* t = sim.target;

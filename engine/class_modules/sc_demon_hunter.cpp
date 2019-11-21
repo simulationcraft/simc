@@ -625,7 +625,7 @@ public:
     return &( entries.back()->second );
   }
 
-  virtual ~demon_hunter_t();
+  ~demon_hunter_t() override;
 
 private:
   target_specific_t<demon_hunter_td_t> _target_data;
@@ -1190,7 +1190,7 @@ public:
     return p()->get_target_data( t );
   }
 
-  virtual timespan_t gcd() const override
+  timespan_t gcd() const override
   {
     timespan_t g = ab::gcd();
 
@@ -1232,7 +1232,7 @@ public:
     ab::init_finished();
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = ab::composite_target_multiplier( target );
 
@@ -1248,7 +1248,7 @@ public:
     return m;
   }
 
-  virtual double composite_da_multiplier( const action_state_t* s ) const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = ab::composite_da_multiplier( s );
 
@@ -1265,7 +1265,7 @@ public:
     return m;
   }
 
-  virtual double composite_ta_multiplier( const action_state_t* s ) const override
+  double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double m = ab::composite_ta_multiplier( s );
 
@@ -1282,7 +1282,7 @@ public:
     return m;
   }
 
-  virtual double composite_energize_amount( const action_state_t* s ) const override
+  double composite_energize_amount( const action_state_t* s ) const override
   {
     double ea = ab::composite_energize_amount( s );
 
@@ -1315,7 +1315,7 @@ public:
     }
   } 
 
-  virtual void tick( dot_t* d ) override
+  void tick( dot_t* d ) override
   {
     ab::tick( d );
 
@@ -1327,7 +1327,7 @@ public:
     }
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     ab::impact( s );
 
@@ -1343,7 +1343,7 @@ public:
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     ab::execute();
 
@@ -1353,7 +1353,7 @@ public:
     }
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     ab::consume_resource();
 
@@ -1378,7 +1378,7 @@ public:
     }
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ( ab::execute_time() > timespan_t::zero() || ab::channeled ) &&
       ( p()->buff.out_of_range->check() || p()->soul_fragment_pick_up ) )
@@ -1399,7 +1399,7 @@ public:
     return ab::ready();
   }
 
-  virtual void update_ready( timespan_t cd ) override
+  void update_ready( timespan_t cd ) override
   {
     if ( cd_wasted_exec &&
       ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && ab::cooldown->duration > timespan_t::zero() ) ) &&
@@ -1843,7 +1843,7 @@ struct eye_beam_t : public demon_hunter_spell_t
       aoe = -1;
     }
 
-    virtual double composite_target_multiplier( player_t* target ) const override
+    double composite_target_multiplier( player_t* target ) const override
     {
       double m = demon_hunter_spell_t::composite_target_multiplier( target );
 
@@ -1855,7 +1855,7 @@ struct eye_beam_t : public demon_hunter_spell_t
       return m;
     }
 
-    virtual double bonus_da( const action_state_t* s ) const override
+    double bonus_da( const action_state_t* s ) const override
     {
       double b = demon_hunter_spell_t::bonus_da( s );
 
@@ -2180,7 +2180,7 @@ struct sigil_of_flame_damage_t : public demon_hunter_spell_t
     }
   }
 
-  dot_t* get_dot(player_t* t)
+  dot_t* get_dot(player_t* t) override
   {
     if (!t) t = target;
     if (!t) return nullptr;
@@ -3002,7 +3002,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       aoe = -1;
     }
 
-    virtual double composite_da_multiplier( const action_state_t* s ) const override
+    double composite_da_multiplier( const action_state_t* s ) const override
     {
       double dm = demon_hunter_attack_t::composite_da_multiplier( s );
 
@@ -3014,7 +3014,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       return dm;
     }
 
-    virtual double bonus_da( const action_state_t* s ) const override
+    double bonus_da( const action_state_t* s ) const override
     {
       double b = demon_hunter_attack_t::bonus_da( s );
 
@@ -3064,7 +3064,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     }
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = demon_hunter_attack_t::cost();
 
@@ -3094,7 +3094,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     // Blade Dance/Death Sweep Shared Cooldown
     cooldown->duration = data().cooldown();
@@ -3204,7 +3204,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       school = SCHOOL_CHAOS; // 7/16/2018 -- Manually setting since Blizzard broke the spell school data for Annihilation_2 (201428)
     }
     
-    virtual double composite_target_multiplier( player_t* target ) const override
+    double composite_target_multiplier( player_t* target ) const override
     {
       double m = demon_hunter_attack_t::composite_target_multiplier( target );
       
@@ -3216,7 +3216,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       return m;
     }
 
-    virtual double bonus_da( const action_state_t* s ) const override
+    double bonus_da( const action_state_t* s ) const override
     {
       double b = demon_hunter_attack_t::bonus_da( s );
 
@@ -3225,7 +3225,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       return b;
     }
 
-    virtual void execute() override
+    void execute() override
     {
       demon_hunter_attack_t::execute();
 
@@ -3252,7 +3252,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     // Don't put damage modifiers here, they should go in chaos_strike_damage_t.
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = demon_hunter_attack_t::cost();
 
@@ -3272,7 +3272,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     demon_hunter_attack_t::execute();
 
@@ -3386,7 +3386,7 @@ struct demons_bite_t : public demon_hunter_attack_t
     return ea;
   }
 
-  virtual double bonus_da( const action_state_t* s ) const override
+  double bonus_da( const action_state_t* s ) const override
   {
     double b = demon_hunter_attack_t::bonus_da( s );
 
@@ -3433,7 +3433,7 @@ struct demon_blades_t : public demon_hunter_attack_t
     energize_delta = energize_amount * data().effectN( 2 ).m_delta();
   }
 
-  virtual double bonus_da( const action_state_t* s ) const override
+  double bonus_da( const action_state_t* s ) const override
   {
     double b = demon_hunter_attack_t::bonus_da( s );
 
@@ -3880,7 +3880,7 @@ struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
     set_cooldown( timespan_t::zero() );
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
 
@@ -4022,7 +4022,7 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
     }
   }
 
-  virtual bool trigger(int stacks, double value, double chance, timespan_t duration) override
+  bool trigger(int stacks, double value, double chance, timespan_t duration) override
   {
     if (duration == timespan_t::min())
     {
@@ -4527,7 +4527,7 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( const std::string& na
       {
       }
 
-      virtual double evaluate() override
+      double evaluate() override
       {
         return dh->get_active_soul_fragments( type );
       }

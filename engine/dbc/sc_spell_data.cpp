@@ -284,7 +284,7 @@ struct spell_list_expr_t : public spell_data_expr_t
   spell_list_expr_t( sim_t* sim, const std::string& name, expr_data_e type = DATA_SPELL, bool eq = false ) :
     spell_data_expr_t( sim, name, type, eq, expression::TOK_SPELL_LIST ) { }
 
-  virtual int evaluate() override
+  int evaluate() override
   {
     unsigned spell_id;
 
@@ -411,7 +411,7 @@ struct spell_list_expr_t : public spell_data_expr_t
   }
 
   // Intersect two spell lists
-  virtual std::vector<uint32_t> operator&( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator&( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -429,7 +429,7 @@ struct spell_list_expr_t : public spell_data_expr_t
   }
 
   // Merge two spell lists, uniqueing entries
-  virtual std::vector<uint32_t> operator|( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator|( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -447,7 +447,7 @@ struct spell_list_expr_t : public spell_data_expr_t
   }
 
   // Subtract two spell lists, other from this
-  virtual std::vector<uint32_t>operator-( const spell_data_expr_t& other ) override
+  std::vector<uint32_t>operator-( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -474,7 +474,7 @@ struct sd_expr_binary_t : public spell_list_expr_t
   sd_expr_binary_t( sim_t* sim, const std::string& n, int o, spell_data_expr_t* l, spell_data_expr_t* r ) :
     spell_list_expr_t( sim, n ), operation( o ), left( l ), right( r ) { }
 
-  virtual int evaluate() override
+  int evaluate() override
   {
     int  left_result =  left -> evaluate();
 
@@ -684,7 +684,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     }
   }
 
-  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -702,7 +702,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return res;
   }
 
-  virtual std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -720,7 +720,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return res;
   }
 
-  virtual std::vector<uint32_t> operator<( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator<( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -740,7 +740,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return res;
   }
 
-  virtual std::vector<uint32_t> operator<=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator<=( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -760,7 +760,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return res;
   }
 
-  virtual std::vector<uint32_t> operator>( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator>( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -780,7 +780,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return res;
   }
 
-  virtual std::vector<uint32_t> operator>=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator>=( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -800,7 +800,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return res;
   }
 
-  virtual std::vector<uint32_t> in( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> in( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -819,7 +819,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return res;
   }
 
-  virtual std::vector<uint32_t> not_in( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> not_in( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -843,7 +843,7 @@ struct spell_class_expr_t : public spell_list_expr_t
 {
   spell_class_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "class", type ) { }
 
-  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
     uint32_t              class_mask;
@@ -879,7 +879,7 @@ struct spell_class_expr_t : public spell_list_expr_t
     return res;
   }
 
-  virtual std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
     uint32_t              class_mask;
@@ -919,7 +919,7 @@ struct spell_race_expr_t : public spell_list_expr_t
 {
   spell_race_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "race", type ) { }
 
-  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
     uint64_t              race_mask;
@@ -948,7 +948,7 @@ struct spell_race_expr_t : public spell_list_expr_t
     return res;
   }
 
-  virtual std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
     uint64_t              class_mask;
@@ -981,7 +981,7 @@ struct spell_flag_expr_t : public spell_list_expr_t
 {
   spell_flag_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "flag", type ) { }
 
-  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -1012,7 +1012,7 @@ struct spell_attribute_expr_t : public spell_list_expr_t
 {
   spell_attribute_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "attribute", type ) { }
 
-  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
 
@@ -1048,7 +1048,7 @@ struct spell_school_expr_t : public spell_list_expr_t
 {
   spell_school_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "school", type ) { }
 
-  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
     uint32_t              school_mask;
@@ -1073,7 +1073,7 @@ struct spell_school_expr_t : public spell_list_expr_t
     return res;
   }
 
-  virtual std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
     uint32_t              school_mask;

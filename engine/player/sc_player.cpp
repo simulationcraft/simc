@@ -252,11 +252,11 @@ struct player_ready_event_t : public player_event_t
     if ( sim().debug )
       sim().out_debug.printf( "New Player-Ready Event: %s", p.name() );
   }
-  virtual const char* name() const override
+  const char* name() const override
   {
     return "Player-Ready";
   }
-  virtual void execute() override
+  void execute() override
   {
     p()->readying = nullptr;
     p()->current_execute_type = execute_type::FOREGROUND;
@@ -368,13 +368,13 @@ struct execute_pet_action_t : public action_t
     action_t::init_finished();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     assert(pet_action);
     pet_action->execute();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( !pet )
     {
@@ -884,12 +884,12 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
                                 amount );
     }
 
-    virtual const char* name() const override
+    const char* name() const override
     {
       return "residual_action_delay_event";
     }
 
-    virtual void execute() override
+    void execute() override
     {
       // Don't ignite on targets that are not active
       if ( target->is_sleeping() )
@@ -7166,7 +7166,7 @@ struct start_moving_t : public action_t
     ignore_false_positive = true;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     player->buffs.movement->trigger();
 
@@ -7176,7 +7176,7 @@ struct start_moving_t : public action_t
     update_ready();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( player->buffs.movement->check() )
       return false;
@@ -7196,7 +7196,7 @@ struct stop_moving_t : public action_t
     ignore_false_positive = true;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     player->buffs.movement->expire();
 
@@ -7205,7 +7205,7 @@ struct stop_moving_t : public action_t
     update_ready();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( !player->buffs.movement->check() )
       return false;
@@ -7687,7 +7687,7 @@ struct berserking_t : public racial_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     racial_spell_t::execute();
 
@@ -7705,7 +7705,7 @@ struct blood_fury_t : public racial_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     racial_spell_t::execute();
 
@@ -7723,7 +7723,7 @@ struct darkflight_t : public racial_spell_t
     parse_options( options_str );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     racial_spell_t::execute();
 
@@ -7752,7 +7752,7 @@ struct stoneform_t : public racial_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     racial_spell_t::execute();
 
@@ -7969,7 +7969,7 @@ struct restart_sequence_t : public action_t
     trigger_gcd           = timespan_t::zero();
   }
 
-  virtual void init() override
+  void init() override
   {
     action_t::init();
 
@@ -7996,14 +7996,14 @@ struct restart_sequence_t : public action_t
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     if ( sim->debug )
       sim->out_debug.printf( "%s restarting sequence %s", player->name(), seq_name_str.c_str() );
     seq->restart();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     bool ret = seq && seq->can_restart();
     if ( ret )
@@ -8029,7 +8029,7 @@ struct restore_mana_t : public action_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     double mana_missing = player->resources.max[ RESOURCE_MANA ] - player->resources.current[ RESOURCE_MANA ];
     double mana_gain    = mana;
@@ -8067,7 +8067,7 @@ struct wait_fixed_t : public wait_action_base_t
     }
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     timespan_t wait = timespan_t::from_seconds( time_expr->eval() );
     if ( wait <= timespan_t::zero() )
@@ -8087,7 +8087,7 @@ struct wait_until_ready_t : public wait_fixed_t
     quiet                 = true;
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     timespan_t wait    = wait_fixed_t::execute_time();
     timespan_t remains = timespan_t::zero();
@@ -8723,14 +8723,14 @@ struct cancel_buff_t : public action_t
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     if ( sim->log )
       sim->out_log.printf( "%s cancels buff %s", player->name(), buff->name() );
     buff->expire();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( !buff || !buff->check() )
       return false;
@@ -8751,13 +8751,13 @@ struct cancel_action_t : public action_t
     action_skill = 1;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     sim->print_log( "{} performs {}", player->name(), name() );
     player->interrupt();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( !player->executing && !player->channeling )
       return false;
@@ -8821,7 +8821,7 @@ struct pool_resource_t : public action_t
     }
   }
 
-  virtual void reset() override
+  void reset() override
   {
     action_t::reset();
 
@@ -8850,7 +8850,7 @@ struct pool_resource_t : public action_t
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     if ( sim->log )
       sim->out_log.printf( "%s performs %s", player->name(), name() );
@@ -8858,12 +8858,12 @@ struct pool_resource_t : public action_t
     player->iteration_pooling_time += wait;
   }
 
-  virtual timespan_t gcd() const override
+  timespan_t gcd() const override
   {
     return wait;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     bool rd = action_t::ready();
     if ( !rd )
@@ -9888,7 +9888,7 @@ struct position_expr_t : public player_expr_t
   position_expr_t( const std::string& n, player_t& p, int m ) : player_expr_t( n, p ), mask( m )
   {
   }
-  virtual double evaluate() override
+  double evaluate() override
   {
     return ( 1 << player.position() ) & mask;
   }
@@ -10330,7 +10330,7 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
           swing_remains_expr_t( player_t& p, slot_e s ) : player_expr_t( "swing_remains", p ), slot( s )
           {
           }
-          virtual double evaluate() override
+          double evaluate() override
           {
             attack_t* attack = ( slot == SLOT_MAIN_HAND ) ? player.main_hand_attack : player.off_hand_attack;
             if ( attack && attack->execute_event )

@@ -70,14 +70,14 @@ struct rng_mt_cxx11_t : public rng_t
 
   rng_mt_cxx11_t() : dist(0,1) {}
 
-  virtual const char* name() const override { return "mt_cxx11"; }
+  const char* name() const override { return "mt_cxx11"; }
 
-  virtual void seed( uint64_t start ) override
+  void seed( uint64_t start ) override
   { 
     engine.seed( (unsigned) start ); 
   }
 
-  virtual double real() override
+  double real() override
   { 
     return dist( engine );
   }
@@ -89,14 +89,14 @@ struct rng_mt_cxx11_64_t : public rng_t
 
   rng_mt_cxx11_64_t() = default;
 
-  virtual const char* name() const override { return "mt_cxx11_64"; }
+  const char* name() const override { return "mt_cxx11_64"; }
 
-  virtual void seed( uint64_t start ) override
+  void seed( uint64_t start ) override
   {
     engine.seed( start );
   }
 
-  virtual double real() override
+  double real() override
   {
     return convert_to_double_0_1(engine());
   }
@@ -121,15 +121,15 @@ struct rng_murmurhash_t : public rng_t
     return x ^= x >> 33;
   }
 
-  virtual const char* name() const override { return "murmurhash3"; }
+  const char* name() const override { return "murmurhash3"; }
 
-  virtual void seed( uint64_t start ) override
+  void seed( uint64_t start ) override
   { 
     assert( start != 0 );
     x = start;
   }
 
-  virtual double real() override
+  double real() override
   { 
     return convert_to_double_0_1( next() );
   }
@@ -154,15 +154,15 @@ struct rng_xorshift64_t : public rng_t
     return x * 2685821657736338717LL;
   }
 
-  virtual const char* name() const override { return "xorshift64"; }
+  const char* name() const override { return "xorshift64"; }
 
-  virtual void seed( uint64_t start ) override
+  void seed( uint64_t start ) override
   { 
     assert( start != 0 );
     x = start;
   }
 
-  virtual double real() override
+  double real() override
   { 
     return convert_to_double_0_1( next() );
   }
@@ -188,9 +188,9 @@ struct rng_xorshift128_t : public rng_t
     return ( s[ 1 ] = ( s1 ^ s0 ^ ( s1 >> 17 ) ^ ( s0 >> 26 ) ) ) + s0; // b, c
   }
 
-  virtual const char* name() const override { return "xorshift128"; }
+  const char* name() const override { return "xorshift128"; }
 
-  virtual void seed( uint64_t start ) override
+  void seed( uint64_t start ) override
   { 
     rng_murmurhash_t mmh;
     mmh.seed( start );
@@ -199,7 +199,7 @@ struct rng_xorshift128_t : public rng_t
     s[ 1 ] = mmh.next();
   }
 
-  virtual double real() override
+  double real() override
   { 
     return convert_to_double_0_1( next() );
   }
@@ -227,9 +227,9 @@ struct rng_xorshift1024_t : public rng_t
     return ( s[ p ] = s0 ^ s1 ) * 1181783497276652981LL; 
   }
 
-  virtual const char* name() const override { return "xorshift1024"; }
+  const char* name() const override { return "xorshift1024"; }
 
-  virtual void seed( uint64_t start ) override
+  void seed( uint64_t start ) override
   { 
     rng_xorshift64_t xs64;
     xs64.seed( start );
@@ -237,7 +237,7 @@ struct rng_xorshift1024_t : public rng_t
     p = 0;
   }
 
-  virtual double real() override
+  double real() override
   { 
     return convert_to_double_0_1( next() );
   }
@@ -495,7 +495,7 @@ struct rng_sfmt_t : public rng_t
   { return _mm_free( p ); }
 #endif
 
-  virtual const char* name() const override {
+  const char* name() const override {
 #ifdef RNG_USE_SSE2
     return "sse2-sfmt";
 #else
@@ -503,12 +503,12 @@ struct rng_sfmt_t : public rng_t
 #endif
   }
   
-  virtual void seed( uint64_t start ) override
+  void seed( uint64_t start ) override
   { 
     dsfmt_chk_init_gen_rand( &dsfmt_global_data, (uint32_t) start ); 
   }
 
-  virtual double real() override
+  double real() override
   { 
     return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; 
   }
@@ -516,7 +516,7 @@ struct rng_sfmt_t : public rng_t
   /**
    * Special implementation because dsfmt only allows 32bit seed
    */
-  virtual uint64_t reseed() override
+  uint64_t reseed() override
   {
     uint64_t s = dsfmt_genrand_uint32( &dsfmt_global_data );
     seed( s );
@@ -601,9 +601,9 @@ struct rng_tinymt_t : public rng_t
     period_certification();
   }
 
-  virtual const char* name() const override { return "tinymt"; }
+  const char* name() const override { return "tinymt"; }
 
-  virtual void seed( uint64_t start ) override
+  void seed( uint64_t start ) override
   {
     // mat1, mat2, and tmat are inputs to the engine
     // I am uncertain how to set them so we'll just grind the seed through MurmurHash.
@@ -616,7 +616,7 @@ struct rng_tinymt_t : public rng_t
     init( start );
   }
 
-  virtual double real() override
+  double real() override
   {
     next_state();
     return temper_conv_open() - 1.0;

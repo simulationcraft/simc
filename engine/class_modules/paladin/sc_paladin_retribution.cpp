@@ -97,7 +97,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
     return c;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     double hp_used = cost();
 
@@ -223,7 +223,7 @@ struct execution_sentence_t : public holy_power_consumer_t
     hasted_gcd = true;
   }
 
-  virtual void impact( action_state_t* s) override
+  void impact( action_state_t* s) override
   {
     holy_power_consumer_t::impact( s );
 
@@ -264,7 +264,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     }
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = paladin_melee_attack_t::action_multiplier();
     if ( p() -> buffs.blade_of_wrath -> up() )
@@ -272,14 +272,14 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     return am;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_melee_attack_t::execute();
     if ( p() -> buffs.blade_of_wrath -> up() )
       p() -> buffs.blade_of_wrath -> expire();
   }
 
-  virtual void impact( action_state_t* state ) override
+  void impact( action_state_t* state ) override
   {
     paladin_melee_attack_t::impact( state );
 
@@ -349,7 +349,7 @@ struct templars_verdict_t : public holy_power_consumer_t
       dual = background = true;
     }
 
-    virtual double action_multiplier() const override
+    double action_multiplier() const override
     {
       double am = paladin_melee_attack_t::action_multiplier();
       if ( p() -> buffs.righteous_verdict -> check() )
@@ -373,7 +373,7 @@ struct templars_verdict_t : public holy_power_consumer_t
 
   void record_data( action_state_t* ) override {}
 
-  virtual void execute() override
+  void execute() override
   {
     // store cost for potential refunding (see below)
     double c = cost();
@@ -406,7 +406,7 @@ struct judgment_ret_t : public judgment_t
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {}
 
-  virtual void execute() override
+  void execute() override
   {
     judgment_t::execute();
 
@@ -420,7 +420,7 @@ struct judgment_ret_t : public judgment_t
     }
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = judgment_t::action_multiplier();
     if ( p() -> buffs.divine_judgment -> up() )
@@ -502,7 +502,7 @@ struct shield_of_vengeance_t : public paladin_absorb_t
     snapshot_flags |= (STATE_CRIT | STATE_VERSATILITY);
   }
 
-  virtual void execute() override
+  void execute() override
   {
     double shield_amount = p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
     paladin_absorb_t::execute();
@@ -541,7 +541,7 @@ struct inquisition_t : public holy_power_consumer_t
 
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double max_cost = base_costs[ RESOURCE_HOLY_POWER ] + secondary_costs[ RESOURCE_HOLY_POWER ];
 
@@ -555,7 +555,7 @@ struct inquisition_t : public holy_power_consumer_t
     return clamp<double>( p() -> resources.current[ RESOURCE_HOLY_POWER ], base_costs[ RESOURCE_HOLY_POWER ], max_cost );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     // Fires of Justice reduces the cost by 1 but maintains the overall duration
     // This needs to be computed before FoJ is consumed in holy_power_consumer_t::execute();
@@ -581,7 +581,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     parse_options( options_str );
   }
 
-  virtual bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* candidate_target ) override
   {
     if ( ! p() -> get_how_availability( candidate_target ) )
     {

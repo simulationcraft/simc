@@ -727,7 +727,7 @@ public:
     initialized = true;
   }
 
-  virtual ~warrior_action_t()
+  ~warrior_action_t() override
   {
   }
 
@@ -778,7 +778,7 @@ public:
     return c;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = ab::composite_target_multiplier( target );
 
@@ -804,7 +804,7 @@ public:
     return m;
   }
 
-  virtual double composite_da_multiplier( const action_state_t* s ) const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
     double dm = ab::composite_da_multiplier( s );
 
@@ -831,7 +831,7 @@ public:
     return dm;
   }
 
-  virtual double composite_ta_multiplier( const action_state_t* s ) const override
+  double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double tm = ab::composite_ta_multiplier( s );
 
@@ -1060,7 +1060,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     special = true;
   }
 
-  virtual void execute()
+  void execute() override
   {
     base_t::execute();
     if ( !special )  // Procs below only trigger on special attacks, not autos
@@ -7027,7 +7027,7 @@ public:
     }
   }
 
-  virtual void html_customsection( report::sc_html_stream& os ) override
+  void html_customsection( report::sc_html_stream& os ) override
   {
     // Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n";

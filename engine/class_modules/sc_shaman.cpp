@@ -683,7 +683,7 @@ public:
       resource_regeneration = regen_type::DYNAMIC;
   }
 
-  virtual ~shaman_t();
+  ~shaman_t() override;
 
   // Misc
   bool active_elemental_pet() const;
@@ -1316,7 +1316,7 @@ public:
     ab::schedule_execute( execute_state );
   }
 
-  virtual void update_ready( timespan_t cd ) override
+  void update_ready( timespan_t cd ) override
   {
     if ( cd_wasted_exec &&
          ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && ab::cooldown->duration > timespan_t::zero() ) ) &&
@@ -1753,7 +1753,7 @@ public:
     base_t::schedule_travel( s );
   }
 
-  virtual bool usable_moving() const override
+  bool usable_moving() const override
   {
     if ( p()->buff.spiritwalkers_grace->check() || execute_time() == timespan_t::zero() )
       return true;
@@ -1789,7 +1789,7 @@ public:
       {
       }
 
-      ~elemental_overload_event_t()
+      ~elemental_overload_event_t() override
       {
         if ( state )
           action_state_t::release( state );
@@ -3317,7 +3317,7 @@ struct melee_t : public shaman_attack_t
     first = true;
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     timespan_t t = shaman_attack_t::execute_time();
     if ( first )
@@ -4202,7 +4202,7 @@ struct lightning_shield_t : public shaman_spell_t
     //}
   }
 
-  virtual void execute() override
+  void execute() override
   {
     shaman_spell_t::execute();
 
@@ -4224,7 +4224,7 @@ struct bloodlust_t : public shaman_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     shaman_spell_t::execute();
 
@@ -4240,7 +4240,7 @@ struct bloodlust_t : public shaman_spell_t
     expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, player );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     // If the global bloodlust override doesn't allow bloodlust, disable bloodlust
     if ( !sim->overrides.bloodlust )
@@ -5230,7 +5230,7 @@ struct spiritwalkers_grace_t : public shaman_spell_t
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     shaman_spell_t::execute();
 
@@ -5985,8 +5985,8 @@ struct shaman_totem_pet_t : public pet_t
     resource_regeneration = regen_type::DISABLED;
   }
 
-  virtual void summon( timespan_t = timespan_t::zero() ) override;
-  virtual void dismiss( bool expired = false ) override;
+  void summon( timespan_t = timespan_t::zero() ) override;
+  void dismiss( bool expired = false ) override;
 
   void init_finished() override
   {
@@ -6010,27 +6010,27 @@ struct shaman_totem_pet_t : public pet_t
   { return owner -> cache.player_multiplier( school ); }
   //*/
 
-  virtual double composite_spell_hit() const override
+  double composite_spell_hit() const override
   {
     return owner->cache.spell_hit();
   }
 
-  virtual double composite_spell_crit_chance() const override
+  double composite_spell_crit_chance() const override
   {
     return owner->cache.spell_crit_chance();
   }
 
-  virtual double composite_spell_power( school_e school ) const override
+  double composite_spell_power( school_e school ) const override
   {
     return owner->cache.spell_power( school );
   }
 
-  virtual double composite_spell_power_multiplier() const override
+  double composite_spell_power_multiplier() const override
   {
     return owner->composite_spell_power_multiplier();
   }
 
-  virtual std::unique_ptr<expr_t> create_expression( const std::string& name ) override
+  std::unique_ptr<expr_t> create_expression( const std::string& name ) override
   {
     if ( util::str_compare_ci( name, "duration" ) )
       return make_ref_expr( name, duration );
@@ -6062,13 +6062,13 @@ struct shaman_totem_t : public shaman_spell_t
     shaman_spell_t::init_finished();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     shaman_spell_t::execute();
     totem_pet->summon( totem_duration );
   }
 
-  virtual std::unique_ptr<expr_t> create_expression( const std::string& name ) override
+  std::unique_ptr<expr_t> create_expression( const std::string& name ) override
   {
     // Redirect active/remains to "pet.<totem name>.active/remains" so things work ok with the
     // pet initialization order shenanigans. Otherwise, at this point in time (when
@@ -6156,11 +6156,11 @@ struct totem_pulse_event_t : public event_t
 
     schedule( real_amplitude );
   }
-  virtual const char* name() const override
+  const char* name() const override
   {
     return "totem_pulse";
   }
-  virtual void execute() override
+  void execute() override
   {
     if ( totem->pulse_action )
       totem->pulse_action->execute();
@@ -6271,7 +6271,7 @@ struct capacitor_totem_pulse_t : public totem_pulse_action_t
     totem_cooldown = totem->o()->get_cooldown( "capacitor_totem" );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     totem_pulse_action_t::execute();
     if ( totem->o()->talent.static_charge->ok() )
@@ -9541,7 +9541,7 @@ public:
     }
   }
 
-  virtual void html_customsection( report::sc_html_stream& os ) override
+  void html_customsection( report::sc_html_stream& os ) override
   {
     // Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
@@ -9676,7 +9676,7 @@ struct shaman_module_t : public module_t
         .verification_value( 3 );
   }
 
-  virtual void combat_begin( sim_t* ) const override
+  void combat_begin( sim_t* ) const override
   {
   }
   void combat_end( sim_t* ) const override

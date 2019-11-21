@@ -19,7 +19,7 @@ struct aegis_of_light_t : public paladin_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_spell_t::execute();
 
@@ -45,7 +45,7 @@ struct ardent_defender_t : public paladin_spell_t
       cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_spell_t::execute();
 
@@ -144,7 +144,7 @@ struct blessed_hammer_tick_t : public paladin_spell_t
     may_crit = true;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
 
@@ -219,7 +219,7 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
     parse_options( options_str );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_spell_t::execute();
 
@@ -227,7 +227,7 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
     p() -> trigger_forbearance( execute_state -> target );
   }
 
-  virtual bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* candidate_target ) override
   {
     if ( candidate_target -> debuffs.forbearance -> check() )
       return false;
@@ -248,7 +248,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     trigger_gcd = 0_ms;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_spell_t::execute();
 
@@ -342,7 +342,7 @@ struct judgment_prot_t : public judgment_t
     sotr_cdr = -1.0 * timespan_t::from_seconds( p -> spec.judgment_2 -> effectN( 1 ).base_value() );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     judgment_t::execute();
 
@@ -460,7 +460,7 @@ struct seraphim_t : public paladin_spell_t
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_spell_t::execute();
 
@@ -582,7 +582,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     return m;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_melee_attack_t::execute();
 

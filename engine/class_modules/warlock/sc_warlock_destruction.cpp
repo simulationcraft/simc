@@ -218,7 +218,7 @@ namespace warlock {
         can_havoc = true;
       }
 
-      virtual void impact(action_state_t* s) override
+      void impact(action_state_t* s) override
       {
         destruction_spell_t::impact(s);
 
@@ -291,7 +291,7 @@ namespace warlock {
         tick_may_crit = true;
       }
 
-      virtual void tick(dot_t* d) override
+      void tick(dot_t* d) override
       {
         destruction_spell_t::tick(d);
 
@@ -448,7 +448,7 @@ namespace warlock {
           p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_fnb_crits);
       }
 
-      virtual double composite_target_crit_chance(player_t* target) const override
+      double composite_target_crit_chance(player_t* target) const override
       {
         double m = destruction_spell_t::composite_target_crit_chance(target);
 
@@ -492,7 +492,7 @@ namespace warlock {
         return da;
       }
 
-      virtual timespan_t execute_time() const override
+      timespan_t execute_time() const override
       {
         timespan_t h = spell_t::execute_time();
 
@@ -545,7 +545,7 @@ namespace warlock {
           p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits);
       }
 
-      virtual double composite_target_crit_chance(player_t* target) const override
+      double composite_target_crit_chance(player_t* target) const override
       {
         double m = destruction_spell_t::composite_target_crit_chance(target);
 
@@ -578,12 +578,12 @@ namespace warlock {
         add_child(internal_combustion);
       }
 
-      virtual void schedule_execute(action_state_t* state = nullptr) override
+      void schedule_execute(action_state_t* state = nullptr) override
       {
         destruction_spell_t::schedule_execute(state);
       }
 
-      virtual timespan_t execute_time() const override
+      timespan_t execute_time() const override
       {
         timespan_t h = warlock_spell_t::execute_time();
 
@@ -770,7 +770,7 @@ namespace warlock {
         return s->action->tick_time(s) * 15.0;
       }
 
-      virtual bool ready() override
+      bool ready() override
       {
         double active_immolates = p()->get_active_dots(immolate_action_id);
 
@@ -815,7 +815,7 @@ namespace warlock {
         cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
       }
 
-      virtual void execute() override
+      void execute() override
       {
         destruction_spell_t::execute();
 
@@ -870,7 +870,7 @@ namespace warlock {
           }
         }
 
-        virtual void execute() override
+        void execute() override
         {
           destruction_spell_t::execute();
         }
@@ -893,7 +893,7 @@ namespace warlock {
         }
       }
 
-      virtual void execute() override
+      void execute() override
       {
         destruction_spell_t::execute();
 
@@ -926,7 +926,7 @@ namespace warlock {
         immolate->base_dd_multiplier *= 0.0;
       }
 
-      virtual void impact(action_state_t* s) override
+      void impact(action_state_t* s) override
       {
         destruction_spell_t::impact(s);
 

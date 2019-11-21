@@ -651,7 +651,7 @@ namespace warlock
         }
       }
 
-      virtual double composite_target_multiplier(player_t* t) const override
+      double composite_target_multiplier(player_t* t) const override
       {
         double m = affliction_spell_t::composite_target_multiplier(t);
 

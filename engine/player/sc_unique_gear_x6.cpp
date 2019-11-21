@@ -1023,7 +1023,7 @@ struct thunder_ritual_impact_t : public proc_spell_t
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * chest_multiplier;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     // Reset pair checking
     pair_buffed = false;
@@ -2054,12 +2054,12 @@ struct reverberating_vitality_t : public proc_spell_t
     max_amount( effect.driver() -> effectN( 2 ).average( effect.item ) ), amount( 0.0 )
   { }
 
-  virtual timespan_t travel_time() const override
+  timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( data().missile_speed() );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     proc_spell_t::execute();
 
@@ -2068,7 +2068,7 @@ struct reverberating_vitality_t : public proc_spell_t
     amount *= 0.5 + target -> health_percentage() * 0.005;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     proc_spell_t::impact( s );
 
@@ -2116,13 +2116,13 @@ struct legion_bombardment_t : public proc_spell_t
     tick( create_proc_action<legion_bombardment_tick_t>( "legion_bombardment_tick", effect ) )
   { }
 
-  virtual timespan_t travel_time() const override
+  timespan_t travel_time() const override
   {
     // Doesn't seem to vary with distance.
     return timespan_t::from_seconds( 2.0 );
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     proc_spell_t::impact( s );
 
@@ -2186,7 +2186,7 @@ struct shadow_blade_t : public proc_spell_t
     base_dd_min = base_dd_max = 150.0;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
     double ctm = proc_spell_t::composite_target_multiplier( target );
 
@@ -2195,7 +2195,7 @@ struct shadow_blade_t : public proc_spell_t
     return ctm;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     proc_spell_t::impact( s );
 
@@ -2214,7 +2214,7 @@ struct shadow_blades_buff_t : public buff_t
     blade_count( as<int>(effect.driver() -> effectN( 3 ).base_value()) )
   { }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -2246,7 +2246,7 @@ struct gorshalach_legacy_t : public proc_spell_t
   }
 
   // Always crits.
-  virtual double composite_crit_chance() const override { return 1.0; }
+  double composite_crit_chance() const override { return 1.0; }
 };
 
 struct gorshalach_bigger_legacy_t : public proc_spell_t
@@ -2260,7 +2260,7 @@ struct gorshalach_bigger_legacy_t : public proc_spell_t
   }
 
   // Always crits.
-  virtual double composite_crit_chance() const override { return 1.0; }
+  double composite_crit_chance() const override { return 1.0; }
 };
 
 struct echo_of_gorshalach_cb_t : public dbc_proc_callback_t
@@ -2366,12 +2366,12 @@ struct fire_mines_driver_t : public dbc_proc_callback_t
       event_t( *a -> player, delay ), action( a ), target( t ), x( x_ ), y( y_ ), active_mines( am )
     { }
 
-    virtual const char* name() const override
+    const char* name() const override
     {
       return "fire_mine_explosion";
     }
 
-    virtual void execute() override
+    void execute() override
     {
       action -> set_target( target );
 
@@ -2681,7 +2681,7 @@ struct flame_gale_driver_t : spell_t
     background = true;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     spell_t::impact( s );
       make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
@@ -3864,7 +3864,7 @@ struct poisoned_dreams_impact_t : public proc_spell_t
     icd = effect.player -> get_cooldown( "poisoned_dreams_icd" );
     icd -> duration = timespan_t::from_seconds( 1.0 );
   }
-  virtual bool ready() override
+  bool ready() override
   {
     if ( icd -> down() )
     {
@@ -3874,7 +3874,7 @@ struct poisoned_dreams_impact_t : public proc_spell_t
     return spell_t::ready();
   }
 
-  virtual void execute() override
+  void execute() override
   {    // TODO: Verify exact ICD from in game data. Currently based off spelldata ICD on the damage event.
        // Also fix hardcoding
     if ( icd -> up() )
@@ -4254,7 +4254,7 @@ void item::entwined_elemental_foci( special_effect_t& effect )
       }
     }
 
-    void execute( action_t*, action_state_t* )
+    void execute( action_t*, action_state_t* ) override
     {
       // Foci prefers to proc inactive buffs over active ones.
       // Make a vector with only the inactive buffs.
@@ -4710,7 +4710,7 @@ struct kiljaedens_burning_wish_t : public proc_spell_t
     travel_speed = 10;
   }
 
-  virtual void init() override
+  void init() override
   {
     spell_t::init();
     // Through testing with Rune of Power, Incanter's Flow, Arcane Power,
@@ -4722,10 +4722,10 @@ struct kiljaedens_burning_wish_t : public proc_spell_t
 
 
   // This always crits.
-  virtual double composite_crit_chance() const override
+  double composite_crit_chance() const override
   { return 1.0; }
 
-  virtual bool verify_actor_level() const override
+  bool verify_actor_level() const override
   { return true; }
 };
 
@@ -6070,7 +6070,7 @@ struct pepper_breath_driver_t : public proc_spell_t
       tick_action = new pepper_breath_damage_t( effect, trigger_id );
     }
   }
-  virtual void init() override
+  void init() override
   {
     spell_t::init();
     snapshot_flags = update_flags = 0;

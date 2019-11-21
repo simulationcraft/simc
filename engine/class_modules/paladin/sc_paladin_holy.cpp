@@ -23,7 +23,7 @@ struct beacon_of_light_t : public paladin_heal_t
     dot_duration = 0_ms;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_heal_t::execute();
 
@@ -64,7 +64,7 @@ struct divine_protection_t : public paladin_spell_t
       cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_spell_t::execute();
 
@@ -83,14 +83,14 @@ struct holy_light_t : public paladin_heal_t
     parse_options( options_str );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_heal_t::execute();
 
     p() -> buffs.infusion_of_light -> expire();
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     timespan_t t = paladin_heal_t::execute_time();
 
@@ -100,7 +100,7 @@ struct holy_light_t : public paladin_heal_t
     return t;
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     paladin_heal_t::schedule_execute( state );
 
@@ -197,7 +197,7 @@ struct holy_prism_t : public paladin_spell_t
       background = true;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_spell_t::execute();
 
@@ -238,7 +238,7 @@ struct holy_shock_damage_t : public paladin_spell_t
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
   }
 
-  virtual double composite_crit_chance() const override
+  double composite_crit_chance() const override
   {
     double cc = paladin_spell_t::composite_crit_chance();
 
@@ -265,7 +265,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
   }
 
-  virtual double composite_crit_chance() const override
+  double composite_crit_chance() const override
   {
     double cc = paladin_heal_t::composite_crit_chance();
 
@@ -275,7 +275,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     return cc;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_heal_t::execute();
 
@@ -307,7 +307,7 @@ struct holy_shock_t : public paladin_spell_t
     add_child( heal );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_spell_t::execute();
 
@@ -380,7 +380,7 @@ struct judgment_holy_t : public judgment_t
     base_multiplier *= 1.0 + p -> spec.holy_paladin -> effectN( 11 ).percent();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     judgment_t::execute();
 
@@ -473,10 +473,10 @@ struct lights_hammer_t : public paladin_spell_t
       background = true;
   }
 
-  virtual timespan_t travel_time() const override
+  timespan_t travel_time() const override
   { return travel_time_; }
 
-  virtual void tick( dot_t* d ) override
+  void tick( dot_t* d ) override
   {
     paladin_spell_t::tick( d );
     // trigger healing and damage ticks

@@ -1190,7 +1190,7 @@ public:
 
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  void html_customsection( report::sc_html_stream& /* os*/ ) override
   {
     (void)p;
     /*// Custom Class Section
@@ -1210,14 +1210,14 @@ struct warlock_module_t : public module_t
 {
   warlock_module_t() : module_t( WARLOCK ) { }
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new warlock_t( sim, name, r );
     p->report_extension = std::unique_ptr<player_report_extension_t>( new warlock_report_t( *p ) );
     return p;
   }
 
-  virtual void static_init() const override
+  void static_init() const override
   {
     // Leyshock's!
     // Shared spells
@@ -1321,12 +1321,12 @@ struct warlock_module_t : public module_t
     expansion::bfa::register_leyshocks_trigger( 264119, STAT_HASTE_RATING );
   }
 
-  virtual void register_hotfixes() const override { }
+  void register_hotfixes() const override { }
 
-  virtual bool valid() const override { return true; }
-  virtual void init( player_t* ) const override { }
-  virtual void combat_begin( sim_t* ) const override { }
-  virtual void combat_end( sim_t* ) const override { }
+  bool valid() const override { return true; }
+  void init( player_t* ) const override { }
+  void combat_begin( sim_t* ) const override { }
+  void combat_end( sim_t* ) const override { }
 };
 
 warlock::warlock_t::pets_t::pets_t( warlock_t* w ) :

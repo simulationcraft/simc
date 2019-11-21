@@ -113,7 +113,7 @@ struct blessing_of_protection_t : public paladin_spell_t
     parse_options( options_str );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_spell_t::execute();
 
@@ -121,7 +121,7 @@ struct blessing_of_protection_t : public paladin_spell_t
     p() -> trigger_forbearance( execute_state -> target );
   }
 
-  virtual bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* candidate_target ) override
   {
     if ( candidate_target -> debuffs.forbearance -> check() )
       return false;
@@ -293,7 +293,7 @@ struct divine_shield_t : public paladin_spell_t
       cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     paladin_spell_t::execute();
 
@@ -319,7 +319,7 @@ struct divine_shield_t : public paladin_spell_t
     p() -> trigger_forbearance( player );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( player -> debuffs.forbearance -> check() )
       return false;
@@ -398,7 +398,7 @@ struct blessing_of_sacrifice_t : public paladin_spell_t
       p -> active.blessing_of_sacrifice_redirect = new blessing_of_sacrifice_redirect_t( p );
   }
 
-  virtual void execute() override;
+  void execute() override;
 
 };
 
@@ -437,7 +437,7 @@ struct lay_on_hands_t : public paladin_heal_t
     trigger_gcd = 0_ms;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     base_dd_min = base_dd_max = p() -> resources.max[ RESOURCE_HEALTH ];
 
@@ -447,7 +447,7 @@ struct lay_on_hands_t : public paladin_heal_t
     p() -> trigger_forbearance( execute_state -> target );
   }
 
-  virtual bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* candidate_target ) override
   {
     if ( candidate_target -> debuffs.forbearance -> check() )
       return false;
@@ -501,7 +501,7 @@ struct melee_t : public paladin_melee_attack_t
     affected_by.avenging_wrath = affected_by.inquisition = affected_by.crusade = affected_by.last_defender = true;
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     if ( ! player -> in_combat ) return 10_ms;
     if ( first )
@@ -510,7 +510,7 @@ struct melee_t : public paladin_melee_attack_t
       return paladin_melee_attack_t::execute_time();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     if ( first )
       first = false;
@@ -740,7 +740,7 @@ struct rebuke_t : public paladin_melee_attack_t
     weapon_multiplier = 0.0;
   }
 
-  virtual bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* candidate_target ) override
   {
     if ( ! candidate_target -> debuffs.casting || ! candidate_target -> debuffs.casting -> check() )
       return false;
@@ -760,7 +760,7 @@ struct reckoning_t: public paladin_melee_attack_t
     use_off_gcd = true;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     if ( s -> target -> is_enemy() )
       target -> taunt( player );
@@ -805,7 +805,7 @@ struct blessing_of_sacrifice_t : public buff_t
   }
 
   // Misuse functions as the redirect callback for damage onto the source
-  virtual bool trigger( int, double value, double, timespan_t ) override
+  bool trigger( int, double value, double, timespan_t ) override
   {
     assert( source );
 
@@ -822,7 +822,7 @@ struct blessing_of_sacrifice_t : public buff_t
     return true;
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -830,7 +830,7 @@ struct blessing_of_sacrifice_t : public buff_t
     source_health_pool = 0.0;
   }
 
-  virtual void reset() override
+  void reset() override
   {
     buff_t::reset();
 
@@ -1986,7 +1986,7 @@ std::unique_ptr<expr_t> paladin_t::create_expression( const std::string& name_st
       wake_cd( p.get_cooldown( "wake_of_ashes" ) )
     { }
 
-    virtual double evaluate() override
+    double evaluate() override
     {
       timespan_t gcd_ready = paladin.gcd_ready - paladin.sim -> current_time();
       gcd_ready = std::max( gcd_ready, 0_ms );
@@ -2126,7 +2126,7 @@ public:
     }
   }
 
-  virtual void html_customsection( report::sc_html_stream& os ) override
+  void html_customsection( report::sc_html_stream& os ) override
   {
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
     if ( p.cooldown_waste_data_list.size() > 0 )
@@ -2155,34 +2155,34 @@ struct paladin_module_t : public module_t
 {
   paladin_module_t() : module_t( PALADIN ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new paladin_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new paladin_report_t( *p ) );
     return p;
   }
 
-  virtual bool valid() const override { return true; }
+  bool valid() const override { return true; }
 
-  virtual void static_init() const override
+  void static_init() const override
   {
     unique_gear::register_special_effect( 286390, empyrean_power );
   }
 
-  virtual void init( player_t* p ) const override
+  void init( player_t* p ) const override
   {
     p -> buffs.beacon_of_light          = make_buff( p, "beacon_of_light", p -> find_spell( 53563 ) );
     p -> buffs.blessing_of_sacrifice    = new buffs::blessing_of_sacrifice_t( p );
     p -> debuffs.forbearance            = new buffs::forbearance_t( p, "forbearance" );
   }
 
-  virtual void register_hotfixes() const override
+  void register_hotfixes() const override
   {
   }
 
-  virtual void combat_begin( sim_t* ) const override {}
+  void combat_begin( sim_t* ) const override {}
 
-  virtual void combat_end  ( sim_t* ) const override {}
+  void combat_end  ( sim_t* ) const override {}
 };
 
 } // end namespace paladin
