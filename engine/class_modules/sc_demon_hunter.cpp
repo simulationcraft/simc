@@ -181,7 +181,7 @@ struct counter_t
 class demon_hunter_t : public player_t
 {
 public:
-  typedef player_t base_t;
+  using base_t = player_t;
 
   // Data collection for cooldown waste
   std::vector<counter_t*> counters;
@@ -1492,11 +1492,11 @@ public:
 
 protected:
   /// typedef for demon_hunter_action_t<action_base_t>
-  typedef demon_hunter_action_t base_t;
+  using base_t = demon_hunter_action_t<Base>;
 
 private:
   /// typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  typedef Base ab;
+  using ab = Base;
 };
 
 // ==========================================================================
@@ -3866,7 +3866,7 @@ protected:
   }
 
 private:
-  typedef BuffBase bb;
+  using bb = BuffBase;
 };
 
 // Nemesis ==================================================================

@@ -350,7 +350,7 @@ private:
   }
 
 public:
-  typedef std::runtime_error error;
+  using error = std::runtime_error;
   struct option_error : public error {
     explicit option_error(const std::string& _Message)
       : runtime_error(_Message)

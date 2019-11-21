@@ -134,7 +134,7 @@ public:
 struct monk_t : public player_t
 {
 public:
-  typedef player_t base_t;
+  using base_t = player_t;
 
   // Active
   action_t* windwalking_aura;
@@ -921,8 +921,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
   template <typename BASE>
   struct sef_action_base_t : public BASE
   {
-    typedef BASE super_t;
-    typedef sef_action_base_t<BASE> base_t;
+    using super_t = BASE;
+    using base_t = sef_action_base_t<BASE>;
 
     const action_t* source_action;
 
@@ -2342,9 +2342,9 @@ struct monk_action_t : public Base
 
 private:
   std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
-  typedef Base ab;  // action base, eg. spell_t
+  using ab = Base;  // action base, eg. spell_t
 public:
-  typedef monk_action_t base_t;
+  using base_t = monk_action_t<Base>;
 
   monk_action_t( const std::string& n, monk_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),

@@ -308,7 +308,7 @@ struct effect_source_t : private noncopyable
   }
 };
 
-typedef effect_source_t<FROZEN_MAX> shatter_source_t;
+using shatter_source_t = effect_source_t<FROZEN_MAX>;
 
 struct mage_t : public player_t
 {
@@ -1507,7 +1507,7 @@ public:
   }
 };
 
-typedef residual_action::residual_periodic_action_t<mage_spell_t> residual_action_t;
+using residual_action_t = residual_action::residual_periodic_action_t<mage_spell_t>;
 
 double mage_spell_state_t::composite_crit_chance() const
 {

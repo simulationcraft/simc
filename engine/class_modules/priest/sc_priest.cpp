@@ -54,9 +54,9 @@ template <class Base>
 struct divine_star_base_t : public Base
 {
 private:
-  typedef Base ab;  // the action base ("ab") type (priest_spell_t or priest_heal_t)
+  using ab = Base;  // the action base ("ab") type (priest_spell_t or priest_heal_t)
 public:
-  typedef divine_star_base_t base_t;
+  using base_t = divine_star_base_t<Base>;
 
   propagate_const<divine_star_base_t*> return_spell;
 

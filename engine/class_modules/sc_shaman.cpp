@@ -1093,9 +1093,9 @@ template <class Base>
 struct shaman_action_t : public Base
 {
 private:
-  typedef Base ab;  // action base, eg. spell_t
+  using ab = Base;  // action base, eg. spell_t
 public:
-  typedef shaman_action_t base_t;
+  using base_t = shaman_action_t<Base>;
 
   // Cooldown tracking
   bool track_cd_waste;
@@ -1423,7 +1423,7 @@ public:
 struct shaman_attack_t : public shaman_action_t<melee_attack_t>
 {
 private:
-  typedef shaman_action_t<melee_attack_t> ab;
+  using ab = shaman_action_t<melee_attack_t>;
 
 public:
   bool may_proc_windfury;
@@ -1630,10 +1630,10 @@ template <class Base>
 struct shaman_spell_base_t : public shaman_action_t<Base>
 {
 private:
-  typedef shaman_action_t<Base> ab;
+  using ab = shaman_action_t<Base>;
 
 public:
-  typedef shaman_spell_base_t<Base> base_t;
+  using base_t = shaman_spell_base_t<Base>;
 
   shaman_spell_base_t( const std::string& n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s )
@@ -2070,7 +2070,7 @@ struct pet_action_t : public T_ACTION
 template <typename T_PET>
 struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
 {
-  typedef pet_melee_attack_t<T_PET> super;
+  using super = pet_melee_attack_t<T_PET>;
 
   pet_melee_attack_t( T_PET* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(),
                       const std::string& options = std::string() )
@@ -2138,7 +2138,7 @@ struct auto_attack_t : public melee_attack_t
 template <typename T_PET>
 struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 {
-  typedef pet_spell_t<T_PET> super;
+  using super = pet_spell_t<T_PET>;
 
   pet_spell_t( T_PET* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(),
                const std::string& options = std::string() )

@@ -652,9 +652,9 @@ struct warrior_action_t : public Base
   double tactician_per_rage;
 
 private:
-  typedef Base ab;  // action base, eg. spell_t
+  using ab = Base;  // action base, eg. spell_t
 public:
-  typedef warrior_action_t base_t;
+  using base_t = warrior_action_t<Base>;
   bool track_cd_waste;
   simple_sample_data_with_min_max_t *cd_wasted_exec, *cd_wasted_cumulative;
   simple_sample_data_t* cd_wasted_iter;

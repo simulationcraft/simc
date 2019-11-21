@@ -113,8 +113,8 @@ struct enemy_t : public player_t
 template <typename ACTION_TYPE>
 struct enemy_action_t : public ACTION_TYPE
 {
-  typedef ACTION_TYPE action_type_t;
-  typedef enemy_action_t<ACTION_TYPE> base_t;
+  using action_type_t = ACTION_TYPE;
+  using base_t = enemy_action_t<ACTION_TYPE>;
 
   bool apply_debuff;
   std::string dmg_type_override;
@@ -293,8 +293,8 @@ struct enemy_action_t : public ACTION_TYPE
 template <typename CHILD_ACTION_TYPE>
 struct enemy_action_driver_t : public CHILD_ACTION_TYPE
 {
-  typedef CHILD_ACTION_TYPE child_action_type_t;
-  typedef enemy_action_driver_t<CHILD_ACTION_TYPE> base_t;
+  using child_action_type_t = CHILD_ACTION_TYPE;
+  using base_t = enemy_action_driver_t<CHILD_ACTION_TYPE>;
  
   int aoe_tanks;
   std::vector<child_action_type_t*> ch_list;

@@ -662,7 +662,7 @@ template <class Base>
 struct hunter_action_t: public Base
 {
 private:
-  typedef Base ab;
+  using ab = Base;
 public:
 
   bool precombat = false;
@@ -1016,7 +1016,7 @@ template <class T_PET, class Base>
 struct hunter_pet_action_t: public Base
 {
 private:
-  typedef Base ab;
+  using ab = Base;
 public:
 
   hunter_pet_action_t( const std::string& n, T_PET* p, const spell_data_t* s = spell_data_t::nil() ):

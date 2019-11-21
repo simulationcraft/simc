@@ -58,7 +58,7 @@ inline unsigned convert_rwcount(std::size_t count) {
 }
 #else
 // Return type of read and write functions.
-typedef ssize_t RWResult;
+using RWResult = ssize_t;
 
 inline std::size_t convert_rwcount(std::size_t count) { return count; }
 #endif
@@ -138,7 +138,7 @@ long long file::size() const {
   unsigned long long long_size = size_upper;
   return (long_size << sizeof(DWORD) * CHAR_BIT) | size_lower;
 #else
-  typedef struct stat Stat;
+  using Stat = struct stat;
   Stat file_stat = Stat();
   if (FMT_POSIX_CALL(fstat(fd_, &file_stat)) == -1)
     FMT_THROW(system_error(errno, "cannot get file attributes"));

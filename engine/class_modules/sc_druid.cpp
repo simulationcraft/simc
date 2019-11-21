@@ -1128,7 +1128,7 @@ template <typename BuffBase>
 struct druid_buff_t : public BuffBase
 {
 protected:
-  typedef druid_buff_t base_t;
+  using base_t = druid_buff_t<buff_t>;
 
   // Used when shapeshifting to switch to a new attack & schedule it to occur
   // when the current swing timer would have ended.
@@ -1453,9 +1453,9 @@ struct druid_action_t : public Base
   bool may_autounshift; // Allows a spell that may be cast in NO_FORM but not in current form to be cast by exiting form.
   unsigned autoshift; // Allows a spell that may not be cast in the current form to be cast by automatically changing to the specified form.
 private:
-  typedef Base ab; // action base, eg. spell_t
+  using ab = Base; // action base, eg. spell_t
 public:
-  typedef druid_action_t base_t;
+  using base_t = druid_action_t<Base>;
 
   bool rend_and_tear;
   bool hasted_gcd;
@@ -1937,9 +1937,9 @@ template <class Base>
 struct druid_attack_t : public druid_action_t< Base >
 {
 private:
-  typedef druid_action_t< Base > ab;
+  using ab = druid_action_t<Base>;
 public:
-  typedef druid_attack_t base_t;
+  using base_t = druid_attack_t<Base>;
 
   bool consumes_bloodtalons;
   snapshot_counter_t* bt_counter;
@@ -2099,9 +2099,9 @@ template <class Base>
 struct druid_spell_base_t : public druid_action_t< Base >
 {
 private:
-  typedef druid_action_t< Base > ab;
+  using ab = druid_action_t<Base>;
 public:
-  typedef druid_spell_base_t base_t;
+  using base_t = druid_spell_base_t<Base>;
 
   bool cat_form_gcd;
   bool reset_melee_swing; // TRUE(default) to reset swing timer on execute (as most cast time spells do)
@@ -2197,7 +2197,7 @@ namespace spells {
 struct druid_spell_t : public druid_spell_base_t<spell_t>
 {
 private:
-  typedef druid_spell_base_t<spell_t> ab;
+  using ab = druid_spell_base_t<spell_t>;
 
 public:
   bool warrior_of_elune;

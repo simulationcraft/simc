@@ -164,7 +164,7 @@ struct converter_timespan_t
 template<class T>
 struct opts_helper_t : public option_t
 {
-  typedef opts_helper_t<T> base_t;
+  using base_t = opts_helper_t<T>;
 
   opts_helper_t( const std::string& name, T& ref ) :
     option_t( name ),

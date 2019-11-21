@@ -197,7 +197,7 @@ struct dynamic_event_t : public event_t
 
 struct rune_event_t : public dynamic_event_t<rune_event_t>
 {
-  typedef dynamic_event_t<rune_event_t> super;
+  using super = dynamic_event_t<rune_event_t>;
 
   rune_t* m_rune;
 
@@ -1484,7 +1484,7 @@ struct pet_action_t : public T_ACTION
 template <typename T_PET>
 struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
 {
-  typedef pet_melee_attack_t<T_PET> super;
+  using super = pet_melee_attack_t<T_PET>;
 
   pet_melee_attack_t( T_PET* pet, const std::string& name,
     const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
@@ -1538,7 +1538,7 @@ struct auto_attack_t : public melee_attack_t
 template <typename T_PET>
 struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 {
-  typedef pet_spell_t<T_PET> super;
+  using super = pet_spell_t<T_PET>;
 
   pet_spell_t( T_PET* pet, const std::string& name,
     const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
@@ -1569,7 +1569,7 @@ action_t* death_knight_pet_t::create_action( const std::string& name,
 template <typename T>
 struct dt_melee_ability_t : public pet_melee_attack_t<T>
 {
-  typedef dt_melee_ability_t<T> super;
+  using super = dt_melee_ability_t<T>;
 
   bool usable_in_dt;
   bool triggers_infected_claws;
@@ -2412,8 +2412,8 @@ namespace { // UNNAMED NAMESPACE
 template <class Base>
 struct death_knight_action_t : public Base
 {
-  typedef Base action_base_t;
-  typedef death_knight_action_t base_t;
+  using action_base_t = Base;
+  using base_t = death_knight_action_t<Base>;
 
   gain_t* gain;
 
