@@ -1097,7 +1097,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
     // Check if the id is "0", and insert a placeholder into the slot state
     if ( token_split[ 0 ].front() == '0' )
     {
-      m_state.push_back( {} );
+      m_state.emplace_back( );
       n_parsed_powers++;
       continue;
     }
@@ -1174,7 +1174,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
           return false;
         }
 
-        m_state.push_back( { essence_type::PASSIVE, id, 1u } );
+        m_state.emplace_back( essence_type::PASSIVE, id, 1u );
         break;
       }
       // Essence id, rank
@@ -1186,8 +1186,8 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
           return false;
         }
 
-        m_state.push_back( { major_parsed ? essence_type::MINOR : essence_type::MAJOR,
-            id, rank } );
+        m_state.emplace_back( major_parsed ? essence_type::MINOR : essence_type::MAJOR,
+            id, rank );
 
         if ( !major_parsed )
         {
@@ -1207,7 +1207,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
 
         explicit_type = true;
 
-        m_state.push_back( { type, id, rank } );
+        m_state.emplace_back( type, id, rank );
         break;
       }
       default:
@@ -1867,7 +1867,7 @@ void blood_rite( special_effect_t& effect )
       return;
     }
 
-    target->callbacks_on_demise.push_back( [buff]( player_t* ) {
+    target->callbacks_on_demise.emplace_back([buff]( player_t* ) {
       if ( buff->up( ) )
       {
         buff->refresh();
@@ -5005,7 +5005,7 @@ void aegis_of_the_deep( special_effect_t& effect )
       return;
     }
 
-    target -> callbacks_on_arise.push_back( [ effect, aegis_buff ] ()
+    target -> callbacks_on_arise.emplace_back([ effect, aegis_buff ] ()
     {
       if ( aegis_buff )
       {
@@ -5016,7 +5016,7 @@ void aegis_of_the_deep( special_effect_t& effect )
     } );
 
 
-    target -> callbacks_on_demise.push_back( [ effect, aegis_buff ] ( player_t* target )
+    target -> callbacks_on_demise.emplace_back([ effect, aegis_buff ] ( player_t* target )
     {
       // Don't do anything if the sim is ending
       if ( target -> sim -> event_mgr.canceled )

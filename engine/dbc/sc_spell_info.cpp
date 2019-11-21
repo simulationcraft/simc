@@ -1458,7 +1458,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     {
       if ( spell->equipped_subclass_mask() & ( 1 << static_cast<unsigned>( wt ) ) )
       {
-        weapon_types.push_back( util::weapon_subclass_string( wt ) );
+        weapon_types.emplace_back(util::weapon_subclass_string( wt ) );
       }
     }
     s << "Requires weapon  : ";

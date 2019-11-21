@@ -4116,7 +4116,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
       ->set_default_value( p.find_spell( 268178 )->effectN( 1 ).percent() );
   }
 
-  target->callbacks_on_demise.push_back( [this]( player_t* ) { target_demise(); } );
+  target->callbacks_on_demise.emplace_back([this]( player_t* ) { target_demise(); } );
 }
 
 void demon_hunter_td_t::target_demise()

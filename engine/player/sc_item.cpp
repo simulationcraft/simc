@@ -1516,7 +1516,7 @@ void item_t::decode_gems()
       {
         throw std::invalid_argument(fmt::format("Invalid stat '{}'.", t.name));
       }
-      parsed.gem_stats.push_back( stat_pair_t( s, static_cast<int>( t.value ) ) );
+      parsed.gem_stats.emplace_back( s, static_cast<int>( t.value ) );
     }
   }
   catch (const std::exception&)
@@ -1792,7 +1792,7 @@ std::vector<stat_pair_t> item_t::str_to_stat_pair( const std::string& stat_str )
   {
     stat_e s = STAT_NONE;
     if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE && t.value != 0 )
-      stats.push_back( stat_pair_t( s, static_cast<int>( t.value ) ) );
+      stats.emplace_back( s, static_cast<int>( t.value ) );
   }
 
   return stats;

@@ -5488,7 +5488,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   // death.
   if ( source -> specialization() == ROGUE_ASSASSINATION && source -> spec.venomous_wounds -> ok() )
   {
-    target -> callbacks_on_demise.push_back( std::bind( &rogue_t::trigger_venomous_wounds_death, source, std::placeholders::_1 ) );
+    target -> callbacks_on_demise.emplace_back(std::bind( &rogue_t::trigger_venomous_wounds_death, source, std::placeholders::_1 ) );
   }
 }
 

@@ -1676,7 +1676,7 @@ void items::briny_barnacle( special_effect_t& effect )
       return;
     }
 
-    target -> callbacks_on_demise.push_back( [ p, explosion ] ( player_t* target )
+    target -> callbacks_on_demise.emplace_back([ p, explosion ] ( player_t* target )
     {
       // Don't do anything if the sim is ending
       if ( target -> sim -> event_mgr.canceled )
@@ -2384,7 +2384,7 @@ struct vigor_engaged_t : public special_effect_t
     overload_spell = effect.player->find_spell( 287917 );
     overload_cd = effect.player->get_cooldown( "oscillating_overload_" + ::util::to_string( overload_spell->id() ) );
 
-    effect.player->callbacks_on_arise.push_back( [ this ]() {
+    effect.player->callbacks_on_arise.emplace_back([ this ]() {
       reset_oscillation();
 
       if ( !player->sim->bfa_opts.randomize_oscillation )

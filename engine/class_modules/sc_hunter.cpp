@@ -141,7 +141,7 @@ struct player_data_t
     if ( it != data_.cend() )
       return it -> second.get();
 
-    data_.push_back( record_t( a -> name_str, std::make_unique<action_data_t>( ) ) );
+    data_.emplace_back( a -> name_str, std::make_unique<action_data_t>( ) );
     return data_.back().second.get();
   }
 
@@ -4462,7 +4462,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   dots.pheromone_bomb = target -> get_dot( "pheromone_bomb", p );
   dots.shrapnel_bomb = target -> get_dot( "shrapnel_bomb", p );
 
-  target -> callbacks_on_demise.push_back( std::bind( &hunter_td_t::target_demise, this ) );
+  target -> callbacks_on_demise.emplace_back(std::bind( &hunter_td_t::target_demise, this ) );
 }
 
 void hunter_td_t::target_demise()

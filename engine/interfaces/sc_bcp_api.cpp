@@ -71,7 +71,7 @@ std::vector<std::string> token_paths()
 {
   std::vector<std::string> paths;
 
-  paths.push_back( "./simc-apitoken" );
+  paths.emplace_back("./simc-apitoken" );
 
   if ( const char* home_path = getenv( "HOME" ) )
   {
@@ -1267,7 +1267,7 @@ bool bcp_api::download_guild( sim_t* sim,
          player_filter != util::translate_class_id( character[ "class" ].GetInt() ) )
       continue;
 
-    names.push_back( character[ "name" ].GetString() );
+    names.emplace_back(character[ "name" ].GetString() );
   }
 
   if ( names.empty() ) return true;

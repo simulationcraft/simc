@@ -562,7 +562,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
 
   buffs.schism = make_buff( *this, "schism", p.talents.schism );
 
-  target->callbacks_on_demise.push_back( [this]( player_t* ) { target_demise(); } );
+  target->callbacks_on_demise.emplace_back([this]( player_t* ) { target_demise(); } );
 }
 
 void priest_td_t::reset()

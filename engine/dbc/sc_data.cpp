@@ -923,7 +923,7 @@ void dbc_override::register_spell( dbc_t& dbc, unsigned spell_id, const std::str
     throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
   }
 
-  override_entries_.push_back( dbc_override_entry_t( DBC_OVERRIDE_SPELL, field, spell_id, v ) );
+  override_entries_.emplace_back( DBC_OVERRIDE_SPELL, field, spell_id, v );
 }
 
 void dbc_override::register_effect( dbc_t& dbc, unsigned effect_id, const std::string& field, double v )
@@ -945,7 +945,7 @@ void dbc_override::register_effect( dbc_t& dbc, unsigned effect_id, const std::s
     throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
   }
 
-  override_entries_.push_back( dbc_override_entry_t( DBC_OVERRIDE_EFFECT, field, effect_id, v ) );
+  override_entries_.emplace_back( DBC_OVERRIDE_EFFECT, field, effect_id, v );
 }
 
 void dbc_override::register_power( dbc_t& dbc, unsigned power_id, const std::string& field, double v )
@@ -967,7 +967,7 @@ void dbc_override::register_power( dbc_t& dbc, unsigned power_id, const std::str
     throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
   }
 
-  override_entries_.push_back( dbc_override_entry_t( DBC_OVERRIDE_POWER, field, power_id, v ) );
+  override_entries_.emplace_back( DBC_OVERRIDE_POWER, field, power_id, v );
 }
 
 const spell_data_t* dbc_override::find_spell( unsigned spell_id, bool ptr )

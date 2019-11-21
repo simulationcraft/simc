@@ -710,7 +710,7 @@ bool parse_item_sources( sim_t*             sim,
     {
       if ( util::str_compare_ci( sources[ j ], default_item_db_sources[ i ] ) )
       {
-        sim -> item_db_sources.push_back( default_item_db_sources[ i ] );
+        sim -> item_db_sources.emplace_back(default_item_db_sources[ i ] );
         break;
       }
     }
@@ -1029,7 +1029,7 @@ struct regen_event_t : public event_t
 std::vector<std::string> get_api_key_locations()
 {
   std::vector<std::string> key_locations;
-  key_locations.push_back( "./apikey.txt" );
+  key_locations.emplace_back("./apikey.txt" );
 
   // unix home
   if ( char* home_path = getenv( "HOME" ) )

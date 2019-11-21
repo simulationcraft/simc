@@ -113,7 +113,7 @@ void pantheon_state_t::parse_options()
       }
     }
 
-    pantheon_opts.push_back( std::make_pair( as<size_t>( pantheon_index ), haste ) );
+    pantheon_opts.emplace_back( as<size_t>( pantheon_index ), haste );
   } );
 }
 

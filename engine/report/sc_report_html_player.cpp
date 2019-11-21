@@ -939,7 +939,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       if ( found )
         continue;
 
-      processed_actions.push_back( a->name() );
+      processed_actions.emplace_back(a->name() );
 
       os << "<div class=\"flex\">\n";  // Wrap details, damage/weapon, spell_data
 
@@ -2345,10 +2345,10 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
   {
     std::vector<std::string> targets;
 
-    targets.push_back( "none" );
+    targets.emplace_back("none" );
     if ( p.target )
     {
-      targets.push_back( p.target->name() );
+      targets.emplace_back(p.target->name() );
     }
 
     for ( const auto& sequence_data : p.collected_data.action_sequence )
@@ -2365,7 +2365,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
         }
       }
       if ( !found )
-        targets.push_back( sequence_data.target->name() );
+        targets.emplace_back(sequence_data.target->name() );
     }
 
     // Sample Sequence (text string)

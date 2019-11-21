@@ -147,7 +147,7 @@ namespace warlock
     debuffs_jaws_of_shadow = make_buff( *this, "jaws_of_shadow", source->find_spell( 242922 ) );
     debuffs_from_the_shadows = make_buff(*this, "from_the_shadows", source->find_spell(270569));
 
-    target->callbacks_on_demise.push_back( [this]( player_t* ) { target_demise(); } );
+    target->callbacks_on_demise.emplace_back([this]( player_t* ) { target_demise(); } );
   }
 
   void warlock_td_t::target_demise()

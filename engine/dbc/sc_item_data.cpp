@@ -1157,7 +1157,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
                es -> effectN( j + 1 ).subtype() == A_MOD_STAT &&
                es -> effectN( j + 1 ).misc_value1() == -1 )
           {
-            stats.push_back( stat_pair_t( STAT_ALL, static_cast<int>(es -> effectN( j + 1 ).average( item.player ) )) );
+            stats.emplace_back( STAT_ALL, static_cast<int>(es -> effectN( j + 1 ).average( item.player ) ) );
             break;
           }
         }
@@ -1520,11 +1520,11 @@ static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_s
   {
     if ( entries[ i ] -> type == ITEM_BONUS_MOD )
     {
-      data.push_back( std::make_tuple(
+      data.emplace_back(
             static_cast<item_mod_type>( entries[ i ] -> value_1 ),
             entries[ i ] -> value_2 / total,
             entries[ i ] -> value_2 / 10000.0
-      ) );
+      );
     }
   }
 

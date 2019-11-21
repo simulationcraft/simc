@@ -3275,7 +3275,7 @@ struct ceaseless_toxin_t : public proc_spell_t
         return;
       }
 
-      target -> callbacks_on_demise.push_back( [ this ]( player_t* actor ) {
+      target -> callbacks_on_demise.emplace_back([ this ]( player_t* actor ) {
         if ( get_dot( actor ) -> is_ticking() )
         {
           cooldown -> adjust( -timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
@@ -6630,7 +6630,7 @@ void artifact_power::murderous_intent( special_effect_t& effect )
     return;
   }
 
-  concordance -> stats.push_back( stat_buff_t::buff_stat_t( STAT_VERSATILITY_RATING, value ) );
+  concordance -> stats.emplace_back( STAT_VERSATILITY_RATING, value );
 }
 
 // Shocklight ===========================================================
@@ -6647,7 +6647,7 @@ void artifact_power::shocklight( special_effect_t& effect )
     return;
   }
 
-  concordance -> stats.push_back( stat_buff_t::buff_stat_t( STAT_CRIT_RATING, value ) );
+  concordance -> stats.emplace_back( STAT_CRIT_RATING, value );
 }
 
 // Light Speed ==========================================================

@@ -2169,7 +2169,7 @@ stat_buff_t::stat_buff_t( actor_pair_t q, const std::string& name, const spell_d
 
       for ( size_t j = 0; j < k.size(); j++ )
       {
-        stats.push_back( buff_stat_t( k[ j ], amount ) );
+        stats.emplace_back( k[ j ], amount );
       }
     }
     else if ( effect.subtype() == A_MOD_DAMAGE_DONE && ( effect.misc_value1() & 0x7E ) )

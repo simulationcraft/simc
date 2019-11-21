@@ -115,7 +115,7 @@ void xml_node_t::create_parameter( const std::string&      input,
   index++;
   simplify_xml( value_str );
 
-  parameters.push_back( xml_parm_t( name_str, value_str ) );
+  parameters.emplace_back( name_str, value_str );
 }
 
 // xml_node_t::create_node ==================================================
@@ -200,7 +200,7 @@ int xml_node_t::create_children( sim_t*                  sim,
             }
             return 0;
           }
-          parameters.push_back( xml_parm_t( "cdata", input.substr( index, finish - index ) ) );
+          parameters.emplace_back( "cdata", input.substr( index, finish - index ) );
           index = finish + 2;
         }
         else
@@ -235,7 +235,7 @@ int xml_node_t::create_children( sim_t*                  sim,
         }
         index++;
       }
-      parameters.push_back( xml_parm_t( ".", input.substr( start, index - start ) ) );
+      parameters.emplace_back( ".", input.substr( start, index - start ) );
     }
   }
 
@@ -1019,7 +1019,7 @@ std::vector<sc_xml_t> sc_xml_t::get_children( const std::string& name )
   {
     if ( ! name.empty() || util::str_compare_ci( name, n -> name() ) )
     {
-      nodes.push_back( sc_xml_t( n ) );
+      nodes.emplace_back( n );
     }
   }
 

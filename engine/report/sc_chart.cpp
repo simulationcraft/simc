@@ -657,8 +657,8 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
     double v = util::round( pdata[ 2 ].value, p.sim->report_precision );
     double e = util::round( pdata[ 2 ].error / 2, p.sim->report_precision );
 
-    mean.push_back( std::make_pair(x, v ) );
-    range.push_back( highchart::data_triple_t(x, v + e, v - e ) );
+    mean.emplace_back(x, v );
+    range.emplace_back(x, v + e, v - e );
   }
 
   ac.add_simple_series( "line", from_color, "Mean", mean );
@@ -1447,9 +1447,9 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p, sc
 
     for ( const auto& pdata : pd )
     {
-      data.push_back( std::make_pair(
+      data.emplace_back(
           pdata.plot_step,
-          util::round( pdata.value, p.sim->report_precision ) ) );
+          util::round( pdata.value, p.sim->report_precision ) );
     }
 
     ac.add_simple_series( "", "", util::stat_type_abbrev( i ), data );
@@ -1506,8 +1506,8 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
     double error_value = util::round(
         p.scaling->scaling_error[ metric ].get_stat( stat ), p.sim->report_precision );
     data.push_back( value );
-    error.push_back( std::make_pair( value - fabs( error_value ),
-                        value + fabs( error_value ) ) );
+    error.emplace_back( value - fabs( error_value ),
+                        value + fabs( error_value ) );
 
     std::string category_str = util::stat_type_abbrev( stat );
     category_str +=

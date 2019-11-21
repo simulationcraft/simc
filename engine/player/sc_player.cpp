@@ -2118,12 +2118,12 @@ std::vector<std::string> player_t::get_racial_actions()
 {
   std::vector<std::string> actions;
 
-  actions.push_back( "blood_fury" );
-  actions.push_back( "berserking" );
-  actions.push_back( "arcane_torrent" );
-  actions.push_back( "lights_judgment" );
-  actions.push_back( "fireblood" );
-  actions.push_back( "ancestral_call" );
+  actions.emplace_back("blood_fury" );
+  actions.emplace_back("berserking" );
+  actions.emplace_back("arcane_torrent" );
+  actions.emplace_back("lights_judgment" );
+  actions.emplace_back("fireblood" );
+  actions.emplace_back("ancestral_call" );
 
   return actions;
 }
@@ -12186,7 +12186,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
       {
         buff_args.push_back( b->remains().total_seconds() );
       }
-      buff_list.push_back( std::make_pair( b, buff_args ) );
+      buff_list.emplace_back( b, buff_args );
     }
   }
 
@@ -12201,7 +12201,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
         std::vector<double> cooldown_args;
         cooldown_args.push_back( c->charges );
         cooldown_args.push_back( c->remains().total_seconds() );
-        cooldown_list.push_back( std::make_pair( c, cooldown_args ) );
+        cooldown_list.emplace_back( c, cooldown_args );
       }
     }
     for ( player_t* current_target : p->sim->target_list )
@@ -12215,10 +12215,10 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
           std::vector<double> debuff_args;
           debuff_args.push_back( d->check() );
           debuff_args.push_back( d->remains().total_seconds() );
-          debuff_list.push_back( std::make_pair( d, debuff_args ) );
+          debuff_list.emplace_back( d, debuff_args );
         }
       }
-      target_list.push_back( std::make_pair( current_target, debuff_list ) );
+      target_list.emplace_back( current_target, debuff_list );
     }
   }
 
@@ -12253,7 +12253,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
       {
         buff_args.push_back( b->remains().total_seconds() );
       }
-      buff_list.push_back( std::make_pair( b, buff_args ) );
+      buff_list.emplace_back( b, buff_args );
     }
   }
 
@@ -12268,7 +12268,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
         std::vector<double> cooldown_args;
         cooldown_args.push_back( c->charges );
         cooldown_args.push_back( c->remains().total_seconds() );
-        cooldown_list.push_back( std::make_pair( c, cooldown_args ) );
+        cooldown_list.emplace_back( c, cooldown_args );
       }
     }
     for ( player_t* current_target : p->sim->target_list )
@@ -12282,10 +12282,10 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
           std::vector<double> debuff_args;
           debuff_args.push_back( d->check() );
           debuff_args.push_back( d->remains().total_seconds() );
-          debuff_list.push_back( std::make_pair( d, debuff_args ) );
+          debuff_list.emplace_back( d, debuff_args );
         }
       }
-      target_list.push_back( std::make_pair( current_target, debuff_list ) );
+      target_list.emplace_back( current_target, debuff_list );
     }
   }
 
@@ -13390,12 +13390,12 @@ void player_t::deactivate()
 
 void player_t::register_combat_begin( buff_t* b )
 {
-  combat_begin_functions.push_back( [ b ]( player_t* ) { b -> trigger(); } );
+  combat_begin_functions.emplace_back([ b ]( player_t* ) { b -> trigger(); } );
 }
 
 void player_t::register_combat_begin( action_t* a )
 {
-  combat_begin_functions.push_back( [ a ]( player_t* ) { a -> execute(); } );
+  combat_begin_functions.emplace_back([ a ]( player_t* ) { a -> execute(); } );
 }
 
 void player_t::register_combat_begin( const combat_begin_fn_t& fn )
@@ -13405,7 +13405,7 @@ void player_t::register_combat_begin( const combat_begin_fn_t& fn )
 
 void player_t::register_combat_begin( double amount, resource_e resource, gain_t* g )
 {
-  combat_begin_functions.push_back( [ amount, resource, g ]( player_t* p ) {
+  combat_begin_functions.emplace_back([ amount, resource, g ]( player_t* p ) {
     p -> resource_gain( resource, amount, g );
   });
 }

@@ -8219,20 +8219,17 @@ void death_knight_t::activate()
     {
       if ( talent.soul_reaper->ok() )
       {
-        target->callbacks_on_demise.push_back(
-          [this]( player_t* t ) { trigger_soul_reaper_death( t ); } );
+        target->callbacks_on_demise.emplace_back([this]( player_t* t ) { trigger_soul_reaper_death( t ); } );
       }
 
       if ( spec.festering_wound->ok() )
       {
-        target->callbacks_on_demise.push_back(
-          [this]( player_t* t ) { trigger_festering_wound_death( t ); } );
+        target->callbacks_on_demise.emplace_back([this]( player_t* t ) { trigger_festering_wound_death( t ); } );
       }
 
       if ( spec.outbreak->ok() )
       {
-        target->callbacks_on_demise.push_back(
-          [this]( player_t* t ) { trigger_virulent_plague_death( t ); } );
+        target->callbacks_on_demise.emplace_back([this]( player_t* t ) { trigger_virulent_plague_death( t ); } );
       }
     }
   } );

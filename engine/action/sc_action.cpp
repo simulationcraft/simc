@@ -234,7 +234,7 @@ action_priority_t* action_priority_list_t::add_action( const std::string& action
 {
   if ( action_priority_str.empty() )
     return nullptr;
-  action_list.push_back( action_priority_t( action_priority_str, comment ) );
+  action_list.emplace_back( action_priority_str, comment );
   return &( action_list.back() );
 }
 
@@ -884,7 +884,7 @@ bool action_t::verify_actor_weapon() const
     {
       if ( data().equipped_subclass_mask() & ( 1 << static_cast<unsigned>( wt ) ) )
       {
-        types.push_back( util::weapon_subclass_string( wt ) );
+        types.emplace_back(util::weapon_subclass_string( wt ) );
       }
     }
     sim->errorf( "Player %s attempting to use action %s without the required main-hand weapon "
@@ -902,7 +902,7 @@ bool action_t::verify_actor_weapon() const
     {
       if ( data().equipped_subclass_mask() & ( 1 << static_cast<unsigned>( wt ) ) )
       {
-        types.push_back( util::weapon_subclass_string( wt ) );
+        types.emplace_back(util::weapon_subclass_string( wt ) );
       }
     }
     sim->errorf( "Player %s attempting to use action %s without the required off-hand weapon "

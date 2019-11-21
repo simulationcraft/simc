@@ -853,7 +853,7 @@ option_db_t::option_db_t()
   // This makes baby pandas cry a bit less, but still makes them weep.
 
   // Add current directory automagically.
-  auto_path.push_back( "." );
+  auto_path.emplace_back("." );
 
   // Automatically add "./profiles" and "../profiles", because the command line
   // client is ran both from the engine/ subdirectory, as well as the source

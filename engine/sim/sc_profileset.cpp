@@ -434,7 +434,7 @@ profile_result_t& profile_set_t::result( scale_metric_e metric )
     return *it;
   }
 
-  m_results.push_back( profile_result_t( metric ) );
+  m_results.emplace_back( metric );
 
   return m_results.back();
 }
@@ -748,12 +748,12 @@ void profilesets_t::initialize( sim_t* sim )
 
   for ( int i = 0; i < sim -> profileset_init_threads; ++i )
   {
-    m_thread.push_back( std::thread([ this, sim ]() {
+    m_thread.emplace_back([ this, sim ]() {
       if ( ! parse( sim ) )
       {
         sim -> cancel();
       }
-    } ) );
+    } );
   }
 }
 
