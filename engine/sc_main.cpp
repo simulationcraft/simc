@@ -341,7 +341,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
         if ( canceled == 0 && ! profilesets.iterate( this ))
         {
-          canceled = 1;
+          canceled = true;
         }
         else
         {
@@ -351,7 +351,7 @@ int sim_t::main( const std::vector<std::string>& args )
       else
       {
         util::printf("Simulation was canceled.\n");
-        canceled = 1;
+        canceled = true;
       }
     }
 

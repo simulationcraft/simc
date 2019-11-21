@@ -1024,7 +1024,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ):
   callbacks( s ),
   use_apl( "" ),
   // Actions
-  use_default_action_list( 0 ),
+  use_default_action_list( false ),
   precombat_action_list( 0 ),
   active_action_list(),
   default_action_list(),
@@ -3029,7 +3029,7 @@ void player_t::create_buffs()
 
   // Infinite-Stacking Buffs and De-Buffs for everyone
   buffs.stunned   = make_buff( this, "stunned" )->set_max_stack( 1 );
-  debuffs.casting = make_buff( this, "casting" )->set_max_stack( 1 )->set_quiet( 1 );
+  debuffs.casting = make_buff( this, "casting" )->set_max_stack( 1 )->set_quiet( true );
 
   // .. for players
   if ( !is_enemy() && type != HEALING_ENEMY )
@@ -4920,7 +4920,7 @@ void player_t::reset()
 
   range::for_each( spawners, []( spawner::base_actor_spawner_t* obj ) { obj->reset(); } );
 
-  potion_used = 0;
+  potion_used = false;
 
   item_cooldown.reset( false );
 

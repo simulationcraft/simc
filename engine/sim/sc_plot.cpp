@@ -56,8 +56,8 @@ plot_t::plot_t( sim_t* s )
     num_plot_stats( 0 ),
     remaining_plot_stats( 0 ),
     remaining_plot_points( 0 ),
-    dps_plot_positive( 0 ),
-    dps_plot_negative( 0 )
+    dps_plot_positive( false ),
+    dps_plot_negative( false )
 {
   create_options();
 }

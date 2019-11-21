@@ -236,7 +236,7 @@ void pet_t::create_buffs()
 
     debuffs.casting = make_buff( this, "casting" )
       ->set_max_stack( 1 )
-      ->set_quiet( 1 );
+      ->set_quiet( true );
   }
 }
 

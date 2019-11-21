@@ -663,7 +663,7 @@ bool parse_spell_query( sim_t*             sim,
     std::string lvl_offset_str = value.substr( lvl_offset + 1 );
     int sq_lvl = std::stoi( lvl_offset_str );
     if ( sq_lvl < 1 )
-      return 0;
+      return false;
 
     if ( sq_lvl > MAX_ILEVEL )
     {
@@ -1308,7 +1308,7 @@ sim_t::sim_t() :
   vary_combat_length( 0.0 ),
   current_iteration( -1 ),
   iterations( 0 ),
-  canceled( 0 ),
+  canceled( false ),
   target_error( 0 ),
   target_error_role( ROLE_DPS ),
   current_error( 0 ),
@@ -1357,7 +1357,7 @@ sim_t::sim_t() :
   talent_input_format(talent_format::UNCHANGED ),
   stat_cache( 1 ),
   max_aoe_enemies( 20 ),
-  show_etmi( 0 ),
+  show_etmi( false ),
   tmi_window_global( 0 ),
   tmi_bin_size( 0.5 ),
   requires_regen_event( false ), single_actor_batch( false ),
@@ -1585,7 +1585,7 @@ void sim_t::cancel()
 
   work_queue -> flush();
 
-  canceled = 1;
+  canceled = true;
 
   for (auto & relative : relatives)
   {
@@ -3754,7 +3754,7 @@ void sim_t::setup( sim_control_t* c )
 
   if ( parent )
   {
-    debug = 0;
+    debug = false;
     log = 0;
   }
   else if ( ! output_file_str.empty() )
@@ -3772,7 +3772,7 @@ void sim_t::setup( sim_control_t* c )
     }
   }
   if ( debug_each )
-    debug = 1;
+    debug = true;
 
   if ( debug )
   {

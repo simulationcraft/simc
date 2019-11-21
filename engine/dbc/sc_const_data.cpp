@@ -2761,7 +2761,7 @@ double dbc_t::weapon_dps( unsigned item_id, unsigned ilevel ) const
 bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& spec_index ) const
 {
   if ( spec_id == SPEC_NONE )
-    return 0;
+    return false;
 
   for ( unsigned int i = 0; i < specialization_max_class(); i++ )
   {
@@ -2771,7 +2771,7 @@ bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& s
       {
         class_idx = i;
         spec_index = j;
-        return 1;
+        return true;
       }
       if ( __class_spec_id[ i ][ j ] == SPEC_NONE )
       {
@@ -2779,7 +2779,7 @@ bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& s
       }
     }
   }
-  return 0;
+  return false;
 }
 
 specialization_e dbc_t::spec_by_idx( const player_e c, unsigned idx ) const

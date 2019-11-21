@@ -2222,7 +2222,7 @@ void laser_matrix( special_effect_t& effect )
     {
       base_dd_min = base_dd_max = power.value( 1 );
       aoe = -1;
-      split_aoe_damage = 1;
+      split_aoe_damage = true;
       radius = e.player->find_spell( 280703 )->effectN( 1 ).radius();
     }
     // TODO: travel_time?
@@ -3963,7 +3963,7 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
   {
     parse_options( options_str );
     aoe         = -1;
-    may_crit    = 1;
+    may_crit    = true;
     base_dd_min = base_dd_max = essence.spell_ref( 1u ).effectN( 1 ).average( essence.item() );
 
     if ( essence.rank() >= 2 )

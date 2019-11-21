@@ -2717,7 +2717,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options_str = std::string() ) :
     base_t( token, p, s ),
-    target_self( 0 )
+    target_self( false )
   {
     add_option( opt_bool( "target_self", target_self ) );
     parse_options( options_str );
@@ -5523,7 +5523,7 @@ struct streaking_stars_t : public druid_spell_t
   streaking_stars_t( druid_t* p ) :
     druid_spell_t( "streaking_star", p, p->find_spell( 272873 ) )
   {
-    background  = 1;
+    background  = true;
     base_dd_min = base_dd_max = p->azerite.streaking_stars.value( 1 );
     if ( p->talent.incarnation_moonkin->ok() )
     {
