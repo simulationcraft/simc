@@ -966,7 +966,7 @@ struct fury_of_the_burning_sun_constructor_t : public item_targetdata_initialize
   void operator()( actor_target_data_t* td ) const override
   {
     const special_effect_t* effect = find_effect( td -> source );
-    if( effect == 0 )
+    if( effect == nullptr )
     {
       td -> debuff.solar_collapse = make_buff( *td, "solar_collapse" );
     }
@@ -1094,7 +1094,7 @@ struct mrrgrias_favor_constructor_t : public item_targetdata_initializer_t
   void operator()( actor_target_data_t* td ) const override
   {
     const special_effect_t* effect = find_effect( td -> source );
-    if( effect == 0 )
+    if( effect == nullptr )
     {
       td -> debuff.thunder_ritual = make_buff( *td, "thunder_ritual" );
     }
@@ -2960,7 +2960,7 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
   void operator()( actor_target_data_t* td ) const override
   {
     const special_effect_t* effect = find_effect( td -> source );
-    if ( effect == 0 )
+    if ( effect == nullptr )
     {
       td -> debuff.brutal_haymaker = make_buff( *td, "brutal_haymaker" );
     }
@@ -4011,7 +4011,7 @@ struct bough_of_corruption_constructor_t : public item_targetdata_initializer_t
   void operator()( actor_target_data_t* td ) const override
   {
     const special_effect_t* effect = find_effect( td -> source );
-    if( effect == 0 )
+    if( effect == nullptr )
     {
       td -> debuff.poisoned_dreams = make_buff( *td, "poisoned_dreams" );
     }
@@ -4473,7 +4473,7 @@ struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initiali
   void operator()( actor_target_data_t* td ) const override
   {
     const special_effect_t* effect = find_effect( td -> source );
-    if ( effect == 0 )
+    if ( effect == nullptr )
     {
       td -> debuff.taint_of_the_sea = make_buff( *td, "taint_of_the_sea" );
     }
@@ -5155,7 +5155,7 @@ struct portable_manacracker_constructor_t : public item_targetdata_initializer_t
   void operator()( actor_target_data_t* td ) const override
   {
     const special_effect_t* effect = find_effect( td -> source );
-    if ( effect == 0 )
+    if ( effect == nullptr )
     {
       td -> debuff.volatile_magic = make_buff( *td, "volatile_magic" );
     }
@@ -5340,7 +5340,7 @@ struct wriggling_sinew_constructor_t : public item_targetdata_initializer_t
   void operator()( actor_target_data_t* td ) const override
   {
     const special_effect_t* effect = find_effect( td -> source );
-    if ( effect == 0 )
+    if ( effect == nullptr )
     {
       td -> debuff.maddening_whispers = make_buff( *td, "maddening_whispers" );
     }
@@ -5463,7 +5463,7 @@ static const convergence_cd_t convergence_cds[] =
   { WARRIOR_ARMS,         { "battle_cry" } },
   { WARRIOR_FURY,         { "recklessness" } },
   { DEMON_HUNTER_HAVOC,   { "metamorphosis" } },
-  { SPEC_NONE,            { 0 } }
+  { SPEC_NONE,            { nullptr } }
 };
 
 struct convergence_of_fates_callback_t : public dbc_proc_callback_t

@@ -22,13 +22,13 @@ SC_SearchBox::SC_SearchBox( QWidget* parent,
                             QBoxLayout::Direction direction ) :
   QWidget( parent ),
   searchBox( new SC_SearchBoxLineEdit( this ) ),
-  searchBoxContextMenu( 0 ),
+  searchBoxContextMenu( nullptr ),
   searchBoxPrev( new QToolButton( this ) ),
   searchBoxNext( new QToolButton( this ) ),
   corner( corner ),
-  reverseAction( 0 ),
-  wrapAction( 0 ),
-  hideArrowsAction( 0 ),
+  reverseAction( nullptr ),
+  wrapAction( nullptr ),
+  hideArrowsAction( nullptr ),
   reverse( false ),
   wrap( true ),
   enableReverseContextMenuItem( true ),
@@ -153,7 +153,7 @@ void SC_SearchBox::updateGeometry()
   QRect geo( QPoint( 0, 0 ), widgetSizeHint );
 
   QWidget* parentWidget = qobject_cast< QWidget* >( parent() );
-  if ( parentWidget != 0 )
+  if ( parentWidget != nullptr )
   {
     QRect parentGeo = parentWidget -> geometry();
 

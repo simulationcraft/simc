@@ -110,7 +110,7 @@ void SC_TabWidgetCloseAll::closeOtherTabs()
 {
   QWidget* currentVisibleTab = widget( currentIndex() );
   bool insertedTabSuccessfully = false;
-  if ( currentVisibleTab != 0 )
+  if ( currentVisibleTab != nullptr )
   {
     if ( ! specialTabsListToNotDelete.contains( currentVisibleTab ) )
     {
@@ -130,7 +130,7 @@ void SC_TabWidgetCloseAll::closeOtherTabs()
 void SC_TabWidgetCloseAll::removeTab( int index, bool close_permanently )
 {
   QWidget* widgetAtIndex = widget( index );
-  if ( widgetAtIndex != 0 )
+  if ( widgetAtIndex != nullptr )
   {
     if ( close_permanently )
     {
@@ -220,7 +220,7 @@ void SC_RecentlyClosedTabItemModel::rowsAboutToBeRemovedSlot( const QModelIndex&
     QWidget* widget = sibling.data( Qt::UserRole ).value< QWidget* >();
     QWidget* par = sibling.data( Qt::UserRole + 1 ).value< QWidget* >();
     emit( removePreview( widget ) );
-    Q_ASSERT( par != 0 );
+    Q_ASSERT( par != nullptr );
     delete par;
 
     setData( sibling, QVariant::fromValue< QWidget* >( 0 ), Qt::UserRole );
@@ -259,12 +259,12 @@ SC_RecentlyClosedTabWidget::SC_RecentlyClosedTabWidget( QWidget* parent,
   QWidget( parent ),
   model( modelToUse ),
   grow( grow ),
-  listView( 0 ),
-  clearHistoryButton( 0 ),
-  currentlyPreviewedWidget( 0 ),
-  currentlyPreviewedWidgetsParent( 0 ),
-  contextMenu( 0 ),
-  boxLayout( 0 ),
+  listView( nullptr ),
+  clearHistoryButton( nullptr ),
+  currentlyPreviewedWidget( nullptr ),
+  currentlyPreviewedWidgetsParent( nullptr ),
+  contextMenu( nullptr ),
+  boxLayout( nullptr ),
   stretchIndex( 0 ),
   previewAnItemOnShow( true ),
   enableContextMenu( true ),
@@ -272,7 +272,7 @@ SC_RecentlyClosedTabWidget::SC_RecentlyClosedTabWidget( QWidget* parent,
   enableClearHistoryContextMenu( true ),
   enableRestoreAllContextMenu( true )
 {
-  if ( model == 0 )
+  if ( model == nullptr )
   {
     model = new SC_RecentlyClosedTabItemModel( this );
   }
@@ -367,20 +367,20 @@ QModelIndex SC_RecentlyClosedTabWidget::getSelectionAndMakeSureIsValidIfElements
 
 void SC_RecentlyClosedTabWidget::removePreview( QWidget* widget )
 {
-  if ( widget == 0 )
+  if ( widget == nullptr )
     widget = currentlyPreviewedWidget;
-  if ( currentlyPreviewedWidget == 0 )
+  if ( currentlyPreviewedWidget == nullptr )
     return;
   if ( currentlyPreviewedWidget == widget )
   {
     boxLayout -> setStretch( stretchIndex, 1 );
     boxLayout -> removeWidget( currentlyPreviewedWidget );
 
-    if ( currentlyPreviewedWidgetsParent != 0 )
+    if ( currentlyPreviewedWidgetsParent != nullptr )
       currentlyPreviewedWidget -> setParent( currentlyPreviewedWidgetsParent );
 
-    currentlyPreviewedWidget = 0;
-    currentlyPreviewedWidgetsParent = 0;
+    currentlyPreviewedWidget = nullptr;
+    currentlyPreviewedWidgetsParent = nullptr;
   }
 }
 
@@ -389,9 +389,9 @@ bool SC_RecentlyClosedTabWidget::addIndexToPreview( const QModelIndex& index )
   if ( index.isValid() )
   {
     QWidget* widget = index.data( Qt::UserRole ).value< QWidget* >();
-    if ( widget != 0 )
+    if ( widget != nullptr )
     {
-      if ( currentlyPreviewedWidget != 0 )
+      if ( currentlyPreviewedWidget != nullptr )
         removePreview( currentlyPreviewedWidget );
       widget -> show();
       boxLayout -> addWidget( widget, 1 );
@@ -454,15 +454,15 @@ SC_RecentlyClosedTab::SC_RecentlyClosedTab(QWidget* parent,
                                            Qt::Corner corner ) :
   SC_TabWidgetCloseAll( parent, corner ),
   enabled( enableRecentlyClosedTabs ),
-  hoverArea( 0 ),
-  recentlyClosedPopup( 0 ),
-  recentlyClosedTab( 0 )
+  hoverArea( nullptr ),
+  recentlyClosedPopup( nullptr ),
+  recentlyClosedTab( nullptr )
 {
   if ( enabled )
   {
     hoverArea = new SC_HoverArea( this, 600 );
     QWidget* cornerWidgetOld = cornerWidget( corner );
-    assert( cornerWidgetOld != 0 );
+    assert( cornerWidgetOld != nullptr );
 
     QBoxLayout* hoverAreaLayout = new QBoxLayout( QBoxLayout::LeftToRight );
     hoverAreaLayout -> setContentsMargins( 0, 0, 0, 0 );

@@ -1,1 +1,1 @@
-HeaderFilterRegex: 'engine/util/(utf8|rapidxml|rapidjson|fmt)/*'
+HeaderFilterRegex: '*/util/(utf8.h|utf8-cpp|rapidxml|rapidjson|fmt)/*'

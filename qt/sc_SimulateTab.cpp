@@ -17,8 +17,8 @@ SC_SimulateTab::SC_SimulateTab( QWidget* parent, SC_RecentlyClosedTabItemModel* 
     setCloseAllTabsBodyText( tr( "Do you really want to close ALL simulation profiles?" ) );
     QIcon addTabIcon( ":/icon/addtab.png" );
     int i = addTab( addTabWidget, addTabIcon, addTabIcon.pixmap( QSize( 64, 64 ) ).isNull() ? "+" : "" );
-    tabBar() -> setTabButton( i, QTabBar::LeftSide, 0 );
-    tabBar() -> setTabButton( i, QTabBar::RightSide, 0 );
+    tabBar() -> setTabButton( i, QTabBar::LeftSide, nullptr );
+    tabBar() -> setTabButton( i, QTabBar::RightSide, nullptr );
     addCloseAllExclude( addTabWidget );
 
     enableDragHoveredOverTabSignal( true );
@@ -210,7 +210,7 @@ void SC_SimulateTab::keyReleaseEvent( QKeyEvent* e )
 void SC_SimulateTab::showEvent( QShowEvent* e )
 {
     QWidget* currentWidget = widget( currentIndex() );
-    if ( currentWidget != 0 )
+    if ( currentWidget != nullptr )
     {
         if ( !currentWidget -> hasFocus() )
         {

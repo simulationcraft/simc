@@ -772,7 +772,7 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
     // too.
     clone -> _effects = new std::vector<const spelleffect_data_t*>( clone -> effect_count(), spelleffect_data_t::nil() );
     // Drivers are set up in the parent's cloning of the trigger spell
-    clone -> _driver = 0;
+    clone -> _driver = nullptr;
     add_spell( clone, ptr );
   }
   else

@@ -1895,7 +1895,7 @@ void item::spellbound_runic_band( special_effect_t& effect )
 
   player_t* p = effect.item -> player;
   const spell_data_t* driver = p -> find_spell( effect.spell_id );
-  buff_t* buff = 0;
+  buff_t* buff = nullptr;
 
   // Need to test which procs on off-spec rings, assume correct proc for now.
   switch( p -> convert_hybrid_stat( STAT_STR_AGI_INT ) )
@@ -1926,7 +1926,7 @@ void item::spellbound_solium_band( special_effect_t& effect )
 
   player_t* p = effect.item -> player;
   const spell_data_t* driver = p -> find_spell( effect.spell_id );
-  buff_t* buff = 0;
+  buff_t* buff = nullptr;
 
   //Need to test which procs on off-spec rings, assume correct proc for now.
   switch( p -> convert_hybrid_stat( STAT_STR_AGI_INT ) )
@@ -1957,7 +1957,7 @@ void item::legendary_ring( special_effect_t& effect )
   maintenance_check( 528 );
 
   player_t* p = effect.item -> player;
-  buff_t* buff = 0;
+  buff_t* buff = nullptr;
 
   struct legendary_ring_damage_t: public spell_t
   {
@@ -2024,7 +2024,7 @@ void item::legendary_ring( special_effect_t& effect )
 
       legendary_ring_buff_t( special_effect_t& originaleffect, std::string name, const spell_data_t* buff, const spell_data_t* damagespell ):
         buff_t( originaleffect.player, name, buff, originaleffect.item ),
-        boom( 0 ), p( originaleffect.player )
+        boom( nullptr ), p( originaleffect.player )
       {
         add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
         set_default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 );
@@ -2238,9 +2238,9 @@ struct flurry_of_xuen_driver_t : public attack_t
 {
   action_t* ac;
 
-  flurry_of_xuen_driver_t( player_t* player, action_t* action = 0 ) :
+  flurry_of_xuen_driver_t( player_t* player, action_t* action = nullptr ) :
     attack_t( "flurry_of_xuen_driver", player, player -> find_spell( 146194 ) ),
-    ac( 0 )
+    ac( nullptr )
   {
     hasted_ticks = may_crit = may_miss = may_dodge = may_parry = callbacks = false;
     proc = background = dual = true;
@@ -2386,26 +2386,26 @@ void item::readiness( special_effect_t& effect )
   static const cooldowns_t __cd[] =
   {
     // NOTE: Spells that trigger buffs must have the cooldown of their buffs removed if they have one, or this trinket may cause undesirable results.
-    { ROGUE_ASSASSINATION, { "evasion", "vanish", "cloak_of_shadows", "vendetta", 0, 0 } },
-    { ROGUE_OUTLAW,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", 0, 0 } },
-    { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", 0, 0 } },
-    { SHAMAN_ENHANCEMENT,  { "earth_elemental_totem", "fire_elemental_totem", "shamanistic_rage", "ascendance", "feral_spirit", 0 } },
-    { DRUID_FERAL,         { "tigers_fury", "berserk", "barkskin", "survival_instincts", 0, 0, 0 } },
-    { DRUID_GUARDIAN,      { "might_of_ursoc", "berserk", "barkskin", "survival_instincts", 0, 0, 0 } },
+    { ROGUE_ASSASSINATION, { "evasion", "vanish", "cloak_of_shadows", "vendetta", nullptr, nullptr } },
+    { ROGUE_OUTLAW,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", nullptr, nullptr } },
+    { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", nullptr, nullptr } },
+    { SHAMAN_ENHANCEMENT,  { "earth_elemental_totem", "fire_elemental_totem", "shamanistic_rage", "ascendance", "feral_spirit", nullptr } },
+    { DRUID_FERAL,         { "tigers_fury", "berserk", "barkskin", "survival_instincts", nullptr, nullptr, nullptr } },
+    { DRUID_GUARDIAN,      { "might_of_ursoc", "berserk", "barkskin", "survival_instincts", nullptr, nullptr, nullptr } },
     { WARRIOR_FURY,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness", "storm_bolt", "heroic_leap" } },
     { WARRIOR_ARMS,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness", "storm_bolt", "heroic_leap" } },
-    { WARRIOR_PROTECTION,  { "shield_wall", "demoralizing_shout", "last_stand", "recklessness", "heroic_leap", 0, 0 } },
-    { DEATH_KNIGHT_BLOOD,  { "antimagic_shell", "dancing_rune_weapon", "icebound_fortitude", "outbreak", "vampiric_blood", "bone_shield", 0 } },
-    { DEATH_KNIGHT_FROST,  { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "pillar_of_frost", 0  } },
-    { DEATH_KNIGHT_UNHOLY, { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "outbreak", "summon_gargoyle", 0 } },
-    { MONK_BREWMASTER,	   { "fortifying_brew", "guard", "zen_meditation", 0, 0, 0, 0 } },
-    { MONK_WINDWALKER,     { "energizing_brew", "fists_of_fury", "fortifying_brew", "zen_meditation", 0, 0, 0 } },
-    { PALADIN_PROTECTION,  { "ardent_defender", "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0 } },
-    { PALADIN_RETRIBUTION, { "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0, 0 } },
-    { HUNTER_BEAST_MASTERY,{ "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", "bestial_wrath", 0 } },
-    { HUNTER_MARKSMANSHIP, { "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0, 0 } },
-    { HUNTER_SURVIVAL,     { "black_arrow", "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0 } },
-    { SPEC_NONE,           { 0 } }
+    { WARRIOR_PROTECTION,  { "shield_wall", "demoralizing_shout", "last_stand", "recklessness", "heroic_leap", nullptr, nullptr } },
+    { DEATH_KNIGHT_BLOOD,  { "antimagic_shell", "dancing_rune_weapon", "icebound_fortitude", "outbreak", "vampiric_blood", "bone_shield", nullptr } },
+    { DEATH_KNIGHT_FROST,  { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "pillar_of_frost", nullptr  } },
+    { DEATH_KNIGHT_UNHOLY, { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "outbreak", "summon_gargoyle", nullptr } },
+    { MONK_BREWMASTER,	   { "fortifying_brew", "guard", "zen_meditation", nullptr, nullptr, nullptr, nullptr } },
+    { MONK_WINDWALKER,     { "energizing_brew", "fists_of_fury", "fortifying_brew", "zen_meditation", nullptr, nullptr, nullptr } },
+    { PALADIN_PROTECTION,  { "ardent_defender", "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", nullptr } },
+    { PALADIN_RETRIBUTION, { "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", nullptr, nullptr } },
+    { HUNTER_BEAST_MASTERY,{ "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", "bestial_wrath", nullptr } },
+    { HUNTER_MARKSMANSHIP, { "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", nullptr, nullptr } },
+    { HUNTER_SURVIVAL,     { "black_arrow", "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", nullptr } },
+    { SPEC_NONE,           { nullptr } }
   };
 
   player_t* p = effect.item -> player;
@@ -2442,7 +2442,7 @@ void item::readiness( special_effect_t& effect )
 
     for ( size_t i = 0; i < 7; i++ )
     {
-      if ( cd -> cooldowns[ i ] == 0 )
+      if ( cd -> cooldowns[ i ] == nullptr )
         break;
 
       auto action = p -> find_action( cd -> cooldowns[ i ] );
@@ -2465,8 +2465,8 @@ void item::amplification( special_effect_t& effect )
 
   buff_t* first_amp = buff_t::find( p, "amplification" );
   buff_t* second_amp = buff_t::find( p, "amplification_2" );
-  buff_t* amp_buff = 0;
-  double* amp_value = 0;
+  buff_t* amp_buff = nullptr;
+  double* amp_value = nullptr;
   if ( first_amp -> default_chance == 0 )
   {
     amp_buff = first_amp;
@@ -2588,7 +2588,7 @@ void item::cleave( special_effect_t& effect )
 
     void execute( action_t* action, action_state_t* state ) override
     {
-      action_t* a = 0;
+      action_t* a = nullptr;
 
       if ( action -> type == ACTION_ATTACK )
         a = cleave_attack;
@@ -2961,7 +2961,7 @@ struct hammering_blows_buff_t : public stat_buff_t
   hammering_blows_buff_t( const special_effect_t& source_effect ) :
     stat_buff_t( source_effect.player, "hammering_blows",
                  source_effect.trigger(), source_effect.item ),
-    stack_driver( 0 )
+    stack_driver( nullptr )
   {
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
   }
@@ -3181,7 +3181,7 @@ struct prophecy_of_fear_constructor_t : public item_targetdata_initializer_t
   void operator()( actor_target_data_t* td ) const override
   {
     const special_effect_t* effect = find_effect( td -> source );
-    if ( effect == 0 )
+    if ( effect == nullptr )
     {
       td -> debuff.mark_of_doom = make_buff( *td, "mark_of_doom" );
     }
@@ -3485,10 +3485,10 @@ struct burning_mirror_t : public spell_t
     bool use_custom = true;
     for ( size_t i = 0; i < n_mirrors; ++i )
     {
-      pet_t* blade_master = NULL;
+      pet_t* blade_master = nullptr;
       if ( use_custom ) 
         blade_master = effect.player -> create_pet( BLADEMASTER_PET_NAME );
-      if ( blade_master == NULL )
+      if ( blade_master == nullptr )
       { 
         use_custom = false;
         blade_master = new blademaster_pet_t( effect.player );
@@ -4141,7 +4141,7 @@ struct item_effect_base_expr_t : public expr_t
   item_effect_base_expr_t( player_t& player, const std::vector<slot_e> slots ) :
     expr_t( "item_effect_base_expr" )
   {
-    const special_effect_t* e = 0;
+    const special_effect_t* e = nullptr;
 
     for ( size_t i = 0; i < slots.size(); i++ )
     {
@@ -4349,7 +4349,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, const 
       slots.push_back( SLOT_TRINKET_2 );
     }
     else
-      return 0;
+      return nullptr;
     ptype_idx++;
 
     stat_idx++;
@@ -4484,7 +4484,7 @@ const item_data_t* unique_gear::find_item_by_spell( const dbc_t& dbc, unsigned s
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 namespace unique_gear

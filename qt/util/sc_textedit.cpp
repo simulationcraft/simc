@@ -133,7 +133,7 @@ void SC_TextEdit::findText( const QString& text )
 void SC_TextEdit::findNext()
 {
   if ( enable_search )
-    findSomeText( searchBox -> text(), 0, textCursor().selectionStart() + 1 );
+    findSomeText( searchBox -> text(), nullptr, textCursor().selectionStart() + 1 );
 }
 
 void SC_TextEdit::findPrev()

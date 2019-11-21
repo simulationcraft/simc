@@ -317,7 +317,7 @@ struct move_enemy_t : public raid_event_t
       x_coord( 0.0 ),
       y_coord( 0.0 ),
       name( "" ),
-      enemy( 0 ),
+      enemy( nullptr ),
       original_x( 0.0 ),
       original_y( 0.0 )
   {
@@ -775,7 +775,7 @@ struct damage_event_t : public raid_event_t
   school_e damage_type;
 
   damage_event_t( sim_t* s, const std::string& options_str )
-    : raid_event_t( s, "damage" ), amount( 1 ), amount_range( 0 ), raid_damage( 0 )
+    : raid_event_t( s, "damage" ), amount( 1 ), amount_range( 0 ), raid_damage( nullptr )
   {
     std::string type_str = "holy";
     add_option( opt_float( "amount", amount ) );
@@ -836,7 +836,7 @@ struct heal_event_t : public raid_event_t
   heal_t* raid_heal;
 
   heal_event_t( sim_t* s, const std::string& options_str )
-    : raid_event_t( s, "heal" ), amount( 1 ), amount_range( 0 ), to_pct( 0 ), to_pct_range( 0 ), raid_heal( 0 )
+    : raid_event_t( s, "heal" ), amount( 1 ), amount_range( 0 ), to_pct( 0 ), to_pct_range( 0 ), raid_heal( nullptr )
   {
     add_option( opt_float( "amount", amount ) );
     add_option( opt_float( "amount_range", amount_range ) );

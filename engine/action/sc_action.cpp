@@ -538,7 +538,7 @@ action_t::~action_t()
   delete execute_state;
   delete pre_execute_state;
 
-  while ( state_cache != 0 )
+  while ( state_cache != nullptr )
   {
     action_state_t* s = state_cache;
     state_cache       = s->next;
@@ -1392,7 +1392,7 @@ player_t* action_t::find_target_by_number( int number ) const
       return t;
   }
 
-  return 0;
+  return nullptr;
 }
 
 // action_t::calculate_block_result =========================================
@@ -2479,7 +2479,7 @@ void action_t::init_finished()
   if ( !option.if_expr_str.empty() )
   {
     if_expr = expr_t::parse( this, option.if_expr_str, sim->optimize_expressions );
-    if ( if_expr == 0 )
+    if ( if_expr == nullptr )
     {
       throw std::invalid_argument(fmt::format("Could not parse if expression from '{}'", option.if_expr_str));
     }
@@ -3841,7 +3841,7 @@ bool action_t::dot_refreshable( const dot_t* dot, const timespan_t& triggered_du
 }
 
 call_action_list_t::call_action_list_t( player_t* player, const std::string& options_str )
-  : action_t( ACTION_CALL, "call_action_list", player ), alist( 0 )
+  : action_t( ACTION_CALL, "call_action_list", player ), alist( nullptr )
 {
   std::string alist_name;
   int randomtoggle = 0;
@@ -3876,7 +3876,7 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
 swap_action_list_t::swap_action_list_t( player_t* player, const std::string& options_str,
                                         const std::string& name ) :
     action_t( ACTION_OTHER, name, player ),
-    alist( 0 )
+    alist( nullptr )
 {
   std::string alist_name;
   int randomtoggle = 0;
@@ -3937,7 +3937,7 @@ void run_action_list_t::execute()
         alist->name_str.c_str(),
         player->readying ? " (off-gcd)" : "");
 
-  if ( player->restore_action_list == 0 )
+  if ( player->restore_action_list == nullptr )
     player->restore_action_list = player->active_action_list;
   player->activate_action_list( alist, player->current_execute_type );
 }

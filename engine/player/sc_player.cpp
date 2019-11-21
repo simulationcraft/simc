@@ -954,7 +954,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ):
   combat_reach( 1.0 ),
   profile_source_( profile_source::DEFAULT ),
   default_target( nullptr ),
-  target( 0 ),
+  target( nullptr ),
   initialized( false ),
   potion_used( false ),
   region_str( s->default_region_str ),
@@ -1004,19 +1004,19 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ):
   resources(),
   // Consumables
   // Events
-  executing( 0 ),
-  queueing( 0 ),
-  channeling( 0 ),
-  strict_sequence( 0 ),
-  readying( 0 ),
-  off_gcd( 0 ),
+  executing( nullptr ),
+  queueing( nullptr ),
+  channeling( nullptr ),
+  strict_sequence( nullptr ),
+  readying( nullptr ),
+  off_gcd( nullptr ),
   cast_while_casting_poll_event(),
   off_gcd_ready( timespan_t::min() ),
   cast_while_casting_ready( timespan_t::min() ),
   in_combat( false ),
   action_queued( false ),
   first_cast( true ),
-  last_foreground_action( 0 ),
+  last_foreground_action( nullptr ),
   prev_gcd_actions( 0 ),
   off_gcdactions(),
   cast_delay_reaction( timespan_t::zero() ),
@@ -4866,7 +4866,7 @@ void player_t::reset()
   queueing        = nullptr;
   channeling      = nullptr;
   readying        = nullptr;
-  strict_sequence = 0;
+  strict_sequence = nullptr;
   off_gcd         = nullptr;
   cast_while_casting_poll_event = nullptr;
   in_combat       = false;
@@ -4926,7 +4926,7 @@ void player_t::reset()
 
   incoming_damage.clear();
 
-  resource_threshold_trigger = 0;
+  resource_threshold_trigger = nullptr;
 
   for ( auto& elem : variables )
     elem->reset();
@@ -5392,7 +5392,7 @@ void player_t::interrupt()
   if ( strict_sequence )
   {
     strict_sequence->cancel();
-    strict_sequence = 0;
+    strict_sequence = nullptr;
   }
   if ( buffs.stunned->check() )
   {
@@ -5476,7 +5476,7 @@ action_t* player_t::execute_action()
 {
   assert( !readying );
 
-  action_t* action = 0;
+  action_t* action = nullptr;
 
   if (resource_regeneration == regen_type::DYNAMIC)
     do_dynamic_regen();
@@ -5492,10 +5492,10 @@ action_t* player_t::execute_action()
 
   last_foreground_action = action;
 
-  if ( restore_action_list != 0 )
+  if ( restore_action_list != nullptr )
   {
     activate_action_list( restore_action_list );
-    restore_action_list = 0;
+    restore_action_list = nullptr;
   }
 
   if ( action )
@@ -6599,7 +6599,7 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
     s->result_total *= 1.0 + buffs.guardian_spirit->data().effectN( 1 ).percent();
 
   // process heal
-  s->result_amount = resource_gain( RESOURCE_HEALTH, s->result_total, 0, s->action );
+  s->result_amount = resource_gain( RESOURCE_HEALTH, s->result_total, nullptr, s->action );
 
   // if the target is a tank record this event on damage timeline
   if ( !is_pet() && primary_role() == ROLE_TANK )
@@ -6981,8 +6981,8 @@ timespan_t wait_for_cooldown_t::execute_time() const
 snapshot_stats_t::snapshot_stats_t( player_t* player, const std::string& options_str ) :
   action_t( ACTION_OTHER, "snapshot_stats", player ),
   completed( false ),
-  proxy_spell( 0 ),
-  proxy_attack( 0 ),
+  proxy_spell( nullptr ),
+  proxy_attack( nullptr ),
   role( player->primary_role() )
 {
   parse_options( options_str );
@@ -7554,7 +7554,7 @@ struct variable_t : public action_t
         break;
       case OPERATION_PRINT:
         // Only spit out prints in main thread
-        if ( sim->parent == 0 )
+        if ( sim->parent == nullptr )
           std::cout << "actor=" << player->name_str << " time=" << sim->current_time().total_seconds()
                     << " iteration=" << sim->current_iteration << " variable=" << var->name_.c_str()
                     << " value=" << var->current_value_ << std::endl;
@@ -7960,7 +7960,7 @@ struct restart_sequence_t : public action_t
 
   restart_sequence_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "restart_sequence", player ),
-    seq( 0 ),
+    seq( nullptr ),
     seq_name_str( "default" )  // matches default name for sequences
   {
     add_option( opt_string( "name", seq_name_str ) );
@@ -8096,7 +8096,7 @@ struct wait_until_ready_t : public wait_fixed_t
     {
       action_t* a = player->action_list[ i ];
       assert( a );
-      if ( a == NULL )  // For release builds.
+      if ( a == nullptr )  // For release builds.
         break;
       if ( a == this )
         break;
@@ -8182,7 +8182,7 @@ struct use_item_t : public action_t
           sim->errorf( "Player %s attempting 'use_item' action with invalid item '%s' in slot '%s'.", player->name(),
                        item->name(), item_slot.c_str() );
         }
-        item       = 0;
+        item       = nullptr;
         background = true;
       }
       else
@@ -8325,7 +8325,7 @@ struct use_item_t : public action_t
 
   void execute() override
   {
-    bool triggered = buff == 0;
+    bool triggered = buff == nullptr;
     if ( buff )
       triggered = buff->trigger();
 
@@ -8399,19 +8399,19 @@ struct use_item_t : public action_t
 
     if ( data_str_split.size() != 2 || !util::str_compare_ci( data_str_split[ 0 ], "use_buff" ) )
     {
-      return 0;
+      return nullptr;
     }
 
     stat_e stat = util::parse_stat_type( data_str_split[ 1 ] );
     if ( stat == STAT_NONE )
     {
-      return 0;
+      return nullptr;
     }
 
     const special_effect_t* e = item->special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
     if ( !e )
     {
-      return 0;
+      return nullptr;
     }
 
     return std::make_unique<use_item_buff_type_expr_t>( e->stat_type() == stat );
@@ -8684,7 +8684,7 @@ struct cancel_buff_t : public action_t
   cancel_buff_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "cancel_buff", player ),
     buff_name(),
-    buff( 0 )
+    buff( nullptr )
   {
     add_option( opt_string( "name", buff_name ) );
     parse_options( options_str );
@@ -8788,7 +8788,7 @@ struct pool_resource_t : public action_t
     resource( r != RESOURCE_NONE ? r : p->primary_resource() ),
     wait( timespan_t::from_seconds( 0.251 ) ),
     for_next( 0 ),
-    next_action( 0 ),
+    next_action( nullptr ),
     amount_expr()
   {
     quiet = true;
@@ -12237,8 +12237,8 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const timespan_t& ts, const timespan_t& wait,
                                                                          const player_t* p ) :
-  action( 0 ),
-  target( 0 ),
+  action( nullptr ),
+  target( nullptr ),
   time( ts ),
   wait_time( wait )
 {
@@ -12881,7 +12881,7 @@ action_t* player_t::select_action( const action_priority_list_t& list,
   for ( size_t i = 0, num_actions = action_list->size(); i < num_actions; ++i )
   {
     visited_apls_ = _visited;
-    action_t* a   = 0;
+    action_t* a   = nullptr;
 
     if ( list.random == 1 )
     {

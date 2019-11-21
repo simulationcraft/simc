@@ -40,7 +40,7 @@ const QString sources[] =
   "spell.effect",
   "perk_spell",
   "azerite",
-  NULL
+  nullptr
 };
 
 const FilterEntry filters[] = 
@@ -87,14 +87,14 @@ const FilterEntry filters[] =
   { "ap_coeff",       false, false, "" }, // these are for effects only
   { "sp_coeff",       false, false, "" },
   { "type",           false, false, "" },
-  { NULL,            false,  false, NULL }
+  { nullptr,            false,  false, nullptr }
 };
 
 const QString numericOperators[] = 
-{ "==", "!=", ">", "<", ">=", "<=", NULL };
+{ "==", "!=", ">", "<", ">=", "<=", nullptr };
 
 const QString stringOperators[] = 
-{ "==", "!=", "~", "!~", NULL };
+{ "==", "!=", "~", "!~", nullptr };
 
 QComboBox* createChoiceFromRange( int lowerInclusive, int upperInclusive ) {
   QComboBox* choice = new QComboBox();
@@ -178,11 +178,11 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
 
   // Add a label
   label.input = new QLabel( tr( "Input Options" ) );
-  gridLayout -> addWidget( label.input, 0, 0, 0 );
+  gridLayout -> addWidget( label.input, 0, 0, nullptr );
 
   // Element (1,0) is a GroupBox containing the inputs
   QGroupBox* inputGroupBox = new QGroupBox();
-  gridLayout -> addWidget( inputGroupBox, 1, 0, 0 );
+  gridLayout -> addWidget( inputGroupBox, 1, 0, nullptr );
 
   // Layout of the groupbox
   QGridLayout* inputGroupBoxLayout = new QGridLayout();
@@ -252,8 +252,8 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
   QFont f( "monospace" );
   f.setStyleHint( QFont::Monospace );
   textbox.result -> setFont( f );
-  gridLayout -> addWidget( label.output, 2, 0, 0 );
-  gridLayout -> addWidget( textbox.result, 3, 0, 0 );
+  gridLayout -> addWidget( label.output, 2, 0, nullptr );
+  gridLayout -> addWidget( textbox.result, 3, 0, nullptr );
   
   // this adjusts the relative width of each column
   //gridLayout -> setColumnStretch( 0, 1 );

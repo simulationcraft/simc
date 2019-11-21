@@ -504,7 +504,7 @@ void SC_MainWindow::updateWebView( SC_WebView* wv )
 {
   assert( wv );
   visibleWebView = wv;
-  if ( cmdLine != 0 ) // can be called before widget is setup
+  if ( cmdLine != nullptr ) // can be called before widget is setup
   {
     if ( visibleWebView == helpView )
     {
@@ -544,7 +544,7 @@ void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_
     files.push_back( sim -> reforge_plot_output_file_str );
 
     std::string output_file_str = sim -> output_file_str;
-    bool sim_control_was_not_zero = sim -> control != 0;
+    bool sim_control_was_not_zero = sim -> control != nullptr;
 
     sim = nullptr;
 
@@ -703,7 +703,7 @@ void SC_MainWindow::stopImport()
 
 bool SC_MainWindow::importRunning()
 {
-  return ( import_sim != 0 );
+  return ( import_sim != nullptr );
 }
 
 void SC_MainWindow::itemWasEnqueuedTryToSim()
@@ -877,7 +877,7 @@ void SC_MainWindow::stopAllSim()
 
 bool SC_MainWindow::simRunning()
 {
-  return ( sim != 0 );
+  return ( sim != nullptr );
 }
 
 void SC_MainWindow::simulateFinished( std::shared_ptr<sim_t> sim )
@@ -1047,7 +1047,7 @@ void SC_MainWindow::simulateFinished( std::shared_ptr<sim_t> sim )
   if ( simulationQueue.isEmpty() && !importRunning() )
     timer -> stop();
 
-  deleteSim( sim, simulateThread -> success == true ? 0 : logText ); SC_MainWindow::sim = 0;
+  deleteSim( sim, simulateThread -> success == true ? nullptr : logText ); SC_MainWindow::sim = nullptr;
 
   if ( !simulationQueue.isEmpty() )
   {
@@ -1355,7 +1355,7 @@ void SC_MainWindow::simulateTabRestored( QWidget*, const QString&, const QString
 
 void SC_MainWindow::switchToASubTab( int direction )
 {
-  QTabWidget* tabWidget = 0;
+  QTabWidget* tabWidget = nullptr;
   switch ( mainTab -> currentTab() )
   {
   case TAB_SIMULATE:

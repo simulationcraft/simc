@@ -60,7 +60,7 @@ void SC_SimulateThread::run()
 
     if ( sim -> challenge_mode ) sim -> scale_to_itemlevel = 630;
 
-    if ( sim -> spell_query != 0 )
+    if ( sim -> spell_query != nullptr )
     {
       success = false;
       return;
