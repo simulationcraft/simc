@@ -523,7 +523,7 @@ public:
   action_t* create_action( const std::string& name,
                            const std::string& options ) override;
   void create_buffs() override;
-  expr_t* create_expression( const std::string& ) override;
+  std::unique_ptr<expr_t> create_expression( const std::string& ) override;
   void create_options() override;
   pet_t* create_pet( const std::string& name,
                      const std::string& type = std::string() ) override;
@@ -607,7 +607,7 @@ public:
   {
     return target_reach >= 0 ? target_reach : sim->target->combat_reach;
   }
-  expr_t* create_sigil_expression( const std::string& );
+  std::unique_ptr<expr_t> create_sigil_expression( const std::string& );
 
   // Cooldown Tracking
   template <typename T_CONTAINER, typename T_DATA>
@@ -2232,9 +2232,9 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     damage->make_ground_aoe_event( p(), execute_state );
   }
 
-  expr_t* create_expression(const std::string& name) override
+  std::unique_ptr<expr_t> create_expression(const std::string& name) override
   {
-    if (expr_t* e = p()->create_sigil_expression(name))
+    if (auto e = p()->create_sigil_expression(name))
       return e;
 
     return demon_hunter_spell_t::create_expression(name);
@@ -2324,9 +2324,9 @@ struct infernal_strike_t : public demon_hunter_spell_t
     return td( t )->dots.sigil_of_flame;
   }
 
-  expr_t* create_expression( const std::string& name ) override
+  std::unique_ptr<expr_t> create_expression( const std::string& name ) override
   {
-    if ( expr_t* e = p()->create_sigil_expression( name ) )
+    if ( auto e = p()->create_sigil_expression( name ) )
       return e;
 
     return demon_hunter_spell_t::create_expression( name );
@@ -2520,7 +2520,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       : event_t( *f->dh, time ), 
       dh( f->dh ), 
       frag( f ), 
-      expr( e )
+      expr( std::move(e) )
     {
     }
 
@@ -2692,7 +2692,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     timespan_t time = calculate_movement_time( frag );
 
     assert( p()->soul_fragment_pick_up == nullptr );
-    p()->soul_fragment_pick_up = make_event<pick_up_event_t>( *sim, frag, time, if_expr );
+    p()->soul_fragment_pick_up = make_event<pick_up_event_t>( *sim, frag, time, if_expr.get() );
   }
 
   bool ready() override
@@ -4511,7 +4511,7 @@ struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
 
 // demon_hunter_t::create_expression ========================================
 
-expr_t* demon_hunter_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> demon_hunter_t::create_expression( const std::string& name_str )
 {
   if ( name_str == "greater_soul_fragments" ||
        name_str == "lesser_soul_fragments" || name_str == "soul_fragments" )
@@ -4547,13 +4547,13 @@ expr_t* demon_hunter_t::create_expression( const std::string& name_str )
       type = soul_fragment::LESSER;
     }
 
-    return new soul_fragments_expr_t( this, name_str, type );
+    return std::make_unique<soul_fragments_expr_t>( this, name_str, type );
   }
   else if ( name_str == "cooldown.metamorphosis.adjusted_remains" )
   {
     if ( this->talent.cycle_of_hatred->ok() )
     {
-      return new metamorphosis_adjusted_cooldown_expr_t( this, name_str );
+      return std::make_unique<metamorphosis_adjusted_cooldown_expr_t>( this, name_str );
     }
     else
     {
@@ -4562,7 +4562,7 @@ expr_t* demon_hunter_t::create_expression( const std::string& name_str )
   }
   else if ( name_str == "buff.metamorphosis.extended_by_demonic" )
   {
-    return new metamorphosis_buff_demonic_expr_t( this, name_str );
+    return std::make_unique<metamorphosis_buff_demonic_expr_t>( this, name_str );
   }
 
   return player_t::create_expression( name_str );
@@ -6058,7 +6058,7 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n )
 
 // demon_hunter_t::create_sigil_expression ==================================
 
-expr_t* demon_hunter_t::create_sigil_expression( const std::string& name )
+std::unique_ptr<expr_t> demon_hunter_t::create_sigil_expression( const std::string& name )
 {
   if ( util::str_compare_ci( name, "activation_time" ) || util::str_compare_ci( name, "delay" ) )
   {
@@ -6094,10 +6094,10 @@ expr_t* demon_hunter_t::create_sigil_expression( const std::string& name )
       }
     };
 
-    return new sigil_placed_expr_t( this, name );
+    return std::make_unique<sigil_placed_expr_t>( this, name );
   }
 
-  return nullptr;
+  return {};
 }
 
 /* Always returns non-null targetdata pointer

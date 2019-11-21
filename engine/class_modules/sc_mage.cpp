@@ -688,8 +688,8 @@ public:
   void        init_resources( bool ) override;
   void        recalculate_resource_max( resource_e ) override;
   void        reset() override;
-  expr_t*     create_expression( const std::string& ) override;
-  expr_t*     create_action_expression( action_t&, const std::string& ) override;
+  std::unique_ptr<expr_t>     create_expression( const std::string& ) override;
+  std::unique_ptr<expr_t>     create_action_expression( action_t&, const std::string& ) override;
   action_t*   create_action( const std::string&, const std::string& ) override;
   void        create_actions() override;
   void        create_pets() override;
@@ -6326,7 +6326,7 @@ void mage_t::combat_end()
  * Use this function for expressions which are bound to some action property (eg. target, cast_time, etc.) and not just
  * to the player itself. For those use the normal mage_t::create_expression override.
  */
-expr_t* mage_t::create_action_expression( action_t& action, const std::string& name )
+std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, const std::string& name )
 {
   std::vector<std::string> splits = util::string_split( name, "." );
 
@@ -6367,7 +6367,7 @@ expr_t* mage_t::create_action_expression( action_t& action, const std::string& n
   return player_t::create_action_expression( action, name );
 }
 
-expr_t* mage_t::create_expression( const std::string& name )
+std::unique_ptr<expr_t> mage_t::create_expression( const std::string& name )
 {
   // Incanters flow direction
   // Evaluates to:  0.0 if IF talent not chosen or IF stack unchanged

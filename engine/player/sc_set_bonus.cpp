@@ -287,7 +287,7 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
   return s;
 }
 
-expr_t* set_bonus_t::create_expression( const player_t* , const std::string& type )
+std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t* , const std::string& type )
 {
   set_bonus_type_e set_bonus = SET_BONUS_NONE;
   set_bonus_e bonus = B_NONE;

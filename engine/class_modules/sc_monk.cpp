@@ -831,7 +831,7 @@ public:
   virtual void invalidate_cache( cache_e ) override;
   virtual void init_action_list() override;
   void activate() override;
-  virtual expr_t* create_expression( const std::string& name_str ) override;
+  virtual std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
   virtual monk_td_t* get_target_data( player_t* target ) const override
   {
     monk_td_t*& td = target_data[ target ];
@@ -2501,7 +2501,7 @@ public:
     return p()->get_target_data( t );
   }
 
-  expr_t* create_expression( const std::string& name_str ) override
+  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override
   {
     if ( name_str == "combo_strike" )
       return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_strike );
@@ -10309,7 +10309,7 @@ double monk_t::calculate_last_stagger_tick_damage( int n ) const
 
 // monk_t::create_expression ==================================================
 
-expr_t* monk_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> monk_t::create_expression( const std::string& name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
   if ( splits.size() == 2 && splits[ 0 ] == "stagger" )
@@ -10356,15 +10356,15 @@ expr_t* monk_t::create_expression( const std::string& name_str )
     };
 
     if ( splits[ 1 ] == "light" )
-      return new stagger_threshold_expr_t( *this, light_stagger_threshold );
+      return std::make_unique<stagger_threshold_expr_t>( *this, light_stagger_threshold );
     else if ( splits[ 1 ] == "moderate" )
-      return new stagger_threshold_expr_t( *this, moderate_stagger_threshold );
+      return std::make_unique<stagger_threshold_expr_t>( *this, moderate_stagger_threshold );
     else if ( splits[ 1 ] == "heavy" )
-      return new stagger_threshold_expr_t( *this, heavy_stagger_threshold );
+      return std::make_unique<stagger_threshold_expr_t>( *this, heavy_stagger_threshold );
     else if ( splits[ 1 ] == "amount" )
-      return new stagger_amount_expr_t( *this );
+      return std::make_unique<stagger_amount_expr_t>( *this );
     else if ( splits[ 1 ] == "pct" )
-      return new stagger_percent_expr_t( *this );
+      return std::make_unique<stagger_percent_expr_t>( *this );
     else if ( splits[ 1 ] == "remains" )
     {
       return make_fn_expr( name_str, [this]() { return current_stagger_dot_remains(); } );
@@ -10411,7 +10411,7 @@ expr_t* monk_t::create_expression( const std::string& name_str )
     };
 
     if ( splits[ 1 ] == "count" )
-      return new sck_stack_expr_t( *this );
+      return std::make_unique<sck_stack_expr_t>( *this );
   }
 
   return base_t::create_expression( name_str );

@@ -456,9 +456,9 @@ action_t* priest_t::create_action_discipline( const std::string& name, const std
   return nullptr;
 }
 
-expr_t* priest_t::create_expression_discipline( action_t*, const std::string& /*name_str*/ )
+std::unique_ptr<expr_t> priest_t::create_expression_discipline( action_t*, const std::string& /*name_str*/ )
 {
-  return nullptr;
+  return {};
 }
 
 void priest_t::generate_apl_discipline_h()

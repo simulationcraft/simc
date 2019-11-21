@@ -598,7 +598,7 @@ struct rogue_t : public player_t
   void        combat_begin() override;
   timespan_t  available() const override;
   action_t*   create_action( const std::string& name, const std::string& options ) override;
-  expr_t*     create_expression( const std::string& name_str ) override;
+  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
   void        regen( timespan_t periodicity ) override;
   double      resource_gain( resource_e, double, gain_t* g = nullptr, action_t* a = nullptr ) override;
   resource_e  primary_resource() const override { return RESOURCE_ENERGY; }
@@ -1164,7 +1164,7 @@ struct rogue_attack_t : public melee_attack_t
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
-  expr_t* create_expression( const std::string& name_str ) override;
+  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
 };
 
 struct secondary_ability_trigger_t : public event_t
@@ -3269,7 +3269,7 @@ struct rupture_t : public rogue_attack_t
     p() -> trigger_venomous_wounds( d -> state );
   }
 
-  expr_t* create_expression( const std::string& name ) override
+  std::unique_ptr<expr_t> create_expression( const std::string& name ) override
   {
     if ( util::str_compare_ci( name, "new_duration" ) )
     {
@@ -3292,7 +3292,7 @@ struct rupture_t : public rogue_attack_t
         }
       };
 
-      return new new_duration_expr_t( this );
+      return std::make_unique<new_duration_expr_t>( this );
     }
 
     return rogue_attack_t::create_expression( name );
@@ -4211,7 +4211,7 @@ struct exsanguinated_expr_t : public expr_t
 
 // rogue_attack_t::create_expression =========================================
 
-expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> actions::rogue_attack_t::create_expression( const std::string& name_str )
 {
   if ( util::str_compare_ci( name_str, "cp_gain" ) )
   {
@@ -4222,7 +4222,7 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   else if ( util::str_compare_ci( name_str, "exsanguinated" ) &&
             ( data().id() == 703 || data().id() == 1943 || this -> name_str == "crimson_tempest" ) )
   {
-    return new exsanguinated_expr_t( this );
+    return std::make_unique<exsanguinated_expr_t>( this );
   }
   else if ( util::str_compare_ci( name_str, "ss_buffed") )
   {
@@ -6047,7 +6047,7 @@ action_t* rogue_t::create_action( const std::string& name,
 
 // rogue_t::create_expression ===============================================
 
-expr_t* rogue_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> rogue_t::create_expression( const std::string& name_str )
 {
   std::vector<std::string> split = util::string_split( name_str, "." );
 
@@ -6206,7 +6206,7 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
       return expr_t::create_constant( "exsanguinated_expr", 0 );
     }
 
-    return new exsanguinated_expr_t( action );
+    return std::make_unique<exsanguinated_expr_t>( action );
   }
   // rtb_list.<buffs>
   else if ( split.size() == 3 && util::str_compare_ci( split[ 0 ], "rtb_list" ) && ! split[ 1 ].empty() )

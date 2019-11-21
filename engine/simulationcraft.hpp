@@ -1498,7 +1498,7 @@ struct sim_t : private sc_thread_t
   player_t* find_player( int index ) const;
   cooldown_t* get_cooldown( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
-  expr_t*   create_expression( const std::string& name );
+  std::unique_ptr<expr_t>   create_expression( const std::string& name );
   /**
    * Create error with printf formatting.
    */
@@ -1877,7 +1877,7 @@ inline Event* make_event( sim_t& sim, Args&&... args )
 {
   static_assert( std::is_base_of<event_t, Event>::value,
                  "Event must be derived from event_t" );
-  auto r = new ( sim ) Event( args... );
+  auto r = new ( sim ) Event( std::forward<Args>(args)... );
   assert( r -> id != 0 && "Event not added to event manager!" );
   return r;
 }
@@ -2746,7 +2746,7 @@ struct set_bonus_t
   // Initialize set bonuses in earnest
   void initialize();
 
-  expr_t* create_expression( const player_t*, const std::string& type );
+  std::unique_ptr<expr_t> create_expression( const player_t*, const std::string& type );
 
   std::vector<const item_set_bonus_t*> enabled_set_bonus_data() const;
 
@@ -3025,7 +3025,7 @@ struct cooldown_t
   const char* name() const
   { return name_str.c_str(); }
 
-  expr_t* create_expression( const std::string& name_str );
+  std::unique_ptr<expr_t> create_expression( const std::string& name_str );
 
   void add_execute_type( execute_type e )
   { execute_types_mask |= ( 1 << static_cast<unsigned>( e ) ); }
@@ -4225,7 +4225,7 @@ public:
   bool parse_talents_armory( const std::string& talent_string );
   bool parse_talents_armory2( const std::string& talent_string );
   bool parse_talents_wowhead( const std::string& talent_string );
-  expr_t* create_resource_expression( const std::string& name );
+  std::unique_ptr<expr_t> create_resource_expression( const std::string& name );
 
 
   bool is_moving() const
@@ -4543,8 +4543,8 @@ public:
   virtual void  summon_pet( const std::string& name, timespan_t duration = timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );
 
-  virtual expr_t* create_expression( const std::string& name );
-  virtual expr_t* create_action_expression( action_t&, const std::string& name );
+  virtual std::unique_ptr<expr_t> create_expression( const std::string& name );
+  virtual std::unique_ptr<expr_t> create_action_expression( action_t&, const std::string& name );
 
   virtual void create_options();
   void recreate_talent_str( talent_format format = talent_format::NUMBERS );
@@ -5548,7 +5548,7 @@ public:
 
   bool interrupt_global;
 
-  expr_t* if_expr;
+  std::unique_ptr<expr_t> if_expr;
 
   enum target_if_mode_e
   {
@@ -5558,10 +5558,10 @@ public:
     TARGET_IF_MAX
   } target_if_mode;
 
-  expr_t* target_if_expr;
-  expr_t* interrupt_if_expr;
-  expr_t* early_chain_if_expr;
-  expr_t* cancel_if_expr;
+  std::unique_ptr<expr_t> target_if_expr;
+  std::unique_ptr<expr_t> interrupt_if_expr;
+  std::unique_ptr<expr_t> early_chain_if_expr;
+  std::unique_ptr<expr_t> cancel_if_expr;
   action_t* sync_action;
   std::string signature_str;
   target_specific_t<dot_t> target_specific_dot;
@@ -6092,7 +6092,7 @@ public:
   // becomes active.
   virtual void activate();
 
-  virtual expr_t* create_expression(const std::string& name);
+  virtual std::unique_ptr<expr_t> create_expression(const std::string& name);
 
   virtual action_state_t* new_state();
 
@@ -6433,7 +6433,7 @@ public:
   virtual double composite_versatility( const action_state_t* state ) const override
   { return spell_base_t::composite_versatility( state ) + player -> cache.heal_versatility(); }
 
-  virtual expr_t* create_expression( const std::string& name ) override;
+  virtual std::unique_ptr<expr_t> create_expression( const std::string& name ) override;
 };
 
 // Absorb ===================================================================
@@ -6670,7 +6670,7 @@ public:
   // action's supporting methods (action_t::tick_time, action_t::composite_dot_ruration), otherwise
   // bad things will happen.
   void   adjust_full_ticks( double coefficient );
-  static expr_t* create_expression( dot_t* dot, action_t* action, action_t* source_action,
+  static std::unique_ptr<expr_t> create_expression( dot_t* dot, action_t* action, action_t* source_action,
       const std::string& name_str, bool dynamic );
 
   timespan_t remains() const;
@@ -7552,7 +7552,7 @@ void initialize_racial_effects( player_t* );
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
 
-expr_t* create_expression( player_t& player, const std::string& name_str );
+std::unique_ptr<expr_t> create_expression( player_t& player, const std::string& name_str );
 
 // Kludge to automatically apply all player-derived, label based modifiers to unique effects. Will
 // be replaced in the future by something else.
@@ -8103,7 +8103,7 @@ inline void player_t::do_dynamic_regen()
 inline target_wrapper_expr_t::target_wrapper_expr_t( action_t& a, const std::string& name_str, const std::string& expr_str ) :
   expr_t( name_str ), action( a ), suffix_expr_str( expr_str )
 {
-  proxy_expr.resize( action.sim -> actor_list.size() + 1, nullptr );
+  std::generate_n(std::back_inserter(proxy_expr), action.sim->actor_list.size(), []{ return std::unique_ptr<expr_t>(); });
 }
 
 inline double target_wrapper_expr_t::evaluate()
@@ -8988,7 +8988,7 @@ public:
   virtual void merge( base_actor_spawner_t* other ) = 0;
 
   // Expressions
-  virtual expr_t* create_expression( const arv::array_view<std::string>& expr ) = 0;
+  virtual std::unique_ptr<expr_t> create_expression( const arv::array_view<std::string>& expr ) = 0;
 
   // Uptime
   virtual timespan_t iteration_uptime() const = 0;

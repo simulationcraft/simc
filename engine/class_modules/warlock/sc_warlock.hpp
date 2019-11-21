@@ -460,7 +460,7 @@ namespace warlock
       void      halt() override;
       void      combat_begin() override;
       void      init_assessors() override;
-      expr_t*   create_expression( const std::string& name_str ) override;
+      std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
       std::string       default_potion() const override;
       std::string       default_flask() const override;
       std::string       default_food() const override;
@@ -488,7 +488,7 @@ namespace warlock
       void init_procs_affliction();
       void create_options_affliction();
       void create_apl_affliction();
-      expr_t*   create_aff_expression(const std::string& name_str);
+      std::unique_ptr<expr_t>   create_aff_expression(const std::string& name_str);
 
       // sc_warlock_demonology
       action_t* create_action_demonology( const std::string& action_name, const std::string& options_str );
@@ -514,7 +514,7 @@ namespace warlock
       pet_t* create_main_pet(const std::string& pet_name, const std::string& options_str);
       pet_t* create_demo_pet(const std::string& pet_name, const std::string& options_str);
       void   create_all_pets();
-      expr_t*   create_pet_expression(const std::string& name_str);
+      std::unique_ptr<expr_t> create_pet_expression(const std::string& name_str);
 
     private:
       void apl_precombat();
@@ -714,7 +714,7 @@ namespace warlock
           }
         }
 
-        expr_t* create_expression(const std::string& name_str) override
+        std::unique_ptr<expr_t> create_expression(const std::string& name_str) override
         {
           if (name_str == "target_uas")
           {

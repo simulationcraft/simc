@@ -255,10 +255,10 @@ public:
 
   virtual int total_stack();
 
-  static expr_t* create_expression( std::string buff_name,
+  static std::unique_ptr<expr_t> create_expression( std::string buff_name,
                                     const std::string& type,
                                     action_t& action );
-  static expr_t* create_expression( std::string buff_name,
+  static std::unique_ptr<expr_t> create_expression( std::string buff_name,
                                     const std::string& type,
                                     buff_t& static_buff );
   std::string to_str() const;

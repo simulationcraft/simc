@@ -686,7 +686,7 @@ bool azerite_state_t::is_enabled( const std::string& name, bool tokenized ) cons
   return is_enabled( power.id );
 }
 
-expr_t* azerite_state_t::create_expression( const std::vector<std::string>& expr_str ) const
+std::unique_ptr<expr_t> azerite_state_t::create_expression( const std::vector<std::string>& expr_str ) const
 {
   if ( expr_str.size() == 1 )
   {
@@ -1223,7 +1223,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
   return true;
 }
 
-expr_t* azerite_essence_state_t::create_expression( const std::vector<std::string>& expr_str ) const
+std::unique_ptr<expr_t> azerite_essence_state_t::create_expression( const std::vector<std::string>& expr_str ) const
 {
   if ( expr_str.size() <= 2 )
     return nullptr;
@@ -1244,7 +1244,7 @@ expr_t* azerite_essence_state_t::create_expression( const std::vector<std::strin
   else
     throw std::invalid_argument( fmt::format( "Unknown azerite essence expression: '{}'.", expr_str[ 2 ] ) );
 
-  return nullptr;
+  return {};
 }
 
 std::vector<unsigned> azerite_essence_state_t::enabled_essences() const

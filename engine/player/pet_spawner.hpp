@@ -53,7 +53,7 @@ public:
   using apply_fn_t = std::function<void(T*)>;
   using check_arg_fn_t = std::function<bool(const T*)>;
   using check_fn_t = std::function<bool(void)>;
-  using expr_fn_t = std::function<expr_t*(const arv::array_view<std::string>&)>;
+  using expr_fn_t = std::function<std::unique_ptr<expr_t>(const arv::array_view<std::string>&)>;
 
 private:
   // Creation phase determines what components of the init process are run on the created pet
@@ -195,7 +195,7 @@ public:
   void create_persistent_actors() override;
 
   /// Returns a pet-related expression
-  expr_t* create_expression( const arv::array_view<std::string>& expr ) override;
+  std::unique_ptr<expr_t> create_expression( const arv::array_view<std::string>& expr ) override;
 
   /// Returns total uptime of the spawned pet type
   timespan_t iteration_uptime() const override;

@@ -80,7 +80,7 @@ struct enemy_t : public player_t
   virtual void combat_end() override;
   virtual void recalculate_health();
   virtual void demise() override;
-  virtual expr_t* create_expression( const std::string& type ) override;
+  virtual std::unique_ptr<expr_t> create_expression( const std::string& type ) override;
   virtual timespan_t available() const override { return waiting_time; }
 
   void actor_changed() override
@@ -1599,7 +1599,7 @@ bool enemy_t::taunt( player_t* source )
 
 // enemy_t::create_expression ===============================================
 
-expr_t* enemy_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> enemy_t::create_expression( const std::string& name_str )
 {
   if ( name_str == "adds" )
     return make_mem_fn_expr( name_str, active_pets, &std::vector<pet_t*>::size );
@@ -1632,7 +1632,7 @@ expr_t* enemy_t::create_expression( const std::string& name_str )
         }
       };
 
-      return new current_target_name_expr_t( this );
+      return std::make_unique<current_target_name_expr_t>( this );
 
     }
     else if ( splits.size() == 3 && splits[ 1 ] == "debuff" )
@@ -1660,7 +1660,7 @@ expr_t* enemy_t::create_expression( const std::string& name_str )
         }
       };
 
-      return new current_target_debuff_expr_t( this, splits[ 2 ] );
+      return std::make_unique<current_target_debuff_expr_t>( this, splits[ 2 ] );
 
     }
 

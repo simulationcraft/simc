@@ -1971,7 +1971,7 @@ action_t* priest_t::create_action_shadow( const std::string& name, const std::st
   return nullptr;
 }
 
-expr_t* priest_t::create_expression_shadow( const std::string& name_str )
+std::unique_ptr<expr_t> priest_t::create_expression_shadow( const std::string& name_str )
 {
   if ( name_str == "shadowy_apparitions_in_flight" )
   {

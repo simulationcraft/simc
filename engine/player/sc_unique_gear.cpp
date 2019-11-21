@@ -4160,7 +4160,7 @@ struct item_effect_base_expr_t : public expr_t
 // expressions). Implements the behavior of expression evaluation.
 struct item_effect_expr_t : public item_effect_base_expr_t
 {
-  std::vector<expr_t*> exprs;
+  std::vector<std::unique_ptr<expr_t>> exprs;
 
   item_effect_expr_t( player_t& player, const std::vector<slot_e> slots ) :
     item_effect_base_expr_t( player, slots )
@@ -4172,7 +4172,7 @@ struct item_effect_expr_t : public item_effect_base_expr_t
   double evaluate() override
   {
     double result = 0;
-    for (auto expr : exprs)
+    for (auto&& expr : exprs)
     {
       double r = expr -> eval();
       if ( r > result )
@@ -4181,9 +4181,6 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 
     return result;
   }
-
-  virtual ~item_effect_expr_t()
-  { range::dispose( exprs ); }
 };
 
 // Buff based item expressions, creates buff expressions for the items from
@@ -4200,8 +4197,8 @@ struct item_buff_expr_t : public item_effect_expr_t
       buff_t* b = buff_t::find( &player, e -> name() );
       if ( buff_has_stat( b, s ) && ( ( ! stacking && b -> max_stack() <= 1 ) || ( stacking && b -> max_stack() > 1 ) ) )
       {
-        if ( expr_t* expr_obj = buff_t::create_expression( b -> name(), expr_str, *b ) )
-          exprs.push_back( expr_obj );
+        if ( auto expr_obj = buff_t::create_expression( b -> name(), expr_str, *b ) )
+          exprs.push_back( std::move(expr_obj) );
       }
     }
   }
@@ -4243,8 +4240,8 @@ struct item_cooldown_expr_t : public item_effect_expr_t
       if ( e -> cooldown() != timespan_t::zero() )
       {
         cooldown_t* cd = player.get_cooldown( e -> cooldown_name() );
-        if ( expr_t* expr_obj = cd -> create_expression( expr ) )
-          exprs.push_back( expr_obj );
+        if ( auto expr_obj = cd -> create_expression( expr ) )
+          exprs.push_back( std::move(expr_obj) );
       }
     }
   }
@@ -4311,7 +4308,7 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
  * trinket[.1|2|name].(has_|)(stacking_|)proc.<stat>.<buff_expr> OR
  * trinket[.1|2|name].(has_|)cooldown.<cooldown_expr>
  */
-expr_t* unique_gear::create_expression( player_t& player, const std::string& name_str )
+std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, const std::string& name_str )
 {
   enum proc_expr_e
   {
@@ -4427,30 +4424,29 @@ expr_t* unique_gear::create_expression( player_t& player, const std::string& nam
 
   if ( pexprtype == PROC_ENABLED && ptype != PROC_COOLDOWN && splits.size() >= 4 )
   {
-    return new item_buff_expr_t( player, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
+    return std::make_unique<item_buff_expr_t>( player, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
   }
   else if ( pexprtype == PROC_ENABLED && ptype == PROC_COOLDOWN && splits.size() >= 3 )
   {
-    return new item_cooldown_expr_t( player, slots, splits[ expr_idx ] );
+    return std::make_unique<item_cooldown_expr_t>( player, slots, splits[ expr_idx ] );
   }
   else if ( pexprtype == PROC_EXISTS )
   {
     if ( ptype != PROC_COOLDOWN )
     {
-      return new item_buff_exists_expr_t( player, slots, stat );
+      return std::make_unique<item_buff_exists_expr_t>( player, slots, stat );
     }
     else
     {
-      return new item_cooldown_exists_expr_t( player, slots );
+      return std::make_unique<item_cooldown_exists_expr_t>( player, slots );
     }
   }
   else if ( pexprtype == PROC_READY )
   {
-    return new item_ready_expr_t( player, slots );
+    return std::make_unique<item_ready_expr_t>( player, slots );
   }
 
   throw std::invalid_argument(fmt::format("Unsupported unique gear expression '{}'.", splits.back()));
-  return nullptr;
 }
 
 // Find a consumable of a given subtype, see data_enum.hh for type values.

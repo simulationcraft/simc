@@ -1928,7 +1928,7 @@ double paladin_t::last_defender_mitigation() const
 
 // player_t::create_expression ==============================================
 
-expr_t* paladin_t::create_consecration_expression( const std::string& expr_str )
+std::unique_ptr<expr_t> paladin_t::create_consecration_expression( const std::string& expr_str )
 {
   auto expr = util::string_split( expr_str, "." );
   if ( expr.size() != 2 )
@@ -1956,7 +1956,7 @@ expr_t* paladin_t::create_consecration_expression( const std::string& expr_str )
   return nullptr;
 }
 
-expr_t* paladin_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> paladin_t::create_expression( const std::string& name_str )
 {
   struct paladin_expr_t : public expr_t
   {
@@ -2014,7 +2014,7 @@ expr_t* paladin_t::create_expression( const std::string& name_str )
 
   if ( splits[ 0 ] == "time_to_hpg" )
   {
-    return new time_to_hpg_expr_t( name_str, *this );
+    return std::make_unique<time_to_hpg_expr_t>( name_str, *this );
   }
 
   auto cons_expr = create_consecration_expression( name_str );

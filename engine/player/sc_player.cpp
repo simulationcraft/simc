@@ -2184,11 +2184,10 @@ void player_t::override_talent( std::string& override_str )
   if ( cut_pt != override_str.npos && override_str.substr( cut_pt + 1, 3 ) == "if=" )
   {
     override_talent_action_t* dummy_action = new override_talent_action_t( this );
-    expr_t* expr                           = expr_t::parse( dummy_action, override_str.substr( cut_pt + 4 ) );
+    auto expr = expr_t::parse( dummy_action, override_str.substr( cut_pt + 4 ) );
     if ( !expr )
       return;
     bool success = expr->success();
-    delete expr;
     if ( !success )
       return;
     override_str = override_str.substr( 0, cut_pt );
@@ -7219,17 +7218,17 @@ struct variable_t : public action_t
   action_var_e operation;
   action_variable_t* var;
   std::string value_str, value_else_str, var_name_str, condition_str;
-  expr_t* value_expression;
-  expr_t* condition_expression;
-  expr_t* value_else_expression;
+  std::unique_ptr<expr_t> value_expression;
+  std::unique_ptr<expr_t> condition_expression;
+  std::unique_ptr<expr_t> value_else_expression;
 
   variable_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_VARIABLE, "variable", player ),
     operation( OPERATION_SET ),
     var( nullptr ),
-    value_expression( nullptr ),
-    condition_expression( nullptr ),
-    value_else_expression( nullptr )
+    value_expression(),
+    condition_expression(),
+    value_else_expression()
   {
     quiet   = true;
     harmful = proc = callbacks = may_miss = may_crit = may_block = may_parry = may_dodge = false;
@@ -7480,32 +7479,10 @@ struct variable_t : public action_t
   // actions with variable expressions can know if the associated variable is constant
   void optimize_expressions()
   {
-    if ( if_expr )
-    {
-      if_expr = if_expr->optimize();
-    }
-
-    if ( value_expression )
-    {
-      value_expression = value_expression->optimize();
-    }
-
-    if ( condition_expression )
-    {
-      value_expression = value_expression->optimize();
-    }
-
-    if ( value_else_expression )
-    {
-      value_else_expression = value_else_expression->optimize();
-    }
-  }
-
-  ~variable_t()
-  {
-    delete value_expression;
-    delete condition_expression;
-    delete value_else_expression;
+    expr_t::optimize_expression(if_expr);
+    expr_t::optimize_expression(value_expression);
+    expr_t::optimize_expression(condition_expression);
+    expr_t::optimize_expression(value_else_expression);
   }
 
   // Note note note, doesn't do anything that a real action does
@@ -8398,7 +8375,7 @@ struct use_item_t : public action_t
     return action_t::ready();
   }
 
-  expr_t* create_special_effect_expr( const std::vector<std::string>& data_str_split )
+  std::unique_ptr<expr_t> create_special_effect_expr( const std::vector<std::string>& data_str_split )
   {
     struct use_item_buff_type_expr_t : public expr_t
     {
@@ -8436,13 +8413,13 @@ struct use_item_t : public action_t
       return 0;
     }
 
-    return new use_item_buff_type_expr_t( e->stat_type() == stat );
+    return std::make_unique<use_item_buff_type_expr_t>( e->stat_type() == stat );
   }
 
-  expr_t* create_expression( const std::string& name_str ) override
+  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override
   {
     std::vector<std::string> split = util::string_split( name_str, "." );
-    if ( expr_t* e = create_special_effect_expr( split ) )
+    if ( auto e = create_special_effect_expr( split ) )
     {
       return e;
     }
@@ -8803,7 +8780,7 @@ struct pool_resource_t : public action_t
   int for_next;
   action_t* next_action;
   std::string amount_str;
-  expr_t* amount_expr;
+  std::unique_ptr<expr_t> amount_expr;
 
   pool_resource_t( player_t* p, const std::string& options_str, resource_e r = RESOURCE_NONE ) :
     action_t( ACTION_OTHER, "pool_resource", p ),
@@ -8811,7 +8788,7 @@ struct pool_resource_t : public action_t
     wait( timespan_t::from_seconds( 0.251 ) ),
     for_next( 0 ),
     next_action( 0 ),
-    amount_expr( nullptr )
+    amount_expr()
   {
     quiet = true;
     add_option( opt_timespan( "wait", wait ) );
@@ -8826,11 +8803,6 @@ struct pool_resource_t : public action_t
       if ( res != RESOURCE_NONE )
         resource = res;
     }
-  }
-
-  ~pool_resource_t()
-  {
-    delete amount_expr;
   }
 
   void init_finished() override
@@ -9892,7 +9864,7 @@ const spell_data_t* player_t::find_spell( unsigned int id, specialization_e s ) 
 
 namespace
 {
-expr_t* deprecate_expression( player_t& p, const std::string& old_name, const std::string& new_name, action_t* a = nullptr  )
+std::unique_ptr<expr_t> deprecate_expression( player_t& p, const std::string& old_name, const std::string& new_name, action_t* a = nullptr  )
 {
   p.sim->errorf( "Use of \"%s\" ( action %s ) in action expressions is deprecated: use \"%s\" instead.\n",
                   old_name.c_str(), a?a->name() : "unknown", new_name.c_str() );
@@ -9921,7 +9893,7 @@ struct position_expr_t : public player_expr_t
   }
 };
 
-expr_t* deprecated_player_expressions( player_t& player, const std::string& expression_str )
+std::unique_ptr<expr_t> deprecated_player_expressions( player_t& player, const std::string& expression_str )
 {
   if ( expression_str == "health_pct" )
     return deprecate_expression( player, expression_str, "health.pct" );
@@ -9944,7 +9916,7 @@ expr_t* deprecated_player_expressions( player_t& player, const std::string& expr
   if ( expression_str == "max_mana_nonproc" )
     return deprecate_expression( player, expression_str, "mana.max_nonproc" );
 
-  return nullptr;
+  return {};
 }
 
 }  // namespace
@@ -9955,14 +9927,14 @@ expr_t* deprecated_player_expressions( player_t& player, const std::string& expr
  * Use this function for expressions which are bound to some action property (eg. target, cast_time, etc.) and not just
  * to the player itself.
  */
-expr_t* player_t::create_action_expression( action_t&, const std::string& name )
+std::unique_ptr<expr_t> player_t::create_action_expression( action_t&, const std::string& name )
 {
   return create_expression( name );
 }
 
-expr_t* player_t::create_expression( const std::string& expression_str )
+std::unique_ptr<expr_t> player_t::create_expression( const std::string& expression_str )
 {
-  if (expr_t* e = deprecated_player_expressions(*this, expression_str))
+  if (auto e = deprecated_player_expressions(*this, expression_str))
   {
     return e;
   }
@@ -10016,9 +9988,9 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     return make_fn_expr( expression_str, [this] { return cache.spell_crit_chance(); } );
 
   if ( expression_str == "position_front" )
-    return new position_expr_t( "position_front", *this, ( 1 << POSITION_FRONT ) | ( 1 << POSITION_RANGED_FRONT ) );
+    return std::make_unique<position_expr_t>( "position_front", *this, ( 1 << POSITION_FRONT ) | ( 1 << POSITION_RANGED_FRONT ) );
   if ( expression_str == "position_back" )
-    return new position_expr_t( "position_back", *this, ( 1 << POSITION_BACK ) | ( 1 << POSITION_RANGED_BACK ) );
+    return std::make_unique<position_expr_t>( "position_back", *this, ( 1 << POSITION_BACK ) | ( 1 << POSITION_RANGED_BACK ) );
 
   if ( expression_str == "time_to_bloodlust" )
     return make_fn_expr( expression_str, [this] { return calculate_time_to_bloodlust(); } );
@@ -10032,7 +10004,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   }
 
   // Resource expressions
-  if ( expr_t* q = create_resource_expression( expression_str ) )
+  if ( auto q = create_resource_expression( expression_str ) )
     return q;
 
   // time_to_pct expressions
@@ -10130,7 +10102,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
         { return var_->current_value_; }
       };
 
-      return new variable_expr_t( this, splits[ 1 ] );
+      return std::make_unique<variable_expr_t>( this, splits[ 1 ] );
     }
 
     // item equipped by item_id or name or effect_name
@@ -10365,7 +10337,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
             return 9999;
           }
         };
-        return new swing_remains_expr_t( *this, hand );
+        return std::make_unique<swing_remains_expr_t>( *this, hand );
       }
     }
 
@@ -10411,13 +10383,13 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   // trinkets
   if ( !splits.empty() && splits[ 0 ] == "trinket" )
   {
-    if ( expr_t* expr = unique_gear::create_expression( *this, expression_str ) )
+    if ( auto expr = unique_gear::create_expression( *this, expression_str ) )
       return expr;
   }
 
   if ( splits[ 0 ] == "legendary_ring" )
   {
-    if ( expr_t* expr = unique_gear::create_expression( *this, expression_str ) )
+    if ( auto expr = unique_gear::create_expression( *this, expression_str ) )
       return expr;
   }
 
@@ -10465,7 +10437,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
 
         // build player/pet expression from the tail of the expression string.
         std::string tail = expression_str.substr( splits[ 1 ].length() + 5 );
-        if ( expr_t* e = pet->create_expression( tail ) )
+        if ( auto e = pet->create_expression( tail ) )
         {
           return e;
         }
@@ -10493,7 +10465,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
       if ( pet->owner )
       {
         std::string tail = expression_str.substr( 6 );
-        if ( expr_t* e = pet->owner->create_expression( tail ) )
+        if ( auto e = pet->owner->create_expression( tail ) )
         {
           return e;
         }
@@ -10521,7 +10493,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   return sim->create_expression( expression_str );
 }
 
-expr_t* player_t::create_resource_expression( const std::string& name_str )
+std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string& name_str )
 {
   auto splits = util::string_split( name_str, "." );
   if ( splits.empty() )

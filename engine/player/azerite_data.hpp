@@ -223,7 +223,7 @@ public:
   void copy_overrides( const std::unique_ptr<azerite_state_t>& other );
 
   /// Create azerite-related expressions
-  expr_t* create_expression( const std::vector<std::string>& expr_str ) const;
+  std::unique_ptr<expr_t> create_expression( const std::vector<std::string>& expr_str ) const;
 
   /// Enabled azerite spells
   std::vector<unsigned> enabled_spells() const;
@@ -287,7 +287,7 @@ public:
   bool parse_azerite_essence( sim_t*, const std::string& /* name */, const std::string& /* value */ );
 
   /// Create essence-related expressions
-  expr_t* create_expression( const std::vector<std::string>& expr_str ) const;
+  std::unique_ptr<expr_t> create_expression( const std::vector<std::string>& expr_str ) const;
 
   std::vector<unsigned> enabled_essences() const;
 

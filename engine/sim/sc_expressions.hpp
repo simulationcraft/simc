@@ -70,7 +70,7 @@ std::vector<expr_token_t> parse_tokens( action_t* action,
 void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim );
 void convert_to_unary( std::vector<expr_token_t>& tokens );
 bool convert_to_rpn( std::vector<expr_token_t>& tokens );
-expr_t* build_player_expression_tree(
+std::unique_ptr<expr_t> build_player_expression_tree(
     player_t& player, std::vector<expression::expr_token_t>& tokens,
     bool optimize );
 }
@@ -141,15 +141,23 @@ public:
     return static_cast<double>( t );
   }
 
-  static expr_t* parse( action_t*, const std::string& expr_str,
+  static std::unique_ptr<expr_t> parse( action_t*, const std::string& expr_str,
                         bool optimize = false );
   template<class T>
-  static expr_t* create_constant( const std::string& name, T value );
+  static std::unique_ptr<expr_t> create_constant( const std::string& name, T value );
 
-  virtual expr_t* optimize( int /* spacing */ = 0 )
-  { /* spacing = 0; */
-    return this;
+  static void optimize_expression(std::unique_ptr<expr_t>& expression, int spacing = 0)
+  {
+    if (!expression)
+    {
+      return;
+    }
+    if (auto optimized = expression->build_optimized_expression(spacing))
+    {
+      expression.swap(optimized);
+    }
   }
+
   virtual double evaluate() = 0;
 
   virtual bool is_constant( double* /*return_value*/ )
@@ -160,6 +168,13 @@ public:
   expression::token_e op_;
 
 private:
+  /* Attempts to create a optimized version of the expression.
+  Should return null if no improved version can be built.
+  */
+  virtual std::unique_ptr<expr_t> build_optimized_expression( int /* spacing */ )
+  { 
+    return {};
+  }
 #if !defined( NDEBUG )
   int id_;
   std::string name_;
@@ -211,9 +226,9 @@ private:
 
 // Template to return a reference expression
 template <typename T>
-inline expr_t* make_ref_expr( const std::string& name, T& t )
+inline std::unique_ptr<expr_t> make_ref_expr( const std::string& name, T& t )
 {
-  return new ref_expr_t<T>( name, const_cast<const T&>( t ) );
+  return std::make_unique<ref_expr_t<T>>( name, const_cast<const T&>( t ) );
 }
 
 // Function Expression - fn_expr_t
@@ -239,7 +254,7 @@ private:
 struct target_wrapper_expr_t : public expr_t
 {
   action_t& action;
-  std::vector<expr_t*> proxy_expr;
+  std::vector<std::unique_ptr<expr_t>> proxy_expr;
   std::string suffix_expr_str;
 
   // Inlined
@@ -247,32 +262,27 @@ struct target_wrapper_expr_t : public expr_t
                          const std::string& expr_str );
   virtual player_t* target() const;
   double evaluate() override;
-
-  ~target_wrapper_expr_t()
-  {
-    range::dispose( proxy_expr );
-  }
 };
 
 // Template to return a function expression
 template <typename F>
-inline expr_t* make_fn_expr( const std::string& name, F&& f )
+inline std::unique_ptr<expr_t> make_fn_expr( const std::string& name, F&& f )
 {
-  return new fn_expr_t<F>( name, std::forward<F>( f ) );
+  return std::make_unique<fn_expr_t<F>>( name, std::forward<F>( f ) );
 }
 
 // Make member function expression - make_mem_fn_expr
 // Template to return function expression that calls a member ( mem ) function (
 // fn ) f on reference t.
 template <typename F, typename T>
-inline expr_t* make_mem_fn_expr( const std::string& name, T& t, F f )
+inline std::unique_ptr<expr_t> make_mem_fn_expr( const std::string& name, T& t, F f )
 {
   return make_fn_expr( name, std::bind( std::mem_fn( f ), &t ) );
 }
 
 template<class T>
-inline expr_t* expr_t::create_constant( const std::string& name, T value )
+inline std::unique_ptr<expr_t> expr_t::create_constant( const std::string& name, T value )
 {
-  return new const_expr_t( name, coerce(value) );
+  return std::make_unique<const_expr_t>( name, coerce(value) );
 }
 

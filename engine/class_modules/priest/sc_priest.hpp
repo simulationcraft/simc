@@ -453,7 +453,7 @@ public:
   void combat_begin() override;
   void init_rng() override;
   priest_td_t* get_target_data( player_t* target ) const override;
-  expr_t* create_expression( const std::string& name_str ) override;
+  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
   void arise() override;
 
   void do_dynamic_regen() override
@@ -480,7 +480,7 @@ private:
   void init_rng_shadow();
   void init_spells_shadow();
   void generate_apl_shadow();
-  expr_t* create_expression_shadow( const std::string& name_str );
+  std::unique_ptr<expr_t> create_expression_shadow( const std::string& name_str );
   action_t* create_action_shadow( const std::string& name, const std::string& options_str );
 
   void create_buffs_discipline();
@@ -488,7 +488,7 @@ private:
   void init_rng_discipline();
   void generate_apl_discipline_d();
   void generate_apl_discipline_h();
-  expr_t* create_expression_discipline( action_t* a, const std::string& name_str );
+  std::unique_ptr<expr_t> create_expression_discipline( action_t* a, const std::string& name_str );
   action_t* create_action_discipline( const std::string& name, const std::string& options_str );
 
   void create_buffs_holy();

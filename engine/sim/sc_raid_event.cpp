@@ -1027,7 +1027,7 @@ struct position_event_t : public raid_event_t
   }
 };
 
-expr_t* parse_player_if_expr( player_t& player, const std::string& expr_str )
+std::unique_ptr<expr_t> parse_player_if_expr( player_t& player, const std::string& expr_str )
 {
   if ( expr_str.empty() )
     return nullptr;
@@ -1046,7 +1046,7 @@ expr_t* parse_player_if_expr( player_t& player, const std::string& expr_str )
   if ( player.sim->debug )
     expression::print_tokens( tokens, player.sim );
 
-  if ( expr_t* e = expression::build_player_expression_tree( player, tokens, player.sim->optimize_expressions ) )
+  if ( auto e = expression::build_player_expression_tree( player, tokens, player.sim->optimize_expressions ) )
     return e;
 
   throw std::invalid_argument("No player expression found");
@@ -1248,7 +1248,7 @@ void raid_event_t::start()
     auto& expr_uptr = player_expressions[ p->actor_index ];
     if ( !expr_uptr )
     {
-      expr_uptr = std::unique_ptr<expr_t>( parse_player_if_expr( *p, player_if_expr_str ) );
+      expr_uptr = parse_player_if_expr( *p, player_if_expr_str );
     }
 
     if ( expr_uptr && !expr_uptr->success() )

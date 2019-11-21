@@ -748,7 +748,7 @@ stat_e priest_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-expr_t* priest_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> priest_t::create_expression( const std::string& name_str )
 {
   auto shadow_expression = create_expression_shadow( name_str );
   if ( shadow_expression )

@@ -3116,7 +3116,7 @@ bool sim_t::time_to_think( timespan_t proc_time )
 
 // sim_t::create_expression =================================================
 
-expr_t* sim_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> sim_t::create_expression( const std::string& name_str )
 {
   if ( name_str == "desired_targets" )
     return expr_t::create_constant( name_str, desired_targets );
@@ -3204,7 +3204,7 @@ expr_t* sim_t::create_expression( const std::string& name_str )
         return nonexecute_actors_pct;
       }
     };
-    return new nonexecute_actors_pct_expr( this );
+    return std::make_unique<nonexecute_actors_pct_expr>( this );
   }
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
@@ -3263,7 +3263,7 @@ expr_t* sim_t::create_expression( const std::string& name_str )
 
     };
 
-    return new raid_event_expr_t( this, type_or_name, filter );
+    return std::make_unique<raid_event_expr_t>( this, type_or_name, filter );
   }
 
   // If nothing else works, check to see if the string matches an actor in the sim.

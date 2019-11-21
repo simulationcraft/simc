@@ -264,7 +264,7 @@ struct expiration_delay_t : public buff_event_t
   }
 };
 
-expr_t* create_buff_expression( std::string buff_name, const std::string& type, action_t* action, buff_t* static_buff )
+std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std::string& type, action_t* action, buff_t* static_buff )
 {
   if ( !static_buff && !action )
   {
@@ -284,7 +284,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
       { return buff()->buff_duration.total_seconds(); }
     };
 
-    return new duration_expr_t( buff_name, action, static_buff );
+    return std::make_unique<duration_expr_t>( buff_name, action, static_buff );
   }
   else if ( type == "remains" )
   {
@@ -298,7 +298,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
       { return buff()->remains().total_seconds(); }
     };
 
-    return new remains_expr_t( buff_name, action, static_buff );
+    return std::make_unique<remains_expr_t>( buff_name, action, static_buff );
   }
   else if ( type == "cooldown_remains" )
   {
@@ -312,7 +312,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
       { return buff()->cooldown->remains().total_seconds(); }
     };
 
-    return new cooldown_remains_expr_t( buff_name, action, static_buff );
+    return std::make_unique<cooldown_remains_expr_t>( buff_name, action, static_buff );
   }
   else if ( type == "up" )
   {
@@ -325,7 +325,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
       { return buff()->check() > 0; }
     };
 
-    return new up_expr_t( buff_name, action, static_buff );
+    return std::make_unique<up_expr_t>( buff_name, action, static_buff );
   }
   else if ( type == "down" )
   {
@@ -339,7 +339,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
       { return buff()->check() <= 0; }
     };
 
-    return new down_expr_t( buff_name, action, static_buff );
+    return std::make_unique<down_expr_t>( buff_name, action, static_buff );
   }
   else if ( type == "stack" )
   {
@@ -352,7 +352,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
       { return buff()->check(); }
     };
 
-    return new stack_expr_t( buff_name, action, static_buff );
+    return std::make_unique<stack_expr_t>( buff_name, action, static_buff );
   }
   else if ( type == "stack_pct" )
   {
@@ -366,7 +366,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
       { return 100.0 * buff()->check() / buff()->max_stack(); }
     };
 
-    return new stack_pct_expr_t( buff_name, action, static_buff );
+    return std::make_unique<stack_pct_expr_t>( buff_name, action, static_buff );
   }
   else if ( type == "max_stack" )
   {
@@ -380,7 +380,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
       { return buff()->max_stack(); }
     };
 
-    return new max_stack_expr_t( buff_name, action, static_buff );
+    return std::make_unique<max_stack_expr_t>( buff_name, action, static_buff );
   }
   else if ( type == "value" )
   {
@@ -393,7 +393,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
       { return buff()->value(); }
     };
 
-    return new value_expr_t( buff_name, action, static_buff );
+    return std::make_unique<value_expr_t>( buff_name, action, static_buff );
   }
   else if ( type == "react" )
   {
@@ -416,7 +416,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
       { return buff()->stack_react(); }
     };
 
-    return new react_expr_t( buff_name, action, static_buff );
+    return std::make_unique<react_expr_t>( buff_name, action, static_buff );
   }
   else if ( type == "react_pct" )
   {
@@ -440,7 +440,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
       { return 100.0 * buff()->stack_react() / buff()->max_stack(); }
     };
 
-    return new react_pct_expr_t( buff_name, action, static_buff );
+    return std::make_unique<react_pct_expr_t>( buff_name, action, static_buff );
   }
   else if ( type == "cooldown_react" )
   {
@@ -459,11 +459,10 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
       }
     };
 
-    return new cooldown_react_expr_t( buff_name, action, static_buff );
+    return std::make_unique<cooldown_react_expr_t>( buff_name, action, static_buff );
   }
 
   throw std::invalid_argument( fmt::format( "Unsupported buff expression '{}'.", type ) );
-  return nullptr;
 }
 
 }  // namespace
@@ -1981,12 +1980,12 @@ std::string buff_t::to_str() const
   return s.str();
 }
 
-expr_t* buff_t::create_expression( std::string buff_name, const std::string& type, action_t& action )
+std::unique_ptr<expr_t> buff_t::create_expression( std::string buff_name, const std::string& type, action_t& action )
 {
   return create_buff_expression( buff_name, type, &action, nullptr );
 }
 
-expr_t* buff_t::create_expression( std::string buff_name, const std::string& type, buff_t& static_buff )
+std::unique_ptr<expr_t> buff_t::create_expression( std::string buff_name, const std::string& type, buff_t& static_buff )
 {
   return create_buff_expression( buff_name, type, nullptr, &static_buff );
 }

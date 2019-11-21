@@ -537,11 +537,6 @@ action_t::~action_t()
 {
   delete execute_state;
   delete pre_execute_state;
-  delete if_expr;
-  delete target_if_expr;
-  delete interrupt_if_expr;
-  delete early_chain_if_expr;
-  delete cancel_if_expr;
 
   while ( state_cache != 0 )
   {
@@ -2467,7 +2462,7 @@ void action_t::init_finished()
     if ( !option.target_if_str.empty() )
     {
        target_if_expr = expr_t::parse( this, option.target_if_str, sim->optimize_expressions );
-       if ( target_if_expr == 0 )
+       if ( !target_if_expr )
        {
          throw std::invalid_argument(fmt::format("Could not parse target if expression from '{}'", option.target_if_str));
        }
@@ -2493,7 +2488,7 @@ void action_t::init_finished()
   if ( !option.interrupt_if_expr_str.empty() )
   {
     interrupt_if_expr = expr_t::parse( this, option.interrupt_if_expr_str, sim->optimize_expressions );
-    if ( interrupt_if_expr == 0 )
+    if ( !interrupt_if_expr )
     {
       throw std::invalid_argument(fmt::format("Could not parse interrupt if expression from '{}'", option.interrupt_if_expr_str));
     }
@@ -2502,7 +2497,7 @@ void action_t::init_finished()
   if ( !option.early_chain_if_expr_str.empty() )
   {
     early_chain_if_expr = expr_t::parse( this, option.early_chain_if_expr_str, sim->optimize_expressions );
-    if ( early_chain_if_expr == 0 )
+    if ( !early_chain_if_expr )
     {
       throw std::invalid_argument(fmt::format("Could not parse chain if expression from '{}'", option.early_chain_if_expr_str));
     }
@@ -2511,7 +2506,7 @@ void action_t::init_finished()
   if ( !option.cancel_if_expr_str.empty() )
   {
     cancel_if_expr = expr_t::parse( this, option.cancel_if_expr_str, sim->optimize_expressions );
-    if ( cancel_if_expr == nullptr )
+    if ( !cancel_if_expr )
     {
       throw std::invalid_argument( fmt::format( "Could not parse cancel if expression from '{}'",
             option.cancel_if_expr_str ) );
@@ -2538,7 +2533,7 @@ void action_t::reset()
   {
     if ( if_expr )
     {
-      if_expr = if_expr->optimize();
+      expr_t::optimize_expression(if_expr);
       if ( sim->optimize_expressions && action_list && if_expr->always_false() )
       {
         std::vector<action_t*>::iterator i =
@@ -2551,14 +2546,10 @@ void action_t::reset()
         player->dynamic_target_action_list.erase( this );
       }
     }
-    if ( target_if_expr )
-      target_if_expr = target_if_expr->optimize();
-    if ( interrupt_if_expr )
-      interrupt_if_expr = interrupt_if_expr->optimize();
-    if ( early_chain_if_expr )
-      early_chain_if_expr = early_chain_if_expr->optimize();
-    if ( cancel_if_expr )
-      cancel_if_expr = cancel_if_expr->optimize();
+      expr_t::optimize_expression(target_if_expr);
+      expr_t::optimize_expression(interrupt_if_expr);
+      expr_t::optimize_expression(early_chain_if_expr);
+      expr_t::optimize_expression(cancel_if_expr);
   }
 }
 
@@ -2658,7 +2649,7 @@ void action_t::check_spell( const spell_data_t* sp )
   }
 }
 
-expr_t* action_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str )
 {
   class action_expr_t : public expr_t
   {
@@ -2793,7 +2784,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return std::max( action.execute_time().total_seconds(), action.gcd().total_seconds() );
       }
     };
-    return new execute_time_expr_t( *this );
+    return std::make_unique<execute_time_expr_t>( *this );
   }
 
   if ( name_str == "tick_time" )
@@ -2812,7 +2803,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return 0.0;
       }
     };
-    return new tick_time_expr_t( *this );
+    return std::make_unique<tick_time_expr_t>( *this );
   }
 
   if ( name_str == "new_tick_time" )
@@ -2828,10 +2819,10 @@ expr_t* action_t::create_expression( const std::string& name_str )
         return action.tick_time( state ).total_seconds();
       }
     };
-    return new new_tick_time_expr_t( *this );
+    return std::make_unique<new_tick_time_expr_t>( *this );
   }
 
-  if ( expr_t* q = dot_t::create_expression( nullptr, this, this, name_str, true ) )
+  if ( auto q = dot_t::create_expression( nullptr, this, this, name_str, true ) )
     return q;
 
   if ( name_str == "miss_react" )
@@ -2850,7 +2841,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return false;
       }
     };
-    return new miss_react_expr_t( *this );
+    return std::make_unique<miss_react_expr_t>( *this );
+
   }
 
   if ( name_str == "cooldown_react" )
@@ -2883,7 +2875,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return false;
       }
     };
-    return new cast_delay_expr_t( *this );
+    return std::make_unique<cast_delay_expr_t>( *this );
   }
 
   if ( name_str == "tick_multiplier" )
@@ -2904,7 +2896,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         return action.composite_ta_multiplier( state );
       }
     };
-    return new tick_multiplier_expr_t( *this );
+    return std::make_unique<tick_multiplier_expr_t>( *this );
   }
 
   if ( name_str == "persistent_multiplier" )
@@ -2925,7 +2917,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         return action.composite_persistent_multiplier( state );
       }
     };
-    return new persistent_multiplier_expr_t( *this );
+    return std::make_unique<persistent_multiplier_expr_t>( *this );
   }
 
   if ( name_str == "charges" || name_str == "charges_fractional" || name_str == "max_charges" ||
@@ -2935,25 +2927,25 @@ expr_t* action_t::create_expression( const std::string& name_str )
   }
 
   if ( name_str == "damage" )
-    return new amount_expr_t( name_str, result_amount_type::DMG_DIRECT, *this );
+    return std::make_unique<amount_expr_t>( name_str, result_amount_type::DMG_DIRECT, *this );
   else if ( name_str == "hit_damage" )
-    return new amount_expr_t( name_str, result_amount_type::DMG_DIRECT, *this, RESULT_HIT );
+    return std::make_unique<amount_expr_t>( name_str, result_amount_type::DMG_DIRECT, *this, RESULT_HIT );
   else if ( name_str == "crit_damage" )
-    return new amount_expr_t( name_str, result_amount_type::DMG_DIRECT, *this, RESULT_CRIT );
+    return std::make_unique<amount_expr_t>( name_str, result_amount_type::DMG_DIRECT, *this, RESULT_CRIT );
   else if ( name_str == "hit_heal" )
-    return new amount_expr_t( name_str, result_amount_type::HEAL_DIRECT, *this, RESULT_HIT );
+    return std::make_unique<amount_expr_t>( name_str, result_amount_type::HEAL_DIRECT, *this, RESULT_HIT );
   else if ( name_str == "crit_heal" )
-    return new amount_expr_t( name_str, result_amount_type::HEAL_DIRECT, *this, RESULT_CRIT );
+    return std::make_unique<amount_expr_t>( name_str, result_amount_type::HEAL_DIRECT, *this, RESULT_CRIT );
   else if ( name_str == "tick_damage" )
-    return new amount_expr_t( name_str, result_amount_type::DMG_OVER_TIME, *this );
+    return std::make_unique<amount_expr_t>( name_str, result_amount_type::DMG_OVER_TIME, *this );
   else if ( name_str == "hit_tick_damage" )
-    return new amount_expr_t( name_str, result_amount_type::DMG_OVER_TIME, *this, RESULT_HIT );
+    return std::make_unique<amount_expr_t>( name_str, result_amount_type::DMG_OVER_TIME, *this, RESULT_HIT );
   else if ( name_str == "crit_tick_damage" )
-    return new amount_expr_t( name_str, result_amount_type::DMG_OVER_TIME, *this, RESULT_CRIT );
+    return std::make_unique<amount_expr_t>( name_str, result_amount_type::DMG_OVER_TIME, *this, RESULT_CRIT );
   else if ( name_str == "tick_heal" )
-    return new amount_expr_t( name_str, result_amount_type::HEAL_OVER_TIME, *this, RESULT_HIT );
+    return std::make_unique<amount_expr_t>( name_str, result_amount_type::HEAL_OVER_TIME, *this, RESULT_HIT );
   else if ( name_str == "crit_tick_heal" )
-    return new amount_expr_t( name_str, result_amount_type::HEAL_OVER_TIME, *this, RESULT_CRIT );
+    return std::make_unique<amount_expr_t>( name_str, result_amount_type::HEAL_OVER_TIME, *this, RESULT_CRIT );
 
   if ( name_str == "crit_pct_current" )
   {
@@ -2973,7 +2965,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         return std::min( 100.0, state->composite_crit_chance() * 100.0 );
       }
     };
-    return new crit_pct_current_expr_t( *this );
+    return std::make_unique<crit_pct_current_expr_t>( *this );
   }
 
   if ( name_str == "multiplier" )
@@ -3094,7 +3086,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
             return num_targets;
           }
         };
-        return new active_enemies_t( *this, splits[ 1 ] );
+        return std::make_unique<active_enemies_t>( *this, splits[ 1 ] );
       }
       else
       {  // If distance targeting is not enabled, default to active_enemies behavior.
@@ -3117,7 +3109,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return false;
         }
       };
-      return new prev_expr_t( *this, splits[ 1 ] );
+      return std::make_unique<prev_expr_t>( *this, splits[ 1 ] );
     }
     else if ( splits[ 0 ] == "prev_off_gcd" )
     {
@@ -3141,7 +3133,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return false;
         }
       };
-      return new prev_gcd_expr_t( *this, splits[ 1 ] );
+      return std::make_unique<prev_gcd_expr_t>( *this, splits[ 1 ] );
     }
     else if ( splits[ 0 ] == "gcd" )
     {
@@ -3172,7 +3164,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
             return gcd_time;
           }
         };
-        return new gcd_expr_t( *this );
+        return std::make_unique<gcd_expr_t>( *this );
       }
       else if ( splits[ 1 ] == "remains" )
       {
@@ -3190,7 +3182,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
             return gcd_remains;
           }
         };
-        return new gcd_remains_expr_t( *this );
+        return std::make_unique<gcd_remains_expr_t>( *this );
       }
       throw std::invalid_argument( fmt::format( "Unsupported gcd expression '{}'.", splits[ 1 ] ) );
     }
@@ -3256,7 +3248,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return 0;
         }
       };
-      return new spell_targets_t( *this, splits.size() > 1 ? splits[ 1 ] : this->name_str );
+      return std::make_unique<spell_targets_t>( *this, splits.size() > 1 ? splits[ 1 ] : this->name_str );
     }
     else
     {
@@ -3304,7 +3296,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         return false;
       }
     };
-    return new prevgcd_expr_t( *this, gcd, splits[ 2 ] );
+    return std::make_unique<prevgcd_expr_t>( *this, gcd, splits[ 2 ] );
   }
 
   if ( splits.size() == 3 && splits[ 0 ] == "dot" )
@@ -3334,7 +3326,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       return dt_;
 
     // more complicated version, cycles through possible sources
-    std::vector<expr_t*> dot_expressions;
+    std::vector<std::unique_ptr<expr_t>> dot_expressions;
     for ( size_t i = 0, size = sim->target_list.size(); i < size; i++ )
     {
       dot_t* d = player->get_dot( splits[ 1 ], sim->target_list[ i ] );
@@ -3342,16 +3334,16 @@ expr_t* action_t::create_expression( const std::string& name_str )
     }
     struct enemy_dots_expr_t : public expr_t
     {
-      std::vector<expr_t*> expr_list;
+      std::vector<std::unique_ptr<expr_t>> expr_list;
 
-      enemy_dots_expr_t( const std::vector<expr_t*>& expr_list ) : expr_t( "enemy_dot" ), expr_list( expr_list )
+      enemy_dots_expr_t( std::vector<std::unique_ptr<expr_t>> expr_list ) : expr_t( "enemy_dot" ), expr_list( std::move(expr_list) )
       {
       }
 
       double evaluate() override
       {
         double ret = 0;
-        for ( auto expr : expr_list )
+        for ( auto&& expr : expr_list )
         {
           double expr_result = expr->eval();
           if ( expr_result != 0 && ( expr_result < ret || ret == 0 ) )
@@ -3361,7 +3353,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       }
     };
 
-    return new enemy_dots_expr_t( dot_expressions );
+    return std::make_unique<enemy_dots_expr_t>( std::move(dot_expressions) );
   }
 
   if ( splits.size() == 3 && splits[ 0 ] == "debuff" )
@@ -3395,7 +3387,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     // Return target(.n).tail expression if we have a expression target
     if ( expr_target )
     {
-      if ( expr_t* e = expr_target->create_action_expression( *this, tail ) )
+      if ( auto e = expr_target->create_action_expression( *this, tail ) )
       {
         return e;
       }
@@ -3408,8 +3400,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
         return nullptr;
       }
-      // Delete the freshly created expression that tested for expression validity
-      delete expr_ptr;
     }
 
     // Proxy target based expression, allowing "dynamic switching" of targets
@@ -3421,7 +3411,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     // of statically sized one based on constructor).
     struct target_proxy_expr_t : public action_expr_t
     {
-      std::vector<expr_t*> proxy_expr;
+      std::vector<std::unique_ptr<expr_t>> proxy_expr;
       std::string suffix_expr_str;
 
       target_proxy_expr_t( action_t& a, const std::string& expr_str )
@@ -3433,10 +3423,11 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
         if ( proxy_expr.size() <= action.target->actor_index )
         {
-          proxy_expr.resize( action.target->actor_index + 1, nullptr );
+          
+          std::generate_n(std::back_inserter(proxy_expr), action.target->actor_index + 1 - proxy_expr.size(), []{ return std::unique_ptr<expr_t>(); });
         }
 
-        expr_t*& expr = proxy_expr[ action.target->actor_index ];
+        auto& expr = proxy_expr[ action.target->actor_index ];
 
         if ( !expr )
         {
@@ -3451,14 +3442,9 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
         return expr->eval();
       }
-
-      ~target_proxy_expr_t()
-      {
-        range::dispose( proxy_expr );
-      }
     };
 
-    return new target_proxy_expr_t( *this, tail );
+    return std::make_unique<target_proxy_expr_t>( *this, tail );
   }
 
   if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" ||
@@ -3504,7 +3490,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
             return false;
           }
         };
-        return new in_flight_multi_expr_t( in_flight_list );
+        return std::make_unique<in_flight_multi_expr_t>( in_flight_list );
       }
       else if ( splits[ 0 ] == "in_flight_to_target" ||
                 ( !in_flight_singleton && splits[ 2 ] == "in_flight_to_target" ) )
@@ -3528,7 +3514,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
             return false;
           }
         };
-        return new in_flight_to_target_multi_expr_t( in_flight_list, *this );
+        return std::make_unique<in_flight_to_target_multi_expr_t>( in_flight_list, *this );
       }
       else if ( splits[ 0 ] == "in_flight_remains" ||
         ( !in_flight_singleton && splits[ 2 ] == "in_flight_remains" ) )
@@ -3557,7 +3543,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
             return event_found ? t.total_seconds() : 0.0;
           }
         };
-        return new in_flight_remains_multi_expr_t( in_flight_list );
+        return std::make_unique<in_flight_remains_multi_expr_t>( in_flight_list );
       }
     }
   }
