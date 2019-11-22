@@ -92,7 +92,7 @@ const item_child_equipment_t* child_equipments( bool ptr );
 std::size_t        n_item_enchantments( bool ptr );
 const gem_property_data_t* gem_properties( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
-std::string specialization_string     ( specialization_e spec );
+const char* specialization_string     ( specialization_e spec );
 double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
 bool valid_gem_color( unsigned color );
 double stat_data_to_attribute( const stat_data_t&, attribute_e);

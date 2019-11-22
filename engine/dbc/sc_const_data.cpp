@@ -763,7 +763,7 @@ specialization_e dbc::translate_spec_str( player_e ptype, const std::string& spe
 
 // specialization_string ====================================================
 
-std::string dbc::specialization_string( specialization_e spec )
+const char* dbc::specialization_string( specialization_e spec )
 {
   switch ( spec )
   {

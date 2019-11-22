@@ -2631,7 +2631,7 @@ void action_t::check_spec( specialization_e necessary_spec )
   if ( player->specialization() != necessary_spec )
   {
     sim->errorf( "Player %s attempting to execute action %s without %s spec.\n", player->name(), name(),
-                 dbc::specialization_string( necessary_spec ).c_str() );
+                 dbc::specialization_string( necessary_spec ) );
 
     background = true;  // prevent action from being executed
   }

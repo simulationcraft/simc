@@ -5720,7 +5720,7 @@ role_e player_t::primary_role() const
 
 const char* player_t::primary_tree_name() const
 {
-  return dbc::specialization_string( specialization() ).c_str();
+  return dbc::specialization_string( specialization() );
 }
 
 /**
@@ -9191,7 +9191,7 @@ bool player_t::parse_talents_armory2( const std::string& talents_url )
   if ( spec_type == SPEC_NONE || specialization() != spec_type )
   {
     sim->errorf( "Player %s has malformed talent url '%s': expected specialization '%s', got '%s'", name(),
-                 talents_url.c_str(), dbc::specialization_string( specialization() ).c_str(),
+                 talents_url.c_str(), dbc::specialization_string( specialization() ),
                  split[ OFFSET_SPEC ].c_str() );
     return false;
   }

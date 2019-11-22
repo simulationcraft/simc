@@ -3401,7 +3401,7 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   if ( p.specialization() != SPEC_NONE )
   {
     os.printf( "<li><b>Spec:</b> %s</li>\n",
-               util::inverse_tokenize( dbc::specialization_string( p.specialization() ) ).c_str() );
+               util::inverse_tokenize( dbc::specialization_string( p.specialization() ) ) );
   }
 
   std::string timewalk_str = " (";
