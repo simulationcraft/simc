@@ -340,7 +340,7 @@ public:
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
     buff_t* dire_beast;
     buff_t* thrill_of_the_hunt;
-    buff_t* thrill_of_the_hunt_pet;
+    buff_t* thrill_of_the_hunt_2;
     buff_t* spitting_cobra;
 
     // Marksmanship
@@ -992,7 +992,7 @@ struct hunter_pet_t: public pet_t
   {
     double cc = pet_t::composite_melee_crit_chance();
 
-    cc += o() -> buffs.thrill_of_the_hunt_pet -> check_stack_value();
+    cc += o() -> buffs.thrill_of_the_hunt_2 -> check_stack_value();
 
     return cc;
   }
@@ -2397,13 +2397,13 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       (*it) -> trigger(); // TODO: error when don't have enough buffs?
 
     p() -> buffs.thrill_of_the_hunt -> trigger();
-    p() -> buffs.thrill_of_the_hunt_pet -> trigger();
+    p() -> buffs.thrill_of_the_hunt_2 -> trigger();
 
     // Adjust BW cd
     timespan_t t = timespan_t::from_seconds( p() -> specs.bestial_wrath -> effectN( 3 ).base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
 
-    if ( p() -> azerite.dance_of_death.ok() && rng().roll( p() -> cache.attack_crit_chance() ) )
+    if ( p() -> azerite.dance_of_death.ok() && rng().roll( p() -> cache.attack_crit_chance() + p() -> buffs.thrill_of_the_hunt_2 -> check_stack_value() ) )
       p() -> buffs.dance_of_death -> trigger();
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
@@ -4996,11 +4996,12 @@ void hunter_t::create_buffs()
       -> set_default_value( talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
       -> set_trigger_spell( talents.thrill_of_the_hunt );
 
-  const spell_data_t* thrill_of_the_hunt_pet = find_spell( 312365 );
-  buffs.thrill_of_the_hunt_pet =
-    make_buff( this, "thrill_of_the_hunt_pet", thrill_of_the_hunt_pet )
-    -> set_default_value( thrill_of_the_hunt_pet -> effectN( 1 ).percent() )
-    -> set_trigger_spell( talents.thrill_of_the_hunt );
+  const spell_data_t* thrill_of_the_hunt_2 = find_spell( 312365 );
+  buffs.thrill_of_the_hunt_2 =
+    make_buff( this, "thrill_of_the_hunt_2", thrill_of_the_hunt_2 )
+    -> set_default_value( thrill_of_the_hunt_2 -> effectN( 1 ).percent() )
+    -> set_trigger_spell( talents.thrill_of_the_hunt )
+    -> set_quiet( true );
 
   buffs.spitting_cobra =
     make_buff( this, "spitting_cobra", talents.spitting_cobra )
