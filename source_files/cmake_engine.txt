@@ -14,7 +14,7 @@ util/utf8-cpp/utf8/unchecked.h
 util/utf8-cpp/utf8/core.h
 util/utf8-cpp/utf8/checked.h
 util/utf8-cpp/utf8.h
-util/utf8.h/utf8.h
+util/utf8-h/utf8.h
 sim/x6_pantheon.hpp
 sim/sc_profileset.hpp
 sim/sc_option.hpp

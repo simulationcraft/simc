@@ -20,7 +20,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\util\utf8-cpp\utf8\core.h" />
 		<ClInclude Include="..\engine\util\utf8-cpp\utf8\checked.h" />
 		<ClInclude Include="..\engine\util\utf8-cpp\utf8.h" />
-		<ClInclude Include="..\engine\util\utf8.h\utf8.h" />
+		<ClInclude Include="..\engine\util\utf8-h\utf8.h" />
 		<ClInclude Include="..\engine\sim\x6_pantheon.hpp" />
 		<ClInclude Include="..\engine\sim\sc_profileset.hpp" />
 		<ClInclude Include="..\engine\sim\sc_option.hpp" />

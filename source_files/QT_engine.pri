@@ -17,7 +17,7 @@
  HEADERS += engine/util/utf8-cpp/utf8/core.h
  HEADERS += engine/util/utf8-cpp/utf8/checked.h
  HEADERS += engine/util/utf8-cpp/utf8.h
- HEADERS += engine/util/utf8.h/utf8.h
+ HEADERS += engine/util/utf8-h/utf8.h
  HEADERS += engine/sim/x6_pantheon.hpp
  HEADERS += engine/sim/sc_profileset.hpp
  HEADERS += engine/sim/sc_option.hpp
