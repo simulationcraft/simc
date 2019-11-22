@@ -338,6 +338,7 @@ public:
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
     buff_t* dire_beast;
     buff_t* thrill_of_the_hunt;
+    buff_t* thrill_of_the_hunt_pet;
     buff_t* spitting_cobra;
 
     // Marksmanship
@@ -983,6 +984,15 @@ struct hunter_pet_t: public pet_t
 
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 2.0_s;
+  }
+
+  double composite_melee_crit_chance() const override
+  {
+    double cc = pet_t::composite_melee_crit_chance();
+
+    cc += o() -> buffs.thrill_of_the_hunt_pet -> check_stack_value();
+
+    return cc;
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2385,6 +2395,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       (*it) -> trigger(); // TODO: error when don't have enough buffs?
 
     p() -> buffs.thrill_of_the_hunt -> trigger();
+    p() -> buffs.thrill_of_the_hunt_pet -> trigger();
 
     // Adjust BW cd
     timespan_t t = timespan_t::from_seconds( p() -> specs.bestial_wrath -> effectN( 3 ).base_value() );
@@ -4982,6 +4993,12 @@ void hunter_t::create_buffs()
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
       -> set_default_value( talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
       -> set_trigger_spell( talents.thrill_of_the_hunt );
+
+  const spell_data_t* thrill_of_the_hunt_pet = find_spell( 312365 );
+  buffs.thrill_of_the_hunt_pet =
+    make_buff( this, "thrill_of_the_hunt_pet", thrill_of_the_hunt_pet )
+    -> set_default_value( thrill_of_the_hunt_pet -> effectN( 1 ).percent() )
+    -> set_trigger_spell( talents.thrill_of_the_hunt );
 
   buffs.spitting_cobra =
     make_buff( this, "spitting_cobra", talents.spitting_cobra )
