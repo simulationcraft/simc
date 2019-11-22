@@ -140,11 +140,11 @@ Attributes       : ........ ........ x....... ......x.   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ..x..... ........ ........ 
 Effects          :
-#1 (id=83)       : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.04478 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
-#2 (id=84)       : Apply Aura (6) | Root (455)
+#1 (id=83)       : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Mechanic: Root | Target: At Caster (22) -> AOE enemy (15)
-Description      : Blasts enemies within $A1 yds of you for $s1 Frost damage and freezes them in place for $d. Damage may interrupt the freeze effect.
+#2 (id=84)       : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.04478 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
+Description      : Blasts enemies within $A2 yds of you for $s2 Frost damage and freezes them in place for $d. Damage may interrupt the freeze effect.
 Tooltip          : Frozen in place.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
 $arctic2=$?s31675[${1.02}][${$<arctic1>}]

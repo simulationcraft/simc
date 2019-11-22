@@ -10643,6 +10643,28 @@ Description      : Your damaging spells and abilities have a chance to crash a w
 
 When your health drops below $s2%, gain a shield absorbing $s3 damage within $303390d. When this occurs, Undulating Tides cannot trigger again for $s4 sec.
 
+Name             : Thrill of the Hunt (id=312365) [Spell Family (9), Hidden] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 8 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Attributes       : ....x..x ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=793988)   : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Description      : $@spelldesc257944
+Tooltip          : Critical strike chance increased by $s1%.
+
 Name             : Heart of Darkness (id=317137) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Shadow

@@ -2791,7 +2791,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=165487)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.92000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.83000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=168466)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : Strikes an enemy with heavenly power, dealing $s1 Holy damage and restoring $<mana>% of your maximum mana.
@@ -2923,11 +2923,11 @@ Effects          :
                    Affected Spells: Smite (585)
                    Family Flags: 7
 #5 (id=733880)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
 #6 (id=733881)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
 #7 (id=743448)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -4326,7 +4326,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=301365)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.27600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.24800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=301387)   : Trigger Spell (64): Purge the Wicked
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 204213 | Target: Enemy (6)
 Description      : Cleanses the target with fire, causing $s1 Fire damage and an additional $204213o1 Fire damage over $204213d. Spreads to an additional nearby enemy when you cast Penance on the target.
@@ -4352,7 +4352,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=301385)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13700 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc204197
 Tooltip          : $w1 Fire damage every $t1 seconds.
 

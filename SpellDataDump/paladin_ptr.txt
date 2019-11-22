@@ -8021,7 +8021,7 @@ Effects          :
 #1 (id=750129)   : Apply Aura (6) | Unknown(285)
                    Base Value: 6 | Scaled Value: 467.454 (coefficient=6.01227) | PvP Coefficient: 0.50000 | Trigger Spell: 287269 | Target: Self (1)
 #2 (id=750167)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 585.8463 (coefficient=7.535) | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 515.1534 (coefficient=6.625767) | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
 Description      : Holy Shock leaves a Glimmer of Light on the target for $287280d.  When you Holy Shock, all targets with Glimmer of Light are damaged for $s1 or healed for $s2.
 
 You may have Glimmer of Light on up to $287269s1 targets.
