@@ -1305,6 +1305,9 @@ class SpellDataGenerator(DataGenerator):
          313643,
          # The Formless Void (major unknown buff)
          312734,
+         # 8.3 Raid items
+         # Shgla'yos, Astral Malignity
+         317262, 317265,
         ),
 
         # Warrior:
