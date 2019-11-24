@@ -2,7 +2,7 @@ include(../simulationcraft.pri)
 
 TEMPLATE    = lib
 TARGET      = simcengine
-CONFIG     += staticlib create_prl c++14
+CONFIG     += staticlib create_prl
 QT         -= core gui
 
 win32 {

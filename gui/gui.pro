@@ -2,7 +2,7 @@ include(../simulationcraft.pri)
 
 TEMPLATE    = app
 TARGET      = SimulationCraft
-CONFIG     += link_prl c++14
+CONFIG     += link_prl
 QT         += network widgets
 LIBS       += -L../lib -lsimcengine
 MOC_DIR     = moc

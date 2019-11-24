@@ -2,7 +2,7 @@ include(../simulationcraft.pri)
 
 TEMPLATE    = app
 TARGET      = simc
-CONFIG     -= qt app_bundle link_prl c++14
+CONFIG     -= qt app_bundle link_prl
 LIBS       += -L../lib -lsimcengine
 QT         -= core gui
 
