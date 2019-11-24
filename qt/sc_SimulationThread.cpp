@@ -93,7 +93,15 @@ void SC_SimulateThread::run()
     error_category = tr("Simulation runtime error");
     std::string error_str_;
     print_exception(error_str_, e);
-    error_str = QString::fromStdString(error_str_);
+    range::for_each( sim->error_list, [ this ]( const std::string& str ) {
+      if ( !error_str.isEmpty() )
+      {
+        error_str += "\n";
+      }
+
+      error_str += QString::fromStdString( str );
+    } );
+    error_str += QString::fromStdString(error_str_);
   }
 }
 
