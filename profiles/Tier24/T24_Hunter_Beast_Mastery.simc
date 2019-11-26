@@ -31,7 +31,6 @@ actions.precombat+=/potion
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/worldvein_resonance
 actions.precombat+=/guardian_of_azeroth
-actions.precombat+=/memory_of_lucid_dreams
 actions.precombat+=/use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists&(trinket.1.has_cooldown+trinket.2.has_cooldown<2|equipped.variable_intensity_gigavolt_oscillating_reactor)
 actions.precombat+=/focused_azerite_beam,if=!raid_event.invulnerable.exists
 # Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s.
@@ -41,6 +40,7 @@ actions.precombat+=/bestial_wrath,precast_time=1.5,if=azerite.primal_instincts.e
 
 # Executed every time the actor is available.
 actions=auto_shot
+actions+="/memory_of_lucid_dreams,if=!buff.aspect_of_the_wild.up&cooldown.aspect_of_the_wild.remains>20&focus<35"
 actions+=/use_items
 actions+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.up&(prev_gcd.1.aspect_of_the_wild|!equipped.cyclotronic_blast&buff.aspect_of_the_wild.up)&(target.health.pct<35|!essence.condensed_lifeforce.major)|(debuff.razor_coral_debuff.down|target.time_to_die<26)&target.time_to_die>(24*(cooldown.cyclotronic_blast.remains+4<target.time_to_die))
 actions+=/use_item,effect_name=cyclotronic_blast,if=buff.bestial_wrath.down|target.time_to_die<5
@@ -57,7 +57,6 @@ actions.cds+=/potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&(target
 actions.cds+=/worldvein_resonance,if=buff.lifeblood.stack<4
 actions.cds+=/guardian_of_azeroth,if=cooldown.aspect_of_the_wild.remains<10|target.time_to_die>cooldown+duration|target.time_to_die<30
 actions.cds+=/ripple_in_space
-actions.cds+=/memory_of_lucid_dreams
 
 actions.cleave=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max
 actions.cleave+=/multishot,if=gcd.max-pet.cat.buff.beast_cleave.remains>0.25
