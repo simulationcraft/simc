@@ -7701,7 +7701,7 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( "blood_fury,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up" );
   cooldowns -> add_action( "berserking,if=buff.pillar_of_frost.up" );
   cooldowns -> add_action( "arcane_pulse,if=(!buff.pillar_of_frost.up&active_enemies>=2)|!buff.pillar_of_frost.up(rune.deficit>=5&runic_power.deficit>=60)" );
-  cooldowns -> add_action( "lights_judgment,if=buff.pillar_of_frost.up"
+  cooldowns -> add_action( "lights_judgment,if=buff.pillar_of_frost.up" );
   cooldowns -> add_action( "ancestral_call,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up" );
   cooldowns -> add_action( "fireblood,if=buff.pillar_of_frost.remains<=8&buff.empower_rune_weapon.up" );
 
