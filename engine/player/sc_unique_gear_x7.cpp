@@ -4839,7 +4839,9 @@ void items::subroutine_recalibration( special_effect_t& effect )
 
     recalibration_cb_t( const special_effect_t& effect, buff_t* b, buff_t* d ) :
       dbc_proc_callback_t( effect.player, effect ),
-      casts( 0 ), req_casts( as<unsigned>( effect.driver()->effectN( 2 ).base_value() ) ),
+      casts( effect.player->sim->bfa_opts.subroutine_recalibration_precombat_stacks ),
+      // Reduce required casts if there's assumed extra casts per buff cycle.
+      req_casts( as<unsigned>( effect.driver()->effectN( 2 ).base_value() ) - effect.player->sim->bfa_opts.subroutine_recalibration_dummy_casts ),
       buff( b ), debuff( d )
     { }
 
@@ -4862,7 +4864,7 @@ void items::subroutine_recalibration( special_effect_t& effect )
           listener->name(), a->name(), casts, req_casts );
       }
 
-      if ( ++casts == req_casts )
+      if ( ++casts >= req_casts )
       {
         dbc_proc_callback_t::trigger( a, call_data );
         casts = 0;

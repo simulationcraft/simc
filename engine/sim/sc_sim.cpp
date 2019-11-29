@@ -3650,6 +3650,10 @@ void sim_t::create_options()
   add_option( opt_timespan( "bfa.font_of_power_precombat_channel",
         bfa_opts.font_of_power_precombat_channel, 0_ms, 34_s ) );
   add_option( opt_uint( "bfa.arcane_heart_hps", bfa_opts.arcane_heart_hps) );
+  add_option( opt_int( "bfa.subroutine_recalibration_precombat_stacks",
+    bfa_opts.subroutine_recalibration_precombat_stacks, 0, 11 ) );
+  add_option( opt_int( "bfa.subroutine_recalibration_dummy_casts",
+    bfa_opts.subroutine_recalibration_dummy_casts, 0, 11 ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
