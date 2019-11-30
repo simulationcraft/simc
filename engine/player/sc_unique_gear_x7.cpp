@@ -4871,10 +4871,16 @@ void items::subroutine_recalibration( special_effect_t& effect )
       }
     }
 
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      casts = effect.player->sim->bfa_opts.subroutine_recalibration_precombat_stacks;
+    }
+
     void activate() override
     {
       dbc_proc_callback_t::activate();
-      casts = 0;
+      casts = effect.player->sim->bfa_opts.subroutine_recalibration_precombat_stacks;
     }
   };
 
