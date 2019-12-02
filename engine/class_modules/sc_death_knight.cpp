@@ -7593,6 +7593,10 @@ void death_knight_t::default_apl_blood()
   // Racials
   def -> add_action( "blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)" );
   def -> add_action( "berserking" );
+  def -> add_action( "arcane_pulse,if=active_enemies>=2|rune<1&runic_power.deficit>60" );
+  def -> add_action( "lights_judgment,if=buff.unholy_strength.up" );
+  def -> add_action( "ancestral_call" );
+  def -> add_action( "fireblood" );
 
   // On-use items
   def -> add_action( "use_items,if=cooldown.dancing_rune_weapon.remains>90" );
