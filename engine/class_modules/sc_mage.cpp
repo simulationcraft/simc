@@ -5257,7 +5257,12 @@ void mage_t::init_spells()
 void mage_t::init_base_stats()
 {
   if ( base.distance < 1 )
-    base.distance = 30;
+  {
+    if ( specialization() == MAGE_ARCANE )
+      base.distance = 10;
+    else
+      base.distance = 30;
+  }
 
   player_t::init_base_stats();
 
