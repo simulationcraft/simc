@@ -155,6 +155,13 @@ enum wolf_type_e
   LIGHTNING_WOLF
 };
 
+enum class elemental
+{
+  FIRE,
+  EARTH,
+  STORM,
+};
+
 enum imbue_e
 {
   IMBUE_NONE = 0,
@@ -6727,6 +6734,65 @@ void shaman_t::create_pets()
 std::unique_ptr<expr_t> shaman_t::create_expression( const std::string& name )
 {
   std::vector<std::string> splits = util::string_split( name, "." );
+
+  if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "pet" ) )
+  {
+    auto require_primal = splits[ 1 ].find( "primal_" ) != std::string::npos;
+    auto et = elemental::FIRE;
+    if ( util::str_in_str_ci( splits[ 1 ], "fire" ) )
+    {
+      et = elemental::FIRE;
+    }
+    else if ( util::str_in_str_ci( splits[ 1 ], "earth" ) )
+    {
+      et = elemental::EARTH;
+    }
+    else if ( util::str_in_str_ci( splits[ 1 ], "storm" ) )
+    {
+      et = elemental::STORM;
+    }
+    else
+    {
+      return player_t::create_expression( name );
+    }
+
+    const pet_t* p = nullptr;
+    auto pe = require_primal || talent.primal_elementalist->ok() == true;
+    switch ( et )
+    {
+      case elemental::FIRE:
+        p = pe ? pet.pet_fire_elemental : pet.guardian_fire_elemental;
+        break;
+      case elemental::EARTH:
+        p = pe ? pet.pet_earth_elemental : pet.guardian_earth_elemental;
+        break;
+      case elemental::STORM:
+        p = pe ? pet.pet_storm_elemental : pet.guardian_storm_elemental;
+        break;
+    }
+
+    if ( !p )
+    {
+      return expr_t::create_constant( name, 0.0 );
+    }
+
+    if ( util::str_compare_ci( splits[ 2 ], "active" ) )
+    {
+      return make_fn_expr( name, [p]() {
+        return static_cast<double>( !p->is_sleeping() );
+      } );
+    }
+    else if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
+    {
+      return make_fn_expr( name, [p]() {
+        return p->expiration->remains().total_seconds();
+      } );
+    }
+    else
+    {
+      return player_t::create_expression( name );
+    }
+  }
 
   if ( util::str_compare_ci( splits[ 0 ], "feral_spirit" ) )
   {
