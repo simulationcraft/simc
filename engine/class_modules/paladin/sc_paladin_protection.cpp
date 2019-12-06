@@ -125,7 +125,7 @@ struct bastion_of_light_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    p() -> cooldowns.shield_of_the_righteous -> reset(false, true);
+    p() -> cooldowns.shield_of_the_righteous -> reset(false, -1);
   }
 };
 

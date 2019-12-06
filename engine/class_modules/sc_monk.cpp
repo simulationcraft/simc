@@ -5332,7 +5332,7 @@ struct black_ox_brew_t : public monk_spell_t
     monk_spell_t::execute();
 
     // Refill Ironskin Brew and Purifying Brew charges.
-    p()->cooldown.brewmaster_active_mitigation->reset( true, true );
+    p()->cooldown.brewmaster_active_mitigation->reset( true, -1 );
 
     p()->resource_gain( RESOURCE_ENERGY, p()->talent.black_ox_brew->effectN( 1 ).base_value(),
                         p()->gain.black_ox_brew_energy );
