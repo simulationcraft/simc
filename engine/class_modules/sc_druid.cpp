@@ -8799,7 +8799,7 @@ void druid_t::apl_guardian()
   cooldowns -> add_talent( this, "Lunar Beam", "if=buff.bear_form.up" );
   cooldowns -> add_talent( this, "Bristling Fur", "if=buff.bear_form.up" );
   cooldowns -> add_action( "incarnation,if=(dot.moonfire.ticking|active_enemies>1)&dot.thrash_bear.ticking" );
-  cooldowns -> add_action( "use_item,name=ashvanes_razor_coral,target=Fluffy_Pillow,if=((equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains>25&debuff.razor_coral_debuff.down)|debuff.razor_coral_debuff.down|(debuff.razor_coral_debuff.up&debuff.conductive_ink_debuff.up&target.time_to_pct_30<=2)|(debuff.razor_coral_debuff.up&time_to_die<=20))" ); 
+  cooldowns -> add_action( "use_item,name=ashvanes_razor_coral,if=((equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains>25&debuff.razor_coral_debuff.down)|debuff.razor_coral_debuff.down|(debuff.razor_coral_debuff.up&debuff.conductive_ink_debuff.up&target.time_to_pct_30<=2)|(debuff.razor_coral_debuff.up&time_to_die<=20))" ); 
   cooldowns -> add_action( "use_item,effect_name=cyclotronic_blast" );
   cooldowns -> add_action( "use_items" );
 			  
