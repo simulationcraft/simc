@@ -8781,13 +8781,16 @@ void druid_t::apl_guardian()
 {
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
   action_priority_list_t* cooldowns       = get_action_priority_list( "cooldowns" );
+  action_priority_list_t* essences        = get_action_priority_list( "essences" );
+  action_priority_list_t* cleave          = get_action_priority_list( "cleave" );
+  action_priority_list_t* multi           = get_action_priority_list( "multi" );
 
   std::vector<std::string> racial_actions = get_racial_actions();
 
   if ( sim -> allow_potions )
     cooldowns -> add_action( "potion" );
 
-  cooldowns -> add_action( "heart_essence" );
+ // cooldowns -> add_action( "heart_essence" );
 
   for (size_t i = 0; i < racial_actions.size(); i++)
     cooldowns -> add_action( racial_actions[i] );
@@ -8796,8 +8799,32 @@ void druid_t::apl_guardian()
   cooldowns -> add_talent( this, "Lunar Beam", "if=buff.bear_form.up" );
   cooldowns -> add_talent( this, "Bristling Fur", "if=buff.bear_form.up" );
   cooldowns -> add_action( "incarnation,if=(dot.moonfire.ticking|active_enemies>1)&dot.thrash_bear.ticking" );
-  cooldowns -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<31|target.time_to_die<20" ); 
+  cooldowns -> add_action( "use_item,name=ashvanes_razor_coral,target=Fluffy_Pillow,if=((equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains>25&debuff.razor_coral_debuff.down)|debuff.razor_coral_debuff.down|(debuff.razor_coral_debuff.up&debuff.conductive_ink_debuff.up&target.time_to_pct_30<=2)|(debuff.razor_coral_debuff.up&time_to_die<=20))" ); 
+  cooldowns -> add_action( "use_item,effect_name=cyclotronic_blast"
   cooldowns -> add_action( "use_items" );
+			  
+  essences -> add_action( "concentrated_flame,if=essence.the_crucible_of_flame.major&((!dot.concentrated_flame_burn.ticking&!action.concentrated_flame_missile.in_flight)^time_to_die<=7)" );
+  essences -> add_action( "anima_of_death,if=essence.anima_of_life_and_death.major" );
+  essences -> add_action( "memory_of_lucid_dreams,if=essence.memory_of_lucid_dreams.major" );
+  essences -> add_action( "worldvein_resonance,if=essence.worldvein_resonance.major" );
+  essences -> add_action( "ripple_in_space,if=essence.ripple_in_space.major" );
+			  
+  cleave -> add_action( "maul,if=rage.deficit<=10" );
+  cleave -> add_action( "ironfur,if=cost<=0" );
+  cleave -> add_action( "pulverize,target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
+  cleave -> add_action( "moonfire,target_if=!dot.moonfire.ticking" );
+  cleave -> add_action( "mangle,if=dot.thrash_bear.ticking" );
+  cleave -> add_action( "moonfire,target_if=buff.galactic_guardian.up&active_enemies=1|dot.moonfire.refreshable" );
+  cleave -> add_action( "maul" );
+  cleave -> add_action( "thrash" );
+  cleave -> add_action( "swipe" );
+			  
+  multi -> add_action( "maul,if=essence.conflict_and_strife.major&!buff.sharpened_claws.up" );
+  multi -> add_action( "ironfur,if=(rage>=cost&azerite.layered_mane.enabled)|rage.deficit<10" );
+  multi -> add_action( "thrash,if=(buff.incarnation.up&active_enemies>=4)|cooldown.thrash_bear.up" );
+  multi -> add_action( "mangle,if=buff.incarnation.up&active_enemies=3&dot.thrash_bear.ticking" );
+  multi -> add_action( "moonfire,if=dot.moonfire.refreshable&target.adds=0" );
+  multi -> add_action( "swipe,if=buff.incarnation.down" );
 
   if ( catweave_bear && talent.feral_affinity -> ok() )
   {
@@ -8832,18 +8859,21 @@ void druid_t::apl_guardian()
   } else {
     default_list -> add_action( "auto_attack" );
     default_list -> add_action( "call_action_list,name=cooldowns" );
-    default_list -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
-    default_list -> add_action( this, "Maul", "if=essence.conflict_and_strife.major&!buff.sharpened_claws.up" );
-    default_list -> add_action( this, "Ironfur", "if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)" );
-    default_list -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
-    default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
-    default_list -> add_action( "thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)" );
-    default_list -> add_action( "swipe,if=buff.incarnation.down&active_enemies>4" );
-    default_list -> add_action( this, "Mangle", "if=dot.thrash_bear.ticking" );
-    default_list -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
-    default_list -> add_action( "thrash" );
-    default_list -> add_action( this, "Maul" );
-    default_list -> add_action( "swipe" );
+    default_list -> add_action( "call_action_list,name=essences" );
+    default_list -> add_action( "call_action_list,name=cleave,if=active_enemies<=2" );
+    default_list -> add_action( "call_action_list,name=multi,if=active_enemies>=3" );
+   // default_list -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
+   // default_list -> add_action( this, "Maul", "if=essence.conflict_and_strife.major&!buff.sharpened_claws.up" );
+   // default_list -> add_action( this, "Ironfur", "if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)" );
+   // default_list -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
+   // default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
+   // default_list -> add_action( "thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)" );
+   // default_list -> add_action( "swipe,if=buff.incarnation.down&active_enemies>4" );
+   // default_list -> add_action( this, "Mangle", "if=dot.thrash_bear.ticking" );
+   // default_list -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
+   // default_list -> add_action( "thrash" );
+   // default_list -> add_action( this, "Maul" );
+   // default_list -> add_action( "swipe" );
   }
 }
 
