@@ -7710,11 +7710,11 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( "fireblood,if=buff.pillar_of_frost.remains<=8&buff.empower_rune_weapon.up" );
 
   // Pillar of Frost
-  cooldowns -> add_action( this, "Pillar of Frost", "if=cooldown.empower_rune_weapon.remains|!talent.breath_of_sindragosa.enabled", "Frost cooldowns" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=cooldown.empower_rune_weapon.remains|talent.icecap.enabled", "Frost cooldowns" );
   cooldowns -> add_talent( this, "Breath of Sindragosa", "use_off_gcd=1,if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains" );
-  cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&!talent.breath_of_sindragosa.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.1.time_to_die<20" );
+  cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&talent.obliteration.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.1.time_to_die<20" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=(cooldown.pillar_of_frost.ready|target.1.time_to_die<20)&talent.breath_of_sindragosa.enabled&runic_power>60" );
-  cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.icecap.enabled" );
+  cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.icecap.enabled&rune<3" );
 	
   // Cold Heart and Frostwyrm's Fury
   cooldowns -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.1.time_to_die<=gcd)" );
