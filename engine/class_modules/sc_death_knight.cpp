@@ -7718,8 +7718,8 @@ void death_knight_t::default_apl_frost()
 	
   // Cold Heart and Frostwyrm's Fury
   cooldowns -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.1.time_to_die<=gcd)" );
-  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(azerite.icy_citadel.rank<=1&buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<=gcd|buff.unholy_strength.remains<=gcd|buff.icy_citadel.remains<=gcd&buff.icy_citadel.up))" );
-  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(azerite.icy_citadel.rank>=2&buff.icy_citadel.up&(buff.unholy_strength.remains<=gcd|buff.icy_citadel.remains<=gcd|buff.pillar_of_frost.up&buff.pillar_of_frost.remains<=gcd))" );
+  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(azerite.icy_citadel.rank<=1&buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<=gcd|buff.unholy_strength.remains<=gcd&buff.unholy_strength.up|buff.icy_citadel.remains<=gcd&buff.icy_citadel.up))" );
+  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(azerite.icy_citadel.rank>=2&buff.icy_citadel.up&(buff.unholy_strength.remains<=gcd&buff.unholy_strength.up|buff.icy_citadel.remains<=gcd|buff.pillar_of_frost.up&buff.pillar_of_frost.remains<=gcd))" );
   cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=target.1.time_to_die<gcd|(target.1.time_to_die<cooldown.pillar_of_frost.remains&buff.unholy_strength.up)" );
 
   // Cold Heart conditionals
@@ -7783,7 +7783,7 @@ void death_knight_t::default_apl_frost()
   standard -> add_action( this, "Remorseless Winter", "", "Standard single-target rotation" );
   standard -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
   standard -> add_action( this, "Howling Blast", "if=buff.rime.up" );
-  standard -> add_action( this, "Frostscythe", "if=talent.icecap.enabled&buff.killing_machine.up" );
+  standard -> add_action( this, "Frostscythe", "if=talent.icecap.enabled&buff.killing_machine.react" );
   standard -> add_action( this, "Obliterate", "if=talent.icecap.enabled&buff.pillar_of_frost.up&!azerite.latent_chill.enabled" );
   standard -> add_action( this, "Obliterate", "if=!buff.frozen_pulse.up&talent.frozen_pulse.enabled" );
   standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
