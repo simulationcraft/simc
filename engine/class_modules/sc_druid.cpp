@@ -8823,7 +8823,7 @@ void druid_t::apl_guardian()
   multi -> add_action( "ironfur,if=(rage>=cost&azerite.layered_mane.enabled)|rage.deficit<10" );
   multi -> add_action( "thrash,if=(buff.incarnation.up&active_enemies>=4)|cooldown.thrash_bear.up" );
   multi -> add_action( "mangle,if=buff.incarnation.up&active_enemies=3&dot.thrash_bear.ticking" );
-  multi -> add_action( "moonfire,if=dot.moonfire.refreshable&target.adds=0" );
+  multi -> add_action( "moonfire,if=dot.moonfire.refreshable&active_enemies<=4" );
   multi -> add_action( "swipe,if=buff.incarnation.down" );
 
   if ( catweave_bear && talent.feral_affinity -> ok() )
