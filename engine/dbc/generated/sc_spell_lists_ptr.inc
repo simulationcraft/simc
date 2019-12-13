@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 8.3.0.32593
+// Class based active abilities, wow build 8.3.0.32805
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1266,7 +1266,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 8.3.0.32593
+// Talent tree specialization abilities, wow build 8.3.0.32805
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1801,7 +1801,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       137008, // Blood Death Knight
       161797, // Riposte
       162702, // Stat Negation Aura - Strength Tank
-       48263, // Veteran of the Third War
        43265, // Death and Decay
        50842, // Blood Boil
       195182, // Marrowrend
@@ -1833,7 +1832,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        81229, // Runic Empowerment
       278223, // Death Strike (Rank 2)
        51271, // Pillar of Frost
-       48263, // Veteran of the Third War
            0,
     },
     // Specialization abilities for Unholy
@@ -1858,7 +1856,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        51462, // Runic Corruption
       275699, // Apocalypse
       278223, // Death Strike (Rank 2)
-       48263, // Veteran of the Third War
            0,
     },
     {
@@ -2387,7 +2384,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 8.3.0.32593
+// Class mastery abilities, wow build 8.3.0.32805
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2626,7 +2623,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (33)
 #endif
 
-// Racial abilities, wow build 8.3.0.32593
+// Racial abilities, wow build 8.3.0.32805
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3600,7 +3597,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (724)
 
-// Set bonus data, wow build 8.3.0.32593
+// Set bonus data, wow build 8.3.0.32805
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4356,9 +4353,9 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  11,   -1, 290362, { 165604, 165566,  0 } },
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  12,   -1, 290362, { 165604, 165566,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (1014)
+#define PTR_RPPMMOD_SIZE (1011)
 
-// 1014 RPPM Modifiers, wow build level 8.3.0.32593
+// 1011 RPPM Modifiers, wow build level 8.3.0.32805
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5228,7 +5225,6 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 271631,    4,  1,  1.0000 },
   { 271681,    4,  1,  1.0000 },
   { 271683,    4,  1,  1.0000 },
-  { 271705,    4,  1,  1.0000 },
   { 271818,    4,  1,  1.0000 },
   { 272258,    4,  1,  1.0000 },
   { 272275,    4,  1,  1.0000 },
@@ -5363,7 +5359,6 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 310712,    4,  1,  1.0000 },
   { 311197,    4,  1,  1.0000 },
   { 311198,    4,  1,  1.0000 },
-  { 311210,    4,  1,  1.0000 },
   { 311304,    4,  1,  1.0000 },
   { 311306,    4,  1,  1.0000 },
   { 313087,    4,  1,  1.0000 },
@@ -5373,6 +5368,5 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 317147,    4,  1,  1.0000 },
   { 317257,    4,  1,  1.0000 },
   { 317290,    4,  1,  1.0000 },
-  { 317860,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };

@@ -1345,7 +1345,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39995)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.71000 | PvP Coefficient: 1.00000 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.82000 | PvP Coefficient: 1.00000 | Target: Unknown(77)
 Description      : $@spelldesc47540
 
 Name             : Shield Discipline (id=47755) 
@@ -6372,7 +6372,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=719440)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc197419
 
 Name             : Luminous Barrier (id=271466) [Spell Family (6)] 
