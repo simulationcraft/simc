@@ -6111,8 +6111,9 @@ struct icebound_fortitude_t : public death_knight_spell_t
 
 struct mark_of_blood_heal_t : public death_knight_heal_t
 {
-  mark_of_blood_heal_t( death_knight_t* p ) :
-    death_knight_heal_t( "mark_of_blood", p, p -> find_spell( 206945 ) )
+  mark_of_blood_heal_t( death_knight_t* p ) : // The data is removed and switched to the talent spell on PTR 8.3.0.32805
+    death_knight_heal_t( "mark_of_blood", p, ( p -> find_spell( 206945 ) == spell_data_t::not_found() ) ?
+                                             p -> talent.mark_of_blood : p -> find_spell( 206945 )  )
   {
     may_crit = callbacks = false;
     background = dual = true;
@@ -7730,7 +7731,7 @@ void death_knight_t::default_apl_frost()
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.icy_citadel.up&buff.unholy_strength.up&azerite.icy_citadel.rank>=2&!buff.breath_of_sindragosa.up&!talent.icecap.enabled" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.remains<4&talent.icecap.enabled&buff.cold_heart.stack>=18&azerite.icy_citadel.rank<=1" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.up&talent.icecap.enabled&azerite.icy_citadel.rank>=2&(buff.cold_heart.stack>=19&buff.icy_citadel.remains<gcd|buff.unholy_strength.up&buff.cold_heart.stack>=18)" );
-	
+
 
   // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
   bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up", "Breath of Sindragosa pooling rotation : starts 20s before Pillar of Frost + BoS are available" );
