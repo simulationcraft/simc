@@ -206,6 +206,15 @@ namespace items
   void hyperthread_wristwraps( special_effect_t& );
 }
 
+// 8.3.0(+?) corruption implementations
+namespace corruption
+{
+  void masterful( special_effect_t& effect );
+  void expedient( special_effect_t& effect );
+  void versatile( special_effect_t& effect );
+  void severe( special_effect_t& effect );
+}
+
 namespace util
 {
 // feasts initialization helper
@@ -5564,6 +5573,46 @@ void set_bonus::keepsakes_of_the_resolute_commandant( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void corruption::masterful( special_effect_t& effect )
+{
+  effect.type = SPECIAL_EFFECT_NONE;
+  effect.player->passive_rating_multiplier.get_mutable( RATING_MASTERY ) *=
+    1.0 + effect.driver()->effectN( 1 ).percent();
+}
+
+void corruption::expedient( special_effect_t& effect )
+{
+  effect.type = SPECIAL_EFFECT_NONE;
+  effect.player->passive_rating_multiplier.get_mutable( RATING_MELEE_HASTE ) *=
+    1.0 + effect.driver()->effectN( 1 ).percent();
+  effect.player->passive_rating_multiplier.get_mutable( RATING_SPELL_HASTE ) *=
+    1.0 + effect.driver()->effectN( 1 ).percent();
+  effect.player->passive_rating_multiplier.get_mutable( RATING_RANGED_HASTE ) *=
+    1.0 + effect.driver()->effectN( 1 ).percent();
+}
+
+void corruption::versatile( special_effect_t& effect )
+{
+  effect.type = SPECIAL_EFFECT_NONE;
+  effect.player->passive_rating_multiplier.get_mutable( RATING_HEAL_VERSATILITY ) *=
+    1.0 + effect.driver()->effectN( 1 ).percent();
+  effect.player->passive_rating_multiplier.get_mutable( RATING_DAMAGE_VERSATILITY ) *=
+    1.0 + effect.driver()->effectN( 1 ).percent();
+  effect.player->passive_rating_multiplier.get_mutable( RATING_MITIGATION_VERSATILITY ) *=
+    1.0 + effect.driver()->effectN( 1 ).percent();
+}
+
+void corruption::severe( special_effect_t& effect )
+{
+  effect.type = SPECIAL_EFFECT_NONE;
+  effect.player->passive_rating_multiplier.get_mutable( RATING_MELEE_CRIT ) *=
+    1.0 + effect.driver()->effectN( 1 ).percent();
+  effect.player->passive_rating_multiplier.get_mutable( RATING_SPELL_CRIT ) *=
+    1.0 + effect.driver()->effectN( 1 ).percent();
+  effect.player->passive_rating_multiplier.get_mutable( RATING_RANGED_CRIT ) *=
+    1.0 + effect.driver()->effectN( 1 ).percent();
+}
+
 } // namespace bfa
 } // anon namespace
 
@@ -5729,6 +5778,20 @@ void unique_gear::register_special_effects_bfa()
   /* 8.1.0 Raid Set Bonuses */
   register_special_effect( 290263, set_bonus::gift_of_the_loa );
   register_special_effect( 290362, set_bonus::keepsakes_of_the_resolute_commandant );
+
+  /* 8.3.0 Corruptions */
+  register_special_effect( 315529, corruption::masterful );
+  register_special_effect( 315530, corruption::masterful );
+  register_special_effect( 315531, corruption::masterful );
+  register_special_effect( 315544, corruption::expedient );
+  register_special_effect( 315545, corruption::expedient );
+  register_special_effect( 315546, corruption::expedient );
+  register_special_effect( 315549, corruption::versatile );
+  register_special_effect( 315552, corruption::versatile );
+  register_special_effect( 315553, corruption::versatile );
+  register_special_effect( 315554, corruption::severe );
+  register_special_effect( 315557, corruption::severe );
+  register_special_effect( 315558, corruption::severe );
 }
 
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )

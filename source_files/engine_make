@@ -91,3 +91,4 @@ SRC += \
     action$(PATHSEP)sc_action.cpp \
     sc_util.cpp \
     dbc$(PATHSEP)azerite.cpp \
+    dbc$(PATHSEP)item_effect.cpp \

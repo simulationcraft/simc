@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 
+#include "dbc/item_effect.hpp"
+
 #include "generated/sc_item_data2.inc"
 #if SC_USE_PTR
 #include "generated/sc_item_data_ptr2.inc"
@@ -705,6 +707,36 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
         item_database::apply_item_scaling( item, entry.value_1, item.parsed.drop_level );
       }
       break;
+    case ITEM_BONUS_ADD_CORRUPTION:
+    {
+      auto effect = item_effect_t::find( entry.value_1, item.player->dbc.ptr );
+      if ( effect.id == 0 )
+      {
+        item.player->sim->error( "Player {} item '{}' unknown item effect id {}, ignoring",
+            item.player->name(), item.name(), entry.value_1 );
+        return true;
+      }
+
+      auto spell = item.player->find_spell( effect.spell_id );
+      if ( spell->id() == 0 )
+      {
+        item.player->sim->error( "Player {} item '{}' unknown spell id {} for item effect id {}, ignoring",
+            item.player->name(), item.name(), effect.spell_id, entry.value_1 );
+        return true;
+      }
+
+      auto index = effect.index;
+      item.parsed.data.trigger_spell[ index ] = effect.type;
+      item.parsed.data.id_spell[ index ] = effect.spell_id;
+      item.parsed.data.cooldown_duration[ index ] = effect.cooldown_duration;
+      item.parsed.data.cooldown_group[ index ] = effect.cooldown_group;
+      item.parsed.data.cooldown_group_duration[ index ] = effect.cooldown_group_duration;
+
+      if ( item.sim->debug )
+        item.player->sim->out_debug.print( "Player {} item '{}' adding effect {} (type={})",
+            item.player->name(), item.name(), effect.spell_id, effect.type );
+      break;
+    }
     default:
       break;
   }
@@ -825,6 +857,15 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
 
   if ( item.parsed.data.level == 0 )
     return item.parsed.stat_val[ idx ];
+
+  // 8.3 introduces "corruption" related stats that are not scaled by ilevel or anything.
+  // They are applied (for now) through item bonuses, and do not use the normal "stat
+  // alocation" scheme.
+  if ( item.parsed.data.stat_type_e[ idx ] == ITEM_MOD_CORRUPTION ||
+       item.parsed.data.stat_type_e[ idx ] == ITEM_MOD_CORRUPTION_RESISTANCE )
+  {
+    return item.parsed.data.stat_alloc[ idx ];
+  }
 
   //if ( item.level == ( int ) new_ilevel )
   //  return item.stat_val[ idx ];
@@ -1520,11 +1561,23 @@ static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_s
   {
     if ( entries[ i ] -> type == ITEM_BONUS_MOD )
     {
-      data.emplace_back(
-            static_cast<item_mod_type>( entries[ i ] -> value_1 ),
-            entries[ i ] -> value_2 / total,
-            entries[ i ] -> value_2 / 10000.0
-      );
+      if ( entries[ i ]->value_1 != ITEM_MOD_CORRUPTION &&
+           entries[ i ]->value_1 != ITEM_MOD_CORRUPTION_RESISTANCE )
+      {
+        data.emplace_back(
+              static_cast<item_mod_type>( entries[ i ] -> value_1 ),
+              entries[ i ] -> value_2 / total,
+              entries[ i ] -> value_2 / 10000.0
+        );
+      }
+      else
+      {
+        data.emplace_back(
+              static_cast<item_mod_type>( entries[ i ] -> value_1 ),
+              entries[ i ] -> value_2 / total,
+              entries[ i ] -> value_2
+        );
+      }
     }
   }
 

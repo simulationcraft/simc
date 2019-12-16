@@ -74,8 +74,8 @@ void gear_stats_t::add_stat( stat_e stat,
     case STAT_RESILIENCE_RATING: resilience_rating += value; break;
     case STAT_PVP_POWER:                 pvp_power += value; break;
 
-    case STAT_CORRUPTION: corruption += value; break;
-    case STAT_CORRUPTION_RESISTANCE: corruption_resistance += value; break;
+    case STAT_CORRUPTION: corruption_rating += value; break;
+    case STAT_CORRUPTION_RESISTANCE: corruption_resistance_rating += value; break;
 
     case STAT_ALL:
       for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_STAT_ALL_MAX; i++ )
@@ -151,8 +151,8 @@ void gear_stats_t::set_stat( stat_e stat,
     case STAT_RESILIENCE_RATING: resilience_rating = value; break;
     case STAT_PVP_POWER:                 pvp_power = value; break;
 
-    case STAT_CORRUPTION: corruption = value; break;
-    case STAT_CORRUPTION_RESISTANCE: corruption_resistance = value; break;
+    case STAT_CORRUPTION: corruption_rating = value; break;
+    case STAT_CORRUPTION_RESISTANCE: corruption_resistance_rating = value; break;
 
     case STAT_ALL:
       for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_STAT_ALL_MAX; i++ )
@@ -227,8 +227,8 @@ double gear_stats_t::get_stat( stat_e stat ) const
     case STAT_RESILIENCE_RATING: return resilience_rating;
     case STAT_PVP_POWER:         return pvp_power;
 
-    case STAT_CORRUPTION: return corruption;
-    case STAT_CORRUPTION_RESISTANCE: return corruption_resistance;
+    case STAT_CORRUPTION: return corruption_rating;
+    case STAT_CORRUPTION_RESISTANCE: return corruption_resistance_rating;
 
     case STAT_ALL: return default_value;
 

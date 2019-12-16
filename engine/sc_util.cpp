@@ -1193,6 +1193,9 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_RUN_SPEED: return "run_speed";
     case CACHE_RPPM_HASTE: return "rppm_haste_coeff";
     case CACHE_RPPM_CRIT: return "rppm_crit_coeff";
+    case CACHE_CORRUPTION: return "corruption";
+    case CACHE_CORRUPTION_RESISTANCE: return "corruption_resistance";
+    case CACHE_AVOIDANCE: return "avoidance";
 
     default: return "unknown";
   }
