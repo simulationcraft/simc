@@ -27,6 +27,7 @@ player/unique_gear.hpp
 dbc/sc_spell_info.hpp
 dbc/specialization.hpp
 dbc/dbc.hpp
+dbc/item_effect.hpp
 simulationcraft.hpp
 sc_util.hpp
 sc_timespan.hpp
@@ -92,6 +93,7 @@ dbc/sc_item_data_import_noptr.cpp
 dbc/sc_item_data.cpp
 dbc/sc_data.cpp
 dbc/sc_const_data.cpp
+dbc/item_effect.cpp
 class_modules/sc_warrior.cpp
 class_modules/warlock/sc_warlock.cpp
 class_modules/warlock/sc_warlock_affliction.cpp
