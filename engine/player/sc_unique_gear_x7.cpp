@@ -204,7 +204,9 @@ namespace items
   void shorting_bit_band( special_effect_t& );
   // 8.2.0 - Mechagon trinkets and special items
   void hyperthread_wristwraps( special_effect_t& );
-}
+  // 8.3.0 - Visions of N'Zoth Trinkets and Special Items
+  void forbidden_obsidian_claw( special_effect_t& );
+  }
 
 // 8.3.0(+?) corruption implementations
 namespace corruption
@@ -5534,6 +5536,20 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
   effect.execute_action = create_proc_action<hyperthread_reduction_t>( "hyperthread_wristwraps", effect, cb );
 }
 
+//Forbidden Obsidian Claw
+
+void items::forbidden_obsidian_claw( special_effect_t& effect )
+{
+  struct obsidian_claw_t : public proc_spell_t
+  {
+    obsidian_claw_t( const special_effect_t& effect )
+      : proc_spell_t( "obsidian_claw", effect.player, effect.trigger(), effect.item )
+    {
+      tick_may_crit = false;
+    }
+  };
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -5792,6 +5808,10 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 315554, corruption::severe );
   register_special_effect( 315557, corruption::severe );
   register_special_effect( 315558, corruption::severe );
+
+  //8.3 Special Effects
+  register_special_effect( 303596, items::forbidden_obsidian_claw );
+
 }
 
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
