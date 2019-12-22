@@ -215,6 +215,7 @@ namespace corruption
   void expedient( special_effect_t& effect );
   void versatile( special_effect_t& effect );
   void severe( special_effect_t& effect );
+  void ineffable_truth( special_effect_t& effect );
 }
 
 namespace util
@@ -5629,6 +5630,43 @@ void corruption::severe( special_effect_t& effect )
     1.0 + effect.driver()->effectN( 1 ).percent();
 }
 
+/**Ineffable Truth
+ * id=316799 driver
+ * id=316801 buff
+ * id=318303 Tier 1 corruption effect that contains recharge multiplier data
+ * id=318484 Tier 2 corruption effect that contains recharge multiplier data
+ */
+void corruption::ineffable_truth( special_effect_t& effect )
+{
+  effect.custom_buff = buff_t::find( effect.player, "ineffable_truth" );
+  if ( !effect.custom_buff )
+  {
+    auto player = effect.player;
+    auto recharge_multiplier = 1.0 / ( 1 + effect.driver()->effectN( 1 ).percent() );
+    effect.custom_buff = make_buff( effect.player, "ineffable_truth", effect.player->find_spell( 316801 ) )
+      ->set_stack_change_callback( [ player, recharge_multiplier ]( buff_t*, int, int new_ )
+      {
+        for ( auto a : player->action_list )
+        {
+          // TODO: On the PTR this only affected class spells and did not affect the cooldown of charged spells. Is this still the case?
+          if ( a->data().class_mask() != 0 && a->data().charges() == 0 )
+          {
+            if ( new_ == 1 )
+              a->base_recharge_multiplier *= recharge_multiplier;
+            else
+              a->base_recharge_multiplier /= recharge_multiplier;
+            a->cooldown->adjust_recharge_multiplier();
+          }
+        }
+      } );
+  }
+
+  // Replace the driver spell, the RPPM value and proc flags are elsewhere
+  effect.spell_id = 316799;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 } // namespace bfa
 } // anon namespace
 
@@ -5808,6 +5846,8 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 315554, corruption::severe );
   register_special_effect( 315557, corruption::severe );
   register_special_effect( 315558, corruption::severe );
+  register_special_effect( 318303, corruption::ineffable_truth );
+  register_special_effect( 318484, corruption::ineffable_truth );
 
   //8.3 Special Effects
   register_special_effect( 303596, items::forbidden_obsidian_claw );
