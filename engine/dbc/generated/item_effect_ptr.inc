@@ -1,4 +1,4 @@
-// Item effects, wow build 8.3.0.32805
+// Item effects, wow build 8.3.0.32861
 static struct std::array<item_effect_t, 204> __ptr_item_effect_data { {
   {    420,  13518,   0,   2,     -1,    0,     -1 }, // Poison
   { 116155, 315277,   2,   1,     -1,    0,     -1 }, // Strikethrough
