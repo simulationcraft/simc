@@ -1227,6 +1227,8 @@ struct sim_t : private sc_thread_t
     int                 subroutine_recalibration_precombat_stacks = 0;
     /// Additional spell cast count to assume each buff cyle.
     int                 subroutine_recalibration_dummy_casts = 0;
+    /// Average duration of buff in percentage
+    double              voidtwisted_titanshard_percent_duration = 0.5;
   } bfa_opts;
 
   // Expansion specific data

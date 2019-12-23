@@ -206,7 +206,8 @@ namespace items
   void hyperthread_wristwraps( special_effect_t& );
   // 8.3.0 - Visions of N'Zoth Trinkets and Special Items
   void forbidden_obsidian_claw( special_effect_t& );
-  }
+  void voidtwisted_titanshard( special_effect_t& );
+}
 
 // 8.3.0(+?) corruption implementations
 namespace corruption
@@ -3030,23 +3031,7 @@ void items::lurkers_insidious_gift( special_effect_t& effect )
 {
   // Damage to the player isn't implemented
 
-  buff_t* insidious_gift_buff = make_buff<stat_buff_t>( effect.player, "insidious_gift", effect.player -> find_spell( 295408 ), effect.item );
 
-  timespan_t duration_override = effect.player -> sim -> bfa_opts.lurkers_insidious_gift_duration;
-
-  // If the overriden duration is out of bounds, yell at the user
-  if ( duration_override > insidious_gift_buff -> buff_duration )
-  {   
-    effect.player -> sim -> error( "{} Lurker's Insidious duration set higher than the buff's maximum duration, setting to {} seconds", 
-                                   effect.player -> name(), insidious_gift_buff -> buff_duration.total_seconds() );
-  }
-  // If the override is valid and different from 0, replace the buff's duration
-  else if ( duration_override > 0_ms )
-  {
-    insidious_gift_buff -> set_duration( duration_override );
-  }
-
-  effect.custom_buff = insidious_gift_buff;
 }
 
 // Abyssal Speaker's Gauntlets ==============================================
@@ -5551,6 +5536,24 @@ void items::forbidden_obsidian_claw( special_effect_t& effect )
   };
 }
 
+// Void-Twisted Titanshard
+// Implement as stat buff instead of absorb. If damage taken events are used again this would need to be changed.
+void items::voidtwisted_titanshard( special_effect_t& effect )
+{
+  effect.custom_buff = buff_t::find( effect.player, "void_shroud" );
+  if ( !effect.custom_buff )
+  {
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "void_shroud", effect.player->find_spell( 315774 ) );
+
+    timespan_t duration_override =
+        effect.custom_buff->buff_duration * effect.player->sim->bfa_opts.voidtwisted_titanshard_percent_duration;
+
+    effect.custom_buff->set_duration( duration_override );
+  }
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -5850,7 +5853,8 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318484, corruption::ineffable_truth );
 
   //8.3 Special Effects
-  register_special_effect( 303596, items::forbidden_obsidian_claw );
+  register_special_effect( 313148, items::forbidden_obsidian_claw );
+  register_special_effect( 315736, items::voidtwisted_titanshard );
 
 }
 
