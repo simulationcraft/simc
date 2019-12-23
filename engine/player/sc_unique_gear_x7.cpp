@@ -3031,7 +3031,25 @@ void items::lurkers_insidious_gift( special_effect_t& effect )
 {
   // Damage to the player isn't implemented
 
+  buff_t* insidious_gift_buff =
+      make_buff<stat_buff_t>( effect.player, "insidious_gift", effect.player->find_spell( 295408 ), effect.item );
 
+  timespan_t duration_override = effect.player->sim->bfa_opts.lurkers_insidious_gift_duration;
+
+  // If the overriden duration is out of bounds, yell at the user
+  if ( duration_override > insidious_gift_buff->buff_duration )
+  {
+    effect.player->sim->error(
+        "{} Lurker's Insidious duration set higher than the buff's maximum duration, setting to {} seconds",
+        effect.player->name(), insidious_gift_buff->buff_duration.total_seconds() );
+  }
+  // If the override is valid and different from 0, replace the buff's duration
+  else if ( duration_override > 0_ms )
+  {
+    insidious_gift_buff->set_duration( duration_override );
+  }
+
+  effect.custom_buff = insidious_gift_buff;
 }
 
 // Abyssal Speaker's Gauntlets ==============================================
