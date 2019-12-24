@@ -5365,7 +5365,8 @@ void mage_t::create_buffs()
   // Shared
   buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this );
   buffs.rune_of_power  = make_buff( this, "rune_of_power", find_spell( 116014 ) )
-                           ->set_default_value( find_spell( 116014 )->effectN( 1 ).percent() );
+                           ->set_default_value( find_spell( 116014 )->effectN( 1 ).percent() )
+                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   // Azerite
   buffs.arcane_pummeling   = make_buff( this, "arcane_pummeling", find_spell( 270670 ) )
