@@ -5687,15 +5687,16 @@ void corruption::ineffable_truth( special_effect_t& effect )
                              ->set_stack_change_callback( [player, recharge_multiplier]( buff_t*, int, int new_ ) {
                                for ( auto a : player->action_list )
                                {
-                                 // TODO: On the PTR this only affected class spells and did not affect the cooldown of
-                                 // charged spells. Is this still the case?
-                                 if ( a->data().class_mask() != 0 && a->data().charges() == 0 )
+                                 // Only class spells have their cooldown reduced.
+                                 if ( a->data().class_mask() != 0 )
                                  {
                                    if ( new_ == 1 )
                                      a->base_recharge_multiplier *= recharge_multiplier;
                                    else
                                      a->base_recharge_multiplier /= recharge_multiplier;
                                    a->cooldown->adjust_recharge_multiplier();
+                                   if ( a->data().charges() > 0 )
+                                     a->internal_cooldown->adjust_recharge_multiplier();
                                  }
                                }
                              } );
