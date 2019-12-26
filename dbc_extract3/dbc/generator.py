@@ -1308,18 +1308,18 @@ class SpellDataGenerator(DataGenerator):
          # 8.3 Raid items/Corruption
          # Infinite Stars
          317262, 317265,
-		 # Titanic Empowerment Set
-		 315793, 315858,
-		 # Psyche Shredder damage spell
-		 316019,
-		 # Torment in a Jar stacks
-		 313088,
-		 # Echoing Void damage
-		 317029,
-		 # Twilight Devastation damage
-		 317159,
-		 #Obsidian Destruction Range
-		 316661
+         # Titanic Empowerment Set
+         315793, 315858,
+         # Psyche Shredder damage spell
+         316019,
+         # Torment in a Jar stacks
+         313088,
+         # Echoing Void damage
+         317029,
+         # Twilight Devastation damage
+         317159,
+         # Obsidian Destruction Range
+         316661
         ),
 
         # Warrior:
