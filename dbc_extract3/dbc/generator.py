@@ -1305,9 +1305,21 @@ class SpellDataGenerator(DataGenerator):
          313643,
          # The Formless Void (major unknown buff)
          312734,
-         # 8.3 Raid items
-         # Shgla'yos, Astral Malignity
+         # 8.3 Raid items/Corruption
+         # Infinite Stars
          317262, 317265,
+		 # Titanic Empowerment Set
+		 315793, 315858,
+		 # Psyche Shredder damage spell
+		 316019,
+		 # Torment in a Jar stacks
+		 313088,
+		 # Echoing Void damage
+		 317029,
+		 # Twilight Devastation damage
+		 317159,
+		 #Obsidian Destruction Range
+		 316661
         ),
 
         # Warrior:
@@ -3902,6 +3914,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'keepsakes',
             'bonuses': [ 1443 ],
             'tier'   : 23
+        },
+		{
+            'name'   : 'titanic_empowerment',
+            'bonuses': [ 1452 ],
+            'tier'   : 24
         }
     ]
 

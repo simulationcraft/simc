@@ -5739,7 +5739,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737265)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.25000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.20000 | Target: Self (1)
 Description      : When your Consume Magic consumes a beneficial Magic effect from the target, gain $s1 Absorb for $274289d and shatter a Soul Fragment from the target.
 
 Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passive] 
