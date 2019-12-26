@@ -4815,6 +4815,7 @@ struct worldvein_resonance_t : public azerite_essence_major_t
 {
   int stacks;
   buff_t* lifeblood;
+  buff_t* worldvein_resonance_buff;
 
   worldvein_resonance_t( player_t* p, const std::string& options_str ) :
     azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) ), stacks()
@@ -4827,11 +4828,38 @@ struct worldvein_resonance_t : public azerite_essence_major_t
     lifeblood = buff_t::find( player, "lifeblood_shard" );
     if ( !lifeblood )
       lifeblood = make_buff<lifeblood_shard_t>( p, essence );
+
+    if ( maybe_ptr( player->dbc.ptr ) ) {
+      worldvein_resonance_buff = buff_t::find( player, "worldvein_resonance" );
+      if ( !worldvein_resonance_buff )
+      {
+        double worldvein_resonance_multiplier = ( 1 + p->find_spell( 313310 )->effectN( 1 ).percent() );
+        worldvein_resonance_buff = make_buff( p, "worldvein_resonance", p->find_spell( 313310 ) );
+        worldvein_resonance_buff->set_stack_change_callback( [worldvein_resonance_multiplier, p]( buff_t*, int, int new_ ) {
+          if ( !p->buffs.lifeblood->stats.empty() )
+          {
+            if ( new_ == 1 )
+              p->buffs.lifeblood->stats[0].amount *= worldvein_resonance_multiplier;
+            else
+              p->buffs.lifeblood->stats[0].amount /= worldvein_resonance_multiplier;
+            int current_stacks = p->buffs.lifeblood->check();
+            if ( current_stacks > 0 )
+            {
+              // If the buff was already active, remove and reapply the stacks to update the player's stats.
+              p->buffs.lifeblood->expire();
+              p->buffs.lifeblood->trigger( current_stacks );
+            }
+          }
+        } );
+      }
+    }
   }
 
   void execute() override
   {
     azerite_essence_major_t::execute();
+    if ( maybe_ptr( player->dbc.ptr ) )
+      worldvein_resonance_buff->trigger();
     lifeblood->trigger( stacks );
   }
 
