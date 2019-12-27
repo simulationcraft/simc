@@ -219,6 +219,7 @@ void expedient( special_effect_t& effect );
 void versatile( special_effect_t& effect );
 void severe( special_effect_t& effect );
 void ineffable_truth( special_effect_t& effect );
+void twilight_devastation( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -266,7 +267,7 @@ void waycrest_legacy( special_effect_t& );
 // 8.1.0 Raid
 void gift_of_the_loa( special_effect_t& );
 void keepsakes_of_the_resolute_commandant( special_effect_t& );
-//8.3.0 Raid
+// 8.3.0 Raid
 void titanic_empowerment( special_effect_t& );
 }  // namespace set_bonus
 
@@ -5708,6 +5709,41 @@ void corruption::ineffable_truth( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+//Twilight Devastation
+void corruption::twilight_devastation( special_effect_t& effect )
+{
+  struct twilight_devastation_t : public proc_spell_t
+  {
+    double maxhp_muliplier;
+
+    // Spell data has the percentage with an extra 0
+    twilight_devastation_t( const special_effect_t& effect )
+      : proc_spell_t( "twilight_devastation", effect.player, effect.player->find_spell( 317159 ) ),
+        maxhp_muliplier( effect.driver()->effectN( 1 ).percent() / 10 )
+    {
+      aoe = -1;
+      // TODO: Check what this scales with
+    }
+
+    double base_da_min( const action_state_t* ) const override
+    {
+      return player->resources.max[ RESOURCE_HEALTH ] * maxhp_muliplier;
+    }
+
+    double base_da_max( const action_state_t* ) const override
+    {
+      return player->resources.max[ RESOURCE_HEALTH ] * maxhp_muliplier;
+    }
+  };
+
+  // Create proc action and then change spell id to the spell with the rppm etc. info
+  effect.execute_action = create_proc_action<twilight_devastation_t>( "twilight_devastation", effect );
+
+  effect.spell_id = 317147;
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -5889,6 +5925,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 315558, corruption::severe );
   register_special_effect( 318303, corruption::ineffable_truth );
   register_special_effect( 318484, corruption::ineffable_truth );
+  register_special_effect( 318276, corruption::twilight_devastation );
+  register_special_effect( 318477, corruption::twilight_devastation );
+  register_special_effect( 318478, corruption::twilight_devastation );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
@@ -5897,7 +5936,6 @@ void unique_gear::register_special_effects_bfa()
 
   // 8.3 Set Bonus(es)
   register_special_effect( 315793, set_bonus::titanic_empowerment );
-
 }
 
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
