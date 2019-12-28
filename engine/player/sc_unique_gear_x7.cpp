@@ -5761,17 +5761,19 @@ void corruption::racing_pulse( special_effect_t& effect )
 
   // If the buff doesnt exist create and otherwise add additional stats
   if ( !buff )
+  {
     buff = create_buff<stat_buff_t>( effect.player, "racing_pulse", effect.player->find_spell( 318227 ) )
                ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() );
+
+    effect.custom_buff = buff;
+
+    // RPPM value and proc flags are in a different spell
+    effect.spell_id = 318220;
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
   else
     buff->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() );
-
-  effect.custom_buff = buff;
-
-  // RPPM value and proc flags are in a different spell
-  effect.spell_id = 318220;
-
-  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Honed Mind
@@ -5781,17 +5783,19 @@ void corruption::honed_mind( special_effect_t& effect )
 
   // If the buff doesnt exist create and otherwise add additional stats
   if ( !buff )
+  {
     buff = create_buff<stat_buff_t>( effect.player, "honed_mind", effect.player->find_spell( 318216 ) )
                ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() );
+
+    effect.custom_buff = buff;
+
+    // RPPM value and proc flags are in a different spell
+    effect.spell_id = 318214;
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
   else
     buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() );
-
-  effect.custom_buff = buff;
-
-  // RPPM value and proc flags are in a different spell
-  effect.spell_id = 318214;
-
-  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Deadly Momentum
@@ -5800,20 +5804,22 @@ void corruption::deadly_momentum( special_effect_t& effect )
   auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "deadly_momentum" ) );
 
   // If the buff doesnt exist create and otherwise add additional stats
-  // TODO: Check refresh behaviour 
+  // TODO: Check refresh behaviour
   if ( !buff )
+  {
     buff = create_buff<stat_buff_t>( effect.player, "deadly_momentum", effect.player->find_spell( 318219 ) )
                ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() );
+
+    effect.custom_buff = buff;
+
+    // RPPM value and proc flags are in a different spell; set to only proc on crit
+    effect.spell_id     = 318218;
+    effect.proc_flags2_ = PF2_CRIT;
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
   else
     buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() );
-
-  effect.custom_buff = buff;
-
-  // RPPM value and proc flags are in a different spell; set to only proc on crit
-  effect.spell_id     = 318218;
-  effect.proc_flags2_ = PF2_CRIT;
-
-  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Surging Vitality
