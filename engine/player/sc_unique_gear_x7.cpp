@@ -5829,24 +5829,26 @@ void corruption::surging_vitality( special_effect_t& effect )
 
   // If the buff doesnt exist create and otherwise add additional stats
   if ( !buff )
+  {
     buff = create_buff<stat_buff_t>( effect.player, "surging_vitality", effect.player->find_spell( 318211 ) )
                ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
+
+    // RPPM value is in a different spell
+    buff->set_rppm( RPPM_NONE, effect.player->find_spell( 318212 )->real_ppm() );
+
+    // Allow the buff to proc by creating a fake damage taken event
+    effect.player->register_combat_begin( [buff]( player_t* ) {
+      if ( buff->sim->bfa_opts.surging_vitality_damage_taken_period > 0_s )
+      {
+        make_repeating_event( buff->sim, buff->sim->bfa_opts.surging_vitality_damage_taken_period, [buff] {
+          if ( buff->rppm )
+            buff->trigger();
+        } );
+      }
+    } );
+  }
   else
     buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
-
-  // RPPM value is in a different spell
-  buff->set_rppm( RPPM_NONE, effect.player->find_spell( 318212 )->real_ppm() );
-
-  // Allow the buff to proc by creating a fake damage taken event
-  effect.player->register_combat_begin( [buff]( player_t* ) {
-    if ( buff->sim->bfa_opts.surging_vitality_damage_taken_period > 0_s )
-    {
-      make_repeating_event( buff->sim, buff->sim->bfa_opts.surging_vitality_damage_taken_period, [buff] {
-        if ( buff->rppm )
-          buff->trigger();
-      } );
-    }
-  } );
 }
 
 }  // namespace bfa
