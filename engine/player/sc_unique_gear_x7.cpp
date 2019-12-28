@@ -224,6 +224,7 @@ void racing_pulse( special_effect_t& effect );
 void honed_mind( special_effect_t& effect );
 void deadly_momentum( special_effect_t& effect );
 void surging_vitality( special_effect_t& effect );
+void strikethrough( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -5851,6 +5852,23 @@ void corruption::surging_vitality( special_effect_t& effect )
     buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
 }
 
+void corruption::strikethrough( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "strikethrough" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "strikethrough", effect.driver() )
+               ->set_default_value( effect.driver()->effectN( 1 ).percent() )
+               ->set_quiet( true );
+
+    effect.player->buffs.strikethrough = buff;
+    effect.player->register_combat_begin( buff );
+    effect.type = SPECIAL_EFFECT_NONE;
+  }
+  else
+    buff->set_default_value( effect.driver()->effectN( 1 ).percent() + buff->default_value );
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -6047,6 +6065,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318270, corruption::surging_vitality );
   register_special_effect( 318495, corruption::surging_vitality );
   register_special_effect( 318499, corruption::surging_vitality );
+  register_special_effect( 315277, corruption::strikethrough );
+  register_special_effect( 315281, corruption::strikethrough );
+  register_special_effect( 315282, corruption::strikethrough );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );

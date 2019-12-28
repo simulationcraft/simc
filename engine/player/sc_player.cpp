@@ -3908,6 +3908,11 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
   {
     m *= 1.0 + buffs.fathom_hunter->check_value();
   }
+  // Critical hit damage buff from corruption effect
+  if ( buffs.strikethrough )
+  {
+    m *= 1.0 + buffs.strikethrough->check_value();
+  }
   return m;
 }
 
