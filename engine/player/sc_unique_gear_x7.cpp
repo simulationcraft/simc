@@ -223,6 +223,7 @@ void twilight_devastation( special_effect_t& effect );
 void racing_pulse( special_effect_t& effect );
 void honed_mind( special_effect_t& effect );
 void deadly_momentum( special_effect_t& effect );
+void surging_vitality( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -5760,8 +5761,8 @@ void corruption::racing_pulse( special_effect_t& effect )
 
   // If the buff doesnt exist create and otherwise add additional stats
   if ( !buff )
-    effect.custom_buff = create_buff<stat_buff_t>( effect.player, "racing_pulse", effect.player->find_spell( 318227 ) )
-                             ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() );
+    buff = create_buff<stat_buff_t>( effect.player, "racing_pulse", effect.player->find_spell( 318227 ) )
+               ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() );
   else
     buff->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() );
 
@@ -5780,8 +5781,8 @@ void corruption::honed_mind( special_effect_t& effect )
 
   // If the buff doesnt exist create and otherwise add additional stats
   if ( !buff )
-    effect.custom_buff = create_buff<stat_buff_t>( effect.player, "honed_mind", effect.player->find_spell( 318216 ) )
-                             ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() );
+    buff = create_buff<stat_buff_t>( effect.player, "honed_mind", effect.player->find_spell( 318216 ) )
+               ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() );
   else
     buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() );
 
@@ -5801,9 +5802,8 @@ void corruption::deadly_momentum( special_effect_t& effect )
   // If the buff doesnt exist create and otherwise add additional stats
   // TODO: Check refresh behaviour 
   if ( !buff )
-    effect.custom_buff =
-        create_buff<stat_buff_t>( effect.player, "deadly_momentum", effect.player->find_spell( 318219 ) )
-                             ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() );
+    buff = create_buff<stat_buff_t>( effect.player, "deadly_momentum", effect.player->find_spell( 318219 ) )
+               ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() );
   else
     buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() );
 
@@ -5814,6 +5814,33 @@ void corruption::deadly_momentum( special_effect_t& effect )
   effect.proc_flags2_ = PF2_CRIT;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Surging Vitality
+void corruption::surging_vitality( special_effect_t& effect )
+{
+  auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "surging_vitality" ) );
+
+  // If the buff doesnt exist create and otherwise add additional stats
+  if ( !buff )
+    buff = create_buff<stat_buff_t>( effect.player, "surging_vitality", effect.player->find_spell( 318211 ) )
+               ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
+  else
+    buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
+
+  // RPPM value is in a different spell
+  buff->set_rppm( RPPM_NONE, effect.player->find_spell( 318212 )->real_ppm() );
+
+  // Allow the buff to proc by creating a fake damage taken event
+  effect.player->register_combat_begin( [buff]( player_t* ) {
+    if ( buff->sim->bfa_opts.surging_vitality_damage_taken_period > 0_s )
+    {
+      make_repeating_event( buff->sim, buff->sim->bfa_opts.surging_vitality_damage_taken_period, [buff] {
+        if ( buff->rppm )
+          buff->trigger();
+      } );
+    }
+  } );
 }
 
 }  // namespace bfa
@@ -6009,6 +6036,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318268, corruption::deadly_momentum );
   register_special_effect( 318493, corruption::deadly_momentum );
   register_special_effect( 318497, corruption::deadly_momentum );
+  register_special_effect( 318270, corruption::surging_vitality );
+  register_special_effect( 318495, corruption::surging_vitality );
+  register_special_effect( 318499, corruption::surging_vitality );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );

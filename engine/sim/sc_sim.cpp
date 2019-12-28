@@ -3656,6 +3656,8 @@ void sim_t::create_options()
     bfa_opts.subroutine_recalibration_dummy_casts, 0, 11 ) );
   add_option( opt_float( "bfa.voidtwisted_titanshard_percent_duration",
     bfa_opts.voidtwisted_titanshard_percent_duration, 0.0, 1.0 ) );
+  add_option( opt_timespan( "bfa.surging_vitality_damage_taken_period", bfa_opts.surging_vitality_damage_taken_period,
+                            1_s, timespan_t::max() ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
