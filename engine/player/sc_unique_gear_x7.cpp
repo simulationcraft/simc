@@ -5714,12 +5714,12 @@ void corruption::twilight_devastation( special_effect_t& effect )
 {
   struct twilight_devastation_t : public proc_spell_t
   {
-    double maxhp_muliplier;
+    double maxhp_multiplier;
 
     // Spell data has the percentage with an extra 0
     twilight_devastation_t( const special_effect_t& effect )
       : proc_spell_t( "twilight_devastation", effect.player, effect.player->find_spell( 317159 ) ),
-        maxhp_muliplier( effect.driver()->effectN( 1 ).percent() / 10 )
+        maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 )
     {
       aoe = -1;
       // TODO: Check what this scales with
@@ -5727,17 +5727,23 @@ void corruption::twilight_devastation( special_effect_t& effect )
 
     double base_da_min( const action_state_t* ) const override
     {
-      return player->resources.max[ RESOURCE_HEALTH ] * maxhp_muliplier;
+      return player->resources.max[ RESOURCE_HEALTH ] * maxhp_multiplier;
     }
 
     double base_da_max( const action_state_t* ) const override
     {
-      return player->resources.max[ RESOURCE_HEALTH ] * maxhp_muliplier;
+      return player->resources.max[ RESOURCE_HEALTH ] * maxhp_multiplier;
     }
   };
 
-  // Create proc action and then change spell id to the spell with the rppm etc. info
-  effect.execute_action = create_proc_action<twilight_devastation_t>( "twilight_devastation", effect );
+  // Check if the proc action exists and then either create it or increase its multipler
+  auto twilight_devastation =
+      static_cast<twilight_devastation_t*>( effect.player->find_action( "twilight_devastation" ) );
+
+  if ( !twilight_devastation )
+    effect.execute_action = create_proc_action<twilight_devastation_t>( "twilight_devastation", effect );
+  else
+    twilight_devastation->maxhp_multiplier += effect.driver()->effectN( 1 ).percent() / 10;
 
   effect.spell_id = 317147;
 
