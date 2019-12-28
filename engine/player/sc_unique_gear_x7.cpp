@@ -221,6 +221,7 @@ void severe( special_effect_t& effect );
 void ineffable_truth( special_effect_t& effect );
 void twilight_devastation( special_effect_t& effect );
 void racing_pulse( special_effect_t& effect );
+void honed_mind( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -5771,6 +5772,26 @@ void corruption::racing_pulse( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Honed Mind
+void corruption::honed_mind( special_effect_t& effect )
+{
+  auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "honed_mind" ) );
+
+  // If the buff doesnt exist create and otherwise add additional stats
+  if ( !buff )
+    effect.custom_buff = create_buff<stat_buff_t>( effect.player, "honed_mind", effect.player->find_spell( 318216 ) )
+                             ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() );
+  else
+    buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() );
+
+  effect.custom_buff = buff;
+
+  // RPPM value and proc flags are in a different spell
+  effect.spell_id = 318214;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -5958,6 +5979,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318266, corruption::racing_pulse );
   register_special_effect( 318492, corruption::racing_pulse );
   register_special_effect( 318496, corruption::racing_pulse );
+  register_special_effect( 318269, corruption::honed_mind );
+  register_special_effect( 318494, corruption::honed_mind );
+  register_special_effect( 318498, corruption::honed_mind );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
