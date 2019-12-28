@@ -222,6 +222,7 @@ void ineffable_truth( special_effect_t& effect );
 void twilight_devastation( special_effect_t& effect );
 void racing_pulse( special_effect_t& effect );
 void honed_mind( special_effect_t& effect );
+void deadly_momentum( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -5792,6 +5793,29 @@ void corruption::honed_mind( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Deadly Momentum
+void corruption::deadly_momentum( special_effect_t& effect )
+{
+  auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "deadly_momentum" ) );
+
+  // If the buff doesnt exist create and otherwise add additional stats
+  // TODO: Check refresh behaviour 
+  if ( !buff )
+    effect.custom_buff =
+        create_buff<stat_buff_t>( effect.player, "deadly_momentum", effect.player->find_spell( 318219 ) )
+                             ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() );
+  else
+    buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() );
+
+  effect.custom_buff = buff;
+
+  // RPPM value and proc flags are in a different spell; set to only proc on crit
+  effect.spell_id     = 318218;
+  effect.proc_flags2_ = PF2_CRIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -5982,6 +6006,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318269, corruption::honed_mind );
   register_special_effect( 318494, corruption::honed_mind );
   register_special_effect( 318498, corruption::honed_mind );
+  register_special_effect( 318268, corruption::deadly_momentum );
+  register_special_effect( 318493, corruption::deadly_momentum );
+  register_special_effect( 318497, corruption::deadly_momentum );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
