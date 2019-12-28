@@ -220,6 +220,7 @@ void versatile( special_effect_t& effect );
 void severe( special_effect_t& effect );
 void ineffable_truth( special_effect_t& effect );
 void twilight_devastation( special_effect_t& effect );
+void racing_pulse( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -5750,6 +5751,26 @@ void corruption::twilight_devastation( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+//Racing Pulse
+void corruption::racing_pulse( special_effect_t& effect )
+{
+  auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "racing_pulse" ) );
+
+  // If the buff doesnt exist create and otherwise add additional stats
+  if ( !buff )
+    effect.custom_buff = create_buff<stat_buff_t>( effect.player, "racing_pulse", effect.player->find_spell( 318227 ) )
+                             ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() );
+  else
+    buff->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() );
+
+  effect.custom_buff = buff;
+
+  // RPPM value and proc flags are in a different spell
+  effect.spell_id = 318220;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -5934,6 +5955,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318276, corruption::twilight_devastation );
   register_special_effect( 318477, corruption::twilight_devastation );
   register_special_effect( 318478, corruption::twilight_devastation );
+  register_special_effect( 318266, corruption::racing_pulse );
+  register_special_effect( 318492, corruption::racing_pulse );
+  register_special_effect( 318496, corruption::racing_pulse );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
