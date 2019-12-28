@@ -4811,11 +4811,77 @@ void worldvein_resonance( special_effect_t& effect )
   }
 }
 
+struct worldvein_resonance_buff_t : public buff_t
+{
+  stat_buff_t* lifeblood;
+
+  worldvein_resonance_buff_t( player_t* p, const azerite_essence_t& ess ) :
+    buff_t( p, "worldvein_resonance", p->find_spell( 313310 ), ess.item() )
+  {
+    lifeblood = static_cast<stat_buff_t*>( buff_t::find( p, "lifeblood" ) );
+  }
+
+  void adjust_stat( bool increase )
+  {
+    if ( !lifeblood )
+    {
+      return;
+    }
+
+    auto& stat_entry = lifeblood->stats.front();
+    if ( increase )
+    {
+      stat_entry.amount *= 1.0 + data().effectN( 1 ).percent();
+    }
+    else
+    {
+      stat_entry.amount /= 1.0 + data().effectN( 1 ).percent();
+    }
+
+    if ( lifeblood->check() )
+    {
+      double delta = stat_entry.amount * lifeblood->current_stack - stat_entry.current_value;
+      sim->print_debug( "{} worldvein_resonance {}creases lifeblood stats by {}%,"
+                        " stacks={}, old={}, new={} ({}{})",
+        player->name(),
+        increase ? "in" : "de", data().effectN( 1 ).base_value(), lifeblood->current_stack,
+        stat_entry.current_value, stat_entry.current_value + delta,
+        increase ? "+" : "", delta );
+
+      if ( delta > 0 )
+      {
+        player->stat_gain( stat_entry.stat, delta, lifeblood->stat_gain, nullptr, true );
+      }
+      else
+      {
+        player->stat_loss( stat_entry.stat, std::fabs( delta ), lifeblood->stat_gain,
+          nullptr, true );
+      }
+
+      stat_entry.current_value += delta;
+    }
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    adjust_stat( true /* Stat increase */ );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    adjust_stat( false /* Stat decrease */ );
+  }
+};
+
 struct worldvein_resonance_t : public azerite_essence_major_t
 {
   int stacks;
   buff_t* lifeblood;
-  buff_t* worldvein_resonance_buff;
+  buff_t* worldvein_resonance;
 
   worldvein_resonance_t( player_t* p, const std::string& options_str ) :
     azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) ), stacks()
@@ -4829,38 +4895,14 @@ struct worldvein_resonance_t : public azerite_essence_major_t
     if ( !lifeblood )
       lifeblood = make_buff<lifeblood_shard_t>( p, essence );
 
-    if ( maybe_ptr( player->dbc.ptr ) ) {
-      worldvein_resonance_buff = buff_t::find( player, "worldvein_resonance" );
-      if ( !worldvein_resonance_buff )
-      {
-        double worldvein_resonance_multiplier = ( 1 + p->find_spell( 313310 )->effectN( 1 ).percent() );
-        worldvein_resonance_buff = make_buff( p, "worldvein_resonance", p->find_spell( 313310 ) );
-        worldvein_resonance_buff->set_stack_change_callback( [worldvein_resonance_multiplier, p]( buff_t*, int, int new_ ) {
-          if ( !p->buffs.lifeblood->stats.empty() )
-          {
-            if ( new_ == 1 )
-              p->buffs.lifeblood->stats[0].amount *= worldvein_resonance_multiplier;
-            else
-              p->buffs.lifeblood->stats[0].amount /= worldvein_resonance_multiplier;
-            int current_stacks = p->buffs.lifeblood->check();
-            if ( current_stacks > 0 )
-            {
-              // If the buff was already active, remove and reapply the stacks to update the player's stats.
-              p->buffs.lifeblood->expire();
-              p->buffs.lifeblood->trigger( current_stacks );
-            }
-          }
-        } );
-      }
-    }
+    worldvein_resonance = make_buff<worldvein_resonance_buff_t>( p, essence );
   }
 
   void execute() override
   {
     azerite_essence_major_t::execute();
-    if ( maybe_ptr( player->dbc.ptr ) )
-      worldvein_resonance_buff->trigger();
     lifeblood->trigger( stacks );
+    worldvein_resonance->trigger();
   }
 
   //Minor and major power both summon Lifeblood shards that grant primary stat (max benefit of 4 shards)
