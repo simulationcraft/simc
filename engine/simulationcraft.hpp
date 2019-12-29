@@ -1231,6 +1231,10 @@ struct sim_t : private sc_thread_t
     double voidtwisted_titanshard_percent_duration = 0.5;
     /// Period between checking if surging vitality can proc
     timespan_t surging_vitality_damage_taken_period = 0_s;
+    /// Allies that decrease crit buff when the trinket is used
+    unsigned manifesto_allies_start = 0;
+    /// Allies that increase vers buff when the first buff expires
+    unsigned manifesto_allies_end = 5;
   } bfa_opts;
 
   // Expansion specific data

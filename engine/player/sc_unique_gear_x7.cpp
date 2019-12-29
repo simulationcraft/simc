@@ -209,6 +209,7 @@ void hyperthread_wristwraps( special_effect_t& );
 void forbidden_obsidian_claw( special_effect_t& );
 void voidtwisted_titanshard( special_effect_t& );
 void vitacharged_titanshard( special_effect_t& );
+void manifesto_of_madness( special_effect_t& );
 }  // namespace items
 
 // 8.3.0(+?) corruption implementations
@@ -5586,6 +5587,37 @@ void items::vitacharged_titanshard( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Manifesto of Madness
+
+void items::manifesto_of_madness( special_effect_t& effect )
+{
+  auto first_buff  = buff_t::find( effect.player, "manifesto_of_madness_chapter_one" );
+  auto second_buff = buff_t::find( effect.player, "manifesto_of_madness_chapter_two" );
+
+  if ( !second_buff )
+  {
+    second_buff = make_buff<stat_buff_t>( effect.player, "manifesto_of_madness_chapter_two",
+                                          effect.player->find_spell( 314040 ), effect.item )
+                      ->add_stat( STAT_VERSATILITY_RATING,
+
+                                  effect.player->find_spell( 314040 )->effectN( 3 ).average( effect.item ) *
+                                      effect.player->sim->bfa_opts.manifesto_allies_end );
+  }
+  if ( !first_buff )
+  {
+    first_buff =
+        make_buff<stat_buff_t>( effect.player, "manifesto_of_madness_chapter_one", effect.driver(), effect.item )
+            ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 5 ).average( effect.item ) *
+                                              ( 1.0 - effect.driver()->effectN( 3 ).percent() *
+                                                          effect.player->sim->bfa_opts.manifesto_allies_start ) )
+            ->set_stack_change_callback( [second_buff]( buff_t*, int, int new_ ) {
+              if ( new_ == 0 )
+                second_buff->trigger();
+            } );
+  }
+  effect.custom_buff = first_buff;
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -6073,6 +6105,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 313148, items::forbidden_obsidian_claw );
   register_special_effect( 315736, items::voidtwisted_titanshard );
   register_special_effect( 315586, items::vitacharged_titanshard );
+  register_special_effect( 313948, items::manifesto_of_madness );
 
   // 8.3 Set Bonus(es)
   register_special_effect( 315793, set_bonus::titanic_empowerment );
