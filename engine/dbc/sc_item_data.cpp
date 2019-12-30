@@ -707,7 +707,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
         item_database::apply_item_scaling( item, entry.value_1, item.parsed.drop_level );
       }
       break;
-    case ITEM_BONUS_ADD_CORRUPTION:
+    case ITEM_BONUS_ADD_ITEM_EFFECT:
     {
       auto effect = item_effect_t::find( entry.value_1, item.player->dbc.ptr );
       if ( effect.id == 0 )
@@ -1543,6 +1543,54 @@ static int get_bonus_power_index( const std::vector<const item_bonus_entry_t*>& 
   return -1;
 }
 
+static std::string get_bonus_item_effect( const std::vector<const item_bonus_entry_t*>& entries, const dbc_t& dbc )
+{
+  std::vector<std::string> entries_str;
+
+  range::for_each( entries, [&entries_str, &dbc]( const item_bonus_entry_t* entry ) {
+    if ( entry->type != ITEM_BONUS_ADD_ITEM_EFFECT )
+    {
+      return;
+    }
+    auto effect = item_effect_t::find( entry->value_1, dbc.ptr );
+    if ( effect.id == 0 )
+    {
+      entries_str.emplace_back( fmt::format( "Unknown Effect (id={})", entry->value_1 ) );
+    }
+    else
+    {
+      auto spell = dbc.spell( effect.spell_id );
+      if ( !spell )
+      {
+        entries_str.emplace_back( fmt::format( "Unknown Spell (id={}, index={})",
+          effect.spell_id, effect.index ) );
+      }
+      else
+      {
+        std::vector<std::string> fields;
+        fields.emplace_back( fmt::format( "id={}", spell->id() ) );
+        fields.emplace_back( fmt::format( "index={}", effect.index ) );
+        fields.emplace_back( fmt::format( "type={}",
+          util::item_spell_trigger_string( static_cast<item_spell_trigger_type>( effect.type ) ) ) );
+        if ( effect.cooldown_duration > 1 )
+        {
+          fields.emplace_back( fmt::format( "cooldown={}ms", effect.cooldown_duration ) );
+        }
+
+        if ( effect.cooldown_group_duration > 1 )
+        {
+          fields.emplace_back( fmt::format( "group_cooldown={}ms", effect.cooldown_group_duration ) );
+        }
+
+        entries_str.emplace_back( fmt::format( "{} ({})", spell->name_cstr(),
+          util::string_join( fields, ", " ) ) );
+      }
+    }
+  } );
+
+  return util::string_join( entries_str, ", " );
+}
+
 static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_stats(
     const std::vector<const item_bonus_entry_t*>& entries )
 {
@@ -1633,6 +1681,7 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     auto stats = get_bonus_id_stats( entries );
     std::pair< std::pair<int, double>, std::pair<int, double> > scaling = get_bonus_id_scaling( dbc, entries );
     auto power_index = get_bonus_power_index( entries );
+    std::string item_effects = get_bonus_item_effect( entries, dbc );
 
     std::vector<std::string> fields;
 
@@ -1697,6 +1746,11 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
       str += util::to_string( scaling.second.second ) + " @plvl " + util::to_string( scaling.second.first );
       str += " }";
       fields.push_back( str );
+    }
+
+    if ( !item_effects.empty() )
+    {
+      fields.emplace_back( fmt::format( "effects={{ {} }}", item_effects ) );
     }
 
     for ( size_t j = 0; j < fields.size(); ++j )
