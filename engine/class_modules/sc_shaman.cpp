@@ -8758,7 +8758,7 @@ void shaman_t::init_action_list_enhancement()
                       "if=!azerite.primal_primer.enabled&talent.hot_hand.enabled&buff.hot_hand.react" );
   filler->add_action( this, "Crash Lightning", "if=active_enemies>1&variable.furyCheck_CL" );
   filler->add_action( this, "Rockbiter", "if=maelstrom<70&!buff.strength_of_earth.up" );
-  filler->add_action( this, "Crash Lightning", "if=talent.crashing_storm.enabled&variable.OCPool_CL" );
+  filler->add_action( this, "Crash Lightning", "if=(talent.crashing_storm.enabled|talent.forceful_winds.enabled)&variable.OCPool_CL" );
   filler->add_action( this, "Lava Lash", "if=variable.OCPool_LL&variable.furyCheck_LL" );
   filler->add_action( "memory_of_lucid_dreams" );
   filler->add_action( this, "Rockbiter" );
