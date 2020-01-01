@@ -2051,6 +2051,7 @@ void priest_t::generate_apl_shadow()
                    "Wait at least 6s between casting CF. Use the first cast ASAP to get it on CD,"
                    " then every subsequent cast should be used when Chorus of Insanity is active or it will recharge in the next gcd, or the target is about to die." );
   cds->add_action( "ripple_in_space" );
+  cds->add_action( "reaping_flames" );
   cds->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
   cds->add_action( "call_action_list,name=crit_cds,if=(buff.voidform.up&"
                    "buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0",
