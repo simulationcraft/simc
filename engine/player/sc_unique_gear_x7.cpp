@@ -3817,6 +3817,18 @@ void items::azsharas_font_of_power( special_effect_t& effect )
     {
       timespan_t time = sim->bfa_opts.font_of_power_precombat_channel;
 
+      if ( time == 0_ms )  // No global override, check for an override from an APL variable
+      {
+        for ( auto v : player->variables )
+        {
+          if ( v->name_ == "font_of_power_precombat_channel" )
+          {
+            time = timespan_t::from_seconds( v->value() );
+            break;
+          }
+        }
+      }
+
       // if ( time == 0_ms )  // No options override, first apply any spec-based hardcoded timings
       //{
       //  switch ( player->specialization() )
