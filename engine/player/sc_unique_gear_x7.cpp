@@ -5571,7 +5571,7 @@ void items::voidtwisted_titanshard( special_effect_t& effect )
   effect.custom_buff = buff_t::find( effect.player, "void_shroud" );
   if ( !effect.custom_buff )
   {
-    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "void_shroud", effect.player->find_spell( 315774 ) );
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "void_shroud", effect.player->find_spell( 315774 ), effect.item );
 
     timespan_t duration_override =
         effect.custom_buff->buff_duration * effect.player->sim->bfa_opts.voidtwisted_titanshard_percent_duration;
@@ -5593,7 +5593,7 @@ void items::vitacharged_titanshard( special_effect_t& effect )
   effect.custom_buff = buff_t::find( effect.player, "vita_charged" );
   if ( !effect.custom_buff )
   {
-    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "vita_charged", effect.player->find_spell( 315787 ) );
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "vita_charged", effect.player->find_spell( 315787 ), effect.item );
   }
 
   new dbc_proc_callback_t( effect.player, effect );
