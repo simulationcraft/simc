@@ -5593,7 +5593,9 @@ void items::vitacharged_titanshard( special_effect_t& effect )
   effect.custom_buff = buff_t::find( effect.player, "vita_charged" );
   if ( !effect.custom_buff )
   {
-    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "vita_charged", effect.player->find_spell( 315787 ), effect.item );
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "vita_charged", effect.player->find_spell( 315787 ), effect.item )
+      ->set_cooldown( 0_ms )
+      ->set_chance( 1.0 );
   }
 
   new dbc_proc_callback_t( effect.player, effect );
