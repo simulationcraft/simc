@@ -5740,14 +5740,15 @@ void corruption::ineffable_truth( special_effect_t& effect )
                                for ( auto a : player->action_list )
                                {
                                  // Only class spells have their cooldown reduced.
-                                 if ( a->data().class_mask() != 0 )
+                                 if ( a->data().class_mask() != 0 && !a->background )
                                  {
                                    if ( new_ == 1 )
                                      a->base_recharge_multiplier *= recharge_multiplier;
                                    else
                                      a->base_recharge_multiplier /= recharge_multiplier;
-                                   a->cooldown->adjust_recharge_multiplier();
-                                   if ( a->data().charges() > 0 )
+                                   if ( a->cooldown->action == a )
+                                     a->cooldown->adjust_recharge_multiplier();
+                                   if ( a->internal_cooldown->action == a )
                                      a->internal_cooldown->adjust_recharge_multiplier();
                                  }
                                }
