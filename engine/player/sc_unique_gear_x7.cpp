@@ -226,6 +226,7 @@ void honed_mind( special_effect_t& effect );
 void deadly_momentum( special_effect_t& effect );
 void surging_vitality( special_effect_t& effect );
 void strikethrough( special_effect_t& effect );
+void glimpse_of_clarity( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -5916,6 +5917,62 @@ void corruption::strikethrough( special_effect_t& effect )
     buff->set_default_value( effect.driver()->effectN( 1 ).percent() + buff->default_value );
 }
 
+/**Glimpse of Clarity
+ * id=315574 driver
+ * id=315573 buff
+ * id=318239 Item effect associated with the bonus ID on the item (6546).
+ * The driver effect is also associated with a bonus ID (6486), but it
+ * is unclear if this bonus ID will actually show up on items in game.
+ */
+void corruption::glimpse_of_clarity( special_effect_t& effect )
+{
+
+  timespan_t cdr_amount = timespan_t::from_seconds( effect.player->find_spell( 315574 )->effectN( 1 ).base_value() );
+
+  effect.custom_buff = buff_t::find( effect.player, "glimpse_of_clarity" );
+  if ( !effect.custom_buff )
+  {
+    effect.custom_buff = make_buff( effect.player, "glimpse_of_clarity", effect.player->find_spell( 315573 ) );
+  }
+
+  auto cb          = new special_effect_t( effect.player );
+  cb->name_str     = "glimpse_of_clarity_cb";
+  cb->type         = SPECIAL_EFFECT_EQUIP;
+  cb->source       = SPECIAL_EFFECT_SOURCE_ITEM;
+  cb->proc_chance_ = 1.0;
+  cb->proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
+  cb->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  effect.player->special_effects.push_back( cb );
+  struct glimpse_of_clarity_cb_t : public dbc_proc_callback_t
+  {
+    timespan_t cdr_amount;
+    buff_t* buff;
+
+    glimpse_of_clarity_cb_t( const special_effect_t& effect, timespan_t cdr_amount )
+      : dbc_proc_callback_t( effect.player, effect ), cdr_amount( cdr_amount ), buff( buff_t::find( effect.player, "glimpse_of_clarity" ) )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* ) override
+    {
+      // Only class spells with a cooldown have their cooldown reduced.
+      if ( buff && buff->check() && a->data().class_mask() != 0 && !a->background && a->cooldown->base_duration > 0_ms )
+      {
+        listener->sim->print_debug( "Glimpse of Clarity reducing the cooldown of {} by {}.", a->name_str, cdr_amount );
+        a->cooldown->adjust( -cdr_amount );
+        buff->decrement();
+      }
+    }
+  };
+
+  new glimpse_of_clarity_cb_t( *cb, cdr_amount );
+
+  // Replace the driver spell, the RPPM value and proc flags are elsewhere in some cases
+  effect.spell_id = 315574;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -6115,6 +6172,8 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 315277, corruption::strikethrough );
   register_special_effect( 315281, corruption::strikethrough );
   register_special_effect( 315282, corruption::strikethrough );
+  register_special_effect( 318239, corruption::glimpse_of_clarity );
+  register_special_effect( 315574, corruption::glimpse_of_clarity );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
