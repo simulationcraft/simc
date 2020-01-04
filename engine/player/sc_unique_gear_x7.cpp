@@ -5989,6 +5989,10 @@ void corruption::glimpse_of_clarity( special_effect_t& effect )
  * id=318487 tier 2 corruption effect
  * id=318488 tier 3 corruption effect
  * TODO: How does this stack if you have multiple copies of it?
+ * TODO: There is some weird scaling that happens with the damage
+ *       of this effect for classes with Attack Power. For example,
+         Balance druids appear to get about 4% additional damage on
+         top of their spell power according to the tooltip's values.
  */
 struct infinite_stars_constructor_t : public item_targetdata_initializer_t
 {
@@ -6034,12 +6038,33 @@ void corruption::infinite_stars( special_effect_t& effect )
       : proc_t( e, "infinite_stars", 317265 )
     {
       spell_power_mod.direct = sp_mod;
+      attack_power_mod.direct = sp_mod;
     }
 
     void init() override
     {
       proc_t::init();
       snapshot_flags |= STATE_SP;
+    }
+
+    double attack_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+      if ( ap <= sp )
+        return 0;
+      return proc_t::attack_direct_power_coefficient( s );
+    }
+
+    double spell_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+      if ( ap > sp )
+        return 0;
+      return proc_t::spell_direct_power_coefficient( s );
     }
 
     timespan_t travel_time() const override
@@ -6066,8 +6091,8 @@ void corruption::infinite_stars( special_effect_t& effect )
     void impact(action_state_t* state) override
     {
       proc_t::impact(state);
-      auto td = player->get_target_data( execute_state->target );
-      td->debuff.infinite_stars->bump();
+      auto td = player->get_target_data( state->target );
+      td->debuff.infinite_stars->trigger();
     }
   };
 
