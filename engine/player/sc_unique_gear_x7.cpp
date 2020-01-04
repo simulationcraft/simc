@@ -227,6 +227,7 @@ void deadly_momentum( special_effect_t& effect );
 void surging_vitality( special_effect_t& effect );
 void strikethrough( special_effect_t& effect );
 void glimpse_of_clarity( special_effect_t& effect );
+void infinite_stars( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -5728,6 +5729,7 @@ void corruption::severe( special_effect_t& effect )
  * id=316801 buff
  * id=318303 Tier 1 corruption effect that contains recharge multiplier data
  * id=318484 Tier 2 corruption effect that contains recharge multiplier data
+ * TODO: How does this stack if you have multiple copies of it?
  */
 void corruption::ineffable_truth( special_effect_t& effect )
 {
@@ -5923,10 +5925,10 @@ void corruption::strikethrough( special_effect_t& effect )
  * id=318239 Item effect associated with the bonus ID on the item (6546).
  * The driver effect is also associated with a bonus ID (6486), but it
  * is unclear if this bonus ID will actually show up on items in game.
+ * TODO: How does this stack if you have multiple copies of it?
  */
 void corruption::glimpse_of_clarity( special_effect_t& effect )
 {
-
   timespan_t cdr_amount = timespan_t::from_seconds( effect.player->find_spell( 315574 )->effectN( 1 ).base_value() );
 
   effect.custom_buff = buff_t::find( effect.player, "glimpse_of_clarity" );
@@ -5943,20 +5945,21 @@ void corruption::glimpse_of_clarity( special_effect_t& effect )
   cb->proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
   cb->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
   effect.player->special_effects.push_back( cb );
+
   struct glimpse_of_clarity_cb_t : public dbc_proc_callback_t
   {
     timespan_t cdr_amount;
     buff_t* buff;
 
-    glimpse_of_clarity_cb_t( const special_effect_t& effect, timespan_t cdr_amount )
-      : dbc_proc_callback_t( effect.player, effect ), cdr_amount( cdr_amount ), buff( buff_t::find( effect.player, "glimpse_of_clarity" ) )
+    glimpse_of_clarity_cb_t( const special_effect_t& effect, timespan_t cdr_amount, buff_t* buff )
+      : dbc_proc_callback_t( effect.player, effect ), cdr_amount( cdr_amount ), buff( buff )
     {
     }
 
     void execute( action_t* a, action_state_t* ) override
     {
       // Only class spells with a cooldown have their cooldown reduced.
-      if ( buff && buff->check() && a->data().class_mask() != 0 && !a->background && a->cooldown->base_duration > 0_ms )
+      if ( buff && buff->check() && a->data().class_mask() != 0 && !a->background && a->cooldown->duration > 0_ms )
       {
         listener->sim->print_debug( "Glimpse of Clarity reducing the cooldown of {} by {}.", a->name_str, cdr_amount );
         a->cooldown->adjust( -cdr_amount );
@@ -5965,10 +5968,113 @@ void corruption::glimpse_of_clarity( special_effect_t& effect )
     }
   };
 
-  new glimpse_of_clarity_cb_t( *cb, cdr_amount );
+  auto callback = new glimpse_of_clarity_cb_t( *cb, cdr_amount, effect.custom_buff );
+  callback->deactivate();
+  callback->initialize();
+
+  effect.custom_buff->set_stack_change_callback( util::callback_buff_activator( callback ) );
 
   // Replace the driver spell, the RPPM value and proc flags are elsewhere in some cases
   effect.spell_id = 315574;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+/**Infinite Stars
+ * id=317257 driver
+ * id=317265 debuff and damage
+ * id=317262 contains the fixed travel time
+ * id=317260 appears to contain a 50 yard radius for the targetting
+ * id=318274 tier 1 corruption effect
+ * id=318487 tier 2 corruption effect
+ * id=318488 tier 3 corruption effect
+ * TODO: How does this stack if you have multiple copies of it?
+ */
+struct infinite_stars_constructor_t : public item_targetdata_initializer_t
+{
+  infinite_stars_constructor_t() : item_targetdata_initializer_t( 0, {} )
+  {
+  }
+
+  const special_effect_t* find_effect( player_t* player ) const override
+  {
+    for ( auto& item : player->items )
+      for ( auto& effect : item.parsed.special_effects )
+        if ( effect->spell_id == 317257 )
+          return effect;
+    return nullptr;
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td->source );
+    if ( !effect )
+    {
+      td->debuff.infinite_stars = make_buff( *td, "infinite_stars_debuff" );
+      return;
+    }
+    assert( !td->debuff.infinite_stars );
+
+    td->debuff.infinite_stars = make_buff( *td, "infinite_stars_debuff", td->source->find_spell( 317265 ) );
+    td->debuff.infinite_stars->set_activated( false );
+    td->debuff.infinite_stars->reset();
+  }
+};
+
+void corruption::infinite_stars( special_effect_t& effect )
+{
+  double sp_mod = effect.driver()->effectN( 2 ).percent();
+
+  struct infinite_stars_t : public proc_t
+  {
+    double debuff_percent   = player->find_spell( 317265 )->effectN( 3 ).percent();
+    double star_travel_time = player->find_spell( 317262 )->missile_speed();
+
+    infinite_stars_t( const special_effect_t& e, double sp_mod )
+      : proc_t( e, "infinite_stars", 317265 )
+    {
+      spell_power_mod.direct = sp_mod;
+    }
+
+    void init() override
+    {
+      proc_t::init();
+      snapshot_flags |= STATE_SP;
+    }
+
+    timespan_t travel_time() const override
+    {
+      return timespan_t::from_seconds( star_travel_time );
+    }
+
+    double composite_target_da_multiplier( player_t* target ) const override
+    {
+      double mul = proc_t::composite_target_da_multiplier( target );
+      auto td = player->get_target_data( target );
+      buff_t* debuff = td->debuff.infinite_stars;
+      mul *= 1.0 + debuff_percent * debuff->check();
+      return mul;
+    }
+
+    void execute() override
+    {
+      size_t index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
+      set_target( target_list()[ index ] );
+      proc_t::execute();
+    }
+
+    void impact(action_state_t* state) override
+    {
+      proc_t::impact(state);
+      auto td = player->get_target_data( execute_state->target );
+      td->debuff.infinite_stars->bump();
+    }
+  };
+
+  effect.execute_action = create_proc_action<infinite_stars_t>( "infinite_stars", effect, sp_mod );
+
+  // Replace the driver spell, the RPPM value and proc flags are elsewhere in some cases
+  effect.spell_id = 317257;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -6174,6 +6280,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 315282, corruption::strikethrough );
   register_special_effect( 318239, corruption::glimpse_of_clarity );
   register_special_effect( 315574, corruption::glimpse_of_clarity );
+  register_special_effect( 318274, corruption::infinite_stars );
+  register_special_effect( 318487, corruption::infinite_stars );
+  register_special_effect( 318488, corruption::infinite_stars );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
@@ -6198,6 +6307,7 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
   sim->register_target_data_initializer( razor_coral_constructor_t( 169311, items ) );
   sim->register_target_data_initializer( conductive_ink_constructor_t( 169319, items ) );
   sim->register_target_data_initializer( luminous_algae_constructor_t( 169304, items ) );
+  sim->register_target_data_initializer( infinite_stars_constructor_t() );
 }
 
 void unique_gear::register_hotfixes_bfa()
