@@ -1262,13 +1262,16 @@ struct mage_spell_state_t : public action_state_t
     frozen_multiplier = mss->frozen_multiplier;
   }
 
+  virtual double composite_frozen_multiplier() const
+  { return frozen ? frozen_multiplier : 1.0; }
+
   double composite_crit_chance() const override;
 
   double composite_da_multiplier() const override
-  { return action_state_t::composite_da_multiplier() * frozen_multiplier; }
+  { return action_state_t::composite_da_multiplier() * composite_frozen_multiplier(); }
 
   double composite_ta_multiplier() const override
-  { return action_state_t::composite_ta_multiplier() * frozen_multiplier; }
+  { return action_state_t::composite_ta_multiplier() * composite_frozen_multiplier(); }
 };
 
 struct mage_spell_t : public spell_t
@@ -1419,7 +1422,7 @@ public:
       cast_state( s )->frozen = frozen( s );
 
     if ( flags & STATE_FROZEN_MUL )
-      cast_state( s )->frozen_multiplier = cast_state( s )->frozen ? frozen_multiplier( s ) : 1.0;
+      cast_state( s )->frozen_multiplier = frozen_multiplier( s );
   }
 
   double cost() const override
