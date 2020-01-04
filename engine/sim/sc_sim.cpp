@@ -1077,6 +1077,7 @@ std::string get_api_key()
 
   for ( const auto& filename : key_locations )
   {
+  	std::cout << "Trying to read Blizzard API credentials from '" << filename << "'" << std::endl;
     std::ifstream myfile( filename );
     if ( ! myfile.is_open() )
     {
@@ -1087,6 +1088,7 @@ std::string get_api_key()
     std::getline( myfile,line );
     if ( validate_api_key( line ) )
     {
+      std::cout << "Blizzard API credentials read from file '" << filename << "'" << std::endl;
       return line;
     }
     else
@@ -2138,7 +2140,7 @@ void sim_t::init_fight_style()
     auto first_and_duration = static_cast<unsigned>( max_time.total_seconds() * 0.05 );
     auto cooldown = static_cast<unsigned>( max_time.total_seconds() * 0.075 );
     auto last = static_cast<unsigned>( max_time.total_seconds() * 0.90 );
-    
+
     raid_events_str += fmt::format( "/adds,count=1,first={},cooldown={},duration={},last={}",
                                      first_and_duration, cooldown, first_and_duration, last );
   }
@@ -3593,9 +3595,9 @@ void sim_t::create_options()
         bfa_opts.covenant_chance, 0.0, 1.0 ) );
   add_option( opt_float( "bfa.incandescent_sliver_chance",
         bfa_opts.incandescent_sliver_chance, 0.0, 1.0 ) );
-  add_option( opt_timespan( "bfa.fight_or_flight_period", 
+  add_option( opt_timespan( "bfa.fight_or_flight_period",
         bfa_opts.fight_or_flight_period, 1_ms, timespan_t::max() ) );
-  add_option( opt_float( "bfa.fight_or_flight_chance", 
+  add_option( opt_float( "bfa.fight_or_flight_chance",
         bfa_opts.fight_or_flight_chance, 0.0, 1.0 ) );
   add_option( opt_float( "bfa.harbingers_inscrutable_will_silence_chance",
         bfa_opts.harbingers_inscrutable_will_silence_chance, 0.0, 1.0 ) );
@@ -3613,9 +3615,9 @@ void sim_t::create_options()
         bfa_opts.lurkers_insidious_gift_duration, 0_ms, timespan_t::max() ) );
   add_option( opt_timespan( "bfa.abyssal_speakers_gauntlets_shield_duration",
         bfa_opts.abyssal_speakers_gauntlets_shield_duration, 0_ms, timespan_t::max() ) );
-  add_option( opt_timespan( "bfa.trident_of_deep_ocean_duration", 
+  add_option( opt_timespan( "bfa.trident_of_deep_ocean_duration",
         bfa_opts.trident_of_deep_ocean_duration, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "bfa.legplates_of_unbound_anguish_chance", 
+  add_option( opt_float( "bfa.legplates_of_unbound_anguish_chance",
         bfa_opts.legplates_of_unbound_anguish_chance, 0.0, 1.0 ) );
   add_option( opt_int( "bfa.loyal_to_the_end_allies",
         bfa_opts.loyal_to_the_end_allies, 0, 4 ) );
