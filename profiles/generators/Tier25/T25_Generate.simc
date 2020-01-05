@@ -3,7 +3,7 @@
 # * Ilvl Cap: 475 (485 for items that drop at that itemlevel)
 # * Ilvl for PvP gear: 460
 # * Heart of Azeroth Level needed to unlock the 3nd extra minor trait is Level 80 (to unlock +5 itemlevel on new azerite items)
-# *   neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=80
+# *   neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 # * Mythic+ gear is permitted up to the Mythic+ item level cap (465)
 # * Dungeon azerite gear from the residuum vendor (up to ilvl 475) is allowed
 # * No items from World Bosses / World Quests / BoEs (except for BoEs from Ny'alotha)
