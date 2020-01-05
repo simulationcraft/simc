@@ -210,6 +210,7 @@ void forbidden_obsidian_claw( special_effect_t& );
 void voidtwisted_titanshard( special_effect_t& );
 void vitacharged_titanshard( special_effect_t& );
 void manifesto_of_madness( special_effect_t& );
+void whispering_eldritch_bow( special_effect_t& );
 }  // namespace items
 
 // 8.3.0(+?) corruption implementations
@@ -5634,6 +5635,60 @@ void items::manifesto_of_madness( special_effect_t& effect )
   effect.custom_buff = first_buff;
 }
 
+// Whispering Eldritch Bow
+void items::whispering_eldritch_bow( special_effect_t& effect )
+{
+  struct whispered_truths_callback_t : public dbc_proc_callback_t
+  {
+    std::set<cooldown_t*> cooldowns;
+    timespan_t amount;
+
+    whispered_truths_callback_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.item, effect ),
+      amount( timespan_t::from_millis( -effect.driver()->effectN( 1 ).base_value() ) )
+    {
+      for ( action_t* a : effect.player->action_list )
+      {
+        if ( a->data().class_mask() != 0 && a->data().is_class( HUNTER ) && a->cooldown->duration > 0_ms )
+        {
+          cooldowns.insert( a->cooldown );
+        }
+      }
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      std::set<cooldown_t*> down_cooldowns;
+      for ( cooldown_t* cd : cooldowns )
+      {
+        if ( cd->down() )
+        {
+          down_cooldowns.insert( cd );
+        }
+      }
+
+      if ( !down_cooldowns.empty() )
+      {
+        auto it = down_cooldowns.begin();
+        std::advance( it, rng().range( down_cooldowns.size() ) );
+        cooldown_t* chosen = *it;
+        chosen->adjust( amount );
+
+        if ( effect.player->sim->debug )
+        {
+          effect.player->sim->out_debug.printf( "%s of %s adjusted cooldown for %s, remains=%.3f",
+            effect.item->name(),
+            effect.player->name(),
+            chosen->name(),
+            chosen->remains().total_seconds() );
+        }
+      }
+    }
+  };
+
+  if ( effect.player -> type == HUNTER )
+    new whispered_truths_callback_t( effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -6314,6 +6369,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 315736, items::voidtwisted_titanshard );
   register_special_effect( 315586, items::vitacharged_titanshard );
   register_special_effect( 313948, items::manifesto_of_madness );
+  register_special_effect( 316780, items::whispering_eldritch_bow );
 
   // 8.3 Set Bonus(es)
   register_special_effect( 315793, set_bonus::titanic_empowerment );
