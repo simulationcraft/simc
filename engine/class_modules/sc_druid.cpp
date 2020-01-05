@@ -8924,6 +8924,7 @@ void druid_t::apl_restoration()
   feral->add_action( "swipe_cat,if=spell_targets.swipe_cat>=2" );
   feral->add_action( "shred,if=combo_points<5|energy>90" );
 
+  balance->add_action( "moonkin_form,if=!buff.moonkin_form.up" );
   balance->add_action( "sunfire,target_if=refreshable" );
   balance->add_action( "moonfire,target_if=refreshable&spell_targets.lunar_strike<7" );
   balance->add_action( "starsurge" );
