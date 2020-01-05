@@ -372,6 +372,7 @@ void loyal_to_the_end( special_effect_t& effect );
 void arcane_heart( special_effect_t& effect );
 void clockwork_heart( special_effect_t& effect );
 void personcomputer_interface( special_effect_t& effect );
+void heart_of_darkness( special_effect_t& effect );
 } // Namespace special_effects ends
 
 namespace azerite_essences
