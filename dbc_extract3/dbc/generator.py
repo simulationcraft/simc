@@ -1314,8 +1314,8 @@ class SpellDataGenerator(DataGenerator):
          316019,
          # Torment in a Jar stacks
          313088,
-         # Echoing Void damage
-         317029,
+         # Echoing Void damage+period
+         317029,317022,
          # Twilight Devastation damage
          317159,
          # Obsidian Destruction Range

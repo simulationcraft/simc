@@ -1236,6 +1236,8 @@ struct sim_t : private sc_thread_t
     unsigned manifesto_allies_start = 0;
     /// Allies that increase vers buff when the first buff expires
     unsigned manifesto_allies_end = 5;
+    /// Echoing Void collapse rppm
+    double echoing_void_collapse_rppm = 2.0;
   } bfa_opts;
 
   // Expansion specific data

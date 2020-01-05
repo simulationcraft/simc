@@ -229,6 +229,7 @@ void surging_vitality( special_effect_t& effect );
 void strikethrough( special_effect_t& effect );
 void glimpse_of_clarity( special_effect_t& effect );
 void infinite_stars( special_effect_t& effect );
+void echoing_void( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -6159,6 +6160,139 @@ void corruption::infinite_stars( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Echoing Void
+void corruption::echoing_void( special_effect_t& effect )
+{
+  // Buff application callback
+  struct echoing_void_cb_t : public dbc_proc_callback_t
+  {
+    // collapse callback
+    dbc_proc_callback_t* callback;
+
+    echoing_void_cb_t( const special_effect_t& effect, dbc_proc_callback_t* cb )
+      : dbc_proc_callback_t( effect.player, effect ), callback( cb )
+    {
+    }
+
+    void trigger( action_t* a, void* call_data ) override
+    {
+      if ( a->background )
+      {
+        return;
+      }
+      if ( !callback->active )
+      {
+        return;
+      }
+      dbc_proc_callback_t::trigger( a, call_data );
+    }
+  };
+
+  // Proc to use up all stacks
+  struct echoing_void_collapse_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    buff_t* echoing_void;
+
+    echoing_void_collapse_cb_t( const special_effect_t& effect, action_t* a, buff_t* b )
+      : dbc_proc_callback_t( effect.player, effect ), damage( a ), echoing_void( b )
+    {
+    }
+
+    void trigger( action_t* a, void* call_data ) override
+    {
+      if ( a->background )
+      {
+        return;
+      }
+
+      if ( !echoing_void->check() )
+      {
+        return;
+      }
+      dbc_proc_callback_t::trigger( a, call_data );
+    }
+
+    void execute( action_t* a, action_state_t* state )
+    {
+      // TODO: Can this proc while doing damage?
+      this->deactivate();
+      make_event<ground_aoe_event_t>( *effect.player->sim, effect.player,
+                                      ground_aoe_params_t()
+                                          .target( state->target )
+                                          .pulse_time( effect.player->find_spell( 317022 )->effectN( 1 ).period() )
+                                          .n_pulses( echoing_void->check() )
+                                          .action( damage )
+                                          .expiration_callback( [this]() { this->activate(); } ),
+                                      true /* immediately pulses */ );
+    }
+  };
+
+  // Damage spell
+  struct echoing_void_t : public proc_spell_t
+  {
+    double maxhp_multiplier;
+    buff_t* echoing_void_buff;
+
+    // Spell data has the percentage with an extra 0
+    echoing_void_t( const special_effect_t& effect, buff_t* b )
+      : proc_spell_t( "echoing_void", effect.player, effect.player->find_spell( 317029 ) ),
+        maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 ),
+        echoing_void_buff( b )
+    {
+      aoe = -1;
+      // TODO: Check what this scales with
+    }
+
+    double base_da_min( const action_state_t* ) const override
+    {
+      return player->resources.max[ RESOURCE_HEALTH ] * maxhp_multiplier;
+    }
+
+    double base_da_max( const action_state_t* ) const override
+    {
+      return player->resources.max[ RESOURCE_HEALTH ] * maxhp_multiplier;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      echoing_void_buff->decrement();
+    }
+  };
+
+  auto buff                = buff_t::find( effect.player, "echoing_void" );
+  auto echoing_void_damage = static_cast<echoing_void_t*>( effect.player->find_action( "echoing_void" ) );
+
+  // If the damage doesn't exist the other things won't as well. Otherwise just increase damage.
+  if ( !echoing_void_damage )
+  {
+    buff = make_buff( effect.player, "echoing_void", effect.player->find_spell( 317020 ) );
+    echoing_void_damage =
+        static_cast<echoing_void_t*>( create_proc_action<echoing_void_t>( "echoing_void", effect, buff ) );
+
+    effect.spell_id    = 317014;
+    effect.custom_buff = buff;
+
+    auto effect2          = new special_effect_t( effect.player );
+    effect2->name_str     = "echoing_void_collapse";
+    effect2->type         = effect.type;
+    effect2->source       = effect.source;
+    effect2->proc_flags_  = PF_ALL_DAMAGE | PF_PERIODIC;
+    effect2->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+    effect2->proc_chance_ = 1.0;
+    effect2->ppm_         = -( effect.player->sim->bfa_opts.echoing_void_collapse_rppm );
+
+    effect.player->special_effects.push_back( effect2 );
+
+    auto proc = new echoing_void_collapse_cb_t( *effect2, echoing_void_damage, buff );
+    proc->initialize();
+    new echoing_void_cb_t( effect, proc );
+  }
+  else
+    echoing_void_damage->maxhp_multiplier += effect.driver()->effectN( 1 ).percent() / 10;
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -6363,6 +6497,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318274, corruption::infinite_stars );
   register_special_effect( 318487, corruption::infinite_stars );
   register_special_effect( 318488, corruption::infinite_stars );
+  register_special_effect( 318280, corruption::echoing_void );
+  register_special_effect( 318485, corruption::echoing_void );
+  register_special_effect( 318486, corruption::echoing_void );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
