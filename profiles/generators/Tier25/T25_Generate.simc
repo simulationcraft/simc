@@ -8,6 +8,7 @@
 # * Dungeon azerite gear from the residuum vendor (up to ilvl 475) is allowed
 # * No items from World Bosses / World Quests / BoEs (except for BoEs from Ny'alotha)
 # * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No buyable Sockets from Wrathion
 # * No Tertiary Stats
 # * No Ranked Gear (ie. Warforged/Titanforged)
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
