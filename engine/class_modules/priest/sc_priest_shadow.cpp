@@ -2044,7 +2044,6 @@ void priest_t::generate_apl_shadow()
   cds->add_action( "guardian_of_azeroth,if=buff.voidform.stack>15" );
   cds->add_action( "focused_azerite_beam,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
   cds->add_action( "purifying_blast,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
-  cds->add_action( "the_unbound_force" );
   cds->add_action( "concentrated_flame,line_cd=6,"
                    "if=time<=10|"
                    "(buff.chorus_of_insanity.stack>=15&buff.voidform.up)|full_recharge_time<gcd|target.time_to_die<5",
@@ -2061,6 +2060,7 @@ void priest_t::generate_apl_shadow()
   // Crit CDs
   crit_cds->add_action( "use_item,name=azsharas_font_of_power" );
   crit_cds->add_action( "use_item,effect_name=cyclotronic_blast" );
+  crit_cds->add_action( "the_unbound_force" );
 
   // single APL
   single->add_action( this, "Void Eruption" );
