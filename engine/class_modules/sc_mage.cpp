@@ -3753,7 +3753,7 @@ struct fire_blast_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result) )
+    if ( result_is_hit( s->result ) )
       p()->buffs.blaster_master->trigger();
   }
 
