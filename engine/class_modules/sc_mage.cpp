@@ -5627,11 +5627,11 @@ void mage_t::apl_precombat()
       precombat->add_action( "variable,name=disable_combustion,op=reset" );
       precombat->add_action( "variable,name=combustion_rop_cutoff,op=set,value=60",
         "This variable sets the time at which Rune of Power should start being saved for the next Combustion phase" );
-      precombat->add_action( "variable,name=combustion_on_use,op=set,value=equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch" );
+      precombat->add_action( "variable,name=combustion_on_use,op=set,value=equipped.manifesto_of_madness|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch" );
       precombat->add_action( "variable,name=font_double_on_use,op=set,value=equipped.azsharas_font_of_power&variable.combustion_on_use" );
       precombat->add_action( "variable,name=font_of_power_precombat_channel,op=set,value=18,if=variable.font_double_on_use&variable.font_of_power_precombat_channel=0",
         "This variable determines when Azshara's Font of Power is used before the pull if bfa.font_of_power_precombat_channel is not specified.");
-      precombat->add_action( "variable,name=on_use_cutoff,op=set,value=20*variable.combustion_on_use&!variable.font_double_on_use+40*variable.font_double_on_use+25*equipped.azsharas_font_of_power&!variable.font_double_on_use",
+      precombat->add_action( "variable,name=on_use_cutoff,op=set,value=20*variable.combustion_on_use&!variable.font_double_on_use+40*variable.font_double_on_use+25*equipped.azsharas_font_of_power&!variable.font_double_on_use+8*equipped.manifesto_of_madness&!variable.font_double_on_use",
         "Items that are used outside of Combustion are not used after this time if they would put a trinket used with Combustion on a sharded cooldown." );
       break;
     case MAGE_FROST:
@@ -5842,6 +5842,7 @@ void mage_t::apl_fire()
   default_list->add_talent( this, "Mirror Image", "if=buff.combustion.down" );
   default_list->add_action( "guardian_of_azeroth,if=(cooldown.combustion.remains<10|target.time_to_die<cooldown.combustion.remains)&!variable.disable_combustion" );
   default_list->add_action( "concentrated_flame" );
+  default_list->add_action( "reaping_flames" );
   default_list->add_action( "focused_azerite_beam" );
   default_list->add_action( "purifying_blast" );
   default_list->add_action( "ripple_in_space" );
@@ -5938,10 +5939,12 @@ void mage_t::apl_fire()
 
   items_high_priority->add_action( "call_action_list,name=items_combustion,if=!variable.disable_combustion&(talent.rune_of_power.enabled&cooldown.combustion.remains<=action.rune_of_power.cast_time|cooldown.combustion.ready)&!firestarter.active|buff.combustion.up" );
   items_high_priority->add_action( "use_items" );
+  items_high_priority->add_action( "use_item,name=manifesto_of_madness,if=!equipped.azsharas_font_of_power&cooldown.combustion.remains<8" );
   items_high_priority->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.combustion.remains<=5+15*variable.font_double_on_use&!variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=rotcrusted_voodoo_doll,if=cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=aquipotent_nautilus,if=cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=shiver_venom_relic,if=cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
+  items_high_priority->add_action( "use_item,name=forbidden_obsidian_claw,if=cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,effect_name=harmonic_dematerializer" );
   items_high_priority->add_action( "use_item,name=malformed_heralds_legwraps,if=cooldown.combustion.remains>=55&buff.combustion.down&cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=ancient_knot_of_wisdom,if=cooldown.combustion.remains>=55&buff.combustion.down&cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
@@ -5949,6 +5952,8 @@ void mage_t::apl_fire()
 
   items_combustion->add_action( "use_item,name=ignition_mages_fuse" );
   items_combustion->add_action( "use_item,name=hyperthread_wristwraps,if=buff.combustion.up&action.fire_blast.charges=0&action.fire_blast.recharge_time>gcd.max" );
+  items_combustion->add_action( "use_item,name=manifesto_of_madness" );
+  items_combustion->add_action( "cancel_buff,use_off_gcd=1,name=manifesto_of_madness_chapter_one,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
   items_combustion->add_action( "use_item,use_off_gcd=1,name=azurethos_singed_plumage,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
   items_combustion->add_action( "use_item,use_off_gcd=1,effect_name=gladiators_badge,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
   items_combustion->add_action( "use_item,use_off_gcd=1,effect_name=gladiators_medallion,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
