@@ -3712,7 +3712,12 @@ void heart_of_darkness( special_effect_t& effect )
             ->add_stat( STAT_MASTERY_RATING, value )
             ->add_stat( STAT_VERSATILITY_RATING, value )
             ->set_quiet( true );
-    effect.player->register_combat_begin( heart_of_darkness );
+    effect.player->register_combat_begin( [heart_of_darkness]( player_t* ) {
+      if ( heart_of_darkness->player->composite_corruption_rating() >= 25 )  // This number is not found in spell data
+      {
+        heart_of_darkness->trigger();
+      }
+    } );
   }
 }
 
