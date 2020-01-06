@@ -1965,11 +1965,14 @@ struct frost_mage_spell_t : public mage_spell_t
 
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && s->chain_target == 0 )
-      record_shatter_source( s, shatter_source );
+    if ( result_is_hit( s->result ) )
+    {
+      if ( s->chain_target == 0 )
+        record_shatter_source( s, shatter_source );
 
-    if ( result_is_hit( s->result ) && chills )
-      p()->buffs.bone_chilling->trigger();
+      if ( chills )
+        p()->buffs.bone_chilling->trigger();
+    }
   }
 };
 
@@ -3746,10 +3749,12 @@ struct fire_blast_t : public fire_mage_spell_t
     base_crit += p->spec.fire_blast_2->effectN( 1 ).percent();
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    fire_mage_spell_t::execute();
-    p()->buffs.blaster_master->trigger();
+    fire_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result) )
+      p()->buffs.blaster_master->trigger();
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
