@@ -4919,7 +4919,9 @@ struct worldvein_resonance_t : public azerite_essence_major_t
     if ( !lifeblood )
       lifeblood = make_buff<lifeblood_shard_t>( p, essence );
 
-    worldvein_resonance = make_buff<worldvein_resonance_buff_t>( p, essence );
+    worldvein_resonance = buff_t::find( player, "worldvein_resonance" );
+    if ( !worldvein_resonance )
+      worldvein_resonance = make_buff<worldvein_resonance_buff_t>( p, essence );
   }
 
   void execute() override
