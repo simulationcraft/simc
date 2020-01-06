@@ -211,6 +211,7 @@ void voidtwisted_titanshard( special_effect_t& );
 void vitacharged_titanshard( special_effect_t& );
 void manifesto_of_madness( special_effect_t& );
 void whispering_eldritch_bow( special_effect_t& );
+void psyche_shredder( special_effect_t& );
 }  // namespace items
 
 // 8.3.0(+?) corruption implementations
@@ -5690,6 +5691,111 @@ void items::whispering_eldritch_bow( special_effect_t& effect )
     new whispered_truths_callback_t( effect );
 }
 
+/**Psyche Shredder
+ * id=313640 driver and damage from hitting the debuffed target
+ * id=313663 debuff and initial damage
+ * id=313627 contains proc flags and ICD for debuff damage
+ * id=316019 debuff damage comes from this in combat logs
+             but the damage effect here is not used
+ * TODO: There are some strange delays of longer than the 0.5s ICD that sometimes occur
+ */
+struct shredded_psyche_cb_t : public dbc_proc_callback_t
+{
+  action_t* damage;
+  player_t* target;
+
+  shredded_psyche_cb_t( const special_effect_t& effect, action_t* d, player_t* t ) :
+    dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t )
+  { }
+
+  void trigger( action_t* a, void* call_data ) override
+  {
+    const action_state_t* s = static_cast<const action_state_t*>( call_data );
+    if ( s->target != target )
+    {
+      return;
+    }
+
+    auto td = a->player->get_target_data( target );
+    buff_t* debuff = td->debuff.psyche_shredder;
+    if ( !debuff->check() )
+      return;
+
+    dbc_proc_callback_t::trigger( a, call_data );
+  }
+
+  void execute( action_t* /* a */, action_state_t* trigger_state ) override
+  {
+    damage->target = trigger_state->target;
+    damage->execute();
+  }
+};
+
+struct shredded_psyche_t : public proc_t
+{
+  shredded_psyche_t( const special_effect_t& e )
+    : proc_t( e, "shredded_psyche", 313627 )
+  {
+    base_dd_min = e.player->find_spell( 313640 )->effectN( 2 ).min( e.item );
+    base_dd_max = e.player->find_spell( 313640 )->effectN( 2 ).max( e.item );
+  }
+};
+
+struct psyche_shredder_constructor_t : public item_targetdata_initializer_t
+{
+  psyche_shredder_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
+  {
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td->source );
+    if ( !effect )
+    {
+      td->debuff.psyche_shredder = make_buff( *td, "psyche_shredder_debuff" );
+      return;
+    }
+    assert( !td->debuff.psyche_shredder );
+
+    td->debuff.psyche_shredder = make_buff( *td, "psyche_shredder_debuff", td->source->find_spell( 313663 ) );
+    td->debuff.psyche_shredder->reset();
+
+    auto damage_spell = create_proc_action<shredded_psyche_t>( "shredded_psyche", *effect );
+
+    auto cb_driver = new special_effect_t( td->source );
+    cb_driver->name_str = "shredded_psyche_driver";
+    cb_driver->spell_id = 313627;
+
+    auto callback = new shredded_psyche_cb_t( *cb_driver, damage_spell, td->target );
+    callback->initialize();
+    callback->deactivate();
+    td->debuff.psyche_shredder->set_stack_change_callback( util::callback_buff_activator( callback ) );
+  }
+};
+
+void items::psyche_shredder( special_effect_t& effect )
+{
+  struct psyche_shredder_t : public proc_t
+  {
+    psyche_shredder_t( const special_effect_t& e )
+      : proc_t( e, "psyche_shredder", 313663 )
+    {
+    }
+
+    void impact(action_state_t* state) override
+    {
+      proc_t::impact(state);
+      auto td = player->get_target_data( state->target );
+      td->debuff.psyche_shredder->trigger();
+    }
+  };
+
+  // applies the debuff and deals the initial damage
+  effect.execute_action = create_proc_action<psyche_shredder_t>( "psyche_shredder", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -5983,6 +6089,7 @@ void corruption::strikethrough( special_effect_t& effect )
  * is unclear if this bonus ID will actually show up on items in game.
  * TODO: How does this stack if you have multiple copies of it?
  */
+
 void corruption::glimpse_of_clarity( special_effect_t& effect )
 {
   timespan_t cdr_amount = timespan_t::from_seconds( effect.player->find_spell( 315574 )->effectN( 1 ).base_value() );
@@ -6507,6 +6614,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 315586, items::vitacharged_titanshard );
   register_special_effect( 313948, items::manifesto_of_madness );
   register_special_effect( 316780, items::whispering_eldritch_bow );
+  register_special_effect( 313640, items::psyche_shredder );
 
   // 8.3 Set Bonus(es)
   register_special_effect( 315793, set_bonus::titanic_empowerment );
@@ -6526,6 +6634,7 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
   sim->register_target_data_initializer( conductive_ink_constructor_t( 169319, items ) );
   sim->register_target_data_initializer( luminous_algae_constructor_t( 169304, items ) );
   sim->register_target_data_initializer( infinite_stars_constructor_t() );
+  sim->register_target_data_initializer( psyche_shredder_constructor_t( 174060, items ) );
 }
 
 void unique_gear::register_hotfixes_bfa()
