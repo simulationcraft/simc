@@ -5760,7 +5760,7 @@ struct psyche_shredder_constructor_t : public item_targetdata_initializer_t
     td->debuff.psyche_shredder = make_buff( *td, "psyche_shredder_debuff", td->source->find_spell( 313663 ) );
     td->debuff.psyche_shredder->reset();
 
-    auto damage_spell = create_proc_action<shredded_psyche_t>( "shredded_psyche", *effect );
+    auto damage_spell = td->source->find_action( "shredded_psyche" );
 
     auto cb_driver = new special_effect_t( td->source );
     cb_driver->name_str = "shredded_psyche_driver";
@@ -5793,6 +5793,9 @@ void items::psyche_shredder( special_effect_t& effect )
 
   // applies the debuff and deals the initial damage
   effect.execute_action = create_proc_action<psyche_shredder_t>( "psyche_shredder", effect );
+
+  // action for the debuff damage
+  auto damage_spell = create_proc_action<shredded_psyche_t>( "shredded_psyche", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
