@@ -6643,17 +6643,18 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
   if ( !spec.icicles->ok() )
     return;
 
-  if ( icicles.empty() )
-    return;
-
   if ( chain && !icicle_event )
   {
     icicle_event = make_event<events::icicle_event_t>( *sim, *this, icicle_target, true );
     sim->print_debug( "{} icicle use on {} (chained), total={}", name(), icicle_target->name(), icicles.size() );
   }
-  else if ( !chain )
+
+  if ( !chain )
   {
     action_t* icicle_action = get_icicle();
+    if ( !icicle_action )
+      return;
+
     icicle_action->set_target( icicle_target );
     icicle_action->execute();
     sim->print_debug( "{} icicle use on {}, total={}", name(), icicle_target->name(), icicles.size() );
