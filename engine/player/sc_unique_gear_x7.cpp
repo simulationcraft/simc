@@ -5765,6 +5765,7 @@ struct psyche_shredder_constructor_t : public item_targetdata_initializer_t
     auto cb_driver = new special_effect_t( td->source );
     cb_driver->name_str = "shredded_psyche_driver";
     cb_driver->spell_id = 313627;
+    td->source->special_effects.push_back( cb_driver );
 
     auto callback = new shredded_psyche_cb_t( *cb_driver, damage_spell, td->target );
     callback->initialize();
