@@ -8727,8 +8727,10 @@ struct cancel_buff_t : public action_t
 
     if ( !buff )
     {
-      throw std::invalid_argument( fmt::format(
-        "Player {} uses cancel_buff with unknown buff {}", player->name(), buff_name ) );
+      if ( sim->debug ) {
+        player->sim->error(
+          "Player {} uses cancel_buff with unknown buff {}", player->name(), buff_name );
+      }
     }
     else if ( !buff->can_cancel )
     {
