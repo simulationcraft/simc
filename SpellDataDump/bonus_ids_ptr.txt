@@ -2557,6 +2557,10 @@ bonus_id={ 4773 }, ilevel={ 16 @plvl 0 - 16 @plvl 120 }
 bonus_id={ 4774 }, ilevel={ 22 @plvl 0 - 22 @plvl 120 }
 bonus_id={ 4775 }, ilevel_adjust={ 5 }
 bonus_id={ 4776 }, quality={ rare }, ilevel={ 180 @plvl 0 - 273 @plvl 120 }
+bonus_id={ 4777 }, base_ilevel={ 825 }
+bonus_id={ 4778 }, base_ilevel={ 845 }, desc={ Heroic }
+bonus_id={ 4779 }, base_ilevel={ 865 }, desc={ Mythic }
+bonus_id={ 4780 }, base_ilevel={ 870 }, desc={ Mythic 2 }
 bonus_id={ 4781 }, desc={ Warforged }, quality={ rare }
 bonus_id={ 4782 }, desc={ Titanforged }, quality={ rare }
 bonus_id={ 4783 }, desc={ Warforged }, quality={ epic }
@@ -2579,6 +2583,7 @@ bonus_id={ 4799 }, base_ilevel={ 895 }, desc={ Heroic }
 bonus_id={ 4800 }, base_ilevel={ 910 }, desc={ Mythic }
 bonus_id={ 4801 }, base_ilevel={ 865 }, desc={ Raid Finder }
 bonus_id={ 4802 }, socket={ 1 }
+bonus_id={ 4803 }
 bonus_id={ 4804 }, ilevel={ 355 @plvl 0 - 355 @plvl 0 }
 bonus_id={ 4805 }, ilevel={ 370 @plvl 0 - 370 @plvl 0 }
 bonus_id={ 4806 }, ilevel={ 385 @plvl 0 - 385 @plvl 0 }
@@ -2607,74 +2612,82 @@ bonus_id={ 4942 }, ilevel={ 370 @plvl 0 - 370 @plvl 0 }
 bonus_id={ 4943 }, ilevel={ 370 @plvl 0 - 370 @plvl 0 }
 bonus_id={ 4944 }, ilevel={ 370 @plvl 0 - 370 @plvl 0 }
 bonus_id={ 4945 }, ilevel={ 385 @plvl 0 - 385 @plvl 0 }
+bonus_id={ 4946 }, base_ilevel={ 870 }, desc={ Mythic 3 }
 bonus_id={ 4948 }, ilevel_adjust={ -20 }
 bonus_id={ 4949 }, ilevel_adjust={ -10 }
 bonus_id={ 4951 }, quality={ rare }
-bonus_id={ 4982 }, quality={ epic }
+bonus_id={ 4982 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 4983 }, quality={ epic }
 bonus_id={ 4984 }, quality={ epic }
-bonus_id={ 4985 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 4986 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 4987 }, desc={ Rival }, quality={ epic }
-bonus_id={ 4988 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 4989 }, desc={ Elite }, quality={ epic }
+bonus_id={ 4985 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 4986 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 4987 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 4988 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 4989 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
 bonus_id={ 4990 }, quality={ rare }, ilevel={ 180 @plvl 0 - 273 @plvl 120 }
 bonus_id={ 4991 }, quality={ rare }
-bonus_id={ 4992 }, quality={ epic }
-bonus_id={ 4993 }, quality={ epic }
-bonus_id={ 4994 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 4995 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 4996 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 4997 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 4998 }, desc={ Rival }, quality={ epic }
-bonus_id={ 4999 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5000 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5001 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5003 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5004 }, desc={ Elite }, quality={ epic }
+bonus_id={ 4992 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 4993 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 4994 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 4995 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 4996 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 4997 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 4998 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 4999 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5000 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5001 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5002 }, base_ilevel={ 870 }, desc={ Mythic 4 }
+bonus_id={ 5003 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5004 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5005 }, base_ilevel={ 870 }, desc={ Mythic 5 }
+bonus_id={ 5006 }, base_ilevel={ 870 }, desc={ Mythic 6 }
+bonus_id={ 5007 }, base_ilevel={ 870 }, desc={ Mythic 7 }
+bonus_id={ 5008 }, base_ilevel={ 870 }, desc={ Mythic 8 }
+bonus_id={ 5009 }, base_ilevel={ 870 }, desc={ Mythic 9 }
+bonus_id={ 5010 }, base_ilevel={ 870 }, desc={ Mythic 10 }
 bonus_id={ 5036 }, quality={ rare }, ilevel={ 180 @plvl 0 - 273 @plvl 120 }
-bonus_id={ 5065 }, quality={ epic }
-bonus_id={ 5066 }, quality={ epic }
-bonus_id={ 5067 }, quality={ epic }
-bonus_id={ 5068 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5069 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5070 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5071 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5072 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5073 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5074 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5075 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5076 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5077 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5078 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5079 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5080 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5081 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5082 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5083 }, quality={ epic }
-bonus_id={ 5084 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5085 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5086 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5087 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5088 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5089 }, quality={ epic }
-bonus_id={ 5090 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5091 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5092 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5093 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5094 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5095 }, quality={ epic }
-bonus_id={ 5096 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5097 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5098 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5099 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5100 }, quality={ epic }
-bonus_id={ 5101 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5102 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5103 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5104 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5105 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5106 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5065 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 5066 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 5067 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 5068 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5069 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5070 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5071 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5072 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5073 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5074 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5075 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5076 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5077 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5078 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5079 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5080 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5081 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5082 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5083 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 5084 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5085 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5086 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5087 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5088 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5089 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 5090 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5091 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5092 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5093 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5094 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5095 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 5096 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5097 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5098 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5099 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5100 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 5101 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5102 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5103 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5104 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5105 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5106 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
 bonus_id={ 5107 }, quality={ epic }
 bonus_id={ 5108 }, quality={ epic }
 bonus_id={ 5109 }, quality={ epic }
@@ -2687,6 +2700,7 @@ bonus_id={ 5115 }, quality={ rare }
 bonus_id={ 5116 }, quality={ rare }
 bonus_id={ 5117 }, ilevel_adjust={ -15 }
 bonus_id={ 5118 }, ilevel_adjust={ -5 }
+bonus_id={ 5119 }, base_ilevel={ 895 }, desc={ Heroic }
 bonus_id={ 5121 }, quality={ rare }
 bonus_id={ 5122 }, quality={ rare }
 bonus_id={ 5123 }, quality={ rare }
@@ -2701,24 +2715,24 @@ bonus_id={ 5137 }, quality={ rare }
 bonus_id={ 5138 }, quality={ epic }
 bonus_id={ 5139 }, quality={ rare }
 bonus_id={ 5140 }, quality={ epic }
-bonus_id={ 5173 }, quality={ epic }
-bonus_id={ 5178 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5179 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5183 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5184 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5188 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5189 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5193 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5194 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5198 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5199 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5203 }, quality={ epic }
-bonus_id={ 5208 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5213 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5218 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5223 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5228 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5243 }, quality={ epic }
+bonus_id={ 5173 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 5178 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5179 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5183 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5184 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5188 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5189 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5193 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5194 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5198 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5199 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5203 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 5208 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5213 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5218 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5223 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5228 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5243 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 5246 }, quality={ common }
 bonus_id={ 5247 }, quality={ uncommon }
 bonus_id={ 5248 }, quality={ rare }
@@ -2731,46 +2745,46 @@ bonus_id={ 5256 }, quality={ epic }
 bonus_id={ 5257 }, quality={ epic }
 bonus_id={ 5261 }, quality={ rare }, ilevel={ 120 @plvl 0 - 120 @plvl 0 }
 bonus_id={ 5262 }, ilevel={ 301 @plvl 1 - 420 @plvl 120 }
-bonus_id={ 5263 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5264 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5265 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5266 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5267 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5268 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5269 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5270 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5271 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5272 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5273 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5274 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5275 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5276 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5277 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5278 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5279 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5280 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5281 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5282 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5283 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5284 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5285 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5286 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5287 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5288 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5289 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5290 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5291 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5292 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5293 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5294 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5295 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5296 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5297 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5298 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5299 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5300 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5301 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5302 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5263 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5264 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5265 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5266 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5267 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5268 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5269 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5270 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5271 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5272 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5273 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5274 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5275 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5276 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5277 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5278 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5279 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5280 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5281 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5282 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5283 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5284 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5285 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5286 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5287 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5288 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5289 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5290 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5291 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5292 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5293 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5294 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5295 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5296 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5297 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5298 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5299 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5300 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5301 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5302 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
 bonus_id={ 5306 }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5307 }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5308 }, quality={ epic }, stats={ 100% Sta [0.3300] }
@@ -2819,12 +2833,12 @@ bonus_id={ 5350 }, desc={ Challenger }, quality={ epic }
 bonus_id={ 5351 }, desc={ Rival }, quality={ epic }
 bonus_id={ 5352 }, desc={ Duelist }, quality={ epic }
 bonus_id={ 5353 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5366 }, quality={ epic }
-bonus_id={ 5367 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5368 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5369 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5370 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5371 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5366 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 5367 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5368 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5369 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5370 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5371 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
 bonus_id={ 5372 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 320 @plvl 120 }
 bonus_id={ 5375 }, ilevel_adjust={ 25 }
 bonus_id={ 5384 }, ilevel={ 10 @plvl 1 - 350 @plvl 120 }
@@ -2859,20 +2873,20 @@ bonus_id={ 5436 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5437 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5438 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5439 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 5449 }, quality={ epic }
+bonus_id={ 5449 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 5450 }, quality={ epic }
 bonus_id={ 5451 }, quality={ epic }
-bonus_id={ 5452 }, quality={ epic }
-bonus_id={ 5453 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5454 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5455 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5456 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5457 }, desc={ Elite }, quality={ epic }
-bonus_id={ 5458 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 5459 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 5460 }, desc={ Rival }, quality={ epic }
-bonus_id={ 5461 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 5462 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5452 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 5453 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5454 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5455 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5456 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5457 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5458 }, base_ilevel={ 810 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5459 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5460 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5461 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5462 }, base_ilevel={ 810 }, desc={ Elite }, quality={ epic }
 bonus_id={ 5463 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 320 @plvl 120 }
 bonus_id={ 5464 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5465 }, stats={ 100% Sta [0.3300] }
@@ -2888,6 +2902,7 @@ bonus_id={ 5474 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 375 @plvl 120 }
 bonus_id={ 5475 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 385 @plvl 120 }
 bonus_id={ 5476 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 395 @plvl 120 }
 bonus_id={ 5477 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 350 @plvl 120 }
+bonus_id={ 5479 }, desc={ Heroic }
 bonus_id={ 5480 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5481 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5482 }, stats={ 100% Sta [0.3300] }
@@ -3197,11 +3212,23 @@ bonus_id={ 5807 }, ilevel={ 110 @plvl 90 - 287 @plvl 120 }
 bonus_id={ 5808 }, ilevel={ 112 @plvl 90 - 290 @plvl 120 }
 bonus_id={ 5814 }, ilevel_adjust={ 25 }
 bonus_id={ 5817 }, ilevel={ 145 @plvl 100 - 290 @plvl 120 }
+bonus_id={ 5819 }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5820 }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5821 }, quality={ epic }
+bonus_id={ 5823 }, desc={ Combatant }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5824 }, desc={ Combatant }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5825 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5827 }, desc={ Challenger }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5829 }, desc={ Challenger }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5830 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5832 }, desc={ Rival }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5833 }, desc={ Rival }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5834 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5836 }, desc={ Duelist }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5837 }, desc={ Duelist }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5838 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5840 }, desc={ Elite }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5841 }, desc={ Elite }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5842 }, desc={ Elite }, quality={ epic }
 bonus_id={ 5843 }, quality={ epic }
 bonus_id={ 5846 }, ilevel_adjust={ 1 }
@@ -3623,21 +3650,7 @@ bonus_id={ 6268 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 6269 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 6270 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 6271 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6272 }, desc={ Rank 1 }, stats={ 100% Rcor [5.0000] }, effects={ Shroud of Resolve (id=317388, index=0, type=equip), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6273 }, desc={ Rank 2 }, ilevel_adjust={ 2 }, stats={ 100% Rcor [12.0000] }, effects={ Shroud of Resolve (id=317389, index=0, type=equip), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6274 }, desc={ Rank 3 }, ilevel_adjust={ 4 }, stats={ 100% Rcor [12.0000] }, effects={ Shroud of Resolve (id=317407, index=0, type=equip), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6275 }, desc={ Rank 4 }, ilevel_adjust={ 6 }, stats={ 100% Rcor [20.0000] }, effects={ Shroud of Resolve (id=317408, index=0, type=equip), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6276 }, desc={ Rank 5 }, ilevel_adjust={ 8 }, stats={ 100% Rcor [20.0000] }, effects={ Shroud of Resolve (id=317409, index=0, type=equip), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6277 }, desc={ Rank 6 }, ilevel_adjust={ 10 }, stats={ 100% Rcor [20.0000] }, effects={ Shroud of Resolve (id=317410, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6278 }, desc={ Rank 7 }, ilevel_adjust={ 12 }, stats={ 100% Rcor [27.0000] }, effects={ Shroud of Resolve (id=317411, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6279 }, desc={ Rank 8 }, ilevel_adjust={ 14 }, stats={ 100% Rcor [27.0000] }, effects={ Shroud of Resolve (id=317412, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6280 }, desc={ Rank 9 }, ilevel_adjust={ 16 }, stats={ 100% Rcor [35.0000] }, effects={ Shroud of Resolve (id=317413, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6281 }, desc={ Rank 10 }, ilevel_adjust={ 18 }, stats={ 100% Rcor [35.0000] }, effects={ Shroud of Resolve (id=317414, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6282 }, desc={ Rank 11 }, ilevel_adjust={ 20 }, stats={ 100% Rcor [42.0000] }, effects={ Shroud of Resolve (id=317415, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6283 }, desc={ Rank 12 }, ilevel_adjust={ 22 }, stats={ 100% Rcor [42.0000] }, effects={ Shroud of Resolve (id=317416, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip) }
-bonus_id={ 6284 }, desc={ Rank 13 }, ilevel_adjust={ 24 }, stats={ 100% Rcor [42.0000] }, effects={ Shroud of Resolve (id=317417, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Draconic Empowerment (id=317860, index=0, type=equip), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6285 }, desc={ Rank 14 }, ilevel_adjust={ 26 }, stats={ 100% Rcor [50.0000] }, effects={ Shroud of Resolve (id=317418, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Draconic Empowerment (id=317860, index=0, type=equip), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6286 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [50.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Draconic Empowerment (id=317860, index=0, type=equip), Shroud of Resolve (id=300470, index=0, type=equip) }
+bonus_id={ 6308 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 6310 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 425 @plvl 120 }
 bonus_id={ 6311 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 415 @plvl 120 }
 bonus_id={ 6312 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 380 @plvl 120 }
@@ -3649,11 +3662,23 @@ bonus_id={ 6317 }, desc={ Warforged }, quality={ rare }
 bonus_id={ 6318 }, desc={ Titanforged }, quality={ rare }
 bonus_id={ 6319 }, desc={ Warforged }, quality={ epic }
 bonus_id={ 6320 }, desc={ Titanforged }, quality={ epic }
+bonus_id={ 6322 }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6323 }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 6324 }, quality={ epic }
+bonus_id={ 6326 }, desc={ Combatant }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6327 }, desc={ Combatant }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 6328 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 6330 }, desc={ Challenger }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6331 }, desc={ Challenger }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 6332 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 6334 }, desc={ Rival }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6335 }, desc={ Rival }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 6336 }, desc={ Rival }, quality={ epic }
 bonus_id={ 6337 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 6339 }, desc={ Duelist }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6340 }, desc={ Duelist }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6342 }, desc={ Elite }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6343 }, desc={ Elite }, quality={ epic }, stats={ 100% Sta [0.3300] }
 bonus_id={ 6344 }, desc={ Elite }, quality={ epic }
 bonus_id={ 6350 }, quality={ rare }
 bonus_id={ 6351 }, quality={ rare }
@@ -3662,143 +3687,4 @@ bonus_id={ 6353 }, ilevel={ 10 @plvl 1 - 400 @plvl 120 }
 bonus_id={ 6354 }, desc={ Warforged }, ilevel={ 15 @plvl 1 - 410 @plvl 120 }
 bonus_id={ 6355 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 420 @plvl 120 }
 bonus_id={ 6356 }, desc={ Warforged }, ilevel={ 15 @plvl 1 - 430 @plvl 120 }
-bonus_id={ 6360 }, quality={ epic }
-bonus_id={ 6361 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 6363 }, quality={ epic }
-bonus_id={ 6366 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 6367 }, desc={ Combatant }, quality={ epic }
-bonus_id={ 6368 }, desc={ Rival }, quality={ epic }
-bonus_id={ 6371 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 6375 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 6377 }, desc={ Rival }, quality={ epic }
-bonus_id={ 6378 }, desc={ Elite }, quality={ epic }
-bonus_id={ 6379 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 6382 }, desc={ Elite }, quality={ epic }
-bonus_id={ 6383 }, quality={ rare }
-bonus_id={ 6384 }, quality={ rare }
-bonus_id={ 6385 }, quality={ rare }
-bonus_id={ 6387 }, quality={ epic }
 bonus_id={ 6416 }, ilevel={ 10 @plvl 1 - 280 @plvl 120 }
-bonus_id={ 6423 }, ilevel={ 10 @plvl 1 - 425 @plvl 120 }
-bonus_id={ 6424 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 425 @plvl 120 }
-bonus_id={ 6425 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 435 @plvl 120 }
-bonus_id={ 6426 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 445 @plvl 120 }
-bonus_id={ 6427 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 450 @plvl 120 }
-bonus_id={ 6428 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 410 @plvl 120 }
-bonus_id={ 6429 }, ilevel={ 10 @plvl 1 - 430 @plvl 120 }
-bonus_id={ 6430 }, desc={ Warforged }, ilevel={ 15 @plvl 1 - 440 @plvl 120 }
-bonus_id={ 6431 }, desc={ Warforged }, ilevel={ 15 @plvl 1 - 450 @plvl 120 }
-bonus_id={ 6432 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 450 @plvl 120 }
-bonus_id={ 6435 }, stats={ 50% Cor [50.0000], 50% Rcor [50.0000] }
-bonus_id={ 6441 }, stats={ 100% Rcor [1000.0000] }
-bonus_id={ 6442 }, stats={ 100% Cor [1100.0000] }, effects={ Unknown Effect (id=116214) }
-bonus_id={ 6443 }, stats={ 100% Cor [1200.0000] }, effects={ Unknown Effect (id=116214) }
-bonus_id={ 6444 }, stats={ 100% Cor [1300.0000] }, effects={ Unknown Effect (id=116214) }
-bonus_id={ 6445 }, stats={ 100% Cor [1400.0000] }, effects={ Unknown Effect (id=116214) }
-bonus_id={ 6446 }, stats={ 100% Cor [600.0000] }
-bonus_id={ 6447 }, stats={ 100% Cor [700.0000] }
-bonus_id={ 6448 }, stats={ 100% Cor [800.0000] }
-bonus_id={ 6450 }, stats={ 100% Cor [5.0000] }
-bonus_id={ 6451 }, stats={ 100% Cor [6.0000] }
-bonus_id={ 6452 }, stats={ 100% Cor [7.0000] }
-bonus_id={ 6453 }, stats={ 100% Cor [8.0000] }
-bonus_id={ 6454 }, stats={ 100% Cor [9.0000] }
-bonus_id={ 6455 }, stats={ 100% Cor [10.0000] }
-bonus_id={ 6456 }, stats={ 100% Cor [11.0000] }
-bonus_id={ 6457 }, stats={ 100% Cor [12.0000] }
-bonus_id={ 6458 }, stats={ 100% Cor [13.0000] }
-bonus_id={ 6459 }, stats={ 100% Cor [14.0000] }
-bonus_id={ 6460 }, stats={ 100% Cor [15.0000] }
-bonus_id={ 6461 }, stats={ 100% Cor [16.0000] }
-bonus_id={ 6462 }, stats={ 100% Cor [15.0000] }
-bonus_id={ 6463 }, stats={ 100% Cor [18.0000] }
-bonus_id={ 6464 }, stats={ 100% Cor [19.0000] }
-bonus_id={ 6465 }, stats={ 100% Cor [20.0000] }
-bonus_id={ 6466 }, stats={ 100% Cor [21.0000] }
-bonus_id={ 6467 }, stats={ 100% Cor [22.0000] }
-bonus_id={ 6468 }, stats={ 100% Cor [23.0000] }
-bonus_id={ 6469 }, stats={ 100% Cor [24.0000] }
-bonus_id={ 6470 }, stats={ 100% Cor [20.0000] }
-bonus_id={ 6501 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6502 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6503 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6504 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6505 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6506 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6507 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6508 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6509 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6510 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6511 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6512 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6514 }, socket={ 1 }
-bonus_id={ 6517 }, desc={ Challenger }, quality={ epic }
-bonus_id={ 6518 }, desc={ Rival }, quality={ epic }
-bonus_id={ 6519 }, desc={ Duelist }, quality={ epic }
-bonus_id={ 6520 }, desc={ Elite }, quality={ epic }
-bonus_id={ 6524 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6525 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6526 }, stats={ 100% Sta [0.3300] }
-bonus_id={ 6537 }, stats={ 100% Cor [25.0000] }, effects={ Twilight Devastation (id=318276, index=2, type=equip) }
-bonus_id={ 6538 }, stats={ 100% Cor [50.0000] }, effects={ Twilight Devastation (id=318477, index=2, type=equip) }
-bonus_id={ 6539 }, stats={ 100% Cor [75.0000] }, effects={ Twilight Devastation (id=318478, index=2, type=equip) }
-bonus_id={ 6540 }, stats={ 100% Cor [15.0000] }, effects={ Void Ritual (id=318286, index=2, type=equip) }
-bonus_id={ 6541 }, stats={ 100% Cor [35.0000] }, effects={ Void Ritual (id=318479, index=2, type=equip) }
-bonus_id={ 6542 }, stats={ 100% Cor [66.0000] }, effects={ Void Ritual (id=318480, index=2, type=equip) }
-bonus_id={ 6543 }, stats={ 100% Cor [10.0000] }, effects={ Twisted Appendage (id=318481, index=2, type=equip) }
-bonus_id={ 6544 }, stats={ 100% Cor [35.0000] }, effects={ Twisted Appendage (id=318482, index=2, type=equip) }
-bonus_id={ 6545 }, stats={ 100% Cor [66.0000] }, effects={ Twisted Appendage (id=318483, index=2, type=equip) }
-bonus_id={ 6546 }, stats={ 100% Cor [15.0000] }, effects={ Glimpse of Clarity (id=318239, index=2, type=equip) }
-bonus_id={ 6547 }, stats={ 100% Cor [20.0000] }, effects={ Ineffable Truth (id=318303, index=2, type=equip) }
-bonus_id={ 6548 }, stats={ 100% Cor [50.0000] }, effects={ Ineffable Truth (id=318484, index=2, type=equip) }
-bonus_id={ 6549 }, stats={ 100% Cor [15.0000] }, effects={ Echoing Void (id=318280, index=2, type=equip) }
-bonus_id={ 6550 }, stats={ 100% Cor [25.0000] }, effects={ Echoing Void (id=318485, index=2, type=equip) }
-bonus_id={ 6551 }, stats={ 100% Cor [50.0000] }, effects={ Echoing Void (id=318486, index=2, type=equip) }
-bonus_id={ 6552 }, stats={ 100% Cor [20.0000] }, effects={ Infinite Stars (id=318274, index=2, type=equip) }
-bonus_id={ 6553 }, stats={ 100% Cor [50.0000] }, effects={ Infinite Stars (id=318487, index=2, type=equip) }
-bonus_id={ 6554 }, stats={ 100% Cor [75.0000] }, effects={ Infinite Stars (id=318488, index=2, type=equip) }
-bonus_id={ 6555 }, stats={ 100% Cor [15.0000] }, effects={ Racing Pulse (id=318266, index=2, type=equip) }
-bonus_id={ 6556 }, stats={ 100% Cor [15.0000] }, effects={ Deadly Momentum (id=318268, index=2, type=equip) }
-bonus_id={ 6557 }, stats={ 100% Cor [15.0000] }, effects={ Honed Mind (id=318269, index=2, type=equip) }
-bonus_id={ 6558 }, stats={ 100% Cor [15.0000] }, effects={ Surging Vitality (id=318270, index=2, type=equip) }
-bonus_id={ 6559 }, stats={ 100% Cor [20.0000] }, effects={ Racing Pulse (id=318492, index=2, type=equip) }
-bonus_id={ 6560 }, stats={ 100% Cor [35.0000] }, effects={ Racing Pulse (id=318496, index=2, type=equip) }
-bonus_id={ 6561 }, stats={ 100% Cor [20.0000] }, effects={ Deadly Momentum (id=318493, index=2, type=equip) }
-bonus_id={ 6562 }, stats={ 100% Cor [35.0000] }, effects={ Deadly Momentum (id=318497, index=2, type=equip) }
-bonus_id={ 6563 }, stats={ 100% Cor [20.0000] }, effects={ Honed Mind (id=318494, index=2, type=equip) }
-bonus_id={ 6564 }, stats={ 100% Cor [35.0000] }, effects={ Honed Mind (id=318498, index=2, type=equip) }
-bonus_id={ 6565 }, stats={ 100% Cor [20.0000] }, effects={ Surging Vitality (id=318495, index=2, type=equip) }
-bonus_id={ 6566 }, stats={ 100% Cor [35.0000] }, effects={ Surging Vitality (id=318499, index=2, type=equip) }
-bonus_id={ 6567 }, stats={ 100% Cor [25.0000] }, effects={ Devour Vitality (id=318294, index=2, type=equip) }
-bonus_id={ 6568 }, stats={ 100% Cor [25.0000] }, effects={ Whispered Truths (id=316780, index=2, type=equip) }
-bonus_id={ 6569 }, stats={ 100% Cor [25.0000] }, effects={ Lash of the Void (id=317290, index=2, type=equip) }
-bonus_id={ 6570 }, stats={ 100% Cor [25.0000] }, effects={ Flash of Insight (id=318299, index=2, type=equip) }
-bonus_id={ 6571 }, stats={ 100% Cor [25.0000] }, effects={ Searing Flames (id=318293, index=2, type=equip) }
-bonus_id={ 6572 }, stats={ 100% Cor [25.0000] }, effects={ Obsidian Skin (id=316651, index=2, type=equip) }
-bonus_id={ 6573 }, stats={ 100% Cor [15.0000] }, effects={ Gushing Wound (id=318272, index=2, type=equip) }
-bonus_id={ 6577 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [53.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6580 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [56.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6581 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [59.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6582 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [62.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6583 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [65.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6584 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [68.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6585 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [71.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6586 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [74.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6587 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [77.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6588 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [80.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6589 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [83.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6590 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [86.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6591 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [89.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6592 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [92.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6593 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [95.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6594 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [98.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6595 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [101.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6596 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [104.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6597 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [107.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6598 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [110.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6599 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [113.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6600 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [116.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6601 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [119.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6602 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [122.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6603 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [125.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
-bonus_id={ 6609 }, stats={ 100% Crit [0.1000] }
