@@ -231,6 +231,7 @@ void strikethrough( special_effect_t& effect );
 void glimpse_of_clarity( special_effect_t& effect );
 void infinite_stars( special_effect_t& effect );
 void echoing_void( special_effect_t& effect );
+void devour_vitality( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -6404,6 +6405,39 @@ void corruption::echoing_void( special_effect_t& effect )
     echoing_void_damage->maxhp_multiplier += effect.driver()->effectN( 1 ).percent() / 10;
 }
 
+// Devour Vitality
+void corruption::devour_vitality( special_effect_t& effect )
+{
+  struct devour_vitality_t : public proc_spell_t
+  {
+    double maxhp_multiplier;
+
+    devour_vitality_t( const special_effect_t& effect )
+      : proc_spell_t( "devour_vitality", effect.player, effect.player->find_spell( 316617 ) ),
+        maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
+    {
+      aoe = -1;
+      // TODO: Check what this scales with
+    }
+
+    double base_da_min( const action_state_t* ) const override
+    {
+      return player->resources.max[ RESOURCE_HEALTH ] * maxhp_multiplier;
+    }
+
+    double base_da_max( const action_state_t* ) const override
+    {
+      return player->resources.max[ RESOURCE_HEALTH ] * maxhp_multiplier;
+    }
+  };
+
+  effect.execute_action = create_proc_action<devour_vitality_t>( "devour_vitality", effect );
+
+  effect.spell_id = 316615;
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -6611,6 +6645,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318280, corruption::echoing_void );
   register_special_effect( 318485, corruption::echoing_void );
   register_special_effect( 318486, corruption::echoing_void );
+  register_special_effect( 318294, corruption::devour_vitality );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
