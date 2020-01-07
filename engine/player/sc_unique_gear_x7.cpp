@@ -5734,7 +5734,7 @@ struct shredded_psyche_cb_t : public dbc_proc_callback_t
 struct shredded_psyche_t : public proc_t
 {
   shredded_psyche_t( const special_effect_t& e )
-    : proc_t( e, "shredded_psyche", 313627 )
+    : proc_t( e, "shredded_psyche", 316019 )
   {
     base_dd_min = e.player->find_spell( 313640 )->effectN( 2 ).min( e.item );
     base_dd_max = e.player->find_spell( 313640 )->effectN( 2 ).max( e.item );
