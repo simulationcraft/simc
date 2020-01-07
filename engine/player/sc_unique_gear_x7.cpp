@@ -232,6 +232,7 @@ void glimpse_of_clarity( special_effect_t& effect );
 void infinite_stars( special_effect_t& effect );
 void echoing_void( special_effect_t& effect );
 void devour_vitality( special_effect_t& effect );
+void gushing_wound( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -5969,7 +5970,7 @@ void corruption::twilight_devastation( special_effect_t& effect )
 
   effect.spell_id = 317147;
 
-  new dbc_proc_callback_t( effect.item, effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 //Racing Pulse
@@ -6416,7 +6417,6 @@ void corruption::devour_vitality( special_effect_t& effect )
       : proc_spell_t( "devour_vitality", effect.player, effect.player->find_spell( 316617 ) ),
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
     {
-      aoe = -1;
       // TODO: Check what this scales with
     }
 
@@ -6435,7 +6435,53 @@ void corruption::devour_vitality( special_effect_t& effect )
 
   effect.spell_id = 316615;
 
-  new dbc_proc_callback_t( effect.item, effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Gushing Wound
+void corruption::gushing_wound( special_effect_t& effect )
+{
+  struct gushing_wound_t : public proc_spell_t
+  {
+    double ap_sp_mod;
+
+    gushing_wound_t( const special_effect_t& effect )
+      : proc_spell_t( "gushing_wound", effect.player, effect.player->find_spell( 318187 ) ),
+        ap_sp_mod( effect.player->find_spell( 318187 )->effectN( 2 ).percent() )
+    {
+      spell_power_mod.tick = attack_power_mod.tick = ap_sp_mod;
+    }
+
+    double attack_tick_power_coefficient( const action_state_t* s ) const override
+    {
+      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+      if ( ap <= sp )
+        return 0;
+      return proc_spell_t::attack_tick_power_coefficient( s );
+    }
+
+    double spell_tick_power_coefficient( const action_state_t* s ) const override
+    {
+      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+      if ( ap <= sp )
+        return 0;
+      return proc_spell_t::spell_tick_power_coefficient( s );
+    }
+  };
+
+  auto gushing_wound = static_cast<gushing_wound_t*>( effect.player->find_action( "gushing_wound" ) );
+
+  if ( !gushing_wound )
+    effect.execute_action = create_proc_action<gushing_wound_t>( "gushing_wound", effect );
+  else
+    gushing_wound->ap_sp_mod += effect.player->find_spell( 318187 )->effectN( 2 ).percent();
+
+  effect.spell_id = 318179;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 }  // namespace bfa
@@ -6646,6 +6692,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318485, corruption::echoing_void );
   register_special_effect( 318486, corruption::echoing_void );
   register_special_effect( 318294, corruption::devour_vitality );
+  register_special_effect( 318272, corruption::gushing_wound );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
