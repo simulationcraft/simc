@@ -2193,16 +2193,12 @@ struct arcane_blast_t : public arcane_mage_spell_t
   void execute() override
   {
     p()->benefits.arcane_charge.arcane_blast->update();
+
     arcane_mage_spell_t::execute();
 
-    if ( hit_any_target )
-    {
+    p()->trigger_arcane_charge();
+    if ( rng().roll( p()->azerite.galvanizing_spark.spell_ref().effectN( 1 ).percent() ) )
       p()->trigger_arcane_charge();
-
-      // TODO: Benefit tracking
-      if ( rng().roll( p()->azerite.galvanizing_spark.spell_ref().effectN( 1 ).percent() ) )
-        p()->trigger_arcane_charge();
-    }
 
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
@@ -2256,7 +2252,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    if ( hit_any_target )
+    if ( !target_list().empty() )
       p()->trigger_arcane_charge();
 
     if ( num_targets_hit >= as<int>( p()->talents.reverberate->effectN( 2 ).base_value() )
@@ -2494,9 +2490,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
   void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      p()->trigger_arcane_charge();
+    p()->trigger_arcane_charge();
   }
 };
 
