@@ -234,6 +234,7 @@ void echoing_void( special_effect_t& effect );
 void devour_vitality( special_effect_t& effect );
 void gushing_wound( special_effect_t& effect );
 void void_ritual( special_effect_t& effect );
+void searing_flames( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -5579,7 +5580,8 @@ void items::voidtwisted_titanshard( special_effect_t& effect )
   effect.custom_buff = buff_t::find( effect.player, "void_shroud" );
   if ( !effect.custom_buff )
   {
-    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "void_shroud", effect.player->find_spell( 315774 ), effect.item );
+    effect.custom_buff =
+        make_buff<stat_buff_t>( effect.player, "void_shroud", effect.player->find_spell( 315774 ), effect.item );
 
     timespan_t duration_override =
         effect.custom_buff->buff_duration * effect.player->sim->bfa_opts.voidtwisted_titanshard_percent_duration;
@@ -5601,9 +5603,10 @@ void items::vitacharged_titanshard( special_effect_t& effect )
   effect.custom_buff = buff_t::find( effect.player, "vita_charged" );
   if ( !effect.custom_buff )
   {
-    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "vita_charged", effect.player->find_spell( 315787 ), effect.item )
-      ->set_cooldown( 0_ms )
-      ->set_chance( 1.0 );
+    effect.custom_buff =
+        make_buff<stat_buff_t>( effect.player, "vita_charged", effect.player->find_spell( 315787 ), effect.item )
+            ->set_cooldown( 0_ms )
+            ->set_chance( 1.0 );
   }
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -5648,8 +5651,9 @@ void items::whispering_eldritch_bow( special_effect_t& effect )
     std::set<cooldown_t*> cooldowns;
     timespan_t amount;
 
-    whispered_truths_callback_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.item, effect ),
-      amount( timespan_t::from_millis( -effect.driver()->effectN( 1 ).base_value() ) )
+    whispered_truths_callback_t( const special_effect_t& effect )
+      : dbc_proc_callback_t( effect.item, effect ),
+        amount( timespan_t::from_millis( -effect.driver()->effectN( 1 ).base_value() ) )
     {
       for ( action_t* a : effect.player->action_list )
       {
@@ -5680,17 +5684,15 @@ void items::whispering_eldritch_bow( special_effect_t& effect )
 
         if ( effect.player->sim->debug )
         {
-          effect.player->sim->out_debug.printf( "%s of %s adjusted cooldown for %s, remains=%.3f",
-            effect.item->name(),
-            effect.player->name(),
-            chosen->name(),
-            chosen->remains().total_seconds() );
+          effect.player->sim->out_debug.printf( "%s of %s adjusted cooldown for %s, remains=%.3f", effect.item->name(),
+                                                effect.player->name(), chosen->name(),
+                                                chosen->remains().total_seconds() );
         }
       }
     }
   };
 
-  if ( effect.player -> type == HUNTER )
+  if ( effect.player->type == HUNTER )
     new whispered_truths_callback_t( effect );
 }
 
@@ -5707,9 +5709,10 @@ struct shredded_psyche_cb_t : public dbc_proc_callback_t
   action_t* damage;
   player_t* target;
 
-  shredded_psyche_cb_t( const special_effect_t& effect, action_t* d, player_t* t ) :
-    dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t )
-  { }
+  shredded_psyche_cb_t( const special_effect_t& effect, action_t* d, player_t* t )
+    : dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t )
+  {
+  }
 
   void trigger( action_t* a, void* call_data ) override
   {
@@ -5719,7 +5722,7 @@ struct shredded_psyche_cb_t : public dbc_proc_callback_t
       return;
     }
 
-    auto td = a->player->get_target_data( target );
+    auto td        = a->player->get_target_data( target );
     buff_t* debuff = td->debuff.psyche_shredder;
     if ( !debuff->check() )
       return;
@@ -5736,8 +5739,7 @@ struct shredded_psyche_cb_t : public dbc_proc_callback_t
 
 struct shredded_psyche_t : public proc_t
 {
-  shredded_psyche_t( const special_effect_t& e )
-    : proc_t( e, "shredded_psyche", 316019 )
+  shredded_psyche_t( const special_effect_t& e ) : proc_t( e, "shredded_psyche", 316019 )
   {
     base_dd_min = e.player->find_spell( 313640 )->effectN( 2 ).min( e.item );
     base_dd_max = e.player->find_spell( 313640 )->effectN( 2 ).max( e.item );
@@ -5765,7 +5767,7 @@ struct psyche_shredder_constructor_t : public item_targetdata_initializer_t
 
     auto damage_spell = td->source->find_action( "shredded_psyche" );
 
-    auto cb_driver = new special_effect_t( td->source );
+    auto cb_driver      = new special_effect_t( td->source );
     cb_driver->name_str = "shredded_psyche_driver";
     cb_driver->spell_id = 313627;
     td->source->special_effects.push_back( cb_driver );
@@ -5781,14 +5783,13 @@ void items::psyche_shredder( special_effect_t& effect )
 {
   struct psyche_shredder_t : public proc_t
   {
-    psyche_shredder_t( const special_effect_t& e )
-      : proc_t( e, "psyche_shredder", 313663 )
+    psyche_shredder_t( const special_effect_t& e ) : proc_t( e, "psyche_shredder", 313663 )
     {
     }
 
-    void impact(action_state_t* state) override
+    void impact( action_state_t* state ) override
     {
-      proc_t::impact(state);
+      proc_t::impact( state );
       auto td = player->get_target_data( state->target );
       td->debuff.psyche_shredder->trigger();
     }
@@ -5933,7 +5934,7 @@ void corruption::ineffable_truth( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-//Twilight Devastation
+// Twilight Devastation
 void corruption::twilight_devastation( special_effect_t& effect )
 {
   struct twilight_devastation_t : public proc_spell_t
@@ -5974,7 +5975,7 @@ void corruption::twilight_devastation( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-//Racing Pulse
+// Racing Pulse
 void corruption::racing_pulse( special_effect_t& effect )
 {
   auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "racing_pulse" ) );
@@ -6204,10 +6205,9 @@ void corruption::infinite_stars( special_effect_t& effect )
     double debuff_percent   = player->find_spell( 317265 )->effectN( 3 ).percent();
     double star_travel_time = player->find_spell( 317262 )->missile_speed();
 
-    infinite_stars_t( const special_effect_t& e, double sp_mod )
-      : proc_t( e, "infinite_stars", 317265 )
+    infinite_stars_t( const special_effect_t& e, double sp_mod ) : proc_t( e, "infinite_stars", 317265 )
     {
-      spell_power_mod.direct = sp_mod;
+      spell_power_mod.direct  = sp_mod;
       attack_power_mod.direct = sp_mod;
     }
 
@@ -6244,8 +6244,8 @@ void corruption::infinite_stars( special_effect_t& effect )
 
     double composite_target_da_multiplier( player_t* target ) const override
     {
-      double mul = proc_t::composite_target_da_multiplier( target );
-      auto td = player->get_target_data( target );
+      double mul     = proc_t::composite_target_da_multiplier( target );
+      auto td        = player->get_target_data( target );
       buff_t* debuff = td->debuff.infinite_stars;
       mul *= 1.0 + debuff_percent * debuff->check();
       return mul;
@@ -6258,9 +6258,9 @@ void corruption::infinite_stars( special_effect_t& effect )
       proc_t::execute();
     }
 
-    void impact(action_state_t* state) override
+    void impact( action_state_t* state ) override
     {
-      proc_t::impact(state);
+      proc_t::impact( state );
       auto td = player->get_target_data( state->target );
       td->debuff.infinite_stars->trigger();
     }
@@ -6528,6 +6528,74 @@ void corruption::void_ritual( special_effect_t& effect )
         ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
 }
 
+// Searing Flames
+void corruption::searing_flames( special_effect_t& effect )
+{
+  // Buff application callback that also triggers damage
+  struct searing_flames_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    searing_flames_cb_t( const special_effect_t& effect, action_t* a )
+      : dbc_proc_callback_t( effect.player, effect ), damage( a )
+    {
+    }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      if ( proc_buff && proc_buff->trigger() && proc_buff->check() == proc_buff->max_stack() )
+      {
+        damage->set_target( state->target );
+        damage->execute();
+        proc_buff->expire();
+      }
+    }
+  };
+
+  // Damage proc
+  struct searing_flames_t : public proc_spell_t
+  {
+    double maxhp_multiplier;
+
+    // TODO: Confirm damage spell id
+    searing_flames_t( const special_effect_t& effect )
+      : proc_spell_t( "searing_flames", effect.player, effect.player->find_spell( 316703 ) ),
+        maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
+    {
+      aoe = -1;
+      // TODO: Check what this scales with
+    }
+
+    double base_da_min( const action_state_t* ) const override
+    {
+      return player->resources.max[ RESOURCE_HEALTH ] * maxhp_multiplier;
+    }
+
+    double base_da_max( const action_state_t* ) const override
+    {
+      return player->resources.max[ RESOURCE_HEALTH ] * maxhp_multiplier;
+    }
+  };
+
+  auto searing_flames_damage = static_cast<searing_flames_t*>( effect.player->find_action( "searing_flames" ) );
+
+  if ( !searing_flames_damage )
+  {
+    effect.custom_buff = make_buff( effect.player, "searing_flames", effect.player->find_spell( 316703 ) );
+
+    searing_flames_damage =
+        static_cast<searing_flames_t*>( create_proc_action<searing_flames_t>( "searing_flames", effect ) );
+
+    // TODO: Confirm these flags
+    effect.proc_flags_  = PF_ALL_DAMAGE;
+    effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+    effect.spell_id    = 317014;
+
+    new searing_flames_cb_t( effect, searing_flames_damage );
+  }
+  else
+    searing_flames_damage->maxhp_multiplier += effect.driver()->effectN( 1 ).percent();
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -6740,6 +6808,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318286, corruption::void_ritual );
   register_special_effect( 318479, corruption::void_ritual );
   register_special_effect( 318480, corruption::void_ritual );
+  register_special_effect( 318293, corruption::searing_flames );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
