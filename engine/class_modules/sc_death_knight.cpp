@@ -7783,7 +7783,6 @@ void death_knight_t::default_apl_frost()
   standard -> add_action( this, "Remorseless Winter", "", "Standard single-target rotation" );
   standard -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
   standard -> add_action( this, "Howling Blast", "if=buff.rime.up" );
-  standard -> add_action( this, "Frostscythe", "if=talent.icecap.enabled&buff.killing_machine.react" );
   standard -> add_action( this, "Obliterate", "if=talent.icecap.enabled&buff.pillar_of_frost.up&azerite.icy_citadel.rank>=2" );
   standard -> add_action( this, "Obliterate", "if=!buff.frozen_pulse.up&talent.frozen_pulse.enabled" );
   standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<(15+talent.runic_attenuation.enabled*3)" );
