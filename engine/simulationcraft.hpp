@@ -1239,6 +1239,8 @@ struct sim_t : private sc_thread_t
     unsigned manifesto_allies_end = 5;
     /// Echoing Void collapse rppm
     double echoing_void_collapse_rppm = 2.0;
+    /// Whether the increased chance via more allies is active
+    bool void_ritual_increased_chance_active = false;
   } bfa_opts;
 
   // Expansion specific data

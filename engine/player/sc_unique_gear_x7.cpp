@@ -233,6 +233,7 @@ void infinite_stars( special_effect_t& effect );
 void echoing_void( special_effect_t& effect );
 void devour_vitality( special_effect_t& effect );
 void gushing_wound( special_effect_t& effect );
+void void_ritual( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -6301,6 +6302,7 @@ void corruption::echoing_void( special_effect_t& effect )
     }
   };
 
+  // TODO: Change this into a % chance proc and find %
   // Proc to use up all stacks
   struct echoing_void_collapse_cb_t : public dbc_proc_callback_t
   {
@@ -6328,7 +6330,6 @@ void corruption::echoing_void( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* state )
     {
-      // TODO: Can this proc while doing damage?
       this->deactivate();
       make_event<ground_aoe_event_t>( *effect.player->sim, effect.player,
                                       ground_aoe_params_t()
@@ -6482,6 +6483,49 @@ void corruption::gushing_wound( special_effect_t& effect )
   effect.spell_id = 318179;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Void Ritual
+void corruption::void_ritual( special_effect_t& effect )
+{
+  struct void_ritual_cb_t : public dbc_proc_callback_t
+  {
+    void_ritual_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.player, effect )
+    {
+    }
+
+    void initialize() override
+    {
+      dbc_proc_callback_t::initialize();
+      if ( !effect.player->sim->bfa_opts.void_ritual_increased_chance_active )
+        rppm->set_modifier( rppm->get_modifier() * 5 / 6 );
+    }
+  };
+
+  auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "the_end_is_coming" ) );
+
+  if ( !buff )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, "the_end_is_coming", effect.player->find_spell( 316823 ) )
+               ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() )
+               ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() )
+               ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() )
+               ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
+
+    // TODO: Confirm how this works when you get a proc while you already have the buff
+    buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+    effect.custom_buff = buff;
+
+    effect.spell_id = 316814;
+
+    new void_ritual_cb_t( effect );
+  }
+  else
+    buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() )
+        ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() )
+        ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() )
+        ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
 }
 
 }  // namespace bfa
@@ -6693,6 +6737,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318486, corruption::echoing_void );
   register_special_effect( 318294, corruption::devour_vitality );
   register_special_effect( 318272, corruption::gushing_wound );
+  register_special_effect( 318286, corruption::void_ritual );
+  register_special_effect( 318479, corruption::void_ritual );
+  register_special_effect( 318480, corruption::void_ritual );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
