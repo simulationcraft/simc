@@ -4749,8 +4749,9 @@ void demon_hunter_t::init_rng()
     rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
     rppm.gluttony = get_rppm( "gluttony", talent.gluttony );
     // 6/27/2018 -- Removed from spell data, but still seems to be RPPM
+    // 1/9/2020  -- It has actually been 2.0 since uldir
     if ( rppm.gluttony->get_frequency() == 0 )
-      rppm.gluttony->set_frequency( 1.0 );
+      rppm.gluttony->set_frequency( 2.0 );
   }
 
   player_t::init_rng();
