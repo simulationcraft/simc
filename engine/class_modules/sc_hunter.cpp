@@ -532,7 +532,7 @@ public:
   wildfire_infusion_e next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
 
   struct options_t {
-    std::string summon_pet_str = "cat";
+    std::string summon_pet_str = "turtle";
     timespan_t pet_attack_speed = 2.0_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
     double memory_of_lucid_dreams_proc_chance = 0.1;
@@ -1199,12 +1199,18 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     gain_t* aspect_of_the_wild = nullptr;
   } gains;
 
+  const spell_data_t* endurance_training = find_spell( 264662 );
+  double owner_hp_mult = 1.0;
+
   hunter_main_pet_t( hunter_t* owner, const std::string& pet_name, pet_e pt ):
     hunter_main_pet_base_t( owner, pet_name, pt )
   {
     // FIXME work around assert in pet specs
     // Set default specs
     _spec = default_spec();
+
+    if ( _spec == PET_TENACITY )
+      owner_hp_mult = 1.0 + endurance_training->effectN( 2 ).percent() * ( 1.0 + o() -> talents.aspect_of_the_beast->effectN( 4 ).percent() );
   }
 
   specialization_e default_spec()
@@ -1282,6 +1288,9 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     o() -> pets.main = this;
     if ( o() -> pets.animal_companion )
       o() -> pets.animal_companion -> summon();
+
+    o() -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= owner_hp_mult;
+    o() -> recalculate_resource_max( RESOURCE_HEALTH );
   }
 
   void demise() override
@@ -1289,7 +1298,12 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     hunter_main_pet_base_t::demise();
 
     if ( o() -> pets.main == this )
+    {
       o() -> pets.main = nullptr;
+
+      o() -> resources.initial_multiplier[ RESOURCE_HEALTH ] /= owner_hp_mult;
+      o() -> recalculate_resource_max( RESOURCE_HEALTH );
+    }
     if ( o() -> pets.animal_companion )
       o() -> pets.animal_companion -> demise();
   }
@@ -5407,7 +5421,7 @@ void hunter_t::apl_bm()
   cds -> add_action( "fireblood,if=cooldown.bestial_wrath.remains>30" );
   cds -> add_action( "berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<13" );
   cds -> add_action( "blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16" );
-  cds -> add_action( "lights_judgment,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains>gcd.max|!pet.cat.buff.frenzy.up" );
+  cds -> add_action( "lights_judgment,if=pet.turtle.buff.frenzy.up&pet.turtle.buff.frenzy.remains>gcd.max|!pet.turtle.buff.frenzy.up" );
   cds -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&target.health.pct<35|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
 
   cds -> add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
@@ -5415,7 +5429,7 @@ void hunter_t::apl_bm()
   cds -> add_action( "ripple_in_space" );
   cds -> add_action( "memory_of_lucid_dreams" );
 
-  st -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<gcd|cooldown.bestial_wrath.remains&(full_recharge_time<gcd|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd)" );
+  st -> add_action( this, "Barbed Shot", "if=pet.turtle.buff.frenzy.up&pet.turtle.buff.frenzy.remains<gcd|cooldown.bestial_wrath.remains&(full_recharge_time<gcd|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd)" );
   st -> add_action( "concentrated_flame,if=focus+focus.regen*gcd<focus.max&buff.bestial_wrath.down&(!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight)|full_recharge_time<gcd|target.time_to_die<5" );
   st -> add_action( this, "Aspect of the Wild", "if=cooldown.barbed_shot.charges<1|!azerite.primal_instincts.enabled" );
   st -> add_talent( this, "Stampede", "if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15" );
@@ -5428,15 +5442,15 @@ void hunter_t::apl_bm()
   st -> add_action( this, "Kill Command" );
   st -> add_talent( this, "Chimaera Shot" );
   st -> add_talent( this, "Dire Beast" );
-  st -> add_action( this, "Barbed Shot", "if=talent.one_with_the_pack.enabled&charges_fractional>1.5|charges_fractional>1.8|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9" );
+  st -> add_action( this, "Barbed Shot", "if=talent.one_with_the_pack.enabled&charges_fractional>1.5|charges_fractional>1.8|cooldown.aspect_of_the_wild.remains<pet.turtle.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9" );
   st -> add_action( "purifying_blast,if=buff.bestial_wrath.down|target.time_to_die<8" );
   st -> add_talent( this, "Barrage" );
   st -> add_action( this, "Cobra Shot", "if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains_guess>focus.time_to_max|buff.memory_of_lucid_dreams.up)&cooldown.kill_command.remains>1|target.time_to_die<3" );
   st -> add_talent( this, "Spitting Cobra" );
-  st -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.duration-gcd>full_recharge_time" );
+  st -> add_action( this, "Barbed Shot", "if=pet.turtle.buff.frenzy.duration-gcd>full_recharge_time" );
 
-  cleave -> add_action( this, "Barbed Shot", "target_if=min:dot.barbed_shot.remains,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max" );
-  cleave -> add_action( this, "Multi-Shot", "if=gcd.max-pet.cat.buff.beast_cleave.remains>0.25" );
+  cleave -> add_action( this, "Barbed Shot", "target_if=min:dot.barbed_shot.remains,if=pet.turtle.buff.frenzy.up&pet.turtle.buff.frenzy.remains<=gcd.max" );
+  cleave -> add_action( this, "Multi-Shot", "if=gcd.max-pet.turtle.buff.beast_cleave.remains>0.25" );
   cleave -> add_action( this, "Barbed Shot", "target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd.max&cooldown.bestial_wrath.remains" );
   cleave -> add_action( this, "Aspect of the Wild" );
   cleave -> add_talent( this, "Stampede", "if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15" );
@@ -5446,7 +5460,7 @@ void hunter_t::apl_bm()
   cleave -> add_talent( this, "Barrage" );
   cleave -> add_action( this, "Kill Command", "if=active_enemies<4|!azerite.rapid_reload.enabled" );
   cleave -> add_talent( this, "Dire Beast" );
-  cleave -> add_action( this, "Barbed Shot", "target_if=min:dot.barbed_shot.remains,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|charges_fractional>1.4|target.time_to_die<9" );
+  cleave -> add_action( this, "Barbed Shot", "target_if=min:dot.barbed_shot.remains,if=pet.turtle.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.turtle.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|charges_fractional>1.4|target.time_to_die<9" );
   cleave -> add_action( "focused_azerite_beam" );
   cleave -> add_action( "purifying_blast" );
   cleave -> add_action( "concentrated_flame" );

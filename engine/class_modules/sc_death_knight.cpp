@@ -6111,8 +6111,9 @@ struct icebound_fortitude_t : public death_knight_spell_t
 
 struct mark_of_blood_heal_t : public death_knight_heal_t
 {
-  mark_of_blood_heal_t( death_knight_t* p ) :
-    death_knight_heal_t( "mark_of_blood", p, p -> find_spell( 206945 ) )
+  mark_of_blood_heal_t( death_knight_t* p ) : // The data is removed and switched to the talent spell on PTR 8.3.0.32805
+    death_knight_heal_t( "mark_of_blood", p, ( p -> find_spell( 206945 ) == spell_data_t::not_found() ) ?
+                                             p -> talent.mark_of_blood : p -> find_spell( 206945 )  )
   {
     may_crit = callbacks = false;
     background = dual = true;
@@ -7593,6 +7594,10 @@ void death_knight_t::default_apl_blood()
   // Racials
   def -> add_action( "blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)" );
   def -> add_action( "berserking" );
+  def -> add_action( "arcane_pulse,if=active_enemies>=2|rune<1&runic_power.deficit>60" );
+  def -> add_action( "lights_judgment,if=buff.unholy_strength.up" );
+  def -> add_action( "ancestral_call" );
+  def -> add_action( "fireblood" );
 
   // On-use items
   def -> add_action( "use_items,if=cooldown.dancing_rune_weapon.remains>90" );
@@ -7720,10 +7725,12 @@ void death_knight_t::default_apl_frost()
   // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>5&target.1.time_to_die<gcd", "Cold heart conditions" );
   cold_heart -> add_action( this, "Chains of Ice", "if=(buff.seething_rage.remains<gcd)&buff.seething_rage.up" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.pillar_of_frost.remains<=gcd*(1+cooldown.frostwyrms_fury.ready)|buff.pillar_of_frost.remains<rune.time_to_3)&buff.pillar_of_frost.up&(azerite.icy_citadel.rank<=1|buff.breath_of_sindragosa.up)" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.remains<8&buff.unholy_strength.remains<gcd*(1+cooldown.frostwyrms_fury.ready)&buff.unholy_strength.remains&buff.pillar_of_frost.up&(azerite.icy_citadel.rank<=1|buff.breath_of_sindragosa.up)" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.icy_citadel.remains<4|buff.icy_citadel.remains<rune.time_to_3)&buff.icy_citadel.up&azerite.icy_citadel.rank>=2&!buff.breath_of_sindragosa.up" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.icy_citadel.up&buff.unholy_strength.up&azerite.icy_citadel.rank>=2&!buff.breath_of_sindragosa.up" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.pillar_of_frost.remains<=gcd*(1+cooldown.frostwyrms_fury.ready)|buff.pillar_of_frost.remains<rune.time_to_3)&buff.pillar_of_frost.up&(azerite.icy_citadel.rank<=1|buff.breath_of_sindragosa.up)&!talent.icecap.enabled" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.remains<8&buff.unholy_strength.remains<gcd*(1+cooldown.frostwyrms_fury.ready)&buff.unholy_strength.remains&buff.pillar_of_frost.up&(azerite.icy_citadel.rank<=1|buff.breath_of_sindragosa.up)&!talent.icecap.enabled" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.icy_citadel.remains<4|buff.icy_citadel.remains<rune.time_to_3)&buff.icy_citadel.up&azerite.icy_citadel.rank>=2&!buff.breath_of_sindragosa.up&!talent.icecap.enabled" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.icy_citadel.up&buff.unholy_strength.up&azerite.icy_citadel.rank>=2&!buff.breath_of_sindragosa.up&!talent.icecap.enabled" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.remains<4&talent.icecap.enabled&buff.cold_heart.stack>=18&azerite.icy_citadel.rank<=1" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.up&talent.icecap.enabled&azerite.icy_citadel.rank>=2&(buff.cold_heart.stack>=19&buff.icy_citadel.remains<gcd|buff.unholy_strength.up&buff.cold_heart.stack>=18)" );
 
 
   // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"

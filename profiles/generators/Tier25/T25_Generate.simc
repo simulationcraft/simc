@@ -1,0 +1,57 @@
+# T25
+# Tier 25 Ny'alotha
+# * Ilvl Cap: 475 (485 for items that drop at that itemlevel)
+# * Ilvl for PvP gear: 460
+# * Heart of Azeroth Level needed to unlock the 3nd extra minor trait is Level 80 (to unlock +5 itemlevel on new azerite items)
+# *   neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+# * Mythic+ gear is permitted up to the Mythic+ item level cap (465)
+# * Dungeon azerite gear from the residuum vendor (up to ilvl 475) is allowed
+# * No items from World Bosses / World Quests / BoEs (except for BoEs from Ny'alotha)
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No buyable Sockets from Wrathion
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Warforged/Titanforged)
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
+# * Must use enchant name (ex: ",enchant=binding_of_mastery") instead of id/hardcoded stats.
+# * Must use gem ids (ex: ",gem_id=151585") instead of hardcoded stats.
+# * Effective Corruption of < 40 AFTER resistances is allowed
+#    * Ny'alotha corrupted weapons
+#    * random corruptions on random items
+# * Legendary cloak at itemlevel x
+# *   back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+
+# Death Knight
+# T25_Generate_Death_Knight.simc
+
+# Demon Hunter
+# T25_Generate_Demon_Hunter.simc
+
+# Druid
+# T25_Generate_Druid.simc
+
+# Hunter
+# T25_Generate_Hunter.simc
+
+# Mage
+# T25_Generate_Mage.simc
+
+# Monk
+# T25_Generate_Monk.simc
+
+# Paladin
+# T25_Generate_Paladin.simc
+
+# Priest
+# T25_Generate_Priest.simc
+
+# Rogue
+# T25_Generate_Rogue.simc
+
+# Shaman
+# T25_Generate_Shaman.simc
+
+# Warlock
+# T25_Generate_Warlock.simc
+
+# Warrior
+# T25_Generate_Warrior.simc

@@ -983,7 +983,7 @@ Name             : Renewing Mist (id=115151) [Spell Family (53)]
 Class            : Mistweaver Monk
 School           : Nature
 Spell Type       : Magic
-Resource         : 2.8% Base Mana (0) (id=5696)
+Resource         : 2.5% Base Mana (0) (id=5696)
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1230,7 +1230,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x....x .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=129071)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.75000 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | PvP Coefficient: 1.75000 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
 #2 (id=140011)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
 #3 (id=155430)   : Dispel (38)
@@ -1551,9 +1551,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=131794)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.95000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.01000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=284314)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Radius: 0 - 60 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.74000 | PvP Coefficient: 1.00000 | Radius: 0 - 60 yards | Target: Unknown(132) -> AOE friendly (31)
 Description      : Causes a surge of invigorating mists, healing the target for $s1$?s274586[ and all allies with your Renewing Mist active for $s2][].
 
 Name             : Thunder Focus Tea (id=116680) [Spell Family (53)] 
@@ -1813,7 +1813,7 @@ Effects          :
 #2 (id=139560)   : Apply Aura (6) | Modify Periodic Healing Recevied% (259)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
 #3 (id=798098)   : Dummy (3)
-                   Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 Description      : Encases the target in a cocoon of Chi energy for $d, absorbing $<newshield> damage and increasing all healing over time received by $m2%.
 Tooltip          : Absorbing $w1 damage, and periodic healing received increased by $w2%.
 Variables        : $shield=${($SP*11)*(1+$@versadmg)}
@@ -2091,7 +2091,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
                  : Not a proc (105), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16100 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
 
@@ -2887,7 +2887,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.39600 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Crane Heal (198756), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850)

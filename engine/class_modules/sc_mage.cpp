@@ -473,7 +473,7 @@ public:
     int gbow_count = 0;
     bool allow_shimmer_lance = false;
     rotation_type_e rotation = ROTATION_STANDARD;
-    double lucid_dreams_proc_chance_arcane = 0.15;
+    double lucid_dreams_proc_chance_arcane = 0.075;
     double lucid_dreams_proc_chance_fire = 0.1;
     double lucid_dreams_proc_chance_frost = 0.075;
   } options;
@@ -668,55 +668,55 @@ public:
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
 
   // Character Definition
-  void        init_spells() override;
-  void        init_base_stats() override;
-  void        create_buffs() override;
-  void        create_options() override;
-  void        init_assessors() override;
-  void        init_action_list() override;
+  void init_spells() override;
+  void init_base_stats() override;
+  void create_buffs() override;
+  void create_options() override;
+  void init_assessors() override;
+  void init_action_list() override;
   std::string default_potion() const override;
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
-  void        init_gains() override;
-  void        init_procs() override;
-  void        init_benefits() override;
-  void        init_uptimes() override;
-  void        init_rng() override;
-  void        init_finished() override;
-  void        invalidate_cache( cache_e ) override;
-  void        init_resources( bool ) override;
-  void        recalculate_resource_max( resource_e ) override;
-  void        reset() override;
-  std::unique_ptr<expr_t>     create_expression( const std::string& ) override;
-  std::unique_ptr<expr_t>     create_action_expression( action_t&, const std::string& ) override;
-  action_t*   create_action( const std::string&, const std::string& ) override;
-  void        create_actions() override;
-  void        create_pets() override;
-  resource_e  primary_resource() const override { return RESOURCE_MANA; }
-  role_e      primary_role() const override { return ROLE_SPELL; }
-  stat_e      convert_hybrid_stat( stat_e ) const override;
-  double      resource_regen_per_second( resource_e ) const override;
-  double      composite_player_pet_damage_multiplier( const action_state_t* ) const override;
-  double      composite_spell_crit_chance() const override;
-  double      composite_rating_multiplier( rating_e ) const override;
-  double      composite_spell_haste() const override;
-  double      matching_gear_multiplier( attribute_e ) const override;
-  void        update_movement( timespan_t ) override;
-  void        teleport( double, timespan_t ) override;
-  double      passive_movement_modifier() const override;
-  void        arise() override;
-  void        combat_begin() override;
-  void        combat_end() override;
+  void init_gains() override;
+  void init_procs() override;
+  void init_benefits() override;
+  void init_uptimes() override;
+  void init_rng() override;
+  void init_finished() override;
+  void invalidate_cache( cache_e ) override;
+  void init_resources( bool ) override;
+  void recalculate_resource_max( resource_e ) override;
+  void reset() override;
+  std::unique_ptr<expr_t> create_expression( const std::string& ) override;
+  std::unique_ptr<expr_t> create_action_expression( action_t&, const std::string& ) override;
+  action_t* create_action( const std::string&, const std::string& ) override;
+  void create_actions() override;
+  void create_pets() override;
+  resource_e primary_resource() const override { return RESOURCE_MANA; }
+  role_e primary_role() const override { return ROLE_SPELL; }
+  stat_e convert_hybrid_stat( stat_e ) const override;
+  double resource_regen_per_second( resource_e ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  double composite_spell_crit_chance() const override;
+  double composite_rating_multiplier( rating_e ) const override;
+  double composite_spell_haste() const override;
+  double matching_gear_multiplier( attribute_e ) const override;
+  void update_movement( timespan_t ) override;
+  void teleport( double, timespan_t ) override;
+  double passive_movement_modifier() const override;
+  void arise() override;
+  void combat_begin() override;
+  void combat_end() override;
   std::string create_profile( save_e ) override;
-  void        copy_from( player_t* ) override;
-  void        merge( player_t& ) override;
-  void        analyze( sim_t& ) override;
-  void        datacollection_begin() override;
-  void        datacollection_end() override;
-  void        regen( timespan_t ) override;
-  void        moving() override;
-  void        vision_of_perfection_proc() override;
+  void copy_from( player_t* ) override;
+  void merge( player_t& ) override;
+  void analyze( sim_t& ) override;
+  void datacollection_begin() override;
+  void datacollection_end() override;
+  void regen( timespan_t ) override;
+  void moving() override;
+  void vision_of_perfection_proc() override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -1262,13 +1262,16 @@ struct mage_spell_state_t : public action_state_t
     frozen_multiplier = mss->frozen_multiplier;
   }
 
+  virtual double composite_frozen_multiplier() const
+  { return frozen ? frozen_multiplier : 1.0; }
+
   double composite_crit_chance() const override;
 
   double composite_da_multiplier() const override
-  { return action_state_t::composite_da_multiplier() * frozen_multiplier; }
+  { return action_state_t::composite_da_multiplier() * composite_frozen_multiplier(); }
 
   double composite_ta_multiplier() const override
-  { return action_state_t::composite_ta_multiplier() * frozen_multiplier; }
+  { return action_state_t::composite_ta_multiplier() * composite_frozen_multiplier(); }
 };
 
 struct mage_spell_t : public spell_t
@@ -1419,7 +1422,7 @@ public:
       cast_state( s )->frozen = frozen( s );
 
     if ( flags & STATE_FROZEN_MUL )
-      cast_state( s )->frozen_multiplier = cast_state( s )->frozen ? frozen_multiplier( s ) : 1.0;
+      cast_state( s )->frozen_multiplier = frozen_multiplier( s );
   }
 
   double cost() const override
@@ -1962,11 +1965,14 @@ struct frost_mage_spell_t : public mage_spell_t
 
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && s->chain_target == 0 )
-      record_shatter_source( s, shatter_source );
+    if ( result_is_hit( s->result ) )
+    {
+      if ( s->chain_target == 0 )
+        record_shatter_source( s, shatter_source );
 
-    if ( result_is_hit( s->result ) && chills )
-      p()->buffs.bone_chilling->trigger();
+      if ( chills )
+        p()->buffs.bone_chilling->trigger();
+    }
   }
 };
 
@@ -2187,16 +2193,12 @@ struct arcane_blast_t : public arcane_mage_spell_t
   void execute() override
   {
     p()->benefits.arcane_charge.arcane_blast->update();
+
     arcane_mage_spell_t::execute();
 
-    if ( hit_any_target )
-    {
+    p()->trigger_arcane_charge();
+    if ( rng().roll( p()->azerite.galvanizing_spark.spell_ref().effectN( 1 ).percent() ) )
       p()->trigger_arcane_charge();
-
-      // TODO: Benefit tracking
-      if ( rng().roll( p()->azerite.galvanizing_spark.spell_ref().effectN( 1 ).percent() ) )
-        p()->trigger_arcane_charge();
-    }
 
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
@@ -2250,7 +2252,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    if ( hit_any_target )
+    if ( !target_list().empty() )
       p()->trigger_arcane_charge();
 
     if ( num_targets_hit >= as<int>( p()->talents.reverberate->effectN( 2 ).base_value() )
@@ -2488,9 +2490,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
   void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      p()->trigger_arcane_charge();
+    p()->trigger_arcane_charge();
   }
 };
 
@@ -3743,10 +3743,12 @@ struct fire_blast_t : public fire_mage_spell_t
     base_crit += p->spec.fire_blast_2->effectN( 1 ).percent();
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    fire_mage_spell_t::execute();
-    p()->buffs.blaster_master->trigger();
+    fire_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      p()->buffs.blaster_master->trigger();
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -5257,7 +5259,12 @@ void mage_t::init_spells()
 void mage_t::init_base_stats()
 {
   if ( base.distance < 1 )
-    base.distance = 30;
+  {
+    if ( specialization() == MAGE_ARCANE )
+      base.distance = 10;
+    else
+      base.distance = 30;
+  }
 
   player_t::init_base_stats();
 
@@ -5291,7 +5298,7 @@ void mage_t::create_buffs()
   buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                  ->set_cooldown( 0_ms )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                   { if ( cur == 0 ) cooldowns.presence_of_mind->start(); } );
+                                   { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } );
 
   buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
                                  ->set_default_value( find_spell( 210126 )->effectN( 1 ).percent() )
@@ -5360,7 +5367,8 @@ void mage_t::create_buffs()
   // Shared
   buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this );
   buffs.rune_of_power  = make_buff( this, "rune_of_power", find_spell( 116014 ) )
-                           ->set_default_value( find_spell( 116014 )->effectN( 1 ).percent() );
+                           ->set_default_value( find_spell( 116014 )->effectN( 1 ).percent() )
+                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   // Azerite
   buffs.arcane_pummeling   = make_buff( this, "arcane_pummeling", find_spell( 270670 ) )
@@ -5606,14 +5614,18 @@ void mage_t::apl_precombat()
       precombat->add_action( "variable,name=conserve_mana,op=set,value=60+20*azerite.equipoise.enabled",
         "conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP." );
       precombat->add_action( "variable,name=font_double_on_use,op=set,value=equipped.azsharas_font_of_power&(equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch)" );
+      precombat->add_action( "variable,name=font_of_power_precombat_channel,op=set,value=12,if=variable.font_double_on_use&variable.font_of_power_precombat_channel=0",
+        "This variable determines when Azshara's Font of Power is used before the pull if bfa.font_of_power_precombat_channel is not specified.");
       break;
     case MAGE_FIRE:
       precombat->add_action( "variable,name=disable_combustion,op=reset" );
       precombat->add_action( "variable,name=combustion_rop_cutoff,op=set,value=60",
         "This variable sets the time at which Rune of Power should start being saved for the next Combustion phase" );
-      precombat->add_action( "variable,name=combustion_on_use,op=set,value=equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch" );
+      precombat->add_action( "variable,name=combustion_on_use,op=set,value=equipped.manifesto_of_madness|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch" );
       precombat->add_action( "variable,name=font_double_on_use,op=set,value=equipped.azsharas_font_of_power&variable.combustion_on_use" );
-      precombat->add_action( "variable,name=on_use_cutoff,op=set,value=20*variable.combustion_on_use&!variable.font_double_on_use+40*variable.font_double_on_use+25*equipped.azsharas_font_of_power&!variable.font_double_on_use",
+      precombat->add_action( "variable,name=font_of_power_precombat_channel,op=set,value=18,if=variable.font_double_on_use&variable.font_of_power_precombat_channel=0",
+        "This variable determines when Azshara's Font of Power is used before the pull if bfa.font_of_power_precombat_channel is not specified.");
+      precombat->add_action( "variable,name=on_use_cutoff,op=set,value=20*variable.combustion_on_use&!variable.font_double_on_use+40*variable.font_double_on_use+25*equipped.azsharas_font_of_power&!variable.font_double_on_use+8*equipped.manifesto_of_madness&!variable.font_double_on_use",
         "Items that are used outside of Combustion are not used after this time if they would put a trinket used with Combustion on a sharded cooldown." );
       break;
     case MAGE_FROST:
@@ -5774,7 +5786,7 @@ void mage_t::apl_arcane()
     burn->add_action( ra );
   }
   burn->add_action( this, "Presence of Mind", "if=(talent.rune_of_power.enabled&buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time)|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time" );
-  burn->add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))" );
+  burn->add_action( "potion,if=buff.arcane_power.up&((!essence.condensed_lifeforce.major|essence.condensed_lifeforce.rank<2)&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))|buff.guardian_of_azeroth.up)|target.time_to_die<cooldown.arcane_power.remains" );
   burn->add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack=0|(active_enemies<3|(active_enemies<2&talent.resonance.enabled))" );
   burn->add_action( this, "Arcane Barrage", "if=active_enemies>=3&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
   burn->add_action( this, "Arcane Explosion", "if=active_enemies>=3" );
@@ -5824,6 +5836,7 @@ void mage_t::apl_fire()
   default_list->add_talent( this, "Mirror Image", "if=buff.combustion.down" );
   default_list->add_action( "guardian_of_azeroth,if=(cooldown.combustion.remains<10|target.time_to_die<cooldown.combustion.remains)&!variable.disable_combustion" );
   default_list->add_action( "concentrated_flame" );
+  default_list->add_action( "reaping_flames" );
   default_list->add_action( "focused_azerite_beam" );
   default_list->add_action( "purifying_blast" );
   default_list->add_action( "ripple_in_space" );
@@ -5920,10 +5933,12 @@ void mage_t::apl_fire()
 
   items_high_priority->add_action( "call_action_list,name=items_combustion,if=!variable.disable_combustion&(talent.rune_of_power.enabled&cooldown.combustion.remains<=action.rune_of_power.cast_time|cooldown.combustion.ready)&!firestarter.active|buff.combustion.up" );
   items_high_priority->add_action( "use_items" );
+  items_high_priority->add_action( "use_item,name=manifesto_of_madness,if=!equipped.azsharas_font_of_power&cooldown.combustion.remains<8" );
   items_high_priority->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.combustion.remains<=5+15*variable.font_double_on_use&!variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=rotcrusted_voodoo_doll,if=cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=aquipotent_nautilus,if=cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=shiver_venom_relic,if=cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
+  items_high_priority->add_action( "use_item,name=forbidden_obsidian_claw,if=cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,effect_name=harmonic_dematerializer" );
   items_high_priority->add_action( "use_item,name=malformed_heralds_legwraps,if=cooldown.combustion.remains>=55&buff.combustion.down&cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=ancient_knot_of_wisdom,if=cooldown.combustion.remains>=55&buff.combustion.down&cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
@@ -5931,6 +5946,8 @@ void mage_t::apl_fire()
 
   items_combustion->add_action( "use_item,name=ignition_mages_fuse" );
   items_combustion->add_action( "use_item,name=hyperthread_wristwraps,if=buff.combustion.up&action.fire_blast.charges=0&action.fire_blast.recharge_time>gcd.max" );
+  items_combustion->add_action( "use_item,name=manifesto_of_madness" );
+  items_combustion->add_action( "cancel_buff,use_off_gcd=1,name=manifesto_of_madness_chapter_one,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
   items_combustion->add_action( "use_item,use_off_gcd=1,name=azurethos_singed_plumage,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
   items_combustion->add_action( "use_item,use_off_gcd=1,effect_name=gladiators_badge,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
   items_combustion->add_action( "use_item,use_off_gcd=1,effect_name=gladiators_medallion,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
@@ -6136,10 +6153,12 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
   double reg = player_t::resource_regen_per_second( rt );
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
+  {
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
 
-  if ( player_t::buffs.memory_of_lucid_dreams->check() )
-    reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+    if ( player_t::buffs.memory_of_lucid_dreams->check() )
+      reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+  }
 
   return reg;
 }
@@ -6625,17 +6644,18 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
   if ( !spec.icicles->ok() )
     return;
 
-  if ( icicles.empty() )
-    return;
-
   if ( chain && !icicle_event )
   {
     icicle_event = make_event<events::icicle_event_t>( *sim, *this, icicle_target, true );
     sim->print_debug( "{} icicle use on {} (chained), total={}", name(), icicle_target->name(), icicles.size() );
   }
-  else if ( !chain )
+
+  if ( !chain )
   {
     action_t* icicle_action = get_icicle();
+    if ( !icicle_action )
+      return;
+
     icicle_action->set_target( icicle_target );
     icicle_action->execute();
     sim->print_debug( "{} icicle use on {}, total={}", name(), icicle_target->name(), icicles.size() );

@@ -7032,7 +7032,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737275)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1041.989 (coefficient=13.40179) | PvP Coefficient: 0.25000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1041.989 (coefficient=13.40179) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (0.25 -> 0.2)
 #2 (id=737276)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : When you successfully Dispel Magic, heal yourself and $s2 injured allies within $280198A1 yds for $s1.

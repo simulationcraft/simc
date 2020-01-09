@@ -71,6 +71,7 @@ enum item_bonus_type
   ITEM_BONUS_SCALING_2 = 13, // Scaling based on ScalingStatDistribution.db2
   ITEM_BONUS_SET_ILEVEL= 14,
   ITEM_BONUS_ADD_RANK  = 17, // Add artifact power rank to a specific trait
+  ITEM_BONUS_ADD_ITEM_EFFECT = 23,
 };
 
 enum proc_types

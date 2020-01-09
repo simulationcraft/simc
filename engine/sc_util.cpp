@@ -1193,6 +1193,9 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_RUN_SPEED: return "run_speed";
     case CACHE_RPPM_HASTE: return "rppm_haste_coeff";
     case CACHE_RPPM_CRIT: return "rppm_crit_coeff";
+    case CACHE_CORRUPTION: return "corruption";
+    case CACHE_CORRUPTION_RESISTANCE: return "corruption_resistance";
+    case CACHE_AVOIDANCE: return "avoidance";
 
     default: return "unknown";
   }
@@ -1248,6 +1251,22 @@ const char* util::proc_type2_string( proc_types2 type )
     case PROC2_CAST_DAMAGE: return "DamageCast";
     case PROC2_CAST_HEAL: return "HealCast";
     default:           return "Unknown";
+  }
+}
+
+// trigger_type_string ======================================================
+
+const char* util::item_spell_trigger_string( item_spell_trigger_type type )
+{
+  switch ( type )
+  {
+    case ITEM_SPELLTRIGGER_ON_EQUIP: return "equip";
+    case ITEM_SPELLTRIGGER_LEARN_SPELL_ID: return "learn";
+    case ITEM_SPELLTRIGGER_SOULSTONE: return "soulstone";
+    case ITEM_SPELLTRIGGER_ON_USE: return "use";
+    case ITEM_SPELLTRIGGER_CHANCE_ON_HIT: return "chance_on_hit";
+    case ITEM_SPELLTRIGGER_ON_NO_DELAY_USE: return "no_delay_use";
+    default: return "unknown";
   }
 }
 

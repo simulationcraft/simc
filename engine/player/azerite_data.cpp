@@ -1324,6 +1324,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 303006, special_effects::arcane_heart          );
   unique_gear::register_special_effect( 300170, special_effects::clockwork_heart       );
   unique_gear::register_special_effect( 300168, special_effects::personcomputer_interface );
+  unique_gear::register_special_effect( 317137, special_effects::heart_of_darkness );
 
   // Generic Azerite Essences
   //
@@ -3692,6 +3693,34 @@ void personcomputer_interface( special_effect_t& effect )
     default: break;
   }
 }
+
+//Heart of Darkness
+void heart_of_darkness( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  buff_t* heart_of_darkness = buff_t::find( effect.player, "heart_of_darkness" );
+  if ( !heart_of_darkness )
+  {
+    double value = power.value( 1 );
+    heart_of_darkness =
+        make_buff<stat_buff_t>( effect.player, "heart_of_darkness", power.spell_ref().effectN( 1 ).trigger() )
+            ->add_stat( STAT_CRIT_RATING, value )
+            ->add_stat( STAT_HASTE_RATING, value )
+            ->add_stat( STAT_MASTERY_RATING, value )
+            ->add_stat( STAT_VERSATILITY_RATING, value )
+            ->set_quiet( true );
+    effect.player->register_combat_begin( [heart_of_darkness]( player_t* ) {
+      if ( heart_of_darkness->player->composite_corruption_rating() >= 25 )  // This number is not found in spell data
+      {
+        heart_of_darkness->trigger();
+      }
+    } );
+  }
+}
+
 } // Namespace special effects ends
 
 namespace azerite_essences
@@ -4811,10 +4840,77 @@ void worldvein_resonance( special_effect_t& effect )
   }
 }
 
+struct worldvein_resonance_buff_t : public buff_t
+{
+  stat_buff_t* lifeblood;
+
+  worldvein_resonance_buff_t( player_t* p, const azerite_essence_t& ess ) :
+    buff_t( p, "worldvein_resonance", p->find_spell( 313310 ), ess.item() )
+  {
+    lifeblood = static_cast<stat_buff_t*>( buff_t::find( p, "lifeblood" ) );
+  }
+
+  void adjust_stat( bool increase )
+  {
+    if ( !lifeblood )
+    {
+      return;
+    }
+
+    auto& stat_entry = lifeblood->stats.front();
+    if ( increase )
+    {
+      stat_entry.amount *= 1.0 + data().effectN( 1 ).percent();
+    }
+    else
+    {
+      stat_entry.amount /= 1.0 + data().effectN( 1 ).percent();
+    }
+
+    if ( lifeblood->check() )
+    {
+      double delta = stat_entry.amount * lifeblood->current_stack - stat_entry.current_value;
+      sim->print_debug( "{} worldvein_resonance {}creases lifeblood stats by {}%,"
+                        " stacks={}, old={}, new={} ({}{})",
+        player->name(),
+        increase ? "in" : "de", data().effectN( 1 ).base_value(), lifeblood->current_stack,
+        stat_entry.current_value, stat_entry.current_value + delta,
+        increase ? "+" : "", delta );
+
+      if ( delta > 0 )
+      {
+        player->stat_gain( stat_entry.stat, delta, lifeblood->stat_gain, nullptr, true );
+      }
+      else
+      {
+        player->stat_loss( stat_entry.stat, std::fabs( delta ), lifeblood->stat_gain,
+          nullptr, true );
+      }
+
+      stat_entry.current_value += delta;
+    }
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    adjust_stat( true /* Stat increase */ );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    adjust_stat( false /* Stat decrease */ );
+  }
+};
+
 struct worldvein_resonance_t : public azerite_essence_major_t
 {
   int stacks;
   buff_t* lifeblood;
+  buff_t* worldvein_resonance;
 
   worldvein_resonance_t( player_t* p, const std::string& options_str ) :
     azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) ), stacks()
@@ -4827,12 +4923,17 @@ struct worldvein_resonance_t : public azerite_essence_major_t
     lifeblood = buff_t::find( player, "lifeblood_shard" );
     if ( !lifeblood )
       lifeblood = make_buff<lifeblood_shard_t>( p, essence );
+
+    worldvein_resonance = buff_t::find( player, "worldvein_resonance" );
+    if ( !worldvein_resonance )
+      worldvein_resonance = make_buff<worldvein_resonance_buff_t>( p, essence );
   }
 
   void execute() override
   {
     azerite_essence_major_t::execute();
     lifeblood->trigger( stacks );
+    worldvein_resonance->trigger();
   }
 
   //Minor and major power both summon Lifeblood shards that grant primary stat (max benefit of 4 shards)

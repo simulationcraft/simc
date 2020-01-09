@@ -104,7 +104,7 @@ actions.filler+=/flametongue,if=talent.searing_assault.enabled
 actions.filler+=/lava_lash,if=!azerite.primal_primer.enabled&talent.hot_hand.enabled&buff.hot_hand.react
 actions.filler+=/crash_lightning,if=active_enemies>1&variable.furyCheck_CL
 actions.filler+=/rockbiter,if=maelstrom<70&!buff.strength_of_earth.up
-actions.filler+=/crash_lightning,if=talent.crashing_storm.enabled&variable.OCPool_CL
+actions.filler+=/crash_lightning,if=(talent.crashing_storm.enabled|talent.forceful_winds.enabled)&variable.OCPool_CL
 actions.filler+=/lava_lash,if=variable.OCPool_LL&variable.furyCheck_LL
 actions.filler+=/memory_of_lucid_dreams
 actions.filler+=/rockbiter

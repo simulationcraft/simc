@@ -993,6 +993,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ):
   base(),
   initial(),
   current(),
+  passive_rating_multiplier( 1.0 ),
   last_cast( timespan_t::zero() ),
   // Defense Mechanics
   def_dr( diminishing_returns_constants_t() ),
@@ -3787,6 +3788,16 @@ double player_t::composite_avoidance() const
   return composite_avoidance_rating() / current.rating.avoidance;
 }
 
+double player_t::composite_corruption() const
+{
+  return composite_corruption_rating() / current.rating.corruption;
+}
+
+double player_t::composite_corruption_resistance() const
+{
+  return composite_corruption_resistance_rating() / current.rating.corruption_resistance;
+}
+
 double player_t::composite_player_pet_damage_multiplier( const action_state_t* ) const
 {
   double m = 1.0;
@@ -3896,6 +3907,11 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
   if ( buffs.fathom_hunter )
   {
     m *= 1.0 + buffs.fathom_hunter->check_value();
+  }
+  // Critical hit damage buff from corruption effect
+  if ( buffs.strikethrough )
+  {
+    m *= 1.0 + buffs.strikethrough->check_value();
   }
   return m;
 }
@@ -4057,9 +4073,10 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
+// TODO: Move racial passives to init_base_stats
 double player_t::composite_rating_multiplier( rating_e rating ) const
 {
-  double v = 1.0;
+  double v = passive_rating_multiplier.get( rating );
 
   switch ( rating )
   {
@@ -4147,6 +4164,12 @@ double player_t::composite_rating( rating_e rating ) const
       break;
     case RATING_AVOIDANCE:
       v = current.stats.avoidance_rating;
+      break;
+    case RATING_CORRUPTION:
+      v = current.stats.corruption_rating;
+      break;
+    case RATING_CORRUPTION_RESISTANCE:
+      v = current.stats.corruption_resistance_rating;
       break;
     default:
       break;
@@ -6068,17 +6091,6 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
   }
 }
 
-/**
- * Adjust the current rating -> % modifer of a stat.
- *
- * Invalidates corresponding cache
- */
-void player_t::modify_current_rating( rating_e r, double amount )
-{
-  current.rating.get( r ) += amount;
-  invalidate_cache( cache_from_rating( r ) );
-}
-
 void player_t::cost_reduction_gain( school_e school, double amount, gain_t* /* gain */, action_t* /* action */ )
 {
   if ( amount <= 0 )
@@ -7054,6 +7066,8 @@ void snapshot_stats_t::execute()
   buffed_stats.mitigation_versatility = p->cache.mitigation_versatility();
   buffed_stats.run_speed              = p->cache.run_speed();
   buffed_stats.avoidance              = p->cache.avoidance();
+  buffed_stats.corruption             = p->cache.corruption();
+  buffed_stats.corruption_resistance  = p->cache.corruption_resistance();
   buffed_stats.leech                  = p->cache.leech();
 
   buffed_stats.spell_power =
@@ -8713,8 +8727,10 @@ struct cancel_buff_t : public action_t
 
     if ( !buff )
     {
-      throw std::invalid_argument( fmt::format(
-        "Player {} uses cancel_buff with unknown buff {}", player->name(), buff_name ) );
+      if ( sim->debug ) {
+        player->sim->error(
+          "Player {} uses cancel_buff with unknown buff {}", player->name(), buff_name );
+      }
     }
     else if ( !buff->can_cancel )
     {
@@ -12138,6 +12154,30 @@ double player_stat_cache_t::avoidance() const
   else
     assert( _avoidance == player->composite_avoidance() );
   return _avoidance;
+}
+
+double player_stat_cache_t::corruption() const
+{
+  if ( !active || !valid[ CACHE_CORRUPTION ] )
+  {
+    valid[ CACHE_CORRUPTION ] = true;
+    _corruption               = player->composite_corruption();
+  }
+  else
+    assert( _corruption == player->composite_corruption() );
+  return _corruption;
+}
+
+double player_stat_cache_t::corruption_resistance() const
+{
+  if ( !active || !valid[ CACHE_CORRUPTION_RESISTANCE ] )
+  {
+    valid[ CACHE_CORRUPTION_RESISTANCE ] = true;
+    _corruption_resistance               = player->composite_corruption_resistance();
+  }
+  else
+    assert( _corruption_resistance == player->composite_corruption_resistance() );
+  return _corruption_resistance;
 }
 
 double player_stat_cache_t::player_multiplier( school_e s ) const
