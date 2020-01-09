@@ -6,9 +6,9 @@ role=attack
 position=back
 talents=2310021
 
-azerite_essences=14:3:1/27:3:0/4:3:0/35:3:0
+azerite_essences=4:3:1/27:3:0/5:3:0/35:3:0
 
-head=circlet_of_the_enveloping_leviathan,id=159310,bonus_id=1647/4819,azerite_powers=181/249/30/13
+head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=136/249/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulder=gorak_tuls_mantle,id=159339,bonus_id=1647/4819,azerite_powers=136/193/30/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
@@ -36,7 +36,7 @@ role=attack
 position=back
 talents=2020022
 
-azerite_essences=14:3:1/27:3:0/4:3:0/35:3:0
+azerite_essences=4:3:1/27:3:0/32:3:0/35:3:0
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=411/129/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
@@ -66,7 +66,7 @@ role=attack
 position=back
 talents=2120031
 
-azerite_essences=14:3:1/27:3:0/4:3:0/35:3:0
+azerite_essences=4:3:1/27:3:0/5:3:0/35:3:0
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=175/413/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
