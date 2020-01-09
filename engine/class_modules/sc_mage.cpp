@@ -6153,10 +6153,12 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
   double reg = player_t::resource_regen_per_second( rt );
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
+  {
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
 
-  if ( player_t::buffs.memory_of_lucid_dreams->check() )
-    reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+    if ( player_t::buffs.memory_of_lucid_dreams->check() )
+      reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+  }
 
   return reg;
 }
