@@ -6457,9 +6457,10 @@ void corruption::gushing_wound( special_effect_t& effect )
     {
       auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
       auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
       if ( ap <= sp )
         return 0;
-      return proc_spell_t::attack_tick_power_coefficient( s );
+      return ap_sp_mod;
     }
 
     double spell_tick_power_coefficient( const action_state_t* s ) const override
@@ -6467,9 +6468,9 @@ void corruption::gushing_wound( special_effect_t& effect )
       auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
       auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
 
-      if ( ap <= sp )
+      if ( ap > sp )
         return 0;
-      return proc_spell_t::spell_tick_power_coefficient( s );
+      return ap_sp_mod;
     }
   };
 
