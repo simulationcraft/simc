@@ -3689,7 +3689,12 @@ bonus_id={ 6429 }, ilevel={ 10 @plvl 1 - 430 @plvl 120 }
 bonus_id={ 6430 }, desc={ Warforged }, ilevel={ 15 @plvl 1 - 440 @plvl 120 }
 bonus_id={ 6431 }, desc={ Warforged }, ilevel={ 15 @plvl 1 - 450 @plvl 120 }
 bonus_id={ 6432 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 450 @plvl 120 }
+bonus_id={ 6434 }, effects={ Poison (id=13518, index=0, type=chance_on_hit) }
 bonus_id={ 6435 }, stats={ 50% Cor [50.0000], 50% Rcor [50.0000] }
+bonus_id={ 6437 }, effects={ Strikethrough (id=315277, index=2, type=equip) }
+bonus_id={ 6438 }, effects={ Strikethrough (id=315281, index=3, type=equip) }
+bonus_id={ 6439 }, effects={ Strikethrough (id=315282, index=4, type=equip) }
+bonus_id={ 6440 }, effects={ Unknown Effect (id=116214) }
 bonus_id={ 6441 }, stats={ 100% Rcor [1000.0000] }
 bonus_id={ 6442 }, stats={ 100% Cor [1100.0000] }, effects={ Unknown Effect (id=116214) }
 bonus_id={ 6443 }, stats={ 100% Cor [1200.0000] }, effects={ Unknown Effect (id=116214) }
@@ -3698,6 +3703,7 @@ bonus_id={ 6445 }, stats={ 100% Cor [1400.0000] }, effects={ Unknown Effect (id=
 bonus_id={ 6446 }, stats={ 100% Cor [600.0000] }
 bonus_id={ 6447 }, stats={ 100% Cor [700.0000] }
 bonus_id={ 6448 }, stats={ 100% Cor [800.0000] }
+bonus_id={ 6449 }, effects={ Unknown Effect (id=116213) }
 bonus_id={ 6450 }, stats={ 100% Cor [5.0000] }
 bonus_id={ 6451 }, stats={ 100% Cor [6.0000] }
 bonus_id={ 6452 }, stats={ 100% Cor [7.0000] }
@@ -3719,6 +3725,34 @@ bonus_id={ 6467 }, stats={ 100% Cor [22.0000] }
 bonus_id={ 6468 }, stats={ 100% Cor [23.0000] }
 bonus_id={ 6469 }, stats={ 100% Cor [24.0000] }
 bonus_id={ 6470 }, stats={ 100% Cor [20.0000] }
+bonus_id={ 6471 }, effects={ Masterful (id=315529, index=2, type=equip) }
+bonus_id={ 6472 }, effects={ Masterful (id=315530, index=2, type=equip) }
+bonus_id={ 6473 }, effects={ Masterful (id=315531, index=2, type=equip) }
+bonus_id={ 6474 }, effects={ Expedient (id=315544, index=2, type=equip) }
+bonus_id={ 6475 }, effects={ Expedient (id=315545, index=2, type=equip) }
+bonus_id={ 6476 }, effects={ Expedient (id=315546, index=2, type=equip) }
+bonus_id={ 6477 }, effects={ Versatile (id=315549, index=2, type=equip) }
+bonus_id={ 6478 }, effects={ Versatile (id=315552, index=2, type=equip) }
+bonus_id={ 6479 }, effects={ Versatile (id=315553, index=2, type=equip) }
+bonus_id={ 6480 }, effects={ Severe (id=315554, index=2, type=equip) }
+bonus_id={ 6481 }, effects={ Severe (id=315557, index=2, type=equip) }
+bonus_id={ 6482 }, effects={ Severe (id=315558, index=2, type=equip) }
+bonus_id={ 6483 }, effects={ Avoidant (id=315607, index=2, type=equip) }
+bonus_id={ 6484 }, effects={ Avoidant (id=315608, index=2, type=equip) }
+bonus_id={ 6485 }, effects={ Avoidant (id=315609, index=2, type=equip) }
+bonus_id={ 6486 }, effects={ Glimpse of Clarity (id=315574, index=2, type=equip) }
+bonus_id={ 6487 }, effects={ Unknown Effect (id=116237) }
+bonus_id={ 6488 }, effects={ Unknown Effect (id=116238) }
+bonus_id={ 6489 }, effects={ Unknown Effect (id=116239) }
+bonus_id={ 6490 }, effects={ Unknown Effect (id=116240) }
+bonus_id={ 6491 }, effects={ Unknown Effect (id=116241) }
+bonus_id={ 6492 }, effects={ Unknown Effect (id=116242) }
+bonus_id={ 6493 }, effects={ Siphoner (id=315590, index=2, type=equip) }
+bonus_id={ 6494 }, effects={ Siphoner (id=315591, index=2, type=equip) }
+bonus_id={ 6495 }, effects={ Siphoner (id=315592, index=2, type=equip) }
+bonus_id={ 6496 }, effects={ Unknown Effect (id=116246) }
+bonus_id={ 6497 }, effects={ Unknown Effect (id=116247) }
+bonus_id={ 6498 }, effects={ Unknown Effect (id=116248) }
 bonus_id={ 6501 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 6502 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 6503 }, stats={ 100% Sta [0.3300] }
@@ -3749,8 +3783,8 @@ bonus_id={ 6543 }, stats={ 100% Cor [10.0000] }, effects={ Twisted Appendage (id
 bonus_id={ 6544 }, stats={ 100% Cor [35.0000] }, effects={ Twisted Appendage (id=318482, index=2, type=equip) }
 bonus_id={ 6545 }, stats={ 100% Cor [66.0000] }, effects={ Twisted Appendage (id=318483, index=2, type=equip) }
 bonus_id={ 6546 }, stats={ 100% Cor [15.0000] }, effects={ Glimpse of Clarity (id=318239, index=2, type=equip) }
-bonus_id={ 6547 }, stats={ 100% Cor [20.0000] }, effects={ Ineffable Truth (id=318303, index=2, type=equip) }
-bonus_id={ 6548 }, stats={ 100% Cor [50.0000] }, effects={ Ineffable Truth (id=318484, index=2, type=equip) }
+bonus_id={ 6547 }, stats={ 100% Cor [17.0000] }, effects={ Ineffable Truth (id=318303, index=2, type=equip) }
+bonus_id={ 6548 }, stats={ 100% Cor [33.0000] }, effects={ Ineffable Truth (id=318484, index=2, type=equip) }
 bonus_id={ 6549 }, stats={ 100% Cor [15.0000] }, effects={ Echoing Void (id=318280, index=2, type=equip) }
 bonus_id={ 6550 }, stats={ 100% Cor [25.0000] }, effects={ Echoing Void (id=318485, index=2, type=equip) }
 bonus_id={ 6551 }, stats={ 100% Cor [50.0000] }, effects={ Echoing Void (id=318486, index=2, type=equip) }
@@ -3769,12 +3803,12 @@ bonus_id={ 6563 }, stats={ 100% Cor [20.0000] }, effects={ Honed Mind (id=318494
 bonus_id={ 6564 }, stats={ 100% Cor [35.0000] }, effects={ Honed Mind (id=318498, index=2, type=equip) }
 bonus_id={ 6565 }, stats={ 100% Cor [20.0000] }, effects={ Surging Vitality (id=318495, index=2, type=equip) }
 bonus_id={ 6566 }, stats={ 100% Cor [35.0000] }, effects={ Surging Vitality (id=318499, index=2, type=equip) }
-bonus_id={ 6567 }, stats={ 100% Cor [25.0000] }, effects={ Devour Vitality (id=318294, index=2, type=equip) }
+bonus_id={ 6567 }, stats={ 100% Cor [35.0000] }, effects={ Devour Vitality (id=318294, index=2, type=equip) }
 bonus_id={ 6568 }, stats={ 100% Cor [25.0000] }, effects={ Whispered Truths (id=316780, index=2, type=equip) }
 bonus_id={ 6569 }, stats={ 100% Cor [25.0000] }, effects={ Lash of the Void (id=317290, index=2, type=equip) }
-bonus_id={ 6570 }, stats={ 100% Cor [25.0000] }, effects={ Flash of Insight (id=318299, index=2, type=equip) }
-bonus_id={ 6571 }, stats={ 100% Cor [25.0000] }, effects={ Searing Flames (id=318293, index=2, type=equip) }
-bonus_id={ 6572 }, stats={ 100% Cor [25.0000] }, effects={ Obsidian Skin (id=316651, index=2, type=equip) }
+bonus_id={ 6570 }, stats={ 100% Cor [20.0000] }, effects={ Flash of Insight (id=318299, index=2, type=equip) }
+bonus_id={ 6571 }, stats={ 100% Cor [30.0000] }, effects={ Searing Flames (id=318293, index=2, type=equip) }
+bonus_id={ 6572 }, stats={ 100% Cor [50.0000] }, effects={ Obsidian Skin (id=316651, index=2, type=equip) }
 bonus_id={ 6573 }, stats={ 100% Cor [15.0000] }, effects={ Gushing Wound (id=318272, index=2, type=equip) }
 bonus_id={ 6577 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [53.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
 bonus_id={ 6580 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [56.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
@@ -3802,3 +3836,6 @@ bonus_id={ 6601 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [11
 bonus_id={ 6602 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [122.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
 bonus_id={ 6603 }, desc={ Rank 15 }, ilevel_adjust={ 30 }, stats={ 100% Rcor [125.0000] }, effects={ Shroud of Resolve (id=317419, index=0, type=equip), Draconic Empowerment (id=317860, index=0, type=equip), Steadfast Resolve (id=318378, index=0, type=use), Shroud of Resolve (id=300470, index=0, type=equip) }
 bonus_id={ 6609 }, stats={ 100% Crit [0.1000] }
+bonus_id={ 6612 }, stats={ 100% Cor [17.0000] }
+bonus_id={ 6613 }, stats={ 100% Cor [28.0000] }
+bonus_id={ 6614 }, stats={ 100% Cor [45.0000] }
