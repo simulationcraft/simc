@@ -6328,6 +6328,12 @@ void corruption::echoing_void( special_effect_t& effect )
       dbc_proc_callback_t::trigger( a, call_data );
     }
 
+    void reset()
+    {
+      dbc_proc_callback_t::reset();
+      activate();
+    }
+
     void execute( action_t* a, action_state_t* state )
     {
       this->deactivate();
