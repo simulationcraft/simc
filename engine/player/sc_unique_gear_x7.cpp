@@ -6277,74 +6277,42 @@ void corruption::infinite_stars( special_effect_t& effect )
 // Echoing Void
 void corruption::echoing_void( special_effect_t& effect )
 {
-  // Buff application callback
+  // Buff application or usage callback
   struct echoing_void_cb_t : public dbc_proc_callback_t
   {
-    // collapse callback
-    dbc_proc_callback_t* callback;
-
-    echoing_void_cb_t( const special_effect_t& effect, dbc_proc_callback_t* cb )
-      : dbc_proc_callback_t( effect.player, effect ), callback( cb )
-    {
-    }
-
-    void trigger( action_t* a, void* call_data ) override
-    {
-      if ( a->background )
-      {
-        return;
-      }
-      if ( !callback->active )
-      {
-        return;
-      }
-      dbc_proc_callback_t::trigger( a, call_data );
-    }
-  };
-
-  // TODO: Change this into a % chance proc and find %
-  // Proc to use up all stacks
-  struct echoing_void_collapse_cb_t : public dbc_proc_callback_t
-  {
     action_t* damage;
-    buff_t* echoing_void;
 
-    echoing_void_collapse_cb_t( const special_effect_t& effect, action_t* a, buff_t* b )
-      : dbc_proc_callback_t( effect.player, effect ), damage( a ), echoing_void( b )
+    echoing_void_cb_t( const special_effect_t& effect, action_t* a)
+      : dbc_proc_callback_t( effect.player, effect ), damage( a )
     {
     }
 
-    void trigger( action_t* a, void* call_data ) override
+    // If the buff is up roll if the collapse begins
+    void execute( action_t*, action_state_t* state ) override
     {
-      if ( a->background )
+      if ( rng().roll( effect.player->sim->bfa_opts.echoing_void_collapse_chance ) && proc_buff->up() )
       {
-        return;
+        // Make the reactivation an event to not let the last tick damage proc a new stack
+        this->deactivate();
+        make_event<ground_aoe_event_t>(
+            *effect.player->sim, effect.player,
+            ground_aoe_params_t()
+                .target( state->target )
+                .pulse_time( effect.player->find_spell( 317022 )->effectN( 1 ).period() )
+                .n_pulses( proc_buff->check() )
+                .action( damage )
+                .expiration_callback(
+                    [this]() { make_event( *effect.player->sim, timespan_t::zero(), [this]() { this->activate(); } ); } ),
+            true /* immediately pulses */ );
       }
-
-      if ( !echoing_void->check() )
-      {
-        return;
-      }
-      dbc_proc_callback_t::trigger( a, call_data );
+      else
+        proc_buff->trigger();
     }
 
     void reset()
     {
       dbc_proc_callback_t::reset();
       activate();
-    }
-
-    void execute( action_t* a, action_state_t* state )
-    {
-      this->deactivate();
-      make_event<ground_aoe_event_t>( *effect.player->sim, effect.player,
-                                      ground_aoe_params_t()
-                                          .target( state->target )
-                                          .pulse_time( effect.player->find_spell( 317022 )->effectN( 1 ).period() )
-                                          .n_pulses( echoing_void->check() )
-                                          .action( damage )
-                                          .expiration_callback( [this]() { this->activate(); } ),
-                                      true /* immediately pulses */ );
     }
   };
 
@@ -6394,20 +6362,7 @@ void corruption::echoing_void( special_effect_t& effect )
     effect.spell_id    = 317014;
     effect.custom_buff = buff;
 
-    auto effect2          = new special_effect_t( effect.player );
-    effect2->name_str     = "echoing_void_collapse";
-    effect2->type         = effect.type;
-    effect2->source       = effect.source;
-    effect2->proc_flags_  = PF_ALL_DAMAGE | PF_PERIODIC;
-    effect2->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
-    effect2->proc_chance_ = 1.0;
-    effect2->ppm_         = -( effect.player->sim->bfa_opts.echoing_void_collapse_rppm );
-
-    effect.player->special_effects.push_back( effect2 );
-
-    auto proc = new echoing_void_collapse_cb_t( *effect2, echoing_void_damage, buff );
-    proc->initialize();
-    new echoing_void_cb_t( effect, proc );
+    new echoing_void_cb_t( effect, echoing_void_damage );
   }
   else
     echoing_void_damage->maxhp_multiplier += effect.driver()->effectN( 1 ).percent() / 10;
@@ -6595,7 +6550,7 @@ void corruption::searing_flames( special_effect_t& effect )
     // TODO: Confirm these flags
     effect.proc_flags_  = PF_ALL_DAMAGE;
     effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-    effect.spell_id    = 317014;
+    effect.spell_id     = 317014;
 
     new searing_flames_cb_t( effect, searing_flames_damage );
   }
