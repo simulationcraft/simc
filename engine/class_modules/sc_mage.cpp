@@ -5755,6 +5755,7 @@ void mage_t::apl_arcane()
 
   essences->add_action( "blood_of_the_enemy,if=burn_phase&buff.arcane_power.down&buff.rune_of_power.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack|time_to_die<cooldown.arcane_power.remains" );
   essences->add_action( "concentrated_flame,line_cd=6,if=buff.rune_of_power.down&buff.arcane_power.down&(!burn_phase|time_to_die<cooldown.arcane_power.remains)&mana.time_to_max>=execute_time" );
+  essences->add_action( "reaping_flames,if=buff.rune_of_power.down&buff.arcane_power.down&(!burn_phase|time_to_die<cooldown.arcane_power.remains)&mana.time_to_max>=execute_time" );
   essences->add_action( "focused_azerite_beam,if=buff.rune_of_power.down&buff.arcane_power.down" );
   essences->add_action( "guardian_of_azeroth,if=buff.rune_of_power.down&buff.arcane_power.down" );
   essences->add_action( "purifying_blast,if=buff.rune_of_power.down&buff.arcane_power.down" );
@@ -6114,6 +6115,7 @@ void mage_t::apl_frost()
       essences->add_action( "purifying_blast,if=buff.rune_of_power.down|active_enemies>3" );
       essences->add_action( "ripple_in_space,if=buff.rune_of_power.down|active_enemies>3" );
       essences->add_action( "concentrated_flame,line_cd=6,if=buff.rune_of_power.down" );
+      essences->add_action( "reaping_flames,if=buff.rune_of_power.down" );
       essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
       essences->add_action( "worldvein_resonance,if=buff.rune_of_power.down|active_enemies>3" );
       break;
@@ -6125,6 +6127,7 @@ void mage_t::apl_frost()
       essences->add_action( "purifying_blast,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3" );
       essences->add_action( "ripple_in_space,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3" );
       essences->add_action( "concentrated_flame,line_cd=6,if=buff.rune_of_power.down&debuff.packed_ice.down" );
+      essences->add_action( "reaping_flames,if=buff.rune_of_power.down&debuff.packed_ice.down" );
       essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
       essences->add_action( "worldvein_resonance,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3" );
       break;
