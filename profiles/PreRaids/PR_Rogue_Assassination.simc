@@ -8,7 +8,7 @@ position=back
 talents=2310021
 
 # Default consumables
-potion=potion_of_unbridled_fury
+potion=potion_of_focused_resolve
 flask=greater_flask_of_the_currents
 food=famine_evaluator_and_snack_table
 augmentation=battle_scarred
@@ -132,8 +132,9 @@ actions.essences+=/focused_azerite_beam,if=spell_targets.fan_of_knives>=2|raid_e
 actions.essences+=/purifying_blast,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60
 actions.essences+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10
 actions.essences+=/ripple_in_space
-actions.essences+=/worldvein_resonance,if=buff.lifeblood.stack<3
+actions.essences+=/worldvein_resonance
 actions.essences+=/memory_of_lucid_dreams,if=energy<50&!cooldown.vendetta.up
+actions.essences+=/reaping_flames
 
 # Stealthed Actions
 # Nighstalker, or Subt+Exsg on 1T: Snapshot Rupture
