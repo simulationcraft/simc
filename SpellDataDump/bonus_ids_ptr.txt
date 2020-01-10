@@ -3783,11 +3783,11 @@ bonus_id={ 6543 }, stats={ 100% Cor [10.0000] }, effects={ Twisted Appendage (id
 bonus_id={ 6544 }, stats={ 100% Cor [35.0000] }, effects={ Twisted Appendage (id=318482, index=2, type=equip) }
 bonus_id={ 6545 }, stats={ 100% Cor [66.0000] }, effects={ Twisted Appendage (id=318483, index=2, type=equip) }
 bonus_id={ 6546 }, stats={ 100% Cor [15.0000] }, effects={ Glimpse of Clarity (id=318239, index=2, type=equip) }
-bonus_id={ 6547 }, stats={ 100% Cor [17.0000] }, effects={ Ineffable Truth (id=318303, index=2, type=equip) }
-bonus_id={ 6548 }, stats={ 100% Cor [33.0000] }, effects={ Ineffable Truth (id=318484, index=2, type=equip) }
-bonus_id={ 6549 }, stats={ 100% Cor [15.0000] }, effects={ Echoing Void (id=318280, index=2, type=equip) }
-bonus_id={ 6550 }, stats={ 100% Cor [25.0000] }, effects={ Echoing Void (id=318485, index=2, type=equip) }
-bonus_id={ 6551 }, stats={ 100% Cor [50.0000] }, effects={ Echoing Void (id=318486, index=2, type=equip) }
+bonus_id={ 6547 }, stats={ 100% Cor [12.0000] }, effects={ Ineffable Truth (id=318303, index=2, type=equip) }
+bonus_id={ 6548 }, stats={ 100% Cor [30.0000] }, effects={ Ineffable Truth (id=318484, index=2, type=equip) }
+bonus_id={ 6549 }, stats={ 100% Cor [25.0000] }, effects={ Echoing Void (id=318280, index=2, type=equip) }
+bonus_id={ 6550 }, stats={ 100% Cor [35.0000] }, effects={ Echoing Void (id=318485, index=2, type=equip) }
+bonus_id={ 6551 }, stats={ 100% Cor [60.0000] }, effects={ Echoing Void (id=318486, index=2, type=equip) }
 bonus_id={ 6552 }, stats={ 100% Cor [20.0000] }, effects={ Infinite Stars (id=318274, index=2, type=equip) }
 bonus_id={ 6553 }, stats={ 100% Cor [50.0000] }, effects={ Infinite Stars (id=318487, index=2, type=equip) }
 bonus_id={ 6554 }, stats={ 100% Cor [75.0000] }, effects={ Infinite Stars (id=318488, index=2, type=equip) }
