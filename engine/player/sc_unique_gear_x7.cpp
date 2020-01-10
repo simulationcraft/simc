@@ -6285,6 +6285,7 @@ void corruption::echoing_void( special_effect_t& effect )
     echoing_void_cb_t( const special_effect_t& effect, action_t* a)
       : dbc_proc_callback_t( effect.player, effect ), damage( a )
     {
+      damage->split_aoe_damage = true;
     }
 
     // If the buff is up roll if the collapse begins
