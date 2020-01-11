@@ -5944,7 +5944,7 @@ void corruption::twilight_devastation( special_effect_t& effect )
 
     // Spell data has the percentage with an extra 0
     twilight_devastation_t( const special_effect_t& effect )
-      : aoe_proc_t( effect, "twilight_devastation", 317159 ),
+      : aoe_proc_t( effect, "twilight_devastation", 317159, true ),
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 )
     {
       // TODO: Check what this scales with
@@ -6532,7 +6532,8 @@ void corruption::searing_flames( special_effect_t& effect )
 
     // TODO: Confirm damage spell id
     searing_flames_t( const special_effect_t& effect )
-      : aoe_proc_t( effect, "searing_flames", 316703 ), maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
+      : aoe_proc_t( effect, "searing_flames", 316703, true ),
+        maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
     {
     }
 
