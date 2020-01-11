@@ -1319,7 +1319,9 @@ class SpellDataGenerator(DataGenerator):
          # Twilight Devastation damage
          317159,
          # Obsidian Destruction Range
-         316661
+         316661,
+         # Twisted Appendage damage
+         316835
         ),
 
         # Warrior:

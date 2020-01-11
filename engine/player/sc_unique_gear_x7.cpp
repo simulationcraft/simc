@@ -235,6 +235,7 @@ void devour_vitality( special_effect_t& effect );
 void gushing_wound( special_effect_t& effect );
 void void_ritual( special_effect_t& effect );
 void searing_flames( special_effect_t& effect );
+void twisted_appendage( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -6282,7 +6283,7 @@ void corruption::echoing_void( special_effect_t& effect )
   {
     action_t* damage;
 
-    echoing_void_cb_t( const special_effect_t& effect, action_t* a)
+    echoing_void_cb_t( const special_effect_t& effect, action_t* a )
       : dbc_proc_callback_t( effect.player, effect ), damage( a )
     {
       damage->split_aoe_damage = true;
@@ -6295,16 +6296,17 @@ void corruption::echoing_void( special_effect_t& effect )
       {
         // Make the reactivation an event to not let the last tick damage proc a new stack
         this->deactivate();
-        make_event<ground_aoe_event_t>(
-            *effect.player->sim, effect.player,
-            ground_aoe_params_t()
-                .target( state->target )
-                .pulse_time( effect.player->find_spell( 317022 )->effectN( 1 ).period() )
-                .n_pulses( proc_buff->check() )
-                .action( damage )
-                .expiration_callback(
-                    [this]() { make_event( *effect.player->sim, timespan_t::zero(), [this]() { this->activate(); } ); } ),
-            true /* immediately pulses */ );
+        make_event<ground_aoe_event_t>( *effect.player->sim, effect.player,
+                                        ground_aoe_params_t()
+                                            .target( state->target )
+                                            .pulse_time( effect.player->find_spell( 317022 )->effectN( 1 ).period() )
+                                            .n_pulses( proc_buff->check() )
+                                            .action( damage )
+                                            .expiration_callback( [this]() {
+                                              make_event( *effect.player->sim, timespan_t::zero(),
+                                                          [this]() { this->activate(); } );
+                                            } ),
+                                        true /* immediately pulses */ );
       }
       else
         proc_buff->trigger();
@@ -6559,6 +6561,105 @@ void corruption::searing_flames( special_effect_t& effect )
     searing_flames_damage->maxhp_multiplier += effect.driver()->effectN( 1 ).percent();
 }
 
+// Twisted Appendage
+void corruption::twisted_appendage( special_effect_t& effect )
+{
+  struct mind_flay_t : public spell_t
+  {
+    double ap_sp_mod;
+    mind_flay_t( const special_effect_t& effect, player_t* p, double mod )
+      : spell_t( "mind_flay", p, effect.player->find_spell( 316835 ) ), ap_sp_mod( mod )
+    {
+      channeled            = true;
+      // Does not seem to work
+      hasted_ticks         = false;
+      spell_power_mod.tick = attack_power_mod.tick = ap_sp_mod;
+    }
+
+    double attack_tick_power_coefficient( const action_state_t* s ) const override
+    {
+      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+      if ( ap <= sp )
+        return 0;
+      return ap_sp_mod;
+    }
+
+    double spell_tick_power_coefficient( const action_state_t* s ) const override
+    {
+      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+      if ( ap > sp )
+        return 0;
+      return ap_sp_mod;
+    }
+  };
+
+  struct twisted_appendage_pet_t : public pet_t
+  {
+    const special_effect_t* effect;
+    mind_flay_t* mind_flay;
+
+    twisted_appendage_pet_t( const special_effect_t& effect, mind_flay_t* a )
+      : pet_t( effect.player->sim, effect.player, "twisted_appendage", true, true ), effect( &effect ), mind_flay( a )
+    {
+      owner_coeff.sp_from_sp = 1;
+      owner_coeff.ap_from_ap = 1;
+    }
+
+    action_t* create_action( const std::string& name, const std::string& options ) override
+    {
+      if ( ::util::str_compare_ci( name, "mind_flay" ) )
+      {
+        return new mind_flay_t( *effect, this, mind_flay->ap_sp_mod );
+      }
+
+      return pet_t::create_action( name, options );
+    }
+
+    void init_action_list() override
+    {
+      pet_t::init_action_list();
+
+      if ( action_list_str.empty() )
+        get_action_priority_list( "default" )->add_action( "mind_flay" );
+    }
+  };
+
+  struct twisted_appendage_cb_t : public dbc_proc_callback_t
+  {
+    spawner::pet_spawner_t<twisted_appendage_pet_t> spawner;
+
+    twisted_appendage_cb_t( const special_effect_t& effect, mind_flay_t* a )
+      : dbc_proc_callback_t( effect.player, effect ),
+        spawner( "twisted_appendage", effect.player,
+                 [&effect, a]( player_t* ) { return new twisted_appendage_pet_t( effect, a ); } )
+    {
+      //spawner.set_default_duration( effect.player->find_spell( 316818 )->duration());
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      // TODO: Fix this workaround for ticks being hasted
+      spawner.spawn( effect.player->find_spell( 316818 )->duration() * effect.player->composite_spell_haste() );
+    }
+  };
+
+  // TODO: Fix abusing this action as a global variable
+  auto mind_flay = static_cast<mind_flay_t*>( effect.player->find_action( "mind_flay" ) );
+
+  if ( !mind_flay )
+  {
+    mind_flay       = static_cast<mind_flay_t*>( create_proc_action<mind_flay_t>( "mind_flay", effect, effect.player,
+                                                                            effect.driver()->effectN( 2 ).percent() ) );
+    effect.spell_id = 316815;
+    new twisted_appendage_cb_t( effect, mind_flay );
+  }
+  else
+    mind_flay->ap_sp_mod += effect.driver()->effectN( 2 ).percent();
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -6772,6 +6873,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318479, corruption::void_ritual );
   register_special_effect( 318480, corruption::void_ritual );
   register_special_effect( 318293, corruption::searing_flames );
+  register_special_effect( 318481, corruption::twisted_appendage );
+  register_special_effect( 318482, corruption::twisted_appendage );
+  register_special_effect( 318483, corruption::twisted_appendage );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
