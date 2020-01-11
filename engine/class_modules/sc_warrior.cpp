@@ -5275,8 +5275,7 @@ void warrior_t::apl_arms()
 
   if ( sim->allow_potions && true_level >= 80 )
   {
-    default_list->add_action( "potion" );
-  //default_list->add_action( "potion","if=(talent.massacre.enabled&target.health.pct<35|target.health.pct<20)&debuff.colossus_smash.up );
+    default_list->add_action( "potion,if=target.health.pct<21&buff.memory_of_lucid_dreams.up|!essence.memory_of_lucid_dreams.major" );
   }
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -5284,15 +5283,19 @@ void warrior_t::apl_arms()
     if ( racial_actions[ i ] == "arcane_torrent" )
     {
       default_list->add_action( racial_actions[ i ] +
-                                ",if=debuff.colossus_smash.down&cooldown.mortal_strike.remains>1.5&rage<50" );
+                                ",if=cooldown.mortal_strike.remains>1.5&buff.memory_of_lucid_dreams.down&rage<50" );
     }
     else if ( racial_actions[ i ] == "lights_judgment" )
     {
       default_list->add_action( racial_actions[ i ] + ",if=debuff.colossus_smash.down" );
     }
+    else if ( racial_actions[ i ] == "berserking" )
+    {
+      default_list->add_action( racial_actions[ i ] + ",if=buff.memory_of_lucid_dreams.up|(!essence.memory_of_lucid_dreams.major&debuff.colossus_smash.up)" );
+    }
     else
     {
-      default_list->add_action( racial_actions[ i ] + ",if=debuff.colossus_smash.up" );
+      default_list->add_action( racial_actions[ i ] + ",if=buff.memory_of_lucid_dreams.remains<5|(!essence.memory_of_lucid_dreams.major&debuff.colossus_smash.up)" );
     }
   }
 
@@ -5301,14 +5304,16 @@ void warrior_t::apl_arms()
     if ( items[ i ].name_str == "ashvanes_razor_coral" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
-                                ",if=!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|"
-                                "(!debuff.conductive_ink_debuff.up&(buff.memory_of_lucid_dreams.up|(debuff.colossus_smash.up&"
-                                "!essence.memory_of_lucid_dreams.major)))" );
+                                ",if=!debuff.razor_coral_debuff.up|(target.health.pct<20.1&buff.memory_of_lucid_dreams.up&"
+                                "cooldown.memory_of_lucid_dreams.remains<117)|(target.health.pct<30.1&debuff.conductive_ink_debuff.up&"
+                                "!essence.memory_of_lucid_dreams.major)|(!debuff.conductive_ink_debuff.up&!essence.memory_of_lucid_dreams.major&"
+                                "debuff.colossus_smash.up)|target.time_to_die<30" );
     }
     else if ( items[ i ].name_str == "azsharas_font_of_power" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
-                                ",if=!debuff.colossus_smash.up&!buff.test_of_might.up&!buff.memory_of_lucid_dreams.up" );
+                                ",if=target.time_to_die<70&(cooldown.colossus_smash.remains<12|(talent.warbreaker.enabled&cooldown.warbreaker.remains<12))|"
+                                "!debuff.colossus_smash.up&!buff.test_of_might.up&!buff.memory_of_lucid_dreams.up&target.time_to_die>150" );
     }
     else if ( items[ i ].name_str == "grongs_primal_rage" )
     {
@@ -5341,8 +5346,10 @@ void warrior_t::apl_arms()
   default_list->add_action( "concentrated_flame,if=!debuff.colossus_smash.up&!buff.test_of_might.up&dot.concentrated_flame_burn.remains=0" );
   default_list->add_action( "the_unbound_force,if=buff.reckless_force.up" );
   default_list->add_action( "guardian_of_azeroth,if=cooldown.colossus_smash.remains<10" );
-  default_list->add_action( "memory_of_lucid_dreams,if=!talent.warbreaker.enabled&cooldown.colossus_smash.remains<3|"
-                            "cooldown.warbreaker.remains<3" );
+  default_list->add_action( "memory_of_lucid_dreams,if=!talent.warbreaker.enabled&cooldown.colossus_smash.remains<gcd&"
+                            "(target.time_to_die>150|target.health.pct<20)" );
+  default_list->add_action( "memory_of_lucid_dreams,if=talent.warbreaker.enabled&cooldown.warbreaker.remains<gcd&"
+                            "(target.time_to_die>150|target.health.pct<20)" );
 
   default_list->add_action( "run_action_list,name=hac,if=raid_event.adds.exists" );
   default_list->add_action( "run_action_list,name=five_target,if=spell_targets.whirlwind>4" );
@@ -5422,7 +5429,8 @@ void warrior_t::apl_arms()
   execute->add_action( this, "Slam", "if=buff.crushing_assault.up&buff.memory_of_lucid_dreams.down" );
   execute->add_action( this, "Mortal Strike","if=buff.overpower.stack=2&talent.dreadnaught."
                              "enabled|buff.executioners_precision.stack=2" );
-  execute->add_action( this, "Execute" , "if=buff.memory_of_lucid_dreams.up|buff.deadly_calm.up");
+  execute->add_action( this, "Execute" , "if=buff.memory_of_lucid_dreams.up|buff.deadly_calm.up|"
+                             "(buff.test_of_might.up&cooldown.memory_of_lucid_dreams.remains>94)");
   execute->add_action( this, "Overpower" );
   execute->add_action( this, "Execute" );
 
@@ -5431,21 +5439,20 @@ void warrior_t::apl_arms()
                              "if=rage<60&buff.deadly_calm.down&buff.memory_of_lucid_dreams.down" );
   single_target->add_talent( this, "Ravager", "if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent."
                              "warbreaker.enabled&cooldown.warbreaker.remains<2))");
-  single_target->add_action( this, "Colossus Smash","if=!essence.memory_of_lucid_dreams.major|"
-                             "(buff.memory_of_lucid_dreams.up|cooldown.memory_of_lucid_dreams.remains>10)" );
-  single_target->add_talent( this, "Warbreaker", "if=!essence.memory_of_lucid_dreams.major|"
-                             "(buff.memory_of_lucid_dreams.up|cooldown.memory_of_lucid_dreams.remains>10)" );
+  single_target->add_action( this, "Colossus Smash" );
+  single_target->add_talent( this, "Warbreaker" );
   single_target->add_talent( this, "Deadly Calm" );
   single_target->add_action( this, "Execute", "if=buff.sudden_death.react" );
-  single_target->add_action( this, "Bladestorm", "if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|"
-                             "buff.deadly_calm.down)&((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|"
-                             "buff.test_of_might.up)&buff.memory_of_lucid_dreams.down" );
+  single_target->add_action( this, "Bladestorm", "if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&"
+                                   "((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)&"
+                                   "buff.memory_of_lucid_dreams.down&rage<40" );
   single_target->add_talent( this, "Cleave", "if=spell_targets.whirlwind>2" );
-  single_target->add_action( this, "Overpower", "if=rage<30&buff.memory_of_lucid_dreams.up&debuff.colossus_smash.up" );
+  single_target->add_action( this, "Overpower", "if=(rage<30&buff.memory_of_lucid_dreams.up&debuff.colossus_smash.up)|(rage<70&buff.memory_of_lucid_dreams.down)" );
   single_target->add_action( this, "Mortal Strike" );
-  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(buff.memory_of_lucid_dreams.up|buff.deadly_calm.up)" );
+  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(buff.memory_of_lucid_dreams.up|debuff.colossus_smash.up|buff.deadly_calm.up)" );
   single_target->add_action( this, "Overpower" );
-  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled" );
+  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&"
+                                   "(buff.test_of_might.up|debuff.colossus_smash.down&buff.test_of_might.down&rage>60)" );
   single_target->add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled");
 }
 
@@ -6053,7 +6060,7 @@ std::string warrior_t::default_potion() const
 
   std::string arms_pot =
       ( true_level > 110 )
-          ? "potion_of_unbridled_fury"
+          ? "potion_of_focused_resolve"
           : ( true_level > 100 )
                 ? "old_war"
                 : ( true_level >= 90 )
