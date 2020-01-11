@@ -5867,7 +5867,7 @@ void mage_t::apl_fire()
     "With Blaster Master and Flame On, Fire Blasts can additionally be used while Hot Streak and Heating Up are not active and a Pyroblast is in the air "
     "and also while casting Scorch even if Heating Up is already active. The latter allows two Hot Streak Pyroblasts to be cast in succession after the Scorch. "
     "Additionally with Blaster Master and Flame On, Fire Blasts should not be used unless Blaster Master is about to expire "
-    "or there are more than enough Fire Blasts to extend Blaster Master to the end of Combustion." ); 
+    "or there are more than enough Fire Blasts to extend Blaster Master to the end of Combustion." );
   combustion_phase->add_talent( this, "Rune of Power", "if=buff.combustion.down" );
   combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,if=azerite.blaster_master.enabled&(essence.memory_of_lucid_dreams.major|!essence.memory_of_lucid_dreams.minor)&talent.meteor.enabled&talent.flame_on.enabled&buff.blaster_master.down&(talent.rune_of_power.enabled&action.rune_of_power.executing&action.rune_of_power.execute_remains<0.6|(cooldown.combustion.ready|buff.combustion.up)&!talent.rune_of_power.enabled&!action.pyroblast.in_flight&!action.fireball.in_flight)",
     "A Fire Blast should be used to apply Blaster Master while casting Rune of Power when using Blaster Master, Flame On, and Meteor. If only Memory of Lucid Dreams Minor is equipped, this line is ignored because it will sometimes result in going into Combustion with few Fire Blast charges." );
