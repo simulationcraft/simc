@@ -1137,7 +1137,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
       const auto& essence = azerite_essence_entry_t::find( token_split[ 0 ], true, m_player->dbc.ptr );
       if ( essence.id == 0 )
       {
-        sim->errorf( "Unable to find Azerite Essence with name '%s'", splits[ 0 ].c_str() );
+        sim->errorf( "Unable to find Azerite Essence with name '%s'", splits[ i ].c_str() );
         return false;
       }
 
@@ -1149,7 +1149,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
       const auto& essence = azerite_essence_entry_t::find( id, m_player->dbc.ptr );
       if ( essence.id != id )
       {
-        sim->errorf( "Unable to find Azerite Essence with id %s", splits[ 0 ].c_str() );
+        sim->errorf( "Unable to find Azerite Essence with id %s", splits[ i ].c_str() );
         return false;
       }
     }
