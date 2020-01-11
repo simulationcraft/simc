@@ -5948,12 +5948,9 @@ void corruption::twilight_devastation( special_effect_t& effect )
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 )
     {
       // TODO: Check what this scales with
-    }
-
-    void init() override
-    {
-      aoe_proc_t::init();
-      update_flags |= STATE_MUL_DA;
+      // Set base damage so that flags are properly set
+      base_dd_min += 1;
+      base_dd_max += 1;
     }
 
     double base_da_min( const action_state_t* ) const override
@@ -6336,12 +6333,9 @@ void corruption::echoing_void( special_effect_t& effect )
         echoing_void_buff( b )
     {
       // TODO: Check what this scales with
-    }
-
-    void init() override
-    {
-      aoe_proc_t::init();
-      update_flags |= STATE_MUL_DA;
+      // Set small base damage so that flags are properly set
+      base_dd_min += 1;
+      base_dd_max += 1;
     }
 
     double base_da_min( const action_state_t* ) const override
@@ -6535,12 +6529,10 @@ void corruption::searing_flames( special_effect_t& effect )
       : aoe_proc_t( effect, "searing_flames", 316703, true ),
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
     {
-    }
-
-    void init() override
-    {
-      aoe_proc_t::init();
-      update_flags |= STATE_MUL_DA;
+      // TODO: Check what this scales with
+      // Set small base damage so that flags are properly set
+      base_dd_min += 1;
+      base_dd_max += 1;
     }
 
     double base_da_min( const action_state_t* ) const override
