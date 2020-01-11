@@ -383,6 +383,8 @@ const char* util::race_type_string( race_e type )
     case RACE_MAGHAR_ORC:          return "maghar_orc";
     case RACE_ZANDALARI_TROLL:     return "zandalari_troll";
     case RACE_KUL_TIRAN:           return "kul_tiran";
+    case RACE_VULPERA:             return "vulpera";
+    case RACE_MECHAGNOME:          return "mechagnome";
     case RACE_MAX:                 return "unknown";
     case RACE_UNKNOWN:             return "unknown";
     // no default statement so we get warnings if something is missing.
@@ -1823,6 +1825,8 @@ unsigned util::race_id( race_e race )
     case RACE_MAGHAR_ORC: return 14;
     case RACE_ZANDALARI_TROLL: return 31;
     case RACE_KUL_TIRAN: return 32;
+    case RACE_VULPERA: return 13;
+    case RACE_MECHAGNOME: return 15;
     default: return 0;
   }
 }
@@ -1947,7 +1951,9 @@ race_e util::translate_race_id( int rid )
     case 31: return RACE_ZANDALARI_TROLL;
     case 32: return RACE_KUL_TIRAN;
     case 34: return RACE_DARK_IRON_DWARF;
+    case 35: return RACE_VULPERA;
     case 36: return RACE_MAGHAR_ORC;
+    case 37: return RACE_MECHAGNOME;
   }
 
   return RACE_NONE;
