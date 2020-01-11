@@ -145,7 +145,9 @@
     { "data_type": "I", "field": "flags" },
     { "data_type": "b", "field": "quality" },
     { "data_type": "i", "field": "unk_1" },
-    { "data_type": "i", "field": "unk_2" }
+    { "data_type": "i", "field": "unk_2" },
+    { "data_type": "i", "field": "unk_3" },
+    { "data_type": "i", "field": "unk_4" }
   ],
   "Curve": [
     { "data_type": "B", "field": "type", "formats": { "cpp": "%4u"    } },
