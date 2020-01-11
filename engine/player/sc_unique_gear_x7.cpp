@@ -5938,17 +5938,22 @@ void corruption::ineffable_truth( special_effect_t& effect )
 // Twilight Devastation
 void corruption::twilight_devastation( special_effect_t& effect )
 {
-  struct twilight_devastation_t : public proc_spell_t
+  struct twilight_devastation_t : public aoe_proc_t
   {
     double maxhp_multiplier;
 
     // Spell data has the percentage with an extra 0
     twilight_devastation_t( const special_effect_t& effect )
-      : proc_spell_t( "twilight_devastation", effect.player, effect.player->find_spell( 317159 ) ),
+      : aoe_proc_t( effect, "twilight_devastation", 317159 ),
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 )
     {
-      aoe = -1;
       // TODO: Check what this scales with
+    }
+
+    void init() override
+    {
+      aoe_proc_t::init();
+      update_flags |= STATE_MUL_DA;
     }
 
     double base_da_min( const action_state_t* ) const override
@@ -6286,7 +6291,6 @@ void corruption::echoing_void( special_effect_t& effect )
     echoing_void_cb_t( const special_effect_t& effect, action_t* a )
       : dbc_proc_callback_t( effect.player, effect ), damage( a )
     {
-      damage->split_aoe_damage = true;
     }
 
     // If the buff is up roll if the collapse begins
@@ -6320,19 +6324,24 @@ void corruption::echoing_void( special_effect_t& effect )
   };
 
   // Damage spell
-  struct echoing_void_t : public proc_spell_t
+  struct echoing_void_t : public aoe_proc_t
   {
     double maxhp_multiplier;
     buff_t* echoing_void_buff;
 
     // Spell data has the percentage with an extra 0
     echoing_void_t( const special_effect_t& effect, buff_t* b )
-      : proc_spell_t( "echoing_void", effect.player, effect.player->find_spell( 317029 ) ),
+      : aoe_proc_t( effect, "echoing_void", 317029, true ),
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 ),
         echoing_void_buff( b )
     {
-      aoe = -1;
       // TODO: Check what this scales with
+    }
+
+    void init() override
+    {
+      aoe_proc_t::init();
+      update_flags |= STATE_MUL_DA;
     }
 
     double base_da_min( const action_state_t* ) const override
@@ -6517,17 +6526,20 @@ void corruption::searing_flames( special_effect_t& effect )
   };
 
   // Damage proc
-  struct searing_flames_t : public proc_spell_t
+  struct searing_flames_t : public aoe_proc_t
   {
     double maxhp_multiplier;
 
     // TODO: Confirm damage spell id
     searing_flames_t( const special_effect_t& effect )
-      : proc_spell_t( "searing_flames", effect.player, effect.player->find_spell( 316703 ) ),
-        maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
+      : aoe_proc_t( effect, "searing_flames", 316703 ), maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
     {
-      aoe = -1;
-      // TODO: Check what this scales with
+    }
+
+    void init() override
+    {
+      aoe_proc_t::init();
+      update_flags |= STATE_MUL_DA;
     }
 
     double base_da_min( const action_state_t* ) const override
