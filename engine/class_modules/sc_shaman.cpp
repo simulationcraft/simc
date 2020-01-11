@@ -8697,6 +8697,7 @@ void shaman_t::init_action_list_enhancement()
 
   cds->add_action( this, "Bloodlust", "if=azerite.ancestral_resonance.enabled",
                    "Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present." );
+  cds->add_action( "worldvein_resonance" );
   cds->add_action( "berserking,if=variable.cooldown_sync" );
   cds->add_action( "use_item,name=azsharas_font_of_power" );
   cds->add_action( "blood_fury,if=variable.cooldown_sync" );
@@ -8764,6 +8765,7 @@ void shaman_t::init_action_list_enhancement()
   filler->add_action( "ripple_in_space,if=raid_event.adds.in>60" );
   filler->add_action( "thundercharge" );
   filler->add_action( "concentrated_flame" );
+  filler->add_action( "reaping_flames" );
   filler->add_action( this, "Crash Lightning",
                       "if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL" );
   filler->add_action( this, "Flametongue", "if=talent.searing_assault.enabled" );
@@ -8780,7 +8782,6 @@ void shaman_t::init_action_list_enhancement()
                       "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd"
                       "&variable.furyCheck_FB" );
   filler->add_action( this, "Flametongue" );
-  filler->add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
 }
 // shaman_t::init_action_list_restoration ===================================
 

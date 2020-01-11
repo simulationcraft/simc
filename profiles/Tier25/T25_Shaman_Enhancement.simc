@@ -1,11 +1,12 @@
-shaman="T22_Shaman_Enhancement"
+shaman="T25_Shaman_Enhancement"
 source=default
 spec=enhancement
 level=120
 race=troll
 role=attack
 position=back
-talents=1101032
+talents=3202033
+azerite_essences=4:3/35:3/5:3/23:3
 
 # Default consumables
 potion=potion_of_unbridled_fury
@@ -144,29 +145,30 @@ actions.priority+=/frostbrand,if=(azerite.natural_harmony.enabled&buff.natural_h
 actions.priority+=/flametongue,if=(azerite.natural_harmony.enabled&buff.natural_harmony_fire.remains<=2*gcd)
 actions.priority+=/rockbiter,if=(azerite.natural_harmony.enabled&buff.natural_harmony_nature.remains<=2*gcd)&maelstrom<70
 
-head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=483/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=spaulders_of_coagulated_viscera,id=160731,bonus_id=4824/1507/4775,azerite_powers=179/22/13
-back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=chainvest_of_assured_quality,id=160627,bonus_id=4824/1507/4775,azerite_powers=447/31/13
-wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
-hands=oblivion_crushers,id=160721,bonus_id=4800/1507
-waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507
-legs=blighted_anima_greaves,id=160716,bonus_id=4800/1507
-feet=fused_monstrosity_stompers,id=160628,bonus_id=4800/1507
-finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
-finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
-trinket1=construct_overcharger,id=160652,bonus_id=4800/1507
-trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
-main_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=quick_navigation
-off_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=masterful_navigation
+head=helm_of_actualized_visions,id=174151,bonus_id=4824/1517/4819/4775,azerite_powers=416/530/30/15/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+shoulders=dreamers_unblinking_pauldrons,id=174149,bonus_id=4824/1517/4819/4775,azerite_powers=416/447/30/44/13
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+chest=last_vestige_of_neltharion,id=174147,bonus_id=4824/1517/4819/4775,azerite_powers=420/416/21/14/13
+wrists=nightmarish_chain_shackles,id=174154,bonus_id=4824/1517
+hands=ebony_scaled_gauntlets,id=174153,bonus_id=4824/1517
+waist=watchers_scheming_girdle,id=174158,bonus_id=4824/1517
+legs=spinebarb_legplates,id=174159,bonus_id=4824/1517
+feet=greaves_of_the_twilight_drake,id=174160,bonus_id=4824/1517
+finger1=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_haste
+finger2=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_haste
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket2=deadeye_spyglass,id=159623,bonus_id=3536/1637/4786
+main_hand=warmace_of_waking_nightmares,id=172186,bonus_id=4824/1517,enchant=force_multiplier
+off_hand=warmace_of_waking_nightmares,id=172186,bonus_id=4824/1517,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=386.19
-# gear_agility=4387
-# gear_stamina=7205
-# gear_crit_rating=926
-# gear_haste_rating=1319
-# gear_mastery_rating=553
-# gear_versatility_rating=211
-# gear_armor=2757
+# gear_ilvl=476.75
+# gear_agility=10422
+# gear_stamina=19890
+# gear_crit_rating=1346
+# gear_haste_rating=1679
+# gear_mastery_rating=733
+# gear_versatility_rating=411
+# gear_corruption_resistance=50
+# gear_armor=5643

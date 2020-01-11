@@ -6,7 +6,7 @@ race=tauren
 role=spell
 position=ranged_back
 talents=2311132
-azerite_essences=4:4/5:3/32:3/35:3
+azerite_essences=4:3/5:3/32:3/35:3
 
 # Default consumables
 potion=potion_of_unbridled_fury
