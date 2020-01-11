@@ -3514,7 +3514,7 @@ struct actor_t : private noncopyable
 
 /* Player Report Extension
  * Allows class modules to write extension to the report sections based on the dynamic class of the player.
- * 
+ *
  * To add sort functionaliy to custom tables:
  *  1) add the 'sort' class to the table: <table="sc sort">
  *    a) optionally add 'even' or 'odd' to automatically stripe the table: <table="sc sort even">
@@ -4479,6 +4479,7 @@ public:
   virtual double composite_avoidance() const;
   virtual double composite_corruption() const;
   virtual double composite_corruption_resistance() const;
+  virtual double composite_total_corruption() const;
   virtual double composite_armor() const;
   virtual double composite_bonus_armor() const;
   virtual double composite_base_armor_multiplier() const; // Modify Base Besistance
@@ -4672,7 +4673,7 @@ public:
   virtual void teleport( double yards, timespan_t duration = timespan_t::zero() );
   virtual movement_direction_type movement_direction() const
   { return current.movement_direction; }
-  
+
   virtual void reset_auto_attacks( timespan_t delay = timespan_t::zero() );
 
   virtual void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr );
@@ -6019,9 +6020,8 @@ public:
   virtual double composite_corruption_resistance() const
   { return player -> cache.corruption_resistance(); }
 
-  // TODO: How does corruption resistane work?
   virtual double composite_total_corruption() const
-  { return player -> cache.corruption() - player -> cache.corruption_resistance(); }
+  { return player -> composite_total_corruption(); }
 
   /// Direct amount multiplier due to debuffs on the target
   virtual double composite_target_da_multiplier( player_t* target ) const
