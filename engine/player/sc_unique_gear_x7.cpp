@@ -6684,6 +6684,11 @@ void corruption::lash_of_the_void( special_effect_t& effect )
       attack_power_mod.direct = ap_mod;
       aoe                     = 0;
     }
+
+    double attack_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      return ap_mod;
+    }
   };
 
   auto lash_of_the_void = static_cast<lash_of_the_void_t*>( effect.player->find_action( "lash_of_the_void" ) );
