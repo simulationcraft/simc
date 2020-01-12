@@ -949,7 +949,7 @@ public:
 
     if ( p()->buff.test_of_might_tracker->check() )
       p()->buff.test_of_might_tracker->current_value +=
-          ab::cost();  // Uses rage cost before deadly calm makes it cheaper.
+          rage;  // Uses rage cost before deadly calm makes it cheaper.
 
     if ( p()->talents.anger_management->ok() )
     {
@@ -5167,7 +5167,7 @@ void warrior_t::apl_fury()
 
   if ( sim->allow_potions && true_level >= 80 )
   {
-    default_list->add_action( "potion" );
+    default_list->add_action( "potion,if=buff.guardian_of_azeroth.up|(!essence.condensed_lifeforce.major&target.time_to_die=60)" );
   }
 
   default_list->add_action( this, "Rampage", "if=cooldown.recklessness.remains<3" );
@@ -5177,13 +5177,14 @@ void warrior_t::apl_fury()
   default_list->add_action( "ripple_in_space,if=!buff.recklessness.up&!buff.siegebreaker.up" );
   default_list->add_action( "worldvein_resonance,if=!buff.recklessness.up&!buff.siegebreaker.up" );
   default_list->add_action( "focused_azerite_beam,if=!buff.recklessness.up&!buff.siegebreaker.up" );
+  default_list->add_action( "reaping_flames,if=!buff.recklessness.up&!buff.siegebreaker.up" );
   default_list->add_action( "concentrated_flame,if=!buff.recklessness.up&!buff.siegebreaker.up&dot.concentrated_flame_burn.remains=0" );
   default_list->add_action( "the_unbound_force,if=buff.reckless_force.up" );
-  default_list->add_action( "guardian_of_azeroth,if=!buff.recklessness.up" );
+  default_list->add_action( "guardian_of_azeroth,if=!buff.recklessness.up&(target.time_to_die>195|target.health.pct<20)" );
   default_list->add_action( "memory_of_lucid_dreams,if=!buff.recklessness.up" );
 
   default_list->add_action( this, "Recklessness", "if=!essence.condensed_lifeforce.major&!essence.blood_of_the_enemy.major|"
-                            "cooldown.guardian_of_azeroth.remains>20|buff.guardian_of_azeroth.up|cooldown.blood_of_the_enemy.remains<gcd" );
+                                  "cooldown.guardian_of_azeroth.remains>1|buff.guardian_of_azeroth.up|cooldown.blood_of_the_enemy.remains<gcd" );
   default_list->add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.meat_cleaver.up" );
 
   for ( size_t i = 0; i < items.size(); i++ )
@@ -5191,7 +5192,7 @@ void warrior_t::apl_fury()
     if ( items[ i ].name_str == "ashvanes_razor_coral" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
-                                ",if=!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|"
+                                ",if=target.time_to_die<20|!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|"
                                 "(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|prev_gcd.2.guardian_of_azeroth|"
                                 "prev_gcd.2.recklessness&(!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major))" );
     }
@@ -5231,7 +5232,7 @@ void warrior_t::apl_fury()
     }
     else
     {
-      default_list->add_action( racial_actions[ i ] );
+      default_list->add_action( racial_actions[ i ] + ",if=buff.recklessness.up" );
     }
   }
 
@@ -5343,6 +5344,7 @@ void warrior_t::apl_arms()
   default_list->add_action( "ripple_in_space,if=!debuff.colossus_smash.up&!buff.test_of_might.up" );
   default_list->add_action( "worldvein_resonance,if=!debuff.colossus_smash.up&!buff.test_of_might.up" );
   default_list->add_action( "focused_azerite_beam,if=!debuff.colossus_smash.up&!buff.test_of_might.up" );
+  default_list->add_action( "reaping_flames,if=!debuff.colossus_smash.up&!buff.test_of_might.up" );
   default_list->add_action( "concentrated_flame,if=!debuff.colossus_smash.up&!buff.test_of_might.up&dot.concentrated_flame_burn.remains=0" );
   default_list->add_action( "the_unbound_force,if=buff.reckless_force.up" );
   default_list->add_action( "guardian_of_azeroth,if=cooldown.colossus_smash.remains<10" );
