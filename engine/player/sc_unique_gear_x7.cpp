@@ -212,6 +212,7 @@ void manifesto_of_madness( special_effect_t& );
 void whispering_eldritch_bow( special_effect_t& );
 void psyche_shredder( special_effect_t& );
 void torment_in_a_jar( special_effect_t& );
+void draconic_empowerment( special_effect_t& );
 }  // namespace items
 
 // 8.3.0(+?) corruption implementations
@@ -5853,6 +5854,22 @@ void items::torment_in_a_jar( special_effect_t& effect )
   new unleashed_agony_cb_t( effect );
 }
 
+/**Draconic Empowerment
+ * id=317860 driver
+ * id=317859 buff
+ */
+void items::draconic_empowerment( special_effect_t& effect )
+{
+  effect.custom_buff = buff_t::find( effect.player, "draconic_empowerment" );
+  if ( !effect.custom_buff )
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "draconic_empowerment", effect.player->find_spell( 317859 ) )
+      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.player->find_spell( 317859 )->effectN( 1 ).average( effect.item ) );
+
+  effect.proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC; // Proc flags are missing in spell data.
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -6977,6 +6994,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 316780, items::whispering_eldritch_bow );
   register_special_effect( 313640, items::psyche_shredder );
   register_special_effect( 313087, items::torment_in_a_jar );
+  register_special_effect( 317860, items::draconic_empowerment );
 
   // 8.3 Set Bonus(es)
   register_special_effect( 315793, set_bonus::titanic_empowerment );
