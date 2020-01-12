@@ -206,7 +206,6 @@ void shorting_bit_band( special_effect_t& );
 // 8.2.0 - Mechagon trinkets and special items
 void hyperthread_wristwraps( special_effect_t& );
 // 8.3.0 - Visions of N'Zoth Trinkets and Special Items
-void forbidden_obsidian_claw( special_effect_t& );
 void voidtwisted_titanshard( special_effect_t& );
 void vitacharged_titanshard( special_effect_t& );
 void manifesto_of_madness( special_effect_t& );
@@ -5562,19 +5561,6 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
   effect.execute_action = create_proc_action<hyperthread_reduction_t>( "hyperthread_wristwraps", effect, cb );
 }
 
-// Forbidden Obsidian Claw
-
-void items::forbidden_obsidian_claw( special_effect_t& effect )
-{
-  struct obsidian_claw_t : public proc_spell_t
-  {
-    obsidian_claw_t( const special_effect_t& effect )
-      : proc_spell_t( "obsidian_claw", effect.player, effect.trigger(), effect.item )
-    {
-    }
-  };
-}
-
 // Void-Twisted Titanshard
 // Implement as stat buff instead of absorb. If damage taken events are used again this would need to be changed.
 void items::voidtwisted_titanshard( special_effect_t& effect )
@@ -6380,7 +6366,7 @@ void corruption::echoing_void( special_effect_t& effect )
         proc_buff->trigger();
     }
 
-    void reset()
+    void reset() override
     {
       dbc_proc_callback_t::reset();
       activate();
@@ -6985,7 +6971,6 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 317290, corruption::lash_of_the_void );
 
   // 8.3 Special Effects
-  register_special_effect( 313148, items::forbidden_obsidian_claw );
   register_special_effect( 315736, items::voidtwisted_titanshard );
   register_special_effect( 315586, items::vitacharged_titanshard );
   register_special_effect( 313948, items::manifesto_of_madness );
