@@ -5569,7 +5569,6 @@ void items::forbidden_obsidian_claw( special_effect_t& effect )
     obsidian_claw_t( const special_effect_t& effect )
       : proc_spell_t( "obsidian_claw", effect.player, effect.trigger(), effect.item )
     {
-      tick_may_crit = false;
     }
   };
 }
