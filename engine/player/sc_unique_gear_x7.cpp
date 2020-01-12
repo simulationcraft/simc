@@ -6581,9 +6581,12 @@ void corruption::twisted_appendage( special_effect_t& effect )
       : spell_t( "mind_flay", p, effect.player->find_spell( 316835 ) ), ap_sp_mod( mod )
     {
       channeled            = true;
-      // Does not seem to work
-      hasted_ticks         = false;
       spell_power_mod.tick = attack_power_mod.tick = ap_sp_mod;
+    }
+
+    double composite_haste() const override
+    {
+      return 1.0;
     }
 
     double attack_tick_power_coefficient( const action_state_t* s ) const override
@@ -6646,13 +6649,12 @@ void corruption::twisted_appendage( special_effect_t& effect )
         spawner( "twisted_appendage", effect.player,
                  [&effect, a]( player_t* ) { return new twisted_appendage_pet_t( effect, a ); } )
     {
-      //spawner.set_default_duration( effect.player->find_spell( 316818 )->duration());
+      spawner.set_default_duration( effect.player->find_spell( 316818 )->duration() );
     }
 
     void execute( action_t*, action_state_t* ) override
     {
-      // TODO: Fix this workaround for ticks being hasted
-      spawner.spawn( effect.player->find_spell( 316818 )->duration() * effect.player->composite_spell_haste() );
+      spawner.spawn();
     }
   };
 
