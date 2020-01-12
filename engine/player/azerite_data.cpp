@@ -4653,6 +4653,10 @@ struct the_unbound_force_t : public azerite_essence_major_t
     if (essence.rank() >= 3)
       max_shard = 5;
   }
+  double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
+  {
+    return 1.0;
+  }
 }; //End of The Unbound Force
 
 // Vision of Perfection
