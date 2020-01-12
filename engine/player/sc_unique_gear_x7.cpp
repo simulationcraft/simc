@@ -6200,17 +6200,17 @@ struct infinite_stars_constructor_t : public item_targetdata_initializer_t
 
 void corruption::infinite_stars( special_effect_t& effect )
 {
-  double sp_mod = effect.driver()->effectN( 2 ).percent();
-
   struct infinite_stars_t : public proc_t
   {
     double debuff_percent   = player->find_spell( 317265 )->effectN( 3 ).percent();
     double star_travel_time = player->find_spell( 317262 )->missile_speed();
+    double ap_sp_mod;
 
-    infinite_stars_t( const special_effect_t& e, double sp_mod ) : proc_t( e, "infinite_stars", 317265 )
+    infinite_stars_t( const special_effect_t& e )
+      : proc_t( e, "infinite_stars", 317265 ), ap_sp_mod( e.driver()->effectN( 2 ).percent() )
     {
-      spell_power_mod.direct  = sp_mod;
-      attack_power_mod.direct = sp_mod;
+      spell_power_mod.direct  = ap_sp_mod;
+      attack_power_mod.direct = ap_sp_mod;
     }
 
     void init() override
@@ -6226,7 +6226,7 @@ void corruption::infinite_stars( special_effect_t& effect )
 
       if ( ap <= sp )
         return 0;
-      return proc_t::attack_direct_power_coefficient( s );
+      return ap_sp_mod;
     }
 
     double spell_direct_power_coefficient( const action_state_t* s ) const override
@@ -6236,7 +6236,7 @@ void corruption::infinite_stars( special_effect_t& effect )
 
       if ( ap > sp )
         return 0;
-      return proc_t::spell_direct_power_coefficient( s );
+      return ap_sp_mod;
     }
 
     timespan_t travel_time() const override
@@ -6268,12 +6268,17 @@ void corruption::infinite_stars( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<infinite_stars_t>( "infinite_stars", effect, sp_mod );
+  auto infinite_stars = static_cast<infinite_stars_t*>( effect.player->find_action( "infinite_stars" ) );
 
-  // Replace the driver spell, the RPPM value and proc flags are elsewhere in some cases
-  effect.spell_id = 317257;
+  if ( !infinite_stars )
+  {
+    effect.execute_action = create_proc_action<infinite_stars_t>( "infinite_stars", effect );
 
-  new dbc_proc_callback_t( effect.player, effect );
+    effect.spell_id = 317257;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+    infinite_stars->ap_sp_mod += effect.driver()->effectN( 2 ).percent();
 }
 
 // Echoing Void
