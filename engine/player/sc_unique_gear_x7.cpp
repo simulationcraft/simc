@@ -212,6 +212,7 @@ void vitacharged_titanshard( special_effect_t& );
 void manifesto_of_madness( special_effect_t& );
 void whispering_eldritch_bow( special_effect_t& );
 void psyche_shredder( special_effect_t& );
+void torment_in_a_jar( special_effect_t& );
 }  // namespace items
 
 // 8.3.0(+?) corruption implementations
@@ -5805,6 +5806,67 @@ void items::psyche_shredder( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// id=313087 driver
+//  - effect 2: consume dmg
+//  - effect 4: damage amp per stack
+// id=313088 stacking player buff
+// id=313089 aoe proc at 12 stacks
+void items::torment_in_a_jar( special_effect_t& effect )
+{
+  struct unleashed_agony_t : public aoe_proc_t
+  {
+    buff_t* buff;
+    double dmg_mod;
+
+    unleashed_agony_t( const special_effect_t& effect, double dmg_mod, buff_t* buff )
+      : aoe_proc_t( effect, "unleashed_agony", 313088, true ),
+      dmg_mod( dmg_mod ), buff( buff )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
+    }
+
+    double base_da_min( const action_state_t* ) const override
+    {
+      return base_dd_min * ( 1 + dmg_mod * buff->stack() );
+    }
+
+    double base_da_max( const action_state_t* s ) const override
+    {
+      return base_da_min( s );
+    }
+  };
+
+  struct unleashed_agony_cb_t : public dbc_proc_callback_t
+  {
+    action_t* stacking_damage;
+
+    unleashed_agony_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.player, effect )
+    {
+      stacking_damage = create_proc_action<unleashed_agony_t>( "unleashed_agony", effect, effect.driver()->effectN( 4 ).percent(), effect.custom_buff );
+      stacking_damage->add_child( effect.execute_action );
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      stacking_damage->set_target( s->target );
+      stacking_damage->execute();
+
+      dbc_proc_callback_t::execute( a, s );
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "unleashed_agony" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "unleashed_agony", effect.player->find_spell( 313088 ) );
+  }
+  effect.custom_buff = buff;
+
+  effect.execute_action = create_proc_action<aoe_proc_t>( "explosion_of_agony", effect, "explosion_of_agony", 313089, true );
+
+  new unleashed_agony_cb_t( effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -6929,6 +6991,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 313948, items::manifesto_of_madness );
   register_special_effect( 316780, items::whispering_eldritch_bow );
   register_special_effect( 313640, items::psyche_shredder );
+  register_special_effect( 313087, items::torment_in_a_jar );
 
   // 8.3 Set Bonus(es)
   register_special_effect( 315793, set_bonus::titanic_empowerment );
