@@ -135,7 +135,7 @@ actions.tod+=/touch_of_death,if=!equipped.cyclotronic_blast&equipped.dribbling_i
 actions.tod+=/touch_of_death,if=!equipped.cyclotronic_blast&!equipped.dribbling_inkpod&target.time_to_die>9
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=388/389/459/566/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=80
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517/4775,azerite_powers=117/389/21/85/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=391/389/31/85/13
@@ -152,12 +152,12 @@ main_hand=unguent_caress,id=172197,bonus_id=4824/1517,enchant=deadly_navigation
 off_hand=mishun_blade_of_tyrants,id=174105,bonus_id=4824/1517,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=477.38
-# gear_agility=10327
-# gear_stamina=19786
-# gear_crit_rating=774
-# gear_haste_rating=978
-# gear_mastery_rating=1370
+# gear_ilvl=479.25
+# gear_agility=10450
+# gear_stamina=20057
+# gear_crit_rating=805
+# gear_haste_rating=1009
+# gear_mastery_rating=1401
 # gear_versatility_rating=1006
 # gear_corruption=90
 # gear_corruption_resistance=50

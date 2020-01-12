@@ -159,8 +159,8 @@ finger1=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_ha
 finger2=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_haste
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=deadeye_spyglass,id=159623,bonus_id=3536/1637/4786
-main_hand=warmace_of_waking_nightmares,id=172186,bonus_id=4824/1517,enchant=force_multiplier
-off_hand=warmace_of_waking_nightmares,id=172186,bonus_id=4824/1517,enchant=quick_navigation
+main_hand=warmace_of_waking_nightmares,id=172186,bonus_id=4824/1517/6554,enchant=force_multiplier
+off_hand=warmace_of_waking_nightmares,id=172186,bonus_id=4824/1517/6552,enchant=quick_navigation
 
 # Gear Summary
 # gear_ilvl=476.75
@@ -170,5 +170,6 @@ off_hand=warmace_of_waking_nightmares,id=172186,bonus_id=4824/1517,enchant=quick
 # gear_haste_rating=1679
 # gear_mastery_rating=733
 # gear_versatility_rating=411
+# gear_corruption=95
 # gear_corruption_resistance=50
 # gear_armor=5643

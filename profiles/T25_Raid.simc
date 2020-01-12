@@ -35,9 +35,7 @@ bfa.worldvein_allies=5
 # T25_Rogue_Subtlety.simc
 
 T25_Shaman_Elemental.simc
-# T25_Shaman_Enhancement_Storm.simc
-# T25_Shaman_Enhancement_Earth.simc
-# T25_Shaman_Enhancement_Fire.simc
+T25_Shaman_Enhancement.simc
 # T25_Shaman_Restoration.simc
 
 # T25_Warlock_Affliction.simc
