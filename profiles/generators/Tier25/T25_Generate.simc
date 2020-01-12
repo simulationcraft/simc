@@ -21,7 +21,7 @@
 # *   back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 
 # Death Knight
-# T25_Generate_Death_Knight.simc
+T25_Generate_Death_Knight.simc
 
 # Demon Hunter
 # T25_Generate_Demon_Hunter.simc
@@ -36,16 +36,16 @@
 T25_Generate_Mage.simc
 
 # Monk
-# T25_Generate_Monk.simc
+T25_Generate_Monk.simc
 
 # Paladin
 # T25_Generate_Paladin.simc
 
 # Priest
-# T25_Generate_Priest.simc
+T25_Generate_Priest.simc
 
 # Rogue
-# T25_Generate_Rogue.simc
+T25_Generate_Rogue.simc
 
 # Shaman
 T25_Generate_Shaman.simc
