@@ -236,6 +236,7 @@ void gushing_wound( special_effect_t& effect );
 void void_ritual( special_effect_t& effect );
 void searing_flames( special_effect_t& effect );
 void twisted_appendage( special_effect_t& effect );
+void lash_of_the_void( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -6669,6 +6670,33 @@ void corruption::twisted_appendage( special_effect_t& effect )
     mind_flay->ap_sp_mod += effect.driver()->effectN( 2 ).percent();
 }
 
+// Lash of the Void
+void corruption::lash_of_the_void( special_effect_t& effect )
+{
+  struct lash_of_the_void_t : public proc_spell_t
+  {
+    double ap_mod;
+
+    lash_of_the_void_t( const special_effect_t& effect )
+      : proc_spell_t( "lash_of_the_void", effect.player, effect.trigger() ),
+        ap_mod( effect.trigger()->effectN( 1 ).ap_coeff() )
+    {
+      attack_power_mod.direct = ap_mod;
+      aoe                     = 0;
+    }
+  };
+
+  auto lash_of_the_void = static_cast<lash_of_the_void_t*>( effect.player->find_action( "lash_of_the_void" ) );
+
+  if ( !lash_of_the_void )
+  {
+    effect.execute_action = create_proc_action<lash_of_the_void_t>( "lash_of_the_void", effect );
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+    lash_of_the_void->ap_mod += effect.trigger()->effectN( 1 ).ap_coeff();
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -6885,6 +6913,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318481, corruption::twisted_appendage );
   register_special_effect( 318482, corruption::twisted_appendage );
   register_special_effect( 318483, corruption::twisted_appendage );
+  register_special_effect( 317290, corruption::lash_of_the_void );
 
   // 8.3 Special Effects
   register_special_effect( 313148, items::forbidden_obsidian_claw );
