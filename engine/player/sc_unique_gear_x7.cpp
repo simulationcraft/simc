@@ -5794,19 +5794,19 @@ void items::psyche_shredder( special_effect_t& effect )
 }
 
 // id=313087 driver
-//  - effect 2: consume dmg
+//  - effect 2: stacking dmg
 //  - effect 4: damage amp per stack
 // id=313088 stacking player buff
 // id=313089 aoe proc at 12 stacks
 void items::torment_in_a_jar( special_effect_t& effect )
 {
-  struct unleashed_agony_t : public aoe_proc_t
+  struct unleashed_agony_t : public proc_t
   {
     buff_t* buff;
     double dmg_mod;
 
     unleashed_agony_t( const special_effect_t& effect, double dmg_mod, buff_t* buff )
-      : aoe_proc_t( effect, "unleashed_agony", 313088, true ),
+      : proc_t( effect, "unleashed_agony", 313088 ),
       dmg_mod( dmg_mod ), buff( buff )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
@@ -5849,7 +5849,7 @@ void items::torment_in_a_jar( special_effect_t& effect )
   }
   effect.custom_buff = buff;
 
-  effect.execute_action = create_proc_action<aoe_proc_t>( "explosion_of_agony", effect, "explosion_of_agony", 313089, true );
+  effect.execute_action = create_proc_action<proc_t>( "explosion_of_agony", effect, "explosion_of_agony", 313089 );
 
   new unleashed_agony_cb_t( effect );
 }
