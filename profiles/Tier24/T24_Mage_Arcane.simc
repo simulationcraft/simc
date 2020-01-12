@@ -102,6 +102,7 @@ actions.conserve+=/arcane_barrage
 
 actions.essences=blood_of_the_enemy,if=burn_phase&buff.arcane_power.down&buff.rune_of_power.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack|time_to_die<cooldown.arcane_power.remains
 actions.essences+=/concentrated_flame,line_cd=6,if=buff.rune_of_power.down&buff.arcane_power.down&(!burn_phase|time_to_die<cooldown.arcane_power.remains)&mana.time_to_max>=execute_time
+actions.essences+=/reaping_flames,if=buff.rune_of_power.down&buff.arcane_power.down&(!burn_phase|time_to_die<cooldown.arcane_power.remains)&mana.time_to_max>=execute_time
 actions.essences+=/focused_azerite_beam,if=buff.rune_of_power.down&buff.arcane_power.down
 actions.essences+=/guardian_of_azeroth,if=buff.rune_of_power.down&buff.arcane_power.down
 actions.essences+=/purifying_blast,if=buff.rune_of_power.down&buff.arcane_power.down
