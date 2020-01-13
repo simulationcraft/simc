@@ -9684,7 +9684,7 @@ void monk_t::apl_pre_windwalker()
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   pre->add_action( "potion" );
-  pre->add_action( "variable,name=coral_double_tod_on_use,op=set,value=equipped.ashvanes_razor_coral&(equipped.cyclotronic_blast|equipped.lustrous_golden_plumage)" );
+  pre->add_action( "variable,name=coral_double_tod_on_use,op=set,value=equipped.ashvanes_razor_coral&(equipped.cyclotronic_blast|equipped.lustrous_golden_plumage|equipped.gladiators_badge|equipped.gladiators_medallion)" );
   pre->add_talent( this, "Chi Burst", "if=(!talent.serenity.enabled|!talent.fist_of_the_white_tiger.enabled)" );
   pre->add_talent( this, "Chi Wave", "if=talent.fist_of_the_white_tiger.enabled" );
   pre->add_talent( this, "Invoke Xuen, the White Tiger" );
@@ -9855,8 +9855,6 @@ void monk_t::apl_combat_windwalker()
                       "Use Arcane Torrent if you are missing at least 1 Chi and won't cap energy within 0.5 seconds" );
     else if ( racial_actions[ i ] == "berserking" )
       berserking = racial_actions[ i ] + ",if=target.time_to_die>183|dot.touch_of_death.remains|target.time_to_die<13";
-      //cd->add_action( racial_actions[ i ] + ",if=target.time_to_die>183|dot.touch_of_death.remains|target.time_to_die<13",
-      //                "Use Berserking during Touch of Death" );
     else
       cd->add_action( racial_actions[ i ] );
   }
@@ -9873,7 +9871,7 @@ void monk_t::apl_combat_windwalker()
   cd->add_action( berserking, "Use Berserking during Touch of Death" );
   cd->add_action( "use_item,name=pocketsized_computation_device,if=dot.touch_of_death.remains" );
   cd->add_action( "use_item,name=ashvanes_razor_coral,if=variable.coral_double_tod_on_use&cooldown.touch_of_death.remains>=23&(debuff.razor_coral_debuff.down|buff.storm_earth_and_fire.remains>13|target.time_to_die-cooldown.touch_of_death.remains<40&cooldown.touch_of_death.remains<23|target.time_to_die<25)" );
-  cd->add_action( "use_item,name=ashvanes_razor_coral,if=!variable.coral_double_tod_on_use&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(dot.touch_of_death.remains|cooldown.touch_of_death.remains+9>target.time_to_die&buff.storm_earth_and_fire.up|target.time_to_die<25))" );
+  cd->add_action( "use_item,name=ashvanes_razor_coral,if=!variable.coral_double_tod_on_use&(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(debuff.razor_coral_debuff.down|dot.touch_of_death.remains|(cooldown.touch_of_death.remains+9>target.time_to_die&buff.storm_earth_and_fire.up)|target.time_to_die<21)" );
   cd->add_action( "the_unbound_force" );
   cd->add_action( "purifying_blast" );
   cd->add_action( "reaping_flames" );
