@@ -1,11 +1,12 @@
-warrior="PR_Warrior_Fury"
+warrior="T25_Warrior_Fury"
 source=default
 spec=fury
 level=120
-race=human
+race=gnome
 role=attack
 position=back
-talents=2122123
+talents=2133123
+azerite_essences=14:3/12:3/32:3/35:3
 
 # Default consumables
 potion=potion_of_unbridled_fury
@@ -52,6 +53,7 @@ actions+=/guardian_of_azeroth,if=!buff.recklessness.up&(target.time_to_die>195|t
 actions+=/memory_of_lucid_dreams,if=!buff.recklessness.up
 actions+=/recklessness,if=!essence.condensed_lifeforce.major&!essence.blood_of_the_enemy.major|cooldown.guardian_of_azeroth.remains>1|buff.guardian_of_azeroth.up|cooldown.blood_of_the_enemy.remains<gcd
 actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up
+actions+=/use_item,name=ashvanes_razor_coral,if=target.time_to_die<20|!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|prev_gcd.2.guardian_of_azeroth|prev_gcd.2.recklessness&(!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major))
 actions+=/blood_fury,if=buff.recklessness.up
 actions+=/berserking,if=buff.recklessness.up
 actions+=/lights_judgment,if=buff.recklessness.down
@@ -74,29 +76,31 @@ actions.single_target+=/raging_blow,if=talent.carnage.enabled|(talent.massacre.e
 actions.single_target+=/furious_slash,if=talent.furious_slash.enabled
 actions.single_target+=/whirlwind
 
-head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4786/4775,azerite_powers=438/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4786/4775,azerite_powers=438/459/13
-back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-chest=ashvane_wardens_cuirass,id=159440,bonus_id=4779/1512/4786/4775,azerite_powers=438/30/13
-wrists=stonefury_vambraces,id=158359,bonus_id=4779/1512/4786
-hands=fangproof_gauntlets,id=159437,bonus_id=4779/1512/4786
-waist=girdle_of_pestilent_purification,id=159418,bonus_id=4779/1512/4786
-legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
-feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
-finger1=loop_of_pulsing_veins,id=159463,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=briny_barnacle,id=159619,bonus_id=4779/1512/4786
-trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
-main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=quick_navigation
-off_hand=jeweled_sharksplitter,id=159634,bonus_id=4779/1512/4786,enchant=masterful_navigation
+head=greathelm_of_phantasmic_reality,id=174167,bonus_id=4824/1517/4775,azerite_powers=437/176/21
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+shoulders=cthraxxi_binders_pauldrons,id=159439,bonus_id=1647/4775,azerite_powers=176/196/30
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+chest=breastplate_of_twilight_decimation,id=174164,bonus_id=4824/1517/4775,azerite_powers=176/119/459
+wrists=bracers_of_phantom_pains,id=174177,bonus_id=4824/1517/6481
+hands=mirageweavers_gauntlets,id=174178,bonus_id=4824/1517/6482
+waist=belt_of_muttering_truths,id=174174,bonus_id=4824/1517/6482
+legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517/6482
+feet=sabatons_of_malevolent_intent,id=174176,bonus_id=4824/1517/6482
+finger1=overclocking_bit_band,id=169159,bonus_id=1522/4778,enchant_id=6109
+finger2=logic_loop_of_recursion,id=169158,bonus_id=1522/4778,enchant_id=6109
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517/4786
+trinket2=vitacharged_titanshard,id=174500,bonus_id=4824/1517/6448
+main_hand=devastations_hour,id=172187,bonus_id=4824/1517,enchant=masterful_navigation
+off_hand=getiikku_cut_of_death,id=159644,bonus_id=1637,enchant=deadly_navigation
 
 # Gear Summary
-# gear_ilvl=341.38
-# gear_strength=3099
-# gear_stamina=4809
-# gear_crit_rating=468
-# gear_haste_rating=1368
-# gear_mastery_rating=554
-# gear_versatility_rating=93
-# gear_armor=3054
+# gear_ilvl=476.75
+# gear_strength=10382
+# gear_stamina=21005
+# gear_crit_rating=1677
+# gear_haste_rating=1886
+# gear_mastery_rating=734
+# gear_versatility_rating=124
+# gear_corruption=800
+# gear_corruption_resistance=50
+# gear_armor=8230

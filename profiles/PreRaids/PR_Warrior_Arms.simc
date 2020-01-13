@@ -26,6 +26,7 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=azsharas_font_of_power
+actions.precombat+=/worldvein_resonance
 actions.precombat+=/memory_of_lucid_dreams
 actions.precombat+=/guardian_of_azeroth
 actions.precombat+=/potion
@@ -47,6 +48,7 @@ actions+=/purifying_blast,if=!debuff.colossus_smash.up&!buff.test_of_might.up
 actions+=/ripple_in_space,if=!debuff.colossus_smash.up&!buff.test_of_might.up
 actions+=/worldvein_resonance,if=!debuff.colossus_smash.up&!buff.test_of_might.up
 actions+=/focused_azerite_beam,if=!debuff.colossus_smash.up&!buff.test_of_might.up
+actions+=/reaping_flames,if=!debuff.colossus_smash.up&!buff.test_of_might.up
 actions+=/concentrated_flame,if=!debuff.colossus_smash.up&!buff.test_of_might.up&dot.concentrated_flame_burn.remains=0
 actions+=/the_unbound_force,if=buff.reckless_force.up
 actions+=/guardian_of_azeroth,if=cooldown.colossus_smash.remains<10
