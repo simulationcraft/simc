@@ -9869,8 +9869,8 @@ void monk_t::apl_combat_windwalker()
   cd->add_action( "use_items,if=equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains<=20|!equipped.cyclotronic_blast" );
   cd->add_action( "ancestral_call,if=dot.touch_of_death.remains|target.time_to_die<16" );
   cd->add_action( "fireblood,if=dot.touch_of_death.remains|target.time_to_die<9" );
-  cd->add_action( berserking, "Use Berserking during Touch of Death" );
   cd->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&(cooldown.concentrated_flame.remains<=cooldown.touch_of_death.remains&(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains)&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&buff.storm_earth_and_fire.down|dot.touch_of_death.remains)|target.time_to_die<8" );
+  cd->add_action( berserking, "Use Berserking during Touch of Death" );
   cd->add_action( "use_item,name=pocketsized_computation_device,if=dot.touch_of_death.remains" );
   cd->add_action( "use_item,name=ashvanes_razor_coral,if=variable.coral_double_tod_on_use&cooldown.touch_of_death.remains>=23&(debuff.razor_coral_debuff.down|buff.storm_earth_and_fire.remains>13|target.time_to_die-cooldown.touch_of_death.remains<40&cooldown.touch_of_death.remains<23|target.time_to_die<25)" );
   cd->add_action( "use_item,name=ashvanes_razor_coral,if=!variable.coral_double_tod_on_use&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(dot.touch_of_death.remains|cooldown.touch_of_death.remains+9>target.time_to_die&buff.storm_earth_and_fire.up|target.time_to_die<25))" );
