@@ -9045,7 +9045,7 @@ double monk_t::composite_base_armor_multiplier() const
 
 double monk_t::resource_gain( resource_e r, double a, gain_t* g, action_t* action )
 {
-  
+
   return player_t::resource_gain( r, a, g, action );
 }
 
@@ -9847,7 +9847,7 @@ void monk_t::apl_combat_windwalker()
   cd->add_action( "worldvein_resonance,if=cooldown.touch_of_death.remains>58|cooldown.touch_of_death.remains<2|target.time_to_die<20" );
 
   // Racials
-  string berserking = "";
+  std::string berserking = "";
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[ i ] == "arcane_torrent" )
