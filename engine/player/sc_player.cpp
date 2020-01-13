@@ -11170,6 +11170,8 @@ void player_t::create_options()
   add_option( opt_float( "gear_bonus_armor", gear.bonus_armor ) );
   add_option( opt_float( "gear_leech_rating", gear.leech_rating ) );
   add_option( opt_float( "gear_run_speed_rating", gear.speed_rating ) );
+  add_option( opt_float( "gear_corruption", gear.corruption_rating ) );
+  add_option( opt_float( "gear_corruption_resistance", gear.corruption_resistance_rating ) );
 
   // Stat Enchants
   add_option( opt_float( "enchant_strength", enchant.attribute[ ATTR_STRENGTH ] ) );
@@ -11195,6 +11197,8 @@ void player_t::create_options()
   add_option( opt_float( "enchant_energy", enchant.resource[ RESOURCE_ENERGY ] ) );
   add_option( opt_float( "enchant_focus", enchant.resource[ RESOURCE_FOCUS ] ) );
   add_option( opt_float( "enchant_runic", enchant.resource[ RESOURCE_RUNIC_POWER ] ) );
+  add_option( opt_float( "enchant_corruption", enchant.corruption_rating ) );
+  add_option( opt_float( "enchant_corruption_resistance", enchant.corruption_resistance_rating ) );
 
   // Regen
   add_option( opt_bool( "infinite_energy", resources.infinite_resource[ RESOURCE_ENERGY ] ) );
