@@ -5134,6 +5134,8 @@ void warrior_t::default_apl_dps_precombat()
 
   precombat->add_action( "use_item,name=azsharas_font_of_power" );
 
+  precombat->add_action( "worldvein_resonance" );
+
   precombat->add_action( "memory_of_lucid_dreams" );
 
   precombat->add_action( "guardian_of_azeroth" );
