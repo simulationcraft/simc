@@ -69,8 +69,6 @@ actions.cd=invoke_xuen_the_white_tiger
 actions.cd+=/guardian_of_azeroth,if=target.time_to_die>185|(!equipped.dribbling_inkpod|equipped.cyclotronic_blast|target.health.pct<30)&cooldown.touch_of_death.remains<=14|equipped.dribbling_inkpod&target.time_to_pct_30.remains<20|target.time_to_die<35
 actions.cd+=/worldvein_resonance,if=cooldown.touch_of_death.remains>58|cooldown.touch_of_death.remains<2|target.time_to_die<20
 actions.cd+=/blood_fury
-# Use Berserking during Touch of Death
-actions.cd+=/berserking,if=target.time_to_die>183|dot.touch_of_death.remains|target.time_to_die<13
 # Use Arcane Torrent if you are missing at least 1 Chi and won't cap energy within 0.5 seconds
 actions.cd+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
 actions.cd+=/lights_judgment
@@ -79,10 +77,12 @@ actions.cd+=/ancestral_call
 actions.cd+=/call_action_list,name=tod
 actions.cd+=/storm_earth_and_fire,,if=cooldown.storm_earth_and_fire.charges=2|(!essence.worldvein_resonance.major|(buff.worldvein_resonance.up|cooldown.worldvein_resonance.remains>cooldown.storm_earth_and_fire.full_recharge_time))&(cooldown.touch_of_death.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.touch_of_death.remains>target.time_to_die)&cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=13|dot.touch_of_death.remains|target.time_to_die<20
 actions.cd+=/blood_of_the_enemy,if=dot.touch_of_death.remains|target.time_to_die<12
-actions.cd+=/use_item,if=equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains<=20|!equipped.cyclotronic_blast
+actions.cd+=/use_items,if=equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains<=20|!equipped.cyclotronic_blast
 actions.cd+=/ancestral_call,if=dot.touch_of_death.remains|target.time_to_die<16
 actions.cd+=/fireblood,if=dot.touch_of_death.remains|target.time_to_die<9
 actions.cd+=/concentrated_flame,if=!dot.concentrated_flame_burn.remains&(cooldown.concentrated_flame.remains<=cooldown.touch_of_death.remains&(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains)&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&buff.storm_earth_and_fire.down|dot.touch_of_death.remains)|target.time_to_die<8
+# Use Berserking during Touch of Death
+actions.cd+=/berserking,if=target.time_to_die>183|dot.touch_of_death.remains|target.time_to_die<13
 actions.cd+=/use_item,name=pocketsized_computation_device,if=dot.touch_of_death.remains
 actions.cd+=/use_item,name=ashvanes_razor_coral,if=variable.coral_double_tod_on_use&cooldown.touch_of_death.remains>=23&(debuff.razor_coral_debuff.down|buff.storm_earth_and_fire.remains>13|target.time_to_die-cooldown.touch_of_death.remains<40&cooldown.touch_of_death.remains<23|target.time_to_die<25)
 actions.cd+=/use_item,name=ashvanes_razor_coral,if=!variable.coral_double_tod_on_use&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(dot.touch_of_death.remains|cooldown.touch_of_death.remains+9>target.time_to_die&buff.storm_earth_and_fire.up|target.time_to_die<25))
