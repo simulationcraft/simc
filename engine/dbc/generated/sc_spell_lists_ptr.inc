@@ -2617,7 +2617,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
     },
   },
 };
-#define PTR_RACE_ABILITY_SIZE (5)
+#define PTR_RACE_ABILITY_SIZE (7)
 
 #ifndef ptr_MAX_RACE
 #define ptr_MAX_RACE (33)
@@ -3068,6 +3068,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       265224, // Forged in Flames
       265222, // Mass Production
       265225, // Mole Machine
+          0,
     },
     {     0, },
     {     0, },
@@ -3082,8 +3083,18 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
     {     0, },
     {     0, },
   },
+  // Racial abilities for Vulpera
   {
-    {     0, },
+    // Generic racial abilities
+    {
+      317795, // Alpaca Saddlebags
+      312411, // Bag of Tricks
+      312198, // Fire Resistance
+      312370, // Make Camp
+      312215, // Nose For Trouble
+      312372, // Return to Camp
+      312425, // Rummage Your Bag
+    },
     {     0, },
     {     0, },
     {     0, },
@@ -3120,8 +3131,17 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
     {     0, },
     {     0, },
   },
+  // Racial abilities for Mechagnome
   {
-    {     0, },
+    // Generic racial abilities
+    {
+      312923, // Combat Analysis
+      312916, // Emergency Failsafe
+      312924, // Hyper Organic Light Originator
+      312896, // Mastercraft
+      312890, // Skeleton Pinkie
+          0,
+    },
     {     0, },
     {     0, },
     {     0, },
@@ -3411,6 +3431,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       255655, // Pride of Ironhorn
       255659, // Rugged Tenacity
       255656, // Waste Not, Want Not
+          0,
     },
     {     0, },
     {     0, },
@@ -3434,6 +3455,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       255667, // Ethereal Connection
       255670, // Preternatural Calm
       256948, // Spatial Rift
+          0,
     },
     {     0, },
     {     0, },
@@ -3557,6 +3579,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       292751, // Embrace of the Loa
       281954, // Pterrordax Swoop
       291944, // Regeneratin'
+          0,
     },
     {     0, },
     {     0, },

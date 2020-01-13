@@ -206,12 +206,13 @@ void shorting_bit_band( special_effect_t& );
 // 8.2.0 - Mechagon trinkets and special items
 void hyperthread_wristwraps( special_effect_t& );
 // 8.3.0 - Visions of N'Zoth Trinkets and Special Items
-void forbidden_obsidian_claw( special_effect_t& );
 void voidtwisted_titanshard( special_effect_t& );
 void vitacharged_titanshard( special_effect_t& );
 void manifesto_of_madness( special_effect_t& );
 void whispering_eldritch_bow( special_effect_t& );
 void psyche_shredder( special_effect_t& );
+void torment_in_a_jar( special_effect_t& );
+void draconic_empowerment( special_effect_t& );
 }  // namespace items
 
 // 8.3.0(+?) corruption implementations
@@ -235,6 +236,8 @@ void devour_vitality( special_effect_t& effect );
 void gushing_wound( special_effect_t& effect );
 void void_ritual( special_effect_t& effect );
 void searing_flames( special_effect_t& effect );
+void twisted_appendage( special_effect_t& effect );
+void lash_of_the_void( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -5559,20 +5562,6 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
   effect.execute_action = create_proc_action<hyperthread_reduction_t>( "hyperthread_wristwraps", effect, cb );
 }
 
-// Forbidden Obsidian Claw
-
-void items::forbidden_obsidian_claw( special_effect_t& effect )
-{
-  struct obsidian_claw_t : public proc_spell_t
-  {
-    obsidian_claw_t( const special_effect_t& effect )
-      : proc_spell_t( "obsidian_claw", effect.player, effect.trigger(), effect.item )
-    {
-      tick_may_crit = false;
-    }
-  };
-}
-
 // Void-Twisted Titanshard
 // Implement as stat buff instead of absorb. If damage taken events are used again this would need to be changed.
 void items::voidtwisted_titanshard( special_effect_t& effect )
@@ -5804,6 +5793,83 @@ void items::psyche_shredder( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// id=313087 driver
+//  - effect 2: stacking dmg
+//  - effect 4: damage amp per stack
+// id=313088 stacking player buff
+// id=313089 aoe proc at 12 stacks
+void items::torment_in_a_jar( special_effect_t& effect )
+{
+  struct unleashed_agony_t : public proc_t
+  {
+    buff_t* buff;
+    double dmg_mod;
+
+    unleashed_agony_t( const special_effect_t& effect, double dmg_mod, buff_t* buff )
+      : proc_t( effect, "unleashed_agony", 313088 ),
+      dmg_mod( dmg_mod ), buff( buff )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
+    }
+
+    double base_da_min( const action_state_t* ) const override
+    {
+      return base_dd_min * ( 1 + dmg_mod * buff->stack() );
+    }
+
+    double base_da_max( const action_state_t* s ) const override
+    {
+      return base_da_min( s );
+    }
+  };
+
+  struct unleashed_agony_cb_t : public dbc_proc_callback_t
+  {
+    action_t* stacking_damage;
+
+    unleashed_agony_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.player, effect )
+    {
+      stacking_damage = create_proc_action<unleashed_agony_t>( "unleashed_agony", effect, effect.driver()->effectN( 4 ).percent(), effect.custom_buff );
+      stacking_damage->add_child( effect.execute_action );
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      stacking_damage->set_target( s->target );
+      stacking_damage->execute();
+
+      dbc_proc_callback_t::execute( a, s );
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "unleashed_agony" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "unleashed_agony", effect.player->find_spell( 313088 ) );
+  }
+  effect.custom_buff = buff;
+
+  effect.execute_action = create_proc_action<proc_t>( "explosion_of_agony", effect, "explosion_of_agony", 313089 );
+
+  new unleashed_agony_cb_t( effect );
+}
+
+/**Draconic Empowerment
+ * id=317860 driver
+ * id=317859 buff
+ */
+void items::draconic_empowerment( special_effect_t& effect )
+{
+  effect.custom_buff = buff_t::find( effect.player, "draconic_empowerment" );
+  if ( !effect.custom_buff )
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "draconic_empowerment", effect.player->find_spell( 317859 ) )
+      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.player->find_spell( 317859 )->effectN( 1 ).average( effect.item ) );
+
+  effect.proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC; // Proc flags are missing in spell data.
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -5937,17 +6003,19 @@ void corruption::ineffable_truth( special_effect_t& effect )
 // Twilight Devastation
 void corruption::twilight_devastation( special_effect_t& effect )
 {
-  struct twilight_devastation_t : public proc_spell_t
+  struct twilight_devastation_t : public aoe_proc_t
   {
     double maxhp_multiplier;
 
     // Spell data has the percentage with an extra 0
     twilight_devastation_t( const special_effect_t& effect )
-      : proc_spell_t( "twilight_devastation", effect.player, effect.player->find_spell( 317159 ) ),
+      : aoe_proc_t( effect, "twilight_devastation", 317159, true ),
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 )
     {
-      aoe = -1;
       // TODO: Check what this scales with
+      // Set base damage so that flags are properly set
+      base_dd_min += 1;
+      base_dd_max += 1;
     }
 
     double base_da_min( const action_state_t* ) const override
@@ -6198,17 +6266,17 @@ struct infinite_stars_constructor_t : public item_targetdata_initializer_t
 
 void corruption::infinite_stars( special_effect_t& effect )
 {
-  double sp_mod = effect.driver()->effectN( 2 ).percent();
-
   struct infinite_stars_t : public proc_t
   {
     double debuff_percent   = player->find_spell( 317265 )->effectN( 3 ).percent();
     double star_travel_time = player->find_spell( 317262 )->missile_speed();
+    double ap_sp_mod;
 
-    infinite_stars_t( const special_effect_t& e, double sp_mod ) : proc_t( e, "infinite_stars", 317265 )
+    infinite_stars_t( const special_effect_t& e )
+      : proc_t( e, "infinite_stars", 317265 ), ap_sp_mod( e.driver()->effectN( 2 ).percent() )
     {
-      spell_power_mod.direct  = sp_mod;
-      attack_power_mod.direct = sp_mod;
+      spell_power_mod.direct  = ap_sp_mod;
+      attack_power_mod.direct = ap_sp_mod;
     }
 
     void init() override
@@ -6224,7 +6292,7 @@ void corruption::infinite_stars( special_effect_t& effect )
 
       if ( ap <= sp )
         return 0;
-      return proc_t::attack_direct_power_coefficient( s );
+      return ap_sp_mod;
     }
 
     double spell_direct_power_coefficient( const action_state_t* s ) const override
@@ -6234,7 +6302,7 @@ void corruption::infinite_stars( special_effect_t& effect )
 
       if ( ap > sp )
         return 0;
-      return proc_t::spell_direct_power_coefficient( s );
+      return ap_sp_mod;
     }
 
     timespan_t travel_time() const override
@@ -6266,12 +6334,17 @@ void corruption::infinite_stars( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<infinite_stars_t>( "infinite_stars", effect, sp_mod );
+  auto infinite_stars = static_cast<infinite_stars_t*>( effect.player->find_action( "infinite_stars" ) );
 
-  // Replace the driver spell, the RPPM value and proc flags are elsewhere in some cases
-  effect.spell_id = 317257;
+  if ( !infinite_stars )
+  {
+    effect.execute_action = create_proc_action<infinite_stars_t>( "infinite_stars", effect );
 
-  new dbc_proc_callback_t( effect.player, effect );
+    effect.spell_id = 317257;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+    infinite_stars->ap_sp_mod += effect.driver()->effectN( 2 ).percent();
 }
 
 // Echoing Void
@@ -6282,7 +6355,7 @@ void corruption::echoing_void( special_effect_t& effect )
   {
     action_t* damage;
 
-    echoing_void_cb_t( const special_effect_t& effect, action_t* a)
+    echoing_void_cb_t( const special_effect_t& effect, action_t* a )
       : dbc_proc_callback_t( effect.player, effect ), damage( a )
     {
     }
@@ -6294,22 +6367,23 @@ void corruption::echoing_void( special_effect_t& effect )
       {
         // Make the reactivation an event to not let the last tick damage proc a new stack
         this->deactivate();
-        make_event<ground_aoe_event_t>(
-            *effect.player->sim, effect.player,
-            ground_aoe_params_t()
-                .target( state->target )
-                .pulse_time( effect.player->find_spell( 317022 )->effectN( 1 ).period() )
-                .n_pulses( proc_buff->check() )
-                .action( damage )
-                .expiration_callback(
-                    [this]() { make_event( *effect.player->sim, timespan_t::zero(), [this]() { this->activate(); } ); } ),
-            true /* immediately pulses */ );
+        make_event<ground_aoe_event_t>( *effect.player->sim, effect.player,
+                                        ground_aoe_params_t()
+                                            .target( state->target )
+                                            .pulse_time( effect.player->find_spell( 317022 )->effectN( 1 ).period() )
+                                            .n_pulses( proc_buff->check() )
+                                            .action( damage )
+                                            .expiration_callback( [this]() {
+                                              make_event( *effect.player->sim, timespan_t::zero(),
+                                                          [this]() { this->activate(); } );
+                                            } ),
+                                        true /* immediately pulses */ );
       }
       else
         proc_buff->trigger();
     }
 
-    void reset()
+    void reset() override
     {
       dbc_proc_callback_t::reset();
       activate();
@@ -6317,19 +6391,21 @@ void corruption::echoing_void( special_effect_t& effect )
   };
 
   // Damage spell
-  struct echoing_void_t : public proc_spell_t
+  struct echoing_void_t : public aoe_proc_t
   {
     double maxhp_multiplier;
     buff_t* echoing_void_buff;
 
     // Spell data has the percentage with an extra 0
     echoing_void_t( const special_effect_t& effect, buff_t* b )
-      : proc_spell_t( "echoing_void", effect.player, effect.player->find_spell( 317029 ) ),
+      : aoe_proc_t( effect, "echoing_void", 317029, true ),
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 ),
         echoing_void_buff( b )
     {
-      aoe = -1;
       // TODO: Check what this scales with
+      // Set small base damage so that flags are properly set
+      base_dd_min += 1;
+      base_dd_max += 1;
     }
 
     double base_da_min( const action_state_t* ) const override
@@ -6514,17 +6590,19 @@ void corruption::searing_flames( special_effect_t& effect )
   };
 
   // Damage proc
-  struct searing_flames_t : public proc_spell_t
+  struct searing_flames_t : public aoe_proc_t
   {
     double maxhp_multiplier;
 
     // TODO: Confirm damage spell id
     searing_flames_t( const special_effect_t& effect )
-      : proc_spell_t( "searing_flames", effect.player, effect.player->find_spell( 316703 ) ),
+      : aoe_proc_t( effect, "searing_flames", 316703, true ),
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
     {
-      aoe = -1;
       // TODO: Check what this scales with
+      // Set small base damage so that flags are properly set
+      base_dd_min += 1;
+      base_dd_max += 1;
     }
 
     double base_da_min( const action_state_t* ) const override
@@ -6556,6 +6634,139 @@ void corruption::searing_flames( special_effect_t& effect )
   }
   else
     searing_flames_damage->maxhp_multiplier += effect.driver()->effectN( 1 ).percent();
+}
+
+// Twisted Appendage
+void corruption::twisted_appendage( special_effect_t& effect )
+{
+  struct mind_flay_t : public spell_t
+  {
+    double ap_sp_mod;
+    mind_flay_t( const special_effect_t& effect, player_t* p, double mod )
+      : spell_t( "mind_flay", p, effect.player->find_spell( 316835 ) ), ap_sp_mod( mod )
+    {
+      channeled            = true;
+      spell_power_mod.tick = attack_power_mod.tick = ap_sp_mod;
+    }
+
+    double composite_haste() const override
+    {
+      return 1.0;
+    }
+
+    double attack_tick_power_coefficient( const action_state_t* s ) const override
+    {
+      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+      if ( ap <= sp )
+        return 0;
+      return ap_sp_mod;
+    }
+
+    double spell_tick_power_coefficient( const action_state_t* s ) const override
+    {
+      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+      if ( ap > sp )
+        return 0;
+      return ap_sp_mod;
+    }
+  };
+
+  struct twisted_appendage_pet_t : public pet_t
+  {
+    const special_effect_t* effect;
+    mind_flay_t* mind_flay;
+
+    twisted_appendage_pet_t( const special_effect_t& effect, mind_flay_t* a )
+      : pet_t( effect.player->sim, effect.player, "twisted_appendage", true, true ), effect( &effect ), mind_flay( a )
+    {
+      owner_coeff.sp_from_sp = 1;
+      owner_coeff.ap_from_ap = 1;
+    }
+
+    action_t* create_action( const std::string& name, const std::string& options ) override
+    {
+      if ( ::util::str_compare_ci( name, "mind_flay" ) )
+      {
+        return new mind_flay_t( *effect, this, mind_flay->ap_sp_mod );
+      }
+
+      return pet_t::create_action( name, options );
+    }
+
+    void init_action_list() override
+    {
+      pet_t::init_action_list();
+
+      if ( action_list_str.empty() )
+        get_action_priority_list( "default" )->add_action( "mind_flay" );
+    }
+  };
+
+  struct twisted_appendage_cb_t : public dbc_proc_callback_t
+  {
+    spawner::pet_spawner_t<twisted_appendage_pet_t> spawner;
+
+    twisted_appendage_cb_t( const special_effect_t& effect, mind_flay_t* a )
+      : dbc_proc_callback_t( effect.player, effect ),
+        spawner( "twisted_appendage", effect.player,
+                 [&effect, a]( player_t* ) { return new twisted_appendage_pet_t( effect, a ); } )
+    {
+      spawner.set_default_duration( effect.player->find_spell( 316818 )->duration() );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      spawner.spawn();
+    }
+  };
+
+  // TODO: Fix abusing this action as a global variable
+  auto mind_flay = static_cast<mind_flay_t*>( effect.player->find_action( "mind_flay" ) );
+
+  if ( !mind_flay )
+  {
+    mind_flay       = static_cast<mind_flay_t*>( create_proc_action<mind_flay_t>( "mind_flay", effect, effect.player,
+                                                                            effect.driver()->effectN( 2 ).percent() ) );
+    effect.spell_id = 316815;
+    new twisted_appendage_cb_t( effect, mind_flay );
+  }
+  else
+    mind_flay->ap_sp_mod += effect.driver()->effectN( 2 ).percent();
+}
+
+// Lash of the Void
+void corruption::lash_of_the_void( special_effect_t& effect )
+{
+  struct lash_of_the_void_t : public proc_spell_t
+  {
+    double ap_mod;
+
+    lash_of_the_void_t( const special_effect_t& effect )
+      : proc_spell_t( "lash_of_the_void", effect.player, effect.trigger() ),
+        ap_mod( effect.trigger()->effectN( 1 ).ap_coeff() )
+    {
+      attack_power_mod.direct = ap_mod;
+      aoe                     = 0;
+    }
+
+    double attack_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      return ap_mod;
+    }
+  };
+
+  auto lash_of_the_void = static_cast<lash_of_the_void_t*>( effect.player->find_action( "lash_of_the_void" ) );
+
+  if ( !lash_of_the_void )
+  {
+    effect.execute_action = create_proc_action<lash_of_the_void_t>( "lash_of_the_void", effect );
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+    lash_of_the_void->ap_mod += effect.trigger()->effectN( 1 ).ap_coeff();
 }
 
 }  // namespace bfa
@@ -6771,14 +6982,19 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318479, corruption::void_ritual );
   register_special_effect( 318480, corruption::void_ritual );
   register_special_effect( 318293, corruption::searing_flames );
+  register_special_effect( 318481, corruption::twisted_appendage );
+  register_special_effect( 318482, corruption::twisted_appendage );
+  register_special_effect( 318483, corruption::twisted_appendage );
+  register_special_effect( 317290, corruption::lash_of_the_void );
 
   // 8.3 Special Effects
-  register_special_effect( 313148, items::forbidden_obsidian_claw );
   register_special_effect( 315736, items::voidtwisted_titanshard );
   register_special_effect( 315586, items::vitacharged_titanshard );
   register_special_effect( 313948, items::manifesto_of_madness );
   register_special_effect( 316780, items::whispering_eldritch_bow );
   register_special_effect( 313640, items::psyche_shredder );
+  register_special_effect( 313087, items::torment_in_a_jar );
+  register_special_effect( 317860, items::draconic_empowerment );
 
   // 8.3 Set Bonus(es)
   register_special_effect( 315793, set_bonus::titanic_empowerment );

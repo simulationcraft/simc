@@ -3131,7 +3131,7 @@ void player_t::create_buffs()
 
       auto worldvein_resonance = find_azerite_essence( "Worldvein Resonance" );
       buffs.lifeblood = make_buff<stat_buff_t>( this, "lifeblood", find_spell( 295137 ) );
-      buffs.lifeblood->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ), 
+      buffs.lifeblood->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
         worldvein_resonance.spell( 1, essence_type::MINOR )->effectN( 5 ).average( worldvein_resonance.item() ) );
 
       buffs.seething_rage = make_buff( this, "seething_rage", find_spell( 297126 ) )
@@ -3143,10 +3143,10 @@ void player_t::create_buffs()
 
       auto ripple_in_space = find_azerite_essence( "Ripple in Space" );
       buffs.reality_shift = make_buff<stat_buff_t>( this, "reality_shift", find_spell( 302916 ) );
-      buffs.reality_shift->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ), 
+      buffs.reality_shift->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
         ripple_in_space.spell_ref(1u, essence_type::MINOR).effectN( 2 ).average(
           ripple_in_space.item() ) );
-      buffs.reality_shift->set_duration( find_spell( 302952 )->duration() 
+      buffs.reality_shift->set_duration( find_spell( 302952 )->duration()
         + timespan_t::from_seconds( ripple_in_space.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
       buffs.reality_shift->set_cooldown( find_spell( 302953 )->duration() );
     }
@@ -3540,7 +3540,7 @@ double player_t::composite_dodge() const
 
 double player_t::composite_parry() const
 {
-  // Start with sources not subject to DR - base parry + parry from base strength (stored in current.parry). 
+  // Start with sources not subject to DR - base parry + parry from base strength (stored in current.parry).
   double total_parry = current.parry;
 
   // bonus_parry is from rating and bonus Strength
@@ -3796,6 +3796,11 @@ double player_t::composite_corruption() const
 double player_t::composite_corruption_resistance() const
 {
   return composite_corruption_resistance_rating() / current.rating.corruption_resistance;
+}
+
+double player_t::composite_total_corruption() const
+{
+  return cache.corruption() - cache.corruption_resistance();
 }
 
 double player_t::composite_player_pet_damage_multiplier( const action_state_t* ) const
@@ -6585,10 +6590,10 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
       double block_reduction = composite_block_reduction( s );
 
       double block_resist = block_reduction / ( block_reduction + s -> action -> player -> current.armor_coeff );
-     
+
       if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
         block_resist *= 2.0;
-      
+
       block_resist = clamp( block_resist, 0.0, armor_cap );
       s -> result_amount *= 1.0 - block_resist;
 
