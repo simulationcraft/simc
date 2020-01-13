@@ -6435,9 +6435,7 @@ void corruption::echoing_void( special_effect_t& effect )
     echoing_void_damage =
         static_cast<echoing_void_t*>( create_proc_action<echoing_void_t>( "echoing_void", effect, buff ) );
 
-    effect.spell_id     = 317014;
-    effect.proc_flags_  = PF_ALL_DAMAGE;
-    effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE;
+    effect.spell_id    = 317014;
     effect.custom_buff = buff;
 
     new echoing_void_cb_t( effect, echoing_void_damage );
