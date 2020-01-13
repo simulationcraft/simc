@@ -5142,7 +5142,7 @@ void demon_hunter_t::apl_havoc()
   essences->add_action( "purifying_blast,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
   essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   essences->add_action( "ripple_in_space" );
-  essences->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
+  essences->add_action( "worldvein_resonance" );
   essences->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );
   apl_cooldown->add_action( "call_action_list,name=essences" );
 

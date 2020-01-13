@@ -54,7 +54,7 @@ actions.cds+=/berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>coold
 actions.cds+=/blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16
 actions.cds+=/lights_judgment,if=pet.turtle.buff.frenzy.up&pet.turtle.buff.frenzy.remains>gcd.max|!pet.turtle.buff.frenzy.up
 actions.cds+=/potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&target.health.pct<35|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)
-actions.cds+=/worldvein_resonance,if=buff.lifeblood.stack<4
+actions.cds+=/worldvein_resonance
 actions.cds+=/guardian_of_azeroth,if=cooldown.aspect_of_the_wild.remains<10|target.time_to_die>cooldown+duration|target.time_to_die<30
 actions.cds+=/ripple_in_space
 actions.cds+=/memory_of_lucid_dreams

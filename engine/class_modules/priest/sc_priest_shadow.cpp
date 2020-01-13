@@ -2051,7 +2051,7 @@ void priest_t::generate_apl_shadow()
                    " then every subsequent cast should be used when Chorus of Insanity is active or it will recharge in the next gcd, or the target is about to die." );
   cds->add_action( "ripple_in_space" );
   cds->add_action( "reaping_flames" );
-  cds->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
+  cds->add_action( "worldvein_resonance" );
   cds->add_action( "call_action_list,name=crit_cds,if=(buff.voidform.up&"
                    "buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0",
                    "Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity active" );

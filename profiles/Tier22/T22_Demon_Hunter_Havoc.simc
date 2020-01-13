@@ -85,7 +85,7 @@ actions.essences+=/focused_azerite_beam,if=spell_targets.blade_dance1>=2|raid_ev
 actions.essences+=/purifying_blast,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60
 actions.essences+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10
 actions.essences+=/ripple_in_space
-actions.essences+=/worldvein_resonance,if=buff.lifeblood.stack<3
+actions.essences+=/worldvein_resonance
 actions.essences+=/memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up
 
 actions.normal=vengeful_retreat,if=talent.momentum.enabled&buff.prepared.down&time>1
