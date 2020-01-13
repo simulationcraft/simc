@@ -7604,7 +7604,8 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "use_item,name=razdunks_big_red_button" );
   def -> add_action( "use_item,name=merekthas_fang" );
   def -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down" );
-  def -> add_action( "use_item,name=ashvanes_razor_coral,if=buff.dancing_rune_weapon.up&debuff.razor_coral_debuff.up");
+  def -> add_action( "use_item,name=ashvanes_razor_coral,if=target.health.pct<31&equipped.dribbling_inkpod" );
+  def -> add_action( "use_item,name=ashvanes_razor_coral,if=buff.dancing_rune_weapon.up&debuff.razor_coral_debuff.up&!equipped.dribbling_inkpod");
 
   // Cooldowns
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
