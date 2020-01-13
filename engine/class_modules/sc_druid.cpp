@@ -8714,10 +8714,12 @@ void druid_t::apl_balance()
                               "target_if=dot.sunfire.remains>10&dot.moonfire.remains>10&(!talent.stellar_flare.enabled|dot.stellar_flare.remains>10)" );
   default_list->add_action( "purifying_blast" );
   default_list->add_action( "ripple_in_space" );
-  default_list->add_action( "concentrated_flame" );
-  default_list->add_action( "the_unbound_force,if=buff.reckless_force.up,"
-                              "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
-  default_list->add_action( "worldvein_resonance" );
+  default_list->add_action( "concentrated_flame,if=(!buff.ca_inc.up|stack=2)&!action.concentrated_flame_missile.in_flight,target_if=!dot.concentrated_flame_burn.ticking" );
+  default_list->add_action(
+      "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<5,target_if=dot.moonfire.ticking&"
+      "dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
+  default_list->add_action( "worldvein_resonance,if=!buff.ca_inc.up,target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
+  default_list->add_action( "reaping_flames,if=!buff.ca_inc.up" );
   default_list->add_action( "focused_azerite_beam,if=(!variable.az_ss|!buff.ca_inc.up),"
                               "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "thorns" );
