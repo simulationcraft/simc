@@ -6129,7 +6129,7 @@ void mage_t::apl_frost()
       essences->add_action( "concentrated_flame,line_cd=6,if=buff.rune_of_power.down&debuff.packed_ice.down" );
       essences->add_action( "reaping_flames,if=buff.rune_of_power.down&debuff.packed_ice.down" );
       essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
-      essences->add_action( "worldvein_resonance,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3" );
+      essences->add_action( "worldvein_resonance,if=buff.rune_of_power.down&debuff.packed_ice.down&cooldown.frozen_orb.remains<4|active_enemies>3" );
       break;
     default:
       break;
