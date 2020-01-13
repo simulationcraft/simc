@@ -8,7 +8,7 @@ talents=2022012
 azerite_essences=32:3:1/35:3:0/4:3:0/28:3:0
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=388/389/459/566/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=80
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517/4775,azerite_powers=117/389/21/85/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=391/389/31/85/13
