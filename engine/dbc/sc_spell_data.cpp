@@ -166,7 +166,7 @@ const std::string _race_strings[] =
   "void_elf",
   "lightforged_draenei",
   "zandalari_troll",
-  "kul_tiran",
+  "kul_tiran"
 };
 
 const std::string _pet_class_strings[] =
