@@ -5806,8 +5806,7 @@ void items::torment_in_a_jar( special_effect_t& effect )
     double dmg_mod;
 
     unleashed_agony_t( const special_effect_t& effect, double dmg_mod, buff_t* buff )
-      : proc_t( effect, "unleashed_agony", 313088 ),
-      dmg_mod( dmg_mod ), buff( buff )
+      : proc_t( effect, "unleashed_agony", 313088 ), dmg_mod( dmg_mod ), buff( buff )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
     }
@@ -5829,7 +5828,8 @@ void items::torment_in_a_jar( special_effect_t& effect )
 
     unleashed_agony_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.player, effect )
     {
-      stacking_damage = create_proc_action<unleashed_agony_t>( "unleashed_agony", effect, effect.driver()->effectN( 4 ).percent(), effect.custom_buff );
+      stacking_damage = create_proc_action<unleashed_agony_t>(
+          "unleashed_agony", effect, effect.driver()->effectN( 4 ).percent(), effect.custom_buff );
       stacking_damage->add_child( effect.execute_action );
     }
 
@@ -5862,10 +5862,12 @@ void items::draconic_empowerment( special_effect_t& effect )
 {
   effect.custom_buff = buff_t::find( effect.player, "draconic_empowerment" );
   if ( !effect.custom_buff )
-    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "draconic_empowerment", effect.player->find_spell( 317859 ) )
-      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.player->find_spell( 317859 )->effectN( 1 ).average( effect.item ) );
+    effect.custom_buff =
+        make_buff<stat_buff_t>( effect.player, "draconic_empowerment", effect.player->find_spell( 317859 ) )
+            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+                        effect.player->find_spell( 317859 )->effectN( 1 ).average( effect.item ) );
 
-  effect.proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC; // Proc flags are missing in spell data.
+  effect.proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC;  // Proc flags are missing in spell data.
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -5923,41 +5925,100 @@ void set_bonus::keepsakes_of_the_resolute_commandant( special_effect_t& effect )
 void corruption::masterful( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_NONE;
-  effect.player->passive_rating_multiplier.get_mutable( RATING_MASTERY ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
+  buff_t* buff = buff_t::find( effect.player, "masterful" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "masterful", effect.player->find_spell( 320253 ) )
+               ->set_default_value( effect.driver()->effectN( 1 ).percent() )
+               ->add_invalidate( CACHE_MASTERY )
+               ->set_quiet( true )
+               ->set_stack_change_callback( []( buff_t* b, int, int new_ ) {
+                 if ( new_ == 1 )
+                 {
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MASTERY ) *= 1.0 + b->default_value;
+                 }
+               } );
+    effect.player->register_combat_begin( buff );
+  }
+  else
+    buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
 }
 
 void corruption::expedient( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_NONE;
-  effect.player->passive_rating_multiplier.get_mutable( RATING_MELEE_HASTE ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
-  effect.player->passive_rating_multiplier.get_mutable( RATING_SPELL_HASTE ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
-  effect.player->passive_rating_multiplier.get_mutable( RATING_RANGED_HASTE ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
+
+  buff_t* buff = buff_t::find( effect.player, "expedient" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "expedient", effect.player->find_spell( 320257 ) )
+               ->set_default_value( effect.driver()->effectN( 1 ).percent() )
+               ->add_invalidate( CACHE_HASTE )
+               ->set_quiet( true )
+               ->set_stack_change_callback( []( buff_t* b, int, int new_ ) {
+                 if ( new_ == 1 )
+                 {
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MELEE_HASTE ) *= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_SPELL_HASTE ) *= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_RANGED_HASTE ) *= 1.0 + b->default_value;
+                 }
+               } );
+    effect.player->register_combat_begin( buff );
+  }
+  else
+    buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
 }
 
 void corruption::versatile( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_NONE;
-  effect.player->passive_rating_multiplier.get_mutable( RATING_HEAL_VERSATILITY ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
-  effect.player->passive_rating_multiplier.get_mutable( RATING_DAMAGE_VERSATILITY ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
-  effect.player->passive_rating_multiplier.get_mutable( RATING_MITIGATION_VERSATILITY ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
+
+  buff_t* buff = buff_t::find( effect.player, "versatile" );
+  if ( !buff )
+  {
+    buff =
+        make_buff( effect.player, "versatile", effect.player->find_spell( 320259 ) )
+            ->set_default_value( effect.driver()->effectN( 1 ).percent() )
+            ->add_invalidate( CACHE_VERSATILITY )
+            ->set_quiet( true )
+            ->set_stack_change_callback( []( buff_t* b, int, int new_ ) {
+              if ( new_ == 1 )
+              {
+                b->player->passive_rating_multiplier.get_mutable( RATING_HEAL_VERSATILITY ) *= 1.0 + b->default_value;
+                b->player->passive_rating_multiplier.get_mutable( RATING_DAMAGE_VERSATILITY ) *= 1.0 + b->default_value;
+                b->player->passive_rating_multiplier.get_mutable( RATING_MITIGATION_VERSATILITY ) *=
+                    1.0 + b->default_value;
+              }
+            } );
+    effect.player->register_combat_begin( buff );
+  }
+  else
+    buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
 }
 
 void corruption::severe( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_NONE;
-  effect.player->passive_rating_multiplier.get_mutable( RATING_MELEE_CRIT ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
-  effect.player->passive_rating_multiplier.get_mutable( RATING_SPELL_CRIT ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
-  effect.player->passive_rating_multiplier.get_mutable( RATING_RANGED_CRIT ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
+
+  buff_t* buff = buff_t::find( effect.player, "severe" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "severe", effect.player->find_spell( 320261 ) )
+               ->set_default_value( effect.driver()->effectN( 1 ).percent() )
+               ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
+               ->set_quiet( true )
+               ->set_stack_change_callback( []( buff_t* b, int, int new_ ) {
+                 if ( new_ == 1 )
+                 {
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MELEE_CRIT ) *= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_SPELL_CRIT ) *= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_RANGED_CRIT ) *= 1.0 + b->default_value;
+                 }
+               } );
+    effect.player->register_combat_begin( buff );
+  }
+  else
+    buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
 }
 
 /**Ineffable Truth
@@ -6175,7 +6236,7 @@ void corruption::glimpse_of_clarity( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff( effect.player, "glimpse_of_clarity", effect.player->find_spell( 315573 ) )
-                             ->set_default_value( effect.driver()->effectN( 1 ).base_value() );
+               ->set_default_value( effect.driver()->effectN( 1 ).base_value() );
     effect.custom_buff = buff;
 
     auto cb          = new special_effect_t( effect.player );
