@@ -213,6 +213,7 @@ void whispering_eldritch_bow( special_effect_t& );
 void psyche_shredder( special_effect_t& );
 void torment_in_a_jar( special_effect_t& );
 void draconic_empowerment( special_effect_t& );
+void writhing_segment_of_drestagath( special_effect_t& );
 }  // namespace items
 
 // 8.3.0(+?) corruption implementations
@@ -5854,6 +5855,11 @@ void items::torment_in_a_jar( special_effect_t& effect )
   new unleashed_agony_cb_t( effect );
 }
 
+void items::writhing_segment_of_drestagath( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<aoe_proc_t>( "spine_eruption", effect, "spine_eruption", effect.driver(), true );
+}
+
 /**Draconic Empowerment
  * id=317860 driver
  * id=317859 buff
@@ -7062,6 +7068,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 313640, items::psyche_shredder );
   register_special_effect( 313087, items::torment_in_a_jar );
   register_special_effect( 317860, items::draconic_empowerment );
+  register_special_effect( 313113, items::writhing_segment_of_drestagath );  
 
   // 8.3 Set Bonus(es)
   register_special_effect( 315793, set_bonus::titanic_empowerment );
