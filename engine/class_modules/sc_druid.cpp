@@ -1491,17 +1491,15 @@ public:
         ab::base_dd_multiplier *= 1.0 + player->spec.balance->effectN( 1 ).percent();
       }
 
-      if ( maybe_ptr( p()->dbc.ptr ) )
+
+      // Additional dot nerf auras (multiplicative with effect#1/2)
+      if ( s->affected_by( player->spec.balance->effectN( 11 ) ) ) // Periodic Damage
       {
-        // Additional dot nerf auras (multiplicative with effect#1/2)
-        if ( s->affected_by( player->spec.balance->effectN( 11 ) ) ) // Periodic Damage
-        {
-          ab::base_td_multiplier *= 1.0 + player->spec.balance->effectN( 11 ).percent();
-        }
-        if ( s->affected_by( player->spec.balance->effectN( 10 ) ) ) // Direct Damage
-        {
-          ab::base_dd_multiplier *= 1.0 + player->spec.balance->effectN( 10 ).percent();
-        }
+        ab::base_td_multiplier *= 1.0 + player->spec.balance->effectN( 11 ).percent();
+      }
+      if ( s->affected_by( player->spec.balance->effectN( 10 ) ) ) // Direct Damage
+      {
+        ab::base_dd_multiplier *= 1.0 + player->spec.balance->effectN( 10 ).percent();
       }
     }
     else if (player->specialization() == DRUID_RESTORATION)
