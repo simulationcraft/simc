@@ -5969,35 +5969,38 @@ void corruption::severe( special_effect_t& effect )
  */
 void corruption::ineffable_truth( special_effect_t& effect )
 {
-  effect.custom_buff = buff_t::find( effect.player, "ineffable_truth" );
-  if ( !effect.custom_buff )
+  buff_t* buff = buff_t::find( effect.player, "ineffable_truth" );
+  if ( !buff )
   {
-    auto player              = effect.player;
-    auto recharge_multiplier = 1.0 / ( 1 + effect.driver()->effectN( 1 ).percent() );
-    effect.custom_buff       = make_buff( effect.player, "ineffable_truth", effect.player->find_spell( 316801 ) )
-                             ->set_stack_change_callback( [player, recharge_multiplier]( buff_t*, int, int new_ ) {
-                               for ( auto a : player->action_list )
-                               {
-                                 // Only class spells have their cooldown reduced.
-                                 if ( a->data().class_mask() != 0 && !a->background )
-                                 {
-                                   if ( new_ == 1 )
-                                     a->base_recharge_multiplier *= recharge_multiplier;
-                                   else
-                                     a->base_recharge_multiplier /= recharge_multiplier;
-                                   if ( a->cooldown->action == a )
-                                     a->cooldown->adjust_recharge_multiplier();
-                                   if ( a->internal_cooldown->action == a )
-                                     a->internal_cooldown->adjust_recharge_multiplier();
-                                 }
-                               }
-                             } );
+    auto player = effect.player;
+    buff        = make_buff( effect.player, "ineffable_truth", effect.player->find_spell( 316801 ) )
+               ->set_default_value( effect.driver()->effectN( 1 ).percent() )
+               ->set_stack_change_callback( [player]( buff_t* b, int, int new_ ) {
+                 double recharge_multiplier = 1.0 / ( 1 + b->default_value );
+                 for ( auto a : player->action_list )
+                 {
+                   // Only class spells have their cooldown reduced.
+                   if ( a->data().class_mask() != 0 && !a->background )
+                   {
+                     if ( new_ == 1 )
+                       a->base_recharge_multiplier *= recharge_multiplier;
+                     else
+                       a->base_recharge_multiplier /= recharge_multiplier;
+                     if ( a->cooldown->action == a )
+                       a->cooldown->adjust_recharge_multiplier();
+                     if ( a->internal_cooldown->action == a )
+                       a->internal_cooldown->adjust_recharge_multiplier();
+                   }
+                 }
+               } );
+    effect.custom_buff = buff;
+    // Replace the driver spell, the RPPM value and proc flags are elsewhere
+    effect.spell_id = 316799;
+
+    new dbc_proc_callback_t( effect.player, effect );
   }
-
-  // Replace the driver spell, the RPPM value and proc flags are elsewhere
-  effect.spell_id = 316799;
-
-  new dbc_proc_callback_t( effect.player, effect );
+  else
+    buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
 }
 
 // Twilight Devastation
