@@ -6168,55 +6168,57 @@ void corruption::strikethrough( special_effect_t& effect )
 
 void corruption::glimpse_of_clarity( special_effect_t& effect )
 {
-  timespan_t cdr_amount = timespan_t::from_seconds( effect.player->find_spell( 315574 )->effectN( 1 ).base_value() );
-
-  effect.custom_buff = buff_t::find( effect.player, "glimpse_of_clarity" );
-  if ( !effect.custom_buff )
+  buff_t* buff = buff_t::find( effect.player, "glimpse_of_clarity" );
+  if ( !buff )
   {
-    effect.custom_buff = make_buff( effect.player, "glimpse_of_clarity", effect.player->find_spell( 315573 ) );
-  }
+    buff = make_buff( effect.player, "glimpse_of_clarity", effect.player->find_spell( 315573 ) )
+                             ->set_default_value( effect.driver()->effectN( 1 ).base_value() );
+    effect.custom_buff = buff;
 
-  auto cb          = new special_effect_t( effect.player );
-  cb->name_str     = "glimpse_of_clarity_cb";
-  cb->type         = SPECIAL_EFFECT_EQUIP;
-  cb->source       = SPECIAL_EFFECT_SOURCE_ITEM;
-  cb->proc_chance_ = 1.0;
-  cb->proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
-  cb->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-  effect.player->special_effects.push_back( cb );
+    auto cb          = new special_effect_t( effect.player );
+    cb->name_str     = "glimpse_of_clarity_cb";
+    cb->type         = SPECIAL_EFFECT_EQUIP;
+    cb->source       = SPECIAL_EFFECT_SOURCE_ITEM;
+    cb->proc_chance_ = 1.0;
+    cb->proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
+    cb->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+    effect.player->special_effects.push_back( cb );
 
-  struct glimpse_of_clarity_cb_t : public dbc_proc_callback_t
-  {
-    timespan_t cdr_amount;
-    buff_t* buff;
-
-    glimpse_of_clarity_cb_t( const special_effect_t& effect, timespan_t cdr_amount, buff_t* buff )
-      : dbc_proc_callback_t( effect.player, effect ), cdr_amount( cdr_amount ), buff( buff )
+    struct glimpse_of_clarity_cb_t : public dbc_proc_callback_t
     {
-    }
+      buff_t* buff;
 
-    void execute( action_t* a, action_state_t* ) override
-    {
-      // Only class spells with a cooldown have their cooldown reduced.
-      if ( buff && buff->check() && a->data().class_mask() != 0 && !a->background && a->cooldown->duration > 0_ms )
+      glimpse_of_clarity_cb_t( const special_effect_t& effect, buff_t* buff )
+        : dbc_proc_callback_t( effect.player, effect ), buff( buff )
       {
-        listener->sim->print_debug( "Glimpse of Clarity reducing the cooldown of {} by {}.", a->name_str, cdr_amount );
-        a->cooldown->adjust( -cdr_amount );
-        buff->decrement();
       }
-    }
-  };
 
-  auto callback = new glimpse_of_clarity_cb_t( *cb, cdr_amount, effect.custom_buff );
-  callback->deactivate();
-  callback->initialize();
+      void execute( action_t* a, action_state_t* ) override
+      {
+        // Only class spells with a cooldown have their cooldown reduced.
+        if ( buff && buff->check() && a->data().class_mask() != 0 && !a->background && a->cooldown->duration > 0_ms )
+        {
+          listener->sim->print_debug( "Glimpse of Clarity reducing the cooldown of {} by {}.", a->name_str,
+                                      buff->default_value );
+          a->cooldown->adjust( -timespan_t::from_seconds( buff->default_value ) );
+          buff->decrement();
+        }
+      }
+    };
 
-  effect.custom_buff->set_stack_change_callback( util::callback_buff_activator( callback ) );
+    auto callback = new glimpse_of_clarity_cb_t( *cb, effect.custom_buff );
+    callback->deactivate();
+    callback->initialize();
 
-  // Replace the driver spell, the RPPM value and proc flags are elsewhere in some cases
-  effect.spell_id = 315574;
+    effect.custom_buff->set_stack_change_callback( util::callback_buff_activator( callback ) );
 
-  new dbc_proc_callback_t( effect.player, effect );
+    // Replace the driver spell, the RPPM value and proc flags are elsewhere in some cases
+    effect.spell_id = 315574;
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+    buff->set_default_value( effect.driver()->effectN( 1 ).base_value() + buff->default_value );
 }
 
 /**Infinite Stars
