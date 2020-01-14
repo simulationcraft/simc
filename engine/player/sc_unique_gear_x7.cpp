@@ -6067,16 +6067,17 @@ void corruption::ineffable_truth( special_effect_t& effect )
 // Twilight Devastation
 void corruption::twilight_devastation( special_effect_t& effect )
 {
-  struct twilight_devastation_t : public aoe_proc_t
+  struct twilight_devastation_t : public proc_t
   {
     double maxhp_multiplier;
 
     // Spell data has the percentage with an extra 0
     twilight_devastation_t( const special_effect_t& effect )
-      : aoe_proc_t( effect, "twilight_devastation", 317159, true ),
+      : proc_t( effect, "twilight_devastation", 317159 ),
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 )
     {
       // TODO: Check what this scales with
+      aoe = -1;
       // Set base damage so that flags are properly set
       base_dd_min += 1;
       base_dd_max += 1;
