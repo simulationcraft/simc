@@ -142,7 +142,8 @@ namespace racial
   void touch_of_the_grave( special_effect_t& );
   void entropic_embrace( special_effect_t& );
   void zandalari_loa( special_effect_t& );
-}
+  void combat_analysis( special_effect_t& );
+  }
 
 /**
  * Select attribute operator for buffs. Selects the attribute based on the
@@ -3860,6 +3861,24 @@ void racial::zandalari_loa( special_effect_t& effect )
   }
 }
 
+void racial::combat_analysis( special_effect_t& effect )
+{
+  const spell_data_t* buff_spell = effect.player->find_spell( 312923 );
+  effect.stat                    = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
+
+  buff_t* buff = buff_t::find( effect.player, "combat_analysis" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "combat_analysis", buff_spell )
+               ->add_stat( effect.stat, buff_spell->effectN( 1 ).average( effect.player ) );
+    buff->set_max_stack( buff_spell->effectN( 3 ).base_value( ) );
+  }
+
+  effect.player->register_combat_begin( [buff, buff_spell]( player_t* ) {
+    make_repeating_event( *buff->sim, buff_spell->effectN( 1 ).period(), [buff]() { buff->trigger(); } );
+  } );
+}
+
 // Figure out if a given generic buff (associated with a trinket/item) is a
 // stat buff of the correct type
 bool buff_has_stat( const buff_t* buff, stat_e stat )
@@ -4855,6 +4874,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 5227,   racial::touch_of_the_grave );
   register_special_effect( 255669, racial::entropic_embrace );
   register_special_effect( 292751, racial::zandalari_loa );
+  register_special_effect( 312923, racial::combat_analysis );
 }
 
 void unique_gear::unregister_special_effects()
