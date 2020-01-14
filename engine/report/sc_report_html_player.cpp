@@ -538,7 +538,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                rowspan.c_str(), s.portion_amount * 100, compound_aps_pct.c_str() );
   }
 
-  // Number of executes 
+  // Number of executes
   os.printf( "<td class=\"right\"%s>%.1f</td>\n", rowspan.c_str(), s.num_executes.pretty_mean() );
 
   // Execute interval
@@ -1111,7 +1111,7 @@ void print_html_action_resource( report::sc_html_stream& os, const stats_t& s )
     if ( s.resource_gain.actual[ i ] > 0 )
     {
       os << "<tr>\n";
-      os.printf( 
+      os.printf(
           "<td class=\"left\">%s</td>\n"
           "<td class=\"left\">%s</td>\n"
           "<td class=\"right\">%.1f</td>\n"
@@ -1686,6 +1686,25 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
           100 * buffed_stats.leech, 100 * p.composite_leech(), p.composite_leech_rating() );
+    }
+    if ( buffed_stats.corruption != 0 )
+    {
+      os.printf(
+          "<tr>\n"
+          "<th class=\"left\">Total Corruption</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\">%.0f (%.0f - %.0f)</td>\n"
+          "<td class=\"right\">%.0f (%.0f - %.0f)</td>\n"
+          "<td class=\"right\">%.0f, %.0f</td>\n"
+          "</tr>\n",
+          buffed_stats.corruption - buffed_stats.corruption_resistance,
+          buffed_stats.corruption,
+          buffed_stats.corruption_resistance,
+          p.composite_total_corruption(),
+          p.composite_corruption(),
+          p.composite_corruption_resistance(),
+          p.composite_corruption_rating(), p.composite_corruption_resistance_rating() );
     }
     if ( p.primary_role() == ROLE_TANK )
     {
@@ -2502,7 +2521,7 @@ void print_html_gain( report::sc_html_stream& os, const gain_t& g, std::array<do
       if (report_overflow)
       {
         double overflow_pct = 100.0 * g.overflow[ i ] / ( g.actual[ i ] + g.overflow[ i ] );
-        
+
         os << "<td class=\"right\">" << g.overflow[ i ] << "</td>\n";
         os << "<td class=\"right\">" << overflow_pct << "%</td>\n";
       }
@@ -4098,7 +4117,7 @@ void output_player_simple_ability_summary( report::sc_html_stream& os, const pla
     os << "<tr class=\"small\">\n";
   else
     os << "<tr>\n";
-    
+
   os << "<th <th colspan=\"3\" class=\"left name\">" << util::encode_html( actor.name() ) << "</th>\n"
      << "</tr>\n"
      << "</thead>\n";

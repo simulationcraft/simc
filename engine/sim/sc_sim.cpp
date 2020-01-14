@@ -3654,6 +3654,14 @@ void sim_t::create_options()
     bfa_opts.subroutine_recalibration_precombat_stacks, 0, 11 ) );
   add_option( opt_int( "bfa.subroutine_recalibration_dummy_casts",
     bfa_opts.subroutine_recalibration_dummy_casts, 0, 11 ) );
+  add_option( opt_float( "bfa.voidtwisted_titanshard_percent_duration",
+    bfa_opts.voidtwisted_titanshard_percent_duration, 0.0, 1.0 ) );
+  add_option( opt_timespan( "bfa.surging_vitality_damage_taken_period", bfa_opts.surging_vitality_damage_taken_period,
+                            1_s, timespan_t::max() ) );
+  add_option( opt_uint( "bfa.manifesto_allies_start", bfa_opts.manifesto_allies_start, 0, 12 ) );
+  add_option( opt_uint( "bfa.manifesto_allies_end", bfa_opts.manifesto_allies_end, 0, 5 ) );
+  add_option( opt_float( "bfa.echoing_void_collapse_chance", bfa_opts.echoing_void_collapse_chance, 0.0, 1.0 ) );
+  add_option( opt_bool( "bfa.void_ritual_increased_chance_active", bfa_opts.void_ritual_increased_chance_active ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

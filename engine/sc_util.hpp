@@ -55,6 +55,7 @@ const char* armor_type_string         ( item_subclass_armor type );
 const char* cache_type_string         ( cache_e );
 const char* proc_type_string          ( proc_types type );
 const char* proc_type2_string         ( proc_types2 type );
+const char* item_spell_trigger_string ( item_spell_trigger_type type );
 const char* special_effect_string     ( special_effect_e type );
 const char* special_effect_source_string( special_effect_source_e type );
 const char* scale_metric_type_abbrev  ( scale_metric_e );

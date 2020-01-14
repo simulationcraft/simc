@@ -225,8 +225,8 @@ class CSVDataGenerator(object):
 class DataGenerator(object):
     _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue',     'Priest', 'Death Knight', 'Shaman', 'Mage',  'Warlock', 'Monk',       'Druid', 'Demon Hunter'  ]
     _class_masks = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20, 0x40,     0x80,    0x100,     0x200,        0x400, 0x800   ]
-    _race_names  = [ None, 'Human',   'Orc',     'Dwarf',  'Night Elf', 'Undead', 'Tauren',       'Gnome',  'Troll', 'Goblin',  'Blood Elf', 'Draenei', 'Dark Iron Dwarf', None, 'Mag\'har Orc' ] + [ None ] * 7 + [ 'Worgen', None, None, 'Pandaren', None, 'Nightborne', 'Highmountain Tauren', 'Void Elf', 'Lightforged Draenei', 'Zandalari Troll', 'Kul Tiran' ]
-    _race_masks  = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             None, 0x2000,        ] + [ None ] * 7 + [ 0x200000, None, None, 0x1000000,  None, 0x4000000,    0x8000000,             0x10000000, 0x20000000,            0x40000000,        0x80000000 ]
+    _race_names  = [ None, 'Human',   'Orc',     'Dwarf',  'Night Elf', 'Undead', 'Tauren',       'Gnome',  'Troll', 'Goblin',  'Blood Elf', 'Draenei', 'Dark Iron Dwarf', 'Vulpera', 'Mag\'har Orc', 'Mechagnome' ] + [ None ] * 6 + [ 'Worgen', None, None, 'Pandaren', None, 'Nightborne', 'Highmountain Tauren', 'Void Elf', 'Lightforged Draenei', 'Zandalari Troll', 'Kul Tiran' ]
+    _race_masks  = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             0x1000, 0x2000, 0x4000       ] + [ None ] * 6 + [ 0x200000, None, None, 0x1000000,  None, 0x4000000,    0x8000000,             0x10000000, 0x20000000,            0x40000000,        0x80000000 ]
     _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
     _pet_masks   = [ None, 0x1,        0x2,        None, 0x4       ]
 
@@ -1305,9 +1305,23 @@ class SpellDataGenerator(DataGenerator):
          313643,
          # The Formless Void (major unknown buff)
          312734,
-         # 8.3 Raid items
-         # Shgla'yos, Astral Malignity
+         # 8.3 Raid items/Corruption
+         # Infinite Stars
          317262, 317265,
+         # Titanic Empowerment Set
+         315793, 315858,
+         # Psyche Shredder damage spell
+         316019,
+         # Torment in a Jar stacks
+         313088,
+         # Echoing Void damage+period
+         317029,317022,
+         # Twilight Devastation damage
+         317159,
+         # Obsidian Destruction Range
+         316661,
+         # Twisted Appendage damage
+         316835
         ),
 
         # Warrior:
@@ -1816,9 +1830,9 @@ class SpellDataGenerator(DataGenerator):
         ( 756, ),                # Blood elf 0x0200
         ( 760, ),                # Draenei   0x0400
         ( 2597, ),               # Dark Iron Dwarf 0x0800
-        (),                      # Naga
+        ( 2775, ),               # Vulpera 0x1000
         ( 2598, ),               # Mag'har Orc 0x2000
-        (),                      # Skeleton
+        ( 2774, ),               # Mechagnome 0x4000
         (),                      # Vrykul
         (),                      # Tuskarr
         (),                      # Forest Troll
@@ -2017,6 +2031,9 @@ class SpellDataGenerator(DataGenerator):
             self._dbc.append('AzeriteItemMilestonePower')
             self._dbc.append('AzeriteEssencePower')
             self._dbc.append('AzeriteEssence')
+
+        if self._options.build >= dbc.WowVersion(8, 3, 0, 0):
+            self._dbc.append('ItemBonus')
 
     def initialize(self):
         if not super().initialize():
@@ -2544,6 +2561,18 @@ class SpellDataGenerator(DataGenerator):
                 self.process_spell(data.id_spell_major_upgrade, ids, 0, 0, False)
                 self.process_spell(data.id_spell_minor_base, ids, 0, 0, False)
                 self.process_spell(data.id_spell_minor_upgrade, ids, 0, 0, False)
+
+        # Get dynamic item effect spells
+        if self._options.build >= dbc.WowVersion(8, 3, 0, 0):
+            for _, data in self._itembonus_db.items():
+                if data.type != 23:
+                    continue
+
+                effect = self._itemeffect_db[data.val_1]
+                if effect.id == 0:
+                    continue
+
+                self.process_spell(effect.id_spell, ids, 0, 0, False)
 
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the
         # generic spells from SpellDataGenerator._spell_id_list[0]
@@ -3887,6 +3916,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'keepsakes',
             'bonuses': [ 1443 ],
             'tier'   : 23
+        },
+		{
+            'name'   : 'titanic_empowerment',
+            'bonuses': [ 1452 ],
+            'tier'   : 24
         }
     ]
 
@@ -4677,4 +4711,53 @@ class TactKeyGenerator(DataGenerator):
                 v, data['key_name'], data['key'] and "\"{}\"".format(data['key']) or "null"))
 
         self._out.write('[\n{}\n]'.format(',\n'.join(out)))
+
+class ItemEffectGenerator(DataGenerator):
+    def __init__(self, options, data_store):
+        super().__init__(options, data_store)
+
+        self._dbc = [ 'ItemEffect', 'ItemBonus', 'SpellName' ]
+
+    # For now export only the 8.3 required item effects for Corrupted gear
+    def filter(self):
+        ids = []
+
+        for bonus in self._itembonus_db.values():
+            if bonus.type != 23:
+                continue
+
+            effect = self._itemeffect_db[bonus.val_1]
+            if effect.id == 0:
+                continue
+
+            spell = self._spellname_db[effect.id_spell]
+            if spell.id == 0:
+                continue
+
+            ids.append(effect.id)
+
+        return ids
+
+    def generate(self, ids = None):
+        data_str = "%sitem_effect%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        self._out.write('// Item effects, wow build %s\n' % ( self._options.build ))
+
+        self._out.write('static struct std::array<item_effect_t, %d> __%s_data { {\n' % (len(ids), data_str))
+
+        for key in sorted(ids):
+            data = self._itemeffect_db[key]
+            spell = self._spellname_db[data.id_spell]
+            if spell.id == 0:
+                continue
+
+            fields = data.field( 'id', 'id_spell', 'index', 'trigger_type',
+                    'cooldown_duration', 'cooldown_group', 'cooldown_group_duration' )
+
+            self._out.write('  { %s }, // %s\n' % (', '.join(fields), spell.name))
+
+        self._out.write('} };\n\n')
 

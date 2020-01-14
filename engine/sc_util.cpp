@@ -383,6 +383,8 @@ const char* util::race_type_string( race_e type )
     case RACE_MAGHAR_ORC:          return "maghar_orc";
     case RACE_ZANDALARI_TROLL:     return "zandalari_troll";
     case RACE_KUL_TIRAN:           return "kul_tiran";
+    case RACE_VULPERA:             return "vulpera";
+    case RACE_MECHAGNOME:          return "mechagnome";
     case RACE_MAX:                 return "unknown";
     case RACE_UNKNOWN:             return "unknown";
     // no default statement so we get warnings if something is missing.
@@ -1193,6 +1195,9 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_RUN_SPEED: return "run_speed";
     case CACHE_RPPM_HASTE: return "rppm_haste_coeff";
     case CACHE_RPPM_CRIT: return "rppm_crit_coeff";
+    case CACHE_CORRUPTION: return "corruption";
+    case CACHE_CORRUPTION_RESISTANCE: return "corruption_resistance";
+    case CACHE_AVOIDANCE: return "avoidance";
 
     default: return "unknown";
   }
@@ -1248,6 +1253,22 @@ const char* util::proc_type2_string( proc_types2 type )
     case PROC2_CAST_DAMAGE: return "DamageCast";
     case PROC2_CAST_HEAL: return "HealCast";
     default:           return "Unknown";
+  }
+}
+
+// trigger_type_string ======================================================
+
+const char* util::item_spell_trigger_string( item_spell_trigger_type type )
+{
+  switch ( type )
+  {
+    case ITEM_SPELLTRIGGER_ON_EQUIP: return "equip";
+    case ITEM_SPELLTRIGGER_LEARN_SPELL_ID: return "learn";
+    case ITEM_SPELLTRIGGER_SOULSTONE: return "soulstone";
+    case ITEM_SPELLTRIGGER_ON_USE: return "use";
+    case ITEM_SPELLTRIGGER_CHANCE_ON_HIT: return "chance_on_hit";
+    case ITEM_SPELLTRIGGER_ON_NO_DELAY_USE: return "no_delay_use";
+    default: return "unknown";
   }
 }
 
@@ -1804,6 +1825,8 @@ unsigned util::race_id( race_e race )
     case RACE_MAGHAR_ORC: return 14;
     case RACE_ZANDALARI_TROLL: return 31;
     case RACE_KUL_TIRAN: return 32;
+    case RACE_VULPERA: return 13;
+    case RACE_MECHAGNOME: return 15;
     default: return 0;
   }
 }
@@ -1928,7 +1951,9 @@ race_e util::translate_race_id( int rid )
     case 31: return RACE_ZANDALARI_TROLL;
     case 32: return RACE_KUL_TIRAN;
     case 34: return RACE_DARK_IRON_DWARF;
+    case 35: return RACE_VULPERA;
     case 36: return RACE_MAGHAR_ORC;
+    case 37: return RACE_MECHAGNOME;
   }
 
   return RACE_NONE;

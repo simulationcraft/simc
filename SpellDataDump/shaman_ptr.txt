@@ -9771,7 +9771,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737280)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 1196.681 (coefficient=15.3914) | PvP Coefficient: 0.25000 | Trigger Spell: 280203 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1196.681 (coefficient=15.3914) | PvP Coefficient: 0.20000 | Trigger Spell: 280203 | Target: Self (1)
 Description      : While Ghost Wolf is active, heal for $s1 every $280205t1 sec.
 
 Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passive] 

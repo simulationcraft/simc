@@ -30,6 +30,7 @@
  HEADERS += engine/dbc/sc_spell_info.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp
+ HEADERS += engine/dbc/item_effect.hpp
  PRECOMPILED_HEADER += engine/simulationcraft.hpp
  HEADERS += engine/simulationcraft.hpp
  HEADERS += engine/sc_util.hpp
@@ -96,6 +97,7 @@
  SOURCES += engine/dbc/sc_item_data.cpp
  SOURCES += engine/dbc/sc_data.cpp
  SOURCES += engine/dbc/sc_const_data.cpp
+ SOURCES += engine/dbc/item_effect.cpp
  SOURCES += engine/class_modules/sc_warrior.cpp
  SOURCES += engine/class_modules/warlock/sc_warlock.cpp
  SOURCES += engine/class_modules/warlock/sc_warlock_affliction.cpp

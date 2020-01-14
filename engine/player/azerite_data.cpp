@@ -1137,7 +1137,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
       const auto& essence = azerite_essence_entry_t::find( token_split[ 0 ], true, m_player->dbc.ptr );
       if ( essence.id == 0 )
       {
-        sim->errorf( "Unable to find Azerite Essence with name '%s'", splits[ 0 ].c_str() );
+        sim->errorf( "Unable to find Azerite Essence with name '%s'", splits[ i ].c_str() );
         return false;
       }
 
@@ -1149,7 +1149,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
       const auto& essence = azerite_essence_entry_t::find( id, m_player->dbc.ptr );
       if ( essence.id != id )
       {
-        sim->errorf( "Unable to find Azerite Essence with id %s", splits[ 0 ].c_str() );
+        sim->errorf( "Unable to find Azerite Essence with id %s", splits[ i ].c_str() );
         return false;
       }
     }
@@ -1324,6 +1324,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 303006, special_effects::arcane_heart          );
   unique_gear::register_special_effect( 300170, special_effects::clockwork_heart       );
   unique_gear::register_special_effect( 300168, special_effects::personcomputer_interface );
+  unique_gear::register_special_effect( 317137, special_effects::heart_of_darkness );
 
   // Generic Azerite Essences
   //
@@ -1349,6 +1350,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 298193, azerite_essences::aegis_of_the_deep );
   unique_gear::register_special_effect( 294910, azerite_essences::sphere_of_suppression );
   unique_gear::register_special_effect( 310712, azerite_essences::breath_of_the_dying ); // lethal strikes
+  unique_gear::register_special_effect( 311210, azerite_essences::spark_of_inspiration ); // unified strength
   // Vision of Perfection major Azerite Essence
   unique_gear::register_special_effect( 296325, azerite_essences::vision_of_perfection );
 }
@@ -3692,6 +3694,33 @@ void personcomputer_interface( special_effect_t& effect )
     default: break;
   }
 }
+
+//Heart of Darkness
+void heart_of_darkness( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  buff_t* heart_of_darkness = buff_t::find( effect.player, "heart_of_darkness" );
+  if ( !heart_of_darkness )
+  {
+    double value = power.value( 1 );
+    heart_of_darkness =
+        make_buff<stat_buff_t>( effect.player, "heart_of_darkness", power.spell_ref().effectN( 1 ).trigger() )
+            ->add_stat( STAT_CRIT_RATING, value )
+            ->add_stat( STAT_HASTE_RATING, value )
+            ->add_stat( STAT_MASTERY_RATING, value )
+            ->add_stat( STAT_VERSATILITY_RATING, value );
+    effect.player->register_combat_begin( [heart_of_darkness]( player_t* ) {
+      if ( heart_of_darkness->player->composite_total_corruption() >= 25 )  // This number is not found in spell data
+      {
+        heart_of_darkness->trigger();
+      }
+    } );
+  }
+}
+
 } // Namespace special effects ends
 
 namespace azerite_essences
@@ -4624,6 +4653,10 @@ struct the_unbound_force_t : public azerite_essence_major_t
     if (essence.rank() >= 3)
       max_shard = 5;
   }
+  double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
+  {
+    return 1.0;
+  }
 }; //End of The Unbound Force
 
 // Vision of Perfection
@@ -4811,10 +4844,77 @@ void worldvein_resonance( special_effect_t& effect )
   }
 }
 
+struct worldvein_resonance_buff_t : public buff_t
+{
+  stat_buff_t* lifeblood;
+
+  worldvein_resonance_buff_t( player_t* p, const azerite_essence_t& ess ) :
+    buff_t( p, "worldvein_resonance", p->find_spell( 313310 ), ess.item() )
+  {
+    lifeblood = static_cast<stat_buff_t*>( buff_t::find( p, "lifeblood" ) );
+  }
+
+  void adjust_stat( bool increase )
+  {
+    if ( !lifeblood )
+    {
+      return;
+    }
+
+    auto& stat_entry = lifeblood->stats.front();
+    if ( increase )
+    {
+      stat_entry.amount *= 1.0 + data().effectN( 1 ).percent();
+    }
+    else
+    {
+      stat_entry.amount /= 1.0 + data().effectN( 1 ).percent();
+    }
+
+    if ( lifeblood->check() )
+    {
+      double delta = stat_entry.amount * lifeblood->current_stack - stat_entry.current_value;
+      sim->print_debug( "{} worldvein_resonance {}creases lifeblood stats by {}%,"
+                        " stacks={}, old={}, new={} ({}{})",
+        player->name(),
+        increase ? "in" : "de", data().effectN( 1 ).base_value(), lifeblood->current_stack,
+        stat_entry.current_value, stat_entry.current_value + delta,
+        increase ? "+" : "", delta );
+
+      if ( delta > 0 )
+      {
+        player->stat_gain( stat_entry.stat, delta, lifeblood->stat_gain, nullptr, true );
+      }
+      else
+      {
+        player->stat_loss( stat_entry.stat, std::fabs( delta ), lifeblood->stat_gain,
+          nullptr, true );
+      }
+
+      stat_entry.current_value += delta;
+    }
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    adjust_stat( true /* Stat increase */ );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    adjust_stat( false /* Stat decrease */ );
+  }
+};
+
 struct worldvein_resonance_t : public azerite_essence_major_t
 {
   int stacks;
   buff_t* lifeblood;
+  buff_t* worldvein_resonance;
 
   worldvein_resonance_t( player_t* p, const std::string& options_str ) :
     azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) ), stacks()
@@ -4827,12 +4927,17 @@ struct worldvein_resonance_t : public azerite_essence_major_t
     lifeblood = buff_t::find( player, "lifeblood_shard" );
     if ( !lifeblood )
       lifeblood = make_buff<lifeblood_shard_t>( p, essence );
+
+    worldvein_resonance = buff_t::find( player, "worldvein_resonance" );
+    if ( !worldvein_resonance )
+      worldvein_resonance = make_buff<worldvein_resonance_buff_t>( p, essence );
   }
 
   void execute() override
   {
     azerite_essence_major_t::execute();
     lifeblood->trigger( stacks );
+    worldvein_resonance->trigger();
   }
 
   //Minor and major power both summon Lifeblood shards that grant primary stat (max benefit of 4 shards)
@@ -5165,6 +5270,81 @@ struct reaping_flames_t : public azerite_essence_major_t
   }
 };
 // End Breath of the Dying
+
+// Spark of Inspiration
+// Minor: Unified Strength
+// id=311210 R1 minor base, cdr on effect 3
+// id=313643 minor haste buff
+// id=311304 R2 minor base, rppm increase
+void spark_of_inspiration( special_effect_t& effect )
+{
+  struct unified_strength_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+    timespan_t cdr;
+    azerite_essence_major_t* major;
+
+    unified_strength_cb_t( special_effect_t& effect, azerite_essence_t& essence, buff_t* b ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      buff(b)
+    {
+      cdr = timespan_t::from_seconds( essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).base_value() / 10.0 );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      buff->trigger();
+
+      if ( !major || !major->essence.enabled() )
+      {
+        major = nullptr;
+
+        for ( action_t* a : listener->action_list )
+        {
+          azerite_essence_major_t* candidate = dynamic_cast<azerite_essence_major_t*>( a );
+          if ( candidate && candidate->essence.enabled() )
+          {
+            major = candidate;
+            break;
+          }
+        }
+
+        if ( !major )
+          return;
+      }
+
+      major->cooldown->adjust( -cdr );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      major = nullptr;
+    }
+  };
+
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
+    return;
+
+  buff_t* buff = buff_t::find( effect.player, effect.name() );
+  if ( !buff )
+  {
+    double haste = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
+
+    auto spell = effect.player->find_spell( 313643 );
+    buff = make_buff<stat_buff_t>( effect.player, "unified_strength", effect.player->find_spell( 313643 ) )
+      -> add_stat( STAT_HASTE_RATING, haste );
+  }
+
+  if ( essence.rank() >= 2 )
+  {
+    effect.ppm_ = -essence.spell_ref( 2u, essence_type::MINOR ).real_ppm();
+    effect.rppm_scale_ = effect.player->dbc.real_ppm_scale( essence.spell_ref( 2u, essence_type::MINOR ).id() );
+  }
+
+  new unified_strength_cb_t( effect, essence, buff );
+}
 
 } // Namespace azerite essences ends
 

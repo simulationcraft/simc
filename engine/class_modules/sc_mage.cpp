@@ -1262,13 +1262,16 @@ struct mage_spell_state_t : public action_state_t
     frozen_multiplier = mss->frozen_multiplier;
   }
 
+  virtual double composite_frozen_multiplier() const
+  { return frozen ? frozen_multiplier : 1.0; }
+
   double composite_crit_chance() const override;
 
   double composite_da_multiplier() const override
-  { return action_state_t::composite_da_multiplier() * frozen_multiplier; }
+  { return action_state_t::composite_da_multiplier() * composite_frozen_multiplier(); }
 
   double composite_ta_multiplier() const override
-  { return action_state_t::composite_ta_multiplier() * frozen_multiplier; }
+  { return action_state_t::composite_ta_multiplier() * composite_frozen_multiplier(); }
 };
 
 struct mage_spell_t : public spell_t
@@ -1419,7 +1422,7 @@ public:
       cast_state( s )->frozen = frozen( s );
 
     if ( flags & STATE_FROZEN_MUL )
-      cast_state( s )->frozen_multiplier = cast_state( s )->frozen ? frozen_multiplier( s ) : 1.0;
+      cast_state( s )->frozen_multiplier = frozen_multiplier( s );
   }
 
   double cost() const override
@@ -1962,11 +1965,14 @@ struct frost_mage_spell_t : public mage_spell_t
 
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && s->chain_target == 0 )
-      record_shatter_source( s, shatter_source );
+    if ( result_is_hit( s->result ) )
+    {
+      if ( s->chain_target == 0 )
+        record_shatter_source( s, shatter_source );
 
-    if ( result_is_hit( s->result ) && chills )
-      p()->buffs.bone_chilling->trigger();
+      if ( chills )
+        p()->buffs.bone_chilling->trigger();
+    }
   }
 };
 
@@ -2187,16 +2193,12 @@ struct arcane_blast_t : public arcane_mage_spell_t
   void execute() override
   {
     p()->benefits.arcane_charge.arcane_blast->update();
+
     arcane_mage_spell_t::execute();
 
-    if ( hit_any_target )
-    {
+    p()->trigger_arcane_charge();
+    if ( rng().roll( p()->azerite.galvanizing_spark.spell_ref().effectN( 1 ).percent() ) )
       p()->trigger_arcane_charge();
-
-      // TODO: Benefit tracking
-      if ( rng().roll( p()->azerite.galvanizing_spark.spell_ref().effectN( 1 ).percent() ) )
-        p()->trigger_arcane_charge();
-    }
 
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
@@ -2250,7 +2252,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    if ( hit_any_target )
+    if ( !target_list().empty() )
       p()->trigger_arcane_charge();
 
     if ( num_targets_hit >= as<int>( p()->talents.reverberate->effectN( 2 ).base_value() )
@@ -2488,9 +2490,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
   void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      p()->trigger_arcane_charge();
+    p()->trigger_arcane_charge();
   }
 };
 
@@ -3743,10 +3743,12 @@ struct fire_blast_t : public fire_mage_spell_t
     base_crit += p->spec.fire_blast_2->effectN( 1 ).percent();
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    fire_mage_spell_t::execute();
-    p()->buffs.blaster_master->trigger();
+    fire_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      p()->buffs.blaster_master->trigger();
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -5296,7 +5298,7 @@ void mage_t::create_buffs()
   buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                  ->set_cooldown( 0_ms )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                   { if ( cur == 0 ) cooldowns.presence_of_mind->start(); } );
+                                   { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } );
 
   buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
                                  ->set_default_value( find_spell( 210126 )->effectN( 1 ).percent() )
@@ -5365,7 +5367,8 @@ void mage_t::create_buffs()
   // Shared
   buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this );
   buffs.rune_of_power  = make_buff( this, "rune_of_power", find_spell( 116014 ) )
-                           ->set_default_value( find_spell( 116014 )->effectN( 1 ).percent() );
+                           ->set_default_value( find_spell( 116014 )->effectN( 1 ).percent() )
+                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   // Azerite
   buffs.arcane_pummeling   = make_buff( this, "arcane_pummeling", find_spell( 270670 ) )
@@ -5611,14 +5614,18 @@ void mage_t::apl_precombat()
       precombat->add_action( "variable,name=conserve_mana,op=set,value=60+20*azerite.equipoise.enabled",
         "conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP." );
       precombat->add_action( "variable,name=font_double_on_use,op=set,value=equipped.azsharas_font_of_power&(equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch)" );
+      precombat->add_action( "variable,name=font_of_power_precombat_channel,op=set,value=12,if=variable.font_double_on_use&variable.font_of_power_precombat_channel=0",
+        "This variable determines when Azshara's Font of Power is used before the pull if bfa.font_of_power_precombat_channel is not specified.");
       break;
     case MAGE_FIRE:
       precombat->add_action( "variable,name=disable_combustion,op=reset" );
       precombat->add_action( "variable,name=combustion_rop_cutoff,op=set,value=60",
         "This variable sets the time at which Rune of Power should start being saved for the next Combustion phase" );
-      precombat->add_action( "variable,name=combustion_on_use,op=set,value=equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch" );
+      precombat->add_action( "variable,name=combustion_on_use,op=set,value=equipped.manifesto_of_madness|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.ignition_mages_fuse|equipped.tzanes_barkspines|equipped.azurethos_singed_plumage|equipped.ancient_knot_of_wisdom|equipped.shockbiters_fang|equipped.neural_synapse_enhancer|equipped.balefire_branch" );
       precombat->add_action( "variable,name=font_double_on_use,op=set,value=equipped.azsharas_font_of_power&variable.combustion_on_use" );
-      precombat->add_action( "variable,name=on_use_cutoff,op=set,value=20*variable.combustion_on_use&!variable.font_double_on_use+40*variable.font_double_on_use+25*equipped.azsharas_font_of_power&!variable.font_double_on_use",
+      precombat->add_action( "variable,name=font_of_power_precombat_channel,op=set,value=18,if=variable.font_double_on_use&variable.font_of_power_precombat_channel=0",
+        "This variable determines when Azshara's Font of Power is used before the pull if bfa.font_of_power_precombat_channel is not specified.");
+      precombat->add_action( "variable,name=on_use_cutoff,op=set,value=20*variable.combustion_on_use&!variable.font_double_on_use+40*variable.font_double_on_use+25*equipped.azsharas_font_of_power&!variable.font_double_on_use+8*equipped.manifesto_of_madness&!variable.font_double_on_use",
         "Items that are used outside of Combustion are not used after this time if they would put a trinket used with Combustion on a sharded cooldown." );
       break;
     case MAGE_FROST:
@@ -5748,6 +5755,7 @@ void mage_t::apl_arcane()
 
   essences->add_action( "blood_of_the_enemy,if=burn_phase&buff.arcane_power.down&buff.rune_of_power.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack|time_to_die<cooldown.arcane_power.remains" );
   essences->add_action( "concentrated_flame,line_cd=6,if=buff.rune_of_power.down&buff.arcane_power.down&(!burn_phase|time_to_die<cooldown.arcane_power.remains)&mana.time_to_max>=execute_time" );
+  essences->add_action( "reaping_flames,if=buff.rune_of_power.down&buff.arcane_power.down&(!burn_phase|time_to_die<cooldown.arcane_power.remains)&mana.time_to_max>=execute_time" );
   essences->add_action( "focused_azerite_beam,if=buff.rune_of_power.down&buff.arcane_power.down" );
   essences->add_action( "guardian_of_azeroth,if=buff.rune_of_power.down&buff.arcane_power.down" );
   essences->add_action( "purifying_blast,if=buff.rune_of_power.down&buff.arcane_power.down" );
@@ -5829,6 +5837,7 @@ void mage_t::apl_fire()
   default_list->add_talent( this, "Mirror Image", "if=buff.combustion.down" );
   default_list->add_action( "guardian_of_azeroth,if=(cooldown.combustion.remains<10|target.time_to_die<cooldown.combustion.remains)&!variable.disable_combustion" );
   default_list->add_action( "concentrated_flame" );
+  default_list->add_action( "reaping_flames" );
   default_list->add_action( "focused_azerite_beam" );
   default_list->add_action( "purifying_blast" );
   default_list->add_action( "ripple_in_space" );
@@ -5858,7 +5867,7 @@ void mage_t::apl_fire()
     "With Blaster Master and Flame On, Fire Blasts can additionally be used while Hot Streak and Heating Up are not active and a Pyroblast is in the air "
     "and also while casting Scorch even if Heating Up is already active. The latter allows two Hot Streak Pyroblasts to be cast in succession after the Scorch. "
     "Additionally with Blaster Master and Flame On, Fire Blasts should not be used unless Blaster Master is about to expire "
-    "or there are more than enough Fire Blasts to extend Blaster Master to the end of Combustion." ); 
+    "or there are more than enough Fire Blasts to extend Blaster Master to the end of Combustion." );
   combustion_phase->add_talent( this, "Rune of Power", "if=buff.combustion.down" );
   combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,if=azerite.blaster_master.enabled&(essence.memory_of_lucid_dreams.major|!essence.memory_of_lucid_dreams.minor)&talent.meteor.enabled&talent.flame_on.enabled&buff.blaster_master.down&(talent.rune_of_power.enabled&action.rune_of_power.executing&action.rune_of_power.execute_remains<0.6|(cooldown.combustion.ready|buff.combustion.up)&!talent.rune_of_power.enabled&!action.pyroblast.in_flight&!action.fireball.in_flight)",
     "A Fire Blast should be used to apply Blaster Master while casting Rune of Power when using Blaster Master, Flame On, and Meteor. If only Memory of Lucid Dreams Minor is equipped, this line is ignored because it will sometimes result in going into Combustion with few Fire Blast charges." );
@@ -5925,10 +5934,12 @@ void mage_t::apl_fire()
 
   items_high_priority->add_action( "call_action_list,name=items_combustion,if=!variable.disable_combustion&(talent.rune_of_power.enabled&cooldown.combustion.remains<=action.rune_of_power.cast_time|cooldown.combustion.ready)&!firestarter.active|buff.combustion.up" );
   items_high_priority->add_action( "use_items" );
+  items_high_priority->add_action( "use_item,name=manifesto_of_madness,if=!equipped.azsharas_font_of_power&cooldown.combustion.remains<8" );
   items_high_priority->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.combustion.remains<=5+15*variable.font_double_on_use&!variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=rotcrusted_voodoo_doll,if=cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=aquipotent_nautilus,if=cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=shiver_venom_relic,if=cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
+  items_high_priority->add_action( "use_item,name=forbidden_obsidian_claw,if=cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,effect_name=harmonic_dematerializer" );
   items_high_priority->add_action( "use_item,name=malformed_heralds_legwraps,if=cooldown.combustion.remains>=55&buff.combustion.down&cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=ancient_knot_of_wisdom,if=cooldown.combustion.remains>=55&buff.combustion.down&cooldown.combustion.remains>variable.on_use_cutoff|variable.disable_combustion" );
@@ -5936,6 +5947,8 @@ void mage_t::apl_fire()
 
   items_combustion->add_action( "use_item,name=ignition_mages_fuse" );
   items_combustion->add_action( "use_item,name=hyperthread_wristwraps,if=buff.combustion.up&action.fire_blast.charges=0&action.fire_blast.recharge_time>gcd.max" );
+  items_combustion->add_action( "use_item,name=manifesto_of_madness" );
+  items_combustion->add_action( "cancel_buff,use_off_gcd=1,name=manifesto_of_madness_chapter_one,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
   items_combustion->add_action( "use_item,use_off_gcd=1,name=azurethos_singed_plumage,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
   items_combustion->add_action( "use_item,use_off_gcd=1,effect_name=gladiators_badge,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
   items_combustion->add_action( "use_item,use_off_gcd=1,effect_name=gladiators_medallion,if=buff.combustion.up|action.meteor.in_flight&action.meteor.in_flight_remains<=0.5" );
@@ -6017,6 +6030,9 @@ void mage_t::apl_frost()
       single->add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&!talent.splitting_ice.enabled" );
       single->add_talent( this, "Comet Storm" );
       single->add_talent( this, "Ebonbolt", "if=buff.icicles.stack=5&!buff.brain_freeze.react" );
+      single->add_action( this, "Ice Lance", "if=buff.brain_freeze.react&(buff.fingers_of_frost.react|prev_gcd.1.flurry)&"
+        "(buff.icicles.max_stack-buff.icicles.stack)*action.frostbolt.execute_time+action.glacial_spike.cast_time+"
+        "action.glacial_spike.travel_time<incanters_flow_time_to.5.any" );
       single->add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt"
         "|talent.incanters_flow.enabled&cast_time+travel_time>incanters_flow_time_to.5.up&cast_time+travel_time<incanters_flow_time_to.4.down" );
       break;
@@ -6102,6 +6118,7 @@ void mage_t::apl_frost()
       essences->add_action( "purifying_blast,if=buff.rune_of_power.down|active_enemies>3" );
       essences->add_action( "ripple_in_space,if=buff.rune_of_power.down|active_enemies>3" );
       essences->add_action( "concentrated_flame,line_cd=6,if=buff.rune_of_power.down" );
+      essences->add_action( "reaping_flames,if=buff.rune_of_power.down" );
       essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
       essences->add_action( "worldvein_resonance,if=buff.rune_of_power.down|active_enemies>3" );
       break;
@@ -6113,8 +6130,9 @@ void mage_t::apl_frost()
       essences->add_action( "purifying_blast,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3" );
       essences->add_action( "ripple_in_space,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3" );
       essences->add_action( "concentrated_flame,line_cd=6,if=buff.rune_of_power.down&debuff.packed_ice.down" );
+      essences->add_action( "reaping_flames,if=buff.rune_of_power.down&debuff.packed_ice.down" );
       essences->add_action( "the_unbound_force,if=buff.reckless_force.up" );
-      essences->add_action( "worldvein_resonance,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3" );
+      essences->add_action( "worldvein_resonance,if=buff.rune_of_power.down&debuff.packed_ice.down&cooldown.frozen_orb.remains<4|active_enemies>3" );
       break;
     default:
       break;
@@ -6141,10 +6159,12 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
   double reg = player_t::resource_regen_per_second( rt );
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
+  {
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
 
-  if ( player_t::buffs.memory_of_lucid_dreams->check() )
-    reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+    if ( player_t::buffs.memory_of_lucid_dreams->check() )
+      reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+  }
 
   return reg;
 }
@@ -6630,17 +6650,18 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
   if ( !spec.icicles->ok() )
     return;
 
-  if ( icicles.empty() )
-    return;
-
   if ( chain && !icicle_event )
   {
     icicle_event = make_event<events::icicle_event_t>( *sim, *this, icicle_target, true );
     sim->print_debug( "{} icicle use on {} (chained), total={}", name(), icicle_target->name(), icicles.size() );
   }
-  else if ( !chain )
+
+  if ( !chain )
   {
     action_t* icicle_action = get_icicle();
+    if ( !icicle_action )
+      return;
+
     icicle_action->set_target( icicle_target );
     icicle_action->execute();
     sim->print_debug( "{} icicle use on {}, total={}", name(), icicle_target->name(), icicles.size() );

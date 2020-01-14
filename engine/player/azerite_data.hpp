@@ -372,6 +372,7 @@ void loyal_to_the_end( special_effect_t& effect );
 void arcane_heart( special_effect_t& effect );
 void clockwork_heart( special_effect_t& effect );
 void personcomputer_interface( special_effect_t& effect );
+void heart_of_darkness( special_effect_t& effect );
 } // Namespace special_effects ends
 
 namespace azerite_essences
@@ -393,6 +394,7 @@ void nullification_dynamo( special_effect_t& effect );
 void aegis_of_the_deep( special_effect_t& effect );
 void sphere_of_suppression( special_effect_t& effect );
 void breath_of_the_dying( special_effect_t& effect );
+void spark_of_inspiration( special_effect_t& effect );
 } // Namepsace azerite_essences ends
 
 // Vision of Perfection CDR helper

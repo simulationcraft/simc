@@ -107,8 +107,9 @@ actions.essences+=/focused_azerite_beam,if=(spell_targets.shuriken_storm>=2|raid
 actions.essences+=/purifying_blast,if=spell_targets.shuriken_storm>=2|raid_event.adds.in>60
 actions.essences+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10
 actions.essences+=/ripple_in_space
-actions.essences+=/worldvein_resonance,if=buff.lifeblood.stack<3
+actions.essences+=/worldvein_resonance,if=cooldown.symbols_of_death.remains<5|target.time_to_die<18
 actions.essences+=/memory_of_lucid_dreams,if=energy<40&buff.symbols_of_death.up
+actions.essences+=/reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30
 
 # Finishers
 actions.finish=pool_resource,for_next=1

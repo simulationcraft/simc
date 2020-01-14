@@ -851,6 +851,7 @@ public:
   double    composite_armor() const override;
   double    composite_armor_multiplier() const override;
   double    composite_melee_attack_power() const override;
+  double    composite_melee_attack_power( attack_power_type type ) const override;
   double    composite_attack_power_multiplier() const override;
   double    composite_attribute( attribute_e attr ) const override;
   double    composite_attribute_multiplier( attribute_e attr ) const override;
@@ -8713,10 +8714,12 @@ void druid_t::apl_balance()
                               "target_if=dot.sunfire.remains>10&dot.moonfire.remains>10&(!talent.stellar_flare.enabled|dot.stellar_flare.remains>10)" );
   default_list->add_action( "purifying_blast" );
   default_list->add_action( "ripple_in_space" );
-  default_list->add_action( "concentrated_flame" );
-  default_list->add_action( "the_unbound_force,if=buff.reckless_force.up,"
-                              "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
-  default_list->add_action( "worldvein_resonance" );
+  default_list->add_action( "concentrated_flame,if=(!buff.ca_inc.up|stack=2)&!action.concentrated_flame_missile.in_flight,target_if=!dot.concentrated_flame_burn.ticking" );
+  default_list->add_action(
+      "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<5,target_if=dot.moonfire.ticking&"
+      "dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
+  default_list->add_action( "worldvein_resonance,if=!buff.ca_inc.up,target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
+  default_list->add_action( "reaping_flames,if=!buff.ca_inc.up" );
   default_list->add_action( "focused_azerite_beam,if=(!variable.az_ss|!buff.ca_inc.up),"
                               "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "thorns" );
@@ -8781,13 +8784,16 @@ void druid_t::apl_guardian()
 {
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
   action_priority_list_t* cooldowns       = get_action_priority_list( "cooldowns" );
+  action_priority_list_t* essences        = get_action_priority_list( "essences" );
+  action_priority_list_t* cleave          = get_action_priority_list( "cleave" );
+  action_priority_list_t* multi           = get_action_priority_list( "multi" );
 
   std::vector<std::string> racial_actions = get_racial_actions();
 
   if ( sim -> allow_potions )
     cooldowns -> add_action( "potion" );
 
-  cooldowns -> add_action( "heart_essence" );
+ // cooldowns -> add_action( "heart_essence" );
 
   for (size_t i = 0; i < racial_actions.size(); i++)
     cooldowns -> add_action( racial_actions[i] );
@@ -8796,8 +8802,32 @@ void druid_t::apl_guardian()
   cooldowns -> add_talent( this, "Lunar Beam", "if=buff.bear_form.up" );
   cooldowns -> add_talent( this, "Bristling Fur", "if=buff.bear_form.up" );
   cooldowns -> add_action( "incarnation,if=(dot.moonfire.ticking|active_enemies>1)&dot.thrash_bear.ticking" );
-  cooldowns -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<31|target.time_to_die<20" ); 
+  cooldowns -> add_action( "use_item,name=ashvanes_razor_coral,if=((equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains>25&debuff.razor_coral_debuff.down)|debuff.razor_coral_debuff.down|(debuff.razor_coral_debuff.up&debuff.conductive_ink_debuff.up&target.time_to_pct_30<=2)|(debuff.razor_coral_debuff.up&time_to_die<=20))" ); 
+  cooldowns -> add_action( "use_item,effect_name=cyclotronic_blast" );
   cooldowns -> add_action( "use_items" );
+			  
+  essences -> add_action( "concentrated_flame,if=essence.the_crucible_of_flame.major&((!dot.concentrated_flame_burn.ticking&!action.concentrated_flame_missile.in_flight)^time_to_die<=7)" );
+  essences -> add_action( "anima_of_death,if=essence.anima_of_life_and_death.major" );
+  essences -> add_action( "memory_of_lucid_dreams,if=essence.memory_of_lucid_dreams.major" );
+  essences -> add_action( "worldvein_resonance,if=essence.worldvein_resonance.major" );
+  essences -> add_action( "ripple_in_space,if=essence.ripple_in_space.major" );
+			  
+  cleave -> add_action( "maul,if=rage.deficit<=10" );
+  cleave -> add_action( "ironfur,if=cost<=0" );
+  cleave -> add_action( "pulverize,target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
+  cleave -> add_action( "moonfire,target_if=!dot.moonfire.ticking" );
+  cleave -> add_action( "mangle,if=dot.thrash_bear.ticking" );
+  cleave -> add_action( "moonfire,target_if=buff.galactic_guardian.up&active_enemies=1|dot.moonfire.refreshable" );
+  cleave -> add_action( "maul" );
+  cleave -> add_action( "thrash" );
+  cleave -> add_action( "swipe" );
+			  
+  multi -> add_action( "maul,if=essence.conflict_and_strife.major&!buff.sharpened_claws.up" );
+  multi -> add_action( "ironfur,if=(rage>=cost&azerite.layered_mane.enabled)|rage.deficit<10" );
+  multi -> add_action( "thrash,if=(buff.incarnation.up&active_enemies>=4)|cooldown.thrash_bear.up" );
+  multi -> add_action( "mangle,if=buff.incarnation.up&active_enemies=3&dot.thrash_bear.ticking" );
+  multi -> add_action( "moonfire,if=dot.moonfire.refreshable&active_enemies<=4" );
+  multi -> add_action( "swipe,if=buff.incarnation.down" );
 
   if ( catweave_bear && talent.feral_affinity -> ok() )
   {
@@ -8832,18 +8862,21 @@ void druid_t::apl_guardian()
   } else {
     default_list -> add_action( "auto_attack" );
     default_list -> add_action( "call_action_list,name=cooldowns" );
-    default_list -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
-    default_list -> add_action( this, "Maul", "if=essence.conflict_and_strife.major&!buff.sharpened_claws.up" );
-    default_list -> add_action( this, "Ironfur", "if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)" );
-    default_list -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
-    default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
-    default_list -> add_action( "thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)" );
-    default_list -> add_action( "swipe,if=buff.incarnation.down&active_enemies>4" );
-    default_list -> add_action( this, "Mangle", "if=dot.thrash_bear.ticking" );
-    default_list -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
-    default_list -> add_action( "thrash" );
-    default_list -> add_action( this, "Maul" );
-    default_list -> add_action( "swipe" );
+    default_list -> add_action( "call_action_list,name=essences" );
+    default_list -> add_action( "call_action_list,name=cleave,if=active_enemies<=2" );
+    default_list -> add_action( "call_action_list,name=multi,if=active_enemies>=3" );
+   // default_list -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
+   // default_list -> add_action( this, "Maul", "if=essence.conflict_and_strife.major&!buff.sharpened_claws.up" );
+   // default_list -> add_action( this, "Ironfur", "if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)" );
+   // default_list -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
+   // default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
+   // default_list -> add_action( "thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)" );
+   // default_list -> add_action( "swipe,if=buff.incarnation.down&active_enemies>4" );
+   // default_list -> add_action( this, "Mangle", "if=dot.thrash_bear.ticking" );
+   // default_list -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
+   // default_list -> add_action( "thrash" );
+   // default_list -> add_action( this, "Maul" );
+   // default_list -> add_action( "swipe" );
   }
 }
 
@@ -9359,6 +9392,21 @@ double druid_t::composite_melee_attack_power() const
   }
 
   return player_t::composite_melee_attack_power();
+}
+
+double druid_t::composite_melee_attack_power( attack_power_type type ) const
+{
+  if ( specialization() == DRUID_BALANCE )
+  {
+    return spec.balance->effectN( 9 ).percent() * cache.spell_power( SCHOOL_MAX ) * composite_spell_power_multiplier();
+  }
+
+  if ( specialization() == DRUID_RESTORATION )
+  {
+    return spec.restoration->effectN( 10 ).percent() * cache.spell_power( SCHOOL_MAX ) *
+           composite_spell_power_multiplier();
+  }
+  return player_t::composite_melee_attack_power( type );
 }
 
 // druid_t::composite_attack_power_multiplier ===============================

@@ -4,7 +4,7 @@ race=human
 spec=beast_mastery
 role=attack
 position=ranged_back
-talents=1203011
+talents=2202012
 azerite_essences=14:3/4:3/5:3
 
 head=soulscarred_headgear,id=159398,bonus_id=1617/4819,azerite_powers=211/193/459/15/13
@@ -21,7 +21,7 @@ finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1602,enchant=accord_of_cri
 finger2=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_critical_strike
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
-main_hand=shiver_venom_crossbow,id=168273,bonus_id=4800/1517,enchant=crows_nest_scope
+main_hand=shiver_venom_crossbow,id=168273,bonus_id=4800/1517,enchant_id=5950
 
 save=T24_Hunter_Beast_Mastery.simc
 

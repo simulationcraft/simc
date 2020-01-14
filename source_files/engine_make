@@ -57,6 +57,7 @@ SRC += \
     dbc$(PATHSEP)sc_item_data.cpp \
     dbc$(PATHSEP)sc_data.cpp \
     dbc$(PATHSEP)sc_const_data.cpp \
+    dbc$(PATHSEP)item_effect.cpp \
     class_modules$(PATHSEP)sc_warrior.cpp \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock.cpp \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_affliction.cpp \

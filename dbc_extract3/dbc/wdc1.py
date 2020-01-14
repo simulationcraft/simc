@@ -171,7 +171,11 @@ class WDC1StructSegmentParser(WDC1SegmentParser):
 
         fmt = '<'
         for column in self.columns:
-            column_type = column.struct_type()
+            if self.record_parser._hotfix_parser and \
+                dbc.use_hotfix_expanded_field(self.parser.class_name()):
+                column_type = dbc.translate_hotfix_expanded_field(column.struct_type())
+            else:
+                column_type = column.struct_type()
 
             fmt += column.elements() * column_type
 
@@ -478,8 +482,8 @@ class RecordParser:
 
         # Sanity check parsing when offset map is not used
         if not self.parser().has_offset_map() and (unparsed_bytes < 0 or unparsed_bytes > 3):
-            raise ValueError('Parse error: file={}, offset={}, parsed_bytes={}, bytes_left={}, record={}, data={}, remains={}'.format(
-                self.parser().file_name(), offset, record_offset, unparsed_bytes, size, parsed_data,
+            raise ValueError('Parse error: file={}, offset={}, parsed_bytes={}, bytes_left={}, record={}, id={}, data={}, remains={}'.format(
+                self.parser().file_name(), offset, record_offset, unparsed_bytes, size, dbc_id, parsed_data,
                 binascii.hexlify(data[offset + record_offset:offset + size])))
 
         return parsed_data

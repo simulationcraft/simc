@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 
+#include "dbc/item_effect.hpp"
+
 #include "generated/sc_item_data2.inc"
 #if SC_USE_PTR
 #include "generated/sc_item_data_ptr2.inc"
@@ -705,6 +707,45 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
         item_database::apply_item_scaling( item, entry.value_1, item.parsed.drop_level );
       }
       break;
+    case ITEM_BONUS_ADD_ITEM_EFFECT:
+    {
+      auto effect = item_effect_t::find( entry.value_1, item.player->dbc.ptr );
+      if ( effect.id == 0 )
+      {
+        item.player->sim->error( "Player {} item '{}' unknown item effect id {}, ignoring",
+            item.player->name(), item.name(), entry.value_1 );
+        return true;
+      }
+
+      auto spell = item.player->find_spell( effect.spell_id );
+      if ( spell->id() == 0 )
+      {
+        item.player->sim->error( "Player {} item '{}' unknown spell id {} for item effect id {}, ignoring",
+            item.player->name(), item.name(), effect.spell_id, entry.value_1 );
+        return true;
+      }
+
+      size_t index = 0;
+      for ( index = 0; index < sizeof_array( item.parsed.data.trigger_spell ); ++index )
+      {
+        if ( item.parsed.data.id_spell[ index ] <= 0 )
+        {
+          break;
+        }
+      }
+
+      item.parsed.data.trigger_spell[ index ] = effect.type;
+      item.parsed.data.id_spell[ index ] = effect.spell_id;
+      item.parsed.data.cooldown_duration[ index ] = effect.cooldown_duration;
+      item.parsed.data.cooldown_group[ index ] = effect.cooldown_group;
+      item.parsed.data.cooldown_group_duration[ index ] = effect.cooldown_group_duration;
+
+      item.player->sim->print_debug( "Player {} item '{}' adding effect {} (type={}, index={})",
+          item.player->name(), item.name(), effect.spell_id,
+          util::item_spell_trigger_string( static_cast<item_spell_trigger_type>( effect.type ) ),
+          index );
+      break;
+    }
     default:
       break;
   }
@@ -825,6 +866,15 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
 
   if ( item.parsed.data.level == 0 )
     return item.parsed.stat_val[ idx ];
+
+  // 8.3 introduces "corruption" related stats that are not scaled by ilevel or anything.
+  // They are applied (for now) through item bonuses, and do not use the normal "stat
+  // alocation" scheme.
+  if ( item.parsed.data.stat_type_e[ idx ] == ITEM_MOD_CORRUPTION ||
+       item.parsed.data.stat_type_e[ idx ] == ITEM_MOD_CORRUPTION_RESISTANCE )
+  {
+    return item.parsed.data.stat_alloc[ idx ];
+  }
 
   //if ( item.level == ( int ) new_ilevel )
   //  return item.stat_val[ idx ];
@@ -1502,6 +1552,54 @@ static int get_bonus_power_index( const std::vector<const item_bonus_entry_t*>& 
   return -1;
 }
 
+static std::string get_bonus_item_effect( const std::vector<const item_bonus_entry_t*>& entries, const dbc_t& dbc )
+{
+  std::vector<std::string> entries_str;
+
+  range::for_each( entries, [&entries_str, &dbc]( const item_bonus_entry_t* entry ) {
+    if ( entry->type != ITEM_BONUS_ADD_ITEM_EFFECT )
+    {
+      return;
+    }
+    auto effect = item_effect_t::find( entry->value_1, dbc.ptr );
+    if ( effect.id == 0 )
+    {
+      entries_str.emplace_back( fmt::format( "Unknown Effect (id={})", entry->value_1 ) );
+    }
+    else
+    {
+      auto spell = dbc.spell( effect.spell_id );
+      if ( !spell )
+      {
+        entries_str.emplace_back( fmt::format( "Unknown Spell (id={}, index={})",
+          effect.spell_id, effect.index ) );
+      }
+      else
+      {
+        std::vector<std::string> fields;
+        fields.emplace_back( fmt::format( "id={}", spell->id() ) );
+        fields.emplace_back( fmt::format( "index={}", effect.index ) );
+        fields.emplace_back( fmt::format( "type={}",
+          util::item_spell_trigger_string( static_cast<item_spell_trigger_type>( effect.type ) ) ) );
+        if ( effect.cooldown_duration > 1 )
+        {
+          fields.emplace_back( fmt::format( "cooldown={}ms", effect.cooldown_duration ) );
+        }
+
+        if ( effect.cooldown_group_duration > 1 )
+        {
+          fields.emplace_back( fmt::format( "group_cooldown={}ms", effect.cooldown_group_duration ) );
+        }
+
+        entries_str.emplace_back( fmt::format( "{} ({})", spell->name_cstr(),
+          util::string_join( fields, ", " ) ) );
+      }
+    }
+  } );
+
+  return util::string_join( entries_str, ", " );
+}
+
 static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_stats(
     const std::vector<const item_bonus_entry_t*>& entries )
 {
@@ -1520,11 +1618,23 @@ static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_s
   {
     if ( entries[ i ] -> type == ITEM_BONUS_MOD )
     {
-      data.emplace_back(
-            static_cast<item_mod_type>( entries[ i ] -> value_1 ),
-            entries[ i ] -> value_2 / total,
-            entries[ i ] -> value_2 / 10000.0
-      );
+      if ( entries[ i ]->value_1 != ITEM_MOD_CORRUPTION &&
+           entries[ i ]->value_1 != ITEM_MOD_CORRUPTION_RESISTANCE )
+      {
+        data.emplace_back(
+              static_cast<item_mod_type>( entries[ i ] -> value_1 ),
+              entries[ i ] -> value_2 / total,
+              entries[ i ] -> value_2 / 10000.0
+        );
+      }
+      else
+      {
+        data.emplace_back(
+              static_cast<item_mod_type>( entries[ i ] -> value_1 ),
+              entries[ i ] -> value_2 / total,
+              entries[ i ] -> value_2
+        );
+      }
     }
   }
 
@@ -1549,7 +1659,8 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     if ( e -> type != ITEM_BONUS_ILEVEL && e -> type != ITEM_BONUS_MOD &&
          e -> type != ITEM_BONUS_SOCKET && e -> type != ITEM_BONUS_SCALING &&
          e -> type != ITEM_BONUS_SCALING_2 && e -> type != ITEM_BONUS_SET_ILEVEL &&
-         e -> type != ITEM_BONUS_ADD_RANK && e -> type != ITEM_BONUS_QUALITY )
+         e -> type != ITEM_BONUS_ADD_RANK && e -> type != ITEM_BONUS_QUALITY &&
+         e -> type != ITEM_BONUS_ADD_ITEM_EFFECT )
     {
       e++;
       continue;
@@ -1580,6 +1691,7 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     auto stats = get_bonus_id_stats( entries );
     std::pair< std::pair<int, double>, std::pair<int, double> > scaling = get_bonus_id_scaling( dbc, entries );
     auto power_index = get_bonus_power_index( entries );
+    std::string item_effects = get_bonus_item_effect( entries, dbc );
 
     std::vector<std::string> fields;
 
@@ -1644,6 +1756,11 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
       str += util::to_string( scaling.second.second ) + " @plvl " + util::to_string( scaling.second.first );
       str += " }";
       fields.push_back( str );
+    }
+
+    if ( !item_effects.empty() )
+    {
+      fields.emplace_back( fmt::format( "effects={{ {} }}", item_effects ) );
     }
 
     for ( size_t j = 0; j < fields.size(); ++j )

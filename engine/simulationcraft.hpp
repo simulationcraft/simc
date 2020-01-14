@@ -399,8 +399,8 @@ struct gear_stats_t
   double leech_rating;
   double speed_rating;
   double avoidance_rating;
-  double corruption;
-  double corruption_resistance;
+  double corruption_rating;
+  double corruption_resistance_rating;
 
   gear_stats_t() :
     default_value( 0.0 ), attribute(), resource(),
@@ -409,7 +409,7 @@ struct gear_stats_t
     weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
     parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 ),
     versatility_rating( 0.0 ), leech_rating( 0.0 ), speed_rating( 0.0 ),
-    avoidance_rating( 0.0 ), corruption( 0.0 ), corruption_resistance( 0.0 )
+    avoidance_rating( 0.0 ), corruption_rating( 0.0 ), corruption_resistance_rating( 0.0 )
   { }
 
   void initialize( double initializer )
@@ -443,8 +443,8 @@ struct gear_stats_t
     leech_rating = initializer;
     speed_rating = initializer;
     avoidance_rating = initializer;
-    corruption = initializer;
-    corruption_resistance = initializer;
+    corruption_rating = initializer;
+    corruption_resistance_rating = initializer;
   }
 
   friend gear_stats_t operator+( const gear_stats_t& left, const gear_stats_t& right )
@@ -480,8 +480,8 @@ struct gear_stats_t
     leech_rating += right.leech_rating;
     speed_rating += right.speed_rating;
     avoidance_rating += right.avoidance_rating;
-    corruption += right.corruption;
-    corruption_resistance += right.corruption_resistance;
+    corruption_rating += right.corruption_rating;
+    corruption_resistance_rating += right.corruption_resistance_rating;
     range::transform ( attribute, right.attribute, attribute.begin(), std::plus<double>() );
     range::transform ( resource, right.resource, resource.begin(), std::plus<double>() );
     return *this;
@@ -522,6 +522,8 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* razor_coral;
     buff_t* conductive_ink;
     buff_t* luminous_algae;
+    buff_t* infinite_stars;
+    buff_t* psyche_shredder;
     // BFA - Essences
     buff_t* blood_of_the_enemy;
     buff_t* condensed_lifeforce;
@@ -1227,6 +1229,18 @@ struct sim_t : private sc_thread_t
     int                 subroutine_recalibration_precombat_stacks = 0;
     /// Additional spell cast count to assume each buff cyle.
     int                 subroutine_recalibration_dummy_casts = 0;
+    /// Average duration of buff in percentage
+    double voidtwisted_titanshard_percent_duration = 0.5;
+    /// Period between checking if surging vitality can proc
+    timespan_t surging_vitality_damage_taken_period = 0_s;
+    /// Allies that decrease crit buff when the trinket is used
+    unsigned manifesto_allies_start = 0;
+    /// Allies that increase vers buff when the first buff expires
+    unsigned manifesto_allies_end = 5;
+    /// Echoing Void collapse rppm
+    double echoing_void_collapse_chance = 0.15;
+    /// Whether the increased chance via more allies is active
+    bool void_ritual_increased_chance_active = false;
   } bfa_opts;
 
   // Expansion specific data
@@ -2002,7 +2016,7 @@ struct rating_t
   double leech, speed, avoidance;
   double corruption, corruption_resistance;
 
-  double& get( rating_e r )
+  double& get_mutable( rating_e r )
   {
     switch ( r )
     {
@@ -2035,13 +2049,45 @@ struct rating_t
     assert( false ); return mastery;
   }
 
-  rating_t()
+  double get( rating_e r ) const
   {
-    // Initialize all ratings to a very high number
-    double max = +1.0E+50;
+    switch ( r )
+    {
+      case RATING_SPELL_HASTE: return spell_haste;
+      case RATING_SPELL_HIT: return spell_hit;
+      case RATING_SPELL_CRIT: return spell_crit;
+      case RATING_MELEE_HASTE: return attack_haste;
+      case RATING_MELEE_HIT: return attack_hit;
+      case RATING_MELEE_CRIT: return attack_crit;
+      case RATING_RANGED_HASTE: return ranged_haste;
+      case RATING_RANGED_HIT: return ranged_hit;
+      case RATING_RANGED_CRIT: return ranged_crit;
+      case RATING_EXPERTISE: return expertise;
+      case RATING_DODGE: return dodge;
+      case RATING_PARRY: return parry;
+      case RATING_BLOCK: return block;
+      case RATING_MASTERY: return mastery;
+      case RATING_PVP_POWER: return pvp_power;
+      case RATING_PVP_RESILIENCE: return pvp_resilience;
+      case RATING_DAMAGE_VERSATILITY: return damage_versatility;
+      case RATING_HEAL_VERSATILITY: return heal_versatility;
+      case RATING_MITIGATION_VERSATILITY: return mitigation_versatility;
+      case RATING_LEECH: return leech;
+      case RATING_SPEED: return speed;
+      case RATING_AVOIDANCE: return avoidance;
+      case RATING_CORRUPTION: return corruption;
+      case RATING_CORRUPTION_RESISTANCE: return corruption_resistance;
+      default: break;
+    }
+    assert( false ); return mastery;
+  }
+
+  // Initialize all ratings to a very high number by default
+  rating_t( double max = +1.0E+50 )
+  {
     for ( rating_e i = static_cast<rating_e>( 0 ); i < RATING_MAX; ++i )
     {
-      get( i ) = max;
+      get_mutable( i ) = max;
     }
   }
 
@@ -2050,9 +2096,12 @@ struct rating_t
     // Read ratings from DBC
     for ( rating_e i = static_cast<rating_e>( 0 ); i < RATING_MAX; ++i )
     {
-      get( i ) = dbc.combat_rating( i,  level );
-      if ( i == RATING_MASTERY )
-        get( i ) /= 100.0;
+      get_mutable( i ) = dbc.combat_rating( i,  level );
+      if ( i == RATING_MASTERY || i == RATING_CORRUPTION || i == RATING_CORRUPTION_RESISTANCE  )
+        get_mutable( i ) /= 100.0;
+
+      if ( get_mutable( i ) == 0.0 )
+        get_mutable( i ) = 1.0;
     }
   }
 
@@ -3122,6 +3171,7 @@ private:
   mutable double _damage_versatility, _heal_versatility, _mitigation_versatility;
   mutable double _leech, _run_speed, _avoidance;
   mutable double _rppm_haste_coeff, _rppm_crit_coeff;
+  mutable double _corruption, _corruption_resistance;
 public:
   bool active; // runtime active-flag
   void invalidate_all();
@@ -3164,6 +3214,8 @@ public:
   double leech() const;
   double run_speed() const;
   double avoidance() const;
+  double corruption() const;
+  double corruption_resistance() const;
   double rppm_haste_coeff() const;
   double rppm_crit_coeff() const;
 #else
@@ -3199,6 +3251,8 @@ public:
   double leech() const { return _player -> composite_leech(); }
   double run_speed() const { return _player -> composite_run_speed(); }
   double avoidance() const { return _player -> composite_avoidance(); }
+  double corruption() const { return _player -> composite_corruption(); }
+  double corruption_resistance() const { return _player -> composite_corruption_resistance(); }
 #endif
 };
 
@@ -3351,6 +3405,7 @@ struct player_collected_data_t
     double mastery_value;
     double damage_versatility, heal_versatility, mitigation_versatility;
     double leech, run_speed, avoidance;
+    double corruption, corruption_resistance;
   } buffed_stats_snapshot;
 
   player_collected_data_t( const player_t* player );
@@ -3459,7 +3514,7 @@ struct actor_t : private noncopyable
 
 /* Player Report Extension
  * Allows class modules to write extension to the report sections based on the dynamic class of the player.
- * 
+ *
  * To add sort functionaliy to custom tables:
  *  1) add the 'sort' class to the table: <table="sc sort">
  *    a) optionally add 'even' or 'odd' to automatically stripe the table: <table="sc sort even">
@@ -3785,6 +3840,9 @@ struct player_t : public actor_t
   initial, // Base + Passive + Gear (overridden or items) + Player Enchants + Global Enchants
   current; // Current values, reset to initial before every iteration
 
+  /// Passive combat rating multipliers
+  rating_t passive_rating_multiplier;
+
   gear_stats_t passive; // Passive stats from various passive auras (and similar effects)
 
   timespan_t last_cast;
@@ -4066,6 +4124,8 @@ struct player_t : public actor_t
     buff_t* bioelectric_charge; // Diver's Folly 1H AGI axe buff to store damage
     buff_t* razor_coral; // Ashvane's Razor Coral trinket crit rating buff
 
+    //8.3 buffs
+    buff_t* strikethrough; // Corruption effect that increases crit damage/healing
   } buffs;
 
   struct debuffs_t
@@ -4209,7 +4269,6 @@ public:
   void collect_resource_timeline_information();
   void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
-  void modify_current_rating( rating_e stat, double amount );
   void create_talents_numbers();
   void create_talents_armory();
   void create_talents_wowhead();
@@ -4418,6 +4477,9 @@ public:
   virtual double composite_leech() const;
   virtual double composite_run_speed() const;
   virtual double composite_avoidance() const;
+  virtual double composite_corruption() const;
+  virtual double composite_corruption_resistance() const;
+  virtual double composite_total_corruption() const;
   virtual double composite_armor() const;
   virtual double composite_bonus_armor() const;
   virtual double composite_base_armor_multiplier() const; // Modify Base Besistance
@@ -4495,6 +4557,10 @@ public:
   { return composite_rating( RATING_SPEED ); }
   virtual double composite_avoidance_rating() const
   { return composite_rating( RATING_AVOIDANCE ); }
+  virtual double composite_corruption_rating() const
+  { return composite_rating( RATING_CORRUPTION ); }
+  virtual double composite_corruption_resistance_rating() const
+  { return composite_rating( RATING_CORRUPTION_RESISTANCE ); }
 
   /// Total activity time for this actor during the iteration
   virtual timespan_t composite_active_time() const
@@ -4607,7 +4673,7 @@ public:
   virtual void teleport( double yards, timespan_t duration = timespan_t::zero() );
   virtual movement_direction_type movement_direction() const
   { return current.movement_direction; }
-  
+
   virtual void reset_auto_attacks( timespan_t delay = timespan_t::zero() );
 
   virtual void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr );
@@ -5947,6 +6013,15 @@ public:
 
   virtual double composite_avoidance() const
   { return player -> cache.avoidance(); }
+
+  virtual double composite_corruption() const
+  { return player -> cache.corruption(); }
+
+  virtual double composite_corruption_resistance() const
+  { return player -> cache.corruption_resistance(); }
+
+  virtual double composite_total_corruption() const
+  { return player -> composite_total_corruption(); }
 
   /// Direct amount multiplier due to debuffs on the target
   virtual double composite_target_da_multiplier( player_t* target ) const

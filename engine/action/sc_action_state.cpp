@@ -126,7 +126,7 @@ action_state_t::action_state_t( action_t* a, player_t* t )
     result_amount( 0 ),
     blocked_amount( 0 ),
     self_absorb_amount( 0 ),
-    haste( 0 ),
+    haste( 1.0 ),
     crit_chance( 0 ),
     target_crit_chance( 0 ),
     attack_power( 0 ),

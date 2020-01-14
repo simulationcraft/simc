@@ -1,4 +1,4 @@
-// Azerite powers, wow build 8.3.0.32593
+// Azerite powers, wow build 8.3.0.32976
 static constexpr std::array<azerite_power_entry_t, 379> __ptr_azerite_power_data { {
   {  13, 263978,  4775, "Azerite Empowered"                 , 0 },
   {  14, 268594,     0, "Longstrider"                       , 1 },
@@ -380,7 +380,7 @@ static constexpr std::array<azerite_power_entry_t, 379> __ptr_azerite_power_data
   { 579, 312928,     0, "Perseverance"                      , 0 },
   { 582, 317137,     0, "Heart of Darkness"                 , 3 },
 } };
-// Azerite Essences, wow build 8.3.0.32593
+// Azerite Essences, wow build 8.3.0.32976
 static constexpr std::array<azerite_essence_entry_t, 28> __ptr_azerite_essence_data { {
   {  2,   1, "Azeroth's Undying Gift"       },
   {  3,   1, "Sphere of Suppression"        },
@@ -412,7 +412,7 @@ static constexpr std::array<azerite_essence_entry_t, 28> __ptr_azerite_essence_d
   { 37,   2, "The Formless Void"            },
 } };
 
-// Azerite Essence Powers, wow build 8.3.0.32593
+// Azerite Essence Powers, wow build 8.3.0.32976
 static constexpr std::array<azerite_essence_power_entry_t, 112> __ptr_azerite_essence_power_data { {
   {   5,   2,   1, { 293019, 294668 }, { 293019, 294668 } }, // Azeroth's Undying Gift
   {   6,   2,   2, { 298080, 298082 }, { 294653, 294687 } }, // Azeroth's Undying Gift

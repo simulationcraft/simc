@@ -1,4 +1,4 @@
-SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29683)
+SimulationCraft 820-02 for World of Warcraft 8.2.0 Live (wow build 31478)
 
 bonus_id={ 1 }, desc={ Heroic }, ilevel_adjust={ 20 }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
@@ -540,7 +540,7 @@ bonus_id={ 648 }, desc={ Empowered }, quality={ epic }, ilevel_adjust={ 5 }
 bonus_id={ 651 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 3 }
 bonus_id={ 656 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 174 @plvl 110 }
 bonus_id={ 657 }, quality={ epic }
-bonus_id={ 664 }, ilevel={ 138 @plvl 98 - 158 @plvl 110 }
+bonus_id={ 664 }, ilevel={ 105 @plvl 98 - 160 @plvl 110 }
 bonus_id={ 665 }, quality={ epic }, ilevel_adjust={ 3 }
 bonus_id={ 666 }, desc={ Obliterum: 0/10 }, quality={ epic }
 bonus_id={ 667 }, desc={ Obliterum: 0/10 }, quality={ epic }, ilevel_adjust={ 1 }
@@ -581,7 +581,7 @@ bonus_id={ 716 }, socket={ 1 }
 bonus_id={ 717 }, socket={ 1 }
 bonus_id={ 718 }, socket={ 1 }
 bonus_id={ 719 }, socket={ 1 }
-bonus_id={ 720 }, quality={ epic }, ilevel={ 138 @plvl 0 - 160 @plvl 110 }
+bonus_id={ 720 }, quality={ epic }, ilevel={ 117 @plvl 0 - 172 @plvl 110 }
 bonus_id={ 721 }, socket={ 1 }
 bonus_id={ 722 }, socket={ 1 }
 bonus_id={ 723 }, socket={ 1 }
@@ -627,8 +627,8 @@ bonus_id={ 763 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 4 }
 bonus_id={ 764 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 6 }
 bonus_id={ 765 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 7 }
 bonus_id={ 766 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 8 }
-bonus_id={ 767 }, ilevel={ 138 @plvl 98 - 157 @plvl 110 }
-bonus_id={ 768 }, ilevel={ 138 @plvl 98 - 158 @plvl 110 }
+bonus_id={ 767 }, ilevel={ 105 @plvl 98 - 158 @plvl 110 }
+bonus_id={ 768 }, ilevel={ 105 @plvl 98 - 163 @plvl 110 }
 bonus_id={ 769 }, ilevel_adjust={ 5 }
 bonus_id={ 1372 }, ilevel_adjust={ -100 }
 bonus_id={ 1373 }, ilevel_adjust={ -99 }
@@ -978,24 +978,24 @@ bonus_id={ 1718 }, suffix={ of the Decimator }, stats={ 100% Crit [0.7000] }
 bonus_id={ 1719 }, suffix={ of the Adaptable }, stats={ 100% Vers [0.7000] }
 bonus_id={ 1720 }, suffix={ of the Impatient }, stats={ 100% Haste [0.7000] }
 bonus_id={ 1721 }, suffix={ of the Savant }, stats={ 100% Mastery [0.7000] }
-bonus_id={ 1723 }, ilevel={ 10 @plvl 0 - 158 @plvl 110 }
-bonus_id={ 1724 }, quality={ rare }, ilevel={ 10 @plvl 0 - 160 @plvl 110 }
-bonus_id={ 1725 }, quality={ epic }, ilevel={ 10 @plvl 0 - 160 @plvl 110 }
+bonus_id={ 1723 }, ilevel={ 6 @plvl 0 - 163 @plvl 110 }
+bonus_id={ 1724 }, quality={ rare }, ilevel={ 12 @plvl 0 - 170 @plvl 110 }
+bonus_id={ 1725 }, quality={ epic }, ilevel={ 18 @plvl 0 - 177 @plvl 110 }
 bonus_id={ 1726 }, base_ilevel={ 845 }, desc={ Heroic }
 bonus_id={ 1727 }, base_ilevel={ 865 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 1729 }, ilevel={ 0 @plvl 0 - 0 @plvl 110 }
 bonus_id={ 1730 }, quality={ rare }, ilevel={ 0 @plvl 0 - 0 @plvl 110 }
 bonus_id={ 1731 }, quality={ epic }, ilevel={ 1 @plvl 0 - 20 @plvl 110 }
-bonus_id={ 1732 }, desc={ Trading Post Module }, ilevel={ 138 @plvl 98 - 158 @plvl 110 }
-bonus_id={ 1733 }, quality={ rare }, ilevel={ 138 @plvl 98 - 160 @plvl 110 }
-bonus_id={ 1734 }, quality={ epic }, ilevel={ 138 @plvl 0 - 160 @plvl 110 }
-bonus_id={ 1735 }, quality={ epic }, ilevel={ 138 @plvl 0 - 160 @plvl 110 }
-bonus_id={ 1736 }, quality={ rare }, ilevel={ 138 @plvl 0 - 160 @plvl 110 }
-bonus_id={ 1737 }, quality={ epic }, ilevel={ 139 @plvl 0 - 160 @plvl 110 }
-bonus_id={ 1738 }, quality={ epic }, ilevel={ 139 @plvl 0 - 160 @plvl 110 }
-bonus_id={ 1739 }, quality={ rare }, ilevel={ 138 @plvl 0 - 160 @plvl 110 }
-bonus_id={ 1740 }, quality={ epic }, ilevel={ 140 @plvl 0 - 160 @plvl 110 }
-bonus_id={ 1741 }, quality={ epic }, ilevel={ 140 @plvl 0 - 160 @plvl 110 }
+bonus_id={ 1732 }, desc={ Trading Post Module }, ilevel={ 105 @plvl 98 - 160 @plvl 110 }
+bonus_id={ 1733 }, quality={ rare }, ilevel={ 111 @plvl 98 - 165 @plvl 110 }
+bonus_id={ 1734 }, quality={ epic }, ilevel={ 117 @plvl 0 - 172 @plvl 110 }
+bonus_id={ 1735 }, quality={ epic }, ilevel={ 117 @plvl 0 - 172 @plvl 110 }
+bonus_id={ 1736 }, quality={ rare }, ilevel={ 111 @plvl 0 - 167 @plvl 110 }
+bonus_id={ 1737 }, quality={ epic }, ilevel={ 117 @plvl 0 - 174 @plvl 110 }
+bonus_id={ 1738 }, quality={ epic }, ilevel={ 117 @plvl 0 - 174 @plvl 110 }
+bonus_id={ 1739 }, quality={ rare }, ilevel={ 111 @plvl 0 - 170 @plvl 110 }
+bonus_id={ 1740 }, quality={ epic }, ilevel={ 117 @plvl 0 - 177 @plvl 110 }
+bonus_id={ 1741 }, quality={ epic }, ilevel={ 117 @plvl 0 - 177 @plvl 110 }
 bonus_id={ 1742 }, suffix={ of the Quickblade }, stats={ 71% Crit [1.2500], 29% Vers [0.5000] }
 bonus_id={ 1743 }, suffix={ of the Quickblade }, stats={ 66% Crit [1.1500], 34% Vers [0.6000] }
 bonus_id={ 1744 }, suffix={ of the Quickblade }, stats={ 60% Crit [1.0500], 40% Vers [0.7000] }
@@ -1046,9 +1046,9 @@ bonus_id={ 1788 }, ilevel={ 10 @plvl 0 - 41 @plvl 110 }
 bonus_id={ 1789 }, quality={ rare }, ilevel={ 10 @plvl 0 - 44 @plvl 110 }
 bonus_id={ 1790 }, quality={ epic }, ilevel={ 10 @plvl 0 - 48 @plvl 110 }
 bonus_id={ 1791 }, ilevel={ 10 @plvl 0 - 58 @plvl 110 }
-bonus_id={ 1792 }, quality={ rare }, ilevel={ 138 @plvl 0 - 160 @plvl 110 }
-bonus_id={ 1793 }, quality={ rare }, ilevel={ 138 @plvl 0 - 160 @plvl 110 }
-bonus_id={ 1794 }, quality={ rare }, ilevel={ 138 @plvl 98 - 160 @plvl 110 }
+bonus_id={ 1792 }, quality={ rare }, ilevel={ 111 @plvl 0 - 167 @plvl 110 }
+bonus_id={ 1793 }, quality={ rare }, ilevel={ 111 @plvl 0 - 170 @plvl 110 }
+bonus_id={ 1794 }, quality={ rare }, ilevel={ 111 @plvl 98 - 165 @plvl 110 }
 bonus_id={ 1795 }, quality={ rare }, ilevel={ 138 @plvl 0 - 160 @plvl 110 }
 bonus_id={ 1796 }, ilevel={ 131 @plvl 0 - 156 @plvl 110 }
 bonus_id={ 1798 }, base_ilevel={ 705 }, desc={ Heroic }
@@ -3212,3 +3212,479 @@ bonus_id={ 5807 }, ilevel={ 110 @plvl 90 - 287 @plvl 120 }
 bonus_id={ 5808 }, ilevel={ 112 @plvl 90 - 290 @plvl 120 }
 bonus_id={ 5814 }, ilevel_adjust={ 25 }
 bonus_id={ 5817 }, ilevel={ 145 @plvl 100 - 290 @plvl 120 }
+bonus_id={ 5819 }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5820 }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5821 }, quality={ epic }
+bonus_id={ 5823 }, desc={ Combatant }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5824 }, desc={ Combatant }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5825 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 5827 }, desc={ Challenger }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5829 }, desc={ Challenger }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5830 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 5832 }, desc={ Rival }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5833 }, desc={ Rival }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5834 }, desc={ Rival }, quality={ epic }
+bonus_id={ 5836 }, desc={ Duelist }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5837 }, desc={ Duelist }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5838 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 5840 }, desc={ Elite }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5841 }, desc={ Elite }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 5842 }, desc={ Elite }, quality={ epic }
+bonus_id={ 5843 }, quality={ epic }
+bonus_id={ 5846 }, ilevel_adjust={ 1 }
+bonus_id={ 5847 }, ilevel_adjust={ 2 }
+bonus_id={ 5848 }, ilevel_adjust={ 3 }
+bonus_id={ 5849 }, ilevel_adjust={ 4 }
+bonus_id={ 5850 }, ilevel_adjust={ 5 }
+bonus_id={ 5851 }, ilevel_adjust={ 6 }
+bonus_id={ 5852 }, ilevel_adjust={ 7 }
+bonus_id={ 5853 }, ilevel_adjust={ 8 }
+bonus_id={ 5854 }, ilevel_adjust={ 9 }
+bonus_id={ 5855 }, ilevel_adjust={ 10 }
+bonus_id={ 5856 }, ilevel_adjust={ 11 }
+bonus_id={ 5857 }, ilevel_adjust={ 12 }
+bonus_id={ 5858 }, ilevel_adjust={ 13 }
+bonus_id={ 5859 }, ilevel_adjust={ 14 }
+bonus_id={ 5860 }, ilevel_adjust={ 15 }
+bonus_id={ 5861 }, ilevel_adjust={ 16 }
+bonus_id={ 5862 }, ilevel_adjust={ 17 }
+bonus_id={ 5863 }, ilevel_adjust={ 18 }
+bonus_id={ 5864 }, ilevel_adjust={ 19 }
+bonus_id={ 5865 }, ilevel_adjust={ 20 }
+bonus_id={ 5866 }, ilevel_adjust={ 21 }
+bonus_id={ 5867 }, ilevel_adjust={ 22 }
+bonus_id={ 5868 }, ilevel_adjust={ 23 }
+bonus_id={ 5869 }, ilevel_adjust={ 24 }
+bonus_id={ 5870 }, ilevel_adjust={ 25 }
+bonus_id={ 5871 }, ilevel_adjust={ 26 }
+bonus_id={ 5872 }, ilevel_adjust={ 27 }
+bonus_id={ 5873 }, ilevel_adjust={ 28 }
+bonus_id={ 5874 }, ilevel_adjust={ 29 }
+bonus_id={ 5875 }, ilevel_adjust={ 30 }
+bonus_id={ 5876 }, ilevel_adjust={ 31 }
+bonus_id={ 5877 }, ilevel_adjust={ 32 }
+bonus_id={ 5878 }, ilevel_adjust={ 33 }
+bonus_id={ 5879 }, ilevel_adjust={ 34 }
+bonus_id={ 5880 }, ilevel_adjust={ 35 }
+bonus_id={ 5881 }, ilevel_adjust={ 36 }
+bonus_id={ 5882 }, ilevel_adjust={ 37 }
+bonus_id={ 5883 }, ilevel_adjust={ 38 }
+bonus_id={ 5884 }, ilevel_adjust={ 39 }
+bonus_id={ 5885 }, ilevel_adjust={ 40 }
+bonus_id={ 5886 }, ilevel_adjust={ 41 }
+bonus_id={ 5887 }, ilevel_adjust={ 42 }
+bonus_id={ 5888 }, ilevel_adjust={ 43 }
+bonus_id={ 5889 }, ilevel_adjust={ 44 }
+bonus_id={ 5890 }, ilevel_adjust={ 45 }
+bonus_id={ 5891 }, ilevel_adjust={ 46 }
+bonus_id={ 5892 }, ilevel_adjust={ 47 }
+bonus_id={ 5893 }, ilevel_adjust={ 48 }
+bonus_id={ 5894 }, ilevel_adjust={ 49 }
+bonus_id={ 5895 }, ilevel_adjust={ 50 }
+bonus_id={ 5896 }, ilevel_adjust={ 51 }
+bonus_id={ 5897 }, ilevel_adjust={ 52 }
+bonus_id={ 5898 }, ilevel_adjust={ 53 }
+bonus_id={ 5899 }, ilevel_adjust={ 54 }
+bonus_id={ 5900 }, ilevel_adjust={ 55 }
+bonus_id={ 5901 }, ilevel_adjust={ 56 }
+bonus_id={ 5902 }, ilevel_adjust={ 57 }
+bonus_id={ 5903 }, ilevel_adjust={ 58 }
+bonus_id={ 5904 }, ilevel_adjust={ 59 }
+bonus_id={ 5905 }, ilevel_adjust={ 60 }
+bonus_id={ 5906 }, ilevel_adjust={ 61 }
+bonus_id={ 5907 }, ilevel_adjust={ 62 }
+bonus_id={ 5908 }, ilevel_adjust={ 63 }
+bonus_id={ 5909 }, ilevel_adjust={ 64 }
+bonus_id={ 5910 }, ilevel_adjust={ 65 }
+bonus_id={ 5911 }, ilevel_adjust={ 66 }
+bonus_id={ 5912 }, ilevel_adjust={ 67 }
+bonus_id={ 5913 }, ilevel_adjust={ 68 }
+bonus_id={ 5914 }, ilevel_adjust={ 69 }
+bonus_id={ 5915 }, ilevel_adjust={ 70 }
+bonus_id={ 5916 }, ilevel_adjust={ 71 }
+bonus_id={ 5917 }, ilevel_adjust={ 72 }
+bonus_id={ 5918 }, ilevel_adjust={ 73 }
+bonus_id={ 5919 }, ilevel_adjust={ 74 }
+bonus_id={ 5920 }, ilevel_adjust={ 75 }
+bonus_id={ 5921 }, ilevel_adjust={ 76 }
+bonus_id={ 5922 }, ilevel_adjust={ 77 }
+bonus_id={ 5923 }, ilevel_adjust={ 78 }
+bonus_id={ 5924 }, ilevel_adjust={ 79 }
+bonus_id={ 5925 }, ilevel_adjust={ 80 }
+bonus_id={ 5926 }, ilevel_adjust={ 81 }
+bonus_id={ 5927 }, ilevel_adjust={ 82 }
+bonus_id={ 5928 }, ilevel_adjust={ 83 }
+bonus_id={ 5929 }, ilevel_adjust={ 84 }
+bonus_id={ 5930 }, ilevel_adjust={ 85 }
+bonus_id={ 5931 }, ilevel_adjust={ 86 }
+bonus_id={ 5932 }, ilevel_adjust={ 87 }
+bonus_id={ 5933 }, ilevel_adjust={ 88 }
+bonus_id={ 5934 }, ilevel_adjust={ 89 }
+bonus_id={ 5935 }, ilevel_adjust={ 90 }
+bonus_id={ 5936 }, ilevel_adjust={ 91 }
+bonus_id={ 5937 }, ilevel_adjust={ 92 }
+bonus_id={ 5938 }, ilevel_adjust={ 93 }
+bonus_id={ 5939 }, ilevel_adjust={ 94 }
+bonus_id={ 5940 }, ilevel_adjust={ 95 }
+bonus_id={ 5941 }, ilevel_adjust={ 96 }
+bonus_id={ 5942 }, ilevel_adjust={ 97 }
+bonus_id={ 5943 }, ilevel_adjust={ 98 }
+bonus_id={ 5944 }, ilevel_adjust={ 99 }
+bonus_id={ 5945 }, ilevel_adjust={ 100 }
+bonus_id={ 5946 }, ilevel_adjust={ 101 }
+bonus_id={ 5947 }, ilevel_adjust={ 102 }
+bonus_id={ 5948 }, ilevel_adjust={ 103 }
+bonus_id={ 5949 }, ilevel_adjust={ 104 }
+bonus_id={ 5950 }, ilevel_adjust={ 105 }
+bonus_id={ 5951 }, ilevel_adjust={ 106 }
+bonus_id={ 5952 }, ilevel_adjust={ 107 }
+bonus_id={ 5953 }, ilevel_adjust={ 108 }
+bonus_id={ 5954 }, ilevel_adjust={ 109 }
+bonus_id={ 5955 }, ilevel_adjust={ 110 }
+bonus_id={ 5956 }, ilevel_adjust={ 111 }
+bonus_id={ 5957 }, ilevel_adjust={ 112 }
+bonus_id={ 5958 }, ilevel_adjust={ 113 }
+bonus_id={ 5959 }, ilevel_adjust={ 114 }
+bonus_id={ 5960 }, ilevel_adjust={ 115 }
+bonus_id={ 5961 }, ilevel_adjust={ 116 }
+bonus_id={ 5962 }, ilevel_adjust={ 117 }
+bonus_id={ 5963 }, ilevel_adjust={ 118 }
+bonus_id={ 5964 }, ilevel_adjust={ 119 }
+bonus_id={ 5965 }, ilevel_adjust={ 120 }
+bonus_id={ 5966 }, ilevel_adjust={ 121 }
+bonus_id={ 5967 }, ilevel_adjust={ 122 }
+bonus_id={ 5968 }, ilevel_adjust={ 123 }
+bonus_id={ 5969 }, ilevel_adjust={ 124 }
+bonus_id={ 5970 }, ilevel_adjust={ 125 }
+bonus_id={ 5971 }, ilevel_adjust={ 126 }
+bonus_id={ 5972 }, ilevel_adjust={ 127 }
+bonus_id={ 5973 }, ilevel_adjust={ 128 }
+bonus_id={ 5974 }, ilevel_adjust={ 129 }
+bonus_id={ 5975 }, ilevel_adjust={ 130 }
+bonus_id={ 5976 }, ilevel_adjust={ 131 }
+bonus_id={ 5977 }, ilevel_adjust={ 132 }
+bonus_id={ 5978 }, ilevel_adjust={ 133 }
+bonus_id={ 5979 }, ilevel_adjust={ 134 }
+bonus_id={ 5980 }, ilevel_adjust={ 135 }
+bonus_id={ 5981 }, ilevel_adjust={ 136 }
+bonus_id={ 5982 }, ilevel_adjust={ 137 }
+bonus_id={ 5983 }, ilevel_adjust={ 138 }
+bonus_id={ 5984 }, ilevel_adjust={ 139 }
+bonus_id={ 5985 }, ilevel_adjust={ 140 }
+bonus_id={ 5986 }, ilevel_adjust={ 141 }
+bonus_id={ 5987 }, ilevel_adjust={ 142 }
+bonus_id={ 5988 }, ilevel_adjust={ 143 }
+bonus_id={ 5989 }, ilevel_adjust={ 144 }
+bonus_id={ 5990 }, ilevel_adjust={ 145 }
+bonus_id={ 5991 }, ilevel_adjust={ 146 }
+bonus_id={ 5992 }, ilevel_adjust={ 147 }
+bonus_id={ 5993 }, ilevel_adjust={ 148 }
+bonus_id={ 5994 }, ilevel_adjust={ 149 }
+bonus_id={ 5995 }, ilevel_adjust={ 150 }
+bonus_id={ 5996 }, ilevel_adjust={ 151 }
+bonus_id={ 5997 }, ilevel_adjust={ 152 }
+bonus_id={ 5998 }, ilevel_adjust={ 153 }
+bonus_id={ 5999 }, ilevel_adjust={ 154 }
+bonus_id={ 6000 }, ilevel_adjust={ 155 }
+bonus_id={ 6001 }, ilevel_adjust={ 156 }
+bonus_id={ 6002 }, ilevel_adjust={ 157 }
+bonus_id={ 6003 }, ilevel_adjust={ 158 }
+bonus_id={ 6004 }, ilevel_adjust={ 159 }
+bonus_id={ 6005 }, ilevel_adjust={ 160 }
+bonus_id={ 6006 }, ilevel_adjust={ 161 }
+bonus_id={ 6007 }, ilevel_adjust={ 162 }
+bonus_id={ 6008 }, ilevel_adjust={ 163 }
+bonus_id={ 6009 }, ilevel_adjust={ 164 }
+bonus_id={ 6010 }, ilevel_adjust={ 165 }
+bonus_id={ 6011 }, ilevel_adjust={ 166 }
+bonus_id={ 6012 }, ilevel_adjust={ 167 }
+bonus_id={ 6013 }, ilevel_adjust={ 168 }
+bonus_id={ 6014 }, ilevel_adjust={ 169 }
+bonus_id={ 6015 }, ilevel_adjust={ 170 }
+bonus_id={ 6016 }, ilevel_adjust={ 171 }
+bonus_id={ 6017 }, ilevel_adjust={ 172 }
+bonus_id={ 6018 }, ilevel_adjust={ 173 }
+bonus_id={ 6019 }, ilevel_adjust={ 174 }
+bonus_id={ 6020 }, ilevel_adjust={ 175 }
+bonus_id={ 6021 }, ilevel_adjust={ 176 }
+bonus_id={ 6022 }, ilevel_adjust={ 177 }
+bonus_id={ 6023 }, ilevel_adjust={ 178 }
+bonus_id={ 6024 }, ilevel_adjust={ 179 }
+bonus_id={ 6025 }, ilevel_adjust={ 180 }
+bonus_id={ 6026 }, ilevel_adjust={ 181 }
+bonus_id={ 6027 }, ilevel_adjust={ 182 }
+bonus_id={ 6028 }, ilevel_adjust={ 183 }
+bonus_id={ 6029 }, ilevel_adjust={ 184 }
+bonus_id={ 6030 }, ilevel_adjust={ 185 }
+bonus_id={ 6031 }, ilevel_adjust={ 186 }
+bonus_id={ 6032 }, ilevel_adjust={ 187 }
+bonus_id={ 6033 }, ilevel_adjust={ 188 }
+bonus_id={ 6034 }, ilevel_adjust={ 189 }
+bonus_id={ 6035 }, ilevel_adjust={ 190 }
+bonus_id={ 6036 }, ilevel_adjust={ 191 }
+bonus_id={ 6037 }, ilevel_adjust={ 192 }
+bonus_id={ 6038 }, ilevel_adjust={ 193 }
+bonus_id={ 6039 }, ilevel_adjust={ 194 }
+bonus_id={ 6040 }, ilevel_adjust={ 195 }
+bonus_id={ 6041 }, ilevel_adjust={ 196 }
+bonus_id={ 6042 }, ilevel_adjust={ 197 }
+bonus_id={ 6043 }, ilevel_adjust={ 198 }
+bonus_id={ 6044 }, ilevel_adjust={ 199 }
+bonus_id={ 6045 }, ilevel_adjust={ 200 }
+bonus_id={ 6046 }, ilevel_adjust={ 201 }
+bonus_id={ 6047 }, ilevel_adjust={ 202 }
+bonus_id={ 6048 }, ilevel_adjust={ 203 }
+bonus_id={ 6049 }, ilevel_adjust={ 204 }
+bonus_id={ 6050 }, ilevel_adjust={ 205 }
+bonus_id={ 6051 }, ilevel_adjust={ 206 }
+bonus_id={ 6052 }, ilevel_adjust={ 207 }
+bonus_id={ 6053 }, ilevel_adjust={ 208 }
+bonus_id={ 6054 }, ilevel_adjust={ 209 }
+bonus_id={ 6055 }, ilevel_adjust={ 210 }
+bonus_id={ 6056 }, ilevel_adjust={ 211 }
+bonus_id={ 6057 }, ilevel_adjust={ 212 }
+bonus_id={ 6058 }, ilevel_adjust={ 213 }
+bonus_id={ 6059 }, ilevel_adjust={ 214 }
+bonus_id={ 6060 }, ilevel_adjust={ 215 }
+bonus_id={ 6061 }, ilevel_adjust={ 216 }
+bonus_id={ 6062 }, ilevel_adjust={ 217 }
+bonus_id={ 6063 }, ilevel_adjust={ 218 }
+bonus_id={ 6064 }, ilevel_adjust={ 219 }
+bonus_id={ 6065 }, ilevel_adjust={ 220 }
+bonus_id={ 6066 }, ilevel_adjust={ 221 }
+bonus_id={ 6067 }, ilevel_adjust={ 222 }
+bonus_id={ 6068 }, ilevel_adjust={ 223 }
+bonus_id={ 6069 }, ilevel_adjust={ 224 }
+bonus_id={ 6070 }, ilevel_adjust={ 225 }
+bonus_id={ 6071 }, ilevel_adjust={ 226 }
+bonus_id={ 6072 }, ilevel_adjust={ 227 }
+bonus_id={ 6073 }, ilevel_adjust={ 228 }
+bonus_id={ 6074 }, ilevel_adjust={ 229 }
+bonus_id={ 6075 }, ilevel_adjust={ 230 }
+bonus_id={ 6076 }, ilevel_adjust={ 231 }
+bonus_id={ 6077 }, ilevel_adjust={ 232 }
+bonus_id={ 6078 }, ilevel_adjust={ 233 }
+bonus_id={ 6079 }, ilevel_adjust={ 234 }
+bonus_id={ 6080 }, ilevel_adjust={ 235 }
+bonus_id={ 6081 }, ilevel_adjust={ 236 }
+bonus_id={ 6082 }, ilevel_adjust={ 237 }
+bonus_id={ 6083 }, ilevel_adjust={ 238 }
+bonus_id={ 6084 }, ilevel_adjust={ 239 }
+bonus_id={ 6085 }, ilevel_adjust={ 240 }
+bonus_id={ 6086 }, ilevel_adjust={ 241 }
+bonus_id={ 6087 }, ilevel_adjust={ 242 }
+bonus_id={ 6088 }, ilevel_adjust={ 243 }
+bonus_id={ 6089 }, ilevel_adjust={ 244 }
+bonus_id={ 6090 }, ilevel_adjust={ 245 }
+bonus_id={ 6091 }, ilevel_adjust={ 246 }
+bonus_id={ 6092 }, ilevel_adjust={ 247 }
+bonus_id={ 6093 }, ilevel_adjust={ 248 }
+bonus_id={ 6094 }, ilevel_adjust={ 249 }
+bonus_id={ 6095 }, ilevel_adjust={ 250 }
+bonus_id={ 6096 }, ilevel_adjust={ 251 }
+bonus_id={ 6097 }, ilevel_adjust={ 252 }
+bonus_id={ 6098 }, ilevel_adjust={ 253 }
+bonus_id={ 6099 }, ilevel_adjust={ 254 }
+bonus_id={ 6100 }, ilevel_adjust={ 255 }
+bonus_id={ 6101 }, ilevel_adjust={ 256 }
+bonus_id={ 6102 }, ilevel_adjust={ 257 }
+bonus_id={ 6103 }, ilevel_adjust={ 258 }
+bonus_id={ 6104 }, ilevel_adjust={ 259 }
+bonus_id={ 6105 }, ilevel_adjust={ 260 }
+bonus_id={ 6106 }, ilevel_adjust={ 261 }
+bonus_id={ 6107 }, ilevel_adjust={ 262 }
+bonus_id={ 6108 }, ilevel_adjust={ 263 }
+bonus_id={ 6109 }, ilevel_adjust={ 264 }
+bonus_id={ 6110 }, ilevel_adjust={ 265 }
+bonus_id={ 6111 }, ilevel_adjust={ 266 }
+bonus_id={ 6112 }, ilevel_adjust={ 267 }
+bonus_id={ 6113 }, ilevel_adjust={ 268 }
+bonus_id={ 6114 }, ilevel_adjust={ 269 }
+bonus_id={ 6115 }, ilevel_adjust={ 270 }
+bonus_id={ 6116 }, ilevel_adjust={ 271 }
+bonus_id={ 6117 }, ilevel_adjust={ 272 }
+bonus_id={ 6118 }, ilevel_adjust={ 273 }
+bonus_id={ 6119 }, ilevel_adjust={ 274 }
+bonus_id={ 6120 }, ilevel_adjust={ 275 }
+bonus_id={ 6121 }, ilevel_adjust={ 276 }
+bonus_id={ 6122 }, ilevel_adjust={ 277 }
+bonus_id={ 6123 }, ilevel_adjust={ 278 }
+bonus_id={ 6124 }, ilevel_adjust={ 279 }
+bonus_id={ 6125 }, ilevel_adjust={ 280 }
+bonus_id={ 6126 }, ilevel_adjust={ 281 }
+bonus_id={ 6127 }, ilevel_adjust={ 282 }
+bonus_id={ 6128 }, ilevel_adjust={ 283 }
+bonus_id={ 6129 }, ilevel_adjust={ 284 }
+bonus_id={ 6130 }, ilevel_adjust={ 285 }
+bonus_id={ 6131 }, ilevel_adjust={ 286 }
+bonus_id={ 6132 }, ilevel_adjust={ 287 }
+bonus_id={ 6133 }, ilevel_adjust={ 288 }
+bonus_id={ 6134 }, ilevel_adjust={ 289 }
+bonus_id={ 6135 }, ilevel_adjust={ 290 }
+bonus_id={ 6136 }, ilevel_adjust={ 291 }
+bonus_id={ 6137 }, ilevel_adjust={ 292 }
+bonus_id={ 6138 }, ilevel_adjust={ 293 }
+bonus_id={ 6139 }, ilevel_adjust={ 294 }
+bonus_id={ 6140 }, ilevel_adjust={ 295 }
+bonus_id={ 6141 }, ilevel_adjust={ 296 }
+bonus_id={ 6142 }, ilevel_adjust={ 297 }
+bonus_id={ 6143 }, ilevel_adjust={ 298 }
+bonus_id={ 6144 }, ilevel_adjust={ 299 }
+bonus_id={ 6145 }, ilevel_adjust={ 300 }
+bonus_id={ 6146 }, ilevel_adjust={ 301 }
+bonus_id={ 6147 }, ilevel_adjust={ 302 }
+bonus_id={ 6148 }, ilevel_adjust={ 303 }
+bonus_id={ 6149 }, ilevel_adjust={ 304 }
+bonus_id={ 6150 }, ilevel_adjust={ 305 }
+bonus_id={ 6151 }, ilevel_adjust={ 306 }
+bonus_id={ 6152 }, ilevel_adjust={ 307 }
+bonus_id={ 6153 }, ilevel_adjust={ 308 }
+bonus_id={ 6154 }, ilevel_adjust={ 309 }
+bonus_id={ 6155 }, ilevel_adjust={ 310 }
+bonus_id={ 6156 }, ilevel_adjust={ 311 }
+bonus_id={ 6157 }, ilevel_adjust={ 312 }
+bonus_id={ 6158 }, ilevel_adjust={ 313 }
+bonus_id={ 6159 }, ilevel_adjust={ 314 }
+bonus_id={ 6160 }, ilevel_adjust={ 315 }
+bonus_id={ 6161 }, ilevel_adjust={ 316 }
+bonus_id={ 6162 }, ilevel_adjust={ 317 }
+bonus_id={ 6163 }, ilevel_adjust={ 318 }
+bonus_id={ 6164 }, ilevel_adjust={ 319 }
+bonus_id={ 6165 }, ilevel_adjust={ 320 }
+bonus_id={ 6166 }, ilevel_adjust={ 321 }
+bonus_id={ 6167 }, ilevel_adjust={ 322 }
+bonus_id={ 6168 }, ilevel_adjust={ 323 }
+bonus_id={ 6169 }, ilevel_adjust={ 324 }
+bonus_id={ 6170 }, ilevel_adjust={ 325 }
+bonus_id={ 6171 }, ilevel_adjust={ 326 }
+bonus_id={ 6172 }, ilevel_adjust={ 327 }
+bonus_id={ 6173 }, ilevel_adjust={ 328 }
+bonus_id={ 6174 }, ilevel_adjust={ 329 }
+bonus_id={ 6175 }, ilevel_adjust={ 330 }
+bonus_id={ 6176 }, ilevel_adjust={ 331 }
+bonus_id={ 6177 }, ilevel_adjust={ 332 }
+bonus_id={ 6178 }, ilevel_adjust={ 333 }
+bonus_id={ 6179 }, ilevel_adjust={ 334 }
+bonus_id={ 6180 }, ilevel_adjust={ 335 }
+bonus_id={ 6181 }, ilevel_adjust={ 336 }
+bonus_id={ 6182 }, ilevel_adjust={ 337 }
+bonus_id={ 6183 }, ilevel_adjust={ 338 }
+bonus_id={ 6184 }, ilevel_adjust={ 339 }
+bonus_id={ 6185 }, ilevel_adjust={ 340 }
+bonus_id={ 6186 }, ilevel_adjust={ 341 }
+bonus_id={ 6187 }, ilevel_adjust={ 342 }
+bonus_id={ 6188 }, ilevel_adjust={ 343 }
+bonus_id={ 6189 }, ilevel_adjust={ 344 }
+bonus_id={ 6190 }, ilevel_adjust={ 345 }
+bonus_id={ 6191 }, ilevel_adjust={ 346 }
+bonus_id={ 6192 }, ilevel_adjust={ 347 }
+bonus_id={ 6193 }, ilevel_adjust={ 348 }
+bonus_id={ 6194 }, ilevel_adjust={ 349 }
+bonus_id={ 6195 }, ilevel_adjust={ 350 }
+bonus_id={ 6196 }, ilevel_adjust={ 351 }
+bonus_id={ 6197 }, ilevel_adjust={ 352 }
+bonus_id={ 6198 }, ilevel_adjust={ 353 }
+bonus_id={ 6199 }, ilevel_adjust={ 354 }
+bonus_id={ 6200 }, ilevel_adjust={ 355 }
+bonus_id={ 6201 }, ilevel_adjust={ 356 }
+bonus_id={ 6202 }, ilevel_adjust={ 357 }
+bonus_id={ 6203 }, ilevel_adjust={ 358 }
+bonus_id={ 6204 }, ilevel_adjust={ 359 }
+bonus_id={ 6205 }, ilevel_adjust={ 360 }
+bonus_id={ 6206 }, ilevel_adjust={ 361 }
+bonus_id={ 6207 }, ilevel_adjust={ 362 }
+bonus_id={ 6208 }, ilevel_adjust={ 363 }
+bonus_id={ 6209 }, ilevel_adjust={ 364 }
+bonus_id={ 6210 }, ilevel_adjust={ 365 }
+bonus_id={ 6211 }, ilevel_adjust={ 366 }
+bonus_id={ 6212 }, ilevel_adjust={ 367 }
+bonus_id={ 6213 }, ilevel_adjust={ 368 }
+bonus_id={ 6214 }, ilevel_adjust={ 369 }
+bonus_id={ 6215 }, ilevel_adjust={ 370 }
+bonus_id={ 6216 }, ilevel_adjust={ 371 }
+bonus_id={ 6217 }, ilevel_adjust={ 372 }
+bonus_id={ 6218 }, ilevel_adjust={ 373 }
+bonus_id={ 6219 }, ilevel_adjust={ 374 }
+bonus_id={ 6220 }, ilevel_adjust={ 375 }
+bonus_id={ 6221 }, ilevel_adjust={ 376 }
+bonus_id={ 6222 }, ilevel_adjust={ 377 }
+bonus_id={ 6223 }, ilevel_adjust={ 378 }
+bonus_id={ 6224 }, ilevel_adjust={ 379 }
+bonus_id={ 6225 }, ilevel_adjust={ 380 }
+bonus_id={ 6226 }, ilevel_adjust={ 381 }
+bonus_id={ 6227 }, ilevel_adjust={ 382 }
+bonus_id={ 6228 }, ilevel_adjust={ 383 }
+bonus_id={ 6229 }, ilevel_adjust={ 384 }
+bonus_id={ 6230 }, ilevel_adjust={ 385 }
+bonus_id={ 6231 }, ilevel_adjust={ 386 }
+bonus_id={ 6232 }, ilevel_adjust={ 387 }
+bonus_id={ 6233 }, ilevel_adjust={ 388 }
+bonus_id={ 6234 }, ilevel_adjust={ 389 }
+bonus_id={ 6235 }, ilevel_adjust={ 390 }
+bonus_id={ 6236 }, ilevel_adjust={ 391 }
+bonus_id={ 6237 }, ilevel_adjust={ 392 }
+bonus_id={ 6238 }, ilevel_adjust={ 393 }
+bonus_id={ 6239 }, ilevel_adjust={ 394 }
+bonus_id={ 6240 }, ilevel_adjust={ 395 }
+bonus_id={ 6241 }, ilevel_adjust={ 396 }
+bonus_id={ 6242 }, ilevel_adjust={ 397 }
+bonus_id={ 6243 }, ilevel_adjust={ 398 }
+bonus_id={ 6244 }, ilevel_adjust={ 399 }
+bonus_id={ 6245 }, ilevel_adjust={ 400 }
+bonus_id={ 6247 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6254 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6255 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6256 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6257 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6258 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6259 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6260 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6261 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6262 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6263 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6264 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6265 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6266 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6267 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6268 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6269 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6270 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6271 }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6308 }, base_ilevel={ 810 }, quality={ epic }
+bonus_id={ 6310 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 425 @plvl 120 }
+bonus_id={ 6311 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 415 @plvl 120 }
+bonus_id={ 6312 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 380 @plvl 120 }
+bonus_id={ 6313 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 405 @plvl 120 }
+bonus_id={ 6314 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 395 @plvl 120 }
+bonus_id={ 6315 }, ilevel={ 10 @plvl 1 - 395 @plvl 120 }
+bonus_id={ 6316 }, ilevel_adjust={ 55 }
+bonus_id={ 6317 }, desc={ Warforged }, quality={ rare }
+bonus_id={ 6318 }, desc={ Titanforged }, quality={ rare }
+bonus_id={ 6319 }, desc={ Warforged }, quality={ epic }
+bonus_id={ 6320 }, desc={ Titanforged }, quality={ epic }
+bonus_id={ 6322 }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6323 }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6324 }, quality={ epic }
+bonus_id={ 6326 }, desc={ Combatant }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6327 }, desc={ Combatant }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6328 }, desc={ Combatant }, quality={ epic }
+bonus_id={ 6330 }, desc={ Challenger }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6331 }, desc={ Challenger }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6332 }, desc={ Challenger }, quality={ epic }
+bonus_id={ 6334 }, desc={ Rival }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6335 }, desc={ Rival }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6336 }, desc={ Rival }, quality={ epic }
+bonus_id={ 6337 }, desc={ Duelist }, quality={ epic }
+bonus_id={ 6339 }, desc={ Duelist }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6340 }, desc={ Duelist }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6342 }, desc={ Elite }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6343 }, desc={ Elite }, quality={ epic }, stats={ 100% Sta [0.3300] }
+bonus_id={ 6344 }, desc={ Elite }, quality={ epic }
+bonus_id={ 6350 }, quality={ rare }
+bonus_id={ 6351 }, quality={ rare }
+bonus_id={ 6352 }, quality={ rare }
+bonus_id={ 6353 }, ilevel={ 10 @plvl 1 - 400 @plvl 120 }
+bonus_id={ 6354 }, desc={ Warforged }, ilevel={ 15 @plvl 1 - 410 @plvl 120 }
+bonus_id={ 6355 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 420 @plvl 120 }
+bonus_id={ 6356 }, desc={ Warforged }, ilevel={ 15 @plvl 1 - 430 @plvl 120 }
+bonus_id={ 6416 }, ilevel={ 10 @plvl 1 - 280 @plvl 120 }

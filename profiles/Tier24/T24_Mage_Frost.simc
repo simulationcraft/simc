@@ -82,6 +82,7 @@ actions.essences+=/blood_of_the_enemy,if=(talent.glacial_spike.enabled&buff.icic
 actions.essences+=/purifying_blast,if=buff.rune_of_power.down|active_enemies>3
 actions.essences+=/ripple_in_space,if=buff.rune_of_power.down|active_enemies>3
 actions.essences+=/concentrated_flame,line_cd=6,if=buff.rune_of_power.down
+actions.essences+=/reaping_flames,if=buff.rune_of_power.down
 actions.essences+=/the_unbound_force,if=buff.reckless_force.up
 actions.essences+=/worldvein_resonance,if=buff.rune_of_power.down|active_enemies>3
 
@@ -97,6 +98,7 @@ actions.single+=/frozen_orb
 actions.single+=/blizzard,if=active_enemies>2|active_enemies>1&!talent.splitting_ice.enabled
 actions.single+=/comet_storm
 actions.single+=/ebonbolt,if=buff.icicles.stack=5&!buff.brain_freeze.react
+actions.single+=/ice_lance,if=buff.brain_freeze.react&(buff.fingers_of_frost.react|prev_gcd.1.flurry)&(buff.icicles.max_stack-buff.icicles.stack)*action.frostbolt.execute_time+action.glacial_spike.cast_time+action.glacial_spike.travel_time<incanters_flow_time_to.5.any
 actions.single+=/glacial_spike,if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|talent.incanters_flow.enabled&cast_time+travel_time>incanters_flow_time_to.5.up&cast_time+travel_time<incanters_flow_time_to.4.down
 actions.single+=/ice_nova
 actions.single+=/use_item,name=tidestorm_codex,if=buff.icy_veins.down&buff.rune_of_power.down

@@ -68,6 +68,7 @@ actions.asc+=/windstrike
 
 # Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present.
 actions.cds=bloodlust,if=azerite.ancestral_resonance.enabled
+actions.cds+=/worldvein_resonance
 actions.cds+=/berserking,if=variable.cooldown_sync
 actions.cds+=/use_item,name=azsharas_font_of_power
 actions.cds+=/blood_fury,if=variable.cooldown_sync
@@ -98,18 +99,18 @@ actions.filler+=/purifying_blast,if=raid_event.adds.in>60
 actions.filler+=/ripple_in_space,if=raid_event.adds.in>60
 actions.filler+=/thundercharge
 actions.filler+=/concentrated_flame
+actions.filler+=/reaping_flames
 actions.filler+=/crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL
 actions.filler+=/flametongue,if=talent.searing_assault.enabled
 actions.filler+=/lava_lash,if=!azerite.primal_primer.enabled&talent.hot_hand.enabled&buff.hot_hand.react
 actions.filler+=/crash_lightning,if=active_enemies>1&variable.furyCheck_CL
 actions.filler+=/rockbiter,if=maelstrom<70&!buff.strength_of_earth.up
-actions.filler+=/crash_lightning,if=talent.crashing_storm.enabled&variable.OCPool_CL
+actions.filler+=/crash_lightning,if=(talent.crashing_storm.enabled|talent.forceful_winds.enabled)&variable.OCPool_CL
 actions.filler+=/lava_lash,if=variable.OCPool_LL&variable.furyCheck_LL
 actions.filler+=/memory_of_lucid_dreams
 actions.filler+=/rockbiter
 actions.filler+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck_FB
 actions.filler+=/flametongue
-actions.filler+=/worldvein_resonance,if=buff.lifeblood.stack<4
 
 actions.freezerburn_core=lava_lash,target_if=max:debuff.primal_primer.stack,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10&variable.furyCheck_LL&variable.CLPool_LL
 actions.freezerburn_core+=/earthen_spike,if=variable.furyCheck_ES

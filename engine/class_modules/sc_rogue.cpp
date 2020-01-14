@@ -5605,7 +5605,7 @@ std::string rogue_t::default_flask() const
 
 std::string rogue_t::default_potion() const
 {
-  return ( true_level > 110 ) ? "potion_of_unbridled_fury" :
+  return ( true_level > 110 ) ? (specialization() == ROGUE_ASSASSINATION ? "potion_of_focused_resolve" : "potion_of_unbridled_fury") :
          ( true_level > 100 ) ? "prolonged_power" :
          ( true_level >= 90 ) ? "draenic_agility" :
          ( true_level >= 85 ) ? "virmens_bite" :
@@ -5755,8 +5755,9 @@ void rogue_t::init_action_list()
     essences->add_action( "purifying_blast,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60" );
     essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
     essences->add_action( "ripple_in_space" );
-    essences->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
+    essences->add_action( "worldvein_resonance" );
     essences->add_action( "memory_of_lucid_dreams,if=energy<50&!cooldown.vendetta.up" );
+    essences->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
 
     // Stealth
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
@@ -5857,8 +5858,9 @@ void rogue_t::init_action_list()
     essences->add_action( "purifying_blast,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60" );
     essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
     essences->add_action( "ripple_in_space" );
-    essences->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
+    essences->add_action( "worldvein_resonance" );
     essences->add_action( "memory_of_lucid_dreams,if=energy<45" );
+    essences->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
@@ -5937,8 +5939,9 @@ void rogue_t::init_action_list()
     essences->add_action( "purifying_blast,if=spell_targets.shuriken_storm>=2|raid_event.adds.in>60" );
     essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
     essences->add_action( "ripple_in_space" );
-    essences->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
+    essences->add_action( "worldvein_resonance,if=cooldown.symbols_of_death.remains<5|target.time_to_die<18" );
     essences->add_action( "memory_of_lucid_dreams,if=energy<40&buff.symbols_of_death.up" );
+    essences->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );

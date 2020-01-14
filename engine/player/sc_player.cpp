@@ -993,6 +993,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ):
   base(),
   initial(),
   current(),
+  passive_rating_multiplier( 1.0 ),
   last_cast( timespan_t::zero() ),
   // Defense Mechanics
   def_dr( diminishing_returns_constants_t() ),
@@ -3130,7 +3131,7 @@ void player_t::create_buffs()
 
       auto worldvein_resonance = find_azerite_essence( "Worldvein Resonance" );
       buffs.lifeblood = make_buff<stat_buff_t>( this, "lifeblood", find_spell( 295137 ) );
-      buffs.lifeblood->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ), 
+      buffs.lifeblood->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
         worldvein_resonance.spell( 1, essence_type::MINOR )->effectN( 5 ).average( worldvein_resonance.item() ) );
 
       buffs.seething_rage = make_buff( this, "seething_rage", find_spell( 297126 ) )
@@ -3142,10 +3143,10 @@ void player_t::create_buffs()
 
       auto ripple_in_space = find_azerite_essence( "Ripple in Space" );
       buffs.reality_shift = make_buff<stat_buff_t>( this, "reality_shift", find_spell( 302916 ) );
-      buffs.reality_shift->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ), 
+      buffs.reality_shift->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
         ripple_in_space.spell_ref(1u, essence_type::MINOR).effectN( 2 ).average(
           ripple_in_space.item() ) );
-      buffs.reality_shift->set_duration( find_spell( 302952 )->duration() 
+      buffs.reality_shift->set_duration( find_spell( 302952 )->duration()
         + timespan_t::from_seconds( ripple_in_space.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
       buffs.reality_shift->set_cooldown( find_spell( 302953 )->duration() );
     }
@@ -3539,7 +3540,7 @@ double player_t::composite_dodge() const
 
 double player_t::composite_parry() const
 {
-  // Start with sources not subject to DR - base parry + parry from base strength (stored in current.parry). 
+  // Start with sources not subject to DR - base parry + parry from base strength (stored in current.parry).
   double total_parry = current.parry;
 
   // bonus_parry is from rating and bonus Strength
@@ -3787,6 +3788,21 @@ double player_t::composite_avoidance() const
   return composite_avoidance_rating() / current.rating.avoidance;
 }
 
+double player_t::composite_corruption() const
+{
+  return composite_corruption_rating() / current.rating.corruption;
+}
+
+double player_t::composite_corruption_resistance() const
+{
+  return composite_corruption_resistance_rating() / current.rating.corruption_resistance;
+}
+
+double player_t::composite_total_corruption() const
+{
+  return cache.corruption() - cache.corruption_resistance();
+}
+
 double player_t::composite_player_pet_damage_multiplier( const action_state_t* ) const
 {
   double m = 1.0;
@@ -3896,6 +3912,11 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
   if ( buffs.fathom_hunter )
   {
     m *= 1.0 + buffs.fathom_hunter->check_value();
+  }
+  // Critical hit damage buff from corruption effect
+  if ( buffs.strikethrough )
+  {
+    m *= 1.0 + buffs.strikethrough->check_value();
   }
   return m;
 }
@@ -4057,9 +4078,10 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
+// TODO: Move racial passives to init_base_stats
 double player_t::composite_rating_multiplier( rating_e rating ) const
 {
-  double v = 1.0;
+  double v = passive_rating_multiplier.get( rating );
 
   switch ( rating )
   {
@@ -4147,6 +4169,12 @@ double player_t::composite_rating( rating_e rating ) const
       break;
     case RATING_AVOIDANCE:
       v = current.stats.avoidance_rating;
+      break;
+    case RATING_CORRUPTION:
+      v = current.stats.corruption_rating;
+      break;
+    case RATING_CORRUPTION_RESISTANCE:
+      v = current.stats.corruption_resistance_rating;
       break;
     default:
       break;
@@ -6068,17 +6096,6 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
   }
 }
 
-/**
- * Adjust the current rating -> % modifer of a stat.
- *
- * Invalidates corresponding cache
- */
-void player_t::modify_current_rating( rating_e r, double amount )
-{
-  current.rating.get( r ) += amount;
-  invalidate_cache( cache_from_rating( r ) );
-}
-
 void player_t::cost_reduction_gain( school_e school, double amount, gain_t* /* gain */, action_t* /* action */ )
 {
   if ( amount <= 0 )
@@ -6573,10 +6590,10 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
       double block_reduction = composite_block_reduction( s );
 
       double block_resist = block_reduction / ( block_reduction + s -> action -> player -> current.armor_coeff );
-     
+
       if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
         block_resist *= 2.0;
-      
+
       block_resist = clamp( block_resist, 0.0, armor_cap );
       s -> result_amount *= 1.0 - block_resist;
 
@@ -7054,6 +7071,8 @@ void snapshot_stats_t::execute()
   buffed_stats.mitigation_versatility = p->cache.mitigation_versatility();
   buffed_stats.run_speed              = p->cache.run_speed();
   buffed_stats.avoidance              = p->cache.avoidance();
+  buffed_stats.corruption             = p->cache.corruption();
+  buffed_stats.corruption_resistance  = p->cache.corruption_resistance();
   buffed_stats.leech                  = p->cache.leech();
 
   buffed_stats.spell_power =
@@ -8713,8 +8732,10 @@ struct cancel_buff_t : public action_t
 
     if ( !buff )
     {
-      throw std::invalid_argument( fmt::format(
-        "Player {} uses cancel_buff with unknown buff {}", player->name(), buff_name ) );
+      if ( sim->debug ) {
+        player->sim->error(
+          "Player {} uses cancel_buff with unknown buff {}", player->name(), buff_name );
+      }
     }
     else if ( !buff->can_cancel )
     {
@@ -11149,6 +11170,8 @@ void player_t::create_options()
   add_option( opt_float( "gear_bonus_armor", gear.bonus_armor ) );
   add_option( opt_float( "gear_leech_rating", gear.leech_rating ) );
   add_option( opt_float( "gear_run_speed_rating", gear.speed_rating ) );
+  add_option( opt_float( "gear_corruption", gear.corruption_rating ) );
+  add_option( opt_float( "gear_corruption_resistance", gear.corruption_resistance_rating ) );
 
   // Stat Enchants
   add_option( opt_float( "enchant_strength", enchant.attribute[ ATTR_STRENGTH ] ) );
@@ -11174,6 +11197,8 @@ void player_t::create_options()
   add_option( opt_float( "enchant_energy", enchant.resource[ RESOURCE_ENERGY ] ) );
   add_option( opt_float( "enchant_focus", enchant.resource[ RESOURCE_FOCUS ] ) );
   add_option( opt_float( "enchant_runic", enchant.resource[ RESOURCE_RUNIC_POWER ] ) );
+  add_option( opt_float( "enchant_corruption", enchant.corruption_rating ) );
+  add_option( opt_float( "enchant_corruption_resistance", enchant.corruption_resistance_rating ) );
 
   // Regen
   add_option( opt_bool( "infinite_energy", resources.infinite_resource[ RESOURCE_ENERGY ] ) );
@@ -12138,6 +12163,30 @@ double player_stat_cache_t::avoidance() const
   else
     assert( _avoidance == player->composite_avoidance() );
   return _avoidance;
+}
+
+double player_stat_cache_t::corruption() const
+{
+  if ( !active || !valid[ CACHE_CORRUPTION ] )
+  {
+    valid[ CACHE_CORRUPTION ] = true;
+    _corruption               = player->composite_corruption();
+  }
+  else
+    assert( _corruption == player->composite_corruption() );
+  return _corruption;
+}
+
+double player_stat_cache_t::corruption_resistance() const
+{
+  if ( !active || !valid[ CACHE_CORRUPTION_RESISTANCE ] )
+  {
+    valid[ CACHE_CORRUPTION_RESISTANCE ] = true;
+    _corruption_resistance               = player->composite_corruption_resistance();
+  }
+  else
+    assert( _corruption_resistance == player->composite_corruption_resistance() );
+  return _corruption_resistance;
 }
 
 double player_stat_cache_t::player_multiplier( school_e s ) const

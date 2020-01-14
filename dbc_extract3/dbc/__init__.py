@@ -100,11 +100,30 @@ KEY_FIELD_HOTFIX_RECORD = {
     'SkillLineAbility'      : 'id_skill',
     'SpecializationSpells'  : 'spec_id',
     'ItemModifiedAppearance': 'id_item',
-    'JournalEncounterItem'  : 'id_encounter'
+    'JournalEncounterItem'  : 'id_encounter',
+    'AzeritePowerSetMember' : 'unk_28366'
+}
+
+# Some DB2 files seem to be expanded to 4 byte fields for the hotfix data for
+# some unknown reason. For those fields, we override the normal data type and
+# expand it to the signed/unsigned version 4 byte field.
+EXPANDED_FIELD_HOTFIX_RECORD = {
+    'AzeritePowerSetMember': True
 }
 
 def use_hotfix_key_field(wdb_name):
     return KEY_FIELD_HOTFIX_RECORD.get(wdb_name, None)
+
+def use_hotfix_expanded_field(wdb_name):
+    return EXPANDED_FIELD_HOTFIX_RECORD.get(wdb_name, False)
+
+def translate_hotfix_expanded_field(format_):
+    if format_ in ['b', 'h']:
+        return 'i'
+    elif format_ in ['B', 'H']:
+        return 'I'
+    else:
+        return format_
 
 HeaderFieldInfo = collections.namedtuple('HeaderFieldInfo', [ 'attr', 'format' ])
 

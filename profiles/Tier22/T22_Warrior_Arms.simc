@@ -8,7 +8,7 @@ position=back
 talents=3312211
 
 # Default consumables
-potion=potion_of_unbridled_fury
+potion=potion_of_focused_resolve
 flask=greater_flask_of_the_undertow
 food=baked_port_tato
 augmentation=battle_scarred
@@ -26,6 +26,7 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=azsharas_font_of_power
+actions.precombat+=/worldvein_resonance
 actions.precombat+=/memory_of_lucid_dreams
 actions.precombat+=/guardian_of_azeroth
 actions.precombat+=/potion
@@ -33,13 +34,13 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=charge
 actions+=/auto_attack
-actions+=/potion
-actions+=/blood_fury,if=debuff.colossus_smash.up
-actions+=/berserking,if=debuff.colossus_smash.up
-actions+=/arcane_torrent,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains>1.5&rage<50
+actions+=/potion,if=target.health.pct<21&buff.memory_of_lucid_dreams.up|!essence.memory_of_lucid_dreams.major
+actions+=/blood_fury,if=buff.memory_of_lucid_dreams.remains<5|(!essence.memory_of_lucid_dreams.major&debuff.colossus_smash.up)
+actions+=/berserking,if=buff.memory_of_lucid_dreams.up|(!essence.memory_of_lucid_dreams.major&debuff.colossus_smash.up)
+actions+=/arcane_torrent,if=cooldown.mortal_strike.remains>1.5&buff.memory_of_lucid_dreams.down&rage<50
 actions+=/lights_judgment,if=debuff.colossus_smash.down
-actions+=/fireblood,if=debuff.colossus_smash.up
-actions+=/ancestral_call,if=debuff.colossus_smash.up
+actions+=/fireblood,if=buff.memory_of_lucid_dreams.remains<5|(!essence.memory_of_lucid_dreams.major&debuff.colossus_smash.up)
+actions+=/ancestral_call,if=buff.memory_of_lucid_dreams.remains<5|(!essence.memory_of_lucid_dreams.major&debuff.colossus_smash.up)
 actions+=/avatar,if=cooldown.colossus_smash.remains<8|(talent.warbreaker.enabled&cooldown.warbreaker.remains<8)
 actions+=/sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>10|cooldown.colossus_smash.remains>8|azerite.test_of_might.enabled)
 actions+=/blood_of_the_enemy,if=buff.test_of_might.up|(debuff.colossus_smash.up&!azerite.test_of_might.enabled)
@@ -47,10 +48,12 @@ actions+=/purifying_blast,if=!debuff.colossus_smash.up&!buff.test_of_might.up
 actions+=/ripple_in_space,if=!debuff.colossus_smash.up&!buff.test_of_might.up
 actions+=/worldvein_resonance,if=!debuff.colossus_smash.up&!buff.test_of_might.up
 actions+=/focused_azerite_beam,if=!debuff.colossus_smash.up&!buff.test_of_might.up
+actions+=/reaping_flames,if=!debuff.colossus_smash.up&!buff.test_of_might.up
 actions+=/concentrated_flame,if=!debuff.colossus_smash.up&!buff.test_of_might.up&dot.concentrated_flame_burn.remains=0
 actions+=/the_unbound_force,if=buff.reckless_force.up
 actions+=/guardian_of_azeroth,if=cooldown.colossus_smash.remains<10
-actions+=/memory_of_lucid_dreams,if=!talent.warbreaker.enabled&cooldown.colossus_smash.remains<3|cooldown.warbreaker.remains<3
+actions+=/memory_of_lucid_dreams,if=!talent.warbreaker.enabled&cooldown.colossus_smash.remains<gcd&(target.time_to_die>150|target.health.pct<20)
+actions+=/memory_of_lucid_dreams,if=talent.warbreaker.enabled&cooldown.warbreaker.remains<gcd&(target.time_to_die>150|target.health.pct<20)
 actions+=/run_action_list,name=hac,if=raid_event.adds.exists
 actions+=/run_action_list,name=five_target,if=spell_targets.whirlwind>4
 actions+=/run_action_list,name=execute,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
@@ -65,7 +68,7 @@ actions.execute+=/bladestorm,if=!buff.memory_of_lucid_dreams.up&buff.test_of_mig
 actions.execute+=/cleave,if=spell_targets.whirlwind>2
 actions.execute+=/slam,if=buff.crushing_assault.up&buff.memory_of_lucid_dreams.down
 actions.execute+=/mortal_strike,if=buff.overpower.stack=2&talent.dreadnaught.enabled|buff.executioners_precision.stack=2
-actions.execute+=/execute,if=buff.memory_of_lucid_dreams.up|buff.deadly_calm.up
+actions.execute+=/execute,if=buff.memory_of_lucid_dreams.up|buff.deadly_calm.up|(buff.test_of_might.up&cooldown.memory_of_lucid_dreams.remains>94)
 actions.execute+=/overpower
 actions.execute+=/execute
 
@@ -102,17 +105,17 @@ actions.hac+=/slam,if=!talent.fervor_of_battle.enabled&!raid_event.adds.up
 actions.single_target=rend,if=remains<=duration*0.3&debuff.colossus_smash.down
 actions.single_target+=/skullsplitter,if=rage<60&buff.deadly_calm.down&buff.memory_of_lucid_dreams.down
 actions.single_target+=/ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
-actions.single_target+=/colossus_smash,if=!essence.memory_of_lucid_dreams.major|(buff.memory_of_lucid_dreams.up|cooldown.memory_of_lucid_dreams.remains>10)
-actions.single_target+=/warbreaker,if=!essence.memory_of_lucid_dreams.major|(buff.memory_of_lucid_dreams.up|cooldown.memory_of_lucid_dreams.remains>10)
+actions.single_target+=/colossus_smash
+actions.single_target+=/warbreaker
 actions.single_target+=/deadly_calm
 actions.single_target+=/execute,if=buff.sudden_death.react
-actions.single_target+=/bladestorm,if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)&buff.memory_of_lucid_dreams.down
+actions.single_target+=/bladestorm,if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)&buff.memory_of_lucid_dreams.down&rage<40
 actions.single_target+=/cleave,if=spell_targets.whirlwind>2
-actions.single_target+=/overpower,if=rage<30&buff.memory_of_lucid_dreams.up&debuff.colossus_smash.up
+actions.single_target+=/overpower,if=(rage<30&buff.memory_of_lucid_dreams.up&debuff.colossus_smash.up)|(rage<70&buff.memory_of_lucid_dreams.down)
 actions.single_target+=/mortal_strike
-actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(buff.memory_of_lucid_dreams.up|buff.deadly_calm.up)
+actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(buff.memory_of_lucid_dreams.up|debuff.colossus_smash.up|buff.deadly_calm.up)
 actions.single_target+=/overpower
-actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled
+actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(buff.test_of_might.up|debuff.colossus_smash.down&buff.test_of_might.down&rage>60)
 actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled
 
 head=helm_of_the_defiled_laboratorium,id=160732,bonus_id=4800/1507/4775,azerite_powers=226/22/13

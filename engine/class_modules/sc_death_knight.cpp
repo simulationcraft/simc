@@ -6111,8 +6111,9 @@ struct icebound_fortitude_t : public death_knight_spell_t
 
 struct mark_of_blood_heal_t : public death_knight_heal_t
 {
-  mark_of_blood_heal_t( death_knight_t* p ) :
-    death_knight_heal_t( "mark_of_blood", p, p -> find_spell( 206945 ) )
+  mark_of_blood_heal_t( death_knight_t* p ) : // The data is removed and switched to the talent spell on PTR 8.3.0.32805
+    death_knight_heal_t( "mark_of_blood", p, ( p -> find_spell( 206945 ) == spell_data_t::not_found() ) ?
+                                             p -> talent.mark_of_blood : p -> find_spell( 206945 )  )
   {
     may_crit = callbacks = false;
     background = dual = true;
