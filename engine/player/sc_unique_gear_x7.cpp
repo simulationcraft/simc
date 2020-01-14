@@ -5495,6 +5495,7 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
       {265221, true},  // Fireblood
       {274738, true},  // Ancestral Call
       {287712, true},  // Haymaker
+      {312411, true},  // Bag of Tricks
       // Major Essences
       {295373, true},  // Concentrated Flame
       {298357, true},  // Memory of Lucid Dreams
@@ -5806,8 +5807,7 @@ void items::torment_in_a_jar( special_effect_t& effect )
     double dmg_mod;
 
     unleashed_agony_t( const special_effect_t& effect, double dmg_mod, buff_t* buff )
-      : proc_t( effect, "unleashed_agony", 313088 ),
-      dmg_mod( dmg_mod ), buff( buff )
+      : proc_t( effect, "unleashed_agony", 313088 ), dmg_mod( dmg_mod ), buff( buff )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
     }
@@ -5829,7 +5829,8 @@ void items::torment_in_a_jar( special_effect_t& effect )
 
     unleashed_agony_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.player, effect )
     {
-      stacking_damage = create_proc_action<unleashed_agony_t>( "unleashed_agony", effect, effect.driver()->effectN( 4 ).percent(), effect.custom_buff );
+      stacking_damage = create_proc_action<unleashed_agony_t>(
+          "unleashed_agony", effect, effect.driver()->effectN( 4 ).percent(), effect.custom_buff );
       stacking_damage->add_child( effect.execute_action );
     }
 
@@ -5862,10 +5863,12 @@ void items::draconic_empowerment( special_effect_t& effect )
 {
   effect.custom_buff = buff_t::find( effect.player, "draconic_empowerment" );
   if ( !effect.custom_buff )
-    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "draconic_empowerment", effect.player->find_spell( 317859 ) )
-      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.player->find_spell( 317859 )->effectN( 1 ).average( effect.item ) );
+    effect.custom_buff =
+        make_buff<stat_buff_t>( effect.player, "draconic_empowerment", effect.player->find_spell( 317859 ) )
+            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+                        effect.player->find_spell( 317859 )->effectN( 1 ).average( effect.item ) );
 
-  effect.proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC; // Proc flags are missing in spell data.
+  effect.proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC;  // Proc flags are missing in spell data.
 
   new dbc_proc_callback_t( effect.player, effect );
 }

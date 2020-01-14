@@ -3762,6 +3762,7 @@ struct player_t : public actor_t
   std::string race_str, professions_str, position_str;
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
   enum zandalari_loa_e {AKUNDA, BWONSAMDI, GONK, KIMBUL, KRAGWA, PAKU} zandalari_loa; //Specify which loa zandalari has chosen to determine racial
+  enum vulpera_tricks_e { CORROSIVE, FLAMES, SHADOWS, HEALING, HOLY } vulpera_tricks; //Specify which trick to use for vulpera bag of tricks
 
   // GCD Related attributes
   timespan_t  gcd_ready, base_gcd, min_gcd; // When is GCD ready, default base and minimum GCD times.

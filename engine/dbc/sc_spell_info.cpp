@@ -327,7 +327,9 @@ const std::unordered_map<unsigned, std::string> _race_map {
   {  9, "Blood Elf" },
   { 10, "Draenei"   },
   { 11, "Dark Iron Dwarf" },
+  { 12, "Vulpera" },
   { 13, "Mag'har Orc" },
+  { 14, "Mechagnome" },
   { 21, "Worgen"    },
   { 24, "Pandaren"  },
   { 26, "Nightborne" },
@@ -335,7 +337,7 @@ const std::unordered_map<unsigned, std::string> _race_map {
   { 28, "Void Elf"            },
   { 29, "Lightforged Draenei" },
   { 30, "Zandalari Troll" },
-  { 31, "Kul Tiran" }
+  { 31, "Kul Tiran" },
 };
 
 static const std::unordered_map<unsigned, const std::string> _targeting_strings = {

@@ -147,9 +147,9 @@ const std::string _race_strings[] =
   "blood_elf",
   "draenei",
   "dark_iron_dwarf",
-  "",
+  "vulpera",
   "maghar_orc",
-  "",
+  "mechagnome",
   "",
   "",
   "",
@@ -166,7 +166,7 @@ const std::string _race_strings[] =
   "void_elf",
   "lightforged_draenei",
   "zandalari_troll",
-  "kul_tiran"
+  "kul_tiran",
 };
 
 const std::string _pet_class_strings[] =
