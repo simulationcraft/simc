@@ -5339,7 +5339,8 @@ void spark_of_inspiration( special_effect_t& effect )
 
   if ( essence.rank() >= 2 )
   {
-    effect.spell_id = essence.spell_ref( 2u, essence_type::MINOR ).id();
+    effect.ppm_ = -essence.spell_ref( 2u, essence_type::MINOR ).real_ppm();
+    effect.rppm_scale_ = effect.player->dbc.real_ppm_scale( essence.spell_ref( 2u, essence_type::MINOR ).id() );
   }
 
   new unified_strength_cb_t( effect, essence, buff );
