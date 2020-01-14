@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 8.2.5.32750
+// Class based active abilities, wow build 8.3.0.33051
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1266,7 +1266,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 8.2.5.32750
+// Talent tree specialization abilities, wow build 8.3.0.33051
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1801,7 +1801,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       137008, // Blood Death Knight
       161797, // Riposte
       162702, // Stat Negation Aura - Strength Tank
-       48263, // Veteran of the Third War
        43265, // Death and Decay
        50842, // Blood Boil
       195182, // Marrowrend
@@ -1833,7 +1832,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        81229, // Runic Empowerment
       278223, // Death Strike (Rank 2)
        51271, // Pillar of Frost
-       48263, // Veteran of the Third War
            0,
     },
     // Specialization abilities for Unholy
@@ -1858,7 +1856,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        51462, // Runic Corruption
       275699, // Apocalypse
       278223, // Death Strike (Rank 2)
-       48263, // Veteran of the Third War
            0,
     },
     {
@@ -2387,7 +2384,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 8.2.5.32750
+// Class mastery abilities, wow build 8.3.0.33051
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2620,13 +2617,13 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
     },
   },
 };
-#define RACE_ABILITY_SIZE (5)
+#define RACE_ABILITY_SIZE (7)
 
 #ifndef MAX_RACE
 #define MAX_RACE (33)
 #endif
 
-// Racial abilities, wow build 8.2.5.32750
+// Racial abilities, wow build 8.3.0.33051
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3071,6 +3068,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       265224, // Forged in Flames
       265222, // Mass Production
       265225, // Mole Machine
+          0,
     },
     {     0, },
     {     0, },
@@ -3085,8 +3083,18 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
     {     0, },
   },
+  // Racial abilities for Vulpera
   {
-    {     0, },
+    // Generic racial abilities
+    {
+      317795, // Alpaca Saddlebags
+      312411, // Bag of Tricks
+      312198, // Fire Resistance
+      312370, // Make Camp
+      312215, // Nose For Trouble
+      312372, // Return to Camp
+      312425, // Rummage Your Bag
+    },
     {     0, },
     {     0, },
     {     0, },
@@ -3123,8 +3131,17 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
     {     0, },
   },
+  // Racial abilities for Mechagnome
   {
-    {     0, },
+    // Generic racial abilities
+    {
+      312923, // Combat Analysis
+      312916, // Emergency Failsafe
+      312924, // Hyper Organic Light Originator
+      312896, // Mastercraft
+      312890, // Skeleton Pinkie
+          0,
+    },
     {     0, },
     {     0, },
     {     0, },
@@ -3414,6 +3431,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       255655, // Pride of Ironhorn
       255659, // Rugged Tenacity
       255656, // Waste Not, Want Not
+          0,
     },
     {     0, },
     {     0, },
@@ -3437,6 +3455,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       255667, // Ethereal Connection
       255670, // Preternatural Calm
       256948, // Spatial Rift
+          0,
     },
     {     0, },
     {     0, },
@@ -3560,6 +3579,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       292751, // Embrace of the Loa
       281954, // Pterrordax Swoop
       291944, // Regeneratin'
+          0,
     },
     {     0, },
     {     0, },
@@ -3598,9 +3618,9 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
   },
 };
-#define SET_BONUS_DATA_SIZE (724)
+#define SET_BONUS_DATA_SIZE (736)
 
-// Set bonus data, wow build 8.2.5.32750
+// Set bonus data, wow build 8.3.0.33051
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4355,10 +4375,23 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  10,   -1, 290362, { 165604, 165566,  0 } },
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  11,   -1, 290362, { 165604, 165566,  0 } },
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  12,   -1, 290362, { 165604, 165566,  0 } },
+  { "Titanic Empowerment"                        , "titanic_empowerment",     18,  1452,   24,   2,   1,   -1, 315793, { 174500, 174528,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
+  { "Titanic Empowerment"                        , "titanic_empowerment",     18,  1452,   24,   2,   2,   -1, 315793, { 174500, 174528,  0 } },
+  { "Titanic Empowerment"                        , "titanic_empowerment",     18,  1452,   24,   2,   3,   -1, 315793, { 174500, 174528,  0 } },
+  { "Titanic Empowerment"                        , "titanic_empowerment",     18,  1452,   24,   2,   4,   -1, 315793, { 174500, 174528,  0 } },
+  { "Titanic Empowerment"                        , "titanic_empowerment",     18,  1452,   24,   2,   5,   -1, 315793, { 174500, 174528,  0 } },
+  { "Titanic Empowerment"                        , "titanic_empowerment",     18,  1452,   24,   2,   6,   -1, 315793, { 174500, 174528,  0 } },
+  { "Titanic Empowerment"                        , "titanic_empowerment",     18,  1452,   24,   2,   7,   -1, 315793, { 174500, 174528,  0 } },
+  { "Titanic Empowerment"                        , "titanic_empowerment",     18,  1452,   24,   2,   8,   -1, 315793, { 174500, 174528,  0 } },
+  { "Titanic Empowerment"                        , "titanic_empowerment",     18,  1452,   24,   2,   9,   -1, 315793, { 174500, 174528,  0 } },
+  { "Titanic Empowerment"                        , "titanic_empowerment",     18,  1452,   24,   2,  10,   -1, 315793, { 174500, 174528,  0 } },
+  { "Titanic Empowerment"                        , "titanic_empowerment",     18,  1452,   24,   2,  11,   -1, 315793, { 174500, 174528,  0 } },
+  { "Titanic Empowerment"                        , "titanic_empowerment",     18,  1452,   24,   2,  12,   -1, 315793, { 174500, 174528,  0 } },
 };
-#define RPPMMOD_SIZE (1000)
+#define RPPMMOD_SIZE (1011)
 
-// 1000 RPPM Modifiers, wow build level 8.2.5.32750
+// 1011 RPPM Modifiers, wow build level 8.3.0.33051
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5228,7 +5261,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 271631,    4,  1,  1.0000 },
   { 271681,    4,  1,  1.0000 },
   { 271683,    4,  1,  1.0000 },
-  { 271705,    4,  1,  1.0000 },
   { 271818,    4,  1,  1.0000 },
   { 272258,    4,  1,  1.0000 },
   { 272275,    4,  1,  1.0000 },
@@ -5360,5 +5392,17 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 308688,    4,  1,  1.0000 },
   { 308690,    4,  1,  1.0000 },
   { 308776,    4,  1,  1.0000 },
+  { 310712,    4,  1,  1.0000 },
+  { 311197,    4,  1,  1.0000 },
+  { 311198,    4,  1,  1.0000 },
+  { 311304,    4,  1,  1.0000 },
+  { 311306,    4,  1,  1.0000 },
+  { 313087,    4,  1,  1.0000 },
+  { 313640,    4,  1,  1.0000 },
+  { 314070,    4,  1,  1.0000 },
+  { 317147,    4,  1,  1.0000 },
+  { 317257,    4,  1,  1.0000 },
+  { 317290,    4,  1,  1.0000 },
+  { 318179,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };

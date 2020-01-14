@@ -1,5 +1,5 @@
-// Azerite powers, wow build 8.2.5.32750
-static constexpr std::array<azerite_power_entry_t, 376> __azerite_power_data { {
+// Azerite powers, wow build 8.3.0.33051
+static constexpr std::array<azerite_power_entry_t, 379> __azerite_power_data { {
   {  13, 263978,  4775, "Azerite Empowered"                 , 0 },
   {  14, 268594,     0, "Longstrider"                       , 1 },
   {  15, 263962,     0, "Resounding Protection"             , 1 },
@@ -376,9 +376,12 @@ static constexpr std::array<azerite_power_entry_t, 376> __azerite_power_data { {
   { 575, 303008,     0, "Undulating Tides"                  , 3 },
   { 576, 303007,     0, "Loyal to the End"                  , 3 },
   { 577, 303006,     0, "Arcane Heart"                      , 3 },
+  { 578, 312927,     0, "Perseverance"                      , 0 },
+  { 579, 312928,     0, "Perseverance"                      , 0 },
+  { 582, 317137,     0, "Heart of Darkness"                 , 3 },
 } };
-// Azerite Essences, wow build 8.2.5.32750
-static constexpr std::array<azerite_essence_entry_t, 21> __azerite_essence_data { {
+// Azerite Essences, wow build 8.3.0.33051
+static constexpr std::array<azerite_essence_entry_t, 28> __azerite_essence_data { {
   {  2,   1, "Azeroth's Undying Gift"       },
   {  3,   1, "Sphere of Suppression"        },
   {  4,   2, "Worldvein Resonance"          },
@@ -389,6 +392,7 @@ static constexpr std::array<azerite_essence_entry_t, 21> __azerite_essence_data 
   { 13,   1, "Nullification Dynamo"         },
   { 14, 160, "Condensed Life-Force"         },
   { 15,   2, "Ripple in Space"              },
+  { 16,  49, "Unwavering Ward"              },
   { 17,  49, "The Ever-Rising Tide"         },
   { 18,  49, "Artifice of Time"             },
   { 19,  49, "The Well of Existence"        },
@@ -396,14 +400,20 @@ static constexpr std::array<azerite_essence_entry_t, 21> __azerite_essence_data 
   { 21,  49, "Vitality Conduit"             },
   { 22,   2, "Vision of Perfection"         },
   { 23, 160, "Blood of the Enemy"           },
+  { 24,  49, "Spirit of Preservation"       },
   { 25,   1, "Aegis of the Deep"            },
   { 27,   2, "Memory of Lucid Dreams"       },
   { 28, 160, "The Unbound Force"            },
   { 32,   2, "Conflict and Strife"          },
+  { 33,   1, "Touch of the Everlasting"     },
+  { 34,   1, "Strength of the Warden"       },
+  { 35, 160, "Breath of the Dying"          },
+  { 36, 160, "Spark of Inspiration"         },
+  { 37,   2, "The Formless Void"            },
 } };
 
-// Azerite Essence Powers, wow build 8.2.5.32750
-static constexpr std::array<azerite_essence_power_entry_t, 84> __azerite_essence_power_data { {
+// Azerite Essence Powers, wow build 8.3.0.33051
+static constexpr std::array<azerite_essence_power_entry_t, 112> __azerite_essence_power_data { {
   {   5,   2,   1, { 293019, 294668 }, { 293019, 294668 } }, // Azeroth's Undying Gift
   {   6,   2,   2, { 298080, 298082 }, { 294653, 294687 } }, // Azeroth's Undying Gift
   {   7,   2,   3, { 298081, 298083 }, { 294650, 294688 } }, // Azeroth's Undying Gift
@@ -444,6 +454,10 @@ static constexpr std::array<azerite_essence_power_entry_t, 84> __azerite_essence
   {  58,  15,   2, { 302982, 302984 }, { 302778, 302957 } }, // Ripple in Space
   {  59,  15,   3, { 302983, 302985 }, { 302780, 302961 } }, // Ripple in Space
   {  60,  15,   4, { 302983, 302985 }, { 302910, 302962 } }, // Ripple in Space
+  {  61,  16,   1, { 296036, 293030 }, { 296036, 293030 } }, // Unwavering Ward
+  {  62,  16,   2, { 310425, 310422 }, { 296038, 296031 } }, // Unwavering Ward
+  {  63,  16,   3, { 310442, 310426 }, { 296104, 296032 } }, // Unwavering Ward
+  { 114,  16,   4, { 310442, 310426 }, { 299542, 299544 } }, // Unwavering Ward
   {  64,  17,   1, { 296072, 296050 }, { 296072, 296050 } }, // The Ever-Rising Tide
   {  65,  17,   2, { 299875, 299878 }, { 296074, 296067 } }, // The Ever-Rising Tide
   {  66,  17,   3, { 299876, 299879 }, { 296075, 296062 } }, // The Ever-Rising Tide
@@ -472,6 +486,10 @@ static constexpr std::array<azerite_essence_power_entry_t, 84> __azerite_essence
   {  84,  23,   2, { 298273, 298274 }, { 297120, 297177 } }, // Blood of the Enemy
   {  85,  23,   3, { 298277, 298275 }, { 297122, 297178 } }, // Blood of the Enemy
   {  99,  23,   4, { 298277, 298275 }, { 298182, 298183 } }, // Blood of the Enemy
+  {  89,  24,   1, { 297375, 297411 }, { 297375, 297411 } }, // Spirit of Preservation
+  {  90,  24,   2, { 298309, 298302 }, { 297546, 297542 } }, // Spirit of Preservation
+  {  91,  24,   3, { 298312, 298304 }, { 297547, 297544 } }, // Spirit of Preservation
+  { 100,  24,   4, { 298312, 298304 }, { 298184, 298185 } }, // Spirit of Preservation
   {  96,  25,   1, { 298168, 298193 }, { 298168, 298193 } }, // Aegis of the Deep
   {  97,  25,   2, { 299273, 299274 }, { 298169, 298351 } }, // Aegis of the Deep
   {  98,  25,   3, { 299275, 299277 }, { 298174, 298352 } }, // Aegis of the Deep
@@ -488,4 +506,24 @@ static constexpr std::array<azerite_essence_power_entry_t, 84> __azerite_essence
   { 122,  32,   2, { 304088, 304089 }, { 304086, 304055 } }, // Conflict and Strife
   { 123,  32,   3, { 304121, 304123 }, { 303892, 304125 } }, // Conflict and Strife
   { 124,  32,   4, { 304121, 304123 }, { 303894, 304533 } }, // Conflict and Strife
+  { 125,  33,   1, { 295046, 295164 }, { 295046, 295164 } }, // Touch of the Everlasting
+  { 126,  33,   2, { 299984, 299989 }, { 295098, 295349 } }, // Touch of the Everlasting
+  { 127,  33,   3, { 299988, 299991 }, { 295119, 295353 } }, // Touch of the Everlasting
+  { 128,  33,   4, { 299988, 299991 }, { 295308, 295309 } }, // Touch of the Everlasting
+  { 129,  34,   1, { 310592, 310603 }, { 310592, 310603 } }, // Strength of the Warden
+  { 130,  34,   2, { 310601, 310607 }, { 310597, 310605 } }, // Strength of the Warden
+  { 131,  34,   3, { 310602, 310608 }, { 310599, 310606 } }, // Strength of the Warden
+  { 132,  34,   4, { 310602, 310608 }, { 310600, 310609 } }, // Strength of the Warden
+  { 133,  35,   1, { 310690, 310712 }, { 310690, 310712 } }, // Breath of the Dying
+  { 134,  35,   2, { 311194, 311197 }, { 310705, 311166 } }, // Breath of the Dying
+  { 135,  35,   3, { 311195, 311198 }, { 310710, 311167 } }, // Breath of the Dying
+  { 136,  35,   4, { 311195, 311198 }, { 310711, 311177 } }, // Breath of the Dying
+  { 137,  36,   1, { 311203, 311210 }, { 311203, 311210 } }, // Spark of Inspiration
+  { 138,  36,   2, { 311302, 311304 }, { 311206, 311211 } }, // Spark of Inspiration
+  { 139,  36,   3, { 311303, 311306 }, { 311207, 311212 } }, // Spark of Inspiration
+  { 140,  36,   4, { 311303, 311306 }, { 311209, 311213 } }, // Spark of Inspiration
+  { 141,  37,   1, { 312725, 312771 }, { 312725, 312771 } }, // The Formless Void
+  { 142,  37,   2, { 313921, 313919 }, { 312764, 312773 } }, // The Formless Void
+  { 143,  37,   3, { 313922, 313920 }, { 312768, 312774 } }, // The Formless Void
+  { 144,  37,   4, { 313922, 313920 }, { 312770, 312775 } }, // The Formless Void
 } };
