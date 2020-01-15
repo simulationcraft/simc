@@ -1,6 +1,6 @@
 rogue="T25_Rogue_Assassination"
 level=120
-race=troll
+race=human
 spec=assassination
 role=attack
 position=back
@@ -30,7 +30,7 @@ save=T25_Rogue_Assassination.simc
 
 rogue="T25_Rogue_Outlaw"
 level=120
-race=pandaren
+race=human
 spec=outlaw
 role=attack
 position=back
