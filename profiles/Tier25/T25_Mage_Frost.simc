@@ -75,6 +75,7 @@ actions.cooldowns+=/berserking
 actions.cooldowns+=/lights_judgment
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/bag_of_tricks
 
 actions.essences=focused_azerite_beam,if=buff.rune_of_power.down|active_enemies>3
 actions.essences+=/memory_of_lucid_dreams,if=active_enemies<5&(buff.icicles.stack<=1|!talent.glacial_spike.enabled)&cooldown.frozen_orb.remains>10

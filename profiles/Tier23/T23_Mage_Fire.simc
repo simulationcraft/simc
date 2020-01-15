@@ -81,6 +81,7 @@ actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
 actions.combustion_phase+=/fireblood
 actions.combustion_phase+=/ancestral_call
+actions.combustion_phase+=/bag_of_tricks
 actions.combustion_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react&!azerite.blaster_master.enabled
 actions.combustion_phase+=/pyroblast,if=buff.pyroclasm.react&buff.combustion.remains>cast_time
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.react

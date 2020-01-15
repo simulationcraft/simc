@@ -41,6 +41,7 @@ actions+=/arcane_torrent
 actions+=/lights_judgment
 actions+=/fireblood
 actions+=/ancestral_call
+actions+=/bag_of_tricks
 actions+=/potion,if=buff.avatar.up|target.time_to_die<25
 # use Ignore Pain to avoid rage capping
 actions+=/ignore_pain,if=rage.deficit<25+20*talent.booming_voice.enabled*cooldown.demoralizing_shout.ready

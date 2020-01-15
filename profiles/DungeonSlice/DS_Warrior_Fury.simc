@@ -58,6 +58,7 @@ actions+=/berserking,if=buff.recklessness.up
 actions+=/lights_judgment,if=buff.recklessness.down
 actions+=/fireblood,if=buff.recklessness.up
 actions+=/ancestral_call,if=buff.recklessness.up
+actions+=/bag_of_tricks,if=buff.recklessness.up
 actions+=/run_action_list,name=single_target
 
 actions.movement=heroic_leap
