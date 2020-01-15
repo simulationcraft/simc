@@ -87,7 +87,7 @@ actions.cd+=/concentrated_flame,if=!dot.concentrated_flame_burn.remains&(cooldow
 actions.cd+=/berserking,if=target.time_to_die>183|dot.touch_of_death.remains|target.time_to_die<13
 actions.cd+=/use_item,name=pocketsized_computation_device,if=dot.touch_of_death.remains
 actions.cd+=/use_item,name=ashvanes_razor_coral,if=variable.coral_double_tod_on_use&cooldown.touch_of_death.remains>=23&(debuff.razor_coral_debuff.down|buff.storm_earth_and_fire.remains>13|target.time_to_die-cooldown.touch_of_death.remains<40&cooldown.touch_of_death.remains<23|target.time_to_die<25)
-actions.cd+=/use_item,name=ashvanes_razor_coral,if=!variable.coral_double_tod_on_use&(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(debuff.razor_coral_debuff.down|dot.touch_of_death.remains|(cooldown.touch_of_death.remains+9>target.time_to_die&buff.storm_earth_and_fire.up)|target.time_to_die<21)
+actions.cd+=/use_item,name=ashvanes_razor_coral,if=!variable.coral_double_tod_on_use&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(dot.touch_of_death.remains|cooldown.touch_of_death.remains+9>target.time_to_die&buff.storm_earth_and_fire.up|target.time_to_die<25))
 actions.cd+=/the_unbound_force
 actions.cd+=/purifying_blast
 actions.cd+=/reaping_flames
