@@ -27,7 +27,6 @@ actions.precombat+=/food
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/worldvein_resonance
 actions.precombat+=/guardian_of_azeroth
@@ -38,6 +37,7 @@ actions.precombat+=/focused_azerite_beam,if=!raid_event.invulnerable.exists
 actions.precombat+=/aspect_of_the_wild,precast_time=1.1,if=!azerite.primal_instincts.enabled&!essence.essence_of_the_focusing_iris.major&(equipped.azsharas_font_of_power|!equipped.cyclotronic_blast)
 # Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat.
 actions.precombat+=/bestial_wrath,precast_time=1.5,if=azerite.primal_instincts.enabled&!essence.essence_of_the_focusing_iris.major&(equipped.azsharas_font_of_power|!equipped.cyclotronic_blast)
+actions.precombat+=/potion,dynamic_prepot=1
 
 # Executed every time the actor is available.
 actions=auto_shot

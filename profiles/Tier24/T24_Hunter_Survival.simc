@@ -27,10 +27,11 @@ actions.precombat+=/food
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists
 actions.precombat+=/guardian_of_azeroth
+actions.precombat+=/worldvein_resonance
+actions.precombat+=/potion,dynamic_prepot=1
 actions.precombat+=/steel_trap
 actions.precombat+=/harpoon
 
@@ -38,24 +39,25 @@ actions.precombat+=/harpoon
 actions=auto_attack
 actions+=/use_items
 actions+=/call_action_list,name=cds
+actions+=/mongoose_bite,if=talent.alpha_predator.enabled&target.time_to_die<10|target.time_to_die<5
 actions+=/call_action_list,name=apwfi,if=active_enemies<3&talent.chakrams.enabled&talent.alpha_predator.enabled
 actions+=/call_action_list,name=wfi,if=active_enemies<3&talent.chakrams.enabled
 actions+=/call_action_list,name=st,if=active_enemies<3&!talent.alpha_predator.enabled&!talent.wildfire_infusion.enabled
 actions+=/call_action_list,name=apst,if=active_enemies<3&talent.alpha_predator.enabled&!talent.wildfire_infusion.enabled
 actions+=/call_action_list,name=apwfi,if=active_enemies<3&talent.alpha_predator.enabled&talent.wildfire_infusion.enabled
 actions+=/call_action_list,name=wfi,if=active_enemies<3&!talent.alpha_predator.enabled&talent.wildfire_infusion.enabled
-actions+=/call_action_list,name=cleave,if=active_enemies>1
+actions+=/call_action_list,name=cleave,if=active_enemies>1&!talent.birds_of_prey.enabled|active_enemies>2
 actions+=/concentrated_flame
 actions+=/arcane_torrent
 
 actions.apst=mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
 actions.apst+=/raptor_strike,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
 actions.apst+=/flanking_strike,if=focus+cast_regen<focus.max
-actions.apst+=/kill_command,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-10
+actions.apst+=/kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max
 actions.apst+=/steel_trap,if=focus+cast_regen<focus.max
-actions.apst+=/wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)
+actions.apst+=/wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)|time_to_die<18&!dot.wildfire_bomb.ticking
 actions.apst+=/serpent_sting,if=!dot.serpent_sting.ticking&!buff.coordinated_assault.up
-actions.apst+=/kill_command,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
+actions.apst+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
 actions.apst+=/serpent_sting,if=refreshable&!buff.coordinated_assault.up&buff.mongoose_fury.stack<5
 actions.apst+=/a_murder_of_crows,if=!buff.coordinated_assault.up
 actions.apst+=/coordinated_assault,if=!buff.coordinated_assault.up
@@ -101,6 +103,7 @@ actions.cds+=/ripple_in_space
 actions.cds+=/concentrated_flame,if=full_recharge_time<1*gcd
 actions.cds+=/the_unbound_force,if=buff.reckless_force.up
 actions.cds+=/worldvein_resonance
+actions.cds+=/reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30
 
 actions.cleave=variable,name=carve_cdr,op=setif,value=active_enemies,value_else=5,condition=active_enemies<5
 actions.cleave+=/a_murder_of_crows
@@ -128,9 +131,9 @@ actions.st+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.st+=/raptor_strike,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
 # To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name.
 actions.st+=/mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
-actions.st+=/kill_command,if=focus+cast_regen<focus.max
+actions.st+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
 actions.st+=/steel_trap,if=focus+cast_regen<focus.max
-actions.st+=/wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)
+actions.st+=/wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)|time_to_die<18&!dot.wildfire_bomb.ticking
 actions.st+=/mongoose_bite,if=buff.mongoose_fury.stack>5&!cooldown.coordinated_assault.remains
 actions.st+=/serpent_sting,if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|dot.serpent_sting.refreshable&!buff.coordinated_assault.up
 actions.st+=/a_murder_of_crows,if=!buff.coordinated_assault.up
