@@ -5858,7 +5858,8 @@ void items::torment_in_a_jar( special_effect_t& effect )
 
 void items::writhing_segment_of_drestagath( special_effect_t& effect )
 {
-  effect.execute_action = create_proc_action<aoe_proc_t>( "spine_eruption", effect, "spine_eruption", effect.driver(), true );
+  effect.execute_action =
+      create_proc_action<aoe_proc_t>( "spine_eruption", effect, "spine_eruption", effect.driver(), true );
 }
 
 /**Draconic Empowerment
@@ -5931,7 +5932,7 @@ void set_bonus::keepsakes_of_the_resolute_commandant( special_effect_t& effect )
 
 void corruption::masterful( special_effect_t& effect )
 {
-  effect.type = SPECIAL_EFFECT_NONE;
+  effect.type  = SPECIAL_EFFECT_NONE;
   buff_t* buff = buff_t::find( effect.player, "masterful" );
   if ( !buff )
   {
@@ -5939,10 +5940,14 @@ void corruption::masterful( special_effect_t& effect )
                ->set_default_value( effect.driver()->effectN( 1 ).percent() )
                ->add_invalidate( CACHE_MASTERY )
                ->set_quiet( true )
-               ->set_stack_change_callback( []( buff_t* b, int, int new_ ) {
-                 if ( new_ == 1 )
+               ->set_stack_change_callback( []( buff_t* b, int old_, int new_ ) {
+                 if ( new_ - old_ > 0 )
                  {
-                   b->player->passive_rating_multiplier.get_mutable( RATING_MASTERY ) *= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MASTERY ) *= ( 1 + b->default_value );
+                 }
+                 else if ( new_ - old_ < 0 )
+                 {
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MASTERY ) /= ( 1 + b->default_value );
                  }
                } );
     effect.player->register_combat_begin( buff );
@@ -5962,12 +5967,18 @@ void corruption::expedient( special_effect_t& effect )
                ->set_default_value( effect.driver()->effectN( 1 ).percent() )
                ->add_invalidate( CACHE_HASTE )
                ->set_quiet( true )
-               ->set_stack_change_callback( []( buff_t* b, int, int new_ ) {
-                 if ( new_ == 1 )
+               ->set_stack_change_callback( []( buff_t* b, int old_, int new_ ) {
+                 if ( new_ - old_ > 0 )
                  {
                    b->player->passive_rating_multiplier.get_mutable( RATING_MELEE_HASTE ) *= 1.0 + b->default_value;
                    b->player->passive_rating_multiplier.get_mutable( RATING_SPELL_HASTE ) *= 1.0 + b->default_value;
                    b->player->passive_rating_multiplier.get_mutable( RATING_RANGED_HASTE ) *= 1.0 + b->default_value;
+                 }
+                 else if ( new_ - old_ < 0 )
+                 {
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MELEE_HASTE ) /= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_SPELL_HASTE ) /= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_RANGED_HASTE ) /= 1.0 + b->default_value;
                  }
                } );
     effect.player->register_combat_begin( buff );
@@ -5988,12 +5999,19 @@ void corruption::versatile( special_effect_t& effect )
             ->set_default_value( effect.driver()->effectN( 1 ).percent() )
             ->add_invalidate( CACHE_VERSATILITY )
             ->set_quiet( true )
-            ->set_stack_change_callback( []( buff_t* b, int, int new_ ) {
-              if ( new_ == 1 )
+            ->set_stack_change_callback( []( buff_t* b, int old_, int new_ ) {
+              if ( new_ - old_ > 0 )
               {
                 b->player->passive_rating_multiplier.get_mutable( RATING_HEAL_VERSATILITY ) *= 1.0 + b->default_value;
                 b->player->passive_rating_multiplier.get_mutable( RATING_DAMAGE_VERSATILITY ) *= 1.0 + b->default_value;
                 b->player->passive_rating_multiplier.get_mutable( RATING_MITIGATION_VERSATILITY ) *=
+                    1.0 + b->default_value;
+              }
+              else if ( new_ - old_ < 0 )
+              {
+                b->player->passive_rating_multiplier.get_mutable( RATING_HEAL_VERSATILITY ) /= 1.0 + b->default_value;
+                b->player->passive_rating_multiplier.get_mutable( RATING_DAMAGE_VERSATILITY ) /= 1.0 + b->default_value;
+                b->player->passive_rating_multiplier.get_mutable( RATING_MITIGATION_VERSATILITY ) /=
                     1.0 + b->default_value;
               }
             } );
@@ -6012,14 +6030,20 @@ void corruption::severe( special_effect_t& effect )
   {
     buff = make_buff( effect.player, "severe", effect.player->find_spell( 320261 ) )
                ->set_default_value( effect.driver()->effectN( 1 ).percent() )
-               ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
+               ->add_invalidate( CACHE_CRIT_CHANCE )
                ->set_quiet( true )
-               ->set_stack_change_callback( []( buff_t* b, int, int new_ ) {
-                 if ( new_ == 1 )
+               ->set_stack_change_callback( []( buff_t* b, int old_, int new_ ) {
+                 if ( new_ - old_ > 0 )
                  {
                    b->player->passive_rating_multiplier.get_mutable( RATING_MELEE_CRIT ) *= 1.0 + b->default_value;
                    b->player->passive_rating_multiplier.get_mutable( RATING_SPELL_CRIT ) *= 1.0 + b->default_value;
                    b->player->passive_rating_multiplier.get_mutable( RATING_RANGED_CRIT ) *= 1.0 + b->default_value;
+                 }
+                 else if ( new_ - old_ < 0 )
+                 {
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MELEE_CRIT ) /= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_SPELL_CRIT ) /= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_RANGED_CRIT ) /= 1.0 + b->default_value;
                  }
                } );
     effect.player->register_combat_begin( buff );
@@ -7069,7 +7093,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 313640, items::psyche_shredder );
   register_special_effect( 313087, items::torment_in_a_jar );
   register_special_effect( 317860, items::draconic_empowerment );
-  register_special_effect( 313113, items::writhing_segment_of_drestagath );  
+  register_special_effect( 313113, items::writhing_segment_of_drestagath );
 
   // 8.3 Set Bonus(es)
   register_special_effect( 315793, set_bonus::titanic_empowerment );
