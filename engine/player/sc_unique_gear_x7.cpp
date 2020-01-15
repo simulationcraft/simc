@@ -5496,6 +5496,7 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
       {265221, true},  // Fireblood
       {274738, true},  // Ancestral Call
       {287712, true},  // Haymaker
+      {312411, true},  // Bag of Tricks
       // Major Essences
       {295373, true},  // Concentrated Flame
       {298357, true},  // Memory of Lucid Dreams

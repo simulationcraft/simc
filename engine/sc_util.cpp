@@ -3234,6 +3234,7 @@ bool is_alliance( race_e race )
     case RACE_LIGHTFORGED_DRAENEI:
     case RACE_DARK_IRON_DWARF:
     case RACE_KUL_TIRAN:
+    case RACE_MECHAGNOME:
       return true;
     default:
       return false;
@@ -3255,6 +3256,7 @@ bool is_horde( race_e race )
     case RACE_NIGHTBORNE:
     case RACE_MAGHAR_ORC:
     case RACE_ZANDALARI_TROLL:
+    case RACE_VULPERA:
       return true;
     default:
       return false;
