@@ -8194,6 +8194,7 @@ void shaman_t::init_action_list_elemental()
   def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
   def->add_action( "fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+  def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
 
   // Pick APL to run
   def->add_action(
