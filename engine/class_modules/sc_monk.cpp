@@ -9877,7 +9877,7 @@ void monk_t::apl_combat_windwalker()
   cd->add_action( berserking, "Use Berserking during Touch of Death" );
   cd->add_action( "use_item,name=pocketsized_computation_device,if=dot.touch_of_death.remains" );
   cd->add_action( "use_item,name=ashvanes_razor_coral,if=variable.coral_double_tod_on_use&cooldown.touch_of_death.remains>=23&(debuff.razor_coral_debuff.down|buff.storm_earth_and_fire.remains>13|target.time_to_die-cooldown.touch_of_death.remains<40&cooldown.touch_of_death.remains<23|target.time_to_die<25)" );
-  cd->add_action( "use_item,name=ashvanes_razor_coral,if=!variable.coral_double_tod_on_use&(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(debuff.razor_coral_debuff.down|dot.touch_of_death.remains|(cooldown.touch_of_death.remains+9>target.time_to_die&buff.storm_earth_and_fire.up)|target.time_to_die<21)" );
+  cd->add_action( "use_item,name=ashvanes_razor_coral,if=!variable.coral_double_tod_on_use&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(dot.touch_of_death.remains|cooldown.touch_of_death.remains+9>target.time_to_die&buff.storm_earth_and_fire.up|target.time_to_die<25))" );
   cd->add_action( "the_unbound_force" );
   cd->add_action( "purifying_blast" );
   cd->add_action( "reaping_flames" );
