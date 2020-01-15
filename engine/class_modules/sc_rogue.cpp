@@ -5708,6 +5708,7 @@ void rogue_t::init_action_list()
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined" );
     def -> add_action( "arcane_pulse");
     def -> add_action( "lights_judgment");
+    def -> add_action( "bag_of_tricks");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -5823,6 +5824,7 @@ void rogue_t::init_action_list()
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen" );
     def -> add_action( "arcane_pulse" );
     def -> add_action( "lights_judgment");
+    def -> add_action( "bag_of_tricks");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -5902,6 +5904,7 @@ void rogue_t::init_action_list()
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen", "Lowest priority in all of the APL because it causes a GCD" );
     def -> add_action( "arcane_pulse" );
     def -> add_action( "lights_judgment");
+    def -> add_action( "bag_of_tricks");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );

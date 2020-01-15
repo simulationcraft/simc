@@ -59,6 +59,7 @@ actions+=/call_action_list,name=build,if=energy.deficit<=variable.stealth_thresh
 actions+=/arcane_torrent,if=energy.deficit>=15+energy.regen
 actions+=/arcane_pulse
 actions+=/lights_judgment
+actions+=/bag_of_tricks
 
 # Builders
 actions.build=shuriken_storm,if=spell_targets>=2+(talent.gloomblade.enabled&azerite.perforate.rank>=2&position_back)
