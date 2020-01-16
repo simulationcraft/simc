@@ -5775,13 +5775,14 @@ void mage_t::apl_arcane()
     "Charged Up), use it before using RoP+AP, because the mana reduction is otherwise largely wasted "
     "since the AB was free anyway." );
   burn->add_action( "lights_judgment,if=buff.arcane_power.down" );
+  burn->add_action( "bag_of_tricks,if=buff.arcane_power.down" );
   burn->add_talent( this, "Rune of Power", "if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
   burn->add_action( "berserking" );
   burn->add_action( this, "Arcane Power" );
   burn->add_action( "use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains" );
   for ( const auto& ra : racial_actions )
   {
-    if ( ra == "lights_judgment" || ra == "arcane_torrent" || ra == "berserking" )
+    if ( ra == "lights_judgment" || ra == "arcane_torrent" || ra == "berserking" || ra == "bag_of_tricks" )
       continue;  // Handled manually.
 
     burn->add_action( ra );
@@ -5858,6 +5859,7 @@ void mage_t::apl_fire()
   active_talents->add_talent( this, "Dragon's Breath", "if=talent.alexstraszas_fury.enabled&(buff.combustion.down&!buff.hot_streak.react|buff.combustion.up&action.fire_blast.charges<action.fire_blast.max_charges&!buff.hot_streak.react)" );
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down", "Combustion phase prepares abilities with a delay, then launches into the Combustion sequence" );
+  combustion_phase->add_action( "bag_of_tricks,if=buff.combustion.down" );
   combustion_phase->add_talent( this, "Living Bomb", "if=active_enemies>1&buff.combustion.down" );
   combustion_phase->add_action( "blood_of_the_enemy" );
   combustion_phase->add_action( "memory_of_lucid_dreams" );
@@ -5876,7 +5878,7 @@ void mage_t::apl_fire()
   combustion_phase->add_action( "potion" );
   for ( const auto& ra : racial_actions )
   {
-    if ( ra == "lights_judgment" || ra == "arcane_torrent" )
+    if ( ra == "lights_judgment" || ra == "arcane_torrent" || ra == "bag_of_tricks" )
       continue;  // Handled manually.
 
     combustion_phase->add_action( ra );
