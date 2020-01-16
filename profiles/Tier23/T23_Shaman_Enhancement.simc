@@ -100,6 +100,7 @@ actions.filler+=/ripple_in_space,if=raid_event.adds.in>60
 actions.filler+=/thundercharge
 actions.filler+=/concentrated_flame
 actions.filler+=/reaping_flames
+actions.filler+=/bag_of_tricks
 actions.filler+=/crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL
 actions.filler+=/flametongue,if=talent.searing_assault.enabled
 actions.filler+=/lava_lash,if=!azerite.primal_primer.enabled&talent.hot_hand.enabled&buff.hot_hand.react

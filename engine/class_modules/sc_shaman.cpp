@@ -8767,6 +8767,7 @@ void shaman_t::init_action_list_enhancement()
   filler->add_action( "thundercharge" );
   filler->add_action( "concentrated_flame" );
   filler->add_action( "reaping_flames" );
+  filler->add_action( "bag_of_tricks" );
   filler->add_action( this, "Crash Lightning",
                       "if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL" );
   filler->add_action( this, "Flametongue", "if=talent.searing_assault.enabled" );
