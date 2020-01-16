@@ -5210,9 +5210,20 @@ void breath_of_the_dying( special_effect_t& effect )
       auto s     = static_cast<action_state_t*>( cd );
       double mod = 1.0;
 
+      // Bugged as of Jan-16-2020 R3 increased execute chance at any rank. Hardcoding for simplicity since likely to be fixed
+      if ( effect.player->bugs == 1 )
+      {
+        if ( s->target->health_percentage() < 20 )
+        {
+          mod += 400 / 100;
+        }
+      }
       // TODO: confirm '400% more' means 5x multiplier
-      if ( s->target->health_percentage() < r3_lo_hp )
-        mod += r3_mul;
+      else
+      {
+        if ( s->target->health_percentage() < r3_lo_hp )
+          mod += r3_mul;
+      }
 
       rppm->set_modifier( mod );
 
