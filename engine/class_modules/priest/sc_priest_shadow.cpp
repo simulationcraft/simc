@@ -2030,6 +2030,8 @@ void priest_t::generate_apl_shadow()
     default_list->add_action( "lights_judgment" );
   if ( race == RACE_MAGHAR_ORC )
     default_list->add_action( "ancestral_call,if=buff.voidform.up" );
+  if ( race == RACE_VULPERA )
+    default_list->add_action( "bag_of_tricks" );
 
   // Choose which APL to use based on talents and fight conditions.
   default_list->add_action( "run_action_list,name=cleave,if=active_enemies>1" );
