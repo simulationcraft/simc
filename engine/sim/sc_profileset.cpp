@@ -1362,6 +1362,9 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
     profileset.output_data().leech_pct( buffed_stats.leech );
     profileset.output_data().speed_rating( player -> composite_spell_haste_rating() );
     profileset.output_data().speed_pct( buffed_stats.run_speed );
+
+    profileset.output_data().corruption( buffed_stats.corruption );
+    profileset.output_data().corruption_resistance( buffed_stats.corruption_resistance );
   }
 }
 
@@ -1425,6 +1428,9 @@ void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput&
     ovr[ "stats" ][ "leech_pct" ] = output_data.leech_pct();
     ovr[ "stats" ][ "speed_rating" ] = output_data.speed_rating();
     ovr[ "stats" ][ "speed_pct" ] = output_data.speed_pct();
+
+    ovr[ "stats" ][ "corruption" ] = output_data.corruption();
+    ovr[ "stats" ][ "corruption_resistance" ] = output_data.corruption_resistance();
   }
 }
 

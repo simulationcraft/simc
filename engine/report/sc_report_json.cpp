@@ -444,6 +444,10 @@ void to_json( JsonOutput root, const player_t& p,
   add_non_zero( root[ "stats" ], "dodge", bs.dodge );
   add_non_zero( root[ "stats" ], "parry", bs.parry );
   add_non_zero( root[ "stats" ], "block", bs.block );
+
+  add_non_zero( root[ "stats" ], "corruption", bs.corruption );
+  add_non_zero( root[ "stats" ], "corruption_resistance", bs.corruption_resistance );
+  add_non_zero( root[ "stats" ], "corruption_total", bs.corruption - bs.corruption_resistance );
 }
 
 void to_json( JsonOutput root,
