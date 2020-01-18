@@ -4102,6 +4102,8 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
         m *= 1.0 + buffs.archmages_incandescence_int->data().effectN( 1 ).percent();
       if ( sim->auras.arcane_intellect->check() )
         m *= 1.0 + sim->auras.arcane_intellect->value();
+      if ( buffs.flash_of_insight )
+        m *= 1.0 + buffs.flash_of_insight->stack_value();
       break;
     case ATTR_SPIRIT:
       if ( buffs.amplification )

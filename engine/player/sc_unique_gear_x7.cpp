@@ -239,6 +239,7 @@ void void_ritual( special_effect_t& effect );
 void searing_flames( special_effect_t& effect );
 void twisted_appendage( special_effect_t& effect );
 void lash_of_the_void( special_effect_t& effect );
+void flash_of_insight( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -6868,6 +6869,59 @@ void corruption::lash_of_the_void( special_effect_t& effect )
     lash_of_the_void->ap_mod += effect.trigger()->effectN( 1 ).ap_coeff();
 }
 
+// Flash of Insight
+// TODO: Confirm the stacks work like this
+void corruption::flash_of_insight( special_effect_t& effect )
+{
+  struct flash_of_insight_t : public buff_t
+  {
+    flash_of_insight_t( const special_effect_t& effect )
+      : buff_t( effect.player, "flash_of_insight", effect.player->find_spell( 316744 ) )
+    {
+      set_default_value( effect.driver()->effectN( 1 ).percent() );
+      add_invalidate( CACHE_INTELLECT );
+    }
+
+    void reset() override
+    {
+      buff_t::reset();
+      reverse = false;
+    }
+
+    void bump( int stacks, double value ) override
+    {
+      if ( check() == max_stack() )
+        reverse = true;
+      else
+        buff_t::bump( stacks, value );
+    }
+
+    void decrement( int stacks, double value ) override
+    {
+      if ( check() == 1 )
+        reverse = false;
+      else
+        buff_t::decrement( stacks, value );
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "flash_of_insight" );
+
+  if ( !buff )
+  {
+    buff = make_buff<flash_of_insight_t>( effect );
+
+    effect.player->buffs.flash_of_insight = buff;
+    effect.custom_buff = buff;
+
+    // RPPM value and proc flags are in a different spell
+    effect.spell_id = 316717;
+
+    new dbc_proc_callback_t( effect.player, effect );
+    effect.player->register_combat_begin( buff );
+  }
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -7085,6 +7139,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318482, corruption::twisted_appendage );
   register_special_effect( 318483, corruption::twisted_appendage );
   register_special_effect( 317290, corruption::lash_of_the_void );
+  register_special_effect( 318299, corruption::flash_of_insight );
 
   // 8.3 Special Effects
   register_special_effect( 315736, items::voidtwisted_titanshard );
