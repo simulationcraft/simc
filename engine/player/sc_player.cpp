@@ -8037,6 +8037,8 @@ struct bag_of_tricks_t : public racial_spell_t
       spell_power_mod.direct  = 1.8;
     }
 
+    may_crit = true;
+
     if ( p->vulpera_tricks == player_t::CORROSIVE )
     {
       school = SCHOOL_NATURE;
