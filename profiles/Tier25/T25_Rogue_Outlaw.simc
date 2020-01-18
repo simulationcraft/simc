@@ -131,18 +131,18 @@ feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517
 finger1=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517,enchant=accord_of_critical_strike
 finger2=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_critical_strike
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
-trinket2=humming_black_dragonscale,id=174044,bonus_id=4824/1517
+trinket2=deadeye_spyglass,id=159623,bonus_id=3536/4786/1637
 main_hand=unguent_caress,id=172197,bonus_id=4824/1517,enchant=deadly_navigation
-off_hand=destroyers_shadowblade,id=172185,bonus_id=4824/1517,enchant=versatile_navigation
+off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3536/4786/1637,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=479.25
-# gear_agility=10450
-# gear_stamina=20057
-# gear_crit_rating=1352
+# gear_ilvl=478.00
+# gear_agility=10351
+# gear_stamina=19983
+# gear_crit_rating=1257
 # gear_haste_rating=1167
 # gear_mastery_rating=813
-# gear_versatility_rating=889
+# gear_versatility_rating=817
 # gear_corruption=95
 # gear_corruption_resistance=50
 # gear_armor=3923

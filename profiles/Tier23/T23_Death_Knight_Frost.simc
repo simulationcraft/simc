@@ -120,6 +120,7 @@ actions.cooldowns+=/arcane_pulse,if=(!buff.pillar_of_frost.up&active_enemies>=2)
 actions.cooldowns+=/lights_judgment,if=buff.pillar_of_frost.up
 actions.cooldowns+=/ancestral_call,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
 actions.cooldowns+=/fireblood,if=buff.pillar_of_frost.remains<=8&buff.empower_rune_weapon.up
+actions.cooldowns+=/bag_of_tricks,if=buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)|buff.seething_rage.up
 # Frost cooldowns
 actions.cooldowns+=/pillar_of_frost,if=cooldown.empower_rune_weapon.remains|talent.icecap.enabled
 actions.cooldowns+=/breath_of_sindragosa,use_off_gcd=1,if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains
@@ -141,6 +142,7 @@ actions.essences+=/purifying_blast,if=!buff.pillar_of_frost.up&!buff.breath_of_s
 actions.essences+=/worldvein_resonance,if=buff.pillar_of_frost.up|buff.empower_rune_weapon.up|cooldown.breath_of_sindragosa.remains>60+15
 actions.essences+=/ripple_in_space,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up
 actions.essences+=/memory_of_lucid_dreams,if=buff.empower_rune_weapon.remains<5&buff.breath_of_sindragosa.up|(rune.time_to_2>gcd&runic_power<50)
+actions.essences+=/reaping_flames
 
 # Obliteration rotation
 actions.obliteration=remorseless_winter,if=talent.gathering_storm.enabled

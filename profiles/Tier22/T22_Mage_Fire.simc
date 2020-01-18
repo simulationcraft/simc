@@ -66,6 +66,7 @@ actions.active_talents+=/meteor,if=buff.rune_of_power.up&(firestarter.remains>co
 
 # Combustion phase prepares abilities with a delay, then launches into the Combustion sequence
 actions.combustion_phase=lights_judgment,if=buff.combustion.down
+actions.combustion_phase+=/bag_of_tricks,if=buff.combustion.down
 actions.combustion_phase+=/living_bomb,if=active_enemies>1&buff.combustion.down
 actions.combustion_phase+=/blood_of_the_enemy
 actions.combustion_phase+=/memory_of_lucid_dreams
@@ -81,7 +82,6 @@ actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
 actions.combustion_phase+=/fireblood
 actions.combustion_phase+=/ancestral_call
-actions.combustion_phase+=/bag_of_tricks
 actions.combustion_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react&!azerite.blaster_master.enabled
 actions.combustion_phase+=/pyroblast,if=buff.pyroclasm.react&buff.combustion.remains>cast_time
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.react

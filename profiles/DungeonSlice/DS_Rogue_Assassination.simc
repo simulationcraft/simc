@@ -166,21 +166,21 @@ hands=gloves_of_abyssal_authority,id=174146,bonus_id=4824/1517/6550
 waist=cord_of_anguished_cries,id=174140,bonus_id=4824/1517
 legs=onyximbued_breeches,id=174139,bonus_id=4824/1517
 feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517
-finger1=ichorspine_loop,id=174532,bonus_id=4824/1517,enchant=accord_of_mastery
-finger2=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_mastery
+finger1=logic_loop_of_division,id=169157,bonus_id=3536/4786/1522,enchant=accord_of_mastery
+finger2=overclocking_bit_band,id=169159,bonus_id=3536/4786/1522,enchant=accord_of_mastery
 trinket1=vitacharged_titanshard,id=174500,bonus_id=4824/1517
 trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=shard_of_the_black_empire,id=172227,bonus_id=4824/1517,enchant=quick_navigation
 off_hand=shard_of_the_black_empire,id=172227,bonus_id=4824/1517,enchant=masterful_navigation
 
 # Gear Summary
-# gear_ilvl=479.88
+# gear_ilvl=478.00
 # gear_agility=9690
-# gear_stamina=19958
-# gear_crit_rating=1015
-# gear_haste_rating=1393
-# gear_mastery_rating=1581
-# gear_versatility_rating=484
+# gear_stamina=19703
+# gear_crit_rating=1171
+# gear_haste_rating=1756
+# gear_mastery_rating=1375
+# gear_versatility_rating=119
 # gear_corruption=95
 # gear_corruption_resistance=50
 # gear_armor=3883
