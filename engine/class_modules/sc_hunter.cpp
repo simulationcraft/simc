@@ -5592,13 +5592,14 @@ void hunter_t::apl_surv()
   default_list -> add_action( "call_action_list,name=apwfi,if=active_enemies<3&talent.alpha_predator.enabled&talent.wildfire_infusion.enabled" );
   default_list -> add_action( "call_action_list,name=wfi,if=active_enemies<3&!talent.alpha_predator.enabled&talent.wildfire_infusion.enabled" );
   default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1&!talent.birds_of_prey.enabled|active_enemies>2" );
-  // Basic charge handling for Rank 3 Crucible of Flame (cast on open globals and when chargecapping)
+  
+  // Fillers, cast if nothing else is available.
   default_list -> add_action( "concentrated_flame" );
-  // Arcane torrent if nothing else is available
   default_list -> add_action( "arcane_torrent" );
+  default_list -> add_action( "bag_of_tricks" );
 
   for ( std::string racial : { "blood_fury", "ancestral_call", "fireblood" } )
-    cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
+  cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
   cds -> add_action( "lights_judgment" );
   cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13");
   cds -> add_action( "potion,if=buff.guardian_of_azeroth.up&(buff.berserking.up|buff.blood_fury.up|!race.troll)|(consumable.potion_of_unbridled_fury&target.time_to_die<61|target.time_to_die<26)|!essence.condensed_lifeforce.major&buff.coordinated_assault.up" );
