@@ -4144,7 +4144,7 @@ Effects          :
 
 Name             : Holy Paladin (id=137029) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin, Death Knight
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -6264,7 +6264,7 @@ Description      : Summons a Mindbender to attack the target for $d.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -7850,7 +7850,7 @@ Description      : $@spelldesc152277
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
@@ -7999,7 +7999,7 @@ Description      : $@spelldesc253593
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Triggered by     : Activating Specialization (200749)
@@ -11455,7 +11455,7 @@ Description      : Your secondary stats are all increased by $s1 while your Corr
 
 Name             : Veteran of the Fourth War (id=319278) [Spell Family (15), Passive] 
 Class            : Death Knight
-Race             : Dark Iron Dwarf, Mag'har Orc, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xff007800)
+Race             : Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xff007800)
 School           : Physical
 Spell Type       : None
 Spell Level      : 55
