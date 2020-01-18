@@ -5170,6 +5170,30 @@ void sphere_of_suppression( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+
+struct resolute_courage_t : public stat_buff_t
+{
+  resolute_courage_t( player_t* p ) :
+    stat_buff_t( p, "resolute_courage" )
+  {
+    add_stat( STAT_CORRUPTION_RESISTANCE, 10 );
+  }
+};
+
+void register_essence_corruption_resistance( special_effect_t& effect )
+{
+  // Corruption resistance from essence
+  buff_t* buff = buff_t::find( effect.player, "resolute_courage" );
+  if ( ! buff )
+  {
+    buff = make_buff<resolute_courage_t>( effect.player );
+    // this needs to happen on arise which is before snapshot stats
+    effect.player->callbacks_on_arise.emplace_back( [ buff ] {
+      buff -> trigger();
+    });
+  }
+}
+
 // Breath of the Dying
 // Minor: Lethal Strikes
 // id=310712 R1 minor base, driver
@@ -5226,6 +5250,8 @@ void breath_of_the_dying( special_effect_t& effect )
   effect.type           = SPECIAL_EFFECT_EQUIP;
   effect.execute_action = action;
   effect.ppm_           = -2.0; // RPPM of 10 hasted in spell data seems to be the buffed rppm, assuming base is 2
+
+  register_essence_corruption_resistance( effect );
 
   new lethal_strikes_cb_t( effect, essence );
 }
@@ -5342,6 +5368,8 @@ void spark_of_inspiration( special_effect_t& effect )
     effect.ppm_ = -essence.spell_ref( 2u, essence_type::MINOR ).real_ppm();
     effect.rppm_scale_ = effect.player->dbc.real_ppm_scale( essence.spell_ref( 2u, essence_type::MINOR ).id() );
   }
+
+  register_essence_corruption_resistance( effect );
 
   new unified_strength_cb_t( effect, essence, buff );
 }
