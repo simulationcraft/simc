@@ -8739,18 +8739,17 @@ void druid_t::apl_balance()
   default_list->add_talent( this, "Fury of Elune", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&solar_wrath.ap_check" );
   // Spenders
   default_list->add_action("cancel_buff,name=starlord,if=buff.starlord.remains<3&!solar_wrath.ap_check", "Spenders");
-  default_list->add_action(this, "Starfall", "if="
-                                    "(buff.starlord.stack<3|buff.starlord.remains>=8)"
-                                    "&spell_targets>=variable.sf_targets"
-                                    "&(target.time_to_die+1)*spell_targets>cost%2.5" );
-  default_list->add_action( this, "Starsurge", "if="
-                                      "(talent.starlord.enabled&(buff.starlord.stack<3|buff.starlord.remains>=5&buff.arcanic_pulsar.stack<8)"
-                                      "|!talent.starlord.enabled&(buff.arcanic_pulsar.stack<8|buff.ca_inc.up))"
-                                    "&spell_targets.starfall<variable.sf_targets"
-                                    "&buff.lunar_empowerment.stack+buff.solar_empowerment.stack<4&buff.solar_empowerment.stack<3&buff.lunar_empowerment.stack<3"
-                                    "&(!variable.az_ss|!buff.ca_inc.up|!prev.starsurge)"
-                                    "|target.time_to_die<=execute_time*astral_power%40|!solar_wrath.ap_check" );
-  // DoTs - for ttd calculations see https://docs.google.com/spreadsheets/d/16NyCGvWcXXwERuiSNlVhdD347jA5iWh-ELs33GtW1XQ/
+  default_list->add_action( this, "Starfall",
+                            "if=(!solar_wrath.ap_check|(buff.starlord.stack<3|buff.starlord.remains>=8)&(target.1.time_"
+                            "to_die+1)*spell_targets>cost%2.5)&spell_targets>=variable.sf_targets" );
+  default_list->add_action(
+      this, "Starsurge",
+      "if=((talent.starlord.enabled&(buff.starlord.stack<3|buff.starlord.remains>=5&buff.arcanic_pulsar.stack<8)|!"
+      "talent.starlord.enabled&(buff.arcanic_pulsar.stack<8|buff.ca_inc.up))&buff.solar_empowerment.stack<3&buff.lunar_"
+      "empowerment.stack<3&buff.reckless_force_counter.stack<19|buff.reckless_force.up)&spell_targets.starfall<"
+      "variable.sf_targets&(!variable.az_ss|!buff.ca_inc.up|!prev.starsurge)|target.1.time_to_die<=execute_time*astral_"
+      "power%40|!solar_wrath.ap_check" );
+  // DoTs - for ttd calculations see https://docs.google.com/spreadsheets/d/16NyCGvWcXXwERuiSNlVhdD347jA5iWh-ELs33GtW1XQ/ (needs slight update)
   default_list->add_action(this, "Sunfire", "if=buff.ca_inc.up&buff.ca_inc.remains<gcd.max&variable.az_ss&dot.moonfire.remains>remains" );
   default_list->add_action(this, "Moonfire", "if=buff.ca_inc.up&buff.ca_inc.remains<gcd.max&variable.az_ss" );
   default_list->add_action(this, "Sunfire", "target_if=refreshable,if=ap_check"
