@@ -6828,11 +6828,11 @@ void corruption::twisted_appendage( special_effect_t& effect )
   };
 
   // TODO: Fix abusing this action as a global variable
-  auto mind_flay = static_cast<mind_flay_t*>( effect.player->find_action( "mind_flay" ) );
+  auto mind_flay = static_cast<mind_flay_t*>( effect.player->find_action( "pet_mind_flay" ) );
 
   if ( !mind_flay )
   {
-    mind_flay       = static_cast<mind_flay_t*>( create_proc_action<mind_flay_t>( "mind_flay", effect, effect.player,
+    mind_flay       = static_cast<mind_flay_t*>( create_proc_action<mind_flay_t>( "pet_mind_flay", effect, effect.player,
                                                                             effect.driver()->effectN( 2 ).percent() ) );
     effect.spell_id = 316815;
     new twisted_appendage_cb_t( effect, mind_flay );
