@@ -5918,8 +5918,12 @@ void set_bonus::titanic_empowerment( special_effect_t& effect )
   effect.custom_buff = buff_t::find( effect.player, "titanic_empowerment" );
   if ( !effect.custom_buff )
   {
-    effect.custom_buff =
-        make_buff<stat_buff_t>( effect.player, "titanic_empowerment", effect.player->find_spell( 315858 ) );
+    auto buff = make_buff<stat_buff_t>( effect.player, "titanic_empowerment", effect.player->find_spell( 315858 ) );
+    // The set bonus uses item scaling for some reason. Player level is used as the item level.
+    const auto& budget = effect.player->dbc.random_property( std::min( effect.player->level(), as<int>( effect.driver()->max_scaling_level() ) ) );
+    double value = budget.p_epic[ 0 ] * effect.driver()->effectN( 1 ).m_coefficient();
+    buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), value );
+    effect.custom_buff = buff;
   }
   new dbc_proc_callback_t( effect.player, effect );
 }
