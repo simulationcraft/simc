@@ -14,9 +14,9 @@ T25_Demon_Hunter_Havoc.simc
 # T25_Druid_Restoration.simc
 # T25_Druid_Guardian.simc
 
-# T25_Hunter_Beast_Mastery.simc
-# T25_Hunter_Marksmanship.simc
-# T25_Hunter_Survival.simc
+T25_Hunter_Beast_Mastery.simc
+T25_Hunter_Marksmanship.simc
+T25_Hunter_Survival.simc
 
 T25_Mage_Fire.simc
 T25_Mage_Frost.simc

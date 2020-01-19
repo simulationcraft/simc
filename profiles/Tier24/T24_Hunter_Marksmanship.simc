@@ -55,6 +55,7 @@ actions.cds+=/blood_fury,if=buff.trueshot.up&(target.time_to_die>cooldown.blood_
 actions.cds+=/ancestral_call,if=buff.trueshot.up&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16
 actions.cds+=/fireblood,if=buff.trueshot.up&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9
 actions.cds+=/lights_judgment
+actions.cds+=/bag_of_tricks
 actions.cds+=/reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30
 actions.cds+=/worldvein_resonance,if=(trinket.azsharas_font_of_power.cooldown.remains>20|!equipped.azsharas_font_of_power)&(cooldown.trueshot.remains_guess<5|essence.spark_of_inspiration.enabled&cooldown.trueshot.remains_guess>45)|target.time_to_die<20
 actions.cds+=/guardian_of_azeroth,if=(ca_execute|target.time_to_die>cooldown.guardian_of_azeroth.duration+duration)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<31

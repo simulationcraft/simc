@@ -1,11 +1,12 @@
-hunter="T22_Hunter_Survival"
+hunter="T25_Hunter_Survival"
 source=default
 spec=survival
 level=120
-race=troll
+race=gnome
 role=attack
 position=back
 talents=1101021
+azerite_essences=27:3/4:3/5:3/35:3
 
 # Default consumables
 potion=unbridled_fury
@@ -163,28 +164,30 @@ actions.wfi+=/raptor_strike
 actions.wfi+=/serpent_sting,if=buff.vipers_venom.up
 actions.wfi+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel
 
-head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=483/30/44/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=flamesterilized_spaulders,id=160632,bonus_id=4824/1507/4786/4775,azerite_powers=371/31/15/13
-back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=chainvest_of_assured_quality,id=160627,bonus_id=4824/1507/4775,azerite_powers=372/22/469/13
-wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
-hands=oblivion_crushers,id=160721,bonus_id=4800/1507
-waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507
-legs=blighted_anima_greaves,id=160716,bonus_id=4800/1507
-feet=fused_monstrosity_stompers,id=160628,bonus_id=4800/1507
-finger1=seal_of_questionable_loyalties,id=158314,bonus_id=1542/4779,enchant=pact_of_haste
-finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
-trinket1=galecallers_boon,id=159614,bonus_id=1542/4779
-trinket2=construct_overcharger,id=160652,bonus_id=4800/1507
-main_hand=voidbinder,id=160688,bonus_id=4800/1507,enchant=quick_navigation
+head=helm_of_actualized_visions,id=174151,bonus_id=4824/1517/4775,azerite_powers=371/582/30/15/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+shoulders=dreamers_unblinking_pauldrons,id=174149,bonus_id=4824/1517/4775,azerite_powers=371/582/30/44/13
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+chest=last_vestige_of_neltharion,id=174147,bonus_id=4824/1517/4775,azerite_powers=163/372/30/14/13
+wrists=nightmarish_chain_shackles,id=174154,bonus_id=4824/1517
+hands=ebony_scaled_gauntlets,id=174153,bonus_id=4824/1517
+waist=chainlink_belt_of_ill_omens,id=174156,bonus_id=4824/1517
+legs=spinebarb_legplates,id=174159,bonus_id=4824/1517
+feet=greaves_of_the_twilight_drake,id=174160,bonus_id=4824/1517
+finger1=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517/6554,enchant=accord_of_haste
+finger2=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517/6573,enchant=accord_of_haste
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+main_hand=qwor_nlyeth,id=174106,bonus_id=4824/1517/6448,enchant_id=quick_navigation
 
 # Gear Summary
-# gear_ilvl=384.27
-# gear_agility=4346
-# gear_stamina=7161
-# gear_crit_rating=947
-# gear_haste_rating=1330
-# gear_mastery_rating=356
-# gear_versatility_rating=351
-# gear_armor=2757
+# gear_ilvl=476.87
+# gear_agility=9708
+# gear_stamina=20021
+# gear_crit_rating=1144
+# gear_haste_rating=1756
+# gear_mastery_rating=765
+# gear_versatility_rating=769
+# gear_corruption=890
+# gear_corruption_resistance=50
+# gear_armor=5601

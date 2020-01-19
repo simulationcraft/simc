@@ -48,6 +48,7 @@ actions+=/call_action_list,name=wfi,if=active_enemies<3&!talent.alpha_predator.e
 actions+=/call_action_list,name=cleave,if=active_enemies>1&!talent.birds_of_prey.enabled|active_enemies>2
 actions+=/concentrated_flame
 actions+=/arcane_torrent
+actions+=/bag_of_tricks
 
 actions.apst=mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
 actions.apst+=/raptor_strike,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
