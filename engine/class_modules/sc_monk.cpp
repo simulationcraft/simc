@@ -9870,7 +9870,7 @@ void monk_t::apl_combat_windwalker()
 
   // Essences
   cd->add_action( "blood_of_the_enemy,if=dot.touch_of_death.remains|target.time_to_die<12" );
-  cd->add_action( "use_items,if=equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains<=20|!equipped.cyclotronic_blast" );
+  cd->add_action( "use_items,if=equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains>=20|!equipped.cyclotronic_blast" );
   cd->add_action( ancestral_call, "Use Ancestral Call during Touch of Death" );
   cd->add_action( fireblood, "Use Fireblood during Touch of Death" );
   cd->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&(cooldown.concentrated_flame.remains<=cooldown.touch_of_death.remains&(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains)&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&buff.storm_earth_and_fire.down|dot.touch_of_death.remains)|target.time_to_die<8" );
