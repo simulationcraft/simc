@@ -5624,7 +5624,6 @@ void hunter_t::apl_surv()
   st -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
   st -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
   st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)|time_to_die<18&!dot.wildfire_bomb.ticking" );
-  st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.stack>5&!cooldown.coordinated_assault.remains" );
   st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|dot.serpent_sting.refreshable&!buff.coordinated_assault.up" );
   st -> add_talent( this, "A Murder of Crows", "if=!buff.coordinated_assault.up" );
   st -> add_action( this, "Coordinated Assault", "if=!buff.coordinated_assault.up" );
