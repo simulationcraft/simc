@@ -10,7 +10,7 @@ talents=3101022
 # Default consumables
 potion=unbridled_fury
 flask=greater_flask_of_the_currents
-food=mechdowels_big_mech
+food=baked_port_tato
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -134,7 +134,6 @@ actions.st+=/mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assa
 actions.st+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
 actions.st+=/steel_trap,if=focus+cast_regen<focus.max
 actions.st+=/wildfire_bomb,if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)|time_to_die<18&!dot.wildfire_bomb.ticking
-actions.st+=/mongoose_bite,if=buff.mongoose_fury.stack>5&!cooldown.coordinated_assault.remains
 actions.st+=/serpent_sting,if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|dot.serpent_sting.refreshable&!buff.coordinated_assault.up
 actions.st+=/a_murder_of_crows,if=!buff.coordinated_assault.up
 actions.st+=/coordinated_assault,if=!buff.coordinated_assault.up
