@@ -37,11 +37,11 @@ talents=3302032
 default_pet=felguard
 azerite_essences=14:3:1/35:3:0/5:3:0/32:3:0
 
-head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4775/6465,azerite_powers=429/231/31
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630/6465,azerite_level=80
-shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4775/6465,azerite_powers=429/231/30
-back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286/6465
-chest=robes_of_unreality,id=174119,bonus_id=4824/1517/4775/6465,azerite_powers=231/582/31
+head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4775,azerite_powers=429/231/31
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4775,azerite_powers=429/231/30
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+chest=robes_of_unreality,id=174119,bonus_id=4824/1517/4775,azerite_powers=231/582/31
 wrists=voiddrenched_wristwraps,id=174122,bonus_id=4824/1517
 hands=grips_of_occult_reminiscence,id=174130,bonus_id=4824/1517
 waist=manainfused_sash,id=174124,bonus_id=4824/1517
@@ -66,11 +66,11 @@ talents=2103023
 default_pet=imp
 azerite_essences=14:3:1/35:3:0/5:3:0/32:3:0
 
-head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4775/6465,azerite_powers=444/582/31
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630/6465,azerite_level=80
-shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4775/6465,azerite_powers=432/582/30
-back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286/6465
-chest=robe_of_the_fallen_keeper,id=174115,bonus_id=4824/1517/4775/6465,azerite_powers=131/582/459
+head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4775,azerite_powers=444/582/31
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4775,azerite_powers=432/582/30
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+chest=robe_of_the_fallen_keeper,id=174115,bonus_id=4824/1517/4775,azerite_powers=131/582/459
 wrists=cuffs_of_grim_conjuration,id=174129,bonus_id=4824/1517
 hands=emberscale_gloves,id=174125,bonus_id=4824/1517
 waist=manainfused_sash,id=174124,bonus_id=4824/1517
