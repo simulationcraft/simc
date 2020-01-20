@@ -279,6 +279,7 @@ public:
   bool raptor_glyph;
   double proc_chance_enh_memory_of_lucid_dreams;
   double proc_chance_ele_memory_of_lucid_dreams;
+  double proc_chance_resto_memory_of_lucid_dreams;
 
   // helper variables for vision of perfection + echo of the elementals synergie
   bool vision_of_perfection_proced_pet;
@@ -636,6 +637,7 @@ public:
       raptor_glyph( false ),
       proc_chance_enh_memory_of_lucid_dreams( 0.15 ),
       proc_chance_ele_memory_of_lucid_dreams( 0.15 ),
+      proc_chance_resto_memory_of_lucid_dreams( 0.15 ),
       vision_of_perfection_proced_pet( false ),
       vision_of_perfection_proc_during_uptime( 0 ),
       action(),
@@ -6918,6 +6920,8 @@ void shaman_t::create_options()
   add_option( opt_bool( "raptor_glyph", raptor_glyph ) );
   add_option( opt_float( "proc_chance_ele_memory_of_lucid_dreams", proc_chance_ele_memory_of_lucid_dreams, 0.0, 1.0 ) );
   add_option( opt_float( "proc_chance_enh_memory_of_lucid_dreams", proc_chance_enh_memory_of_lucid_dreams, 0.0, 1.0 ) );
+  add_option(
+      opt_float( "proc_chance_resto_memory_of_lucid_dreams", proc_chance_resto_memory_of_lucid_dreams, 0.0, 1.0 ) );
 }
 
 // shaman_t::copy_from =====================================================
@@ -7582,13 +7586,15 @@ void shaman_t::trigger_memory_of_lucid_dreams( double cost )
     return;
   }
 
-  if ( specialization() == SHAMAN_RESTORATION || specialization() == SPEC_NONE )
+  if ( specialization() == SPEC_NONE )
   {
     return;
   }
 
-  if ( !rng().roll( specialization() == SHAMAN_ELEMENTAL ? proc_chance_ele_memory_of_lucid_dreams
-                                                         : proc_chance_enh_memory_of_lucid_dreams ) )
+  if ( !rng().roll( specialization() == SHAMAN_ELEMENTAL
+                        ? proc_chance_ele_memory_of_lucid_dreams
+                        : specialization() == SHAMAN_ENHANCEMENT ? proc_chance_enh_memory_of_lucid_dreams
+                                                                 : proc_chance_resto_memory_of_lucid_dreams ) )
   {
     return;
   }
@@ -8916,7 +8922,8 @@ double shaman_t::resource_loss( resource_e resource_type, double amount, gain_t*
 {
   auto actual_loss = player_t::resource_loss( resource_type, amount, g, a );
 
-  if ( resource_type == RESOURCE_MAELSTROM )
+  if ( ( specialization() == SHAMAN_RESTORATION && resource_type == RESOURCE_MANA ) ||
+       resource_type == RESOURCE_MAELSTROM )
   {
     trigger_memory_of_lucid_dreams( actual_loss );
   }
