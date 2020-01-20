@@ -118,11 +118,11 @@ actions.finish+=/dispatch
 # Stealth
 actions.stealth=ambush
 
-head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=411/129/30/13
+head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=411/582/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulders=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517/4775,azerite_powers=411/129/21/13
+shoulders=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517/4775,azerite_powers=411/582/21/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=180/129/31/13
+chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=180/582/31/13
 wrists=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517/6551
 hands=chitinspine_gloves,id=174137,bonus_id=4824/1517/6550
 waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517

@@ -156,11 +156,11 @@ actions.stealthed+=/garrote,target_if=min:remains,if=talent.subterfuge.enabled&a
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend
 
-head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=136/249/30/13
+head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=136/582/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=gorak_tuls_mantle,id=159339,bonus_id=1647/4819/4775,azerite_powers=136/193/30/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=cephalohide_jacket,id=159314,bonus_id=1647/4819/4775,azerite_powers=136/181/30/13
+chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=181/582/21/13
 wrists=wristwraps_of_volatile_power,id=174145,bonus_id=4824/1517/6554
 hands=gloves_of_abyssal_authority,id=174146,bonus_id=4824/1517/6552
 waist=cord_of_anguished_cries,id=174140,bonus_id=4824/1517
@@ -174,13 +174,13 @@ main_hand=shard_of_the_black_empire,id=172227,bonus_id=4824/1517,enchant=quick_n
 off_hand=shard_of_the_black_empire,id=172227,bonus_id=4824/1517,enchant=masterful_navigation
 
 # Gear Summary
-# gear_ilvl=477.38
-# gear_agility=9542
-# gear_stamina=19350
+# gear_ilvl=478.00
+# gear_agility=9690
+# gear_stamina=19703
 # gear_crit_rating=1171
 # gear_haste_rating=1756
 # gear_mastery_rating=1375
 # gear_versatility_rating=119
 # gear_corruption=95
 # gear_corruption_resistance=50
-# gear_armor=3829
+# gear_armor=3883

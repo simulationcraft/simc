@@ -76,7 +76,7 @@ actions.cd+=/bag_of_tricks
 actions.cd+=/call_action_list,name=tod
 actions.cd+=/storm_earth_and_fire,,if=cooldown.storm_earth_and_fire.charges=2|(!essence.worldvein_resonance.major|(buff.worldvein_resonance.up|cooldown.worldvein_resonance.remains>cooldown.storm_earth_and_fire.full_recharge_time))&(cooldown.touch_of_death.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.touch_of_death.remains>target.time_to_die)&cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=13|dot.touch_of_death.remains|target.time_to_die<20
 actions.cd+=/blood_of_the_enemy,if=dot.touch_of_death.remains|target.time_to_die<12
-actions.cd+=/use_items,if=equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains<=20|!equipped.cyclotronic_blast
+actions.cd+=/use_items,if=equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains>=20|!equipped.cyclotronic_blast
 # Use Ancestral Call during Touch of Death
 actions.cd+=/ancestral_call,if=dot.touch_of_death.remains|target.time_to_die<16
 # Use Fireblood during Touch of Death
