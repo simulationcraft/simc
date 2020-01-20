@@ -7712,7 +7712,7 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( "lights_judgment,if=buff.pillar_of_frost.up" );
   cooldowns -> add_action( "ancestral_call,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up" );
   cooldowns -> add_action( "fireblood,if=buff.pillar_of_frost.remains<=8&buff.empower_rune_weapon.up" );
-  cooldowns -> add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)|buff.seething_rage.up" );
+  cooldowns -> add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)&active_enemies=1|buff.seething_rage.up&active_enemies=1" );
 
   // Pillar of Frost
   cooldowns -> add_action( this, "Pillar of Frost", "if=cooldown.empower_rune_weapon.remains|talent.icecap.enabled", "Frost cooldowns" );
@@ -7849,7 +7849,7 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "ancestral_call,if=(pet.gargoyle.active&talent.summon_gargoyle.enabled)|pet.apoc_ghoul.active" );
   def -> add_action( "arcane_pulse,if=active_enemies>=2|(rune.deficit>=5&runic_power.deficit>=60)" );
   def -> add_action( "fireblood,if=(pet.gargoyle.active&talent.summon_gargoyle.enabled)|pet.apoc_ghoul.active" );
-  def -> add_action( "bag_of_tricks,if=buff.unholy_strength.up|buff.festermight.remains<gcd" );
+  def -> add_action( "bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1|buff.festermight.remains<gcd&active_enemies=1" );
   def -> add_action( "use_items,if=time>20|!equipped.ramping_amplitude_gigavolt_engine|!equipped.vision_of_demise", "Custom trinkets usage" );
   def -> add_action( "use_item,name=azsharas_font_of_power,if=(essence.vision_of_perfection.enabled&!talent.unholy_frenzy.enabled)|(!essence.condensed_lifeforce.major&!essence.vision_of_perfection.enabled)" );
   def -> add_action( "use_item,name=azsharas_font_of_power,if=cooldown.apocalypse.remains<14&(essence.condensed_lifeforce.major|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled)" );
