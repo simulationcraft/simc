@@ -8040,6 +8040,7 @@ struct bag_of_tricks_t : public racial_spell_t
     }
 
     may_crit = true;
+    gcd_type = gcd_haste_type::NONE;
 
     if ( p->vulpera_tricks == player_t::CORROSIVE )
     {
