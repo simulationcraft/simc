@@ -4,7 +4,7 @@ level=120
 race=troll
 role=attack
 position=back
-talents=2203031
+talents=2203032
 
 azerite_essences=22:4:1/27:4:0/35:4:0/5:4:0
 
@@ -13,11 +13,11 @@ neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=pauldrons_of_infinite_darkness,id=174166,bonus_id=1517/4824,azerite_powers=199/109/31/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=desert_guardians_breastplate,id=159424,bonus_id=1647,azerite_powers=109/199/18/13
-wrists=dragonbone_vambraces,id=174170,bonus_id=4824/1517/6475/6465
-hands=mirage-weavers_gauntlets,id=174178,bonus_id=4824/1517/6476/6465
-waist=welloiled_plate_girdle,id=169057,bonus_id=4824/1522/6476/6465
-legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517/6476/6465
-feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517/6476/6462
+wrists=dragonbone_vambraces,id=174170,bonus_id=4824/1517/6552
+hands=mirage-weavers_gauntlets,id=174178,bonus_id=4824/1517/6554
+waist=welloiled_plate_girdle,id=169057,bonus_id=4824/1522
+legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517
+feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517
 finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_haste
 finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_haste
 trinket1=void-twisted_titanshard,id=174528,bonus_id=4824/1517
@@ -27,7 +27,7 @@ main_hand=devastations_hour,id=172187,bonus_id=4824/1517,enchant=rune_of_the_fal
 save=T25_Death_Knight_Unholy.simc
 
 
-deathknight="T25_Death_Knight_Frost"
+deathknight="T25_Death_Knight_Frost_Icecap"
 spec=frost
 level=120
 race=human
@@ -42,11 +42,11 @@ neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulder=writhing_spaulders_of_madness,id=174165,bonus_id=1517/4824,azerite_powers=108/582/459/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=breastplate_of_twilight_decimation,id=174164,bonus_id=1517/4824,azerite_powers=108/582/459/13
-wrists=bracers_of_phantom_pains,id=174177,bonus_id=4824/1517/6482/6465
-hands=mirage-weavers_gauntlets,id=174178,bonus_id=4824/1517/6482/6465
-waist=dark_crystalline_girdle,id=174171,bonus_id=4824/1517/6482/6465
-legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517/6482/6465
-feet=sabatons_of_malevolent_intent,id=174176,bonus_id=4824/1517/6481/6462
+wrists=bracers_of_phantom_pains,id=174177,bonus_id=4824/1517/6554
+hands=mirage-weavers_gauntlets,id=174178,bonus_id=4824/1517/6552
+waist=dark_crystalline_girdle,id=174171,bonus_id=4824/1517
+legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517
+feet=sabatons_of_malevolent_intent,id=174176,bonus_id=4824/1517
 finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_critical_strike
 finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_critical_strike
 trinket1=void-twisted_titanshard,id=174528,bonus_id=4824/1517
@@ -54,10 +54,10 @@ trinket2=vita-charged_titanshard,id=174500,bonus_id=4824/1517
 main_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_razorice
 off_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_the_fallen_crusader
 
-save=T25_Death_Knight_Frost.simc
+save=T25_Death_Knight_Frost_Icecap.simc
 
 
-deathknight="T25_Death_Knight_Frost_BoS"
+deathknight="T25_Death_Knight_Frost"
 spec=frost
 level=120
 race=blood_elf
@@ -72,11 +72,11 @@ neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulder=writhing_spaulders_of_madness,id=174165,bonus_id=1517/4824,azerite_powers=108/582/459/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=breastplate_of_twilight_decimation,id=174164,bonus_id=1517/4824,azerite_powers=108/582/459/13
-wrists=bracers_of_phantom_pains,id=174177,bonus_id=4824/1517/6473/6465
-hands=gauntlets_of_foul_inquisition,id=174169,bonus_id=4824/1517/6473/6465
-waist=belt_of_muttering_truths,id=174174,bonus_id=4824/1517/6473/6465
-legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517/6473/6465
-feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517/6472/6462
+wrists=bracers_of_phantom_pains,id=174177,bonus_id=4824/1517/6554
+hands=gauntlets_of_foul_inquisition,id=174169,bonus_id=4824/1517/6552
+waist=belt_of_muttering_truths,id=174174,bonus_id=4824/1517
+legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517
+feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517
 finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_mastery
 finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_mastery
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
@@ -84,7 +84,7 @@ trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 main_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_razorice
 off_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_the_fallen_crusader
 
-save=T25_Death_Knight_Frost_BoS.simc
+save=T25_Death_Knight_Frost.simc
 
 
 
