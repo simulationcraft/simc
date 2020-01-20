@@ -6588,7 +6588,7 @@ void corruption::gushing_wound( special_effect_t& effect )
     double ap_sp_mod;
 
     gushing_wound_t( const special_effect_t& effect )
-      : proc_spell_t( "gushing_wound", effect.player, effect.player->find_spell( 318187 ) ),
+      : proc_spell_t( "gushing_wound_corruption", effect.player, effect.player->find_spell( 318187 ) ),
         ap_sp_mod( effect.player->find_spell( 318187 )->effectN( 2 ).percent() )
     {
       spell_power_mod.tick = attack_power_mod.tick = ap_sp_mod;
@@ -6615,10 +6615,10 @@ void corruption::gushing_wound( special_effect_t& effect )
     }
   };
 
-  auto gushing_wound = static_cast<gushing_wound_t*>( effect.player->find_action( "gushing_wound" ) );
+  auto gushing_wound = static_cast<gushing_wound_t*>( effect.player->find_action( "gushing_wound_corruption" ) );
 
   if ( !gushing_wound )
-    effect.execute_action = create_proc_action<gushing_wound_t>( "gushing_wound", effect );
+    effect.execute_action = create_proc_action<gushing_wound_t>( "gushing_wound_corruption", effect );
   else
     gushing_wound->ap_sp_mod += effect.player->find_spell( 318187 )->effectN( 2 ).percent();
 
