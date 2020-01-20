@@ -6,7 +6,7 @@ role=spell
 position=ranged_back
 talents=3302023
 default_pet=imp
-azerite_essences=12:3/5:3/32:3/35:3
+azerite_essences=14:3/5:3/32:3/35:3
 
 head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4775,azerite_powers=123/230/31
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
@@ -64,7 +64,7 @@ role=spell
 position=ranged_back
 talents=2103023
 default_pet=imp
-azerite_essences=14:3:1/35:3:0/5:3:0/32:3:0
+azerite_essences=27:3:1/22:3:0/35:3:0/5:3:0
 
 head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4775,azerite_powers=444/582/31
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80

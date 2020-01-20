@@ -6,7 +6,7 @@ race=troll
 role=spell
 position=ranged_back
 talents=2103023
-azerite_essences=14:3:1/35:3:0/5:3:0/32:3:0
+azerite_essences=27:3:1/22:3:0/35:3:0/5:3:0
 
 # Default consumables
 potion=unbridled_fury
