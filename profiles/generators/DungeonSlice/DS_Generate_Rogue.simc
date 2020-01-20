@@ -12,7 +12,7 @@ head=cowl_of_fluid_machinations,id=159302,bonus_id=1647/4819,azerite_powers=407/
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulder=gorak_tuls_mantle,id=159339,bonus_id=1647/4819,azerite_powers=408/193/30/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=408/249/30/13
+chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=408/582/30/13
 wrists=wristwraps_of_volatile_power,id=174145,bonus_id=4824/1517/6551
 hands=gloves_of_abyssal_authority,id=174146,bonus_id=4824/1517/6550
 waist=cord_of_anguished_cries,id=174140,bonus_id=4824/1517
@@ -38,11 +38,11 @@ talents=2020021
 
 azerite_essences=5:3:1/27:3:0/6:3:0/35:3:0
 
-head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=411/129/30/13
+head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=411/582/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulder=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517,azerite_powers=411/129/21/13
+shoulder=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517,azerite_powers=411/582/21/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=180/129/31/13
+chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=180/582/31/13
 wrists=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517/6551
 hands=chitinspine_gloves,id=174137,bonus_id=4824/1517/6550
 waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517
