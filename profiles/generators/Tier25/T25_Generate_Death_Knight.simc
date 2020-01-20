@@ -27,7 +27,7 @@ main_hand=devastations_hour,id=172187,bonus_id=4824/1517,enchant=rune_of_the_fal
 save=T25_Death_Knight_Unholy.simc
 
 
-deathknight="T25_Death_Knight_Frost_Icecap"
+deathknight="T25_Death_Knight_Frost"
 spec=frost
 level=120
 race=human
@@ -54,10 +54,10 @@ trinket2=vita-charged_titanshard,id=174500,bonus_id=4824/1517
 main_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_razorice
 off_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_the_fallen_crusader
 
-save=T25_Death_Knight_Frost_Icecap.simc
+save=T25_Death_Knight_Frost.simc
 
 
-deathknight="T25_Death_Knight_Frost"
+deathknight="T25_Death_Knight_Frost_BoS"
 spec=frost
 level=120
 race=blood_elf
@@ -84,7 +84,7 @@ trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 main_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_razorice
 off_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_the_fallen_crusader
 
-save=T25_Death_Knight_Frost.simc
+save=T25_Death_Knight_Frost_BoS.simc
 
 
 
