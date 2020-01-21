@@ -5199,6 +5199,7 @@ void demon_hunter_t::apl_vengeance()
   action_priority_list_t* apl_default = get_action_priority_list( "default" );
 
   apl_default->add_action( "auto_attack" );
+  // Only triggers if there is something to steal
   apl_default->add_action( this, "Consume Magic" );
   apl_default->add_action( "call_action_list,name=brand,if=talent.charred_flesh.enabled" );
   apl_default->add_action( "call_action_list,name=defensives" );
@@ -5207,7 +5208,6 @@ void demon_hunter_t::apl_vengeance()
 
   action_priority_list_t* apl_defensives = get_action_priority_list( "defensives", "Defensives" );
   apl_defensives->add_action( this, "Demon Spikes" );
-  // apl_defensives->add_talent( this, "Soul Barrier" );
   apl_defensives->add_action( this, "Metamorphosis" );
   apl_defensives->add_action( this, "Fiery Brand" );
 
@@ -5231,9 +5231,9 @@ void demon_hunter_t::apl_vengeance()
   apl_brand->add_action( this, "Sigil of Flame", "if=dot.fiery_brand.ticking" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal", "Normal Rotation" );
-  apl_normal->add_action( this, "Infernal Strike" );
-  apl_normal->add_talent( this, "Spirit Bomb", "if=soul_fragments>=4" );
-  apl_normal->add_action( this, "Soul Cleave", "if=!talent.spirit_bomb.enabled" );
+  apl_normal->add_action( this, "Infernal Strike" , "if=(!talent.flame_crash.enabled|(dot.sigil_of_flame.remains<3&!action.infernal_strike.sigil_placed))");
+  apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4)" );
+  apl_normal->add_action( this, "Soul Cleave", "if=(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4))" );
   apl_normal->add_action( this, "Soul Cleave", "if=talent.spirit_bomb.enabled&soul_fragments=0" );
   apl_normal->add_action( this, "Immolation Aura", "if=pain<=90" );
   apl_normal->add_talent( this, "Felblade", "if=pain<=70" );
