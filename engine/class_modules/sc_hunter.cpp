@@ -5487,21 +5487,21 @@ void hunter_t::apl_mm()
   precombat -> add_talent( this, "Hunter's Mark" );
   precombat -> add_talent( this, "Double Tap", "precast_time=10",
         "Precast this as early as possible to potentially gain another cast during the fight." );
+  precombat -> add_action( "use_item,name=azsharas_font_of_power" );
   precombat -> add_action( "worldvein_resonance" );
   precombat -> add_action( "guardian_of_azeroth" );
   precombat -> add_action( "memory_of_lucid_dreams" );
-  precombat -> add_action( "use_item,name=azsharas_font_of_power" );
   precombat -> add_action( this, "Trueshot", "precast_time=1.5,if=active_enemies>2" );
   precombat -> add_action( "potion,dynamic_prepot=1" );
   precombat -> add_action( this, "Aimed Shot", "if=active_enemies<3" );
 
   default_list -> add_action( "auto_shot" );
-  default_list -> add_action( special_use_item_action( "lurkers_insidious_gift", "if=cooldown.trueshot.remains_guess<15|target.time_to_die<30" ) );
-  default_list -> add_action( special_use_item_action( "azsharas_font_of_power", "if=cooldown.trueshot.remains<18|target.time_to_die<40" ) );
-  default_list -> add_action( special_use_item_action( "lustrous_golden_plumage", "if=cooldown.trueshot.remains_guess<5|target.time_to_die<20" ) );
-  default_list -> add_action( special_use_item_action( "galecallers_boon", "if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<10" ) );
-  default_list -> add_action( special_use_item_action( "ashvanes_razor_coral", "if=buff.trueshot.up&(buff.guardian_of_azeroth.up|!essence.condensed_lifeforce.major.rank3&ca_execute)|debuff.razor_coral_debuff.down|target.time_to_die<20" ) );
-  default_list -> add_action( "use_item,name=pocketsized_computation_device,if=!buff.trueshot.up&!essence.blood_of_the_enemy.major.rank3|debuff.blood_of_the_enemy.up|target.time_to_die<5" );
+  default_list -> add_action( "use_item,name=lurkers_insidious_gift,if=cooldown.trueshot.remains_guess<15|target.time_to_die<30" );
+  default_list -> add_action( "use_item,name=azsharas_font_of_power,if=(target.time_to_die>cooldown+34|target.health.pct<20|target.time_to_pct_20<15)&cooldown.trueshot.remains_guess<15|target.time_to_die<35" );
+  default_list -> add_action( "use_item,name=lustrous_golden_plumage,if=cooldown.trueshot.remains_guess<5|target.time_to_die<20" );
+  default_list -> add_action( "use_item,name=galecallers_boon,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<10" );
+  default_list -> add_action( "use_item,name=ashvanes_razor_coral,if=buff.trueshot.up&(buff.guardian_of_azeroth.up|!essence.condensed_lifeforce.major&target.health.pct<20)|debuff.razor_coral_debuff.down|target.time_to_die<20" );
+  default_list -> add_action( "use_item,name=pocketsized_computation_device,if=!buff.trueshot.up&!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up|target.time_to_die<5" );
   default_list -> add_action( "use_items,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<20",
 	  "Try to line up activated trinkets with Trueshot" );
   default_list -> add_action( "call_action_list,name=cds" );
@@ -5517,12 +5517,12 @@ void hunter_t::apl_mm()
   cds -> add_action( "lights_judgment" );
   cds -> add_action( "bag_of_tricks" );
   cds -> add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
-  cds -> add_action( "worldvein_resonance,if=(trinket.azsharas_font_of_power.cooldown.remains>20|!equipped.azsharas_font_of_power)&(cooldown.trueshot.remains_guess<5|essence.spark_of_inspiration.enabled&cooldown.trueshot.remains_guess>45)|target.time_to_die<20" );
-  cds -> add_action( "guardian_of_azeroth,if=(ca_execute|target.time_to_die>cooldown.guardian_of_azeroth.duration+duration)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<31" );
+  cds -> add_action( "worldvein_resonance,if=(trinket.azsharas_font_of_power.cooldown.remains>20|!equipped.azsharas_font_of_power|target.time_to_die<trinket.azsharas_font_of_power.cooldown.duration+34&target.health.pct>20)&(cooldown.trueshot.remains_guess<3|(essence.vision_of_perfection.minor&target.time_to_die>cooldown+buff.worldvein_resonance.duration))|target.time_to_die<20" );
+  cds -> add_action( "guardian_of_azeroth,if=(ca_execute|target.time_to_die>cooldown+30)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<31" );
   cds -> add_action( "ripple_in_space,if=cooldown.trueshot.remains<7" );
   cds -> add_action( "memory_of_lucid_dreams,if=!buff.trueshot.up" );
-  cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
-  cds -> add_action( this, "Trueshot", "if=focus>60&(buff.precise_shots.down&cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15" );
+  cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
+  cds -> add_action( this, "Trueshot", "if=focus>60&(buff.precise_shots.down&cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+buff.trueshot.duration|(target.health.pct<20|!talent.careful_aim.enabled)&(!equipped.azsharas_font_of_power|trinket.azsharas_font_of_power.cooldown.remains>15))|target.time_to_die<15" );
 
   st -> add_talent( this, "Explosive Shot" );
   st -> add_talent( this, "Barrage", "if=active_enemies>1" );
