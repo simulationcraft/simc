@@ -11,7 +11,7 @@ azerite_essences=12:3/32:3/4:3
 # Default consumables
 potion=potion_of_unbridled_fury
 flask=greater_flask_of_endless_fathoms
-food=mechdowels_big_mech
+food=baked_port_tato
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -27,25 +27,27 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
+actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/lava_burst
 
 # Executed every time the actor is available.
 actions=potion
 actions+=/wind_shear
 actions+=/spiritwalkers_grace,moving=1,if=movement.distance>6
+actions+=/flame_shock,target_if=(!ticking|dot.flame_shock.remains<=gcd)|refreshable
 actions+=/use_items
 actions+=/blood_fury
 actions+=/berserking
 actions+=/fireblood
 actions+=/ancestral_call
-actions+=/concentrated_flame
-actions+=/ripple_in_space
 actions+=/worldvein_resonance
-actions+=/flame_shock,target_if=(!ticking|dot.flame_shock.remains<=gcd)|refreshable
 actions+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
+actions+=/concentrated_flame,if=dot.concentrated_flame_burn.remains=0
+actions+=/ripple_in_space
 actions+=/earth_elemental
+actions+=/bag_of_tricks
 actions+=/lightning_bolt,if=spell_targets.chain_lightning<2
-actions+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
+actions+=/chain_lightning,if=spell_targets.chain_lightning>1
 actions+=/flame_shock,moving=1
 
 head=silivazs_skullguard,id=168357,bonus_id=4824/1517/4775,azerite_powers=457/575/31/85/13

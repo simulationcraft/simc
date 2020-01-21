@@ -162,11 +162,11 @@ actions.havoc+=/soul_fire
 actions.havoc+=/shadowburn,if=active_enemies<3|!talent.fire_and_brimstone.enabled
 actions.havoc+=/incinerate,if=cast_time<havoc_remains
 
-head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4775,azerite_powers=444/582/31
+head=visage_of_nightmarish_machinations,id=174118,bonus_id=4824/1517/4775,azerite_powers=444/582/31/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4775,azerite_powers=432/582/30
+shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4775,azerite_powers=432/582/30/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=robe_of_the_fallen_keeper,id=174115,bonus_id=4824/1517/4775,azerite_powers=131/582/459
+chest=robe_of_the_fallen_keeper,id=174115,bonus_id=4824/1517/4775,azerite_powers=131/582/459/13
 wrists=cuffs_of_grim_conjuration,id=174129,bonus_id=4824/1517
 hands=emberscale_gloves,id=174125,bonus_id=4824/1517
 waist=manainfused_sash,id=174124,bonus_id=4824/1517

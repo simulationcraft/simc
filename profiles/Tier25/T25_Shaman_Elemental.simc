@@ -203,24 +203,24 @@ chest=last_vestige_of_neltharion,id=174147,bonus_id=4824/1517/4775,azerite_power
 wrists=bracers_of_manifest_apathy,id=174161,bonus_id=4824/1517
 hands=egoannihilating_grips,id=174162,bonus_id=4824/1517
 waist=watchers_scheming_girdle,id=174158,bonus_id=4824/1517/6554
-legs=eldritch_cragscale_greaves,id=170443,bonus_id=1690,gem_id=168639
-feet=eldritch_cragscale_boots,id=170440,bonus_id=1690,gem_id=168639
-finger1=logic_loop_of_division,id=169157,ilevel=460,enchant=accord_of_versatility
-finger2=overclocking_bit_band,id=169159,ilevel=460,enchant=accord_of_versatility
-trinket1=psyche_shredder,id=174060,bonus_id=4824/1517,ilevel=475
+legs=spinebarb_legplates,id=174159,bonus_id=4824/1517
+feet=greaves_of_the_twilight_drake,id=174160,bonus_id=4824/1517
+finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_versatility
+finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_versatility
+trinket1=psyche_shredder,id=174060,bonus_id=4824/1517
 trinket2=forbidden_obsidian_claw,id=173944,bonus_id=4824/1517
 main_hand=vorzz_yoqal,id=172196,bonus_id=4824/1517/6541,enchant=machinists_brilliance
 off_hand=precipice_of_oblivion,id=172188,bonus_id=4824/1517
 
 # Gear Summary
-# gear_ilvl=478.00
+# gear_ilvl=479.25
 # gear_strength=380
-# gear_stamina=19680
-# gear_intellect=13223
-# gear_crit_rating=1636
-# gear_haste_rating=1307
-# gear_mastery_rating=635
-# gear_versatility_rating=667
+# gear_stamina=19890
+# gear_intellect=13284
+# gear_crit_rating=1290
+# gear_haste_rating=1302
+# gear_mastery_rating=637
+# gear_versatility_rating=943
 # gear_corruption=110
 # gear_corruption_resistance=50
-# gear_armor=9609
+# gear_armor=9664

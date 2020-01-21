@@ -1,13 +1,12 @@
-demonhunter="T24_Demon_Hunter_Vengeance"
+demonhunter="T25_Demon_Hunter_Vengeance"
 source=default
 spec=vengeance
 level=120
-race=night_elf
-timeofday=night
+race=blood_elf
 role=tank
 position=front
-talents=1213121
-azerite_essences=12:3:1/13:3:0/32:3:0
+talents=1213321
+azerite_essences=12:3:1/13:3:0/32:3:0/37:3:0
 
 # Default consumables
 potion=steelskin_potion
@@ -76,30 +75,31 @@ actions.normal+=/sigil_of_flame
 actions.normal+=/shear
 actions.normal+=/throw_glaive
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=1587/4820/4775,azerite_powers=13/85/101/160/221
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=pistoleers_spaulders,id=159331,bonus_id=1587/5440/4775,azerite_powers=13/85/20/246/160
-back=silverback_cloak,id=165513,bonus_id=4800/1537
-chest=spymasters_wrap,id=155860,bonus_id=1587/5440/4775,azerite_powers=13/202/20/160/221
-wrists=amethyststudded_bindings,id=165524,bonus_id=4800/1537
-hands=mechjockey_grips,id=165522,bonus_id=4800/1537
-waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
-legs=cranedancer_leggings,id=165521,bonus_id=4800/1537
-feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
-finger1=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=37haste
-finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=37haste
-trinket1=diamondlaced_refracting_prism,id=165573,bonus_id=4800/1537
-trinket2=bwonsamdis_bargain,id=165577,bonus_id=4800/1537
-main_hand=bloodtooth_the_soulfeaster,id=165591,bonus_id=4800/1537,enchant=quick_navigation
-off_hand=daelin_proudmoores_saber,id=165604,bonus_id=4800/1537,enchant=versatile_navigation
+head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=134/160/30/202/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+shoulders=gorak_tuls_mantle,id=159339,bonus_id=1647/4775,azerite_powers=134/246/21/202/13
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=134/160/22/85/13
+wrists=wristwraps_of_volatile_power,id=174145,bonus_id=4824/1517/6549
+hands=gloves_of_abyssal_authority,id=174146,bonus_id=4824/1517/6549
+waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517
+legs=onyximbued_breeches,id=174139,bonus_id=4824/1517
+feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517
+finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_haste
+finger2=voidetched_band,id=174531,bonus_id=4824/1517,enchant=accord_of_haste
+trinket1=sigil_of_warding,id=173940,bonus_id=4824/1517
+trinket2=humming_black_dragonscale,id=174044,bonus_id=4824/1517
+main_hand=mishun_blade_of_tyrants,id=174105,bonus_id=4824/1517,enchant=force_multiplier
+off_hand=mishun_blade_of_tyrants,id=174105,bonus_id=4824/1517,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=418.94
-# gear_agility=5925
-# gear_stamina=10190
-# gear_crit_rating=499
-# gear_haste_rating=1201
-# gear_mastery_rating=1169
-# gear_versatility_rating=629
-# gear_armor=2363
-# set_bonus=keepsakes_2pc=1
+# gear_ilvl=480.50
+# gear_agility=10516
+# gear_stamina=19792
+# gear_crit_rating=587
+# gear_haste_rating=1315
+# gear_mastery_rating=1375
+# gear_versatility_rating=945
+# gear_corruption=50
+# gear_corruption_resistance=50
+# gear_armor=3883

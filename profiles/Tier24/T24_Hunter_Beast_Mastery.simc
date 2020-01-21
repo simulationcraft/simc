@@ -117,7 +117,7 @@ finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1602,enchant=accord_of_cri
 finger2=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_critical_strike
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
-main_hand=shiver_venom_crossbow,id=168273,bonus_id=4800/1517,enchant_id=5950
+main_hand=shiver_venom_crossbow,id=168273,bonus_id=4800/1517,enchant=galeforce_striking
 
 # Gear Summary
 # gear_ilvl=440.87

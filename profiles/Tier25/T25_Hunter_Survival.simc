@@ -177,7 +177,7 @@ finger1=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517/6554,encha
 finger2=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517/6573,enchant=accord_of_haste
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
-main_hand=qwor_nlyeth,id=174106,bonus_id=4824/1517/6448,enchant_id=quick_navigation
+main_hand=qwor_nlyeth,id=174106,bonus_id=4824/1517/6448,enchant=quick_navigation
 
 # Gear Summary
 # gear_ilvl=476.87

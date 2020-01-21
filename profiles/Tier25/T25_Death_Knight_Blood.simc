@@ -73,8 +73,8 @@ neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=pauldrons_of_infinite_darkness,id=174166,bonus_id=1517/4824/4775,azerite_powers=349/582/31/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=breastplate_of_twilight_decimation,id=174164,bonus_id=1517/4824/4775,azerite_powers=243/582/459/13
-wrists=dragonbone_vambraces,id=174170,bonus_id=4824/1517/6550
-hands=mirageweavers_gauntlets,id=174178,bonus_id=4824/1517/6476
+wrists=dragonbone_vambraces,id=174170,bonus_id=4824/1517/6551
+hands=mirageweavers_gauntlets,id=174178,bonus_id=4824/1517/6550
 waist=dark_crystalline_girdle,id=174171,bonus_id=4824/1517
 legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517
 feet=sabatons_of_malevolent_intent,id=174176,bonus_id=4824/1517
@@ -92,6 +92,6 @@ main_hand=getiikku_cut_of_death,id=159644,bonus_id=1637,enchant=rune_of_the_fall
 # gear_haste_rating=1399
 # gear_mastery_rating=542
 # gear_versatility_rating=336
-# gear_corruption=35
+# gear_corruption=95
 # gear_corruption_resistance=50
 # gear_armor=8318

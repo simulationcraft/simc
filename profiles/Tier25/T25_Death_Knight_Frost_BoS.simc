@@ -121,7 +121,7 @@ actions.cooldowns+=/arcane_pulse,if=(!buff.pillar_of_frost.up&active_enemies>=2)
 actions.cooldowns+=/lights_judgment,if=buff.pillar_of_frost.up
 actions.cooldowns+=/ancestral_call,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
 actions.cooldowns+=/fireblood,if=buff.pillar_of_frost.remains<=8&buff.empower_rune_weapon.up
-actions.cooldowns+=/bag_of_tricks,if=buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)|buff.seething_rage.up
+actions.cooldowns+=/bag_of_tricks,if=buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)&active_enemies=1|buff.seething_rage.up&active_enemies=1
 # Frost cooldowns
 actions.cooldowns+=/pillar_of_frost,if=cooldown.empower_rune_weapon.remains|talent.icecap.enabled
 actions.cooldowns+=/breath_of_sindragosa,use_off_gcd=1,if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains
@@ -178,11 +178,11 @@ neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=writhing_spaulders_of_madness,id=174165,bonus_id=1517/4824/4775,azerite_powers=108/582/459/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=breastplate_of_twilight_decimation,id=174164,bonus_id=1517/4824/4775,azerite_powers=108/582/459/13
-wrists=bracers_of_phantom_pains,id=174177,bonus_id=4824/1517/6473/6465
-hands=gauntlets_of_foul_inquisition,id=174169,bonus_id=4824/1517/6473/6465
-waist=belt_of_muttering_truths,id=174174,bonus_id=4824/1517/6473/6465
-legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517/6473/6465
-feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517/6472/6462
+wrists=bracers_of_phantom_pains,id=174177,bonus_id=4824/1517/6554
+hands=gauntlets_of_foul_inquisition,id=174169,bonus_id=4824/1517/6552
+waist=belt_of_muttering_truths,id=174174,bonus_id=4824/1517
+legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517
+feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517
 finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_mastery
 finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_mastery
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517

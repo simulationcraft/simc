@@ -5,7 +5,7 @@ level=120
 race=troll
 role=attack
 position=back
-talents=2203031
+talents=2203032
 azerite_essences=22:4:1/27:4:0/35:4:0/5:4:0
 
 # Default consumables
@@ -42,7 +42,7 @@ actions+=/lights_judgment,if=(buff.unholy_strength.up&buff.festermight.remains<=
 actions+=/ancestral_call,if=(pet.gargoyle.active&talent.summon_gargoyle.enabled)|pet.apoc_ghoul.active
 actions+=/arcane_pulse,if=active_enemies>=2|(rune.deficit>=5&runic_power.deficit>=60)
 actions+=/fireblood,if=(pet.gargoyle.active&talent.summon_gargoyle.enabled)|pet.apoc_ghoul.active
-actions+=/bag_of_tricks,if=buff.unholy_strength.up|buff.festermight.remains<gcd
+actions+=/bag_of_tricks,if=buff.unholy_strength.up&active_enemies=1|buff.festermight.remains<gcd&active_enemies=1
 # Custom trinkets usage
 actions+=/use_items,if=time>20|!equipped.ramping_amplitude_gigavolt_engine|!equipped.vision_of_demise
 actions+=/use_item,name=azsharas_font_of_power,if=(essence.vision_of_perfection.enabled&!talent.unholy_frenzy.enabled)|(!essence.condensed_lifeforce.major&!essence.vision_of_perfection.enabled)
@@ -122,11 +122,11 @@ neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=pauldrons_of_infinite_darkness,id=174166,bonus_id=1517/4824/4775,azerite_powers=199/109/31/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=desert_guardians_breastplate,id=159424,bonus_id=1647/4775,azerite_powers=109/199/18/13
-wrists=dragonbone_vambraces,id=174170,bonus_id=4824/1517/6475/6465
-hands=mirageweavers_gauntlets,id=174178,bonus_id=4824/1517/6476/6465
-waist=welloiled_plate_girdle,id=169057,bonus_id=4824/1522/6476/6465
-legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517/6476/6465
-feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517/6476/6462
+wrists=dragonbone_vambraces,id=174170,bonus_id=4824/1517/6552
+hands=mirageweavers_gauntlets,id=174178,bonus_id=4824/1517/6554
+waist=welloiled_plate_girdle,id=169057,bonus_id=4824/1522
+legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517
+feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517
 finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_haste
 finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_haste
 trinket1=voidtwisted_titanshard,id=174528,bonus_id=4824/1517
