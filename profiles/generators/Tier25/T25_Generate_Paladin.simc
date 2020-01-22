@@ -17,8 +17,8 @@ hands=mirage-weavers_gauntlets,id=174178,bonus_id=4824/1517
 waist=dark_crystalline_girdle,id=174171,bonus_id=4824/1517
 legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517/6552
 feet=sabatons_of_malevolent_intent,id=174176,bonus_id=4824/1517/6554
-finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=pact_of_haste
-finger2=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517,enchant=pact_of_haste
+finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_haste
+finger2=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517,enchant=accord_of_haste
 trinket1=writhing_segment_of_drestagath,id=173946,bonus_id=4824/1517
 trinket2=vita-charged_titanshard,id=174500,bonus_id=4824/1517
 main_hand=gift_of_the_void,id=172194,bonus_id=4824/1517,enchant=force_multiplier
