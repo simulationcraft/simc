@@ -369,7 +369,7 @@ bool report::check_gear( player_t& p, sim_t& sim )
   unsigned hoa_level             = 0;
   std::string tier_name          = "";
   int third_ring_traits          = 2;
-  int max_cloak_ilevel            = 0;
+  int max_cloak_ilevel           = 0;
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
@@ -421,7 +421,7 @@ bool report::check_gear( player_t& p, sim_t& sim )
     hoa_ilevel                 = 493;
     hoa_level                  = 80;
     tier_name                  = "T25";
-    max_cloak_ilevel            = 500;
+    max_cloak_ilevel           = 500;
   }
   else
   {
