@@ -40,7 +40,7 @@ T25_Generate_Mage.simc
 T25_Generate_Monk.simc
 
 # Paladin
-# T25_Generate_Paladin.simc
+T25_Generate_Paladin.simc
 
 # Priest
 T25_Generate_Priest.simc
