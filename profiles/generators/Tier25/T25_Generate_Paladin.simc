@@ -9,11 +9,11 @@ azerite_essences=12:3/13:3/32:3/37:3
 
 head=greathelm_of_phantasmic_reality,id=174167,bonus_id=4824/1517,azerite_powers=395/582/21/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulder=writhing_spaulders_of_madness,id=174165,ilevel=475,azerite_powers=395/582/459/13
-back="ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=carapace_of_pulsing_vita,id=174168,ilevel=475,azerite_powers=395/582/21/13
+shoulder=writhing_spaulders_of_madness,id=174165,bonus_id=4824/1517,azerite_powers=395/582/459/13
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+chest=carapace_of_pulsing_vita,id=174168,bonus_id=4824/1517,azerite_powers=395/582/21/13
 wrist=dragonbone_vambraces,id=174170,bonus_id=4824/1517
-hands=mirage-weavers_gauntlets,id=174178,bonus_id=4824/1517
+hands=mirageweavers_gauntlets,id=174178,bonus_id=4824/1517
 waist=dark_crystalline_girdle,id=174171,bonus_id=4824/1517
 legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517/6552
 feet=sabatons_of_malevolent_intent,id=174176,bonus_id=4824/1517/6554
