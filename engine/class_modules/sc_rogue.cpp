@@ -2356,6 +2356,19 @@ struct crimson_tempest_t : public rogue_attack_t
   }
 };
 
+// Detection ================================================================
+
+// This ability does nothing but for some odd reasons throughout the history of Rogue spaghetti, we may want to look at using it. So, let's support it.
+struct detection_t : public rogue_attack_t
+{
+  detection_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "detection", p, p -> find_class_spell( "Detection" ), options_str )
+  {
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    ignore_false_positive = true;
+  }
+};
+
 // Dispatch =================================================================
 
 struct dispatch_t: public rogue_attack_t
@@ -6009,6 +6022,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "blade_rush"          ) return new blade_rush_t         ( this, options_str );
   if ( name == "blindside"           ) return new blindside_t          ( this, options_str );
   if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( this, options_str );
+  if ( name == "detection"           ) return new detection_t          ( this, options_str );
   if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
