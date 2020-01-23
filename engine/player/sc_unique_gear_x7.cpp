@@ -6749,6 +6749,7 @@ void corruption::twisted_appendage( special_effect_t& effect )
     mind_flay_t( const special_effect_t& effect, player_t* p, double mod )
       : spell_t( "mind_flay", p, effect.player->find_spell( 316835 ) ), ap_sp_mod( mod )
     {
+      tick_may_crit        = true;
       channeled            = true;
       spell_power_mod.tick = attack_power_mod.tick = ap_sp_mod;
     }
