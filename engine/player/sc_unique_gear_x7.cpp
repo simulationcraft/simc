@@ -6700,8 +6700,8 @@ void corruption::searing_flames( special_effect_t& effect )
 
     // TODO: Confirm damage spell id
     searing_flames_t( const special_effect_t& effect )
-      : aoe_proc_t( effect, "searing_flames", 316703, true ),
-        maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
+      : aoe_proc_t( effect, "searing_flames", 316704, true ),
+      maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
     {
       // TODO: Check what this scales with
       // Set small base damage so that flags are properly set
@@ -6727,12 +6727,12 @@ void corruption::searing_flames( special_effect_t& effect )
     effect.custom_buff = make_buff( effect.player, "searing_flames", effect.player->find_spell( 316703 ) );
 
     searing_flames_damage =
-        static_cast<searing_flames_t*>( create_proc_action<searing_flames_t>( "searing_flames", effect ) );
+      static_cast<searing_flames_t*>( create_proc_action<searing_flames_t>( "searing_flames", effect ) );
 
     // TODO: Confirm these flags
     effect.proc_flags_  = PF_ALL_DAMAGE;
     effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-    effect.spell_id     = 317014;
+    effect.spell_id     = 316698;
 
     new searing_flames_cb_t( effect, searing_flames_damage );
   }
@@ -6749,6 +6749,11 @@ void corruption::twisted_appendage( special_effect_t& effect )
     mind_flay_t( const special_effect_t& effect, player_t* p, double mod )
       : spell_t( "mind_flay", p, effect.player->find_spell( 316835 ) ), ap_sp_mod( mod )
     {
+      // Merge the stats object with other instances of the pet
+      auto ta = effect.player -> find_pet( "twisted_appendage" );
+      if ( ta && ta -> find_action( "mind_flay" ) )
+        stats = ta -> find_action( "mind_flay" ) -> stats;
+
       tick_may_crit        = true;
       channeled            = true;
       spell_power_mod.tick = attack_power_mod.tick = ap_sp_mod;
