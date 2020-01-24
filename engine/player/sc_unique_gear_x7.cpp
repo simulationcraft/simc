@@ -6331,10 +6331,7 @@ void corruption::glimpse_of_clarity( special_effect_t& effect )
  * id=318487 tier 2 corruption effect
  * id=318488 tier 3 corruption effect
  * TODO: How does this stack if you have multiple copies of it?
- * TODO: There is some weird scaling that happens with the damage
- *       of this effect for classes with Attack Power. For example,
-         Balance druids appear to get about 4% additional damage on
-         top of their spell power according to the tooltip's values.
+ * TODO: Verify item level bases implementation changes are correct.
  */
 struct infinite_stars_constructor_t : public item_targetdata_initializer_t
 {
@@ -6373,39 +6370,22 @@ void corruption::infinite_stars( special_effect_t& effect )
   {
     double debuff_percent   = player->find_spell( 317265 )->effectN( 3 ).percent();
     double star_travel_time = player->find_spell( 317262 )->missile_speed();
-    double ap_sp_mod;
+    double scaled_dmg;
 
     infinite_stars_t( const special_effect_t& e )
-      : proc_t( e, "infinite_stars", 317265 ), ap_sp_mod( e.driver()->effectN( 2 ).percent() )
+      : proc_t( e, "infinite_stars", 317265 ), scaled_dmg( e.driver()->effectN( 1 ).average( e.item ) )
     {
-      spell_power_mod.direct  = ap_sp_mod;
-      attack_power_mod.direct = ap_sp_mod;
+      base_dd_min = base_dd_max = scaled_dmg;
     }
 
-    void init() override
+    double base_da_min(const action_state_t*) const override
     {
-      proc_t::init();
-      snapshot_flags |= STATE_SP;
+      return scaled_dmg;
     }
 
-    double attack_direct_power_coefficient( const action_state_t* s ) const override
+    double base_da_max(const action_state_t*) const override
     {
-      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
-
-      if ( ap <= sp )
-        return 0;
-      return ap_sp_mod;
-    }
-
-    double spell_direct_power_coefficient( const action_state_t* s ) const override
-    {
-      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
-
-      if ( ap > sp )
-        return 0;
-      return ap_sp_mod;
+      return scaled_dmg;
     }
 
     timespan_t travel_time() const override
@@ -6447,7 +6427,7 @@ void corruption::infinite_stars( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
   else
-    infinite_stars->ap_sp_mod += effect.driver()->effectN( 2 ).percent();
+    infinite_stars->scaled_dmg += effect.driver()->effectN( 1 ).average( effect.item );
 }
 
 // Echoing Void
