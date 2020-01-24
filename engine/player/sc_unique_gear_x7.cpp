@@ -6746,13 +6746,14 @@ void corruption::twisted_appendage( special_effect_t& effect )
   struct mind_flay_t : public spell_t
   {
     double ap_sp_mod;
-    mind_flay_t( const special_effect_t& effect, player_t* p, double mod )
-      : spell_t( "mind_flay", p, effect.player->find_spell( 316835 ) ), ap_sp_mod( mod )
+
+    mind_flay_t( pet_t* p, double mod )
+      : spell_t( "mind_flay", p, p->find_spell( 316835 ) ), ap_sp_mod( mod )
     {
       // Merge the stats object with other instances of the pet
-      auto ta = effect.player -> find_pet( "twisted_appendage" );
-      if ( ta && ta -> find_action( "mind_flay" ) )
-        stats = ta -> find_action( "mind_flay" ) -> stats;
+      auto ta = p->owner->find_pet( "twisted_appendage" );
+      if ( ta && ta->find_action( "mind_flay" ) )
+        stats = ta->find_action( "mind_flay" )->stats;
 
       tick_may_crit        = true;
       channeled            = true;
@@ -6786,11 +6787,10 @@ void corruption::twisted_appendage( special_effect_t& effect )
 
   struct twisted_appendage_pet_t : public pet_t
   {
-    const special_effect_t* effect;
-    mind_flay_t* mind_flay;
+    double coef;
 
-    twisted_appendage_pet_t( const special_effect_t& effect, mind_flay_t* a )
-      : pet_t( effect.player->sim, effect.player, "twisted_appendage", true, true ), effect( &effect ), mind_flay( a )
+    twisted_appendage_pet_t( const special_effect_t& effect, double coef_ )
+      : pet_t( effect.player->sim, effect.player, "twisted_appendage", true, true ), coef( coef_ )
     {
       owner_coeff.sp_from_sp = 1;
       owner_coeff.ap_from_ap = 1;
@@ -6800,7 +6800,7 @@ void corruption::twisted_appendage( special_effect_t& effect )
     {
       if ( ::util::str_compare_ci( name, "mind_flay" ) )
       {
-        return new mind_flay_t( *effect, this, mind_flay->ap_sp_mod );
+        return new mind_flay_t( this, coef );
       }
 
       return pet_t::create_action( name, options );
@@ -6817,12 +6817,14 @@ void corruption::twisted_appendage( special_effect_t& effect )
 
   struct twisted_appendage_cb_t : public dbc_proc_callback_t
   {
+    double coef;
     spawner::pet_spawner_t<twisted_appendage_pet_t> spawner;
 
-    twisted_appendage_cb_t( const special_effect_t& effect, mind_flay_t* a )
+    twisted_appendage_cb_t( const special_effect_t& effect )
       : dbc_proc_callback_t( effect.player, effect ),
+        coef(),
         spawner( "twisted_appendage", effect.player,
-                 [&effect, a]( player_t* ) { return new twisted_appendage_pet_t( effect, a ); } )
+                 [ &effect, this ] ( player_t* ) { return new twisted_appendage_pet_t( effect, coef ); } )
     {
       spawner.set_default_duration( effect.player->find_spell( 316818 )->duration() );
     }
@@ -6833,18 +6835,23 @@ void corruption::twisted_appendage( special_effect_t& effect )
     }
   };
 
-  // TODO: Fix abusing this action as a global variable
-  auto mind_flay = static_cast<mind_flay_t*>( effect.player->find_action( "pet_mind_flay" ) );
+  // Save the coefficient before we replace the effect's spell id.
+  double coef = effect.driver()->effectN( 2 ).percent();
+  twisted_appendage_cb_t* spawner_cb = nullptr;
 
-  if ( !mind_flay )
+  for ( auto cb : effect.player->callbacks.all_callbacks )
   {
-    mind_flay       = static_cast<mind_flay_t*>( create_proc_action<mind_flay_t>( "pet_mind_flay", effect, effect.player,
-                                                                            effect.driver()->effectN( 2 ).percent() ) );
-    effect.spell_id = 316815;
-    new twisted_appendage_cb_t( effect, mind_flay );
+    if ( spawner_cb = dynamic_cast<twisted_appendage_cb_t*>( cb ) )
+      break;
   }
-  else
-    mind_flay->ap_sp_mod += effect.driver()->effectN( 2 ).percent();
+
+  if ( !spawner_cb )
+  {
+    effect.spell_id = 316815;
+    spawner_cb = new twisted_appendage_cb_t( effect );
+  }
+
+  spawner_cb->coef += coef;
 }
 
 // Lash of the Void
