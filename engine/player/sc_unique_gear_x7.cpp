@@ -6565,33 +6565,18 @@ void corruption::gushing_wound( special_effect_t& effect )
 {
   struct gushing_wound_t : public proc_spell_t
   {
-    double ap_sp_mod;
+    double scaled_dmg;
 
     gushing_wound_t( const special_effect_t& effect )
       : proc_spell_t( "gushing_wound_corruption", effect.player, effect.player->find_spell( 318187 ) ),
-        ap_sp_mod( effect.player->find_spell( 318187 )->effectN( 2 ).percent() )
+        scaled_dmg( effect.driver()->effectN( 1 ).average( effect.item ) )
     {
-      spell_power_mod.tick = attack_power_mod.tick = ap_sp_mod;
+      base_td = scaled_dmg;
     }
 
-    double attack_tick_power_coefficient( const action_state_t* s ) const override
+    double base_ta( const action_state_t* s ) const override
     {
-      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
-
-      if ( ap <= sp )
-        return 0;
-      return ap_sp_mod;
-    }
-
-    double spell_tick_power_coefficient( const action_state_t* s ) const override
-    {
-      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
-
-      if ( ap > sp )
-        return 0;
-      return ap_sp_mod;
+      return scaled_dmg;
     }
   };
 
@@ -6600,7 +6585,7 @@ void corruption::gushing_wound( special_effect_t& effect )
   if ( !gushing_wound )
     effect.execute_action = create_proc_action<gushing_wound_t>( "gushing_wound_corruption", effect );
   else
-    gushing_wound->ap_sp_mod += effect.player->find_spell( 318187 )->effectN( 2 ).percent();
+    gushing_wound->scaled_dmg += effect.driver()->effectN( 1 ).average( effect.item );
 
   effect.spell_id = 318179;
 
