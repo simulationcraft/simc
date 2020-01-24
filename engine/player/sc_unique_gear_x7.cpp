@@ -6725,10 +6725,10 @@ void corruption::twisted_appendage( special_effect_t& effect )
 {
   struct mind_flay_t : public spell_t
   {
-    double ap_sp_mod;
+    double scaled_dmg;
 
-    mind_flay_t( pet_t* p, double mod )
-      : spell_t( "mind_flay", p, p->find_spell( 316835 ) ), ap_sp_mod( mod )
+    mind_flay_t( pet_t* p, double dmg )
+      : spell_t( "mind_flay", p, p->find_spell( 316835 ) ), scaled_dmg( dmg )
     {
       // Merge the stats object with other instances of the pet
       auto ta = p->owner->find_pet( "twisted_appendage" );
@@ -6737,7 +6737,7 @@ void corruption::twisted_appendage( special_effect_t& effect )
 
       tick_may_crit        = true;
       channeled            = true;
-      spell_power_mod.tick = attack_power_mod.tick = ap_sp_mod;
+      base_td              = scaled_dmg;
     }
 
     double composite_haste() const override
@@ -6745,42 +6745,26 @@ void corruption::twisted_appendage( special_effect_t& effect )
       return 1.0;
     }
 
-    double attack_tick_power_coefficient( const action_state_t* s ) const override
+    double base_ta(const action_state_t*) const override
     {
-      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
-      if ( ap <= sp )
-        return 0;
-      return ap_sp_mod;
-    }
-
-    double spell_tick_power_coefficient( const action_state_t* s ) const override
-    {
-      auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
-      auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
-
-      if ( ap > sp )
-        return 0;
-      return ap_sp_mod;
+      return scaled_dmg;
     }
   };
 
   struct twisted_appendage_pet_t : public pet_t
   {
-    double coef;
+    double dmg;
 
-    twisted_appendage_pet_t( const special_effect_t& effect, double coef_ )
-      : pet_t( effect.player->sim, effect.player, "twisted_appendage", true, true ), coef( coef_ )
+    twisted_appendage_pet_t( const special_effect_t& effect, double dmg_ )
+      : pet_t( effect.player->sim, effect.player, "twisted_appendage", true, true ), dmg( dmg_ )
     {
-      owner_coeff.sp_from_sp = 1;
-      owner_coeff.ap_from_ap = 1;
     }
 
     action_t* create_action( const std::string& name, const std::string& options ) override
     {
       if ( ::util::str_compare_ci( name, "mind_flay" ) )
       {
-        return new mind_flay_t( this, coef );
+        return new mind_flay_t( this, dmg );
       }
 
       return pet_t::create_action( name, options );
@@ -6797,14 +6781,14 @@ void corruption::twisted_appendage( special_effect_t& effect )
 
   struct twisted_appendage_cb_t : public dbc_proc_callback_t
   {
-    double coef;
+    double dmg;
     spawner::pet_spawner_t<twisted_appendage_pet_t> spawner;
 
     twisted_appendage_cb_t( const special_effect_t& effect )
       : dbc_proc_callback_t( effect.player, effect ),
-        coef(),
+        dmg(),
         spawner( "twisted_appendage", effect.player,
-                 [ &effect, this ] ( player_t* ) { return new twisted_appendage_pet_t( effect, coef ); } )
+                 [ &effect, this ] ( player_t* ) { return new twisted_appendage_pet_t( effect, dmg ); } )
     {
       spawner.set_default_duration( effect.player->find_spell( 316818 )->duration() );
     }
@@ -6816,7 +6800,7 @@ void corruption::twisted_appendage( special_effect_t& effect )
   };
 
   // Save the coefficient before we replace the effect's spell id.
-  double coef = effect.driver()->effectN( 2 ).percent();
+  double dmg = effect.driver()->effectN( 1 ).average( effect.item );
   twisted_appendage_cb_t* spawner_cb = nullptr;
 
   for ( auto cb : effect.player->callbacks.all_callbacks )
@@ -6831,7 +6815,7 @@ void corruption::twisted_appendage( special_effect_t& effect )
     spawner_cb = new twisted_appendage_cb_t( effect );
   }
 
-  spawner_cb->coef += coef;
+  spawner_cb->dmg += dmg;
 }
 
 // Lash of the Void
