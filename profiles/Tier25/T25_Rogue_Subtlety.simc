@@ -168,12 +168,12 @@ neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517/4775,azerite_powers=175/413/21/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=414/413/31/13
-wrists=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517/6554
-hands=chitinspine_gloves,id=174137,bonus_id=4824/1517/6552
-waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517
-legs=macabre_ritual_pants,id=174143,bonus_id=4824/1517
-feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517
-finger1=logic_loop_of_division,id=169157,bonus_id=3536/4786/1522,enchant=accord_of_versatility
+wrists=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517/6573
+hands=chitinspine_gloves,id=174137,bonus_id=4824/1517/6573
+waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517/6573
+legs=macabre_ritual_pants,id=174143,bonus_id=4824/1517/6573
+feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517/6573
+finger1=logic_loop_of_division,id=169157,bonus_id=3536/4786/1522/6573,enchant=accord_of_versatility
 finger2=overclocking_bit_band,id=169159,bonus_id=3536/4786/1522,enchant=accord_of_versatility
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=deadeye_spyglass,id=159623,bonus_id=3536/4786/1637
@@ -188,6 +188,6 @@ off_hand=destroyers_shadowblade,id=172185,bonus_id=4824/1517,enchant=versatile_n
 # gear_haste_rating=1370
 # gear_mastery_rating=812
 # gear_versatility_rating=592
-# gear_corruption=95
+# gear_corruption=90
 # gear_corruption_resistance=50
 # gear_armor=3923
