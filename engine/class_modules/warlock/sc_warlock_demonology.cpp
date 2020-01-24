@@ -444,9 +444,7 @@ namespace warlock {
             // Spelldata unknown. In-game testing shows Demonic Consumption provides 10% damage per 20 energy an imp has.
             demonic_consumption_multiplier += available / 10 * 5;
             imp->demonic_consumption = true;
-            //Demonic Consumption does not appear to immediately despawn imps.
-            //This bug allows spells like Implosion to trigger partially.
-            make_event( sim, p()->bugs ? 15_ms : 0_ms, [imp] {imp->dismiss(); } );
+            imp->dismiss();
           }
 
           for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
@@ -1092,7 +1090,6 @@ namespace warlock {
     action_priority_list_t* imp = get_action_priority_list( "implosion" );
     action_priority_list_t* opener = get_action_priority_list( "opener" );
 
-    def->add_action( "implosion,if=azerite.explosive_potential.enabled&talent.demonic_consumption.enabled&prev_gcd.1.summon_demonic_tyrant" );
     def->add_action( "potion,if=pet.demonic_tyrant.active&(!essence.vision_of_perfection.major|!talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains>=cooldown.summon_demonic_tyrant.duration-5)&(!talent.nether_portal.enabled|cooldown.nether_portal.remains>160)|target.time_to_die<30" );
     def->add_action( "use_item,name=azsharas_font_of_power,if=cooldown.summon_demonic_tyrant.remains<=20&!talent.nether_portal.enabled" );
     def->add_action( "use_items,if=pet.demonic_tyrant.active&(!essence.vision_of_perfection.major|!talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains>=cooldown.summon_demonic_tyrant.duration-5)|target.time_to_die<=15" );
