@@ -6839,19 +6839,24 @@ void corruption::lash_of_the_void( special_effect_t& effect )
 {
   struct lash_of_the_void_t : public proc_spell_t
   {
-    double ap_mod;
+    double scaled_dmg;
 
     lash_of_the_void_t( const special_effect_t& effect )
-      : proc_spell_t( "lash_of_the_void", effect.player, effect.trigger() ),
-        ap_mod( effect.trigger()->effectN( 1 ).ap_coeff() )
+      : proc_spell_t( "lash_of_the_void", effect.player, effect.driver() ),
+        scaled_dmg( effect.driver()->effectN( 1 ).average( effect.item ) )
     {
-      attack_power_mod.direct = ap_mod;
-      aoe                     = 0;
+      base_dd_min = base_dd_max = scaled_dmg;
+      aoe                       = 0;
     }
 
-    double attack_direct_power_coefficient( const action_state_t* s ) const override
+    double base_da_min(const action_state_t*) const override
     {
-      return ap_mod;
+      return scaled_dmg;
+    }
+
+    double base_da_max(const action_state_t*) const override
+    {
+      return scaled_dmg;
     }
   };
 
@@ -6863,7 +6868,7 @@ void corruption::lash_of_the_void( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
   else
-    lash_of_the_void->ap_mod += effect.trigger()->effectN( 1 ).ap_coeff();
+    lash_of_the_void->scaled_dmg += effect.driver()->effectN( 1 ).average( effect.item );
 }
 
 // Flash of Insight
