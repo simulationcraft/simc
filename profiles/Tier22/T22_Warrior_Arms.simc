@@ -26,6 +26,7 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=azsharas_font_of_power
+actions.precombat+=/worldvein_resonance
 actions.precombat+=/memory_of_lucid_dreams
 actions.precombat+=/guardian_of_azeroth
 actions.precombat+=/potion
@@ -40,6 +41,7 @@ actions+=/arcane_torrent,if=cooldown.mortal_strike.remains>1.5&buff.memory_of_lu
 actions+=/lights_judgment,if=debuff.colossus_smash.down
 actions+=/fireblood,if=buff.memory_of_lucid_dreams.remains<5|(!essence.memory_of_lucid_dreams.major&debuff.colossus_smash.up)
 actions+=/ancestral_call,if=buff.memory_of_lucid_dreams.remains<5|(!essence.memory_of_lucid_dreams.major&debuff.colossus_smash.up)
+actions+=/bag_of_tricks,if=buff.memory_of_lucid_dreams.remains<5|(!essence.memory_of_lucid_dreams.major&debuff.colossus_smash.up)
 actions+=/avatar,if=cooldown.colossus_smash.remains<8|(talent.warbreaker.enabled&cooldown.warbreaker.remains<8)
 actions+=/sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>10|cooldown.colossus_smash.remains>8|azerite.test_of_might.enabled)
 actions+=/blood_of_the_enemy,if=buff.test_of_might.up|(debuff.colossus_smash.up&!azerite.test_of_might.enabled)
@@ -47,6 +49,7 @@ actions+=/purifying_blast,if=!debuff.colossus_smash.up&!buff.test_of_might.up
 actions+=/ripple_in_space,if=!debuff.colossus_smash.up&!buff.test_of_might.up
 actions+=/worldvein_resonance,if=!debuff.colossus_smash.up&!buff.test_of_might.up
 actions+=/focused_azerite_beam,if=!debuff.colossus_smash.up&!buff.test_of_might.up
+actions+=/reaping_flames,if=!debuff.colossus_smash.up&!buff.test_of_might.up
 actions+=/concentrated_flame,if=!debuff.colossus_smash.up&!buff.test_of_might.up&dot.concentrated_flame_burn.remains=0
 actions+=/the_unbound_force,if=buff.reckless_force.up
 actions+=/guardian_of_azeroth,if=cooldown.colossus_smash.remains<10

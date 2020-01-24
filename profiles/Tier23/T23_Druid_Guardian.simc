@@ -53,6 +53,7 @@ actions.cooldowns+=/arcane_torrent
 actions.cooldowns+=/lights_judgment
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/bag_of_tricks
 actions.cooldowns+=/barkskin,if=buff.bear_form.up
 actions.cooldowns+=/lunar_beam,if=buff.bear_form.up
 actions.cooldowns+=/bristling_fur,if=buff.bear_form.up

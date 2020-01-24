@@ -67,6 +67,7 @@ actions.active_talents+=/meteor,if=buff.rune_of_power.up&(firestarter.remains>co
 
 # Combustion phase prepares abilities with a delay, then launches into the Combustion sequence
 actions.combustion_phase=lights_judgment,if=buff.combustion.down
+actions.combustion_phase+=/bag_of_tricks,if=buff.combustion.down
 actions.combustion_phase+=/living_bomb,if=active_enemies>1&buff.combustion.down
 actions.combustion_phase+=/blood_of_the_enemy
 actions.combustion_phase+=/memory_of_lucid_dreams

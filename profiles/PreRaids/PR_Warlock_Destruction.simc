@@ -46,6 +46,7 @@ actions+=/focused_azerite_beam,if=!pet.infernal.active|!talent.grimoire_of_supre
 actions+=/the_unbound_force,if=buff.reckless_force.react
 actions+=/purifying_blast
 actions+=/concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight
+actions+=/reaping_flames
 actions+=/channel_demonfire
 # The if condition here always applies Havoc to something other than the primary target
 actions+=/havoc,cycle_targets=1,if=!(target=self.target)&(dot.immolate.remains>dot.immolate.duration*0.5|!talent.internal_combustion.enabled)&(!cooldown.summon_infernal.ready|!talent.grimoire_of_supremacy.enabled|talent.grimoire_of_supremacy.enabled&pet.infernal.remains<=10)
@@ -106,6 +107,7 @@ actions.cds+=/use_item,name=azsharas_font_of_power,if=cooldown.summon_infernal.u
 actions.cds+=/summon_infernal
 actions.cds+=/guardian_of_azeroth,if=pet.infernal.active
 actions.cds+=/dark_soul_instability,if=pet.infernal.active&(pet.infernal.remains<20.5|pet.infernal.remains<22&soul_shard>=3.6|!talent.grimoire_of_supremacy.enabled)
+actions.cds+=/worldvein_resonance,if=pet.infernal.active&(pet.infernal.remains<18.5|pet.infernal.remains<20&soul_shard>=3.6|!talent.grimoire_of_supremacy.enabled)
 actions.cds+=/memory_of_lucid_dreams,if=pet.infernal.active&(pet.infernal.remains<15.5|soul_shard<3.5&(buff.dark_soul_instability.up|!talent.grimoire_of_supremacy.enabled&dot.immolate.remains>12))
 # If DSI is not ready but you can get more than one infernal in before the end of the fight, summon the Infernal now
 actions.cds+=/summon_infernal,if=target.time_to_die>cooldown.summon_infernal.duration+30
@@ -115,14 +117,16 @@ actions.cds+=/summon_infernal,if=talent.dark_soul_instability.enabled&cooldown.d
 actions.cds+=/guardian_of_azeroth,if=cooldown.summon_infernal.remains>target.time_to_die
 # If the fight will end before infernal is back up, use DSI
 actions.cds+=/dark_soul_instability,if=cooldown.summon_infernal.remains>target.time_to_die&pet.infernal.remains<20.5
+actions.cds+=/worldvein_resonance,if=cooldown.summon_infernal.remains>target.time_to_die&pet.infernal.remains<18.5
 actions.cds+=/memory_of_lucid_dreams,if=cooldown.summon_infernal.remains>target.time_to_die&(pet.infernal.remains<15.5|buff.dark_soul_instability.up&soul_shard<3)
 # If the fight is about to end, use CDs such that they get as much time up as possible
 actions.cds+=/summon_infernal,if=target.time_to_die<30
 actions.cds+=/guardian_of_azeroth,if=target.time_to_die<30
 actions.cds+=/dark_soul_instability,if=target.time_to_die<21&target.time_to_die>4
+actions.cds+=/worldvein_resonance,if=target.time_to_die<19&target.time_to_die>4
 actions.cds+=/memory_of_lucid_dreams,if=target.time_to_die<16&target.time_to_die>6
 actions.cds+=/blood_of_the_enemy
-actions.cds+=/worldvein_resonance
+actions.cds+=/worldvein_resonance,if=cooldown.summon_infernal.remains>=60-12&!pet.infernal.active
 actions.cds+=/ripple_in_space
 actions.cds+=/potion,if=pet.infernal.active|target.time_to_die<30
 actions.cds+=/berserking,if=pet.infernal.active&(!talent.grimoire_of_supremacy.enabled|(!essence.memory_of_lucid_dreams.major|buff.memory_of_lucid_dreams.remains)&(!talent.dark_soul_instability.enabled|buff.dark_soul_instability.remains))|target.time_to_die<=15

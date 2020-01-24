@@ -2,7 +2,7 @@ rogue="T25_Rogue_Outlaw"
 source=default
 spec=outlaw
 level=120
-race=pandaren
+race=human
 role=attack
 position=back
 talents=2020022
@@ -60,6 +60,7 @@ actions+=/call_action_list,name=build
 actions+=/arcane_torrent,if=energy.deficit>=15+energy.regen
 actions+=/arcane_pulse
 actions+=/lights_judgment
+actions+=/bag_of_tricks
 
 # Builders
 # Use Pistol Shot if it won't cap combo points and the Oppotunity buff is up. Avoid using when Keep Your Wits stacks are high unless the Deadshot buff is also up.
@@ -103,7 +104,7 @@ actions.essences+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_for
 actions.essences+=/ripple_in_space
 actions.essences+=/worldvein_resonance
 actions.essences+=/memory_of_lucid_dreams,if=energy<45
-actions.essences+=/reaping_flames
+actions.essences+=/reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30
 
 # Finishers
 # BtE over RtB rerolls with Deadshot/Ace traits or Ruthless Precision.
@@ -117,31 +118,31 @@ actions.finish+=/dispatch
 # Stealth
 actions.stealth=ambush
 
-head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=411/129/30/13
+head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=446/582/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulders=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517/4775,azerite_powers=411/129/21/13
+shoulders=spaulders_of_aberrant_allure,id=174135,bonus_id=4824/1517/4775,azerite_powers=446/582/21/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=446/129/31/13
-wrists=wristwraps_of_volatile_power,id=174145,bonus_id=4824/1517/6554
+chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=446/582/31/13
+wrists=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517/6553
 hands=chitinspine_gloves,id=174137,bonus_id=4824/1517/6552
-waist=cord_of_anguished_cries,id=174140,bonus_id=4824/1517
+waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517
 legs=macabre_ritual_pants,id=174143,bonus_id=4824/1517
 feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517
 finger1=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517,enchant=accord_of_critical_strike
-finger2=voidetched_band,id=174531,bonus_id=4824/1517,enchant=accord_of_critical_strike
+finger2=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_critical_strike
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
-trinket2=dribbling_inkpod,id=169319,bonus_id=4800/1517
-main_hand=unguent_caress,id=172197,bonus_id=4824/1517,enchant=deadly_navigation
-off_hand=destroyers_shadowblade,id=172185,bonus_id=4824/1517,enchant=versatile_navigation
+trinket2=deadeye_spyglass,id=159623,bonus_id=3536/4786/1637
+main_hand=unguent_caress,id=172197,bonus_id=4824/1517/6569,enchant=deadly_navigation
+off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3536/4786/1637,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=476.75
-# gear_agility=10273
-# gear_stamina=19964
-# gear_crit_rating=1254
-# gear_haste_rating=855
-# gear_mastery_rating=1450
-# gear_versatility_rating=645
+# gear_ilvl=477.38
+# gear_agility=10240
+# gear_stamina=19718
+# gear_crit_rating=1257
+# gear_haste_rating=1167
+# gear_mastery_rating=813
+# gear_versatility_rating=817
 # gear_corruption=95
 # gear_corruption_resistance=50
-# gear_armor=3923
+# gear_armor=3883

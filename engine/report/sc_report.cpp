@@ -369,6 +369,7 @@ bool report::check_gear( player_t& p, sim_t& sim )
   unsigned hoa_level             = 0;
   std::string tier_name          = "";
   int third_ring_traits          = 2;
+  int max_cloak_ilevel           = 0;
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
@@ -381,11 +382,12 @@ bool report::check_gear( player_t& p, sim_t& sim )
   }
   else if (p.report_information.save_str.find( "DS" ) != std::string::npos )
   {
-    max_ilevel_allowed         = 445;
+    max_ilevel_allowed         = 485;
     max_azerite_ilevel_allowed = max_ilevel_allowed + 5;
-    hoa_ilevel                 = 463;
-    hoa_level                  = 65;
+    hoa_ilevel                 = 493;
+    hoa_level                  = 80;
     tier_name                  = "DS";
+    max_cloak_ilevel           = 500;
   }
   else if ( p.report_information.save_str.find( "T22" ) != std::string::npos )
   {
@@ -411,6 +413,15 @@ bool report::check_gear( player_t& p, sim_t& sim )
     hoa_ilevel                 = 463;
     hoa_level                  = 65;
     tier_name                  = "T24";
+  }
+  else if (p.report_information.save_str.find( "T25" ) != std::string::npos )
+  {
+    max_ilevel_allowed         = 485;
+    max_azerite_ilevel_allowed = max_ilevel_allowed + 5;
+    hoa_ilevel                 = 493;
+    hoa_level                  = 80;
+    tier_name                  = "T25";
+    max_cloak_ilevel           = 500;
   }
   else
   {
@@ -495,6 +506,15 @@ bool report::check_gear( player_t& p, sim_t& sim )
         sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n", p.name(),
                     util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(),
                     tier_name.c_str(), util::to_string( max_azerite_ilevel_allowed ).c_str() );
+    }
+    // Legendary Cloak for T25 profile
+    else if ( slot == SLOT_BACK && ( tier_name == "T25" || tier_name == "DS" ) )
+    {
+      // Check item level
+      if ( item.parsed.data.level != max_cloak_ilevel )
+        sim.errorf( "Player %s has cloak of ilevel %s, ilevel for %s should be %s.\n", p.name(),
+                    util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(),
+                    util::to_string( max_cloak_ilevel ).c_str() );
     }
     // Normal gear
     else

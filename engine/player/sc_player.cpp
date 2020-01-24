@@ -628,6 +628,43 @@ bool parse_loa( sim_t* sim, const std::string& name, const std::string& override
   return true;
 }
 
+// parse_tricks
+bool parse_tricks( sim_t* sim, const std::string& name, const std::string& override_str )
+{
+  assert( name == "vulpera_tricks" );
+  (void)name;
+
+  player_t* p = sim->active_player;
+  if ( util::str_compare_ci( override_str, "corrosive" ) || util::str_compare_ci( override_str, "corrosive_vial" ) )
+  {
+    p->vulpera_tricks = player_t::CORROSIVE;
+  }
+  else if ( util::str_compare_ci( override_str, "flames" ) || util::str_compare_ci( override_str, "flames_of_fury" ) )
+  {
+    p->vulpera_tricks = player_t::FLAMES;
+  }
+  else if ( util::str_compare_ci( override_str, "shadows" ) ||
+            util::str_compare_ci( override_str, "sinister_shadows" ) )
+  {
+    p->vulpera_tricks = player_t::SHADOWS;
+  }
+  else if ( util::str_compare_ci( override_str, "healing" ) || util::str_compare_ci( override_str, "healing_vial" ) )
+  {
+    p->vulpera_tricks = player_t::HEALING;
+  }
+  else if ( util::str_compare_ci( override_str, "holy" ) || util::str_compare_ci( override_str, "holy_relic" ) )
+  {
+    p->vulpera_tricks = player_t::HOLY;
+  }
+  else
+  {
+    sim->error( "\n%s vulpera_tricks string \"%s\" not valid.\n", sim->active_player->name(), override_str.c_str() );
+    return false;
+  }
+
+  return true;
+}
+
 // parse_role_string ========================================================
 
 bool parse_role_string( sim_t* sim, const std::string& name, const std::string& value )
@@ -933,172 +970,174 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
   make_event<delay_event_t>( *residual_action->sim, t, residual_action, amount );
 }
 
-player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ):
-  actor_t( s, n ),
-  type( t ),
-  parent( nullptr ),
-  index( -1 ),
-  creation_iteration( sim -> current_iteration ),
-  actor_spawn_index( -1 ),
-  race( r ),
-  role( ROLE_NONE ),
-  true_level( default_level ),
-  party( 0 ),
-  ready_type( READY_POLL ),
-  _spec( SPEC_NONE ),
-  bugs( true ),
-  disable_hotfixes( 0 ),
-  scale_player( true ),
-  death_pct( 0.0 ),
-  height( 0 ),
-  combat_reach( 1.0 ),
-  profile_source_( profile_source::DEFAULT ),
-  default_target( nullptr ),
-  target( nullptr ),
-  initialized( false ),
-  potion_used( false ),
-  region_str( s->default_region_str ),
-  server_str( s->default_server_str ),
-  origin_str(),
-  timeofday( DAY_TIME ),  // Set to Day by Default since in raid it always switches to Day, user can override.
-  zandalari_loa( PAKU ), //Set loa to paku by default (as it has some gain for any role if not optimal), user can override
-  gcd_ready( timespan_t::zero() ),
-  base_gcd( timespan_t::from_seconds( 1.5 ) ),
-  min_gcd( timespan_t::from_millis( 750 ) ),
-  gcd_type(gcd_haste_type::NONE ),
-  gcd_current_haste_value( 1.0 ),
-  started_waiting( timespan_t::min() ),
-  pet_list(),
-  active_pets(),
-  invert_scaling( 0 ),
-  // Reaction
-  reaction_offset( timespan_t::from_seconds( 0.1 ) ),
-  reaction_max( timespan_t::from_seconds( 1.4 ) ),
-  reaction_mean( timespan_t::from_seconds( 0.3 ) ),
-  reaction_stddev( timespan_t::zero() ),
-  reaction_nu( timespan_t::from_seconds( 0.25 ) ),
-  // Latency
-  world_lag( timespan_t::from_seconds( 0.1 ) ),
-  world_lag_stddev( timespan_t::min() ),
-  brain_lag( timespan_t::zero() ),
-  brain_lag_stddev( timespan_t::min() ),
-  world_lag_override( false ),
-  world_lag_stddev_override( false ),
-  cooldown_tolerance_( timespan_t::min() ),
-  dbc( s->dbc ),
-  talent_points(),
-  profession(),
-  artifact( nullptr ),
-  azerite( nullptr ),
-  base(),
-  initial(),
-  current(),
-  passive_rating_multiplier( 1.0 ),
-  last_cast( timespan_t::zero() ),
-  // Defense Mechanics
-  def_dr( diminishing_returns_constants_t() ),
-  // Attacks
-  main_hand_attack( nullptr ),
-  off_hand_attack( nullptr ),
-  current_attack_speed( 1.0 ),
-  // Resources
-  resources(),
-  // Consumables
-  // Events
-  executing( nullptr ),
-  queueing( nullptr ),
-  channeling( nullptr ),
-  strict_sequence( nullptr ),
-  readying( nullptr ),
-  off_gcd( nullptr ),
-  cast_while_casting_poll_event(),
-  off_gcd_ready( timespan_t::min() ),
-  cast_while_casting_ready( timespan_t::min() ),
-  in_combat( false ),
-  action_queued( false ),
-  first_cast( true ),
-  last_foreground_action( nullptr ),
-  prev_gcd_actions( 0 ),
-  off_gcdactions(),
-  cast_delay_reaction( timespan_t::zero() ),
-  cast_delay_occurred( timespan_t::zero() ),
-  callbacks( s ),
-  use_apl( "" ),
-  // Actions
-  use_default_action_list( false ),
-  precombat_action_list( 0 ),
-  active_action_list(),
-  default_action_list(),
-  active_off_gcd_list(),
-  active_cast_while_casting_list(),
-  restore_action_list(),
-  no_action_list_provided(),
-  // Reporting
-  quiet( false ),
-  report_extension( new player_report_extension_t() ),
-  arise_time( timespan_t::min() ),
-  iteration_fight_length(),
-  iteration_waiting_time(),
-  iteration_pooling_time(),
-  iteration_executed_foreground_actions( 0 ),
-  iteration_resource_lost(),
-  iteration_resource_gained(),
-  rps_gain( 0 ),
-  rps_loss( 0 ),
-  tmi_window( 6.0 ),
-  collected_data( this ),
-  // Damage
-  iteration_dmg( 0 ),
-  priority_iteration_dmg( 0 ),
-  iteration_dmg_taken( 0 ),
-  dpr( 0 ),
-  // Heal
-  iteration_heal( 0 ),
-  iteration_heal_taken( 0 ),
-  iteration_absorb(),
-  iteration_absorb_taken(),
-  hpr( 0 ),
-  report_information(),
-  // Gear
-  sets( ( !is_pet() && !is_enemy() ) ? new set_bonus_t( this ) : nullptr ),
-  meta_gem( META_GEM_NONE ),
-  matching_gear( false ),
-  karazhan_trinkets_paired( false ),
-  item_cooldown( "item_cd", *this ),
-  legendary_tank_cloak_cd( nullptr ),
-  warlords_unseeing_eye( 0.0 ),
-  warlords_unseeing_eye_stats(),
-  auto_attack_multiplier( 1.0 ),
-  insignia_of_the_grand_army_multiplier( 1.0 ),
-  scaling( ( !is_pet() || sim->report_pets_separately ) ? new player_scaling_t() : nullptr ),
-  // Movement & Position
-  base_movement_speed( 7.0 ),
-  passive_modifier( 0 ),
-  x_position( 0.0 ),
-  y_position( 0.0 ),
-  default_x_position( 0.0 ),
-  default_y_position( 0.0 ),
-  consumables(),
-  buffs(),
-  debuffs(),
-  gains(),
-  spells(),
-  procs(),
-  uptimes(),
-  racials(),
-  passive_values(),
-  active_during_iteration( false ),
-  _mastery( spelleffect_data_t::nil() ),
-  cache( this ),
-  resource_regeneration( regen_type::STATIC ),
-  last_regen( timespan_t::zero() ),
-  regen_caches( CACHE_MAX ),
-  dynamic_regen_pets( false ),
-  visited_apls_( 0 ),
-  action_list_id_( 0 ),
-  current_execute_type( execute_type::FOREGROUND ),
-  has_active_resource_callbacks( false ),
-  resource_threshold_trigger()
+player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r )
+  : actor_t( s, n ),
+    type( t ),
+    parent( nullptr ),
+    index( -1 ),
+    creation_iteration( sim->current_iteration ),
+    actor_spawn_index( -1 ),
+    race( r ),
+    role( ROLE_NONE ),
+    true_level( default_level ),
+    party( 0 ),
+    ready_type( READY_POLL ),
+    _spec( SPEC_NONE ),
+    bugs( true ),
+    disable_hotfixes( 0 ),
+    scale_player( true ),
+    death_pct( 0.0 ),
+    height( 0 ),
+    combat_reach( 1.0 ),
+    profile_source_( profile_source::DEFAULT ),
+    default_target( nullptr ),
+    target( nullptr ),
+    initialized( false ),
+    potion_used( false ),
+    region_str( s->default_region_str ),
+    server_str( s->default_server_str ),
+    origin_str(),
+    timeofday( DAY_TIME ),  // Set to Day by Default since in raid it always switches to Day, user can override.
+    zandalari_loa(
+        PAKU ),  // Set loa to paku by default (as it has some gain for any role if not optimal), user can override
+    vulpera_tricks( CORROSIVE ),  // default trick for damage
+    gcd_ready( timespan_t::zero() ),
+    base_gcd( timespan_t::from_seconds( 1.5 ) ),
+    min_gcd( timespan_t::from_millis( 750 ) ),
+    gcd_type( gcd_haste_type::NONE ),
+    gcd_current_haste_value( 1.0 ),
+    started_waiting( timespan_t::min() ),
+    pet_list(),
+    active_pets(),
+    invert_scaling( 0 ),
+    // Reaction
+    reaction_offset( timespan_t::from_seconds( 0.1 ) ),
+    reaction_max( timespan_t::from_seconds( 1.4 ) ),
+    reaction_mean( timespan_t::from_seconds( 0.3 ) ),
+    reaction_stddev( timespan_t::zero() ),
+    reaction_nu( timespan_t::from_seconds( 0.25 ) ),
+    // Latency
+    world_lag( timespan_t::from_seconds( 0.1 ) ),
+    world_lag_stddev( timespan_t::min() ),
+    brain_lag( timespan_t::zero() ),
+    brain_lag_stddev( timespan_t::min() ),
+    world_lag_override( false ),
+    world_lag_stddev_override( false ),
+    cooldown_tolerance_( timespan_t::min() ),
+    dbc( s->dbc ),
+    talent_points(),
+    profession(),
+    artifact( nullptr ),
+    azerite( nullptr ),
+    base(),
+    initial(),
+    current(),
+    passive_rating_multiplier( 1.0 ),
+    last_cast( timespan_t::zero() ),
+    // Defense Mechanics
+    def_dr( diminishing_returns_constants_t() ),
+    // Attacks
+    main_hand_attack( nullptr ),
+    off_hand_attack( nullptr ),
+    current_attack_speed( 1.0 ),
+    // Resources
+    resources(),
+    // Consumables
+    // Events
+    executing( nullptr ),
+    queueing( nullptr ),
+    channeling( nullptr ),
+    strict_sequence( nullptr ),
+    readying( nullptr ),
+    off_gcd( nullptr ),
+    cast_while_casting_poll_event(),
+    off_gcd_ready( timespan_t::min() ),
+    cast_while_casting_ready( timespan_t::min() ),
+    in_combat( false ),
+    action_queued( false ),
+    first_cast( true ),
+    last_foreground_action( nullptr ),
+    prev_gcd_actions( 0 ),
+    off_gcdactions(),
+    cast_delay_reaction( timespan_t::zero() ),
+    cast_delay_occurred( timespan_t::zero() ),
+    callbacks( s ),
+    use_apl( "" ),
+    // Actions
+    use_default_action_list( false ),
+    precombat_action_list( 0 ),
+    active_action_list(),
+    default_action_list(),
+    active_off_gcd_list(),
+    active_cast_while_casting_list(),
+    restore_action_list(),
+    no_action_list_provided(),
+    // Reporting
+    quiet( false ),
+    report_extension( new player_report_extension_t() ),
+    arise_time( timespan_t::min() ),
+    iteration_fight_length(),
+    iteration_waiting_time(),
+    iteration_pooling_time(),
+    iteration_executed_foreground_actions( 0 ),
+    iteration_resource_lost(),
+    iteration_resource_gained(),
+    rps_gain( 0 ),
+    rps_loss( 0 ),
+    tmi_window( 6.0 ),
+    collected_data( this ),
+    // Damage
+    iteration_dmg( 0 ),
+    priority_iteration_dmg( 0 ),
+    iteration_dmg_taken( 0 ),
+    dpr( 0 ),
+    // Heal
+    iteration_heal( 0 ),
+    iteration_heal_taken( 0 ),
+    iteration_absorb(),
+    iteration_absorb_taken(),
+    hpr( 0 ),
+    report_information(),
+    // Gear
+    sets( ( !is_pet() && !is_enemy() ) ? new set_bonus_t( this ) : nullptr ),
+    meta_gem( META_GEM_NONE ),
+    matching_gear( false ),
+    karazhan_trinkets_paired( false ),
+    item_cooldown( "item_cd", *this ),
+    legendary_tank_cloak_cd( nullptr ),
+    warlords_unseeing_eye( 0.0 ),
+    warlords_unseeing_eye_stats(),
+    auto_attack_multiplier( 1.0 ),
+    insignia_of_the_grand_army_multiplier( 1.0 ),
+    scaling( ( !is_pet() || sim->report_pets_separately ) ? new player_scaling_t() : nullptr ),
+    // Movement & Position
+    base_movement_speed( 7.0 ),
+    passive_modifier( 0 ),
+    x_position( 0.0 ),
+    y_position( 0.0 ),
+    default_x_position( 0.0 ),
+    default_y_position( 0.0 ),
+    consumables(),
+    buffs(),
+    debuffs(),
+    gains(),
+    spells(),
+    procs(),
+    uptimes(),
+    racials(),
+    passive_values(),
+    active_during_iteration( false ),
+    _mastery( spelleffect_data_t::nil() ),
+    cache( this ),
+    resource_regeneration( regen_type::STATIC ),
+    last_regen( timespan_t::zero() ),
+    regen_caches( CACHE_MAX ),
+    dynamic_regen_pets( false ),
+    visited_apls_( 0 ),
+    action_list_id_( 0 ),
+    current_execute_type( execute_type::FOREGROUND ),
+    has_active_resource_callbacks( false ),
+    resource_threshold_trigger()
 {
   actor_index = sim->actor_list.size();
   sim->actor_list.push_back( this );
@@ -1375,7 +1414,8 @@ void player_t::init_base_stats()
     base.stats.attribute[ STAT_STRENGTH ] += util::floor( racials.heroic_presence->effectN( 1 ).average( this ) );
     base.stats.attribute[ STAT_AGILITY ] += util::floor( racials.heroic_presence->effectN( 2 ).average( this ) );
     base.stats.attribute[ STAT_INTELLECT ] += util::floor( racials.heroic_presence->effectN( 3 ).average( this ) );
-    // so is endurance. Can't tell if this is floored, ends in 0.055 @ L100. Assuming based on symmetry w/ heroic pres.
+    // so is endurance. Can't tell if this is floored, ends in 0.055 @ L100. Assuming based on symmetry w/ heroic
+    // pres.
     base.stats.attribute[ STAT_STAMINA ] += util::floor( racials.endurance->effectN( 1 ).average( this ) );
 
     base.spell_crit_chance        = dbc.spell_crit_base( type, level() );
@@ -2103,6 +2143,9 @@ std::string player_t::init_use_racial_actions( const std::string& append )
       buffer += "/lights_judgment";
       race_action_found = true;
       break;
+    case RACE_VULPERA:
+      buffer += "/bag_of_tricks";
+      race_action_found = true;
     default:
       break;
   }
@@ -2119,12 +2162,13 @@ std::vector<std::string> player_t::get_racial_actions()
 {
   std::vector<std::string> actions;
 
-  actions.emplace_back("blood_fury" );
-  actions.emplace_back("berserking" );
-  actions.emplace_back("arcane_torrent" );
-  actions.emplace_back("lights_judgment" );
-  actions.emplace_back("fireblood" );
-  actions.emplace_back("ancestral_call" );
+  actions.emplace_back( "blood_fury" );
+  actions.emplace_back( "berserking" );
+  actions.emplace_back( "arcane_torrent" );
+  actions.emplace_back( "lights_judgment" );
+  actions.emplace_back( "fireblood" );
+  actions.emplace_back( "ancestral_call" );
+  actions.emplace_back( "bag_of_tricks" );
 
   return actions;
 }
@@ -4058,6 +4102,8 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
         m *= 1.0 + buffs.archmages_incandescence_int->data().effectN( 1 ).percent();
       if ( sim->auras.arcane_intellect->check() )
         m *= 1.0 + sim->auras.arcane_intellect->value();
+      if ( buffs.flash_of_insight )
+        m *= 1.0 + buffs.flash_of_insight->stack_value();
       break;
     case ATTR_SPIRIT:
       if ( buffs.amplification )
@@ -4325,10 +4371,10 @@ void player_t::sequence_add_wait( const timespan_t& amount, const timespan_t& ts
     }
     else
     {
-      assert(
-          false &&
-          "Collected too much action sequence data."
-          "This means there is a serious overflow of executed actions in the first iteration, which should be fixed." );
+      assert( false &&
+              "Collected too much action sequence data."
+              "This means there is a serious overflow of executed actions in the first iteration, which should be "
+              "fixed." );
     }
   }
 }
@@ -4348,10 +4394,10 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
     }
     else
     {
-      assert(
-          false &&
-          "Collected too much action sequence data."
-          "This means there is a serious overflow of executed actions in the first iteration, which should be fixed." );
+      assert( false &&
+              "Collected too much action sequence data."
+              "This means there is a serious overflow of executed actions in the first iteration, which should be "
+              "fixed." );
     }
   }
 }
@@ -4730,8 +4776,8 @@ void merge( player_t& left, player_t& right )
 /**
  * Merge player data with player from other thread.
  *
- * After simulating the same setup in multiple sim/threads, this function will merge the same player (and its collected
- * data) from two simulations together, aggregating the collected data.
+ * After simulating the same setup in multiple sim/threads, this function will merge the same player (and its
+ * collected data) from two simulations together, aggregating the collected data.
  */
 void player_t::merge( player_t& other )
 {
@@ -5858,6 +5904,7 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
     case STAT_LEECH_RATING:
     case STAT_AVOIDANCE_RATING:
     case STAT_SPEED_RATING:
+    case STAT_CORRUPTION_RESISTANCE:
       current.stats.add_stat( stat, amount );
       invalidate_cache( cache_type );
       break;
@@ -5997,6 +6044,7 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
     case STAT_LEECH_RATING:
     case STAT_AVOIDANCE_RATING:
     case STAT_SPEED_RATING:
+    case STAT_CORRUPTION_RESISTANCE:
       current.stats.add_stat( stat, -amount );
       invalidate_cache( cache_type );
       break;
@@ -6162,18 +6210,19 @@ void account_parry_haste( player_t& p, action_state_t* s )
         // from the time remaining on the current swing timer.  However, this effect cannot reduce the current swing
         // timer to less than 20% of the base value.  The game uses hasted values.  To illustrate that, two examples:
         // base weapon speed: 2.6, 30% haste, thus base swing timer is 2.6/1.3=2.0 seconds
-        // 1) if we parry when the current swing timer has 1.8 seconds remaining, then it gets reduced by 40% of 2.0, or
-        // 0.8 seconds,
+        // 1) if we parry when the current swing timer has 1.8 seconds remaining, then it gets reduced by 40% of 2.0,
+        // or 0.8 seconds,
         //    and the current swing timer becomes 1.0 seconds.
-        // 2) if we parry when the current swing timer has 1.0 second remaining the game tries to subtract 0.8 seconds,
-        // but hits the
+        // 2) if we parry when the current swing timer has 1.0 second remaining the game tries to subtract 0.8
+        // seconds, but hits the
         //    minimum value (20% of 2.0, or 0.4 seconds.  The current swing timer becomes 0.4 seconds.
         // Thus, the result is that the current swing timer becomes
         // max(current_swing_timer-0.4*base_swing_timer,0.2*base_swing_timer)
 
-        // the reschedule_execute(x) function we call to perform this tries to reschedule the effect such that it occurs
-        // at (sim->current_time() + x).  Thus we need to give it the difference between sim->current_time() and the new
-        // target of execute_event->occurs(). That value is simply the remaining time on the current swing timer.
+        // the reschedule_execute(x) function we call to perform this tries to reschedule the effect such that it
+        // occurs at (sim->current_time() + x).  Thus we need to give it the difference between sim->current_time()
+        // and the new target of execute_event->occurs(). That value is simply the remaining time on the current swing
+        // timer.
 
         // first, we need the hasted base swing timer, swing_time
         timespan_t swing_time = p.main_hand_attack->time_to_execute;
@@ -6438,8 +6487,9 @@ bool try_guardian_spirit( player_t& p, double actual_amount )
        actual_amount <= ( p.resources.max[ RESOURCE_HEALTH ] * 2 ) )
   {
     // Just assume that this is used so rarely that a strcmp hack will do
-    // stats_t* stat = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit"
-    // ) : 0; double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> data().effectN( 2
+    // stats_t* stat = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats(
+    // "guardian_spirit" ) : 0; double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit ->
+    // data().effectN( 2
     // ).percent(); resource_gain( RESOURCE_HEALTH, s -> result_amount ); if ( stat ) stat -> add_result( gs_amount,
     // gs_amount, result_amount_type::HEAL_DIRECT, RESULT_HIT );
     p.buffs.guardian_spirit->expire();
@@ -7970,6 +8020,65 @@ struct haymaker_t : public racial_spell_t
   }
 };
 
+// Bag of Tricks ===========================================================
+struct bag_of_tricks_t : public racial_spell_t
+{
+  bag_of_tricks_t( player_t* p, const std::string& options_str )
+    : racial_spell_t( p, "bag_of_tricks", p->find_racial_spell( "Bag of Tricks" ), options_str )
+  {
+    // This either a healing or damage spell depending on the chosen trick
+    //Values for damage are hardcoded in tooltip
+    if ( p->vulpera_tricks == player_t::HEALING || p->vulpera_tricks == player_t::HOLY )
+    {
+      attack_power_mod.direct = 0;
+      spell_power_mod.direct  = 0;
+    }
+    else
+    {
+      attack_power_mod.direct = 1.8;
+      spell_power_mod.direct  = 1.8;
+    }
+
+    may_crit = true;
+    gcd_type = gcd_haste_type::NONE;
+
+    if ( p->vulpera_tricks == player_t::CORROSIVE )
+    {
+      school = SCHOOL_NATURE;
+    }
+    else if ( p->vulpera_tricks == player_t::FLAMES )
+    {
+      school = SCHOOL_FIRE;
+    }
+    else if ( p->vulpera_tricks == player_t::SHADOWS )
+    {
+      school = SCHOOL_SHADOW;
+    }
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
+  {
+    auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+    auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+    if ( ap <= sp )
+      return 0;
+
+    return racial_spell_t::attack_direct_power_coefficient( s );
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* s ) const override
+  {
+    auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+    auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+    if ( ap > sp )
+      return 0;
+
+    return racial_spell_t::spell_direct_power_coefficient( s );
+  }
+};
+
 // Restart Sequence Action ==================================================
 
 struct restart_sequence_t : public action_t
@@ -8941,6 +9050,8 @@ action_t* player_t::create_action( const std::string& name, const std::string& o
     return new shadowmeld_t( this, options_str );
   if ( name == "stoneform" )
     return new stoneform_t( this, options_str );
+  if ( name == "bag_of_tricks" )
+    return new bag_of_tricks_t( this, options_str );
 
   if ( name == "cancel_action" )
     return new cancel_action_t( this, options_str );
@@ -9463,7 +9574,8 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     if ( w_class != type )
     {
       sim->errorf(
-          "Player %s has malformed wowhead talent string '%s': specified class %s does not match player class %s.\n",
+          "Player %s has malformed wowhead talent string '%s': specified class %s does not match player class "
+          "%s.\n",
           name(), talent_string.c_str(), util::player_type_string( w_class ), util::player_type_string( type ) );
       return false;
     }
@@ -9598,7 +9710,8 @@ void player_t::replace_spells()
     }
   }
 
-  // Search general spells for spells to replace (a spell you learn earlier might be replaced by one you learn later)
+  // Search general spells for spells to replace (a spell you learn earlier might be replaced by one you learn
+  // later)
   if ( _spec != SPEC_NONE )
   {
     for ( unsigned int i = 0; i < dbc.class_ability_size(); i++ )
@@ -9651,8 +9764,8 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
         continue;
       auto spell = dbc::find_spell( this, td->spell_id() );
 
-      // Loop through all our classes talents, and check if their spell's id match the one we maped to the given talent
-      // name
+      // Loop through all our classes talents, and check if their spell's id match the one we maped to the given
+      // talent name
       if ( td && ( td->spell_id() == spell_id ) )
       {
         // check if we have the talent enabled or not
@@ -9946,8 +10059,8 @@ std::unique_ptr<expr_t> deprecated_player_expressions( player_t& player, const s
 /**
  * Player specific action expressions
  *
- * Use this function for expressions which are bound to some action property (eg. target, cast_time, etc.) and not just
- * to the player itself.
+ * Use this function for expressions which are bound to some action property (eg. target, cast_time, etc.) and not
+ * just to the player itself.
  */
 std::unique_ptr<expr_t> player_t::create_action_expression( action_t&, const std::string& name )
 {
@@ -10656,10 +10769,10 @@ double player_t::calculate_time_to_bloodlust() const
     }
     else
     {
-      // the sim's bloodlust_check event fires every second, so negative times under 1 second should be treated as zero
-      // for safety. without this, time_to_bloodlust can spike to the next target value up to a second before bloodlust
-      // is actually cast. probably a non-issue since the worst case is likely to be casting something 1 second too
-      // early, but we may as well account for it
+      // the sim's bloodlust_check event fires every second, so negative times under 1 second should be treated as
+      // zero for safety. without this, time_to_bloodlust can spike to the next target value up to a second before
+      // bloodlust is actually cast. probably a non-issue since the worst case is likely to be casting something 1
+      // second too early, but we may as well account for it
       if ( time_to_bl < timespan_t::zero() && -time_to_bl < timespan_t::from_seconds( 1.0 ) )
         time_to_bl = timespan_t::zero();
       if ( bl_pct_time < timespan_t::zero() && -bl_pct_time < timespan_t::from_seconds( 1.0 ) )
@@ -10739,6 +10852,19 @@ std::string player_t::create_profile( save_e stype )
     {
       profile_str += "zandalari_loa=" + util::to_string(zandalari_loa == player_t::AKUNDA ? "akunda" : zandalari_loa == player_t::BWONSAMDI ? "bwonsamdi"
         : zandalari_loa == player_t::GONK ? "gonk" : zandalari_loa == player_t::KIMBUL ? "kimbul" : zandalari_loa == player_t::KRAGWA ? "kragwa" : "paku") + term;
+    }
+    if ( race == RACE_VULPERA )
+    {
+      profile_str +=
+          "vulpera_tricks=" +
+          util::to_string( vulpera_tricks == player_t::HOLY
+                               ? "holy"
+                               : vulpera_tricks == player_t::FLAMES
+                                     ? "flames"
+                                     : vulpera_tricks == player_t::SHADOWS
+                                           ? "shadows"
+                                           : vulpera_tricks == player_t::HEALING ? "healing" : "corrosive" ) +
+          term;
     }
     profile_str += "role=";
     profile_str += util::role_type_string( primary_role() ) + term;
@@ -11005,6 +11131,7 @@ void player_t::copy_from( player_t* source )
   race_str        = source->race_str;
   timeofday       = source->timeofday;
   zandalari_loa   = source->zandalari_loa;
+  vulpera_tricks  = source->vulpera_tricks;
   race            = source->race;
   role            = source->role;
   _spec           = source->_spec;
@@ -11066,6 +11193,7 @@ void player_t::create_options()
   add_option( opt_string( "race", race_str ) );
   add_option( opt_func( "timeofday", parse_timeofday ) );
   add_option( opt_func( "zandalari_loa", parse_loa ) );
+  add_option( opt_func( "vulpera_tricks", parse_tricks ) );
   add_option( opt_int( "level", true_level, 1, MAX_LEVEL ) );
   add_option( opt_bool( "ready_trigger", ready_type ) );
   add_option( opt_func( "role", parse_role_string ) );
@@ -11170,6 +11298,8 @@ void player_t::create_options()
   add_option( opt_float( "gear_bonus_armor", gear.bonus_armor ) );
   add_option( opt_float( "gear_leech_rating", gear.leech_rating ) );
   add_option( opt_float( "gear_run_speed_rating", gear.speed_rating ) );
+  add_option( opt_float( "gear_corruption", gear.corruption_rating ) );
+  add_option( opt_float( "gear_corruption_resistance", gear.corruption_resistance_rating ) );
 
   // Stat Enchants
   add_option( opt_float( "enchant_strength", enchant.attribute[ ATTR_STRENGTH ] ) );
@@ -11195,6 +11325,8 @@ void player_t::create_options()
   add_option( opt_float( "enchant_energy", enchant.resource[ RESOURCE_ENERGY ] ) );
   add_option( opt_float( "enchant_focus", enchant.resource[ RESOURCE_FOCUS ] ) );
   add_option( opt_float( "enchant_runic", enchant.resource[ RESOURCE_RUNIC_POWER ] ) );
+  add_option( opt_float( "enchant_corruption", enchant.corruption_rating ) );
+  add_option( opt_float( "enchant_corruption_resistance", enchant.corruption_resistance_rating ) );
 
   // Regen
   add_option( opt_bool( "infinite_energy", resources.infinite_resource[ RESOURCE_ENERGY ] ) );
@@ -12942,7 +13074,8 @@ action_t* player_t::select_action( const action_priority_list_t& list,
         size_t random              = static_cast<size_t>( rng().range( 0, static_cast<double>( num_actions ) ) );
         a                          = (*action_list)[ random ];
         attempted_random++;
-        // Limit the amount of attempts to select a random action based on skill, then bail out and try again in 100 ms.
+        // Limit the amount of attempts to select a random action based on skill, then bail out and try again in 100
+        // ms.
         if ( attempted_random > max_random_attempts )
           break;
       }
@@ -13405,9 +13538,9 @@ void player_t::acquire_target( retarget_source event, player_t* context )
  * A method to "activate" an actor in the simulator. Single actor batch mode activates one primary actor at a time,
  * while normal simulation mode activates all actors at the beginning of the sim.
  *
- * NOTE: Currently, the only thing that occurs during activation of an actor is the registering of various state change
- * callbacks (via the action_t::activate method) to the global actor lists.
- * Actor pets are also activated by default.
+ * NOTE: Currently, the only thing that occurs during activation of an actor is the registering of various state
+ * change callbacks (via the action_t::activate method) to the global actor lists. Actor pets are also activated by
+ * default.
  */
 void player_t::activate()
 {

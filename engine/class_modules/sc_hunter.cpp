@@ -5290,7 +5290,11 @@ std::string hunter_t::default_flask() const
 
 std::string hunter_t::default_food() const
 {
-  return ( true_level >  110 ) ? "mechdowels_big_mech" :
+
+  std::string bfa_food = ( specialization() == HUNTER_SURVIVAL ) ? "baked_port_tato" :
+    ( specialization() == HUNTER_MARKSMANSHIP ) ? "abyssalfried_rissole" : "mechdowels_big_mech";
+
+  return ( true_level >  110 ) ? bfa_food :
          ( true_level >  100 ) ? "lavish_suramar_feast" :
          ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
          ( true_level >= 80  ) ? "seafood_magnifique_feast" :
@@ -5344,9 +5348,6 @@ void hunter_t::init_action_list()
       precombat -> add_action( "summon_pet" );
 
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-    // Pre-pot
-    precombat -> add_action( "potion" );
 
     switch ( specialization() )
     {
@@ -5406,6 +5407,7 @@ void hunter_t::apl_bm()
           "Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s." );
   precombat -> add_action( this, "Bestial Wrath", "precast_time=1.5,if=azerite.primal_instincts.enabled&!essence.essence_of_the_focusing_iris.major&(equipped.azsharas_font_of_power|!equipped.cyclotronic_blast)",
           "Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat." );
+  precombat -> add_action( "potion,dynamic_prepot=1" );
 
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( "use_items" );
@@ -5423,11 +5425,12 @@ void hunter_t::apl_bm()
   cds -> add_action( "blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16" );
   cds -> add_action( "lights_judgment,if=pet.turtle.buff.frenzy.up&pet.turtle.buff.frenzy.remains>gcd.max|!pet.turtle.buff.frenzy.up" );
   cds -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&target.health.pct<35|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
-
-  cds -> add_action( "worldvein_resonance,if=buff.lifeblood.stack<4" );
+  cds -> add_action( "worldvein_resonance" );
   cds -> add_action( "guardian_of_azeroth,if=cooldown.aspect_of_the_wild.remains<10|target.time_to_die>cooldown+duration|target.time_to_die<30" );
   cds -> add_action( "ripple_in_space" );
   cds -> add_action( "memory_of_lucid_dreams" );
+  cds -> add_action( "bag_of_tricks" );
+  cds -> add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
 
   st -> add_action( this, "Barbed Shot", "if=pet.turtle.buff.frenzy.up&pet.turtle.buff.frenzy.remains<gcd|cooldown.bestial_wrath.remains&(full_recharge_time<gcd|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd)" );
   st -> add_action( "concentrated_flame,if=focus+focus.regen*gcd<focus.max&buff.bestial_wrath.down&(!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight)|full_recharge_time<gcd|target.time_to_die<5" );
@@ -5484,24 +5487,21 @@ void hunter_t::apl_mm()
   precombat -> add_talent( this, "Hunter's Mark" );
   precombat -> add_talent( this, "Double Tap", "precast_time=10",
         "Precast this as early as possible to potentially gain another cast during the fight." );
-
+  precombat -> add_action( "use_item,name=azsharas_font_of_power" );
   precombat -> add_action( "worldvein_resonance" );
   precombat -> add_action( "guardian_of_azeroth" );
   precombat -> add_action( "memory_of_lucid_dreams" );
-  precombat -> add_action( "use_item,name=azsharas_font_of_power" );
-
   precombat -> add_action( this, "Trueshot", "precast_time=1.5,if=active_enemies>2" );
+  precombat -> add_action( "potion,dynamic_prepot=1" );
   precombat -> add_action( this, "Aimed Shot", "if=active_enemies<3" );
 
   default_list -> add_action( "auto_shot" );
-  
-  default_list -> add_action( special_use_item_action( "lurkers_insidious_gift", "if=cooldown.trueshot.remains_guess<15|target.time_to_die<30" ) );
-  default_list -> add_action( special_use_item_action( "azsharas_font_of_power", "if=cooldown.trueshot.remains<18|target.time_to_die<40" ) );
-  default_list -> add_action( special_use_item_action( "lustrous_golden_plumage", "if=cooldown.trueshot.remains_guess<5|target.time_to_die<20" ) );
-  default_list -> add_action( special_use_item_action( "galecallers_boon", "if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<10" ) );
-  default_list -> add_action( special_use_item_action( "ashvanes_razor_coral", "if=buff.trueshot.up&(buff.guardian_of_azeroth.up|!essence.condensed_lifeforce.major.rank3&ca_execute)|debuff.razor_coral_debuff.down|target.time_to_die<20" ) );
-
-  default_list -> add_action( "use_item,name=pocketsized_computation_device,if=!buff.trueshot.up&!essence.blood_of_the_enemy.major.rank3|debuff.blood_of_the_enemy.up|target.time_to_die<5" );
+  default_list -> add_action( "use_item,name=lurkers_insidious_gift,if=cooldown.trueshot.remains_guess<15|target.time_to_die<30" );
+  default_list -> add_action( "use_item,name=azsharas_font_of_power,if=(target.time_to_die>cooldown+34|target.health.pct<20|target.time_to_pct_20<15)&cooldown.trueshot.remains_guess<15|target.time_to_die<35" );
+  default_list -> add_action( "use_item,name=lustrous_golden_plumage,if=cooldown.trueshot.remains_guess<5|target.time_to_die<20" );
+  default_list -> add_action( "use_item,name=galecallers_boon,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<10" );
+  default_list -> add_action( "use_item,name=ashvanes_razor_coral,if=buff.trueshot.up&(buff.guardian_of_azeroth.up|!essence.condensed_lifeforce.major&target.health.pct<20)|debuff.razor_coral_debuff.down|target.time_to_die<20" );
+  default_list -> add_action( "use_item,name=pocketsized_computation_device,if=!buff.trueshot.up&!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up|target.time_to_die<5" );
   default_list -> add_action( "use_items,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<20",
 	  "Try to line up activated trinkets with Trueshot" );
   default_list -> add_action( "call_action_list,name=cds" );
@@ -5510,20 +5510,19 @@ void hunter_t::apl_mm()
 
   cds -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down&!buff.trueshot.up" );
   cds -> add_talent( this, "Double Tap", "if=cooldown.rapid_fire.remains<gcd|cooldown.rapid_fire.remains<cooldown.aimed_shot.remains|target.time_to_die<20" );
-
   cds -> add_action( "berserking,if=buff.trueshot.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13" );
   cds -> add_action( "blood_fury,if=buff.trueshot.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
   cds -> add_action( "ancestral_call,if=buff.trueshot.up&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
   cds -> add_action( "fireblood,if=buff.trueshot.up&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9" );
   cds -> add_action( "lights_judgment" );
-
-  cds -> add_action( "worldvein_resonance,if=buff.lifeblood.stack<4&!buff.trueshot.up" );
-  cds -> add_action( "guardian_of_azeroth,if=(ca_execute|target.time_to_die>cooldown.guardian_of_azeroth.duration+duration)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<31" );
+  cds -> add_action( "bag_of_tricks" );
+  cds -> add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
+  cds -> add_action( "worldvein_resonance,if=(trinket.azsharas_font_of_power.cooldown.remains>20|!equipped.azsharas_font_of_power|target.time_to_die<trinket.azsharas_font_of_power.cooldown.duration+34&target.health.pct>20)&(cooldown.trueshot.remains_guess<3|(essence.vision_of_perfection.minor&target.time_to_die>cooldown+buff.worldvein_resonance.duration))|target.time_to_die<20" );
+  cds -> add_action( "guardian_of_azeroth,if=(ca_execute|target.time_to_die>cooldown+30)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<31" );
   cds -> add_action( "ripple_in_space,if=cooldown.trueshot.remains<7" );
   cds -> add_action( "memory_of_lucid_dreams,if=!buff.trueshot.up" );
-
-  cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
-  cds -> add_action( this, "Trueshot", "if=focus>60&(buff.precise_shots.down&cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15" );
+  cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
+  cds -> add_action( this, "Trueshot", "if=focus>60&(buff.precise_shots.down&cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+buff.trueshot.duration|(target.health.pct<20|!talent.careful_aim.enabled)&(!equipped.azsharas_font_of_power|trinket.azsharas_font_of_power.cooldown.remains>15))|target.time_to_die<15" );
 
   st -> add_talent( this, "Explosive Shot" );
   st -> add_talent( this, "Barrage", "if=active_enemies>1" );
@@ -5576,26 +5575,30 @@ void hunter_t::apl_surv()
   precombat -> add_action( "use_item,name=azsharas_font_of_power" );	
   precombat -> add_action( "use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists" );
   precombat -> add_action( "guardian_of_azeroth" );
+  precombat -> add_action( "worldvein_resonance" );
+  precombat -> add_action( "potion,dynamic_prepot=1" );
   precombat -> add_talent( this, "Steel Trap" );
   precombat -> add_action( this, "Harpoon" );	
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "use_items" );
   default_list -> add_action( "call_action_list,name=cds" );
+  default_list -> add_action( "mongoose_bite,if=talent.alpha_predator.enabled&target.time_to_die<10|target.time_to_die<5" );	
   default_list -> add_action( "call_action_list,name=apwfi,if=active_enemies<3&talent.chakrams.enabled&talent.alpha_predator.enabled" );
   default_list -> add_action( "call_action_list,name=wfi,if=active_enemies<3&talent.chakrams.enabled");
   default_list -> add_action( "call_action_list,name=st,if=active_enemies<3&!talent.alpha_predator.enabled&!talent.wildfire_infusion.enabled" );
   default_list -> add_action( "call_action_list,name=apst,if=active_enemies<3&talent.alpha_predator.enabled&!talent.wildfire_infusion.enabled" );
   default_list -> add_action( "call_action_list,name=apwfi,if=active_enemies<3&talent.alpha_predator.enabled&talent.wildfire_infusion.enabled" );
   default_list -> add_action( "call_action_list,name=wfi,if=active_enemies<3&!talent.alpha_predator.enabled&talent.wildfire_infusion.enabled" );
-  default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1" );
-  // Basic charge handling for Rank 3 Crucible of Flame (cast on open globals and when chargecapping)
+  default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1&!talent.birds_of_prey.enabled|active_enemies>2" );
+  
+  // Fillers, cast if nothing else is available.
   default_list -> add_action( "concentrated_flame" );
-  // Arcane torrent if nothing else is available
   default_list -> add_action( "arcane_torrent" );
+  default_list -> add_action( "bag_of_tricks" );
 
   for ( std::string racial : { "blood_fury", "ancestral_call", "fireblood" } )
-    cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
+  cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
   cds -> add_action( "lights_judgment" );
   cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13");
   cds -> add_action( "potion,if=buff.guardian_of_azeroth.up&(buff.berserking.up|buff.blood_fury.up|!race.troll)|(consumable.potion_of_unbridled_fury&target.time_to_die<61|target.time_to_die<26)|!essence.condensed_lifeforce.major&buff.coordinated_assault.up" );
@@ -5614,6 +5617,7 @@ void hunter_t::apl_surv()
   cds->add_action( "concentrated_flame,if=full_recharge_time<1*gcd" );
   cds->add_action( "the_unbound_force,if=buff.reckless_force.up" );
   cds->add_action( "worldvein_resonance" );
+  cds->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
 
   st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
   st -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
@@ -5621,10 +5625,9 @@ void hunter_t::apl_surv()
   st -> add_talent( this, "Mongoose Bite", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)",
                         "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
   st -> add_action( this, "Serpent_Sting", "if=buff.vipers_venom.up&buff.vipers_venom.remains<1.5*gcd" );
-  st -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max" );
+  st -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
   st -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
-  st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)" );
-  st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.stack>5&!cooldown.coordinated_assault.remains" );
+  st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)|time_to_die<18&!dot.wildfire_bomb.ticking" );
   st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|dot.serpent_sting.refreshable&!buff.coordinated_assault.up" );
   st -> add_talent( this, "A Murder of Crows", "if=!buff.coordinated_assault.up" );
   st -> add_action( this, "Coordinated Assault", "if=!buff.coordinated_assault.up" );
@@ -5637,11 +5640,11 @@ void hunter_t::apl_surv()
   apst -> add_talent( this, "Mongoose Bite", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)" );
   apst -> add_action( this, "Raptor Strike", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)" );
   apst -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
-  apst -> add_action( this, "Kill Command", "if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-10" );
+  apst -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max" );
   apst -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
-  apst -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)" );
+  apst -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)|time_to_die<18&!dot.wildfire_bomb.ticking" );
   apst -> add_action( this, "Serpent Sting", "if=!dot.serpent_sting.ticking&!buff.coordinated_assault.up" );
-  apst -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)" );
+  apst -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)" );
   apst -> add_action( this, "Serpent Sting", "if=refreshable&!buff.coordinated_assault.up&buff.mongoose_fury.stack<5" );
   apst -> add_talent( this, "A Murder of Crows", "if=!buff.coordinated_assault.up" );
   apst -> add_action( this, "Coordinated Assault", "if=!buff.coordinated_assault.up" );

@@ -213,6 +213,7 @@ void whispering_eldritch_bow( special_effect_t& );
 void psyche_shredder( special_effect_t& );
 void torment_in_a_jar( special_effect_t& );
 void draconic_empowerment( special_effect_t& );
+void writhing_segment_of_drestagath( special_effect_t& );
 }  // namespace items
 
 // 8.3.0(+?) corruption implementations
@@ -238,6 +239,7 @@ void void_ritual( special_effect_t& effect );
 void searing_flames( special_effect_t& effect );
 void twisted_appendage( special_effect_t& effect );
 void lash_of_the_void( special_effect_t& effect );
+void flash_of_insight( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -5495,6 +5497,7 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
       {265221, true},  // Fireblood
       {274738, true},  // Ancestral Call
       {287712, true},  // Haymaker
+      {312411, true},  // Bag of Tricks
       // Major Essences
       {295373, true},  // Concentrated Flame
       {298357, true},  // Memory of Lucid Dreams
@@ -5806,8 +5809,7 @@ void items::torment_in_a_jar( special_effect_t& effect )
     double dmg_mod;
 
     unleashed_agony_t( const special_effect_t& effect, double dmg_mod, buff_t* buff )
-      : proc_t( effect, "unleashed_agony", 313088 ),
-      dmg_mod( dmg_mod ), buff( buff )
+      : proc_t( effect, "unleashed_agony", 313088 ), dmg_mod( dmg_mod ), buff( buff )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
     }
@@ -5829,7 +5831,8 @@ void items::torment_in_a_jar( special_effect_t& effect )
 
     unleashed_agony_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.player, effect )
     {
-      stacking_damage = create_proc_action<unleashed_agony_t>( "unleashed_agony", effect, effect.driver()->effectN( 4 ).percent(), effect.custom_buff );
+      stacking_damage = create_proc_action<unleashed_agony_t>(
+          "unleashed_agony", effect, effect.driver()->effectN( 4 ).percent(), effect.custom_buff );
       stacking_damage->add_child( effect.execute_action );
     }
 
@@ -5854,6 +5857,12 @@ void items::torment_in_a_jar( special_effect_t& effect )
   new unleashed_agony_cb_t( effect );
 }
 
+void items::writhing_segment_of_drestagath( special_effect_t& effect )
+{
+  effect.execute_action =
+      create_proc_action<aoe_proc_t>( "spine_eruption", effect, "spine_eruption", effect.driver(), true );
+}
+
 /**Draconic Empowerment
  * id=317860 driver
  * id=317859 buff
@@ -5862,10 +5871,12 @@ void items::draconic_empowerment( special_effect_t& effect )
 {
   effect.custom_buff = buff_t::find( effect.player, "draconic_empowerment" );
   if ( !effect.custom_buff )
-    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "draconic_empowerment", effect.player->find_spell( 317859 ) )
-      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.player->find_spell( 317859 )->effectN( 1 ).average( effect.item ) );
+    effect.custom_buff =
+        make_buff<stat_buff_t>( effect.player, "draconic_empowerment", effect.player->find_spell( 317859 ) )
+            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+                        effect.player->find_spell( 317859 )->effectN( 1 ).average( effect.item ) );
 
-  effect.proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC; // Proc flags are missing in spell data.
+  effect.proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC;  // Proc flags are missing in spell data.
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -5907,8 +5918,12 @@ void set_bonus::titanic_empowerment( special_effect_t& effect )
   effect.custom_buff = buff_t::find( effect.player, "titanic_empowerment" );
   if ( !effect.custom_buff )
   {
-    effect.custom_buff =
-        make_buff<stat_buff_t>( effect.player, "titanic_empowerment", effect.player->find_spell( 315858 ) );
+    auto buff = make_buff<stat_buff_t>( effect.player, "titanic_empowerment", effect.player->find_spell( 315858 ) );
+    // The set bonus uses item scaling for some reason. Player level is used as the item level.
+    const auto& budget = effect.player->dbc.random_property( std::min( effect.player->level(), as<int>( effect.driver()->max_scaling_level() ) ) );
+    double value = budget.p_epic[ 0 ] * effect.driver()->effectN( 1 ).m_coefficient();
+    buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), value );
+    effect.custom_buff = buff;
   }
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -5922,42 +5937,124 @@ void set_bonus::keepsakes_of_the_resolute_commandant( special_effect_t& effect )
 
 void corruption::masterful( special_effect_t& effect )
 {
-  effect.type = SPECIAL_EFFECT_NONE;
-  effect.player->passive_rating_multiplier.get_mutable( RATING_MASTERY ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
+  effect.type  = SPECIAL_EFFECT_NONE;
+  buff_t* buff = buff_t::find( effect.player, "masterful" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "masterful", effect.player->find_spell( 320253 ) )
+               ->set_default_value( effect.driver()->effectN( 1 ).percent() )
+               ->add_invalidate( CACHE_MASTERY )
+               ->set_quiet( true )
+               ->set_stack_change_callback( []( buff_t* b, int old_, int new_ ) {
+                 if ( new_ - old_ > 0 )
+                 {
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MASTERY ) *= ( 1 + b->default_value );
+                 }
+                 else if ( new_ - old_ < 0 )
+                 {
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MASTERY ) /= ( 1 + b->default_value );
+                 }
+               } );
+    effect.player->register_combat_begin( buff );
+  }
+  else
+    buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
 }
 
 void corruption::expedient( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_NONE;
-  effect.player->passive_rating_multiplier.get_mutable( RATING_MELEE_HASTE ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
-  effect.player->passive_rating_multiplier.get_mutable( RATING_SPELL_HASTE ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
-  effect.player->passive_rating_multiplier.get_mutable( RATING_RANGED_HASTE ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
+
+  buff_t* buff = buff_t::find( effect.player, "expedient" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "expedient", effect.player->find_spell( 320257 ) )
+               ->set_default_value( effect.driver()->effectN( 1 ).percent() )
+               ->add_invalidate( CACHE_HASTE )
+               ->set_quiet( true )
+               ->set_stack_change_callback( []( buff_t* b, int old_, int new_ ) {
+                 if ( new_ - old_ > 0 )
+                 {
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MELEE_HASTE ) *= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_SPELL_HASTE ) *= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_RANGED_HASTE ) *= 1.0 + b->default_value;
+                 }
+                 else if ( new_ - old_ < 0 )
+                 {
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MELEE_HASTE ) /= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_SPELL_HASTE ) /= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_RANGED_HASTE ) /= 1.0 + b->default_value;
+                 }
+               } );
+    effect.player->register_combat_begin( buff );
+  }
+  else
+    buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
 }
 
 void corruption::versatile( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_NONE;
-  effect.player->passive_rating_multiplier.get_mutable( RATING_HEAL_VERSATILITY ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
-  effect.player->passive_rating_multiplier.get_mutable( RATING_DAMAGE_VERSATILITY ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
-  effect.player->passive_rating_multiplier.get_mutable( RATING_MITIGATION_VERSATILITY ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
+
+  buff_t* buff = buff_t::find( effect.player, "versatile" );
+  if ( !buff )
+  {
+    buff =
+        make_buff( effect.player, "versatile", effect.player->find_spell( 320259 ) )
+            ->set_default_value( effect.driver()->effectN( 1 ).percent() )
+            ->add_invalidate( CACHE_VERSATILITY )
+            ->set_quiet( true )
+            ->set_stack_change_callback( []( buff_t* b, int old_, int new_ ) {
+              if ( new_ - old_ > 0 )
+              {
+                b->player->passive_rating_multiplier.get_mutable( RATING_HEAL_VERSATILITY ) *= 1.0 + b->default_value;
+                b->player->passive_rating_multiplier.get_mutable( RATING_DAMAGE_VERSATILITY ) *= 1.0 + b->default_value;
+                b->player->passive_rating_multiplier.get_mutable( RATING_MITIGATION_VERSATILITY ) *=
+                    1.0 + b->default_value;
+              }
+              else if ( new_ - old_ < 0 )
+              {
+                b->player->passive_rating_multiplier.get_mutable( RATING_HEAL_VERSATILITY ) /= 1.0 + b->default_value;
+                b->player->passive_rating_multiplier.get_mutable( RATING_DAMAGE_VERSATILITY ) /= 1.0 + b->default_value;
+                b->player->passive_rating_multiplier.get_mutable( RATING_MITIGATION_VERSATILITY ) /=
+                    1.0 + b->default_value;
+              }
+            } );
+    effect.player->register_combat_begin( buff );
+  }
+  else
+    buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
 }
 
 void corruption::severe( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_NONE;
-  effect.player->passive_rating_multiplier.get_mutable( RATING_MELEE_CRIT ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
-  effect.player->passive_rating_multiplier.get_mutable( RATING_SPELL_CRIT ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
-  effect.player->passive_rating_multiplier.get_mutable( RATING_RANGED_CRIT ) *=
-      1.0 + effect.driver()->effectN( 1 ).percent();
+
+  buff_t* buff = buff_t::find( effect.player, "severe" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "severe", effect.player->find_spell( 320261 ) )
+               ->set_default_value( effect.driver()->effectN( 1 ).percent() )
+               ->add_invalidate( CACHE_CRIT_CHANCE )
+               ->set_quiet( true )
+               ->set_stack_change_callback( []( buff_t* b, int old_, int new_ ) {
+                 if ( new_ - old_ > 0 )
+                 {
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MELEE_CRIT ) *= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_SPELL_CRIT ) *= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_RANGED_CRIT ) *= 1.0 + b->default_value;
+                 }
+                 else if ( new_ - old_ < 0 )
+                 {
+                   b->player->passive_rating_multiplier.get_mutable( RATING_MELEE_CRIT ) /= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_SPELL_CRIT ) /= 1.0 + b->default_value;
+                   b->player->passive_rating_multiplier.get_mutable( RATING_RANGED_CRIT ) /= 1.0 + b->default_value;
+                 }
+               } );
+    effect.player->register_combat_begin( buff );
+  }
+  else
+    buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
 }
 
 /**Ineffable Truth
@@ -5969,50 +6066,54 @@ void corruption::severe( special_effect_t& effect )
  */
 void corruption::ineffable_truth( special_effect_t& effect )
 {
-  effect.custom_buff = buff_t::find( effect.player, "ineffable_truth" );
-  if ( !effect.custom_buff )
+  buff_t* buff = buff_t::find( effect.player, "ineffable_truth" );
+  if ( !buff )
   {
-    auto player              = effect.player;
-    auto recharge_multiplier = 1.0 / ( 1 + effect.driver()->effectN( 1 ).percent() );
-    effect.custom_buff       = make_buff( effect.player, "ineffable_truth", effect.player->find_spell( 316801 ) )
-                             ->set_stack_change_callback( [player, recharge_multiplier]( buff_t*, int, int new_ ) {
-                               for ( auto a : player->action_list )
-                               {
-                                 // Only class spells have their cooldown reduced.
-                                 if ( a->data().class_mask() != 0 && !a->background )
-                                 {
-                                   if ( new_ == 1 )
-                                     a->base_recharge_multiplier *= recharge_multiplier;
-                                   else
-                                     a->base_recharge_multiplier /= recharge_multiplier;
-                                   if ( a->cooldown->action == a )
-                                     a->cooldown->adjust_recharge_multiplier();
-                                   if ( a->internal_cooldown->action == a )
-                                     a->internal_cooldown->adjust_recharge_multiplier();
-                                 }
-                               }
-                             } );
+    auto player = effect.player;
+    buff        = make_buff( effect.player, "ineffable_truth", effect.player->find_spell( 316801 ) )
+               ->set_default_value( effect.driver()->effectN( 1 ).percent() )
+               ->set_stack_change_callback( [player]( buff_t* b, int, int new_ ) {
+                 double recharge_multiplier = 1.0 / ( 1 + b->default_value );
+                 for ( auto a : player->action_list )
+                 {
+                   // Only class spells have their cooldown reduced.
+                   if ( a->data().class_mask() != 0 && !a->background )
+                   {
+                     if ( new_ == 1 )
+                       a->base_recharge_multiplier *= recharge_multiplier;
+                     else
+                       a->base_recharge_multiplier /= recharge_multiplier;
+                     if ( a->cooldown->action == a )
+                       a->cooldown->adjust_recharge_multiplier();
+                     if ( a->internal_cooldown->action == a )
+                       a->internal_cooldown->adjust_recharge_multiplier();
+                   }
+                 }
+               } );
+    effect.custom_buff = buff;
+    // Replace the driver spell, the RPPM value and proc flags are elsewhere
+    effect.spell_id = 316799;
+
+    new dbc_proc_callback_t( effect.player, effect );
   }
-
-  // Replace the driver spell, the RPPM value and proc flags are elsewhere
-  effect.spell_id = 316799;
-
-  new dbc_proc_callback_t( effect.player, effect );
+  else
+    buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
 }
 
 // Twilight Devastation
 void corruption::twilight_devastation( special_effect_t& effect )
 {
-  struct twilight_devastation_t : public aoe_proc_t
+  struct twilight_devastation_t : public proc_t
   {
     double maxhp_multiplier;
 
     // Spell data has the percentage with an extra 0
     twilight_devastation_t( const special_effect_t& effect )
-      : aoe_proc_t( effect, "twilight_devastation", 317159, true ),
+      : proc_t( effect, "twilight_devastation", 317159 ),
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 )
     {
       // TODO: Check what this scales with
+      aoe = -1;
       // Set base damage so that flags are properly set
       base_dd_min += 1;
       base_dd_max += 1;
@@ -6168,55 +6269,57 @@ void corruption::strikethrough( special_effect_t& effect )
 
 void corruption::glimpse_of_clarity( special_effect_t& effect )
 {
-  timespan_t cdr_amount = timespan_t::from_seconds( effect.player->find_spell( 315574 )->effectN( 1 ).base_value() );
-
-  effect.custom_buff = buff_t::find( effect.player, "glimpse_of_clarity" );
-  if ( !effect.custom_buff )
+  buff_t* buff = buff_t::find( effect.player, "glimpse_of_clarity" );
+  if ( !buff )
   {
-    effect.custom_buff = make_buff( effect.player, "glimpse_of_clarity", effect.player->find_spell( 315573 ) );
-  }
+    buff = make_buff( effect.player, "glimpse_of_clarity", effect.player->find_spell( 315573 ) )
+               ->set_default_value( effect.driver()->effectN( 1 ).base_value() );
+    effect.custom_buff = buff;
 
-  auto cb          = new special_effect_t( effect.player );
-  cb->name_str     = "glimpse_of_clarity_cb";
-  cb->type         = SPECIAL_EFFECT_EQUIP;
-  cb->source       = SPECIAL_EFFECT_SOURCE_ITEM;
-  cb->proc_chance_ = 1.0;
-  cb->proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
-  cb->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-  effect.player->special_effects.push_back( cb );
+    auto cb          = new special_effect_t( effect.player );
+    cb->name_str     = "glimpse_of_clarity_cb";
+    cb->type         = SPECIAL_EFFECT_EQUIP;
+    cb->source       = SPECIAL_EFFECT_SOURCE_ITEM;
+    cb->proc_chance_ = 1.0;
+    cb->proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
+    cb->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+    effect.player->special_effects.push_back( cb );
 
-  struct glimpse_of_clarity_cb_t : public dbc_proc_callback_t
-  {
-    timespan_t cdr_amount;
-    buff_t* buff;
-
-    glimpse_of_clarity_cb_t( const special_effect_t& effect, timespan_t cdr_amount, buff_t* buff )
-      : dbc_proc_callback_t( effect.player, effect ), cdr_amount( cdr_amount ), buff( buff )
+    struct glimpse_of_clarity_cb_t : public dbc_proc_callback_t
     {
-    }
+      buff_t* buff;
 
-    void execute( action_t* a, action_state_t* ) override
-    {
-      // Only class spells with a cooldown have their cooldown reduced.
-      if ( buff && buff->check() && a->data().class_mask() != 0 && !a->background && a->cooldown->duration > 0_ms )
+      glimpse_of_clarity_cb_t( const special_effect_t& effect, buff_t* buff )
+        : dbc_proc_callback_t( effect.player, effect ), buff( buff )
       {
-        listener->sim->print_debug( "Glimpse of Clarity reducing the cooldown of {} by {}.", a->name_str, cdr_amount );
-        a->cooldown->adjust( -cdr_amount );
-        buff->decrement();
       }
-    }
-  };
 
-  auto callback = new glimpse_of_clarity_cb_t( *cb, cdr_amount, effect.custom_buff );
-  callback->deactivate();
-  callback->initialize();
+      void execute( action_t* a, action_state_t* ) override
+      {
+        // Only class spells with a cooldown have their cooldown reduced.
+        if ( buff && buff->check() && a->data().class_mask() != 0 && !a->background && a->cooldown->duration > 0_ms )
+        {
+          listener->sim->print_debug( "Glimpse of Clarity reducing the cooldown of {} by {}.", a->name_str,
+                                      buff->default_value );
+          a->cooldown->adjust( -timespan_t::from_seconds( buff->default_value ) );
+          buff->decrement();
+        }
+      }
+    };
 
-  effect.custom_buff->set_stack_change_callback( util::callback_buff_activator( callback ) );
+    auto callback = new glimpse_of_clarity_cb_t( *cb, effect.custom_buff );
+    callback->deactivate();
+    callback->initialize();
 
-  // Replace the driver spell, the RPPM value and proc flags are elsewhere in some cases
-  effect.spell_id = 315574;
+    effect.custom_buff->set_stack_change_callback( util::callback_buff_activator( callback ) );
 
-  new dbc_proc_callback_t( effect.player, effect );
+    // Replace the driver spell, the RPPM value and proc flags are elsewhere in some cases
+    effect.spell_id = 315574;
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+    buff->set_default_value( effect.driver()->effectN( 1 ).base_value() + buff->default_value );
 }
 
 /**Infinite Stars
@@ -6437,6 +6540,7 @@ void corruption::echoing_void( special_effect_t& effect )
 
     effect.spell_id    = 317014;
     effect.custom_buff = buff;
+    effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_SPELL | PF_MAGIC_SPELL;
 
     new echoing_void_cb_t( effect, echoing_void_damage );
   }
@@ -6484,7 +6588,7 @@ void corruption::gushing_wound( special_effect_t& effect )
     double ap_sp_mod;
 
     gushing_wound_t( const special_effect_t& effect )
-      : proc_spell_t( "gushing_wound", effect.player, effect.player->find_spell( 318187 ) ),
+      : proc_spell_t( "gushing_wound_corruption", effect.player, effect.player->find_spell( 318187 ) ),
         ap_sp_mod( effect.player->find_spell( 318187 )->effectN( 2 ).percent() )
     {
       spell_power_mod.tick = attack_power_mod.tick = ap_sp_mod;
@@ -6511,10 +6615,10 @@ void corruption::gushing_wound( special_effect_t& effect )
     }
   };
 
-  auto gushing_wound = static_cast<gushing_wound_t*>( effect.player->find_action( "gushing_wound" ) );
+  auto gushing_wound = static_cast<gushing_wound_t*>( effect.player->find_action( "gushing_wound_corruption" ) );
 
   if ( !gushing_wound )
-    effect.execute_action = create_proc_action<gushing_wound_t>( "gushing_wound", effect );
+    effect.execute_action = create_proc_action<gushing_wound_t>( "gushing_wound_corruption", effect );
   else
     gushing_wound->ap_sp_mod += effect.player->find_spell( 318187 )->effectN( 2 ).percent();
 
@@ -6596,8 +6700,8 @@ void corruption::searing_flames( special_effect_t& effect )
 
     // TODO: Confirm damage spell id
     searing_flames_t( const special_effect_t& effect )
-      : aoe_proc_t( effect, "searing_flames", 316703, true ),
-        maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
+      : aoe_proc_t( effect, "searing_flames", 316704, true ),
+      maxhp_multiplier( effect.driver()->effectN( 1 ).percent() )
     {
       // TODO: Check what this scales with
       // Set small base damage so that flags are properly set
@@ -6623,12 +6727,12 @@ void corruption::searing_flames( special_effect_t& effect )
     effect.custom_buff = make_buff( effect.player, "searing_flames", effect.player->find_spell( 316703 ) );
 
     searing_flames_damage =
-        static_cast<searing_flames_t*>( create_proc_action<searing_flames_t>( "searing_flames", effect ) );
+      static_cast<searing_flames_t*>( create_proc_action<searing_flames_t>( "searing_flames", effect ) );
 
     // TODO: Confirm these flags
     effect.proc_flags_  = PF_ALL_DAMAGE;
     effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-    effect.spell_id     = 317014;
+    effect.spell_id     = 316698;
 
     new searing_flames_cb_t( effect, searing_flames_damage );
   }
@@ -6642,9 +6746,16 @@ void corruption::twisted_appendage( special_effect_t& effect )
   struct mind_flay_t : public spell_t
   {
     double ap_sp_mod;
-    mind_flay_t( const special_effect_t& effect, player_t* p, double mod )
-      : spell_t( "mind_flay", p, effect.player->find_spell( 316835 ) ), ap_sp_mod( mod )
+
+    mind_flay_t( pet_t* p, double mod )
+      : spell_t( "mind_flay", p, p->find_spell( 316835 ) ), ap_sp_mod( mod )
     {
+      // Merge the stats object with other instances of the pet
+      auto ta = p->owner->find_pet( "twisted_appendage" );
+      if ( ta && ta->find_action( "mind_flay" ) )
+        stats = ta->find_action( "mind_flay" )->stats;
+
+      tick_may_crit        = true;
       channeled            = true;
       spell_power_mod.tick = attack_power_mod.tick = ap_sp_mod;
     }
@@ -6676,11 +6787,10 @@ void corruption::twisted_appendage( special_effect_t& effect )
 
   struct twisted_appendage_pet_t : public pet_t
   {
-    const special_effect_t* effect;
-    mind_flay_t* mind_flay;
+    double coef;
 
-    twisted_appendage_pet_t( const special_effect_t& effect, mind_flay_t* a )
-      : pet_t( effect.player->sim, effect.player, "twisted_appendage", true, true ), effect( &effect ), mind_flay( a )
+    twisted_appendage_pet_t( const special_effect_t& effect, double coef_ )
+      : pet_t( effect.player->sim, effect.player, "twisted_appendage", true, true ), coef( coef_ )
     {
       owner_coeff.sp_from_sp = 1;
       owner_coeff.ap_from_ap = 1;
@@ -6690,7 +6800,7 @@ void corruption::twisted_appendage( special_effect_t& effect )
     {
       if ( ::util::str_compare_ci( name, "mind_flay" ) )
       {
-        return new mind_flay_t( *effect, this, mind_flay->ap_sp_mod );
+        return new mind_flay_t( this, coef );
       }
 
       return pet_t::create_action( name, options );
@@ -6707,12 +6817,14 @@ void corruption::twisted_appendage( special_effect_t& effect )
 
   struct twisted_appendage_cb_t : public dbc_proc_callback_t
   {
+    double coef;
     spawner::pet_spawner_t<twisted_appendage_pet_t> spawner;
 
-    twisted_appendage_cb_t( const special_effect_t& effect, mind_flay_t* a )
+    twisted_appendage_cb_t( const special_effect_t& effect )
       : dbc_proc_callback_t( effect.player, effect ),
+        coef(),
         spawner( "twisted_appendage", effect.player,
-                 [&effect, a]( player_t* ) { return new twisted_appendage_pet_t( effect, a ); } )
+                 [ &effect, this ] ( player_t* ) { return new twisted_appendage_pet_t( effect, coef ); } )
     {
       spawner.set_default_duration( effect.player->find_spell( 316818 )->duration() );
     }
@@ -6723,18 +6835,23 @@ void corruption::twisted_appendage( special_effect_t& effect )
     }
   };
 
-  // TODO: Fix abusing this action as a global variable
-  auto mind_flay = static_cast<mind_flay_t*>( effect.player->find_action( "mind_flay" ) );
+  // Save the coefficient before we replace the effect's spell id.
+  double coef = effect.driver()->effectN( 2 ).percent();
+  twisted_appendage_cb_t* spawner_cb = nullptr;
 
-  if ( !mind_flay )
+  for ( auto cb : effect.player->callbacks.all_callbacks )
   {
-    mind_flay       = static_cast<mind_flay_t*>( create_proc_action<mind_flay_t>( "mind_flay", effect, effect.player,
-                                                                            effect.driver()->effectN( 2 ).percent() ) );
-    effect.spell_id = 316815;
-    new twisted_appendage_cb_t( effect, mind_flay );
+    if ( spawner_cb = dynamic_cast<twisted_appendage_cb_t*>( cb ) )
+      break;
   }
-  else
-    mind_flay->ap_sp_mod += effect.driver()->effectN( 2 ).percent();
+
+  if ( !spawner_cb )
+  {
+    effect.spell_id = 316815;
+    spawner_cb = new twisted_appendage_cb_t( effect );
+  }
+
+  spawner_cb->coef += coef;
 }
 
 // Lash of the Void
@@ -6767,6 +6884,59 @@ void corruption::lash_of_the_void( special_effect_t& effect )
   }
   else
     lash_of_the_void->ap_mod += effect.trigger()->effectN( 1 ).ap_coeff();
+}
+
+// Flash of Insight
+// TODO: Confirm the stacks work like this
+void corruption::flash_of_insight( special_effect_t& effect )
+{
+  struct flash_of_insight_t : public buff_t
+  {
+    flash_of_insight_t( const special_effect_t& effect )
+      : buff_t( effect.player, "flash_of_insight", effect.player->find_spell( 316744 ) )
+    {
+      set_default_value( effect.driver()->effectN( 1 ).percent() );
+      add_invalidate( CACHE_INTELLECT );
+    }
+
+    void reset() override
+    {
+      buff_t::reset();
+      reverse = false;
+    }
+
+    void bump( int stacks, double value ) override
+    {
+      if ( check() == max_stack() )
+        reverse = true;
+      else
+        buff_t::bump( stacks, value );
+    }
+
+    void decrement( int stacks, double value ) override
+    {
+      if ( check() == 1 )
+        reverse = false;
+      else
+        buff_t::decrement( stacks, value );
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "flash_of_insight" );
+
+  if ( !buff )
+  {
+    buff = make_buff<flash_of_insight_t>( effect );
+
+    effect.player->buffs.flash_of_insight = buff;
+    effect.custom_buff = buff;
+
+    // RPPM value and proc flags are in a different spell
+    effect.spell_id = 316717;
+
+    new dbc_proc_callback_t( effect.player, effect );
+    effect.player->register_combat_begin( buff );
+  }
 }
 
 }  // namespace bfa
@@ -6986,6 +7156,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318482, corruption::twisted_appendage );
   register_special_effect( 318483, corruption::twisted_appendage );
   register_special_effect( 317290, corruption::lash_of_the_void );
+  register_special_effect( 318299, corruption::flash_of_insight );
 
   // 8.3 Special Effects
   register_special_effect( 315736, items::voidtwisted_titanshard );
@@ -6995,6 +7166,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 313640, items::psyche_shredder );
   register_special_effect( 313087, items::torment_in_a_jar );
   register_special_effect( 317860, items::draconic_empowerment );
+  register_special_effect( 313113, items::writhing_segment_of_drestagath );
 
   // 8.3 Set Bonus(es)
   register_special_effect( 315793, set_bonus::titanic_empowerment );

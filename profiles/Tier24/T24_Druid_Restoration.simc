@@ -37,6 +37,7 @@ actions+=/arcane_torrent
 actions+=/lights_judgment
 actions+=/fireblood
 actions+=/ancestral_call
+actions+=/bag_of_tricks
 actions+=/use_item,effect_name=cyclotronic_blast,if=!buff.prowl.up&!buff.shadowmeld.up
 actions+=/use_items
 actions+=/potion

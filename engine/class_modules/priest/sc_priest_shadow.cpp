@@ -569,10 +569,10 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
 
     // They removed this in PTR for some reason
     // Publik 2019-10-07
-    if ( spiteful_apparitions_bonus > 0.0 && !priest().talents.auspicious_spirits->ok() && !maybe_ptr( priest().dbc.ptr ) )
+    /*if ( spiteful_apparitions_bonus > 0.0 && !priest().talents.auspicious_spirits->ok() )
     {
       spiteful_apparitions_bonus *= 1.75;
-    }
+    }*/
   }
 
   void impact( action_state_t* s ) override
@@ -2030,6 +2030,8 @@ void priest_t::generate_apl_shadow()
     default_list->add_action( "lights_judgment" );
   if ( race == RACE_MAGHAR_ORC )
     default_list->add_action( "ancestral_call,if=buff.voidform.up" );
+  if ( race == RACE_VULPERA )
+    default_list->add_action( "bag_of_tricks" );
 
   // Choose which APL to use based on talents and fight conditions.
   default_list->add_action( "run_action_list,name=cleave,if=active_enemies>1" );
@@ -2051,7 +2053,7 @@ void priest_t::generate_apl_shadow()
                    " then every subsequent cast should be used when Chorus of Insanity is active or it will recharge in the next gcd, or the target is about to die." );
   cds->add_action( "ripple_in_space" );
   cds->add_action( "reaping_flames" );
-  cds->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
+  cds->add_action( "worldvein_resonance" );
   cds->add_action( "call_action_list,name=crit_cds,if=(buff.voidform.up&"
                    "buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0",
                    "Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity active" );

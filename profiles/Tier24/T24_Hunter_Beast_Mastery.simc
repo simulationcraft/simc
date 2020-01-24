@@ -5,7 +5,7 @@ level=120
 race=human
 role=attack
 position=ranged_back
-talents=1203011
+talents=2202012
 azerite_essences=14:3/4:3/5:3
 
 # Default consumables
@@ -27,7 +27,6 @@ actions.precombat+=/food
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/worldvein_resonance
 actions.precombat+=/guardian_of_azeroth
@@ -38,6 +37,7 @@ actions.precombat+=/focused_azerite_beam,if=!raid_event.invulnerable.exists
 actions.precombat+=/aspect_of_the_wild,precast_time=1.1,if=!azerite.primal_instincts.enabled&!essence.essence_of_the_focusing_iris.major&(equipped.azsharas_font_of_power|!equipped.cyclotronic_blast)
 # Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat.
 actions.precombat+=/bestial_wrath,precast_time=1.5,if=azerite.primal_instincts.enabled&!essence.essence_of_the_focusing_iris.major&(equipped.azsharas_font_of_power|!equipped.cyclotronic_blast)
+actions.precombat+=/potion,dynamic_prepot=1
 
 # Executed every time the actor is available.
 actions=auto_shot
@@ -55,10 +55,12 @@ actions.cds+=/berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>coold
 actions.cds+=/blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16
 actions.cds+=/lights_judgment,if=pet.turtle.buff.frenzy.up&pet.turtle.buff.frenzy.remains>gcd.max|!pet.turtle.buff.frenzy.up
 actions.cds+=/potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&target.health.pct<35|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)
-actions.cds+=/worldvein_resonance,if=buff.lifeblood.stack<4
+actions.cds+=/worldvein_resonance
 actions.cds+=/guardian_of_azeroth,if=cooldown.aspect_of_the_wild.remains<10|target.time_to_die>cooldown+duration|target.time_to_die<30
 actions.cds+=/ripple_in_space
 actions.cds+=/memory_of_lucid_dreams
+actions.cds+=/bag_of_tricks
+actions.cds+=/reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30
 
 actions.cleave=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.turtle.buff.frenzy.up&pet.turtle.buff.frenzy.remains<=gcd.max
 actions.cleave+=/multishot,if=gcd.max-pet.turtle.buff.beast_cleave.remains>0.25
@@ -115,7 +117,7 @@ finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1602,enchant=accord_of_cri
 finger2=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=accord_of_critical_strike
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
-main_hand=shiver_venom_crossbow,id=168273,bonus_id=4800/1517,enchant=crows_nest_scope
+main_hand=shiver_venom_crossbow,id=168273,bonus_id=4800/1517,enchant=galeforce_striking
 
 # Gear Summary
 # gear_ilvl=440.87

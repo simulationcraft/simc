@@ -1321,7 +1321,9 @@ class SpellDataGenerator(DataGenerator):
          # Obsidian Destruction Range
          316661,
          # Twisted Appendage damage
-         316835
+         316835,
+         # Searing Breath damage
+         316704,
         ),
 
         # Warrior:

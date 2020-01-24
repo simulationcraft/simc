@@ -60,6 +60,7 @@ actions.burn+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack
 # When running Overpowered, and we got a Rule of Threes proc (AKA we got our 4th Arcane Charge via Charged Up), use it before using RoP+AP, because the mana reduction is otherwise largely wasted since the AB was free anyway.
 actions.burn+=/arcane_blast,if=buff.rule_of_threes.up&talent.overpowered.enabled&active_enemies<3
 actions.burn+=/lights_judgment,if=buff.arcane_power.down
+actions.burn+=/bag_of_tricks,if=buff.arcane_power.down
 actions.burn+=/rune_of_power,if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)
 actions.burn+=/berserking
 actions.burn+=/arcane_power

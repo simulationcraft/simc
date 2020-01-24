@@ -35,11 +35,13 @@ actions+=/arcane_pulse,if=active_enemies>=2|rune<1&runic_power.deficit>60
 actions+=/lights_judgment,if=buff.unholy_strength.up
 actions+=/ancestral_call
 actions+=/fireblood
+actions+=/bag_of_tricks
 actions+=/use_items,if=cooldown.dancing_rune_weapon.remains>90
 actions+=/use_item,name=razdunks_big_red_button
 actions+=/use_item,name=merekthas_fang
 actions+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down
-actions+=/use_item,name=ashvanes_razor_coral,if=buff.dancing_rune_weapon.up&debuff.razor_coral_debuff.up
+actions+=/use_item,name=ashvanes_razor_coral,if=target.health.pct<31&equipped.dribbling_inkpod
+actions+=/use_item,name=ashvanes_razor_coral,if=buff.dancing_rune_weapon.up&debuff.razor_coral_debuff.up&!equipped.dribbling_inkpod
 actions+=/potion,if=buff.dancing_rune_weapon.up
 actions+=/dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
 actions+=/tombstone,if=buff.bone_shield.stack>=7

@@ -76,6 +76,7 @@ actions.cooldowns+=/berserking
 actions.cooldowns+=/lights_judgment
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/bag_of_tricks
 
 actions.essences=focused_azerite_beam,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3
 actions.essences+=/memory_of_lucid_dreams,if=active_enemies<5&debuff.packed_ice.down&cooldown.frozen_orb.remains>5&!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0
@@ -85,7 +86,7 @@ actions.essences+=/ripple_in_space,if=buff.rune_of_power.down&debuff.packed_ice.
 actions.essences+=/concentrated_flame,line_cd=6,if=buff.rune_of_power.down&debuff.packed_ice.down
 actions.essences+=/reaping_flames,if=buff.rune_of_power.down&debuff.packed_ice.down
 actions.essences+=/the_unbound_force,if=buff.reckless_force.up
-actions.essences+=/worldvein_resonance,if=buff.rune_of_power.down&debuff.packed_ice.down|active_enemies>3
+actions.essences+=/worldvein_resonance,if=buff.rune_of_power.down&debuff.packed_ice.down&cooldown.frozen_orb.remains<4|active_enemies>3
 
 actions.movement=blink_any,if=movement.distance>10
 actions.movement+=/ice_floes,if=buff.ice_floes.down

@@ -4749,8 +4749,9 @@ void demon_hunter_t::init_rng()
     rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
     rppm.gluttony = get_rppm( "gluttony", talent.gluttony );
     // 6/27/2018 -- Removed from spell data, but still seems to be RPPM
+    // 1/9/2020  -- It has actually been 2.0 since uldir
     if ( rppm.gluttony->get_frequency() == 0 )
-      rppm.gluttony->set_frequency( 1.0 );
+      rppm.gluttony->set_frequency( 2.0 );
   }
 
   player_t::init_rng();
@@ -5036,7 +5037,7 @@ std::string demon_hunter_t::default_flask() const
 
 std::string demon_hunter_t::default_potion() const
 {
-  return (true_level > 110) ? (specialization() == DEMON_HUNTER_HAVOC ? "potion_of_unbridled_fury" : "steelskin_potion") :
+  return (true_level > 110) ? "potion_of_unbridled_fury" :
          (true_level > 100) ? (specialization() == DEMON_HUNTER_HAVOC ? "prolonged_power" : "unbending_potion") :
          (true_level >= 90) ? (specialization() == DEMON_HUNTER_HAVOC ? "draenic_agility" : "draenic_versatility") :
          (true_level >= 85) ? "virmens_bite" :
@@ -5142,8 +5143,9 @@ void demon_hunter_t::apl_havoc()
   essences->add_action( "purifying_blast,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
   essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   essences->add_action( "ripple_in_space" );
-  essences->add_action( "worldvein_resonance,if=buff.lifeblood.stack<3" );
+  essences->add_action( "worldvein_resonance,if=buff.metamorphosis.up" );
   essences->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );
+  essences->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
   apl_cooldown->add_action( "call_action_list,name=essences" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
@@ -5198,6 +5200,7 @@ void demon_hunter_t::apl_vengeance()
   action_priority_list_t* apl_default = get_action_priority_list( "default" );
 
   apl_default->add_action( "auto_attack" );
+  // Only triggers if there is something to steal
   apl_default->add_action( this, "Consume Magic" );
   apl_default->add_action( "call_action_list,name=brand,if=talent.charred_flesh.enabled" );
   apl_default->add_action( "call_action_list,name=defensives" );
@@ -5206,7 +5209,6 @@ void demon_hunter_t::apl_vengeance()
 
   action_priority_list_t* apl_defensives = get_action_priority_list( "defensives", "Defensives" );
   apl_defensives->add_action( this, "Demon Spikes" );
-  // apl_defensives->add_talent( this, "Soul Barrier" );
   apl_defensives->add_action( this, "Metamorphosis" );
   apl_defensives->add_action( this, "Fiery Brand" );
 
@@ -5230,9 +5232,9 @@ void demon_hunter_t::apl_vengeance()
   apl_brand->add_action( this, "Sigil of Flame", "if=dot.fiery_brand.ticking" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal", "Normal Rotation" );
-  apl_normal->add_action( this, "Infernal Strike" );
-  apl_normal->add_talent( this, "Spirit Bomb", "if=soul_fragments>=4" );
-  apl_normal->add_action( this, "Soul Cleave", "if=!talent.spirit_bomb.enabled" );
+  apl_normal->add_action( this, "Infernal Strike" , "if=(!talent.flame_crash.enabled|(dot.sigil_of_flame.remains<3&!action.infernal_strike.sigil_placed))");
+  apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4)" );
+  apl_normal->add_action( this, "Soul Cleave", "if=(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4))" );
   apl_normal->add_action( this, "Soul Cleave", "if=talent.spirit_bomb.enabled&soul_fragments=0" );
   apl_normal->add_action( this, "Immolation Aura", "if=pain<=90" );
   apl_normal->add_talent( this, "Felblade", "if=pain<=70" );

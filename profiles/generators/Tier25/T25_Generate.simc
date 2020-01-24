@@ -25,13 +25,13 @@
 T25_Generate_Death_Knight.simc
 
 # Demon Hunter
-# T25_Generate_Demon_Hunter.simc
+T25_Generate_Demon_Hunter.simc
 
 # Druid
 # T25_Generate_Druid.simc
 
 # Hunter
-# T25_Generate_Hunter.simc
+T25_Generate_Hunter.simc
 
 # Mage
 T25_Generate_Mage.simc
@@ -40,7 +40,7 @@ T25_Generate_Mage.simc
 T25_Generate_Monk.simc
 
 # Paladin
-# T25_Generate_Paladin.simc
+T25_Generate_Paladin.simc
 
 # Priest
 T25_Generate_Priest.simc
@@ -52,7 +52,7 @@ T25_Generate_Rogue.simc
 T25_Generate_Shaman.simc
 
 # Warlock
-# T25_Generate_Warlock.simc
+T25_Generate_Warlock.simc
 
 # Warrior
-# T25_Generate_Warrior.simc
+T25_Generate_Warrior.simc

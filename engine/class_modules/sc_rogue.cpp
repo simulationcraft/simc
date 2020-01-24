@@ -2356,6 +2356,19 @@ struct crimson_tempest_t : public rogue_attack_t
   }
 };
 
+// Detection ================================================================
+
+// This ability does nothing but for some odd reasons throughout the history of Rogue spaghetti, we may want to look at using it. So, let's support it.
+struct detection_t : public rogue_attack_t
+{
+  detection_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "detection", p, p -> find_class_spell( "Detection" ), options_str )
+  {
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    ignore_false_positive = true;
+  }
+};
+
 // Dispatch =================================================================
 
 struct dispatch_t: public rogue_attack_t
@@ -5708,6 +5721,7 @@ void rogue_t::init_action_list()
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined" );
     def -> add_action( "arcane_pulse");
     def -> add_action( "lights_judgment");
+    def -> add_action( "bag_of_tricks");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -5757,7 +5771,7 @@ void rogue_t::init_action_list()
     essences->add_action( "ripple_in_space" );
     essences->add_action( "worldvein_resonance" );
     essences->add_action( "memory_of_lucid_dreams,if=energy<50&!cooldown.vendetta.up" );
-    essences->add_action( "reaping_flames" );
+    essences->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
 
     // Stealth
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
@@ -5823,6 +5837,7 @@ void rogue_t::init_action_list()
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen" );
     def -> add_action( "arcane_pulse" );
     def -> add_action( "lights_judgment");
+    def -> add_action( "bag_of_tricks");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -5860,7 +5875,7 @@ void rogue_t::init_action_list()
     essences->add_action( "ripple_in_space" );
     essences->add_action( "worldvein_resonance" );
     essences->add_action( "memory_of_lucid_dreams,if=energy<45" );
-    essences->add_action( "reaping_flames" );
+    essences->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
@@ -5902,6 +5917,7 @@ void rogue_t::init_action_list()
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen", "Lowest priority in all of the APL because it causes a GCD" );
     def -> add_action( "arcane_pulse" );
     def -> add_action( "lights_judgment");
+    def -> add_action( "bag_of_tricks");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -5941,7 +5957,7 @@ void rogue_t::init_action_list()
     essences->add_action( "ripple_in_space" );
     essences->add_action( "worldvein_resonance,if=cooldown.symbols_of_death.remains<5|target.time_to_die<18" );
     essences->add_action( "memory_of_lucid_dreams,if=energy<40&buff.symbols_of_death.up" );
-    essences->add_action( "reaping_flames" );
+    essences->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
@@ -6006,6 +6022,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "blade_rush"          ) return new blade_rush_t         ( this, options_str );
   if ( name == "blindside"           ) return new blindside_t          ( this, options_str );
   if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( this, options_str );
+  if ( name == "detection"           ) return new detection_t          ( this, options_str );
   if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );

@@ -279,6 +279,7 @@ public:
   bool raptor_glyph;
   double proc_chance_enh_memory_of_lucid_dreams;
   double proc_chance_ele_memory_of_lucid_dreams;
+  double proc_chance_resto_memory_of_lucid_dreams;
 
   // helper variables for vision of perfection + echo of the elementals synergie
   bool vision_of_perfection_proced_pet;
@@ -636,6 +637,7 @@ public:
       raptor_glyph( false ),
       proc_chance_enh_memory_of_lucid_dreams( 0.15 ),
       proc_chance_ele_memory_of_lucid_dreams( 0.15 ),
+      proc_chance_resto_memory_of_lucid_dreams( 0.15 ),
       vision_of_perfection_proced_pet( false ),
       vision_of_perfection_proc_during_uptime( 0 ),
       action(),
@@ -6918,6 +6920,8 @@ void shaman_t::create_options()
   add_option( opt_bool( "raptor_glyph", raptor_glyph ) );
   add_option( opt_float( "proc_chance_ele_memory_of_lucid_dreams", proc_chance_ele_memory_of_lucid_dreams, 0.0, 1.0 ) );
   add_option( opt_float( "proc_chance_enh_memory_of_lucid_dreams", proc_chance_enh_memory_of_lucid_dreams, 0.0, 1.0 ) );
+  add_option(
+      opt_float( "proc_chance_resto_memory_of_lucid_dreams", proc_chance_resto_memory_of_lucid_dreams, 0.0, 1.0 ) );
 }
 
 // shaman_t::copy_from =====================================================
@@ -7582,13 +7586,15 @@ void shaman_t::trigger_memory_of_lucid_dreams( double cost )
     return;
   }
 
-  if ( specialization() == SHAMAN_RESTORATION || specialization() == SPEC_NONE )
+  if ( specialization() == SPEC_NONE )
   {
     return;
   }
 
-  if ( !rng().roll( specialization() == SHAMAN_ELEMENTAL ? proc_chance_ele_memory_of_lucid_dreams
-                                                         : proc_chance_enh_memory_of_lucid_dreams ) )
+  if ( !rng().roll( specialization() == SHAMAN_ELEMENTAL
+                        ? proc_chance_ele_memory_of_lucid_dreams
+                        : specialization() == SHAMAN_ENHANCEMENT ? proc_chance_enh_memory_of_lucid_dreams
+                                                                 : proc_chance_resto_memory_of_lucid_dreams ) )
   {
     return;
   }
@@ -8096,7 +8102,19 @@ std::string shaman_t::default_food() const
                                                    ? "sea_mist_rice_noodles"
                                                    : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
-  return specialization() == SHAMAN_ENHANCEMENT ? enhance_food : elemental_food;
+  std::string restoration_food = ( true_level > 110 )
+                                     ? "baked_port_tato"
+                                     : ( true_level > 100 )
+                                           ? "lemon_herb_filet"
+                                           : ( true_level > 90 )
+                                                 ? "pickled_eel"
+                                                 : ( true_level >= 90 )
+                                                       ? "mogu_fish_stew"
+                                                       : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+
+  return specialization() == SHAMAN_ENHANCEMENT
+             ? enhance_food
+             : specialization() == SHAMAN_ELEMENTAL ? elemental_food : restoration_food;
 }
 
 // shaman_t::default_rune ===================================================
@@ -8194,6 +8212,7 @@ void shaman_t::init_action_list_elemental()
   def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
   def->add_action( "fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+  def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
 
   // Pick APL to run
   def->add_action(
@@ -8766,6 +8785,7 @@ void shaman_t::init_action_list_enhancement()
   filler->add_action( "thundercharge" );
   filler->add_action( "concentrated_flame" );
   filler->add_action( "reaping_flames" );
+  filler->add_action( "bag_of_tricks" );
   filler->add_action( this, "Crash Lightning",
                       "if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL" );
   filler->add_action( this, "Flametongue", "if=talent.searing_assault.enabled" );
@@ -8798,6 +8818,7 @@ void shaman_t::init_action_list_restoration_dps()
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   // Actual precombat
   precombat->add_action( "potion" );
+  precombat->add_action( "use_item,name=azsharas_font_of_power" );
   precombat->add_action( this, "Lava Burst" );
 
   // In-combat potion
@@ -8807,22 +8828,20 @@ void shaman_t::init_action_list_restoration_dps()
   def->add_action( this, "Wind Shear" );
   def->add_action( this, "Spiritwalker's Grace", "moving=1,if=movement.distance>6" );
   // On-use items
+  def->add_action( this, "Flame Shock", "target_if=(!ticking|dot.flame_shock.remains<=gcd)|refreshable" );
   def->add_action( "use_items" );
-  // Racials
   def->add_action( "blood_fury" );
   def->add_action( "berserking" );
   def->add_action( "fireblood" );
   def->add_action( "ancestral_call" );
-  // Azerite Essences
-  def->add_action( "concentrated_flame" );
-  def->add_action( "ripple_in_space" );
   def->add_action( "worldvein_resonance" );
-
-  def->add_action( this, "Flame Shock", "target_if=(!ticking|dot.flame_shock.remains<=gcd)|refreshable" );
   def->add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
+  def->add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains=0" );
+  def->add_action( "ripple_in_space" );
   def->add_action( this, "Earth Elemental" );
+  def->add_action( "bag_of_tricks" );
   def->add_action( this, "Lightning Bolt", "if=spell_targets.chain_lightning<2" );
-  def->add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
+  def->add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>1" );
   def->add_action( this, "Flame Shock", "moving=1" );
 }
 
@@ -8914,7 +8933,8 @@ double shaman_t::resource_loss( resource_e resource_type, double amount, gain_t*
 {
   auto actual_loss = player_t::resource_loss( resource_type, amount, g, a );
 
-  if ( resource_type == RESOURCE_MAELSTROM )
+  if ( ( specialization() == SHAMAN_RESTORATION && resource_type == RESOURCE_MANA ) ||
+       resource_type == RESOURCE_MAELSTROM )
   {
     trigger_memory_of_lucid_dreams( actual_loss );
   }

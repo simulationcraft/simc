@@ -52,7 +52,7 @@ actions.cds+=/purifying_blast,if=spell_targets.mind_sear>=2|raid_event.adds.in>6
 actions.cds+=/concentrated_flame,line_cd=6,if=time<=10|(buff.chorus_of_insanity.stack>=15&buff.voidform.up)|full_recharge_time<gcd|target.time_to_die<5
 actions.cds+=/ripple_in_space
 actions.cds+=/reaping_flames
-actions.cds+=/worldvein_resonance,if=buff.lifeblood.stack<3
+actions.cds+=/worldvein_resonance
 # Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity active
 actions.cds+=/call_action_list,name=crit_cds,if=(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0
 # Default fallback for usable items: Use on cooldown.

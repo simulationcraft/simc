@@ -444,6 +444,9 @@ void to_json( JsonOutput root, const player_t& p,
   add_non_zero( root[ "stats" ], "dodge", bs.dodge );
   add_non_zero( root[ "stats" ], "parry", bs.parry );
   add_non_zero( root[ "stats" ], "block", bs.block );
+
+  add_non_zero( root[ "stats" ], "corruption", bs.corruption );
+  add_non_zero( root[ "stats" ], "corruption_resistance", bs.corruption_resistance );
 }
 
 void to_json( JsonOutput root,
@@ -759,6 +762,13 @@ void to_json( JsonOutput& arr, const player_t& p )
   root[ "timeofday" ] = p.timeofday == player_t::NIGHT_TIME ? "NIGHT_TIME" : "DAY_TIME";
   root[ "zandalari_loa" ] = p.zandalari_loa == player_t::AKUNDA ? "akunda" : p.zandalari_loa == player_t::BWONSAMDI ? "bwonsamdi"
     : p.zandalari_loa == player_t::GONK ? "gonk" : p.zandalari_loa == player_t::KIMBUL ? "kimbul" : p.zandalari_loa == player_t::KRAGWA ? "kragwa" : "paku";
+  root[ "vulpera_tricks" ] = p.vulpera_tricks == player_t::HOLY
+                                 ? "holy"
+                                 : p.vulpera_tricks == player_t::FLAMES
+                                       ? "flames"
+                                       : p.vulpera_tricks == player_t::SHADOWS
+                                             ? "shadows"
+                                             : p.vulpera_tricks == player_t::HEALING ? "healing" : "corrosive";
 
   if ( p.is_enemy() )
   {

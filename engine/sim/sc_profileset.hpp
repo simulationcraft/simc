@@ -214,7 +214,9 @@ class profile_output_data_t
             m_leech_rating,
             m_leech_pct,
             m_speed_rating,
-            m_speed_pct;
+            m_speed_pct,
+            m_corruption,
+            m_corruption_resistance;
 
 public:
   profile_output_data_t() : m_race ( RACE_NONE )
@@ -357,6 +359,18 @@ public:
 
   profile_output_data_t& speed_pct( double d )
   { m_speed_pct = d; return *this; }
+
+  double corruption() const
+  { return m_corruption; }
+
+  profile_output_data_t& corruption( double d )
+  { m_corruption = d; return *this; }
+
+  double corruption_resistance() const
+  { return m_corruption_resistance; }
+
+  profile_output_data_t& corruption_resistance( double d )
+  { m_corruption_resistance = d; return *this; }
 };
 
 class profile_set_t

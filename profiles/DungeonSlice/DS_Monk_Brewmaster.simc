@@ -1,4 +1,4 @@
-monk="T23_Monk_Brewmaster"
+monk="DS_Monk_Brewmaster"
 source=default
 spec=brewmaster
 level=120
@@ -42,6 +42,7 @@ actions+=/berserking
 actions+=/lights_judgment
 actions+=/fireblood
 actions+=/ancestral_call
+actions+=/bag_of_tricks
 actions+=/invoke_niuzao_the_black_ox,if=target.time_to_die>25
 # Ironskin Brew priority whenever it took significant damage and ironskin brew buff is missing (adjust the health.max coefficient according to intensity of damage taken), and to dump excess charges before BoB.
 actions+=/ironskin_brew,if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_brawler.stack<2&!buff.ironskin_brew.up

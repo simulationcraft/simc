@@ -4698,10 +4698,11 @@ void vision_of_perfection( special_effect_t& effect )
     }
   };
 
-  // There are 3 RPPM spells for Vision of Perfection
+  // There are 4 RPPM spells for Vision of Perfection
   //   1) id=297866 0.85 rppm, 0.1s icd, yellow hits + dot -- tank spec: logs show tank spec procing with 2.4s interval
   //   2) id=297868 0.85 rppm, 0.1s icd, heals only      -- healer spec: hotfix on this spell for holy paladins
   //   3) id=297869 0.85 rppm, 3.5s icd, yellow hits + dot -- dps spec?: by process of elimination?
+  //   4) id=296326 1.00 rppm, no icd?, in-combat -- confirmed for resto shaman
   switch ( effect.player->specialization() )
   {
     case DEATH_KNIGHT_BLOOD:
@@ -4717,8 +4718,10 @@ void vision_of_perfection( special_effect_t& effect )
     case PALADIN_HOLY:
     case PRIEST_DISCIPLINE:
     case PRIEST_HOLY:
-    case SHAMAN_RESTORATION:
       effect.spell_id = 297868;
+      break;
+    case SHAMAN_RESTORATION:
+      effect.spell_id = 296326;
       break;
     default:
       effect.spell_id = 297869;
@@ -5170,6 +5173,30 @@ void sphere_of_suppression( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+
+struct resolute_courage_t : public stat_buff_t
+{
+  resolute_courage_t( player_t* p ) :
+    stat_buff_t( p, "resolute_courage" )
+  {
+    add_stat( STAT_CORRUPTION_RESISTANCE, 10 );
+  }
+};
+
+void register_essence_corruption_resistance( special_effect_t& effect )
+{
+  // Corruption resistance from essence
+  buff_t* buff = buff_t::find( effect.player, "resolute_courage" );
+  if ( ! buff )
+  {
+    buff = make_buff<resolute_courage_t>( effect.player );
+    // this needs to happen on arise which is before snapshot stats
+    effect.player->callbacks_on_arise.emplace_back( [ buff ] {
+      buff -> trigger();
+    });
+  }
+}
+
 // Breath of the Dying
 // Minor: Lethal Strikes
 // id=310712 R1 minor base, driver
@@ -5212,7 +5239,7 @@ void breath_of_the_dying( special_effect_t& effect )
 
       // TODO: confirm '400% more' means 5x multiplier
       if ( s->target->health_percentage() < r3_lo_hp )
-        mod += r3_mul;
+          mod += r3_mul;
 
       rppm->set_modifier( mod );
 
@@ -5226,6 +5253,8 @@ void breath_of_the_dying( special_effect_t& effect )
   effect.type           = SPECIAL_EFFECT_EQUIP;
   effect.execute_action = action;
   effect.ppm_           = -2.0; // RPPM of 10 hasted in spell data seems to be the buffed rppm, assuming base is 2
+
+  register_essence_corruption_resistance( effect );
 
   new lethal_strikes_cb_t( effect, essence );
 }
@@ -5339,8 +5368,11 @@ void spark_of_inspiration( special_effect_t& effect )
 
   if ( essence.rank() >= 2 )
   {
-    effect.spell_id = essence.spell_ref( 2u, essence_type::MINOR ).id();
+    effect.ppm_ = -essence.spell_ref( 2u, essence_type::MINOR ).real_ppm();
+    effect.rppm_scale_ = effect.player->dbc.real_ppm_scale( essence.spell_ref( 2u, essence_type::MINOR ).id() );
   }
+
+  register_essence_corruption_resistance( effect );
 
   new unified_strength_cb_t( effect, essence, buff );
 }

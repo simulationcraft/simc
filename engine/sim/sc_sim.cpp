@@ -3655,7 +3655,7 @@ void sim_t::create_options()
   add_option( opt_int( "bfa.subroutine_recalibration_dummy_casts",
     bfa_opts.subroutine_recalibration_dummy_casts, 0, 11 ) );
   add_option( opt_float( "bfa.voidtwisted_titanshard_percent_duration",
-    bfa_opts.voidtwisted_titanshard_percent_duration, 0.0, 1.0 ) );
+    bfa_opts.voidtwisted_titanshard_percent_duration, 0.01, 1.0 ) );
   add_option( opt_timespan( "bfa.surging_vitality_damage_taken_period", bfa_opts.surging_vitality_damage_taken_period,
                             1_s, timespan_t::max() ) );
   add_option( opt_uint( "bfa.manifesto_allies_start", bfa_opts.manifesto_allies_start, 0, 12 ) );

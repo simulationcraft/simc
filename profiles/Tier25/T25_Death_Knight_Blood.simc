@@ -1,0 +1,97 @@
+deathknight="T25_Death_Knight_Blood"
+source=default
+spec=blood
+level=120
+race=undead
+role=tank
+position=front
+talents=2220022
+azerite_essences=12:4:1/37:4:0/32:4:0/4:4:0
+
+# Default consumables
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_the_undertow
+food=mechdowels_big_mech
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
+actions+=/berserking
+actions+=/arcane_pulse,if=active_enemies>=2|rune<1&runic_power.deficit>60
+actions+=/lights_judgment,if=buff.unholy_strength.up
+actions+=/ancestral_call
+actions+=/fireblood
+actions+=/bag_of_tricks
+actions+=/use_items,if=cooldown.dancing_rune_weapon.remains>90
+actions+=/use_item,name=razdunks_big_red_button
+actions+=/use_item,name=merekthas_fang
+actions+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down
+actions+=/use_item,name=ashvanes_razor_coral,if=target.health.pct<31&equipped.dribbling_inkpod
+actions+=/use_item,name=ashvanes_razor_coral,if=buff.dancing_rune_weapon.up&debuff.razor_coral_debuff.up&!equipped.dribbling_inkpod
+actions+=/potion,if=buff.dancing_rune_weapon.up
+actions+=/dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
+actions+=/tombstone,if=buff.bone_shield.stack>=7
+actions+=/call_action_list,name=standard
+
+actions.standard=death_strike,if=runic_power.deficit<=10
+actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up
+actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
+actions.standard+=/heart_essence,if=!buff.dancing_rune_weapon.up
+actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
+actions.standard+=/marrowrend,if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15
+actions.standard+=/bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up
+actions.standard+=/death_strike,if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.1.time_to_die<10
+actions.standard+=/death_and_decay,if=spell_targets.death_and_decay>=3
+actions.standard+=/rune_strike,if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd
+actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd
+actions.standard+=/blood_boil,if=buff.dancing_rune_weapon.up
+actions.standard+=/death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2
+actions.standard+=/consumption
+actions.standard+=/blood_boil
+actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
+actions.standard+=/use_item,name=grongs_primal_rage
+actions.standard+=/rune_strike
+actions.standard+=/arcane_torrent,if=runic_power.deficit>20
+
+head=greathelm_of_phantasmic_reality,id=174167,bonus_id=4824/1517/4775,azerite_powers=140/582/21/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+shoulders=pauldrons_of_infinite_darkness,id=174166,bonus_id=1517/4824/4775,azerite_powers=349/582/31/13
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+chest=breastplate_of_twilight_decimation,id=174164,bonus_id=1517/4824/4775,azerite_powers=243/582/459/13
+wrists=dragonbone_vambraces,id=174170,bonus_id=4824/1517/6551
+hands=mirageweavers_gauntlets,id=174178,bonus_id=4824/1517/6550
+waist=dark_crystalline_girdle,id=174171,bonus_id=4824/1517
+legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517
+feet=sabatons_of_malevolent_intent,id=174176,bonus_id=4824/1517
+finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_critical_strike
+finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_critical_strike
+trinket1=dribbling_inkpod,id=169319,bonus_id=4800/1517
+trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+main_hand=getiikku_cut_of_death,id=159644,bonus_id=1637,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_ilvl=474.87
+# gear_strength=10205
+# gear_stamina=19654
+# gear_crit_rating=1558
+# gear_haste_rating=1399
+# gear_mastery_rating=542
+# gear_versatility_rating=336
+# gear_corruption=95
+# gear_corruption_resistance=50
+# gear_armor=8318

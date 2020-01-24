@@ -70,6 +70,7 @@ actions.generators+=/call_action_list,name=finishers,if=talent.hammer_of_wrath.e
 actions.generators+=/crusader_strike,if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2&cooldown.consecration.remains>gcd*2)
 actions.generators+=/call_action_list,name=finishers
 actions.generators+=/concentrated_flame
+actions.generators+=/reaping_flames
 actions.generators+=/crusader_strike,if=holy_power<=4
 actions.generators+=/arcane_torrent,if=holy_power<=4
 
