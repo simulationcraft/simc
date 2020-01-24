@@ -1227,7 +1227,7 @@ struct sim_t : private sc_thread_t
     unsigned            arcane_heart_hps = 0;
     /// Prepull spell cast count to assume.
     int                 subroutine_recalibration_precombat_stacks = 0;
-    /// Additional spell cast count to assume each buff cyle.
+    /// Additional spell cast count to assume each buff cycle.
     int                 subroutine_recalibration_dummy_casts = 0;
     /// Average duration of buff in percentage
     double voidtwisted_titanshard_percent_duration = 0.5;
@@ -1241,6 +1241,8 @@ struct sim_t : private sc_thread_t
     double echoing_void_collapse_chance = 0.15;
     /// Whether the increased chance via more allies is active
     bool void_ritual_increased_chance_active = false;
+    /// Approximate interval in seconds between raid member major essence uses that trigger Symbiotic Presence.
+    timespan_t symbiotic_presence_interval = 22_s;
   } bfa_opts;
 
   // Expansion specific data

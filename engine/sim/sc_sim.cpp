@@ -3662,6 +3662,7 @@ void sim_t::create_options()
   add_option( opt_uint( "bfa.manifesto_allies_end", bfa_opts.manifesto_allies_end, 0, 5 ) );
   add_option( opt_float( "bfa.echoing_void_collapse_chance", bfa_opts.echoing_void_collapse_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "bfa.void_ritual_increased_chance_active", bfa_opts.void_ritual_increased_chance_active ) );
+  add_option( opt_timespan( "bfa.symbiotic_presence_interval", bfa_opts.symbiotic_presence_interval, 1_s, timespan_t::max() ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

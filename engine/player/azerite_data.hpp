@@ -395,6 +395,7 @@ void aegis_of_the_deep( special_effect_t& effect );
 void sphere_of_suppression( special_effect_t& effect );
 void breath_of_the_dying( special_effect_t& effect );
 void spark_of_inspiration( special_effect_t& effect );
+void formless_void( special_effect_t& effect );
 } // Namepsace azerite_essences ends
 
 // Vision of Perfection CDR helper

@@ -1351,6 +1351,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 294910, azerite_essences::sphere_of_suppression );
   unique_gear::register_special_effect( 310712, azerite_essences::breath_of_the_dying ); // lethal strikes
   unique_gear::register_special_effect( 311210, azerite_essences::spark_of_inspiration ); // unified strength
+  unique_gear::register_special_effect( 312771, azerite_essences::formless_void ); // symbiotic prensence
   // Vision of Perfection major Azerite Essence
   unique_gear::register_special_effect( 296325, azerite_essences::vision_of_perfection );
 }
@@ -5356,12 +5357,11 @@ void spark_of_inspiration( special_effect_t& effect )
   if ( !essence.enabled() )
     return;
 
-  buff_t* buff = buff_t::find( effect.player, effect.name() );
+  buff_t* buff = buff_t::find( effect.player, "unified_strength" );
   if ( !buff )
   {
     double haste = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
 
-    auto spell = effect.player->find_spell( 313643 );
     buff = make_buff<stat_buff_t>( effect.player, "unified_strength", effect.player->find_spell( 313643 ) )
       -> add_stat( STAT_HASTE_RATING, haste );
   }
@@ -5375,6 +5375,48 @@ void spark_of_inspiration( special_effect_t& effect )
   register_essence_corruption_resistance( effect );
 
   new unified_strength_cb_t( effect, essence, buff );
+}
+
+// Formless Void
+// Minor: Symbiotic Presence
+// id=312771 R1 minor base, primary stat on effect 2
+// id=312915 minor agi/haste buff (duration)
+// id=312773 R2 upgrade, increase R1 buff by effect 1 %
+// id=312774 R3 upgrade, haste on effect 1
+void formless_void( special_effect_t& effect )
+{
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
+    return;
+
+  buff_t* buff = buff_t::find( effect.player, "symbiotic_presence" );
+  if ( !buff )
+  {
+    auto primary = essence.spell_ref( 1u, essence_spell::BASE, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+    primary *= 1 + essence.spell_ref( 2u, essence_spell::UPGRADE ).effectN( 1 ).percent();
+
+    stat_buff_t* stat_buff = make_buff<stat_buff_t>( effect.player, "symbiotic_presence", effect.player->find_spell( 312915 ) )
+      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), primary );
+
+    if ( essence.rank() >= 3 )
+    {
+      stat_buff -> add_stat( STAT_HASTE_RATING, essence.spell_ref( 3u, essence_spell::UPGRADE ).effectN( 1 ).average( essence.item() ) );
+    }
+
+    buff = stat_buff;
+  }
+
+  timespan_t interval = buff->sim->bfa_opts.symbiotic_presence_interval;
+  effect.player -> register_combat_begin( [ buff, interval ]( player_t* )
+  {
+    buff -> trigger();
+    make_repeating_event( *buff -> sim, interval, [ buff ]()
+    {
+      buff -> trigger();
+    } );
+  } );
+
+  register_essence_corruption_resistance( effect );
 }
 
 } // Namespace azerite essences ends
