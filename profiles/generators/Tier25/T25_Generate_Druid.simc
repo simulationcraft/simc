@@ -1,0 +1,32 @@
+druid="T25_Druid_Guardian"
+level=120
+race=troll
+spec=guardian
+role=tank
+position=front
+talents=1000131
+
+azerite_essences=12:4/13:3/32:3/37:3
+
+#echoing void t3: 60 corruption | bonus_id=6551
+#devour vitality: 35 corruption | bonus_id=6567
+#cloak + essence resistance: 60
+#effective corruption: 35
+
+head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=44/459/582/241/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+shoulder=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517,azerite_powers=219/21/582/241/13
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+chest=darkheart_robe,id=174131,bonus_id=4824/1517,azerite_powers=15/30/582/241/13
+wrist=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517
+hands=chitinspine_gloves,id=174137,bonus_id=4824/1517/6551
+waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517
+legs=macabre_ritual_pants,id=174143,bonus_id=4824/1517
+feet=boots_of_manifest_shadow,id=174141,bonus_id=4824/1517
+finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_versatility
+finger2=voidetched_band,id=174531,bonus_id=4824/1517,enchant=accord_of_versatility
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket2=torment_in_a_jar,id=173943,bonus_id=4824/1517
+main_hand=anzig_vra,id=172191,bonus_id=4824/1517/6567,enchant=force_multiplier
+
+save=T25_Druid_Guardian.simc
