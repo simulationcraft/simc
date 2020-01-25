@@ -2850,7 +2850,7 @@ Effects          :
 
 Name             : Ancient Zandalari Knowledge (id=138430) [Hidden] 
 Class            : Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffa02fff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffa07fff)
 School           : Nature
 Spell Type       : None
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 

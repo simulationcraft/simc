@@ -659,8 +659,9 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1) -> Self (1)
                    Affected Spells: Aura of Mercy (183415), Aura of Sacrifice (183416), Devotion Aura (183425), Retribution Aura (203797), Aura of Mercy (210291)
                    Family Flags: 69, 120
-#2 (id=311516)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+#2 (id=311516)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Period (1000 -> 500)
 #3 (id=341678)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1) -> Self (1)
                    Affected Spells: Aura of Mercy (210291)

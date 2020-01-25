@@ -2332,6 +2332,7 @@ Tooltip          : Damage taken reduced by $w3%.
 Immune to interrupt and silence effects.
 
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Demonology Shaman, Warlock
 School           : Shadowflame
 Spell Type       : Magic
@@ -2342,7 +2343,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 0.7 yards/sec
 Family Flags     : 21
-Attributes       : ........ ........ x....... ........   .......x .x...... ........ ........ 
+Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ...x.... ........ ........   ........ ..x..... ........ ...x.... 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
