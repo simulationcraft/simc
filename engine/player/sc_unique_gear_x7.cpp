@@ -6815,7 +6815,7 @@ void corruption::lash_of_the_void( special_effect_t& effect )
         scaled_dmg( effect.driver()->effectN( 1 ).average( effect.item ) )
     {
       base_dd_min = base_dd_max = scaled_dmg;
-      aoe                       = 0;
+      aoe                       = -1;
     }
 
     double base_da_min(const action_state_t*) const override
