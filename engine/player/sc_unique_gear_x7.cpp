@@ -5796,6 +5796,9 @@ void items::psyche_shredder( special_effect_t& effect )
   // action for the debuff damage
   auto damage_spell = create_proc_action<shredded_psyche_t>( "shredded_psyche", effect );
 
+  if ( effect.player->bugs )
+    effect.ppm_ = -2.0;
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
