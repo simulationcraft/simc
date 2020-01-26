@@ -7655,7 +7655,7 @@ void death_knight_t::default_apl_frost()
   default_apl_dps_precombat();
 
   precombat -> add_action( "use_item,name=azsharas_font_of_power" );
-  precombat -> add_action( "variable,name=other_on_use_equipped,value=(equipped.notorious_gladiators_badge|equipped.sinister_gladiators_badge|equipped.sinister_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.notorious_gladiators_medallion|equipped.ashvanes_razor_coral)" );
+  precombat -> add_action( "variable,name=other_on_use_equipped,value=(equipped.notorious_gladiators_badge|equipped.corrupted_gladiators_badge|equipped.corrupted_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.notorious_gladiators_medallion|equipped.ashvanes_razor_coral)" );
 
   def -> add_action( "auto_attack" );
 
