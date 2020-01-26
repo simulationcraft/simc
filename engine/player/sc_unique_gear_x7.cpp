@@ -5658,6 +5658,9 @@ void items::whispering_eldritch_bow( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* ) override
     {
+      if ( !rng().roll( effect.player->sim->bfa_opts.whispered_truths_offensive_chance ) )
+        return;
+
       std::set<cooldown_t*> down_cooldowns;
       for ( cooldown_t* cd : cooldowns )
       {
