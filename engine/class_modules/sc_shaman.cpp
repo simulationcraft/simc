@@ -8176,6 +8176,9 @@ void shaman_t::init_action_list_elemental()
 
   // "Default" APL controlling logic flow to specialized sub-APLs
   def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
+  def->add_action( this, "Flame Shock",
+                   "if=!ticking&spell_targets.chainlightning<4&(cooldown.storm_elemental.remains<cooldown.storm_"
+                   "elemental.duration-30|buff.wind_gust.stack<14)" );
   def->add_talent( this, "Totem Mastery", "if=talent.totem_mastery.enabled&buff.resonance_totem.remains<2" );
   def->add_action( "use_items" );
   def->add_action(
