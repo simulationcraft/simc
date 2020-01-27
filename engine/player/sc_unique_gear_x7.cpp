@@ -6717,18 +6717,6 @@ void corruption::twisted_appendage( special_effect_t& effect )
 {
   struct mind_flay_t : public spell_t
   {
-    struct mind_flay_state_t : public action_state_t
-    {
-      mind_flay_state_t( action_t* action, player_t* target ) :
-        action_state_t( action, target )
-      { }
-
-      double composite_ta_multiplier() const override
-      {
-        return ta_multiplier * persistent_multiplier * target_ta_multiplier * versatility;
-      }
-    };
-
     double scaled_dmg;
 
     mind_flay_t( pet_t* p, double dmg )
@@ -6744,14 +6732,17 @@ void corruption::twisted_appendage( special_effect_t& effect )
       base_td              = scaled_dmg;
     }
 
+    void init() override
+    {
+      spell_t::init();
+
+      snapshot_flags &= ~STATE_MUL_PET;
+      update_flags &= ~STATE_MUL_PET;
+    }
+
     double composite_haste() const override
     {
       return 1.0;
-    }
-
-    action_state_t* new_state() override
-    {
-      return new mind_flay_state_t( this, target );
     }
 
     double base_ta(const action_state_t*) const override
