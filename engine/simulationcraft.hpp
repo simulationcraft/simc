@@ -4132,6 +4132,7 @@ struct player_t : public actor_t
     //8.3 buffs
     buff_t* strikethrough; // Corruption effect that increases crit damage/healing
     buff_t* flash_of_insight;  // Corruption effect that increases int
+    buff_t* obsidian_destruction; // Corruption effect that increases armor
   } buffs;
 
   struct debuffs_t

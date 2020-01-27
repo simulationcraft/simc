@@ -3501,6 +3501,11 @@ double player_t::composite_armor_multiplier() const
 {
   double a = current.armor_multiplier;
 
+  if ( buffs.obsidian_destruction )
+  {
+    a *= 1.0 + buffs.obsidian_destruction -> value();
+  }
+
   return a;
 }
 

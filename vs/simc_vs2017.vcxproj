@@ -136,6 +136,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>

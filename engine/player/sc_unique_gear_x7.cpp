@@ -240,6 +240,7 @@ void searing_flames( special_effect_t& effect );
 void twisted_appendage( special_effect_t& effect );
 void lash_of_the_void( special_effect_t& effect );
 void flash_of_insight( special_effect_t& effect );
+void obsidian_destruction( special_effect_t& effect );
 }  // namespace corruption
 
 namespace util
@@ -6916,6 +6917,73 @@ void corruption::flash_of_insight( special_effect_t& effect )
   }
 }
 
+void corruption::obsidian_destruction( special_effect_t& effect )
+{
+  // Explosion spell
+  struct obsidian_destruction_damage_t : public proc_spell_t
+  {
+    double armor_multiplier;
+
+    obsidian_destruction_damage_t( const special_effect_t& effect ) :
+      proc_spell_t( "obsidian_destruction_damage", effect.player, effect.player -> find_spell( 316661 ) ),
+      armor_multiplier( effect.driver() -> effectN( 3 ).percent() )
+    { }
+
+    void init() override
+    {
+      proc_spell_t::init();
+
+      snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+      update_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    }
+
+    double base_da_min( const action_state_t* ) const override
+    {
+      return armor_multiplier * player -> cache.armor();
+    }
+
+    double base_da_max( const action_state_t* ) const override
+    {
+      return armor_multiplier * player -> cache.armor();
+    }
+  };
+
+  auto damage = static_cast<obsidian_destruction_damage_t*>( effect.player -> find_action( "obsidian_destruction_damage" ) );
+
+  if ( ! damage )
+  {
+    buff_t* buff = make_buff( effect.player, "obsidian_destruction_buff", effect.driver() -> effectN( 4 ).trigger() )
+      -> set_default_value( effect.driver() -> effectN( 1 ).percent() );
+
+    effect.player -> buffs.obsidian_destruction = buff;
+    damage = new obsidian_destruction_damage_t( effect );
+
+    effect.player -> register_combat_begin( [ buff, damage ] ( player_t* ) {
+      // The buff resets to 1 stack on combat start
+      buff -> trigger();
+      // Use this opportunity to invalidate armor only once (the buff doesn't drop throughout the fight)
+      buff -> player -> invalidate_cache( CACHE_ARMOR );
+      // The buff gains a stack every 1s throughout combat
+      make_repeating_event( buff -> sim, buff -> data().effectN( 1 ).period(), [ buff, damage ] {
+        // The damage isn't triggered on reaching max stack, but 1s later when it goes down to 1
+        if ( buff -> stack() ==  buff -> max_stack() )
+        {
+          damage -> execute();
+          buff -> decrement( buff -> max_stack() - 1 );
+        }
+        else
+          buff -> increment();
+      } );
+    } );
+  }
+  // If a fury warrior dual wields the weapon, both the armor increase and the damage are doubled
+  else
+  {
+    effect.player -> buffs.obsidian_destruction -> default_value += effect.driver() -> effectN( 1 ).percent();
+    damage -> armor_multiplier += effect.driver() -> effectN( 3 ).percent();
+  }
+}
+
 }  // namespace bfa
 }  // namespace
 
@@ -7134,6 +7202,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 318483, corruption::twisted_appendage );
   register_special_effect( 317290, corruption::lash_of_the_void );
   register_special_effect( 318299, corruption::flash_of_insight );
+  register_special_effect( 316651, corruption::obsidian_destruction );
 
   // 8.3 Special Effects
   register_special_effect( 315736, items::voidtwisted_titanshard );
