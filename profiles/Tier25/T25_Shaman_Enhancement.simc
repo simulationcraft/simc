@@ -5,8 +5,8 @@ level=120
 race=troll
 role=attack
 position=back
-talents=3202033
-azerite_essences=4:3/35:3/5:3/23:3
+talents=3202023
+azerite_essences=4:3/35:3/27:3/23:3
 
 # Default consumables
 potion=potion_of_unbridled_fury
