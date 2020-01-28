@@ -4439,7 +4439,7 @@ void items::dribbling_inkpod( special_effect_t& effect )
     double hp_pct;
 
     conductive_ink_boom_cb_t( const special_effect_t& e, const special_effect_t& primary )
-      : dbc_proc_callback_t( e.player, e ), hp_pct( primary.trigger()->effectN( 1 ).base_value() )
+      : dbc_proc_callback_t( e.player, e ), hp_pct( primary.trigger()->effectN( 2 ).base_value() )
     {
     }
 
