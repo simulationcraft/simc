@@ -5973,19 +5973,22 @@ void set_bonus::titanic_empowerment( special_effect_t& effect )
     buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), value );
   }
 
-  titanic_empowerment_cb_t* titanic_cb = nullptr;
-  for ( auto cb : effect.player->callbacks.all_callbacks )
+  if ( effect.player->sim->bfa_opts.nyalotha )
   {
-    if ( titanic_cb = dynamic_cast<titanic_empowerment_cb_t*>( cb ) )
-      break;
-  }
+    titanic_empowerment_cb_t* titanic_cb = nullptr;
+    for ( auto cb : effect.player->callbacks.all_callbacks )
+    {
+      if ( titanic_cb = dynamic_cast<titanic_empowerment_cb_t*>( cb ) )
+        break;
+    }
 
-  if ( !titanic_cb )
-  {
-    titanic_cb = new titanic_empowerment_cb_t( effect, {buff} );
+    if ( !titanic_cb )
+    {
+      titanic_cb = new titanic_empowerment_cb_t( effect, {buff} );
+    }
+    else
+      titanic_cb->proc_buffs.push_back( buff );
   }
-  else
-    titanic_cb->proc_buffs.push_back( buff );
 }
 
 // Keepsakes of the Resolute Commandant Set Bonus =========================

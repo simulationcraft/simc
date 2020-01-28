@@ -1245,6 +1245,8 @@ struct sim_t : private sc_thread_t
     timespan_t symbiotic_presence_interval = 22_s;
     /// Percentage of Whispered Truths reductions to be applied to offensive spells.
     double whispered_truths_offensive_chance = 0.75;
+    /// Whether the player is in Ny'alotha or not.
+    bool nyalotha = true;
   } bfa_opts;
 
   // Expansion specific data
