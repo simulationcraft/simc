@@ -5962,19 +5962,18 @@ void set_bonus::gift_of_the_loa( special_effect_t& effect )
 
 void set_bonus::titanic_empowerment( special_effect_t& effect )
 {
-  auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "titanic_empowerment" ) );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "titanic_empowerment", effect.player->find_spell( 315858 ) );
-    // The set bonus uses item scaling for some reason. Player level is used as the item level.
-    const auto& budget = effect.player->dbc.random_property(
-        std::min( effect.player->level(), as<int>( effect.driver()->max_scaling_level() ) ) );
-    double value = budget.p_epic[ 0 ] * effect.driver()->effectN( 1 ).m_coefficient();
-    buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), value );
-  }
-
   if ( effect.player->sim->bfa_opts.nyalotha )
   {
+    auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "titanic_empowerment" ) );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, "titanic_empowerment", effect.player->find_spell( 315858 ) );
+      // The set bonus uses item scaling for some reason. Player level is used as the item level.
+      const auto& budget = effect.player->dbc.random_property(
+          std::min( effect.player->level(), as<int>( effect.driver()->max_scaling_level() ) ) );
+      double value = budget.p_epic[ 0 ] * effect.driver()->effectN( 1 ).m_coefficient();
+      buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), value );
+    }
     titanic_empowerment_cb_t* titanic_cb = nullptr;
     for ( auto cb : effect.player->callbacks.all_callbacks )
     {
