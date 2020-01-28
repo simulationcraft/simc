@@ -2366,6 +2366,8 @@ struct detection_t : public rogue_attack_t
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
     ignore_false_positive = true;
+    gcd_type = gcd_haste_type::SPELL_SPEED;
+    min_gcd = timespan_t::from_millis(750); // Force 750ms min gcd because rogue player base has a 1s min.
   }
 };
 
