@@ -27,37 +27,8 @@ main_hand=devastations_hour,id=172187,bonus_id=4824/1517,enchant=rune_of_the_fal
 save=T25_Death_Knight_Unholy.simc
 
 
+
 deathknight="T25_Death_Knight_Frost"
-spec=frost
-level=120
-race=human
-role=attack
-position=back
-talents=3202011
-
-azerite_essences=4:4:1/27:4:0/5:4:0/35:4:0
-
-head=second_sight_helm,id=174163,bonus_id=4824/1517,azerite_powers=108/582/459/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulder=writhing_spaulders_of_madness,id=174165,bonus_id=1517/4824,azerite_powers=108/582/459/13
-back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=breastplate_of_twilight_decimation,id=174164,bonus_id=1517/4824,azerite_powers=108/582/459/13
-wrists=bracers_of_phantom_pains,id=174177,bonus_id=4824/1517/6554
-hands=mirage-weavers_gauntlets,id=174178,bonus_id=4824/1517/6552
-waist=dark_crystalline_girdle,id=174171,bonus_id=4824/1517
-legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517
-feet=sabatons_of_malevolent_intent,id=174176,bonus_id=4824/1517
-finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_critical_strike
-finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_critical_strike
-trinket1=void-twisted_titanshard,id=174528,bonus_id=4824/1517
-trinket2=vita-charged_titanshard,id=174500,bonus_id=4824/1517
-main_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_razorice
-off_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_the_fallen_crusader
-
-save=T25_Death_Knight_Frost.simc
-
-
-deathknight="T25_Death_Knight_Frost_BoS"
 spec=frost
 level=120
 race=blood_elf
@@ -84,7 +55,7 @@ trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 main_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_razorice
 off_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_the_fallen_crusader
 
-save=T25_Death_Knight_Frost_BoS.simc
+save=T25_Death_Knight_Frost.simc
 
 
 
