@@ -4452,7 +4452,6 @@ void items::dribbling_inkpod( special_effect_t& effect )
 
       if ( td->debuff.conductive_ink->check() && s->target->health_percentage() <= hp_pct )
       {
-        td->source->sim->print_log( "it is {}", s->target->health_percentage() );
         dbc_proc_callback_t::trigger( a, cd );
       }
     }
