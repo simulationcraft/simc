@@ -4406,7 +4406,7 @@ void items::dribbling_inkpod( special_effect_t& effect )
     double hp_pct;
 
     conductive_ink_cb_t( const special_effect_t& e )
-      : dbc_proc_callback_t( e.player, e ), hp_pct( e.driver()->effectN( 3 ).percent() )
+      : dbc_proc_callback_t( e.player, e ), hp_pct( e.driver()->effectN( 3 ).base_value() )
     {
     }
 
@@ -4439,7 +4439,7 @@ void items::dribbling_inkpod( special_effect_t& effect )
     double hp_pct;
 
     conductive_ink_boom_cb_t( const special_effect_t& e, const special_effect_t& primary )
-      : dbc_proc_callback_t( e.player, e ), hp_pct( primary.driver()->effectN( 3 ).percent() )
+      : dbc_proc_callback_t( e.player, e ), hp_pct( primary.driver()->effectN( 3 ).base_value() )
     {
     }
 
@@ -4452,6 +4452,7 @@ void items::dribbling_inkpod( special_effect_t& effect )
 
       if ( td->debuff.conductive_ink->check() && s->target->health_percentage() <= hp_pct )
       {
+        td->source->sim->print_log( "it is {}", s->target->health_percentage() );
         dbc_proc_callback_t::trigger( a, cd );
       }
     }
