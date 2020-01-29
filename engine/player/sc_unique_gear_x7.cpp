@@ -6965,12 +6965,12 @@ void corruption::flash_of_insight( special_effect_t& effect )
 void corruption::obsidian_destruction( special_effect_t& effect )
 {
   // Explosion spell
-  struct obsidian_destruction_damage_t : public proc_spell_t
+  struct obsidian_destruction_damage_t : public aoe_proc_t
   {
     double armor_multiplier;
 
     obsidian_destruction_damage_t( const special_effect_t& effect )
-      : proc_spell_t( "obsidian_destruction_damage", effect.player, effect.player->find_spell( 316661 ) ),
+      : aoe_proc_t( effect, "obsidian_destruction_damage", effect.player->find_spell( 316661 ), true ),
         armor_multiplier( effect.driver()->effectN( 3 ).percent() )
     {
     }
