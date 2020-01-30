@@ -1292,6 +1292,32 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       }
     }
 
+    {
+      std::stringstream s;
+      for ( int i = 0; i < MAX_ITEM_EFFECT; i++ )
+      {
+        int id = item.parsed.data.id_spell[ i ];
+        if ( id )
+        {
+          if ( !s.str().empty() )
+            s << ", ";
+
+          auto spell = item.player->find_spell( id );
+          auto decorator = report::spell_data_decorator_t( item.player, spell );
+          decorator.item( item );
+          s << decorator.decorate();
+        }
+      }
+
+      if ( !s.str().empty() )
+      {
+        item_sim_desc += "<br/>";
+        item_sim_desc += "item effects: { ";
+        item_sim_desc += s.str();
+        item_sim_desc += " }";
+      }
+    }
+
     os.printf(
         "<tr>\n"
         "<th class=\"left\" colspan=\"2\"></th>\n"
