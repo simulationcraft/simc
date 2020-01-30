@@ -1302,6 +1302,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
           if ( !s.str().empty() )
             s << ", ";
 
+          s << util::item_spell_trigger_string( as<item_spell_trigger_type>( item.parsed.data.trigger_spell[ i ] ) ) << ": ";
           auto spell = item.player->find_spell( id );
           auto decorator = report::spell_data_decorator_t( item.player, spell );
           decorator.item( item );
