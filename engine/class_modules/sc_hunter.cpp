@@ -5411,7 +5411,7 @@ void hunter_t::apl_bm()
 
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( "use_items" );
-  default_list -> add_action( "use_item,name=azsharas_font_of_power,if=target.time_to_die>10" );
+  default_list -> add_action( "use_item,name=azsharas_font_of_power,if=target.time_to_die>10&(cooldown.aspect_of_the_wild.remains<14|target.time_to_die<34)" );
   default_list -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.up&(prev_gcd.1.aspect_of_the_wild|!equipped.cyclotronic_blast&buff.aspect_of_the_wild.remains>5)&(target.health.pct<35|!essence.condensed_lifeforce.major|!talent.killer_instinct.enabled)|(debuff.razor_coral_debuff.down|target.time_to_die<26)&target.time_to_die>(24*(cooldown.cyclotronic_blast.remains+4<target.time_to_die))" );
   default_list -> add_action( "use_item,effect_name=cyclotronic_blast,if=buff.bestial_wrath.down|target.time_to_die<5" );
   default_list -> add_action( "call_action_list,name=cds" );
@@ -5425,7 +5425,7 @@ void hunter_t::apl_bm()
   cds -> add_action( "blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16" );
   cds -> add_action( "lights_judgment,if=pet.turtle.buff.frenzy.up&pet.turtle.buff.frenzy.remains>gcd.max|!pet.turtle.buff.frenzy.up" );
   cds -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&target.health.pct<35|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
-  cds -> add_action( "worldvein_resonance" );
+  cds -> add_action( "worldvein_resonance,if=(prev_gcd.1.aspect_of_the_wild|cooldown.aspect_of_the_wild.remains<gcd|target.time_to_die<20)|!essence.vision_of_perfection.minor" );
   cds -> add_action( "guardian_of_azeroth,if=cooldown.aspect_of_the_wild.remains<10|target.time_to_die>cooldown+duration|target.time_to_die<30" );
   cds -> add_action( "ripple_in_space" );
   cds -> add_action( "memory_of_lucid_dreams" );
