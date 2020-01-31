@@ -559,8 +559,8 @@ inline To as( From f )
 {
   To t = static_cast<To>( f );
   // Casting between arithmetic types
-  assert( std::is_arithmetic<To>::value );
-  assert( std::is_arithmetic<From>::value );
+  static_assert( std::is_arithmetic<To>::value, "Output type is not arithmetic." );
+  static_assert( std::is_arithmetic<From>::value, "Input type is not arithmetic." );
   // is "safe" if (a) it's reversible, and
   assert( f == static_cast<From>( t ) );
   // (b) both values have the same sign.
