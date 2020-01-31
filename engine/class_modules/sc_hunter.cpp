@@ -5417,7 +5417,6 @@ void hunter_t::apl_bm()
   default_list -> add_action( "call_action_list,name=cds" );
   default_list -> add_action( "call_action_list,name=st,if=active_enemies<2" );
   default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1" );
-  default_list -> add_action( "arcane_torrent" );
   
   cds -> add_action( "ancestral_call,if=cooldown.bestial_wrath.remains>30" );
   cds -> add_action( "fireblood,if=cooldown.bestial_wrath.remains>30" );
