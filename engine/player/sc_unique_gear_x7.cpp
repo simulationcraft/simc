@@ -6505,10 +6505,15 @@ void corruption::echoing_void( special_effect_t& effect )
     {
     }
 
-    // If the buff is up roll if the collapse begins
-    void execute( action_t*, action_state_t* state ) override
+    void execute( action_t* action, action_state_t* state ) override
     {
-      if ( rng().roll( effect.player->sim->bfa_opts.echoing_void_collapse_chance ) && proc_buff->up() )
+      // Hotfix January 27, 2020  
+      // Echoing Void (Corrupted Effect) can now only trigger from abilities that are on the global cooldown.
+      if ( action->trigger_gcd == timespan_t::zero() )
+        return;
+
+      // If the buff is up roll if the collapse begins
+      if ( proc_buff->check() && rng().roll( effect.player->sim->bfa_opts.echoing_void_collapse_chance ) )
       {
         // Make the reactivation an event to not let the last tick damage proc a new stack
         this->deactivate();
@@ -6525,7 +6530,9 @@ void corruption::echoing_void( special_effect_t& effect )
                                         true /* immediately pulses */ );
       }
       else
+      {
         proc_buff->trigger();
+      }
     }
 
     void reset() override
@@ -6580,9 +6587,10 @@ void corruption::echoing_void( special_effect_t& effect )
     echoing_void_damage =
         static_cast<echoing_void_t*>( create_proc_action<echoing_void_t>( "echoing_void", effect, buff ) );
 
-    effect.spell_id    = 317014;
-    effect.custom_buff = buff;
-    effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_SPELL | PF_MAGIC_SPELL;
+    effect.spell_id     = 317014;
+    effect.custom_buff  = buff;
+    effect.proc_flags_  = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_SPELL | PF_MAGIC_SPELL;
+    effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
     new echoing_void_cb_t( effect, echoing_void_damage );
   }
