@@ -7,7 +7,7 @@ timeofday=day
 role=attack
 position=back
 talents=2120031
-azerite_essences=4:3:1/27:3:0/5:3:0/35:3:0
+azerite_essences=4:3:1/27:3:0/32:3:0/35:3:0
 
 # Default consumables
 potion=potion_of_unbridled_fury
