@@ -9,7 +9,7 @@ talents=2203031
 azerite_essences=22:4:1/27:4:0/35:4:0/5:4:0
 
 head=greathelm_of_phantasmic_reality,id=174167,bonus_id=4824/1517/4775,azerite_powers=199/109/21/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1620,azerite_level=80
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=pauldrons_of_infinite_darkness,id=174166,bonus_id=1517/4824/4775,azerite_powers=199/109/31/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=desert_guardians_breastplate,id=159424,bonus_id=1647/4775,azerite_powers=109/199/18/13
