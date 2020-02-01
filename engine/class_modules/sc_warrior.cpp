@@ -5679,6 +5679,7 @@ struct test_of_might_t : public warrior_buff_t<buff_t>
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     stat_buff_t* test_of_might = warrior().buff.test_of_might;
+    test_of_might->expire();
     const int strength = static_cast<int>( current_value / 10 ) * as<int>( warrior().azerite.test_of_might.value( 1 ) );
     test_of_might->manual_stats_added = false;
     test_of_might->add_stat( STAT_STRENGTH, strength );
