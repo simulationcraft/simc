@@ -7887,7 +7887,7 @@ void death_knight_t::default_apl_unholy()
   essences -> add_action( "reaping_flames" );
 
   cooldowns -> add_action( this, "Army of the Dead" );
-  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4" );
+  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&(!essence.vision_of_perfection.enabled|essence.vision_of_perfection.enabled&(talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains<=3|!talent.unholy_frenzy.enabled))" );
   cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists|raid_event.adds.in>15" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
   cooldowns -> add_talent( this, "Unholy Frenzy", "if=essence.vision_of_perfection.enabled&pet.apoc_ghoul.active|debuff.festering_wound.stack<4&(!azerite.magus_of_the_dead.enabled|azerite.magus_of_the_dead.enabled&cooldown.apocalypse.remains&pet.apoc_ghoul.active)" );
