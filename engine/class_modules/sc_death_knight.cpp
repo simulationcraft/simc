@@ -7890,7 +7890,7 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4" );
   cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists|raid_event.adds.in>15" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
-  cooldowns -> add_talent( this, "Unholy Frenzy", "if=essence.vision_of_perfection.enabled|(essence.condensed_lifeforce.enabled&pet.apoc_ghoul.active)|debuff.festering_wound.stack<4&!(equipped.ramping_amplitude_gigavolt_engine|azerite.magus_of_the_dead.enabled)|cooldown.apocalypse.remains<2&(equipped.ramping_amplitude_gigavolt_engine|azerite.magus_of_the_dead.enabled)" );
+  cooldowns -> add_talent( this, "Unholy Frenzy", "if=essence.vision_of_perfection.enabled&pet.apoc_ghoul.active|debuff.festering_wound.stack<4&(!azerite.magus_of_the_dead.enabled|azerite.magus_of_the_dead.enabled&cooldown.apocalypse.remains&pet.apoc_ghoul.active)" );
   cooldowns -> add_talent( this, "Unholy Frenzy", "if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))" );
   cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.time_to_die<8&target.time_to_die>4" );
   cooldowns -> add_talent( this, "Soul Reaper", "if=(!raid_event.adds.exists|raid_event.adds.in>20)&rune<=(1-buff.unholy_frenzy.up)" );
@@ -7900,10 +7900,10 @@ void death_knight_t::default_apl_unholy()
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<14&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&!variable.pooling_for_gargoyle" );
   generic -> add_action( this, "Death and Decay", "if=talent.pestilence.enabled&cooldown.apocalypse.remains" );
   generic -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
-  generic -> add_action( this, "Scourge Strike", "if=((debuff.festering_wound.up&cooldown.apocalypse.remains>5)|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
-  generic -> add_talent( this, "Clawing Shadows", "if=((debuff.festering_wound.up&cooldown.apocalypse.remains>5)|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
+  generic -> add_action( this, "Scourge Strike", "if=((debuff.festering_wound.up&(cooldown.apocalypse.remains>5&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled)|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains>6))|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
+  generic -> add_talent( this, "Clawing Shadows", "if=((debuff.festering_wound.up&(cooldown.apocalypse.remains>5&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled)|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains>6))|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<20&!variable.pooling_for_gargoyle" );
-  generic -> add_action( this, "Festering Strike", "if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<1|debuff.festering_wound.stack<4&(cooldown.apocalypse.remains<3&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled)|!buff.unholy_frenzy.up|essence.vision_of_perfection.enabled&(talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains<7|!talent.unholy_frenzy.enabled))|(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
   generic -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
 
   // Generic AOE actions to be done
