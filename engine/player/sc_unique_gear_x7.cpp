@@ -5444,14 +5444,20 @@ void items::shorting_bit_band( special_effect_t& effect )
     {
       aoe         = 0;
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      range       = radius;
     }
 
     void execute() override
     {
-      size_t index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
-      set_target( target_list()[ index ] );
+      double numTargets = targets_in_range_list( target_list() ).size();
+      if ( numTargets != 0 ) //We only do anything if target in range; we just eat the proc and do nothing if no targets <=8y
+      {
 
-      proc_t::execute();
+        size_t index = static_cast< size_t >( rng().range( 0, numTargets ) );
+        set_target( targets_in_range_list( target_list() )[ index ] );
+
+        proc_t::execute();
+      }
     }
   };
 
