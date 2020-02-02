@@ -21,6 +21,13 @@
 
 namespace { // UNNAMED NAMESPACE
 
+// Due to differences in item-level computation between in-game and armory profiles, some
+// items require simc to override the item ilevel with the armory import one (instead of
+// computing it using the in-game rules)
+static const std::unordered_map<unsigned, bool> __ILEVEL_OVERRIDE_MAP = {
+  { 167555U, true } // Pocket-Sized Computation Device
+};
+
 struct player_spec_t
 {
   std::string region, server, name, url, origin, talent_spec;
@@ -595,6 +602,12 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
     }
 
     azerite::parse_blizzard_azerite_information( item, slot_data );
+
+    auto it = __ILEVEL_OVERRIDE_MAP.find( item.parsed.data.id );
+    if ( it != __ILEVEL_OVERRIDE_MAP.end() )
+    {
+      item.option_ilevel_str =  util::to_string( slot_data[ "level" ][ "value" ].GetUint() );
+    }
   }
 }
 
