@@ -18,7 +18,7 @@ hands=mirage-weavers_gauntlets,id=174178,bonus_id=4824/1517/6573
 waist=welloiled_plate_girdle,id=169057,bonus_id=4824/1522/6573
 legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517/6573
 feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517/6573
-finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522/6476,enchant=accord_of_haste
+finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522/6476/6465,enchant=accord_of_haste
 finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_haste
 trinket1=void-twisted_titanshard,id=174528,bonus_id=4824/1517
 trinket2=vita-charged_titanshard,id=174500,bonus_id=4824/1517
