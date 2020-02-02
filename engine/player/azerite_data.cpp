@@ -5280,6 +5280,8 @@ struct reaping_flames_t : public azerite_essence_major_t
     // Damage stored in R1 MINOR
     base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() );
 
+    may_crit = true;
+
     lo_hp  = essence.spell_ref( 1u ).effectN( 2 ).base_value();
     hi_hp  = essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value();
     cd_mod = -essence.spell_ref( 1u ).effectN( 3 ).base_value();
