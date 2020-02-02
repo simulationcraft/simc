@@ -2547,6 +2547,7 @@ struct item_t
   bool has_scaling_stat_bonus_id() const;
 
   const special_effect_t* special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
+  const special_effect_t* special_effect_with_name( const std::string& name, special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
 };
 std::ostream& operator<<(std::ostream&, const item_t&);
 
