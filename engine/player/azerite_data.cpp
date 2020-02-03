@@ -933,6 +933,16 @@ void azerite_essence_state_t::update_traversal_nodes()
     passives.push_back( 300577u );
   }
 
+  if ( neck.parsed.azerite_level >= 71 )
+  {
+    passives.push_back( 312927u );
+  }
+
+  if ( neck.parsed.azerite_level >= 80 )
+  {
+    passives.push_back( 312928u );
+  }
+
   range::for_each( passives, [ this ]( unsigned id ) {
     auto it = range::find_if( m_state, [id]( const slot_state_t& slot ) {
       return id == slot.id() && slot.type() == essence_type::PASSIVE;
@@ -1333,6 +1343,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 300575, azerite_essences::stamina_milestone );
   unique_gear::register_special_effect( 300576, azerite_essences::stamina_milestone );
   unique_gear::register_special_effect( 300577, azerite_essences::stamina_milestone );
+  unique_gear::register_special_effect( 312927, azerite_essences::stamina_milestone );
+  unique_gear::register_special_effect( 312928, azerite_essences::stamina_milestone );
 
   // Generic minor Azerite Essences
   unique_gear::register_special_effect( 295365, azerite_essences::the_crucible_of_flame );
