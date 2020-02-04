@@ -90,16 +90,16 @@ finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_
 finger2=voidetched_band,id=174531,bonus_id=4824/1517,enchant=accord_of_versatility
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=torment_in_a_jar,id=173943,bonus_id=4824/1517
-main_hand=anzig_vra,id=172191,bonus_id=4824/1517/6567,enchant=force_multiplier
+main_hand=qwor_nlyeth,id=174106,bonus_id=4824/1517/6550,enchant=force_multiplier
 
 # Gear Summary
 # gear_ilvl=478.20
 # gear_agility=10246
 # gear_stamina=19580
 # gear_crit_rating=640
-# gear_haste_rating=1036
-# gear_mastery_rating=1200
-# gear_versatility_rating=1339
+# gear_haste_rating=1243
+# gear_mastery_rating=1099
+# gear_versatility_rating=1232
 # gear_corruption=95
 # gear_corruption_resistance=50
 # gear_armor=3834
