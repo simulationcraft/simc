@@ -1,4 +1,4 @@
-SimulationCraft 830-02 for World of Warcraft 8.3.0 Live (wow build 33051)
+SimulationCraft 830-01 for World of Warcraft 8.3.0 Live (wow build 33051, git build bfa-dev 087d0f4a96)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
