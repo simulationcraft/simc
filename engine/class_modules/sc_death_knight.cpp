@@ -7247,6 +7247,9 @@ void death_knight_t::init_spells()
   // Generic
   spec.plate_specialization = find_specialization_spell( "Plate Specialization" );
   spec.death_knight         = find_spell( 137005 ); // "Death Knight" passive
+  // Veteran of the Third and Fourth War are identical, Third's data is used for the generic effect
+  spec.veteran_of_the_third_war = find_spell( 48263 );
+
   // Shared
   spec.icebound_fortitude   = find_specialization_spell( "Icebound Fortitude" );
   spec.death_and_decay      = find_specialization_spell( "Death and Decay" );
@@ -7688,7 +7691,7 @@ void death_knight_t::default_apl_frost()
   essences -> add_action( "ripple_in_space,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
   essences -> add_action( "memory_of_lucid_dreams,if=buff.empower_rune_weapon.remains<5&buff.breath_of_sindragosa.up|(rune.time_to_2>gcd&runic_power<50)" );
   essences -> add_action( "reaping_flames" );
-	
+
   // On-use items
   cooldowns -> add_action( "use_item,name=azsharas_font_of_power,if=(cooldown.empowered_rune_weapon.ready&!variable.other_on_use_equipped)|(cooldown.pillar_of_frost.remains<=10&variable.other_on_use_equipped)" );
   cooldowns -> add_action( "use_item,name=lurkers_insidious_gift,if=talent.breath_of_sindragosa.enabled&((cooldown.pillar_of_frost.remains<=10&variable.other_on_use_equipped)|(buff.pillar_of_frost.up&!variable.other_on_use_equipped))|(buff.pillar_of_frost.up&!talent.breath_of_sindragosa.enabled)" );
@@ -7720,13 +7723,13 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&talent.obliteration.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.1.time_to_die<20" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=(cooldown.pillar_of_frost.ready|target.1.time_to_die<20)&talent.breath_of_sindragosa.enabled&runic_power>60" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.icecap.enabled&rune<3" );
-	
+
   // Cold Heart and Frostwyrm's Fury
   cooldowns -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.1.time_to_die<=gcd)" );
   cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.pillar_of_frost.up&azerite.icy_citadel.rank<=1&(buff.pillar_of_frost.remains<=gcd|buff.unholy_strength.remains<=gcd&buff.unholy_strength.up))" );
   cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.icy_citadel.up&!talent.icecap.enabled&(buff.unholy_strength.up|buff.icy_citadel.remains<=gcd))|buff.icy_citadel.up&buff.icy_citadel.remains<=gcd&talent.icecap.enabled&buff.pillar_of_frost.up" );
   cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=target.1.time_to_die<gcd|(target.1.time_to_die<cooldown.pillar_of_frost.remains&buff.unholy_strength.up)" );
-	
+
   // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>5&target.1.time_to_die<gcd", "Cold heart conditions" );
   cold_heart -> add_action( this, "Chains of Ice", "if=(buff.seething_rage.remains<gcd)&buff.seething_rage.up" );
@@ -7796,7 +7799,7 @@ void death_knight_t::default_apl_frost()
   standard -> add_action( this, "Frost Strike" );
   standard -> add_talent( this, "Horn of Winter" );
   standard -> add_action( "arcane_torrent" );
-	
+
   // AoE Rotation
   aoe -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|(azerite.frozen_tempest.rank&spell_targets.remorseless_winter>=3&!buff.rime.up)", "AoE Rotation" );
   aoe -> add_talent( this, "Glacial Advance", "if=talent.frostscythe.enabled" );
