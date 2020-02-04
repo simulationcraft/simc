@@ -9,7 +9,7 @@ cd $DIR/..
 for CLASS in "${CLASSES[@]}"
 do
   echo "Processing $CLASS"
-  FILE=spelldatadump/$CLASS.txt
+  FILE=SpellDataDump/$CLASS.txt
   echo $FILE
   ./engine/simc spell_query="spell.class=$CLASS" > $FILE.unix
 
@@ -18,7 +18,7 @@ do
   rm $FILE.unix
 done
 
-FILE=spelldatadump/allspells.txt
+FILE=SpellDataDump/allspells.txt
 ./engine/simc spell_query="spell" > $FILE.unix
 
 # convert unix line endings to windows since that's been the standard
