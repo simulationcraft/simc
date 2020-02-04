@@ -1364,6 +1364,11 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 310712, azerite_essences::breath_of_the_dying ); // lethal strikes
   unique_gear::register_special_effect( 311210, azerite_essences::spark_of_inspiration ); // unified strength
   unique_gear::register_special_effect( 312771, azerite_essences::formless_void ); // symbiotic prensence
+  unique_gear::register_special_effect( 310603, azerite_essences::strength_of_the_warden ); // endurance
+  unique_gear::register_special_effect( 293030, azerite_essences::unwavering_ward ); // unwavering ward
+  unique_gear::register_special_effect( 297411, azerite_essences::spirit_of_preservation ); // devout spirit
+  unique_gear::register_special_effect( 295164, azerite_essences::touch_of_the_everlasting ); // will to survive
+
   // Vision of Perfection major Azerite Essence
   unique_gear::register_special_effect( 296325, azerite_essences::vision_of_perfection );
 }
@@ -5430,6 +5435,34 @@ void formless_void( special_effect_t& effect )
     } );
   } );
 
+  register_essence_corruption_resistance( effect );
+}
+
+// Strength of the Warden
+// Just register the corruption resistance
+void strength_of_the_warden( special_effect_t& effect )
+{
+  register_essence_corruption_resistance( effect );
+}
+
+// Unwavering Ward
+// Just register the corruption resistance
+void unwavering_ward( special_effect_t& effect )
+{
+  register_essence_corruption_resistance( effect );
+}
+
+// Spirit of Preservation
+// Just register the corruption resistance
+void spirit_of_preservation( special_effect_t& effect )
+{
+  register_essence_corruption_resistance( effect );
+}
+
+// Touch of the Everlasting
+// Just register the corruption resistance
+void touch_of_the_everlasting( special_effect_t& effect )
+{
   register_essence_corruption_resistance( effect );
 }
 
