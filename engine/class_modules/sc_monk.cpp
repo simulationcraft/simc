@@ -9684,7 +9684,7 @@ void monk_t::apl_pre_windwalker()
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   pre->add_action( "potion" );
-  pre->add_action( "variable,name=coral_double_tod_on_use,op=set,value=equipped.ashvanes_razor_coral&(equipped.cyclotronic_blast|equipped.lustrous_golden_plumage|equipped.gladiators_badge|equipped.gladiators_medallion)" );
+  pre->add_action( "variable,name=coral_double_tod_on_use,op=set,value=equipped.ashvanes_razor_coral&(equipped.cyclotronic_blast|equipped.lustrous_golden_plumage|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.remote_guidance_device)" );
   pre->add_talent( this, "Chi Burst", "if=(!talent.serenity.enabled|!talent.fist_of_the_white_tiger.enabled)" );
   pre->add_talent( this, "Chi Wave", "if=talent.fist_of_the_white_tiger.enabled" );
   pre->add_talent( this, "Invoke Xuen, the White Tiger" );
