@@ -816,7 +816,7 @@ timespan_t special_effect_t::cooldown() const
   {
     for ( size_t i = 0; i < MAX_ITEM_EFFECT; i++ )
     {
-      if ( item -> parsed.data.cooldown_duration[ i ] > 0 )
+      if ( item -> parsed.data.id_spell[ i ] == spell_id && item -> parsed.data.cooldown_duration[ i ] > 0 )
         return timespan_t::from_millis( item -> parsed.data.cooldown_duration[ i ] );
     }
   }
