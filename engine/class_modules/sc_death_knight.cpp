@@ -7257,7 +7257,6 @@ void death_knight_t::init_spells()
 
   // Blood
   spec.blood_death_knight       = find_specialization_spell( "Blood Death Knight" );
-  spec.veteran_of_the_third_war = find_specialization_spell( "Veteran of the Third War" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.blood_boil               = find_specialization_spell( "Blood Boil" );
   spec.crimson_scourge          = find_specialization_spell( "Crimson Scourge" );
