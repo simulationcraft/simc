@@ -1,4 +1,4 @@
-SimulationCraft 830-01 for World of Warcraft 8.3.0 Live (wow build 33051, git build bfa-dev 087d0f4a96)
+SimulationCraft 830-02 for World of Warcraft 8.3.0 Live (wow build 33051)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
