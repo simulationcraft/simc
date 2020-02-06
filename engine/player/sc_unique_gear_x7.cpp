@@ -5973,11 +5973,19 @@ void set_bonus::titanic_empowerment( special_effect_t& effect )
     auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "titanic_empowerment" ) );
     if ( !buff )
     {
+      auto vita_shard = effect.player->find_item_by_id( 174500 );
+      auto void_shard = effect.player->find_item_by_id( 174528 );
+      if ( !vita_shard || !void_shard )
+      {
+        // Don't attempt to guess the correct stat amount when the set bonus is enabled manually.
+        effect.player->sim->print_debug( "Titanic Empowerment requires both trinkets to be equipped, disabling." );
+        return;
+      }
+
+      int average_ilvl = ( vita_shard->item_level() + void_shard->item_level() ) / 2;
       buff = make_buff<stat_buff_t>( effect.player, "titanic_empowerment", effect.player->find_spell( 315858 ) );
-      // The set bonus uses item scaling for some reason. Player level is used as the item level.
-      const auto& budget = effect.player->dbc.random_property(
-          std::min( effect.player->level(), as<int>( effect.driver()->max_scaling_level() ) ) );
-      double value = budget.p_epic[ 0 ] * effect.driver()->effectN( 1 ).m_coefficient();
+      const auto& budget = effect.player->dbc.random_property( average_ilvl );
+      double value = budget.p_epic[ 0 ] * buff->data().effectN( 1 ).m_coefficient();
       buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), value );
     }
     titanic_empowerment_cb_t* titanic_cb = nullptr;
