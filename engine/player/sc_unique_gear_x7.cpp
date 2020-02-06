@@ -6229,7 +6229,7 @@ void corruption::racing_pulse( special_effect_t& effect )
   if ( !buff )
   {
     buff = create_buff<stat_buff_t>( effect.player, "racing_pulse", effect.player->find_spell( 318227 ) )
-               ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() );
+               ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 
     effect.custom_buff = buff;
 
@@ -6239,7 +6239,7 @@ void corruption::racing_pulse( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
   else
-    buff->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() );
+    buff->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 }
 
 // Honed Mind
@@ -6251,7 +6251,7 @@ void corruption::honed_mind( special_effect_t& effect )
   if ( !buff )
   {
     buff = create_buff<stat_buff_t>( effect.player, "honed_mind", effect.player->find_spell( 318216 ) )
-               ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() );
+               ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 
     effect.custom_buff = buff;
 
@@ -6261,7 +6261,7 @@ void corruption::honed_mind( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
   else
-    buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() );
+    buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 }
 
 // Deadly Momentum
@@ -6274,7 +6274,7 @@ void corruption::deadly_momentum( special_effect_t& effect )
   if ( !buff )
   {
     buff = create_buff<stat_buff_t>( effect.player, "deadly_momentum", effect.player->find_spell( 318219 ) )
-               ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() );
+               ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 
     effect.custom_buff = buff;
 
@@ -6285,7 +6285,7 @@ void corruption::deadly_momentum( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
   else
-    buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() );
+    buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 }
 
 // Surging Vitality
@@ -6297,7 +6297,7 @@ void corruption::surging_vitality( special_effect_t& effect )
   if ( !buff )
   {
     buff = create_buff<stat_buff_t>( effect.player, "surging_vitality", effect.player->find_spell( 318211 ) )
-               ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
+               ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 
     // RPPM value is in a different spell
     buff->set_rppm( RPPM_NONE, effect.player->find_spell( 318212 )->real_ppm() );
@@ -6314,7 +6314,7 @@ void corruption::surging_vitality( special_effect_t& effect )
     } );
   }
   else
-    buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
+    buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 }
 
 void corruption::strikethrough( special_effect_t& effect )
