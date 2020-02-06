@@ -3695,7 +3695,7 @@ struct icy_veins_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::init_finished();
 
-    if ( action_list->name_str == "precombat" )
+    if ( action_list && action_list->name_str == "precombat" )
       precombat = true;
   }
 
