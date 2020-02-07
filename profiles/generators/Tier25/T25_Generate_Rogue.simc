@@ -6,7 +6,7 @@ role=attack
 position=back
 talents=2310021
 
-azerite_essences=4:3:1/27:3:0/5:3:0/35:3:0
+azerite_essences=4:3:1/27:3:0/32:3:0/35:3:0
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=136/582/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
@@ -66,7 +66,7 @@ role=attack
 position=back
 talents=2120031
 
-azerite_essences=4:3:1/27:3:0/5:3:0/35:3:0
+azerite_essences=4:3:1/27:3:0/32:3:0/35:3:0
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=175/413/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80

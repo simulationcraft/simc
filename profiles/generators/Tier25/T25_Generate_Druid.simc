@@ -9,7 +9,7 @@ talents=1000131
 azerite_essences=12:4/13:3/32:3/37:3
 
 #echoing void t3: 60 corruption | bonus_id=6551
-#devour vitality: 35 corruption | bonus_id=6567
+#echoing void t2: 35 corruption | bonus_id=6550
 #cloak + essence resistance: 60
 #effective corruption: 35
 
@@ -27,7 +27,7 @@ finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_
 finger2=voidetched_band,id=174531,bonus_id=4824/1517,enchant=accord_of_versatility
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=torment_in_a_jar,id=173943,bonus_id=4824/1517
-main_hand=anzig_vra,id=172191,bonus_id=4824/1517/6567,enchant=force_multiplier
+main_hand=qwor_nlyeth,id=174106,bonus_id=4824/1517/6550,enchant=force_multiplier
 
 save=T25_Druid_Guardian.simc
 

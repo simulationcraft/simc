@@ -111,6 +111,23 @@ const special_effect_t* item_t::special_effect( special_effect_source_e source, 
   return nullptr;
 }
 
+// item_t::special_effect_with_name =========================================
+
+const special_effect_t* item_t::special_effect_with_name( const std::string& name, special_effect_source_e source, special_effect_e type ) const
+{
+  for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
+  {
+    if ( ( source == SPECIAL_EFFECT_SOURCE_NONE || parsed.special_effects[ i ] -> source == source ) &&
+      ( type == SPECIAL_EFFECT_NONE || type == parsed.special_effects[ i ] -> type ) &&
+      util::str_compare_ci( parsed.special_effects[ i ] -> name() , name ) )
+    {
+      return parsed.special_effects[ i ];
+    }
+  }
+
+  return nullptr;
+}
+
 gear_stats_t item_t::total_stats() const
 {
   gear_stats_t total_stats;

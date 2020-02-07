@@ -5444,14 +5444,20 @@ void items::shorting_bit_band( special_effect_t& effect )
     {
       aoe         = 0;
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      range       = radius;
     }
 
     void execute() override
     {
-      size_t index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
-      set_target( target_list()[ index ] );
+      double numTargets = targets_in_range_list( target_list() ).size();
+      if ( numTargets != 0 ) //We only do anything if target in range; we just eat the proc and do nothing if no targets <=8y
+      {
 
-      proc_t::execute();
+        size_t index = static_cast< size_t >( rng().range( 0, numTargets ) );
+        set_target( targets_in_range_list( target_list() )[ index ] );
+
+        proc_t::execute();
+      }
     }
   };
 
@@ -5967,11 +5973,19 @@ void set_bonus::titanic_empowerment( special_effect_t& effect )
     auto buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "titanic_empowerment" ) );
     if ( !buff )
     {
+      auto vita_shard = effect.player->find_item_by_id( 174500 );
+      auto void_shard = effect.player->find_item_by_id( 174528 );
+      if ( !vita_shard || !void_shard )
+      {
+        // Don't attempt to guess the correct stat amount when the set bonus is enabled manually.
+        effect.player->sim->print_debug( "Titanic Empowerment requires both trinkets to be equipped, disabling." );
+        return;
+      }
+
+      int average_ilvl = ( vita_shard->item_level() + void_shard->item_level() ) / 2;
       buff = make_buff<stat_buff_t>( effect.player, "titanic_empowerment", effect.player->find_spell( 315858 ) );
-      // The set bonus uses item scaling for some reason. Player level is used as the item level.
-      const auto& budget = effect.player->dbc.random_property(
-          std::min( effect.player->level(), as<int>( effect.driver()->max_scaling_level() ) ) );
-      double value = budget.p_epic[ 0 ] * effect.driver()->effectN( 1 ).m_coefficient();
+      const auto& budget = effect.player->dbc.random_property( average_ilvl );
+      double value = budget.p_epic[ 0 ] * buff->data().effectN( 1 ).m_coefficient();
       buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), value );
     }
     titanic_empowerment_cb_t* titanic_cb = nullptr;
@@ -6215,7 +6229,7 @@ void corruption::racing_pulse( special_effect_t& effect )
   if ( !buff )
   {
     buff = create_buff<stat_buff_t>( effect.player, "racing_pulse", effect.player->find_spell( 318227 ) )
-               ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() );
+               ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 
     effect.custom_buff = buff;
 
@@ -6225,7 +6239,7 @@ void corruption::racing_pulse( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
   else
-    buff->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() );
+    buff->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 }
 
 // Honed Mind
@@ -6237,7 +6251,7 @@ void corruption::honed_mind( special_effect_t& effect )
   if ( !buff )
   {
     buff = create_buff<stat_buff_t>( effect.player, "honed_mind", effect.player->find_spell( 318216 ) )
-               ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() );
+               ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 
     effect.custom_buff = buff;
 
@@ -6247,7 +6261,7 @@ void corruption::honed_mind( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
   else
-    buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() );
+    buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 }
 
 // Deadly Momentum
@@ -6260,7 +6274,7 @@ void corruption::deadly_momentum( special_effect_t& effect )
   if ( !buff )
   {
     buff = create_buff<stat_buff_t>( effect.player, "deadly_momentum", effect.player->find_spell( 318219 ) )
-               ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() );
+               ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 
     effect.custom_buff = buff;
 
@@ -6271,7 +6285,7 @@ void corruption::deadly_momentum( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
   else
-    buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() );
+    buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 }
 
 // Surging Vitality
@@ -6283,7 +6297,7 @@ void corruption::surging_vitality( special_effect_t& effect )
   if ( !buff )
   {
     buff = create_buff<stat_buff_t>( effect.player, "surging_vitality", effect.player->find_spell( 318211 ) )
-               ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
+               ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 
     // RPPM value is in a different spell
     buff->set_rppm( RPPM_NONE, effect.player->find_spell( 318212 )->real_ppm() );
@@ -6300,7 +6314,7 @@ void corruption::surging_vitality( special_effect_t& effect )
     } );
   }
   else
-    buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
+    buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 }
 
 void corruption::strikethrough( special_effect_t& effect )

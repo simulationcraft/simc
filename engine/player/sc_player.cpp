@@ -10258,15 +10258,7 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
         {
           return expr_t::create_constant( "item_equipped", 1 );
         }
-        else if ( items[ i ].has_use_special_effect() &&
-          util::str_compare_ci(
-            items[ i ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name(), splits[ 1 ] ) )
-        {
-          return expr_t::create_constant( "item_equipped", 1 );
-        }
-        else if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP ) &&
-          util::str_compare_ci(
-            items[ i ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP )->name(), splits[ 1 ] ) )
+        else if ( items[ i ].special_effect_with_name( splits[ 1 ] ) )
         {
           return expr_t::create_constant( "item_equipped", 1 );
         }

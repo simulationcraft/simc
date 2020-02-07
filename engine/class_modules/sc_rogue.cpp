@@ -5724,7 +5724,7 @@ void rogue_t::init_action_list()
     def -> add_action( "arcane_pulse");
     def -> add_action( "lights_judgment");
     def -> add_action( "bag_of_tricks");
-    def -> add_action( "detection,if=equipped.echoing_void");
+    def -> add_action( "detection,if=equipped.echoing_void|equipped.echoing_void_oh");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -5841,7 +5841,7 @@ void rogue_t::init_action_list()
     def -> add_action( "arcane_pulse" );
     def -> add_action( "lights_judgment");
     def -> add_action( "bag_of_tricks");
-    def -> add_action( "detection,if=equipped.echoing_void");
+    def -> add_action( "detection,if=equipped.echoing_void|equipped.echoing_void_oh");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -5922,7 +5922,7 @@ void rogue_t::init_action_list()
     def -> add_action( "arcane_pulse" );
     def -> add_action( "lights_judgment");
     def -> add_action( "bag_of_tricks");
-    def -> add_action( "detection,if=equipped.echoing_void");
+    def -> add_action( "detection,if=equipped.echoing_void|equipped.echoing_void_oh");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );

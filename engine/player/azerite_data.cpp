@@ -933,6 +933,16 @@ void azerite_essence_state_t::update_traversal_nodes()
     passives.push_back( 300577u );
   }
 
+  if ( neck.parsed.azerite_level >= 71 )
+  {
+    passives.push_back( 312927u );
+  }
+
+  if ( neck.parsed.azerite_level >= 80 )
+  {
+    passives.push_back( 312928u );
+  }
+
   range::for_each( passives, [ this ]( unsigned id ) {
     auto it = range::find_if( m_state, [id]( const slot_state_t& slot ) {
       return id == slot.id() && slot.type() == essence_type::PASSIVE;
@@ -1333,6 +1343,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 300575, azerite_essences::stamina_milestone );
   unique_gear::register_special_effect( 300576, azerite_essences::stamina_milestone );
   unique_gear::register_special_effect( 300577, azerite_essences::stamina_milestone );
+  unique_gear::register_special_effect( 312927, azerite_essences::stamina_milestone );
+  unique_gear::register_special_effect( 312928, azerite_essences::stamina_milestone );
 
   // Generic minor Azerite Essences
   unique_gear::register_special_effect( 295365, azerite_essences::the_crucible_of_flame );
@@ -1352,6 +1364,11 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 310712, azerite_essences::breath_of_the_dying ); // lethal strikes
   unique_gear::register_special_effect( 311210, azerite_essences::spark_of_inspiration ); // unified strength
   unique_gear::register_special_effect( 312771, azerite_essences::formless_void ); // symbiotic prensence
+  unique_gear::register_special_effect( 310603, azerite_essences::strength_of_the_warden ); // endurance
+  unique_gear::register_special_effect( 293030, azerite_essences::unwavering_ward ); // unwavering ward
+  unique_gear::register_special_effect( 297411, azerite_essences::spirit_of_preservation ); // devout spirit
+  unique_gear::register_special_effect( 295164, azerite_essences::touch_of_the_everlasting ); // will to survive
+
   // Vision of Perfection major Azerite Essence
   unique_gear::register_special_effect( 296325, azerite_essences::vision_of_perfection );
 }
@@ -5280,6 +5297,8 @@ struct reaping_flames_t : public azerite_essence_major_t
     // Damage stored in R1 MINOR
     base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() );
 
+    may_crit = true;
+
     lo_hp  = essence.spell_ref( 1u ).effectN( 2 ).base_value();
     hi_hp  = essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value();
     cd_mod = -essence.spell_ref( 1u ).effectN( 3 ).base_value();
@@ -5416,6 +5435,34 @@ void formless_void( special_effect_t& effect )
     } );
   } );
 
+  register_essence_corruption_resistance( effect );
+}
+
+// Strength of the Warden
+// Just register the corruption resistance
+void strength_of_the_warden( special_effect_t& effect )
+{
+  register_essence_corruption_resistance( effect );
+}
+
+// Unwavering Ward
+// Just register the corruption resistance
+void unwavering_ward( special_effect_t& effect )
+{
+  register_essence_corruption_resistance( effect );
+}
+
+// Spirit of Preservation
+// Just register the corruption resistance
+void spirit_of_preservation( special_effect_t& effect )
+{
+  register_essence_corruption_resistance( effect );
+}
+
+// Touch of the Everlasting
+// Just register the corruption resistance
+void touch_of_the_everlasting( special_effect_t& effect )
+{
   register_essence_corruption_resistance( effect );
 }
 

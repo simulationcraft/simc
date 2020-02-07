@@ -40,19 +40,19 @@ azerite_essences=12:3:1/13:3:0/32:3:0/37:3:0
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=134/160/30/202/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulder=gorak_tuls_mantle,id=159339,bonus_id=1647,azerite_powers=134/246/21/202/13
+shoulders=gorak_tuls_mantle,id=159339,bonus_id=1647/4775,azerite_powers=134/193/459/202/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=134/160/22/85/13
-wrist=wristwraps_of_volatile_power,id=174145,bonus_id=4824/1517/6549
-hands=gloves_of_abyssal_authority,id=174146,bonus_id=4824/1517/6549
-waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517
-legs=onyximbued_breeches,id=174139,bonus_id=4824/1517
+chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=134/582/31/85/13
+wrist=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517/6550
+hands=grips_of_electrified_defense,id=159337,bonus_id=4824/1637
+waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517/6551
+legs=macabre_ritual_pants,id=174143,bonus_id=4824/1517
 feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517
-finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_haste
-finger2=voidetched_band,id=174531,bonus_id=4824/1517,enchant=accord_of_haste
-trinket1=sigil_of_warding,id=173940,bonus_id=4824/1517
-trinket2=humming_black_dragonscale,id=174044,bonus_id=4824/1517
-main_hand=mishun_blade_of_tyrants,id=174105,bonus_id=4824/1517,enchant=force_multiplier
-off_hand=mishun_blade_of_tyrants,id=174105,bonus_id=4824/1517,enchant=versatile_navigation
+finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_versatility
+finger2=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517,enchant=accord_of_versatility
+trinket1=vitacharged_titanshard,id=174500,bonus_id=4824/1517
+trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+main_hand=bilestained_crawg_tusks,id=159653,bonus_id=4824/1637,enchant=deadly_navigation
+off_hand=bilestained_crawg_tusks,id=159653,bonus_id=4824/1637,enchant=versatile_navigation
 
 save=T25_Demon_Hunter_Vengeance.simc
