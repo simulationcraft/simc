@@ -5696,7 +5696,7 @@ void items::whispering_eldritch_bow( special_effect_t& effect )
     {
       for ( action_t* a : effect.player->action_list )
       {
-        if ( a->data().class_mask() != 0 && a->data().is_class( HUNTER ) && a->cooldown->duration > 0_ms && a->data().race_mask() == 0)
+        if ( a->data().class_mask() != 0 && a->data().is_class( HUNTER ) && a->cooldown->duration > 0_ms && a->data().race_mask() == 0 )
         {
           cooldowns.insert( a->cooldown );
         }
