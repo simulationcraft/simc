@@ -279,6 +279,11 @@ buff_stack_change_callback_t callback_buff_activator( dbc_proc_callback_t* callb
   };
 }
 
+bool is_adjustable_class_spell( action_t* a )
+{
+  return a->data().class_mask() != 0 && !a->background && a->cooldown->duration > 0_ms && a->data().race_mask() == 0;
+}
+
 }  // namespace util
 
 namespace set_bonus
@@ -5696,7 +5701,7 @@ void items::whispering_eldritch_bow( special_effect_t& effect )
     {
       for ( action_t* a : effect.player->action_list )
       {
-        if ( a->data().class_mask() != 0 && a->data().is_class( HUNTER ) && a->cooldown->duration > 0_ms && a->data().race_mask() == 0 )
+        if ( util::is_adjustable_class_spell( a ) )
         {
           cooldowns.insert( a->cooldown );
         }
@@ -6153,7 +6158,7 @@ void corruption::ineffable_truth( special_effect_t& effect )
                  for ( auto a : player->action_list )
                  {
                    // Only class spells have their cooldown reduced.
-                   if ( a->data().class_mask() != 0 && !a->background )
+                   if ( util::is_adjustable_class_spell( a ) )
                    {
                      if ( new_ == 1 )
                        a->base_recharge_multiplier *= recharge_multiplier;
@@ -6373,7 +6378,7 @@ void corruption::glimpse_of_clarity( special_effect_t& effect )
       void execute( action_t* a, action_state_t* ) override
       {
         // Only class spells with a cooldown have their cooldown reduced.
-        if ( buff && buff->check() && a->data().class_mask() != 0 && !a->background && a->cooldown->duration > 0_ms )
+        if ( buff && buff->check() && util::is_adjustable_class_spell( a ) )
         {
           listener->sim->print_debug( "Glimpse of Clarity reducing the cooldown of {} by {}.", a->name_str,
                                       buff->default_value );
