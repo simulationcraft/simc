@@ -5230,7 +5230,11 @@ void warrior_t::apl_fury()
     }
     else if ( racial_actions[ i ] == "lights_judgment" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=buff.recklessness.down" );
+      default_list->add_action( racial_actions[ i ] + ",if=buff.recklessness.down&debuff.siegebreaker.down" );
+    }
+    else if ( racial_actions[ i ] == "bag_of_tricks" )
+    {
+      default_list->add_action( racial_actions[ i ] + ",if=buff.recklessness.down&debuff.siegebreaker.down&buff.enrage.up" );
     }
     else
     {
@@ -5290,7 +5294,11 @@ void warrior_t::apl_arms()
     }
     else if ( racial_actions[ i ] == "lights_judgment" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=debuff.colossus_smash.down" );
+      default_list->add_action( racial_actions[ i ] + ",if=debuff.colossus_smash.down&buff.memory_of_lucid_dreams.down&cooldown.mortal_strike.remains" );
+    }
+    else if ( racial_actions[ i ] == "bag_of_tricks" )
+    {
+      default_list->add_action( racial_actions[ i ] + ",if=debuff.colossus_smash.down&buff.memory_of_lucid_dreams.down&cooldown.mortal_strike.remains" );
     }
     else if ( racial_actions[ i ] == "berserking" )
     {
