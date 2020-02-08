@@ -6354,7 +6354,7 @@ void corruption::glimpse_of_clarity( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff( effect.player, "glimpse_of_clarity", effect.player->find_spell( 315573 ) )
-               ->set_default_value( effect.driver()->effectN( 1 ).base_value() );
+               ->set_default_value( effect.player->find_spell( 315574 )->effectN( 1 ).base_value() );
     effect.custom_buff = buff;
 
     auto cb          = new special_effect_t( effect.player );
@@ -6400,7 +6400,7 @@ void corruption::glimpse_of_clarity( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
   else
-    buff->set_default_value( effect.driver()->effectN( 1 ).base_value() + buff->default_value );
+    buff->set_default_value( effect.player->find_spell( 315574 )->effectN( 1 ).base_value() + buff->default_value );
 }
 
 /**Infinite Stars
