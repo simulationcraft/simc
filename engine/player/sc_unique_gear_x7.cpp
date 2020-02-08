@@ -6347,14 +6347,28 @@ void corruption::strikethrough( special_effect_t& effect )
  * is unclear if this bonus ID will actually show up on items in game.
  * TODO: How does this stack if you have multiple copies of it?
  */
-
 void corruption::glimpse_of_clarity( special_effect_t& effect )
 {
+  struct glimpse_of_clarity_buff_t : public buff_t
+  {
+    int trigger_stacks;
+
+    glimpse_of_clarity_buff_t( const special_effect_t& effect )
+      : buff_t( effect.player, "glimpse_of_clarity", effect.player->find_spell( 315573 ) ), trigger_stacks( 1 )
+    {
+      set_default_value( effect.player->find_spell( 315574 )->effectN( 1 ).base_value() );
+    }
+
+    bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+    {
+      return buff_t::trigger( trigger_stacks, value, chance, duration );
+    }
+  };
+
   buff_t* buff = buff_t::find( effect.player, "glimpse_of_clarity" );
   if ( !buff )
   {
-    buff = make_buff( effect.player, "glimpse_of_clarity", effect.player->find_spell( 315573 ) )
-               ->set_default_value( effect.player->find_spell( 315574 )->effectN( 1 ).base_value() );
+    buff = make_buff<glimpse_of_clarity_buff_t>( effect );
     effect.custom_buff = buff;
 
     auto cb          = new special_effect_t( effect.player );
@@ -6400,7 +6414,8 @@ void corruption::glimpse_of_clarity( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
   else
-    buff->set_default_value( effect.player->find_spell( 315574 )->effectN( 1 ).base_value() + buff->default_value );
+    // Glimpse of Clarity will trigger a stack for each copy of the effect that is equipped.
+    static_cast<glimpse_of_clarity_buff_t*>( buff )->trigger_stacks += 1;
 }
 
 /**Infinite Stars
