@@ -6667,6 +6667,11 @@ void corruption::gushing_wound( special_effect_t& effect )
     {
       return scaled_dmg;
     }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+    {
+      return dot->time_to_next_tick() + triggered_duration;
+    }
   };
 
   auto gushing_wound = static_cast<gushing_wound_t*>( effect.player->find_action( "gushing_wound_corruption" ) );
