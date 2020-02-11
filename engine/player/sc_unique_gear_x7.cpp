@@ -6630,16 +6630,6 @@ void corruption::devour_vitality( special_effect_t& effect )
     {
       // TODO: Check what this scales with
     }
-
-    virtual double composite_crit_chance() const override
-	  {
-		  if (player->bugs) //only uses base crit chance as of 31/01-2020
-		  {
-		    return 0.05;
-		  }
-
-		   return composite_crit_chance();
-	  }
     
     double base_da_min( const action_state_t* ) const override
     {
