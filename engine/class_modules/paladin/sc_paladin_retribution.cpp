@@ -195,15 +195,6 @@ struct crusade_t : public paladin_spell_t
     if ( p() -> azerite.avengers_might.ok() )
       p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.crusade -> buff_duration );
   }
-
-  bool ready() override
-  {
-    // Crusade can not be used if the buff is already active (eg. with Vision of Perfection)
-    if ( p() -> buffs.crusade -> check() )
-      return false;
-    else
-      return paladin_spell_t::ready();
-  }
 };
 
 // Execution Sentence =======================================================

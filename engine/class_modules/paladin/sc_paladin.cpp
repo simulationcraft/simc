@@ -162,12 +162,6 @@ struct avenging_wrath_t : public paladin_spell_t
 
     p() -> buffs.avenging_wrath_autocrit -> trigger();
   }
-
-  bool ready() override
-  {
-    // Avenging Wrath can not be used if the buff is already active (eg. with Vision of Perfection)
-    return p() -> buffs.avenging_wrath -> check() ? false : paladin_spell_t::ready();
-  }
 };
 
 // Consecration =============================================================
