@@ -6570,7 +6570,7 @@ void corruption::echoing_void( special_effect_t& effect )
     // Spell data has the percentage with an extra 0
     echoing_void_t( const special_effect_t& effect, buff_t* b )
       : aoe_proc_t( effect, "echoing_void", 317029, true ),
-        maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 ),
+        maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 100.0 ),
         echoing_void_buff( b )
     {
       // TODO: Check what this scales with
@@ -6614,7 +6614,7 @@ void corruption::echoing_void( special_effect_t& effect )
     new echoing_void_cb_t( effect, echoing_void_damage );
   }
   else
-    echoing_void_damage->maxhp_multiplier += effect.driver()->effectN( 1 ).percent() / 10;
+    echoing_void_damage->maxhp_multiplier += effect.driver()->effectN( 1 ).percent() / 100.0;
 }
 
 // Devour Vitality
