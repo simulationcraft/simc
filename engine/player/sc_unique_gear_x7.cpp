@@ -5835,6 +5835,9 @@ void items::psyche_shredder( special_effect_t& effect )
   // applies the debuff and deals the initial damage
   effect.execute_action = create_proc_action<psyche_shredder_t>( "psyche_shredder", effect );
 
+  // Create the action for the debuff damage here, before any debuff initialization takes place.
+  create_proc_action<shredded_psyche_t>( "shredded_psyche", effect );
+
   if ( effect.player->bugs )
     effect.ppm_ = -2.0;
 
