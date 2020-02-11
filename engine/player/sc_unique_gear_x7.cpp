@@ -5587,7 +5587,7 @@ struct titanic_empowerment_cb_t : public dbc_proc_callback_t
   {
   }
 
-  void execute( action_t* a, action_state_t* state ) override
+  void execute( action_t* /* a */, action_state_t* /* state */ ) override
   {
     for ( auto b : proc_buffs )
     {
@@ -5610,12 +5610,8 @@ void items::voidtwisted_titanshard( special_effect_t& effect )
 
     buff->set_duration( duration_override );
   }
-  titanic_empowerment_cb_t* titanic_cb = nullptr;
-  for ( auto cb : effect.player->callbacks.all_callbacks )
-  {
-    if ( titanic_cb = dynamic_cast<titanic_empowerment_cb_t*>( cb ) )
-      break;
-  }
+
+  auto titanic_cb = effect.player->callbacks.get_first_of<titanic_empowerment_cb_t>();
 
   if ( !titanic_cb )
   {
@@ -5641,13 +5637,7 @@ void items::vitacharged_titanshard( special_effect_t& effect )
                ->set_chance( 1.0 );
   }
 
-  titanic_empowerment_cb_t* titanic_cb = nullptr;
-  for ( auto cb : effect.player->callbacks.all_callbacks )
-  {
-    if ( titanic_cb = dynamic_cast<titanic_empowerment_cb_t*>( cb ) )
-      break;
-  }
-
+  auto titanic_cb = effect.player->callbacks.get_first_of<titanic_empowerment_cb_t>();
   if ( !titanic_cb )
   {
     titanic_cb = new titanic_empowerment_cb_t( effect, {buff} );
@@ -5845,9 +5835,6 @@ void items::psyche_shredder( special_effect_t& effect )
   // applies the debuff and deals the initial damage
   effect.execute_action = create_proc_action<psyche_shredder_t>( "psyche_shredder", effect );
 
-  // action for the debuff damage
-  auto damage_spell = create_proc_action<shredded_psyche_t>( "shredded_psyche", effect );
-
   if ( effect.player->bugs )
     effect.ppm_ = -2.0;
 
@@ -5863,8 +5850,8 @@ void items::torment_in_a_jar( special_effect_t& effect )
 {
   struct unleashed_agony_t : public proc_t
   {
-    buff_t* buff;
     double dmg_mod;
+    buff_t* buff;
 
     unleashed_agony_t( const special_effect_t& effect, double dmg_mod, buff_t* buff )
       : proc_t( effect, "unleashed_agony", 313088 ), dmg_mod( dmg_mod ), buff( buff )
@@ -5993,13 +5980,8 @@ void set_bonus::titanic_empowerment( special_effect_t& effect )
       double value = budget.p_epic[ 0 ] * buff->data().effectN( 1 ).m_coefficient();
       buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), value );
     }
-    titanic_empowerment_cb_t* titanic_cb = nullptr;
-    for ( auto cb : effect.player->callbacks.all_callbacks )
-    {
-      if ( titanic_cb = dynamic_cast<titanic_empowerment_cb_t*>( cb ) )
-        break;
-    }
 
+    auto titanic_cb = effect.player->callbacks.get_first_of<titanic_empowerment_cb_t>();
     if ( !titanic_cb )
     {
       titanic_cb = new titanic_empowerment_cb_t( effect, {buff} );
@@ -6359,7 +6341,7 @@ void corruption::glimpse_of_clarity( special_effect_t& effect )
       set_default_value( effect.player->find_spell( 315574 )->effectN( 1 ).base_value() );
     }
 
-    bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+    bool trigger( int /* stacks */, double value, double chance, timespan_t duration ) override
     {
       return buff_t::trigger( trigger_stacks, value, chance, duration );
     }
@@ -6688,7 +6670,7 @@ void corruption::gushing_wound( special_effect_t& effect )
       base_td = scaled_dmg;
     }
 
-    double base_ta( const action_state_t* s ) const override
+    double base_ta( const action_state_t* /* s */ ) const override
     {
       return scaled_dmg;
     }
@@ -6907,13 +6889,7 @@ void corruption::twisted_appendage( special_effect_t& effect )
 
   // Save the coefficient before we replace the effect's spell id.
   double dmg                         = effect.driver()->effectN( 1 ).average( effect.item );
-  twisted_appendage_cb_t* spawner_cb = nullptr;
-
-  for ( auto cb : effect.player->callbacks.all_callbacks )
-  {
-    if ( spawner_cb = dynamic_cast<twisted_appendage_cb_t*>( cb ) )
-      break;
-  }
+  auto spawner_cb = effect.player->callbacks.get_first_of<twisted_appendage_cb_t>();
 
   if ( !spawner_cb )
   {

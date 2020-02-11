@@ -3128,6 +3128,21 @@ struct effect_callbacks_t
   void reset();
 
   void register_callback( unsigned proc_flags, unsigned proc_flags2, T_CB* cb );
+
+  // Helper to get first instance of object T and return it, if not found, return nullptr
+  template <typename T>
+  T* get_first_of() const
+  {
+    for ( size_t i = 0; i < all_callbacks.size(); ++i )
+    {
+      auto ptr = dynamic_cast<T*>( all_callbacks[ i ] );
+      if ( ptr )
+      {
+        return ptr;
+      }
+    }
+    return nullptr;
+  }
 private:
   void add_proc_callback( proc_types type, unsigned flags, T_CB* cb );
 };
