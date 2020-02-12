@@ -6082,7 +6082,7 @@ std::string warrior_t::default_potion() const
 
   std::string protection_pot =
       ( true_level > 110 )
-          ? "superior_battle_potion_of_strength"
+          ? "potion_of_unbridled_fury"
           : ( true_level > 100 )
                 ? "old_war"
                 : ( true_level >= 90 )
