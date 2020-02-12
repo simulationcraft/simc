@@ -6608,7 +6608,7 @@ void corruption::echoing_void( special_effect_t& effect )
 
     effect.spell_id     = 317014;
     effect.custom_buff  = buff;
-    effect.proc_flags_  = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_SPELL | PF_MAGIC_SPELL;
+    effect.proc_flags_  = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_MAGIC_SPELL;
     effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
 
     new echoing_void_cb_t( effect, echoing_void_damage );
