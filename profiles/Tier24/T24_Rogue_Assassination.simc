@@ -45,7 +45,6 @@ actions+=/arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
 actions+=/arcane_pulse
 actions+=/lights_judgment
 actions+=/bag_of_tricks
-actions+=/detection,if=equipped.echoing_void|equipped.echoing_void_oh
 
 # Cooldowns
 actions.cds=use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&(cooldown.vendetta.remains<?cooldown.toxic_blade.remains)<10+10*equipped.ashvanes_razor_coral&!debuff.vendetta.up&!debuff.toxic_blade.up

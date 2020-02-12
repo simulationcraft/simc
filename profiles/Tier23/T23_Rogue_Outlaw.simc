@@ -60,7 +60,6 @@ actions+=/arcane_torrent,if=energy.deficit>=15+energy.regen
 actions+=/arcane_pulse
 actions+=/lights_judgment
 actions+=/bag_of_tricks
-actions+=/detection,if=equipped.echoing_void|equipped.echoing_void_oh
 
 # Builders
 # Use Pistol Shot if it won't cap combo points and the Oppotunity buff is up. Avoid using when Keep Your Wits stacks are high unless the Deadshot buff is also up.
