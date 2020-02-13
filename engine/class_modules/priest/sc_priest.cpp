@@ -1289,6 +1289,15 @@ priest_td_t* priest_t::get_target_data( player_t* target ) const
 
 void priest_t::init_action_list()
 {
+  // 13/02/2020: The Discipline module/apl is outdated and not supported (both for dps and healing)
+  if ( specialization() == PRIEST_DISCIPLINE )
+  {
+    if ( !quiet )
+      sim->errorf( "Priest Discipline for player %s is not currently supported.", name() );
+
+    quiet = true;
+    return;
+  }
 
   if ( !action_list_str.empty() )
   {
