@@ -5218,7 +5218,8 @@ void rogue_t::trigger_deepening_shadows( const action_state_t* state )
   }
   timespan_t adjustment = timespan_t::from_seconds( -0.1 * cdr * s -> cp );
 
-  cooldowns.shadow_dance -> adjust( adjustment, s -> cp >= 5 );
+  // Deepening does not appear to be affected by Ineffable truth (and other effects like this?) so multiply with the mult to eliminate it.
+  cooldowns.shadow_dance -> adjust( adjustment * cooldowns.shadow_dance->recharge_multiplier, s -> cp >= 5 );
 }
 
 void rogue_t::trigger_shadow_techniques( const action_state_t* state )
