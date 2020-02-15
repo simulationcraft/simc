@@ -7144,7 +7144,7 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
   void decrement( int stacks, double value ) override
   {
     monk_t* p = debug_cast<monk_t*>( player );
-    if ( stacks > 0 && p->current_health() < p->max_health() )
+    if ( stacks > 0 )
     {
       p->active_actions.gift_of_the_ox_trigger->execute();
 
