@@ -8383,7 +8383,7 @@ void druid_t::apl_precombat()
     }
     if ( talent.balance_affinity->ok() )
     {
-      precombat->add_action( this, "Moonkin Form" );
+      precombat->add_action( "moonkin_form_affinity" );
     }
     precombat->add_action( "potion" );
   }
