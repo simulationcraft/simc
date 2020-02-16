@@ -7144,7 +7144,7 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
   void decrement( int stacks, double value ) override
   {
     monk_t* p = debug_cast<monk_t*>( player );
-    if ( stacks > 0 && p->current_health() < p->max_health() )
+    if ( stacks > 0 )
     {
       p->active_actions.gift_of_the_ox_trigger->execute();
 
@@ -9513,7 +9513,7 @@ std::string monk_t::default_potion() const
   {
     case MONK_BREWMASTER:
       if ( true_level > 110 )
-        return "superior_battle_potion_of_agility";
+        return "unbridled_fury";
       else if ( true_level > 100 )
         return "prolonged_power";
       else if ( true_level > 90 )
@@ -9578,7 +9578,7 @@ std::string monk_t::default_food() const
   {
     case MONK_BREWMASTER:
       if ( true_level > 110 )
-        return "famine_evaluator_and_snack_table";
+        return "biltong";
       else if ( true_level > 100 )
         return "fishbrul_special";
       else if ( true_level > 90 )
