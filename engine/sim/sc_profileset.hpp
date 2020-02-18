@@ -35,7 +35,7 @@ class profilesets_t;
 
 struct statistical_data_t
 {
-  double min, first_quartile, median, mean, third_quartile, max, std_dev;
+  double min, first_quartile, median, mean, third_quartile, max, std_dev, mean_std_dev;
 };
 
 class profile_result_t
@@ -48,15 +48,16 @@ class profile_result_t
   double         m_1stquartile;
   double         m_3rdquartile;
   double         m_stddev;
+  double         m_mean_stddev;
   size_t         m_iterations;
 
 public:
   profile_result_t() : m_metric( SCALE_METRIC_NONE ), m_mean( 0 ), m_median( 0 ), m_min( 0 ),
-    m_max( 0 ), m_1stquartile( 0 ), m_3rdquartile( 0 ), m_stddev( 0 ), m_iterations( 0 )
+    m_max( 0 ), m_1stquartile( 0 ), m_3rdquartile( 0 ), m_stddev( 0 ), m_mean_stddev(0), m_iterations( 0 )
   { }
 
   profile_result_t( scale_metric_e m ) : m_metric( m ), m_mean( 0 ), m_median( 0 ), m_min( 0 ),
-    m_max( 0 ), m_1stquartile( 0 ), m_3rdquartile( 0 ), m_stddev( 0 ), m_iterations( 0 )
+    m_max( 0 ), m_1stquartile( 0 ), m_3rdquartile( 0 ), m_stddev( 0 ), m_mean_stddev(0), m_iterations( 0 )
   { }
 
   scale_metric_e metric() const
@@ -101,8 +102,18 @@ public:
   double stddev() const
   { return m_stddev; }
 
+  double mean_stddev() const
+  {
+    return m_mean_stddev;
+  }
+
   profile_result_t& stddev( double v )
   { m_stddev = v; return *this; }
+
+  profile_result_t& mean_stddev(double v)
+  {
+    m_mean_stddev = v; return *this;
+  }
 
   size_t iterations() const
   { return m_iterations; }
@@ -111,7 +122,7 @@ public:
   { m_iterations = i; return *this; }
 
   statistical_data_t statistical_data() const
-  { return { m_min, m_1stquartile, m_median, m_mean, m_3rdquartile, m_max, m_stddev }; }
+  { return { m_min, m_1stquartile, m_median, m_mean, m_3rdquartile, m_max, m_stddev, m_mean_stddev }; }
 };
 
 class profile_output_data_item_t
