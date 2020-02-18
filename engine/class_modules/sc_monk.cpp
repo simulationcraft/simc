@@ -2930,6 +2930,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
     : base_t( n, player, s )
   {
     ap_type = attack_power_type::WEAPON_MAINHAND;
+
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -4235,11 +4236,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     parse_options( options_str );
     sef_ability      = SEF_RUSHING_JADE_WIND;
     may_combo_strike = true;
-
-    // Forcing the minimum GCD to 750 milliseconds
-    min_gcd   = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::ATTACK_HASTE;
-
+    gcd_type = gcd_haste_type::NONE;
+    
     // Set dot data to 0, since we handle everything through the buff.
     base_tick_time = timespan_t::zero();
     dot_duration   = timespan_t::zero();
@@ -5513,6 +5511,7 @@ struct breath_of_fire_t : public monk_spell_t
       background    = true;
       tick_may_crit = may_crit = true;
       hasted_ticks             = false;
+      gcd_type = gcd_haste_type::NONE;
     }
 
     double bonus_ta( const action_state_t* s ) const override
