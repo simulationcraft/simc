@@ -1299,7 +1299,7 @@ std::string paladin_t::default_rune() const
 void paladin_t::init_action_list()
 {
   // 2019-04-03: The Holy module is outdated and not supported (both for dps and healing)
-  if (!sim->allow_experimental_specializations && specialization() == PALADIN_HOLY )
+  if ( !sim->allow_experimental_specializations && specialization() == PALADIN_HOLY )
   {
     if ( ! quiet )
       sim -> errorf( "Paladin holy for player %s is not currently supported.", name() );

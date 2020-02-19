@@ -3333,7 +3333,7 @@ void sim_t::create_options()
   add_option( opt_bool( "optimize_expressions", optimize_expressions ) );
   add_option( opt_bool( "single_actor_batch", single_actor_batch ) );
   add_option( opt_bool( "progressbar_type", progressbar_type ) );
-  add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations) );
+  add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations ) );
   
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );

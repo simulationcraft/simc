@@ -8871,7 +8871,7 @@ void shaman_t::init_action_list()
   }
 
   // Restoration isn't supported atm
-  if (!sim->allow_experimental_specializations && specialization() == SHAMAN_RESTORATION && primary_role() == ROLE_HEAL )
+  if ( !sim->allow_experimental_specializations && specialization() == SHAMAN_RESTORATION && primary_role() == ROLE_HEAL )
   {
     if ( !quiet )
       sim->errorf( "Restoration Shaman healing for player %s is not currently supported.", name() );

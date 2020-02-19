@@ -9822,7 +9822,7 @@ void monk_t::apl_combat_mistweaver()
 void monk_t::init_action_list()
 {
   // Mistweaver isn't supported atm
-  if (!sim->allow_experimental_specializations && specialization() == MONK_MISTWEAVER && role != ROLE_ATTACK )
+  if ( !sim->allow_experimental_specializations && specialization() == MONK_MISTWEAVER && role != ROLE_ATTACK )
   {
     if ( !quiet )
       sim->errorf( "Monk mistweaver healing for player %s is not currently supported.", name() );
