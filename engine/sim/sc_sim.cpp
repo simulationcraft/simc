@@ -1362,6 +1362,7 @@ sim_t::sim_t() :
   tmi_bin_size( 0.5 ),
   requires_regen_event( false ), single_actor_batch( false ),
   progressbar_type( 0 ),
+  allow_experimental_specializations( false ),
   armory_retries( 3 ),
   enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
   target_adds( 0 ), desired_targets( 1 ), enable_taunts( false ),
@@ -3332,6 +3333,8 @@ void sim_t::create_options()
   add_option( opt_bool( "optimize_expressions", optimize_expressions ) );
   add_option( opt_bool( "single_actor_batch", single_actor_batch ) );
   add_option( opt_bool( "progressbar_type", progressbar_type ) );
+  add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations) );
+  
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );

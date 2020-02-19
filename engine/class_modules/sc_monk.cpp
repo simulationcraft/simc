@@ -9821,9 +9821,8 @@ void monk_t::apl_combat_mistweaver()
 
 void monk_t::init_action_list()
 {
-#ifdef NDEBUG  // Only restrict on release builds.
   // Mistweaver isn't supported atm
-  if ( specialization() == MONK_MISTWEAVER && role != ROLE_ATTACK )
+  if (!sim->allow_experimental_specializations && specialization() == MONK_MISTWEAVER && role != ROLE_ATTACK )
   {
     if ( !quiet )
       sim->errorf( "Monk mistweaver healing for player %s is not currently supported.", name() );
@@ -9831,7 +9830,6 @@ void monk_t::init_action_list()
     quiet = true;
     return;
   }
-#endif
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
     if ( !quiet )
@@ -9852,7 +9850,7 @@ void monk_t::init_action_list()
   {
     if ( !quiet )
       sim->errorf(
-          "Player %s has a Brewmaster and has equipped a 1-Hand weapon equipped in the Off-Hand when they are unable "
+          "Player %s is a Brewmaster and has a 1-Hand weapon equipped in the Off-Hand when they are unable "
           "to dual weld.",
           name() );
     quiet = true;

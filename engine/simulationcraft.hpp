@@ -1040,6 +1040,7 @@ struct sim_t : private sc_thread_t
   bool        single_actor_batch;
   int         progressbar_type;
   int         armory_retries;
+  bool        allow_experimental_specializations;
 
   // Target options
   double      enemy_death_pct;
