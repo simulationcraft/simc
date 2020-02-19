@@ -4462,6 +4462,7 @@ public:
   virtual void create_actions();
   virtual void init_actions();
   virtual void init_finished();
+  virtual void action_init_finished(action_t&);
   virtual bool verify_use_items() const;
   virtual void reset();
   virtual void combat_begin();

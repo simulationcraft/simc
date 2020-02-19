@@ -2913,6 +2913,19 @@ void player_t::init_assessors()
 
 void player_t::init_finished()
 {
+
+  for (auto action : action_list)
+  {
+    try
+    {
+      action_init_finished(*action);
+    }
+    catch (const std::exception&)
+    {
+      std::throw_with_nested(std::runtime_error(fmt::format("Action '{}'", action->name())));
+    }
+  }
+
   for ( auto action : action_list )
   {
     try
@@ -2924,6 +2937,7 @@ void player_t::init_finished()
       std::throw_with_nested(std::runtime_error(fmt::format("Action '{}'", action->name())));
     }
   }
+
 
   // Naive recording of minimum energy thresholds for the actor.
   // TODO: Energy pooling, and energy-based expressions (energy>=10) are not included yet
@@ -2961,6 +2975,11 @@ void player_t::init_finished()
       }
     } );
   }
+}
+
+void player_t::action_init_finished(action_t& a)
+{
+  // here could be generic affected_by code
 }
 
 /**

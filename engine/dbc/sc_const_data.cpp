@@ -2787,6 +2787,16 @@ specialization_e dbc_t::spec_by_idx( const player_e c, unsigned idx ) const
 
 // DBC
 
+bool spell_data_t::affected_by_category(dbc_t& dbc, int category) const
+{
+  auto affected_spells = dbc.spells_by_category(category);
+  auto it = range::find_if(affected_spells, [spell_id = id()](const spell_data_t* l) {
+    return l->id() == spell_id;
+  });
+
+  return it != affected_spells.end();
+}
+
 bool spell_data_t::affected_by( const spell_data_t* spell ) const
 {
   if ( class_family() != spell -> class_family() )

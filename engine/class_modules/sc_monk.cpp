@@ -841,6 +841,7 @@ public:
     }
     return td;
   }
+  void action_init_finished(action_t&) override;
 
   // Monk specific
   void apl_combat_brewmaster();
@@ -2303,39 +2304,6 @@ struct monk_action_t : public Base
   // Affect flags for various dynamic effects
   struct
   {
-    struct
-    {
-      bool spell_da1;
-      bool spell_da2;
-      bool spell_da3;
-      bool spell_da4;
-      bool spell_ta1;
-      bool spell_ta2;
-    } brewmaster;
-
-    struct
-    {
-      bool spell_da1;
-      bool spell_ta1;
-    } mistweaver;
-
-    struct
-    {
-      bool spell_da1;
-      bool spell_da2;
-      bool spell_da3;
-      bool spell_da4;
-      bool spell_da5;
-      bool spell_da6;
-      bool spell_da7;
-      bool spell_ta1;
-      bool spell_ta2;
-      bool spell_ta3;
-      bool spell_ta4;
-    } windwalker;
-
-    bool hasted_cooldown;
-    bool hasted_gcd;
     bool serenity;
     bool sunrise_technique;
   } affected_by;
@@ -2351,137 +2319,11 @@ public:
       sef_ability( SEF_NONE ),
       ww_mastery( false ),
       may_combo_strike( false ),
-
       affected_by()
   {
-    init_affected_by();
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
-    ab::trigger_gcd = timespan_t::from_seconds( 1.5 );
 
-    switch ( player->specialization() )
-    {
-      case MONK_BREWMASTER:
-      {
-        if ( affected_by.brewmaster.spell_da1 )
-          ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 1 ).percent();
-        if ( affected_by.brewmaster.spell_da2 )  // RJW uses direct hit for it's ticks
-          ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 6 ).percent();
-        if ( affected_by.brewmaster.spell_da3 )
-          ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 7 ).percent();
-        if ( affected_by.brewmaster.spell_da4 )
-          ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 18 ).percent();
-
-        if ( affected_by.brewmaster.spell_ta1 )
-          ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 2 ).percent();
-        if ( affected_by.brewmaster.spell_ta2 )
-          ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 8 ).percent();
-
-        // Reduce GCD from 1.5 sec to 1 sec
-        if ( ab::data().affected_by( player->spec.brewmaster_monk->effectN( 14 ) ) )
-          ab::trigger_gcd += player->spec.brewmaster_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
-
-        // Brewmasters no longer use Chi so need to zero out chi cost
-        if ( ab::data().affected_by( player->spec.brewmaster_monk->effectN( 16 ) ) )
-          ab::base_costs[ RESOURCE_CHI ] *=
-              1 + player->spec.brewmaster_monk->effectN( 16 ).percent();  // -100% for Brewmasters
-        break;
-      }
-      case MONK_MISTWEAVER:
-      {
-        if ( affected_by.mistweaver.spell_da1 )
-          ab::base_dd_multiplier *= 1.0 + player->spec.mistweaver_monk->effectN( 1 ).percent();
-        if ( affected_by.mistweaver.spell_ta1 )
-          ab::base_td_multiplier *= 1.0 + player->spec.mistweaver_monk->effectN( 2 ).percent();
-
-        break;
-      }
-      case MONK_WINDWALKER:
-      {
-        if ( affected_by.windwalker.spell_da1 )
-        {
-          ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 1 ).percent();
-        }
-        if ( affected_by.windwalker.spell_da2 )
-          ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 5 ).percent();
-        if ( affected_by.windwalker.spell_da3 )
-        {
-          ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 6 ).percent();
-        }
-        if ( affected_by.windwalker.spell_da4 )
-        {
-          ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 8 ).percent();
-        }
-        if ( affected_by.windwalker.spell_da5 )
-          ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 9 ).percent();
-        if ( affected_by.windwalker.spell_da6 )
-          ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 11 ).percent();
-
-        if ( affected_by.windwalker.spell_ta1 )
-        {
-          ab::base_td_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 2 ).percent();
-        }
-        if ( affected_by.windwalker.spell_ta2 )
-          ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 7 ).percent();
-
-        if ( ab::data().affected_by( player->spec.windwalker_monk->effectN( 14 ) ) )
-          ab::trigger_gcd += player->spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
-        // Technically minimum GCD is 750ms but all but the level 15 spells have a minimum GCD of 1 sec
-        ab::min_gcd = timespan_t::from_seconds( 1.0 );
-
-        // Cooldown reduction
-        if ( ab::data().affected_by( player->spec.windwalker_monk->effectN( 10 ) ) )
-          ab::cooldown->duration *= 1 + player->spec.windwalker_monk->effectN( 10 ).percent();  // saved as -100
-        break;
-      }
-      default:
-        break;
-    }
-  }
-
-  /**
-   * Initialize all affected_by members and print out debug info
-   */
-  void init_affected_by()
-  {
-    struct affect_init_t
-    {
-      const spelleffect_data_t& effect;
-      bool& affects;
-    } affects[] = {
-        {p()->spec.brewmaster_monk->effectN( 1 ), affected_by.brewmaster.spell_da1},
-        {p()->spec.brewmaster_monk->effectN( 6 ), affected_by.brewmaster.spell_da2},
-        {p()->spec.brewmaster_monk->effectN( 7 ), affected_by.brewmaster.spell_da3},
-        {p()->spec.brewmaster_monk->effectN( 18 ), affected_by.brewmaster.spell_da4},
-        {p()->spec.brewmaster_monk->effectN( 2 ), affected_by.brewmaster.spell_ta1},
-        {p()->spec.brewmaster_monk->effectN( 8 ), affected_by.brewmaster.spell_ta2},
-        {p()->spec.brewmaster_monk->effectN( 4 ), affected_by.hasted_cooldown},  // not yet working, see Keg Smash
-        {p()->spec.brewmaster_monk->effectN( 5 ),
-         affected_by.hasted_cooldown},  // not yet working, see Ironskin-/Purifying Brew
-        {p()->passives.aura_monk->effectN( 1 ), affected_by.hasted_cooldown},
-        {p()->spec.mistweaver_monk->effectN( 6 ), affected_by.hasted_gcd},
-        {p()->spec.mistweaver_monk->effectN( 1 ), affected_by.mistweaver.spell_da1},
-        {p()->spec.mistweaver_monk->effectN( 2 ), affected_by.mistweaver.spell_ta1},
-        {p()->spec.windwalker_monk->effectN( 1 ), affected_by.windwalker.spell_da1},
-        {p()->spec.windwalker_monk->effectN( 5 ), affected_by.windwalker.spell_da2},
-        {p()->spec.windwalker_monk->effectN( 6 ), affected_by.windwalker.spell_da3},
-        {p()->spec.windwalker_monk->effectN( 8 ), affected_by.windwalker.spell_da4},
-        {p()->spec.windwalker_monk->effectN( 9 ), affected_by.windwalker.spell_da5},
-        {p()->spec.windwalker_monk->effectN( 11 ), affected_by.windwalker.spell_da6},
-        {p()->spec.windwalker_monk->effectN( 2 ), affected_by.windwalker.spell_ta1},
-        {p()->spec.windwalker_monk->effectN( 7 ), affected_by.windwalker.spell_ta2},
-    };
-
-    for ( const auto& a : affects )
-    {
-      bool affects = base_t::data().affected_by( a.effect );
-      if ( affects )
-      {
-        a.affects = true;
-        ab::sim->print_debug( "Action {} ({}) affected by {} (idx={}).", ab::name(), ab::data().id(),
-                              a.effect.spell()->name_cstr(), a.effect.spell_effect_num() + 1 );
-      }
-    }
   }
 
   monk_t* p()
@@ -2514,12 +2356,7 @@ public:
   void init() override
   {
     ab::init();
-
-    if ( affected_by.hasted_cooldown )
-    {
-      ab::cooldown->hasted = true;
-    }
-
+    
     /* Iterate through power entries, and find if there are resources linked to one of our stances
      */
     for ( size_t i = 0; ab::data()._power && i < ab::data()._power->size(); i++ )
@@ -2854,22 +2691,6 @@ public:
     }
 
     ab::impact( s );
-  }
-
-  timespan_t gcd() const override
-  {
-    timespan_t t = ab::action_t::gcd();
-
-    if ( t == timespan_t::zero() )
-      return t;
-
-    if ( affected_by.hasted_gcd )
-      t *= ab::player->cache.attack_haste();
-
-    if ( t < ab::min_gcd )
-      t = ab::min_gcd;
-
-    return t;
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
@@ -4573,9 +4394,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     may_combo_strike                  = true;
 
     spell_power_mod.direct = 0.0;
-    // Forcing the minimum GCD to 750 milliseconds
-    min_gcd   = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::ATTACK_HASTE;
 
     tick_action =
         new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p->passives.whirling_dragon_punch_tick );
@@ -4814,9 +4632,7 @@ struct keg_smash_t : public monk_melee_attack_t
 
     cooldown->duration = p.spec.keg_smash->cooldown();
     cooldown->duration = p.spec.keg_smash->charge_cooldown();
-
-    affected_by.hasted_cooldown = true;  // necessary since category based affected_by parsing is not a thing
-
+    
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
     trigger_gcd = timespan_t::from_seconds( 1 );
@@ -6480,8 +6296,6 @@ struct expel_harm_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    // like other BrM spells, this has fixed 1.0 second GCD.
-    trigger_gcd = timespan_t::from_seconds( 1.0 );
   }
 
   bool ready() override
@@ -6624,8 +6438,6 @@ struct chi_wave_t : public monk_spell_t
     add_child( damage );
     tick_zero = true;
     radius    = player->find_spell( 132466 )->effectN( 2 ).base_value();
-    // Forcing the minimum GCD to 750 milliseconds for all 3 specs
-    min_gcd   = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
   }
 
@@ -6756,7 +6568,7 @@ struct reverse_harm_t : public monk_heal_t
   {
     parse_options( options_str );
     damage           = new reverse_harm_damage_t( player );
-    cooldown->hasted = false;
+    add_child(damage);
     target           = &player;
     may_crit         = false;
     may_combo_strike = true;
@@ -10363,6 +10175,117 @@ std::unique_ptr<expr_t> monk_t::create_expression( const std::string& name_str )
   }
 
   return base_t::create_expression( name_str );
+}
+
+
+void monk_t::action_init_finished(action_t& action)
+{
+
+  // hasted cooldown
+  for (auto&& effect : {spec.brewmaster_monk->effectN(4), spec.brewmaster_monk->effectN(5)})
+  {
+    if (action.data().affected_by_category(dbc, effect))
+    {
+      action.cooldown->hasted = true;
+    }
+  }
+  if (action.data().affected_by(passives.aura_monk->effectN(1)))
+  {
+
+    action.cooldown->hasted = true;
+  }
+
+  if (spec.brewmaster_monk->ok())
+  {
+    if (action.data().affected_by(spec.brewmaster_monk->effectN(1)))
+      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN(1).percent();
+
+
+
+    if (action.data().affected_by(spec.brewmaster_monk->effectN(6)))  // RJW uses direct hit for it's ticks
+      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN(6).percent();
+
+    if (action.data().affected_by(spec.brewmaster_monk->effectN(7)))
+      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN(7).percent();
+
+    if (action.data().affected_by(spec.brewmaster_monk->effectN(18)))
+      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN(18).percent();
+
+    if (action.data().affected_by(spec.brewmaster_monk->effectN(2)))
+      action.base_td_multiplier *= 1.0 + spec.brewmaster_monk->effectN(2).percent();
+
+    if (action.data().affected_by(spec.brewmaster_monk->effectN(8)))
+      action.base_td_multiplier *= 1.0 + spec.brewmaster_monk->effectN(8).percent();
+
+    // Reduce GCD from 1.5 sec to 1 sec
+    if (action.data().affected_by(spec.brewmaster_monk->effectN(14)))
+      action.trigger_gcd += spec.brewmaster_monk->effectN(14).time_value();  // Saved as -500 milliseconds
+
+    // Brewmasters no longer use Chi so need to zero out chi cost
+    if (action.data().affected_by(spec.brewmaster_monk->effectN(16)))
+      action.base_costs[RESOURCE_CHI] *= 1 + spec.brewmaster_monk->effectN(16).percent();  // -100% for Brewmasters
+
+    // Reduce GCD from 1.5 sec to 1.005 sec (33%)
+    if (action.data().affected_by_label(spec.brewmaster_monk->effectN(22)))
+    {
+      action.trigger_gcd *= ( 100.0 + spec.brewmaster_monk->effectN(22).base_value()) / 100.0;
+      action.gcd_type = gcd_haste_type::NONE;
+    }
+  }
+
+  if (spec.mistweaver_monk->ok())
+  {
+    if (action.data().affected_by(spec.mistweaver_monk->effectN(1)))
+      action.base_dd_multiplier *= 1.0 + spec.mistweaver_monk->effectN(1).percent();
+    if (action.data().affected_by(spec.mistweaver_monk->effectN(2)))
+      action.base_td_multiplier *= 1.0 + spec.mistweaver_monk->effectN(2).percent();
+    if (action.data().affected_by(spec.mistweaver_monk->effectN(6)))
+      action.gcd_type = gcd_haste_type::HASTE;
+
+  }
+
+  if (spec.windwalker_monk->ok())
+  {
+    if (action.data().affected_by(spec.windwalker_monk->effectN(1)))
+    {
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(1).percent();
+    }
+    if (action.data().affected_by(spec.windwalker_monk->effectN(5)))
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(5).percent();
+    if (action.data().affected_by(spec.windwalker_monk->effectN(6)))
+    {
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(6).percent();
+    }
+    if (action.data().affected_by(spec.windwalker_monk->effectN(8)))
+    {
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(8).percent();
+    }
+    if (action.data().affected_by(spec.windwalker_monk->effectN(9)))
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(9).percent();
+    if (action.data().affected_by(spec.windwalker_monk->effectN(11)))
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(11).percent();
+
+    if (action.data().affected_by(spec.windwalker_monk->effectN(2)))
+    {
+      action.base_td_multiplier *= 1.0 + spec.windwalker_monk->effectN(2).percent();
+    }
+    if (action.data().affected_by(spec.windwalker_monk->effectN(7)))
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(7).percent();
+
+    // Cooldown reduction
+    if (action.data().affected_by(spec.windwalker_monk->effectN(10)))
+      action.cooldown->duration *= 1.0 + spec.windwalker_monk->effectN(10).percent();  // saved as -100
+
+    if (action.data().affected_by(spec.windwalker_monk->effectN(14)))
+      action.trigger_gcd += spec.windwalker_monk->effectN(14).time_value();  // Saved as -500 milliseconds
+
+    // Reduce GCD from 1.5 sec to 1.005 sec (33%)
+    if (action.data().affected_by_label(spec.brewmaster_monk->effectN(16)))
+    {
+      action.trigger_gcd *= (100.0 + spec.brewmaster_monk->effectN(16).base_value()) / 100.0;
+      action.gcd_type = gcd_haste_type::NONE;
+    }
+  }
 }
 
 // monk_t::monk_report =================================================

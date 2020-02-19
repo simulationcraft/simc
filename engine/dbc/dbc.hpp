@@ -1113,6 +1113,18 @@ public:
     return l;
   }
 
+  bool affected_by_category(dbc_t& dbc, const spelleffect_data_t& effect) const
+  {
+    return affected_by_category(dbc, effect.misc_value1());
+  }
+
+  bool affected_by_category(dbc_t& dbc, int category) const;
+
+  bool affected_by_label(const spelleffect_data_t& effect) const
+  {
+    return affected_by_label(effect.misc_value2());
+  }
+
   bool affected_by_label( int label ) const
   {
     if ( _labels == nullptr )
