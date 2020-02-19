@@ -3658,6 +3658,7 @@ void clockwork_heart( special_effect_t& effect )
     ticker = make_buff( effect.player, "clockwork_heart_ticker", effect.trigger() )
       ->set_quiet( true )
       ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+      ->set_tick_on_application( true )
       ->set_tick_callback( [clockwork]( buff_t*, int, const timespan_t& ) {
         clockwork->trigger();
       } );
