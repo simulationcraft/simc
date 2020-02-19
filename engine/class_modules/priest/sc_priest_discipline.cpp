@@ -181,7 +181,7 @@ struct shadow_word_pain_disc_t final : public priest_spell_t
 struct power_word_solace_t final : public priest_spell_t
 {
   power_word_solace_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "power_word_solace", player, player.find_spell( 129250 ) )
+    : priest_spell_t( "power_word_solace", player, player.talents.power_word_solace)
   {
     parse_options( options_str );
 
