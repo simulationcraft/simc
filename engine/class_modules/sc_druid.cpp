@@ -8441,6 +8441,8 @@ void druid_t::apl_feral()
    def->add_action("run_action_list,name=opener,if=variable.opener_done=0");
    def->add_action("cat_form,if=!buff.cat_form.up");
    def->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
+   def->add_action("variable,name=reaping_delay,value=target.time_to_die,if=variable.reaping_delay=0");
+   def->add_action("cycling_variable,name=reaping_delay,op=min,value=target.time_to_die");
    def->add_action("call_action_list,name=cooldowns");
    def->add_action("ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(talent.sabertooth.enabled)");
    def->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down");
@@ -8474,7 +8476,11 @@ void druid_t::apl_feral()
    cooldowns->add_action("feral_frenzy,if=combo_points=0");
    cooldowns->add_action("focused_azerite_beam,if=active_enemies>desired_targets|(raid_event.adds.in>90&energy.deficit>=50)");
    cooldowns->add_action("purifying_blast,if=active_enemies>desired_targets|raid_event.adds.in>60");
-   cooldowns->add_action("heart_essence,if=buff.tigers_fury.up");
+   cooldowns->add_action("guardian_of_azeroth,if=buff.tigers_fury.up");
+   cooldowns->add_action("concentrated_flame,if=buff.tigers_fury.up");
+   cooldowns->add_action("ripple_in_space,if=buff.tigers_fury.up");
+   cooldowns->add_action("worldvein_resonance,if=buff.tigers_fury.up");
+   cooldowns->add_action("reaping_flames,target_if=target.time_to_die<5|((target.health.pct>80|target.health.pct<=20)&variable.reaping_delay>25)|(target.time_to_pct_20>30&variable.reaping_delay>40)");
    cooldowns->add_action("incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)");
    cooldowns->add_action("potion,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))");
    cooldowns->add_action("shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up");
