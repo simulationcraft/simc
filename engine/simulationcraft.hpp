@@ -528,7 +528,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* blood_of_the_enemy;
     buff_t* condensed_lifeforce;
     buff_t* focused_resolve;
-	buff_t* reaping_flames_tracker;
+    buff_t* reaping_flames_tracker;
   } debuff;
 
   struct atd_dot_t
@@ -4153,7 +4153,6 @@ struct player_t : public actor_t
     buff_t* strikethrough; // Corruption effect that increases crit damage/healing
     buff_t* flash_of_insight;  // Corruption effect that increases int
     buff_t* obsidian_destruction; // Corruption effect that increases armor
-	buff_t* reaping_flames; // Breath of the Dying 8.3 Essence
   } buffs;
 
   struct debuffs_t
