@@ -8480,7 +8480,7 @@ void druid_t::apl_feral()
    cooldowns->add_action("concentrated_flame,if=buff.tigers_fury.up");
    cooldowns->add_action("ripple_in_space,if=buff.tigers_fury.up");
    cooldowns->add_action("worldvein_resonance,if=buff.tigers_fury.up");
-   cooldowns->add_action("reaping_flames,target_if=target.time_to_die<5|((target.health.pct>80|target.health.pct<=20)&variable.reaping_delay>25)|(target.time_to_pct_20>30&variable.reaping_delay>40)");
+   cooldowns->add_action("reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&variable.reaping_delay>29)|(target.time_to_pct_20>30&variable.reaping_delay>44)");
    cooldowns->add_action("incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)");
    cooldowns->add_action("potion,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))");
    cooldowns->add_action("shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up");
