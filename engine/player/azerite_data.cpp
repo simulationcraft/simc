@@ -1450,6 +1450,24 @@ void register_azerite_target_data_initializers( sim_t* sim )
         ->set_quiet( true );
     }
   } );
+
+  sim->register_target_data_initializer( [] ( actor_target_data_t * td ) {
+    auto essence = td->source->find_azerite_essence("Breath of the Dying");
+	if (essence.enabled())
+	{
+		td->debuff.reaping_flames_tracker = make_buff(*td, "reaping_flames_tracker", td->source->find_spell(310710))
+			->set_duration(timespan_t::from_seconds(1.5))
+			->set_quiet(true);
+		td->debuff.reaping_flames_tracker->reset();
+	}
+	else {
+		td->debuff.reaping_flames_tracker = make_buff(*td, "reaping_flames_tracker")
+			->set_quiet(true);
+	}
+
+
+  } );
+
 }
 
 std::tuple<int, int, int> compute_value( const azerite_power_t& power, const spelleffect_data_t& effect )
@@ -5290,6 +5308,7 @@ struct reaping_flames_t : public azerite_essence_major_t
   double lo_hp; // note these are base_value and NOT percent
   double hi_hp;
   double cd_mod;
+  double execute_cd;
 
   reaping_flames_t( player_t* p, const std::string& options_str ) :
     azerite_essence_major_t( p, "reaping_flames", p->find_spell( 310690 ) )
@@ -5303,6 +5322,22 @@ struct reaping_flames_t : public azerite_essence_major_t
     lo_hp  = essence.spell_ref( 1u ).effectN( 2 ).base_value();
     hi_hp  = essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value();
     cd_mod = -essence.spell_ref( 1u ).effectN( 3 ).base_value();
+	execute_cd = essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(2).base_value();
+
+    if ( !player->buffs.reaping_flames )
+       player->buffs.reaping_flames =
+           make_buff( player, "reaping_flames", player->find_spell( 311202 ) )
+               ->set_default_value(
+                   essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent() );
+  }
+
+  double action_multiplier() const override
+  {
+	  double am = azerite_essence_major_t::action_multiplier();
+
+	  am *= 1.0 + player->buffs.reaping_flames->check_value();
+
+	  return am;
   }
 
   void execute() override
@@ -5314,9 +5349,31 @@ struct reaping_flames_t : public azerite_essence_major_t
       reduce = true;
 
     azerite_essence_major_t::execute();
+	
+	player->buffs.reaping_flames->expire();
 
     if ( reduce )
       cooldown->adjust( timespan_t::from_seconds ( cd_mod ) );
+
+	if (execute_cd)
+	{
+		//trigger the tracking buff
+		auto td = player->get_target_data(target);
+		td->debuff.reaping_flames_tracker->trigger();
+
+		target->callbacks_on_demise.emplace_back([this] (player_t*) {
+			auto td = player->get_target_data(target);
+			if (td->debuff.reaping_flames_tracker->up())
+			{
+				cooldown->adjust(-cooldown->remains() + timespan_t::from_seconds(execute_cd));
+				player->buffs.reaping_flames->trigger();
+			}
+
+		});
+	}
+		
+		
+
   }
 };
 // End Breath of the Dying
