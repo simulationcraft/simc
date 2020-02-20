@@ -1455,8 +1455,7 @@ void register_azerite_target_data_initializers( sim_t* sim )
     auto essence = td->source->find_azerite_essence( "Breath of the Dying" );
     if ( essence.enabled() )
     {
-      td->debuff.reaping_flames_tracker = make_buff( *td, "reaping_flames_tracker", td->source->find_spell( 310710 ) )
-        ->set_duration( 1.5_s )
+      td->debuff.reaping_flames_tracker = make_buff( *td, "reaping_flames_tracker", td->source->find_spell( 311947 ) )
         ->set_quiet( true );
       td->debuff.reaping_flames_tracker->reset();
     }
