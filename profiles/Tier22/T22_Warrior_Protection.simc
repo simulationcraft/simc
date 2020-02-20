@@ -8,7 +8,7 @@ position=front
 talents=1223211
 
 # Default consumables
-potion=superior_battle_potion_of_strength
+potion=potion_of_unbridled_fury
 flask=greater_flask_of_the_undertow
 food=mechdowels_big_mech
 augmentation=battle_scarred

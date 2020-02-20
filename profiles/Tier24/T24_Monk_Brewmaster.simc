@@ -9,9 +9,9 @@ talents=1010021
 azerite_essences=12:3/300573/13:3/300575/300576/32:3
 
 # Default consumables
-potion=superior_battle_potion_of_agility
+potion=unbridled_fury
 flask=currents
-food=famine_evaluator_and_snack_table
+food=biltong
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.

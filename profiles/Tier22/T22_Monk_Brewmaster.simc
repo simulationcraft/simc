@@ -8,9 +8,9 @@ position=front
 talents=1030021
 
 # Default consumables
-potion=superior_battle_potion_of_agility
+potion=unbridled_fury
 flask=currents
-food=famine_evaluator_and_snack_table
+food=biltong
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
