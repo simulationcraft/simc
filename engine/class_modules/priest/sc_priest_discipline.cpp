@@ -156,10 +156,7 @@ struct shadow_word_pain_disc_t final : public priest_spell_t
   {
     double d = priest_spell_t::bonus_ta( state );
 
-    if ( priest().azerite.death_throes.enabled() )
-    {
-      d += priest().azerite.death_throes.value( 1 );
-    }
+    d += get_death_throes_bonus();
 
     return d;
   }
@@ -214,10 +211,7 @@ struct purge_the_wicked_t final : public priest_spell_t
     {
       double d = priest_spell_t::bonus_ta( state );
 
-      if ( priest().azerite.death_throes.enabled() )
-      {
-        d += priest().azerite.death_throes.value( 1 );
-      }
+      d += get_death_throes_bonus();
 
       return d;
     }
