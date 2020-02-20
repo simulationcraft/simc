@@ -7668,6 +7668,36 @@ struct variable_t : public action_t
   }
 };
 
+struct cycling_variable_t : public variable_t
+{
+	using variable_t::variable_t;
+
+	void execute() override
+	{
+		if (sim->target_non_sleeping_list.size() > 1)
+		{
+			player_t* saved_target = target;
+
+			// Note, need to take a copy of the original target list here, instead of a reference. Otherwise
+			// if spell_targets (or any expression that uses the target list) modifies it, the loop below
+			// may break, since the number of elements on the vector is not the same as it originally was
+			std::vector<player_t*> ctl = target_list();
+			size_t num_targets = ctl.size();
+
+			for (size_t i = 0; i < num_targets; i++)
+			{
+				target = ctl[i];
+				variable_t::execute();
+			}
+
+			target = saved_target;
+			return;
+		}
+
+		variable_t::execute();
+	}
+};
+
 // ===== Racial Abilities ===================================================
 
 struct racial_spell_t : public spell_t
@@ -9112,6 +9142,8 @@ action_t* player_t::create_action( const std::string& name, const std::string& o
     return new pool_resource_t( this, options_str );
   if ( name == "variable" )
     return new variable_t( this, options_str );
+  if ( name == "cycling_variable" )
+    return new cycling_variable_t( this, options_str );
 
   if ( auto action = azerite::create_action( this, name, options_str ) )
     return action;
