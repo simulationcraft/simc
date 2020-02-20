@@ -1113,32 +1113,6 @@ public:
     return l;
   }
 
-  bool affected_by_category(dbc_t& dbc, const spelleffect_data_t& effect) const
-  {
-    return affected_by_category(dbc, effect.misc_value1());
-  }
-
-  bool affected_by_category(dbc_t& dbc, int category) const;
-
-  bool affected_by_label(const spelleffect_data_t& effect) const
-  {
-    return affected_by_label(effect.misc_value2());
-  }
-
-  bool affected_by_label( int label ) const
-  {
-    if ( _labels == nullptr )
-    {
-      return false;
-    }
-
-    auto it = range::find_if( *_labels, [ label ]( const spelllabel_data_t* l ) {
-      return l -> label() == label;
-    } );
-
-    return it != _labels -> end();
-  }
-
   bool is_class( player_e c ) const
   {
     if ( ! _class_mask )
@@ -1270,6 +1244,11 @@ public:
     return s.str();
   }
 
+  bool affected_by_all( dbc_t& dbc, const spelleffect_data_t& effect ) const;
+  bool affected_by_category( dbc_t& dbc, const spelleffect_data_t& effect ) const;
+  bool affected_by_category( dbc_t& dbc, int category ) const;
+  bool affected_by_label( const spelleffect_data_t& effect ) const;
+  bool affected_by_label( int label ) const;
   bool affected_by( const spell_data_t* ) const;
   bool affected_by( const spelleffect_data_t* ) const;
   bool affected_by( const spelleffect_data_t& ) const;

@@ -2787,7 +2787,31 @@ specialization_e dbc_t::spec_by_idx( const player_e c, unsigned idx ) const
 
 // DBC
 
-bool spell_data_t::affected_by_category(dbc_t& dbc, int category) const
+// check if spell affected by effect through either class flag, label or category
+bool spell_data_t::affected_by_all( dbc_t& dbc, const spelleffect_data_t& effect ) const
+{
+  if (affected_by(effect))
+  {
+    return true;
+  }
+  if (affected_by_label(effect))
+  {
+    return true;
+  }
+  if (affected_by_category(dbc, effect))
+  {
+    return true;
+  }
+
+  return false;
+}
+
+bool spell_data_t::affected_by_category( dbc_t& dbc, const spelleffect_data_t& effect ) const
+{
+  return affected_by_category(dbc, effect.misc_value1());
+}
+
+bool spell_data_t::affected_by_category( dbc_t& dbc, int category ) const
 {
   auto affected_spells = dbc.spells_by_category(category);
   auto it = range::find_if(affected_spells, [spell_id = id()](const spell_data_t* l) {
@@ -2795,6 +2819,25 @@ bool spell_data_t::affected_by_category(dbc_t& dbc, int category) const
   });
 
   return it != affected_spells.end();
+}
+
+bool spell_data_t::affected_by_label( const spelleffect_data_t& effect ) const
+{
+  return affected_by_label(effect.misc_value2());
+}
+
+bool spell_data_t::affected_by_label( int label ) const
+{
+  if (_labels == nullptr || _labels->size() == 0)
+  {
+    return false;
+  }
+
+  auto it = range::find_if(*_labels, [label](const spelllabel_data_t* l) {
+    return l->label() == label;
+    });
+
+  return it != _labels->end();
 }
 
 bool spell_data_t::affected_by( const spell_data_t* spell ) const
