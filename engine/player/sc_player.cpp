@@ -5396,7 +5396,10 @@ void player_t::arise()
 
   current_attack_speed = cache.attack_speed();
 
-  range::for_each( callbacks_on_arise, []( const std::function<void( void )>& fn ) { fn(); } );
+  // Requires index-based lookup since on-arise callbacks may
+  // insert new on-arise callbacks to the vector.
+  for ( size_t i = 0; i < callbacks_on_arise.size(); ++i )
+    callbacks_on_arise[ i ]();
 }
 
 /**
@@ -5429,7 +5432,10 @@ void player_t::demise()
   event_t::cancel( off_gcd );
   event_t::cancel( cast_while_casting_poll_event );
 
-  range::for_each( callbacks_on_demise, [this]( const std::function<void( player_t* )>& fn ) { fn( this ); } );
+  // Requires index-based lookup since on-demise callbacks may
+  // insert new on-demise callbacks to the vector.
+  for ( size_t i = 0; i < callbacks_on_demise.size(); ++i )
+    callbacks_on_demise[ i ]( this );
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
