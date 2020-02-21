@@ -1358,8 +1358,8 @@ std::string enemy_t::generate_action_list()
   std::string als = "";
 
   // this is the standard Fluffy Pillow action list
-  als += "/auto_attack,damage=24000,attack_speed=1.5,aoe_tanks=1,range=" + util::to_string( 2400 );
-  als += "/melee_nuke,damage=40000,cooldown=30,attack_speed=2.0,aoe_tanks=1";
+  als += "/auto_attack,damage=80000,attack_speed=1.5,aoe_tanks=1,range=" + util::to_string( 2400 );
+  als += "/melee_nuke,damage=300000,cooldown=15,attack_speed=2.0,aoe_tanks=1";
 
   return als;
 }
