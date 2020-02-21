@@ -4117,11 +4117,11 @@ struct primal_wrath_t : public cat_attack_t
     return td( t )->dots.rip;
   }
 
-  double attack_direct_power_coefficient(const action_state_t* s) const override
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
-    double adpc = cat_attack_t::attack_direct_power_coefficient(s);
+    double adpc = cat_attack_t::attack_direct_power_coefficient( s );
 
-    adpc *= 1 + combo_points;
+    adpc *= ( 1ll + combo_points );
 
     return adpc;
   }
@@ -4130,18 +4130,19 @@ struct primal_wrath_t : public cat_attack_t
   {
     cat_attack_t::impact( s );
 
-    auto b_state = rip->get_state();
-    b_state->target      = s->target;
+    auto b_state    = rip->get_state();
+    b_state->target = s->target;
     rip->snapshot_state( b_state, result_amount_type::DMG_OVER_TIME );
     // Copy persistent multipliers from the direct attack.
     b_state->persistent_multiplier = s->persistent_multiplier;
 
     if ( !td( s->target )->dots.rip->state )
     {
-      td( s->target )->dots.rip->state          = rip->get_state();
-      td( s->target )->dots.rip->current_action = rip;
+      td( s->target )->dots.rip->state = rip->get_state();
     }
 
+    td( s->target )->dots.rip->current_action =
+        rip;  // changes stat object to primal wraths for consistency in case of a refresh
     td( s->target )->dots.rip->state->copy_state( b_state );
     td( s->target )->dots.rip->trigger( rip->dot_duration * 0.5 * ( combo_points + 1 ) );  // this seems to be hardcoded
 
