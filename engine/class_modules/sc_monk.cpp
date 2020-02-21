@@ -283,6 +283,7 @@ public:
   struct procs_t
   {
     proc_t* bok_proc;
+    proc_t* boiling_brew_healing_sphere;
   } proc;
 
   struct talents_t
@@ -688,27 +689,27 @@ private:
 public:
   monk_t( sim_t* sim, const std::string& name, race_e r )
     : player_t( sim, MONK, name, r ),
-      active_actions( active_actions_t() ),
+      active_actions(),
       spiritual_focus_count( 0 ),
       gift_of_the_ox_proc_chance(),
       fu_zan_the_wanderers_companion( nullptr ),
       sheilun_staff_of_the_mists( nullptr ),
       fists_of_the_heavens( nullptr ),
-      buff( buffs_t() ),
-      gain( gains_t() ),
-      proc( procs_t() ),
-      talent( talents_t() ),
-      spec( specs_t() ),
-      mastery( mastery_spells_t() ),
-      cooldown( cooldowns_t() ),
-      passives( passives_t() ),
+      buff(),
+      gain(),
+      proc(),
+      talent(),
+      spec(),
+      mastery(),
+      cooldown(),
+      passives(),
       rppm(),
-      legendary( legendary_t() ),
-      azerite( azerite_powers_t() ),
-      azerite_spells( azerite_spells_t() ),
-      pet( pets_t() ),
+      legendary(),
+      azerite(),
+      azerite_spells(),
+      pet(),
       //      pet_spawner( pets_t() ),
-      user_options( options_t() ),
+      user_options(),
       light_stagger_threshold( 0 ),
       moderate_stagger_threshold( 0.01666 ),  // Moderate transfers at 33.3% Stagger; 1.67% every 1/2 sec
       heavy_stagger_threshold( 0.03333 )      // Heavy transfers at 66.6% Stagger; 3.34% every 1/2 sec
@@ -5344,8 +5345,11 @@ struct breath_of_fire_t : public monk_spell_t
     {
       monk_spell_t::impact( s );
 
-      if ( p()->azerite.boiling_brew.ok() && p()->rppm.boiling_brew->trigger() )
+      if (p()->azerite.boiling_brew.ok() && p()->rppm.boiling_brew->trigger())
+      {
+        p()->proc.boiling_brew_healing_sphere->occur();
         p()->buff.gift_of_the_ox->trigger();
+      }
     }
   };
 
@@ -8314,6 +8318,7 @@ void monk_t::init_procs()
   base_t::init_procs();
 
   proc.bok_proc = get_proc( "bok_proc" );
+  proc.boiling_brew_healing_sphere = get_proc("Boiling Brew Healing Sphere");
 }
 
 // monk_t::init_assessors ===================================================
