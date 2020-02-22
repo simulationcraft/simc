@@ -5582,7 +5582,7 @@ void hunter_t::apl_surv()
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "use_items" );
   default_list -> add_action( "call_action_list,name=cds" );
-  default_list -> add_action( "mongoose_bite,if=talent.alpha_predator.enabled&target.time_to_die<10|target.time_to_die<5" );	
+  default_list -> add_action( "mongoose_bite,if=active_enemies=1&(talent.alpha_predator.enabled&target.time_to_die<10|target.time_to_die<5)" );	
   default_list -> add_action( "call_action_list,name=apwfi,if=active_enemies<3&talent.chakrams.enabled&talent.alpha_predator.enabled" );
   default_list -> add_action( "call_action_list,name=wfi,if=active_enemies<3&talent.chakrams.enabled");
   default_list -> add_action( "call_action_list,name=st,if=active_enemies<3&!talent.alpha_predator.enabled&!talent.wildfire_infusion.enabled" );
