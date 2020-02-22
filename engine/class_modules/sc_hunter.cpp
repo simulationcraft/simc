@@ -5608,7 +5608,6 @@ void hunter_t::apl_surv()
 	
   // Essences
   cds->add_action( "focused_azerite_beam" );
-  cds->add_action( "memory_of_lucid_dreams,if=focus<focus.max-30&buff.coordinated_assault.up" );
   cds->add_action( "blood_of_the_enemy,if=buff.coordinated_assault.up" );
   cds->add_action( "purifying_blast" );
   cds->add_action( "guardian_of_azeroth" );
@@ -5616,7 +5615,12 @@ void hunter_t::apl_surv()
   cds->add_action( "concentrated_flame,if=full_recharge_time<1*gcd" );
   cds->add_action( "the_unbound_force,if=buff.reckless_force.up" );
   cds->add_action( "worldvein_resonance" );
-  cds->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
+  cds->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );	
+  // lucid Major Focusdump phase	
+  cds->add_action( this, "Serpent_Sting,if=refreshable&buff.vipers_venom.up&!cooldown.memory_of_lucid_dreams.remains" );
+  cds->add_talent( this, "Mongoose Bite,if=!cooldown.memory_of_lucid_dreams.remains" );
+  cds->add_action( this, "Wildfire Bomb,if=full_recharge_time<1.5*gcd&focus<action.mongoose_bite.cost&!cooldown.memory_of_lucid_dreams.remains" );
+  cds->add_action( "memory_of_lucid_dreams,if=focus<action.mongoose_bite.cost&buff.coordinated_assault.up" );
 
   st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
   st -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
