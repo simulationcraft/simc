@@ -5328,7 +5328,6 @@ struct breath_of_fire_t : public monk_spell_t
       background    = true;
       tick_may_crit = may_crit = true;
       hasted_ticks             = false;
-      gcd_type = gcd_haste_type::NONE;
     }
 
     double bonus_ta( const action_state_t* s ) const override
@@ -5359,6 +5358,7 @@ struct breath_of_fire_t : public monk_spell_t
     : monk_spell_t( "breath_of_fire", &p, p.spec.breath_of_fire ), dot_action( new periodic_t( p ) )
   {
     parse_options( options_str );
+    gcd_type = gcd_haste_type::NONE;
 
     trigger_gcd = timespan_t::from_seconds( 1 );
 
