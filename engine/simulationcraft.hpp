@@ -1249,6 +1249,8 @@ struct sim_t : private sc_thread_t
     double whispered_truths_offensive_chance = 0.75;
     /// Whether the player is in Ny'alotha or not.
     bool nyalotha = true;
+    /// Chance for Infinite Stars to not hit the primary target (for single target sims)
+    double infinite_stars_miss_chance = 0;
   } bfa_opts;
 
   // Expansion specific data

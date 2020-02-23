@@ -6494,7 +6494,8 @@ void corruption::infinite_stars( special_effect_t& effect )
     {
       proc_t::impact( state );
       auto td = player->get_target_data( state->target );
-      td->debuff.infinite_stars->trigger();
+      if (!player->rng().roll(player->sim->bfa_opts.infinite_stars_miss_chance))
+        td->debuff.infinite_stars->trigger();
     }
   };
 
