@@ -1335,6 +1335,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 300170, special_effects::clockwork_heart       );
   unique_gear::register_special_effect( 300168, special_effects::personcomputer_interface );
   unique_gear::register_special_effect( 317137, special_effects::heart_of_darkness );
+  unique_gear::register_special_effect( 268437, special_effects::impassive_visage );
 
   // Generic Azerite Essences
   //
@@ -3753,6 +3754,49 @@ void heart_of_darkness( special_effect_t& effect )
       }
     } );
   }
+}
+
+void impassive_visage(special_effect_t& effect)
+{
+  class impassive_visage_heal_t : public heal_t
+  {
+  public:
+    impassive_visage_heal_t(player_t* p, const spell_data_t* s, double amount) :
+      heal_t("impassive_visage", p, s)
+    {
+      target = p;
+      background = true;
+      base_dd_min = base_dd_max = amount;
+    }
+  };
+
+  class impassive_visage_cb_t : public dbc_proc_callback_t
+  {
+    impassive_visage_heal_t* heal_action;
+  public:
+    impassive_visage_cb_t(const special_effect_t& effect, impassive_visage_heal_t* heal) :
+      dbc_proc_callback_t(effect.player, effect),
+      heal_action(heal)
+    { 
+    }
+
+    void execute(action_t* /* a */, action_state_t* /* state */) override
+    {
+      heal_action->execute();
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell(effect.driver()->name_cstr());
+  if (!power.enabled())
+  {
+    return;
+  } 
+  const spell_data_t* driver = power.spell();
+  const spell_data_t* spell = driver->effectN(1).trigger();
+  const spell_data_t* heal = driver->effectN(1).trigger();
+
+  auto heal_action = new impassive_visage_heal_t(effect.player, heal, power.value());
+  new impassive_visage_cb_t(effect, heal_action);
 }
 
 } // Namespace special effects ends
