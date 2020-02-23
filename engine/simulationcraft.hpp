@@ -4293,7 +4293,7 @@ public:
 
   // Normal methods
   void init_character_properties();
-  void collect_resource_timeline_information();
+  double get_stat_value(stat_e);
   void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void create_talents_numbers();
@@ -4628,6 +4628,7 @@ public:
   virtual timespan_t time_to_percent( double percent ) const;
   virtual void cost_reduction_gain( school_e school, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a = nullptr );
+  virtual void collect_resource_timeline_information();
 
   virtual void assess_damage( school_e, result_amount_type, action_state_t* );
   virtual void target_mitigation( school_e, result_amount_type, action_state_t* );

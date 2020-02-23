@@ -5646,6 +5646,35 @@ void player_t::regen( timespan_t periodicity )
   }
 }
 
+
+double player_t::get_stat_value(stat_e stat)
+{
+  switch (stat)
+  {
+
+  case STAT_STRENGTH:
+    return cache.strength();
+  case STAT_AGILITY:
+    return cache.agility();
+  case STAT_INTELLECT:
+    return cache.intellect();
+  case STAT_SPELL_POWER:
+    return cache.spell_power(SCHOOL_NONE);
+  case STAT_ATTACK_POWER:
+    return cache.attack_power();
+  case STAT_MASTERY_RATING:
+    return composite_mastery_rating();
+  case STAT_VERSATILITY_RATING:
+    return composite_damage_versatility_rating();
+  case STAT_ARMOR:
+    return cache.armor();
+  default:
+    break;
+  }
+
+  return 0.0;
+}
+
 void player_t::collect_resource_timeline_information()
 {
   for ( auto& elem : collected_data.resource_timelines )
@@ -5655,27 +5684,8 @@ void player_t::collect_resource_timeline_information()
 
   for ( auto& elem : collected_data.stat_timelines )
   {
-    switch ( elem.type )
-    {
-      case STAT_STRENGTH:
-        elem.timeline.add( sim->current_time(), cache.strength() );
-        break;
-      case STAT_AGILITY:
-        elem.timeline.add( sim->current_time(), cache.agility() );
-        break;
-      case STAT_INTELLECT:
-        elem.timeline.add( sim->current_time(), cache.intellect() );
-        break;
-      case STAT_SPELL_POWER:
-        elem.timeline.add( sim->current_time(), cache.spell_power( SCHOOL_NONE ) );
-        break;
-      case STAT_ATTACK_POWER:
-        elem.timeline.add( sim->current_time(), cache.attack_power() );
-        break;
-      default:
-        elem.timeline.add( sim->current_time(), 0 );
-        break;
-    }
+    auto value = get_stat_value(elem.type);
+    elem.timeline.add(sim->current_time(), value);
   }
 }
 
