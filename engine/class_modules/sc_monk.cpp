@@ -859,7 +859,7 @@ public:
   void apl_pre_windwalker();
 
   // Custom Monk Functions
-  void stagger_damage_changed();
+  void stagger_damage_changed(bool last_tick = false);
   double current_stagger_tick_dmg();
   double current_stagger_tick_dmg_percent();
   double current_stagger_amount_remains();
@@ -5454,7 +5454,11 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     // Just get dot duration from heavy stagger spell data
     auto s = p->find_spell( 124273 );
     assert( s );
-    dot_duration   = s->duration();
+
+    dot_duration = s->duration();
+    if (p->legendary.jewel_of_the_lost_abbey)
+      dot_duration += timespan_t::from_seconds(p->legendary.jewel_of_the_lost_abbey->effectN(1).base_value() / 10);
+    dot_duration += timespan_t::from_seconds(p->talent.bob_and_weave->effectN(1).base_value() / 10);
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks = tick_may_crit = false;
     target                       = p;
@@ -5494,7 +5498,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   void last_tick( dot_t* d ) override
   {
     base_t::last_tick( d );
-    p()->stagger_damage_changed();
+    p()->stagger_damage_changed(true);
   }
 
   proc_types proc_type() const override
@@ -7055,6 +7059,26 @@ struct windwalking_driver_t : public monk_buff_t<buff_t>
   }
 };
 
+struct stagger_buff_t : public monk_buff_t<buff_t>
+{
+  stagger_buff_t(monk_t& p, const std::string& n, const spell_data_t* s) :
+    monk_buff_t(p, n, s)
+  {
+
+    timespan_t stagger_duration = s->duration();
+    if (p.legendary.jewel_of_the_lost_abbey)
+      stagger_duration += timespan_t::from_seconds(p.legendary.jewel_of_the_lost_abbey->effectN(1).base_value() / 10);
+    stagger_duration += timespan_t::from_seconds(p.talent.bob_and_weave->effectN(1).base_value() / 10);
+
+    //set_duration(stagger_duration);
+    set_duration(timespan_t::zero());
+    if (p.talent.high_tolerance->ok())
+    {
+      add_invalidate(CACHE_HASTE);
+    }
+  }
+};
+
 }  // namespace buffs
 
 namespace items
@@ -8210,21 +8234,10 @@ void monk_t::create_buffs()
 
   buff.spitfire = make_buff( this, "spitfire", talent.spitfire->effectN( 1 ).trigger() );
 
-  timespan_t stagger_duration = passives.heavy_stagger->duration();
-  if ( legendary.jewel_of_the_lost_abbey )
-    stagger_duration += timespan_t::from_seconds( legendary.jewel_of_the_lost_abbey->effectN( 1 ).base_value() / 10 );
-  stagger_duration += timespan_t::from_seconds( talent.bob_and_weave->effectN( 1 ).base_value() / 10 );
 
-  buff.light_stagger    = make_buff( this, "light_stagger", find_spell( 124275 ) );
-  buff.moderate_stagger = make_buff( this, "moderate_stagger", find_spell( 124274 ) );
-  buff.heavy_stagger    = make_buff( this, "heavy_stagger", passives.heavy_stagger );
-  for ( auto&& b : {buff.light_stagger, buff.moderate_stagger, buff.heavy_stagger} )
-  {
-    b->set_duration( stagger_duration );
-    if ( talent.high_tolerance->ok() )
-      b->add_invalidate( CACHE_HASTE );
-  }
-
+  buff.light_stagger    = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) );
+  buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) );
+  buff.heavy_stagger    = make_buff<buffs::stagger_buff_t>( *this, "heavy_stagger", passives.heavy_stagger );
   // Mistweaver
   buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal );
 
@@ -10034,7 +10047,7 @@ double monk_t::current_stagger_tick_dmg()
   return dmg;
 }
 
-void monk_t::stagger_damage_changed()
+void monk_t::stagger_damage_changed(bool last_tick)
 {
   buff_t* previous_buff = nullptr;
   for ( auto&& b : {buff.light_stagger, buff.moderate_stagger, buff.heavy_stagger} )
@@ -10052,7 +10065,7 @@ void monk_t::stagger_damage_changed()
   int niuzao       = 0;
   if ( active_actions.stagger_self_damage )
     dot = active_actions.stagger_self_damage->get_dot();
-  if ( dot && dot->is_ticking() )
+  if ( !last_tick && dot && dot->is_ticking() ) // fake dot not active on last tick
   {
     auto current_tick_dmg = current_stagger_tick_dmg();
     auto current_tick_dmg_per_max_health = current_tick_dmg / resources.max[ RESOURCE_HEALTH ];
@@ -10078,7 +10091,7 @@ void monk_t::stagger_damage_changed()
   if ( previous_buff && previous_buff != new_buff )
   {
     previous_buff->expire();
-    if ( buff.training_of_niuzao->up() )
+    if ( buff.training_of_niuzao->check() )
       buff.training_of_niuzao->expire();
   }
   if ( new_buff && previous_buff != new_buff )
