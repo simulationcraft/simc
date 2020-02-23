@@ -39,7 +39,7 @@ actions.precombat+=/harpoon
 actions=auto_attack
 actions+=/use_items
 actions+=/call_action_list,name=cds
-actions+=/mongoose_bite,if=talent.alpha_predator.enabled&target.time_to_die<10|target.time_to_die<5
+actions+=/mongoose_bite,if=active_enemies=1&(talent.alpha_predator.enabled&target.time_to_die<10|target.time_to_die<5)
 actions+=/call_action_list,name=apwfi,if=active_enemies<3&talent.chakrams.enabled&talent.alpha_predator.enabled
 actions+=/call_action_list,name=wfi,if=active_enemies<3&talent.chakrams.enabled
 actions+=/call_action_list,name=st,if=active_enemies<3&!talent.alpha_predator.enabled&!talent.wildfire_infusion.enabled
@@ -96,7 +96,6 @@ actions.cds+=/use_item,name=ashvanes_razor_coral,if=equipped.dribbling_inkpod&(d
 actions.cds+=/use_item,name=galecallers_boon,if=cooldown.memory_of_lucid_dreams.remains|talent.wildfire_infusion.enabled&cooldown.coordinated_assault.remains|cooldown.cyclotronic_blast.remains|!essence.memory_of_lucid_dreams.major&cooldown.coordinated_assault.remains
 actions.cds+=/use_item,name=azsharas_font_of_power
 actions.cds+=/focused_azerite_beam
-actions.cds+=/memory_of_lucid_dreams,if=focus<focus.max-30&buff.coordinated_assault.up
 actions.cds+=/blood_of_the_enemy,if=buff.coordinated_assault.up
 actions.cds+=/purifying_blast
 actions.cds+=/guardian_of_azeroth
@@ -105,6 +104,7 @@ actions.cds+=/concentrated_flame,if=full_recharge_time<1*gcd
 actions.cds+=/the_unbound_force,if=buff.reckless_force.up
 actions.cds+=/worldvein_resonance
 actions.cds+=/reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30
+actions.cds+=/memory_of_lucid_dreams,if=focus<action.mongoose_bite.cost&buff.coordinated_assault.up
 
 actions.cleave=variable,name=carve_cdr,op=setif,value=active_enemies,value_else=5,condition=active_enemies<5
 actions.cleave+=/a_murder_of_crows

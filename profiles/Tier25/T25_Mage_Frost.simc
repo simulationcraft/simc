@@ -2,11 +2,11 @@ mage="T25_Mage_Frost"
 source=default
 spec=frost
 level=120
-race=dwarf
+race=human
 role=spell
 position=back
 talents=1011023
-azerite_essences=14:3/32:3/5:3/35:3
+azerite_essences=27:3/4:3/5:3/35:3
 
 # Default consumables
 potion=unbridled_fury
@@ -113,32 +113,32 @@ actions.talent_rop=rune_of_power,if=talent.glacial_spike.enabled&buff.icicles.st
 # Without Glacial Spike, Rune of Power should be used before any bigger cooldown (Ebonbolt, Comet Storm, Ray of Frost) or when Rune of Power is about to reach 2 charges.
 actions.talent_rop+=/rune_of_power,if=!talent.glacial_spike.enabled&(talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)
 
-head=cowl_of_unspeakable_horrors,id=174116,bonus_id=4824/1517/4775,azerite_powers=582/170/30/13
+head=cowl_of_unspeakable_horrors,id=174116,bonus_id=4824/1517/4775,azerite_powers=170/582/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulders=void_ascendants_mantle,id=174120,bonus_id=4824/1517/4775,azerite_powers=582/170/459/13
+shoulders=shoulderguards_of_fraying_sanity,id=168987,bonus_id=5448/1532/4786/6510/4775,azerite_powers=170/569/459/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=ruffled_poet_blouse,id=158301,bonus_id=1647/4786/5448/6510/4775,azerite_powers=505/170/21/13
-wrists=cuffs_of_grim_conjuration,id=174129,bonus_id=4824/1517/6573
-hands=emberscale_gloves,id=174125,bonus_id=4824/1517/6573
-waist=manainfused_sash,id=174124,bonus_id=4824/1517/6573
-legs=corporeal_supplicants_trousers,id=174127,bonus_id=4824/1517/6573
-feet=psychics_subtle_slippers,id=174123,bonus_id=4824/1517/6573
-finger1=voidetched_band,id=174531,bonus_id=4824/1517,enchant=accord_of_critical_strike
-finger2=ichorspine_loop,id=174532,bonus_id=4824/1517,enchant=accord_of_critical_strike
+chest=ruffled_poet_blouse,id=158301,bonus_id=1647/4786/5448/6510/4775,azerite_powers=170/505/21/13
+wrists=cuffs_of_grim_conjuration,id=174129,bonus_id=4824/1517/6460/6472
+hands=grips_of_occult_reminiscence,id=174130,bonus_id=4824/1517/6460/6472
+waist=manainfused_sash,id=174124,bonus_id=4824/1517/6460/6472
+legs=corporeal_supplicants_trousers,id=174127,bonus_id=4824/1517/6460/6472
+feet=psychics_subtle_slippers,id=174123,bonus_id=4824/1517/6460/6472
+finger1=voidetched_band,id=174531,bonus_id=4824/1517,enchant=accord_of_mastery
+finger2=ichorspine_loop,id=174532,bonus_id=4824/1517,enchant=accord_of_mastery
 trinket1=vitacharged_titanshard,id=174500,bonus_id=4824/1517
-trinket2=psyche_shredder,id=174060,bonus_id=4824/1517
+trinket2=balefire_branch,id=159630,bonus_id=6536/6516/6515/1637/4786
 main_hand=shglayos_astral_malignity,id=174108,bonus_id=4824/1517,enchant=masterful_navigation
-off_hand=zealous_ritualists_reverie,id=175009,bonus_id=4824/1517/6573
+off_hand=zealous_ritualists_reverie,id=175009,bonus_id=4824/1517/6465/6473
 
 # Gear Summary
-# gear_ilvl=479.88
-# gear_stamina=20111
-# gear_intellect=12498
-# gear_crit_rating=1193
-# gear_haste_rating=859
-# gear_mastery_rating=1837
-# gear_versatility_rating=563
-# gear_corruption=90
+# gear_ilvl=479.25
+# gear_stamina=20593
+# gear_intellect=11775
+# gear_crit_rating=955
+# gear_haste_rating=726
+# gear_mastery_rating=2313
+# gear_versatility_rating=692
+# gear_corruption=95
 # gear_corruption_resistance=50
 # gear_armor=2358
 rotation=no_ice_lance
