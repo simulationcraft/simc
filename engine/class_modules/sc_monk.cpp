@@ -5702,8 +5702,8 @@ struct ironskin_brew_t : public monk_spell_t
     {
       timespan_t base_time     = p()->buff.ironskin_brew->buff_duration;
       timespan_t max_time      = p()->passives.ironskin_brew->effectN( 2 ).base_value() * base_time;
-      timespan_t max_extension = max_time - p()->buff.ironskin_brew->remains();
-      p()->buff.ironskin_brew->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, std::min( base_time, max_extension ) );
+      timespan_t new_length = std::min(max_time, base_time + p()->buff.ironskin_brew->remains());
+      p()->buff.ironskin_brew->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length);
     }
     else
       p()->buff.ironskin_brew->trigger();
@@ -9612,7 +9612,7 @@ void monk_t::apl_combat_brewmaster()
       "brawler.stack<2&!buff.ironskin_brew.up",
       "Ironskin Brew priority whenever it took significant damage and ironskin brew buff is missing (adjust the "
       "health.max coefficient according to intensity of damage taken), and to dump excess charges before BoB." );
-  def->add_action( this, "Ironskin Brew", "if=cooldown.brews.charges_fractional>1&cooldown.black_ox_brew.remains<3" );
+  def->add_action( this, "Ironskin Brew", "if=cooldown.brews.charges_fractional>1&cooldown.black_ox_brew.remains<3&buff.ironskin_brew.remains<15" );
 
   // Purifying Brew
   def->add_action( this, "Purifying Brew",
