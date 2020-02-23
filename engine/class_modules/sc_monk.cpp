@@ -141,12 +141,14 @@ public:
 
   struct
   {
-    luxurious_sample_data_t* stagger_tick_damage;
+    sc_timeline_t stagger_timeline;
+    luxurious_sample_data_t* stagger_damage;
     luxurious_sample_data_t* stagger_total_damage;
-    luxurious_sample_data_t* light_stagger_total_damage;
-    luxurious_sample_data_t* moderate_stagger_total_damage;
-    luxurious_sample_data_t* heavy_stagger_total_damage;
+    luxurious_sample_data_t* light_stagger_damage;
+    luxurious_sample_data_t* moderate_stagger_damage;
+    luxurious_sample_data_t* heavy_stagger_damage;
     luxurious_sample_data_t* purified_damage;
+    luxurious_sample_data_t* staggering_strikes_cleared;
     double buffed_stagger_base;
     double buffed_stagger_pct_player_level, buffed_stagger_pct_target_level;
   } sample_datas;
@@ -4022,8 +4024,11 @@ struct blackout_strike_t : public monk_melee_attack_t
           p()->buff.elusive_brawler->trigger(
               as<int>( p()->azerite.elusive_footwork.spell_ref().effectN( 2 ).base_value() ) );
 
-        if ( p()->azerite.staggering_strikes.ok() )
-          p()->partial_clear_stagger_amount( p()->azerite.staggering_strikes.value() );
+        if (p()->azerite.staggering_strikes.ok())
+        {
+          auto amount_cleared = p()->partial_clear_stagger_amount(p()->azerite.staggering_strikes.value());
+          p()->sample_datas.staggering_strikes_cleared->add(amount_cleared);
+        }
       }
     }
   }
@@ -5451,6 +5456,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     target                       = p;
   }
 
+
   void impact( action_state_t* s ) override
   {
     base_t::impact( s );
@@ -5463,6 +5469,22 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     base_t::assess_damage( type, s );
 
     p()->stagger_tick_damage.push_back( {s->result_amount} );
+
+    p()->sample_datas.stagger_timeline.add(sim->current_time(), s->result_amount);
+    p()->sample_datas.stagger_damage->add(s->result_amount);
+
+    if (p()->buff.light_stagger->check())
+    {
+      p()->sample_datas.light_stagger_damage->add(s->result_amount);
+    }
+    else if (p()->buff.moderate_stagger->check())
+    {
+      p()->sample_datas.moderate_stagger_damage->add(s->result_amount);
+    }
+    else if (p()->buff.heavy_stagger->check())
+    {
+      p()->sample_datas.heavy_stagger_damage->add(s->result_amount);
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -5470,6 +5492,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     base_t::last_tick( d );
     p()->stagger_damage_changed();
   }
+
   proc_types proc_type() const override
   {
     return PROC1_ANY_DAMAGE_TAKEN;
@@ -5505,15 +5528,13 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   double clear_all_damage()
   {
     dot_t* d                = get_dot();
-    double damage_remaining = 0.0;
-    if ( d->is_ticking() )
-      damage_remaining += d->state->result_amount;  // Assumes base_td == damage, no modifiers or crits
-
+    double amount_cleared = amount_remaining();
+    
     d->cancel();
     cancel();
     p()->stagger_damage_changed();
 
-    return damage_remaining;
+    return amount_cleared;
   }
 
   /* Clears part of the stagger dot. Used by Purifying Brew
@@ -5522,22 +5543,30 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   double clear_partial_damage_pct( double percent_amount )
   {
     dot_t* d                = get_dot();
-    double damage_remaining = 0.0;
+    double amount_cleared = 0.0;
 
     if ( d->is_ticking() )
     {
       auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
-      damage_remaining += dot_state->tick_amount;  // Assumes base_td == damage, no modifiers or crits
-      damage_remaining *= percent_amount;
-      dot_state->tick_amount -= damage_remaining;
-    }
 
-    sim->print_debug( "{} partially clears stagger by {:.2f}% ({} / tick).", player->name(), percent_amount * 100.0,
-                      damage_remaining );
+      auto ticks_left = d->ticks_left();
+      auto damage_remaining_initial = amount_remaining();
+      auto damage_remaining_after_clear = damage_remaining_initial * (1.0 - percent_amount);
+      amount_cleared = damage_remaining_initial - damage_remaining_after_clear;
+      set_tick_amount(damage_remaining_after_clear / ticks_left);
+      assert(std::fabs(amount_remaining() - damage_remaining_after_clear) < 1.0 && "stagger remaining amount after clear does not match");
+
+      sim->print_debug("{} partially clears stagger by {} (requested:  {:.2f}%). Damage remaining is {}.", player->name(), amount_cleared, percent_amount * 100.0, damage_remaining_after_clear);
+    }
+    else
+    {
+      sim->print_debug("{} no active stagger to clear (requested pct: {}).", player->name(), percent_amount * 100.0);
+    }
 
     p()->stagger_damage_changed();
 
-    return damage_remaining;
+
+    return amount_cleared;
   }
 
   /* Clears part of the stagger dot. Used by Staggering Strikes Azerite Trait
@@ -5546,21 +5575,41 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   double clear_partial_damage_amount( double amount )
   {
     dot_t* d                = get_dot();
-    double damage_remaining = 0.0;
+    double amount_cleared = 0.0;
 
     if ( d->is_ticking() )
     {
       auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
-      damage_remaining += dot_state->tick_amount;  // Assumes base_td == damage, no modifiers or crits
-      damage_remaining       = std::fmax( damage_remaining - amount, 0 );
-      dot_state->tick_amount = damage_remaining;
-    }
+      auto ticks_left = d->ticks_left();
+      auto damage_remaining_initial = amount_remaining();
+      auto damage_remaining_after_clear = std::fmax(damage_remaining_initial - amount, 0 );
+      amount_cleared = damage_remaining_initial - damage_remaining_after_clear;
+      set_tick_amount(damage_remaining_after_clear / ticks_left);
+      assert(std::fabs(amount_remaining() - damage_remaining_after_clear) < 1.0 && "stagger remaining amount after clear does not match");
 
-    sim->print_debug( "{} partially clears stagger by {} ({} / tick).", player->name(), amount, damage_remaining );
+      sim->print_debug("{} partially clears stagger by {} (requested: {}). Damage remaining is {}.", player->name(), amount_cleared, amount, damage_remaining_after_clear);
+
+    }
+    else
+    {
+      sim->print_debug("{} no active stagger to clear (requested amount: {}).", player->name(), amount);
+    }
 
     p()->stagger_damage_changed();
 
-    return damage_remaining;
+
+    return amount_cleared;
+  }
+
+  // adds amount to residual actions tick amount
+  void set_tick_amount(double amount)
+  {
+    dot_t* dot = get_dot();
+    if (dot)
+    {
+      auto rd_state = debug_cast<residual_action::residual_periodic_state_t*>(dot->state);
+      rd_state->tick_amount = amount;
+    }
   }
 
   bool stagger_ticking()
@@ -5572,16 +5621,16 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   double tick_amount()
   {
     dot_t* d = get_dot();
-    if ( d && d->state )
-      return calculate_tick_amount( d->state, d->current_stack() );
+    if (d && d->state)
+      return base_ta(d->state);
     return 0;
   }
 
   double amount_remaining()
   {
     dot_t* d = get_dot();
-    if ( d && d->state )
-      return d->state->result_amount;
+    if ( d  && d->state)
+      return base_ta(d->state) * d->ticks_left();
     return 0;
   }
 };
@@ -5741,7 +5790,8 @@ struct purifying_brew_t : public monk_spell_t
     }
 
     // Reduce stagger damage
-    p()->active_actions.stagger_self_damage->clear_partial_damage_pct( data().effectN( 1 ).percent() );
+    auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct( data().effectN( 1 ).percent() );
+    p()->sample_datas.purified_damage->add(amount_cleared);
   }
 };
 
@@ -7986,12 +8036,13 @@ void monk_t::init_spells()
   mastery.gust_of_mists   = find_mastery_spell( MONK_MISTWEAVER );
 
   // Sample Data
-  sample_datas.stagger_total_damage          = get_sample_data( "Total Stagger damage generated" );
-  sample_datas.stagger_tick_damage           = get_sample_data( "Stagger damage that was not purified" );
-  sample_datas.purified_damage               = get_sample_data( "Stagger damage that was purified" );
-  sample_datas.light_stagger_total_damage    = get_sample_data( "Amount of damage purified while at light stagger" );
-  sample_datas.moderate_stagger_total_damage = get_sample_data( "Amount of damage purified while at moderate stagger" );
-  sample_datas.heavy_stagger_total_damage    = get_sample_data( "Amount of damage purified while at heavy stagger" );
+  sample_datas.stagger_total_damage     = get_sample_data("Damage added to stagger pool");
+  sample_datas.stagger_damage           = get_sample_data( "Effective stagger damage" );
+  sample_datas.light_stagger_damage     = get_sample_data( "Effective light stagger damage" );
+  sample_datas.moderate_stagger_damage  = get_sample_data( "Effective moderate stagger damage" );
+  sample_datas.heavy_stagger_damage     = get_sample_data( "Effective heavy stagger damage" );
+  sample_datas.purified_damage          = get_sample_data( "Stagger damage that was purified" );
+  sample_datas.staggering_strikes_cleared = get_sample_data( "Stagger damage that was cleared by Staggering Strikes" );
 
   // Active Action Spells
   // Brewmaster
@@ -9025,6 +9076,7 @@ stat_e monk_t::convert_hybrid_stat( stat_e s ) const
 
 void monk_t::pre_analyze_hook()
 {
+  sample_datas.stagger_timeline.adjust(*sim);
   base_t::pre_analyze_hook();
 }
 
@@ -9153,8 +9205,6 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   // Stagger is not reduced by damage mitigation effects
   if ( s->action->id == passives.stagger_self_damage->id() )
   {
-    // Register the tick then exit
-    sample_datas.stagger_tick_damage->add( s->result_amount );
     return;
   }
 
@@ -9988,8 +10038,9 @@ void monk_t::stagger_damage_changed()
     dot = active_actions.stagger_self_damage->get_dot();
   if ( dot && dot->is_ticking() )
   {
-    auto current_tick_dmg_per_max_health = current_stagger_tick_dmg() / resources.max[ RESOURCE_HEALTH ];
-    sim->print_debug( "Stagger dmg: {} ({}%):", current_stagger_tick_dmg(), current_tick_dmg_per_max_health * 100.0 );
+    auto current_tick_dmg = current_stagger_tick_dmg();
+    auto current_tick_dmg_per_max_health = current_tick_dmg / resources.max[ RESOURCE_HEALTH ];
+    sim->print_debug( "Stagger dmg: {} ({}%):", current_tick_dmg, current_tick_dmg_per_max_health * 100.0 );
     if ( current_tick_dmg_per_max_health > 0.06 )
     {
       new_buff = buff.heavy_stagger;
@@ -10308,15 +10359,25 @@ public:
     // Custom Class Section
     if ( p.specialization() == MONK_BREWMASTER )
     {
-      double stagger_tick_dmg  = p.sample_datas.stagger_tick_damage->sum();
-      double purified_dmg      = p.sample_datas.purified_damage->sum();
-      double stagger_total_dmg = stagger_tick_dmg + purified_dmg;
+      double stagger_tick_dmg  = p.sample_datas.stagger_damage->mean();
+      double purified_dmg      = p.sample_datas.purified_damage->mean();
+      double staggering_strikes = p.sample_datas.staggering_strikes_cleared->mean();
+      double stagger_total_dmg  = p.sample_datas.stagger_total_damage->mean();
 
       os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
          << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-      os << "\t\t\t\t\t\t<p style=\"color: red;\">This section is a work in progress</p>\n";
+      highchart::time_series_t chart(highchart::build_id(p, "stagger_damage"), *p.sim);
+      chart::generate_actor_timeline(chart, p, "Stagger effective damage", color::resource_color(RESOURCE_HEALTH),
+        p.sample_datas.stagger_timeline);
+
+        chart.set("tooltip.headerFormat", "<b>{point.key}</b> s<br/>");
+        chart.set("chart.width", "575");
+        //chart.set_mean(p.collected_data.health_changes.merged_timeline.mean());
+
+        os << chart.to_target_div();
+        p.sim->add_chart_data(chart);
 
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger base Unbuffed: {} Raid Buffed: {}</p>\n", p.stagger_base_value(),
                   p.sample_datas.buffed_stagger_base );
@@ -10327,16 +10388,17 @@ public:
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger pct (target level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
                   100.0 * p.stagger_pct( p.target->level() ), 100.0 * p.sample_datas.buffed_stagger_pct_target_level );
 
-      os << "\t\t\t\t\t\t<p>Percent amount of stagger that was purified: "
-         << ( ( purified_dmg / stagger_total_dmg ) * 100 ) << "%</p>\n"
-         << "\t\t\t\t\t\t<p>Percent amount of stagger that directly damaged the player: "
-         << ( ( stagger_tick_dmg / stagger_total_dmg ) * 100 ) << "%</p>\n\n";
+      fmt::print(os, "\t\t\t\t\t\t<p>Total Stagger damage added: {} / {:.2f}%</p>\n", stagger_total_dmg, 100.0);
+      fmt::print(os, "\t\t\t\t\t\t<p>Stagger cleared by Purifying Brew: {} / {:.2f}%</p>\n", purified_dmg, (purified_dmg / stagger_total_dmg) * 100.0);
+      fmt::print(os, "\t\t\t\t\t\t<p>Stagger cleared by Staggering Strikes: {} / {:.2f}%</p>\n", staggering_strikes, (staggering_strikes / stagger_total_dmg) * 100.0);
+      fmt::print(os, "\t\t\t\t\t\t<p>Stagger that directly damaged the player: {} / {:.2f}%</p>\n", stagger_tick_dmg, (stagger_tick_dmg / stagger_total_dmg) * 100.0);
+
 
       os << "\t\t\t\t\t\t<table class=\"sc\">\n"
          << "\t\t\t\t\t\t\t<tbody>\n"
          << "\t\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t\t<th class=\"left\">Damage Stats</th>\n"
-         << "\t\t\t\t\t\t\t\t\t<th>DTPS</th>\n"
+         << "\t\t\t\t\t\t\t\t\t<th>Total</th>\n"
          //        << "\t\t\t\t\t\t\t\t\t<th>DTPS%</th>\n"
          << "\t\t\t\t\t\t\t\t\t<th>Execute</th>\n"
          << "\t\t\t\t\t\t\t\t</tr>\n";
@@ -10353,8 +10415,8 @@ public:
          << "<span style = \"margin - left: 18px; \">Stagger</span></a></span>\n"
          << "\t\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << ( p.sample_datas.stagger_tick_damage->mean() / 60 ) << "</td>\n";
-      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << p.sample_datas.stagger_tick_damage->count()
+         << ( p.sample_datas.stagger_damage->mean() ) << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << p.sample_datas.stagger_damage->count()
          << "</td>\n";
       os << "\t\t\t\t\t\t\t\t</tr>\n";
 
@@ -10370,9 +10432,9 @@ public:
          << "<span style = \"margin - left: 18px; \">Light Stagger</span></a></span>\n"
          << "\t\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << ( p.sample_datas.light_stagger_total_damage->mean() / 60 ) << "</td>\n";
+         << ( p.sample_datas.light_stagger_damage->mean() ) << "</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << p.sample_datas.light_stagger_total_damage->count() << "</td>\n";
+         << p.sample_datas.light_stagger_damage->count() << "</td>\n";
       os << "\t\t\t\t\t\t\t\t</tr>\n";
 
       // Moderate Stagger info
@@ -10386,9 +10448,9 @@ public:
          << "<span style = \"margin - left: 18px; \">Moderate Stagger</span></a></span>\n"
          << "\t\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << ( p.sample_datas.moderate_stagger_total_damage->mean() / 60 ) << "</td>\n";
+         << ( p.sample_datas.moderate_stagger_damage->mean() ) << "</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << p.sample_datas.moderate_stagger_total_damage->count() << "</td>\n";
+         << p.sample_datas.moderate_stagger_damage->count() << "</td>\n";
       os << "\t\t\t\t\t\t\t\t</tr>\n";
 
       // Heavy Stagger info
@@ -10402,9 +10464,9 @@ public:
          << "<span style = \"margin - left: 18px; \">Heavy Stagger</span></a></span>\n"
          << "\t\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << ( p.sample_datas.heavy_stagger_total_damage->mean() / 60 ) << "</td>\n";
+         << ( p.sample_datas.heavy_stagger_damage->mean() ) << "</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << p.sample_datas.heavy_stagger_total_damage->count() << "</td>\n";
+         << p.sample_datas.heavy_stagger_damage->count() << "</td>\n";
       os << "\t\t\t\t\t\t\t\t</tr>\n";
 
       os << "\t\t\t\t\t\t\t</tbody>\n"
