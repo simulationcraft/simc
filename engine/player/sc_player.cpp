@@ -1473,9 +1473,13 @@ void player_t::init_base_stats()
   // All classes get 3% dodge and miss
   base.dodge = 0.03;
   base.miss = 0.03;
-  // Dodge from base agillity isn't affected by diminishing returns and is added here
-  base.dodge += racials.quickness->effectN( 1 ).percent() +
-      ( dbc.race_base( race ).agility + dbc.attribute_base( type, level() ).agility ) * base.dodge_per_agility;
+
+  if (racials.quickness->ok()) // check spell data to avoid applying it to enemies.
+  {
+    // Dodge from base agillity isn't affected by diminishing returns and is added here
+    base.dodge += racials.quickness->effectN(1).percent() +
+      (dbc.race_base(race).agility + dbc.attribute_base(type, level()).agility) * base.dodge_per_agility;
+  }
 
   // Only Warriors and Paladins (and enemies) can block, defaults to 0
   if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TMI_BOSS || type == TANK_DUMMY )
@@ -1500,10 +1504,13 @@ void player_t::init_base_stats()
   // Only certain classes can parry, and get 3% base parry, default is 0
   // Parry from base strength isn't affected by diminishing returns and is added here
   if ( type == WARRIOR || type == PALADIN || type == ROGUE || type == DEATH_KNIGHT || type == MONK ||
-       type == DEMON_HUNTER || specialization() == SHAMAN_ENHANCEMENT || type == ENEMY || type == TMI_BOSS ||
-       type == TANK_DUMMY )
+       type == DEMON_HUNTER || specialization() == SHAMAN_ENHANCEMENT  )
   {
     base.parry = 0.03 + ( dbc.race_base( race ).strength + dbc.attribute_base( type, level() ).strength ) * base.parry_per_strength;
+  }
+  else if (type == ENEMY || type == TMI_BOSS || type == TANK_DUMMY)
+  {
+    base.parry = 0.03;
   }
 
   // Extract avoidance DR values from table in sc_extra_data.inc
@@ -2339,12 +2346,13 @@ void player_t::init_spells()
     const spell_data_t* s = find_mastery_spell( specialization() );
     if ( s->ok() )
       _mastery = &( s->effectN( 1 ) );
+
+    if (record_healing())
+    {
+      spells.leech = new leech_t(this);
+    }
   }
 
-  if ( record_healing() )
-  {
-    spells.leech = new leech_t( this );
-  }
 }
 
 void player_t::init_gains()

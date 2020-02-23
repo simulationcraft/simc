@@ -865,7 +865,7 @@ struct heal_event_t : public raid_event_t
         }
       };
 
-      raid_heal = new raid_heal_t( name.empty() ? type.c_str() : name.c_str(), sim -> active_player );
+      raid_heal = new raid_heal_t( name.empty() ? type.c_str() : name.c_str(), sim -> target );
       raid_heal -> init();
     }
 

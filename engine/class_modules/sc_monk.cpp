@@ -142,7 +142,7 @@ public:
   struct
   {
     sc_timeline_t stagger_effective_damage_timeline;
-    sc_timeline_t stagger_tick_damage_pct_timeline;
+    sc_timeline_t stagger_damage_pct_timeline;
     sc_timeline_t stagger_pct_timeline;
     luxurious_sample_data_t* stagger_damage;
     luxurious_sample_data_t* stagger_total_damage;
@@ -862,6 +862,7 @@ public:
   void stagger_damage_changed(bool last_tick = false);
   double current_stagger_tick_dmg();
   double current_stagger_tick_dmg_percent();
+  double current_stagger_amount_remains_percent();
   double current_stagger_amount_remains();
   timespan_t current_stagger_dot_remains();
   double stagger_base_value();
@@ -7811,7 +7812,8 @@ void monk_t::collect_resource_timeline_information()
 {
   base_t::collect_resource_timeline_information();
 
-  sample_datas.stagger_tick_damage_pct_timeline.add(sim->current_time(), current_stagger_tick_dmg_percent() * 100.0);
+  sample_datas.stagger_damage_pct_timeline.add(sim->current_time(), current_stagger_amount_remains_percent() * 100.0);
+
   auto stagger_pct_val = stagger_pct(target->level());
   sample_datas.stagger_pct_timeline.add(sim->current_time(), stagger_pct_val * 100.0);
 }
@@ -9103,7 +9105,7 @@ stat_e monk_t::convert_hybrid_stat( stat_e s ) const
 void monk_t::pre_analyze_hook()
 {
   sample_datas.stagger_effective_damage_timeline.adjust(*sim);
-  sample_datas.stagger_tick_damage_pct_timeline.adjust(*sim);
+  sample_datas.stagger_damage_pct_timeline.adjust(*sim);
   sample_datas.stagger_pct_timeline.adjust(*sim);
 
   base_t::pre_analyze_hook();
@@ -10119,6 +10121,11 @@ double monk_t::current_stagger_tick_dmg_percent()
   return current_stagger_tick_dmg() / resources.max[ RESOURCE_HEALTH ];
 }
 
+double monk_t::current_stagger_amount_remains_percent()
+{
+  return current_stagger_amount_remains() / resources.max[RESOURCE_HEALTH];
+}
+
 // monk_t::current_stagger_dot_duration ==================================================
 
 timespan_t monk_t::current_stagger_dot_remains()
@@ -10378,7 +10385,7 @@ void monk_t::merge(player_t& other)
   auto& other_monk = static_cast<const monk_t&>(other);
 
   sample_datas.stagger_effective_damage_timeline.merge(other_monk.sample_datas.stagger_effective_damage_timeline);
-  sample_datas.stagger_tick_damage_pct_timeline.merge(other_monk.sample_datas.stagger_tick_damage_pct_timeline);
+  sample_datas.stagger_damage_pct_timeline.merge(other_monk.sample_datas.stagger_damage_pct_timeline);
   sample_datas.stagger_pct_timeline.merge(other_monk.sample_datas.stagger_pct_timeline);
 }
 
@@ -10416,13 +10423,13 @@ public:
       os << chart_stagger_damage.to_target_div();
       p.sim->add_chart_data(chart_stagger_damage);
 
-      highchart::time_series_t chart_stagger_tick_damage_pct(highchart::build_id(p, "stagger_tick_damage_pct"), *p.sim);
-      chart::generate_actor_timeline(chart_stagger_tick_damage_pct, p, "Stagger tick damage / health %", color::resource_color(RESOURCE_HEALTH),
-        p.sample_datas.stagger_tick_damage_pct_timeline);
-      chart_stagger_tick_damage_pct.set("tooltip.headerFormat", "<b>{point.key}</b> s<br/>");
-      chart_stagger_tick_damage_pct.set("chart.width", "575");
-      os << chart_stagger_tick_damage_pct.to_target_div();
-      p.sim->add_chart_data(chart_stagger_tick_damage_pct);
+      highchart::time_series_t chart_stagger_damage_pct(highchart::build_id(p, "stagger_damage_pct"), *p.sim);
+      chart::generate_actor_timeline(chart_stagger_damage_pct, p, "Stagger pool / health %", color::resource_color(RESOURCE_HEALTH),
+        p.sample_datas.stagger_damage_pct_timeline);
+      chart_stagger_damage_pct.set("tooltip.headerFormat", "<b>{point.key}</b> s<br/>");
+      chart_stagger_damage_pct.set("chart.width", "575");
+      os << chart_stagger_damage_pct.to_target_div();
+      p.sim->add_chart_data(chart_stagger_damage_pct);
 
 
       highchart::time_series_t chart_stagger_pct(highchart::build_id(p, "stagger_pct"), *p.sim);
