@@ -5449,16 +5449,16 @@ void items::shorting_bit_band( special_effect_t& effect )
     {
       aoe         = 0;
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
-      range       = radius;
+      range                     = radius;
     }
 
     void execute() override
     {
       double numTargets = targets_in_range_list( target_list() ).size();
-      if ( numTargets != 0 ) //We only do anything if target in range; we just eat the proc and do nothing if no targets <=8y
+      if ( numTargets !=
+           0 )  // We only do anything if target in range; we just eat the proc and do nothing if no targets <=8y
       {
-
-        size_t index = static_cast< size_t >( rng().range( 0, numTargets ) );
+        size_t index = static_cast<size_t>( rng().range( 0, numTargets ) );
         set_target( targets_in_range_list( target_list() )[ index ] );
 
         proc_t::execute();
@@ -5980,7 +5980,7 @@ void set_bonus::titanic_empowerment( special_effect_t& effect )
       int average_ilvl = ( vita_shard->item_level() + void_shard->item_level() ) / 2;
       buff = make_buff<stat_buff_t>( effect.player, "titanic_empowerment", effect.player->find_spell( 315858 ) );
       const auto& budget = effect.player->dbc.random_property( average_ilvl );
-      double value = budget.p_epic[ 0 ] * buff->data().effectN( 1 ).m_coefficient();
+      double value       = budget.p_epic[ 0 ] * buff->data().effectN( 1 ).m_coefficient();
       buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), value );
     }
 
@@ -6353,7 +6353,7 @@ void corruption::glimpse_of_clarity( special_effect_t& effect )
   buff_t* buff = buff_t::find( effect.player, "glimpse_of_clarity" );
   if ( !buff )
   {
-    buff = make_buff<glimpse_of_clarity_buff_t>( effect );
+    buff               = make_buff<glimpse_of_clarity_buff_t>( effect );
     effect.custom_buff = buff;
 
     auto cb          = new special_effect_t( effect.player );
@@ -6494,8 +6494,20 @@ void corruption::infinite_stars( special_effect_t& effect )
     {
       proc_t::impact( state );
       auto td = player->get_target_data( state->target );
-      if (!player->rng().roll(player->sim->bfa_opts.infinite_stars_miss_chance))
-        td->debuff.infinite_stars->trigger();
+      td->debuff.infinite_stars->trigger();
+    }
+  };
+
+  struct infinite_stars_proc_callback_t : public dbc_proc_callback_t
+  {
+    infinite_stars_proc_callback_t( player_t* p, const special_effect_t& e ) : dbc_proc_callback_t( p, e )
+    {
+    }
+
+    void execute(action_t* a, action_state_t* state) override
+    {
+      if ( !a->player->rng().roll( a->player->sim->bfa_opts.infinite_stars_miss_chance ) )
+        dbc_proc_callback_t::execute( a, state );
     }
   };
 
@@ -6506,7 +6518,7 @@ void corruption::infinite_stars( special_effect_t& effect )
     effect.execute_action = create_proc_action<infinite_stars_t>( "infinite_stars", effect );
 
     effect.spell_id = 317257;
-    new dbc_proc_callback_t( effect.player, effect );
+    new infinite_stars_proc_callback_t( effect.player, effect );
   }
   else
     infinite_stars->scaled_dmg += effect.driver()->effectN( 1 ).average( effect.item );
@@ -6527,7 +6539,7 @@ void corruption::echoing_void( special_effect_t& effect )
 
     void execute( action_t* action, action_state_t* state ) override
     {
-      // Hotfix January 27, 2020  
+      // Hotfix January 27, 2020
       // Echoing Void (Corrupted Effect) can now only trigger from abilities that are on the global cooldown.
       if ( action->trigger_gcd == timespan_t::zero() )
         return;
@@ -6631,7 +6643,7 @@ void corruption::devour_vitality( special_effect_t& effect )
     {
       // TODO: Check what this scales with
     }
-    
+
     double base_da_min( const action_state_t* ) const override
     {
       return player->resources.max[ RESOURCE_HEALTH ] * maxhp_multiplier;
@@ -6887,7 +6899,7 @@ void corruption::twisted_appendage( special_effect_t& effect )
   };
 
   // Save the coefficient before we replace the effect's spell id.
-  double dmg                         = effect.driver()->effectN( 1 ).average( effect.item );
+  double dmg      = effect.driver()->effectN( 1 ).average( effect.item );
   auto spawner_cb = effect.player->callbacks.get_first_of<twisted_appendage_cb_t>();
 
   if ( !spawner_cb )
