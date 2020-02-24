@@ -6949,7 +6949,6 @@ void corruption::lash_of_the_void( special_effect_t& effect )
 }
 
 // Flash of Insight
-// TODO: Confirm the stacks work like this
 void corruption::flash_of_insight( special_effect_t& effect )
 {
   struct flash_of_insight_t : public buff_t
@@ -6960,27 +6959,9 @@ void corruption::flash_of_insight( special_effect_t& effect )
       set_default_value( effect.driver()->effectN( 1 ).percent() );
       add_invalidate( CACHE_INTELLECT );
     }
-
-    void reset() override
+    void execute( int /* stacks */, double value, timespan_t duration ) override
     {
-      buff_t::reset();
-      reverse = false;
-    }
-
-    void bump( int stacks, double value ) override
-    {
-      if ( check() == max_stack() )
-        reverse = true;
-      else
-        buff_t::bump( stacks, value );
-    }
-
-    void decrement( int stacks, double value ) override
-    {
-      if ( check() == 1 )
-        reverse = false;
-      else
-        buff_t::decrement( stacks, value );
+      buff_t::execute( rng().range( 1, max_stack() ) - current_stack, value, duration );
     }
   };
 
