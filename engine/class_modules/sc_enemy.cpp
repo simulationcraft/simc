@@ -104,6 +104,8 @@ struct enemy_t : public player_t
   }
 
   bool taunt( player_t* source ) override;
+
+  void add_tank_heal_raid_event();
 };
 
 
@@ -1358,14 +1360,37 @@ std::string enemy_t::generate_action_list()
   std::string als = "";
 
   // this is the standard Fluffy Pillow action list
-  als += "/auto_attack,damage=24000,attack_speed=1.5,aoe_tanks=1,range=" + util::to_string( 2400 );
-  als += "/melee_nuke,damage=40000,cooldown=30,attack_speed=2.0,aoe_tanks=1";
+  als += "/auto_attack,damage=600000,attack_speed=1.5,aoe_tanks=1,range=" + util::to_string( 2400 );
+  als += "/melee_nuke,damage=1500000,cooldown=15,attack_speed=2.0,aoe_tanks=1";
 
   return als;
 }
 
+void enemy_t::add_tank_heal_raid_event()
+{
+  std::string heal_raid_event = "heal,name=tank_heal,amount=50000,period=0.5,duration=0,player_if=role.tank";
+  sim->raid_events_str += "/" + heal_raid_event;
+  std::string::size_type cut_pt = heal_raid_event.find_first_of(",");
+  auto heal_options = heal_raid_event.substr(cut_pt + 1);
+  auto heal_name = heal_raid_event.substr(0, cut_pt);
+  auto raid_event = raid_event_t::create(sim, heal_name, heal_options);
+
+  if (raid_event->cooldown <= timespan_t::zero())
+  {
+    throw std::invalid_argument("Cooldown not set or negative.");
+  }
+  if (raid_event->cooldown <= raid_event->cooldown_stddev)
+  {
+    throw std::invalid_argument("Cooldown lower than cooldown standard deviation.");
+  }
+
+  sim->print_debug("Successfully created '{}'.", *(raid_event.get()));
+  sim->raid_events.push_back(std::move(raid_event));
+}
+
 void enemy_t::init_action_list()
 {
+
   if ( ! is_add() && is_enemy() )
   {
     // If the action list string is empty, automatically populate it
@@ -1375,8 +1400,12 @@ void enemy_t::init_action_list()
       precombat_list += "/snapshot_stats";
 
       // If targeting an player, use Fluffy Pillow or TMI boss as appropriate
-      if ( ! target -> is_enemy() )
+      if (!target->is_enemy())
+      {
+        add_tank_heal_raid_event();
+
         action_list_str += generate_action_list();
+      }
 
       // Otherwise just auto-attack the heal target
       else if ( sim -> heal_target && this != sim -> heal_target )

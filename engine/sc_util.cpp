@@ -339,6 +339,20 @@ const char* util::role_type_string( role_e role )
   }
 }
 
+const char* util::gcd_haste_type_string(gcd_haste_type gcd_type)
+{
+  switch (gcd_type)
+  {
+  case gcd_haste_type::NONE:    return "none";
+  case gcd_haste_type::HASTE:     return "haste(all)";
+  case gcd_haste_type::SPELL_HASTE:    return "spell_haste";
+  case gcd_haste_type::ATTACK_HASTE:       return "attack_haste";
+  case gcd_haste_type::SPELL_SPEED:      return "spell_speed";
+  case gcd_haste_type::ATTACK_SPEED:      return "attack_speed";
+  default:             return "unknown";
+  }
+}
+
 // parse_role_type ==========================================================
 
 role_e util::parse_role_type( const std::string& name )

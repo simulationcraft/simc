@@ -41,6 +41,8 @@ actions=auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
 actions+=/run_action_list,name=opener,if=variable.opener_done=0
 actions+=/cat_form,if=!buff.cat_form.up
 actions+=/rake,if=buff.prowl.up|buff.shadowmeld.up
+actions+=/variable,name=reaping_delay,value=target.time_to_die,if=variable.reaping_delay=0
+actions+=/cycling_variable,name=reaping_delay,op=min,value=target.time_to_die
 actions+=/call_action_list,name=cooldowns
 actions+=/ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(talent.sabertooth.enabled)
 actions+=/regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down
@@ -57,7 +59,11 @@ actions.cooldowns+=/blood_of_the_enemy,if=buff.tigers_fury.up
 actions.cooldowns+=/feral_frenzy,if=combo_points=0
 actions.cooldowns+=/focused_azerite_beam,if=active_enemies>desired_targets|(raid_event.adds.in>90&energy.deficit>=50)
 actions.cooldowns+=/purifying_blast,if=active_enemies>desired_targets|raid_event.adds.in>60
-actions.cooldowns+=/heart_essence,if=buff.tigers_fury.up
+actions.cooldowns+=/guardian_of_azeroth,if=buff.tigers_fury.up
+actions.cooldowns+=/concentrated_flame,if=buff.tigers_fury.up
+actions.cooldowns+=/ripple_in_space,if=buff.tigers_fury.up
+actions.cooldowns+=/worldvein_resonance,if=buff.tigers_fury.up
+actions.cooldowns+=/reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&variable.reaping_delay>29)|(target.time_to_pct_20>30&variable.reaping_delay>44)
 actions.cooldowns+=/incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)
 actions.cooldowns+=/potion,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))
 actions.cooldowns+=/shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up

@@ -129,6 +129,7 @@ namespace warlock
       ->set_max_stack( 100 );
     debuffs_shadowburn = make_buff(*this, "shadowburn", source->find_spell(17877));
     debuffs_havoc = make_buff( *this, "havoc", source->find_spell( 80240 ) )
+      ->set_cooldown ( 0_ms )
       ->set_stack_change_callback( [ &p ] ( buff_t* b, int, int cur )
       {
         if ( cur == 0 )

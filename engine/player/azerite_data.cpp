@@ -1335,6 +1335,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 300170, special_effects::clockwork_heart       );
   unique_gear::register_special_effect( 300168, special_effects::personcomputer_interface );
   unique_gear::register_special_effect( 317137, special_effects::heart_of_darkness );
+  unique_gear::register_special_effect( 268437, special_effects::impassive_visage );
 
   // Generic Azerite Essences
   //
@@ -1447,6 +1448,21 @@ void register_azerite_target_data_initializers( sim_t* sim )
     else
     {
       td->debuff.condensed_lifeforce = make_buff( *td, "condensed_lifeforce" )
+        ->set_quiet( true );
+    }
+  } );
+
+  sim->register_target_data_initializer( [] ( actor_target_data_t * td ) {
+    auto essence = td->source->find_azerite_essence( "Breath of the Dying" );
+    if ( essence.enabled() )
+    {
+      td->debuff.reaping_flames_tracker = make_buff( *td, "reaping_flames_tracker", td->source->find_spell( 311947 ) )
+        ->set_quiet( true );
+      td->debuff.reaping_flames_tracker->reset();
+    }
+    else
+    {
+      td->debuff.reaping_flames_tracker = make_buff( *td, "reaping_flames_tracker" )
         ->set_quiet( true );
     }
   } );
@@ -3658,6 +3674,7 @@ void clockwork_heart( special_effect_t& effect )
     ticker = make_buff( effect.player, "clockwork_heart_ticker", effect.trigger() )
       ->set_quiet( true )
       ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+      ->set_tick_on_application( true )
       ->set_tick_callback( [clockwork]( buff_t*, int, const timespan_t& ) {
         clockwork->trigger();
       } );
@@ -3737,6 +3754,49 @@ void heart_of_darkness( special_effect_t& effect )
       }
     } );
   }
+}
+
+void impassive_visage(special_effect_t& effect)
+{
+  class impassive_visage_heal_t : public heal_t
+  {
+  public:
+    impassive_visage_heal_t(player_t* p, const spell_data_t* s, double amount) :
+      heal_t("impassive_visage", p, s)
+    {
+      target = p;
+      background = true;
+      base_dd_min = base_dd_max = amount;
+    }
+  };
+
+  class impassive_visage_cb_t : public dbc_proc_callback_t
+  {
+    impassive_visage_heal_t* heal_action;
+  public:
+    impassive_visage_cb_t(const special_effect_t& effect, impassive_visage_heal_t* heal) :
+      dbc_proc_callback_t(effect.player, effect),
+      heal_action(heal)
+    { 
+    }
+
+    void execute(action_t* /* a */, action_state_t* /* state */) override
+    {
+      heal_action->execute();
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell(effect.driver()->name_cstr());
+  if (!power.enabled())
+  {
+    return;
+  } 
+  const spell_data_t* driver = power.spell();
+  const spell_data_t* spell = driver->effectN(1).trigger();
+  const spell_data_t* heal = driver->effectN(1).trigger();
+
+  auto heal_action = new impassive_visage_heal_t(effect.player, heal, power.value());
+  new impassive_visage_cb_t(effect, heal_action);
 }
 
 } // Namespace special effects ends
@@ -5289,9 +5349,12 @@ struct reaping_flames_t : public azerite_essence_major_t
   double lo_hp; // note these are base_value and NOT percent
   double hi_hp;
   double cd_mod;
+  double cd_reset;
+  buff_t* damage_buff;
 
   reaping_flames_t( player_t* p, const std::string& options_str ) :
-    azerite_essence_major_t( p, "reaping_flames", p->find_spell( 310690 ) )
+    azerite_essence_major_t( p, "reaping_flames", p->find_spell( 310690 ) ),
+    damage_buff()
   {
     parse_options( options_str );
     // Damage stored in R1 MINOR
@@ -5299,9 +5362,50 @@ struct reaping_flames_t : public azerite_essence_major_t
 
     may_crit = true;
 
-    lo_hp  = essence.spell_ref( 1u ).effectN( 2 ).base_value();
-    hi_hp  = essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value();
-    cd_mod = -essence.spell_ref( 1u ).effectN( 3 ).base_value();
+    lo_hp    = essence.spell_ref( 1u ).effectN( 2 ).base_value();
+    hi_hp    = essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value();
+    cd_mod   = -essence.spell_ref( 1u ).effectN( 3 ).base_value();
+    cd_reset = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 2 ).base_value();
+  }
+
+  void init() override
+  {
+    azerite_essence_major_t::init();
+
+    if ( essence.rank() < 3 )
+      return;
+
+    damage_buff = buff_t::find( player, "reaping_flames" );
+    if ( !damage_buff )
+    {
+      damage_buff = make_buff( player, "reaping_flames", player->find_spell( 311202 ) )
+        ->set_default_value( essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent() );
+
+      range::for_each( sim->actor_list, [ this ] ( player_t* target )
+      {
+        if ( !target->is_enemy() )
+          return;
+
+        target->callbacks_on_demise.emplace_back( [ this ] ( player_t* enemy )
+        {
+          if ( player->get_target_data( enemy )->debuff.reaping_flames_tracker->check() )
+          {
+            cooldown->adjust( timespan_t::from_seconds( cd_reset ) - cooldown->duration );
+            damage_buff->trigger();
+          }
+        } );
+      } );
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = azerite_essence_major_t::action_multiplier();
+
+    if ( damage_buff )
+      am *= 1.0 + damage_buff->check_value();
+
+    return am;
   }
 
   void execute() override
@@ -5316,6 +5420,12 @@ struct reaping_flames_t : public azerite_essence_major_t
 
     if ( reduce )
       cooldown->adjust( timespan_t::from_seconds ( cd_mod ) );
+
+    if ( damage_buff )
+    {
+      damage_buff->expire();
+      player->get_target_data( target )->debuff.reaping_flames_tracker->trigger();
+    }
   }
 };
 // End Breath of the Dying

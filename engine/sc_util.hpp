@@ -44,6 +44,7 @@ const char* profession_type_string    ( profession_e );
 const char* race_type_string          ( race_e );
 const char* stats_type_string         ( stats_e );
 const char* role_type_string          ( role_e );
+const char* gcd_haste_type_string     (gcd_haste_type);
 const char* resource_type_string      ( resource_e );
 const char* result_type_string        ( result_e type );
 const char* block_result_type_string  ( block_result_e type );

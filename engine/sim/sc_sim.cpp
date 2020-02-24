@@ -1362,6 +1362,7 @@ sim_t::sim_t() :
   tmi_bin_size( 0.5 ),
   requires_regen_event( false ), single_actor_batch( false ),
   progressbar_type( 0 ),
+  allow_experimental_specializations( false ),
   armory_retries( 3 ),
   enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
   target_adds( 0 ), desired_targets( 1 ), enable_taunts( false ),
@@ -3332,6 +3333,8 @@ void sim_t::create_options()
   add_option( opt_bool( "optimize_expressions", optimize_expressions ) );
   add_option( opt_bool( "single_actor_batch", single_actor_batch ) );
   add_option( opt_bool( "progressbar_type", progressbar_type ) );
+  add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations ) );
+  
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
@@ -3665,6 +3668,7 @@ void sim_t::create_options()
   add_option( opt_timespan( "bfa.symbiotic_presence_interval", bfa_opts.symbiotic_presence_interval, 1_s, timespan_t::max() ) );
   add_option( opt_float( "bfa.whispered_truths_offensive_chance", bfa_opts.whispered_truths_offensive_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "bfa.nyalotha", bfa_opts.nyalotha ) );
+  add_option( opt_float( "bfa.infinite_stars_miss_chance", bfa_opts.infinite_stars_miss_chance, 0.0, 1.0 ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

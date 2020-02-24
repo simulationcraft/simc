@@ -200,7 +200,7 @@ heal_t::heal_t( const std::string&  token,
 {
   if ( sim -> heal_target && target == sim -> target )
     target = sim -> heal_target;
-  else if ( target -> is_enemy() )
+  else if (!target || target -> is_enemy() )
     target = p;
 
   weapon_multiplier = 0.0;

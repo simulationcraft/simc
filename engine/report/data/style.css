@@ -452,6 +452,7 @@ ul.params li a:hover {
     max-width: 900px;
     margin-top: 10px;
     margin-bottom: 10px;
+    display: inline-block;
 }
 tr.details .charts {
     padding: 0;

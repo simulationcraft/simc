@@ -528,6 +528,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* blood_of_the_enemy;
     buff_t* condensed_lifeforce;
     buff_t* focused_resolve;
+    buff_t* reaping_flames_tracker;
   } debuff;
 
   struct atd_dot_t
@@ -1040,6 +1041,7 @@ struct sim_t : private sc_thread_t
   bool        single_actor_batch;
   int         progressbar_type;
   int         armory_retries;
+  bool        allow_experimental_specializations;
 
   // Target options
   double      enemy_death_pct;
@@ -1247,6 +1249,8 @@ struct sim_t : private sc_thread_t
     double whispered_truths_offensive_chance = 0.75;
     /// Whether the player is in Ny'alotha or not.
     bool nyalotha = true;
+    /// Chance for Infinite Stars to not hit the primary target (for single target sims)
+    double infinite_stars_miss_chance = 0;
   } bfa_opts;
 
   // Expansion specific data
@@ -4291,7 +4295,7 @@ public:
 
   // Normal methods
   void init_character_properties();
-  void collect_resource_timeline_information();
+  double get_stat_value(stat_e);
   void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void create_talents_numbers();
@@ -4462,6 +4466,7 @@ public:
   virtual void create_actions();
   virtual void init_actions();
   virtual void init_finished();
+  virtual void action_init_finished(action_t&);
   virtual bool verify_use_items() const;
   virtual void reset();
   virtual void combat_begin();
@@ -4625,6 +4630,7 @@ public:
   virtual timespan_t time_to_percent( double percent ) const;
   virtual void cost_reduction_gain( school_e school, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a = nullptr );
+  virtual void collect_resource_timeline_information();
 
   virtual void assess_damage( school_e, result_amount_type, action_state_t* );
   virtual void target_mitigation( school_e, result_amount_type, action_state_t* );

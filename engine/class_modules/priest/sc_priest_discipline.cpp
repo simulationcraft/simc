@@ -156,10 +156,7 @@ struct shadow_word_pain_disc_t final : public priest_spell_t
   {
     double d = priest_spell_t::bonus_ta( state );
 
-    if ( priest().azerite.death_throes.enabled() )
-    {
-      d += priest().azerite.death_throes.value( 1 );
-    }
+    d += get_death_throes_bonus();
 
     return d;
   }
@@ -181,7 +178,7 @@ struct shadow_word_pain_disc_t final : public priest_spell_t
 struct power_word_solace_t final : public priest_spell_t
 {
   power_word_solace_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "power_word_solace", player, player.find_spell( 129250 ) )
+    : priest_spell_t( "power_word_solace", player, player.talents.power_word_solace)
   {
     parse_options( options_str );
 
@@ -214,10 +211,7 @@ struct purge_the_wicked_t final : public priest_spell_t
     {
       double d = priest_spell_t::bonus_ta( state );
 
-      if ( priest().azerite.death_throes.enabled() )
-      {
-        d += priest().azerite.death_throes.value( 1 );
-      }
+      d += get_death_throes_bonus();
 
       return d;
     }
