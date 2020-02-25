@@ -529,7 +529,6 @@ const char* util::player_type_string( player_e type )
     case PLAYER_GUARDIAN: return "guardian";
     case ENEMY:           return "enemy";
     case ENEMY_ADD:       return "add";
-    case TMI_BOSS:        return "tmi_boss";
     case TANK_DUMMY:      return "tank_dummy";
     default:              return "unknown";
   }
@@ -1222,7 +1221,7 @@ const char* util::cache_type_string( cache_e c )
 const char* util::proc_type_string( proc_types type )
 {
   switch ( type )
-  { 
+  {
     case PROC1_KILLED:               return "Killed";
     case PROC1_KILLING_BLOW:         return "KillingBlow";
     case PROC1_MELEE:                return "MeleeSwing";
@@ -1496,7 +1495,7 @@ const char* util::stat_type_wowhead( stat_e stat )
 
     case STAT_WEAPON_DPS:   return "__dps";
 
-    case STAT_ARMOR:             return "armor"; 
+    case STAT_ARMOR:             return "armor";
     case STAT_BONUS_ARMOR:       return "armorbonus";
     case STAT_RESILIENCE_RATING: return "resilRating";
     case STAT_DODGE_RATING:      return "dodgeRating";
@@ -2756,7 +2755,7 @@ std::string util::decode_html( const std::string& input )
       if ( endp != input.c_str() + end )
       {
         // Not everything parsed. Oh well.
-        
+
       }
       utf8::append( codepoint, std::back_inserter( output ) );
     }

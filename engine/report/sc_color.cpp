@@ -209,8 +209,6 @@ rgb class_color( player_e type )
       return color::GREY;
     case HEALING_ENEMY:
       return color::GREY;
-    case TMI_BOSS:
-      return color::GREY;
     case TANK_DUMMY:
       return color::GREY;
     default:

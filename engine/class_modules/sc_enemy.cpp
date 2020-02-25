@@ -18,14 +18,6 @@ enum tank_dummy_e
   TANK_DUMMY_MAX
 };
 
-enum tmi_boss_e
-{
-  TMI_NONE = 0,
-  // TODO : Add more T21 profiles
-  TMI_T19L, TMI_T19N, TMI_T19H, TMI_T19M, TMI_T21, TMI_MAX
-};
-
-
 struct enemy_t : public player_t
 {
   size_t enemy_id;
@@ -297,7 +289,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
 {
   using child_action_type_t = CHILD_ACTION_TYPE;
   using base_t = enemy_action_driver_t<CHILD_ACTION_TYPE>;
- 
+
   int aoe_tanks;
   std::vector<child_action_type_t*> ch_list;
   size_t num_attacks;
@@ -375,7 +367,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
           }
           // remove this element
           rt_list.erase( rt_list.begin() + element );
-          
+
           // infinte loop check
           if ( rt_list.size() == 0 )
             break;
@@ -998,93 +990,6 @@ struct heal_enemy_t : public enemy_t
 };
 
 // ==========================================================================
-// TMI Enemy
-// ==========================================================================
-
-struct tmi_enemy_t : public enemy_t
-{
-  std::string tmi_boss_str;
-  tmi_boss_e tmi_boss_enum;
-
-  tmi_enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID ) :
-    enemy_t( s, n, r, TMI_BOSS ),
-    tmi_boss_str( "none" ),
-    tmi_boss_enum( TMI_NONE )
-  {
-  }
-
-  void create_options() override
-  {
-    add_option( opt_string( "tmi_boss_type", tmi_boss_str ) );
-    enemy_t::create_options();
-  }
-
-  tmi_boss_e convert_tmi_string( const std::string& tmi_string )
-  {
-    // this function translates between the "tmi_boss" option string and the tmi_boss_e enum
-    // eventually plan on using regular expressions here
-    if ( util::str_in_str_ci( tmi_string, "none" ) )
-      return TMI_NONE;
-    if ( util::str_in_str_ci( tmi_string, "T19L" ) )
-      return TMI_T19L;
-    if ( util::str_in_str_ci( tmi_string, "T19N" ) )
-      return TMI_T19N;
-    if ( util::str_in_str_ci( tmi_string, "T19H" ) )
-      return TMI_T19H;
-    if ( util::str_in_str_ci( tmi_string, "T19M" ) )
-      return TMI_T19M;
-    if ( util::str_in_str_ci( tmi_string, "T21" ) )
-      return TMI_T21;
-
-    if ( ! tmi_string.empty() && sim -> debug )
-      sim -> out_debug.printf( "Unknown TMI string input provided: %s", tmi_string.c_str() );
-
-    return TMI_NONE;
-  }
-
-  void init() override
-  {
-    tmi_boss_enum = convert_tmi_string( tmi_boss_str );
-     // if no tmi_boss_type input is given, try parsing the name
-    if ( tmi_boss_enum == TMI_NONE )
-      tmi_boss_enum = convert_tmi_string( name_str );
-    // if we still have no clue, pit them against the worst case
-    if ( tmi_boss_enum == TMI_NONE )
-      tmi_boss_enum = static_cast<tmi_boss_e>( TMI_MAX - 1 );
-  }
-
-  void init_base_stats() override
-  {
-    enemy_t::init_base_stats();
-
-    // override race
-    race = RACE_HUMANOID;
-
-    // override level    
-    true_level = sim -> max_player_level + 3; // fix at max player level
-  }
-
-  std::string generate_action_list() override
-  {
-    // Bosses are (roughly) standardized based on content level. dot damage is 2/15 of melee damage (0.1333 multiplier)
-    // TODO : add more T21 profiles (N/H/M) and replace estimated damage with actual damage.
-    std::string als = "";
-    const int num_bosses = TMI_MAX;
-    assert( tmi_boss_enum < TMI_MAX );
-    int aa_damage[ num_bosses ] = { 0, // L    N     H      M      T21
-                                        5000, 10000, 20000, 30000, 40000// T18 -- L-H values are estimates
-                                  };
-
-    als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
-    als += "/spell_nuke,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 1.5 ) + ",cooldown=90";
-    als += "/melee_nuke,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 2 ) + ",cooldown=60";
-    als += "/spell_dot,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 2 / 15 ) + ",tick_time=2,dot_duration=30,aoe_tanks=1,if=!ticking";
-
-    return als;
-  }
-};
-
-// ==========================================================================
 // Tank Dummy Enemy
 // ==========================================================================
 
@@ -1128,7 +1033,7 @@ struct tank_dummy_enemy_t : public enemy_t
   void init() override
   {
     tank_dummy_enum = convert_tank_dummy_string( tank_dummy_str );
-     // if no tmi_boss_type input is given, try parsing the name
+     // Try parsing the name
     if ( tank_dummy_enum == TANK_DUMMY_NONE )
       tank_dummy_enum = convert_tank_dummy_string( name_str );
     // if we still have no clue, pit them against the worst case
@@ -1158,7 +1063,7 @@ struct tank_dummy_enemy_t : public enemy_t
       default:
         break;
     }
-    
+
     initial.armor_coeff = dummy_armor_coeff;
   }
 
@@ -1399,8 +1304,8 @@ void enemy_t::init_action_list()
       std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
       precombat_list += "/snapshot_stats";
 
-      // If targeting an player, use Fluffy Pillow or TMI boss as appropriate
-      if (!target->is_enemy())
+      // If targeting an player, use Fluffy Pillow or Tank Dummy boss as appropriate
+      if ( !target->is_enemy() )
       {
         add_tank_heal_raid_event();
 
@@ -1791,23 +1696,6 @@ struct heal_enemy_module_t : public module_t
   void combat_end  ( sim_t* ) const override {}
 };
 
-// TMI ENEMY MODULE INTERFACE ==============================================
-
-struct tmi_enemy_module_t : public module_t
-{
-  tmi_enemy_module_t() : module_t( TMI_BOSS ) {}
-
-  player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const override
-  {
-    auto  p = new tmi_enemy_t( sim, name );
-    return p;
-  }
-  bool valid() const override { return true; }
-  void init        ( player_t* ) const override {}
-  void combat_begin( sim_t* ) const override {}
-  void combat_end  ( sim_t* ) const override {}
-};
-
 // TANK DUMMY ENEMY MODULE INTERFACE ==============================================
 
 struct tank_dummy_enemy_module_t : public module_t
@@ -1836,12 +1724,6 @@ const module_t* module_t::enemy()
 const module_t* module_t::heal_enemy()
 {
   static heal_enemy_module_t m = heal_enemy_module_t();
-  return &m;
-}
-
-const module_t* module_t::tmi_enemy()
-{
-  static tmi_enemy_module_t m = tmi_enemy_module_t();
   return &m;
 }
 

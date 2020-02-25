@@ -1664,7 +1664,6 @@ struct module_t
   static const module_t* warlock();
   static const module_t* warrior();
   static const module_t* enemy();
-  static const module_t* tmi_enemy();
   static const module_t* tank_dummy_enemy();
   static const module_t* heal_enemy();
 
@@ -1685,7 +1684,6 @@ struct module_t
       case WARLOCK:      return warlock();
       case WARRIOR:      return warrior();
       case ENEMY:        return enemy();
-      case TMI_BOSS:     return tmi_enemy();
       case TANK_DUMMY:   return tank_dummy_enemy();
       default: break;
     }
@@ -4284,7 +4282,7 @@ public:
 
   // Static methods
   static player_t* create( sim_t* sim, const player_description_t& );
-  static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == TMI_BOSS || t == TANK_DUMMY; }
+  static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == TANK_DUMMY; }
   static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
 
 

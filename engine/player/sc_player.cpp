@@ -1482,7 +1482,7 @@ void player_t::init_base_stats()
   }
 
   // Only Warriors and Paladins (and enemies) can block, defaults to 0
-  if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TMI_BOSS || type == TANK_DUMMY )
+  if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TANK_DUMMY )
   {
     // Set block reduction to 0 for warrior/paladin because it's computed in composite_block_reduction()
     base.block_reduction = 0;
@@ -1508,7 +1508,7 @@ void player_t::init_base_stats()
   {
     base.parry = 0.03 + ( dbc.race_base( race ).strength + dbc.attribute_base( type, level() ).strength ) * base.parry_per_strength;
   }
-  else if (type == ENEMY || type == TMI_BOSS || type == TANK_DUMMY)
+  else if ( type == ENEMY || type == TANK_DUMMY )
   {
     base.parry = 0.03;
   }
