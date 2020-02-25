@@ -1,4 +1,4 @@
-SimulationCraft 830-02 for World of Warcraft 8.3.0 Live (wow build 33051, git build bfa-dev 371efb9)
+SimulationCraft 830-02 for World of Warcraft 8.3.0 Live (wow build 33051)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -139,7 +139,7 @@ Name             : Rejuvenation (id=774) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 10.5% Base Mana (0) (id=95)
+Resource         : 10% Base Mana (0) (id=95) [Hotfixed: Percent Cost (10.5 -> 10)]
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3943,7 +3943,7 @@ Name             : Efflorescence (id=145205) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 21.6% Base Mana (0) (id=9240)
+Resource         : 17% Base Mana (0) (id=9240) [Hotfixed: Percent Cost (21.6 -> 17)]
 Spell Level      : 70
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4253,7 +4253,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Periodic effect can crit (265)
 Effects          :
 #1 (id=220365)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.41000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Hotfixed: SP Coefficient (0.37 -> 0.41)
 #2 (id=709927)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01200 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc740
