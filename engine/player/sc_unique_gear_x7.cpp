@@ -6721,10 +6721,10 @@ void corruption::void_ritual( special_effect_t& effect )
   if ( !buff )
   {
     buff = create_buff<stat_buff_t>( effect.player, "the_end_is_coming", effect.player->find_spell( 316823 ) )
-               ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() )
-               ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() )
-               ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() )
-               ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
+               ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.player ) )
+               ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.player ) )
+               ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.player ) )
+               ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 
     // TODO: Confirm how this works when you get a proc while you already have the buff
     buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
@@ -6736,10 +6736,10 @@ void corruption::void_ritual( special_effect_t& effect )
     new void_ritual_cb_t( effect );
   }
   else
-    buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).base_value() )
-        ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).base_value() )
-        ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).base_value() )
-        ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).base_value() );
+    buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.player ) )
+        ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.player ) )
+        ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.player ) )
+        ->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
 }
 
 // Searing Flames
