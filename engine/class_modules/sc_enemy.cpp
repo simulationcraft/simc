@@ -1047,18 +1047,19 @@ struct tank_dummy_enemy_t : public enemy_t
 
     double dummy_armor_coeff = dbc.armor_mitigation_constant( level() );
 
-    // Max level enemies have different K values based on difficulty, changes when new tier is released and not provided in spelldata
-    // 8.1 and 8.1.5 (BoD + Crucible) K values here
+    // Max level enemies have different armor coefficient based on the difficulty setting and the area they're fought in
+    // New values are added when a new tier is released
+    // 8.3 values for Mythic/M+ Dungeons (_Dungeon setting) and Normal/Mythic Ny'alotha (_Raid/_Mythic setting) here
     switch ( tank_dummy_enum )
     {
       case TANK_DUMMY_DUNGEON:
-        dummy_armor_coeff = 8467.2;
+        dummy_armor_coeff = 14282.1;
         break;
       case TANK_DUMMY_RAID:
-        dummy_armor_coeff = 9355.5;
+        dummy_armor_coeff = 14282.1;
         break;
       case TANK_DUMMY_MYTHIC:
-        dummy_armor_coeff = 11478.6;
+        dummy_armor_coeff = 17986.5;
         break;
       default:
         break;
@@ -1091,9 +1092,9 @@ struct tank_dummy_enemy_t : public enemy_t
   std::string generate_action_list() override
   {
     std::string als = "";
-    int aa_damage[ 5 ] = { 0, 48000, 90000, 120000, 240000 }; // NONE, WEAK, DUNGEON, RAID, MYTHIC
-    int aa_damage_var[ 5 ] = { 0, 4800, 9000, 12000, 24000 };
-    int dummy_strike_damage[ 5 ] = { 0, 80000, 150000, 200000, 400000 }; // Base melee nuke damage
+    int aa_damage[ 5 ] = { 0, 100000, 200000, 250000, 500000 }; // NONE, WEAK, DUNGEON, RAID, MYTHIC
+    int aa_damage_var[ 5 ] = { 0, 8000, 20000, 25000, 50000 };
+    int dummy_strike_damage[ 5 ] = { 0, 250000, 500000, 625000, 1250000 }; // Base melee nuke damage
 
     als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_enum ] ) + ",range=" + util::to_string( aa_damage_var[ tank_dummy_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
     als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_enum ] ) + ",range=0,attack_speed=2,cooldown=30,aoe_tanks=1";
@@ -1191,6 +1192,9 @@ void enemy_t::init_defense()
   collected_data.health_changes_tmi.collect = false;
   collected_data.health_changes.collect = false;
 
+  // Default fluffy pillow armor coefficient, set to Heroic Ny'alotha armor coefficient
+  initial.armor_coeff = 16002.0;
+
   if ( ( total_gear.armor ) <= 0 )
   {
     double& a = initial.stats.armor;
@@ -1265,11 +1269,13 @@ std::string enemy_t::generate_action_list()
   std::string als = "";
 
   // this is the standard Fluffy Pillow action list
-  als += "/auto_attack,damage=600000,attack_speed=1.5,aoe_tanks=1,range=" + util::to_string( 2400 );
-  als += "/melee_nuke,damage=1500000,cooldown=15,attack_speed=2.0,aoe_tanks=1";
+  als += "/auto_attack,damage=400000,attack_speed=1.5,aoe_tanks=1,range=" + util::to_string( 25000 );
+  als += "/melee_nuke,damage=1000000,cooldown=15,attack_speed=2.0,aoe_tanks=1";
 
   return als;
 }
+
+// enemy_t::add_tank_heal_raid_event() ======================================
 
 void enemy_t::add_tank_heal_raid_event()
 {
