@@ -5522,14 +5522,14 @@ void formless_void( special_effect_t& effect )
   if ( !buff )
   {
     auto primary = essence.spell_ref( 1u, essence_spell::BASE, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
-    primary *= 1 + essence.spell_ref( 2u, essence_spell::UPGRADE ).effectN( 1 ).percent();
+    primary *= 1 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
 
     stat_buff_t* stat_buff = make_buff<stat_buff_t>( effect.player, "symbiotic_presence", effect.player->find_spell( 312915 ) )
       ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), primary );
 
     if ( essence.rank() >= 3 )
     {
-      stat_buff -> add_stat( STAT_HASTE_RATING, essence.spell_ref( 3u, essence_spell::UPGRADE ).effectN( 1 ).average( essence.item() ) );
+      stat_buff -> add_stat( STAT_HASTE_RATING, essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average( essence.item() ) );
     }
 
     buff = stat_buff;
