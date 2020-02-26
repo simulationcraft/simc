@@ -156,7 +156,7 @@ void to_json( JsonOutput root, const buff_t* b )
 void buffs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
-  range::for_each( p.buff_list, [ &root]( const buff_t* b ) {
+  range::for_each( p.report_information.dynamic_buffs, [ &root]( const buff_t* b ) {
     if ( b -> avg_start.sum() == 0 )
     {
       return;

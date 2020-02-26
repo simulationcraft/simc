@@ -7247,6 +7247,9 @@ void death_knight_t::init_spells()
   // Generic
   spec.plate_specialization = find_specialization_spell( "Plate Specialization" );
   spec.death_knight         = find_spell( 137005 ); // "Death Knight" passive
+  // Veteran of the Third and Fourth War are identical, Third's data is used for the generic effect
+  spec.veteran_of_the_third_war = find_spell( 48263 );
+
   // Shared
   spec.icebound_fortitude   = find_specialization_spell( "Icebound Fortitude" );
   spec.death_and_decay      = find_specialization_spell( "Death and Decay" );
@@ -7254,7 +7257,6 @@ void death_knight_t::init_spells()
 
   // Blood
   spec.blood_death_knight       = find_specialization_spell( "Blood Death Knight" );
-  spec.veteran_of_the_third_war = find_specialization_spell( "Veteran of the Third War" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.blood_boil               = find_specialization_spell( "Blood Boil" );
   spec.crimson_scourge          = find_specialization_spell( "Crimson Scourge" );
@@ -7655,7 +7657,7 @@ void death_knight_t::default_apl_frost()
   default_apl_dps_precombat();
 
   precombat -> add_action( "use_item,name=azsharas_font_of_power" );
-  precombat -> add_action( "variable,name=other_on_use_equipped,value=(equipped.notorious_gladiators_badge|equipped.sinister_gladiators_badge|equipped.sinister_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.notorious_gladiators_medallion|equipped.ashvanes_razor_coral)" );
+  precombat -> add_action( "variable,name=other_on_use_equipped,value=(equipped.notorious_gladiators_badge|equipped.corrupted_gladiators_badge|equipped.corrupted_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.notorious_gladiators_medallion|equipped.ashvanes_razor_coral)" );
 
   def -> add_action( "auto_attack" );
 
@@ -7688,7 +7690,7 @@ void death_knight_t::default_apl_frost()
   essences -> add_action( "ripple_in_space,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
   essences -> add_action( "memory_of_lucid_dreams,if=buff.empower_rune_weapon.remains<5&buff.breath_of_sindragosa.up|(rune.time_to_2>gcd&runic_power<50)" );
   essences -> add_action( "reaping_flames" );
-	
+
   // On-use items
   cooldowns -> add_action( "use_item,name=azsharas_font_of_power,if=(cooldown.empowered_rune_weapon.ready&!variable.other_on_use_equipped)|(cooldown.pillar_of_frost.remains<=10&variable.other_on_use_equipped)" );
   cooldowns -> add_action( "use_item,name=lurkers_insidious_gift,if=talent.breath_of_sindragosa.enabled&((cooldown.pillar_of_frost.remains<=10&variable.other_on_use_equipped)|(buff.pillar_of_frost.up&!variable.other_on_use_equipped))|(buff.pillar_of_frost.up&!talent.breath_of_sindragosa.enabled)" );
@@ -7720,13 +7722,13 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&talent.obliteration.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.1.time_to_die<20" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=(cooldown.pillar_of_frost.ready|target.1.time_to_die<20)&talent.breath_of_sindragosa.enabled&runic_power>60" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.icecap.enabled&rune<3" );
-	
+
   // Cold Heart and Frostwyrm's Fury
   cooldowns -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.1.time_to_die<=gcd)" );
   cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.pillar_of_frost.up&azerite.icy_citadel.rank<=1&(buff.pillar_of_frost.remains<=gcd|buff.unholy_strength.remains<=gcd&buff.unholy_strength.up))" );
   cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.icy_citadel.up&!talent.icecap.enabled&(buff.unholy_strength.up|buff.icy_citadel.remains<=gcd))|buff.icy_citadel.up&buff.icy_citadel.remains<=gcd&talent.icecap.enabled&buff.pillar_of_frost.up" );
   cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=target.1.time_to_die<gcd|(target.1.time_to_die<cooldown.pillar_of_frost.remains&buff.unholy_strength.up)" );
-	
+
   // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>5&target.1.time_to_die<gcd", "Cold heart conditions" );
   cold_heart -> add_action( this, "Chains of Ice", "if=(buff.seething_rage.remains<gcd)&buff.seething_rage.up" );
@@ -7796,7 +7798,7 @@ void death_knight_t::default_apl_frost()
   standard -> add_action( this, "Frost Strike" );
   standard -> add_talent( this, "Horn of Winter" );
   standard -> add_action( "arcane_torrent" );
-	
+
   // AoE Rotation
   aoe -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|(azerite.frozen_tempest.rank&spell_targets.remorseless_winter>=3&!buff.rime.up)", "AoE Rotation" );
   aoe -> add_talent( this, "Glacial Advance", "if=talent.frostscythe.enabled" );
@@ -7887,10 +7889,10 @@ void death_knight_t::default_apl_unholy()
   essences -> add_action( "reaping_flames" );
 
   cooldowns -> add_action( this, "Army of the Dead" );
-  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4" );
+  cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&(active_enemies>=2|!essence.vision_of_perfection.enabled|essence.vision_of_perfection.enabled&(talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains<=3|!talent.unholy_frenzy.enabled))" );
   cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists|raid_event.adds.in>15" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
-  cooldowns -> add_talent( this, "Unholy Frenzy", "if=essence.vision_of_perfection.enabled|(essence.condensed_lifeforce.enabled&pet.apoc_ghoul.active)|debuff.festering_wound.stack<4&!(equipped.ramping_amplitude_gigavolt_engine|azerite.magus_of_the_dead.enabled)|cooldown.apocalypse.remains<2&(equipped.ramping_amplitude_gigavolt_engine|azerite.magus_of_the_dead.enabled)" );
+  cooldowns -> add_talent( this, "Unholy Frenzy", "if=essence.vision_of_perfection.enabled&pet.apoc_ghoul.active|debuff.festering_wound.stack<4&(!azerite.magus_of_the_dead.enabled|azerite.magus_of_the_dead.enabled&pet.apoc_ghoul.active)" );
   cooldowns -> add_talent( this, "Unholy Frenzy", "if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))" );
   cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.time_to_die<8&target.time_to_die>4" );
   cooldowns -> add_talent( this, "Soul Reaper", "if=(!raid_event.adds.exists|raid_event.adds.in>20)&rune<=(1-buff.unholy_frenzy.up)" );
@@ -7900,10 +7902,10 @@ void death_knight_t::default_apl_unholy()
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<14&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&!variable.pooling_for_gargoyle" );
   generic -> add_action( this, "Death and Decay", "if=talent.pestilence.enabled&cooldown.apocalypse.remains" );
   generic -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
-  generic -> add_action( this, "Scourge Strike", "if=((debuff.festering_wound.up&cooldown.apocalypse.remains>5)|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
-  generic -> add_talent( this, "Clawing Shadows", "if=((debuff.festering_wound.up&cooldown.apocalypse.remains>5)|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
+  generic -> add_action( this, "Scourge Strike", "if=((debuff.festering_wound.up&(cooldown.apocalypse.remains>5&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled)|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains>6))|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
+  generic -> add_talent( this, "Clawing Shadows", "if=((debuff.festering_wound.up&(cooldown.apocalypse.remains>5&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled)|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains>6))|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<20&!variable.pooling_for_gargoyle" );
-  generic -> add_action( this, "Festering Strike", "if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&(cooldown.apocalypse.remains<3&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains<7))|debuff.festering_wound.stack<1&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
   generic -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
 
   // Generic AOE actions to be done

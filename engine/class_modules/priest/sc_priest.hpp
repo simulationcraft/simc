@@ -1256,6 +1256,21 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
+  double get_death_throes_bonus() const
+  {
+    if ( priest().azerite.death_throes.enabled() )
+    {
+      auto value = priest().azerite.death_throes.value( 1 );
+      if ( priest().specs.discipline_priest->ok() )
+      {
+        value *= ( 100.0 + priest().specs.discipline_priest->effectN( 8 ).base_value() ) / 100.0;
+      }
+      return value;
+    }
+
+    return 0.0;
+  }
+
   void assess_damage( result_amount_type type, action_state_t* s ) override
   {
     base_t::assess_damage( type, s );

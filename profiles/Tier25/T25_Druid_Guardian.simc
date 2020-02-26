@@ -1,0 +1,105 @@
+druid="T25_Druid_Guardian"
+source=default
+spec=guardian
+level=120
+race=troll
+role=tank
+position=front
+talents=1000131
+azerite_essences=12:4/13:3/32:3/37:3
+
+# Default consumables
+potion=focused_resolve
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/memory_of_lucid_dreams
+actions.precombat+=/bear_form
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=essences
+actions+=/call_action_list,name=cleave,if=active_enemies<=2
+actions+=/call_action_list,name=multi,if=active_enemies>=3
+
+actions.cleave=maul,if=rage.deficit<=10
+actions.cleave+=/ironfur,if=cost<=0
+actions.cleave+=/pulverize,target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks
+actions.cleave+=/moonfire,target_if=!dot.moonfire.ticking
+actions.cleave+=/mangle,if=dot.thrash_bear.ticking
+actions.cleave+=/moonfire,target_if=buff.galactic_guardian.up&active_enemies=1|dot.moonfire.refreshable
+actions.cleave+=/maul
+actions.cleave+=/thrash
+actions.cleave+=/swipe
+
+actions.cooldowns=potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/arcane_torrent
+actions.cooldowns+=/lights_judgment
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/bag_of_tricks
+actions.cooldowns+=/barkskin,if=buff.bear_form.up
+actions.cooldowns+=/lunar_beam,if=buff.bear_form.up
+actions.cooldowns+=/bristling_fur,if=buff.bear_form.up
+actions.cooldowns+=/incarnation,if=(dot.moonfire.ticking|active_enemies>1)&dot.thrash_bear.ticking
+actions.cooldowns+=/use_item,name=ashvanes_razor_coral,if=((equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains>25&debuff.razor_coral_debuff.down)|debuff.razor_coral_debuff.down|(debuff.razor_coral_debuff.up&debuff.conductive_ink_debuff.up&target.time_to_pct_30<=2)|(debuff.razor_coral_debuff.up&time_to_die<=20))
+actions.cooldowns+=/use_item,effect_name=cyclotronic_blast
+actions.cooldowns+=/use_items
+
+actions.essences=concentrated_flame,if=essence.the_crucible_of_flame.major&((!dot.concentrated_flame_burn.ticking&!action.concentrated_flame_missile.in_flight)^time_to_die<=7)
+actions.essences+=/anima_of_death,if=essence.anima_of_life_and_death.major
+actions.essences+=/memory_of_lucid_dreams,if=essence.memory_of_lucid_dreams.major
+actions.essences+=/worldvein_resonance,if=essence.worldvein_resonance.major
+actions.essences+=/ripple_in_space,if=essence.ripple_in_space.major
+
+actions.multi=maul,if=essence.conflict_and_strife.major&!buff.sharpened_claws.up
+actions.multi+=/ironfur,if=(rage>=cost&azerite.layered_mane.enabled)|rage.deficit<10
+actions.multi+=/thrash,if=(buff.incarnation.up&active_enemies>=4)|cooldown.thrash_bear.up
+actions.multi+=/mangle,if=buff.incarnation.up&active_enemies=3&dot.thrash_bear.ticking
+actions.multi+=/moonfire,if=dot.moonfire.refreshable&active_enemies<=4
+actions.multi+=/swipe,if=buff.incarnation.down
+
+head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=44/459/582/241/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+shoulders=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517/4775,azerite_powers=219/21/582/241/13
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+chest=darkheart_robe,id=174131,bonus_id=4824/1517/4775,azerite_powers=15/30/582/241/13
+wrists=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517
+hands=chitinspine_gloves,id=174137,bonus_id=4824/1517/6551
+waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517
+legs=macabre_ritual_pants,id=174143,bonus_id=4824/1517
+feet=boots_of_manifest_shadow,id=174141,bonus_id=4824/1517
+finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_versatility
+finger2=voidetched_band,id=174531,bonus_id=4824/1517,enchant=accord_of_versatility
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket2=torment_in_a_jar,id=173943,bonus_id=4824/1517
+main_hand=qwor_nlyeth,id=174106,bonus_id=4824/1517/6550,enchant=force_multiplier
+
+# Gear Summary
+# gear_ilvl=478.20
+# gear_agility=10246
+# gear_stamina=19580
+# gear_crit_rating=640
+# gear_haste_rating=1243
+# gear_mastery_rating=1099
+# gear_versatility_rating=1232
+# gear_corruption=95
+# gear_corruption_resistance=50
+# gear_armor=3834

@@ -9,10 +9,10 @@ T25_Death_Knight_Unholy.simc
 T25_Demon_Hunter_Havoc.simc
 T25_Demon_Hunter_Vengeance.simc
 
-# T25_Druid_Balance.simc
-# T25_Druid_Feral.simc
+T25_Druid_Balance.simc
+T25_Druid_Feral.simc
 # T25_Druid_Restoration.simc
-# T25_Druid_Guardian.simc
+T25_Druid_Guardian.simc
 
 T25_Hunter_Beast_Mastery.simc
 T25_Hunter_Marksmanship.simc
@@ -26,7 +26,7 @@ T25_Monk_Brewmaster.simc
 T25_Monk_Windwalker.simc
 
 T25_Paladin_Protection.simc
-# T25_Paladin_Retribution.simc
+T25_Paladin_Retribution.simc
 
 T25_Priest_Shadow.simc
 
@@ -44,4 +44,4 @@ T25_Warlock_Destruction.simc
 
 T25_Warrior_Arms.simc
 T25_Warrior_Fury.simc
-# T25_Warrior_Protection.simc
+T25_Warrior_Protection.simc

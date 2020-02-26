@@ -139,6 +139,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
       .third_quartile( data.third_quartile )
       .max( data.max )
       .stddev( data.std_dev )
+      .mean_stddev( data.mean_std_dev )
       .iterations( progress.current_iterations );
   } );
 
@@ -948,6 +949,8 @@ void profilesets_t::output_json( const sim_t& sim, js::JsonOutput& root ) const
     obj[ "min" ] = result.min();
     obj[ "max" ] = result.max();
     obj[ "stddev" ] = result.stddev();
+    obj["mean_stddev"] = result.mean_stddev();
+    obj["mean_error"] = result.mean_stddev() * sim.confidence_estimator;
 
     if ( result.median() != 0 )
     {
@@ -971,6 +974,8 @@ void profilesets_t::output_json( const sim_t& sim, js::JsonOutput& root ) const
         obj2[ "min" ] = result.min();
         obj2[ "max" ] = result.max();
         obj2[ "stddev" ] = result.stddev();
+        obj2[ "mean_stddev" ] = result.mean_stddev();
+        obj2[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
 
         if ( result.median() != 0 )
         {
@@ -1209,7 +1214,7 @@ void create_options( sim_t* sim )
 statistical_data_t collect( const extended_sample_data_t& c )
 {
   return { c.min(), c.percentile( 0.25 ), c.percentile( 0.5 ), c.mean(),
-           c.percentile( 0.75 ), c.max(), c.std_dev };
+           c.percentile( 0.75 ), c.max(), c.std_dev, c.mean_std_dev };
 }
 
 statistical_data_t metric_data( const player_t* player, scale_metric_e metric )

@@ -952,6 +952,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  "<li><span class=\"label\">range:</span>%.1f</li>\n"
                  "<li><span class=\"label\">travel_speed:</span>%.4f</li>\n"
                  "<li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
+                 "<li><span class=\"label\">gcd_type:</span>%s</li>\n"
                  "<li><span class=\"label\">min_gcd:</span>%.4f</li>\n"
                  "<li><span class=\"label\">base_cost:</span>%.1f</li>\n"
                  "<li><span class=\"label\">secondary_cost:</span>%.1f</li>\n"
@@ -970,6 +971,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  a->range,
                  a->travel_speed,
                  a->trigger_gcd.total_seconds(),
+                 util::gcd_haste_type_string(a->gcd_type),
                  a->min_gcd.total_seconds(),
                  a->base_costs[ a->current_resource() ],
                  a->secondary_costs[ a->current_resource() ],
@@ -1289,6 +1291,33 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       {
         item_sim_desc += "<br/>";
         item_sim_desc += s.str();
+      }
+    }
+
+    {
+      std::stringstream s;
+      for ( int i = 0; i < MAX_ITEM_EFFECT; i++ )
+      {
+        int id = item.parsed.data.id_spell[ i ];
+        if ( id )
+        {
+          if ( !s.str().empty() )
+            s << ", ";
+
+          s << util::item_spell_trigger_string( static_cast<item_spell_trigger_type>( item.parsed.data.trigger_spell[ i ] ) ) << ": ";
+          auto spell = item.player->find_spell( id );
+          auto decorator = report::spell_data_decorator_t( item.player, spell );
+          decorator.item( item );
+          s << decorator.decorate();
+        }
+      }
+
+      if ( !s.str().empty() )
+      {
+        item_sim_desc += "<br/>";
+        item_sim_desc += "item effects: { ";
+        item_sim_desc += s.str();
+        item_sim_desc += " }";
       }
     }
 

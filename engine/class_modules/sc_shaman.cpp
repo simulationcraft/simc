@@ -849,7 +849,7 @@ struct resonance_totem_buff_t : public buff_t
     set_duration( p->talent.totem_mastery->effectN( 1 ).trigger()->duration() );
     set_period( s_data->effectN( 1 ).period() );
 
-    set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) {
+    set_tick_callback( [ p ]( buff_t* b, int, const timespan_t& ) {
       double g = b->data().effectN( 1 ).base_value();
       p->trigger_maelstrom_gain( g, p->gain.resonance_totem );
     } );
@@ -907,7 +907,7 @@ struct roiling_storm_buff_driver_t : public buff_t
 
     if ( p->azerite.roiling_storm.ok() )
     {
-      set_tick_callback( [p]( buff_t*, int, const timespan_t& ) {
+      set_tick_callback( [ p ]( buff_t*, int, const timespan_t& ) {
         p->buff.stormbringer->trigger( p->buff.stormbringer->max_stack() );
         p->cooldown.strike->reset( true );
       } );
@@ -1026,7 +1026,7 @@ struct ascendance_buff_t : public buff_t
       lava_burst( nullptr )
   {
     set_trigger_spell( p->talent.ascendance );
-    set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) {
+    set_tick_callback( [ p ]( buff_t* b, int, const timespan_t& ) {
       double g = b->data().effectN( 4 ).base_value();
       p->trigger_maelstrom_gain( g, p->gain.ascendance );
     } );
@@ -2062,7 +2062,7 @@ struct pet_action_t : public T_ACTION
     if ( !this->player->sim->report_pets_separately )
     {
       auto it = range::find_if( p()->o()->pet_list,
-                                [this]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+                                [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
 
       if ( it != p()->o()->pet_list.end() && this->player != *it )
       {
@@ -5095,11 +5095,18 @@ void trigger_elemental_blast_proc( shaman_t* p )
 {
   unsigned b = static_cast<unsigned>( p->rng().range( 0, 3 ) );
 
-  // EB can no longer proc the same buff twice
-  while ( ( b == 0 && p->buff.elemental_blast_crit->check() ) || ( b == 1 && p->buff.elemental_blast_haste->check() ) ||
-          ( b == 2 && p->buff.elemental_blast_mastery->check() ) )
+  // if for some reason (Ineffable Truth, corruption) Elemental Blast can trigger four times, just let it overwrite
+  // something
+  if ( !p->buff.elemental_blast_crit->check() && !p->buff.elemental_blast_haste->check() &&
+       !p->buff.elemental_blast_mastery->check() )
   {
-    b = static_cast<unsigned>( p->rng().range( 0, 3 ) );
+    // EB can no longer proc the same buff twice
+    while ( ( b == 0 && p->buff.elemental_blast_crit->check() ) ||
+            ( b == 1 && p->buff.elemental_blast_haste->check() ) ||
+            ( b == 2 && p->buff.elemental_blast_mastery->check() ) )
+    {
+      b = static_cast<unsigned>( p->rng().range( 0, 3 ) );
+    }
   }
 
   if ( b == 0 )
@@ -6776,11 +6783,11 @@ std::unique_ptr<expr_t> shaman_t::create_expression( const std::string& name )
 
     if ( util::str_compare_ci( splits[ 2 ], "active" ) )
     {
-      return make_fn_expr( name, [p]() { return static_cast<double>( !p->is_sleeping() ); } );
+      return make_fn_expr( name, [ p ]() { return static_cast<double>( !p->is_sleeping() ); } );
     }
     else if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
     {
-      return make_fn_expr( name, [p]() { return p->expiration->remains().total_seconds(); } );
+      return make_fn_expr( name, [ p ]() { return p->expiration->remains().total_seconds(); } );
     }
     else
     {
@@ -6801,7 +6808,7 @@ std::unique_ptr<expr_t> shaman_t::create_expression( const std::string& name )
 
     if ( util::str_compare_ci( splits[ 1 ], "active" ) )
     {
-      return make_fn_expr( name, [this]() {
+      return make_fn_expr( name, [ this ]() {
         if ( talent.elemental_spirits->ok() )
         {
           return pet.fire_wolves.n_active_pets() + pet.frost_wolves.n_active_pets() +
@@ -6834,7 +6841,7 @@ std::unique_ptr<expr_t> shaman_t::create_expression( const std::string& name )
         }
       };
 
-      return make_fn_expr( name, [this, &max_remains_fn]() {
+      return make_fn_expr( name, [ this, &max_remains_fn ]() {
         if ( talent.elemental_spirits->ok() )
         {
           std::vector<pet_t*> max_remains;
@@ -7833,7 +7840,7 @@ void shaman_t::create_buffs()
                           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                           ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
                           ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                          ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) {
+                          ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
                             assert( action.earthen_rage );
                             action.earthen_rage->set_target( recent_target );
                             action.earthen_rage->execute();
@@ -7891,7 +7898,7 @@ void shaman_t::create_buffs()
   buff.thundercharge = make_buff( this, "thundercharge", find_spell( 204366 ) )
                            ->set_cooldown( timespan_t::zero() )
                            ->set_default_value( find_spell( 204366 )->effectN( 1 ).percent() )
-                           ->set_stack_change_callback( [this]( buff_t*, int, int ) {
+                           ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
                              range::for_each( ability_cooldowns, []( cooldown_t* cd ) {
                                if ( cd->down() )
                                {
@@ -7934,7 +7941,7 @@ void shaman_t::create_buffs()
                           ->set_activated( false )
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
   buff.fury_of_air = make_buff( this, "fury_of_air", talent.fury_of_air )
-                         ->set_tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
+                         ->set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
                            action.fury_of_air->set_target( target );
                            action.fury_of_air->execute();
 
@@ -7950,7 +7957,7 @@ void shaman_t::create_buffs()
                            if ( resources.current[ RESOURCE_MAELSTROM ] == 0 )
                            {
                              // Separate the expiration event to happen immediately after tick processing
-                             make_event( *sim, timespan_t::zero(), [b]() { b->expire(); } );
+                             make_event( *sim, timespan_t::zero(), [ b ]() { b->expire(); } );
                            }
                          } );
 
@@ -8176,6 +8183,9 @@ void shaman_t::init_action_list_elemental()
 
   // "Default" APL controlling logic flow to specialized sub-APLs
   def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
+  def->add_action( this, "Flame Shock",
+                   "if=!ticking&spell_targets.chainlightning<4&(cooldown.storm_elemental.remains<cooldown.storm_"
+                   "elemental.duration-30|buff.wind_gust.stack<14)" );
   def->add_talent( this, "Totem Mastery", "if=talent.totem_mastery.enabled&buff.resonance_totem.remains<2" );
   def->add_action( "use_items" );
   def->add_action(
@@ -8860,9 +8870,8 @@ void shaman_t::init_action_list()
     return;
   }
 
-#ifdef NDEBUG  // Only restrict on release builds.
   // Restoration isn't supported atm
-  if ( specialization() == SHAMAN_RESTORATION && primary_role() == ROLE_HEAL )
+  if ( !sim->allow_experimental_specializations && specialization() == SHAMAN_RESTORATION && primary_role() == ROLE_HEAL )
   {
     if ( !quiet )
       sim->errorf( "Restoration Shaman healing for player %s is not currently supported.", name() );
@@ -8870,7 +8879,6 @@ void shaman_t::init_action_list()
     quiet = true;
     return;
   }
-#endif
 
   // After error checks, initialize secondary actions for various things
   if ( specialization() == SHAMAN_ENHANCEMENT )

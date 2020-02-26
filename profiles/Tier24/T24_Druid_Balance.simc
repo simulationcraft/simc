@@ -61,8 +61,8 @@ actions+=/worldvein_resonance,if=!buff.ca_inc.up,target_if=dot.moonfire.ticking&
 actions+=/reaping_flames,if=!buff.ca_inc.up
 actions+=/focused_azerite_beam,if=(!variable.az_ss|!buff.ca_inc.up),target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)
 actions+=/thorns
-actions+=/use_items,slots=trinket1,if=!trinket.1.has_proc.any|buff.ca_inc.up
-actions+=/use_items,slots=trinket2,if=!trinket.2.has_proc.any|buff.ca_inc.up
+actions+=/use_items,slots=trinket1,if=!trinket.1.has_proc.any|buff.ca_inc.up|target.1.time_to_die<20
+actions+=/use_items,slots=trinket2,if=!trinket.2.has_proc.any|buff.ca_inc.up|target.1.time_to_die<20
 actions+=/use_items
 actions+=/warrior_of_elune
 actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)

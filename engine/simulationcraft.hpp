@@ -5,7 +5,7 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "820"
+#define SC_MAJOR_VERSION "830"
 #define SC_MINOR_VERSION "02"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
@@ -528,6 +528,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* blood_of_the_enemy;
     buff_t* condensed_lifeforce;
     buff_t* focused_resolve;
+    buff_t* reaping_flames_tracker;
   } debuff;
 
   struct atd_dot_t
@@ -1040,6 +1041,7 @@ struct sim_t : private sc_thread_t
   bool        single_actor_batch;
   int         progressbar_type;
   int         armory_retries;
+  bool        allow_experimental_specializations;
 
   // Target options
   double      enemy_death_pct;
@@ -1218,7 +1220,7 @@ struct sim_t : private sc_thread_t
     /// Whether the player is in Nazjatar/Eternal Palace for various effects
     bool                nazjatar = true;
     /// Whether the Shiver Venom Crossbow/Lance should assume the target has the Shiver Venom debuff
-    bool                shiver_venom = true;
+    bool                shiver_venom = false;
     /// Storm of the Eternal haste and crit stat split ratio.
     double              storm_of_the_eternal_ratio = 0.05;
     /// How long before combat to start channeling Azshara's Font of Power
@@ -1227,7 +1229,7 @@ struct sim_t : private sc_thread_t
     unsigned            arcane_heart_hps = 0;
     /// Prepull spell cast count to assume.
     int                 subroutine_recalibration_precombat_stacks = 0;
-    /// Additional spell cast count to assume each buff cyle.
+    /// Additional spell cast count to assume each buff cycle.
     int                 subroutine_recalibration_dummy_casts = 0;
     /// Average duration of buff in percentage
     double voidtwisted_titanshard_percent_duration = 0.5;
@@ -1241,6 +1243,14 @@ struct sim_t : private sc_thread_t
     double echoing_void_collapse_chance = 0.15;
     /// Whether the increased chance via more allies is active
     bool void_ritual_increased_chance_active = false;
+    /// Approximate interval in seconds between raid member major essence uses that trigger Symbiotic Presence.
+    timespan_t symbiotic_presence_interval = 22_s;
+    /// Percentage of Whispered Truths reductions to be applied to offensive spells.
+    double whispered_truths_offensive_chance = 0.75;
+    /// Whether the player is in Ny'alotha or not.
+    bool nyalotha = true;
+    /// Chance for Infinite Stars to not hit the primary target (for single target sims)
+    double infinite_stars_miss_chance = 0;
   } bfa_opts;
 
   // Expansion specific data
@@ -1654,7 +1664,6 @@ struct module_t
   static const module_t* warlock();
   static const module_t* warrior();
   static const module_t* enemy();
-  static const module_t* tmi_enemy();
   static const module_t* tank_dummy_enemy();
   static const module_t* heal_enemy();
 
@@ -1675,7 +1684,6 @@ struct module_t
       case WARLOCK:      return warlock();
       case WARRIOR:      return warrior();
       case ENEMY:        return enemy();
-      case TMI_BOSS:     return tmi_enemy();
       case TANK_DUMMY:   return tank_dummy_enemy();
       default: break;
     }
@@ -2541,6 +2549,7 @@ struct item_t
   bool has_scaling_stat_bonus_id() const;
 
   const special_effect_t* special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
+  const special_effect_t* special_effect_with_name( const std::string& name, special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
 };
 std::ostream& operator<<(std::ostream&, const item_t&);
 
@@ -3121,6 +3130,21 @@ struct effect_callbacks_t
   void reset();
 
   void register_callback( unsigned proc_flags, unsigned proc_flags2, T_CB* cb );
+
+  // Helper to get first instance of object T and return it, if not found, return nullptr
+  template <typename T>
+  T* get_first_of() const
+  {
+    for ( size_t i = 0; i < all_callbacks.size(); ++i )
+    {
+      auto ptr = dynamic_cast<T*>( all_callbacks[ i ] );
+      if ( ptr )
+      {
+        return ptr;
+      }
+    }
+    return nullptr;
+  }
 private:
   void add_proc_callback( proc_types type, unsigned flags, T_CB* cb );
 };
@@ -4128,6 +4152,7 @@ struct player_t : public actor_t
     //8.3 buffs
     buff_t* strikethrough; // Corruption effect that increases crit damage/healing
     buff_t* flash_of_insight;  // Corruption effect that increases int
+    buff_t* obsidian_destruction; // Corruption effect that increases armor
   } buffs;
 
   struct debuffs_t
@@ -4257,7 +4282,7 @@ public:
 
   // Static methods
   static player_t* create( sim_t* sim, const player_description_t& );
-  static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == TMI_BOSS || t == TANK_DUMMY; }
+  static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == TANK_DUMMY; }
   static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
 
 
@@ -4268,7 +4293,7 @@ public:
 
   // Normal methods
   void init_character_properties();
-  void collect_resource_timeline_information();
+  double get_stat_value(stat_e);
   void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void create_talents_numbers();
@@ -4439,6 +4464,7 @@ public:
   virtual void create_actions();
   virtual void init_actions();
   virtual void init_finished();
+  virtual void action_init_finished(action_t&);
   virtual bool verify_use_items() const;
   virtual void reset();
   virtual void combat_begin();
@@ -4602,6 +4628,7 @@ public:
   virtual timespan_t time_to_percent( double percent ) const;
   virtual void cost_reduction_gain( school_e school, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a = nullptr );
+  virtual void collect_resource_timeline_information();
 
   virtual void assess_damage( school_e, result_amount_type, action_state_t* );
   virtual void target_mitigation( school_e, result_amount_type, action_state_t* );

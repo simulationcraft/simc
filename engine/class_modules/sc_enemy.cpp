@@ -18,14 +18,6 @@ enum tank_dummy_e
   TANK_DUMMY_MAX
 };
 
-enum tmi_boss_e
-{
-  TMI_NONE = 0,
-  // TODO : Add more T21 profiles
-  TMI_T19L, TMI_T19N, TMI_T19H, TMI_T19M, TMI_T21, TMI_MAX
-};
-
-
 struct enemy_t : public player_t
 {
   size_t enemy_id;
@@ -104,6 +96,8 @@ struct enemy_t : public player_t
   }
 
   bool taunt( player_t* source ) override;
+
+  void add_tank_heal_raid_event();
 };
 
 
@@ -295,7 +289,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
 {
   using child_action_type_t = CHILD_ACTION_TYPE;
   using base_t = enemy_action_driver_t<CHILD_ACTION_TYPE>;
- 
+
   int aoe_tanks;
   std::vector<child_action_type_t*> ch_list;
   size_t num_attacks;
@@ -373,7 +367,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
           }
           // remove this element
           rt_list.erase( rt_list.begin() + element );
-          
+
           // infinte loop check
           if ( rt_list.size() == 0 )
             break;
@@ -996,93 +990,6 @@ struct heal_enemy_t : public enemy_t
 };
 
 // ==========================================================================
-// TMI Enemy
-// ==========================================================================
-
-struct tmi_enemy_t : public enemy_t
-{
-  std::string tmi_boss_str;
-  tmi_boss_e tmi_boss_enum;
-
-  tmi_enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID ) :
-    enemy_t( s, n, r, TMI_BOSS ),
-    tmi_boss_str( "none" ),
-    tmi_boss_enum( TMI_NONE )
-  {
-  }
-
-  void create_options() override
-  {
-    add_option( opt_string( "tmi_boss_type", tmi_boss_str ) );
-    enemy_t::create_options();
-  }
-
-  tmi_boss_e convert_tmi_string( const std::string& tmi_string )
-  {
-    // this function translates between the "tmi_boss" option string and the tmi_boss_e enum
-    // eventually plan on using regular expressions here
-    if ( util::str_in_str_ci( tmi_string, "none" ) )
-      return TMI_NONE;
-    if ( util::str_in_str_ci( tmi_string, "T19L" ) )
-      return TMI_T19L;
-    if ( util::str_in_str_ci( tmi_string, "T19N" ) )
-      return TMI_T19N;
-    if ( util::str_in_str_ci( tmi_string, "T19H" ) )
-      return TMI_T19H;
-    if ( util::str_in_str_ci( tmi_string, "T19M" ) )
-      return TMI_T19M;
-    if ( util::str_in_str_ci( tmi_string, "T21" ) )
-      return TMI_T21;
-
-    if ( ! tmi_string.empty() && sim -> debug )
-      sim -> out_debug.printf( "Unknown TMI string input provided: %s", tmi_string.c_str() );
-
-    return TMI_NONE;
-  }
-
-  void init() override
-  {
-    tmi_boss_enum = convert_tmi_string( tmi_boss_str );
-     // if no tmi_boss_type input is given, try parsing the name
-    if ( tmi_boss_enum == TMI_NONE )
-      tmi_boss_enum = convert_tmi_string( name_str );
-    // if we still have no clue, pit them against the worst case
-    if ( tmi_boss_enum == TMI_NONE )
-      tmi_boss_enum = static_cast<tmi_boss_e>( TMI_MAX - 1 );
-  }
-
-  void init_base_stats() override
-  {
-    enemy_t::init_base_stats();
-
-    // override race
-    race = RACE_HUMANOID;
-
-    // override level    
-    true_level = sim -> max_player_level + 3; // fix at max player level
-  }
-
-  std::string generate_action_list() override
-  {
-    // Bosses are (roughly) standardized based on content level. dot damage is 2/15 of melee damage (0.1333 multiplier)
-    // TODO : add more T21 profiles (N/H/M) and replace estimated damage with actual damage.
-    std::string als = "";
-    const int num_bosses = TMI_MAX;
-    assert( tmi_boss_enum < TMI_MAX );
-    int aa_damage[ num_bosses ] = { 0, // L    N     H      M      T21
-                                        5000, 10000, 20000, 30000, 40000// T18 -- L-H values are estimates
-                                  };
-
-    als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
-    als += "/spell_nuke,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 1.5 ) + ",cooldown=90";
-    als += "/melee_nuke,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 2 ) + ",cooldown=60";
-    als += "/spell_dot,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 2 / 15 ) + ",tick_time=2,dot_duration=30,aoe_tanks=1,if=!ticking";
-
-    return als;
-  }
-};
-
-// ==========================================================================
 // Tank Dummy Enemy
 // ==========================================================================
 
@@ -1126,7 +1033,7 @@ struct tank_dummy_enemy_t : public enemy_t
   void init() override
   {
     tank_dummy_enum = convert_tank_dummy_string( tank_dummy_str );
-     // if no tmi_boss_type input is given, try parsing the name
+     // Try parsing the name
     if ( tank_dummy_enum == TANK_DUMMY_NONE )
       tank_dummy_enum = convert_tank_dummy_string( name_str );
     // if we still have no clue, pit them against the worst case
@@ -1140,23 +1047,24 @@ struct tank_dummy_enemy_t : public enemy_t
 
     double dummy_armor_coeff = dbc.armor_mitigation_constant( level() );
 
-    // Max level enemies have different K values based on difficulty, changes when new tier is released and not provided in spelldata
-    // 8.1 and 8.1.5 (BoD + Crucible) K values here
+    // Max level enemies have different armor coefficient based on the difficulty setting and the area they're fought in
+    // New values are added when a new tier is released
+    // 8.3 values for Mythic/M+ Dungeons (_Dungeon setting) and Normal/Mythic Ny'alotha (_Raid/_Mythic setting) here
     switch ( tank_dummy_enum )
     {
       case TANK_DUMMY_DUNGEON:
-        dummy_armor_coeff = 8467.2;
+        dummy_armor_coeff = 14282.1;
         break;
       case TANK_DUMMY_RAID:
-        dummy_armor_coeff = 9355.5;
+        dummy_armor_coeff = 14282.1;
         break;
       case TANK_DUMMY_MYTHIC:
-        dummy_armor_coeff = 11478.6;
+        dummy_armor_coeff = 17986.5;
         break;
       default:
         break;
     }
-    
+
     initial.armor_coeff = dummy_armor_coeff;
   }
 
@@ -1184,9 +1092,9 @@ struct tank_dummy_enemy_t : public enemy_t
   std::string generate_action_list() override
   {
     std::string als = "";
-    int aa_damage[ 5 ] = { 0, 48000, 90000, 120000, 240000 }; // NONE, WEAK, DUNGEON, RAID, MYTHIC
-    int aa_damage_var[ 5 ] = { 0, 4800, 9000, 12000, 24000 };
-    int dummy_strike_damage[ 5 ] = { 0, 80000, 150000, 200000, 400000 }; // Base melee nuke damage
+    int aa_damage[ 5 ] = { 0, 100000, 200000, 250000, 500000 }; // NONE, WEAK, DUNGEON, RAID, MYTHIC
+    int aa_damage_var[ 5 ] = { 0, 8000, 20000, 25000, 50000 };
+    int dummy_strike_damage[ 5 ] = { 0, 250000, 500000, 625000, 1250000 }; // Base melee nuke damage
 
     als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_enum ] ) + ",range=" + util::to_string( aa_damage_var[ tank_dummy_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
     als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_enum ] ) + ",range=0,attack_speed=2,cooldown=30,aoe_tanks=1";
@@ -1284,6 +1192,9 @@ void enemy_t::init_defense()
   collected_data.health_changes_tmi.collect = false;
   collected_data.health_changes.collect = false;
 
+  // Default fluffy pillow armor coefficient, set to Heroic Ny'alotha armor coefficient
+  initial.armor_coeff = 16002.0;
+
   if ( ( total_gear.armor ) <= 0 )
   {
     double& a = initial.stats.armor;
@@ -1358,14 +1269,39 @@ std::string enemy_t::generate_action_list()
   std::string als = "";
 
   // this is the standard Fluffy Pillow action list
-  als += "/auto_attack,damage=24000,attack_speed=1.5,aoe_tanks=1,range=" + util::to_string( 2400 );
-  als += "/melee_nuke,damage=40000,cooldown=30,attack_speed=2.0,aoe_tanks=1";
+  als += "/auto_attack,damage=400000,attack_speed=1.5,aoe_tanks=1,range=" + util::to_string( 25000 );
+  als += "/melee_nuke,damage=1000000,cooldown=15,attack_speed=2.0,aoe_tanks=1";
 
   return als;
 }
 
+// enemy_t::add_tank_heal_raid_event() ======================================
+
+void enemy_t::add_tank_heal_raid_event()
+{
+  std::string heal_raid_event = "heal,name=tank_heal,amount=50000,period=0.5,duration=0,player_if=role.tank";
+  sim->raid_events_str += "/" + heal_raid_event;
+  std::string::size_type cut_pt = heal_raid_event.find_first_of(",");
+  auto heal_options = heal_raid_event.substr(cut_pt + 1);
+  auto heal_name = heal_raid_event.substr(0, cut_pt);
+  auto raid_event = raid_event_t::create(sim, heal_name, heal_options);
+
+  if (raid_event->cooldown <= timespan_t::zero())
+  {
+    throw std::invalid_argument("Cooldown not set or negative.");
+  }
+  if (raid_event->cooldown <= raid_event->cooldown_stddev)
+  {
+    throw std::invalid_argument("Cooldown lower than cooldown standard deviation.");
+  }
+
+  sim->print_debug("Successfully created '{}'.", *(raid_event.get()));
+  sim->raid_events.push_back(std::move(raid_event));
+}
+
 void enemy_t::init_action_list()
 {
+
   if ( ! is_add() && is_enemy() )
   {
     // If the action list string is empty, automatically populate it
@@ -1374,9 +1310,13 @@ void enemy_t::init_action_list()
       std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
       precombat_list += "/snapshot_stats";
 
-      // If targeting an player, use Fluffy Pillow or TMI boss as appropriate
-      if ( ! target -> is_enemy() )
+      // If targeting an player, use Fluffy Pillow or Tank Dummy boss as appropriate
+      if ( !target->is_enemy() )
+      {
+        add_tank_heal_raid_event();
+
         action_list_str += generate_action_list();
+      }
 
       // Otherwise just auto-attack the heal target
       else if ( sim -> heal_target && this != sim -> heal_target )
@@ -1762,23 +1702,6 @@ struct heal_enemy_module_t : public module_t
   void combat_end  ( sim_t* ) const override {}
 };
 
-// TMI ENEMY MODULE INTERFACE ==============================================
-
-struct tmi_enemy_module_t : public module_t
-{
-  tmi_enemy_module_t() : module_t( TMI_BOSS ) {}
-
-  player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const override
-  {
-    auto  p = new tmi_enemy_t( sim, name );
-    return p;
-  }
-  bool valid() const override { return true; }
-  void init        ( player_t* ) const override {}
-  void combat_begin( sim_t* ) const override {}
-  void combat_end  ( sim_t* ) const override {}
-};
-
 // TANK DUMMY ENEMY MODULE INTERFACE ==============================================
 
 struct tank_dummy_enemy_module_t : public module_t
@@ -1807,12 +1730,6 @@ const module_t* module_t::enemy()
 const module_t* module_t::heal_enemy()
 {
   static heal_enemy_module_t m = heal_enemy_module_t();
-  return &m;
-}
-
-const module_t* module_t::tmi_enemy()
-{
-  static tmi_enemy_module_t m = tmi_enemy_module_t();
   return &m;
 }
 

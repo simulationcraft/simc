@@ -89,7 +89,7 @@ enum class regen_type
 {
   /*
    Old resource regeneration model.
-  
+
    Actors regen every 'periodicity' seconds through a single global event.
    Default.
    */
@@ -97,11 +97,11 @@ enum class regen_type
 
   /*
    Dynamic resource regeneration model.
-   
+
    Resources are regenerated at dynamic intervals when an actor is about to
    execute an action, and when the state of the actor changes in a way that
    affects resource regeneration.
-   
+
    See comment on player_t::regen_caches how to define what state changes
    affect resource regneration.
    */
@@ -259,7 +259,6 @@ enum player_e
   HEALING_ENEMY,
   ENEMY,
   ENEMY_ADD,
-  TMI_BOSS,
   TANK_DUMMY,
   PLAYER_MAX
 };

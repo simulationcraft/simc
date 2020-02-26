@@ -86,10 +86,10 @@ actions.aoe+=/festering_strike,if=((((debuff.festering_wound.stack<4&!buff.unhol
 actions.aoe+=/death_coil,if=!variable.pooling_for_gargoyle
 
 actions.cooldowns=army_of_the_dead
-actions.cooldowns+=/apocalypse,if=debuff.festering_wound.stack>=4
+actions.cooldowns+=/apocalypse,if=debuff.festering_wound.stack>=4&(active_enemies>=2|!essence.vision_of_perfection.enabled|essence.vision_of_perfection.enabled&(talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains<=3|!talent.unholy_frenzy.enabled))
 actions.cooldowns+=/dark_transformation,if=!raid_event.adds.exists|raid_event.adds.in>15
 actions.cooldowns+=/summon_gargoyle,if=runic_power.deficit<14
-actions.cooldowns+=/unholy_frenzy,if=essence.vision_of_perfection.enabled|(essence.condensed_lifeforce.enabled&pet.apoc_ghoul.active)|debuff.festering_wound.stack<4&!(equipped.ramping_amplitude_gigavolt_engine|azerite.magus_of_the_dead.enabled)|cooldown.apocalypse.remains<2&(equipped.ramping_amplitude_gigavolt_engine|azerite.magus_of_the_dead.enabled)
+actions.cooldowns+=/unholy_frenzy,if=essence.vision_of_perfection.enabled&pet.apoc_ghoul.active|debuff.festering_wound.stack<4&(!azerite.magus_of_the_dead.enabled|azerite.magus_of_the_dead.enabled&pet.apoc_ghoul.active)
 actions.cooldowns+=/unholy_frenzy,if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))
 actions.cooldowns+=/soul_reaper,target_if=target.time_to_die<8&target.time_to_die>4
 actions.cooldowns+=/soul_reaper,if=(!raid_event.adds.exists|raid_event.adds.in>20)&rune<=(1-buff.unholy_frenzy.up)
@@ -111,10 +111,10 @@ actions.generic=death_coil,if=buff.sudden_doom.react&!variable.pooling_for_gargo
 actions.generic+=/death_coil,if=runic_power.deficit<14&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&!variable.pooling_for_gargoyle
 actions.generic+=/death_and_decay,if=talent.pestilence.enabled&cooldown.apocalypse.remains
 actions.generic+=/defile,if=cooldown.apocalypse.remains
-actions.generic+=/scourge_strike,if=((debuff.festering_wound.up&cooldown.apocalypse.remains>5)|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)
-actions.generic+=/clawing_shadows,if=((debuff.festering_wound.up&cooldown.apocalypse.remains>5)|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)
+actions.generic+=/scourge_strike,if=((debuff.festering_wound.up&(cooldown.apocalypse.remains>5&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled)|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains>6))|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)
+actions.generic+=/clawing_shadows,if=((debuff.festering_wound.up&(cooldown.apocalypse.remains>5&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled)|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains>6))|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)
 actions.generic+=/death_coil,if=runic_power.deficit<20&!variable.pooling_for_gargoyle
-actions.generic+=/festering_strike,if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)
+actions.generic+=/festering_strike,if=debuff.festering_wound.stack<4&(cooldown.apocalypse.remains<3&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains<7))|debuff.festering_wound.stack<1&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)
 actions.generic+=/death_coil,if=!variable.pooling_for_gargoyle
 
 head=greathelm_of_phantasmic_reality,id=174167,bonus_id=4824/1517/4775,azerite_powers=199/109/21/13
@@ -122,12 +122,12 @@ neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=pauldrons_of_infinite_darkness,id=174166,bonus_id=1517/4824/4775,azerite_powers=199/109/31/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=desert_guardians_breastplate,id=159424,bonus_id=1647/4775,azerite_powers=109/199/18/13
-wrists=dragonbone_vambraces,id=174170,bonus_id=4824/1517/6552
-hands=mirageweavers_gauntlets,id=174178,bonus_id=4824/1517/6554
-waist=welloiled_plate_girdle,id=169057,bonus_id=4824/1522
-legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517
-feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517
-finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_haste
+wrists=dragonbone_vambraces,id=174170,bonus_id=4824/1517/6573
+hands=mirageweavers_gauntlets,id=174178,bonus_id=4824/1517/6573
+waist=welloiled_plate_girdle,id=169057,bonus_id=4824/1522/6573
+legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517/6573
+feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517/6573
+finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522/6476/6465,enchant=accord_of_haste
 finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_haste
 trinket1=voidtwisted_titanshard,id=174528,bonus_id=4824/1517
 trinket2=vitacharged_titanshard,id=174500,bonus_id=4824/1517

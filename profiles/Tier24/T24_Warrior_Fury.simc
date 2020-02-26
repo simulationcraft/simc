@@ -56,10 +56,10 @@ actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up
 actions+=/use_item,name=ashvanes_razor_coral,if=target.time_to_die<20|!debuff.razor_coral_debuff.up|(target.health.pct<30.1&debuff.conductive_ink_debuff.up)|(!debuff.conductive_ink_debuff.up&buff.memory_of_lucid_dreams.up|prev_gcd.2.guardian_of_azeroth|prev_gcd.2.recklessness&(!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major))
 actions+=/blood_fury,if=buff.recklessness.up
 actions+=/berserking,if=buff.recklessness.up
-actions+=/lights_judgment,if=buff.recklessness.down
+actions+=/lights_judgment,if=buff.recklessness.down&debuff.siegebreaker.down
 actions+=/fireblood,if=buff.recklessness.up
 actions+=/ancestral_call,if=buff.recklessness.up
-actions+=/bag_of_tricks,if=buff.recklessness.up
+actions+=/bag_of_tricks,if=buff.recklessness.down&debuff.siegebreaker.down&buff.enrage.up
 actions+=/run_action_list,name=single_target
 
 actions.movement=heroic_leap

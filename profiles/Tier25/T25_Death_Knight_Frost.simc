@@ -2,11 +2,11 @@ deathknight="T25_Death_Knight_Frost"
 source=default
 spec=frost
 level=120
-race=human
+race=blood_elf
 role=attack
 position=back
-talents=3202011
-azerite_essences=4:4:1/27:4:0/5:4:0/35:4:0
+talents=3102013
+azerite_essences=4:4:1/27:4:0/32:4:0/35:4:0
 
 # Default consumables
 potion=potion_of_unbridled_fury
@@ -28,7 +28,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/use_item,name=azsharas_font_of_power
-actions.precombat+=/variable,name=other_on_use_equipped,value=(equipped.notorious_gladiators_badge|equipped.sinister_gladiators_badge|equipped.sinister_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.notorious_gladiators_medallion|equipped.ashvanes_razor_coral)
+actions.precombat+=/variable,name=other_on_use_equipped,value=(equipped.notorious_gladiators_badge|equipped.corrupted_gladiators_badge|equipped.corrupted_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.notorious_gladiators_medallion|equipped.ashvanes_razor_coral)
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -179,26 +179,24 @@ shoulders=writhing_spaulders_of_madness,id=174165,bonus_id=1517/4824/4775,azerit
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=breastplate_of_twilight_decimation,id=174164,bonus_id=1517/4824/4775,azerite_powers=108/582/459/13
 wrists=bracers_of_phantom_pains,id=174177,bonus_id=4824/1517/6554
-hands=mirageweavers_gauntlets,id=174178,bonus_id=4824/1517/6552
-waist=dark_crystalline_girdle,id=174171,bonus_id=4824/1517
+hands=gauntlets_of_foul_inquisition,id=174169,bonus_id=4824/1517/6552
+waist=belt_of_muttering_truths,id=174174,bonus_id=4824/1517
 legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517
-feet=sabatons_of_malevolent_intent,id=174176,bonus_id=4824/1517
-finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_critical_strike
-finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_critical_strike
-trinket1=voidtwisted_titanshard,id=174528,bonus_id=4824/1517
-trinket2=vitacharged_titanshard,id=174500,bonus_id=4824/1517
+feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517
+finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_mastery
+finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_mastery
+trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
+trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 main_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_razorice
 off_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=479.25
-# gear_strength=8996
-# gear_stamina=19350
-# gear_crit_rating=1657
-# gear_haste_rating=1722
-# gear_mastery_rating=821
-# gear_versatility_rating=459
+# gear_ilvl=474.88
+# gear_strength=9486
+# gear_stamina=19226
+# gear_crit_rating=1605
+# gear_haste_rating=1498
+# gear_mastery_rating=1287
 # gear_corruption=95
 # gear_corruption_resistance=50
-# gear_armor=8134
-# set_bonus=titanic_empowerment_2pc=1
+# gear_armor=8063

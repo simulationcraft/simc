@@ -1,4 +1,4 @@
-SimulationCraft 820-02 for World of Warcraft 8.3.0 Live (wow build 33051)
+SimulationCraft 830-02 for World of Warcraft 8.3.0 Live (wow build 33051)
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -2223,6 +2223,7 @@ Effects          :
 Description      : $@spelldesc105174
 
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Demonology Shaman, Warlock
 School           : Shadowflame
 Spell Type       : Magic
@@ -2233,7 +2234,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 0.7 yards/sec
 Family Flags     : 21
-Attributes       : ........ ........ x....... ........   .......x .x...... ........ ........ 
+Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ...x.... ........ ........   ........ ..x..... ........ ...x.... 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -3035,15 +3036,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.07000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.07000 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Searing Assault (268429), Icy Edge (271920), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst (285466)
                    Family Flags: 39
+                   Hotfixed: Base Value (0 -> 3)
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.07000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.07000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Searing Assault (268429), Icy Edge (271920), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst (285466)
                    Family Flags: 39
+                   Hotfixed: Base Value (0 -> 3)
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Base Value (0 -> 3)
 #4 (id=191040)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 101 | Scaled Value: 101 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191041)   : Apply Aura (6) | Unknown(179)
@@ -7971,7 +7975,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707066)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.735425) | PvP Coefficient: 0.50000 | Trigger Spell: 270667 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 228.7172 (coefficient=0.735425) | PvP Coefficient: 0.50000 | Trigger Spell: 270667 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant you Elemental Whirl, increasing your Critical Strike, Haste, Mastery, or Versatility by $s1 for $268956d.
 
 Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive] 
@@ -8105,7 +8109,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=711012)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.069642) | PvP Coefficient: 0.50000 | Trigger Spell: 271705 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 21.65866 (coefficient=0.069642) | PvP Coefficient: 0.50000 | Trigger Spell: 271705 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 1 sec or whenever you take damage.
 Tooltip          : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 3 sec or whenever you take damage.
 
@@ -8192,7 +8196,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714511)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Trigger Spell: 270675 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 34.65411 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Trigger Spell: 270675 | Target: Self (1)
 Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
 
 Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive] 
@@ -8250,7 +8254,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714792)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.894276) | PvP Coefficient: 0.50000 | Trigger Spell: 270677 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 589.1198 (coefficient=1.894276) | PvP Coefficient: 0.50000 | Trigger Spell: 270677 | Target: Self (1)
 Description      : Your healing effects have a chance to increase your Haste by up to $s1 for $269085d. Healing lower health targets will grant you more Haste.
 
 Name             : Concentrated Mending (id=267882) [Scaling Spell (-8), Passive] 
@@ -8326,7 +8330,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714807)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=22) | PvP Coefficient: 0.50000 | Trigger Spell: 272570 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6842 (coefficient=22) | PvP Coefficient: 0.50000 | Trigger Spell: 272570 | Target: Self (1)
 Description      : When you go below $272570s1% mana, you gain $s1 mana. Can occur once every $289362d.
 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
@@ -8365,7 +8369,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714818)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.72) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 223.92 (coefficient=0.72) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Casting $?a137009[Wild Growth]?a137022[Essence Font]?a137030[Prayer of Healing or Power Word: Radiance]?a137026[Light of Dawn]?a137038[Chain Heal][your multi-target healing spell] grants you $s1 Mastery for $272090d. This cannot occur more than once every $272089proccooldown sec.
 
 Name             : Searing Assault (id=268429) [Spell Family (11)] 
@@ -8451,9 +8455,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716157)   : Apply Aura (6) | Unknown(277)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | PvP Coefficient: 0.20000 | Trigger Spell: 270653 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 17.32705 (coefficient=0.055714) | PvP Coefficient: 0.20000 | Trigger Spell: 270653 | Target: Self (1)
 #2 (id=716158)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.016714) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5.198054 (coefficient=0.016714) | PvP Coefficient: 0.20000 | Target: Self (1)
 Description      : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 Tooltip          : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 
@@ -8990,7 +8994,7 @@ Effects          :
 #3 (id=725609)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=725610)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.11156) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 656.6952 (coefficient=2.11156) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you Meticulous Scheming for $273685d, which transforms into Seize the Moment! after you cast $s3 different spells, granting you $s4 Haste for $273714d.
 
 Name             : Rezan's Fury (id=273790) [Scaling Spell (-8), Passive] 
@@ -9028,7 +9032,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725757)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=3.342839) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1039.623 (coefficient=3.342839) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul increases your Critical Strike by $s1.
 
 Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive] 
@@ -9344,7 +9348,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732968)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.532135) | PvP Coefficient: 0.50000 | Trigger Spell: 277926 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 476.494 (coefficient=1.532135) | PvP Coefficient: 0.50000 | Trigger Spell: 277926 | Target: Self (1)
 #2 (id=754433)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 #3 (id=756142)   : Apply Aura (6) | Unknown(285)
@@ -9454,11 +9458,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734562)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.343) | PvP Coefficient: 0.50000 | Trigger Spell: 279027 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 106.673 (coefficient=0.343) | PvP Coefficient: 0.50000 | Trigger Spell: 279027 | Target: Self (1)
 #2 (id=734563)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.343) | PvP Coefficient: 0.50000
+                   Base Value: 0 | Scaled Value: 106.673 (coefficient=0.343) | PvP Coefficient: 0.50000
 #3 (id=734564)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.343) | PvP Coefficient: 0.50000
+                   Base Value: 0 | Scaled Value: 106.673 (coefficient=0.343) | PvP Coefficient: 0.50000
 Description      : Dealing Fire damage grants $s1 Critical Strike for $279028d. 
 Dealing Frost damage grants $s2 Mastery for $279029d.
 Dealing Nature damage grants $s3 Haste for $279033d.
@@ -9733,7 +9737,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.194999) | PvP Coefficient: 0.50000 | Trigger Spell: 279900 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 60.64469 (coefficient=0.194999) | PvP Coefficient: 0.50000 | Trigger Spell: 279900 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $279902u times.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
@@ -10023,7 +10027,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737922)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | PvP Coefficient: 0.50000 | Trigger Spell: 280408 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 629.8384 (coefficient=2.025204) | PvP Coefficient: 0.50000 | Trigger Spell: 280408 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $280409d. Killing an enemy refreshes the duration of this effect.
 
 Name             : Incite the Pack (id=280410) [Scaling Spell (-7), Passive] 
@@ -10042,9 +10046,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737926)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.855276) | PvP Coefficient: 0.50000 | Trigger Spell: 280411 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 576.9908 (coefficient=1.855276) | PvP Coefficient: 0.50000 | Trigger Spell: 280411 | Target: Self (1)
 #2 (id=737927)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.300856) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 93.56622 (coefficient=0.300856) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=737931)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : You occasionally loose a tremendous roar, increasing your Mastery by $s1 and granting $s2 Mastery to up to $280413i nearby allies. Lasts $280412d.
@@ -10064,7 +10068,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737972)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.50713) | PvP Coefficient: 0.50000 | Trigger Spell: 280432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 779.7174 (coefficient=2.50713) | PvP Coefficient: 0.50000 | Trigger Spell: 280432 | Target: Self (1)
 #2 (id=737973)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #3 (id=737974)   : Dummy (3)
@@ -10128,9 +10132,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738189)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | PvP Coefficient: 0.50000 | Trigger Spell: 280778 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 284.1635 (coefficient=0.913709) | PvP Coefficient: 0.50000 | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 173.2705 (coefficient=0.55714) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
@@ -10319,9 +10323,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738283)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | PvP Coefficient: 0.50000 | Trigger Spell: 280851 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 284.1635 (coefficient=0.913709) | PvP Coefficient: 0.50000 | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 173.2705 (coefficient=0.55714) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
@@ -10450,7 +10454,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738417)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 17.32705 (coefficient=0.055714) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
@@ -10487,9 +10491,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=741004)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.540558) | PvP Coefficient: 0.50000 | Trigger Spell: 281842 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 790.1135 (coefficient=2.540558) | PvP Coefficient: 0.50000 | Trigger Spell: 281842 | Target: Self (1)
 #2 (id=741005)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.501426) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 155.9435 (coefficient=0.501426) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
 
 Name             : Lava Burst (id=285452) [Spell Family (11)] 
@@ -10701,7 +10705,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=750457)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | PvP Coefficient: 0.50000 | Trigger Spell: 287468 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 629.8384 (coefficient=2.025204) | PvP Coefficient: 0.50000 | Trigger Spell: 287468 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $287471d. At night, you also gain $287471s2% movement speed for the duration.
 
 Name             : Ancients' Bulwark (id=287604) [Scaling Spell (-1), Passive] 
@@ -10982,7 +10986,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=773468)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.83571) | PvP Coefficient: 1.00000 | Trigger Spell: 300173 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 259.9058 (coefficient=0.83571) | PvP Coefficient: 1.00000 | Trigger Spell: 300173 | Target: Self (1)
 Description      : Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.
 
 Name             : Arcane Heart (id=303006) [Scaling Spell (-7), Passive] 
@@ -11005,7 +11009,7 @@ Effects          :
 #1 (id=778205)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
 #2 (id=778206)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 0 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 498.5871 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778207)   : Apply Aura (6) | Unknown(285)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 303209 | Target: Self (1)
 Description      : Every $s1 damage and healing done you gain Omnipotence, increasing your highest stat by $s2 for $303212d. You heal for $s3% of all Arcane damage taken.
@@ -11025,11 +11029,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778208)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 124.7549 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
 #2 (id=778209)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31.18864 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778210)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 249.5094 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your Mastery is increased by $s1, plus an additional $s2 for each ally also affected by Loyal to the End, up to $s3.
 
 When you die, your allies gain Critical Strike, Haste, and Versatility equal to their Mastery bonus from this trait.
@@ -11111,7 +11115,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=802122)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.174171) | PvP Coefficient: 1.00000 | Trigger Spell: 316101 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 54.16718 (coefficient=0.174171) | PvP Coefficient: 1.00000 | Trigger Spell: 316101 | Target: Self (1)
 Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
 
 

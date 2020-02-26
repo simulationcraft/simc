@@ -1,4 +1,4 @@
-SimulationCraft 820-02 for World of Warcraft 8.3.0 Live (wow build 33051)
+SimulationCraft 830-02 for World of Warcraft 8.3.0 Live (wow build 33051)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -127,7 +127,7 @@ Effects          :
                    Family Flags: 67
 #6 (id=774482)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Global Cooldown (21)
                    Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 1.00000 | Misc Value: 21 | Misc Value 2: 640 (Label) | Target: Self (1)
-                   Affected Spells (Label): Life-Binder's Invocation (293032), Azeroth's Undying Gift (293019), Suppressing Pulse (293031), Unwavering Ward (293030), Azeroth's Undying Gift (294650), Azeroth's Undying Gift (294653), Azeroth's Undying Gift (294655), Hardened Azerite (294668), Hardened Azerite (294685), Hardened Azerite (294687), Hardened Azerite (294688), Hardened Azerite (294689), Sphere of Suppression (294906), Sphere of Suppression (294907), Sphere of Suppression (294908), Sphere of Suppression (294909), Sphere of Suppression (294910), Sphere of Suppression (294912), Sphere of Suppression (294919), Sphere of Suppression (294920), Sphere of Suppression (294922), Anima of Death (294926), Anima of Death (294945), Anima of Death (294946), Azeroth's Undying Gift (294951), Anima of Life (294964), Anima of Life (294966), Anima of Life (294969), Anima of Life (294970), Anima of Life (294972), Touch of the Everlasting (295046), Touch of the Everlasting (295047), Touch of the Everlasting (295048), Lifeblood (295078), Touch of the Everlasting (295098), Lifeblood Shard (295114), Touch of the Everlasting (295119), Touch of the Everlasting (295129), Lifeblood (295137), Worldvein Resonance (295160), Will to Survive (295164), Lifeblood (295165), Lifeblood (295166), Worldvein Resonance (295186), Worldvein Resonance (295206), Worldvein Resonance (295208), Worldvein Resonance (295209), Worldvein Resonance (295210), Focused Energy (295246), Focused Energy (295248), Focused Energy (295251), Focused Energy (295252), Essence of the Focusing Iris (295253), Focused Azerite Beam (295258), Focused Azerite Beam (295261), Focused Azerite Beam (295262), Focused Azerite Beam (295263), Focused Azerite Beam (295264), Purification Protocol (295293), Purification Protocol (295305), Anima of Death (295306), Anima of Death (295307), Touch of the Everlasting (295308), Will to Survive (295309), Purification Protocol (295310), Purification Protocol (295333), Purifying Blast (295337), Purifying Blast (295338), Will to Survive (295339), Will to Survive (295349), Purification Protocol (295351), Purifying Blast (295352), Will to Survive (295353), Purifying Blast (295354), Purifying Blast (295358), Purification Protocol (295363), Purifying Blast (295364), Ancient Flame (295365), Purifying Blast (295366), Ancient Flame (295367), Concentrated Flame (295368), Ancient Flame (295369), Ancient Flame (295372), Concentrated Flame (295373), Concentrated Flame (295374), Concentrated Flame (295376), Concentrated Flame (295377), Concentrated Flame (295379), Concentrated Flame (295380), Ancient Flame (295381), Empowered Null Barrier (295746), Null Dynamo (295747), Null Dynamo (295748), Null Barrier (295749), Null Barrier (295750), Condensed Life-Force (295834), Azerite Spike (295835), Condensed Life-Force (295836), Condensed Life-Force (295837), Condensed Life-Force (295838), Condensed Life-Force (295839), Guardian of Azeroth (295840), Guardian of Azeroth (295841), Null Barrier (295842), Guardian of Azeroth (295843), Null Dynamo (295844), Null Dynamo (295845), Null Dynamo (295846), Guardian of Azeroth (295855), Azerite Spike (295856), Azeroth's Undying Gift (295872), Hardened Azerite (295883), Condensed Life-Force (295892), Unwavering Ward (296004), Unwavering Ward (296031), Unwavering Ward (296032), Guardian Shell (296036), Guardian Shell (296038), The Ever-Rising Tide (296050), The Ever-Rising Tide (296059), Null Barrier (296061), The Ever-Rising Tide (296062), The Ever-Rising Tide (296067), Overcharge Mana (296072), Overcharge Mana (296074), Overcharge Mana (296075), Artifice of Time (296081), Quickening (296086), Artifice of Time (296089), Artifice of Time (296091), Standstill (296094), Rewind (296101), Artifice of Time (296102), Artifice of Time (296103), Guardian Shell (296104), The Well of Existence (296136), The Well of Existence (296192), The Well of Existence (296193), Refreshment (296197), Refreshment (296200), Refreshment (296201), Suppressing Pulse (296203), Seed of Eonar (296207), Seed of Eonar (296211), Life-Binder's Invocation (296213), Life-Binder's Invocation (296214), Life-Binder's Invocation (296220), Life-Binder's Invocation (296221), Vitality Conduit (296230), Vitality Conduit (unused) (296231), Vitality Conduit (296232), Strive for Perfection (296321), Strive for Perfection (296322), Strive for Perfection (296324), Vision of Perfection (296325), Vision of Perfection (296326), Vision of Perfection (296328), Strive for Perfection (296330), Blood of the Enemy (297108), Blood of the Enemy (297120), Blood of the Enemy (297122), Seething Rage (297126), Blood-Soaked (297147), Blood-Soaked (297162), Blood-Soaked (297168), Blood-Soaked (297177), Blood-Soaked (297178), Anima of Life and Death (297365), Spirit of Preservation (297375), Nullification Dynamo (297384), Devout Spirit (297411), Devout Spirit (297412), Devout Spirit (297542), Devout Spirit (297544), Spirit of Preservation (297546), Spirit of Preservation (297547), Vision of Perfection (297736), Vision of Perfection (297737), Vision of Perfection (297738), Vision of Perfection (297739), Vision of Perfection (297745), Vision of Perfection (297866), Vision of Perfection (297868), Vision of Perfection (297869), Spirit of Preservation (297961), Spirit of Preservation (297964), Spirit of Preservation (297965), Blood of the Enemy (297969), Blood of the Enemy (297970), Blood of the Enemy (297971), Azeroth's Undying Gift (298080), Azeroth's Undying Gift (298081), Hardened Azerite (298082), Hardened Azerite (298083), Vision of Perfection (298084), Aegis of the Deep (298168), Aegis of the Deep (298169), Aegis of the Deep (298174), Blood of the Enemy (298182), Blood of the Enemy (298183), Spirit of Preservation (298184), Devout Spirit (298185), Aegis of the Deep (298186), Stand Your Ground (298193), Stand Your Ground (298197), Stand Your Ground (298204), Blood of the Enemy (298273), Blood-Soaked (298274), Blood-Soaked (298275), Blood of the Enemy (298277), Azeroth's Undying Gift (298278), Azeroth's Undying Gift (298279), Azeroth's Undying Gift (298280), Nullification Dynamo (298281), Nullification Dynamo (298282), Nullification Dynamo (298284), Anima of Life and Death (298286), Anima of Life and Death (298287), Anima of Life and Death (298288), Sphere of Suppression (298292), Devout Spirit (298302), Devout Spirit (298304), Spirit of Preservation (298309), Spirit of Preservation (298312), Strive for Perfection (296320), Lucid Dreams (298268), Lucid Dreams (298337), Lucid Dreams (298339), Lucid Dreams (298343), Stand Your Ground (298351), Stand Your Ground (298352), Aegis of the Deep (298353), Memory of Lucid Dreams (298357), Lucid Dreams (298373), Memory of Lucid Dreams (298376), Memory of Lucid Dreams (298377), Lucid Dreams (298404), Lucid Dreams (298405), Reckless Force (298407), Reckless Force (298409), Touch of the Everlasting (298412), Touch of the Everlasting (298414), Touch of the Everlasting (298415), Touch of the Everlasting (298416), Sphere of Suppression (298418), Sphere of Suppression (298419), Sphere of Suppression (298420), Reckless Force (298448), Reckless Force (298449), Reckless Force (298450), The Unbound Force (298452), The Unbound Force (298453), The Unbound Force (298455), The Unbound Force (298456), The Unbound Force (298457), The Crucible of Flame (298601), The Crucible of Flame (298603), The Crucible of Flame (298604), The Crucible of Flame (298605), Worldvein Resonance (298606), Worldvein Resonance (298607), Worldvein Resonance (298609), Worldvein Resonance (298611), Essence of the Focusing Iris (298618), Essence of the Focusing Iris (298620), Essence of the Focusing Iris (298621), Essence of the Focusing Iris (298623), Lifeblood (298627), Worldvein Resonance (298628), Blood of the Enemy (299039), Spirit of Preservation (299149), Aegis of the Deep (299237), Aegis of the Deep (299238), Aegis of the Deep (299239), Aegis of the Deep (299240), Aegis of the Deep (299273), Stand Your Ground (299274), Aegis of the Deep (299275), Stand Your Ground (299277), Vision of Perfection (299296), Vision of Perfection (299297), Vision of Perfection (299298), Vision of Perfection (299299), Memory of Lucid Dreams (299300), Memory of Lucid Dreams (299302), Memory of Lucid Dreams (299304), Memory of Lucid Dreams (299305), Ripple in Space (299306), Ripple in Space (299307), Ripple in Space (299309), Ripple in Space (299310), Condensed Life-Force (299312), Condensed Life-Force (299313), Condensed Life-Force (299314), Condensed Life-Force (299315), Purification Protocol (299316), Purification Protocol (299317), Purification Protocol (299318), Purification Protocol (299320), The Unbound Force (299321), The Unbound Force (299322), The Unbound Force (299323), The Unbound Force (299324), Lifeblood (299333), Worldvein Resonance (299334), Focused Energy (299335), Focused Azerite Beam (299336), Focused Energy (299337), Focused Azerite Beam (299338), Purification Protocol (299343), Purifying Blast (299345), Purification Protocol (299346), Purifying Blast (299347), Ancient Flame (299348), Concentrated Flame (299349), Ancient Flame (299350), Concentrated Flame (299353), Condensed Life-Force (299354), Guardian of Azeroth (299355), Condensed Life-Force (299357), Guardian of Azeroth (299358), Strive for Perfection (299367), Vision of Perfection (299368), Strive for Perfection (299369), Vision of Perfection (299370), Lucid Dreams (299371), Memory of Lucid Dreams (299372), Lucid Dreams (299373), Memory of Lucid Dreams (299374), Reckless Force (299375), The Unbound Force (299376), Reckless Force (299377), The Unbound Force (299378), Burning Embrace (299396), Artifice of Time (299506), Artifice of Time (299507), Artifice of Time (299508), Artifice of Time (299509), Life-Binder's Invocation (299510), Life-Binder's Invocation (299511), Life-Binder's Invocation (299512), Life-Binder's Invocation (299513), The Ever-Rising Tide (299514), The Ever-Rising Tide (299515), The Ever-Rising Tide (299516), The Ever-Rising Tide (299517), Artifice of Time (299518), Artifice of Time (299519), Life-Binder's Invocation (299520), Life-Binder's Invocation (299521), Overcharge Mana (299522), The Ever-Rising Tide (299523), The Well of Existence (299524), The Well of Existence (299526), The Well of Existence (299527), The Well of Existence (299528), Refreshment (299529), The Well of Existence (299530), Unwavering Ward (299538), Unwavering Ward (299539), Unwavering Ward (299540), Unwavering Ward (299541), Guardian Shell (299542), Unwavering Ward (299544), Vitality Conduit (299550), Vitality Conduit (299551), Vitality Conduit (299552), Vitality Conduit (299554), Vitality Conduit (299559), Vitality Conduit (299560), Overcharge Mana (299624), Overcharge Mana (299875), Overcharge Mana (299876), The Ever-Rising Tide (299878), The Ever-Rising Tide (299879), Standstill (299882), Standstill (299883), Artifice of Time (299885), Artifice of Time (299887), Refreshment (299932), Refreshment (299933), The Well of Existence (299935), The Well of Existence (299936), Seed of Eonar (299939), Seed of Eonar (299940), Life-Binder's Invocation (299943), Life-Binder's Invocation (299944), Vitality Conduit (299958), Vitality Conduit (299959), Touch of the Everlasting (299984), Touch of the Everlasting (299988), Will to Survive (299989), Will to Survive (299991), Anima of Death (300002), Anima of Death (300003), Anima of Life (300004), Anima of Life (300005), Suppressing Pulse (300009), Suppressing Pulse (300010), Sphere of Suppression (300012), Sphere of Suppression (300013), Empowered Null Barrier (300015), Empowered Null Barrier (300016), Null Barrier (300018), Null Barrier (300020), Guardian of Azeroth (300091), Memory of Lucid Dreams (300120), Perseverance (300573), Perseverance (300575), Perseverance (300576), Perseverance (300577), Heart of Azeroth Slot Unlock (300949), Azerite Spike (302555), Vision of Perfection (302656), Ripple in Space (302731), Ripple in Space (302778), Ripple in Space (302780), Ripple in Space (302864), Ripple in Space (302910), Reality Shift (302916), Reckless Force (302917), Reckless Force (302932), Reality Shift (302952), Reality Shift (302953), Reality Shift (302957), Reality Shift (302961), Reality Shift (302962), Ripple in Space (302982), Ripple in Space (302983), Reality Shift (302984), Reality Shift (302985), Vision of Perfection (303342), Vision of Perfection (303344), Guardian of Azeroth (303347), Guardian of Azeroth (303349), Azerite Volley (303351), Memory of Lucid Dreams (303399), Memory of Lucid Dreams (303412), Transference (303448), Vitality Conduit (303460), Vitality Conduit (303463), Vitality Conduit (303472), Transference (303474), Transference (303476), Conflict (303823), Conflict and Strife (303824), Conflict and Strife (303834), Conflict and Strife (303835), Conflict and Strife (303836), Conflict and Strife (303837), Conflict and Strife (303868), Conflict (303892), Conflict (303894), Conflict and Strife (303897), Conflict and Strife (304014), Conflict and Strife (304015), Conflict and Strife (304016), Conflict and Strife (304017), Conflict and Strife (304018), Conflict and Strife (304019), Conflict and Strife (304020), Conflict and Strife (304021), Conflict and Strife (304022), Conflict and Strife (304023), Reckless Force (304038), Strife (304055), Strife (304056), Strife (304081), Conflict (304086), Conflict (304088), Strife (304089), Conflict (304121), Strife (304123), Strife (304125), Conflict (304375), Strife (304533), Lucid Dreams (304633), Aegis of the Deep (304693), Conflict (304720), Vitality Conduit (304722), Conflict (304724), Conflict (304775), Strife (305148), Conflict and Strife (305350), Conflict and Strife (305352), Seed of Eonar (305500), Lifeblood (305694), Strife (305723), Unwavering Ward (310422), Guardian Shell (310425), Unwavering Ward (310426), Guardian Shell (310442), Saving Vigil (310479), Devout Spirit (310530), Vigilant Protector (310592), Vigilant Protector (310595), Vigilant Protector (310597), Vigilant Protector (310599), Vigilant Protector (310600), Vigilant Protector (310601), Vigilant Protector (310602), Endurance (310603), Endurance (310605), Endurance (310606), Endurance (310607), Endurance (310608), Endurance (310609), Reaping Flames (310690), Reaping Flames (310705), Reaping Flames (310710), Reaping Flames (310711), Lethal Strikes (310712), Lethal Strikes (311166), Lethal Strikes (311167), Lethal Strikes (311177), Breath of the Dying (311185), Breath of the Dying (311186), Breath of the Dying (311187), Breath of the Dying (311188), Lethal Strikes (311192), Reaping Flames (311194), Reaping Flames (311195), Lethal Strikes (311197), Lethal Strikes (311198), Lethal Strikes (311201), Reaping Flames (311202), Moment of Glory (311203), Moment of Glory (311206), Moment of Glory (311207), Moment of Glory (311209), Unified Strength (311210), Unified Strength (311211), Unified Strength (311212), Unified Strength (311213), Spark of Inspiration (311214), Spark of Inspiration (311215), Spark of Inspiration (311216), Spark of Inspiration (311217), Moment of Glory (311302), Moment of Glory (311303), Unified Strength (311304), Unified Strength (311306), Strength of the Warden (311308), Strength of the Warden (311309), Strength of the Warden (311310), Strength of the Warden (311311), Guardian Shell (312130), Replica of Knowledge (312725), The Formless Void (312734), Replica of Knowledge (312764), Replica of Knowledge (312768), Replica of Knowledge (312770), Symbiotic Presence (312771), Symbiotic Presence (312773), Symbiotic Presence (312774), Symbiotic Presence (312775), The Formless Void (312793), The Formless Void (312794), The Formless Void (312795), The Formless Void (312796), Symbiotic Presence (312915), Will to Survive (312920), Will to Survive (312922), Perseverance (312927), Perseverance (312928), Worldvein Resonance (313310), Unified Strength (313643), Symbiotic Presence (313917), Symbiotic Presence (313918), Symbiotic Presence (313919), Symbiotic Presence (313920), Replica of Knowledge (313921), Replica of Knowledge (313922)
+                   Affected Spells (Label): Life-Binder's Invocation (293032), Azeroth's Undying Gift (293019), Suppressing Pulse (293031), Unwavering Ward (293030), Azeroth's Undying Gift (294650), Azeroth's Undying Gift (294653), Azeroth's Undying Gift (294655), Hardened Azerite (294668), Hardened Azerite (294685), Hardened Azerite (294687), Hardened Azerite (294688), Hardened Azerite (294689), Sphere of Suppression (294906), Sphere of Suppression (294907), Sphere of Suppression (294908), Sphere of Suppression (294909), Sphere of Suppression (294910), Sphere of Suppression (294912), Sphere of Suppression (294919), Sphere of Suppression (294920), Sphere of Suppression (294922), Anima of Death (294926), Anima of Death (294945), Anima of Death (294946), Azeroth's Undying Gift (294951), Anima of Life (294964), Anima of Life (294966), Anima of Life (294969), Anima of Life (294970), Anima of Life (294972), Touch of the Everlasting (295046), Touch of the Everlasting (295047), Touch of the Everlasting (295048), Lifeblood (295078), Touch of the Everlasting (295098), Lifeblood Shard (295114), Touch of the Everlasting (295119), Touch of the Everlasting (295129), Lifeblood (295137), Worldvein Resonance (295160), Will to Survive (295164), Lifeblood (295165), Lifeblood (295166), Worldvein Resonance (295186), Worldvein Resonance (295206), Worldvein Resonance (295208), Worldvein Resonance (295209), Worldvein Resonance (295210), Focused Energy (295246), Focused Energy (295248), Focused Energy (295251), Focused Energy (295252), Essence of the Focusing Iris (295253), Focused Azerite Beam (295258), Focused Azerite Beam (295261), Focused Azerite Beam (295262), Focused Azerite Beam (295263), Focused Azerite Beam (295264), Purification Protocol (295293), Purification Protocol (295305), Anima of Death (295306), Anima of Death (295307), Touch of the Everlasting (295308), Will to Survive (295309), Purification Protocol (295310), Purification Protocol (295333), Purifying Blast (295337), Purifying Blast (295338), Will to Survive (295339), Will to Survive (295349), Purification Protocol (295351), Purifying Blast (295352), Will to Survive (295353), Purifying Blast (295354), Purifying Blast (295358), Purification Protocol (295363), Purifying Blast (295364), Ancient Flame (295365), Purifying Blast (295366), Ancient Flame (295367), Concentrated Flame (295368), Ancient Flame (295369), Ancient Flame (295372), Concentrated Flame (295373), Concentrated Flame (295374), Concentrated Flame (295376), Concentrated Flame (295377), Concentrated Flame (295379), Concentrated Flame (295380), Ancient Flame (295381), Empowered Null Barrier (295746), Null Dynamo (295747), Null Dynamo (295748), Null Barrier (295749), Null Barrier (295750), Condensed Life-Force (295834), Azerite Spike (295835), Condensed Life-Force (295836), Condensed Life-Force (295837), Condensed Life-Force (295838), Condensed Life-Force (295839), Guardian of Azeroth (295840), Guardian of Azeroth (295841), Null Barrier (295842), Guardian of Azeroth (295843), Null Dynamo (295844), Null Dynamo (295845), Null Dynamo (295846), Guardian of Azeroth (295855), Azerite Spike (295856), Azeroth's Undying Gift (295872), Hardened Azerite (295883), Condensed Life-Force (295892), Unwavering Ward (296004), Unwavering Ward (296031), Unwavering Ward (296032), Guardian Shell (296036), Guardian Shell (296038), The Ever-Rising Tide (296050), The Ever-Rising Tide (296059), Null Barrier (296061), The Ever-Rising Tide (296062), The Ever-Rising Tide (296067), Overcharge Mana (296072), Overcharge Mana (296074), Overcharge Mana (296075), Artifice of Time (296081), Quickening (296086), Artifice of Time (296089), Artifice of Time (296091), Standstill (296094), Rewind (296101), Artifice of Time (296102), Artifice of Time (296103), Guardian Shell (296104), The Well of Existence (296136), The Well of Existence (296192), The Well of Existence (296193), Refreshment (296197), Refreshment (296200), Refreshment (296201), Suppressing Pulse (296203), Seed of Eonar (296207), Seed of Eonar (296211), Life-Binder's Invocation (296213), Life-Binder's Invocation (296214), Life-Binder's Invocation (296220), Life-Binder's Invocation (296221), Vitality Conduit (296230), Vitality Conduit (unused) (296231), Vitality Conduit (296232), Strive for Perfection (296321), Strive for Perfection (296322), Strive for Perfection (296324), Vision of Perfection (296325), Vision of Perfection (296326), Vision of Perfection (296328), Strive for Perfection (296330), Blood of the Enemy (297108), Blood of the Enemy (297120), Blood of the Enemy (297122), Seething Rage (297126), Blood-Soaked (297147), Blood-Soaked (297162), Blood-Soaked (297168), Blood-Soaked (297177), Blood-Soaked (297178), Anima of Life and Death (297365), Spirit of Preservation (297375), Nullification Dynamo (297384), Devout Spirit (297411), Devout Spirit (297412), Devout Spirit (297542), Devout Spirit (297544), Spirit of Preservation (297546), Spirit of Preservation (297547), Vision of Perfection (297736), Vision of Perfection (297737), Vision of Perfection (297738), Vision of Perfection (297739), Vision of Perfection (297745), Vision of Perfection (297866), Vision of Perfection (297868), Vision of Perfection (297869), Spirit of Preservation (297961), Spirit of Preservation (297964), Spirit of Preservation (297965), Blood of the Enemy (297969), Blood of the Enemy (297970), Blood of the Enemy (297971), Azeroth's Undying Gift (298080), Azeroth's Undying Gift (298081), Hardened Azerite (298082), Hardened Azerite (298083), Vision of Perfection (298084), Aegis of the Deep (298168), Aegis of the Deep (298169), Aegis of the Deep (298174), Blood of the Enemy (298182), Blood of the Enemy (298183), Spirit of Preservation (298184), Devout Spirit (298185), Aegis of the Deep (298186), Stand Your Ground (298193), Stand Your Ground (298197), Stand Your Ground (298204), Blood of the Enemy (298273), Blood-Soaked (298274), Blood-Soaked (298275), Blood of the Enemy (298277), Azeroth's Undying Gift (298278), Azeroth's Undying Gift (298279), Azeroth's Undying Gift (298280), Nullification Dynamo (298281), Nullification Dynamo (298282), Nullification Dynamo (298284), Anima of Life and Death (298286), Anima of Life and Death (298287), Anima of Life and Death (298288), Sphere of Suppression (298292), Devout Spirit (298302), Devout Spirit (298304), Spirit of Preservation (298309), Spirit of Preservation (298312), Strive for Perfection (296320), Lucid Dreams (298268), Lucid Dreams (298337), Lucid Dreams (298339), Lucid Dreams (298343), Stand Your Ground (298351), Stand Your Ground (298352), Aegis of the Deep (298353), Memory of Lucid Dreams (298357), Lucid Dreams (298373), Memory of Lucid Dreams (298376), Memory of Lucid Dreams (298377), Lucid Dreams (298404), Lucid Dreams (298405), Reckless Force (298407), Reckless Force (298409), Touch of the Everlasting (298412), Touch of the Everlasting (298414), Touch of the Everlasting (298415), Touch of the Everlasting (298416), Sphere of Suppression (298418), Sphere of Suppression (298419), Sphere of Suppression (298420), Reckless Force (298448), Reckless Force (298449), Reckless Force (298450), The Unbound Force (298452), The Unbound Force (298453), The Unbound Force (298455), The Unbound Force (298456), The Unbound Force (298457), The Crucible of Flame (298601), The Crucible of Flame (298603), The Crucible of Flame (298604), The Crucible of Flame (298605), Worldvein Resonance (298606), Worldvein Resonance (298607), Worldvein Resonance (298609), Worldvein Resonance (298611), Essence of the Focusing Iris (298618), Essence of the Focusing Iris (298620), Essence of the Focusing Iris (298621), Essence of the Focusing Iris (298623), Lifeblood (298627), Worldvein Resonance (298628), Blood of the Enemy (299039), Spirit of Preservation (299149), Aegis of the Deep (299237), Aegis of the Deep (299238), Aegis of the Deep (299239), Aegis of the Deep (299240), Aegis of the Deep (299273), Stand Your Ground (299274), Aegis of the Deep (299275), Stand Your Ground (299277), Vision of Perfection (299296), Vision of Perfection (299297), Vision of Perfection (299298), Vision of Perfection (299299), Memory of Lucid Dreams (299300), Memory of Lucid Dreams (299302), Memory of Lucid Dreams (299304), Memory of Lucid Dreams (299305), Ripple in Space (299306), Ripple in Space (299307), Ripple in Space (299309), Ripple in Space (299310), Condensed Life-Force (299312), Condensed Life-Force (299313), Condensed Life-Force (299314), Condensed Life-Force (299315), Purification Protocol (299316), Purification Protocol (299317), Purification Protocol (299318), Purification Protocol (299320), The Unbound Force (299321), The Unbound Force (299322), The Unbound Force (299323), The Unbound Force (299324), Lifeblood (299333), Worldvein Resonance (299334), Focused Energy (299335), Focused Azerite Beam (299336), Focused Energy (299337), Focused Azerite Beam (299338), Purification Protocol (299343), Purifying Blast (299345), Purification Protocol (299346), Purifying Blast (299347), Ancient Flame (299348), Concentrated Flame (299349), Ancient Flame (299350), Concentrated Flame (299353), Condensed Life-Force (299354), Guardian of Azeroth (299355), Condensed Life-Force (299357), Guardian of Azeroth (299358), Strive for Perfection (299367), Vision of Perfection (299368), Strive for Perfection (299369), Vision of Perfection (299370), Lucid Dreams (299371), Memory of Lucid Dreams (299372), Lucid Dreams (299373), Memory of Lucid Dreams (299374), Reckless Force (299375), The Unbound Force (299376), Reckless Force (299377), The Unbound Force (299378), Burning Embrace (299396), Artifice of Time (299506), Artifice of Time (299507), Artifice of Time (299508), Artifice of Time (299509), Life-Binder's Invocation (299510), Life-Binder's Invocation (299511), Life-Binder's Invocation (299512), Life-Binder's Invocation (299513), The Ever-Rising Tide (299514), The Ever-Rising Tide (299515), The Ever-Rising Tide (299516), The Ever-Rising Tide (299517), Artifice of Time (299518), Artifice of Time (299519), Life-Binder's Invocation (299520), Life-Binder's Invocation (299521), Overcharge Mana (299522), The Ever-Rising Tide (299523), The Well of Existence (299524), The Well of Existence (299526), The Well of Existence (299527), The Well of Existence (299528), Refreshment (299529), The Well of Existence (299530), Unwavering Ward (299538), Unwavering Ward (299539), Unwavering Ward (299540), Unwavering Ward (299541), Guardian Shell (299542), Unwavering Ward (299544), Vitality Conduit (299550), Vitality Conduit (299551), Vitality Conduit (299552), Vitality Conduit (299554), Vitality Conduit (299559), Vitality Conduit (299560), Overcharge Mana (299624), Overcharge Mana (299875), Overcharge Mana (299876), The Ever-Rising Tide (299878), The Ever-Rising Tide (299879), Standstill (299882), Standstill (299883), Artifice of Time (299885), Artifice of Time (299887), Refreshment (299932), Refreshment (299933), The Well of Existence (299935), The Well of Existence (299936), Seed of Eonar (299939), Seed of Eonar (299940), Life-Binder's Invocation (299943), Life-Binder's Invocation (299944), Vitality Conduit (299958), Vitality Conduit (299959), Touch of the Everlasting (299984), Touch of the Everlasting (299988), Will to Survive (299989), Will to Survive (299991), Anima of Death (300002), Anima of Death (300003), Anima of Life (300004), Anima of Life (300005), Suppressing Pulse (300009), Suppressing Pulse (300010), Sphere of Suppression (300012), Sphere of Suppression (300013), Empowered Null Barrier (300015), Empowered Null Barrier (300016), Null Barrier (300018), Null Barrier (300020), Guardian of Azeroth (300091), Memory of Lucid Dreams (300120), Perseverance (300573), Perseverance (300575), Perseverance (300576), Perseverance (300577), Heart of Azeroth Slot Unlock (300949), Azerite Spike (302555), Vision of Perfection (302656), Ripple in Space (302731), Ripple in Space (302778), Ripple in Space (302780), Ripple in Space (302864), Ripple in Space (302910), Reality Shift (302916), Reckless Force (302917), Reckless Force (302932), Reality Shift (302952), Reality Shift (302953), Reality Shift (302957), Reality Shift (302961), Reality Shift (302962), Ripple in Space (302982), Ripple in Space (302983), Reality Shift (302984), Reality Shift (302985), Vision of Perfection (303342), Vision of Perfection (303344), Guardian of Azeroth (303347), Guardian of Azeroth (303349), Azerite Volley (303351), Memory of Lucid Dreams (303399), Memory of Lucid Dreams (303412), Transference (303448), Vitality Conduit (303460), Vitality Conduit (303463), Vitality Conduit (303472), Transference (303474), Transference (303476), Conflict (303823), Conflict and Strife (303824), Conflict and Strife (303834), Conflict and Strife (303835), Conflict and Strife (303836), Conflict and Strife (303837), Conflict and Strife (303868), Conflict (303892), Conflict (303894), Conflict and Strife (303897), Conflict and Strife (304014), Conflict and Strife (304015), Conflict and Strife (304016), Conflict and Strife (304017), Conflict and Strife (304018), Conflict and Strife (304019), Conflict and Strife (304020), Conflict and Strife (304021), Conflict and Strife (304022), Conflict and Strife (304023), Reckless Force (304038), Strife (304055), Strife (304056), Strife (304081), Conflict (304086), Conflict (304088), Strife (304089), Conflict (304121), Strife (304123), Strife (304125), Conflict (304375), Strife (304533), Lucid Dreams (304633), Aegis of the Deep (304693), Conflict (304720), Vitality Conduit (304722), Conflict (304724), Conflict (304775), Strife (305148), Conflict and Strife (305350), Conflict and Strife (305352), Seed of Eonar (305500), Lifeblood (305694), Strife (305723), Unwavering Ward (310422), Guardian Shell (310425), Unwavering Ward (310426), Guardian Shell (310442), Saving Vigil (310479), Devout Spirit (310530), Vigilant Protector (310592), Vigilant Protector (310595), Vigilant Protector (310597), Vigilant Protector (310599), Vigilant Protector (310600), Vigilant Protector (310601), Vigilant Protector (310602), Endurance (310603), Endurance (310605), Endurance (310606), Endurance (310607), Endurance (310608), Endurance (310609), Reaping Flames (310690), Reaping Flames (310705), Reaping Flames (310710), Reaping Flames (310711), Lethal Strikes (310712), Lethal Strikes (311166), Lethal Strikes (311167), Lethal Strikes (311177), Breath of the Dying (311185), Breath of the Dying (311186), Breath of the Dying (311187), Breath of the Dying (311188), Lethal Strikes (311192), Reaping Flames (311194), Reaping Flames (311195), Lethal Strikes (311197), Lethal Strikes (311198), Lethal Strikes (311201), Reaping Flames (311202), Moment of Glory (311203), Moment of Glory (311206), Moment of Glory (311207), Moment of Glory (311209), Unified Strength (311210), Unified Strength (311211), Unified Strength (311212), Unified Strength (311213), Spark of Inspiration (311214), Spark of Inspiration (311215), Spark of Inspiration (311216), Spark of Inspiration (311217), Moment of Glory (311302), Moment of Glory (311303), Unified Strength (311304), Unified Strength (311306), Strength of the Warden (311308), Strength of the Warden (311309), Strength of the Warden (311310), Strength of the Warden (311311), Reaping Flames (311947), Guardian Shell (312130), Replica of Knowledge (312725), The Formless Void (312734), Replica of Knowledge (312764), Replica of Knowledge (312768), Replica of Knowledge (312770), Symbiotic Presence (312771), Symbiotic Presence (312773), Symbiotic Presence (312774), Symbiotic Presence (312775), The Formless Void (312793), The Formless Void (312794), The Formless Void (312795), The Formless Void (312796), Symbiotic Presence (312915), Will to Survive (312920), Will to Survive (312922), Perseverance (312927), Perseverance (312928), Worldvein Resonance (313310), Unified Strength (313643), Symbiotic Presence (313917), Symbiotic Presence (313918), Symbiotic Presence (313919), Symbiotic Presence (313920), Replica of Knowledge (313921), Replica of Knowledge (313922)
 Description      : Shapeshift into Cat Form, increasing auto-attack damage by $s4%, movement speed by $113636s1%, granting protection from Polymorph effects, and reducing falling damage.
 
 The act of shapeshifting frees you from movement impairing effects.
@@ -139,7 +139,7 @@ Name             : Rejuvenation (id=774) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 10.5% Base Mana (0) (id=95)
+Resource         : 10% Base Mana (0) (id=95) [Hotfixed: Percent Cost (10.5 -> 10)]
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3943,7 +3943,7 @@ Name             : Efflorescence (id=145205) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 21.6% Base Mana (0) (id=9240)
+Resource         : 17% Base Mana (0) (id=9240) [Hotfixed: Percent Cost (21.6 -> 17)]
 Spell Level      : 70
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4253,7 +4253,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Periodic effect can crit (265)
 Effects          :
 #1 (id=220365)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.41000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Hotfixed: SP Coefficient (0.37 -> 0.41)
 #2 (id=709927)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01200 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc740
@@ -6191,17 +6192,18 @@ Description      : Deals $m1 Arcane damage.
 Tooltip          : Deals $m1 Arcane damage.
 
 Name             : Brambles (id=203953) [Spell Family (7), Passive] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6)
+                 : Passive (6), Disable player procs (112)
 Effects          :
 #1 (id=300960)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xffffffd8 | Target: Self (1)
@@ -6211,6 +6213,7 @@ While Barkskin is active, the brambles also deal $213709s1 Nature damage to all 
 Variables        : $shield=${$AP*0.06}
 
 Name             : Brambles (id=203958) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -6218,12 +6221,13 @@ Range            : 100 yards
 Affecting spells : Guardian Druid (137010 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ x....... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Disable player procs (112)
 Effects          :
 #1 (id=300967)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -7072,6 +7076,7 @@ Description      : $@spelldesc203964
 Tooltip          : Your next Moonfire generates ${$m1/10} Rage, and deals $s3% increased direct damage.
 
 Name             : Brambles (id=213709) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -7079,15 +7084,17 @@ Range            : 100 yards
 Affecting spells : Guardian Druid (137010 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 54, 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Disable player procs (112)
 Effects          :
 #1 (id=317117)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.02621 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Hotfixed: AP Coefficient (0.026208 -> 0.026208)
 Description      : $@spelldesc203953
 
 Name             : Swipe (id=213764) [Spell Family (7)] 
@@ -7935,7 +7942,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707066)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.735425) | PvP Coefficient: 0.50000 | Trigger Spell: 270667 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 228.7172 (coefficient=0.735425) | PvP Coefficient: 0.50000 | Trigger Spell: 270667 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant you Elemental Whirl, increasing your Critical Strike, Haste, Mastery, or Versatility by $s1 for $268956d.
 
 Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive] 
@@ -7997,7 +8004,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=711012)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.069642) | PvP Coefficient: 0.50000 | Trigger Spell: 271705 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 21.65866 (coefficient=0.069642) | PvP Coefficient: 0.50000 | Trigger Spell: 271705 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 1 sec or whenever you take damage.
 Tooltip          : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 3 sec or whenever you take damage.
 
@@ -8084,7 +8091,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714511)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Trigger Spell: 270675 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 34.65411 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Trigger Spell: 270675 | Target: Self (1)
 Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
 
 Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive] 
@@ -8142,7 +8149,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714792)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.894276) | PvP Coefficient: 0.50000 | Trigger Spell: 270677 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 589.1198 (coefficient=1.894276) | PvP Coefficient: 0.50000 | Trigger Spell: 270677 | Target: Self (1)
 Description      : Your healing effects have a chance to increase your Haste by up to $s1 for $269085d. Healing lower health targets will grant you more Haste.
 
 Name             : Concentrated Mending (id=267882) [Scaling Spell (-8), Passive] 
@@ -8218,7 +8225,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714807)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=22) | PvP Coefficient: 0.50000 | Trigger Spell: 272570 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6842 (coefficient=22) | PvP Coefficient: 0.50000 | Trigger Spell: 272570 | Target: Self (1)
 Description      : When you go below $272570s1% mana, you gain $s1 mana. Can occur once every $289362d.
 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
@@ -8257,7 +8264,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714818)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.72) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 223.92 (coefficient=0.72) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Casting $?a137009[Wild Growth]?a137022[Essence Font]?a137030[Prayer of Healing or Power Word: Radiance]?a137026[Light of Dawn]?a137038[Chain Heal][your multi-target healing spell] grants you $s1 Mastery for $272090d. This cannot occur more than once every $272089proccooldown sec.
 
 Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passive] 
@@ -8319,9 +8326,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716157)   : Apply Aura (6) | Unknown(277)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | PvP Coefficient: 0.20000 | Trigger Spell: 270653 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 17.32705 (coefficient=0.055714) | PvP Coefficient: 0.20000 | Trigger Spell: 270653 | Target: Self (1)
 #2 (id=716158)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.016714) | PvP Coefficient: 0.20000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5.198054 (coefficient=0.016714) | PvP Coefficient: 0.20000 | Target: Self (1)
 Description      : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 Tooltip          : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 
@@ -8433,7 +8440,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=717596)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.280374) | PvP Coefficient: 0.50000 | Trigger Spell: 270611 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 87.19631 (coefficient=0.280374) | PvP Coefficient: 0.50000 | Trigger Spell: 270611 | Target: Self (1)
 #2 (id=717597)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
@@ -8735,7 +8742,7 @@ Effects          :
 #3 (id=725609)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=725610)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.11156) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 656.6952 (coefficient=2.11156) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you Meticulous Scheming for $273685d, which transforms into Seize the Moment! after you cast $s3 different spells, granting you $s4 Haste for $273714d.
 
 Name             : Rezan's Fury (id=273790) [Scaling Spell (-8), Passive] 
@@ -8773,7 +8780,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725757)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=3.342839) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1039.623 (coefficient=3.342839) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul increases your Critical Strike by $s1.
 
 Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive] 
@@ -8927,7 +8934,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726746)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.476421) | PvP Coefficient: 0.50000 | Trigger Spell: 274425 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 459.1669 (coefficient=1.476421) | PvP Coefficient: 0.50000 | Trigger Spell: 274425 | Target: Self (1)
 #2 (id=753578)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=753579)   : Apply Aura (6) | Dummy (4)
@@ -9608,7 +9615,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.194999) | PvP Coefficient: 0.50000 | Trigger Spell: 279900 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 60.64469 (coefficient=0.194999) | PvP Coefficient: 0.50000 | Trigger Spell: 279900 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $279902u times.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
@@ -9898,7 +9905,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737922)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | PvP Coefficient: 0.50000 | Trigger Spell: 280408 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 629.8384 (coefficient=2.025204) | PvP Coefficient: 0.50000 | Trigger Spell: 280408 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $280409d. Killing an enemy refreshes the duration of this effect.
 
 Name             : Incite the Pack (id=280410) [Scaling Spell (-7), Passive] 
@@ -9917,9 +9924,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737926)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.855276) | PvP Coefficient: 0.50000 | Trigger Spell: 280411 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 576.9908 (coefficient=1.855276) | PvP Coefficient: 0.50000 | Trigger Spell: 280411 | Target: Self (1)
 #2 (id=737927)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.300856) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 93.56622 (coefficient=0.300856) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=737931)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : You occasionally loose a tremendous roar, increasing your Mastery by $s1 and granting $s2 Mastery to up to $280413i nearby allies. Lasts $280412d.
@@ -9939,7 +9946,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737972)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.50713) | PvP Coefficient: 0.50000 | Trigger Spell: 280432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 779.7174 (coefficient=2.50713) | PvP Coefficient: 0.50000 | Trigger Spell: 280432 | Target: Self (1)
 #2 (id=737973)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #3 (id=737974)   : Dummy (3)
@@ -10003,9 +10010,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738189)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | PvP Coefficient: 0.50000 | Trigger Spell: 280778 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 284.1635 (coefficient=0.913709) | PvP Coefficient: 0.50000 | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 173.2705 (coefficient=0.55714) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
@@ -10134,9 +10141,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738283)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | PvP Coefficient: 0.50000 | Trigger Spell: 280851 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 284.1635 (coefficient=0.913709) | PvP Coefficient: 0.50000 | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 173.2705 (coefficient=0.55714) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
@@ -10265,7 +10272,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738417)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 17.32705 (coefficient=0.055714) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
@@ -10302,9 +10309,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=741004)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.540558) | PvP Coefficient: 0.50000 | Trigger Spell: 281842 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 790.1135 (coefficient=2.540558) | PvP Coefficient: 0.50000 | Trigger Spell: 281842 | Target: Self (1)
 #2 (id=741005)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.501426) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 155.9435 (coefficient=0.501426) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
 
 Name             : Primal Wrath (id=285381) [Spell Family (7)] 
@@ -10409,7 +10416,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=750457)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | PvP Coefficient: 0.50000 | Trigger Spell: 287468 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 629.8384 (coefficient=2.025204) | PvP Coefficient: 0.50000 | Trigger Spell: 287468 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $287471d. At night, you also gain $287471s2% movement speed for the duration.
 
 Name             : Ancients' Bulwark (id=287604) [Scaling Spell (-1), Passive] 
@@ -10650,7 +10657,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=753603)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.337136) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 415.8493 (coefficient=1.337136) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=753606)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consuming Gore grants you $s1 mastery for $289315d and has a $s2% chance to activate Gore.
@@ -10716,7 +10723,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=773468)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.83571) | PvP Coefficient: 1.00000 | Trigger Spell: 300173 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 259.9058 (coefficient=0.83571) | PvP Coefficient: 1.00000 | Trigger Spell: 300173 | Target: Self (1)
 Description      : Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.
 
 Name             : Ursine Adept (id=300346) [Spell Family (7), Passive] 
@@ -10799,7 +10806,7 @@ Effects          :
 #1 (id=778205)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1500000 | Scaled Value: 1500000 | PvP Coefficient: 1.00000 | Trigger Spell: 303211 | Target: Self (1)
 #2 (id=778206)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 0 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 498.5871 (coefficient=1.603174) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778207)   : Apply Aura (6) | Unknown(285)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 303209 | Target: Self (1)
 Description      : Every $s1 damage and healing done you gain Omnipotence, increasing your highest stat by $s2 for $303212d. You heal for $s3% of all Arcane damage taken.
@@ -10819,11 +10826,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=778208)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 124.7549 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 303250 | Target: Self (1)
 #2 (id=778209)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31.18864 (coefficient=0.100285) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=778210)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 249.5094 (coefficient=0.802281) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your Mastery is increased by $s1, plus an additional $s2 for each ally also affected by Loyal to the End, up to $s3.
 
 When you die, your allies gain Critical Strike, Haste, and Versatility equal to their Mastery bonus from this trait.
@@ -10924,7 +10931,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=802122)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.174171) | PvP Coefficient: 1.00000 | Trigger Spell: 316101 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 54.16718 (coefficient=0.174171) | PvP Coefficient: 1.00000 | Trigger Spell: 316101 | Target: Self (1)
 Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
 
 

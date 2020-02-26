@@ -108,18 +108,22 @@ win32 {
   }
 }
 
-# Curl is now required for everything, on unixy systems use pkg-config to find it, on Windows,
-# require CURL_ROOT to be defined (in an environment variable or compilation definition) and
-# pointing to the base curl directory (dll found in CURL_ROOT/bin, includes in CURL_ROOT/include)
-!win32 {
-  isEmpty(SC_NO_NETWORKING) {
+# Curl is now required for everything, on MacOS use the default system curl (library with
+# MacOS, headers with MacOS SDK in XCode), on other unixy systems use pkg-config to find
+# it, on Windows, require CURL_ROOT to be defined (in an environment variable or
+# compilation definition) and pointing to the base curl directory (dll found in
+# CURL_ROOT/bin, includes in CURL_ROOT/include)
+isEmpty(SC_NO_NETWORKING) {
+  !win32:!macx {
     CONFIG += link_pkgconfig
     PKGCONFIG += libcurl
   }
-}
 
-win32 {
-  isEmpty(SC_NO_NETWORKING) {
+  macx:{
+    LIBS += -lcurl
+  }
+
+  win32 {
     isEmpty(CURL_ROOT) {
       CURL_ROOT = $$(CURL_ROOT)
     }

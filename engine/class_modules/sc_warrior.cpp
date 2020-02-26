@@ -5230,7 +5230,11 @@ void warrior_t::apl_fury()
     }
     else if ( racial_actions[ i ] == "lights_judgment" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=buff.recklessness.down" );
+      default_list->add_action( racial_actions[ i ] + ",if=buff.recklessness.down&debuff.siegebreaker.down" );
+    }
+    else if ( racial_actions[ i ] == "bag_of_tricks" )
+    {
+      default_list->add_action( racial_actions[ i ] + ",if=buff.recklessness.down&debuff.siegebreaker.down&buff.enrage.up" );
     }
     else
     {
@@ -5290,7 +5294,11 @@ void warrior_t::apl_arms()
     }
     else if ( racial_actions[ i ] == "lights_judgment" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=debuff.colossus_smash.down" );
+      default_list->add_action( racial_actions[ i ] + ",if=debuff.colossus_smash.down&buff.memory_of_lucid_dreams.down&cooldown.mortal_strike.remains" );
+    }
+    else if ( racial_actions[ i ] == "bag_of_tricks" )
+    {
+      default_list->add_action( racial_actions[ i ] + ",if=debuff.colossus_smash.down&buff.memory_of_lucid_dreams.down&cooldown.mortal_strike.remains" );
     }
     else if ( racial_actions[ i ] == "berserking" )
     {
@@ -5679,6 +5687,7 @@ struct test_of_might_t : public warrior_buff_t<buff_t>
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     stat_buff_t* test_of_might = warrior().buff.test_of_might;
+    test_of_might->expire();
     const int strength = static_cast<int>( current_value / 10 ) * as<int>( warrior().azerite.test_of_might.value( 1 ) );
     test_of_might->manual_stats_added = false;
     test_of_might->add_stat( STAT_STRENGTH, strength );
@@ -6073,7 +6082,7 @@ std::string warrior_t::default_potion() const
 
   std::string protection_pot =
       ( true_level > 110 )
-          ? "superior_battle_potion_of_strength"
+          ? "potion_of_unbridled_fury"
           : ( true_level > 100 )
                 ? "old_war"
                 : ( true_level >= 90 )

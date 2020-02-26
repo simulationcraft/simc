@@ -933,6 +933,16 @@ void azerite_essence_state_t::update_traversal_nodes()
     passives.push_back( 300577u );
   }
 
+  if ( neck.parsed.azerite_level >= 71 )
+  {
+    passives.push_back( 312927u );
+  }
+
+  if ( neck.parsed.azerite_level >= 80 )
+  {
+    passives.push_back( 312928u );
+  }
+
   range::for_each( passives, [ this ]( unsigned id ) {
     auto it = range::find_if( m_state, [id]( const slot_state_t& slot ) {
       return id == slot.id() && slot.type() == essence_type::PASSIVE;
@@ -1325,6 +1335,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 300170, special_effects::clockwork_heart       );
   unique_gear::register_special_effect( 300168, special_effects::personcomputer_interface );
   unique_gear::register_special_effect( 317137, special_effects::heart_of_darkness );
+  unique_gear::register_special_effect( 268437, special_effects::impassive_visage );
 
   // Generic Azerite Essences
   //
@@ -1333,6 +1344,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 300575, azerite_essences::stamina_milestone );
   unique_gear::register_special_effect( 300576, azerite_essences::stamina_milestone );
   unique_gear::register_special_effect( 300577, azerite_essences::stamina_milestone );
+  unique_gear::register_special_effect( 312927, azerite_essences::stamina_milestone );
+  unique_gear::register_special_effect( 312928, azerite_essences::stamina_milestone );
 
   // Generic minor Azerite Essences
   unique_gear::register_special_effect( 295365, azerite_essences::the_crucible_of_flame );
@@ -1351,6 +1364,12 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 294910, azerite_essences::sphere_of_suppression );
   unique_gear::register_special_effect( 310712, azerite_essences::breath_of_the_dying ); // lethal strikes
   unique_gear::register_special_effect( 311210, azerite_essences::spark_of_inspiration ); // unified strength
+  unique_gear::register_special_effect( 312771, azerite_essences::formless_void ); // symbiotic prensence
+  unique_gear::register_special_effect( 310603, azerite_essences::strength_of_the_warden ); // endurance
+  unique_gear::register_special_effect( 293030, azerite_essences::unwavering_ward ); // unwavering ward
+  unique_gear::register_special_effect( 297411, azerite_essences::spirit_of_preservation ); // devout spirit
+  unique_gear::register_special_effect( 295164, azerite_essences::touch_of_the_everlasting ); // will to survive
+
   // Vision of Perfection major Azerite Essence
   unique_gear::register_special_effect( 296325, azerite_essences::vision_of_perfection );
 }
@@ -1429,6 +1448,21 @@ void register_azerite_target_data_initializers( sim_t* sim )
     else
     {
       td->debuff.condensed_lifeforce = make_buff( *td, "condensed_lifeforce" )
+        ->set_quiet( true );
+    }
+  } );
+
+  sim->register_target_data_initializer( [] ( actor_target_data_t * td ) {
+    auto essence = td->source->find_azerite_essence( "Breath of the Dying" );
+    if ( essence.enabled() )
+    {
+      td->debuff.reaping_flames_tracker = make_buff( *td, "reaping_flames_tracker", td->source->find_spell( 311947 ) )
+        ->set_quiet( true );
+      td->debuff.reaping_flames_tracker->reset();
+    }
+    else
+    {
+      td->debuff.reaping_flames_tracker = make_buff( *td, "reaping_flames_tracker" )
         ->set_quiet( true );
     }
   } );
@@ -3640,6 +3674,7 @@ void clockwork_heart( special_effect_t& effect )
     ticker = make_buff( effect.player, "clockwork_heart_ticker", effect.trigger() )
       ->set_quiet( true )
       ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+      ->set_tick_on_application( true )
       ->set_tick_callback( [clockwork]( buff_t*, int, const timespan_t& ) {
         clockwork->trigger();
       } );
@@ -3719,6 +3754,49 @@ void heart_of_darkness( special_effect_t& effect )
       }
     } );
   }
+}
+
+void impassive_visage(special_effect_t& effect)
+{
+  class impassive_visage_heal_t : public heal_t
+  {
+  public:
+    impassive_visage_heal_t(player_t* p, const spell_data_t* s, double amount) :
+      heal_t("impassive_visage", p, s)
+    {
+      target = p;
+      background = true;
+      base_dd_min = base_dd_max = amount;
+    }
+  };
+
+  class impassive_visage_cb_t : public dbc_proc_callback_t
+  {
+    impassive_visage_heal_t* heal_action;
+  public:
+    impassive_visage_cb_t(const special_effect_t& effect, impassive_visage_heal_t* heal) :
+      dbc_proc_callback_t(effect.player, effect),
+      heal_action(heal)
+    { 
+    }
+
+    void execute(action_t* /* a */, action_state_t* /* state */) override
+    {
+      heal_action->execute();
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell(effect.driver()->name_cstr());
+  if (!power.enabled())
+  {
+    return;
+  } 
+  const spell_data_t* driver = power.spell();
+  const spell_data_t* spell = driver->effectN(1).trigger();
+  const spell_data_t* heal = driver->effectN(1).trigger();
+
+  auto heal_action = new impassive_visage_heal_t(effect.player, heal, power.value());
+  new impassive_visage_cb_t(effect, heal_action);
 }
 
 } // Namespace special effects ends
@@ -5271,17 +5349,63 @@ struct reaping_flames_t : public azerite_essence_major_t
   double lo_hp; // note these are base_value and NOT percent
   double hi_hp;
   double cd_mod;
+  double cd_reset;
+  buff_t* damage_buff;
 
   reaping_flames_t( player_t* p, const std::string& options_str ) :
-    azerite_essence_major_t( p, "reaping_flames", p->find_spell( 310690 ) )
+    azerite_essence_major_t( p, "reaping_flames", p->find_spell( 310690 ) ),
+    damage_buff()
   {
     parse_options( options_str );
     // Damage stored in R1 MINOR
     base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() );
 
-    lo_hp  = essence.spell_ref( 1u ).effectN( 2 ).base_value();
-    hi_hp  = essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value();
-    cd_mod = -essence.spell_ref( 1u ).effectN( 3 ).base_value();
+    may_crit = true;
+
+    lo_hp    = essence.spell_ref( 1u ).effectN( 2 ).base_value();
+    hi_hp    = essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value();
+    cd_mod   = -essence.spell_ref( 1u ).effectN( 3 ).base_value();
+    cd_reset = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 2 ).base_value();
+  }
+
+  void init() override
+  {
+    azerite_essence_major_t::init();
+
+    if ( essence.rank() < 3 )
+      return;
+
+    damage_buff = buff_t::find( player, "reaping_flames" );
+    if ( !damage_buff )
+    {
+      damage_buff = make_buff( player, "reaping_flames", player->find_spell( 311202 ) )
+        ->set_default_value( essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent() );
+
+      range::for_each( sim->actor_list, [ this ] ( player_t* target )
+      {
+        if ( !target->is_enemy() )
+          return;
+
+        target->callbacks_on_demise.emplace_back( [ this ] ( player_t* enemy )
+        {
+          if ( player->get_target_data( enemy )->debuff.reaping_flames_tracker->check() )
+          {
+            cooldown->adjust( timespan_t::from_seconds( cd_reset ) - cooldown->duration );
+            damage_buff->trigger();
+          }
+        } );
+      } );
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = azerite_essence_major_t::action_multiplier();
+
+    if ( damage_buff )
+      am *= 1.0 + damage_buff->check_value();
+
+    return am;
   }
 
   void execute() override
@@ -5296,6 +5420,12 @@ struct reaping_flames_t : public azerite_essence_major_t
 
     if ( reduce )
       cooldown->adjust( timespan_t::from_seconds ( cd_mod ) );
+
+    if ( damage_buff )
+    {
+      damage_buff->expire();
+      player->get_target_data( target )->debuff.reaping_flames_tracker->trigger();
+    }
   }
 };
 // End Breath of the Dying
@@ -5356,12 +5486,11 @@ void spark_of_inspiration( special_effect_t& effect )
   if ( !essence.enabled() )
     return;
 
-  buff_t* buff = buff_t::find( effect.player, effect.name() );
+  buff_t* buff = buff_t::find( effect.player, "unified_strength" );
   if ( !buff )
   {
     double haste = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
 
-    auto spell = effect.player->find_spell( 313643 );
     buff = make_buff<stat_buff_t>( effect.player, "unified_strength", effect.player->find_spell( 313643 ) )
       -> add_stat( STAT_HASTE_RATING, haste );
   }
@@ -5375,6 +5504,76 @@ void spark_of_inspiration( special_effect_t& effect )
   register_essence_corruption_resistance( effect );
 
   new unified_strength_cb_t( effect, essence, buff );
+}
+
+// Formless Void
+// Minor: Symbiotic Presence
+// id=312771 R1 minor base, primary stat on effect 2
+// id=312915 minor agi/haste buff (duration)
+// id=312773 R2 upgrade, increase R1 buff by effect 1 %
+// id=312774 R3 upgrade, haste on effect 1
+void formless_void( special_effect_t& effect )
+{
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
+    return;
+
+  buff_t* buff = buff_t::find( effect.player, "symbiotic_presence" );
+  if ( !buff )
+  {
+    auto primary = essence.spell_ref( 1u, essence_spell::BASE, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+    primary *= 1 + essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+
+    stat_buff_t* stat_buff = make_buff<stat_buff_t>( effect.player, "symbiotic_presence", effect.player->find_spell( 312915 ) )
+      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), primary );
+
+    if ( essence.rank() >= 3 )
+    {
+      stat_buff -> add_stat( STAT_HASTE_RATING, essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average( essence.item() ) );
+    }
+
+    buff = stat_buff;
+  }
+
+  timespan_t interval = buff->sim->bfa_opts.symbiotic_presence_interval;
+  effect.player -> register_combat_begin( [ buff, interval ]( player_t* )
+  {
+    buff -> trigger();
+    make_repeating_event( *buff -> sim, interval, [ buff ]()
+    {
+      buff -> trigger();
+    } );
+  } );
+
+  register_essence_corruption_resistance( effect );
+}
+
+// Strength of the Warden
+// Just register the corruption resistance
+void strength_of_the_warden( special_effect_t& effect )
+{
+  register_essence_corruption_resistance( effect );
+}
+
+// Unwavering Ward
+// Just register the corruption resistance
+void unwavering_ward( special_effect_t& effect )
+{
+  register_essence_corruption_resistance( effect );
+}
+
+// Spirit of Preservation
+// Just register the corruption resistance
+void spirit_of_preservation( special_effect_t& effect )
+{
+  register_essence_corruption_resistance( effect );
+}
+
+// Touch of the Everlasting
+// Just register the corruption resistance
+void touch_of_the_everlasting( special_effect_t& effect )
+{
+  register_essence_corruption_resistance( effect );
 }
 
 } // Namespace azerite essences ends

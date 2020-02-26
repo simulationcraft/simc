@@ -1,4 +1,4 @@
-SimulationCraft 820-02 for World of Warcraft 8.3.0 Live (wow build 33051)
+SimulationCraft 830-01 for World of Warcraft 8.3.0 Live (wow build 33051)
 
 bonus_id={ 1 }, desc={ Heroic }, ilevel_adjust={ 20 }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
@@ -2687,6 +2687,7 @@ bonus_id={ 5115 }, quality={ rare }
 bonus_id={ 5116 }, quality={ rare }
 bonus_id={ 5117 }, ilevel_adjust={ -15 }
 bonus_id={ 5118 }, ilevel_adjust={ -5 }
+bonus_id={ 5119 }, desc={ Heroic }
 bonus_id={ 5121 }, quality={ rare }
 bonus_id={ 5122 }, quality={ rare }
 bonus_id={ 5123 }, quality={ rare }
@@ -2888,6 +2889,7 @@ bonus_id={ 5474 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 375 @plvl 120 }
 bonus_id={ 5475 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 385 @plvl 120 }
 bonus_id={ 5476 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 395 @plvl 120 }
 bonus_id={ 5477 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 350 @plvl 120 }
+bonus_id={ 5479 }, desc={ Heroic }
 bonus_id={ 5480 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5481 }, stats={ 100% Sta [0.3300] }
 bonus_id={ 5482 }, stats={ 100% Sta [0.3300] }
