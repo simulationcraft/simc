@@ -6916,36 +6916,16 @@ void corruption::lash_of_the_void( special_effect_t& effect )
 {
   struct lash_of_the_void_t : public proc_spell_t
   {
-    double scaled_dmg;
-
     lash_of_the_void_t( const special_effect_t& effect )
-      : proc_spell_t( "lash_of_the_void", effect.player, effect.driver() ),
-        scaled_dmg( effect.driver()->effectN( 1 ).average( effect.item ) )
+      : proc_spell_t( effect.name(), effect.player, effect.driver() )
     {
-      base_dd_min = base_dd_max = scaled_dmg;
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
       aoe                       = -1;
-    }
-
-    double base_da_min( const action_state_t* ) const override
-    {
-      return scaled_dmg;
-    }
-
-    double base_da_max( const action_state_t* ) const override
-    {
-      return scaled_dmg;
     }
   };
 
-  auto lash_of_the_void = static_cast<lash_of_the_void_t*>( effect.player->find_action( "lash_of_the_void" ) );
-
-  if ( !lash_of_the_void )
-  {
-    effect.execute_action = create_proc_action<lash_of_the_void_t>( "lash_of_the_void", effect );
-    new dbc_proc_callback_t( effect.player, effect );
-  }
-  else
-    lash_of_the_void->scaled_dmg += effect.driver()->effectN( 1 ).average( effect.item );
+  effect.execute_action = create_proc_action<lash_of_the_void_t>( effect.name(), effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Flash of Insight
