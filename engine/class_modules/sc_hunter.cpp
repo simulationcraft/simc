@@ -5617,9 +5617,9 @@ void hunter_t::apl_surv()
   cds->add_action( "worldvein_resonance" );
   cds->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );	
   // lucid Major Focusdump phase	
-  cds->add_action( this, "Serpent_Sting,if=refreshable&buff.vipers_venom.up&!cooldown.memory_of_lucid_dreams.remains" );
-  cds->add_talent( this, "Mongoose Bite,if=!cooldown.memory_of_lucid_dreams.remains" );
-  cds->add_action( this, "Wildfire Bomb,if=full_recharge_time<1.5*gcd&focus<action.mongoose_bite.cost&!cooldown.memory_of_lucid_dreams.remains" );
+  cds->add_action( this, "Serpent_Sting", "if=refreshable&buff.vipers_venom.up&!cooldown.memory_of_lucid_dreams.remains" );
+  cds->add_talent( this, "Mongoose Bite", "if=!cooldown.memory_of_lucid_dreams.remains" );
+  cds->add_action( this, "Wildfire Bomb", "if=full_recharge_time<1.5*gcd&focus<action.mongoose_bite.cost&!cooldown.memory_of_lucid_dreams.remains" );
   cds->add_action( "memory_of_lucid_dreams,if=focus<action.mongoose_bite.cost&buff.coordinated_assault.up" );
 
   st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
