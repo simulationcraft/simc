@@ -5432,13 +5432,13 @@ void hunter_t::apl_bm()
 
   st -> add_action( this, "Barbed Shot", "if=pet.turtle.buff.frenzy.up&pet.turtle.buff.frenzy.remains<gcd|cooldown.bestial_wrath.remains&(full_recharge_time<gcd|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd)" );
   st -> add_action( "concentrated_flame,if=focus+focus.regen*gcd<focus.max&buff.bestial_wrath.down&(!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight)|full_recharge_time<gcd|target.time_to_die<5" );
-  st -> add_action( this, "Aspect of the Wild", "if=cooldown.barbed_shot.charges<1|!azerite.primal_instincts.enabled" );
+  st -> add_action( this, "Aspect of the Wild", "if=buff.aspect_of_the_wild.down&(cooldown.barbed_shot.charges<1|!azerite.primal_instincts.enabled)" );
   st -> add_talent( this, "Stampede", "if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15" );
   st -> add_talent( this, "A Murder of Crows" );
   st -> add_action( "focused_azerite_beam,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10|target.time_to_die<5" );
   st -> add_action( this, "Bestial Wrath", "if=!buff.bestial_wrath.up&cooldown.aspect_of_the_wild.remains>15|target.time_to_die<15+gcd" );
-  st -> add_action( this, "Barbed Shot", "if=azerite.dance_of_death.rank>1&buff.dance_of_death.remains<gcd&crit_pct_current>40" );
+  st -> add_action( this, "Barbed Shot", "if=azerite.dance_of_death.rank>1&buff.dance_of_death.remains<gcd" );
   st -> add_action( "blood_of_the_enemy,if=buff.aspect_of_the_wild.remains>10+gcd|target.time_to_die<10+gcd" );
   st -> add_action( this, "Kill Command" );
   st -> add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
