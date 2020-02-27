@@ -2499,9 +2499,11 @@ void sim_t::init()
     {
       switch ( timewalk )
       {
-        case 85: scale_to_itemlevel = 300; break;
-        case 80: scale_to_itemlevel = 160; break;
-        case 70: scale_to_itemlevel = 95;  break;
+        case 100: scale_to_itemlevel = 152; break;
+        case 90:  scale_to_itemlevel = 116; break;
+        case 85:  scale_to_itemlevel = 104; break;
+        case 80:  scale_to_itemlevel = 92;  break;
+        case 70:  scale_to_itemlevel = 67;  break;
       }
     }
     scale_itemlevel_down_only = true;
