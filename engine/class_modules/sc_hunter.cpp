@@ -5572,8 +5572,8 @@ void hunter_t::apl_surv()
   action_priority_list_t* cleave         = get_action_priority_list( "cleave" );
 
   precombat -> add_action( "use_item,name=azsharas_font_of_power" );	
-  precombat -> add_action( "use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists" );
   precombat -> add_action( "guardian_of_azeroth" );
+  precombat -> add_action( this, "Coordinated Assault" );	
   precombat -> add_action( "worldvein_resonance" );
   precombat -> add_action( "potion,dynamic_prepot=1" );
   precombat -> add_talent( this, "Steel Trap" );
@@ -5603,7 +5603,7 @@ void hunter_t::apl_surv()
   cds -> add_action( "potion,if=buff.guardian_of_azeroth.up&(buff.berserking.up|buff.blood_fury.up|!race.troll)|(consumable.potion_of_unbridled_fury&target.time_to_die<61|target.time_to_die<26)|!essence.condensed_lifeforce.major&buff.coordinated_assault.up" );
   cds -> add_action( this, "Aspect of the Eagle", "if=target.distance>=6" );
   cds -> add_action( "use_item,name=ashvanes_razor_coral,if=equipped.dribbling_inkpod&(debuff.razor_coral_debuff.down|time_to_pct_30<1|(health.pct<30&buff.guardian_of_azeroth.up|buff.memory_of_lucid_dreams.up))|(!equipped.dribbling_inkpod&(buff.memory_of_lucid_dreams.up|buff.guardian_of_azeroth.up&cooldown.guardian_of_azeroth.remains>175)|debuff.razor_coral_debuff.down)|target.time_to_die<20" );
-  cds -> add_action( "use_item,name=galecallers_boon,if=cooldown.memory_of_lucid_dreams.remains|talent.wildfire_infusion.enabled&cooldown.coordinated_assault.remains|cooldown.cyclotronic_blast.remains|!essence.memory_of_lucid_dreams.major&cooldown.coordinated_assault.remains" );
+  cds -> add_action( "use_item,name=galecallers_boon,if=cooldown.memory_of_lucid_dreams.remains|talent.wildfire_infusion.enabled&cooldown.coordinated_assault.remains|!essence.memory_of_lucid_dreams.major&cooldown.coordinated_assault.remains" );
   cds -> add_action( "use_item,name=azsharas_font_of_power" );
 	
   // Essences
@@ -5627,8 +5627,8 @@ void hunter_t::apl_surv()
   st -> add_action( this, "Raptor Strike", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)" );
   st -> add_talent( this, "Mongoose Bite", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)",
                         "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
-  st -> add_action( this, "Serpent_Sting", "if=buff.vipers_venom.up&buff.vipers_venom.remains<1.5*gcd" );
   st -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
+  st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&buff.vipers_venom.remains<1*gcd" );
   st -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
   st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)|time_to_die<18&!dot.wildfire_bomb.ticking" );
   st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|dot.serpent_sting.refreshable&!buff.coordinated_assault.up" );
