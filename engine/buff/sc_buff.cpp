@@ -1536,6 +1536,23 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
       tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / tick_time() ), timespan_t::zero() );
     }
   }
+
+  if ( sim->log )
+  {
+    std::string buff_display_name = fmt::format( "{}_{}", name_str, current_stack );
+
+    if ( player )
+    {
+      if ( !player->is_sleeping() )
+      {
+        sim->print_log( "{} refreshes {} (value={})", *player, buff_display_name, current_value );
+      }
+    }
+    else
+    {
+      sim->print_log( "Raid refreshes {} (value={})", buff_display_name, current_value );
+    }
+  }
 }
 
 void buff_t::bump( int stacks, double value )
@@ -1828,12 +1845,12 @@ void buff_t::aura_loss()
   {
     if ( !player->is_sleeping() )
     {
-      sim->print_log( "{} loses {}", *player, *this );
+      sim->print_log( "{} loses {}", *player, name_str );
     }
   }
   else
   {
-    sim->print_log( "Raid loses {}", *this );
+    sim->print_log( "Raid loses {}", name_str );
   }
 }
 
