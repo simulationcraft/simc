@@ -5846,13 +5846,13 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( "call_action_list,name=essences,if=!stealthed.all" );
-    cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&energy.time_to_max>1&(!equipped.azsharas_font_of_power|cooldown.latent_arcana.remains>20)" );
+    cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&(!equipped.azsharas_font_of_power|cooldown.latent_arcana.remains>20)" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds -> add_action( this, "Blade Flurry", "if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)", "Blade Flurry on 2+ enemies. With adds: Use if they stay for 8+ seconds or if your next charge will be ready in time for the next wave." );
     cds -> add_talent( this, "Ghostly Strike", "if=variable.blade_flurry_sync&combo_points.deficit>=1+buff.broadside.up" );
     cds -> add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&(energy.time_to_max>5|energy<15)" );
-    cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>1" );
+    cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>1&(!buff.adrenaline_rush.up|energy<45)" );
     cds -> add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition", "Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell." );
     cds -> add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
 

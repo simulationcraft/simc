@@ -71,7 +71,7 @@ actions.build+=/sinister_strike
 
 # Cooldowns
 actions.cds=call_action_list,name=essences,if=!stealthed.all
-actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&energy.time_to_max>1&(!equipped.azsharas_font_of_power|cooldown.latent_arcana.remains>20)
+actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&(!equipped.azsharas_font_of_power|cooldown.latent_arcana.remains>20)
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
 # If no adds will die within the next 30s, use MfD on boss without any CP.
@@ -80,7 +80,7 @@ actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration
 actions.cds+=/blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)
 actions.cds+=/ghostly_strike,if=variable.blade_flurry_sync&combo_points.deficit>=1+buff.broadside.up
 actions.cds+=/killing_spree,if=variable.blade_flurry_sync&(energy.time_to_max>5|energy<15)
-actions.cds+=/blade_rush,if=variable.blade_flurry_sync&energy.time_to_max>1
+actions.cds+=/blade_rush,if=variable.blade_flurry_sync&energy.time_to_max>1&(!buff.adrenaline_rush.up|energy<45)
 # Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell.
 actions.cds+=/vanish,if=!stealthed.all&variable.ambush_condition
 actions.cds+=/shadowmeld,if=!stealthed.all&variable.ambush_condition
