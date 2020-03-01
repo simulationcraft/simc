@@ -5171,7 +5171,7 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( this, "Throw Glaive", "if=talent.demon_blades.enabled" );
 
   action_priority_list_t* apl_demonic = get_action_priority_list( "demonic" );
-  apl_demonic->add_action( this, "Fel Barrage", "if=(debuff.blood_of_the_enemy.up|cooldown.blood_of_the_enemy.remains>25)&(buff.metamorphosis.up|cooldown.eye_beam.remains>20)")
+  apl_demonic->add_action( this, "Fel Barrage", "if=(debuff.blood_of_the_enemy.up|cooldown.blood_of_the_enemy.remains>25)&(buff.metamorphosis.up|cooldown.eye_beam.remains>20)");
   apl_demonic->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_demonic->add_action( this, "Eye Beam", "if=raid_event.adds.up|raid_event.adds.in>25" );
   apl_demonic->add_talent( this, "Fel Barrage", "if=((buff.metamorphosis.up)&raid_event.adds.in>30)|active_enemies>desired_targets" );
