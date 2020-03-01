@@ -5838,8 +5838,11 @@ void items::psyche_shredder( special_effect_t& effect )
   // Create the action for the debuff damage here, before any debuff initialization takes place.
   create_proc_action<shredded_psyche_t>( "shredded_psyche", effect );
 
+  // Note that this is not necessarily a bug, we just don't know how the updated RPPM formula
+  // introduced in BfA interacts with ICD/infrequent trigger attempts. Disabling RPPM BLP
+  // makes the simmed ppm roughly match the observed ppm.
   if ( effect.player->bugs )
-    effect.ppm_ = -2.0;
+    effect.rppm_blp_ = real_ppm_t::BLP_DISABLED;
 
   new dbc_proc_callback_t( effect.player, effect );
 }

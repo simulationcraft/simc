@@ -2871,7 +2871,7 @@ private:
     blp_state( BLP_ENABLED )
   { }
 
-  static double max_interval() { return 10.0; }
+  static double max_interval() { return 3.5; }
   static double max_bad_luck_prot() { return 1000.0; }
 public:
   static double proc_chance( player_t*         player,
