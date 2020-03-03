@@ -205,6 +205,7 @@ void overclocking_bit_band( special_effect_t& );
 void shorting_bit_band( special_effect_t& );
 // 8.2.0 - Mechagon trinkets and special items
 void hyperthread_wristwraps( special_effect_t& );
+void anodized_deflectors( special_effect_t& );
 // 8.3.0 - Visions of N'Zoth Trinkets and Special Items
 void voidtwisted_titanshard( special_effect_t& );
 void vitacharged_titanshard( special_effect_t& );
@@ -5577,6 +5578,33 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
   effect.execute_action = create_proc_action<hyperthread_reduction_t>( "hyperthread_wristwraps", effect, cb );
 }
 
+// Anodized Deflectors
+
+void items::anodized_deflectors( special_effect_t& effect )
+{
+  effect.disable_action();
+
+  buff_t* anodized_deflectors_buff = buff_t::find( effect.player, "anodized_deflection" );
+
+  if ( !anodized_deflectors_buff )
+  {
+    auto damage = create_proc_action<aoe_proc_t>( "anodized_deflection", effect, "anodized_deflection", 301554 );
+    // Manually set the damage because it's stored in the driver spell
+    // The damaging spell has a value with a another -much higher- coefficient that doesn't seem to be used in-game
+    damage -> base_dd_min = damage -> base_dd_max = effect.driver() -> effectN( 3 ).average( effect.item );
+
+    anodized_deflectors_buff = make_buff<stat_buff_t>( effect.player, "anodized_deflection", effect.driver() )
+      -> add_stat( STAT_PARRY_RATING, effect.driver() -> effectN( 1 ).average( effect.item ) )
+      -> add_stat( STAT_AVOIDANCE_RATING, effect.driver() -> effectN( 2 ).average( effect.item ) )
+      -> set_stack_change_callback( [ damage ]( buff_t*, int, int new_ ) {
+    if ( new_ == 0 )
+      damage -> execute();
+    } );
+  }
+
+  effect.custom_buff = anodized_deflectors_buff;
+}
+
 // Shared Callback for all Titan trinkets
 struct titanic_empowerment_cb_t : public dbc_proc_callback_t
 {
@@ -7168,6 +7196,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 303564, items::ashvanes_razor_coral );
   register_special_effect( 296963, items::dribbling_inkpod );
   register_special_effect( 300142, items::hyperthread_wristwraps );
+  register_special_effect( 300140, items::anodized_deflectors );
   register_special_effect( 301753, items::reclaimed_shock_coil );
   register_special_effect( 303356, items::dreams_end );
   register_special_effect( 303353, items::divers_folly );
