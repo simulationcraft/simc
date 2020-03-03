@@ -5925,7 +5925,7 @@ void items::draconic_empowerment( special_effect_t& effect )
     effect.custom_buff =
         make_buff<stat_buff_t>( effect.player, "draconic_empowerment", effect.player->find_spell( 317859 ) )
             ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-                        effect.player->find_spell( 317859 )->effectN( 1 ).average( effect.item ) );
+                        effect.player->find_spell( 317859 )->effectN( 1 ).average( effect.player ) );
 
   effect.proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC;  // Proc flags are missing in spell data.
 
