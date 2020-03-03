@@ -6182,7 +6182,7 @@ void corruption::twilight_devastation( special_effect_t& effect )
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 )
     {
       // TODO: Check what this scales with
-      aoe = -1;
+      aoe = 10;
       // Set base damage so that flags are properly set
       base_dd_min += 1;
       base_dd_max += 1;
@@ -6196,6 +6196,13 @@ void corruption::twilight_devastation( special_effect_t& effect )
     double base_da_max( const action_state_t* ) const override
     {
       return player->resources.max[ RESOURCE_HEALTH ] * maxhp_multiplier;
+    }
+
+    double composite_aoe_multiplier( const action_state_t* s ) const override
+    {
+      // 50% damage penalty for targets 6-10, as per
+      // https://us.forums.blizzard.com/en/wow/t/hotfixes-updated-february-24-2020/414943/59
+      return s->chain_target >= 5 ? 0.5 : 1.0;
     }
   };
 
