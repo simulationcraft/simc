@@ -5598,6 +5598,7 @@ void items::anodized_deflectors( special_effect_t& effect )
       -> add_stat( STAT_AVOIDANCE_RATING, effect.driver() -> effectN( 2 ).average( effect.item ) )
       -> set_stack_change_callback( [ damage ]( buff_t*, int, int new_ ) {
     if ( new_ == 0 )
+      damage -> set_target( damage -> player -> target );
       damage -> execute();
     } );
   }
