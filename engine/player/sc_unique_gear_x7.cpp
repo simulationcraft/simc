@@ -6200,9 +6200,14 @@ void corruption::twilight_devastation( special_effect_t& effect )
 
     double composite_aoe_multiplier( const action_state_t* s ) const override
     {
+      double m = proc_t::composite_aoe_multiplier( s );
+
       // 50% damage penalty for targets 6-10, as per
       // https://us.forums.blizzard.com/en/wow/t/hotfixes-updated-february-24-2020/414943/59
-      return s->chain_target >= 5 ? 0.5 : 1.0;
+      if ( s->chain_target >= 5 )
+        m *= 0.5;
+
+      return m;
     }
   };
 
