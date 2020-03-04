@@ -8172,10 +8172,6 @@ void shaman_t::init_action_list_elemental()
   precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
   precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
 
-  // All Shamans Bloodlust by default
-  def->add_action( this, "Bloodlust", "if=azerite.ancestral_resonance.enabled",
-                   "Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present." );
-
   // In-combat potion
   def->add_action(
       "potion,if=expected_combat_length-time<60|cooldown.guardian_of_azeroth.remains<30",
