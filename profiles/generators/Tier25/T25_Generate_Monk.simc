@@ -19,7 +19,7 @@ legs=onyximbued_breeches,id=174139,bonus_id=4824/1517/6573
 feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517/6573
 finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517/6573,enchant=accord_of_versatility
 finger2=lurking_schemers_band,id=175008,bonus_id=4824/1517,enchant=accord_of_versatility,gems=versatile_dark_opal
-trinket1=dead_eye_spyglass,id=159623,bonus_id=6536/1637/4786
+trinket1=deadeye_spyglass,id=159623,bonus_id=6536/1637/4786
 trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=unguent_caress,id=172197,bonus_id=4824/1517,enchant=deadly_navigation
 off_hand=mishun_blade_of_tyrants,id=174105,bonus_id=4824/1517,enchant=versatile_navigation
