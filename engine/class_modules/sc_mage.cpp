@@ -3797,7 +3797,8 @@ struct living_bomb_dot_t : public fire_mage_spell_t
 
     if ( primary )
     {
-      for ( auto t : p()->action.living_bomb_explosion->target_list() )
+      auto targets = p()->action.living_bomb_explosion->target_list();
+      for ( auto t : targets )
       {
         if ( t == target )
           continue;
@@ -4156,7 +4157,8 @@ struct pyroblast_t : public hot_streak_spell_t
 
     if ( trailing_embers )
     {
-      for ( auto t : target_list() )
+      auto targets = target_list();
+      for ( auto t : targets )
       {
         trailing_embers->set_target( t );
         trailing_embers->execute();
