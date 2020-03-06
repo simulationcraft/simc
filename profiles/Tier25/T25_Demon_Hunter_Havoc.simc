@@ -81,7 +81,7 @@ actions.demonic+=/vengeful_retreat,if=movement.distance>15
 actions.demonic+=/throw_glaive,if=talent.demon_blades.enabled
 
 actions.essences=concentrated_flame,if=(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)
-actions.essences+=/blood_of_the_enemy,if=buff.metamorphosis.up|target.time_to_die<=10
+actions.essences+=/blood_of_the_enemy,if=(buff.metamorphosis.up&!cooldown.blade_dance.ready)|target.time_to_die<=10
 actions.essences+=/guardian_of_azeroth,if=(buff.metamorphosis.up&cooldown.metamorphosis.ready)|buff.metamorphosis.remains>25|target.time_to_die<=30
 actions.essences+=/focused_azerite_beam,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60
 actions.essences+=/purifying_blast,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60
