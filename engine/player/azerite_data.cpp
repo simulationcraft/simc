@@ -3839,7 +3839,7 @@ void gemhide(special_effect_t& effect)
   }
 
   effect.spell_id = 270579;
-  const spell_data_t* buff_spell = power.spell()->effectN(2).trigger();
+  const spell_data_t* buff_spell = effect.player->find_spell(270576);
 
   buff_t* buff = buff_t::find(effect.player, "gemhide");
   if (!buff)

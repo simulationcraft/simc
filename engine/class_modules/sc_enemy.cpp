@@ -629,7 +629,6 @@ struct melee_nuke_t : public enemy_action_t<melee_attack_t>
     may_block = true;
     base_execute_time = timespan_t::from_seconds( 3.0 );
     base_dd_min = 2800;
-    proc = true;
 
     parse_options( options_str );
   }
