@@ -62,6 +62,7 @@ struct enemy_t : public player_t
   void init_target() override;
   virtual std::string generate_action_list();
   std::string generate_tank_action_list(tank_dummy_e);
+  double get_armor_coeff(tank_dummy_e);
   void init_action_list() override;
   void init_stats() override;
   double resource_loss( resource_e, double, gain_t*, action_t* ) override;
@@ -617,7 +618,7 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
 
 // Melee Nuke ===============================================================
 
-struct melee_nuke_t : public enemy_action_t<attack_t>
+struct melee_nuke_t : public enemy_action_t<melee_attack_t>
 {
   // default constructor
   melee_nuke_t( player_t* p, const std::string& options_str ) :
@@ -628,6 +629,7 @@ struct melee_nuke_t : public enemy_action_t<attack_t>
     may_block = true;
     base_execute_time = timespan_t::from_seconds( 3.0 );
     base_dd_min = 2800;
+    proc = true;
 
     parse_options( options_str );
   }
@@ -1048,32 +1050,9 @@ struct tank_dummy_enemy_t : public enemy_t
   {
     enemy_t::init_defense();
 
-    double dummy_armor_coeff = dbc.armor_mitigation_constant( level() );
-
-    // Max level enemies have different armor coefficient based on the difficulty setting and the area they're fought in
-    // New values are added when a new tier is released
-    // 8.3 values for Mythic/M+ Dungeons (_Dungeon setting) and Normal/Mythic Ny'alotha (_Raid/_Mythic setting) here
-    switch ( tank_dummy_enum )
-    {
-      case tank_dummy_e::DUNGEON:
-        dummy_armor_coeff = 14282.1;
-        break;
-      case tank_dummy_e::RAID:
-        dummy_armor_coeff = 14282.1;
-        break;
-      case tank_dummy_e::HEROIC:
-        // TODO: fix values
-        dummy_armor_coeff = 14282.1;
-        break;
-      case tank_dummy_e::MYTHIC:
-        dummy_armor_coeff = 17986.5;
-        break;
-      default:
-        break;
-    }
-
-    initial.armor_coeff = dummy_armor_coeff;
+    initial.armor_coeff = get_armor_coeff(tank_dummy_enum);
   }
+
 
   void init_base_stats() override
   {
@@ -1184,6 +1163,34 @@ void enemy_t::init_base_stats()
   }
 }
 
+double enemy_t::get_armor_coeff(tank_dummy_e tank_dummy_enum)
+{
+  double dummy_armor_coeff = dbc.armor_mitigation_constant(level());
+
+  // Max level enemies have different armor coefficient based on the difficulty setting and the area they're fought in
+  // New values are added when a new tier is released
+  // 8.3 values for Mythic/M+ Dungeons (_Dungeon setting) and Normal/Mythic Ny'alotha (_Raid/_Mythic setting) here
+  switch (tank_dummy_enum)
+  {
+  case tank_dummy_e::DUNGEON:
+    dummy_armor_coeff = 14282.1;
+    break;
+  case tank_dummy_e::RAID:
+    dummy_armor_coeff = 14282.1;
+    break;
+  case tank_dummy_e::HEROIC:
+    dummy_armor_coeff = 16002.0;
+    break;
+  case tank_dummy_e::MYTHIC:
+    dummy_armor_coeff = 17986.5;
+    break;
+  default:
+    break;
+  }
+
+  return dummy_armor_coeff;
+}
+
 void enemy_t::init_defense()
 {
   player_t::init_defense();
@@ -1192,7 +1199,7 @@ void enemy_t::init_defense()
   collected_data.health_changes.collect = false;
 
   // Default fluffy pillow armor coefficient, set to Heroic Ny'alotha armor coefficient
-  initial.armor_coeff = 16002.0;
+  initial.armor_coeff = get_armor_coeff(tank_dummy_e::HEROIC);
 
   if ( ( total_gear.armor ) <= 0 )
   {
