@@ -11,11 +11,11 @@
 
 namespace { // UNNAMED NAMESPACE
 
-enum tank_dummy_e
+enum class tank_dummy_e
 {
-  TANK_DUMMY_NONE = 0,
-  TANK_DUMMY_WEAK, TANK_DUMMY_DUNGEON, TANK_DUMMY_RAID, TANK_DUMMY_MYTHIC,
-  TANK_DUMMY_MAX
+  NONE = 0,
+  WEAK, DUNGEON, RAID, HEROIC, MYTHIC,
+  MAX
 };
 
 struct enemy_t : public player_t
@@ -61,6 +61,7 @@ struct enemy_t : public player_t
   void init_resources( bool force = false ) override;
   void init_target() override;
   virtual std::string generate_action_list();
+  std::string generate_tank_action_list(tank_dummy_e);
   void init_action_list() override;
   void init_stats() override;
   double resource_loss( resource_e, double, gain_t*, action_t* ) override;
@@ -1001,7 +1002,7 @@ struct tank_dummy_enemy_t : public enemy_t
   tank_dummy_enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID ) :
     enemy_t( s, n, r, TANK_DUMMY ),
     tank_dummy_str( "none" ),
-    tank_dummy_enum( TANK_DUMMY_NONE )
+    tank_dummy_enum( tank_dummy_e::NONE )
   {
   }
 
@@ -1014,31 +1015,33 @@ struct tank_dummy_enemy_t : public enemy_t
   tank_dummy_e convert_tank_dummy_string( const std::string& tank_dummy_string )
   {
     if ( util::str_in_str_ci( tank_dummy_string, "none" ) )
-      return TANK_DUMMY_NONE;
+      return tank_dummy_e::NONE;
     if ( util::str_in_str_ci( tank_dummy_string, "weak" ) )
-      return TANK_DUMMY_WEAK;
+      return tank_dummy_e::WEAK;
     if ( util::str_in_str_ci( tank_dummy_string, "dungeon" ) )
-      return TANK_DUMMY_DUNGEON;
+      return tank_dummy_e::DUNGEON;
     if ( util::str_in_str_ci( tank_dummy_string, "raid" ) )
-      return TANK_DUMMY_RAID;
+      return tank_dummy_e::RAID;
+    if (util::str_in_str_ci(tank_dummy_string, "heroic"))
+      return tank_dummy_e::HEROIC;
     if ( util::str_in_str_ci( tank_dummy_string, "mythic" ) )
-      return TANK_DUMMY_MYTHIC;
+      return tank_dummy_e::MYTHIC;
 
     if ( !tank_dummy_string.empty() && sim -> debug )
       sim -> out_debug.printf( "Unknown Tank Dummy string input provided: %s", tank_dummy_string.c_str() );
 
-    return TANK_DUMMY_NONE;
+    return tank_dummy_e::NONE;
   }
 
   void init() override
   {
     tank_dummy_enum = convert_tank_dummy_string( tank_dummy_str );
      // Try parsing the name
-    if ( tank_dummy_enum == TANK_DUMMY_NONE )
+    if ( tank_dummy_enum == tank_dummy_e::NONE )
       tank_dummy_enum = convert_tank_dummy_string( name_str );
     // if we still have no clue, pit them against the worst case
-    if ( tank_dummy_enum == TANK_DUMMY_NONE )
-      tank_dummy_enum = static_cast<tank_dummy_e>( TANK_DUMMY_MAX - 1 );
+    if ( tank_dummy_enum == tank_dummy_e::NONE )
+      tank_dummy_enum = static_cast<tank_dummy_e>(static_cast<int>(tank_dummy_e::MAX) - 1 );
   }
 
   void init_defense() override
@@ -1052,13 +1055,17 @@ struct tank_dummy_enemy_t : public enemy_t
     // 8.3 values for Mythic/M+ Dungeons (_Dungeon setting) and Normal/Mythic Ny'alotha (_Raid/_Mythic setting) here
     switch ( tank_dummy_enum )
     {
-      case TANK_DUMMY_DUNGEON:
+      case tank_dummy_e::DUNGEON:
         dummy_armor_coeff = 14282.1;
         break;
-      case TANK_DUMMY_RAID:
+      case tank_dummy_e::RAID:
         dummy_armor_coeff = 14282.1;
         break;
-      case TANK_DUMMY_MYTHIC:
+      case tank_dummy_e::HEROIC:
+        // TODO: fix values
+        dummy_armor_coeff = 14282.1;
+        break;
+      case tank_dummy_e::MYTHIC:
         dummy_armor_coeff = 17986.5;
         break;
       default:
@@ -1075,10 +1082,10 @@ struct tank_dummy_enemy_t : public enemy_t
     // override level
     switch ( tank_dummy_enum )
     {
-      case TANK_DUMMY_DUNGEON:
+      case tank_dummy_e::DUNGEON:
         true_level = sim -> max_player_level + 2;
         break;
-      case TANK_DUMMY_WEAK:
+      case tank_dummy_e::WEAK:
         true_level = sim -> max_player_level;
         break;
       default:
@@ -1091,15 +1098,7 @@ struct tank_dummy_enemy_t : public enemy_t
 
   std::string generate_action_list() override
   {
-    std::string als = "";
-    int aa_damage[ 5 ] = { 0, 100000, 200000, 250000, 500000 }; // NONE, WEAK, DUNGEON, RAID, MYTHIC
-    int aa_damage_var[ 5 ] = { 0, 8000, 20000, 25000, 50000 };
-    int dummy_strike_damage[ 5 ] = { 0, 250000, 500000, 625000, 1250000 }; // Base melee nuke damage
-
-    als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_enum ] ) + ",range=" + util::to_string( aa_damage_var[ tank_dummy_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
-    als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_enum ] ) + ",range=0,attack_speed=2,cooldown=30,aoe_tanks=1";
-
-    return als;
+    return generate_tank_action_list(tank_dummy_enum);
   }
 };
 
@@ -1266,11 +1265,24 @@ void enemy_t::init_target()
 
 std::string enemy_t::generate_action_list()
 {
-  std::string als = "";
+  return generate_tank_action_list(tank_dummy_e::HEROIC);
+}
 
-  // this is the standard Fluffy Pillow action list
-  als += "/auto_attack,damage=400000,attack_speed=1.5,aoe_tanks=1,range=" + util::to_string( 25000 );
-  als += "/melee_nuke,damage=1000000,cooldown=15,attack_speed=2.0,aoe_tanks=1";
+std::string enemy_t::generate_tank_action_list(tank_dummy_e tank_dummy)
+{
+  std::string als = "";
+  constexpr size_t numTankDummies = static_cast<size_t>(tank_dummy_e::MAX);
+  //                               NONE, WEAK, DUNGEON, RAID, HEROIC, MYTHIC
+  int aa_damage[numTankDummies] = { 0, 100000, 200000, 250000, 400000, 500000 };
+  int aa_damage_var[numTankDummies] = { 0, 8000, 20000, 25000, 40000, 50000 };
+  int dummy_strike_damage[numTankDummies] = { 0, 250000, 500000, 625000, 1000000, 1250000 }; // Base melee nuke damage
+  int background_spell_damage[numTankDummies] = { 0, 1000, 2000, 2500, 4000, 5000 };
+  int background_spell_damage_var[numTankDummies] = { 0, 80, 200, 250, 400, 500 };
+
+  size_t tank_dummy_index = static_cast<size_t>(tank_dummy);
+  als += "/auto_attack,damage=" + util::to_string(aa_damage[tank_dummy_index]) + ",range=" + util::to_string(aa_damage_var[tank_dummy_index]) + ",attack_speed=1.5,aoe_tanks=1";
+  als += "/melee_nuke,damage=" + util::to_string(dummy_strike_damage[tank_dummy_index]) + ",range=0,attack_speed=2,cooldown=15,aoe_tanks=1";
+  als += "/spell_dot,damage=" + util::to_string(background_spell_damage[tank_dummy_index]) + ",range=" + util::to_string(background_spell_damage_var[tank_dummy_index]) + ",attack_speed=0,cooldown=100,aoe_tanks=1,dot_duration=100";
 
   return als;
 }
