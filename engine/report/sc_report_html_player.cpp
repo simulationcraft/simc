@@ -3199,12 +3199,12 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
         os << "</ul>\n";
       }
 
-      if (absorb_buff)
+      if ( absorb_buff )
       {
         os << "<h4>Absorb Details</h4>\n"
           << "<ul>\n";
-        os.printf("<li><span class=\"label\">school:</span>%s</li>\n", util::school_type_string(absorb_buff->absorb_school));
-        os.printf("<li><span class=\"label\">high priority:</span>%i</li>\n", absorb_buff->high_priority);
+        os.printf("<li><span class=\"label\">school:</span>%s</li>\n", util::school_type_string( absorb_buff->absorb_school ) );
+        os.printf("<li><span class=\"label\">high priority:</span>%s</li>\n", absorb_buff -> high_priority ? "yes" : "no" );
         os << "</ul>\n";
       }
 
