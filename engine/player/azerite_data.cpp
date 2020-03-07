@@ -1336,6 +1336,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 300168, special_effects::personcomputer_interface );
   unique_gear::register_special_effect( 317137, special_effects::heart_of_darkness );
   unique_gear::register_special_effect( 268437, special_effects::impassive_visage );
+  unique_gear::register_special_effect( 268596, special_effects::gemhide );
 
   // Generic Azerite Essences
   //
@@ -3797,6 +3798,56 @@ void impassive_visage(special_effect_t& effect)
 
   auto heal_action = new impassive_visage_heal_t(effect.player, heal, power.value());
   new impassive_visage_cb_t(effect, heal_action);
+}
+
+void gemhide(special_effect_t& effect)
+{
+  class gemhide_buff_t : public stat_buff_t
+  {
+  public:
+    gemhide_buff_t(player_t* p, const spell_data_t* s, double avoidance, double armor) :
+      stat_buff_t(p, "gemhide", s)
+    {
+      add_stat(STAT_AVOIDANCE_RATING, avoidance);
+      add_stat(STAT_ARMOR, armor);
+    }
+  };
+
+  class gemhide_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+  public:
+    gemhide_cb_t(const special_effect_t& effect, buff_t* buff) :
+      dbc_proc_callback_t(effect.player, effect),
+      buff(buff)
+    {
+    }
+
+    void execute(action_t* /* a */, action_state_t* state) override
+    {
+      if (state->result_amount * 10.0 > listener->max_health())
+      {
+        buff->trigger();
+      }
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell(effect.driver()->name_cstr());
+  if (!power.enabled())
+  {
+    return;
+  }
+
+  effect.spell_id = 270579;
+  const spell_data_t* buff_spell = power.spell()->effectN(2).trigger();
+
+  buff_t* buff = buff_t::find(effect.player, "gemhide");
+  if (!buff)
+  {
+    buff =
+      make_buff<gemhide_buff_t>(effect.player, buff_spell, power.value(1), power.value(2));
+  }
+  new gemhide_cb_t(effect, buff);
 }
 
 } // Namespace special effects ends
