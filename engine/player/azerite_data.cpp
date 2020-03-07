@@ -5168,6 +5168,7 @@ void nullification_dynamo( special_effect_t& effect )
       null_barrier_damage( damage )
     {
       default_value = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( essence.item() );
+      set_absorb_source(p->get_stats("null_barrier"));
     }
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
