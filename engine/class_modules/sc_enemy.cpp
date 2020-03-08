@@ -1043,7 +1043,7 @@ struct tank_dummy_enemy_t : public enemy_t
       tank_dummy_enum = convert_tank_dummy_string( name_str );
     // if we still have no clue, pit them against the default value (heroic)
     if ( tank_dummy_enum == tank_dummy_e::NONE )
-      tank_dummy_enum = tank_dummy_e::HEROIC );
+      tank_dummy_enum = tank_dummy_e::HEROIC;
   }
 
   void init_base_stats() override
