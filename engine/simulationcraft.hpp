@@ -7051,11 +7051,19 @@ struct dbc_proc_callback_t : public action_callback_t
       return;
     }
 
-    // Don't allow harmful actions to proc on players
-    if ( proc_action && proc_action->harmful && !state->target->is_enemy() )
+    if ( proc_action && proc_action->harmful )
     {
-      return;
-    }
+      // Don't allow players to proc harmful actions on other players
+      if (!state->target->is_enemy() && !proc_action->target->is_enemy())
+      {
+        return;
+      }
+      // Don't allow enemies to proc harmful actions on other enemies
+      if (state->target->is_enemy() && proc_action->target->is_enemy())
+      {
+        return;
+      }
+    } 
 
     bool triggered = roll( a );
     if ( listener -> sim -> debug )
