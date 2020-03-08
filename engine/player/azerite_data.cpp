@@ -3779,7 +3779,7 @@ void impassive_visage(special_effect_t& effect)
     impassive_visage_cb_t(const special_effect_t& effect, impassive_visage_heal_t* heal) :
       dbc_proc_callback_t(effect.player, effect),
       heal_action(heal)
-    { 
+    {
     }
 
     void execute(action_t* /* a */, action_state_t* /* state */) override
@@ -3792,7 +3792,7 @@ void impassive_visage(special_effect_t& effect)
   if (!power.enabled())
   {
     return;
-  } 
+  }
   const spell_data_t* driver = power.spell();
   const spell_data_t* spell = driver->effectN(1).trigger();
   const spell_data_t* heal = driver->effectN(1).trigger();
@@ -3803,52 +3803,44 @@ void impassive_visage(special_effect_t& effect)
 
 void gemhide(special_effect_t& effect)
 {
-  class gemhide_buff_t : public stat_buff_t
-  {
-  public:
-    gemhide_buff_t(player_t* p, const spell_data_t* s, double avoidance, double armor) :
-      stat_buff_t(p, "gemhide", s)
-    {
-      add_stat(STAT_AVOIDANCE_RATING, avoidance);
-      add_stat(STAT_ARMOR, armor);
-    }
-  };
-
-  class gemhide_cb_t : public dbc_proc_callback_t
+  struct gemhide_cb_t : public dbc_proc_callback_t
   {
     buff_t* buff;
-  public:
-    gemhide_cb_t(const special_effect_t& effect, buff_t* buff) :
-      dbc_proc_callback_t(effect.player, effect),
-      buff(buff)
+    double damage_threshold;
+
+    gemhide_cb_t( const special_effect_t& effect, buff_t* buff, double dt ) :
+      dbc_proc_callback_t( effect.player, effect ), buff( buff ), damage_threshold( dt )
     {
     }
 
-    void execute(action_t* /* a */, action_state_t* state) override
+    void execute( action_t* /* a */, action_state_t* state ) override
     {
-      if (state->result_amount * 10.0 > listener->max_health())
+      // Gemhide takes the amount of damage before absorbs
+      if ( state -> result_mitigated > listener -> max_health() * damage_threshold )
       {
-        buff->trigger();
+        buff -> trigger();
       }
     }
   };
 
-  azerite_power_t power = effect.player->find_azerite_spell(effect.driver()->name_cstr());
-  if (!power.enabled())
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
   {
     return;
   }
 
-  effect.spell_id = 270579;
-  const spell_data_t* buff_spell = effect.player->find_spell(270576);
+  // The callback data isn't on the azerite's main spell ID, but on 270579
+  effect.spell_id = power.spell() -> effectN( 2 ).trigger() -> id();
 
-  buff_t* buff = buff_t::find(effect.player, "gemhide");
-  if (!buff)
+  buff_t* buff = buff_t::find( effect.player, "gemhide" );
+  if ( !buff )
   {
-    buff =
-      make_buff<gemhide_buff_t>(effect.player, buff_spell, power.value(1), power.value(2));
+    buff = make_buff<stat_buff_t>( effect.player, "gemhide", power.spell()
+                                   -> effectN( 2 ).trigger() -> effectN( 1 ).trigger() )
+          -> add_stat( STAT_AVOIDANCE_RATING, power.value( 1 ) )
+          -> add_stat( STAT_ARMOR, power.value( 2 ) );
   }
-  new gemhide_cb_t(effect, buff);
+  new gemhide_cb_t( effect, buff, power.spell() -> effectN( 3 ).percent() );
 }
 
 void crystalline_carapace( special_effect_t& effect )
