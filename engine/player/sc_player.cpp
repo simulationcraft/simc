@@ -1458,6 +1458,11 @@ void player_t::init_base_stats()
 
     if ( base.distance < 1 )
       base.distance = 5;
+
+    // Armor Coefficient, based on level (6300 @ 120)
+    base.armor_coeff = dbc.armor_mitigation_constant( level() );
+    sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
+
   }
 
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
@@ -1838,9 +1843,6 @@ void player_t::init_defense()
     collected_data.health_changes_tmi.set_bin_size( sim->tmi_bin_size );
   }
 
-  // Armor Coefficient
-  initial.armor_coeff = dbc.armor_mitigation_constant( level() );
-  sim->print_debug( "{} initial armor coefficient set to {}.", *this, initial.armor_coeff );
 }
 
 void player_t::init_weapon( weapon_t& w )
@@ -6662,8 +6664,8 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
 
   if ( school == SCHOOL_PHYSICAL && dmg_type == result_amount_type::DMG_DIRECT )
   {
-    if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
-      sim->out_debug.printf( "Damage to %s before armor mitigation is %f", s->target->name(), s->result_amount );
+    if ( s -> action && !s -> target -> is_enemy() && !s-> target -> is_add() )
+      sim -> print_debug( "Damage to {} before armor mitigation is {}", s -> target -> name(), s -> result_amount );
 
     // Maximum amount of damage reduced by armor
     double armor_cap = 0.85;
@@ -6677,8 +6679,9 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
       s -> result_amount *= 1.0 - resist;
     }
 
-    if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
-      sim->out_debug.printf( "Damage to %s after armor mitigation is %f (%f armor)", s->target->name(), s->result_amount, s -> target_armor );
+    if ( s -> action && !s -> target -> is_enemy() && !s-> target -> is_add() )
+      sim -> print_debug( "Damage to {} after armor mitigation is {} ({} armor, {} armor coeff)",
+                          s -> target -> name(), s -> result_amount, s -> target_armor, s -> action -> player -> current.armor_coeff );
 
     double pre_block_amount = s->result_amount;
 
