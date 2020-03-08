@@ -1337,6 +1337,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 317137, special_effects::heart_of_darkness );
   unique_gear::register_special_effect( 268437, special_effects::impassive_visage );
   unique_gear::register_special_effect( 268596, special_effects::gemhide );
+  unique_gear::register_special_effect( 271536, special_effects::crystalline_carapace );
 
   // Generic Azerite Essences
   //
@@ -3850,6 +3851,114 @@ void gemhide(special_effect_t& effect)
   new gemhide_cb_t(effect, buff);
 }
 
+void crystalline_carapace( special_effect_t& effect )
+{
+  class crystalline_carapace_buff_t : public stat_buff_t
+  {
+    action_callback_t* callback;
+
+  public:
+    crystalline_carapace_buff_t( player_t* p, const spell_data_t* s, double armor, action_callback_t* callback )
+      : stat_buff_t( p, "crystalline_carapace", s ), callback( callback )
+    {
+      add_stat( STAT_ARMOR, armor );
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      stat_buff_t::expire_override( expiration_stacks, remaining_duration );
+      callback->deactivate();
+    }
+
+    void start( int stacks, double value, timespan_t duration ) override
+    {
+      stat_buff_t::start( stacks, value, duration );
+      callback->activate();
+    }
+  };
+
+  class crystalline_carapace_damage_t : public spell_t
+  {
+  public:
+    crystalline_carapace_damage_t( player_t* p, const spell_data_t* s, double amount )
+      : spell_t( "crystalline_carapace_damage", p, s )
+    {
+      background  = true;
+      base_dd_min = base_dd_max = amount;
+    }
+  };
+
+  class crystalline_carapace_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+
+  public:
+    crystalline_carapace_cb_t( const special_effect_t& effect, buff_t* buff )
+      : dbc_proc_callback_t( effect.player, effect ), buff( buff )
+    {
+    }
+
+    void execute( action_t* /* a */, action_state_t* state ) override
+    {
+      if ( state->result_amount * 10.0 > listener->max_health() )
+      {
+        buff->trigger();
+      }
+    }
+  };
+
+  class crystalline_carapace_melee_attack_cb_t : public dbc_proc_callback_t
+  {
+    action_t* enemy_damage;
+
+  public:
+    crystalline_carapace_melee_attack_cb_t( const special_effect_t& effect, action_t* enemy_damage )
+      : dbc_proc_callback_t( effect.player, effect ), enemy_damage( enemy_damage )
+    {
+    }
+
+    void execute( action_t* /* a */, action_state_t* state ) override
+    {
+      if ( state->action )
+      {
+        enemy_damage->target = state->action->player;
+        enemy_damage->schedule_execute();
+      }
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+  {
+    return;
+  }
+
+  effect.spell_id                = 271537;
+  const spell_data_t* buff_spell = effect.player->find_spell( 271538 );
+  action_t* damage_action =
+      new crystalline_carapace_damage_t( effect.player, effect.player->find_spell( 271539 ), power.value( 1 ) );
+
+  // TODO: get this to proc.
+  auto secondary      = new special_effect_t( effect.player );
+  secondary->name_str = "crystalline_carapace_melee_taken";
+  secondary->spell_id = 271538;
+  secondary->type     = effect.type;
+  secondary->source   = effect.source;
+
+  effect.player->special_effects.push_back( secondary );
+
+  auto trigger_cb = new crystalline_carapace_melee_attack_cb_t( *secondary, damage_action );
+  trigger_cb->deactivate();
+
+  buff_t* buff = buff_t::find( effect.player, "crystalline_carapace" );
+  if ( !buff )
+  {
+    buff = make_buff<crystalline_carapace_buff_t>( effect.player, buff_spell, power.value( 2 ), trigger_cb );
+  }
+
+  new crystalline_carapace_cb_t( effect, buff );
+}
+
 } // Namespace special effects ends
 
 namespace azerite_essences
@@ -5146,12 +5255,9 @@ void nullification_dynamo( special_effect_t& effect )
   {
     null_barrier_damage_t( const special_effect_t& effect, const azerite_essence_t& essence ) :
       proc_spell_t( "null_barrier_damage", effect.player,
-                    // Waiting for whitelising
-                    effect.player -> find_spell( 296061 ) == spell_data_t::not_found() ? spell_data_t::nil() : effect.player -> find_spell( 296061 ),
+                    effect.player -> find_spell( 296061 ),
                     essence.item() )
     {
-      // A lot of manual data here because the spell isn't whitelisted yet
-      school = SCHOOL_SHADOW;
       may_crit = false;
       split_aoe_damage = true;
       aoe = -1;

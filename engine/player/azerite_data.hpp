@@ -375,6 +375,7 @@ void personcomputer_interface( special_effect_t& effect );
 void heart_of_darkness( special_effect_t& effect );
 void impassive_visage( special_effect_t& effect );
 void gemhide(special_effect_t& effect);
+void crystalline_carapace(special_effect_t& effect);
 } // Namespace special_effects ends
 
 namespace azerite_essences
