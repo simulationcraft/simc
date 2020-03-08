@@ -7053,13 +7053,8 @@ struct dbc_proc_callback_t : public action_callback_t
 
     if ( proc_action && proc_action->harmful )
     {
-      // Don't allow players to proc harmful actions on other players
-      if (!state->target->is_enemy() && !proc_action->target->is_enemy())
-      {
-        return;
-      }
-      // Don't allow enemies to proc harmful actions on other enemies
-      if (state->target->is_enemy() && proc_action->target->is_enemy())
+      // Don't allow players to harm other players, and enemies harm other enemies
+      if (state->action && state->action->player->is_enemy() == state->target->is_enemy())
       {
         return;
       }
