@@ -1921,7 +1921,7 @@ void action_t::reschedule_execute( timespan_t time )
 void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 {
   if ( ( cd_duration > timespan_t::zero() ||
-         ( cd_duration == timespan_t::min() && cooldown->duration > timespan_t::zero() ) ) &&
+         ( cd_duration == timespan_t::min() && cooldown_duration() > timespan_t::zero() ) ) &&
        !dual )
   {
     timespan_t delay = timespan_t::zero();
@@ -2741,7 +2741,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
     return make_mem_fn_expr( name_str, *this, &action_t::gcd );
 
   if ( name_str == "cooldown" )
-    return make_ref_expr( name_str, cooldown->duration );
+    return make_fn_expr( name_str, [this] { return cooldown_duration().total_seconds(); } );
 
   if ( name_str == "travel_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::travel_time );

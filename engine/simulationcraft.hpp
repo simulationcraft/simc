@@ -5812,6 +5812,9 @@ public:
 
   virtual double cost_per_tick( resource_e ) const;
 
+  virtual timespan_t cooldown_duration() const
+  { return cooldown ? cooldown->duration : timespan_t::zero(); }
+
   virtual timespan_t gcd() const;
 
   virtual double false_positive_pct() const;
