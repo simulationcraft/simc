@@ -1751,9 +1751,9 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Sweeping Claws" );
-    def -> add_action( "Claw" );
-    def -> add_action( "Monstrous Blow" );
+    def -> add_action( "sweeping_claws" );
+    def -> add_action( "claw,if=energy>70" );
+    def -> add_action( "monstrous_blow" );
     // def -> add_action( "Gnaw" ); Unused because it's a dps loss compared to waiting for DT and casting Monstrous Blow
   }
 
