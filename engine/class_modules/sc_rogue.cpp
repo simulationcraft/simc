@@ -4834,6 +4834,7 @@ struct roll_the_bones_t : public buff_t
       // -- for 2-buffs, and 1% chance for 5-buffs (yahtzee), bringing the expected value of
       // -- a roll down to 1.24 buffs (plus additional value for synergies between buffs).
       // Source: https://us.battle.net/forums/en/wow/topic/20753815486?page=2#post-21
+      // Odds double checked on 2020-03-09.
       rogue -> fixed_rtb_odds = { 79.0, 20.0, 0.0, 0.0, 1.0, 0.0 };
     }
 
@@ -4841,7 +4842,11 @@ struct roll_the_bones_t : public buff_t
     {
       std::vector<double> current_odds = rogue -> fixed_rtb_odds;
       if (loaded)
+      {
+        // At some point Loaded Dice were apparently changed to just convert 1 buffs straight into two buffs. (2020-03-09)
+        current_odds[1] += current_odds[0];
         current_odds[0] = 0.0;
+      }
 
       double odd_sum = 0.0;
       for ( const double& chance : current_odds )
