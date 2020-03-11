@@ -152,7 +152,7 @@ public:
 
     // Prot
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
-    stat_buff_t* seraphim;
+    buff_t* seraphim;
     buff_t* aegis_of_light;
     buff_t* ardent_defender;
     buff_t* avengers_valor;

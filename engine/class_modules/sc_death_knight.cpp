@@ -3431,6 +3431,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
     rune_gen( as<int>( player -> find_spell( 303753 ) -> effectN( 1 ).base_value() ) )
   {
     tick_zero = true;
+    cooldown -> duration = 0_ms; // Handled by the action
 
     // Extract the cost per tick from spelldata
     for ( size_t idx = 1; idx <= data().power_count(); idx++ )
@@ -8104,6 +8105,7 @@ void death_knight_t::create_buffs()
 
   buffs.unholy_frenzy = make_buff( this, "unholy_frenzy", talent.unholy_frenzy )
         -> set_default_value( talent.unholy_frenzy -> effectN( 1 ).percent() )
+        -> set_cooldown( 0_ms ) // Handled by the action
         -> add_invalidate( CACHE_HASTE );
 
   // Azerite Traits

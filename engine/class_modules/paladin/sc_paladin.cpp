@@ -1155,6 +1155,7 @@ void paladin_t::create_buffs()
   buffs.divine_steed = make_buff( this, "divine_steed", find_spell( "Divine Steed" ) )
                      -> set_duration( 3_s )
                      -> set_chance( 1.0 )
+                     -> set_cooldown( 0_ms ) // handled by the ability
                      -> set_default_value( 1.0 ); // TODO: change this to spellid 221883 & see if that automatically captures details
 
   // General

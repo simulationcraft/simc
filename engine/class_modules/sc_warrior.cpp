@@ -5830,15 +5830,17 @@ void warrior_t::create_buffs()
   buff.rallying_cry = new buffs::rallying_cry_t( *this, "rallying_cry", find_spell( 97463 ) );
 
   buff.overpower =
-      make_buff( this, "overpower", spec.overpower )
-      ->set_default_value( spec.overpower->effectN( 2 ).percent() + talents.dreadnaught->effectN( 2 ).percent() );
+    make_buff( this, "overpower", spec.overpower )
+    ->set_default_value( spec.overpower->effectN( 2 ).percent() + talents.dreadnaught->effectN( 2 ).percent() );
 
-  buff.ravager = make_buff( this, "ravager", talents.ravager );
+  buff.ravager = make_buff( this, "ravager", talents.ravager )
+    -> set_cooldown( 0_ms ); // handled by the ability
 
   buff.ravager_protection = make_buff( this, "ravager_protection", spell.ravager_protection )
     ->add_invalidate( CACHE_PARRY );
 
-  buff.spell_reflection = make_buff( this, "spell_reflection", spec.spell_reflection );
+  buff.spell_reflection = make_buff( this, "spell_reflection", spec.spell_reflection )
+    -> set_cooldown( 0_ms ); // handled by the ability
 
   buff.sweeping_strikes = make_buff( this, "sweeping_strikes", spec.sweeping_strikes )
       ->set_cooldown( timespan_t::zero() );
