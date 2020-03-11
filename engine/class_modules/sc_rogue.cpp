@@ -6734,6 +6734,7 @@ void rogue_t::create_buffs()
                                 -> add_invalidate( CACHE_RUN_SPEED );
   buffs.stealth               = new buffs::stealth_t( this );
   buffs.vanish                = new buffs::vanish_t( this );
+
   // Assassination
   buffs.envenom               = make_buff( this, "envenom", find_specialization_spell( "Envenom" ) )
                                 -> set_duration( timespan_t::min() )
@@ -6759,9 +6760,9 @@ void rogue_t::create_buffs()
                                 -> set_affects_regen( true )
                                 -> set_default_value( find_spell( 199600 ) -> effectN( 1 ).base_value() / 5.0 );
   buffs.grand_melee           = make_buff( this, "grand_melee", find_spell( 193358 ) )
-      -> add_invalidate( CACHE_ATTACK_SPEED )
-      -> add_invalidate( CACHE_LEECH )
-      -> set_default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
+                                -> add_invalidate( CACHE_ATTACK_SPEED )
+                                -> add_invalidate( CACHE_LEECH )
+                                -> set_default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
   buffs.skull_and_crossbones  = make_buff( this, "skull_and_crossbones", find_spell( 199603 ) )
                                 -> set_default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
   buffs.ruthless_precision    = make_buff( this, "ruthless_precision", find_spell( 193357 ) )
@@ -6771,6 +6772,7 @@ void rogue_t::create_buffs()
                                 -> set_default_value( find_spell( 193359 ) -> effectN( 1 ).base_value() * 0.1 );
   // Note, since I (navv) am a slacker, this needs to be constructed after the secondary buffs.
   buffs.roll_the_bones        = new buffs::roll_the_bones_t( this );
+  
   // Subtlety
   buffs.shadow_blades         = make_buff( this, "shadow_blades", spec.shadow_blades )
                                 -> set_cooldown( timespan_t::zero() )
@@ -6780,14 +6782,14 @@ void rogue_t::create_buffs()
                                 -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                 -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-
   // Talents
   // Shared
   buffs.alacrity                = make_buff( this, "alacrity", find_spell( 193538 ) )
-      -> set_default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
-      -> set_chance( talent.alacrity -> ok() )
-      -> add_invalidate( CACHE_HASTE );
+                                  -> set_default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
+                                  -> set_chance( talent.alacrity -> ok() )
+                                  -> add_invalidate( CACHE_HASTE );
   buffs.subterfuge              = new buffs::subterfuge_t( this );
+
   // Assassination
   buffs.elaborate_planning      = make_buff( this, "elaborate_planning", talent.elaborate_planning -> effectN( 1 ).trigger() )
                                   -> set_default_value( 1.0 + talent.elaborate_planning -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -6814,6 +6816,7 @@ void rogue_t::create_buffs()
                                   -> set_affects_regen( true )
                                   -> add_invalidate( CACHE_ATTACK_SPEED );
   buffs.killing_spree           = make_buff( this, "killing_spree", talent.killing_spree )
+                                  -> set_cooldown( timespan_t::zero() )
                                   -> set_duration( talent.killing_spree -> duration() );
   // Subtlety
   buffs.master_of_shadows       = make_buff( this, "master_of_shadows", find_spell( 196980 ) )

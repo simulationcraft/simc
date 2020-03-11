@@ -4103,6 +4103,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   if (p.specialization() == DEMON_HUNTER_HAVOC)
   {
     debuffs.dark_slash = make_buff( *this, "dark_slash", p.talent.dark_slash )
+      ->set_cooldown( timespan_t::zero() )
       ->set_default_value( p.talent.dark_slash->effectN( 3 ).percent() );
     debuffs.nemesis = new buffs::nemesis_debuff_t(*this);
   }
@@ -4298,8 +4299,7 @@ void demon_hunter_t::create_buffs()
 
   // General ================================================================
 
-  buff.demon_soul =
-      make_buff( this, "demon_soul", find_spell( 163073 ) )
+  buff.demon_soul = make_buff( this, "demon_soul", find_spell( 163073 ) )
     ->set_default_value( find_spell( 163073 )->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -4307,8 +4307,7 @@ void demon_hunter_t::create_buffs()
 
   if(specialization() == DEMON_HUNTER_HAVOC )
   {
-    buff.immolation_aura =
-        make_buff( this, "immolation_aura", spec.immolation_aura )
+    buff.immolation_aura = make_buff( this, "immolation_aura", spec.immolation_aura )
       ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
         active.immolation_aura->execute();
       } )
@@ -4316,8 +4315,7 @@ void demon_hunter_t::create_buffs()
   }
   else // DEMON_HUNTER_VENGEANCE
   {
-    buff.immolation_aura =
-        make_buff( this, "immolation_aura", spec.immolation_aura )
+    buff.immolation_aura = make_buff( this, "immolation_aura", spec.immolation_aura )
       ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
         active.immolation_aura->execute();
       } )
@@ -4328,39 +4326,34 @@ void demon_hunter_t::create_buffs()
 
   // Havoc ==================================================================
 
-  buff.blade_dance =
-    make_buff( this, "blade_dance", spec.blade_dance )
+  buff.blade_dance = make_buff( this, "blade_dance", spec.blade_dance )
     ->set_default_value( spec.blade_dance->effectN( 2 ).percent() )
     ->add_invalidate( CACHE_DODGE )
     ->set_cooldown( timespan_t::zero() );
 
-  buff.blur =
-    make_buff(this, "blur", spec.blur->effectN(1).trigger())
-    ->set_default_value(spec.blur->effectN(1).trigger()->effectN(3).percent()
-      + (talent.desperate_instincts->ok() ? talent.desperate_instincts->effectN(3).percent() : 0))
-      ->set_cooldown(timespan_t::zero())
-      ->add_invalidate(CACHE_LEECH)
-      ->add_invalidate(CACHE_DODGE);
-
-  buff.death_sweep =
-    make_buff( this, "death_sweep", spec.death_sweep )
+  buff.death_sweep = make_buff( this, "death_sweep", spec.death_sweep )
     ->set_default_value( spec.death_sweep->effectN( 2 ).percent() )
     ->add_invalidate( CACHE_DODGE )
     ->set_cooldown( timespan_t::zero() );
+
+  buff.blur = make_buff(this, "blur", spec.blur->effectN(1).trigger())
+    ->set_default_value(spec.blur->effectN(1).trigger()->effectN(3).percent()
+      + (talent.desperate_instincts->ok() ? talent.desperate_instincts->effectN(3).percent() : 0))
+    ->set_cooldown(timespan_t::zero())
+    ->add_invalidate(CACHE_LEECH)
+    ->add_invalidate(CACHE_DODGE);
 
   buff.fel_rush_move = new movement_buff_t(
     this, "fel_rush_movement", spell_data_t::nil() );
   buff.fel_rush_move->set_chance( 1.0 )
   ->set_duration( find_class_spell( "Fel Rush" )->gcd() );
 
-  buff.momentum =
-    make_buff( this, "momentum", spec.momentum_buff )
+  buff.momentum = make_buff( this, "momentum", spec.momentum_buff )
     ->set_default_value( spec.momentum_buff->effectN( 1 ).percent() )
     ->set_trigger_spell( talent.momentum )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.out_of_range =
-    make_buff( this, "out_of_range", spell_data_t::nil() )
+  buff.out_of_range = make_buff( this, "out_of_range", spell_data_t::nil() )
     ->set_chance( 1.0 );
 
   // TODO: Buffs for each race?
@@ -4368,8 +4361,7 @@ void demon_hunter_t::create_buffs()
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   const double prepared_value = ( find_spell( 203650 )->effectN( 1 ).resource( RESOURCE_FURY ) / 50 );
-  buff.prepared =
-    make_buff( this, "prepared", find_spell( 203650, DEMON_HUNTER_HAVOC ) )
+  buff.prepared = make_buff( this, "prepared", find_spell( 203650, DEMON_HUNTER_HAVOC ) )
     ->set_default_value( prepared_value )
     ->set_trigger_spell( talent.momentum )
     ->set_period( timespan_t::from_millis( 100 ) )
@@ -4377,8 +4369,7 @@ void demon_hunter_t::create_buffs()
       resource_gain( RESOURCE_FURY, b->check_value(), gain.prepared );
     } );
 
-  buff.blind_fury =
-    make_buff( this, "blind_fury", spec.eye_beam )
+  buff.blind_fury = make_buff( this, "blind_fury", spec.eye_beam )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value( talent.blind_fury->effectN( 3 ).resource( RESOURCE_FURY ) / 50 )
     ->set_duration( spec.eye_beam->duration() * ( 1.0 + talent.blind_fury->effectN( 1 ).percent() ) )
@@ -4399,9 +4390,9 @@ void demon_hunter_t::create_buffs()
 
   buff.soul_barrier = make_buff<absorb_buff_t>( this, "soul_barrier", talent.soul_barrier );
   buff.soul_barrier->set_absorb_source( get_stats( "soul_barrier" ) )
-      ->set_absorb_gain( get_gain( "soul_barrier" ) )
-      ->set_absorb_high_priority( true )  // TOCHECK
-      ->set_cooldown( timespan_t::zero() );
+    ->set_absorb_gain( get_gain( "soul_barrier" ) )
+    ->set_absorb_high_priority( true )  // TOCHECK
+    ->set_cooldown( timespan_t::zero() );
 
   // Azerite ================================================================
   
