@@ -12,9 +12,7 @@
 
 #include "fmt/posix.h"
 
-#include <climits>
-
-#if FMT_USE_FCNTL
+#include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -41,8 +39,8 @@
 #  ifdef __MINGW32__
 #    define _SH_DENYNO 0x40
 #  endif
+
 #endif  // _WIN32
-#endif  // FMT_USE_FCNTL
 
 #ifdef fileno
 #  undef fileno
@@ -51,7 +49,7 @@
 namespace {
 #ifdef _WIN32
 // Return type of read and write functions.
-using RWResult = int;
+typedef int RWResult;
 
 // On Windows the count argument to read and write is unsigned, so convert
 // it from size_t preventing integer overflow.
@@ -96,7 +94,6 @@ int buffered_file::fileno() const {
   return fd;
 }
 
-#if FMT_USE_FCNTL
 file::file(cstring_view path, int oflag) {
   int mode = S_IRUSR | S_IWUSR;
 #if defined(_WIN32) && !defined(__MINGW32__)
@@ -233,5 +230,4 @@ long getpagesize() {
   return size;
 #endif
 }
-#endif  // FMT_USE_FCNTL
 FMT_END_NAMESPACE
