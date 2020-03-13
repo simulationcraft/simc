@@ -108,6 +108,7 @@ public:
 protected:
   timespan_t last_start;
   timespan_t last_trigger;
+  timespan_t last_expire;
   timespan_t last_stack_change;
   timespan_t iteration_uptime_sum;
   timespan_t last_benefite_update;
@@ -214,6 +215,8 @@ public:
 
   timespan_t remains() const;
   timespan_t elapsed( const timespan_t& t ) const { return t - last_start; }
+  timespan_t last_trigger_time() const { return last_trigger; }
+  timespan_t last_expire_time() const { return last_expire; }
   bool   remains_gt( timespan_t time ) const;
   bool   remains_lt( timespan_t time ) const;
   bool   trigger  ( action_t*, int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
