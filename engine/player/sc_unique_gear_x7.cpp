@@ -6893,6 +6893,17 @@ void corruption::twisted_appendage( special_effect_t& effect )
     {
       return scaled_dmg;
     }
+
+    bool ready() override
+    {
+      // Don't start a new cast if it won't have a chance to tick, to avoid inflating the execute count
+      if ( this->player->cast_pet()->expiration->remains() < base_tick_time )
+      {
+        return false;
+      }
+
+      spell_t::ready();
+    }
   };
 
   struct twisted_appendage_pet_t : public pet_t
@@ -6934,7 +6945,8 @@ void corruption::twisted_appendage( special_effect_t& effect )
         spawner( "twisted_appendage", effect.player,
                  [&effect, this]( player_t* ) { return new twisted_appendage_pet_t( effect, dmg ); } )
     {
-      spawner.set_default_duration( effect.player->find_spell( 316818 )->duration() );
+      // Add 1ms to the duration due to the spawner scheduling canceling the final tick otherwise
+      spawner.set_default_duration( effect.player->find_spell( 316818 )->duration() + 1_ms );
     }
 
     void execute( action_t*, action_state_t* ) override
