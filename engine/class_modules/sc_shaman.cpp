@@ -1033,7 +1033,7 @@ struct ascendance_buff_t : public buff_t
     set_cooldown( timespan_t::zero() );  // Cooldown is handled by the action
   }
 
-  void ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown );
+  void ascendance( attack_t* mh, attack_t* oh );
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 };
@@ -4827,6 +4827,11 @@ struct lava_burst_t : public shaman_spell_t
   {
     timespan_t d = cooldown->duration;
 
+    if ( p()->buff.ascendance->up() )
+    {
+      d = timespan_t::zero();
+    }
+
     // Lava Surge has procced during the cast of Lava Burst, the cooldown
     // reset is deferred to the finished cast, instead of "eating" it.
     if ( p()->lava_surge_during_lvb )
@@ -6358,7 +6363,7 @@ struct thundercharge_t : public shaman_spell_t
 // Shaman Custom Buff implementation
 // ==========================================================================
 
-void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown )
+void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh )
 {
   // Presume that ascendance trigger and expiration will not reset the swing
   // timer, so we need to cancel and reschedule autoattack with the
@@ -6439,14 +6444,13 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_c
       }
     }
   }
-  // Elemental simply changes the Lava Burst cooldown, Lava Beam replacement
+  // Elemental simply resets the Lava Burst cooldown, Lava Beam replacement
   // will be handled by action list and ready() in Chain Lightning / Lava
   // Beam
   else if ( player->specialization() == SHAMAN_ELEMENTAL )
   {
     if ( lava_burst )
     {
-      lava_burst->cooldown->duration = lvb_cooldown;
       lava_burst->cooldown->reset( false );
     }
   }
@@ -6461,7 +6465,7 @@ inline bool ascendance_buff_t::trigger( int stacks, double value, double chance,
     lava_burst = player->find_action( "lava_burst" );
   }
 
-  ascendance( p->ascendance_mh, p->ascendance_oh, timespan_t::zero() );
+  ascendance( p->ascendance_mh, p->ascendance_oh );
   // Don't record CD waste during Ascendance.
   if ( lava_burst )
   {
@@ -6475,10 +6479,8 @@ inline void ascendance_buff_t::expire_override( int expiration_stacks, timespan_
 {
   shaman_t* p = debug_cast<shaman_t*>( player );
 
-  timespan_t lvbcd;
-  lvbcd = lava_burst ? lava_burst->data().charge_cooldown() : timespan_t::zero();
+  ascendance( p->melee_mh, p->melee_oh );
 
-  ascendance( p->melee_mh, p->melee_oh, lvbcd );
   // Start CD waste recollection from when Ascendance buff fades, since Lava
   // Burst is guaranteed to be very much ready when Ascendance ends.
   if ( lava_burst )
