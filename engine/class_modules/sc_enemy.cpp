@@ -1073,27 +1073,29 @@ struct tank_dummy_enemy_t : public enemy_t
       // Max level enemies have different armor coefficient based on the difficulty setting and the area they're fought in
       // The default value stored in spelldata only works for outdoor and generally "easy" content
       // New values are added when new seasonal content (new raid, new M+ season) is released
+      // ArmorConstantMod is pulled from the ExpectedStatMod table
+      // Values are a combination of the base K values for the intended level, multiplied by the ArmorConstantMod field
       // 8.3 values here
 
-      /* Base/open world Zandalar/Kul Tiras: 6300
-        Open World Mechagon/Nazjatar: 10344.6
-        Open World Invasion quests (8.3): 12782.7
-        M0/M+ (8.2): 10275.3
-        M0/M+ (8.3): 14282.1
-        Operation: Mechagon: 14282.1
-        Uldir Normal: 7736.4
-        Uldir Heroic: 8467.2
-        Uldir Mythic: 9311.4
-        BfD/Crucible LFR: 8467.2
-        BfD/Crucible Normal: 9355.5
-        BfD/Crucible Heroic: 10344.6
-        BfD/Crucible Mythic: 11478.6
-        TEP Normal: 11478.6
-        TEP Heroic: 12782.7
-        TEP Mythic: 14282.1
-        Ny'alotha Normal: 14282.1
-        Ny'alotha Heroic: 16002.0
-        Ny'alotha Mythic: 17986.5 */
+      /* Base/open world Zandalar/Kul Tiras: 6300 (Level 120 Armor mitigation constants (K-values))
+        Open World Mechagon/Nazjatar: 10344.6 (ID: 147; ArmorMod: 1.642)
+        Open World Invasion quests (8.3): 12782.7 (ID: 150; ArmorMod: 2.029)
+        M0/M+ (8.2): 10275.3 (ID: 147; ArmorMod: 1.642)
+        M0/M+ (8.3): 14282.1 (ID: 151; ArmorMod: 2.267)
+        Operation: Mechagon: 14282.1 (ID: 151; ArmorMod: 2.267)
+        Uldir Normal: 7736.4 (ID: 8; ArmorMod: 1.228)
+        Uldir Heroic: 8467.2 (ID: 9; ArmorMod: 1.344)
+        Uldir Mythic: 9311.4 (ID: 10; ArmorMod: 1.478)
+        BfD/Crucible LFR: 8498.7 (ID: 136; ArmorMod: 1.349)
+        BfD/Crucible Normal: 9355.5 (ID: 135; ArmorMod: 1.485)
+        BfD/Crucible Heroic: 10344.6 (ID: 147; ArmorMod: 1.642)
+        BfD/Crucible Mythic: 11478.6 (ID: 149; ArmorMod: 1.822)
+        TEP Normal: 11478.6 (ID: 149; ArmorMod: 1.822)
+        TEP Heroic: 12782.7 (ID: 150; ArmorMod: 2.029)
+        TEP Mythic: 14282.1 (ID: 151; ArmorMod: 2.267)
+        Ny'alotha Normal: 14282.1 (ID: 151; ArmorMod: 2.267)
+        Ny'alotha Heroic: 16002.0 (ID: 152; ArmorMod: 2.54)
+        Ny'alotha Mythic: 17986.5 (ID: 158; ArmorMod: 2.855) */
 
       switch ( tank_dummy_enum )
       {
