@@ -2652,7 +2652,7 @@ public:
 	// Memory of Lucid Dreams Essence
     if ( p()->azerite.memory_of_lucid_dreams.enabled() && ab::last_resource_cost > 0 )
     {
-      resource_e cr = ab::current_resource();
+      resource_e cr = current_resource();
       if ( cr == RESOURCE_ENERGY || cr == RESOURCE_MANA )
       {
         if ( p()->rng().roll( p()->user_options.memory_of_lucid_dreams_proc_chance ) )
