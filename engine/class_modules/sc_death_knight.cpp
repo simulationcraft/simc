@@ -7878,7 +7878,7 @@ void death_knight_t::default_apl_unholy()
 
   // Heart of Azeroth Essences
   essences -> add_action( "memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40" );
-  essences -> add_action( "blood_of_the_enemy,if=death_and_decay.ticking|defile.ticking|pet.apoc_ghoul.active&!death_and_decay.ticking" );
+  essences -> add_action( "blood_of_the_enemy,if=death_and_decay.ticking|pet.apoc_ghoul.active&!death_and_decay.ticking" );
   essences -> add_action( "guardian_of_azeroth,if=(cooldown.apocalypse.remains<6&cooldown.army_of_the_dead.remains>cooldown.condensed_lifeforce.remains)|cooldown.army_of_the_dead.remains<2|equipped.ineffable_truth|equipped.ineffable_truth_oh" );
   essences -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<11" );
   essences -> add_action( "focused_azerite_beam,if=!death_and_decay.ticking" );
