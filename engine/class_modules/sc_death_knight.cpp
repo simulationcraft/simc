@@ -7687,7 +7687,7 @@ void death_knight_t::default_apl_frost()
   essences -> add_action( "focused_azerite_beam,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
   essences -> add_action( "concentrated_flame,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&dot.concentrated_flame_burn.remains=0" );
   essences -> add_action( "purifying_blast,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
-  essences -> add_action( "worldvein_resonance,if=buff.pillar_of_frost.up|buff.empower_rune_weapon.up|cooldown.breath_of_sindragosa.remains>60+15" );
+  essences -> add_action( "worldvein_resonance,if=buff.pillar_of_frost.up|buff.empower_rune_weapon.up|cooldown.breath_of_sindragosa.remains>60+15|equipped.ineffable_truth|equipped.ineffable_truth_oh" );
   essences -> add_action( "ripple_in_space,if=!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
   essences -> add_action( "memory_of_lucid_dreams,if=buff.empower_rune_weapon.remains<5&buff.breath_of_sindragosa.up|(rune.time_to_2>gcd&runic_power<50)" );
   essences -> add_action( "reaping_flames" );
@@ -7879,7 +7879,7 @@ void death_knight_t::default_apl_unholy()
   // Heart of Azeroth Essences
   essences -> add_action( "memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40" );
   essences -> add_action( "blood_of_the_enemy,if=(cooldown.death_and_decay.remains&spell_targets.death_and_decay>1)|(cooldown.defile.remains&spell_targets.defile>1)|(cooldown.apocalypse.remains&active_enemies=1)" );
-  essences -> add_action( "guardian_of_azeroth,if=(cooldown.apocalypse.remains<6&cooldown.army_of_the_dead.remains>cooldown.condensed_lifeforce.remains)|cooldown.army_of_the_dead.remains<2" );
+  essences -> add_action( "guardian_of_azeroth,if=(cooldown.apocalypse.remains<6&cooldown.army_of_the_dead.remains>cooldown.condensed_lifeforce.remains)|cooldown.army_of_the_dead.remains<2|equipped.ineffable_truth|equipped.ineffable_truth_oh" );
   essences -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<11" );
   essences -> add_action( "focused_azerite_beam,if=!death_and_decay.ticking" );
   essences -> add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains=0" );
