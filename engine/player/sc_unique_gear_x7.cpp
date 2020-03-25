@@ -6902,7 +6902,7 @@ void corruption::twisted_appendage( special_effect_t& effect )
         return false;
       }
 
-      spell_t::ready();
+      return spell_t::ready();
     }
   };
 
