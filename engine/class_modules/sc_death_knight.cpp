@@ -729,18 +729,19 @@ public:
   // Pets and Guardians
   struct pets_t
   {
-    std::array< pet_t*, 4 > apoc_ghoul;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon_pet;
     pets::gargoyle_pet_t* gargoyle;
     pet_t* ghoul_pet;
     pet_t* risen_skulker;
 
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> army_ghouls;
+    spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> apoc_ghouls;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> magus_of_the_dead;
 
     pets_t( death_knight_t* p ) :
       army_ghouls( "army_ghoul", p ),
+      apoc_ghouls( "apoc_ghoul", p ),
       bloodworms( "bloodworm", p ),
       magus_of_the_dead( "magus_of_the_dead", p )
     {}
@@ -843,8 +844,6 @@ public:
     options( options_t() ),
     _runes( this )
   {
-    range::fill( pets.apoc_ghoul, nullptr );
-
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
     cooldown.army_of_the_dead    = get_cooldown( "army_of_the_dead" );
     cooldown.bone_shield_icd     = get_cooldown( "bone_shield_icd" );
@@ -1769,7 +1768,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 };
 
 // ==========================================================================
-// Army of the Dead Ghoul
+// Army of the Dead (and Apocalypse) Ghouls
 // ==========================================================================
 
 struct army_ghoul_pet_t : public base_ghoul_pet_t
@@ -3064,10 +3063,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
     {
       p() -> burst_festering_wound( execute_state, n_wounds );
 
-      for ( int i = 0; i < n_wounds; ++i )
-      {
-        p() -> pets.apoc_ghoul[ i ] -> summon( summon_duration );
-      }
+      p() -> pets.apoc_ghouls.spawn( summon_duration, n_wounds );
     }
 
     if ( p() -> azerite.magus_of_the_dead.enabled() )
@@ -7126,10 +7122,9 @@ void death_knight_t::create_pets()
 
     if ( find_action( "apocalypse" ) )
     {
-      for ( int i = 0; i < 4; i++ )
-      {
-        pets.apoc_ghoul[ i ] = new pets::army_ghoul_pet_t( this, "apoc_ghoul" );
-      }
+      pets.apoc_ghouls.set_creation_callback(
+        [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
+
     }
 
     if ( azerite.magus_of_the_dead.enabled() )
