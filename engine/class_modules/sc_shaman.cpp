@@ -3581,14 +3581,14 @@ struct stormstrike_base_t : public shaman_attack_t
     may_proc_primal_primer                                                                 = false;
   }
 
-  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+  timespan_t cooldown_duration() const override
   {
     if ( p()->buff.stormbringer->up() || background == true )
     {
-      cd_duration = timespan_t::zero();
+      return timespan_t::zero();
     }
 
-    shaman_attack_t::update_ready( cd_duration );
+    return shaman_attack_t::cooldown_duration();
   }
 
   double cost() const override
@@ -3630,8 +3630,10 @@ struct stormstrike_base_t : public shaman_attack_t
       }
     }
 
-    p()->buff.gathering_storms->decrement();
-    p()->buff.stormbringer->decrement();
+    make_event( sim, [ this ]() {
+      p()->buff.gathering_storms->decrement();
+      p()->buff.stormbringer->decrement();
+    } );
   }
 
   void reset() override
