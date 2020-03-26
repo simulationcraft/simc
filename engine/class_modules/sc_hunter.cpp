@@ -535,7 +535,7 @@ public:
     std::string summon_pet_str = "turtle";
     timespan_t pet_attack_speed = 2.0_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
-    double memory_of_lucid_dreams_proc_chance = 0.1;
+    double memory_of_lucid_dreams_proc_chance = 0.15;
   } options;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
@@ -2394,8 +2394,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
   void init_finished() override
   {
-    pet_t* pets[] = { p() -> pets.main, p() -> pets.animal_companion };
-    for ( auto pet : pets )
+    for ( auto pet : p()->pet_list )
       add_pet_stats( pet, { "stomp" } );
 
     hunter_ranged_attack_t::init_finished();
