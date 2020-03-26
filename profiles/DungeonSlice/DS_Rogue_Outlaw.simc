@@ -38,8 +38,8 @@ actions.precombat+=/use_item,effect_name=cyclotronic_blast,if=!raid_event.invuln
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)
 actions=stealth
-# Reroll for 2+ buffs with Loaded Dice up. Otherwise reroll for 2+ or Grand Melee or Ruthless Precision.
-actions+=/variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)
+# Reroll for 2+ or Grand Melee or Ruthless Precision.
+actions+=/variable,name=rtb_reroll,value=rtb_buffs<2&!buff.grand_melee.up&!buff.ruthless_precision.up
 # Reroll for 2+ buffs or Broadside with Deadshot.
 actions+=/variable,name=rtb_reroll,op=set,if=azerite.deadshot.enabled,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.broadside.up)
 # Reroll for 2+ buffs or Ruthless Precision with Ace up your Sleeve, unless there are more Deadshot ranks.
@@ -50,6 +50,8 @@ actions+=/variable,name=rtb_reroll,op=set,if=azerite.snake_eyes.rank>=2,value=rt
 actions+=/variable,name=rtb_reroll,op=reset,if=azerite.snake_eyes.rank>=2&buff.snake_eyes.stack>=2-buff.broadside.up
 # With Blade Flurry up, ignore rules above and take everything that is 2+ (not counting SaC) or single BS, GM, RP
 actions+=/variable,name=rtb_reroll,op=set,if=buff.blade_flurry.up,value=rtb_buffs-buff.skull_and_crossbones.up<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up&!buff.broadside.up)
+# With Loaded Dice up, reroll any single buff, any 2 buff with Buried Treasure, or in pandemic.
+actions+=/variable,name=rtb_reroll,op=set,if=buff.loaded_dice.up,value=(rtb_buffs-buff.buried_treasure.up)<2|buff.roll_the_bones.remains<10.8+(1.8*talent.deeper_stratagem.enabled)
 actions+=/variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up&!buff.keep_your_wits_about_you.up
 actions+=/variable,name=bte_condition,value=buff.ruthless_precision.up|(azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled)&buff.roll_the_bones.up
 # With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry

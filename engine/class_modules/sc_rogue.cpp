@@ -3922,6 +3922,9 @@ struct vendetta_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     rogue_td_t* td = this->td( execute_state->target );
+
+    // Casting Vendetta when a VoP proc is up overwrites the buff durations rather than extending
+    td->debuffs.vendetta->expire();
     td->debuffs.vendetta->trigger();
 
     if ( precombat_seconds && ! p() -> in_combat ) {
@@ -4470,6 +4473,16 @@ struct adrenaline_rush_t : public buff_t
     add_invalidate( CACHE_ATTACK_SPEED );
   }
 
+  void trigger_secondary_procs()
+  {
+    // 6/23/2019 - Vision of Perfection refresh procs trigger Loaded Dice and extend Brigand's Blitz
+    rogue_t* rogue = debug_cast<rogue_t*>( source );
+    if ( rogue->talent.loaded_dice->ok() )
+      rogue->buffs.loaded_dice->trigger();
+
+    rogue->buffs.brigands_blitz_driver->trigger();
+  }
+
   void start( int stacks, double value, timespan_t duration ) override
   {
     buff_t::start( stacks, value, duration );
@@ -4477,24 +4490,19 @@ struct adrenaline_rush_t : public buff_t
     rogue_t* rogue = debug_cast<rogue_t*>( source );
     rogue -> resources.temporary[ RESOURCE_ENERGY ] += data().effectN( 4 ).base_value();
     rogue -> recalculate_resource_max( RESOURCE_ENERGY );
-
-    // 6/22/2019 - Vision of Perfection procs trigger both Loaded Dice and Brigand's Blitz
-    if ( rogue->talent.loaded_dice->ok() )
-      rogue->buffs.loaded_dice->trigger();
-
-    rogue->buffs.brigands_blitz_driver->trigger();
+    trigger_secondary_procs();
   }
 
   void refresh( int stacks, double value, timespan_t duration ) override
   {
     buff_t::refresh( stacks, value, duration );
+    trigger_secondary_procs();
+  }
 
-    // 6/23/2019 - Vision of Perfection refresh procs trigger Loaded Dice and extend Brigand's Blitz
-    rogue_t* rogue = debug_cast<rogue_t*>( source );
-    if ( rogue->talent.loaded_dice->ok() )
-      rogue->buffs.loaded_dice->trigger();
-
-    rogue->buffs.brigands_blitz_driver->trigger();
+  void extend_duration( player_t* p, timespan_t extra_seconds ) override
+  {
+    buff_t::extend_duration( p, extra_seconds );
+    trigger_secondary_procs();
   }
 
   void expire_override(int expiration_stacks, timespan_t remaining_duration ) override
@@ -4768,25 +4776,72 @@ struct vendetta_debuff_t : public buff_t
     set_default_value( data().effectN( 1 ).percent() );
   }
 
+  void trigger_nothing_personal( timespan_t duration )
+  {
+    // 3/25/2020 - Vision of Perfection refresh procs trigger/extend both Nothing Personal effects
+    rogue_t* rogue = debug_cast<rogue_t*>( source );
+    if ( !rogue->azerite.nothing_personal.ok() || nothing_personal == nullptr )
+      return;
+
+    // Debuff Trigger/Refresh
+    rogue_td_t* td = rogue->get_target_data( player );
+    if ( td->dots.nothing_personal->is_ticking() )
+    {
+      td->dots.nothing_personal->extend_duration( duration );
+    }
+    else
+    {
+      nothing_personal->set_target( player );
+      nothing_personal->dot_duration = duration;
+      nothing_personal->schedule_execute();
+    }
+
+    // Buff Trigger/Refresh
+    if ( rogue->buffs.nothing_personal->check() )
+    {
+      rogue->buffs.nothing_personal->extend_duration( rogue, duration );
+    }
+    else
+    {
+      rogue->buffs.nothing_personal->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+    }
+  }
+
+  void expire_nothing_personal()
+  {
+    rogue_t* rogue = debug_cast<rogue_t*>( source );
+    if ( !rogue->azerite.nothing_personal.ok() )
+      return;
+
+    rogue->buffs.nothing_personal->expire();
+    rogue->get_target_data( player )->dots.nothing_personal->cancel();
+  }
+
+  void extend_duration( player_t* p, timespan_t extra_seconds ) override
+  {
+    buff_t::extend_duration( p, extra_seconds );
+    trigger_nothing_personal( extra_seconds );
+  }
+
+  void refresh( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::refresh( stacks, value, duration );
+    trigger_nothing_personal( duration );
+  }
+
   void start( int stacks, double value, timespan_t duration ) override
   {
     buff_t::start( stacks, value, duration );
 
-    rogue_t* p = static_cast<rogue_t*>( source );
+    // 3/25/2020 - The base 3s duration regen buff does not re-apply on refreshes
+    debug_cast<rogue_t*>( source )->buffs.vendetta->trigger();
+    trigger_nothing_personal( remains() );
+  }
 
-    // TOCHECK - See if the energy regen applies on refresh() and not just start()
-    p->buffs.vendetta->trigger();
-
-    // 6/22/2019 - Vision of Perfection procs trigger Nothing Personal for the same duration
-    //             This only applies for the initial cast/trigger, extensions do not trigger NP
-    //             NP dot is logged as 'refreshed' after a true Vendetta cast, but adds no duration
-    if ( p->azerite.nothing_personal.ok() && nothing_personal )
-    {
-      p->buffs.nothing_personal->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, remains() );
-      nothing_personal->set_target( player );
-      nothing_personal->dot_duration = remains();
-      nothing_personal->schedule_execute();
-    }
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    expire_nothing_personal();
   }
 };
 
@@ -5830,12 +5885,13 @@ void rogue_t::init_action_list()
     precombat -> add_action( "use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists" );
 
     // Main Rotation
-    def -> add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)", "Reroll for 2+ buffs with Loaded Dice up. Otherwise reroll for 2+ or Grand Melee or Ruthless Precision." );
+    def -> add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&!buff.grand_melee.up&!buff.ruthless_precision.up", "Reroll for 2+ or Grand Melee or Ruthless Precision." );
     def -> add_action( "variable,name=rtb_reroll,op=set,if=azerite.deadshot.enabled,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.broadside.up)", "Reroll for 2+ buffs or Broadside with Deadshot." );
     def -> add_action( "variable,name=rtb_reroll,op=set,if=azerite.ace_up_your_sleeve.enabled&azerite.ace_up_your_sleeve.rank>=azerite.deadshot.rank,value=rtb_buffs<2&(buff.loaded_dice.up|buff.ruthless_precision.remains<=cooldown.between_the_eyes.remains)", "Reroll for 2+ buffs or Ruthless Precision with Ace up your Sleeve, unless there are more Deadshot ranks." );
     def -> add_action( "variable,name=rtb_reroll,op=set,if=azerite.snake_eyes.rank>=2,value=rtb_buffs<2", "2+ Snake Eyes: Always reroll for 2+ buffs." );
     def -> add_action( "variable,name=rtb_reroll,op=reset,if=azerite.snake_eyes.rank>=2&buff.snake_eyes.stack>=2-buff.broadside.up", "2+ Snake Eyes: Do not reroll with 2+ stacks of the Snake Eyes buff (1+ stack with Broadside up)." );
     def -> add_action( "variable,name=rtb_reroll,op=set,if=buff.blade_flurry.up,value=rtb_buffs-buff.skull_and_crossbones.up<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up&!buff.broadside.up)", "With Blade Flurry up, ignore rules above and take everything that is 2+ (not counting SaC) or single BS, GM, RP" );
+    def -> add_action( "variable,name=rtb_reroll,op=set,if=buff.loaded_dice.up,value=(rtb_buffs-buff.buried_treasure.up)<2|buff.roll_the_bones.remains<10.8+(1.8*talent.deeper_stratagem.enabled)", "With Loaded Dice up, reroll any single buff, any 2 buff with Buried Treasure, or in pandemic." );
     def -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up&!buff.keep_your_wits_about_you.up" );
     def -> add_action( "variable,name=bte_condition,value=buff.ruthless_precision.up|(azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled)&buff.roll_the_bones.up" );
     def -> add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
@@ -7482,8 +7538,6 @@ void rogue_t::vision_of_perfection_proc()
       const timespan_t duration = td->debuffs.vendetta->data().duration() * azerite.vision_of_perfection_percentage;
       if ( td->debuffs.vendetta->check() )
       {
-        // 6/23/2019 - Confirmed in-game that Vendetta extends, but the behavior with secondary procs is inconsistent
-        //             Nothing Personal does not refresh or get re-applied on additional procs
         td->debuffs.vendetta->extend_duration( this, duration );
       }
       else
