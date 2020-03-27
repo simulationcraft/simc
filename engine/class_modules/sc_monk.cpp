@@ -3556,7 +3556,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     ww_mastery = true;
 
-    background                    = true;
+    background = dual             = true;
     may_crit                      = true;
     affected_by.sunrise_technique = true;
   }
