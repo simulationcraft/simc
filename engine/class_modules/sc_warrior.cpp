@@ -59,7 +59,6 @@ public:
   bool non_dps_mechanics, warrior_fixed_time;
   int into_the_fray_friends;
   int never_surrender_percentage;
-  double expected_max_health;
 
   auto_dispose<std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
   auto_dispose<std::vector<simple_data_t*> > cd_waste_iter;
@@ -493,7 +492,6 @@ public:
     warrior_fixed_time    = true;
     into_the_fray_friends = -1;
     never_surrender_percentage = 70;
-    expected_max_health   = 0;
 
     resource_regeneration = regen_type::DISABLED;
 
@@ -5014,63 +5012,7 @@ void warrior_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
-  resources.base_multiplier[ RESOURCE_HEALTH ] *= 1 + talents.indomitable->effectN( 1 ).percent();
-
-  if ( specialization() == WARRIOR_PROTECTION )
-  {
-    if ( items.size() > 0 )
-    {
-      double totalweight         = 0;
-      double avg_weighted_ilevel = 0;
-      size_t divisor             = 0;
-      for ( size_t i = 0; i < items.size(); i++ )
-      {
-        if ( items[ i ].slot == SLOT_SHIRT || items[ i ].slot == SLOT_TABARD || !items[ i ].active() )
-        {
-          continue;
-        }
-        const auto& data = dbc.random_property( items[ i ].item_level() );
-        if ( data.p_epic[ 0 ] == 0 )
-        {
-          continue;
-        }
-
-        double ratio = data.p_epic[ item_database::random_suffix_type( items[ i ] ) ] / data.p_epic[ 0 ];
-        totalweight += ratio;
-        divisor++;
-      }
-      for ( size_t i = 0; i < items.size(); i++ )
-      {
-        if ( items[ i ].slot == SLOT_SHIRT || items[ i ].slot == SLOT_TABARD || !items[ i ].active() )
-        {
-          continue;
-        }
-        const auto& data = dbc.random_property( items[ i ].item_level() );
-        if ( data.p_epic[ 0 ] == 0 )
-        {
-          continue;
-        }
-
-        double ratio = data.p_epic[ item_database::random_suffix_type( items[ i ] ) ] / data.p_epic[ 0 ];
-        avg_weighted_ilevel += ( ratio * static_cast<double>( items[ i ].item_level() ) / totalweight * divisor );
-      }
-
-
-      int average_itemlevel = static_cast<int>( divisor ? avg_weighted_ilevel / divisor : 0.0 );
-
-      if (average_itemlevel > 0 )
-      {
-
-        const auto& data = dbc.random_property( static_cast<int>( average_itemlevel ) );
-
-        expected_max_health = data.p_epic[ 0 ] * 8.484262;
-        expected_max_health += base.stats.attribute[ ATTR_STAMINA ];
-        expected_max_health *= 1.0 + matching_gear_multiplier( ATTR_STAMINA );
-        expected_max_health *= 60;
-
-      }
-    }
-  }
+  resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1 + talents.indomitable -> effectN( 1 ).percent();
 }
 
 // warrior_t::merge ==========================================================
