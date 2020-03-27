@@ -5699,9 +5699,23 @@ void formless_void( special_effect_t& effect )
 }
 
 // Strength of the Warden
-// Just register the corruption resistance
+// Ignore Rank 1 major (taunt)
+// TODO: Implement R2 major (dodge on use), R3 major (damage increase against affected enemies)
+// Ignore R1/R2 minor ? (stores healing taken and triggers on parry/dodge)
+// TODO: add a user-input option for R3 minor? (tanks get 3% max health for every player with secondary r3 in the raid)
+// Technically a player without the essence can get buffed by others too, as long as they're in tank spec
 void strength_of_the_warden( special_effect_t& effect )
 {
+  auto essence = effect.player -> find_azerite_essence( effect.driver() -> essence_id() );
+  if ( !essence.enabled() )
+    return;
+
+  // R3 Minor, +3% max health to you (implemented) and other tank specializations characters in your raid (NYI)
+  // There doesn't seem to be any buff associated with the health gain, similarly to Warriors' Indomitable talent
+  double health_gain = essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+  effect.player -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + health_gain;
+  effect.player -> recalculate_resource_max( RESOURCE_HEALTH );
+
   register_essence_corruption_resistance( effect );
 }
 
