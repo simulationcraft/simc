@@ -5186,15 +5186,31 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( sim -> active_enemies == 1 )
     return;
 
+  bool procs_keep_your_wits = azerite.keep_your_wits_about_you.ok();
+
   // Compute Blade Flurry modifier
   double multiplier = 1.0;
   if ( state -> action -> name_str == "killing_spree_mh" || state -> action -> name_str == "killing_spree_oh" )
   {
+    // 3/27/2020 -- Killing Spree no longer procs Wits twice per teleport
+    if ( state->action->weapon == &( this->off_hand_weapon ) )
+    {
+      procs_keep_your_wits = false;
+    }
+
     multiplier = talent.killing_spree -> effectN( 2 ).percent();
   }
   else
   {
-    multiplier = spec.blade_flurry -> effectN( 2 ).percent() + talent.dancing_steel -> effectN( 3 ).percent();
+    // 3/37/2020 -- Dancing Steel increases Blade Flurry by 10% not 5%
+    if ( this->bugs )
+    {
+      multiplier = spec.blade_flurry->effectN( 2 ).percent() + ( talent.dancing_steel->effectN( 3 ).percent() * 2.0 );
+    }
+    else
+    {
+      multiplier = spec.blade_flurry->effectN( 2 ).percent() + talent.dancing_steel->effectN( 3 ).percent();
+    }
   }
 
   // Note, unmitigated damage
@@ -5205,8 +5221,10 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   active_blade_flurry -> execute();
 
   // Keep triggers once per instance with 8.2
-  if ( azerite.keep_your_wits_about_you.ok() )
-      buffs.keep_your_wits_about_you -> trigger();
+  if ( procs_keep_your_wits )
+  {
+    buffs.keep_your_wits_about_you->trigger();
+  }
 }
 
 void rogue_t::trigger_combo_point_gain( int     cp,
