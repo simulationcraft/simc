@@ -650,15 +650,16 @@ public:
     // Spending Chi has a chance to make your next Spinning Crane Kick free and deal 1274 additional damage.
     azerite_power_t dance_of_chiji;
 
+	azerite_essence_t vision_of_perfection; 
     azerite_essence_t memory_of_lucid_dreams;
-    azerite_essence_t vision_of_perfection;
-    double vision_of_perfection_percentage;
   } azerite;
 
   struct azerite_spells_t
   {
     // General
     const spell_data_t* memory_of_lucid_dreams;
+    const spell_data_t* vision_of_perfection_1;
+    const spell_data_t* vision_of_perfection_2;
   } azerite_spells;
 
   struct pets_t
@@ -849,6 +850,7 @@ public:
   }
   void action_init_finished( action_t& ) override;
   void merge( player_t& other ) override;
+  void vision_of_perfection_proc() override;
 
   // Monk specific
   void apl_combat_brewmaster();
@@ -8015,10 +8017,8 @@ void monk_t::init_spells()
   azerite.memory_of_lucid_dreams        = find_azerite_essence( "Memory of Lucid Dreams" );
   azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
   azerite.vision_of_perfection          = find_azerite_essence( "Vision of Perfection" );
-  azerite.vision_of_perfection_percentage =
-      azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
-  azerite.vision_of_perfection_percentage +=
-      azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
+  azerite_spells.vision_of_perfection_1 = azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR );
+  azerite_spells.vision_of_perfection_2 = azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
 
   // Passives =========================================
   // General
@@ -9107,7 +9107,42 @@ stat_e monk_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-// monk_t::pre_analyze_hook  ================================================
+// monk_t::vision_of_perfection_proc == == == == == == == == == == == == == == == ==
+
+void monk_t::vision_of_perfection_proc()
+{
+  const double percentage = azerite_spells.vision_of_perfection_1->effectN( 1 ).percent() +
+                            azerite_spells.vision_of_perfection_2->effectN( 1 ).percent();
+  const timespan_t sef_duration = buff.storm_earth_and_fire->data().duration() * percentage;
+  const timespan_t serentiy_duration = buff.serenity->data().duration() * percentage;
+
+  if ( specialization() == MONK_WINDWALKER )
+  {
+    if ( talent.serenity->ok() )
+    {
+      if ( buff.serenity->check() )
+      {
+        buff.serenity->extend_duration( this, serentiy_duration );
+      }
+      else
+      {
+        buff.serenity->trigger( 1, buff.serenity->default_value, -1.0, serentiy_duration );
+      }
+    }
+/*    else
+    {
+      if ( buff.storm_earth_and_fire->check() )
+      {
+        buff.storm_earth_and_fire->extend_duration( this, sef_duration );
+      }
+      else
+      {
+        buff.storm_earth_and_fire->trigger( 1, buff.storm_earth_and_fire->default_value, -1.0, sef_duration );
+      }
+    }
+*/
+  }
+}  // monk_t::pre_analyze_hook  ================================================
 
 void monk_t::pre_analyze_hook()
 {
