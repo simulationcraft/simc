@@ -5553,7 +5553,9 @@ struct reaping_flames_t : public azerite_essence_major_t
     double am = azerite_essence_major_t::action_multiplier();
 
     if ( damage_buff )
-      am *= 1.0 + damage_buff->check_value();
+    {
+      am *= 1.0 + damage_buff->value();
+    }
 
     return am;
   }

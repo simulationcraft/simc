@@ -5136,7 +5136,8 @@ void demon_hunter_t::apl_havoc()
   essences->add_action( "ripple_in_space" );
   essences->add_action( "worldvein_resonance,if=buff.metamorphosis.up" );
   essences->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );
-  essences->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
+  essences->add_action( "cycling_variable,name=reaping_delay,op=min,if=essence.breath_of_the_dying.major,value=target.time_to_die", "Hold Reaping Flames for execute range or kill buffs, if possible. Always try to get the lowest cooldown based on available enemies." );
+  essences->add_action( "reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&(active_enemies=1|variable.reaping_delay>29))|(target.time_to_pct_20>30&(active_enemies=1|variable.reaping_delay>44))" );
   apl_cooldown->add_action( "call_action_list,name=essences" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );

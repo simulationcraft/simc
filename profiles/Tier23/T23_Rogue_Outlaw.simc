@@ -107,7 +107,9 @@ actions.essences+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_for
 actions.essences+=/ripple_in_space
 actions.essences+=/worldvein_resonance
 actions.essences+=/memory_of_lucid_dreams,if=energy<45
-actions.essences+=/reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30
+# Hold Reaping Flames for execute range or kill buffs, if possible. Always try to get the lowest cooldown based on available enemies.
+actions.essences+=/cycling_variable,name=reaping_delay,op=min,if=essence.breath_of_the_dying.major,value=target.time_to_die
+actions.essences+=/reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&(active_enemies=1|variable.reaping_delay>29))|(target.time_to_pct_20>30&(active_enemies=1|variable.reaping_delay>44))
 
 # Finishers
 # BtE over RtB rerolls with Deadshot/Ace traits or Ruthless Precision.
