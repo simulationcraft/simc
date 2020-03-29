@@ -3632,6 +3632,10 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
           // -1 to reduce the spell cooldown instead of increasing
           // saved as 3000
           p()->cooldown.fists_of_fury->adjust( -1 * p()->find_spell( 242260 )->effectN( 1 ).time_value() );
+
+		// Apply Mark of the Crane
+		if ( p()->spec.spinning_crane_kick )
+          p()->trigger_mark_of_the_crane( s );
       }
 
       if ( p()->azerite.sunrise_technique.ok() )
@@ -4483,6 +4487,15 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
 
       mh_attack->execute();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    // Apply Mark of the Crane
+    if ( result_is_hit( s->result ) && p()->spec.spinning_crane_kick )
+      p()->trigger_mark_of_the_crane( s );
   }
 };
 
@@ -9994,7 +10007,7 @@ void monk_t::apl_combat_windwalker()
                    "Actions.AoE is intended for use with Hectic_Add_Cleave and currently needs to be optimized" );
   aoe->add_talent( this, "Whirling Dragon Punch" );
   aoe->add_talent( this, "Energizing Elixir", "if=!prev_gcd.1.tiger_palm&chi<=1&energy<50" );
-  aoe->add_action( this, "Fists of Fury", "if=energy.time_to_max>3" );
+  aoe->add_action( this, "Fists of Fury", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
   aoe->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   aoe->add_action( this, "Spinning Crane Kick",
                    "if=combo_strike&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3)" );
@@ -10014,7 +10027,7 @@ void monk_t::apl_combat_windwalker()
   st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.touch_of_death.remains>2|variable.hold_tod", "Use RSK on targets without Mark of the Crane debuff, if possible, and if ToD is at least 2 seconds away" );
   st->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down&active_enemies>1" );
   st->add_action( this, "Reverse Harm", "if=chi.max-chi>1" );
-  st->add_talent( this, "Fist of the White Tiger", "if=chi<3" );
+  st->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
   st->add_talent( this, "Energizing Elixir", "if=chi<=3&energy<50" );
   st->add_talent( this, "Chi Burst", "if=chi.max-chi>0&active_enemies=1|chi.max-chi>1", "Use CB if you are more than 0 Chi away from max and have 1 enemy, or are more than 1 Chi away from max" );
   st->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>3&!dot.touch_of_death.remains&buff.storm_earth_and_fire.down", "Use TP if you are 4 or more chi away from max and ToD and SEF are both not up" );
