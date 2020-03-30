@@ -9913,13 +9913,13 @@ void monk_t::apl_combat_windwalker()
 
   cd_serenity->add_talent( this, "Serenity" );
 
-  cd_serenity->add_action( "the_unbound_force", "if=buff.serenity.down" );
-  cd_serenity->add_action( "purifying_blast", "if=buff.serenity.down" );
-  cd_serenity->add_action( "reaping_flames", "if=buff.serenity.down" );
-  cd_serenity->add_action( "focused_azerite_beam", "if=buff.serenity.down" );
+  cd_serenity->add_action( "the_unbound_force,if=buff.serenity.down" );
+  cd_serenity->add_action( "purifying_blast,if=buff.serenity.down" );
+  cd_serenity->add_action( "reaping_flames,if=buff.serenity.down" );
+  cd_serenity->add_action( "focused_azerite_beam,if=buff.serenity.down" );
   cd_serenity->add_action( "memory_of_lucid_dreams,if=buff.serenity.down&energy<40" );
-  cd_serenity->add_action( "ripple_in_space", "if=buff.serenity.down" );
-  cd_serenity->add_action( "bag_of_tricks", "if=buff.serenity.down" );
+  cd_serenity->add_action( "ripple_in_space,if=buff.serenity.down" );
+  cd_serenity->add_action( "bag_of_tricks,if=buff.serenity.down" );
 
   // Storm, Earth and Fire Cooldowns
   cd_sef->add_talent( this, "Invoke Xuen, the White Tiger", "if=buff.serenity.down|target.time_to_die<25",
