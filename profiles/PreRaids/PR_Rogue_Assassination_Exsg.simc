@@ -30,6 +30,7 @@ actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>1
 actions.precombat+=/apply_poison
 actions.precombat+=/stealth
 actions.precombat+=/use_item,name=azsharas_font_of_power
+actions.precombat+=/guardian_of_azeroth,if=talent.exsanguinate.enabled
 
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)
@@ -77,8 +78,10 @@ actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/fireblood,if=debuff.vendetta.up
 actions.cds+=/ancestral_call,if=debuff.vendetta.up
-actions.cds+=/use_item,name=galecallers_boon,if=cooldown.vendetta.remains>45
-actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10-4*equipped.azsharas_font_of_power|target.time_to_die<20
+actions.cds+=/use_item,name=galecallers_boon,if=(debuff.vendetta.up|(!talent.exsanguinate.enabled&cooldown.vendetta.remains>45|talent.exsanguinate.enabled&cooldown.exsanguinate.remains<6))&!exsanguinated.rupture
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|target.time_to_die<20
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=(!talent.exsanguinate.enabled|!talent.subterfuge.enabled)&debuff.vendetta.remains>10-4*equipped.azsharas_font_of_power
+actions.cds+=/use_item,name=ashvanes_razor_coral,if=(talent.exsanguinate.enabled&talent.subterfuge.enabled)&debuff.vendetta.up&(exsanguinated.garrote|azerite.shrouded_suffocation.enabled&dot.garrote.pmultiplier>1)
 actions.cds+=/use_item,effect_name=cyclotronic_blast,if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.toxic_blade.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4
 actions.cds+=/use_item,name=lurkers_insidious_gift,if=debuff.vendetta.up
 actions.cds+=/use_item,name=lustrous_golden_plumage,if=debuff.vendetta.up

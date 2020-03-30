@@ -5796,6 +5796,7 @@ void rogue_t::init_action_list()
     precombat->add_action( "apply_poison" );
     precombat->add_action( this, "Stealth" );
     precombat->add_action( "use_item,name=azsharas_font_of_power" );
+    precombat->add_action( "guardian_of_azeroth,if=talent.exsanguinate.enabled" );
 
     // Main Rotation
     def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)" );
@@ -5836,8 +5837,10 @@ void rogue_t::init_action_list()
     cds -> add_action( "fireblood,if=debuff.vendetta.up" );
     cds -> add_action( "ancestral_call,if=debuff.vendetta.up" );
 
-    cds -> add_action( "use_item,name=galecallers_boon,if=cooldown.vendetta.remains>45" );
-    cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.vendetta.remains>10-4*equipped.azsharas_font_of_power|target.time_to_die<20" );
+    cds -> add_action( "use_item,name=galecallers_boon,if=(debuff.vendetta.up|(!talent.exsanguinate.enabled&cooldown.vendetta.remains>45|talent.exsanguinate.enabled&cooldown.exsanguinate.remains<6))&!exsanguinated.rupture" );
+    cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|target.time_to_die<20" );
+    cds -> add_action( "use_item,name=ashvanes_razor_coral,if=(!talent.exsanguinate.enabled|!talent.subterfuge.enabled)&debuff.vendetta.remains>10-4*equipped.azsharas_font_of_power" );
+    cds -> add_action( "use_item,name=ashvanes_razor_coral,if=(talent.exsanguinate.enabled&talent.subterfuge.enabled)&debuff.vendetta.up&(exsanguinated.garrote|azerite.shrouded_suffocation.enabled&dot.garrote.pmultiplier>1)" );
     cds -> add_action( "use_item,effect_name=cyclotronic_blast,if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.toxic_blade.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4" );
     cds -> add_action( "use_item,name=lurkers_insidious_gift,if=debuff.vendetta.up" );
     cds -> add_action( "use_item,name=lustrous_golden_plumage,if=debuff.vendetta.up" );
