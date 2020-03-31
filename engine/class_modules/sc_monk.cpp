@@ -1622,6 +1622,17 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       energize_type = ENERGIZE_NONE;
     }
+
+    void impact( action_state_t* state ) override
+    {
+      sef_melee_attack_t::impact( state );
+
+      if ( result_is_hit( state->result ) )
+      {
+        if ( o()->spec.spinning_crane_kick )
+          o()->trigger_mark_of_the_crane( state );
+      }
+    }
   };
 
   struct sef_fist_of_the_white_tiger_t : public sef_melee_attack_t
