@@ -1,12 +1,12 @@
-monk="T24_Monk_Windwalker"
+monk="T25_Monk_Windwalker_Serenity"
 source=default
 spec=windwalker
 level=120
-race=pandaren
+race=human
 role=dps
 position=back
-talents=2022032
-azerite_essences=14:3/32:3/4:3
+talents=2022013
+azerite_essences=32:3:1/35:3:0/4:3:0/5:3:0
 
 # Default consumables
 potion=unbridled_fury
@@ -161,29 +161,31 @@ actions.st+=/flying_serpent_kick,interrupt=1
 # Use BoK if FoF is close and you have 2 chi and your last global was TP, or if you are about to cap energy and either your last gcd was TP or if you are less than 2 chi away from capping
 actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(cooldown.fists_of_fury.remains<3&chi=2|energy.time_to_max<1)&(prev_gcd.1.tiger_palm|chi.max-chi<2)
 
-head=helm_of_hideous_transformation,id=168347,bonus_id=4824/1517/4775,azerite_powers=389/390/21/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
-shoulders=shoulderpads_of_frothing_rage,id=168348,bonus_id=4824/1517/4775,azerite_powers=117/388/22/13
-back=cloak_of_blessed_depths,id=168602,bonus_id=4800/1517
-chest=blackwater_shimmerscale_vest,id=168343,bonus_id=4824/1517/4775,azerite_powers=389/391/38/13
-wrists=oris_tidal_wristwraps,id=170305,bonus_id=1512
-hands=poens_deepsea_grips,id=170334,bonus_id=1512
-waist=vims_scalecrusher_clasp,id=170368,bonus_id=1512
-legs=leggings_of_the_stormborn,id=168378,bonus_id=4800/1517
-feet=akanas_reefstrider_footwraps,id=170141,bonus_id=1512
-finger1=ring_of_the_highborne_courtier,id=168890,bonus_id=4800/1517,enchant=pact_of_versatility
-finger2=cursed_lovers_ring,id=168891,bonus_id=4800/1517,enchant=pact_of_versatility
-trinket1=dribbling_inkpod,id=169319,bonus_id=4800/1517
+head=stygian_guise,id=174132,bonus_id=4824/1517/4775,azerite_powers=389/582/20/83/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+shoulders=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517/4775,azerite_powers=117/389/21/85/13
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+chest=type_ii_bomber_jacket,id=169073,bonus_id=5448/1532/4775,azerite_powers=389/569/31/44/13
+wrists=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517/6573
+hands=chitinspine_gloves,id=174137,bonus_id=4824/1517/6573
+waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517/6573
+legs=onyximbued_breeches,id=174139,bonus_id=4824/1517/6573
+feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517/6573
+finger1=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517/6573,enchant=accord_of_versatility
+finger2=lurking_schemers_band,id=175008,bonus_id=4824/1517,gems=versatile_dark_opal,enchant=accord_of_versatility
+trinket1=deadeye_spyglass,id=159623,bonus_id=6536/1637/4786
 trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
-main_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=masterful_navigation
-off_hand=claw_of_the_myrmidon,id=168276,bonus_id=4800/1517,enchant=versatile_navigation
+main_hand=unguent_caress,id=172197,bonus_id=4824/1517,enchant=deadly_navigation
+off_hand=mishun_blade_of_tyrants,id=174105,bonus_id=4824/1517,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=442.06
-# gear_agility=7437
-# gear_stamina=13190
-# gear_crit_rating=1190
-# gear_haste_rating=1023
-# gear_mastery_rating=729
-# gear_versatility_rating=768
-# gear_armor=2806
+# gear_ilvl=478.00
+# gear_agility=10237
+# gear_stamina=19704
+# gear_crit_rating=972
+# gear_haste_rating=1312
+# gear_mastery_rating=1030
+# gear_versatility_rating=957
+# gear_corruption=90
+# gear_corruption_resistance=50
+# gear_armor=3869
