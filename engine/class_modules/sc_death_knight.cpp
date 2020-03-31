@@ -398,7 +398,7 @@ struct death_knight_t : public player_t {
 public:
   // Active
   double runic_power_decay_rate;
-  std::vector<ground_aoe_event_t*> dnds;
+  ground_aoe_event_t* active_dnd;
   bool deprecated_dnd_expression;
 
   // Counters
@@ -2945,7 +2945,7 @@ struct melee_t : public death_knight_melee_attack_t
       }
 
       // Crimson scourge doesn't proc if death and decay is ticking
-      if ( td( s -> target ) -> dot.blood_plague -> is_ticking() && p() -> dnds.size() == 0 )
+      if ( td( s -> target ) -> dot.blood_plague -> is_ticking() && p() -> active_dnd )
       {
         if ( p() -> buffs.crimson_scourge -> trigger() )
         {
@@ -3950,6 +3950,13 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
   void execute() override
   {
+    // If a death and decay/defile is already active, cancel it
+    if ( p() -> active_dnd )
+    {
+      event_t::cancel( p() -> active_dnd );
+      p() -> active_dnd = nullptr;
+    }
+
     death_knight_spell_t::execute();
 
     p() -> buffs.crimson_scourge -> decrement();
@@ -3971,16 +3978,11 @@ struct death_and_decay_base_t : public death_knight_spell_t
         switch ( type )
         {
           case ground_aoe_params_t::EVENT_CREATED:
-            p() -> dnds.push_back( event );
+            p() -> active_dnd = event;
             break;
           case ground_aoe_params_t::EVENT_DESTRUCTED:
           {
-            auto it = range::find( p() -> dnds, event );
-            assert( it != p() -> dnds.end() && "DnD event not found in vector" );
-            if ( it != p() -> dnds.end() )
-            {
-              p() -> dnds.erase( it );
-            }
+            p() -> active_dnd = nullptr;
             break;
           }
           default:
@@ -6562,18 +6564,10 @@ void death_knight_t::trigger_virulent_plague_death( player_t* target )
 
 bool death_knight_t::in_death_and_decay() const
 {
-  if ( ! sim -> distance_targeting_enabled )
-  {
-    return dnds.size() > 0;
-  }
-  else
-  {
-    auto it = range::find_if( dnds, [ this ]( const ground_aoe_event_t* event ) {
-      return get_ground_aoe_distance( *event -> pulse_state ) <= event -> pulse_state -> action -> radius;
-    } );
+  if ( ! sim -> distance_targeting_enabled || ! active_dnd )
+    return active_dnd != nullptr;
 
-    return it != dnds.end();
-  }
+  return get_ground_aoe_distance( *active_dnd -> pulse_state ) <= active_dnd -> pulse_state -> action -> radius;
 }
 
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
@@ -7043,14 +7037,12 @@ std::unique_ptr<expr_t> death_knight_t::create_death_and_decay_expression( const
   if ( util::str_compare_ci( expr[ spell_offset + 1u ], "ticking" ) ||
        util::str_compare_ci( expr[ spell_offset + 1u ], "up" ) )
   {
-    return make_fn_expr( "dnd_ticking", [ this ]() { return dnds.size() > 0 ? 1 : 0; } );
+    return make_fn_expr( "dnd_ticking", [ this ]() { return active_dnd ? 1 : 0; } );
   }
   else if ( util::str_compare_ci( expr[ spell_offset + 1u ], "remains" ) )
   {
     return make_fn_expr( "dnd_remains", [ this ]() {
-      return dnds.size() > 0
-             ? dnds.back() -> remaining_time().total_seconds()
-             : 0;
+      return active_dnd ? active_dnd -> remaining_time().total_seconds() : 0;
     } );
   }
 
@@ -8267,7 +8259,7 @@ void death_knight_t::reset()
 
   runic_power_decay_rate = 1; // 1 RP per second decay
   _runes.reset();
-  dnds.clear();
+  active_dnd = nullptr;
   eternal_rune_weapon_counter = 0;
 }
 
