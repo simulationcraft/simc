@@ -2074,8 +2074,8 @@ buff_t* buff_t::find( player_t* p, const std::string& name, player_t* source )
 
 std::string buff_t::source_name() const
 {
-  if ( player )
-    return player->name_str;
+  if ( source )
+    return source->name_str;
 
   return "noone";
 }
