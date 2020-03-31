@@ -405,6 +405,10 @@ public:
   double eternal_rune_weapon_counter;
   bool triggered_frozen_tempest;
 
+  // Enemies affected by festering wounds caching
+  int  festering_wounds_target_count;
+  bool festering_wounds_target_count_valid;
+
   // Special azerite data
   double vision_of_perfection_minor_cdr, vision_of_perfection_major_coeff;
   int perfection_ghouls_spawn_count;
@@ -830,6 +834,8 @@ public:
     deprecated_dnd_expression( false ),
     eternal_rune_weapon_counter( 0 ),
     triggered_frozen_tempest( false ),
+    festering_wounds_target_count( 0 ),
+    festering_wounds_target_count_valid( true ),
     antimagic_shell( nullptr ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
@@ -921,6 +927,7 @@ public:
   void      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( const action_state_t* state, unsigned n = 1 );
+  int       count_festering_wounds_targets();
   void      default_apl_dps_precombat();
   void      default_apl_blood();
   void      default_apl_frost();
@@ -983,7 +990,15 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_period( 0_ms );
   debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
                            -> set_trigger_spell( p -> spec.festering_wound )
-                           -> set_cooldown( 0_ms ); // Handled by trigger_festering_wound
+                           -> set_cooldown( 0_ms ) // Handled by trigger_festering_wound
+                           -> set_stack_change_callback( [ this, p ]( buff_t*, int old_, int new_ )
+                           {
+                             // Invalidate the FW target count if needed
+                             if ( old_ == 0 || new_ == 0 )
+                             {
+                               p -> festering_wounds_target_count_valid = false;
+                             }
+                           } );
 
   debuff.deep_cuts         = make_buff( *this, "deep_cuts", p -> find_spell( 272685 ) );
 }
@@ -2293,7 +2308,7 @@ struct magus_pet_t : public death_knight_pet_t
     magus_td_t( player_t* target, magus_pet_t* p ) :
       actor_target_data_t( target, p )
     {
-      frostbolt_debuff = make_buff( *this, "frostbolt_apocalypse_magus", p -> owner -> find_spell( 288548 ) );
+      frostbolt_debuff = make_buff( *this, "frostbolt_magus_of_the_dead", p -> owner -> find_spell( 288548 ) );
     }
   };
 
@@ -6511,6 +6526,9 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   // If the target wasn't affected by festering wound, return
   if ( n_wounds == 0 ) return;
 
+  // Invalidate the FW target count cache
+  festering_wounds_target_count_valid = false;
+
   // Generate the RP you'd have gained if you popped the wounds manually
   resource_gain( RESOURCE_RUNIC_POWER,
                  spec.festering_wound -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) * n_wounds,
@@ -6885,6 +6903,27 @@ void death_knight_t::vision_of_perfection_proc()
   }
 }
 
+int death_knight_t::count_festering_wounds_targets()
+{
+  // If the cache is valid, return the cached value
+  if ( festering_wounds_target_count_valid || specialization() != DEATH_KNIGHT_UNHOLY )
+    return festering_wounds_target_count;
+
+  int wounded_targets = 0;
+  for ( const auto fw_target : sim -> target_non_sleeping_list )
+  {
+    auto td = get_target_data( fw_target );
+
+    if ( td -> debuff.festering_wound -> check() )
+      wounded_targets++;
+  }
+  this -> festering_wounds_target_count = wounded_targets;
+  this -> festering_wounds_target_count_valid = true;
+
+  return wounded_targets;
+}
+
+
 // ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
@@ -7077,11 +7116,17 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( const std::string& na
     return dnd_expr;
   }
 
+  // Death Knight special expressions
   if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
   {
     if ( util::str_compare_ci( splits[ 1 ], "disable_aotd" ) && splits.size() == 2 )
       return make_fn_expr( "disable_aotd_expression", [ this ]() {
         return this -> options.disable_aotd;
+      } );
+
+    if ( util::str_compare_ci( splits[ 1 ], "fwounded_targets" ) && splits.size() == 2 )
+      return make_fn_expr( "festering_wounds_target_count_expression", [ this ]() {
+        return this -> count_festering_wounds_targets();
       } );
   }
 
