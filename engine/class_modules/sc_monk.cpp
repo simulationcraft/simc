@@ -9805,7 +9805,7 @@ void monk_t::apl_combat_windwalker()
       "energy soon" );
   def->add_action( this, "Tiger Palm",
                    "target_if=min:debuff.mark_of_the_crane.remains,if=!combo_break&chi.max-chi>=2&(talent.serenity."
-                   "enabled|!dot.touch_of_death.remains)&buff.seething_rage.down&buff.serenity.down&(energy.time_to_"
+                   "enabled|!dot.touch_of_death.remains|active_enemies>2)&buff.seething_rage.down&buff.serenity.down&(energy.time_to_"
                    "max<1|talent.serenity.enabled&cooldown.serenity.remains<2|!talent.serenity.enabled&cooldown.touch_"
                    "of_death.remains<3&!variable.hold_tod|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)",
                    "Use TP if it wont break mastery, AND are missing at least 2 chi, AND big cooldowns are not up, AND "
@@ -10048,18 +10048,17 @@ void monk_t::apl_combat_windwalker()
   serenity->add_action( this, "Spinning Crane Kick" );
 
   // Multiple Targets
-  aoe->add_action( this, "Rising Sun Kick",
-                   "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains<5)&cooldown.fists_of_fury.remains>3",
-                   "Actions.AoE is intended for use with Hectic_Add_Cleave and currently needs to be optimized" );
-  aoe->add_talent( this, "Whirling Dragon Punch" );
+  aoe->add_talent( this, "Whirling Dragon Punch", "", "Actions.AoE is intended for use with Hectic_Add_Cleave and currently needs to be optimized" );
   aoe->add_talent( this, "Energizing Elixir", "if=!prev_gcd.1.tiger_palm&chi<=1&energy<50" );
-  aoe->add_action( this, "Fists of Fury", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
+  aoe->add_action( this, "Fists of Fury", "if=energy.time_to_max>1" );
+  aoe->add_action( this, "Rising Sun Kick",
+                   "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.rising_sun_kick.duration>cooldown.whirling_dragon_punch.remains+4)&(cooldown.fists_of_fury.remains>3|chi>=5)" );
   aoe->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   aoe->add_action( this, "Spinning Crane Kick",
-                   "if=combo_strike&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3)" );
+                   "if=combo_strike&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3|buff.dance_of_chiji.react)" );
   aoe->add_action( this, "Reverse Harm", "if=chi.max-chi>=2" );
-  aoe->add_talent( this, "Chi Burst", "if=chi<=3" );
-  aoe->add_talent( this, "Fist of the White Tiger", "if=chi.max-chi>=3" );
+  aoe->add_talent( this, "Chi Burst", "if=chi.max-chi>=3" );
+  aoe->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
   aoe->add_action( this, "Tiger Palm",
 				   "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|!combo_break)" );
   aoe->add_talent( this, "Chi Wave", "if=!combo_break" );
