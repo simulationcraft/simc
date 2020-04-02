@@ -10764,13 +10764,13 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string&
     }
     else if ( splits[ 1 ] == "regen" )
     {
-      return make_fn_expr( name_str, [this, r] { return resources.base_regen_per_second[ r ]; } );
+      return make_fn_expr( name_str, [this, r] { return resource_regen_per_second( r ); } );
     }
 
     else if ( splits[ 1 ] == "time_to_max" )
     {
       return make_fn_expr( "time_to_max_resource", [this, r] {
-        return ( resources.max[ r ] - resources.current[ r ] ) / resources.base_regen_per_second[ r ];
+        return ( resources.max[ r ] - resources.current[ r ] ) / resource_regen_per_second( r );
       } );
     }
   }

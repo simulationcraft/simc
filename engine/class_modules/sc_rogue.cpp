@@ -599,6 +599,7 @@ struct rogue_t : public player_t
   timespan_t  available() const override;
   action_t*   create_action( const std::string& name, const std::string& options ) override;
   std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
+  std::unique_ptr<expr_t> create_resource_expression( const std::string& name ) override;
   void        regen( timespan_t periodicity ) override;
   double      resource_gain( resource_e, double, gain_t* g = nullptr, action_t* a = nullptr ) override;
   resource_e  primary_resource() const override { return RESOURCE_ENERGY; }
@@ -5939,8 +5940,8 @@ void rogue_t::init_action_list()
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds -> add_action( this, "Blade Flurry", "if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)", "Blade Flurry on 2+ enemies. With adds: Use if they stay for 8+ seconds or if your next charge will be ready in time for the next wave." );
     cds -> add_talent( this, "Ghostly Strike", "if=variable.blade_flurry_sync&combo_points.deficit>=1+buff.broadside.up" );
-    cds -> add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&(energy.time_to_max>5|energy<15)" );
-    cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>1&(!buff.adrenaline_rush.up|energy<45)" );
+    cds -> add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&spell_targets.blade_flurry>1&energy.time_to_max>2" );
+    cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>2" );
     cds -> add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition", "Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell." );
     cds -> add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
 
@@ -6469,6 +6470,54 @@ std::unique_ptr<expr_t> rogue_t::create_expression( const std::string& name_str 
   }
 
   return player_t::create_expression( name_str );
+}
+
+std::unique_ptr<expr_t> rogue_t::create_resource_expression( const std::string& name_str )
+{
+  auto splits = util::string_split( name_str, "." );
+  if ( splits.empty() )
+    return nullptr;
+
+  resource_e r = util::parse_resource_type( splits[ 0 ] );
+  if ( r == RESOURCE_ENERGY )
+  {
+    // Custom Rogue Energy Regen Functions
+    // Handles things that are outside of the normal resource_regen_per_second flow
+    if ( splits.size() == 2 && ( splits[ 1 ] == "regen" || splits[ 1 ] == "time_to_max" ) )
+    {
+      const bool regen = ( splits[ 1 ] == "regen" );
+      return make_fn_expr( name_str, [ this, regen ] {
+        const double energy_deficit = resources.max[ RESOURCE_ENERGY ] - resources.current[ RESOURCE_ENERGY ];
+        double energy_regen_per_second = resource_regen_per_second( RESOURCE_ENERGY );
+        
+        if ( buffs.adrenaline_rush->check() )
+        {
+          energy_regen_per_second *= 1.0 + buffs.adrenaline_rush->data().effectN( 1 ).percent();
+        }
+
+        energy_regen_per_second += buffs.nothing_personal->check_value();
+        energy_regen_per_second += buffs.buried_treasure->check_value();
+        energy_regen_per_second += buffs.vendetta->check_value();
+
+        if ( buffs.blade_rush->check() )
+        {
+          energy_regen_per_second += ( buffs.blade_rush->data().effectN( 1 ).base_value() / buffs.blade_rush->buff_period.total_seconds() );
+        }
+
+        // TODO - Add support for Venomous Vim, Master of Shadows, and potentially also estimated Combat Potency, ShT etc.
+        //        Also consider if buffs such as Adrenaline Rush/Lucid should be prorated based on duration for time_to_max
+
+        if ( player_t::buffs.memory_of_lucid_dreams->check() )
+        {
+          energy_regen_per_second *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+        }
+
+        return regen ? energy_regen_per_second : energy_deficit / energy_regen_per_second;
+      } );
+    }
+  }
+
+  return player_t::create_resource_expression( name_str );
 }
 
 // rogue_t::init_base =======================================================
@@ -7479,6 +7528,7 @@ void rogue_t::regen( timespan_t periodicity )
   player_t::regen( periodicity );
 
   // We handle some energy gain increases here instead of the resource_regen_per_second method in order to better track their benefits.
+  // IMPORTANT NOTE: If anything is updated/added here, rogue_t::create_resource_expression() needs to be updated as well to reflect this
   if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
   {
     if ( buffs.adrenaline_rush -> up() )

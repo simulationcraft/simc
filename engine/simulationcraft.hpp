@@ -4315,8 +4315,6 @@ public:
   bool parse_talents_armory( const std::string& talent_string );
   bool parse_talents_armory2( const std::string& talent_string );
   bool parse_talents_wowhead( const std::string& talent_string );
-  std::unique_ptr<expr_t> create_resource_expression( const std::string& name );
-
 
   bool is_moving() const
   { return buffs.movement && buffs.movement -> check(); }
@@ -4644,6 +4642,7 @@ public:
 
   virtual std::unique_ptr<expr_t> create_expression( const std::string& name );
   virtual std::unique_ptr<expr_t> create_action_expression( action_t&, const std::string& name );
+  virtual std::unique_ptr<expr_t> create_resource_expression( const std::string& name );
 
   virtual void create_options();
   void recreate_talent_str( talent_format format = talent_format::NUMBERS );
