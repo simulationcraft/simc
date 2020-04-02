@@ -35,6 +35,7 @@ position=ranged_back
 talents=2202012
 
 azerite_essences=22:3/5:3/35:3/32:3
+
 head=helm_of_actualized_visions,id=174151,bonus_id=4824/1517/4775,azerite_powers=366/211/30/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=epaulettes_of_arcing_power,id=169074,bonus_id=1532/4819/4775,azerite_powers=211/366/18/13

@@ -6,7 +6,7 @@ race=human
 role=attack
 position=ranged_back
 talents=2202012
-azerite_essences=22:3/5:3/35:3
+azerite_essences=22:3/5:3/35:3/32:3
 
 # Default consumables
 potion=unbridled_fury
@@ -108,12 +108,12 @@ neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=epaulettes_of_arcing_power,id=169074,bonus_id=1532/4819/4775,azerite_powers=211/366/18/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 chest=last_vestige_of_neltharion,id=174147,bonus_id=4824/1517/4775,azerite_powers=366/211/30/14/13
-wrists=arcglass_bindings,id=159380,ilevel=465
+wrists=arcglass_bindings,id=159380,bonus_id=1637
 hands=egoannihilating_grips,id=174162,bonus_id=4824/1517
 waist=watchers_scheming_girdle,id=174158,bonus_id=4824/1517/6547
 legs=greaves_of_forbidden_magics,id=174155,bonus_id=4824/1517/6465/6482
 feet=greaves_of_the_twilight_drake,id=174160,bonus_id=4824/1517
-finger1=ichorspine_loop,id=174532,bonus_id=4824/1517/6465/6476,enchant=accord_of_critical_strike
+finger1=ichorspine_loop,id=174532,bonus_id=4824/1517/6465/6482,enchant=accord_of_critical_strike
 finger2=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517/6465/6482,enchant=accord_of_critical_strike
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 trinket2=vitacharged_titanshard,id=174500,bonus_id=4824/1517
