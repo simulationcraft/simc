@@ -1271,6 +1271,12 @@ struct blade_flurry_attack_t : public rogue_attack_t
     range      = -1.0;
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
   bool procs_main_gauche() const override
   { return false; }
 
@@ -5214,8 +5220,11 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
     }
   }
 
+  // Target multipliers do not replicate to secondary targets, need to reverse it out
+  const double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
+
   // Note, unmitigated damage
-  double damage = state -> result_total * multiplier;
+  double damage = state->result_total * multiplier * target_da_multiplier;
   active_blade_flurry -> base_dd_min = damage;
   active_blade_flurry -> base_dd_max = damage;
   active_blade_flurry -> set_target( state->target );
@@ -5939,7 +5948,7 @@ void rogue_t::init_action_list()
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds -> add_action( this, "Blade Flurry", "if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)", "Blade Flurry on 2+ enemies. With adds: Use if they stay for 8+ seconds or if your next charge will be ready in time for the next wave." );
-    cds -> add_talent( this, "Ghostly Strike", "if=variable.blade_flurry_sync&combo_points.deficit>=1+buff.broadside.up" );
+    cds -> add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadside.up" );
     cds -> add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&spell_targets.blade_flurry>1&energy.time_to_max>2" );
     cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>2" );
     cds -> add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition", "Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell." );
