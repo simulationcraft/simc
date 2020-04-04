@@ -1433,6 +1433,7 @@ class SpellDataGenerator(DataGenerator):
             ( 278962, 0 ),          # Paradise Lost, Azerite trait buff
             ( 286131, 0 ),          # Replicating Shadows, Azerite trait dmg effect
             ( 193315, 0 ),          # Sinister Strike extra attack damage spell
+            ( 257506, 0 ),          # Shot in the Dark buff for free Cheap Shot casts
         ),
 
         # Priest:
