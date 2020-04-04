@@ -5998,7 +5998,7 @@ void rogue_t::init_action_list()
     // Azerite Essences
     action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
     essences->add_action( "concentrated_flame,if=energy.time_to_max>1&!buff.blade_flurry.up&(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)" );
-    essences->add_action( "blood_of_the_enemy,if=variable.blade_flurry_sync&cooldown.between_the_eyes.up&variable.bte_condition" );
+    essences->add_action( "blood_of_the_enemy,if=variable.blade_flurry_sync&cooldown.between_the_eyes.up&variable.bte_condition&(spell_targets.blade_flurry>=2|raid_event.adds.in>45)" );
     essences->add_action( "guardian_of_azeroth" );
     essences->add_action( "focused_azerite_beam,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60&!buff.adrenaline_rush.up" );
     essences->add_action( "purifying_blast,if=spell_targets.blade_flurry>=2|raid_event.adds.in>60" );
