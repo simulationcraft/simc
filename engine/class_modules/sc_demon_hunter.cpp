@@ -5127,14 +5127,17 @@ void demon_hunter_t::apl_havoc()
   add_havoc_use_items( this, apl_cooldown );
 
   action_priority_list_t* essences = get_action_priority_list( "essences" );
+  essences->add_action( "variable,name=fel_barrage_sync,if=talent.fel_barrage.enabled,value=cooldown.fel_barrage.ready&(((!talent.demonic.enabled|buff.metamorphosis.up)&!variable.waiting_for_momentum&raid_event.adds.in>30)|active_enemies>desired_targets)" );
   essences->add_action( "concentrated_flame,if=(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)" );
-  essences->add_action( "blood_of_the_enemy,if=buff.metamorphosis.up|target.time_to_die<=10" );
+  essences->add_action( "blood_of_the_enemy,if=(!talent.fel_barrage.enabled|cooldown.fel_barrage.remains>45)&!variable.waiting_for_momentum&((!talent.demonic.enabled|buff.metamorphosis.up&!cooldown.blade_dance.ready)|target.time_to_die<=10)",
+                        "Attempt to sync with Fel Barrage or AoE if it will be used within the next 45 seconds, otherwise use during normal burst damage." );
+  essences->add_action( "blood_of_the_enemy,if=talent.fel_barrage.enabled&variable.fel_barrage_sync" );
   essences->add_action( "guardian_of_azeroth,if=(buff.metamorphosis.up&cooldown.metamorphosis.ready)|buff.metamorphosis.remains>25|target.time_to_die<=30" );
   essences->add_action( "focused_azerite_beam,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
   essences->add_action( "purifying_blast,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
   essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   essences->add_action( "ripple_in_space" );
-  essences->add_action( "worldvein_resonance,if=buff.metamorphosis.up" );
+  essences->add_action( "worldvein_resonance,if=buff.metamorphosis.up|variable.fel_barrage_sync" );
   essences->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );
   essences->add_action( "cycling_variable,name=reaping_delay,op=min,if=essence.breath_of_the_dying.major,value=target.time_to_die", "Hold Reaping Flames for execute range or kill buffs, if possible. Always try to get the lowest cooldown based on available enemies." );
   essences->add_action( "reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&(active_enemies=1|variable.reaping_delay>29))|(target.time_to_pct_20>30&(active_enemies=1|variable.reaping_delay>44))" );
@@ -5165,7 +5168,7 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* apl_demonic = get_action_priority_list( "demonic" );
   apl_demonic->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_demonic->add_action( this, "Eye Beam", "if=raid_event.adds.up|raid_event.adds.in>25" );
-  apl_demonic->add_talent( this, "Fel Barrage", "if=((!cooldown.eye_beam.up|buff.metamorphosis.up)&raid_event.adds.in>30)|active_enemies>desired_targets" );
+  apl_demonic->add_talent( this, "Fel Barrage", "if=(buff.metamorphosis.up&raid_event.adds.in>30)|active_enemies>desired_targets" );
   apl_demonic->add_action( this, "Blade Dance", "if=variable.blade_dance&!cooldown.metamorphosis.ready"
                                                 "&(cooldown.eye_beam.remains>(5-azerite.revolving_blades.rank*3)|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
   apl_demonic->add_talent( this, "Immolation Aura" );
