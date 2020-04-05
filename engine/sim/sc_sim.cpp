@@ -2220,7 +2220,7 @@ void sim_t::init_fight_style()
 
     raid_events_str +=
         "/invulnerable,cooldown=500,duration=500,retarget=1"
-        "/adds,name=Boss,count=1,cooldown=500,duration=140,type=enemy,duration_stddev=2"
+        "/adds,name=Boss,count=1,cooldown=500,duration=140,type=add_boss,duration_stddev=2"
         "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=15,duration_stddev=2"
         "/adds,name=BigAdd,count=2,count_range=1,first=155,cooldown=45,duration=30,duration_stddev=2";
   }

@@ -10178,10 +10178,13 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
     return expr_t::create_constant( "bugs", bugs );
 
   if ( expression_str == "is_add" )
-    return expr_t::create_constant("is_add", is_add() );
+    return expr_t::create_constant( "is_add", is_add() );
+
+  if ( expression_str == "is_boss" )
+    return expr_t::create_constant( "is_boss", is_boss() );
 
   if ( expression_str == "is_enemy" )
-    return expr_t::create_constant("is_enemy", is_enemy() );
+    return expr_t::create_constant( "is_enemy", is_enemy() );
 
   if ( expression_str == "attack_haste" )
     return make_fn_expr( expression_str, [this] { return cache.attack_haste(); } );

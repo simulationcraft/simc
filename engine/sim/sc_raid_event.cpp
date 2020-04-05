@@ -52,7 +52,9 @@ struct adds_event_t : public raid_event_t
       spawn_radius( 0 ),
       spawn_angle_start( -1 ),
       spawn_angle_end( -1 ),
+      race_str(),
       race( RACE_NONE ),
+      enemy_type_str(),
       enemy_type( ENEMY_ADD )
   {
     add_option( opt_string( "name", name_str ) );
@@ -139,7 +141,7 @@ struct adds_event_t : public raid_event_t
     {
       enemy_type = util::parse_player_type( enemy_type_str );
 
-      if ( enemy_type == PLAYER_NONE )
+      if ( !( enemy_type == ENEMY_ADD || enemy_type == ENEMY_ADD_BOSS ) )
       {
         throw std::invalid_argument(
           fmt::format( "{} could not parse enemy type from '{}'.", *this, enemy_type_str ) );

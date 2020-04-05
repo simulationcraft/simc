@@ -4282,7 +4282,7 @@ public:
 
   // Static methods
   static player_t* create( sim_t* sim, const player_description_t& );
-  static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == TANK_DUMMY; }
+  static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == ENEMY_ADD_BOSS || t == TANK_DUMMY; }
   static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
 
 
@@ -4319,9 +4319,10 @@ public:
   bool is_moving() const
   { return buffs.movement && buffs.movement -> check(); }
   double composite_block_dr( double extra_block ) const;
-  bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
+  bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD || type == ENEMY_ADD_BOSS; }
   bool is_enemy() const { return _is_enemy( type ); }
-  bool is_add() const { return type == ENEMY_ADD; }
+  bool is_boss() const { return type == ENEMY || type == ENEMY_ADD_BOSS; }
+  bool is_add() const { return type == ENEMY_ADD || type == ENEMY_ADD_BOSS; }
   bool is_sleeping() const { return _is_sleeping( this ); }
   bool is_my_pet( const player_t* t ) const;
   bool in_gcd() const { return gcd_ready > sim -> current_time(); }
