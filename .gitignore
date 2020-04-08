@@ -128,9 +128,13 @@ dbc_extract3/cache/ptr/DBCache.bin
 
 apikey.txt
 
-# Hide some commong build folders
+# Hide some common build folders
 Debug/
 Build/
 Release/
 
 *.o.tmp
+
+# ignore common python virtual environments
+env/
+.env/
