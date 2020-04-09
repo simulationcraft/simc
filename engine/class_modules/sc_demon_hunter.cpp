@@ -3745,6 +3745,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
     attack_power_mod.direct = 0;  // This parent action deals no damage, parsed data is for the heal
 
     execute_action = new soul_cleave_damage_t( "soul_cleave_damage", p, data().effectN( 2 ).trigger() );
+    execute_action->stats = stats;
     
     // Add damage modifiers in soul_cleave_damage_t, not here.
   }
