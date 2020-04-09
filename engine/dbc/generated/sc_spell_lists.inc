@@ -387,7 +387,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         8679, // Wound Poison
            0,
     },
-    // Outlaw tree, 16 abilities
+    // Outlaw tree, 17 abilities
     {
        13750, // Adrenaline Rush
         8676, // Ambush
@@ -403,6 +403,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       199754, // Riposte
       193316, // Roll the Bones
         6770, // Sap
+      193315, // Sinister Strike
         1784, // Stealth
         1856, // Vanish
            0,
