@@ -7651,8 +7651,8 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "call_action_list,name=standard" );
 
   // Single Target Rotation
-  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
   standard -> add_action( this, "Concentrated Flame", "if=dot.concentrated_flame_burn.remains=0&!buff.dancing_rune_weapon.up" );
+  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
   standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20" );
   standard -> add_action( "heart_essence,if=!buff.dancing_rune_weapon.up");
