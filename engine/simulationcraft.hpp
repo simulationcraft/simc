@@ -4932,6 +4932,9 @@ public:
 
   virtual void summon( timespan_t duration = timespan_t::zero() );
   virtual void dismiss( bool expired = false );
+  // Adjust pet remaining duration. New duration of <= 0 dismisses pet. No-op on
+  // persistent pets.
+  virtual void adjust_duration( const timespan_t& adjustment );
 
   const char* name() const override { return full_name_str.c_str(); }
   const player_t* get_owner_or_self() const override

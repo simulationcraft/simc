@@ -243,6 +243,33 @@ void pet_t::create_buffs()
   }
 }
 
+void pet_t::adjust_duration( const timespan_t& adjustment )
+{
+  if ( !expiration || adjustment == 0_ms )
+  {
+    return;
+  }
+
+  auto new_duration = expiration->remains() + adjustment;
+  if ( new_duration <= 0_ms )
+  {
+    dismiss();
+  }
+  else
+  {
+    duration += adjustment;
+
+    if ( new_duration > expiration->remains() )
+    {
+      expiration->reschedule( new_duration );
+    }
+    else
+    {
+      expiration = make_event<expiration_t>( *sim, *this, new_duration );
+    }
+  }
+}
+
 void pet_t::assess_damage( school_e       school,
                            result_amount_type          type,
                            action_state_t* s )
