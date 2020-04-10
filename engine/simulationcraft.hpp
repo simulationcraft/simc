@@ -2871,7 +2871,7 @@ private:
     blp_state( BLP_ENABLED )
   { }
 
-  static double max_interval() { return 10.0; }
+  static double max_interval() { return 3.5; }
   static double max_bad_luck_prot() { return 1000.0; }
 public:
   static double proc_chance( player_t*         player,
@@ -4282,7 +4282,7 @@ public:
 
   // Static methods
   static player_t* create( sim_t* sim, const player_description_t& );
-  static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == TANK_DUMMY; }
+  static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == ENEMY_ADD_BOSS || t == TANK_DUMMY; }
   static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
 
 
@@ -4315,15 +4315,14 @@ public:
   bool parse_talents_armory( const std::string& talent_string );
   bool parse_talents_armory2( const std::string& talent_string );
   bool parse_talents_wowhead( const std::string& talent_string );
-  std::unique_ptr<expr_t> create_resource_expression( const std::string& name );
-
 
   bool is_moving() const
   { return buffs.movement && buffs.movement -> check(); }
   double composite_block_dr( double extra_block ) const;
-  bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
+  bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD || type == ENEMY_ADD_BOSS; }
   bool is_enemy() const { return _is_enemy( type ); }
-  bool is_add() const { return type == ENEMY_ADD; }
+  bool is_boss() const { return type == ENEMY || type == ENEMY_ADD_BOSS; }
+  bool is_add() const { return type == ENEMY_ADD || type == ENEMY_ADD_BOSS; }
   bool is_sleeping() const { return _is_sleeping( this ); }
   bool is_my_pet( const player_t* t ) const;
   bool in_gcd() const { return gcd_ready > sim -> current_time(); }
@@ -4644,6 +4643,7 @@ public:
 
   virtual std::unique_ptr<expr_t> create_expression( const std::string& name );
   virtual std::unique_ptr<expr_t> create_action_expression( action_t&, const std::string& name );
+  virtual std::unique_ptr<expr_t> create_resource_expression( const std::string& name );
 
   virtual void create_options();
   void recreate_talent_str( talent_format format = talent_format::NUMBERS );
@@ -5811,6 +5811,9 @@ public:
   virtual double base_cost() const;
 
   virtual double cost_per_tick( resource_e ) const;
+
+  virtual timespan_t cooldown_duration() const
+  { return cooldown ? cooldown->duration : timespan_t::zero(); }
 
   virtual timespan_t gcd() const;
 
@@ -7051,11 +7054,14 @@ struct dbc_proc_callback_t : public action_callback_t
       return;
     }
 
-    // Don't allow harmful actions to proc on players
-    if ( proc_action && proc_action->harmful && !state->target->is_enemy() )
+    if ( proc_action && proc_action->harmful )
     {
-      return;
-    }
+      // Don't allow players to harm other players, and enemies harm other enemies
+      if (state->action && state->action->player->is_enemy() == state->target->is_enemy())
+      {
+        return;
+      }
+    } 
 
     bool triggered = roll( a );
     if ( listener -> sim -> debug )

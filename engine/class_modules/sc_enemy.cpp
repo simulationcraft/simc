@@ -11,11 +11,11 @@
 
 namespace { // UNNAMED NAMESPACE
 
-enum tank_dummy_e
+enum class tank_dummy_e
 {
-  TANK_DUMMY_NONE = 0,
-  TANK_DUMMY_WEAK, TANK_DUMMY_DUNGEON, TANK_DUMMY_RAID, TANK_DUMMY_MYTHIC,
-  TANK_DUMMY_MAX
+  NONE = 0,
+  WEAK, DUNGEON, RAID, HEROIC, MYTHIC,
+  MAX
 };
 
 struct enemy_t : public player_t
@@ -28,6 +28,7 @@ struct enemy_t : public player_t
 
   int current_target;
   int apply_damage_taken_debuff;
+  double custom_armor_coeff;
 
   std::vector<buff_t*> buffs_health_decades;
 
@@ -39,7 +40,8 @@ struct enemy_t : public player_t
     health_recalculation_dampening_exponent( 1.0 ),
     waiting_time( timespan_t::from_seconds( 1.0 ) ),
     current_target( 0 ),
-    apply_damage_taken_debuff( 0 )
+    apply_damage_taken_debuff( 0 ),
+    custom_armor_coeff( 0 )
   {
     s -> target_list.push_back( this );
     position_str = "front";
@@ -61,6 +63,7 @@ struct enemy_t : public player_t
   void init_resources( bool force = false ) override;
   void init_target() override;
   virtual std::string generate_action_list();
+  std::string generate_tank_action_list( tank_dummy_e );
   void init_action_list() override;
   void init_stats() override;
   double resource_loss( resource_e, double, gain_t*, action_t* ) override;
@@ -616,7 +619,7 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
 
 // Melee Nuke ===============================================================
 
-struct melee_nuke_t : public enemy_action_t<attack_t>
+struct melee_nuke_t : public enemy_action_t<melee_attack_t>
 {
   // default constructor
   melee_nuke_t( player_t* p, const std::string& options_str ) :
@@ -1001,7 +1004,7 @@ struct tank_dummy_enemy_t : public enemy_t
   tank_dummy_enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID ) :
     enemy_t( s, n, r, TANK_DUMMY ),
     tank_dummy_str( "none" ),
-    tank_dummy_enum( TANK_DUMMY_NONE )
+    tank_dummy_enum( tank_dummy_e::NONE )
   {
   }
 
@@ -1014,58 +1017,33 @@ struct tank_dummy_enemy_t : public enemy_t
   tank_dummy_e convert_tank_dummy_string( const std::string& tank_dummy_string )
   {
     if ( util::str_in_str_ci( tank_dummy_string, "none" ) )
-      return TANK_DUMMY_NONE;
+      return tank_dummy_e::NONE;
     if ( util::str_in_str_ci( tank_dummy_string, "weak" ) )
-      return TANK_DUMMY_WEAK;
+      return tank_dummy_e::WEAK;
     if ( util::str_in_str_ci( tank_dummy_string, "dungeon" ) )
-      return TANK_DUMMY_DUNGEON;
+      return tank_dummy_e::DUNGEON;
     if ( util::str_in_str_ci( tank_dummy_string, "raid" ) )
-      return TANK_DUMMY_RAID;
+      return tank_dummy_e::RAID;
+    if (util::str_in_str_ci(tank_dummy_string, "heroic"))
+      return tank_dummy_e::HEROIC;
     if ( util::str_in_str_ci( tank_dummy_string, "mythic" ) )
-      return TANK_DUMMY_MYTHIC;
+      return tank_dummy_e::MYTHIC;
 
     if ( !tank_dummy_string.empty() && sim -> debug )
       sim -> out_debug.printf( "Unknown Tank Dummy string input provided: %s", tank_dummy_string.c_str() );
 
-    return TANK_DUMMY_NONE;
+    return tank_dummy_e::NONE;
   }
 
   void init() override
   {
     tank_dummy_enum = convert_tank_dummy_string( tank_dummy_str );
      // Try parsing the name
-    if ( tank_dummy_enum == TANK_DUMMY_NONE )
+    if ( tank_dummy_enum == tank_dummy_e::NONE )
       tank_dummy_enum = convert_tank_dummy_string( name_str );
-    // if we still have no clue, pit them against the worst case
-    if ( tank_dummy_enum == TANK_DUMMY_NONE )
-      tank_dummy_enum = static_cast<tank_dummy_e>( TANK_DUMMY_MAX - 1 );
-  }
-
-  void init_defense() override
-  {
-    enemy_t::init_defense();
-
-    double dummy_armor_coeff = dbc.armor_mitigation_constant( level() );
-
-    // Max level enemies have different armor coefficient based on the difficulty setting and the area they're fought in
-    // New values are added when a new tier is released
-    // 8.3 values for Mythic/M+ Dungeons (_Dungeon setting) and Normal/Mythic Ny'alotha (_Raid/_Mythic setting) here
-    switch ( tank_dummy_enum )
-    {
-      case TANK_DUMMY_DUNGEON:
-        dummy_armor_coeff = 14282.1;
-        break;
-      case TANK_DUMMY_RAID:
-        dummy_armor_coeff = 14282.1;
-        break;
-      case TANK_DUMMY_MYTHIC:
-        dummy_armor_coeff = 17986.5;
-        break;
-      default:
-        break;
-    }
-
-    initial.armor_coeff = dummy_armor_coeff;
+    // if we still have no clue, pit them against the default value (heroic)
+    if ( tank_dummy_enum == tank_dummy_e::NONE )
+      tank_dummy_enum = tank_dummy_e::HEROIC;
   }
 
   void init_base_stats() override
@@ -1075,10 +1053,10 @@ struct tank_dummy_enemy_t : public enemy_t
     // override level
     switch ( tank_dummy_enum )
     {
-      case TANK_DUMMY_DUNGEON:
+      case tank_dummy_e::DUNGEON:
         true_level = sim -> max_player_level + 2;
         break;
-      case TANK_DUMMY_WEAK:
+      case tank_dummy_e::WEAK:
         true_level = sim -> max_player_level;
         break;
       default:
@@ -1087,19 +1065,64 @@ struct tank_dummy_enemy_t : public enemy_t
 
     // override race
     race = RACE_HUMANOID;
+
+    // Don't change the value if it's specified by the user - handled in enemy_t::init_base_stats()
+    if ( custom_armor_coeff <= 0 )
+    {
+      // Armor coefficient
+      // Max level enemies have different armor coefficient based on the difficulty setting and the area they're fought in
+      // The default value stored in spelldata only works for outdoor and generally "easy" content
+      // New values are added when new seasonal content (new raid, new M+ season) is released
+      // ArmorConstantMod is pulled from the ExpectedStatMod table
+      // Values are a combination of the base K values for the intended level, multiplied by the ArmorConstantMod field
+      // 8.3 values here
+
+      /* Base/open world Zandalar/Kul Tiras: 6300 (Level 120 Armor mitigation constants (K-values))
+        Open World Mechagon/Nazjatar: 10344.6 (ID: 147; ArmorMod: 1.642)
+        Open World Invasion quests (8.3): 12782.7 (ID: 150; ArmorMod: 2.029)
+        M0/M+ (8.2): 10275.3 (ID: 147; ArmorMod: 1.642)
+        M0/M+ (8.3): 14282.1 (ID: 151; ArmorMod: 2.267)
+        Operation: Mechagon: 14282.1 (ID: 151; ArmorMod: 2.267)
+        Uldir LFR: 7100.1 (ID: 7; ArmorMod: 1.127)
+        Uldir Normal: 7736.4 (ID: 8; ArmorMod: 1.228)
+        Uldir Heroic: 8467.2 (ID: 9; ArmorMod: 1.344)
+        Uldir Mythic: 9311.4 (ID: 10; ArmorMod: 1.478)
+        BfD/Crucible LFR: 8467.2 (ID: 9; ArmorMod: 1.344)
+        BfD/Crucible Normal: 9355.5 (ID: 135; ArmorMod: 1.485)
+        BfD/Crucible Heroic: 10344.6 (ID: 147; ArmorMod: 1.642)
+        BfD/Crucible Mythic: 11478.6 (ID: 149; ArmorMod: 1.822)
+        TEP LFR: 10344.6 (ID: 147; ArmorMod: 1.642)
+        TEP Normal: 11478.6 (ID: 149; ArmorMod: 1.822)
+        TEP Heroic: 12782.7 (ID: 150; ArmorMod: 2.029)
+        TEP Mythic: 14282.1 (ID: 151; ArmorMod: 2.267)
+        Ny'alotha LFR: 12782.7 (ID: 150; ArmorMod: 2.029)
+        Ny'alotha Normal: 14282.1 (ID: 151; ArmorMod: 2.267)
+        Ny'alotha Heroic: 16002.0 (ID: 152; ArmorMod: 2.54)
+        Ny'alotha Mythic: 17986.5 (ID: 158; ArmorMod: 2.855) */
+
+      switch ( tank_dummy_enum )
+      {
+      case tank_dummy_e::DUNGEON:
+        base.armor_coeff = 14282.1; // 8.3 M0/M+
+        break;
+      case tank_dummy_e::RAID:
+        base.armor_coeff = 14282.1; // Normal Ny'alotha
+        break;
+      case tank_dummy_e::HEROIC:
+        base.armor_coeff = 16002.0; // Heroic Ny'alotha
+        break;
+      case tank_dummy_e::MYTHIC:
+        base.armor_coeff = 17986.5; // Mythic Ny'alotha
+        break;
+      default:
+        break; // Use the default value set in enemy_t::init_base_stats()
+      }
+    }
   }
 
   std::string generate_action_list() override
   {
-    std::string als = "";
-    int aa_damage[ 5 ] = { 0, 100000, 200000, 250000, 500000 }; // NONE, WEAK, DUNGEON, RAID, MYTHIC
-    int aa_damage_var[ 5 ] = { 0, 8000, 20000, 25000, 50000 };
-    int dummy_strike_damage[ 5 ] = { 0, 250000, 500000, 625000, 1250000 }; // Base melee nuke damage
-
-    als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_enum ] ) + ",range=" + util::to_string( aa_damage_var[ tank_dummy_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
-    als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_enum ] ) + ",range=0,attack_speed=2,cooldown=30,aoe_tanks=1";
-
-    return als;
+    return generate_tank_action_list( tank_dummy_enum );
   }
 };
 
@@ -1155,8 +1178,6 @@ void enemy_t::init_base_stats()
   if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
     waiting_time = timespan_t::from_seconds( 1.0 );
 
-
-
   base.attack_crit_chance = 0.05;
 
   if ( sim -> overrides.target_health.size() > 0 )
@@ -1183,6 +1204,10 @@ void enemy_t::init_base_stats()
   {
     initial_health_percentage = 100.0;
   }
+
+  // Armor Coefficient, based on level (6300 @ 120-123)
+  base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : dbc.armor_mitigation_constant( level() );
+  sim -> print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
 }
 
 void enemy_t::init_defense()
@@ -1191,9 +1216,6 @@ void enemy_t::init_defense()
 
   collected_data.health_changes_tmi.collect = false;
   collected_data.health_changes.collect = false;
-
-  // Default fluffy pillow armor coefficient, set to Heroic Ny'alotha armor coefficient
-  initial.armor_coeff = 16002.0;
 
   if ( ( total_gear.armor ) <= 0 )
   {
@@ -1266,11 +1288,22 @@ void enemy_t::init_target()
 
 std::string enemy_t::generate_action_list()
 {
-  std::string als = "";
+  return generate_tank_action_list(tank_dummy_e::HEROIC);
+}
 
-  // this is the standard Fluffy Pillow action list
-  als += "/auto_attack,damage=400000,attack_speed=1.5,aoe_tanks=1,range=" + util::to_string( 25000 );
-  als += "/melee_nuke,damage=1000000,cooldown=15,attack_speed=2.0,aoe_tanks=1";
+std::string enemy_t::generate_tank_action_list(tank_dummy_e tank_dummy)
+{
+  std::string als = "";
+  constexpr size_t numTankDummies = static_cast<size_t>(tank_dummy_e::MAX);
+  //                               NONE, WEAK, DUNGEON, RAID,  HEROIC, MYTHIC
+  int aa_damage[numTankDummies] = { 0, 100000, 200000, 250000, 400000, 500000 }; // Base auto attack damage
+  int dummy_strike_damage[numTankDummies] = { 0, 250000, 500000, 625000, 1000000, 1250000 }; // Base melee nuke damage
+  int background_spell_damage[numTankDummies] = { 0, 4000, 8000, 10000, 16000, 20000 }; // Base background dot damage
+
+  size_t tank_dummy_index = static_cast<size_t>(tank_dummy);
+  als += "/auto_attack,damage=" + util::to_string(aa_damage[tank_dummy_index]) + ",attack_speed=1.5,aoe_tanks=1";
+  als += "/melee_nuke,damage=" + util::to_string(dummy_strike_damage[tank_dummy_index]) + ",attack_speed=2,cooldown=25,aoe_tanks=1";
+  als += "/spell_dot,damage=" + util::to_string(background_spell_damage[tank_dummy_index]) + ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60";
 
   return als;
 }
@@ -1455,6 +1488,7 @@ void enemy_t::create_options()
   player_t::create_options();
 
   add_option( opt_int( "level", true_level, 0, MAX_LEVEL + 3 ) );
+  add_option( opt_float( "armor_coefficient", custom_armor_coeff ) );
 }
 
 // enemy_t::create_add ======================================================

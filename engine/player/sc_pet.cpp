@@ -129,6 +129,9 @@ void pet_t::init_base_stats()
   // Pets have inherent 5% critical strike chance if not overridden.
   base.spell_crit_chance  = 0.05;
   base.attack_crit_chance = 0.05;
+
+  base.armor_coeff = dbc.armor_mitigation_constant( level() );
+  sim -> print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
 }
 
 void pet_t::init_target()

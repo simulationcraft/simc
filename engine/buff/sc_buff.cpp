@@ -461,6 +461,34 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
 
     return std::make_unique<cooldown_react_expr_t>( buff_name, action, static_buff );
   }
+  else if ( type == "last_trigger" )
+  {
+    struct last_trigger_expr_t : public buff_expr_t
+    {
+      last_trigger_expr_t( std::string bn, action_t* a, buff_t* b ) :
+        buff_expr_t( "buff_last_trigger", bn, a, b )
+      { }
+
+      double evaluate() override
+      { return buff()->last_trigger_time().total_seconds(); }
+    };
+
+    return std::make_unique<last_trigger_expr_t>( buff_name, action, static_buff );
+  }
+  else if ( type == "last_expire" )
+  {
+    struct last_expire_expr_t : public buff_expr_t
+    {
+      last_expire_expr_t( std::string bn, action_t* a, buff_t* b ) :
+        buff_expr_t( "buff_last_expire", bn, a, b )
+      { }
+
+      double evaluate() override
+      { return buff()->last_expire_time().total_seconds(); }
+    };
+
+    return std::make_unique<last_expire_expr_t>( buff_name, action, static_buff );
+  }
 
   throw std::invalid_argument( fmt::format( "Unsupported buff expression '{}'.", type ) );
 }
@@ -517,6 +545,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, const std::strin
     partial_tick( false ),
     last_start(),
     last_trigger(),
+    last_expire(),
     iteration_uptime_sum(),
     last_benefite_update(),
     up_count(),
@@ -1536,6 +1565,23 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
       tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / tick_time() ), timespan_t::zero() );
     }
   }
+
+  if ( sim->log )
+  {
+    std::string buff_display_name = fmt::format( "{}_{}", name_str, current_stack );
+
+    if ( player )
+    {
+      if ( !player->is_sleeping() )
+      {
+        sim->print_log( "{} refreshes {} (value={})", *player, buff_display_name, current_value );
+      }
+    }
+    else
+    {
+      sim->print_log( "Raid refreshes {} (value={})", buff_display_name, current_value );
+    }
+  }
 }
 
 void buff_t::bump( int stacks, double value )
@@ -1712,6 +1758,7 @@ void buff_t::expire( timespan_t delay )
   {
     event_t::cancel( expiration_delay );
   }
+  last_expire = sim->current_time();
 
   timespan_t remaining_duration = timespan_t::zero();
   int expiration_stacks         = current_stack;
@@ -1828,12 +1875,12 @@ void buff_t::aura_loss()
   {
     if ( !player->is_sleeping() )
     {
-      sim->print_log( "{} loses {}", *player, *this );
+      sim->print_log( "{} loses {}", *player, name_str );
     }
   }
   else
   {
-    sim->print_log( "Raid loses {}", *this );
+    sim->print_log( "Raid loses {}", name_str );
   }
 }
 
@@ -1846,6 +1893,7 @@ void buff_t::reset()
   expire();
   last_start        = timespan_t::min();
   last_trigger      = timespan_t::min();
+  last_expire       = timespan_t::min();
   last_stack_change = timespan_t::min();
 }
 
@@ -2026,8 +2074,8 @@ buff_t* buff_t::find( player_t* p, const std::string& name, player_t* source )
 
 std::string buff_t::source_name() const
 {
-  if ( player )
-    return player->name_str;
+  if ( source )
+    return source->name_str;
 
   return "noone";
 }

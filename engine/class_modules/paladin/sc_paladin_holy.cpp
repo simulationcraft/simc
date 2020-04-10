@@ -334,7 +334,7 @@ struct holy_shock_t : public paladin_spell_t
       bool success = p() -> buffs.divine_purpose -> trigger( 1,
                                                              p() -> buffs.divine_purpose -> default_value,
                                                              p() -> talents.divine_purpose -> effectN( 1 ).percent() );
-      if ( success ) 
+      if ( success )
       {
         p() -> procs.divine_purpose -> occur();
         p() -> cooldowns.holy_shock -> reset (true);
@@ -348,7 +348,7 @@ struct holy_shock_t : public paladin_spell_t
 
     if ( p() -> buffs.avenging_wrath -> check() && p() -> talents.sanctified_wrath -> ok() )
       rm *= 1.0 + p() -> talents.sanctified_wrath -> effectN( 2 ).percent();
-    
+
     return rm;
   }
 };
@@ -533,7 +533,8 @@ void paladin_t::create_buffs_holy()
                                -> set_cooldown( 0_ms ); // Handled by the action
   buffs.holy_avenger           = make_buff( this, "holy_avenger", talents.holy_avenger )
                                -> set_default_value( talents.holy_avenger -> effectN( 1 ).percent() )
-                               -> add_invalidate( CACHE_HASTE );
+                               -> add_invalidate( CACHE_HASTE )
+                               -> set_cooldown( 0_ms ); // handled by the ability
   buffs.infusion_of_light      = make_buff( this, "infusion_of_light", find_spell( 54149 ) );
 }
 
@@ -543,19 +544,19 @@ void paladin_t::init_spells_holy()
   talents.crusaders_might    = find_talent_spell( "Crusader's Might" );
   talents.bestow_faith       = find_talent_spell( "Bestow Faith" );
   talents.lights_hammer      = find_talent_spell( "Light's Hammer" );
-  
+
   talents.unbreakable_spirit = find_talent_spell( "Unbreakable Spirit" );
   talents.cavalier           = find_talent_spell( "Cavalier" );
   talents.rule_of_law        = find_talent_spell( "Rule of Law" );
-  
+
   talents.devotion_aura      = find_talent_spell( "Devotion Aura" );
   talents.aura_of_sacrifice  = find_talent_spell( "Aura of Sacrifice" );
   talents.aura_of_mercy      = find_talent_spell( "Aura of Mercy" );
-  
+
   talents.judgment_of_light  = find_talent_spell( "Judgment of Light" );
   talents.holy_prism         = find_talent_spell( "Holy Prism" );
   talents.holy_avenger       = find_talent_spell( "Holy Avenger" );
-  
+
   talents.sanctified_wrath   = find_talent_spell( "Sanctified Wrath" );
   talents.avenging_crusader  = find_talent_spell( "Avenging Crusader" );
   talents.awakening          = find_talent_spell( "Awakening" );
@@ -645,7 +646,7 @@ void paladin_t::generate_action_prio_list_holy()
 
   // Augmentation
   precombat -> add_action( "augmentation" );
-  
+
   precombat -> add_action( this, "Beacon of Light" , "target=healing_target");
   // Beacon probably goes somewhere here?
   // Damn right it does, Theckie-poo.

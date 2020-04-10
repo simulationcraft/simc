@@ -3107,6 +3107,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
   if ( report_details )
   {
     const stat_buff_t* stat_buff = dynamic_cast<const stat_buff_t*>( &b );
+    const auto* absorb_buff = dynamic_cast<const absorb_buff_t*>(&b);
 
     int first_rows    = 2 + ( b.item ? 16 : 15 );  // # of rows in the first column incl 2 for header (buff details)
     int second_rows   = ( b.rppm ? 5 : 0 ) +
@@ -3195,6 +3196,15 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                      util::stat_type_string( stat_buff->stats[ j ].stat ),
                      stat_buff->stats[ j ].amount );
         }
+        os << "</ul>\n";
+      }
+
+      if ( absorb_buff )
+      {
+        os << "<h4>Absorb Details</h4>\n"
+          << "<ul>\n";
+        os.printf("<li><span class=\"label\">school:</span>%s</li>\n", util::school_type_string( absorb_buff->absorb_school ) );
+        os.printf("<li><span class=\"label\">high priority:</span>%s</li>\n", absorb_buff -> high_priority ? "yes" : "no" );
         os << "</ul>\n";
       }
 

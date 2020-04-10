@@ -32,6 +32,8 @@ struct adds_event_t : public raid_event_t
   double spawn_angle_end;
   std::string race_str;
   race_e race;
+  std::string enemy_type_str;
+  player_e enemy_type;
 
   adds_event_t( sim_t* s, const std::string& options_str )
     : raid_event_t( s, "adds" ),
@@ -50,7 +52,10 @@ struct adds_event_t : public raid_event_t
       spawn_radius( 0 ),
       spawn_angle_start( -1 ),
       spawn_angle_end( -1 ),
-      race( RACE_NONE )
+      race_str(),
+      race( RACE_NONE ),
+      enemy_type_str(),
+      enemy_type( ENEMY_ADD )
   {
     add_option( opt_string( "name", name_str ) );
     add_option( opt_string( "master", master_str ) );
@@ -66,6 +71,7 @@ struct adds_event_t : public raid_event_t
     add_option( opt_float( "angle_start", spawn_angle_start ) );
     add_option( opt_float( "angle_end", spawn_angle_end ) );
     add_option( opt_string( "race", race_str ) );
+    add_option( opt_string( "type", enemy_type_str ) );
     parse_options( options_str );
 
     if ( !master_str.empty() )
@@ -128,6 +134,17 @@ struct adds_event_t : public raid_event_t
       {
         throw std::invalid_argument(
             fmt::format( "{} could not parse race from sim target race '{}'.", *this, sim->target_race ) );
+      }
+    }
+
+    if ( !enemy_type_str.empty() )
+    {
+      enemy_type = util::parse_player_type( enemy_type_str );
+
+      if ( !( enemy_type == ENEMY_ADD || enemy_type == ENEMY_ADD_BOSS ) )
+      {
+        throw std::invalid_argument(
+          fmt::format( "{} could not parse enemy type from '{}'.", *this, enemy_type_str ) );
       }
     }
 
@@ -228,6 +245,7 @@ struct adds_event_t : public raid_event_t
         assert( p );
         p->resources.base[ RESOURCE_HEALTH ] = health;
         p->race                              = race;
+        p->type                              = enemy_type;
         adds.push_back( p );
       }
     }

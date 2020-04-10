@@ -205,6 +205,7 @@ void overclocking_bit_band( special_effect_t& );
 void shorting_bit_band( special_effect_t& );
 // 8.2.0 - Mechagon trinkets and special items
 void hyperthread_wristwraps( special_effect_t& );
+void anodized_deflectors( special_effect_t& );
 // 8.3.0 - Visions of N'Zoth Trinkets and Special Items
 void voidtwisted_titanshard( special_effect_t& );
 void vitacharged_titanshard( special_effect_t& );
@@ -281,7 +282,7 @@ buff_stack_change_callback_t callback_buff_activator( dbc_proc_callback_t* callb
 
 bool is_adjustable_class_spell( action_t* a )
 {
-  return a->data().class_mask() != 0 && !a->background && a->cooldown->duration > 0_ms && a->data().race_mask() == 0;
+  return a->data().class_mask() != 0 && !a->background && a->cooldown_duration() > 0_ms && a->data().race_mask() == 0;
 }
 
 }  // namespace util
@@ -5577,6 +5578,35 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
   effect.execute_action = create_proc_action<hyperthread_reduction_t>( "hyperthread_wristwraps", effect, cb );
 }
 
+// Anodized Deflectors
+
+void items::anodized_deflectors( special_effect_t& effect )
+{
+  effect.disable_action();
+
+  buff_t* anodized_deflectors_buff = buff_t::find( effect.player, "anodized_deflection" );
+
+  if ( !anodized_deflectors_buff )
+  {
+    auto damage = create_proc_action<aoe_proc_t>( "anodized_deflection", effect, "anodized_deflection", 301554 );
+    // Manually set the damage because it's stored in the driver spell
+    // The damaging spell has a value with a another -much higher- coefficient that doesn't seem to be used in-game
+    damage -> base_dd_min = damage -> base_dd_max = effect.driver() -> effectN( 3 ).average( effect.item );
+
+    anodized_deflectors_buff = make_buff<stat_buff_t>( effect.player, "anodized_deflection", effect.driver() )
+      -> add_stat( STAT_PARRY_RATING, effect.driver() -> effectN( 1 ).average( effect.item ) )
+      -> add_stat( STAT_AVOIDANCE_RATING, effect.driver() -> effectN( 2 ).average( effect.item ) )
+      -> set_stack_change_callback( [ damage ]( buff_t*, int, int new_ ) {
+          if ( new_ == 0 )
+          {
+            damage -> set_target( damage -> player -> target );
+            damage -> execute();
+          } } );
+  }
+
+  effect.custom_buff = anodized_deflectors_buff;
+}
+
 // Shared Callback for all Titan trinkets
 struct titanic_empowerment_cb_t : public dbc_proc_callback_t
 {
@@ -5838,8 +5868,11 @@ void items::psyche_shredder( special_effect_t& effect )
   // Create the action for the debuff damage here, before any debuff initialization takes place.
   create_proc_action<shredded_psyche_t>( "shredded_psyche", effect );
 
+  // Note that this is not necessarily a bug, we just don't know how the updated RPPM formula
+  // introduced in BfA interacts with ICD/infrequent trigger attempts. Disabling RPPM BLP
+  // makes the simmed ppm roughly match the observed ppm.
   if ( effect.player->bugs )
-    effect.ppm_ = -2.0;
+    effect.rppm_blp_ = real_ppm_t::BLP_DISABLED;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -5922,7 +5955,7 @@ void items::draconic_empowerment( special_effect_t& effect )
     effect.custom_buff =
         make_buff<stat_buff_t>( effect.player, "draconic_empowerment", effect.player->find_spell( 317859 ) )
             ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-                        effect.player->find_spell( 317859 )->effectN( 1 ).average( effect.item ) );
+                        effect.player->find_spell( 317859 )->effectN( 1 ).average( effect.player ) );
 
   effect.proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC;  // Proc flags are missing in spell data.
 
@@ -6179,7 +6212,7 @@ void corruption::twilight_devastation( special_effect_t& effect )
         maxhp_multiplier( effect.driver()->effectN( 1 ).percent() / 10 )
     {
       // TODO: Check what this scales with
-      aoe = -1;
+      aoe = 10;
       // Set base damage so that flags are properly set
       base_dd_min += 1;
       base_dd_max += 1;
@@ -6193,6 +6226,18 @@ void corruption::twilight_devastation( special_effect_t& effect )
     double base_da_max( const action_state_t* ) const override
     {
       return player->resources.max[ RESOURCE_HEALTH ] * maxhp_multiplier;
+    }
+
+    double composite_aoe_multiplier( const action_state_t* s ) const override
+    {
+      double m = proc_t::composite_aoe_multiplier( s );
+
+      // 50% damage penalty for targets 6-10, as per
+      // https://us.forums.blizzard.com/en/wow/t/hotfixes-updated-february-24-2020/414943/59
+      if ( s->chain_target >= 5 )
+        m *= 0.5;
+
+      return m;
     }
   };
 
@@ -6848,6 +6893,17 @@ void corruption::twisted_appendage( special_effect_t& effect )
     {
       return scaled_dmg;
     }
+
+    bool ready() override
+    {
+      // Don't start a new cast if it won't have a chance to tick, to avoid inflating the execute count
+      if ( this->player->cast_pet()->expiration->remains() < base_tick_time )
+      {
+        return false;
+      }
+
+      return spell_t::ready();
+    }
   };
 
   struct twisted_appendage_pet_t : public pet_t
@@ -6889,7 +6945,8 @@ void corruption::twisted_appendage( special_effect_t& effect )
         spawner( "twisted_appendage", effect.player,
                  [&effect, this]( player_t* ) { return new twisted_appendage_pet_t( effect, dmg ); } )
     {
-      spawner.set_default_duration( effect.player->find_spell( 316818 )->duration() );
+      // Add 1ms to the duration due to the spawner scheduling canceling the final tick otherwise
+      spawner.set_default_duration( effect.player->find_spell( 316818 )->duration() + 1_ms );
     }
 
     void execute( action_t*, action_state_t* ) override
@@ -6916,36 +6973,16 @@ void corruption::lash_of_the_void( special_effect_t& effect )
 {
   struct lash_of_the_void_t : public proc_spell_t
   {
-    double scaled_dmg;
-
     lash_of_the_void_t( const special_effect_t& effect )
-      : proc_spell_t( "lash_of_the_void", effect.player, effect.driver() ),
-        scaled_dmg( effect.driver()->effectN( 1 ).average( effect.item ) )
+      : proc_spell_t( effect.name(), effect.player, effect.driver() )
     {
-      base_dd_min = base_dd_max = scaled_dmg;
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
       aoe                       = -1;
-    }
-
-    double base_da_min( const action_state_t* ) const override
-    {
-      return scaled_dmg;
-    }
-
-    double base_da_max( const action_state_t* ) const override
-    {
-      return scaled_dmg;
     }
   };
 
-  auto lash_of_the_void = static_cast<lash_of_the_void_t*>( effect.player->find_action( "lash_of_the_void" ) );
-
-  if ( !lash_of_the_void )
-  {
-    effect.execute_action = create_proc_action<lash_of_the_void_t>( "lash_of_the_void", effect );
-    new dbc_proc_callback_t( effect.player, effect );
-  }
-  else
-    lash_of_the_void->scaled_dmg += effect.driver()->effectN( 1 ).average( effect.item );
+  effect.execute_action = create_proc_action<lash_of_the_void_t>( effect.name(), effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Flash of Insight
@@ -7173,6 +7210,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 303564, items::ashvanes_razor_coral );
   register_special_effect( 296963, items::dribbling_inkpod );
   register_special_effect( 300142, items::hyperthread_wristwraps );
+  register_special_effect( 300140, items::anodized_deflectors );
   register_special_effect( 301753, items::reclaimed_shock_coil );
   register_special_effect( 303356, items::dreams_end );
   register_special_effect( 303353, items::divers_folly );

@@ -481,7 +481,7 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
 struct shield_of_vengeance_t : public paladin_absorb_t
 {
   shield_of_vengeance_t( paladin_t* p, const std::string& options_str ) :
-    paladin_absorb_t( "shield_of_vengeance", p, p -> find_spell( 184662 ) )
+    paladin_absorb_t( "shield_of_vengeance", p, p -> find_specialization_spell( "Shield of Vengeance" ) )
   {
     parse_options( options_str );
 

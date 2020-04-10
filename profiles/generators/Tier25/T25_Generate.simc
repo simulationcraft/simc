@@ -18,7 +18,7 @@
 # * Effective Corruption of < 40 AFTER resistances is allowed
 #    * Ny'alotha corrupted weapons
 #    * random corruptions on random items
-# * Legendary cloak at itemlevel x
+# * Legendary cloak at itemlevel 500 with with 50 corruption resistance
 # *   back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
 
 # Death Knight

@@ -3745,6 +3745,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
     attack_power_mod.direct = 0;  // This parent action deals no damage, parsed data is for the heal
 
     execute_action = new soul_cleave_damage_t( "soul_cleave_damage", p, data().effectN( 2 ).trigger() );
+    execute_action->stats = stats;
     
     // Add damage modifiers in soul_cleave_damage_t, not here.
   }
@@ -4103,6 +4104,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   if (p.specialization() == DEMON_HUNTER_HAVOC)
   {
     debuffs.dark_slash = make_buff( *this, "dark_slash", p.talent.dark_slash )
+      ->set_cooldown( timespan_t::zero() )
       ->set_default_value( p.talent.dark_slash->effectN( 3 ).percent() );
     debuffs.nemesis = new buffs::nemesis_debuff_t(*this);
   }
@@ -4298,8 +4300,7 @@ void demon_hunter_t::create_buffs()
 
   // General ================================================================
 
-  buff.demon_soul =
-      make_buff( this, "demon_soul", find_spell( 163073 ) )
+  buff.demon_soul = make_buff( this, "demon_soul", find_spell( 163073 ) )
     ->set_default_value( find_spell( 163073 )->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -4307,8 +4308,7 @@ void demon_hunter_t::create_buffs()
 
   if(specialization() == DEMON_HUNTER_HAVOC )
   {
-    buff.immolation_aura =
-        make_buff( this, "immolation_aura", spec.immolation_aura )
+    buff.immolation_aura = make_buff( this, "immolation_aura", spec.immolation_aura )
       ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
         active.immolation_aura->execute();
       } )
@@ -4316,8 +4316,7 @@ void demon_hunter_t::create_buffs()
   }
   else // DEMON_HUNTER_VENGEANCE
   {
-    buff.immolation_aura =
-        make_buff( this, "immolation_aura", spec.immolation_aura )
+    buff.immolation_aura = make_buff( this, "immolation_aura", spec.immolation_aura )
       ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
         active.immolation_aura->execute();
       } )
@@ -4328,39 +4327,34 @@ void demon_hunter_t::create_buffs()
 
   // Havoc ==================================================================
 
-  buff.blade_dance =
-    make_buff( this, "blade_dance", spec.blade_dance )
+  buff.blade_dance = make_buff( this, "blade_dance", spec.blade_dance )
     ->set_default_value( spec.blade_dance->effectN( 2 ).percent() )
     ->add_invalidate( CACHE_DODGE )
     ->set_cooldown( timespan_t::zero() );
 
-  buff.blur =
-    make_buff(this, "blur", spec.blur->effectN(1).trigger())
-    ->set_default_value(spec.blur->effectN(1).trigger()->effectN(3).percent()
-      + (talent.desperate_instincts->ok() ? talent.desperate_instincts->effectN(3).percent() : 0))
-      ->set_cooldown(timespan_t::zero())
-      ->add_invalidate(CACHE_LEECH)
-      ->add_invalidate(CACHE_DODGE);
-
-  buff.death_sweep =
-    make_buff( this, "death_sweep", spec.death_sweep )
+  buff.death_sweep = make_buff( this, "death_sweep", spec.death_sweep )
     ->set_default_value( spec.death_sweep->effectN( 2 ).percent() )
     ->add_invalidate( CACHE_DODGE )
     ->set_cooldown( timespan_t::zero() );
+
+  buff.blur = make_buff(this, "blur", spec.blur->effectN(1).trigger())
+    ->set_default_value(spec.blur->effectN(1).trigger()->effectN(3).percent()
+      + (talent.desperate_instincts->ok() ? talent.desperate_instincts->effectN(3).percent() : 0))
+    ->set_cooldown(timespan_t::zero())
+    ->add_invalidate(CACHE_LEECH)
+    ->add_invalidate(CACHE_DODGE);
 
   buff.fel_rush_move = new movement_buff_t(
     this, "fel_rush_movement", spell_data_t::nil() );
   buff.fel_rush_move->set_chance( 1.0 )
   ->set_duration( find_class_spell( "Fel Rush" )->gcd() );
 
-  buff.momentum =
-    make_buff( this, "momentum", spec.momentum_buff )
+  buff.momentum = make_buff( this, "momentum", spec.momentum_buff )
     ->set_default_value( spec.momentum_buff->effectN( 1 ).percent() )
     ->set_trigger_spell( talent.momentum )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.out_of_range =
-    make_buff( this, "out_of_range", spell_data_t::nil() )
+  buff.out_of_range = make_buff( this, "out_of_range", spell_data_t::nil() )
     ->set_chance( 1.0 );
 
   // TODO: Buffs for each race?
@@ -4368,8 +4362,7 @@ void demon_hunter_t::create_buffs()
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   const double prepared_value = ( find_spell( 203650 )->effectN( 1 ).resource( RESOURCE_FURY ) / 50 );
-  buff.prepared =
-    make_buff( this, "prepared", find_spell( 203650, DEMON_HUNTER_HAVOC ) )
+  buff.prepared = make_buff( this, "prepared", find_spell( 203650, DEMON_HUNTER_HAVOC ) )
     ->set_default_value( prepared_value )
     ->set_trigger_spell( talent.momentum )
     ->set_period( timespan_t::from_millis( 100 ) )
@@ -4377,8 +4370,7 @@ void demon_hunter_t::create_buffs()
       resource_gain( RESOURCE_FURY, b->check_value(), gain.prepared );
     } );
 
-  buff.blind_fury =
-    make_buff( this, "blind_fury", spec.eye_beam )
+  buff.blind_fury = make_buff( this, "blind_fury", spec.eye_beam )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value( talent.blind_fury->effectN( 3 ).resource( RESOURCE_FURY ) / 50 )
     ->set_duration( spec.eye_beam->duration() * ( 1.0 + talent.blind_fury->effectN( 1 ).percent() ) )
@@ -4399,9 +4391,9 @@ void demon_hunter_t::create_buffs()
 
   buff.soul_barrier = make_buff<absorb_buff_t>( this, "soul_barrier", talent.soul_barrier );
   buff.soul_barrier->set_absorb_source( get_stats( "soul_barrier" ) )
-      ->set_absorb_gain( get_gain( "soul_barrier" ) )
-      ->set_absorb_high_priority( true )  // TOCHECK
-      ->set_cooldown( timespan_t::zero() );
+    ->set_absorb_gain( get_gain( "soul_barrier" ) )
+    ->set_absorb_high_priority( true )  // TOCHECK
+    ->set_cooldown( timespan_t::zero() );
 
   // Azerite ================================================================
   
@@ -5136,16 +5128,20 @@ void demon_hunter_t::apl_havoc()
   add_havoc_use_items( this, apl_cooldown );
 
   action_priority_list_t* essences = get_action_priority_list( "essences" );
+  essences->add_action( "variable,name=fel_barrage_sync,if=talent.fel_barrage.enabled,value=cooldown.fel_barrage.ready&(((!talent.demonic.enabled|buff.metamorphosis.up)&!variable.waiting_for_momentum&raid_event.adds.in>30)|active_enemies>desired_targets)" );
   essences->add_action( "concentrated_flame,if=(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)" );
-  essences->add_action( "blood_of_the_enemy,if=buff.metamorphosis.up|target.time_to_die<=10" );
+  essences->add_action( "blood_of_the_enemy,if=(!talent.fel_barrage.enabled|cooldown.fel_barrage.remains>45)&!variable.waiting_for_momentum&((!talent.demonic.enabled|buff.metamorphosis.up&!cooldown.blade_dance.ready)|target.time_to_die<=10)",
+                        "Attempt to sync with Fel Barrage or AoE if it will be used within the next 45 seconds, otherwise use during normal burst damage." );
+  essences->add_action( "blood_of_the_enemy,if=talent.fel_barrage.enabled&variable.fel_barrage_sync" );
   essences->add_action( "guardian_of_azeroth,if=(buff.metamorphosis.up&cooldown.metamorphosis.ready)|buff.metamorphosis.remains>25|target.time_to_die<=30" );
   essences->add_action( "focused_azerite_beam,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
   essences->add_action( "purifying_blast,if=spell_targets.blade_dance1>=2|raid_event.adds.in>60" );
   essences->add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   essences->add_action( "ripple_in_space" );
-  essences->add_action( "worldvein_resonance,if=buff.metamorphosis.up" );
+  essences->add_action( "worldvein_resonance,if=buff.metamorphosis.up|variable.fel_barrage_sync" );
   essences->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );
-  essences->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
+  essences->add_action( "cycling_variable,name=reaping_delay,op=min,if=essence.breath_of_the_dying.major,value=target.time_to_die", "Hold Reaping Flames for execute range or kill buffs, if possible. Always try to get the lowest cooldown based on available enemies." );
+  essences->add_action( "reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&(active_enemies=1|variable.reaping_delay>29))|(target.time_to_pct_20>30&(active_enemies=1|variable.reaping_delay>44))" );
   apl_cooldown->add_action( "call_action_list,name=essences" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
@@ -5173,7 +5169,7 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* apl_demonic = get_action_priority_list( "demonic" );
   apl_demonic->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_demonic->add_action( this, "Eye Beam", "if=raid_event.adds.up|raid_event.adds.in>25" );
-  apl_demonic->add_talent( this, "Fel Barrage", "if=((!cooldown.eye_beam.up|buff.metamorphosis.up)&raid_event.adds.in>30)|active_enemies>desired_targets" );
+  apl_demonic->add_talent( this, "Fel Barrage", "if=(buff.metamorphosis.up&raid_event.adds.in>30)|active_enemies>desired_targets" );
   apl_demonic->add_action( this, "Blade Dance", "if=variable.blade_dance&!cooldown.metamorphosis.ready"
                                                 "&(cooldown.eye_beam.remains>(5-azerite.revolving_blades.rank*3)|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
   apl_demonic->add_talent( this, "Immolation Aura" );

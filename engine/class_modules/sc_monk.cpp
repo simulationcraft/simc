@@ -650,15 +650,16 @@ public:
     // Spending Chi has a chance to make your next Spinning Crane Kick free and deal 1274 additional damage.
     azerite_power_t dance_of_chiji;
 
-	azerite_essence_t memory_of_lucid_dreams;
-    azerite_essence_t vision_of_perfection;
-    double vision_of_perfection_percentage;
+	azerite_essence_t vision_of_perfection; 
+    azerite_essence_t memory_of_lucid_dreams;
   } azerite;
 
   struct azerite_spells_t
   {
     // General
     const spell_data_t* memory_of_lucid_dreams;
+    const spell_data_t* vision_of_perfection_1;
+    const spell_data_t* vision_of_perfection_2;
   } azerite_spells;
 
   struct pets_t
@@ -793,7 +794,7 @@ public:
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_melee_expertise( const weapon_t* weapon ) const override;
   double composite_melee_attack_power() const override;
-  double composite_melee_attack_power(attack_power_type ap_type ) const override;
+  double composite_melee_attack_power( attack_power_type ap_type ) const override;
   double composite_spell_haste() const override;
   double composite_melee_haste() const override;
   double composite_attack_power_multiplier() const override;
@@ -847,8 +848,9 @@ public:
     }
     return td;
   }
-  void action_init_finished(action_t&) override;
-  void merge(player_t& other) override;
+  void action_init_finished( action_t& ) override;
+  void merge( player_t& other ) override;
+  void vision_of_perfection_proc() override;
 
   // Monk specific
   void apl_combat_brewmaster();
@@ -859,7 +861,7 @@ public:
   void apl_pre_windwalker();
 
   // Custom Monk Functions
-  void stagger_damage_changed(bool last_tick = false);
+  void stagger_damage_changed( bool last_tick = false );
   double current_stagger_tick_dmg();
   double current_stagger_tick_dmg_percent();
   double current_stagger_amount_remains_percent();
@@ -931,7 +933,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_action_base_t : public BASE
   {
     using super_t = BASE;
-    using base_t = sef_action_base_t<BASE>;
+    using base_t  = sef_action_base_t<BASE>;
 
     const action_t* source_action;
 
@@ -1619,6 +1621,17 @@ struct storm_earth_and_fire_pet_t : public pet_t
       dual                                         = true;
 
       energize_type = ENERGIZE_NONE;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      sef_melee_attack_t::impact( state );
+
+      if ( result_is_hit( state->result ) )
+      {
+        if ( o()->spec.spinning_crane_kick )
+          o()->trigger_mark_of_the_crane( state );
+      }
     }
   };
 
@@ -2323,15 +2336,10 @@ public:
   using base_t = monk_action_t<Base>;
 
   monk_action_t( const std::string& n, monk_t* player, const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, player, s ),
-      sef_ability( SEF_NONE ),
-      ww_mastery( false ),
-      may_combo_strike( false ),
-      affected_by()
+    : ab( n, player, s ), sef_ability( SEF_NONE ), ww_mastery( false ), may_combo_strike( false ), affected_by()
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
-
   }
 
   monk_t* p()
@@ -2364,7 +2372,7 @@ public:
   void init() override
   {
     ab::init();
-    
+
     /* Iterate through power entries, and find if there are resources linked to one of our stances
      */
     for ( size_t i = 0; ab::data()._power && i < ab::data()._power->size(); i++ )
@@ -2649,10 +2657,10 @@ public:
       p()->resource_gain( RESOURCE_ENERGY, energy_restored, p()->gain.energy_refund );
     }
 
-	// Memory of Lucid Dreams Essence
+    // Memory of Lucid Dreams Essence
     if ( p()->azerite.memory_of_lucid_dreams.enabled() && ab::last_resource_cost > 0 )
     {
-      resource_e cr = ab::current_resource();
+      resource_e cr = current_resource();
       if ( cr == RESOURCE_ENERGY || cr == RESOURCE_MANA )
       {
         if ( p()->rng().roll( p()->user_options.memory_of_lucid_dreams_proc_chance ) )
@@ -2759,7 +2767,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
     : base_t( n, player, s )
   {
     ap_type = attack_power_type::WEAPON_MAINHAND;
-
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -2952,7 +2959,7 @@ struct xuen_spell_t : public summon_pet_t
     harmful            = false;
     summoning_duration = data().duration();
     // Forcing the minimum GCD to 750 milliseconds
-    min_gcd   = timespan_t::from_millis( 750 );
+    min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
   }
 };
@@ -2987,7 +2994,7 @@ struct niuzao_spell_t : public summon_pet_t
     harmful            = false;
     summoning_duration = data().duration();
     // Forcing the minimum GCD to 750 milliseconds
-    min_gcd   = timespan_t::from_millis( 750 );
+    min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
   }
 };
@@ -3008,7 +3015,7 @@ struct storm_earth_and_fire_t : public monk_spell_t
     trigger_gcd = timespan_t::from_seconds( 1 );
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::ATTACK_HASTE;
+    gcd_type  = gcd_haste_type::ATTACK_HASTE;
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
 
     cooldown->charges += (int)p->spec.storm_earth_and_fire_2->effectN( 1 ).base_value();
@@ -3556,7 +3563,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     ww_mastery = true;
 
-    background                    = true;
+    background = dual             = true;
     may_crit                      = true;
     affected_by.sunrise_technique = true;
   }
@@ -3638,6 +3645,10 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
           // -1 to reduce the spell cooldown instead of increasing
           // saved as 3000
           p()->cooldown.fists_of_fury->adjust( -1 * p()->find_spell( 242260 )->effectN( 1 ).time_value() );
+
+		// Apply Mark of the Crane
+		if ( p()->spec.spinning_crane_kick )
+          p()->trigger_mark_of_the_crane( s );
       }
 
       if ( p()->azerite.sunrise_technique.ok() )
@@ -4029,10 +4040,10 @@ struct blackout_strike_t : public monk_melee_attack_t
           p()->buff.elusive_brawler->trigger(
               as<int>( p()->azerite.elusive_footwork.spell_ref().effectN( 2 ).base_value() ) );
 
-        if (p()->azerite.staggering_strikes.ok())
+        if ( p()->azerite.staggering_strikes.ok() )
         {
-          auto amount_cleared = p()->partial_clear_stagger_amount(p()->azerite.staggering_strikes.value());
-          p()->sample_datas.staggering_strikes_cleared->add(amount_cleared);
+          auto amount_cleared = p()->partial_clear_stagger_amount( p()->azerite.staggering_strikes.value() );
+          p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
         }
       }
     }
@@ -4068,8 +4079,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     parse_options( options_str );
     sef_ability      = SEF_RUSHING_JADE_WIND;
     may_combo_strike = true;
-    gcd_type = gcd_haste_type::NONE;
-    
+    gcd_type         = gcd_haste_type::NONE;
+
     // Set dot data to 0, since we handle everything through the buff.
     base_tick_time = timespan_t::zero();
     dot_duration   = timespan_t::zero();
@@ -4490,6 +4501,15 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
       mh_attack->execute();
     }
   }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    // Apply Mark of the Crane
+    if ( result_is_hit( s->result ) && p()->spec.spinning_crane_kick )
+      p()->trigger_mark_of_the_crane( s );
+  }
 };
 
 // ==========================================================================
@@ -4643,7 +4663,7 @@ struct keg_smash_t : public monk_melee_attack_t
 
     cooldown->duration = p.spec.keg_smash->cooldown();
     cooldown->duration = p.spec.keg_smash->charge_cooldown();
-    
+
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
     trigger_gcd = timespan_t::from_seconds( 1 );
@@ -5216,7 +5236,7 @@ struct serenity_t : public monk_spell_t
     harmful     = false;
     trigger_gcd = timespan_t::from_seconds( 1 );
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
-    min_gcd   = timespan_t::from_millis( 750 );
+    min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
 
     if ( player->azerite.vision_of_perfection.enabled() )
@@ -5252,7 +5272,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
                            // increase in the number of ticks.
     interrupt_auto_attack = true;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
-    min_gcd   = timespan_t::from_millis( 750 );
+    min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
   }
 
@@ -5354,7 +5374,7 @@ struct breath_of_fire_t : public monk_spell_t
     {
       monk_spell_t::impact( s );
 
-      if (p()->azerite.boiling_brew.ok() && p()->rppm.boiling_brew->trigger())
+      if ( p()->azerite.boiling_brew.ok() && p()->rppm.boiling_brew->trigger() )
       {
         p()->proc.boiling_brew_healing_sphere->occur();
         p()->buff.gift_of_the_ox->trigger();
@@ -5457,14 +5477,13 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     assert( s );
 
     dot_duration = s->duration();
-    if (p->legendary.jewel_of_the_lost_abbey)
-      dot_duration += timespan_t::from_seconds(p->legendary.jewel_of_the_lost_abbey->effectN(1).base_value() / 10);
-    dot_duration += timespan_t::from_seconds(p->talent.bob_and_weave->effectN(1).base_value() / 10);
+    if ( p->legendary.jewel_of_the_lost_abbey )
+      dot_duration += timespan_t::from_seconds( p->legendary.jewel_of_the_lost_abbey->effectN( 1 ).base_value() / 10 );
+    dot_duration += timespan_t::from_seconds( p->talent.bob_and_weave->effectN( 1 ).base_value() / 10 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks = tick_may_crit = false;
     target                       = p;
   }
-
 
   void impact( action_state_t* s ) override
   {
@@ -5479,27 +5498,27 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 
     p()->stagger_tick_damage.push_back( {s->result_amount} );
 
-    p()->sample_datas.stagger_effective_damage_timeline.add(sim->current_time(), s->result_amount);
-    p()->sample_datas.stagger_damage->add(s->result_amount);
+    p()->sample_datas.stagger_effective_damage_timeline.add( sim->current_time(), s->result_amount );
+    p()->sample_datas.stagger_damage->add( s->result_amount );
 
-    if (p()->buff.light_stagger->check())
+    if ( p()->buff.light_stagger->check() )
     {
-      p()->sample_datas.light_stagger_damage->add(s->result_amount);
+      p()->sample_datas.light_stagger_damage->add( s->result_amount );
     }
-    else if (p()->buff.moderate_stagger->check())
+    else if ( p()->buff.moderate_stagger->check() )
     {
-      p()->sample_datas.moderate_stagger_damage->add(s->result_amount);
+      p()->sample_datas.moderate_stagger_damage->add( s->result_amount );
     }
-    else if (p()->buff.heavy_stagger->check())
+    else if ( p()->buff.heavy_stagger->check() )
     {
-      p()->sample_datas.heavy_stagger_damage->add(s->result_amount);
+      p()->sample_datas.heavy_stagger_damage->add( s->result_amount );
     }
   }
 
   void last_tick( dot_t* d ) override
   {
     base_t::last_tick( d );
-    p()->stagger_damage_changed(true);
+    p()->stagger_damage_changed( true );
   }
 
   proc_types proc_type() const override
@@ -5536,9 +5555,9 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
    */
   double clear_all_damage()
   {
-    dot_t* d                = get_dot();
+    dot_t* d              = get_dot();
     double amount_cleared = amount_remaining();
-    
+
     d->cancel();
     cancel();
     p()->stagger_damage_changed();
@@ -5551,29 +5570,30 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
    */
   double clear_partial_damage_pct( double percent_amount )
   {
-    dot_t* d                = get_dot();
+    dot_t* d              = get_dot();
     double amount_cleared = 0.0;
 
     if ( d->is_ticking() )
     {
       auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
 
-      auto ticks_left = d->ticks_left();
-      auto damage_remaining_initial = amount_remaining();
-      auto damage_remaining_after_clear = damage_remaining_initial * (1.0 - percent_amount);
-      amount_cleared = damage_remaining_initial - damage_remaining_after_clear;
-      set_tick_amount(damage_remaining_after_clear / ticks_left);
-      assert(std::fabs(amount_remaining() - damage_remaining_after_clear) < 1.0 && "stagger remaining amount after clear does not match");
+      auto ticks_left                   = d->ticks_left();
+      auto damage_remaining_initial     = amount_remaining();
+      auto damage_remaining_after_clear = damage_remaining_initial * ( 1.0 - percent_amount );
+      amount_cleared                    = damage_remaining_initial - damage_remaining_after_clear;
+      set_tick_amount( damage_remaining_after_clear / ticks_left );
+      assert( std::fabs( amount_remaining() - damage_remaining_after_clear ) < 1.0 &&
+              "stagger remaining amount after clear does not match" );
 
-      sim->print_debug("{} partially clears stagger by {} (requested:  {:.2f}%). Damage remaining is {}.", player->name(), amount_cleared, percent_amount * 100.0, damage_remaining_after_clear);
+      sim->print_debug( "{} partially clears stagger by {} (requested:  {:.2f}%). Damage remaining is {}.",
+                        player->name(), amount_cleared, percent_amount * 100.0, damage_remaining_after_clear );
     }
     else
     {
-      sim->print_debug("{} no active stagger to clear (requested pct: {}).", player->name(), percent_amount * 100.0);
+      sim->print_debug( "{} no active stagger to clear (requested pct: {}).", player->name(), percent_amount * 100.0 );
     }
 
     p()->stagger_damage_changed();
-
 
     return amount_cleared;
   }
@@ -5583,40 +5603,40 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
    */
   double clear_partial_damage_amount( double amount )
   {
-    dot_t* d                = get_dot();
+    dot_t* d              = get_dot();
     double amount_cleared = 0.0;
 
     if ( d->is_ticking() )
     {
-      auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
-      auto ticks_left = d->ticks_left();
-      auto damage_remaining_initial = amount_remaining();
-      auto damage_remaining_after_clear = std::fmax(damage_remaining_initial - amount, 0 );
-      amount_cleared = damage_remaining_initial - damage_remaining_after_clear;
-      set_tick_amount(damage_remaining_after_clear / ticks_left);
-      assert(std::fabs(amount_remaining() - damage_remaining_after_clear) < 1.0 && "stagger remaining amount after clear does not match");
+      auto dot_state                    = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
+      auto ticks_left                   = d->ticks_left();
+      auto damage_remaining_initial     = amount_remaining();
+      auto damage_remaining_after_clear = std::fmax( damage_remaining_initial - amount, 0 );
+      amount_cleared                    = damage_remaining_initial - damage_remaining_after_clear;
+      set_tick_amount( damage_remaining_after_clear / ticks_left );
+      assert( std::fabs( amount_remaining() - damage_remaining_after_clear ) < 1.0 &&
+              "stagger remaining amount after clear does not match" );
 
-      sim->print_debug("{} partially clears stagger by {} (requested: {}). Damage remaining is {}.", player->name(), amount_cleared, amount, damage_remaining_after_clear);
-
+      sim->print_debug( "{} partially clears stagger by {} (requested: {}). Damage remaining is {}.", player->name(),
+                        amount_cleared, amount, damage_remaining_after_clear );
     }
     else
     {
-      sim->print_debug("{} no active stagger to clear (requested amount: {}).", player->name(), amount);
+      sim->print_debug( "{} no active stagger to clear (requested amount: {}).", player->name(), amount );
     }
 
     p()->stagger_damage_changed();
-
 
     return amount_cleared;
   }
 
   // adds amount to residual actions tick amount
-  void set_tick_amount(double amount)
+  void set_tick_amount( double amount )
   {
     dot_t* dot = get_dot();
-    if (dot)
+    if ( dot )
     {
-      auto rd_state = debug_cast<residual_action::residual_periodic_state_t*>(dot->state);
+      auto rd_state         = debug_cast<residual_action::residual_periodic_state_t*>( dot->state );
       rd_state->tick_amount = amount;
     }
   }
@@ -5630,16 +5650,16 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   double tick_amount()
   {
     dot_t* d = get_dot();
-    if (d && d->state)
-      return base_ta(d->state);
+    if ( d && d->state )
+      return base_ta( d->state );
     return 0;
   }
 
   double amount_remaining()
   {
     dot_t* d = get_dot();
-    if ( d  && d->state)
-      return base_ta(d->state) * d->ticks_left();
+    if ( d && d->state )
+      return base_ta( d->state ) * d->ticks_left();
     return 0;
   }
 };
@@ -5709,10 +5729,10 @@ struct ironskin_brew_t : public monk_spell_t
 
     if ( p()->buff.ironskin_brew->check() )
     {
-      timespan_t base_time     = p()->buff.ironskin_brew->buff_duration;
-      timespan_t max_time      = p()->passives.ironskin_brew->effectN( 2 ).base_value() * base_time;
-      timespan_t new_length = std::min(max_time, base_time + p()->buff.ironskin_brew->remains());
-      p()->buff.ironskin_brew->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length);
+      timespan_t base_time  = p()->buff.ironskin_brew->buff_duration;
+      timespan_t max_time   = p()->passives.ironskin_brew->effectN( 2 ).base_value() * base_time;
+      timespan_t new_length = std::min( max_time, base_time + p()->buff.ironskin_brew->remains() );
+      p()->buff.ironskin_brew->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length );
     }
     else
       p()->buff.ironskin_brew->trigger();
@@ -5799,8 +5819,9 @@ struct purifying_brew_t : public monk_spell_t
     }
 
     // Reduce stagger damage
-    auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct( data().effectN( 1 ).percent() );
-    p()->sample_datas.purified_damage->add(amount_cleared);
+    auto amount_cleared =
+        p()->active_actions.stagger_self_damage->clear_partial_damage_pct( data().effectN( 1 ).percent() );
+    p()->sample_datas.purified_damage->add( amount_cleared );
   }
 };
 
@@ -6358,7 +6379,6 @@ struct expel_harm_t : public monk_spell_t
       niuzao( new niuzaos_blessing_t( *p ) )
   {
     parse_options( options_str );
-
   }
 
   bool ready() override
@@ -6385,7 +6405,8 @@ struct expel_harm_t : public monk_spell_t
     // variance but with enough iterations will have the same mean.
     double coeff =
         p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff() * p()->spec.expel_harm->effectN( 2 ).percent();
-    double ap     = p()->composite_melee_attack_power( attack_power_type::WEAPON_MAINHAND ) * p()->composite_attack_power_multiplier();
+    double ap = p()->composite_melee_attack_power( attack_power_type::WEAPON_MAINHAND ) *
+                p()->composite_attack_power_multiplier();
     double stacks = p()->buff.gift_of_the_ox->stack();
 
     dmg->base_dd_min = ap * coeff * stacks;
@@ -6501,7 +6522,7 @@ struct chi_wave_t : public monk_spell_t
     add_child( damage );
     tick_zero = true;
     radius    = player->find_spell( 132466 )->effectN( 2 ).base_value();
-    gcd_type = gcd_haste_type::SPELL_HASTE;
+    gcd_type  = gcd_haste_type::SPELL_HASTE;
   }
 
   void impact( action_state_t* s ) override
@@ -6565,7 +6586,7 @@ struct chi_burst_t : public monk_spell_t
 
     interrupt_auto_attack = false;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
-    min_gcd   = timespan_t::from_millis( 750 );
+    min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
   }
 
@@ -6630,8 +6651,8 @@ struct reverse_harm_t : public monk_heal_t
     : monk_heal_t( "reverse_harm", player, player.spec.reverse_harm )
   {
     parse_options( options_str );
-    damage           = new reverse_harm_damage_t( player );
-    add_child(damage);
+    damage = new reverse_harm_damage_t( player );
+    add_child( damage );
     target           = &player;
     may_crit         = false;
     may_combo_strike = true;
@@ -7062,20 +7083,19 @@ struct windwalking_driver_t : public monk_buff_t<buff_t>
 
 struct stagger_buff_t : public monk_buff_t<buff_t>
 {
-  stagger_buff_t(monk_t& p, const std::string& n, const spell_data_t* s) :
-    monk_buff_t(p, n, s)
+  stagger_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
-
     timespan_t stagger_duration = s->duration();
-    if (p.legendary.jewel_of_the_lost_abbey)
-      stagger_duration += timespan_t::from_seconds(p.legendary.jewel_of_the_lost_abbey->effectN(1).base_value() / 10);
-    stagger_duration += timespan_t::from_seconds(p.talent.bob_and_weave->effectN(1).base_value() / 10);
+    if ( p.legendary.jewel_of_the_lost_abbey )
+      stagger_duration +=
+          timespan_t::from_seconds( p.legendary.jewel_of_the_lost_abbey->effectN( 1 ).base_value() / 10 );
+    stagger_duration += timespan_t::from_seconds( p.talent.bob_and_weave->effectN( 1 ).base_value() / 10 );
 
-    //set_duration(stagger_duration);
-    set_duration(timespan_t::zero());
-    if (p.talent.high_tolerance->ok())
+    // set_duration(stagger_duration);
+    set_duration( timespan_t::zero() );
+    if ( p.talent.high_tolerance->ok() )
     {
-      add_invalidate(CACHE_HASTE);
+      add_invalidate( CACHE_HASTE );
     }
   }
 };
@@ -7812,10 +7832,10 @@ void monk_t::collect_resource_timeline_information()
 {
   base_t::collect_resource_timeline_information();
 
-  sample_datas.stagger_damage_pct_timeline.add(sim->current_time(), current_stagger_amount_remains_percent() * 100.0);
+  sample_datas.stagger_damage_pct_timeline.add( sim->current_time(), current_stagger_amount_remains_percent() * 100.0 );
 
-  auto stagger_pct_val = stagger_pct(target->level());
-  sample_datas.stagger_pct_timeline.add(sim->current_time(), stagger_pct_val * 100.0);
+  auto stagger_pct_val = stagger_pct( target->level() );
+  sample_datas.stagger_pct_timeline.add( sim->current_time(), stagger_pct_val * 100.0 );
 }
 
 // monk_t::init_spells ======================================================
@@ -8007,11 +8027,9 @@ void monk_t::init_spells()
 
   azerite.memory_of_lucid_dreams        = find_azerite_essence( "Memory of Lucid Dreams" );
   azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
-  azerite.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
-  azerite.vision_of_perfection_percentage =
-      azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
-  azerite.vision_of_perfection_percentage +=
-      azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
+  azerite.vision_of_perfection          = find_azerite_essence( "Vision of Perfection" );
+  azerite_spells.vision_of_perfection_1 = azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR );
+  azerite_spells.vision_of_perfection_2 = azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
 
   // Passives =========================================
   // General
@@ -8075,12 +8093,12 @@ void monk_t::init_spells()
   mastery.gust_of_mists   = find_mastery_spell( MONK_MISTWEAVER );
 
   // Sample Data
-  sample_datas.stagger_total_damage     = get_sample_data("Damage added to stagger pool");
-  sample_datas.stagger_damage           = get_sample_data( "Effective stagger damage" );
-  sample_datas.light_stagger_damage     = get_sample_data( "Effective light stagger damage" );
-  sample_datas.moderate_stagger_damage  = get_sample_data( "Effective moderate stagger damage" );
-  sample_datas.heavy_stagger_damage     = get_sample_data( "Effective heavy stagger damage" );
-  sample_datas.purified_damage          = get_sample_data( "Stagger damage that was purified" );
+  sample_datas.stagger_total_damage       = get_sample_data( "Damage added to stagger pool" );
+  sample_datas.stagger_damage             = get_sample_data( "Effective stagger damage" );
+  sample_datas.light_stagger_damage       = get_sample_data( "Effective light stagger damage" );
+  sample_datas.moderate_stagger_damage    = get_sample_data( "Effective moderate stagger damage" );
+  sample_datas.heavy_stagger_damage       = get_sample_data( "Effective heavy stagger damage" );
+  sample_datas.purified_damage            = get_sample_data( "Stagger damage that was purified" );
   sample_datas.staggering_strikes_cleared = get_sample_data( "Stagger damage that was cleared by Staggering Strikes" );
 
   // Active Action Spells
@@ -8236,7 +8254,6 @@ void monk_t::create_buffs()
 
   buff.spitfire = make_buff( this, "spitfire", talent.spitfire->effectN( 1 ).trigger() );
 
-
   buff.light_stagger    = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) );
   buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) );
   buff.heavy_stagger    = make_buff<buffs::stagger_buff_t>( *this, "heavy_stagger", passives.heavy_stagger );
@@ -8385,7 +8402,7 @@ void monk_t::init_gains()
   gain.tiger_palm               = get_gain( "tiger_palm" );
 
   // Azerite Traits
-  gain.open_palm_strikes = get_gain( "open_palm_strikes" );
+  gain.open_palm_strikes      = get_gain( "open_palm_strikes" );
   gain.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams_proc" );
   gain.lucid_dreams           = get_gain( "lucid_dreams" );
 }
@@ -8396,8 +8413,8 @@ void monk_t::init_procs()
 {
   base_t::init_procs();
 
-  proc.bok_proc = get_proc( "bok_proc" );
-  proc.boiling_brew_healing_sphere = get_proc("Boiling Brew Healing Sphere");
+  proc.bok_proc                    = get_proc( "bok_proc" );
+  proc.boiling_brew_healing_sphere = get_proc( "Boiling Brew Healing Sphere" );
 }
 
 // monk_t::init_assessors ===================================================
@@ -8652,7 +8669,8 @@ void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& 
                            pet->target->name(), original_target->name() );
   }
 
-  range::for_each( pet->action_list, [pet]( action_t* a ) { a->acquire_target( retarget_source::SELF_ARISE, nullptr, pet->target ); } );
+  range::for_each( pet->action_list,
+                   [pet]( action_t* a ) { a->acquire_target( retarget_source::SELF_ARISE, nullptr, pet->target ); } );
 }
 
 // monk_t::retarget_storm_earth_and_fire_pets =======================================
@@ -8940,7 +8958,6 @@ double monk_t::composite_base_armor_multiplier() const
 
 double monk_t::resource_gain( resource_e r, double a, gain_t* g, action_t* action )
 {
-
   return player_t::resource_gain( r, a, g, action );
 }
 
@@ -9008,7 +9025,8 @@ void monk_t::create_options()
   base_t::create_options();
 
   add_option( opt_int( "initial_chi", user_options.initial_chi ) );
-  add_option( opt_float( "memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
+  add_option(
+      opt_float( "memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
 }
 
 // monk_t::copy_from =========================================================
@@ -9100,13 +9118,48 @@ stat_e monk_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-// monk_t::pre_analyze_hook  ================================================
+// monk_t::vision_of_perfection_proc == == == == == == == == == == == == == == == ==
+
+void monk_t::vision_of_perfection_proc()
+{
+  const double percentage = azerite_spells.vision_of_perfection_1->effectN( 1 ).percent() +
+                            azerite_spells.vision_of_perfection_2->effectN( 1 ).percent();
+  const timespan_t sef_duration = buff.storm_earth_and_fire->data().duration() * percentage;
+  const timespan_t serentiy_duration = buff.serenity->data().duration() * percentage;
+
+  if ( specialization() == MONK_WINDWALKER )
+  {
+    if ( talent.serenity->ok() )
+    {
+      if ( buff.serenity->check() )
+      {
+        buff.serenity->extend_duration( this, serentiy_duration );
+      }
+      else
+      {
+        buff.serenity->trigger( 1, buff.serenity->default_value, -1.0, serentiy_duration );
+      }
+    }
+/*    else
+    {
+      if ( buff.storm_earth_and_fire->check() )
+      {
+        buff.storm_earth_and_fire->extend_duration( this, sef_duration );
+      }
+      else
+      {
+        buff.storm_earth_and_fire->trigger( 1, buff.storm_earth_and_fire->default_value, -1.0, sef_duration );
+      }
+    }
+*/
+  }
+}  // monk_t::pre_analyze_hook  ================================================
 
 void monk_t::pre_analyze_hook()
 {
-  sample_datas.stagger_effective_damage_timeline.adjust(*sim);
-  sample_datas.stagger_damage_pct_timeline.adjust(*sim);
-  sample_datas.stagger_pct_timeline.adjust(*sim);
+  sample_datas.stagger_effective_damage_timeline.adjust( *sim );
+  sample_datas.stagger_damage_pct_timeline.adjust( *sim );
+  sample_datas.stagger_pct_timeline.adjust( *sim );
 
   base_t::pre_analyze_hook();
 }
@@ -9581,9 +9634,22 @@ void monk_t::apl_pre_windwalker()
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   pre->add_action( "potion" );
-  pre->add_action( "variable,name=coral_double_tod_on_use,op=set,value=equipped.ashvanes_razor_coral&(equipped.cyclotronic_blast|equipped.lustrous_golden_plumage|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.remote_guidance_device)" );
-  pre->add_talent( this, "Chi Burst", "if=(!talent.serenity.enabled|!talent.fist_of_the_white_tiger.enabled)" );
-  pre->add_talent( this, "Chi Wave", "if=talent.fist_of_the_white_tiger.enabled" );
+  pre->add_action(
+      "variable,name=tod_on_use_trinket,op=set,value=equipped.cyclotronic_blast|equipped.lustrous_golden_plumage|"
+      "equipped.gladiators_badge|equipped.gladiators_medallion|equipped.remote_guidance_device",
+      "Checks if you have a trinket equipped that wants to be used together with ToD" );
+  pre->add_action(
+      "variable,name=hold_tod,op=set,value=cooldown.touch_of_death.remains+9>target.time_to_die|!talent.serenity."
+      "enabled&!variable.tod_on_use_trinket&equipped.dribbling_inkpod&target.time_to_pct_30.remains<130&target.time_to_"
+      "pct_30.remains>8|target.time_to_die<130&target.time_to_die>cooldown.serenity.remains&cooldown.serenity.remains>"
+      "2|buff.serenity.up&target.time_to_die>11",
+      "Variable that will tell you if you will need to wait to cast ToD/do not want to cast it at all anymore" );
+  pre->add_action(
+      "variable,name=font_of_power_precombat_channel,op=set,value=19,if=!talent.serenity.enabled&(variable.tod_on_use_"
+      "trinket|equipped.ashvanes_razor_coral)" );
+  pre->add_action( "use_item,name=azsharas_font_of_power" );
+  pre->add_talent( this, "Chi Burst", "if=!talent.serenity.enabled|!talent.fist_of_the_white_tiger.enabled" );
+  pre->add_talent( this, "Chi Wave", "if=talent.fist_of_the_white_tiger.enabled|essence.conflict_and_strife.major" );
   pre->add_talent( this, "Invoke Xuen, the White Tiger" );
   pre->add_action( "guardian_of_azeroth" );
 }
@@ -9643,7 +9709,9 @@ void monk_t::apl_combat_brewmaster()
       "brawler.stack<2&!buff.ironskin_brew.up",
       "Ironskin Brew priority whenever it took significant damage and ironskin brew buff is missing (adjust the "
       "health.max coefficient according to intensity of damage taken), and to dump excess charges before BoB." );
-  def->add_action( this, "Ironskin Brew", "if=cooldown.brews.charges_fractional>1&cooldown.black_ox_brew.remains<3&buff.ironskin_brew.remains<15" );
+  def->add_action(
+      this, "Ironskin Brew",
+      "if=cooldown.brews.charges_fractional>1&cooldown.black_ox_brew.remains<3&buff.ironskin_brew.remains<15" );
 
   // Purifying Brew
   def->add_action( this, "Purifying Brew",
@@ -9699,12 +9767,11 @@ void monk_t::apl_combat_windwalker()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
   action_priority_list_t* def             = get_action_priority_list( "default" );
-  action_priority_list_t* cd              = get_action_priority_list( "cd" );
+  action_priority_list_t* cd_sef          = get_action_priority_list( "cd_sef" );
+  action_priority_list_t* cd_serenity     = get_action_priority_list( "cd_serenity" );
   action_priority_list_t* serenity        = get_action_priority_list( "serenity" );
   action_priority_list_t* aoe             = get_action_priority_list( "aoe" );
-  action_priority_list_t* rskless         = get_action_priority_list( "rskless" );
   action_priority_list_t* st              = get_action_priority_list( "st" );
-  action_priority_list_t* tod             = get_action_priority_list( "tod" );
 
   def->add_action( "auto_attack" );
   def->add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
@@ -9714,9 +9781,8 @@ void monk_t::apl_combat_windwalker()
   {
     if ( true_level >= 100 )
       def->add_action(
-          "potion,if=buff.serenity.up|dot.touch_of_death.remains|!talent.serenity.enabled&trinket.proc.agility.react|buff.bloodlust.react|target.time_to_die<=60",
-          "Potion if Serenity or Storm, Earth, and Fire are up or you are running serenity and a main stat trinket "
-          "procs, or you are under the effect of bloodlust, or target time to die is greater or equal to 60" );
+          "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up&dot.touch_of_death.remains|target.time_to_die<=60",
+          "Use potion if Serenity is up, or both SEF and ToD are up, or the target will die within 60 seconds" );
     else
       def->add_action(
           "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility."
@@ -9724,139 +9790,304 @@ void monk_t::apl_combat_windwalker()
           "|buff.bloodlust.react|target.time_to_die<=60" );
   }
 
-  def->add_action( "call_action_list,name=serenity,if=buff.serenity.up" );
-  def->add_action( this, "Reverse Harm",
-                   "if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=2" );
-  def->add_talent( this, "Fist of the White Tiger",
-                   "if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=3" );
+  def->add_action(
+      this, "Reverse Harm",
+      "if=chi.max-chi>=2&(talent.serenity.enabled|!dot.touch_of_death.remains)&buff.serenity.down&(energy.time_to_max<"
+      "1|talent.serenity.enabled&cooldown.serenity.remains<2|!talent.serenity.enabled&cooldown.touch_of_death.remains<"
+      "3&!variable.hold_tod|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)" );
+  def->add_talent(
+      this, "Fist of the White Tiger",
+      "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3&buff.serenity.down&buff.seething_rage.down&("
+      "energy.time_to_max<1|talent.serenity.enabled&cooldown.serenity.remains<2|!talent.serenity.enabled&cooldown."
+      "touch_of_death.remains<3&!variable.hold_tod|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)",
+      "Use FotWT if  you are missing at least 3 chi, And  serenity, And  BotE are not up, AND you either are about to "
+      "cap energy, or serenity is about to come up, or ToD is about to come up, or FoF is coming up and you will cap "
+      "energy soon" );
   def->add_action( this, "Tiger Palm",
-                   "target_if=min:debuff.mark_of_the_crane.remains,if=!combo_break&(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2)|(energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5))&chi.max-chi>=2&!dot.touch_of_death.remains" );
-  def->add_talent( this, "Chi Wave", "if=!talent.fist_of_the_white_tiger.enabled&time<=3" );
-  def->add_action( "call_action_list,name=cd" );
+                   "target_if=min:debuff.mark_of_the_crane.remains,if=!combo_break&chi.max-chi>=2&(talent.serenity."
+                   "enabled|!dot.touch_of_death.remains|active_enemies>2)&buff.seething_rage.down&buff.serenity.down&(energy.time_to_"
+                   "max<1|talent.serenity.enabled&cooldown.serenity.remains<2|!talent.serenity.enabled&cooldown.touch_"
+                   "of_death.remains<3&!variable.hold_tod|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)",
+                   "Use TP if it wont break mastery, AND are missing at least 2 chi, AND big cooldowns are not up, AND "
+                   "you either are about to cap energy, or serenity is about to come up, or ToD is coming up, or FoF "
+                   "is coming up and you will cap energy soon" );
+  def->add_talent( this, "Chi Wave", "if=!talent.fist_of_the_white_tiger.enabled&prev_gcd.1.tiger_palm&time<=3" );
+  def->add_action( "call_action_list,name=cd_serenity,if=talent.serenity.enabled" );
+  def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity.enabled" );
+  def->add_action( "call_action_list,name=serenity,if=buff.serenity.up",
+                   "Call the Serenity action list if Serenity is currently up" );
   def->add_action( "call_action_list,name=st,if=active_enemies<3",
                    "Call the ST action list if there are 2 or less enemies" );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>=3",
                    "Call the AoE action list if there are 3 or more enemies" );
 
-  // Cooldowns
-  cd->add_talent( this, "Invoke Xuen, the White Tiger", "", "Cooldowns" );
-  cd->add_action( "guardian_of_azeroth,if=target.time_to_die>185|(!equipped.dribbling_inkpod|equipped.cyclotronic_blast|target.health.pct<30)&cooldown.touch_of_death.remains<=14|equipped.dribbling_inkpod&target.time_to_pct_30.remains<20|target.time_to_die<35" );
-  cd->add_action( "worldvein_resonance,if=cooldown.touch_of_death.remains>58|cooldown.touch_of_death.remains<2|target.time_to_die<20" );
+  // Serenity Cooldowns
+  cd_serenity->add_talent( this, "Invoke Xuen, the White Tiger", "if=buff.serenity.down|target.time_to_die<25",
+                           "Cooldowns" );
 
-  // Racials
-  std::string ancestral_call = "";
-  std::string berserking     = "";
-  std::string fireblood      = "";
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-  {
-    if ( racial_actions[ i ] == "arcane_torrent" )
-      cd->add_action( racial_actions[ i ] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5",
-                      "Use Arcane Torrent if you are missing at least 1 Chi and won't cap energy within 0.5 seconds" );
-    else if ( racial_actions[ i ] == "ancestral_call" )
-	  ancestral_call = racial_actions[ i ] + ",if=dot.touch_of_death.remains|target.time_to_die<16";
-    else if ( racial_actions[ i ] == "berserking" )
-      berserking = racial_actions[ i ] + ",if=target.time_to_die>183|dot.touch_of_death.remains|target.time_to_die<13";
-    else if ( racial_actions[ i ] == "fireblood" )
-      fireblood = racial_actions[ i ] + ",if=dot.touch_of_death.remains|target.time_to_die<9";
-    else
-      cd->add_action( racial_actions[ i ] );
-  }
-
-  cd->add_action( "call_action_list,name=tod" );
-  cd->add_action( this, "Storm, Earth, and Fire", ",if=cooldown.storm_earth_and_fire.charges=2|(!essence.worldvein_resonance.major|(buff.worldvein_resonance.up|cooldown.worldvein_resonance.remains>cooldown.storm_earth_and_fire.full_recharge_time))&(cooldown.touch_of_death.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.touch_of_death.remains>target.time_to_die)&cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=13|dot.touch_of_death.remains|target.time_to_die<20" );
-
-  // Essences
-  cd->add_action( "blood_of_the_enemy,if=dot.touch_of_death.remains|target.time_to_die<12" );
-  cd->add_action( "use_items,if=equipped.cyclotronic_blast&cooldown.cyclotronic_blast.remains>=20|!equipped.cyclotronic_blast" );
-  cd->add_action( ancestral_call, "Use Ancestral Call during Touch of Death" );
-  cd->add_action( fireblood, "Use Fireblood during Touch of Death" );
-  cd->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&(cooldown.concentrated_flame.remains<=cooldown.touch_of_death.remains&(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains)&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&buff.storm_earth_and_fire.down|dot.touch_of_death.remains)|target.time_to_die<8" );
-  cd->add_action( berserking, "Use Berserking during Touch of Death" );
-  cd->add_action( "use_item,name=pocketsized_computation_device,if=dot.touch_of_death.remains" );
-  cd->add_action( "use_item,name=ashvanes_razor_coral,if=variable.coral_double_tod_on_use&cooldown.touch_of_death.remains>=23&(debuff.razor_coral_debuff.down|buff.storm_earth_and_fire.remains>13|target.time_to_die-cooldown.touch_of_death.remains<40&cooldown.touch_of_death.remains<23|target.time_to_die<25)" );
-  cd->add_action( "use_item,name=ashvanes_razor_coral,if=!variable.coral_double_tod_on_use&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(dot.touch_of_death.remains|cooldown.touch_of_death.remains+9>target.time_to_die&buff.storm_earth_and_fire.up|target.time_to_die<25))" );
-  cd->add_action( "the_unbound_force" );
-  cd->add_action( "purifying_blast" );
-  cd->add_action( "reaping_flames" );
-  cd->add_action( "focused_azerite_beam" );
-
-  cd->add_talent( this, "Serenity", "if=cooldown.rising_sun_kick.remains<=2|target.time_to_die<=12" );
-  cd->add_action( "memory_of_lucid_dreams,if=energy<40&buff.storm_earth_and_fire.up" );
-  cd->add_action( "ripple_in_space" );
-
-  // On-use items
+  // Serenity On-use w/ Azshara's Font of Power
   for ( size_t i = 0; i < items.size(); i++ )
   {
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
-      /*      if ( items[ i ].name_str == "unbridled_fury" )
-              cd->add_action( "use_item,name=" + items[ i ].name_str +
-                              ",if=(!talent.fist_of_the_white_tiger.enabled&cooldown.fist_of_the_white_tiger.remains<14&"
-                              "cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7)|buff.serenity.up"
-         ); else if ( items[ i ].name_str == "tiny_oozeling_in_a_jar" ) cd->add_action( "use_item,name=" + items[ i
-         ].name_str + ",if=buff.congealing_goo.stack>=6" ); else if ( items[ i ].name_str == "horn_of_valor" )
-              cd->add_action( "use_item,name=" + items[ i ].name_str +
-                              ",if=!talent.serenity.enabled|cooldown.serenity.remains<18|cooldown.serenity.remains>50|target."
-                              "time_to_die<=30" );
-            else if ( items[ i ].name_str == "vial_of_ceaseless_toxins" )
-              cd->add_action(
-                  "use_item,name=" + items[ i ].name_str +
-                  ",if=(buff.serenity.up&!equipped.specter_of_betrayal)|(equipped.specter_of_betrayal&(time<5|cooldown."
-                  "serenity.remains<=8))|!talent.serenity.enabled|target.time_to_die<=cooldown.serenity.remains" );
-            else if ( items[ i ].name_str == "specter_of_betrayal" )
-              cd->add_action( "use_item,name=" + items[ i ].name_str +
-                              ",if=(cooldown.serenity.remains>10|buff.serenity.up)|!talent.serenity.enabled" );
-            else if ( ( items[ i ].name_str != "draught_of_souls" ) || ( items[ i ].name_str != "forgefiends_fabricator"
-         ) || ( items[ i ].name_str != "archimondes_hatred_reborn" ) )
-      */
-      // cd->add_action( "use_item,name=" + items[ i ].name_str );
+      if ( items[ i ].name_str == "azsharas_font_of_power" )
+        cd_serenity->add_action( "use_item,name=" + items[ i ].name_str + ",if=buff.serenity.down&(cooldown.serenity.remains<20|target.time_to_die<40)" );
     }
   }
 
-  // Touch of Death
-  tod->add_action( this, "Touch of Death", "if=equipped.cyclotronic_blast&target.time_to_die>9&cooldown.cyclotronic_blast.remains<=1" );
-  tod->add_action( this, "Touch of Death", "if=!equipped.cyclotronic_blast&equipped.dribbling_inkpod&target.time_to_die>9&(target.time_to_pct_30.remains>=130|target.time_to_pct_30.remains<8)" );
-  tod->add_action( this, "Touch of Death", "if=!equipped.cyclotronic_blast&!equipped.dribbling_inkpod&target.time_to_die>9" );
+  cd_serenity->add_action(
+      "guardian_of_azeroth,if=buff.serenity.down&(target.time_to_die>185|cooldown.serenity.remains<=7)|target.time_to_"
+      "die<35" );
+
+  // Serenity Racials
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+    if ( racial_actions[ i ] == "arcane_torrent" )
+      cd_serenity->add_action( racial_actions[ i ] + ",if=buff.serenity.down&chi.max-chi>=1&energy.time_to_max>=0.5",
+                               "Use Arcane Torrent if Serenity is not up, and you are missing at least 1 Chi, and "
+                               "won't cap energy within 0.5 seconds" );
+    else if ( racial_actions[ i ] == "ancestral_call" )
+      cd_serenity->add_action( racial_actions[ i ] + ",if=cooldown.serenity.remains>20|target.time_to_die<20" );
+    else if ( racial_actions[ i ] == "blood_fury" )
+      cd_serenity->add_action( racial_actions[ i ] + ",if=cooldown.serenity.remains>20|target.time_to_die<20" );
+    else if ( racial_actions[ i ] == "fireblood" )
+      cd_serenity->add_action( racial_actions[ i ] + ",if=cooldown.serenity.remains>20|target.time_to_die<10" );
+    else if ( racial_actions[ i ] == "berserking" )
+      cd_serenity->add_action( racial_actions[ i ] + ",if=cooldown.serenity.remains>20|target.time_to_die<15" );
+    else
+      cd_serenity->add_action( racial_actions[ i ] );
+  }
+
+  // Serenity On-use w/ Lustrous Golden Plumage & Gladiator's Medallion
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    {
+      if ( items[ i ].name_str == "lustrous_golden_plumage" )
+        cd_serenity->add_action( "use_item,name=" + items[ i ].name_str + ",if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<25" );
+      else if ( items[ i ].name_str == "gladiators_medallion" )
+        cd_serenity->add_action( "use_item,name=" + items[ i ].name_str + ",if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<20" );
+    }
+  }
+
+  cd_serenity->add_action( this, "Touch of Death", "if=!variable.hold_tod" );
+
+  // Serenity On-use w/ Pocketsized Computation Device
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    {
+      if ( items[ i ].name_str == "pocketsized_computation_device" )
+        cd_serenity->add_action( "use_item,name=" + items[ i ].name_str + ",if=buff.serenity.down&(cooldown.touch_of_death.remains>10|!variable.hold_tod)|target.time_to_die<5" );
+    }
+  }
+
+  cd_serenity->add_action(
+      "blood_of_the_enemy,if=buff.serenity.down&(cooldown.serenity.remains>20|cooldown.serenity.remains<2)|target.time_"
+      "to_die<15" );
+
+   // Serenity On-use items
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    std::string name_str = "";
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    {
+      name_str = items[ i ].name_str;
+      if ( name_str != "azsharas_font_of_power" || name_str != "lustrous_golden_plumage" ||
+           name_str != "gladiators_medallion" || name_str != "pocketsized_computation_device" )
+      {
+        if ( name_str == "remote_guidance_device" )
+          cd_serenity->add_action( "use_item,name=" + name_str +
+                                   ",if=cooldown.touch_of_death.remains>10|!variable.hold_tod" );
+        else if ( name_str == "gladiators_badge" )
+          cd_serenity->add_action( "use_item,name=" + name_str +
+                                   ",if=cooldown.serenity.remains>20|target.time_to_die<20" );
+        else if ( name_str == "galecallers_boon" )
+          cd_serenity->add_action( "use_item,name=" + name_str +
+                                   ",if=cooldown.serenity.remains>20|target.time_to_die<20" );
+        else if ( name_str == "writhing_segment_of_drestagath" )
+          cd_serenity->add_action( "use_item,name=" + name_str +
+                                   ",if=cooldown.touch_of_death.remains>10|!variable.hold_tod" );
+        else if ( name_str == "ashvanes_razor_coral" )
+          cd_serenity->add_action( "use_item,name=" + name_str +
+                                   ",if=debuff.razor_coral_debuff.down|buff.serenity.remains>9|target.time_to_die<25" );
+        else
+          cd_serenity->add_action( "use_item,name=" + name_str );
+      }
+    }
+  }
+
+  // Serenity Essences
+  cd_serenity->add_action( "worldvein_resonance,if=buff.serenity.down&(cooldown.serenity.remains>15|cooldown.serenity.remains<2)|target.time_to_die<20" );
+  cd_serenity->add_action(
+      "concentrated_flame,if=buff.serenity.down&(cooldown.serenity.remains|cooldown.concentrated_flame.charges=2)&!dot.concentrated_flame_burn.remains&(cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains|target.time_to_die<8)" );
+
+  cd_serenity->add_talent( this, "Serenity" );
+
+  cd_serenity->add_action( "the_unbound_force,if=buff.serenity.down" );
+  cd_serenity->add_action( "purifying_blast,if=buff.serenity.down" );
+  cd_serenity->add_action( "reaping_flames,if=buff.serenity.down" );
+  cd_serenity->add_action( "focused_azerite_beam,if=buff.serenity.down" );
+  cd_serenity->add_action( "memory_of_lucid_dreams,if=buff.serenity.down&energy<40" );
+  cd_serenity->add_action( "ripple_in_space,if=buff.serenity.down" );
+  cd_serenity->add_action( "bag_of_tricks,if=buff.serenity.down" );
+
+  // Storm, Earth and Fire Cooldowns
+  cd_sef->add_talent( this, "Invoke Xuen, the White Tiger", "if=buff.serenity.down|target.time_to_die<25",
+                           "Cooldowns" );
+
+  // Storm, Earth, and Fire w/ Azshara's Font of Power
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    {
+      if ( items[ i ].name_str == "azsharas_font_of_power" )
+        cd_sef->add_action( "use_item,name=" + items[ i ].name_str + ",if=buff.storm_earth_and_fire.down&!dot.touch_of_death.remains&(cooldown.touch_of_death.remains<15|cooldown.touch_of_death.remains<21&(variable.tod_on_use_trinket|equipped.ashvanes_razor_coral)|variable.hold_tod|target.time_to_die<40)" );
+    }
+  }
+
+  cd_sef->add_action(
+      "guardian_of_azeroth,if=target.time_to_die>185|!variable.hold_tod&cooldown.touch_of_death.remains<=14|target.time_to_die<35" );
+  cd_sef->add_action(
+      "worldvein_resonance,if=cooldown.touch_of_death.remains>58|cooldown.touch_of_death.remains<2|variable.hold_tod|target.time_to_die<20" );
+
+  // Storm, Earth, and Fire w/ Arcane Torrent
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+    if ( racial_actions[ i ] == "arcane_torrent" )
+      cd_sef->add_action( racial_actions[ i ] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5",
+                               "Use Arcane Torrent if you are missing at least 1 Chi and won't cap energy within 0.5 seconds" );
+  }
+
+  // Storm, Earth, and Fire w/ Lustrous Golden Plumage & Gladiator's Medallion
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    {
+      if ( items[ i ].name_str == "lustrous_golden_plumage" )
+        cd_sef->add_action( "use_item,name=" + items[ i ].name_str +
+                                 ",if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable."
+                                 "hold_tod|target.time_to_die<25" );
+      else if ( items[ i ].name_str == "gladiators_medallion" )
+        cd_sef->add_action( "use_item,name=" + items[ i ].name_str +
+                                 ",if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable."
+                                 "hold_tod|target.time_to_die<20" );
+    }
+  }
+
+  cd_sef->add_action( this, "Touch of Death", "if=!variable.hold_tod&(!equipped.cyclotronic_blast|cooldown.cyclotronic_blast.remains<=1)&(chi>1|energy<40)" );
+  cd_sef->add_action( this, "Storm, Earth, and Fire", ",if=cooldown.storm_earth_and_fire.charges=2|dot.touch_of_death.remains|target.time_to_die<20|(buff.worldvein_resonance.remains>10|cooldown.worldvein_resonance.remains>cooldown.storm_earth_and_fire.full_recharge_time|!essence.worldvein_resonance.major)&(cooldown.touch_of_death.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_tod&!equipped.dribbling_inkpod)&cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=13" );
+  cd_sef->add_action( "blood_of_the_enemy,if=cooldown.touch_of_death.remains>45|variable.hold_tod&cooldown.fists_of_fury.remains<2|target.time_to_die<12|target.time_to_die>100&target.time_to_die<110&(cooldown.fists_of_fury.remains<3|cooldown.whirling_dragon_punch.remains<5|cooldown.rising_sun_kick.remains<5)" );
+  cd_sef->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&((cooldown.concentrated_flame.remains<=cooldown.touch_of_death.remains+1|variable.hold_tod)&(!talent.whirling_dragon_punch.enabled|cooldown.whirling_dragon_punch.remains)&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&buff.storm_earth_and_fire.down|dot.touch_of_death.remains)|target.time_to_die<8" );
+
+  // Storm, Earth and Fire Racials
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+    if ( racial_actions[ i ] != "arcane_torrent" )
+    {
+      if ( racial_actions[ i ] == "ancestral_call" )
+        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.touch_of_death.remains>30|variable.hold_tod|target.time_to_die<20" );
+      else if ( racial_actions[ i ] == "blood_fury" )
+        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.touch_of_death.remains>30|variable.hold_tod|target.time_to_die<20", "Use Blood Fury if Touch of Death's cooldown is greater than 30 (this includes while ToD is currently active), or off cooldown when you are holding onto ToD, or when the target is about to die" );
+      else if ( racial_actions[ i ] == "fireblood" )
+        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.touch_of_death.remains>30|variable.hold_tod|target.time_to_die<10" );
+      else if ( racial_actions[ i ] == "berserking" )
+        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.touch_of_death.remains>30|variable.hold_tod|target.time_to_die<15" );
+      else
+	    cd_sef->add_action( racial_actions[ i ] );
+    }
+  }
+
+  // Storm, Earth and Fire On-use items
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    std::string name_str = "";
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    {
+      name_str = items[ i ].name_str;
+      if ( name_str != "azsharas_font_of_power" || name_str != "lustrous_golden_plumage" || name_str != "gladiators_medallion" )
+      {
+        if ( name_str == "pocketsized_computation_device" )
+          cd_sef->add_action( "use_item,name=" + name_str + ",,if=cooldown.touch_of_death.remains>30|!variable.hold_tod" );
+        else if ( name_str == "remote_guidance_device" )
+          cd_sef->add_action( "use_item,name=" + name_str + ",if=cooldown.touch_of_death.remains>30|!variable.hold_tod" );
+        else if ( name_str == "gladiators_badge" )
+          cd_sef->add_action( "use_item,name=" + name_str + ",if=cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<20" );
+        else if ( name_str == "galecallers_boon" )
+          cd_sef->add_action( "use_item,name=" + name_str + ",if=cooldown.touch_of_death.remains>55|variable.hold_tod|target.time_to_die<12" );
+        else if ( name_str == "writhing_segment_of_drestagath" )
+          cd_sef->add_action( "use_item,name=" + name_str + ",if=cooldown.touch_of_death.remains>20|!variable.hold_tod" );
+        else if ( name_str == "ashvanes_razor_coral" )
+        {
+          cd_sef->add_action( "use_item,name=" + name_str + ",if=variable.tod_on_use_trinket&(cooldown.touch_of_death.remains>21|variable.hold_tod)&(debuff.razor_coral_debuff.down|buff.storm_earth_and_fire.remains>13|target.time_to_die-cooldown.touch_of_death.remains<40&cooldown.touch_of_death.remains<25|target.time_to_die<25)" );
+          cd_sef->add_action( "use_item,name=" + name_str + ",if=!variable.tod_on_use_trinket&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(dot.touch_of_death.remains|cooldown.touch_of_death.remains+9>target.time_to_die)&buff.storm_earth_and_fire.up|target.time_to_die<25)" );
+		}
+        else
+          cd_sef->add_action( "use_item,name=" + name_str );
+      }
+    }
+  }
+
+  // Storm, Earth and Fire Essences
+  cd_sef->add_action( "the_unbound_force" );
+  cd_sef->add_action( "purifying_blast" );
+  cd_sef->add_action( "reaping_flames" );
+  cd_sef->add_action( "focused_azerite_beam" );
+  cd_sef->add_action( "memory_of_lucid_dreams,if=energy<40" );
+  cd_sef->add_action( "ripple_in_space" );
+  cd_sef->add_action( "bag_of_tricks" );
 
   // Serenity
-  serenity->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3|prev_gcd.1.spinning_crane_kick", "Serenity priority" );
-  serenity->add_action( this, "Fists of Fury", "if=(buff.bloodlust.up&prev_gcd.1.rising_sun_kick)|buff.serenity.remains<1|(active_enemies>1&active_enemies<5)" );
-  serenity->add_talent( this, "Fist of the White Tiger", "if=talent.hit_combo.enabled&energy.time_to_max<2&prev_gcd.1.blackout_kick&chi<=2" );
-  serenity->add_action( this, "Tiger Palm", "if=talent.hit_combo.enabled&energy.time_to_max<1&prev_gcd.1.blackout_kick&chi.max-chi>=2" );
-  serenity->add_action( this, "Spinning Crane Kick", "if=combo_strike&(active_enemies>=3|(talent.hit_combo.enabled&prev_gcd.1.blackout_kick)|(active_enemies=2&prev_gcd.1.blackout_kick))" );
-  serenity->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
+  serenity->add_action( this, "Fists of Fury", "if=buff.serenity.remains<1|active_enemies>1", "Priority while serenity is up" );
+  serenity->add_action( this, "Spinning Crane Kick", "if=combo_strike&(active_enemies>2|active_enemies>1&!cooldown.rising_sun_kick.up)" );
+  serenity->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
+  serenity->add_action( this, "Fists of Fury", "interrupt_if=gcd.remains=0", "This will cast FoF and interrupt the channel if the GCD is ready and something higher on the priority list (RSK) is avaible" );
+  serenity->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
+  serenity->add_action( this, "Reverse Harm", "if=chi.max-chi>1&energy.time_to_max<1" );
+  serenity->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike|!talent.hit_combo.enabled", "Use BoK, it will only break mastery if Hit Combo is NOT talented" );
+  serenity->add_action( this, "Spinning Crane Kick" );
 
   // Multiple Targets
-  aoe->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains<5)&cooldown.fists_of_fury.remains>3", "Actions.AoE is intended for use with Hectic_Add_Cleave and currently needs to be optimized" );
-  aoe->add_talent( this, "Whirling Dragon Punch" );
+  aoe->add_talent( this, "Whirling Dragon Punch", "", "Actions.AoE is intended for use with Hectic_Add_Cleave and currently needs to be optimized" );
   aoe->add_talent( this, "Energizing Elixir", "if=!prev_gcd.1.tiger_palm&chi<=1&energy<50" );
-  aoe->add_action( this, "Fists of Fury", "if=energy.time_to_max>3" );
+  aoe->add_action( this, "Fists of Fury", "if=energy.time_to_max>1" );
+  aoe->add_action( this, "Rising Sun Kick",
+                   "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.rising_sun_kick.duration>cooldown.whirling_dragon_punch.remains+4)&(cooldown.fists_of_fury.remains>3|chi>=5)" );
   aoe->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
-  aoe->add_action( this, "Spinning Crane Kick", "if=combo_strike&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3)" );
+  aoe->add_action( this, "Spinning Crane Kick",
+                   "if=combo_strike&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3|buff.dance_of_chiji.react)" );
   aoe->add_action( this, "Reverse Harm", "if=chi.max-chi>=2" );
-  aoe->add_talent( this, "Chi Burst", "if=chi<=3" );
-  aoe->add_talent( this, "Fist of the White Tiger", "if=chi.max-chi>=3" );
-  aoe->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|!combo_break)" );
+  aoe->add_talent( this, "Chi Burst", "if=chi.max-chi>=3" );
+  aoe->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
+  aoe->add_action( this, "Tiger Palm",
+				   "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|!combo_break)" );
   aoe->add_talent( this, "Chi Wave", "if=!combo_break" );
   aoe->add_action( this, "Flying Serpent Kick", "if=buff.bok_proc.down,interrupt=1" );
-  aoe->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|(talent.hit_combo.enabled&prev_gcd.1.tiger_palm&chi<4))" );
+  aoe->add_action( this, "Blackout Kick",
+                   "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|(talent.hit_combo.enabled&prev_gcd.1.tiger_palm&chi<4))" );
 
   // Single Target
-  st->add_talent( this, "Whirling Dragon Punch" );
-  st->add_action( this, "Fists of Fury", "if=energy.time_to_max>3" );
-  st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=chi>=5" );
-  st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
+  st->add_talent( this, "Whirling Dragon Punch", "", "Single target priority" );
+  st->add_action( this, "Fists of Fury", "if=talent.serenity.enabled|cooldown.touch_of_death.remains>6|variable.hold_tod" );
+  st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.touch_of_death.remains>2|variable.hold_tod", "Use RSK on targets without Mark of the Crane debuff, if possible, and if ToD is at least 2 seconds away" );
   st->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down&active_enemies>1" );
-  st->add_action( this, "Reverse Harm", "if=chi.max-chi>=2" );
-  st->add_talent( this, "Fist of the White Tiger", "if=chi<=2" );
+  st->add_action( this, "Reverse Harm", "if=chi.max-chi>1" );
+  st->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
   st->add_talent( this, "Energizing Elixir", "if=chi<=3&energy<50" );
-  st->add_action( this, "Spinning Crane Kick", "if=combo_strike&buff.dance_of_chiji.react" );
-  st->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(cooldown.rising_sun_kick.remains>3|chi>=3)&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))" );
+  st->add_talent( this, "Chi Burst", "if=chi.max-chi>0&active_enemies=1|chi.max-chi>1", "Use CB if you are more than 0 Chi away from max and have 1 enemy, or are more than 1 Chi away from max" );
+  st->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>3&!dot.touch_of_death.remains&buff.storm_earth_and_fire.down", "Use TP if you are 4 or more chi away from max and ToD and SEF are both not up" );
   st->add_talent( this, "Chi Wave" );
-  st->add_talent( this, "Chi Burst", "if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2" );
-  st->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2" );
-  st->add_action( this, "Flying Serpent Kick", "if=prev_gcd.1.blackout_kick&chi>3,interrupt=1" );
-}
+  st->add_action( this, "Spinning Crane Kick", "if=combo_strike&buff.dance_of_chiji.react" );
+  st->add_action( this, "Blackout Kick",
+                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&((cooldown.touch_of_death.remains>2|variable.hold_tod)&(cooldown.rising_sun_kick.remains>2&cooldown.fists_of_fury.remains>2|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>2|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>4|chi>5)|buff.bok_proc.up)", 
+                  "Use BoK if both FoF and RSK are not close, or RSK is close and FoF is not close and you have more than 2 chi, or FoF is close RSK is not close and you have more than 3 chi, or you have more than 5 chi, or if you get a proc" );
+  st->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>1" );
+  st->add_action( this, "Flying Serpent Kick", "interrupt=1", "Use FSK and interrupt it straight away" );
+  st->add_action( this, "Blackout Kick",
+                  "target_if=min:debuff.mark_of_the_crane.remains,if=(cooldown.fists_of_fury.remains<3&chi=2|energy.time_to_max<1)&(prev_gcd.1.tiger_palm|chi.max-chi<2)", 
+                  "Use BoK if FoF is close and you have 2 chi and your last global was TP, or if you are about to cap energy and either your last gcd was TP or if you are less than 2 chi away from capping" );
+
+}  // namespace
 
 // Mistweaver Combat Action Priority List ==================================
 
@@ -10049,7 +10280,7 @@ double monk_t::current_stagger_tick_dmg()
   return dmg;
 }
 
-void monk_t::stagger_damage_changed(bool last_tick)
+void monk_t::stagger_damage_changed( bool last_tick )
 {
   buff_t* previous_buff = nullptr;
   for ( auto&& b : {buff.light_stagger, buff.moderate_stagger, buff.heavy_stagger} )
@@ -10061,15 +10292,15 @@ void monk_t::stagger_damage_changed(bool last_tick)
     }
   }
   sim->print_debug( "Previous stagger buff was {}.", previous_buff ? previous_buff->name() : "none" );
-  
+
   buff_t* new_buff = nullptr;
   dot_t* dot       = nullptr;
   int niuzao       = 0;
   if ( active_actions.stagger_self_damage )
     dot = active_actions.stagger_self_damage->get_dot();
-  if ( !last_tick && dot && dot->is_ticking() ) // fake dot not active on last tick
+  if ( !last_tick && dot && dot->is_ticking() )  // fake dot not active on last tick
   {
-    auto current_tick_dmg = current_stagger_tick_dmg();
+    auto current_tick_dmg                = current_stagger_tick_dmg();
     auto current_tick_dmg_per_max_health = current_tick_dmg / resources.max[ RESOURCE_HEALTH ];
     sim->print_debug( "Stagger dmg: {} ({}%):", current_tick_dmg, current_tick_dmg_per_max_health * 100.0 );
     if ( current_tick_dmg_per_max_health > 0.06 )
@@ -10123,7 +10354,7 @@ double monk_t::current_stagger_tick_dmg_percent()
 
 double monk_t::current_stagger_amount_remains_percent()
 {
-  return current_stagger_amount_remains() / resources.max[RESOURCE_HEALTH];
+  return current_stagger_amount_remains() / resources.max[ RESOURCE_HEALTH ];
 }
 
 // monk_t::current_stagger_dot_duration ==================================================
@@ -10267,126 +10498,120 @@ std::unique_ptr<expr_t> monk_t::create_expression( const std::string& name_str )
   return base_t::create_expression( name_str );
 }
 
-
-void monk_t::action_init_finished(action_t& action)
+void monk_t::action_init_finished( action_t& action )
 {
-
   // hasted cooldown
-  for (auto&& effect : {spec.brewmaster_monk->effectN(4), spec.brewmaster_monk->effectN(5)})
+  for ( auto&& effect : {spec.brewmaster_monk->effectN( 4 ), spec.brewmaster_monk->effectN( 5 )} )
   {
-    if (action.data().affected_by_category(dbc, effect))
+    if ( action.data().affected_by_category( dbc, effect ) )
     {
       action.cooldown->hasted = true;
     }
   }
-  if (action.data().affected_by(passives.aura_monk->effectN(1)))
+  if ( action.data().affected_by( passives.aura_monk->effectN( 1 ) ) )
   {
-
     action.cooldown->hasted = true;
   }
 
-  if (spec.brewmaster_monk->ok())
+  if ( spec.brewmaster_monk->ok() )
   {
-    if (action.data().affected_by(spec.brewmaster_monk->effectN(1)))
-      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN(1).percent();
+    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 1 ) ) )
+      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN( 1 ).percent();
 
+    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 6 ) ) )  // RJW uses direct hit for it's ticks
+      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN( 6 ).percent();
 
+    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 7 ) ) )
+      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN( 7 ).percent();
 
-    if (action.data().affected_by(spec.brewmaster_monk->effectN(6)))  // RJW uses direct hit for it's ticks
-      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN(6).percent();
+    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 18 ) ) )
+      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN( 18 ).percent();
 
-    if (action.data().affected_by(spec.brewmaster_monk->effectN(7)))
-      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN(7).percent();
+    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 2 ) ) )
+      action.base_td_multiplier *= 1.0 + spec.brewmaster_monk->effectN( 2 ).percent();
 
-    if (action.data().affected_by(spec.brewmaster_monk->effectN(18)))
-      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN(18).percent();
-
-    if (action.data().affected_by(spec.brewmaster_monk->effectN(2)))
-      action.base_td_multiplier *= 1.0 + spec.brewmaster_monk->effectN(2).percent();
-
-    if (action.data().affected_by(spec.brewmaster_monk->effectN(8)))
-      action.base_td_multiplier *= 1.0 + spec.brewmaster_monk->effectN(8).percent();
+    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 8 ) ) )
+      action.base_td_multiplier *= 1.0 + spec.brewmaster_monk->effectN( 8 ).percent();
 
     // Reduce GCD from 1.5 sec to 1 sec
-    if (action.data().affected_by(spec.brewmaster_monk->effectN(14)))
-      action.trigger_gcd += spec.brewmaster_monk->effectN(14).time_value();  // Saved as -500 milliseconds
+    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 14 ) ) )
+      action.trigger_gcd += spec.brewmaster_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
 
     // Brewmasters no longer use Chi so need to zero out chi cost
-    if (action.data().affected_by(spec.brewmaster_monk->effectN(16)))
-      action.base_costs[RESOURCE_CHI] *= 1 + spec.brewmaster_monk->effectN(16).percent();  // -100% for Brewmasters
+    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 16 ) ) )
+      action.base_costs[ RESOURCE_CHI ] *= 1 + spec.brewmaster_monk->effectN( 16 ).percent();  // -100% for Brewmasters
 
     // Reduce GCD from 1.5 sec to 1.005 sec (33%)
-    if (action.data().affected_by_label(spec.brewmaster_monk->effectN(22)))
+    if ( action.data().affected_by_label( spec.brewmaster_monk->effectN( 22 ) ) )
     {
-      action.trigger_gcd *= ( 100.0 + spec.brewmaster_monk->effectN(22).base_value()) / 100.0;
+      action.trigger_gcd *= ( 100.0 + spec.brewmaster_monk->effectN( 22 ).base_value() ) / 100.0;
       action.gcd_type = gcd_haste_type::NONE;
     }
   }
 
-  if (spec.mistweaver_monk->ok())
+  if ( spec.mistweaver_monk->ok() )
   {
-    if (action.data().affected_by(spec.mistweaver_monk->effectN(1)))
-      action.base_dd_multiplier *= 1.0 + spec.mistweaver_monk->effectN(1).percent();
-    if (action.data().affected_by(spec.mistweaver_monk->effectN(2)))
-      action.base_td_multiplier *= 1.0 + spec.mistweaver_monk->effectN(2).percent();
-    if (action.data().affected_by(spec.mistweaver_monk->effectN(6)))
+    if ( action.data().affected_by( spec.mistweaver_monk->effectN( 1 ) ) )
+      action.base_dd_multiplier *= 1.0 + spec.mistweaver_monk->effectN( 1 ).percent();
+    if ( action.data().affected_by( spec.mistweaver_monk->effectN( 2 ) ) )
+      action.base_td_multiplier *= 1.0 + spec.mistweaver_monk->effectN( 2 ).percent();
+    if ( action.data().affected_by( spec.mistweaver_monk->effectN( 6 ) ) )
       action.gcd_type = gcd_haste_type::HASTE;
-
   }
 
-  if (spec.windwalker_monk->ok())
+  if ( spec.windwalker_monk->ok() )
   {
-    if (action.data().affected_by(spec.windwalker_monk->effectN(1)))
+    if ( action.data().affected_by( spec.windwalker_monk->effectN( 1 ) ) )
     {
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(1).percent();
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 1 ).percent();
     }
-    if (action.data().affected_by(spec.windwalker_monk->effectN(5)))
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(5).percent();
-    if (action.data().affected_by(spec.windwalker_monk->effectN(6)))
+    if ( action.data().affected_by( spec.windwalker_monk->effectN( 5 ) ) )
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 5 ).percent();
+    if ( action.data().affected_by( spec.windwalker_monk->effectN( 6 ) ) )
     {
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(6).percent();
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 6 ).percent();
     }
-    if (action.data().affected_by(spec.windwalker_monk->effectN(8)))
+    if ( action.data().affected_by( spec.windwalker_monk->effectN( 8 ) ) )
     {
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(8).percent();
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 8 ).percent();
     }
-    if (action.data().affected_by(spec.windwalker_monk->effectN(9)))
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(9).percent();
-    if (action.data().affected_by(spec.windwalker_monk->effectN(11)))
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(11).percent();
+    if ( action.data().affected_by( spec.windwalker_monk->effectN( 9 ) ) )
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 9 ).percent();
+    if ( action.data().affected_by( spec.windwalker_monk->effectN( 11 ) ) )
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 11 ).percent();
 
-    if (action.data().affected_by(spec.windwalker_monk->effectN(2)))
+    if ( action.data().affected_by( spec.windwalker_monk->effectN( 2 ) ) )
     {
-      action.base_td_multiplier *= 1.0 + spec.windwalker_monk->effectN(2).percent();
+      action.base_td_multiplier *= 1.0 + spec.windwalker_monk->effectN( 2 ).percent();
     }
-    if (action.data().affected_by(spec.windwalker_monk->effectN(7)))
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN(7).percent();
+    if ( action.data().affected_by( spec.windwalker_monk->effectN( 7 ) ) )
+      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 7 ).percent();
 
     // Cooldown reduction
-    if (action.data().affected_by(spec.windwalker_monk->effectN(10)))
-      action.cooldown->duration *= 1.0 + spec.windwalker_monk->effectN(10).percent();  // saved as -100
+    if ( action.data().affected_by( spec.windwalker_monk->effectN( 10 ) ) )
+      action.cooldown->duration *= 1.0 + spec.windwalker_monk->effectN( 10 ).percent();  // saved as -100
 
-    if (action.data().affected_by(spec.windwalker_monk->effectN(14)))
-      action.trigger_gcd += spec.windwalker_monk->effectN(14).time_value();  // Saved as -500 milliseconds
+    if ( action.data().affected_by( spec.windwalker_monk->effectN( 14 ) ) )
+      action.trigger_gcd += spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
 
     // Reduce GCD from 1.5 sec to 1.005 sec (33%)
-    if (action.data().affected_by_label(spec.brewmaster_monk->effectN(16)))
+    if ( action.data().affected_by_label( spec.brewmaster_monk->effectN( 16 ) ) )
     {
-      action.trigger_gcd *= (100.0 + spec.brewmaster_monk->effectN(16).base_value()) / 100.0;
+      action.trigger_gcd *= ( 100.0 + spec.brewmaster_monk->effectN( 16 ).base_value() ) / 100.0;
       action.gcd_type = gcd_haste_type::NONE;
     }
   }
 }
 
-void monk_t::merge(player_t& other)
+void monk_t::merge( player_t& other )
 {
-  base_t::merge(other);
+  base_t::merge( other );
 
-  auto& other_monk = static_cast<const monk_t&>(other);
+  auto& other_monk = static_cast<const monk_t&>( other );
 
-  sample_datas.stagger_effective_damage_timeline.merge(other_monk.sample_datas.stagger_effective_damage_timeline);
-  sample_datas.stagger_damage_pct_timeline.merge(other_monk.sample_datas.stagger_damage_pct_timeline);
-  sample_datas.stagger_pct_timeline.merge(other_monk.sample_datas.stagger_pct_timeline);
+  sample_datas.stagger_effective_damage_timeline.merge( other_monk.sample_datas.stagger_effective_damage_timeline );
+  sample_datas.stagger_damage_pct_timeline.merge( other_monk.sample_datas.stagger_damage_pct_timeline );
+  sample_datas.stagger_pct_timeline.merge( other_monk.sample_datas.stagger_pct_timeline );
 }
 
 // monk_t::monk_report =================================================
@@ -10406,8 +10631,8 @@ public:
     // Custom Class Section
     if ( p.specialization() == MONK_BREWMASTER )
     {
-      double stagger_tick_dmg  = p.sample_datas.stagger_damage->mean();
-      double purified_dmg      = p.sample_datas.purified_damage->mean();
+      double stagger_tick_dmg   = p.sample_datas.stagger_damage->mean();
+      double purified_dmg       = p.sample_datas.purified_damage->mean();
       double staggering_strikes = p.sample_datas.staggering_strikes_cleared->mean();
       double stagger_total_dmg  = p.sample_datas.stagger_total_damage->mean();
 
@@ -10415,30 +10640,31 @@ public:
          << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-      highchart::time_series_t chart_stagger_damage(highchart::build_id(p, "stagger_damage"), *p.sim);
-      chart::generate_actor_timeline(chart_stagger_damage, p, "Stagger effective damage", color::resource_color(RESOURCE_HEALTH),
-        p.sample_datas.stagger_effective_damage_timeline);
-      chart_stagger_damage.set("tooltip.headerFormat", "<b>{point.key}</b> s<br/>");
-      chart_stagger_damage.set("chart.width", "575");
+      highchart::time_series_t chart_stagger_damage( highchart::build_id( p, "stagger_damage" ), *p.sim );
+      chart::generate_actor_timeline( chart_stagger_damage, p, "Stagger effective damage",
+                                      color::resource_color( RESOURCE_HEALTH ),
+                                      p.sample_datas.stagger_effective_damage_timeline );
+      chart_stagger_damage.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart_stagger_damage.set( "chart.width", "575" );
       os << chart_stagger_damage.to_target_div();
-      p.sim->add_chart_data(chart_stagger_damage);
+      p.sim->add_chart_data( chart_stagger_damage );
 
-      highchart::time_series_t chart_stagger_damage_pct(highchart::build_id(p, "stagger_damage_pct"), *p.sim);
-      chart::generate_actor_timeline(chart_stagger_damage_pct, p, "Stagger pool / health %", color::resource_color(RESOURCE_HEALTH),
-        p.sample_datas.stagger_damage_pct_timeline);
-      chart_stagger_damage_pct.set("tooltip.headerFormat", "<b>{point.key}</b> s<br/>");
-      chart_stagger_damage_pct.set("chart.width", "575");
+      highchart::time_series_t chart_stagger_damage_pct( highchart::build_id( p, "stagger_damage_pct" ), *p.sim );
+      chart::generate_actor_timeline( chart_stagger_damage_pct, p, "Stagger pool / health %",
+                                      color::resource_color( RESOURCE_HEALTH ),
+                                      p.sample_datas.stagger_damage_pct_timeline );
+      chart_stagger_damage_pct.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart_stagger_damage_pct.set( "chart.width", "575" );
       os << chart_stagger_damage_pct.to_target_div();
-      p.sim->add_chart_data(chart_stagger_damage_pct);
+      p.sim->add_chart_data( chart_stagger_damage_pct );
 
-
-      highchart::time_series_t chart_stagger_pct(highchart::build_id(p, "stagger_pct"), *p.sim);
-      chart::generate_actor_timeline(chart_stagger_pct, p, "Stagger %", color::resource_color(RESOURCE_HEALTH),
-        p.sample_datas.stagger_pct_timeline);
-      chart_stagger_pct.set("tooltip.headerFormat", "<b>{point.key}</b> s<br/>");
-      chart_stagger_pct.set("chart.width", "575");
+      highchart::time_series_t chart_stagger_pct( highchart::build_id( p, "stagger_pct" ), *p.sim );
+      chart::generate_actor_timeline( chart_stagger_pct, p, "Stagger %", color::resource_color( RESOURCE_HEALTH ),
+                                      p.sample_datas.stagger_pct_timeline );
+      chart_stagger_pct.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart_stagger_pct.set( "chart.width", "575" );
       os << chart_stagger_pct.to_target_div();
-      p.sim->add_chart_data(chart_stagger_pct);
+      p.sim->add_chart_data( chart_stagger_pct );
 
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger base Unbuffed: {} Raid Buffed: {}</p>\n", p.stagger_base_value(),
                   p.sample_datas.buffed_stagger_base );
@@ -10449,11 +10675,13 @@ public:
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger pct (target level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
                   100.0 * p.stagger_pct( p.target->level() ), 100.0 * p.sample_datas.buffed_stagger_pct_target_level );
 
-      fmt::print(os, "\t\t\t\t\t\t<p>Total Stagger damage added: {} / {:.2f}%</p>\n", stagger_total_dmg, 100.0);
-      fmt::print(os, "\t\t\t\t\t\t<p>Stagger cleared by Purifying Brew: {} / {:.2f}%</p>\n", purified_dmg, (purified_dmg / stagger_total_dmg) * 100.0);
-      fmt::print(os, "\t\t\t\t\t\t<p>Stagger cleared by Staggering Strikes: {} / {:.2f}%</p>\n", staggering_strikes, (staggering_strikes / stagger_total_dmg) * 100.0);
-      fmt::print(os, "\t\t\t\t\t\t<p>Stagger that directly damaged the player: {} / {:.2f}%</p>\n", stagger_tick_dmg, (stagger_tick_dmg / stagger_total_dmg) * 100.0);
-
+      fmt::print( os, "\t\t\t\t\t\t<p>Total Stagger damage added: {} / {:.2f}%</p>\n", stagger_total_dmg, 100.0 );
+      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Purifying Brew: {} / {:.2f}%</p>\n", purified_dmg,
+                  ( purified_dmg / stagger_total_dmg ) * 100.0 );
+      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Staggering Strikes: {} / {:.2f}%</p>\n", staggering_strikes,
+                  ( staggering_strikes / stagger_total_dmg ) * 100.0 );
+      fmt::print( os, "\t\t\t\t\t\t<p>Stagger that directly damaged the player: {} / {:.2f}%</p>\n", stagger_tick_dmg,
+                  ( stagger_tick_dmg / stagger_total_dmg ) * 100.0 );
 
       os << "\t\t\t\t\t\t<table class=\"sc\">\n"
          << "\t\t\t\t\t\t\t<tbody>\n"
@@ -10475,8 +10703,8 @@ public:
             "50% no-repeat;\"> "
          << "<span style = \"margin - left: 18px; \">Stagger</span></a></span>\n"
          << "\t\t\t\t\t\t\t\t\t</td>\n";
-      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << ( p.sample_datas.stagger_damage->mean() ) << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << ( p.sample_datas.stagger_damage->mean() )
+         << "</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << p.sample_datas.stagger_damage->count()
          << "</td>\n";
       os << "\t\t\t\t\t\t\t\t</tr>\n";
@@ -10494,8 +10722,8 @@ public:
          << "\t\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
          << ( p.sample_datas.light_stagger_damage->mean() ) << "</td>\n";
-      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << p.sample_datas.light_stagger_damage->count() << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << p.sample_datas.light_stagger_damage->count()
+         << "</td>\n";
       os << "\t\t\t\t\t\t\t\t</tr>\n";
 
       // Moderate Stagger info
@@ -10526,8 +10754,8 @@ public:
          << "\t\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
          << ( p.sample_datas.heavy_stagger_damage->mean() ) << "</td>\n";
-      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-         << p.sample_datas.heavy_stagger_damage->count() << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << p.sample_datas.heavy_stagger_damage->count()
+         << "</td>\n";
       os << "\t\t\t\t\t\t\t\t</tr>\n";
 
       os << "\t\t\t\t\t\t\t</tbody>\n"

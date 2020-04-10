@@ -398,12 +398,16 @@ struct death_knight_t : public player_t {
 public:
   // Active
   double runic_power_decay_rate;
-  std::vector<ground_aoe_event_t*> dnds;
+  ground_aoe_event_t* active_dnd;
   bool deprecated_dnd_expression;
 
   // Counters
   double eternal_rune_weapon_counter;
   bool triggered_frozen_tempest;
+
+  // Enemies affected by festering wounds caching
+  int  festering_wounds_target_count;
+  bool festering_wounds_target_count_valid;
 
   // Special azerite data
   double vision_of_perfection_minor_cdr, vision_of_perfection_major_coeff;
@@ -729,18 +733,19 @@ public:
   // Pets and Guardians
   struct pets_t
   {
-    std::array< pet_t*, 4 > apoc_ghoul;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon_pet;
     pets::gargoyle_pet_t* gargoyle;
     pet_t* ghoul_pet;
     pet_t* risen_skulker;
 
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> army_ghouls;
+    spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> apoc_ghouls;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> magus_of_the_dead;
 
     pets_t( death_knight_t* p ) :
       army_ghouls( "army_ghoul", p ),
+      apoc_ghouls( "apoc_ghoul", p ),
       bloodworms( "bloodworm", p ),
       magus_of_the_dead( "magus_of_the_dead", p )
     {}
@@ -829,6 +834,8 @@ public:
     deprecated_dnd_expression( false ),
     eternal_rune_weapon_counter( 0 ),
     triggered_frozen_tempest( false ),
+    festering_wounds_target_count( 0 ),
+    festering_wounds_target_count_valid( true ),
     antimagic_shell( nullptr ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
@@ -843,8 +850,6 @@ public:
     options( options_t() ),
     _runes( this )
   {
-    range::fill( pets.apoc_ghoul, nullptr );
-
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
     cooldown.army_of_the_dead    = get_cooldown( "army_of_the_dead" );
     cooldown.bone_shield_icd     = get_cooldown( "bone_shield_icd" );
@@ -922,6 +927,7 @@ public:
   void      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( const action_state_t* state, unsigned n = 1 );
+  int       count_festering_wounds_targets();
   void      default_apl_dps_precombat();
   void      default_apl_blood();
   void      default_apl_frost();
@@ -984,7 +990,15 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_period( 0_ms );
   debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
                            -> set_trigger_spell( p -> spec.festering_wound )
-                           -> set_cooldown( 0_ms ); // Handled by trigger_festering_wound
+                           -> set_cooldown( 0_ms ) // Handled by trigger_festering_wound
+                           -> set_stack_change_callback( [ this, p ]( buff_t*, int old_, int new_ )
+                           {
+                             // Invalidate the FW target count if needed
+                             if ( old_ == 0 || new_ == 0 )
+                             {
+                               p -> festering_wounds_target_count_valid = false;
+                             }
+                           } );
 
   debuff.deep_cuts         = make_buff( *this, "deep_cuts", p -> find_spell( 272685 ) );
 }
@@ -1751,9 +1765,9 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Sweeping Claws" );
-    def -> add_action( "Claw" );
-    def -> add_action( "Monstrous Blow" );
+    def -> add_action( "sweeping_claws" );
+    def -> add_action( "claw,if=energy>70" );
+    def -> add_action( "monstrous_blow" );
     // def -> add_action( "Gnaw" ); Unused because it's a dps loss compared to waiting for DT and casting Monstrous Blow
   }
 
@@ -1769,7 +1783,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 };
 
 // ==========================================================================
-// Army of the Dead Ghoul
+// Army of the Dead (and Apocalypse) Ghouls
 // ==========================================================================
 
 struct army_ghoul_pet_t : public base_ghoul_pet_t
@@ -2294,7 +2308,7 @@ struct magus_pet_t : public death_knight_pet_t
     magus_td_t( player_t* target, magus_pet_t* p ) :
       actor_target_data_t( target, p )
     {
-      frostbolt_debuff = make_buff( *this, "frostbolt_apocalypse_magus", p -> owner -> find_spell( 288548 ) );
+      frostbolt_debuff = make_buff( *this, "frostbolt_magus_of_the_dead", p -> owner -> find_spell( 288548 ) );
     }
   };
 
@@ -2946,7 +2960,7 @@ struct melee_t : public death_knight_melee_attack_t
       }
 
       // Crimson scourge doesn't proc if death and decay is ticking
-      if ( td( s -> target ) -> dot.blood_plague -> is_ticking() && p() -> dnds.size() == 0 )
+      if ( td( s -> target ) -> dot.blood_plague -> is_ticking() && ! p() -> active_dnd )
       {
         if ( p() -> buffs.crimson_scourge -> trigger() )
         {
@@ -3064,10 +3078,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
     {
       p() -> burst_festering_wound( execute_state, n_wounds );
 
-      for ( int i = 0; i < n_wounds; ++i )
-      {
-        p() -> pets.apoc_ghoul[ i ] -> summon( summon_duration );
-      }
+      p() -> pets.apoc_ghouls.spawn( summon_duration, n_wounds );
     }
 
     if ( p() -> azerite.magus_of_the_dead.enabled() )
@@ -3431,6 +3442,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
     rune_gen( as<int>( player -> find_spell( 303753 ) -> effectN( 1 ).base_value() ) )
   {
     tick_zero = true;
+    cooldown -> duration = 0_ms; // Handled by the action
 
     // Extract the cost per tick from spelldata
     for ( size_t idx = 1; idx <= data().power_count(); idx++ )
@@ -3953,6 +3965,13 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
   void execute() override
   {
+    // If a death and decay/defile is already active, cancel it
+    if ( p() -> active_dnd )
+    {
+      event_t::cancel( p() -> active_dnd );
+      p() -> active_dnd = nullptr;
+    }
+
     death_knight_spell_t::execute();
 
     p() -> buffs.crimson_scourge -> decrement();
@@ -3974,16 +3993,11 @@ struct death_and_decay_base_t : public death_knight_spell_t
         switch ( type )
         {
           case ground_aoe_params_t::EVENT_CREATED:
-            p() -> dnds.push_back( event );
+            p() -> active_dnd = event;
             break;
           case ground_aoe_params_t::EVENT_DESTRUCTED:
           {
-            auto it = range::find( p() -> dnds, event );
-            assert( it != p() -> dnds.end() && "DnD event not found in vector" );
-            if ( it != p() -> dnds.end() )
-            {
-              p() -> dnds.erase( it );
-            }
+            p() -> active_dnd = nullptr;
             break;
           }
           default:
@@ -6512,6 +6526,9 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   // If the target wasn't affected by festering wound, return
   if ( n_wounds == 0 ) return;
 
+  // Invalidate the FW target count cache
+  festering_wounds_target_count_valid = false;
+
   // Generate the RP you'd have gained if you popped the wounds manually
   resource_gain( RESOURCE_RUNIC_POWER,
                  spec.festering_wound -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) * n_wounds,
@@ -6565,18 +6582,10 @@ void death_knight_t::trigger_virulent_plague_death( player_t* target )
 
 bool death_knight_t::in_death_and_decay() const
 {
-  if ( ! sim -> distance_targeting_enabled )
-  {
-    return dnds.size() > 0;
-  }
-  else
-  {
-    auto it = range::find_if( dnds, [ this ]( const ground_aoe_event_t* event ) {
-      return get_ground_aoe_distance( *event -> pulse_state ) <= event -> pulse_state -> action -> radius;
-    } );
+  if ( ! sim -> distance_targeting_enabled || ! active_dnd )
+    return active_dnd != nullptr;
 
-    return it != dnds.end();
-  }
+  return get_ground_aoe_distance( *active_dnd -> pulse_state ) <= active_dnd -> pulse_state -> action -> radius;
 }
 
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
@@ -6894,6 +6903,27 @@ void death_knight_t::vision_of_perfection_proc()
   }
 }
 
+int death_knight_t::count_festering_wounds_targets()
+{
+  // If the cache is valid, return the cached value
+  if ( festering_wounds_target_count_valid || specialization() != DEATH_KNIGHT_UNHOLY )
+    return festering_wounds_target_count;
+
+  int wounded_targets = 0;
+  for ( const auto fw_target : sim -> target_non_sleeping_list )
+  {
+    auto td = get_target_data( fw_target );
+
+    if ( td -> debuff.festering_wound -> check() )
+      wounded_targets++;
+  }
+  this -> festering_wounds_target_count = wounded_targets;
+  this -> festering_wounds_target_count_valid = true;
+
+  return wounded_targets;
+}
+
+
 // ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
@@ -7046,14 +7076,12 @@ std::unique_ptr<expr_t> death_knight_t::create_death_and_decay_expression( const
   if ( util::str_compare_ci( expr[ spell_offset + 1u ], "ticking" ) ||
        util::str_compare_ci( expr[ spell_offset + 1u ], "up" ) )
   {
-    return make_fn_expr( "dnd_ticking", [ this ]() { return dnds.size() > 0 ? 1 : 0; } );
+    return make_fn_expr( "dnd_ticking", [ this ]() { return active_dnd ? 1 : 0; } );
   }
   else if ( util::str_compare_ci( expr[ spell_offset + 1u ], "remains" ) )
   {
     return make_fn_expr( "dnd_remains", [ this ]() {
-      return dnds.size() > 0
-             ? dnds.back() -> remaining_time().total_seconds()
-             : 0;
+      return active_dnd ? active_dnd -> remaining_time().total_seconds() : 0;
     } );
   }
 
@@ -7088,11 +7116,17 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( const std::string& na
     return dnd_expr;
   }
 
+  // Death Knight special expressions
   if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
   {
     if ( util::str_compare_ci( splits[ 1 ], "disable_aotd" ) && splits.size() == 2 )
       return make_fn_expr( "disable_aotd_expression", [ this ]() {
         return this -> options.disable_aotd;
+      } );
+
+    if ( util::str_compare_ci( splits[ 1 ], "fwounded_targets" ) && splits.size() == 2 )
+      return make_fn_expr( "festering_wounds_target_count_expression", [ this ]() {
+        return this -> count_festering_wounds_targets();
       } );
   }
 
@@ -7125,10 +7159,9 @@ void death_knight_t::create_pets()
 
     if ( find_action( "apocalypse" ) )
     {
-      for ( int i = 0; i < 4; i++ )
-      {
-        pets.apoc_ghoul[ i ] = new pets::army_ghoul_pet_t( this, "apoc_ghoul" );
-      }
+      pets.apoc_ghouls.set_creation_callback(
+        [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
+
     }
 
     if ( azerite.magus_of_the_dead.enabled() )
@@ -7877,7 +7910,7 @@ void death_knight_t::default_apl_unholy()
 
   // Heart of Azeroth Essences
   essences -> add_action( "memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40" );
-  essences -> add_action( "blood_of_the_enemy,if=(cooldown.death_and_decay.remains&spell_targets.death_and_decay>1)|(cooldown.defile.remains&spell_targets.defile>1)|(cooldown.apocalypse.remains&cooldown.death_and_decay.ready)" );
+  essences -> add_action( "blood_of_the_enemy,if=(cooldown.death_and_decay.remains&spell_targets.death_and_decay>1)|(cooldown.defile.remains&spell_targets.defile>1)|(cooldown.apocalypse.remains&active_enemies=1)" );
   essences -> add_action( "guardian_of_azeroth,if=(cooldown.apocalypse.remains<6&cooldown.army_of_the_dead.remains>cooldown.condensed_lifeforce.remains)|cooldown.army_of_the_dead.remains<2" );
   essences -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<11" );
   essences -> add_action( "focused_azerite_beam,if=!death_and_decay.ticking" );
@@ -7902,10 +7935,10 @@ void death_knight_t::default_apl_unholy()
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<14&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&!variable.pooling_for_gargoyle" );
   generic -> add_action( this, "Death and Decay", "if=talent.pestilence.enabled&cooldown.apocalypse.remains" );
   generic -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
-  generic -> add_action( this, "Scourge Strike", "if=((debuff.festering_wound.up&(cooldown.apocalypse.remains>5&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled)|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains>6))|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
-  generic -> add_talent( this, "Clawing Shadows", "if=((debuff.festering_wound.up&(cooldown.apocalypse.remains>5&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled)|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains>6))|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
+  generic -> add_action( this, "Scourge Strike", "if=((debuff.festering_wound.up&(cooldown.apocalypse.remains>5&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled)|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&(cooldown.unholy_frenzy.remains>6&azerite.magus_of_the_dead.enabled|!azerite.magus_of_the_dead.enabled&cooldown.apocalypse.remains>4)))|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
+  generic -> add_talent( this, "Clawing Shadows", "if=((debuff.festering_wound.up&(cooldown.apocalypse.remains>5&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled)|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&(cooldown.unholy_frenzy.remains>6&azerite.magus_of_the_dead.enabled|!azerite.magus_of_the_dead.enabled&cooldown.apocalypse.remains>4)))|debuff.festering_wound.stack>4)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<20&!variable.pooling_for_gargoyle" );
-  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&(cooldown.apocalypse.remains<3&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains<7))|debuff.festering_wound.stack<1&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<4&(cooldown.apocalypse.remains<3&(!essence.vision_of_perfection.enabled|!talent.unholy_frenzy.enabled|essence.vision_of_perfection.enabled&talent.unholy_frenzy.enabled&(cooldown.unholy_frenzy.remains<7&azerite.magus_of_the_dead.enabled|!azerite.magus_of_the_dead.enabled)))|debuff.festering_wound.stack<1&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
   generic -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
 
   // Generic AOE actions to be done
@@ -8104,6 +8137,7 @@ void death_knight_t::create_buffs()
 
   buffs.unholy_frenzy = make_buff( this, "unholy_frenzy", talent.unholy_frenzy )
         -> set_default_value( talent.unholy_frenzy -> effectN( 1 ).percent() )
+        -> set_cooldown( 0_ms ) // Handled by the action
         -> add_invalidate( CACHE_HASTE );
 
   // Azerite Traits
@@ -8270,7 +8304,7 @@ void death_knight_t::reset()
 
   runic_power_decay_rate = 1; // 1 RP per second decay
   _runes.reset();
-  dnds.clear();
+  active_dnd = nullptr;
   eternal_rune_weapon_counter = 0;
 }
 

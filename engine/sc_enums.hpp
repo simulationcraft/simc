@@ -259,6 +259,7 @@ enum player_e
   HEALING_ENEMY,
   ENEMY,
   ENEMY_ADD,
+  ENEMY_ADD_BOSS,
   TANK_DUMMY,
   PLAYER_MAX
 };

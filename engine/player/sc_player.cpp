@@ -1458,6 +1458,11 @@ void player_t::init_base_stats()
 
     if ( base.distance < 1 )
       base.distance = 5;
+
+    // Armor Coefficient, based on level (6300 @ 120)
+    base.armor_coeff = dbc.armor_mitigation_constant( level() );
+    sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
+
   }
 
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
@@ -1838,9 +1843,6 @@ void player_t::init_defense()
     collected_data.health_changes_tmi.set_bin_size( sim->tmi_bin_size );
   }
 
-  // Armor Coefficient
-  initial.armor_coeff = dbc.armor_mitigation_constant( level() );
-  sim->print_debug( "{} initial armor coefficient set to {}.", *this, initial.armor_coeff );
 }
 
 void player_t::init_weapon( weapon_t& w )
@@ -6662,8 +6664,8 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
 
   if ( school == SCHOOL_PHYSICAL && dmg_type == result_amount_type::DMG_DIRECT )
   {
-    if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
-      sim->out_debug.printf( "Damage to %s before armor mitigation is %f", s->target->name(), s->result_amount );
+    if ( s -> action && !s -> target -> is_enemy() && !s-> target -> is_add() )
+      sim -> print_debug( "Damage to {} before armor mitigation is {}", s -> target -> name(), s -> result_amount );
 
     // Maximum amount of damage reduced by armor
     double armor_cap = 0.85;
@@ -6677,8 +6679,9 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
       s -> result_amount *= 1.0 - resist;
     }
 
-    if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
-      sim->out_debug.printf( "Damage to %s after armor mitigation is %f (%f armor)", s->target->name(), s->result_amount, s -> target_armor );
+    if ( s -> action && !s -> target -> is_enemy() && !s-> target -> is_add() )
+      sim -> print_debug( "Damage to {} after armor mitigation is {} ({} armor, {} armor coeff)",
+                          s -> target -> name(), s -> result_amount, s -> target_armor, s -> action -> player -> current.armor_coeff );
 
     double pre_block_amount = s->result_amount;
 
@@ -10175,10 +10178,13 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
     return expr_t::create_constant( "bugs", bugs );
 
   if ( expression_str == "is_add" )
-    return expr_t::create_constant("is_add", is_add() );
+    return expr_t::create_constant( "is_add", is_add() );
+
+  if ( expression_str == "is_boss" )
+    return expr_t::create_constant( "is_boss", is_boss() );
 
   if ( expression_str == "is_enemy" )
-    return expr_t::create_constant("is_enemy", is_enemy() );
+    return expr_t::create_constant( "is_enemy", is_enemy() );
 
   if ( expression_str == "attack_haste" )
     return make_fn_expr( expression_str, [this] { return cache.attack_haste(); } );
@@ -10722,7 +10728,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string&
   {
     if ( splits[ 1 ] == "deficit" )
     {
-      return make_fn_expr( name_str, [this, r] { return resources.max[ r ] - resources.current[ r ]; } );
+      return make_fn_expr( name_str, [ this, r ] { return resources.max[ r ] - resources.current[ r ]; } );
     }
 
     else if ( splits[ 1 ] == "pct" || splits[ 1 ] == "percent" )
@@ -10733,7 +10739,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string&
       }
       else
       {
-        return make_fn_expr( name_str, [this, r] { return resources.pct( r ) * 100.0; } );
+        return make_fn_expr( name_str, [ this, r ] { return resources.pct( r ) * 100.0; } );
       }
     }
 
@@ -10745,13 +10751,14 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string&
 
     else if ( splits[ 1 ] == "pct_nonproc" )
     {
-      return make_fn_expr( name_str, [this, r] {
+      return make_fn_expr( name_str, [ this, r ] {
         return resources.current[ r ] / collected_data.buffed_stats_snapshot.resource[ r ] * 100.0;
       } );
     }
+    
     else if ( splits[ 1 ] == "net_regen" )
     {
-      return make_fn_expr( name_str, [this, r] {
+      return make_fn_expr( name_str, [ this, r ] {
         timespan_t now = sim->current_time();
         if ( now != timespan_t::zero() )
           return ( iteration_resource_gained[ r ] - iteration_resource_lost[ r ] ) / now.total_seconds();
@@ -10759,15 +10766,38 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string&
           return 0.0;
       } );
     }
+    
     else if ( splits[ 1 ] == "regen" )
     {
-      return make_fn_expr( name_str, [this, r] { return resources.base_regen_per_second[ r ]; } );
+      return make_fn_expr( name_str, [ this, r ] { return resource_regen_per_second( r ); } );
     }
-
-    else if ( splits[ 1 ] == "time_to_max" )
+    
+    else if ( util::str_begins_with_ci( splits[ 1 ], "time_to_" ) )
     {
-      return make_fn_expr( "time_to_max_resource", [this, r] {
-        return ( resources.max[ r ] - resources.current[ r ] ) / resources.base_regen_per_second[ r ];
+      std::vector<std::string> parts = util::string_split( splits[ 1 ], "_" );
+
+      // foo.time_to_max
+      if ( util::str_in_str_ci( parts[ 2 ], "max" ) )
+      {
+        return make_fn_expr( name_str, [ this, r ] {
+          return ( resources.max[ r ] - resources.current[ r ] ) / resource_regen_per_second( r );
+        } );
+      }
+
+      // foo.time_to_x
+      const double amount = std::stod( parts[ 2 ] );
+      return make_fn_expr( name_str, [ this, r, amount ] {
+        if ( resources.current[ r ] >= amount )
+        {
+          return timespan_t::zero().total_seconds();
+        }
+        else if ( amount > resources.max[ r ] )
+        {
+          // If the value is impossible to reach, return functional infinity
+          return timespan_t::max().total_seconds();
+        }
+        
+        return ( amount - resources.current[ r ] ) / resource_regen_per_second( r );
       } );
     }
   }

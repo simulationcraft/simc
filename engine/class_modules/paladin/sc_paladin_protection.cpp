@@ -505,6 +505,7 @@ shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
   add_invalidate( CACHE_BONUS_ARMOR );
   set_default_value( p -> spells.sotr_buff -> effectN( 1 ).percent() );
   set_refresh_behavior( buff_refresh_behavior::EXTEND );
+  cooldown -> duration = 0_ms; // handled by the ability
 }
 
 void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
@@ -840,8 +841,10 @@ action_t* paladin_t::create_action_protection( const std::string& name, const st
 
 void paladin_t::create_buffs_protection()
 {
-  buffs.aegis_of_light = make_buff( this, "aegis_of_light", talents.aegis_of_light );
-  buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) );
+  buffs.aegis_of_light = make_buff( this, "aegis_of_light", talents.aegis_of_light )
+                        -> set_cooldown( 0_ms ); // handled by the ability
+  buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) )
+                        -> set_cooldown( 0_ms ); // handled by the ability
   buffs.avengers_valor = make_buff( this, "avengers_valor", passives.avengers_valor )
                        -> set_default_value( passives.avengers_valor -> effectN( 1 ).percent() );
 
@@ -858,8 +861,8 @@ void paladin_t::create_buffs_protection()
                  -> add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
                  -> add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
                  -> add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                 -> add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) );
-  buffs.seraphim -> set_cooldown( 0_ms ); // let the ability handle the cooldown
+                 -> add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                 -> set_cooldown( 0_ms ); // let the ability handle the cooldown
 
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
 
