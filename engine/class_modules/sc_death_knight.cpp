@@ -7644,7 +7644,7 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "use_item,name=ashvanes_razor_coral,if=buff.dancing_rune_weapon.up&debuff.razor_coral_debuff.up&!equipped.dribbling_inkpod");
 
   // Cooldowns
-  def -> add_action( this, "Vampiric Blood"
+  def -> add_action( this, "Vampiric Blood" );
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
   def -> add_action( this, "Dancing Rune Weapon", "if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready" );
   def -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
