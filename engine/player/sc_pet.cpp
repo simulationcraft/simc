@@ -270,6 +270,7 @@ void pet_t::adjust_duration( const timespan_t& adjustment )
     }
     else
     {
+      event_t::cancel( expiration );
       expiration = make_event<expiration_t>( *sim, *this, new_duration );
     }
   }
