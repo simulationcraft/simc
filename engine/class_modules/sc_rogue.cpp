@@ -3674,6 +3674,12 @@ struct sinister_strike_t : public rogue_attack_t
 
       return b;
     }
+
+    void execute() override
+    {
+      rogue_attack_t::execute();
+      p()->buffs.snake_eyes->decrement();
+    }
   };
 
   sinister_strike_t( rogue_t* p, const std::string& options_str ) :
