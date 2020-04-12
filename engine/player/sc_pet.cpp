@@ -253,7 +253,7 @@ void pet_t::adjust_duration( const timespan_t& adjustment )
   auto new_duration = expiration->remains() + adjustment;
   if ( new_duration <= 0_ms )
   {
-    sim->out_debug.print( "{} pet {} duration adjusted to {}, dismissing ...",
+    sim->print_debug( "{} pet {} duration adjusted to {}, dismissing ...",
       owner->name(), name_str, new_duration );
     dismiss();
   }
@@ -261,7 +261,7 @@ void pet_t::adjust_duration( const timespan_t& adjustment )
   {
     duration += adjustment;
 
-    sim->out_debug.print( "{} pet {} duration adjusted to {}",
+    sim->print_debug( "{} pet {} duration adjusted to {}",
       owner->name(), name_str, new_duration );
 
     if ( new_duration > expiration->remains() )

@@ -9148,7 +9148,7 @@ void monk_t::vision_of_perfection_proc()
     {
       if ( buff.storm_earth_and_fire->check() )
       {
-        sim->out_debug.print( "{} vision_of_perfection extending storm_earth_and_fire duration by {}",
+        sim->print_debug( "{} vision_of_perfection extending storm_earth_and_fire duration by {}",
           name(), sef_duration );
 
         buff.storm_earth_and_fire->extend_duration( this, sef_duration );
@@ -9158,7 +9158,7 @@ void monk_t::vision_of_perfection_proc()
       }
       else
       {
-        sim->out_debug.print( "{} vision_of_perfection summoning storm_earth_and_fire duration for {}",
+        sim->print_debug( "{} vision_of_perfection summoning storm_earth_and_fire duration for {}",
           name(), sef_duration );
 
         summon_storm_earth_and_fire( sef_duration );
