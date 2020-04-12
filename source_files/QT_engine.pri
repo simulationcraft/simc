@@ -18,6 +18,18 @@
  HEADERS += engine/util/utf8-cpp/utf8/checked.h
  HEADERS += engine/util/utf8-cpp/utf8.h
  HEADERS += engine/util/utf8-h/utf8.h
+ HEADERS += engine/util/fmt/chrono.h
+ HEADERS += engine/util/fmt/color.h
+ HEADERS += engine/util/fmt/compile.h
+ HEADERS += engine/util/fmt/core.h
+ HEADERS += engine/util/fmt/format.h
+ HEADERS += engine/util/fmt/format-inl.h
+ HEADERS += engine/util/fmt/locale.h
+ HEADERS += engine/util/fmt/os.h
+ HEADERS += engine/util/fmt/ostream.h
+ HEADERS += engine/util/fmt/posix.h
+ HEADERS += engine/util/fmt/printf.h
+ HEADERS += engine/util/fmt/ranges.h
  HEADERS += engine/sim/x6_pantheon.hpp
  HEADERS += engine/sim/sc_profileset.hpp
  HEADERS += engine/sim/sc_option.hpp
@@ -49,7 +61,7 @@
  SOURCES += engine/util/concurrency.cpp
  SOURCES += engine/util/git_info.cpp
  SOURCES += engine/util/fmt/format.cpp
- SOURCES += engine/util/fmt/posix.cpp
+ SOURCES += engine/util/fmt/os.cpp
  SOURCES += engine/sim/x6_pantheon.cpp
  SOURCES += engine/sim/spawner.cpp
  SOURCES += engine/sim/sc_sim.cpp
