@@ -169,7 +169,7 @@ struct expiration_t : public buff_event_t
   {
     if ( b->stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
     {
-      b->sim->errorf( "{} {} creates asynchronous expiration with no stack count.",
+      b->sim->error( "{} {} creates asynchronous expiration with no stack count.",
           *buff->player, *buff );
       b->sim->cancel();
     }
@@ -724,7 +724,7 @@ buff_t* buff_t::set_max_stack( int max_stack )
   if ( _max_stack > 999 )
   {
     _max_stack = 999;
-    sim->errorf( "{} initialized with max_stack > 999. Setting max_stack to 999.\n", *this );
+    sim->error( "{} initialized with max_stack > 999. Setting max_stack to 999.\n", *this );
   }
 
   stack_react_time.resize( _max_stack + 1 );
