@@ -9651,12 +9651,6 @@ void monk_t::apl_pre_windwalker()
       "equipped.gladiators_badge|equipped.gladiators_medallion|equipped.remote_guidance_device",
       "Checks if you have a trinket equipped that wants to be used together with ToD" );
   pre->add_action(
-      "variable,name=hold_tod,op=set,value=cooldown.touch_of_death.remains+9>target.time_to_die|!talent.serenity."
-      "enabled&!variable.tod_on_use_trinket&equipped.dribbling_inkpod&target.time_to_pct_30.remains<130&target.time_to_"
-      "pct_30.remains>8|target.time_to_die<130&target.time_to_die>cooldown.serenity.remains&cooldown.serenity.remains>"
-      "2|buff.serenity.up&target.time_to_die>11",
-      "Variable that will tell you if you will need to wait to cast ToD/do not want to cast it at all anymore" );
-  pre->add_action(
       "variable,name=font_of_power_precombat_channel,op=set,value=19,if=!talent.serenity.enabled&(variable.tod_on_use_"
       "trinket|equipped.ashvanes_razor_coral)" );
   pre->add_action( "use_item,name=azsharas_font_of_power" );
@@ -9802,6 +9796,12 @@ void monk_t::apl_combat_windwalker()
           "|buff.bloodlust.react|target.time_to_die<=60" );
   }
 
+  def->add_action(
+      "variable,name=hold_tod,op=set,value=cooldown.touch_of_death.remains+9>target.time_to_die|!talent.serenity."
+      "enabled&!variable.tod_on_use_trinket&equipped.dribbling_inkpod&target.time_to_pct_30.remains<130&target.time_to_"
+      "pct_30.remains>8|target.time_to_die<130&target.time_to_die>cooldown.serenity.remains&cooldown.serenity.remains>"
+      "2|buff.serenity.up&target.time_to_die>11",
+      "Variable that will tell you if you will need to wait to cast ToD/do not want to cast it at all anymore" );
   def->add_action(
       this, "Reverse Harm",
       "if=chi.max-chi>=2&(talent.serenity.enabled|!dot.touch_of_death.remains)&buff.serenity.down&(energy.time_to_max<"
@@ -9988,7 +9988,7 @@ void monk_t::apl_combat_windwalker()
   }
 
   cd_sef->add_action( this, "Touch of Death", "if=!variable.hold_tod&(!equipped.cyclotronic_blast|cooldown.cyclotronic_blast.remains<=1)&(chi>1|energy<40)" );
-  cd_sef->add_action( this, "Storm, Earth, and Fire", ",if=cooldown.storm_earth_and_fire.charges=2|dot.touch_of_death.remains|target.time_to_die<20|(buff.worldvein_resonance.remains>10|cooldown.worldvein_resonance.remains>cooldown.storm_earth_and_fire.full_recharge_time|!essence.worldvein_resonance.major)&(cooldown.touch_of_death.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_tod&!equipped.dribbling_inkpod)&cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=13" );
+  cd_sef->add_action( this, "Storm, Earth, and Fire", ",if=cooldown.storm_earth_and_fire.charges=2|dot.touch_of_death.remains|target.time_to_die<20|(buff.worldvein_resonance.remains>10|cooldown.worldvein_resonance.remains>cooldown.storm_earth_and_fire.full_recharge_time|!essence.worldvein_resonance.major)&cooldown.touch_of_death.remains>cooldown.storm_earth_and_fire.full_recharge_time&cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=13" );
   cd_sef->add_action( "blood_of_the_enemy,if=cooldown.touch_of_death.remains>45|variable.hold_tod&cooldown.fists_of_fury.remains<2|target.time_to_die<12|target.time_to_die>100&target.time_to_die<110&(cooldown.fists_of_fury.remains<3|cooldown.whirling_dragon_punch.remains<5|cooldown.rising_sun_kick.remains<5)" );
   cd_sef->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&((cooldown.concentrated_flame.remains<=cooldown.touch_of_death.remains+1|variable.hold_tod)&(!talent.whirling_dragon_punch.enabled|cooldown.whirling_dragon_punch.remains)&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&buff.storm_earth_and_fire.down|dot.touch_of_death.remains)|target.time_to_die<8" );
 
@@ -10081,7 +10081,7 @@ void monk_t::apl_combat_windwalker()
   // Single Target
   st->add_talent( this, "Whirling Dragon Punch", "", "Single target priority" );
   st->add_action( this, "Fists of Fury", "if=talent.serenity.enabled|cooldown.touch_of_death.remains>6|variable.hold_tod" );
-  st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.touch_of_death.remains>2|variable.hold_tod", "Use RSK on targets without Mark of the Crane debuff, if possible, and if ToD is at least 2 seconds away" );
+  st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=talent.serenity.enabled|cooldown.touch_of_death.remains>2|variable.hold_tod", "Use RSK on targets without Mark of the Crane debuff, if possible, and if ToD is at least 2 seconds away" );
   st->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down&active_enemies>1" );
   st->add_action( this, "Reverse Harm", "if=chi.max-chi>1" );
   st->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
@@ -10091,7 +10091,7 @@ void monk_t::apl_combat_windwalker()
   st->add_talent( this, "Chi Wave" );
   st->add_action( this, "Spinning Crane Kick", "if=combo_strike&buff.dance_of_chiji.react" );
   st->add_action( this, "Blackout Kick",
-                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&((cooldown.touch_of_death.remains>2|variable.hold_tod)&(cooldown.rising_sun_kick.remains>2&cooldown.fists_of_fury.remains>2|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>2|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>4|chi>5)|buff.bok_proc.up)", 
+                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&((talent.serenity.enabled|cooldown.touch_of_death.remains>2|variable.hold_tod)&(cooldown.rising_sun_kick.remains>2&cooldown.fists_of_fury.remains>2|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>2|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>4|chi>5)|buff.bok_proc.up)", 
                   "Use BoK if both FoF and RSK are not close, or RSK is close and FoF is not close and you have more than 2 chi, or FoF is close RSK is not close and you have more than 3 chi, or you have more than 5 chi, or if you get a proc" );
   st->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>1" );
   st->add_action( this, "Flying Serpent Kick", "interrupt=1", "Use FSK and interrupt it straight away" );
