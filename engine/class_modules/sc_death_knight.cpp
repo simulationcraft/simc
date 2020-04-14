@@ -7888,7 +7888,7 @@ void death_knight_t::default_apl_unholy()
   essences -> add_action( "worldvein_resonance,if=!death_and_decay.ticking&buff.unholy_strength.up&!essence.vision_of_perfection.minor&!talent.army_of_the_damned.enabled|target.time_to_die<cooldown.apocalypse.remains" );
   essences -> add_action( "ripple_in_space,if=!death_and_decay.ticking" );
   essences -> add_action( "reaping_flames" );
-	
+
   cooldowns -> add_action( this, "Army of the Dead" );
   cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4&(active_enemies>=2|!essence.vision_of_perfection.enabled|!azerite.magus_of_the_dead.enabled|essence.vision_of_perfection.enabled&(talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains<=3|!talent.unholy_frenzy.enabled))" );
   cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists|raid_event.adds.in>15" );
