@@ -6189,9 +6189,11 @@ struct vampiric_blood_buff_t : public buff_t
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
+    bool refreshing = this -> check();
+
     buff_t::execute( stacks, value, duration );
 
-    if ( delta != 0.0 )
+    if ( delta != 0.0 && !refreshing )
     {
       double old_health = player -> resources.max[ RESOURCE_HEALTH ];
       player -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + delta;
