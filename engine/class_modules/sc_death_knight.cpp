@@ -6373,10 +6373,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
         // Reschedule pet expiration
         // TODO: Tie pet expiration to buff expiration?
         if ( pets.dancing_rune_weapon_pet && ! pets.dancing_rune_weapon_pet -> is_sleeping() )
-        {
-          timespan_t previous_expiration = pets.dancing_rune_weapon_pet -> expiration -> time;
-          pets.dancing_rune_weapon_pet -> expiration -> reschedule_time = previous_expiration + timespan_t::from_seconds( duration_increase );
-        }
+          pets.dancing_rune_weapon_pet -> adjust_duration( timespan_t::from_seconds( duration_increase ) );
 
         eternal_rune_weapon_counter += duration_increase;
       }
