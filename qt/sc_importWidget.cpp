@@ -64,7 +64,7 @@ void BattleNetImportWidget::loadRealmData()
         }
         else
         {
-            qDebug() << "Could not open" << json_file.fileName();
+            qDebug() << "Could not open" << json_file.fileName() << ", reason: " << json_file.errorString();
         }
     }
 

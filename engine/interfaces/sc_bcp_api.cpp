@@ -875,7 +875,7 @@ bool download_item_data( item_t& item, cache::behavior_e caching )
         item.parsed.data.stat_type_e[ i ] = stat[ "stat" ].GetInt();
         item.parsed.stat_val[ i ]         = stat[ "amount" ].GetInt();
 
-        if ( js.HasMember( "weaponInfo" ) && 
+        if ( js.HasMember( "weaponInfo" ) &&
              ( item.parsed.data.stat_type_e[ i ] == ITEM_MOD_INTELLECT ||
                item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPIRIT ||
                item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPELL_POWER ) )
@@ -1261,7 +1261,7 @@ bool bcp_api::download_guild( sim_t* sim,
       continue;
 
     int rank = member[ "rank" ].GetInt();
-    if ( ( max_rank > 0 && rank > max_rank ) || 
+    if ( ( max_rank > 0 && rank > max_rank ) ||
          ( ! ranks.empty() && range::find( ranks, rank ) == ranks.end() ) )
       continue;
 

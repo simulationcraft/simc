@@ -289,6 +289,8 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   QDir::home().mkpath( AppDataDir );
 #endif
 
+  qDebug() << "AppDataDir: " << AppDataDir;
+
   TmpDir = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
   assert( !TmpDir.isEmpty() );
   qDebug() << "TmpDir: " << TmpDir;
