@@ -5559,7 +5559,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 
     if ( d->is_ticking() )
     {
-      auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
+      debug_cast<residual_action::residual_periodic_state_t*>( d->state );
 
       auto ticks_left                   = d->ticks_left();
       auto damage_remaining_initial     = amount_remaining();
@@ -5592,7 +5592,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 
     if ( d->is_ticking() )
     {
-      auto dot_state                    = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
+      debug_cast<residual_action::residual_periodic_state_t*>( d->state );
       auto ticks_left                   = d->ticks_left();
       auto damage_remaining_initial     = amount_remaining();
       auto damage_remaining_after_clear = std::fmax( damage_remaining_initial - amount, 0 );
