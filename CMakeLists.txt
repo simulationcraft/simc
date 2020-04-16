@@ -1,5 +1,11 @@
 # Projects Settings   
 cmake_minimum_required (VERSION 3.1)
+
+# allow enabling lto from the command line
+if(POLICY CMP0069)
+    cmake_policy(SET CMP0069 NEW)
+endif()
+
 project(simc)
 
 # switch on/off different build targets
