@@ -1242,14 +1242,15 @@ statistical_data_t metric_data( const player_t* player, scale_metric_e metric )
       return {
         hps.min + aps.min,
         hps.first_quartile + aps.first_quartile,
-        hps.mean + aps.mean,
         hps.median + aps.median,
+        hps.mean + aps.mean,
         hps.third_quartile + aps.first_quartile,
         hps.max + aps.max,
+        sqrt( d.aps.variance + d.hps.variance ),
         sqrt( d.aps.mean_variance + d.hps.mean_variance )
       };
     }
-    default:                     return { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+    default:                     return { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
   }
 }
 
