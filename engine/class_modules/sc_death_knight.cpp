@@ -991,7 +991,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
                            -> set_trigger_spell( p -> spec.festering_wound )
                            -> set_cooldown( 0_ms ) // Handled by trigger_festering_wound
-                           -> set_stack_change_callback( [ this, p ]( buff_t*, int old_, int new_ )
+                           -> set_stack_change_callback( [ p ]( buff_t*, int old_, int new_ )
                            {
                              // Invalidate the FW target count if needed
                              if ( old_ == 0 || new_ == 0 )
