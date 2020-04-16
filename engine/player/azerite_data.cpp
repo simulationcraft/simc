@@ -3794,7 +3794,6 @@ void impassive_visage(special_effect_t& effect)
     return;
   }
   const spell_data_t* driver = power.spell();
-  const spell_data_t* spell = driver->effectN(1).trigger();
   const spell_data_t* heal = driver->effectN(1).trigger();
 
   auto heal_action = new impassive_visage_heal_t(effect.player, heal, power.value());
