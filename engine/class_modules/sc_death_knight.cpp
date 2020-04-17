@@ -831,6 +831,7 @@ public:
   death_knight_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
     runic_power_decay_rate(),
+    active_dnd( nullptr ),
     deprecated_dnd_expression( false ),
     eternal_rune_weapon_counter( 0 ),
     triggered_frozen_tempest( false ),
