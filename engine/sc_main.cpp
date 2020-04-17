@@ -232,14 +232,7 @@ struct special_effect_initializer_t
 
 void print_version_info(const dbc_t& dbc)
 {
-  std::string build_info = fmt::format("wow build {}", dbc.build_level());
-  if ( git_info::available() )
-  {
-    build_info += fmt::format(", git build {} {}", git_info::branch(), git_info::revision());
-  }
-
-  fmt::print("SimulationCraft {} for World of Warcraft {} {} ({})\n\n",
-      SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), build_info);
+  std::cout << util::version_info_str( &dbc ) << std::endl << std::endl;
   std::flush(std::cout);
 }
 

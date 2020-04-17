@@ -1085,6 +1085,9 @@ void print_json_pretty( FILE* o, const sim_t& sim )
   root[ "build_date" ] = __DATE__;
   root[ "build_time" ] = __TIME__;
   root[ "timestamp" ] = as<uint64_t>( std::time( nullptr ) );
+#if defined( SC_NO_NETWORKING )
+  root[ "no_networking" ] = true;
+#endif
 
   if ( git_info::available())
   {
