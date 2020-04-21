@@ -2983,6 +2983,22 @@ struct fury_of_xuen_spell_t : public summon_pet_t
     summoning_duration = p->passives.fury_of_xuen_haste_buff->duration();
     min_gcd            = timespan_t::zero();
   }
+
+  // Fully override this summon mechanism for now to prevent potential crashes/issues
+  // TODO: What is the proper behavior for procs during Xuen out?
+  void execute() override
+  {
+    if ( pet->is_sleeping() )
+    {
+      pet->summon( summoning_duration );
+    }
+    else
+    {
+      pet->adjust_duration( summoning_duration );
+    }
+
+    monk_spell_t::execute();
+  }
 };
 
 // ==========================================================================
