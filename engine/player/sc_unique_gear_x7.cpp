@@ -570,7 +570,7 @@ void consumables::potion_of_empowered_proximity( special_effect_t& effect )
     // this is an ok way to grant everything in one go based on the current active enemy state
     if ( new_ )
     {
-      auto new_value = clamp( stat_value + buff->sim->target_non_sleeping_list.size() * stat_value, 0.0, max_value );
+      auto new_value = clamp( buff->sim->target_non_sleeping_list.size() * stat_value, stat_value, max_value );
       buff->stats.front().amount = new_value;
     }
     else
@@ -589,7 +589,7 @@ void consumables::potion_of_empowered_proximity( special_effect_t& effect )
         return;
       }
 
-      auto new_value = clamp( stat_value + buff->sim->target_non_sleeping_list.size() * stat_value, 0.0, max_value );
+      auto new_value = clamp( buff->sim->target_non_sleeping_list.size() * stat_value, stat_value, max_value );
       auto diff      = new_value - buff->stats.front().current_value;
       if ( diff > 0 )
       {
