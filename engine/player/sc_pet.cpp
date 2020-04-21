@@ -157,7 +157,7 @@ void pet_t::summon( timespan_t summon_duration )
 
   // Add to active_pets
   auto it = range::find( owner -> active_pets, this );
-  if ( it != owner -> active_pets.end() )
+  if ( it == owner -> active_pets.end() )
     owner -> active_pets.push_back( this );
 
   summoned = true;
