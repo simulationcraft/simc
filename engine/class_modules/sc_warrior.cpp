@@ -5524,7 +5524,7 @@ struct rallying_cry_t : public warrior_buff_t<buff_t>
   {
   }
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  bool start( int stacks, double value, double chance, timespan_t duration ) override
   {
     health_gain = static_cast<int>(
         util::floor( warrior().resources.max[ RESOURCE_HEALTH ] * warrior().spec.rallying_cry->effectN( 1 ).percent() ) );
@@ -5551,7 +5551,7 @@ struct last_stand_buff_t : public warrior_buff_t<buff_t>
     set_cooldown( timespan_t::zero() );
   }
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  bool start( int stacks, double value, double chance, timespan_t duration ) override
   {
     health_gain = static_cast<int>(
         util::floor( warrior().resources.max[ RESOURCE_HEALTH ] * ( warrior().spec.last_stand->effectN( 1 ).percent() ) ) );
