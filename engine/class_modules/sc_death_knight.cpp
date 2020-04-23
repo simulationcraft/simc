@@ -5540,7 +5540,7 @@ struct pillar_of_frost_buff_t : public buff_t
     {
       p -> buffs.icy_citadel -> trigger();
       p -> buffs.icy_citadel -> extend_duration( p, p -> azerite.icy_citadel.spell() -> effectN( 2 ).time_value() *
-                                                    p -> buffs.icy_citadel_builder -> stack() );
+                                                 p -> buffs.icy_citadel_builder -> stack() );
       p -> buffs.icy_citadel_builder -> expire();
     }
   }
@@ -6176,52 +6176,46 @@ struct rune_tap_t : public death_knight_spell_t
 
 struct vampiric_blood_buff_t : public buff_t
 {
-  double delta;
-  death_knight_t* p;
+  double health_change;
 
   vampiric_blood_buff_t( death_knight_t* player ) :
     buff_t( player, "vampiric_blood", player -> spec.vampiric_blood ),
-    p( player )
+    health_change( data().effectN( 4 ).percent() )
   {
     // Cooldown handled by the action
     cooldown -> duration = 0_ms;
-    delta = data().effectN( 4 ).percent();
   }
 
-  void execute( int stacks, double value, timespan_t duration ) override
+  void start( int stacks, double value, timespan_t duration ) override
   {
-    bool refreshing = this -> check();
+    buff_t::start( stacks, value, duration );
 
-    buff_t::execute( stacks, value, duration );
+    double old_health = player -> resources.current[ RESOURCE_HEALTH ];
+    double old_max_health = player -> resources.max[ RESOURCE_HEALTH ];
 
-    if ( delta != 0.0 && !refreshing )
-    {
-      double old_health = player -> resources.max[ RESOURCE_HEALTH ];
-      player -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + delta;
-      player -> recalculate_resource_max( RESOURCE_HEALTH );
+    player -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + health_change;
+    player -> recalculate_resource_max( RESOURCE_HEALTH );
+    player -> resources.current[ RESOURCE_HEALTH ] *= 1.0 + health_change; // Update health after the maximum is increased
 
-      this -> sim -> print_debug( "{} {} stacking health pct change {}%, {} -> {}",
-                                  this -> player -> name(), this -> name(), delta * 100.0, old_health,
-                                  this -> player -> resources.max[ RESOURCE_HEALTH ] );
-    }
+    sim -> print_debug( "{} gains Vampiric Blood: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                                  player -> name(), health_change * 100.0,
+                                  old_health, player -> resources.current[ RESOURCE_HEALTH ],
+                                  old_max_health, player -> resources.max[ RESOURCE_HEALTH ] );
   }
 
-  void expire_override( int s, timespan_t t ) override
+  void expire_override( int, timespan_t ) override
   {
-    buff_t::expire_override( s, t );
+    double old_health = player -> resources.current[ RESOURCE_HEALTH ];
+    double old_max_health = player -> resources.max[ RESOURCE_HEALTH ];
 
-    death_knight_t* p = debug_cast<death_knight_t*>( player );
+    player -> resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + health_change;
+    player -> resources.current[ RESOURCE_HEALTH ] /= 1.0 + health_change; // Update health before the maximum is reduced
+    player -> recalculate_resource_max( RESOURCE_HEALTH );
 
-    if ( delta != 0.0 )
-    {
-      double old_health = p -> resources.max[ RESOURCE_HEALTH ];
-      p -> resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + delta;
-      p -> recalculate_resource_max( RESOURCE_HEALTH );
-
-      this -> sim -> print_debug( "{} {} stacking health pct change {}%, {} -> {}",
-                                  this -> player -> name(), this -> name(), delta * 100.0, old_health,
-                                  this -> player -> resources.max[ RESOURCE_HEALTH ] );
-    }
+    sim -> print_debug( "{} loses Vampiric Blood: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                        player -> name(), health_change * 100.0,
+                        old_health, player -> resources.current[ RESOURCE_HEALTH ],
+                        old_max_health, player -> resources.max[ RESOURCE_HEALTH ] );
   }
 };
 
@@ -8050,10 +8044,8 @@ void death_knight_t::create_buffs()
         -> set_default_value( 1.0 / ( 1.0 + spell.bone_shield -> effectN( 4 ).percent() ) )
         -> set_stack_change_callback( talent.foul_bulwark -> ok() ? [ this ]( buff_t*, int old_stacks, int new_stacks )
           {
-            double old_buff = old_stacks * talent.foul_bulwark -> effectN( 1 ).percent();
-            double new_buff = new_stacks * talent.foul_bulwark -> effectN( 1 ).percent();
-            resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + old_buff;
-            resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + new_buff;
+            double health_change = talent.foul_bulwark -> effectN( 1 ).percent() * new_stacks / old_stacks;
+            resources.initial_multiplier[ RESOURCE_HEALTH ] *= health_change;
             recalculate_resource_max( RESOURCE_HEALTH );
           } : buff_stack_change_callback_t() )
         // The internal cd in spelldata is for stack loss, handled in bone_shield_handler

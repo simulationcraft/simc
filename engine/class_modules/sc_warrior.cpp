@@ -5518,24 +5518,41 @@ protected:
 
 struct rallying_cry_t : public warrior_buff_t<buff_t>
 {
-  int health_gain;
-  rallying_cry_t( warrior_t& p, const std::string& n, const spell_data_t* s )
-    : base_t( p, n, s ), health_gain( 0 )
+  double health_change;
+  rallying_cry_t( warrior_t& p, const std::string& n, const spell_data_t* s ) :
+    base_t( p, n, s ), health_change( data().effectN( 1 ).percent() )
+  { }
+
+  void start( int stacks, double value, timespan_t duration ) override
   {
+    warrior_buff_t<buff_t>::start( stacks, value, duration );
+
+    double old_health = player -> resources.current[ RESOURCE_HEALTH ];
+    double old_max_health = player -> resources.max[ RESOURCE_HEALTH ];
+
+    player -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + health_change;
+    player -> recalculate_resource_max( RESOURCE_HEALTH );
+    player -> resources.current[ RESOURCE_HEALTH ] *= 1.0 + health_change; // Update health after the maximum is increased
+
+    sim -> print_debug( "{} gains Rallying Cry: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                        player -> name(), health_change * 100.0,
+                        old_health, player -> resources.current[ RESOURCE_HEALTH ],
+                        old_max_health, player -> resources.max[ RESOURCE_HEALTH ] );
   }
 
-  bool start( int stacks, double value, double chance, timespan_t duration ) override
+  void expire_override( int, timespan_t ) override
   {
-    health_gain = static_cast<int>(
-        util::floor( warrior().resources.max[ RESOURCE_HEALTH ] * warrior().spec.rallying_cry->effectN( 1 ).percent() ) );
-    warrior().stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
-    return base_t::trigger( stacks, value, chance, duration );
-  }
+    double old_max_health = player -> resources.max[ RESOURCE_HEALTH ];
+    double old_health = player -> resources.current[ RESOURCE_HEALTH ];
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    warrior().stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
-    base_t::expire_override( expiration_stacks, remaining_duration );
+    player -> resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + health_change;
+    player -> resources.current[ RESOURCE_HEALTH ] /= 1.0 + health_change; // Update health before the maximum is reduced
+    player -> recalculate_resource_max( RESOURCE_HEALTH );
+
+    sim -> print_debug( "{} loses Rallying Cry: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                        player -> name(), health_change * 100.0,
+                        old_health, player -> resources.current[ RESOURCE_HEALTH ],
+                        old_max_health, player -> resources.max[ RESOURCE_HEALTH ] );
   }
 };
 
@@ -5543,26 +5560,45 @@ struct rallying_cry_t : public warrior_buff_t<buff_t>
 
 struct last_stand_buff_t : public warrior_buff_t<buff_t>
 {
-  int health_gain;
-  last_stand_buff_t( warrior_t& p, const std::string& n, const spell_data_t* s )
-    : base_t( p, n, s ), health_gain( 0 )
+  double health_change;
+  last_stand_buff_t( warrior_t& p, const std::string& n, const spell_data_t* s ) :
+    base_t( p, n, s ), health_change( data().effectN( 1 ).percent() )
   {
     add_invalidate( CACHE_BLOCK );
     set_cooldown( timespan_t::zero() );
   }
 
-  bool start( int stacks, double value, double chance, timespan_t duration ) override
+  void start( int stacks, double value, timespan_t duration ) override
   {
-    health_gain = static_cast<int>(
-        util::floor( warrior().resources.max[ RESOURCE_HEALTH ] * ( warrior().spec.last_stand->effectN( 1 ).percent() ) ) );
-    warrior().stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
-    return base_t::trigger( stacks, value, chance, duration );
+    warrior_buff_t<buff_t>::start( stacks, value, duration );
+
+    double old_health = player -> resources.current[ RESOURCE_HEALTH ];
+    double old_max_health = player -> resources.max[ RESOURCE_HEALTH ];
+
+    player -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + health_change;
+    player -> recalculate_resource_max( RESOURCE_HEALTH );
+    player -> resources.current[ RESOURCE_HEALTH ] *= 1.0 + health_change; // Update health after the maximum is increased
+
+    sim -> print_debug( "{} gains Last Stand: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                        player -> name(), health_change * 100.0,
+                        old_health, player -> resources.current[ RESOURCE_HEALTH ],
+                        old_max_health, player -> resources.max[ RESOURCE_HEALTH ] );
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  void expire_override( int, timespan_t ) override
   {
-    warrior().stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
-    base_t::expire_override( expiration_stacks, remaining_duration );
+    double old_max_health = player -> resources.max[ RESOURCE_HEALTH ];
+    double old_health = player -> resources.current[ RESOURCE_HEALTH ];
+
+    player -> resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + health_change;
+    // Last Stand isn't like other health buffs, the player doesn't lose health when it expires (unless it's over the cap)
+    // player -> resources.current[ RESOURCE_HEALTH ] /= 1.0 + health_change;
+    player -> recalculate_resource_max( RESOURCE_HEALTH );
+
+    sim -> print_debug( "{} loses Last Stand: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                        player -> name(), health_change * 100.0,
+                        old_health, player -> resources.current[ RESOURCE_HEALTH ],
+                        old_max_health, player -> resources.max[ RESOURCE_HEALTH ] );
   }
 };
 
