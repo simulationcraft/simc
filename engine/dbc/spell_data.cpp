@@ -256,17 +256,6 @@ void spelleffect_data_t::link( bool ptr )
   {
     ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
     ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
-    if ( ed._trigger_spell -> id() > 0 )
-    {
-      if ( ! ed._trigger_spell -> _driver )
-      {
-        ed._trigger_spell -> _driver = new std::vector<spell_data_t*>;
-      }
-      if ( range::find( *ed._trigger_spell -> _driver, ed._spell ) == ed._trigger_spell -> _driver -> end() )
-      {
-        ed._trigger_spell -> _driver -> push_back( ed._spell );
-      }
-    }
 
     if ( ed._spell -> _effects -> size() < ( ed.index() + 1 ) )
       ed._spell -> _effects -> resize( ed.index() + 1, &spelleffect_data_t::nil() );
@@ -434,6 +423,7 @@ static auto spell_data_linker(util::span<T, N> data) {
 void spell_data_t::link( bool ptr )
 {
   auto link_power = spell_data_linker( SC_DBC_GET_DATA( __spellpower_index_data, __ptr_spellpower_index_data, ptr ) );
+  auto link_driver = spell_data_linker( SC_DBC_GET_DATA( __spelldriver_index_data, __ptr_spelldriver_index_data, ptr ) );
   auto link_labels = spell_data_linker( SC_DBC_GET_DATA( __spelllabel_index_data, __ptr_spelllabel_index_data, ptr ) );
 
   for ( spell_data_t& sd : data( ptr ) )
@@ -441,6 +431,7 @@ void spell_data_t::link( bool ptr )
     sd._effects = new std::vector<const spelleffect_data_t*>;
 
     link_power( sd._power, sd._power_count );
+    link_driver( sd._driver, sd._driver_count );
     link_labels( sd._labels, sd._labels_count );
   }
 }
@@ -450,7 +441,6 @@ void spell_data_t::de_link( bool ptr )
   for ( spell_data_t& sd : data( ptr ) )
   {
     delete sd._effects;
-    delete sd._driver;
   }
 }
 
