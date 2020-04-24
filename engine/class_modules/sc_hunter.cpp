@@ -5606,7 +5606,7 @@ void hunter_t::apl_surv()
   cds -> add_action( "use_item,name=azsharas_font_of_power" );
 	
   // Essences
-  cds->add_action( "focused_azerite_beam" );
+  cds->add_action( "focused_azerite_beam,if=raid_event.adds.in>90&focus<focus.max-25|(active_enemies>1&!talent.birds_of_prey.enabled|active_enemies>2)&(buff.blur_of_talons.up&buff.blur_of_talons.remains>3*gcd|!buff.blur_of_talons.up)" );
   cds->add_action( "blood_of_the_enemy,if=buff.coordinated_assault.up" );
   cds->add_action( "purifying_blast" );
   cds->add_action( "guardian_of_azeroth" );
