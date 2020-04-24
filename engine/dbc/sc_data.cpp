@@ -664,6 +664,7 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
 
   // Drivers are set up in the parent's cloning of the trigger spell
   clone -> _driver = nullptr;
+  clone -> _driver_count = 0;
   add_spell( clone, ptr );
 
   // Clone effects
@@ -689,7 +690,7 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
     e_clone -> _spell = clone;
 
     // No trigger set up in the source effect, so processing for this effect can end here.
-    if ( e_source -> trigger() -> id() == 0 )
+    if ( e_source -> trigger() -> id() == 0 || e_source -> trigger() -> drivers().empty() )
     {
       continue;
     }
@@ -700,20 +701,19 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
     assert( e_source -> trigger() -> _driver );
 
     const auto e_source_trigger_drivers = e_source -> trigger() -> drivers();
-    if ( ! e_clone -> _trigger_spell -> _driver )
+
+    auto& e_clone_trigger_drivers = spell_driver_map_[ ptr ][ e_source -> trigger() -> id() ];
+    if ( e_clone_trigger_drivers.empty() )
     {
-      e_clone -> _trigger_spell -> _driver = new std::vector<spell_data_t*>( e_source_trigger_drivers.size(), spell_data_t::nil() );
+      auto driver_data = allocator_.create_n<const spell_data_t*>( e_source_trigger_drivers.size(), spell_data_t::nil() );
+      e_clone_trigger_drivers = { driver_data, e_source_trigger_drivers.size() };
+      e_clone -> _trigger_spell -> _driver = e_clone_trigger_drivers.data();
+      e_clone -> _trigger_spell -> _driver_count = as<uint8_t>( e_clone_trigger_drivers.size() );
     }
 
-    for ( size_t driver_idx = 0; driver_idx < e_source_trigger_drivers.size(); ++driver_idx )
-    {
-      const spell_data_t* driver = e_source_trigger_drivers[ driver_idx ];
-      if ( driver -> id() == clone -> id() )
-      {
-        e_clone -> _trigger_spell -> _driver -> at( driver_idx ) = clone;
-        break;
-      }
-    }
+    auto it = range::find( e_source_trigger_drivers, clone -> id(), &spell_data_t::id );
+    if ( it != e_source_trigger_drivers.end() )
+      e_clone_trigger_drivers[ std::distance( e_source_trigger_drivers.begin(), it ) ] = clone;
   }
 
   // Clone powers
@@ -771,25 +771,11 @@ custom_dbc_data_t::~custom_dbc_data_t()
 {
   for ( size_t i = 0; i < spells_[ 0 ].size(); ++i )
   {
-    range::for_each( *spells_[ 0 ][ i ] -> _effects, []( const spelleffect_data_t* e ) {
-      if ( e && e -> _trigger_spell -> id() > 0 )
-      {
-        delete e -> _trigger_spell -> _driver;
-        e -> _trigger_spell -> _driver = nullptr;
-      }
-    } );
     delete spells_[ 0 ][ i ] -> _effects;
   }
 
   for ( size_t i = 0; i < spells_[ 1 ].size(); ++i )
   {
-    range::for_each( *spells_[ 1 ][ i ] -> _effects, []( const spelleffect_data_t* e ) {
-      if ( e && e -> _trigger_spell -> id() > 0 )
-      {
-        delete e -> _trigger_spell -> _driver;
-        e -> _trigger_spell -> _driver = nullptr;
-      }
-    } );
     delete spells_[ 1 ][ i ] -> _effects;
   }
 }

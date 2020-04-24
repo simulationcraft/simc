@@ -442,10 +442,11 @@ struct spell_data_t
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
   const spellpower_data_t* const* _power;
-  std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s)
+  const spell_data_t* const* _driver; // The triggered spell's driver(s)
   const spelllabel_data_t* const* _labels; // Applied (known) labels to the spell
 
   uint8_t _power_count;
+  uint8_t _driver_count;
   uint8_t _labels_count;
 
   unsigned equipped_class() const
@@ -577,7 +578,7 @@ struct spell_data_t
   { return _power_count; }
 
   size_t driver_count() const
-  { return _driver ? _driver -> size() : 0; }
+  { return _driver_count; }
 
   size_t label_count() const
   { return _labels_count; }
@@ -664,9 +665,8 @@ struct spell_data_t
 
   util::span<const spell_data_t* const> drivers() const
   {
-    if ( _driver ) // explicit for gcc & msvc because of extra cv
-      return { _driver -> data(), _driver -> size() };
-    return {};
+    assert( _driver != nullptr || _driver_count == 0 );
+    return { _driver, _driver_count };
   }
 
   bool is_class( player_e c ) const;
