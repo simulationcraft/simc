@@ -42,19 +42,6 @@ util::span<const spellpower_data_t> spellpower_data_t::data( bool ptr )
   return SC_DBC_GET_DATA( __spellpower_data, __ptr_spellpower_data, ptr );
 }
 
-void spellpower_data_t::link( bool ptr )
-{
-  for ( const spellpower_data_t& pd : spellpower_data_t::data( ptr ) )
-  {
-    spell_data_t* sd = spell_data_t::find( pd._spell_id, ptr );
-
-    if ( sd -> _power == nullptr )
-      sd -> _power = new std::vector<const spellpower_data_t*>;
-
-    sd -> _power -> push_back( &pd );
-  }
-}
-
 // ==========================================================================
 // Spell Effect Data - SpellEffect.dbc
 // ==========================================================================
@@ -433,11 +420,26 @@ util::span<spell_data_t> spell_data_t::data( bool ptr )
   return SC_DBC_GET_DATA( __spell_data, __ptr_spell_data, ptr );
 }
 
+template <typename T, size_t N>
+static auto spell_data_linker(util::span<T, N> data) {
+  return [index = size_t(0), data] (T*& ptr, size_t count) mutable {
+    if ( count > 0 )
+    {
+      ptr = &data[index];
+      index += count;
+    }
+  };
+}
+
 void spell_data_t::link( bool ptr )
 {
+  auto link_power = spell_data_linker( SC_DBC_GET_DATA( __spellpower_index_data, __ptr_spellpower_index_data, ptr ) );
+
   for ( spell_data_t& sd : data( ptr ) )
   {
     sd._effects = new std::vector<const spelleffect_data_t*>;
+
+    link_power( sd._power, sd._power_count );
   }
 
   for ( const spelllabel_data_t& label : spelllabel_data_t::data( ptr ) )
@@ -457,7 +459,6 @@ void spell_data_t::de_link( bool ptr )
   for ( spell_data_t& sd : data( ptr ) )
   {
     delete sd._effects;
-    delete sd._power;
     delete sd._driver;
     delete sd._labels;
   }

@@ -18,6 +18,7 @@
 #include "specialization.hpp"
 #include "sc_enums.hpp"
 #include "util/util.hpp"
+#include "util/allocator.hpp"
 
 #include "dbc/azerite.hpp"
 #include "dbc/rand_prop_points.hpp"
@@ -133,6 +134,8 @@ namespace hotfix
     auto_dispose< std::vector<spell_data_t*> > spells_[ 2 ];
     auto_dispose< std::vector<spelleffect_data_t*> > effects_[ 2 ];
     auto_dispose< std::vector<spellpower_data_t*> > powers_[ 2 ];
+
+    util::bump_ptr_allocator_t<> allocator_;
 
     ~custom_dbc_data_t();
 

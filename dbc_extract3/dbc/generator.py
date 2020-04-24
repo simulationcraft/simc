@@ -2624,6 +2624,8 @@ class SpellDataGenerator(DataGenerator):
         # Whitelist labels separately, based on effect types, otherwise we get far too many
         included_labels = set()
 
+        spellpower_index = defaultdict(list)
+
         # Hotfix data for spells, effects, powers
         spell_hotfix_data = {}
         effect_hotfix_data = {}
@@ -2638,12 +2640,14 @@ class SpellDataGenerator(DataGenerator):
             spell = self._spellname_db[id]
             hotfix_flags = 0
             hotfix_data = []
+            power_count = 0
 
             if not spell.id and id > 0:
                 sys.stderr.write('Spell id %d not found\n') % id
                 continue
 
             for power in spell.get_links('power'):
+                power_count += 1
                 powers.add( power )
                 if power.is_hotfixed():
                     hotfix_flags |= SPELL_POWER_HOTFIX_PRESENT
@@ -2887,8 +2891,11 @@ class SpellDataGenerator(DataGenerator):
             f, hfd = category.get_hotfix_info(('dmg_class', 47))
 
             # Pad struct with empty pointers for direct access to spell effect data
-            # 47, 48, 49, 50, 51
+            # 48, 49, 50, 51
             fields += [ u'0', u'0', u'0', u'0' ]
+
+            # 52
+            fields += [ str(power_count) ]
 
             # Finally, update hotfix flags, they are located in the array of fields at position 2
             if spell._flags == -1:
@@ -3027,15 +3034,6 @@ class SpellDataGenerator(DataGenerator):
 
         self._out.write('} };\n\n')
 
-        index = 0
-        def sortf( a, b ):
-            if a.id > b.id:
-                return 1
-            elif a.id < b.id:
-                return -1
-
-            return 0
-
         powers = list(powers)
         powers.sort(key = lambda k: k.id)
 
@@ -3043,9 +3041,12 @@ class SpellDataGenerator(DataGenerator):
         self._out.write('static const std::array<spellpower_data_t, %d> __%s_data { {\n' % (
             len(powers), self.format_str( "spellpower" ) ))
 
-        for power in powers:
+        for index, power in enumerate(powers):
             hotfix_flags = 0
             hotfix_data = []
+
+            spellpower_index[power.id_parent].append(index)
+
             # 1 2 3
             fields = power.field('id', self._options.build < 25600 and 'id_spell' or 'id_parent', 'aura_id')
             f, hfd = power.get_hotfix_info(('aura_id', 2))
@@ -3103,6 +3104,18 @@ class SpellDataGenerator(DataGenerator):
         output_data = [('spell', spell_hotfix_data), ('effect', effect_hotfix_data), ('power', power_hotfix_data)]
         for type_str, hotfix_data in output_data:
             output_hotfixes(self, type_str, hotfix_data)
+
+        # Then, write out pseudo-runtime linking data
+        def output_index_data(index_data, type_name, name):
+            name = self.format_str(name)
+
+            self._out.write('static constexpr std::array<const {}*, {}> __{}_index_data {{ {{\n'.format(
+                type_name, sum(len(ids) for ids in index_data.values()), name ))
+            for _, ids in sorted(index_data.items()):
+                self._out.write('  {},\n'.format( ', '.join('&__{}_data[{}]'.format(name, id) for id in ids) ))
+            self._out.write('} };\n')
+
+        output_index_data( spellpower_index, 'spellpower_data_t', 'spellpower' )
 
         return ''
 

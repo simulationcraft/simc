@@ -646,20 +646,25 @@ static void collect_base_spells( const spell_data_t* spell, std::vector<const sp
 spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool ptr )
 {
   spell_data_t* clone = get_mutable_spell( source -> id(), ptr );
-  if ( ! clone )
-  {
-    clone = new spell_data_t( *source );
-    // TODO: Power, not overridable atm so we can use the static data, and the static data vector
-    // too.
-    clone -> _effects = new std::vector<const spelleffect_data_t*>( clone -> effect_count(), &spelleffect_data_t::nil() );
-    // Drivers are set up in the parent's cloning of the trigger spell
-    clone -> _driver = nullptr;
-    add_spell( clone, ptr );
-  }
-  else
+  if ( clone )
   {
     return clone;
   }
+
+  clone = new spell_data_t( *source );
+
+  clone -> _effects = new std::vector<const spelleffect_data_t*>( clone -> effect_count(), &spelleffect_data_t::nil() );
+
+  const spellpower_data_t** clone_power = nullptr;
+  if ( source -> power_count() > 0 )
+  {
+    clone_power = allocator_.create_n<const spellpower_data_t*>( source -> power_count(), &spellpower_data_t::nil() );
+    clone -> _power = clone_power;
+  }
+
+  // Drivers are set up in the parent's cloning of the trigger spell
+  clone -> _driver = nullptr;
+  add_spell( clone, ptr );
 
   // Clone effects
   const auto source_effects = source -> effects();
@@ -728,7 +733,7 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
       add_power( p_clone, ptr );
     }
 
-    clone -> _power -> at( i ) = p_clone;
+    clone_power[ i ] = p_clone;
   }
 
   return clone;

@@ -145,6 +145,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\sim\sim_ostream.hpp" />
 		<ClInclude Include="..\engine\sim\uptime.hpp" />
 		<ClInclude Include="..\engine\simulationcraft.hpp" />
+		<ClInclude Include="..\engine\util\allocator.hpp" />
 		<ClInclude Include="..\engine\util\cache.hpp" />
 		<ClInclude Include="..\engine\util\chrono.hpp" />
 		<ClInclude Include="..\engine\util\concurrency.hpp" />

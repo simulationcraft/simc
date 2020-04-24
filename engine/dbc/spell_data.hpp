@@ -133,7 +133,6 @@ struct spellpower_data_t
   { return dbc::find<spellpower_data_t>( id, ptr, &spellpower_data_t::_id ); }
 
   static util::span<const spellpower_data_t> data( bool ptr = false );
-  static void link( bool ptr = false );
 
   bool override_field( util::string_view field, double value );
   double get_field( util::string_view field ) const;
@@ -442,9 +441,11 @@ struct spell_data_t
 
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
-  std::vector<const spellpower_data_t*>*  _power;
+  const spellpower_data_t* const* _power;
   std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s)
   std::vector<const spelllabel_data_t*>* _labels; // Applied (known) labels to the spell
+
+  uint8_t _power_count;
 
   unsigned equipped_class() const
   { return _equipped_class; }
@@ -572,7 +573,7 @@ struct spell_data_t
   { assert( _effects ); return _effects -> size(); }
 
   size_t power_count() const
-  { return _power ? _power -> size() : 0; }
+  { return _power_count; }
 
   size_t driver_count() const
   { return _driver ? _driver -> size() : 0; }
@@ -650,9 +651,8 @@ struct spell_data_t
 
   util::span<const spellpower_data_t* const> powers() const
   {
-    if ( _power )
-      return *_power;
-    return {};
+    assert( _power != nullptr || _power_count == 0 );
+    return { _power, _power_count };
   }
 
   util::span<const spelllabel_data_t* const> labels() const

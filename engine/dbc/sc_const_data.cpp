@@ -200,14 +200,12 @@ void dbc::init()
   // runtime linking, eg. from spell_data to all its effects
   spell_data_t::link( false );
   spelleffect_data_t::link( false );
-  spellpower_data_t::link( false );
   talent_data_t::link( false );
 
   if ( SC_USE_PTR )
   {
     spell_data_t::link( true );
     spelleffect_data_t::link( true );
-    spellpower_data_t::link( true );
     talent_data_t::link( true );
   }
 
