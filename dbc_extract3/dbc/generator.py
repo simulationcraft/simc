@@ -2625,11 +2625,34 @@ class SpellDataGenerator(DataGenerator):
         included_labels = set()
 
         spellpower_index = defaultdict(list)
+        spelllabel_index = defaultdict(list)
 
         # Hotfix data for spells, effects, powers
         spell_hotfix_data = {}
         effect_hotfix_data = {}
         power_hotfix_data = {}
+
+        for id in id_keys:
+            spell = self.db('SpellName')[id]
+
+            for effect in spell._effects:
+                if effect and ids.get(id, { 'effect_list': [ False ] })['effect_list'][effect.index]:
+                    # Check if we need to grab a specific label number for the effect
+                    for sub_type, field in SpellDataGenerator._label_whitelist:
+                        if effect.sub_type == sub_type:
+                            included_labels.add(getattr(effect, field))
+
+        labels = []
+        for label_id, label_data in self.db('SpellLabel').items():
+            if label_data.label not in included_labels:
+                continue
+            if label_data.id_parent not in id_keys:
+                continue
+            labels.append(label_data)
+
+        labels.sort(key = lambda k: k.id)
+        for index, label in enumerate(labels):
+            spelllabel_index[label.id_parent].append(index)
 
         self._out.write('// %d spells, wow build level %s\n' % ( len(ids), self._options.build ))
         self._out.write('static std::array<spell_data_t, %d> __%s_data { {\n' % (
@@ -2790,11 +2813,6 @@ class SpellDataGenerator(DataGenerator):
                     if effect.is_hotfixed():
                         hotfix_flags |= SPELL_EFFECT_HOTFIX_PRESENT
 
-                    # Check if we need to grab a specific label number for the effect
-                    for sub_type, field in SpellDataGenerator._label_whitelist:
-                        if effect.sub_type == sub_type:
-                            included_labels.add(getattr(effect, field))
-
             # Add spell flags
             # 35
             fields += [ '{ %s }' % ', '.join(misc.field('flags_1', 'flags_2', 'flags_3', 'flags_4',
@@ -2894,8 +2912,9 @@ class SpellDataGenerator(DataGenerator):
             # 48, 49, 50, 51
             fields += [ u'0', u'0', u'0', u'0' ]
 
-            # 52
+            # 52, 53
             fields += [ str(power_count) ]
+            fields += [ str(len(spelllabel_index.get(id, ()))) ]
 
             # Finally, update hotfix flags, they are located in the array of fields at position 2
             if spell._flags == -1:
@@ -3078,19 +3097,6 @@ class SpellDataGenerator(DataGenerator):
 
         self._out.write('} };\n\n')
 
-        labels = []
-        for label_id, label_data in self._spelllabel_db.items():
-            if label_data.label not in included_labels:
-                continue
-
-            spell_id = self._options.build < 25600 and label_data.id_spell or label_data.id_parent
-            if spell_id not in id_keys:
-                continue
-
-            labels.append(label_data)
-
-        labels.sort(key = lambda k: k.id)
-
         self._out.write('// %d labels, wow build level %s\n' % ( len(labels), self._options.build ))
         self._out.write('static const std::array<spelllabel_data_t, %d> __%s_data { {\n' % (
             len(labels), self.format_str( 'spelllabel' ) ))
@@ -3116,6 +3122,7 @@ class SpellDataGenerator(DataGenerator):
             self._out.write('} };\n')
 
         output_index_data( spellpower_index, 'spellpower_data_t', 'spellpower' )
+        output_index_data( spelllabel_index, 'spelllabel_data_t', 'spelllabel' )
 
         return ''
 

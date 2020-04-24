@@ -434,23 +434,14 @@ static auto spell_data_linker(util::span<T, N> data) {
 void spell_data_t::link( bool ptr )
 {
   auto link_power = spell_data_linker( SC_DBC_GET_DATA( __spellpower_index_data, __ptr_spellpower_index_data, ptr ) );
+  auto link_labels = spell_data_linker( SC_DBC_GET_DATA( __spelllabel_index_data, __ptr_spelllabel_index_data, ptr ) );
 
   for ( spell_data_t& sd : data( ptr ) )
   {
     sd._effects = new std::vector<const spelleffect_data_t*>;
 
     link_power( sd._power, sd._power_count );
-  }
-
-  for ( const spelllabel_data_t& label : spelllabel_data_t::data( ptr ) )
-  {
-    auto spell = spell_data_t::find( label.id_spell(), ptr );
-    if ( spell -> _labels == nullptr )
-    {
-      spell -> _labels = new std::vector<const spelllabel_data_t*>();
-    }
-
-    spell -> _labels -> push_back( &label );
+    link_labels( sd._labels, sd._labels_count );
   }
 }
 
@@ -460,7 +451,6 @@ void spell_data_t::de_link( bool ptr )
   {
     delete sd._effects;
     delete sd._driver;
-    delete sd._labels;
   }
 }
 
