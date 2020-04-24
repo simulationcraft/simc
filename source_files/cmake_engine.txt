@@ -139,6 +139,7 @@ sim/sim_control.hpp
 sim/sim_ostream.hpp
 sim/uptime.hpp
 simulationcraft.hpp
+util/allocator.hpp
 util/cache.hpp
 util/chrono.hpp
 util/concurrency.hpp
