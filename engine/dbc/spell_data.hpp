@@ -443,9 +443,10 @@ struct spell_data_t
   std::vector<const spelleffect_data_t*>* _effects;
   const spellpower_data_t* const* _power;
   std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s)
-  std::vector<const spelllabel_data_t*>* _labels; // Applied (known) labels to the spell
+  const spelllabel_data_t* const* _labels; // Applied (known) labels to the spell
 
   uint8_t _power_count;
+  uint8_t _labels_count;
 
   unsigned equipped_class() const
   { return _equipped_class; }
@@ -579,7 +580,7 @@ struct spell_data_t
   { return _driver ? _driver -> size() : 0; }
 
   size_t label_count() const
-  { return _labels ? _labels -> size() : 0; }
+  { return _labels_count; }
 
   bool found() const
   { return ( this != not_found() ); }
@@ -657,9 +658,8 @@ struct spell_data_t
 
   util::span<const spelllabel_data_t* const> labels() const
   {
-    if ( _labels )
-      return *_labels;
-    return {};
+    assert( _labels != nullptr || _labels_count == 0 );
+    return { _labels, _labels_count };
   }
 
   util::span<const spell_data_t* const> drivers() const
