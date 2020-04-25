@@ -505,7 +505,6 @@ struct rogue_t : public player_t
     proc_t* seal_fate;
 
     // Outlaw
-    proc_t* sinister_strike_extra_attack;
     proc_t* roll_the_bones_1;
     proc_t* roll_the_bones_2;
     proc_t* roll_the_bones_3;
@@ -3651,34 +3650,47 @@ struct shuriken_toss_t : public rogue_attack_t
 struct sinister_strike_t : public rogue_attack_t
 {
   timespan_t extra_attack_delay;
+  action_t* extra_attack;
+
+  struct sinister_strike_extra_attack_t : public rogue_attack_t
+  {
+    sinister_strike_extra_attack_t( rogue_t* p ) :
+      rogue_attack_t( "sinister_strike_extra_attack", p, p -> find_spell( 197834 ) )
+    {
+      background = true;
+      
+      // CP generation is not in the spell data for some reason
+      energize_type = ENERGIZE_ON_HIT;
+      energize_amount = 1;
+      energize_resource = RESOURCE_COMBO_POINT;
+    }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      double b = rogue_attack_t::bonus_da( s );
+
+      b += p()->buffs.snake_eyes->value();
+      b += p()->azerite.keep_your_wits_about_you.value( 2 );
+
+      return b;
+    }
+
+    void execute() override
+    {
+      rogue_attack_t::execute();
+      p()->buffs.snake_eyes->decrement();
+    }
+  };
 
   sinister_strike_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "sinister_strike", p, p -> find_specialization_spell( "Sinister Strike" ), options_str ),
-    extra_attack_delay( data().duration() )
+    extra_attack_delay( timespan_t::from_millis( 300 ) ),
+    extra_attack( new sinister_strike_extra_attack_t( p ) )
   {
+    add_child( extra_attack );
   }
 
-  double cost() const override
-  {
-    if ( secondary_trigger == TRIGGER_SINISTER_STRIKE )
-      return 0;
-
-    return rogue_attack_t::cost();
-  }
-
-  double composite_energize_amount( const action_state_t* state ) const override
-  {
-    double ea = rogue_attack_t::composite_energize_amount( state );
-
-    // Do not grant CP on extra proc event
-    // This was changed back as of 2018-07-09, commenting it out in case the revert is reverted.
-    /*if ( secondary_trigger == TRIGGER_SINISTER_STRIKE )
-      return 0;*/
-
-    return ea;
-  }
-
-  double sinister_strike_proc_chance() const
+  double extra_attack_proc_chance() const
   {
     double opportunity_proc_chance = data().effectN( 3 ).percent();
     opportunity_proc_chance += p() -> talent.weaponmaster -> effectN( 1 ).percent();
@@ -3692,9 +3704,6 @@ struct sinister_strike_t : public rogue_attack_t
     double b = rogue_attack_t::bonus_da( s );
 
     b += p() -> buffs.snake_eyes -> value();
-
-    if ( secondary_trigger == TRIGGER_SINISTER_STRIKE )
-      b += p() -> azerite.keep_your_wits_about_you.value( 2 );
 
     return b;
   }
@@ -3710,13 +3719,9 @@ struct sinister_strike_t : public rogue_attack_t
 
     p() -> buffs.snake_eyes -> decrement();
 
-    if ( secondary_trigger != TRIGGER_SINISTER_STRIKE )
+    if ( p()->buffs.opportunity->trigger( 1, buff_t::DEFAULT_VALUE(), extra_attack_proc_chance() ) )
     {
-      if ( p()->buffs.opportunity->trigger( 1, buff_t::DEFAULT_VALUE(), sinister_strike_proc_chance() ) )
-      {
-        make_event<actions::secondary_ability_trigger_t>( *sim, execute_state->target, this, 0, TRIGGER_SINISTER_STRIKE, extra_attack_delay );
-        p()->procs.sinister_strike_extra_attack->occur();
-      }
+      make_event<actions::secondary_ability_trigger_t>( *sim, execute_state->target, extra_attack, 0, TRIGGER_SINISTER_STRIKE, extra_attack_delay );
     }
   }
 };
@@ -6763,11 +6768,15 @@ void rogue_t::init_spells()
 
   shadow_blades_attack = new actions::shadow_blades_attack_t( this );
 
-  if ( mastery.main_gauche -> ok() )
+  if ( mastery.main_gauche->ok() )
+  {
     active_main_gauche = new actions::main_gauche_t( this );
-
-  if ( spec.blade_flurry -> ok() )
+  }
+    
+  if ( spec.blade_flurry->ok() )
+  {
     active_blade_flurry = new actions::blade_flurry_attack_t( this );
+  }
 
   if ( talent.poison_bomb -> ok() )
   {
@@ -6820,7 +6829,6 @@ void rogue_t::init_procs()
   procs.seal_fate                    = get_proc( "Seal Fate"                    );
   procs.weaponmaster                 = get_proc( "Weaponmaster"                 );
 
-  procs.sinister_strike_extra_attack = get_proc( "Sinister Strike Extra Attack" );
   procs.roll_the_bones_1             = get_proc( "Roll the Bones: 1 buff"       );
   procs.roll_the_bones_2             = get_proc( "Roll the Bones: 2 buffs"      );
   procs.roll_the_bones_3             = get_proc( "Roll the Bones: 3 buffs"      );

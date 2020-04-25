@@ -2173,7 +2173,7 @@ double dbc_t::effect_delta( unsigned effect_id, unsigned level ) const
 
 double dbc_t::effect_delta( const spelleffect_data_t* e, unsigned level ) const
 {
-  assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
+  (void)level; assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
   if ( e -> m_delta() != 0 && e -> spell() -> scaling_class() != 0 )
   {

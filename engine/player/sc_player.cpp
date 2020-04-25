@@ -2987,7 +2987,7 @@ void player_t::init_finished()
   }
 }
 
-void player_t::action_init_finished(action_t& a)
+void player_t::action_init_finished(action_t&)
 {
   // here could be generic affected_by code
 }

@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "util/git_info.hpp"
 
 #if !defined(SC_WINDOWS)
 #include <sys/time.h>
@@ -240,6 +241,28 @@ double stat_value( const player_t* p, stat_e stat )
 
 double util::wall_time() { return wall_sw.elapsed(); }
 double util::cpu_time() { return cpu_sw.elapsed(); }
+
+std::string util::version_info_str( const dbc_t* dbc )
+{
+  if ( !dbc )
+  {
+    return {};
+  }
+
+  std::string build_info = fmt::format( "wow build {}", dbc->build_level() );
+  if ( git_info::available() )
+  {
+    build_info += fmt::format(", git build {} {}",
+        git_info::branch(), git_info::revision());
+  }
+
+#if defined( SC_NO_NETWORKING )
+  build_info += ", no-networking";
+#endif
+
+  return fmt::format( "SimulationCraft {} for World of Warcraft {} {} ({})",
+      SC_VERSION, dbc->wow_version(), dbc->wow_ptr_status(), build_info );
+}
 
 // Note, does not take into account that technically players could have different amounts of
 // melee/spell/ranged ratings for specific things. Blizzard has not used this system thus far in any

@@ -225,7 +225,7 @@ void strict_sequence_t::schedule_execute( action_state_t* state )
   assert( ( current_action == 0 && ! player -> strict_sequence ) ||
           ( current_action < sub_actions.size() && player -> strict_sequence ) );
   // Check that we're not discarding the state since we cannot give it to queue_execute.
-  assert( ! state );
+  (void)state; assert( ! state );
 
   if ( current_action == 0 )
     player -> strict_sequence = this;

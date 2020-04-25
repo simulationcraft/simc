@@ -157,7 +157,7 @@ void pet_t::summon( timespan_t summon_duration )
 
   // Add to active_pets
   auto it = range::find( owner -> active_pets, this );
-  if ( it != owner -> active_pets.end() )
+  if ( it == owner -> active_pets.end() )
     owner -> active_pets.push_back( this );
 
   summoned = true;
@@ -240,6 +240,39 @@ void pet_t::create_buffs()
     debuffs.casting = make_buff( this, "casting" )
       ->set_max_stack( 1 )
       ->set_quiet( true );
+  }
+}
+
+void pet_t::adjust_duration( const timespan_t& adjustment )
+{
+  if ( !expiration || adjustment == 0_ms )
+  {
+    return;
+  }
+
+  auto new_duration = expiration->remains() + adjustment;
+  if ( new_duration <= 0_ms )
+  {
+    sim->print_debug( "{} pet {} duration adjusted to {}, dismissing ...",
+      owner->name(), name_str, new_duration );
+    dismiss();
+  }
+  else
+  {
+    duration += adjustment;
+
+    sim->print_debug( "{} pet {} duration adjusted to {}",
+      owner->name(), name_str, new_duration );
+
+    if ( new_duration > expiration->remains() )
+    {
+      expiration->reschedule( new_duration );
+    }
+    else
+    {
+      event_t::cancel( expiration );
+      expiration = make_event<expiration_t>( *sim, *this, new_duration );
+    }
   }
 }
 

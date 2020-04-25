@@ -22,7 +22,7 @@
 
 // Forward declarations
 struct player_t;
-
+class dbc_t;
 
 /**
  * Defines various utility, string and enum <-> string translation functions.
@@ -33,6 +33,8 @@ stat_e highest_stat( const player_t* p, const std::vector<stat_e>& stat );
 
 double wall_time();
 double cpu_time();
+
+std::string version_info_str( const dbc_t* dbc );
 
 const char* attribute_type_string     ( attribute_e type );
 const char* dot_behavior_type_string  ( dot_behavior_e t );

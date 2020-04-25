@@ -53,6 +53,10 @@ namespace spells
 {
 struct stagger_self_damage_t;
 }
+namespace pet_summon
+{
+struct storm_earth_and_fire_t;
+}
 }  // namespace actions
 namespace pets
 {
@@ -882,6 +886,7 @@ public:
 
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
+  void summon_storm_earth_and_fire( const timespan_t& duration );
   void retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& targets, size_t n_targets ) const;
   void retarget_storm_earth_and_fire_pets() const;
 
@@ -1811,7 +1816,7 @@ public:
   {
     pet_t::summon( duration );
 
-    o()->buff.storm_earth_and_fire->trigger();
+    o()->buff.storm_earth_and_fire->trigger( 1, buff_t::DEFAULT_VALUE(), 1, duration );
 
     if ( o()->buff.bok_proc->up() )
       buff.bok_proc_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.bok_proc->remains() );
@@ -2978,6 +2983,22 @@ struct fury_of_xuen_spell_t : public summon_pet_t
     summoning_duration = p->passives.fury_of_xuen_haste_buff->duration();
     min_gcd            = timespan_t::zero();
   }
+
+  // Fully override this summon mechanism for now to prevent potential crashes/issues
+  // TODO: What is the proper behavior for procs during Xuen out?
+  void execute() override
+  {
+    if ( pet->is_sleeping() )
+    {
+      pet->summon( summoning_duration );
+    }
+    else
+    {
+      pet->adjust_duration( summoning_duration );
+    }
+
+    monk_spell_t::execute();
+  }
 };
 
 // ==========================================================================
@@ -3002,8 +3023,6 @@ struct niuzao_spell_t : public summon_pet_t
 // ==========================================================================
 // Storm, Earth, and Fire
 // ==========================================================================
-
-struct storm_earth_and_fire_t;
 
 struct storm_earth_and_fire_t : public monk_spell_t
 {
@@ -3058,25 +3077,6 @@ struct storm_earth_and_fire_t : public monk_spell_t
     return monk_spell_t::ready();
   }
 
-  // Normal summon that summons the pets, they seek out proper targeets
-  void normal_summon()
-  {
-    auto targets   = p()->create_storm_earth_and_fire_target_list();
-    auto n_targets = targets.size();
-
-    // Start targeting logic from "owner" always
-    p()->pet.sef[ SEF_EARTH ]->reset_targeting();
-    p()->pet.sef[ SEF_EARTH ]->target = p()->target;
-    p()->retarget_storm_earth_and_fire( p()->pet.sef[ SEF_EARTH ], targets, n_targets );
-    p()->pet.sef[ SEF_EARTH ]->summon( data().duration() );
-
-    // Start targeting logic from "owner" always
-    p()->pet.sef[ SEF_FIRE ]->reset_targeting();
-    p()->pet.sef[ SEF_FIRE ]->target = p()->target;
-    p()->retarget_storm_earth_and_fire( p()->pet.sef[ SEF_FIRE ], targets, n_targets );
-    p()->pet.sef[ SEF_FIRE ]->summon( data().duration() );
-  }
-
   // Monk used SEF while pets are up to sticky target them into an enemy
   void sticky_targeting()
   {
@@ -3107,7 +3107,7 @@ struct storm_earth_and_fire_t : public monk_spell_t
 
     if ( !p()->buff.storm_earth_and_fire->check() )
     {
-      normal_summon();
+      p()->summon_storm_earth_and_fire( data().duration() );
     }
     else
     {
@@ -5575,7 +5575,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 
     if ( d->is_ticking() )
     {
-      auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
+      debug_cast<residual_action::residual_periodic_state_t*>( d->state );
 
       auto ticks_left                   = d->ticks_left();
       auto damage_remaining_initial     = amount_remaining();
@@ -5608,7 +5608,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 
     if ( d->is_ticking() )
     {
-      auto dot_state                    = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
+      debug_cast<residual_action::residual_periodic_state_t*>( d->state );
       auto ticks_left                   = d->ticks_left();
       auto damage_remaining_initial     = amount_remaining();
       auto damage_remaining_after_clear = std::fmax( damage_remaining_initial - amount, 0 );
@@ -8504,6 +8504,26 @@ void monk_t::recalculate_resource_max( resource_e r )
   player_t::recalculate_resource_max( r );
 }
 
+// monk_t::summon_storm_earth_and_fire ================================================
+
+void monk_t::summon_storm_earth_and_fire( const timespan_t& duration )
+{
+  auto targets   = create_storm_earth_and_fire_target_list();
+  auto n_targets = targets.size();
+
+  // Start targeting logic from "owner" always
+  pet.sef[ SEF_EARTH ]->reset_targeting();
+  pet.sef[ SEF_EARTH ]->target = target;
+  retarget_storm_earth_and_fire( pet.sef[ SEF_EARTH ], targets, n_targets );
+  pet.sef[ SEF_EARTH ]->summon( duration );
+
+  // Start targeting logic from "owner" always
+  pet.sef[ SEF_FIRE ]->reset_targeting();
+  pet.sef[ SEF_FIRE ]->target = target;
+  retarget_storm_earth_and_fire( pet.sef[ SEF_FIRE ], targets, n_targets );
+  pet.sef[ SEF_FIRE ]->summon( duration );
+}
+
 // monk_t::create_storm_earth_and_fire_target_list ====================================
 
 std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
@@ -9140,18 +9160,26 @@ void monk_t::vision_of_perfection_proc()
         buff.serenity->trigger( 1, buff.serenity->default_value, -1.0, serentiy_duration );
       }
     }
-/*    else
+    else
     {
       if ( buff.storm_earth_and_fire->check() )
       {
+        sim->print_debug( "{} vision_of_perfection extending storm_earth_and_fire duration by {}",
+          name(), sef_duration );
+
         buff.storm_earth_and_fire->extend_duration( this, sef_duration );
+        range::for_each( pet.sef, [&sef_duration]( auto* pet ) {
+          pet->adjust_duration( sef_duration );
+        } );
       }
       else
       {
-        buff.storm_earth_and_fire->trigger( 1, buff.storm_earth_and_fire->default_value, -1.0, sef_duration );
+        sim->print_debug( "{} vision_of_perfection summoning storm_earth_and_fire duration for {}",
+          name(), sef_duration );
+
+        summon_storm_earth_and_fire( sef_duration );
       }
     }
-*/
   }
 }  // monk_t::pre_analyze_hook  ================================================
 
