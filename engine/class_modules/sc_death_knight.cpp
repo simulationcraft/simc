@@ -7611,6 +7611,7 @@ std::string death_knight_t::default_rune() const
 void death_knight_t::default_apl_blood()
 {
   action_priority_list_t* def      = get_action_priority_list( "default" );
+  action_priority_list_t* essences = get_action_priority_list( "essences" );
   action_priority_list_t* standard = get_action_priority_list( "standard" );
 
   // Setup precombat APL for DPS spec
