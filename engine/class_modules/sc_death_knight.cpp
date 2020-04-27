@@ -8044,8 +8044,11 @@ void death_knight_t::create_buffs()
         -> set_default_value( 1.0 / ( 1.0 + spell.bone_shield -> effectN( 4 ).percent() ) )
         -> set_stack_change_callback( talent.foul_bulwark -> ok() ? [ this ]( buff_t*, int old_stacks, int new_stacks )
           {
-            double health_change = talent.foul_bulwark -> effectN( 1 ).percent() * new_stacks / old_stacks;
+            double fb_health = talent.foul_bulwark -> effectN( 1 ).percent();
+            double health_change = ( 1.0 + new_stacks * fb_health ) / ( 1.0 + old_stacks * fb_health );
+
             resources.initial_multiplier[ RESOURCE_HEALTH ] *= health_change;
+
             recalculate_resource_max( RESOURCE_HEALTH );
           } : buff_stack_change_callback_t() )
         // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
