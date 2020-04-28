@@ -9938,7 +9938,7 @@ void monk_t::apl_combat_windwalker()
 
   cd_serenity->add_action( "the_unbound_force,if=buff.serenity.down" );
   cd_serenity->add_action( "purifying_blast,if=buff.serenity.down" );
-  cd_serenity->add_action( "reaping_flames,if=buff.serenity.down" );
+  cd_serenity->add_action( "reaping_flames,if=buff.serenity.down&(target.time_to_pct_20>30|target.health_pct<=20)|target.time_to_die<2" );
   cd_serenity->add_action( "focused_azerite_beam,if=buff.serenity.down" );
   cd_serenity->add_action( "memory_of_lucid_dreams,if=buff.serenity.down&energy<40" );
   cd_serenity->add_action( "ripple_in_space,if=buff.serenity.down" );
@@ -10043,7 +10043,7 @@ void monk_t::apl_combat_windwalker()
   // Storm, Earth and Fire Essences
   cd_sef->add_action( "the_unbound_force" );
   cd_sef->add_action( "purifying_blast" );
-  cd_sef->add_action( "reaping_flames" );
+  cd_sef->add_action( "reaping_flames", "if=target.time_to_pct_20>30|target.health_pct<=20" );
   cd_sef->add_action( "focused_azerite_beam" );
   cd_sef->add_action( "memory_of_lucid_dreams,if=energy<40" );
   cd_sef->add_action( "ripple_in_space" );
