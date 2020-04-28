@@ -7611,6 +7611,7 @@ std::string death_knight_t::default_rune() const
 void death_knight_t::default_apl_blood()
 {
   action_priority_list_t* def      = get_action_priority_list( "default" );
+  action_priority_list_t* essences = get_action_priority_list( "essences" );
   action_priority_list_t* standard = get_action_priority_list( "standard" );
 
   // Setup precombat APL for DPS spec
@@ -7632,6 +7633,8 @@ void death_knight_t::default_apl_blood()
   // On-use items
   def -> add_action( "use_items,if=cooldown.dancing_rune_weapon.remains>90" );
   def -> add_action( "use_item,name=razdunks_big_red_button" );
+  def -> add_action( "use_item,name=cyclotronic_blast,if=cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>cast_time" );
+  def -> add_action( "use_item,name=azsharas_font_of_power,if=(cooldown.dancing_rune_weapon.remains<5&target.time_to_die>15)|(target.time_to_die<34)" );
   def -> add_action( "use_item,name=merekthas_fang,if=(cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>3)&!raid_event.adds.exists|raid_event.adds.in>15" );
   def -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down" );
   def -> add_action( "use_item,name=ashvanes_razor_coral,if=target.health.pct<31&equipped.dribbling_inkpod" );
@@ -7642,10 +7645,17 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
   def -> add_action( this, "Dancing Rune Weapon", "if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready" );
   def -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
+  def -> add_action( "call_action_list,name=essences" );
   def -> add_action( "call_action_list,name=standard" );
+  
+  // Essences
+  essences -> add_action( this, "Concentraded Flame", "if=dot.concentrated_flame_burn.remains<2&!buff.dancing_rune_weapon.up" );
+  essences -> add_action( this, "Anima of Death", "if=buff.vampiric_blood.up&(raid_event.adds.exists|raid_event.adds.in>15)" );
+  essences -> add_action( this, "Memory of Lucid Dreams", "if=rune.time_to_1>gcd&runic_power<40" );
+  essences -> add_action( this, "Worldvein Resonance" );
+  essences -> add_action( this, "Ripple in Space", "if=!buff.dancing_rune_weapon.up" );
 
   // Single Target Rotation
-  standard -> add_action( this, "Concentrated Flame", "if=dot.concentrated_flame_burn.remains=0&!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
   standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20" );
