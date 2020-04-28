@@ -1723,7 +1723,7 @@ public:
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield,
                               weapon_e weapon_type )
-    : pet_t( sim, owner, name, true ),
+    : pet_t( sim, owner, name, true, true ),
       attacks( SEF_ATTACK_MAX ),
       spells( SEF_SPELL_MAX - SEF_SPELL_MIN ),
       sticky_target( false ),
