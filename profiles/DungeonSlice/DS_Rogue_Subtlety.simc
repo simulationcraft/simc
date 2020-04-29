@@ -7,7 +7,7 @@ timeofday=day
 role=attack
 position=back
 talents=2120012
-azerite_essences=5:3:1/27:3:0/6:3:0/35:3:0
+azerite_essences=35:3:1/27:3:0/6:3:0/32:3:0
 
 # Default consumables
 potion=potion_of_unbridled_fury
@@ -178,13 +178,13 @@ feet=corpuscular_leather_greaves,id=174144,bonus_id=4824/1517
 finger1=logic_loop_of_division,id=169157,bonus_id=3536/4786/1522,enchant=accord_of_mastery
 finger2=overclocking_bit_band,id=169159,bonus_id=3536/4786/1522,enchant=accord_of_mastery
 trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
-trinket2=deadeye_spyglass,id=159623,bonus_id=3536/4786/1637
+trinket2=torment_in_a_jar,id=173943,bonus_id=4824/1517
 main_hand=shard_of_the_black_empire,id=172227,bonus_id=4824/1517,enchant=deadly_navigation
 off_hand=destroyers_shadowblade,id=172185,bonus_id=4824/1517,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=477.38
-# gear_agility=10422
+# gear_ilvl=478.00
+# gear_agility=10487
 # gear_stamina=19885
 # gear_crit_rating=1399
 # gear_haste_rating=1370
