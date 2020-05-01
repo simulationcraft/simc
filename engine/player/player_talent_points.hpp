@@ -11,6 +11,7 @@
 #include <array>
 #include <vector>
 #include <functional>
+#include <string>
 
 struct spell_data_t;
 
