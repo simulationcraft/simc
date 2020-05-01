@@ -1419,8 +1419,8 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack;
 
-  death_knight_pet_t( death_knight_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true ) :
-    pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack )
+  death_knight_pet_t( death_knight_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
+    pet_t( owner -> sim, owner, name, guardian, dynamic ), use_auto_attack( auto_attack )
   {
     if ( auto_attack )
     {
@@ -1647,13 +1647,13 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
 };
 
 // ==========================================================================
-// Generic Unholy "ghoul" (Ghoul, Army ghouls)
+// Generic Unholy energy ghoul (main pet and Army/Apoc ghouls)
 // ==========================================================================
 
 struct base_ghoul_pet_t : public death_knight_pet_t
 {
-  base_ghoul_pet_t( death_knight_t* owner, const std::string& name, bool guardian = false ) :
-    death_knight_pet_t( owner, name, guardian, true )
+  base_ghoul_pet_t( death_knight_t* owner, const std::string& name, bool guardian = false, bool dynamic = true ) :
+    death_knight_pet_t( owner, name, guardian, true, dynamic )
   {
     main_hand_weapon.swing_time = 2.0_s;
   }
@@ -1688,7 +1688,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 };
 
 // ==========================================================================
-// Unholy basic ghoul pet
+// Unholy's permanent ghoul pet
 // ==========================================================================
 
 struct ghoul_pet_t : public base_ghoul_pet_t
@@ -1733,7 +1733,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   };
 
   ghoul_pet_t( death_knight_t* owner ) :
-    base_ghoul_pet_t( owner, "ghoul" , false )
+    base_ghoul_pet_t( owner, "ghoul" , false, false )
   {
     gnaw_cd = get_cooldown( "gnaw" );
     gnaw_cd -> duration = owner -> spell.pet_gnaw -> cooldown();
@@ -1784,7 +1784,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 };
 
 // ==========================================================================
-// Army of the Dead (and Apocalypse) Ghouls
+// Army of the Dead and Apocalypse ghouls
 // ==========================================================================
 
 struct army_ghoul_pet_t : public base_ghoul_pet_t
@@ -1983,7 +1983,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
 };
 
 // ==========================================================================
-// Risen Skulker (All Will Serve skelebro)
+// Risen Skulker (All Will Serve talent)
 // ==========================================================================
 
 struct risen_skulker_pet_t : public death_knight_pet_t
@@ -2002,7 +2002,8 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     }
   };
 
-  risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "risen_skulker", true, false )
+  risen_skulker_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "risen_skulker", true, false, false )
   {
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
