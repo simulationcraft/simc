@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "progress_bar.hpp"
 #include "simulationcraft.hpp"
 
 std::string progress_bar_t::format_time( double t )

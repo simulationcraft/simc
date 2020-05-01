@@ -30,6 +30,9 @@ util/fmt/ostream.h
 util/fmt/posix.h
 util/fmt/printf.h
 util/fmt/ranges.h
+sim/event_manager.hpp
+sim/event.hpp
+sim/sc_sim.hpp
 sim/x6_pantheon.hpp
 sim/sc_profileset.hpp
 sim/sc_option.hpp
@@ -76,6 +79,7 @@ util/concurrency.cpp
 util/git_info.cpp
 util/fmt/format.cpp
 util/fmt/os.cpp
+sim/event_manager.cpp
 sim/x6_pantheon.cpp
 sim/spawner.cpp
 sim/sc_sim.cpp

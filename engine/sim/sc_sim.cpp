@@ -1291,6 +1291,25 @@ struct compare_name
 
 } // UNNAMED NAMESPACE ===================================================
 
+// Standard progress method, normal mode sims use the single (first) index, single actor batch
+// sims progress with the main thread's current index.
+sim_progress_t sim_t::work_queue_t::progress( int idx )
+{
+  G l(m);
+  size_t current_index = idx;
+  if ( idx < 0 )
+  {
+    current_index = index;
+  }
+
+  if ( current_index >= _total_work.size() )
+  {
+    return sim_progress_t{ _work.back(), _projected_work.back() };
+  }
+
+  return sim_progress_t{ _work[ current_index ], _projected_work[ current_index ] };
+}
+
 // ==========================================================================
 // Simulator
 // ==========================================================================
@@ -4131,6 +4150,12 @@ void sim_t::disable_debug_seed()
   }
 }
 
+double sim_t::averaged_range( double min, double max )
+{
+  if ( average_range ) return ( min + max ) / 2.0;
+  return rng().range( min, max );
+}
+
 // Activates the relevant actors in the simulator just before simulating, based on the relevant
 // simulation mode (single vs multi actor).
 void sim_t::activate_actors()
@@ -4207,4 +4232,9 @@ bool sim_t::requires_cleanup() const
 
   // .. or finally, clean up child threads based on the "cleanup_threads" option value
   return cleanup_threads;
+}
+
+void sim_ostream_t::print_simulation_time()
+{
+  fmt::fprintf(*_raw.get_stream(), "%.3f ", sim.current_time().total_seconds());
 }

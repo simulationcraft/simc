@@ -36,6 +36,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\util\fmt\posix.h" />
 		<ClInclude Include="..\engine\util\fmt\printf.h" />
 		<ClInclude Include="..\engine\util\fmt\ranges.h" />
+		<ClInclude Include="..\engine\sim\event_manager.hpp" />
+		<ClInclude Include="..\engine\sim\event.hpp" />
+		<ClInclude Include="..\engine\sim\sc_sim.hpp" />
 		<ClInclude Include="..\engine\sim\x6_pantheon.hpp" />
 		<ClInclude Include="..\engine\sim\sc_profileset.hpp" />
 		<ClInclude Include="..\engine\sim\sc_option.hpp" />
@@ -98,6 +101,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\util\fmt\os.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\sim\event_manager.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\x6_pantheon.cpp">

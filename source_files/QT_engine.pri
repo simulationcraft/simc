@@ -33,6 +33,9 @@
  HEADERS += engine/util/fmt/posix.h
  HEADERS += engine/util/fmt/printf.h
  HEADERS += engine/util/fmt/ranges.h
+ HEADERS += engine/sim/event_manager.hpp
+ HEADERS += engine/sim/event.hpp
+ HEADERS += engine/sim/sc_sim.hpp
  HEADERS += engine/sim/x6_pantheon.hpp
  HEADERS += engine/sim/sc_profileset.hpp
  HEADERS += engine/sim/sc_option.hpp
@@ -80,6 +83,7 @@
  SOURCES += engine/util/git_info.cpp
  SOURCES += engine/util/fmt/format.cpp
  SOURCES += engine/util/fmt/os.cpp
+ SOURCES += engine/sim/event_manager.cpp
  SOURCES += engine/sim/x6_pantheon.cpp
  SOURCES += engine/sim/spawner.cpp
  SOURCES += engine/sim/sc_sim.cpp
