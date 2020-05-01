@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#pragma once
+
 #include <cstddef>
 #include <string>
 #include <iostream>
