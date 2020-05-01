@@ -18,12 +18,12 @@ event_t::event_t( sim_t& s, actor_t* a )
     canceled( false ),
     recycled( false ),
     scheduled( false )
-#if ACTOR_EVENT_BOOKKEEPING
+#ifdef ACTOR_EVENT_BOOKKEEPING
     ,
     actor( a )
 #endif
 {
-#if !ACTOR_EVENT_BOOKKEEPING
+#ifndef ACTOR_EVENT_BOOKKEEPING
   (void)a;
 #endif
 }
@@ -62,7 +62,7 @@ void event_t::cancel( event_t*& e )
   if ( !e )
     return;
 
-#if ACTOR_EVENT_BOOKKEEPING
+#ifdef ACTOR_EVENT_BOOKKEEPING
   if ( e->_sim.debug && e->actor && !e->canceled )
   {
     e->actor->event_counter--;
@@ -254,7 +254,7 @@ void event_manager_t::add_event( event_t* e, timespan_t delta_time )
   sim->print_debug( "Add Event: {} time={} reschedule={} id={}",
       e->name(), e->time, e->reschedule_time, e->id );
 
-#if ACTOR_EVENT_BOOKKEEPING
+#ifdef ACTOR_EVENT_BOOKKEEPING
   if ( sim->debug && e->actor )
   {
     e->actor->event_counter++;
@@ -283,7 +283,7 @@ bool event_manager_t::execute()
   {
     current_time = e->time;
 
-#if ACTOR_EVENT_BOOKKEEPING
+#ifdef ACTOR_EVENT_BOOKKEEPING
     if ( sim->debug && e->actor && !e->canceled )
     {
       // Perform actor event bookkeeping first
@@ -316,7 +316,7 @@ bool event_manager_t::execute()
 
       if ( monitor_cpu )
       {
-#if ACTOR_EVENT_BOOKKEEPING
+#ifdef ACTOR_EVENT_BOOKKEEPING
         stopwatch_t& sw =
             e->actor ? e->actor->event_stopwatch : event_stopwatch;
 #else

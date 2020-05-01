@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "action/sc_action.hpp"
 #include "simulationcraft.hpp"
 
 // ==========================================================================
@@ -39,7 +40,7 @@ void do_execute( action_t* action, execute_type type )
     action->player->sequence_add( action, action->target, action->sim->current_time() );
   }
   action->execute();
-  action->line_cooldown.start();
+  action->line_cooldown->start();
 
   // If the ability has a GCD, we need to start it
   action->start_gcd();
@@ -445,7 +446,7 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
     action_list(),
     starved_proc(),
     total_executions(),
-    line_cooldown( "line_cd", *p ),
+    line_cooldown( new cooldown_t("line_cd", *p) ),
     signature(),
     execute_state(),
     pre_execute_state(),
@@ -524,7 +525,7 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
   add_option( opt_string( "sync", option.sync_str ) );
   add_option( opt_bool( "wait_on_ready", option.wait_on_ready ) );
   add_option( opt_string( "target", option.target_str ) );
-  add_option( opt_timespan( "line_cd", line_cooldown.duration ) );
+  add_option( opt_timespan( "line_cd", line_cooldown->duration ) );
   add_option( opt_float( "action_skill", action_skill ) );
   // Interrupt_immediate forces a channeled action to interrupt on tick (if requested), even if the
   // GCD has not elapsed.
@@ -1018,6 +1019,9 @@ timespan_t action_t::gcd() const
   return gcd_;
 }
 
+timespan_t action_t::cooldown_duration() const
+{ return cooldown ? cooldown->duration : timespan_t::zero(); }
+
 /** False Positive skill chance, executes command regardless of expression. */
 double action_t::false_positive_pct() const
 {
@@ -1304,6 +1308,30 @@ double action_t::calculate_crit_damage_bonus( action_state_t* state ) const
   return state->result_total;
 }
 
+result_amount_type action_t::report_amount_type( const action_state_t* state ) const
+{ return state -> result_type; }
+
+double action_t::composite_target_crit_chance( player_t* target ) const
+{
+  actor_target_data_t* td = player->get_owner_or_self()->get_target_data( target );
+
+  double c = 0.0;
+
+  if ( td )
+  {
+    // Essence: Blood of the Enemy Major debuff
+    c += td->debuff.blood_of_the_enemy->stack_value();
+
+    // Consumable: Potion of Focused Resolve (TODO: Does this apply to pets as well?)
+    if ( !player->is_pet() )
+    {
+      c += td->debuff.focused_resolve->stack_value();
+    }
+  }
+
+  return c;
+}
+
 void action_t::consume_resource()
 {
   resource_e cr = current_resource();
@@ -1320,6 +1348,9 @@ void action_t::consume_resource()
 
   stats->consume_resource( current_resource(), last_resource_cost );
 }
+
+timespan_t action_t::cooldown_base_duration( const cooldown_t& cd ) const
+{ return cd.duration; }
 
 int action_t::num_targets() const
 {
@@ -2169,7 +2200,7 @@ bool action_t::action_ready()
   if ( !has_movement_directionality() )
     return false;
 
-  if ( line_cooldown.down() )
+  if ( line_cooldown->down() )
     return false;
 
   if ( sync_action && !sync_action->action_ready() )
@@ -2522,7 +2553,7 @@ void action_t::reset()
   }
   cooldown->reset_init();
   internal_cooldown->reset_init();
-  line_cooldown.reset_init();
+  line_cooldown->reset_init();
   execute_event                = nullptr;
   queue_event                  = nullptr;
   interrupt_immediate_occurred = false;
@@ -4050,6 +4081,9 @@ void action_t::add_child( action_t* child )
   }
 }
 
+void action_t::add_option( std::unique_ptr<option_t> new_option )
+{ options.insert( options.begin(), std::move(new_option) ); }
+
 bool action_t::has_movement_directionality() const
 {
   // If ability has no movement restrictions, it'll be usable
@@ -4098,6 +4132,12 @@ void action_t::reschedule_queue_event()
     queue_event = make_event<queued_action_execute_event_t>( *sim, this, new_queue_delay, type );
   }
 }
+
+rng::rng_t& action_t::rng()
+{ return sim -> rng(); }
+
+rng::rng_t& action_t::rng() const
+{ return sim -> rng(); }
 
 /**
  * Acquire a new target, where the context is the actor that sources the retarget event, and the actor-level candidate

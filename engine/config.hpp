@@ -119,4 +119,14 @@
  * */
 constexpr double m_pi = 3.14159265358979323846;
 
+// ==========================================================================
+// Simc related compilation defines
+// ==========================================================================
+
+#define SC_USE_STAT_CACHE
+
+#ifndef NDEBUG
+#define ACTOR_EVENT_BOOKKEEPING
+#endif
+
 #endif // CONFIG_H

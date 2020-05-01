@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "sc_player.hpp"
 #include <cerrno>
 #include <memory>
 
@@ -1103,7 +1104,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r )
     meta_gem( META_GEM_NONE ),
     matching_gear( false ),
     karazhan_trinkets_paired( false ),
-    item_cooldown( "item_cd", *this ),
+    item_cooldown( new cooldown_t("item_cd", *this) ),
     legendary_tank_cloak_cd( nullptr ),
     warlords_unseeing_eye( 0.0 ),
     warlords_unseeing_eye_stats(),
@@ -1229,6 +1230,9 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r )
       "# Feel free to edit, adapt and improve it to your own needs.\n"
       "# SimulationCraft is always looking for updates and improvements to the default action lists.\n";
 }
+
+// Added in source file to get full definitions of all objects to destruct here;
+player_t::~player_t() = default;
 
 player_t::base_initial_current_t::base_initial_current_t() :
   stats(),
@@ -2216,6 +2220,12 @@ bool player_t::add_action( const spell_data_t* s, std::string options, std::stri
     return true;
   }
   return false;
+}
+
+void player_t::add_option( std::unique_ptr<option_t> o )
+{
+  // Push_front so derived classes (eg. enemy_t) can override existing options
+  options.insert( options.begin(), std::move( o ) );
 }
 
 /**
@@ -3593,6 +3603,16 @@ double player_t::composite_block_dr( double extra_block ) const
         bonus_block / ( def_dr.block_factor * bonus_block * 100 * def_dr.block_vertical_stretch + def_dr.horizontal_shift );
 
   return total_block;
+}
+
+bool player_t::is_moving() const
+{
+  return buffs.movement && buffs.movement -> check();
+}
+
+bool player_t::in_gcd() const
+{ 
+  return gcd_ready > sim -> current_time(); 
 }
 
 double player_t::composite_dodge() const
@@ -5030,7 +5050,7 @@ void player_t::reset()
 
   potion_used = false;
 
-  item_cooldown.reset( false );
+  item_cooldown -> reset( false );
 
   incoming_damage.clear();
 
@@ -5614,7 +5634,7 @@ action_t* player_t::execute_action()
 
   if ( action )
   {
-    action->line_cooldown.start();
+    action->line_cooldown->start();
     action->queue_execute( execute_type::FOREGROUND );
     if ( !action->quiet )
     {
@@ -5845,6 +5865,16 @@ role_e player_t::primary_role() const
 const char* player_t::primary_tree_name() const
 {
   return dbc::specialization_string( specialization() );
+}
+
+bool player_t::has_shield_equipped() const
+{
+  return  items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD;
+}
+
+bool player_t::record_healing() const
+{ 
+  return role == ROLE_TANK || role == ROLE_HEAL || sim -> enable_dps_healing;
 }
 
 /**
@@ -8496,12 +8526,12 @@ struct use_item_t : public action_t
         }
         else
         {
-          cooldown_group = &( player->item_cooldown );
+          cooldown_group = player->item_cooldown.get();
         }
       }
       else
       {
-        cooldown_group = &( player->item_cooldown );
+        cooldown_group = player->item_cooldown.get();
         // Presumes on-use items will always have static durations. Considering the client data
         // system hardcodes the cooldown group durations in the DBC files, this is a reasonably safe
         // bet for now.
@@ -9912,6 +9942,16 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, uint32_t i
   }
 
   return spell_data_t::not_found();
+}
+
+artifact_power_t player_t::find_artifact_spell( const std::string&, bool ) const
+{
+  return {};
+}
+
+artifact_power_t player_t::find_artifact_spell( unsigned ) const
+{
+  return {};
 }
 
 azerite_power_t player_t::find_azerite_spell( unsigned id ) const
@@ -11806,6 +11846,15 @@ void player_t::check_resource_change_for_callback(resource_e resource, double pr
   check_resource_callback_deactivation();
 }
 
+rng::rng_t& player_t::rng()
+{
+  return sim -> rng();
+}
+
+rng::rng_t& player_t::rng() const
+{
+  return sim -> rng();
+}
 
 timespan_t player_t::time_to_move() const
 {
@@ -11913,544 +11962,6 @@ void player_t::do_update_movement( double yards )
   }
 }
 
-/**
- * Invalidate cache for ALL stats.
- */
-void player_stat_cache_t::invalidate_all()
-{
-  if ( !active )
-    return;
-
-  range::fill( valid, false );
-  range::fill( spell_power_valid, false );
-  range::fill( player_mult_valid, false );
-  range::fill( player_heal_mult_valid, false );
-}
-
-/**
- * Invalidate cache for a specific cache.
- */
-void player_stat_cache_t::invalidate( cache_e c )
-{
-  switch ( c )
-  {
-    case CACHE_SPELL_POWER:
-      range::fill( spell_power_valid, false );
-      break;
-    case CACHE_PLAYER_DAMAGE_MULTIPLIER:
-      range::fill( player_mult_valid, false );
-      break;
-    case CACHE_PLAYER_HEAL_MULTIPLIER:
-      range::fill( player_heal_mult_valid, false );
-      break;
-    default:
-      valid[ c ] = false;
-      break;
-  }
-}
-
-/**
- * Get access attribute cache functions by attribute-enumeration.
- */
-double player_stat_cache_t::get_attribute( attribute_e a ) const
-{
-  switch ( a )
-  {
-    case ATTR_STRENGTH:
-      return strength();
-    case ATTR_AGILITY:
-      return agility();
-    case ATTR_STAMINA:
-      return stamina();
-    case ATTR_INTELLECT:
-      return intellect();
-    case ATTR_SPIRIT:
-      return spirit();
-    default:
-      assert( false );
-      break;
-  }
-  return 0.0;
-}
-
-#if defined( SC_USE_STAT_CACHE )
-
-double player_stat_cache_t::strength() const
-{
-  if ( !active || !valid[ CACHE_STRENGTH ] )
-  {
-    valid[ CACHE_STRENGTH ] = true;
-    _strength               = player->strength();
-  }
-  else
-    assert( _strength == player->strength() );
-  return _strength;
-}
-
-double player_stat_cache_t::agility() const
-{
-  if ( !active || !valid[ CACHE_AGILITY ] )
-  {
-    valid[ CACHE_AGILITY ] = true;
-    _agility               = player->agility();
-  }
-  else
-    assert( _agility == player->agility() );
-  return _agility;
-}
-
-double player_stat_cache_t::stamina() const
-{
-  if ( !active || !valid[ CACHE_STAMINA ] )
-  {
-    valid[ CACHE_STAMINA ] = true;
-    _stamina               = player->stamina();
-  }
-  else
-    assert( _stamina == player->stamina() );
-  return _stamina;
-}
-
-double player_stat_cache_t::intellect() const
-{
-  if ( !active || !valid[ CACHE_INTELLECT ] )
-  {
-    valid[ CACHE_INTELLECT ] = true;
-    _intellect               = player->intellect();
-  }
-  else
-    assert( _intellect == player->intellect() );
-  return _intellect;
-}
-
-double player_stat_cache_t::spirit() const
-{
-  if ( !active || !valid[ CACHE_SPIRIT ] )
-  {
-    valid[ CACHE_SPIRIT ] = true;
-    _spirit               = player->spirit();
-  }
-  else
-    assert( _spirit == player->spirit() );
-  return _spirit;
-}
-
-double player_stat_cache_t::spell_power( school_e s ) const
-{
-  if ( !active || !spell_power_valid[ s ] )
-  {
-    spell_power_valid[ s ] = true;
-    _spell_power[ s ]      = player->composite_spell_power( s );
-  }
-  else
-    assert( _spell_power[ s ] == player->composite_spell_power( s ) );
-  return _spell_power[ s ];
-}
-
-double player_stat_cache_t::attack_power() const
-{
-  if ( !active || !valid[ CACHE_ATTACK_POWER ] )
-  {
-    valid[ CACHE_ATTACK_POWER ] = true;
-    _attack_power               = player->composite_melee_attack_power();
-  }
-  else
-    assert( _attack_power == player->composite_melee_attack_power() );
-  return _attack_power;
-}
-
-double player_stat_cache_t::attack_expertise() const
-{
-  if ( !active || !valid[ CACHE_ATTACK_EXP ] )
-  {
-    valid[ CACHE_ATTACK_EXP ] = true;
-    _attack_expertise         = player->composite_melee_expertise();
-  }
-  else
-    assert( _attack_expertise == player->composite_melee_expertise() );
-  return _attack_expertise;
-}
-
-double player_stat_cache_t::attack_hit() const
-{
-  if ( !active || !valid[ CACHE_ATTACK_HIT ] )
-  {
-    valid[ CACHE_ATTACK_HIT ] = true;
-    _attack_hit               = player->composite_melee_hit();
-  }
-  else
-  {
-    if ( _attack_hit != player->composite_melee_hit() )
-    {
-      assert( false );
-    }
-    // assert( _attack_hit == player -> composite_attack_hit() );
-  }
-  return _attack_hit;
-}
-
-double player_stat_cache_t::attack_crit_chance() const
-{
-  if ( !active || !valid[ CACHE_ATTACK_CRIT_CHANCE ] )
-  {
-    valid[ CACHE_ATTACK_CRIT_CHANCE ] = true;
-    _attack_crit_chance               = player->composite_melee_crit_chance();
-  }
-  else
-    assert( _attack_crit_chance == player->composite_melee_crit_chance() );
-  return _attack_crit_chance;
-}
-
-double player_stat_cache_t::attack_haste() const
-{
-  if ( !active || !valid[ CACHE_ATTACK_HASTE ] )
-  {
-    valid[ CACHE_ATTACK_HASTE ] = true;
-    _attack_haste               = player->composite_melee_haste();
-  }
-  else
-    assert( _attack_haste == player->composite_melee_haste() );
-  return _attack_haste;
-}
-
-double player_stat_cache_t::attack_speed() const
-{
-  if ( !active || !valid[ CACHE_ATTACK_SPEED ] )
-  {
-    valid[ CACHE_ATTACK_SPEED ] = true;
-    _attack_speed               = player->composite_melee_speed();
-  }
-  else
-    assert( _attack_speed == player->composite_melee_speed() );
-  return _attack_speed;
-}
-
-double player_stat_cache_t::spell_hit() const
-{
-  if ( !active || !valid[ CACHE_SPELL_HIT ] )
-  {
-    valid[ CACHE_SPELL_HIT ] = true;
-    _spell_hit               = player->composite_spell_hit();
-  }
-  else
-    assert( _spell_hit == player->composite_spell_hit() );
-  return _spell_hit;
-}
-
-double player_stat_cache_t::spell_crit_chance() const
-{
-  if ( !active || !valid[ CACHE_SPELL_CRIT_CHANCE ] )
-  {
-    valid[ CACHE_SPELL_CRIT_CHANCE ] = true;
-    _spell_crit_chance               = player->composite_spell_crit_chance();
-  }
-  else
-    assert( _spell_crit_chance == player->composite_spell_crit_chance() );
-  return _spell_crit_chance;
-}
-
-double player_stat_cache_t::rppm_haste_coeff() const
-{
-  if ( !active || !valid[ CACHE_RPPM_HASTE ] )
-  {
-    valid[ CACHE_RPPM_HASTE ] = true;
-    _rppm_haste_coeff          = 1.0 / std::min( player->cache.spell_haste(), player->cache.attack_haste() );
-  }
-  else
-  {
-    assert( _rppm_haste_coeff == 1.0 / std::min( player->cache.spell_haste(), player->cache.attack_haste() ) );
-  }
-  return _rppm_haste_coeff;
-}
-
-double player_stat_cache_t::rppm_crit_coeff() const
-{
-  if ( !active || !valid[ CACHE_RPPM_CRIT ] )
-  {
-    valid[ CACHE_RPPM_CRIT ] = true;
-    _rppm_crit_coeff          = 1.0 + std::max( player->cache.attack_crit_chance(), player->cache.spell_crit_chance() );
-  }
-  else
-  {
-    assert( _rppm_crit_coeff == 1.0 + std::max( player->cache.attack_crit_chance(), player->cache.spell_crit_chance() ) );
-  }
-  return _rppm_crit_coeff;
-}
-
-double player_stat_cache_t::spell_haste() const
-{
-  if ( !active || !valid[ CACHE_SPELL_HASTE ] )
-  {
-    valid[ CACHE_SPELL_HASTE ] = true;
-    _spell_haste               = player->composite_spell_haste();
-  }
-  else
-    assert( _spell_haste == player->composite_spell_haste() );
-  return _spell_haste;
-}
-
-double player_stat_cache_t::spell_speed() const
-{
-  if ( !active || !valid[ CACHE_SPELL_SPEED ] )
-  {
-    valid[ CACHE_SPELL_SPEED ] = true;
-    _spell_speed               = player->composite_spell_speed();
-  }
-  else
-    assert( _spell_speed == player->composite_spell_speed() );
-  return _spell_speed;
-}
-
-double player_stat_cache_t::dodge() const
-{
-  if ( !active || !valid[ CACHE_DODGE ] )
-  {
-    valid[ CACHE_DODGE ] = true;
-    _dodge               = player->composite_dodge();
-  }
-  else
-    assert( _dodge == player->composite_dodge() );
-  return _dodge;
-}
-
-double player_stat_cache_t::parry() const
-{
-  if ( !active || !valid[ CACHE_PARRY ] )
-  {
-    valid[ CACHE_PARRY ] = true;
-    _parry               = player->composite_parry();
-  }
-  else
-    assert( _parry == player->composite_parry() );
-  return _parry;
-}
-
-double player_stat_cache_t::block() const
-{
-  if ( !active || !valid[ CACHE_BLOCK ] )
-  {
-    valid[ CACHE_BLOCK ] = true;
-    _block               = player->composite_block();
-  }
-  else
-    assert( _block == player->composite_block() );
-  return _block;
-}
-
-double player_stat_cache_t::crit_block() const
-{
-  if ( !active || !valid[ CACHE_CRIT_BLOCK ] )
-  {
-    valid[ CACHE_CRIT_BLOCK ] = true;
-    _crit_block               = player->composite_crit_block();
-  }
-  else
-    assert( _crit_block == player->composite_crit_block() );
-  return _crit_block;
-}
-
-double player_stat_cache_t::crit_avoidance() const
-{
-  if ( !active || !valid[ CACHE_CRIT_AVOIDANCE ] )
-  {
-    valid[ CACHE_CRIT_AVOIDANCE ] = true;
-    _crit_avoidance               = player->composite_crit_avoidance();
-  }
-  else
-    assert( _crit_avoidance == player->composite_crit_avoidance() );
-  return _crit_avoidance;
-}
-
-double player_stat_cache_t::miss() const
-{
-  if ( !active || !valid[ CACHE_MISS ] )
-  {
-    valid[ CACHE_MISS ] = true;
-    _miss               = player->composite_miss();
-  }
-  else
-    assert( _miss == player->composite_miss() );
-  return _miss;
-}
-
-double player_stat_cache_t::armor() const
-{
-  if ( !active || !valid[ CACHE_ARMOR ] || !valid[ CACHE_BONUS_ARMOR ] )
-  {
-    valid[ CACHE_ARMOR ] = true;
-    _armor               = player->composite_armor();
-  }
-  else
-    assert( _armor == player->composite_armor() );
-  return _armor;
-}
-
-double player_stat_cache_t::mastery() const
-{
-  if ( !active || !valid[ CACHE_MASTERY ] )
-  {
-    valid[ CACHE_MASTERY ] = true;
-    _mastery               = player->composite_mastery();
-    _mastery_value         = player->composite_mastery_value();
-  }
-  else
-    assert( _mastery == player->composite_mastery() );
-  return _mastery;
-}
-
-/**
- * This is composite_mastery * specialization_mastery_coefficient !
- *
- * If you need the pure mastery value, use player_t::composite_mastery
- */
-double player_stat_cache_t::mastery_value() const
-{
-  if ( !active || !valid[ CACHE_MASTERY ] )
-  {
-    valid[ CACHE_MASTERY ] = true;
-    _mastery               = player->composite_mastery();
-    _mastery_value         = player->composite_mastery_value();
-  }
-  else
-    assert( _mastery_value == player->composite_mastery_value() );
-  return _mastery_value;
-}
-
-double player_stat_cache_t::bonus_armor() const
-{
-  if ( !active || !valid[ CACHE_BONUS_ARMOR ] )
-  {
-    valid[ CACHE_BONUS_ARMOR ] = true;
-    _bonus_armor               = player->composite_bonus_armor();
-  }
-  else
-    assert( _bonus_armor == player->composite_bonus_armor() );
-  return _bonus_armor;
-}
-
-double player_stat_cache_t::damage_versatility() const
-{
-  if ( !active || !valid[ CACHE_DAMAGE_VERSATILITY ] )
-  {
-    valid[ CACHE_DAMAGE_VERSATILITY ] = true;
-    _damage_versatility               = player->composite_damage_versatility();
-  }
-  else
-    assert( _damage_versatility == player->composite_damage_versatility() );
-  return _damage_versatility;
-}
-
-double player_stat_cache_t::heal_versatility() const
-{
-  if ( !active || !valid[ CACHE_HEAL_VERSATILITY ] )
-  {
-    valid[ CACHE_HEAL_VERSATILITY ] = true;
-    _heal_versatility               = player->composite_heal_versatility();
-  }
-  else
-    assert( _heal_versatility == player->composite_heal_versatility() );
-  return _heal_versatility;
-}
-
-double player_stat_cache_t::mitigation_versatility() const
-{
-  if ( !active || !valid[ CACHE_MITIGATION_VERSATILITY ] )
-  {
-    valid[ CACHE_MITIGATION_VERSATILITY ] = true;
-    _mitigation_versatility               = player->composite_mitigation_versatility();
-  }
-  else
-    assert( _mitigation_versatility == player->composite_mitigation_versatility() );
-  return _mitigation_versatility;
-}
-
-double player_stat_cache_t::leech() const
-{
-  if ( !active || !valid[ CACHE_LEECH ] )
-  {
-    valid[ CACHE_LEECH ] = true;
-    _leech               = player->composite_leech();
-  }
-  else
-    assert( _leech == player->composite_leech() );
-  return _leech;
-}
-
-double player_stat_cache_t::run_speed() const
-{
-  if ( !active || !valid[ CACHE_RUN_SPEED ] )
-  {
-    valid[ CACHE_RUN_SPEED ] = true;
-    _run_speed               = player->composite_movement_speed();
-  }
-  else
-    assert( _run_speed == player->composite_movement_speed() );
-  return _run_speed;
-}
-
-double player_stat_cache_t::avoidance() const
-{
-  if ( !active || !valid[ CACHE_AVOIDANCE ] )
-  {
-    valid[ CACHE_AVOIDANCE ] = true;
-    _avoidance               = player->composite_avoidance();
-  }
-  else
-    assert( _avoidance == player->composite_avoidance() );
-  return _avoidance;
-}
-
-double player_stat_cache_t::corruption() const
-{
-  if ( !active || !valid[ CACHE_CORRUPTION ] )
-  {
-    valid[ CACHE_CORRUPTION ] = true;
-    _corruption               = player->composite_corruption();
-  }
-  else
-    assert( _corruption == player->composite_corruption() );
-  return _corruption;
-}
-
-double player_stat_cache_t::corruption_resistance() const
-{
-  if ( !active || !valid[ CACHE_CORRUPTION_RESISTANCE ] )
-  {
-    valid[ CACHE_CORRUPTION_RESISTANCE ] = true;
-    _corruption_resistance               = player->composite_corruption_resistance();
-  }
-  else
-    assert( _corruption_resistance == player->composite_corruption_resistance() );
-  return _corruption_resistance;
-}
-
-double player_stat_cache_t::player_multiplier( school_e s ) const
-{
-  if ( !active || !player_mult_valid[ s ] )
-  {
-    player_mult_valid[ s ] = true;
-    _player_mult[ s ]      = player->composite_player_multiplier( s );
-  }
-  else
-    assert( _player_mult[ s ] == player->composite_player_multiplier( s ) );
-  return _player_mult[ s ];
-}
-
-double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) const
-{
-  school_e sch = s->action->get_school();
-
-  if ( !active || !player_heal_mult_valid[ sch ] )
-  {
-    player_heal_mult_valid[ sch ] = true;
-    _player_heal_mult[ sch ]      = player->composite_player_heal_multiplier( s );
-  }
-  else
-    assert( _player_heal_mult[ sch ] == player->composite_player_heal_multiplier( s ) );
-  return _player_heal_mult[ sch ];
-}
-
-#endif
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t,
                                                                          const timespan_t& ts, const player_t* p ) :
@@ -13305,6 +12816,54 @@ slot_e player_t::child_item_slot( const item_t& item ) const
   return SLOT_INVALID;
 }
 
+timespan_t player_t::cooldown_tolerance() const
+{
+  return cooldown_tolerance_ < timespan_t::zero() ? sim -> default_cooldown_tolerance : cooldown_tolerance_;
+}
+
+pet_t* player_t::cast_pet()
+{
+  return debug_cast<pet_t*>( this );
+}
+
+const pet_t* player_t::cast_pet() const
+{
+  return debug_cast<const pet_t*>( this );
+}
+
+void player_t::add_active_dot( unsigned action_id )
+{
+  if ( active_dots.size() < action_id + 1 )
+    active_dots.resize( action_id + 1 );
+
+  active_dots[ action_id ]++;
+  if ( sim -> debug )
+    sim -> out_debug.printf( "%s Increasing %s dot count to %u", name(), action_map[ action_id ].c_str(), active_dots[ action_id ] );
+}
+
+void player_t::remove_active_dot( unsigned action_id )
+{
+  assert( active_dots.size() > action_id );
+  assert( active_dots[ action_id ] > 0 );
+
+  active_dots[ action_id ]--;
+  if ( sim -> debug )
+    sim -> out_debug.printf( "%s Decreasing %s dot count to %u", name(), action_map[ action_id ].c_str(), active_dots[ action_id ] );
+}
+
+unsigned player_t::get_active_dots( unsigned action_id ) const
+{
+  if ( active_dots.size() <= action_id )
+    return 0;
+
+  return active_dots[ action_id ];
+}
+
+void player_t::adjust_dynamic_cooldowns()
+{
+  range::for_each( dynamic_cooldown_list, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } );
+}
+
 // TODO: This currently does not take minimum GCD into account, should it?
 void player_t::adjust_global_cooldown( gcd_haste_type gcd_type )
 {
@@ -13713,6 +13272,13 @@ spawner::base_actor_spawner_t* player_t::find_spawner( const std::string& id ) c
   }
 
   return nullptr;
+}
+
+int player_t::nth_iteration() const
+{
+  return creation_iteration == -1
+          ? sim -> current_iteration
+          : sim -> current_iteration - creation_iteration;
 }
 
 void action_variable_t::optimize()

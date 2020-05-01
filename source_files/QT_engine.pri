@@ -2,8 +2,10 @@
 # To change the list of source files for the simc engine lib, update this file and run synchronize.py
 
 
+ HEADERS += engine/action/sc_action.hpp
  HEADERS += engine/action/sc_action_state.hpp
  HEADERS += engine/buff/sc_buff.hpp
+ HEADERS += engine/util/plot_data.hpp
  HEADERS += engine/util/xml.hpp
  HEADERS += engine/util/timeline.hpp
  HEADERS += engine/util/stopwatch.hpp
@@ -36,10 +38,24 @@
  HEADERS += engine/sim/sc_option.hpp
  HEADERS += engine/sim/sc_expressions.hpp
  HEADERS += engine/report/sc_report.hpp
+ HEADERS += engine/player/actor.hpp
+ HEADERS += engine/player/assessor.hpp
  HEADERS += engine/player/artifact_data.hpp
  HEADERS += engine/player/azerite_data.hpp
+ HEADERS += engine/player/effect_callbacks.hpp
+ HEADERS += engine/player/gear_stats.hpp
  HEADERS += engine/player/pet_spawner.hpp
+ HEADERS += engine/player/player_collected_data.hpp
+ HEADERS += engine/player/player_processed_report_information.hpp
+ HEADERS += engine/player/player_resources.hpp
+ HEADERS += engine/player/player_stat_cache.hpp
+ HEADERS += engine/player/player_talent_points.hpp
+ HEADERS += engine/player/rating.hpp
+ HEADERS += engine/player/scaling_metric_data.hpp
+ HEADERS += engine/player/sc_player.hpp
+ HEADERS += engine/player/target_specific.hpp
  HEADERS += engine/player/unique_gear.hpp
+ HEADERS += engine/player/weapon.hpp
  HEADERS += engine/dbc/sc_spell_info.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp
@@ -57,6 +73,7 @@
  HEADERS += engine/class_modules/priest/sc_priest.hpp
  SOURCES += engine/util/xml.cpp
  SOURCES += engine/util/stopwatch.cpp
+ SOURCES += engine/player/actor.cpp
  SOURCES += engine/util/rng.cpp
  SOURCES += engine/util/io.cpp
  SOURCES += engine/util/concurrency.cpp
@@ -87,9 +104,11 @@
  SOURCES += engine/report/sc_gear_weights.cpp
  SOURCES += engine/report/sc_color.cpp
  SOURCES += engine/report/sc_chart.cpp
+ SOURCES += engine/player/player_talent_points.cpp
  SOURCES += engine/player/sc_unique_gear_x6.cpp
  SOURCES += engine/player/sc_unique_gear_x7.cpp
  SOURCES += engine/player/sc_unique_gear.cpp
+ SOURCES += engine/player/player_stat_cache.cpp
  SOURCES += engine/player/sc_set_bonus.cpp
  SOURCES += engine/player/sc_proc.cpp
  SOURCES += engine/player/sc_player.cpp

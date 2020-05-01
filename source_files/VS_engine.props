@@ -5,8 +5,10 @@ To change the list of source files, update the QT_ files and run synchronize.py
 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup>
+		<ClInclude Include="..\engine\action\sc_action.hpp" />
 		<ClInclude Include="..\engine\action\sc_action_state.hpp" />
 		<ClInclude Include="..\engine\buff\sc_buff.hpp" />
+		<ClInclude Include="..\engine\util\plot_data.hpp" />
 		<ClInclude Include="..\engine\util\xml.hpp" />
 		<ClInclude Include="..\engine\util\timeline.hpp" />
 		<ClInclude Include="..\engine\util\stopwatch.hpp" />
@@ -39,10 +41,24 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\sim\sc_option.hpp" />
 		<ClInclude Include="..\engine\sim\sc_expressions.hpp" />
 		<ClInclude Include="..\engine\report\sc_report.hpp" />
+		<ClInclude Include="..\engine\player\actor.hpp" />
+		<ClInclude Include="..\engine\player\assessor.hpp" />
 		<ClInclude Include="..\engine\player\artifact_data.hpp" />
 		<ClInclude Include="..\engine\player\azerite_data.hpp" />
+		<ClInclude Include="..\engine\player\effect_callbacks.hpp" />
+		<ClInclude Include="..\engine\player\gear_stats.hpp" />
 		<ClInclude Include="..\engine\player\pet_spawner.hpp" />
+		<ClInclude Include="..\engine\player\player_collected_data.hpp" />
+		<ClInclude Include="..\engine\player\player_processed_report_information.hpp" />
+		<ClInclude Include="..\engine\player\player_resources.hpp" />
+		<ClInclude Include="..\engine\player\player_stat_cache.hpp" />
+		<ClInclude Include="..\engine\player\player_talent_points.hpp" />
+		<ClInclude Include="..\engine\player\rating.hpp" />
+		<ClInclude Include="..\engine\player\scaling_metric_data.hpp" />
+		<ClInclude Include="..\engine\player\sc_player.hpp" />
+		<ClInclude Include="..\engine\player\target_specific.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear.hpp" />
+		<ClInclude Include="..\engine\player\weapon.hpp" />
 		<ClInclude Include="..\engine\dbc\sc_spell_info.hpp" />
 		<ClInclude Include="..\engine\dbc\specialization.hpp" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />
@@ -61,6 +77,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\util\stopwatch.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\player\actor.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\util\rng.cpp">
@@ -153,6 +172,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\report\sc_chart.cpp">
 			
 		</ClCompile>
+		<ClCompile Include="..\engine\player\player_talent_points.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_unique_gear_x6.cpp">
 			
 		</ClCompile>
@@ -161,6 +183,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_unique_gear.cpp">
 			
+		</ClCompile>
+		<ClCompile Include="..\engine\player\player_stat_cache.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_set_bonus.cpp">
 			
