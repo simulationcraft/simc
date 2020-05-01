@@ -3,7 +3,19 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "sc_buff.hpp"
+#include "player/target_specific.hpp"
+#include "sim/sc_expressions.hpp"
+#include "action/sc_action.hpp"
+#include "sim/event.hpp"
+#include "sim/sc_sim.hpp"
+#include "sim/real_ppm.hpp"
+#include "rng.hpp"
+#include "sim/sc_cooldown.hpp"
+#include "sim/sc_expressions.hpp"
+#include "dbc/item_database.hpp"
+#include "player/expansion_effects.hpp"
+#include "player/stats.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE

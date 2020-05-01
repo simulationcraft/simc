@@ -11,6 +11,7 @@ SRC += \
     util$(PATHSEP)git_info.cpp \
     util$(PATHSEP)fmt$(PATHSEP)format.cpp \
     util$(PATHSEP)fmt$(PATHSEP)os.cpp \
+    sim$(PATHSEP)artifact_power.cpp \
     sim$(PATHSEP)event_manager.cpp \
     sim$(PATHSEP)x6_pantheon.cpp \
     sim$(PATHSEP)spawner.cpp \

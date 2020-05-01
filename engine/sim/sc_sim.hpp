@@ -15,6 +15,7 @@
 #include "util/sample_data.hpp"
 #include "sc_option.hpp"
 #include "sc_profileset.hpp"
+#include "event_manager.hpp"
 #include <map>
 #include <mutex>
 

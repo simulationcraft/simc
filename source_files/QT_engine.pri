@@ -37,10 +37,12 @@
  HEADERS += engine/sim/event.hpp
  HEADERS += engine/sim/sc_sim.hpp
  HEADERS += engine/sim/x6_pantheon.hpp
+ HEADERS += engine/sim/sc_cooldown.hpp
  HEADERS += engine/sim/sc_profileset.hpp
  HEADERS += engine/sim/sc_option.hpp
  HEADERS += engine/sim/sc_expressions.hpp
  HEADERS += engine/sim/progress_bar.hpp
+ HEADERS += engine/sim/real_ppm.hpp
  HEADERS += engine/report/sc_report.hpp
  HEADERS += engine/player/actor.hpp
  HEADERS += engine/player/assessor.hpp
@@ -60,6 +62,7 @@
  HEADERS += engine/player/target_specific.hpp
  HEADERS += engine/player/unique_gear.hpp
  HEADERS += engine/player/weapon.hpp
+ HEADERS += engine/dbc/item_database.hpp
  HEADERS += engine/dbc/sc_spell_info.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp
@@ -84,6 +87,7 @@
  SOURCES += engine/util/git_info.cpp
  SOURCES += engine/util/fmt/format.cpp
  SOURCES += engine/util/fmt/os.cpp
+ SOURCES += engine/sim/artifact_power.cpp
  SOURCES += engine/sim/event_manager.cpp
  SOURCES += engine/sim/x6_pantheon.cpp
  SOURCES += engine/sim/spawner.cpp

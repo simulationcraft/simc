@@ -170,10 +170,6 @@ namespace highchart {
 #include "util/stopwatch.hpp"
 #include "sim/sc_option.hpp"
 
-// Data Access ==============================================================
-const int MAX_LEVEL = 120;
-const int MAX_SCALING_LEVEL = 120;
-const int MAX_ILEVEL = 1300;
 
 // Include DBC Module
 #include "dbc/dbc.hpp"
@@ -185,62 +181,7 @@ const int MAX_ILEVEL = 1300;
 
 #include "report/sc_report.hpp"
 
-struct artifact_power_t
-{
-  artifact_power_t(unsigned rank, const spell_data_t* spell, const artifact_power_data_t* power,
-      const artifact_power_rank_t* rank_data) :
-      rank_( rank ), spell_( spell ), rank_data_( rank_data ), power_( power )
-  { }
-
-  artifact_power_t() :
-    artifact_power_t(0, spell_data_t::not_found(), artifact_power_data_t::nil(), artifact_power_rank_t::nil() )
-  { }
-
-  unsigned rank_;
-  const spell_data_t* spell_;
-  const artifact_power_rank_t* rank_data_;
-  const artifact_power_data_t* power_;
-
-  operator const spell_data_t*() const
-  { return spell_; }
-
-  const artifact_power_data_t* power() const
-  { return power_; }
-
-  double value( size_t idx = 1 ) const
-  {
-    if ( ( rank() == 1 && rank_data_ -> value() == 0.0 ) || rank_data_ -> value() == 0.0 )
-    {
-      return spell_ -> effectN( idx ).base_value();
-    }
-    else
-    {
-      return rank_data_ -> value();
-    }
-  }
-
-  timespan_t time_value( size_t idx = 1 ) const
-  {
-    if ( rank() == 1 )
-    {
-      return spell_ -> effectN( idx ).time_value();
-    }
-    else
-    {
-      return timespan_t::from_millis( rank_data_ -> value() );
-    }
-  }
-
-  double percent( size_t idx = 1 ) const
-  { return value( idx ) * .01; }
-
-  const spell_data_t& data() const
-  { return *spell_; }
-
-  unsigned rank() const
-  { return rank_; }
-};
-
+#include "sim/artifact_power.hpp"
 
 /* Luxurious sample data container with automatic merge/analyze,
  * intended to be used in class modules for custom reporting.
@@ -1413,101 +1354,7 @@ struct set_bonus_t
 
 std::ostream& operator<<(std::ostream&, const set_bonus_t&);
 
-// "Real" 'Procs per Minute' helper class =====================================
-
-struct real_ppm_t
-{
-  enum blp : int
-  {
-    BLP_DISABLED = 0,
-    BLP_ENABLED
-  };
-
-private:
-  player_t*    player;
-  std::string  name_str;
-  double       freq;
-  double       modifier;
-  double       rppm;
-  timespan_t   last_trigger_attempt;
-  timespan_t   last_successful_trigger;
-  unsigned     scales_with;
-  blp          blp_state;
-
-  real_ppm_t() : player( nullptr ), freq( 0 ), modifier( 0 ), rppm( 0 ), scales_with( 0 ),
-    blp_state( BLP_ENABLED )
-  { }
-
-  static double max_interval() { return 3.5; }
-  static double max_bad_luck_prot() { return 1000.0; }
-public:
-  static double proc_chance( player_t*         player,
-                             double            PPM,
-                             const timespan_t& last_trigger,
-                             const timespan_t& last_successful_proc,
-                             unsigned          scales_with,
-                             blp               blp_state );
-
-  real_ppm_t( const std::string& name, player_t* p, double frequency = 0, double mod = 1.0, unsigned s = RPPM_NONE, blp b = BLP_ENABLED ) :
-    player( p ),
-    name_str( name ),
-    freq( frequency ),
-    modifier( mod ),
-    rppm( freq * mod ),
-    last_trigger_attempt( timespan_t::zero() ),
-    last_successful_trigger( timespan_t::zero() ),
-    scales_with( s ),
-    blp_state( b )
-  { }
-
-  real_ppm_t( const std::string& name, player_t* p, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
-
-  void set_scaling( unsigned s )
-  { scales_with = s; }
-
-  void set_modifier( double mod )
-  { modifier = mod; rppm = freq * modifier; }
-
-  const std::string& name() const
-  { return name_str; }
-
-  void set_frequency( double frequency )
-  { freq = frequency; rppm = freq * modifier; }
-
-  void set_blp_state( blp state )
-  { blp_state = state; }
-
-  unsigned get_scaling() const
-  {
-    return scales_with;
-  }
-
-  double get_frequency() const
-  { return freq; }
-
-  double get_modifier() const
-  { return modifier; }
-
-  double get_rppm() const
-  { return rppm; }
-
-  blp get_blp_state() const
-  { return blp_state; }
-
-  void set_last_trigger_attempt( const timespan_t& ts )
-  { last_trigger_attempt = ts; }
-
-  void set_last_trigger_success( const timespan_t& ts )
-  { last_successful_trigger = ts; }
-
-  void reset()
-  {
-    last_trigger_attempt = timespan_t::zero();
-    last_successful_trigger = timespan_t::zero();
-  }
-
-  bool trigger();
-};
+#include "sim/real_ppm.hpp"
 
 // "Deck of Cards" randomizer helper class ====================================
 // Described at https://www.reddit.com/r/wow/comments/6j2wwk/wow_class_design_ama_june_2017/djb8z68/
@@ -1575,98 +1422,7 @@ public:
   bool trigger();
 };
 
-// Cooldown =================================================================
-
-struct cooldown_t
-{
-  sim_t& sim;
-  player_t* player;
-  std::string name_str;
-  timespan_t duration;
-  timespan_t ready;
-  timespan_t reset_react;
-  int charges;
-  event_t* recharge_event;
-  event_t* ready_trigger_event;
-  timespan_t last_start, last_charged;
-  bool hasted; // Hasted cooldowns will reschedule based on haste state changing (through buffs). TODO: Separate hastes?
-  action_t* action; // Dynamic cooldowns will need to know what action triggered the cd
-
-  // Associated execution types amongst all the actions shared by this cooldown. Bitmasks based on
-  // the execute_type enum class
-  unsigned execute_types_mask;
-
-  // State of the current cooldown progression. Only updated for ongoing cooldowns.
-  int current_charge;
-  double recharge_multiplier;
-  timespan_t base_duration;
-
-  cooldown_t( const std::string& name, player_t& );
-  cooldown_t( const std::string& name, sim_t& );
-
-  // Adjust the CD. If "requires_reaction" is true (or not provided), then the CD change is something
-  // the user would react to rather than plan ahead for.
-  void adjust( timespan_t, bool requires_reaction = true );
-  void adjust_recharge_multiplier(); // Reacquire cooldown recharge multiplier from the action to adjust the cooldown time
-  void adjust_base_duration(); // Reacquire base cooldown duration from the action to adjust the cooldown time
-  // Instantly recharge a cooldown. For multicharge cooldowns, charges_ specifies how many charges to reset.
-  // If less than zero, all charges are reset.
-  void reset( bool require_reaction, int charges_ = 1 );
-  void start( action_t* action, timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
-  void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
-
-  void reset_init();
-
-  timespan_t remains() const
-  { return std::max( timespan_t::zero(), ready - sim.current_time() ); }
-
-  timespan_t current_charge_remains() const
-  { return recharge_event ? recharge_event -> remains() : timespan_t::zero(); }
-
-  // Return true if the cooldown is ready (has at least one charge).
-  bool up() const
-  { return ready <= sim.current_time(); }
-
-  // Return true if the cooldown is not ready (has zero charges).
-  bool down() const
-  { return ready > sim.current_time(); }
-
-  // Return true if the cooldown is in progress.
-  bool ongoing() const
-  { return down() || recharge_event; }
-
-  // Return true if the action bound to this cooldown is ready. Cooldowns are ready either when
-  // their cooldown has elapsed, or a short while before its cooldown is finished. The latter case
-  // is in use when the cooldown is associated with a foreground action (i.e., a player button
-  // press) to model in-game behavior of queueing soon-to-be-ready abilities. Inlined below.
-  bool is_ready() const;
-
-  // Return the queueing delay for cooldowns that are queueable
-  timespan_t queue_delay() const
-  { return std::max( timespan_t::zero(), ready - sim.current_time() ); }
-
-  // Point in time when the cooldown is queueable
-  timespan_t queueable() const;
-
-  // Trigger update of specialized execute thresholds for this cooldown
-  void update_ready_thresholds();
-
-  const char* name() const
-  { return name_str.c_str(); }
-
-  std::unique_ptr<expr_t> create_expression( const std::string& name_str );
-
-  void add_execute_type( execute_type e )
-  { execute_types_mask |= ( 1 << static_cast<unsigned>( e ) ); }
-
-  static timespan_t ready_init()
-  { return timespan_t::from_seconds( -60 * 60 ); }
-
-  static timespan_t cooldown_duration( const cooldown_t* cd );
-
-private:
-  void adjust_remaining_duration( double delta ); // Modify the remaining duration of an ongoing cooldown.
-};
+#include "sim/sc_cooldown.hpp"
 
 #include "player/player_stat_cache.hpp"
 
@@ -1933,125 +1689,9 @@ public:
   void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr ) override;
 };
 
+#include "sim/gain.hpp"
 
-// Gain =====================================================================
-
-struct gain_t : private noncopyable
-{
-public:
-  std::array<double, RESOURCE_MAX> actual, overflow, count;
-  const std::string name_str;
-
-  gain_t( const std::string& n ) :
-    actual(),
-    overflow(),
-    count(),
-    name_str( n )
-  { }
-  void add( resource_e rt, double amount, double overflow_ = 0.0 )
-  { actual[ rt ] += amount; overflow[ rt ] += overflow_; count[ rt ]++; }
-  void merge( const gain_t& other )
-  {
-    for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-    { actual[ i ] += other.actual[ i ]; overflow[ i ] += other.overflow[ i ]; count[ i ] += other.count[ i ]; }
-  }
-  void analyze( size_t iterations )
-  {
-    for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-    { actual[ i ] /= iterations; overflow[ i ] /= iterations; count[ i ] /= iterations; }
-  }
-  const char* name() const { return name_str.c_str(); }
-};
-
-// Stats ====================================================================
-
-struct stats_t : private noncopyable
-{
-private:
-  sim_t& sim;
-public:
-  const std::string name_str;
-  player_t* player;
-  stats_t* parent;
-  // We should make school and type const or const-like, and either stricly define when, where and who defines the values,
-  // or make sure that it is equal to the value of all it's actions.
-  school_e school;
-  stats_e type;
-
-  std::vector<action_t*> action_list;
-  gain_t resource_gain;
-  // Flags
-  bool analyzed;
-  bool quiet;
-  bool background;
-
-  simple_sample_data_t num_executes, num_ticks, num_refreshes, num_direct_results, num_tick_results;
-  unsigned int iteration_num_executes, iteration_num_ticks, iteration_num_refreshes;
-  // Variables used both during combat and for reporting
-  simple_sample_data_t total_execute_time, total_tick_time;
-  timespan_t iteration_total_execute_time, iteration_total_tick_time;
-  double portion_amount;
-  simple_sample_data_t total_intervals;
-  timespan_t last_execute;
-  extended_sample_data_t actual_amount, total_amount, portion_aps, portion_apse;
-  std::vector<stats_t*> children;
-
-  struct stats_results_t
-  {
-  public:
-    simple_sample_data_with_min_max_t actual_amount, avg_actual_amount, count;
-    simple_sample_data_t total_amount, fight_actual_amount, fight_total_amount, overkill_pct;
-    double pct;
-  private:
-    int iteration_count;
-    double iteration_actual_amount, iteration_total_amount;
-    friend struct stats_t;
-  public:
-
-    stats_results_t();
-    void analyze( double num_results );
-    void merge( const stats_results_t& other );
-    void datacollection_begin();
-    void datacollection_end();
-  };
-  std::array<stats_results_t,FULLTYPE_MAX> direct_results;
-  std::array<stats_results_t,RESULT_MAX> tick_results;
-
-  // Reporting only
-  std::array<double, RESOURCE_MAX> resource_portion, apr, rpe;
-  double rpe_sum, compound_amount, overkill_pct;
-  double aps, ape, apet, etpe, ttpt;
-  timespan_t total_time;
-  std::string aps_distribution_chart;
-
-  std::string timeline_aps_chart;
-
-  struct stats_scaling_t {
-    gear_stats_t value;
-    gear_stats_t error;
-  };
-  std::unique_ptr<stats_scaling_t> scaling;
-  std::unique_ptr<sc_timeline_t> timeline_amount;
-
-  stats_t( const std::string& name, player_t* );
-
-  void add_child( stats_t* child );
-  void consume_resource( resource_e resource_type, double resource_amount );
-  full_result_e translate_result( result_e result, block_result_e block_result );
-  void add_result( double act_amount, double tot_amount, result_amount_type dmg_type, result_e result, block_result_e block_result, player_t* target );
-  void add_execute( timespan_t time, player_t* target );
-  void add_tick   ( timespan_t time, player_t* target );
-  void add_refresh( player_t* target );
-  void datacollection_begin();
-  void datacollection_end();
-  void reset();
-  void analyze();
-  void merge( const stats_t& other );
-  const char* name() const { return name_str.c_str(); }
-
-  bool has_direct_amount_results() const;
-  bool has_tick_amount_results() const;
-};
+#include "player/stats.hpp"
 
 #include "action/sc_action.hpp"
 // Attack ===================================================================
@@ -2984,72 +2624,7 @@ struct travel_event_t : public event_t
   { return "Stateless Action Travel"; }
 };
 
-// Item database ============================================================
-
-namespace item_database
-{
-bool     download_item(      item_t& item );
-bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
-
-int      random_suffix_type( item_t& item );
-int      random_suffix_type( const item_data_t* );
-uint32_t armor_value(        const item_t& item );
-uint32_t armor_value(        const item_data_t*, const dbc_t&, unsigned item_level = 0 );
-// Uses weapon's own (upgraded) ilevel to calculate the damage
-uint32_t weapon_dmg_min(     item_t& item );
-// Allows custom ilevel to be specified
-uint32_t weapon_dmg_min(     const item_data_t*, const dbc_t&, unsigned item_level = 0 );
-uint32_t weapon_dmg_max(     item_t& item );
-uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t&, unsigned item_level = 0 );
-
-bool     load_item_from_data( item_t& item );
-
-// Parse anything relating to the use of ItemSpellEnchantment.dbc. This includes
-// enchants, and engineering addons.
-bool     parse_item_spell_enchant( item_t& item, std::vector<stat_pair_t>& stats, special_effect_t& effect, unsigned enchant_id );
-
-std::string stat_to_str( int stat, int stat_amount );
-
-// Stat scaling methods for items, or item stats
-double approx_scale_coefficient( unsigned current_ilevel, unsigned new_ilevel );
-int scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel );
-
-stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
-stat_pair_t item_enchantment_effect_stats( player_t* player, const item_enchantment_data_t& enchantment, int index );
-double item_budget( const item_t* item, unsigned max_ilevel );
-double item_budget( const player_t* player, unsigned ilevel );
-
-inline bool heroic( unsigned f ) { return ( f & RAID_TYPE_HEROIC ) == RAID_TYPE_HEROIC; }
-inline bool lfr( unsigned f ) { return ( f & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
-inline bool warforged( unsigned f ) { return ( f & RAID_TYPE_WARFORGED ) == RAID_TYPE_WARFORGED; }
-inline bool mythic( unsigned f ) { return ( f & RAID_TYPE_MYTHIC ) == RAID_TYPE_MYTHIC; }
-
-bool apply_item_bonus( item_t& item, const item_bonus_entry_t& entry );
-
-double curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value );
-void apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level );
-double apply_combat_rating_multiplier( const item_t& item, double amount );
-double apply_combat_rating_multiplier( const player_t* player, combat_rating_multiplier_type type, unsigned ilevel, double amount );
-double apply_stamina_multiplier( const item_t& item, double amount );
-double apply_stamina_multiplier( const player_t* player, combat_rating_multiplier_type type, unsigned ilevel, double amount );
-
-/// Convert stat values to stat allocation values based on the item data
-void convert_stat_values( item_t& item );
-
-// Return the combat rating multiplier category for item data
-combat_rating_multiplier_type item_combat_rating_type( const item_data_t* data );
-
-struct token_t
-{
-  std::string full;
-  std::string name;
-  double value;
-  std::string value_str;
-};
-std::vector<token_t> parse_tokens( const std::string& encoded_str );
-
-bool has_item_bonus_type( const item_t& item, item_bonus_type bonus_type );
-}
+#include "dbc/item_database.hpp"
 
 // Procs ====================================================================
 
@@ -3925,27 +3500,7 @@ void trigger( action_t* residual_action, player_t* t, double amount );
 
 }  // namespace residual_action
 
-// Expansion specific methods and helpers
-namespace expansion
-{
-// Legion (WoW 7.0)
-namespace legion
-{
-} // namespace legion
-
-namespace bfa
-{
-// All Leyshocks-related functionality defined in sc_unique_gear_x7.cpp
-
-// Register a simple spell id -> stat buff type mapping
-void register_leyshocks_trigger( unsigned spell_id, stat_e stat_buff );
-
-// Trigger based on a spell id on a predetermined mappings on an actor
-void trigger_leyshocks_grand_compilation( unsigned spell_id, player_t* actor );
-// Bypass spell mapping to trigger any of the buffs required on an actor
-void trigger_leyshocks_grand_compilation( stat_e buff, player_t* actor );
-}
-} // namespace expansion
+#include "player/expansion_effects.hpp"
 
 // Inlines ==================================================================
 

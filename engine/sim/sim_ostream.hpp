@@ -6,6 +6,10 @@
 #pragma once
 
 #include "config.hpp"
+#include "fmt/core.h"
+#include "fmt/printf.h"
+
+struct sim_t;
 
 /* Unformatted SimC output class.
  */

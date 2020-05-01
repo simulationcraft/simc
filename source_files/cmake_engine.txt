@@ -34,10 +34,12 @@ sim/event_manager.hpp
 sim/event.hpp
 sim/sc_sim.hpp
 sim/x6_pantheon.hpp
+sim/sc_cooldown.hpp
 sim/sc_profileset.hpp
 sim/sc_option.hpp
 sim/sc_expressions.hpp
 sim/progress_bar.hpp
+sim/real_ppm.hpp
 report/sc_report.hpp
 player/actor.hpp
 player/assessor.hpp
@@ -57,6 +59,7 @@ player/sc_player.hpp
 player/target_specific.hpp
 player/unique_gear.hpp
 player/weapon.hpp
+dbc/item_database.hpp
 dbc/sc_spell_info.hpp
 dbc/specialization.hpp
 dbc/dbc.hpp
@@ -80,6 +83,7 @@ util/concurrency.cpp
 util/git_info.cpp
 util/fmt/format.cpp
 util/fmt/os.cpp
+sim/artifact_power.cpp
 sim/event_manager.cpp
 sim/x6_pantheon.cpp
 sim/spawner.cpp
