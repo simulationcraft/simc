@@ -37,6 +37,7 @@ sim/x6_pantheon.hpp
 sim/sc_profileset.hpp
 sim/sc_option.hpp
 sim/sc_expressions.hpp
+sim/progress_bar.hpp
 report/sc_report.hpp
 player/actor.hpp
 player/assessor.hpp

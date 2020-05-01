@@ -43,6 +43,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\sim\sc_profileset.hpp" />
 		<ClInclude Include="..\engine\sim\sc_option.hpp" />
 		<ClInclude Include="..\engine\sim\sc_expressions.hpp" />
+		<ClInclude Include="..\engine\sim\progress_bar.hpp" />
 		<ClInclude Include="..\engine\report\sc_report.hpp" />
 		<ClInclude Include="..\engine\player\actor.hpp" />
 		<ClInclude Include="..\engine\player\assessor.hpp" />

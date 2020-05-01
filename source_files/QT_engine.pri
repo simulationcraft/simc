@@ -40,6 +40,7 @@
  HEADERS += engine/sim/sc_profileset.hpp
  HEADERS += engine/sim/sc_option.hpp
  HEADERS += engine/sim/sc_expressions.hpp
+ HEADERS += engine/sim/progress_bar.hpp
  HEADERS += engine/report/sc_report.hpp
  HEADERS += engine/player/actor.hpp
  HEADERS += engine/player/assessor.hpp
