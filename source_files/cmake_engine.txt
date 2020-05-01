@@ -1,4 +1,5 @@
 set(source_files
+action/sc_action_state.hpp
 buff/sc_buff.hpp
 util/xml.hpp
 util/timeline.hpp

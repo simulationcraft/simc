@@ -2,6 +2,7 @@
 # To change the list of source files for the simc engine lib, update this file and run synchronize.py
 
 
+ HEADERS += engine/action/sc_action_state.hpp
  HEADERS += engine/buff/sc_buff.hpp
  HEADERS += engine/util/xml.hpp
  HEADERS += engine/util/timeline.hpp

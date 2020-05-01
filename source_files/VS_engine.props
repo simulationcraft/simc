@@ -5,6 +5,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup>
+		<ClInclude Include="..\engine\action\sc_action_state.hpp" />
 		<ClInclude Include="..\engine\buff\sc_buff.hpp" />
 		<ClInclude Include="..\engine\util\xml.hpp" />
 		<ClInclude Include="..\engine\util\timeline.hpp" />
