@@ -14,11 +14,8 @@
 #   removed except for the following files and directories (including
 #   their files)
 #   - ./simc
-#   - ./.git/
-#   - ./profiles/
+#   - ./profiles/*
 #
-#   To remove image size further clone with a depth of 1
-#   git clone --depth 1 https://github.com/simulationcraft/simc.git SimulationCraft
 
 # base image
 FROM alpine:latest AS build
@@ -44,16 +41,12 @@ RUN apk --no-cache add --virtual build_dependencies \
 FROM alpine:latest
 
 RUN apk --no-cache add --virtual build_dependencies \
-    g++ \
-    libcurl
-    # git \
-    # curl-dev \
-    # \
-    # make
+    libcurl \
+    libgcc \
+    libstdc++
 
 # get compiled simc and profiles
 COPY --from=build /app/SimulationCraft/engine/simc /app/SimulationCraft/
 COPY --from=build /app/SimulationCraft/profiles/ /app/SimulationCraft/profiles/
-COPY --from=build /app/SimulationCraft/.git/ /app/SimulationCraft/.git/
 
 WORKDIR /app/SimulationCraft
