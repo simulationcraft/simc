@@ -236,11 +236,11 @@ $(MODULE): $(SRC_OBJ)
 	@$(CXX) $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
-	-@echo [$(MODULE)] Compiling $(notdir $<)
+	-@echo [$(MODULE)] Compiling $<
 	@$(CXX) $(CPP_FLAGS) $(OPTS_INTERNAL) $(OPTS) -c $< -o $@
 
 %.s: %.cpp $(SRC_H)
-	-@echo [$(MODULE)] Compiling $(notdir $<)
+	-@echo [$(MODULE)] Compiling $<
 	$(CXX) $(CPP_FLAGS) $(OPTS_INTERNAL) $(OPTS) -S $< -o $@
 
 # Force regeneration of git_info.o on every recompilation to potntially get the
