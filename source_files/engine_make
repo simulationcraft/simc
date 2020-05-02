@@ -28,6 +28,7 @@ SRC += \
     sim$(PATHSEP)sc_event.cpp \
     sim$(PATHSEP)sc_core_sim.cpp \
     sim$(PATHSEP)sc_cooldown.cpp \
+    sim$(PATHSEP)real_ppm.cpp \
     report$(PATHSEP)sc_report_text.cpp \
     report$(PATHSEP)sc_report_json.cpp \
     report$(PATHSEP)sc_report_html_sim.cpp \

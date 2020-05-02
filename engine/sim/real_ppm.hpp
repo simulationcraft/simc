@@ -6,7 +6,10 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "sc_timespan.hpp"
+#include "dbc/dbc.hpp"
+
 #include <string>
 
 struct player_t;
