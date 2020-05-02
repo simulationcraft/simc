@@ -105,7 +105,6 @@ sim/sc_option.cpp
 sim/sc_gear_stats.cpp
 sim/sc_expressions.cpp
 sim/sc_event.cpp
-sim/sc_core_sim.cpp
 sim/sc_cooldown.cpp
 player/actor.cpp
 report/sc_report_text.cpp

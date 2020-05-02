@@ -26,7 +26,6 @@ SRC += \
     sim$(PATHSEP)sc_gear_stats.cpp \
     sim$(PATHSEP)sc_expressions.cpp \
     sim$(PATHSEP)sc_event.cpp \
-    sim$(PATHSEP)sc_core_sim.cpp \
     sim$(PATHSEP)sc_cooldown.cpp \
     player$(PATHSEP)actor.cpp \
     report$(PATHSEP)sc_report_text.cpp \

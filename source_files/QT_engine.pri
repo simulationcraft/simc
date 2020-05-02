@@ -109,7 +109,6 @@
  SOURCES += engine/sim/sc_gear_stats.cpp
  SOURCES += engine/sim/sc_expressions.cpp
  SOURCES += engine/sim/sc_event.cpp
- SOURCES += engine/sim/sc_core_sim.cpp
  SOURCES += engine/sim/sc_cooldown.cpp
  SOURCES += engine/player/actor.cpp
  SOURCES += engine/report/sc_report_text.cpp
