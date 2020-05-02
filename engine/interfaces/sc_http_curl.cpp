@@ -294,7 +294,7 @@ curl_connection_pool_t::curl_connection_pool_t() : http_connection_pool_t(), m_h
     throw std::runtime_error( fmt::format( "Unable to initialize libcurl: {}",
       curl_easy_strerror( ret ) ) );
   }
-};
+}
 
 curl_connection_pool_t::~curl_connection_pool_t()
 {

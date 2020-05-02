@@ -406,7 +406,7 @@ std::tuple<std::string, std::string> http::normalize_header( const std::string& 
     value.erase( value.begin() );
   }
 
-  return {key, value};
+  return std::make_tuple( key, value );
 }
 
 
