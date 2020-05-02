@@ -116,6 +116,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\sim\x6_pantheon.cpp">
 			
 		</ClCompile>
+		<ClCompile Include="..\engine\sim\real_ppm.cpp">
+			
+		</ClCompile>
 		<ClCompile Include="..\engine\sim\spawner.cpp">
 			
 		</ClCompile>

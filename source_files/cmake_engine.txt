@@ -86,6 +86,7 @@ util/fmt/os.cpp
 sim/artifact_power.cpp
 sim/event_manager.cpp
 sim/x6_pantheon.cpp
+sim/real_ppm.cpp
 sim/spawner.cpp
 sim/sc_sim.cpp
 sim/sc_scaling.cpp

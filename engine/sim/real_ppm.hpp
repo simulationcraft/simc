@@ -6,10 +6,13 @@
 #pragma once
 
 #include "config.hpp"
+#include "sc_enums.hpp"
 #include "sc_timespan.hpp"
 #include <string>
 
+struct item_t;
 struct player_t;
+struct spell_data_t;
 
 // "Real" 'Procs per Minute' helper class =====================================
 struct real_ppm_t
@@ -57,7 +60,7 @@ public:
     blp_state( b )
   { }
 
-  real_ppm_t( const std::string& name, player_t* p, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
+  real_ppm_t( const std::string& name, player_t* p, const spell_data_t* data, const item_t* item = nullptr );
 
   void set_scaling( unsigned s )
   { scales_with = s; }

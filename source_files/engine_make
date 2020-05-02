@@ -14,6 +14,7 @@ SRC += \
     sim$(PATHSEP)artifact_power.cpp \
     sim$(PATHSEP)event_manager.cpp \
     sim$(PATHSEP)x6_pantheon.cpp \
+    sim$(PATHSEP)real_ppm.cpp \
     sim$(PATHSEP)spawner.cpp \
     sim$(PATHSEP)sc_sim.cpp \
     sim$(PATHSEP)sc_scaling.cpp \

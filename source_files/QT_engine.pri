@@ -90,6 +90,7 @@
  SOURCES += engine/sim/artifact_power.cpp
  SOURCES += engine/sim/event_manager.cpp
  SOURCES += engine/sim/x6_pantheon.cpp
+ SOURCES += engine/sim/real_ppm.cpp
  SOURCES += engine/sim/spawner.cpp
  SOURCES += engine/sim/sc_sim.cpp
  SOURCES += engine/sim/sc_scaling.cpp
