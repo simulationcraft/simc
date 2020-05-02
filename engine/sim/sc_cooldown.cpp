@@ -4,7 +4,11 @@
 // ==========================================================================
 
 #include "sc_cooldown.hpp"
-#include "simulationcraft.hpp"
+#include "action/sc_action.hpp"
+#include "player/sc_player.hpp"
+#include "sim/event.hpp"
+#include "sim/sc_expressions.hpp"
+#include "sim/sc_sim.hpp"
 
 namespace { // UNNAMED NAMESPACE
 
@@ -63,12 +67,14 @@ struct recharge_event_t : event_t
   }
 };
 
-struct ready_trigger_event_t : public player_event_t
+struct ready_trigger_event_t : public event_t
 {
+  player_t& player;
   cooldown_t* cooldown;
 
   ready_trigger_event_t( player_t& p, cooldown_t* cd ) :
-    player_event_t( p, cd -> ready - p.sim -> current_time() ),
+    event_t( p, cd -> ready - p.sim -> current_time() ),
+    player(p),
     cooldown( cd )
   { }
 
@@ -78,7 +84,7 @@ struct ready_trigger_event_t : public player_event_t
   void execute() override
   {
     cooldown -> ready_trigger_event = nullptr;
-    p() -> trigger_ready();
+    player.trigger_ready();
   }
 };
 

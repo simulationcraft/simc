@@ -163,7 +163,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\sc_cooldown.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\actor.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
