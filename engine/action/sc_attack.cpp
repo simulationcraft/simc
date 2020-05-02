@@ -286,6 +286,18 @@ void attack_t::init()
     may_glance = false;
 }
 
+double attack_t::recharge_multiplier( const cooldown_t& cd ) const
+{
+  double m = action_t::recharge_multiplier( cd );
+
+  if ( cd.hasted )
+  {
+    m *= player->cache.attack_haste();
+  }
+
+  return m;
+}
+
 void attack_t::reschedule_auto_attack( double old_swing_haste )
 {
   if ( player->cache.attack_speed() == old_swing_haste )

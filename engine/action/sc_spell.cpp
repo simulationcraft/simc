@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "spell.hpp"
+#include "heal.hpp"
 #include "simulationcraft.hpp"
 
 // ==========================================================================
@@ -90,6 +92,18 @@ void spell_base_t::schedule_execute( action_state_t* execute_state )
 
   if ( ! background && time_to_execute > timespan_t::zero() )
     player -> debuffs.casting -> trigger();
+}
+
+double spell_base_t::recharge_multiplier( const cooldown_t& cd ) const
+{
+  double m = action_t::recharge_multiplier( cd );
+
+  if ( cd.hasted )
+  {
+    m *= player->cache.spell_haste();
+  }
+
+  return m;
 }
 
 proc_types spell_base_t::proc_type() const

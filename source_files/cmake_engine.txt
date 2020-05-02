@@ -1,7 +1,11 @@
 set(source_files
+item/enchants.hpp
+item/item.hpp
+item/special_effect.hpp
 action/sc_action.hpp
 action/sc_action_state.hpp
 buff/sc_buff.hpp
+interfaces/wowhead.hpp
 util/plot_data.hpp
 util/xml.hpp
 util/timeline.hpp
@@ -76,7 +80,6 @@ class_modules/warlock/sc_warlock.hpp
 class_modules/priest/sc_priest.hpp
 util/xml.cpp
 util/stopwatch.cpp
-player/actor.cpp
 util/rng.cpp
 util/io.cpp
 util/concurrency.cpp
@@ -101,6 +104,7 @@ sim/sc_expressions.cpp
 sim/sc_event.cpp
 sim/sc_core_sim.cpp
 sim/sc_cooldown.cpp
+player/actor.cpp
 report/sc_report_text.cpp
 report/sc_report_json.cpp
 report/sc_report_html_sim.cpp
@@ -119,15 +123,16 @@ player/sc_set_bonus.cpp
 player/sc_proc.cpp
 player/sc_player.cpp
 player/sc_pet.cpp
-player/sc_item.cpp
-player/sc_enchant.cpp
 player/sc_consumable.cpp
 player/artifact_data.cpp
 player/azerite_data.cpp
-interfaces/sc_wowhead.cpp
+interfaces/wowhead.cpp
 interfaces/sc_js.cpp
 interfaces/sc_http.cpp
 interfaces/sc_bcp_api.cpp
+item/enchants.cpp
+item/item.cpp
+item/special_effect.cpp
 dbc/sc_spell_info.cpp
 dbc/sc_spell_data.cpp
 dbc/sc_item_data_import_ptr.cpp

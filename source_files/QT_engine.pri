@@ -2,9 +2,13 @@
 # To change the list of source files for the simc engine lib, update this file and run synchronize.py
 
 
+ HEADERS += engine/item/enchants.hpp
+ HEADERS += engine/item/item.hpp
+ HEADERS += engine/item/special_effect.hpp
  HEADERS += engine/action/sc_action.hpp
  HEADERS += engine/action/sc_action_state.hpp
  HEADERS += engine/buff/sc_buff.hpp
+ HEADERS += engine/interfaces/wowhead.hpp
  HEADERS += engine/util/plot_data.hpp
  HEADERS += engine/util/xml.hpp
  HEADERS += engine/util/timeline.hpp
@@ -80,7 +84,6 @@
  HEADERS += engine/class_modules/priest/sc_priest.hpp
  SOURCES += engine/util/xml.cpp
  SOURCES += engine/util/stopwatch.cpp
- SOURCES += engine/player/actor.cpp
  SOURCES += engine/util/rng.cpp
  SOURCES += engine/util/io.cpp
  SOURCES += engine/util/concurrency.cpp
@@ -105,6 +108,7 @@
  SOURCES += engine/sim/sc_event.cpp
  SOURCES += engine/sim/sc_core_sim.cpp
  SOURCES += engine/sim/sc_cooldown.cpp
+ SOURCES += engine/player/actor.cpp
  SOURCES += engine/report/sc_report_text.cpp
  SOURCES += engine/report/sc_report_json.cpp
  SOURCES += engine/report/sc_report_html_sim.cpp
@@ -123,15 +127,16 @@
  SOURCES += engine/player/sc_proc.cpp
  SOURCES += engine/player/sc_player.cpp
  SOURCES += engine/player/sc_pet.cpp
- SOURCES += engine/player/sc_item.cpp
- SOURCES += engine/player/sc_enchant.cpp
  SOURCES += engine/player/sc_consumable.cpp
  SOURCES += engine/player/artifact_data.cpp
  SOURCES += engine/player/azerite_data.cpp
- SOURCES += engine/interfaces/sc_wowhead.cpp
+ SOURCES += engine/interfaces/wowhead.cpp
  SOURCES += engine/interfaces/sc_js.cpp
  SOURCES += engine/interfaces/sc_http.cpp
  SOURCES += engine/interfaces/sc_bcp_api.cpp
+ SOURCES += engine/item/enchants.cpp
+ SOURCES += engine/item/item.cpp
+ SOURCES += engine/item/special_effect.cpp
  SOURCES += engine/dbc/sc_spell_info.cpp
  SOURCES += engine/dbc/sc_spell_data.cpp
  SOURCES += engine/dbc/sc_item_data_import_ptr.cpp

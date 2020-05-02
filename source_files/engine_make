@@ -4,7 +4,6 @@
 SRC += \
     util$(PATHSEP)xml.cpp \
     util$(PATHSEP)stopwatch.cpp \
-    player$(PATHSEP)actor.cpp \
     util$(PATHSEP)rng.cpp \
     util$(PATHSEP)io.cpp \
     util$(PATHSEP)concurrency.cpp \
@@ -29,6 +28,7 @@ SRC += \
     sim$(PATHSEP)sc_event.cpp \
     sim$(PATHSEP)sc_core_sim.cpp \
     sim$(PATHSEP)sc_cooldown.cpp \
+    player$(PATHSEP)actor.cpp \
     report$(PATHSEP)sc_report_text.cpp \
     report$(PATHSEP)sc_report_json.cpp \
     report$(PATHSEP)sc_report_html_sim.cpp \
@@ -47,15 +47,16 @@ SRC += \
     player$(PATHSEP)sc_proc.cpp \
     player$(PATHSEP)sc_player.cpp \
     player$(PATHSEP)sc_pet.cpp \
-    player$(PATHSEP)sc_item.cpp \
-    player$(PATHSEP)sc_enchant.cpp \
     player$(PATHSEP)sc_consumable.cpp \
     player$(PATHSEP)artifact_data.cpp \
     player$(PATHSEP)azerite_data.cpp \
-    interfaces$(PATHSEP)sc_wowhead.cpp \
+    interfaces$(PATHSEP)wowhead.cpp \
     interfaces$(PATHSEP)sc_js.cpp \
     interfaces$(PATHSEP)sc_http.cpp \
     interfaces$(PATHSEP)sc_bcp_api.cpp \
+    item$(PATHSEP)enchants.cpp \
+    item$(PATHSEP)item.cpp \
+    item$(PATHSEP)special_effect.cpp \
     dbc$(PATHSEP)sc_spell_info.cpp \
     dbc$(PATHSEP)sc_spell_data.cpp \
     dbc$(PATHSEP)sc_item_data_import_ptr.cpp \

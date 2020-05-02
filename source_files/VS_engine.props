@@ -5,9 +5,13 @@ To change the list of source files, update the QT_ files and run synchronize.py
 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup>
+		<ClInclude Include="..\engine\item\enchants.hpp" />
+		<ClInclude Include="..\engine\item\item.hpp" />
+		<ClInclude Include="..\engine\item\special_effect.hpp" />
 		<ClInclude Include="..\engine\action\sc_action.hpp" />
 		<ClInclude Include="..\engine\action\sc_action_state.hpp" />
 		<ClInclude Include="..\engine\buff\sc_buff.hpp" />
+		<ClInclude Include="..\engine\interfaces\wowhead.hpp" />
 		<ClInclude Include="..\engine\util\plot_data.hpp" />
 		<ClInclude Include="..\engine\util\xml.hpp" />
 		<ClInclude Include="..\engine\util\timeline.hpp" />
@@ -86,9 +90,6 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\util\stopwatch.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
-		<ClCompile Include="..\engine\player\actor.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
 		<ClCompile Include="..\engine\util\rng.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
@@ -117,7 +118,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\real_ppm.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\spawner.cpp">
 			
@@ -160,6 +161,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\sc_cooldown.cpp">
 			
+		</ClCompile>
+		<ClCompile Include="..\engine\player\actor.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\report\sc_report_text.cpp">
 			
@@ -215,12 +219,6 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\player\sc_pet.cpp">
 			
 		</ClCompile>
-		<ClCompile Include="..\engine\player\sc_item.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\player\sc_enchant.cpp">
-			
-		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_consumable.cpp">
 			
 		</ClCompile>
@@ -230,7 +228,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\player\azerite_data.cpp">
 			
 		</ClCompile>
-		<ClCompile Include="..\engine\interfaces\sc_wowhead.cpp">
+		<ClCompile Include="..\engine\interfaces\wowhead.cpp">
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\interfaces\sc_js.cpp">
@@ -240,6 +238,15 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\interfaces\sc_bcp_api.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\engine\item\enchants.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\engine\item\item.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\engine\item\special_effect.cpp">
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\sc_spell_info.cpp">

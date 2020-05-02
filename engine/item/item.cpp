@@ -3,6 +3,17 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "item.hpp"
+#include "special_effect.hpp"
+#include "enchants.hpp"
+#include "dbc/dbc.hpp"
+#include "player/sc_player.hpp"
+#include "player/weapon.hpp"
+#include "sim/sc_sim.hpp"
+#include "player/artifact_data.hpp"
+#include "dbc/item_database.hpp"
+#include "sc_enums.hpp"
+#include "interfaces/wowhead.hpp"
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE ==========================================
@@ -15,7 +26,30 @@ struct token_t
   std::string value_str;
 };
 
+} // end unnamed namespace
+
+
+item_t::parsed_input_t::parsed_input_t()
+  : item_level( 0 ),
+    enchant_id( 0 ),
+    addon_id( 0 ),
+    armor( 0 ),
+    azerite_level( 0 ),
+    data(),
+    initial_cd( timespan_t::zero() ),
+    drop_level( 0 )
+{
+  range::fill( data.stat_type_e, -1 );
+  range::fill( data.stat_alloc, 0 );
+  range::fill( stat_val, 0 );
+  range::fill( gem_id, 0 );
+  range::fill( bonus_id, 0 );
+  range::fill( gem_color, SOCKET_COLOR_NONE );
+  range::fill( gem_ilevel, 0 );
+  range::fill( gem_actual_ilevel, 0 );
 }
+
+item_t::parsed_input_t::~parsed_input_t() = default;
 
 // item_t::item_t ===========================================================
 

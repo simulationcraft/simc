@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "wowhead.hpp"
 #include "simulationcraft.hpp"
 
 #include "util/rapidjson/document.h"
