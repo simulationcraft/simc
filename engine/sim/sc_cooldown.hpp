@@ -7,10 +7,12 @@
 
 #include "config.hpp"
 #include "sc_timespan.hpp"
+#include "sc_enums.hpp"
 #include <string>
 
 struct action_t;
 struct event_t;
+struct expr_t;
 struct player_t;
 struct sim_t;
 
@@ -56,19 +58,15 @@ struct cooldown_t
 
   void reset_init();
 
-  timespan_t remains() const
-  { return std::max( timespan_t::zero(), ready - sim.current_time() ); }
+  timespan_t remains() const;
 
-  timespan_t current_charge_remains() const
-  { return recharge_event ? recharge_event -> remains() : timespan_t::zero(); }
+  timespan_t current_charge_remains() const;
 
   // Return true if the cooldown is ready (has at least one charge).
-  bool up() const
-  { return ready <= sim.current_time(); }
+  bool up() const;
 
   // Return true if the cooldown is not ready (has zero charges).
-  bool down() const
-  { return ready > sim.current_time(); }
+  bool down() const;
 
   // Return true if the cooldown is in progress.
   bool ongoing() const
@@ -81,8 +79,7 @@ struct cooldown_t
   bool is_ready() const;
 
   // Return the queueing delay for cooldowns that are queueable
-  timespan_t queue_delay() const
-  { return std::max( timespan_t::zero(), ready - sim.current_time() ); }
+  timespan_t queue_delay() const;
 
   // Point in time when the cooldown is queueable
   timespan_t queueable() const;

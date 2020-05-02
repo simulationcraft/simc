@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "sc_cooldown.hpp"
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE
@@ -369,6 +370,23 @@ void cooldown_t::reset( bool require_reaction, int charges_ )
     player->trigger_ready();
   }
 }
+
+timespan_t cooldown_t::remains() const
+{
+  return std::max( timespan_t::zero(), ready - sim.current_time() );
+}
+
+timespan_t cooldown_t::current_charge_remains() const
+{ return recharge_event ? recharge_event -> remains() : timespan_t::zero(); }
+
+bool cooldown_t::up() const
+{ return ready <= sim.current_time(); }
+
+bool cooldown_t::down() const
+{ return ready > sim.current_time(); }
+
+timespan_t cooldown_t::queue_delay() const
+{ return std::max( timespan_t::zero(), ready - sim.current_time() ); }
 
 void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
 {
