@@ -2452,16 +2452,6 @@ inline bool cooldown_t::is_ready() const
   return queueable() <= sim.current_time();
 }
 
-template <class T>
-sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
-{
-  fmt::fprintf(*_raw.get_stream(), "%.3f ", sim.current_time().total_seconds());
-  _raw << rhs << "\n";
-
-  return *this;
-}
-
-
 struct ground_aoe_params_t
 {
   enum hasted_with

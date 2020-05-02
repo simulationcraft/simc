@@ -59,10 +59,22 @@ struct sim_ostream_t
   std::ostream* get_stream()
   { return _raw.get_stream(); }
   template <class T>
-  sim_ostream_t & operator<< (T const& rhs);
+  sim_ostream_t & operator<< (T const& rhs)
+  {
+    print_simulation_time();
+    _raw << rhs << "\n";
+
+    return *this;
+  }
 
   template<typename Format, typename... Args>
-  sim_ostream_t& printf(Format&& format, Args&& ... args);
+  sim_ostream_t& printf(Format&& format, Args&& ... args)
+  {
+    print_simulation_time();
+    fmt::fprintf(*_raw.get_stream(), std::forward<Format>(format), std::forward<Args>(args)... );
+    _raw << "\n";
+    return *this;
+  }
 
   /**
    * Print using fmt libraries python-like formatting syntax.
@@ -79,13 +91,3 @@ private:
   sim_t& sim;
   sc_raw_ostream_t _raw;
 };
-
-
-template<typename Format, typename... Args>
-sim_ostream_t& sim_ostream_t::printf(Format&& format, Args&& ... args)
-{
-  print_simulation_time();
-  fmt::fprintf(*_raw.get_stream(), std::forward<Format>(format), std::forward<Args>(args)... );
-  _raw << "\n";
-  return *this;
-}
