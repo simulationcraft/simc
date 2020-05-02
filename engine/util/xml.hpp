@@ -6,7 +6,7 @@
 #ifndef XML_HPP
 #define XML_HPP
 
-#include "../config.hpp"
+#include "config.hpp"
 
 #include <memory>
 
@@ -18,11 +18,12 @@
 #include "cache.hpp"
 #include "io.hpp"
 
-#include "rapidxml/rapidxml.hpp"
 
 struct sim_t;
-
-using namespace rapidxml;
+namespace rapidxml {
+  template<class Ch>
+  class xml_node;
+}
 
 // XML ======================================================================
 
@@ -31,15 +32,15 @@ using namespace rapidxml;
 struct sc_xml_t
 {
   char *buf;
-  xml_node<>* root;
+  rapidxml::xml_node<char>* root;
 
   sc_xml_t() : buf( nullptr ), root( nullptr )
   { }
 
-  sc_xml_t( xml_node<>* n ) : buf( nullptr ), root( n )
+  sc_xml_t( rapidxml::xml_node<char>* n ) : buf( nullptr ), root( n )
   { }
 
-  sc_xml_t( xml_node<>* n, char* b ) : buf( b ), root( n )
+  sc_xml_t( rapidxml::xml_node<char>* n, char* b ) : buf( b ), root( n )
   { }
 
   // We have only one releaseable source of xml_node* in the system, which will
@@ -67,8 +68,7 @@ struct sc_xml_t
   bool valid() const
   { return root != nullptr; }
 
-  std::string name() const
-  { return root ? std::string( root -> name() ) : std::string(); }
+  std::string name() const;
 
   sc_xml_t get_child( const std::string& name ) const;
   sc_xml_t get_node ( const std::string& path ) const;
@@ -88,15 +88,7 @@ struct sc_xml_t
                           const std::string& confirmation = std::string() );
   static sc_xml_t create( sim_t* sim, const std::string& input, const std::string& cache_key );
 
-  virtual ~sc_xml_t()
-  {
-    assert( ! buf || ( root && buf ) );
-    if ( buf && ! root -> parent() )
-    {
-      delete[] buf;
-      delete root;
-    }
-  }
+  virtual ~sc_xml_t();
 
 private:
   sc_xml_t search_tree( const std::string& node_name ) const;

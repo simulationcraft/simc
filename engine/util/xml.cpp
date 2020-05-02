@@ -3,10 +3,17 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include <memory>
-
-#include "simulationcraft.hpp"
+#include "xml.hpp"
+#include "rapidxml/rapidxml.hpp"
 #include "rapidxml/rapidxml_print.hpp"
+#include "util/concurrency.hpp"
+#include "sc_util.hpp"
+#include "sim/sc_sim.hpp"
+#include "interfaces/sc_http.hpp"
+#include <memory>
+#include <unordered_map>
+
+using namespace rapidxml;
 
 // XML Reader ==================================================================
 
@@ -749,6 +756,21 @@ std::string xml_writer_t::sanitize( std::string v )
     util::replace_all( v, replacements[ i ].from, replacements[ i ].to );
 
   return v;
+}
+
+std::string sc_xml_t::name() const
+{
+  return root ? std::string( root -> name() ) : std::string();
+}
+
+sc_xml_t::~sc_xml_t()
+{
+  assert( ! buf || ( root && buf ) );
+  if ( buf && ! root -> parent() )
+  {
+    delete[] buf;
+    delete root;
+  }
 }
 
 void sc_xml_t::print_xml( FILE* f, int )
