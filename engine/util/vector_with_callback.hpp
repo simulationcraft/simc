@@ -8,6 +8,8 @@
 #include "config.hpp"
 #include <vector>
 
+struct player_t;
+
 /* Encapsulated Vector
  * const read access
  * Modifying the vector triggers registered callbacks

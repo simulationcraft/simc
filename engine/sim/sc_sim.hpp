@@ -31,6 +31,9 @@ struct option_t;
 struct plot_t;
 struct raid_event_t;
 struct reforge_plot_t;
+namespace rng {
+  struct rng_t;
+}
 struct scaling_t;
 struct sim_control_t;
 struct spell_data_expr_t;

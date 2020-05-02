@@ -12,6 +12,7 @@
 
 struct item_t;
 struct item_data_t;
+struct special_effect_t;
 struct stat_pair_t;
 
 // Item database ============================================================

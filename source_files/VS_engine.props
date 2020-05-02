@@ -229,7 +229,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\azerite_data.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\interfaces\wowhead.cpp">
 			
@@ -259,10 +259,10 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\sc_spell_info.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\sc_spell_data.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\sc_item_data_import_ptr.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -274,10 +274,10 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\sc_data.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\sc_const_data.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\item_effect.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>

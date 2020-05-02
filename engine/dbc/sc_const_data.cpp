@@ -3,9 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "dbc.hpp"
 
 #include "data_definitions.hh"
+#include "item_database.hpp"
+
 #include "generated/sc_spec_list.inc"
 #include "generated/sc_scale_data.inc"
 #include "generated/sc_talent_data.inc"
@@ -20,6 +22,9 @@
 #include "generated/sc_spell_lists_ptr.inc"
 #include "sc_extra_data_ptr.inc"
 #endif
+
+#include "player/sc_player.hpp"
+#include "item/item.hpp"
 
 namespace { // ANONYMOUS namespace ==========================================
 
