@@ -3,7 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "event.hpp"
+#include "player/actor.hpp"
+#include "sc_sim.hpp" // replace with event manager dependency
 
 // ==========================================================================
 // Event
