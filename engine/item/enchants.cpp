@@ -3,11 +3,17 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-// TODO: Check if Power Torrent, Jade Spirit share buffs, or allow separate
-
-#include "simulationcraft.hpp"
+#include "enchants.hpp"
+#include "special_effect.hpp"
+#include "dbc/dbc.hpp"
+#include "player/sc_player.hpp"
+#include "player/unique_gear.hpp"
+#include "dbc/item_database.hpp"
+#include "sim/sc_sim.hpp"
 
 using namespace enchant;
+
+// TODO: Check if Power Torrent, Jade Spirit share buffs, or allow separate
 
 namespace /* ANONYMOUS NAMESPACE */
 {

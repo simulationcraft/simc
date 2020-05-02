@@ -6,6 +6,12 @@
 #pragma once
 
 #include "config.hpp"
+#include "sc_enums.hpp"
+#include "item.hpp"
+#include <string>
+
+class dbc_t;
+struct item_enchantment_data_t;
 
 namespace enchant
 {
