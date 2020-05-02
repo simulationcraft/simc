@@ -12,6 +12,7 @@
 #include <iostream>
 #include <map>
 #include <iomanip>
+#include <cctype>
 
 namespace {
 struct proc_map_t
