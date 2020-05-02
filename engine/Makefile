@@ -85,7 +85,7 @@ endif
 ifeq (${FLAVOR},Darwin)
   # Workaround for XCode 11 issues when using optimized builds. Potentially related to
   # https://forums.developer.apple.com/thread/121887
-  CPP_FLAGS += -mmacosx-version-min=10.14
+  CPP_FLAGS += -mmacosx-version-min=10.12
 ifeq (${OPENSSL},)
   LINK_LIBS += -framework Security -framework CoreFoundation
 endif
