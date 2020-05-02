@@ -3,7 +3,7 @@ include(../simulationcraft.pri)
 TEMPLATE    = app
 TARGET      = simc
 CONFIG     -= qt app_bundle link_prl
-LIBS       += -L../lib -lsimcengine
+LIBS       += -L../lib
 QT         -= core gui
 
 # Linux puts binaries to a different place (see simulationcraft.pri)

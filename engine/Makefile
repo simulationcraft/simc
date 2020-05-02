@@ -94,6 +94,9 @@ endif
 ifneq (${DEBUG},)
   CPP_FLAGS += -g
 endif
+ifneq (${CURL_DEBUG},)
+  CPP_FLAGS += -DCURL_DEBUG
+endif
 ifneq (${EVENT_QUEUE_DEBUG},)
   CPP_FLAGS += -DEVENT_QUEUE_DEBUG
 endif

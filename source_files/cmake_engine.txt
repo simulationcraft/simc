@@ -68,6 +68,9 @@ dbc/sc_spell_info.hpp
 dbc/specialization.hpp
 dbc/dbc.hpp
 dbc/item_effect.hpp
+interfaces/sc_http.hpp
+interfaces/sc_http_curl.hpp
+interfaces/sc_http_wininet.hpp
 simulationcraft.hpp
 sc_util.hpp
 sc_timespan.hpp
@@ -129,6 +132,8 @@ player/azerite_data.cpp
 interfaces/wowhead.cpp
 interfaces/sc_js.cpp
 interfaces/sc_http.cpp
+interfaces/sc_http_curl.cpp
+interfaces/sc_http_wininet.cpp
 interfaces/sc_bcp_api.cpp
 item/enchants.cpp
 item/item.cpp

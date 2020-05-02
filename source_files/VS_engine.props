@@ -74,6 +74,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\dbc\specialization.hpp" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />
 		<ClInclude Include="..\engine\dbc\item_effect.hpp" />
+		<ClInclude Include="..\engine\interfaces\sc_http.hpp" />
+		<ClInclude Include="..\engine\interfaces\sc_http_curl.hpp" />
+		<ClInclude Include="..\engine\interfaces\sc_http_wininet.hpp" />
 		<ClInclude Include="..\engine\simulationcraft.hpp" />
 		<ClInclude Include="..\engine\sc_util.hpp" />
 		<ClInclude Include="..\engine\sc_timespan.hpp" />
@@ -235,6 +238,12 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\interfaces\sc_http.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\engine\interfaces\sc_http_curl.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\engine\interfaces\sc_http_wininet.cpp">
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\interfaces\sc_bcp_api.cpp">

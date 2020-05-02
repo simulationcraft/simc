@@ -17,6 +17,8 @@ cache::cache_control_t cache::cache_control_t::singleton;
 namespace http
 {
 void set_proxy( const std::string&, const std::string&, const unsigned) {}
+const proxy_t& get_proxy() { static proxy_t p {};  return p; }
+http_connection_pool_t* pool() { return nullptr; }
 
 void cache_load( const std::string&) {}
 void cache_save( const std::string&) {}
@@ -30,18 +32,31 @@ int get( std::string& /*result */,
 {
   return 503;
 }
+std::tuple<std::string, std::string> normalize_header( const std::string& )
+{
+  return {};
 }
-
+} // Namespace http ends
 #else
 
-#include <curl/curl.h>
+#ifdef SC_USE_CURL
+
+#include "sc_http_curl.hpp"
+http::curl_connection_pool_t connection_pool;
+
+#endif /* SC_USE_CURL */
+
+#ifdef SC_USE_WININET
+#include "sc_http_wininet.hpp"
+http::wininet_connection_pool_t connection_pool;
+
+#endif /* SC_USE_WININET */
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
 http::proxy_t proxy;
 
 const bool HTTP_CACHE_DEBUG = false;
-const std::string UA_STR = "Simulationcraft/" + std::string( SC_VERSION );
 
 mutex_t cache_mutex;
 
@@ -57,218 +72,8 @@ struct url_cache_entry_t
   {}
 };
 
-class curl_handle_cache_t;
-
-class curl_handle_t
-{
-  CURL*                m_handle;
-  curl_slist*          m_header_opts;
-
-  std::string          m_buffer;
-  std::unordered_map<std::string, std::string> m_headers;
-  char                 m_error[ CURL_ERROR_SIZE ];
-
-  size_t read_data( const char* data_in, size_t total_bytes )
-  {
-    m_buffer.append( data_in, total_bytes );
-    return total_bytes;
-  }
-
-  size_t add_response_header( const char* header_str, size_t total_bytes )
-  {
-    std::string header = std::string( header_str, total_bytes );
-    // Find first ':'
-    auto pos = header.find( ':' );
-    // Don't support foldable headers since they are deprecated anyhow
-    if ( pos == std::string::npos || header[ 0 ] == ' ' )
-    {
-      return total_bytes;
-    }
-
-    std::string key = header.substr( 0, pos );
-    std::string value = header.substr( pos + 1 );
-
-    // Transform all header keys to lowercase to sanitize the input
-    std::transform( key.begin(), key.end(), key.begin(), tolower );
-
-    // Prune whitespaces from values
-    while ( !value.empty() && ( value.back() == ' ' || value.back() == '\n' ||
-            value.back() == '\t' || value.back() == '\r' ) )
-    {
-      value.pop_back();
-    }
-
-    while ( !value.empty() && ( value.front() == ' ' || value.front() == '\t' ) )
-    {
-      value.erase( value.begin() );
-    }
-
-    m_headers[ key ] = value;
-
-    return total_bytes;
-  }
-public:
-  static size_t data_cb( void* contents, size_t size, size_t nmemb, void* usr )
-  {
-    curl_handle_t* obj = reinterpret_cast<curl_handle_t*>( usr );
-    return obj->read_data( reinterpret_cast<const char*>( contents ), size * nmemb );
-  }
-
-  static size_t header_cb( char* contents, size_t size, size_t nmemb, void* usr )
-  {
-    curl_handle_t* obj = reinterpret_cast<curl_handle_t*>( usr );
-    return obj->add_response_header( contents, size * nmemb );
-  }
-
-  curl_handle_t() : m_handle( nullptr ), m_header_opts( nullptr )
-  {
-    m_error[ 0 ] = '\0';
-  }
-
-  curl_handle_t( CURL* handle ) : m_handle( handle ), m_header_opts( nullptr )
-  {
-    m_error[ 0 ] = '\0';
-
-    curl_easy_setopt( handle, CURLOPT_HEADERFUNCTION, header_cb );
-    curl_easy_setopt( handle, CURLOPT_WRITEFUNCTION, data_cb );
-    curl_easy_setopt( handle, CURLOPT_HEADERDATA, reinterpret_cast<void*>( this ) );
-    curl_easy_setopt( handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>( this ) );
-    curl_easy_setopt( handle, CURLOPT_ERRORBUFFER, m_error );
-  }
-
-  // Curl handle object
-  CURL* handle() const
-  { return m_handle; }
-
-  // Curl descriptive error (when fetch() returns != CURLE_OK)
-  std::string error() const
-  { return { m_error }; }
-
-  // Response body
-  const std::string& result() const
-  { return m_buffer; }
-
-  // Response headers
-  const std::unordered_map<std::string, std::string>& headers() const
-  { return m_headers; }
-
-  void add_request_headers( const std::vector<std::string>& headers )
-  {
-    range::for_each( headers, [ this ]( const std::string& header ) {
-      m_header_opts = curl_slist_append( m_header_opts, header.c_str() );
-    } );
-
-    curl_easy_setopt( m_handle, CURLOPT_HTTPHEADER, m_header_opts );
-  }
-
-  void add_request_header( const std::string& header )
-  {
-    m_header_opts = curl_slist_append( m_header_opts, header.c_str() );
-    curl_easy_setopt( m_handle, CURLOPT_HTTPHEADER, m_header_opts );
-  }
-
-  // Fetch an url
-  CURLcode fetch( const std::string& url ) const
-  {
-    curl_easy_setopt( m_handle, CURLOPT_URL, url.c_str() );
-    return curl_easy_perform( m_handle );
-  }
-
-  int response_code() const
-  {
-    long response_code = 0;
-    curl_easy_getinfo( m_handle, CURLINFO_RESPONSE_CODE, &response_code );
-    return as<int>( response_code );
-  }
-
-  ~curl_handle_t();
-};
-
-class curl_handle_cache_t
-{
-  CURL* m_handle = nullptr;
-
-public:
-  curl_handle_cache_t()
-  {
-    curl_global_init( CURL_GLOBAL_ALL );
-  }
-
-  curl_handle_t get()
-  {
-    if ( !m_handle )
-    {
-      bool ssl_proxy = ( proxy.type == "https" );
-      bool use_proxy = ( ssl_proxy || proxy.type == "http" );
-
-      m_handle = curl_easy_init();
-      if ( !m_handle )
-      {
-        return {};
-      }
-
-      if ( HTTP_CACHE_DEBUG )
-      {
-        curl_easy_setopt( m_handle, CURLOPT_VERBOSE, 1L);
-      }
-
-      curl_easy_setopt( m_handle, CURLOPT_TIMEOUT, 15L );
-      curl_easy_setopt( m_handle, CURLOPT_FOLLOWLOCATION, 1L );
-      curl_easy_setopt( m_handle, CURLOPT_MAXREDIRS, 5L );
-      curl_easy_setopt( m_handle, CURLOPT_ACCEPT_ENCODING, "");
-      curl_easy_setopt( m_handle, CURLOPT_USERAGENT, UA_STR.c_str() );
-
-      if ( use_proxy )
-      {
-        char error_buffer[ CURL_ERROR_SIZE ];
-        error_buffer[ 0 ] = '\0';
-// Note, won't cover the case where curl is compiled without USE_SSL
-#ifdef CURL_VERSION_HTTPS_PROXY
-        auto ret = curl_easy_setopt( m_handle, CURLOPT_PROXYTYPE,
-            ssl_proxy ? CURLPROXY_HTTPS : CURLPROXY_HTTP );
-#else
-        if ( ssl_proxy )
-        {
-          std::cerr << "Libcurl does not support HTTPS proxies, aborting." << std::endl;
-          return {};
-        }
-        auto ret = curl_easy_setopt( m_handle, CURLOPT_PROXYTYPE, CURLPROXY_HTTP );
-#endif /* CURL_VERSION_HTTPS_PROXY */
-        if ( ret != CURLE_OK )
-        {
-          std::cerr << "Unable setup proxy (" << error_buffer << ")" << std::endl;
-          curl_easy_cleanup( m_handle );
-          m_handle = nullptr;
-          return {};
-        }
-
-        curl_easy_setopt( m_handle, CURLOPT_PROXY, proxy.host.c_str() );
-        curl_easy_setopt( m_handle, CURLOPT_PROXYPORT, proxy.port );
-      }
-    }
-
-    return { m_handle };
-  }
-
-  ~curl_handle_cache_t()
-  {
-    curl_easy_cleanup( m_handle );
-    curl_global_cleanup();
-  }
-};
-
-curl_handle_t::~curl_handle_t()
-{
-  // Reset headers before giving the handle to the user
-  curl_easy_setopt( m_handle, CURLOPT_HTTPHEADER, nullptr );
-  // Free headers
-  curl_slist_free_all( m_header_opts );
-}
-
 typedef std::unordered_map<std::string, url_cache_entry_t> url_db_t;
 url_db_t url_db;
-
-curl_handle_cache_t curl_db;
 
 // cache_clear ==============================================================
 
@@ -286,42 +91,42 @@ int download( url_cache_entry_t&              entry,
               const std::string&              url,
               const std::vector<std::string>& headers = {} )
 {
-  auto handle = curl_db.get();
+  auto handle = connection_pool.handle( url );
   // Curl was not able to initialize, get out instantly
-  if ( !handle.handle() )
+  if ( !handle->initialized() )
   {
-    std::cerr << "Unable to initialize CURL" << std::endl;
+    std::cerr << "Unable to initialize networking functionality" << std::endl;
     return 500;
   }
 
-  handle.add_request_headers( headers );
+  handle->add_request_headers( headers );
 
   // Add If-Modified-Since
   if ( !entry.last_modified_header.empty() )
   {
-    handle.add_request_header( ( "If-Modified-Since: " + entry.last_modified_header ).c_str() );
+    handle->add_request_header( ( "If-Modified-Since: " + entry.last_modified_header ).c_str() );
   }
 
-  auto res = handle.fetch( url );
-  int response_code = handle.response_code();
+  auto res = handle->get( url );
+  int response_code = handle->response_code();
 
-  if ( res != CURLE_OK )
+  if ( !res )
   {
-    std::cerr << "Unable to fetch result (" << handle.error() << ")" << std::endl;
-    return handle.response_code();
+    std::cerr << "Unable to fetch result (" << handle->error() << ")" << std::endl;
+    return handle->response_code();
   }
 
   // Unconditionally return response body
-  result.assign( handle.result() );
+  result.assign( handle->result() );
 
   // Cache results on successful fetch
   if ( response_code == 200 )
   {
     entry.last_modified_header.clear();
 
-    entry.result.assign( handle.result() );
+    entry.result.assign( handle->result() );
 
-    auto response_headers = handle.headers();
+    auto response_headers = handle->headers();
     if ( response_headers.find( "last-modified" ) != response_headers.end() )
     {
       entry.last_modified_header = response_headers[ "last-modified" ];
@@ -353,6 +158,27 @@ void http::set_proxy( const std::string& proxy_type,
   proxy.type = proxy_type;
   proxy.host = proxy_host;
   proxy.port = proxy_port;
+}
+
+const http::proxy_t& http::get_proxy()
+{
+  return proxy;
+}
+
+http::http_handle_t::http_handle_t()
+{
+}
+
+http::http_handle_t::~http_handle_t()
+{
+}
+
+http::http_connection_pool_t::http_connection_pool_t()
+{
+}
+
+http::http_connection_pool_t::~http_connection_pool_t()
+{
 }
 
 // http::clear_cache ========================================================
@@ -463,6 +289,13 @@ void http::cache_save( const std::string& file_name )
   {}
 }
 
+// http::pool ===============================================================
+
+http::http_connection_pool_t* http::pool()
+{
+  return &connection_pool;
+}
+
 // http::get ================================================================
 
 int http::get( std::string&       result,
@@ -544,6 +377,39 @@ int http::get( std::string&       result,
 
   return response_code;
 }
+
+std::tuple<std::string, std::string> http::normalize_header( const std::string& header_str )
+{
+  // Find first ':'
+  auto pos = header_str.find( ':' );
+  // Don't support foldable headers since they are deprecated anyhow
+  if ( pos == std::string::npos || header_str[ 0 ] == ' ' )
+  {
+    return {};
+  }
+
+  std::string key   = header_str.substr( 0, pos );
+  std::string value = header_str.substr( pos + 1 );
+
+  // Transform all header keys to lowercase to sanitize the input
+  std::transform( key.begin(), key.end(), key.begin(), tolower );
+
+  // Prune whitespaces from values
+  while ( !value.empty() &&
+          ( value.back() == ' ' || value.back() == '\n' || value.back() == '\t' || value.back() == '\r' ) )
+  {
+    value.pop_back();
+  }
+
+  while ( !value.empty() && ( value.front() == ' ' || value.front() == '\t' ) )
+  {
+    value.erase( value.begin() );
+  }
+
+  return {key, value};
+}
+
+
 
 #endif /* NO_SC_NETWORKING */
 

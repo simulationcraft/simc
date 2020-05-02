@@ -71,6 +71,9 @@
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp
  HEADERS += engine/dbc/item_effect.hpp
+ HEADERS += engine/interfaces/sc_http.hpp
+ HEADERS += engine/interfaces/sc_http_curl.hpp
+ HEADERS += engine/interfaces/sc_http_wininet.hpp
  PRECOMPILED_HEADER += engine/simulationcraft.hpp
  HEADERS += engine/simulationcraft.hpp
  HEADERS += engine/sc_util.hpp
@@ -133,6 +136,8 @@
  SOURCES += engine/interfaces/wowhead.cpp
  SOURCES += engine/interfaces/sc_js.cpp
  SOURCES += engine/interfaces/sc_http.cpp
+ SOURCES += engine/interfaces/sc_http_curl.cpp
+ SOURCES += engine/interfaces/sc_http_wininet.cpp
  SOURCES += engine/interfaces/sc_bcp_api.cpp
  SOURCES += engine/item/enchants.cpp
  SOURCES += engine/item/item.cpp

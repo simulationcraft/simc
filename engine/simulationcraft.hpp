@@ -165,6 +165,8 @@ namespace highchart {
 
 // Utilities ================================================================
 
+#include "interfaces/sc_http.hpp"
+
 #include "sc_util.hpp"
 
 #include "util/stopwatch.hpp"
@@ -2083,27 +2085,6 @@ void token_load();
 void token_save();
 
 slot_e translate_api_slot( const std::string& slot_str );
-}
-
-// HTTP Download  ===========================================================
-
-namespace http
-{
-struct proxy_t
-{
-  std::string type;
-  std::string host;
-  int port;
-};
-void set_proxy( const std::string& type, const std::string& host, const unsigned port );
-
-void cache_load( const std::string& file_name );
-void cache_save( const std::string& file_name );
-bool clear_cache( sim_t*, const std::string& name, const std::string& value );
-
-int get( std::string& result, const std::string& url,
-          cache::behavior_e caching, const std::string& confirmation = "",
-          const std::vector<std::string>& headers = {} );
 }
 
 // XML ======================================================================

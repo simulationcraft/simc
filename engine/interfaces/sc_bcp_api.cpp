@@ -9,10 +9,6 @@
 #include "util/rapidjson/stringbuffer.h"
 #include "util/rapidjson/prettywriter.h"
 
-#ifndef SC_NO_NETWORKING
-#include <curl/curl.h>
-#endif
-
 #include "../util/utf8-h/utf8.h"
 
 // ==========================================================================
@@ -67,13 +63,6 @@ mutex_t token_mutex;
 
 #ifndef SC_NO_NETWORKING
 
-size_t data_cb( void* contents, size_t size, size_t nmemb, void* usr )
-{
-  std::string* obj = reinterpret_cast<std::string*>( usr );
-  obj->append( reinterpret_cast<const char*>( contents ), size * nmemb );
-  return size * nmemb;
-}
-
 std::vector<std::string> token_paths()
 {
   std::vector<std::string> paths;
@@ -121,8 +110,6 @@ bool authorize( sim_t* sim, const std::string& region )
     return true;
   }
 
-  std::string ua_str = "Simulationcraft/" + std::string( SC_VERSION );
-
   std::string oauth_endpoint;
   if ( util::str_compare_ci( region, "eu" ) || util::str_compare_ci( region, "us" ) )
   {
@@ -137,40 +124,26 @@ bool authorize( sim_t* sim, const std::string& region )
     oauth_endpoint = CHINA_OAUTH_ENDPOINT_URI;
   }
 
-  auto handle = curl_easy_init();
-  std::string buffer;
-  char error_buffer[ CURL_ERROR_SIZE ];
-  error_buffer[ 0 ] = '\0';
+  auto pool = http::pool();
+  auto handle = pool->handle( oauth_endpoint );
 
-  curl_easy_setopt( handle, CURLOPT_URL, oauth_endpoint.c_str() );
-  //curl_easy_setopt( handle, CURLOPT_VERBOSE, 1L);
-  curl_easy_setopt( handle, CURLOPT_FAILONERROR, 1L);
-  curl_easy_setopt( handle, CURLOPT_POSTFIELDS, "grant_type=client_credentials" );
-  curl_easy_setopt( handle, CURLOPT_USERPWD, sim->apikey.c_str() );
-  curl_easy_setopt( handle, CURLOPT_TIMEOUT, 15L );
-  curl_easy_setopt( handle, CURLOPT_FOLLOWLOCATION, 1L );
-  curl_easy_setopt( handle, CURLOPT_MAXREDIRS, 5L );
-  curl_easy_setopt( handle, CURLOPT_ACCEPT_ENCODING, "");
-  curl_easy_setopt( handle, CURLOPT_USERAGENT, ua_str.c_str() );
-  curl_easy_setopt( handle, CURLOPT_WRITEFUNCTION, data_cb );
-  curl_easy_setopt( handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>( &buffer ) );
-  curl_easy_setopt( handle, CURLOPT_ERRORBUFFER, error_buffer );
+  handle->set_basic_auth( sim->apikey.c_str() );
+  auto res = handle->post( oauth_endpoint,
+    "grant_type=client_credentials", "application/x-www-form-urlencoded" );
 
-  auto res = curl_easy_perform( handle );
-  if ( res != CURLE_OK )
+  if ( !res || handle->response_code() != 200 )
   {
-    std::cerr << "Unable to fetch bearer token from " << oauth_endpoint << ", " << error_buffer << std::endl;
-    curl_easy_cleanup( handle );
+    std::cerr << "Unable to fetch bearer token from " <<
+      oauth_endpoint << ", response=" << handle->response_code() << ", error=" << handle->error() << ", result=" << handle->result() << std::endl;
     authorization_failed = true;
     return false;
   }
 
   rapidjson::Document response;
-  response.Parse< 0 >( buffer );
+  response.Parse< 0 >( handle->result() );
   if ( response.HasParseError() )
   {
     std::cerr << "Unable to parse response message from " << oauth_endpoint << std::endl;
-    curl_easy_cleanup( handle );
     authorization_failed = true;
     return false;
   }
@@ -178,14 +151,11 @@ bool authorize( sim_t* sim, const std::string& region )
   if ( !response.HasMember( "access_token" ) )
   {
     std::cerr << "Malformed JSON object from " << oauth_endpoint << std::endl;
-    curl_easy_cleanup( handle );
     authorization_failed = true;
     return false;
   }
 
   token = response[ "access_token" ].GetString();
-
-  curl_easy_cleanup( handle );
 
   return true;
 }

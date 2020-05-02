@@ -53,6 +53,8 @@ SRC += \
     interfaces$(PATHSEP)wowhead.cpp \
     interfaces$(PATHSEP)sc_js.cpp \
     interfaces$(PATHSEP)sc_http.cpp \
+    interfaces$(PATHSEP)sc_http_curl.cpp \
+    interfaces$(PATHSEP)sc_http_wininet.cpp \
     interfaces$(PATHSEP)sc_bcp_api.cpp \
     item$(PATHSEP)enchants.cpp \
     item$(PATHSEP)item.cpp \
