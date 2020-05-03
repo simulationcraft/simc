@@ -36,7 +36,6 @@ struct item_t;
 
 const unsigned NUM_SPELL_FLAGS = 14;
 const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
-#define SC_USE_PTR 0
 
 struct stat_data_t
 {
