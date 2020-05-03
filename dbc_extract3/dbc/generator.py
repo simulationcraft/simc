@@ -4061,12 +4061,7 @@ class SpellItemEnchantmentGenerator(DataGenerator):
     def __init__(self, options, data_store):
         super().__init__(options, data_store)
 
-        self._dbc = ['SpellName', 'SpellEffect', 'GemProperties', 'SpellItemEnchantment']
-
-        if options.build < 23436:
-            self._dbc.append('Item-sparse')
-        else:
-            self._dbc.append('ItemSparse')
+        self._dbc = ['SpellName', 'SpellEffect', 'GemProperties', 'SpellItemEnchantment', 'ItemSparse']
 
     def filter_linked_spells(self, source_db, data, target_db, target_attr):
         for effect in data._effects:
@@ -4081,14 +4076,14 @@ class SpellItemEnchantmentGenerator(DataGenerator):
         if not super().initialize():
             return False
 
-        self._data_store.link('SpellEffect', self._options.build < 25600 and 'id_spell' or 'id_parent', 'SpellName', 'add_effect' )
+        self._data_store.link('SpellEffect', 'id_parent', 'SpellName', 'add_effect' )
 
         # Map spell ids to spellitemenchantments, as there's no direct
         # link between them, and 5.4+, we need/want to scale enchants properly
         self._data_store.link('SpellName', self.filter_linked_spells, 'SpellItemEnchantment', 'spells')
 
         # Map items to gem properties
-        self._data_store.link(self._options.build < 23436 and 'Item-Sparse' or 'ItemSparse', 'gem_props', 'GemProperties', 'item')
+        self._data_store.link('ItemSparse', 'gem_props', 'GemProperties', 'item')
 
         # Map gem properties to enchants
         self._data_store.link('GemProperties', 'id_enchant', 'SpellItemEnchantment', 'gem_property')
@@ -4099,20 +4094,16 @@ class SpellItemEnchantmentGenerator(DataGenerator):
         return self._spellitemenchantment_db.keys()
 
     def generate(self, ids = None):
-        self._out.write('#define %sSPELL_ITEM_ENCH%s_SIZE (%d)\n\n' % (
-            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
-            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
-            len(ids)
-        ))
         self._out.write('// Item enchantment data, wow build %s\n' % self._options.build)
-        self._out.write('static struct item_enchantment_data_t __%sspell_item_ench%s_data[] = {\n' % (
+        self._out.write('static constexpr std::array<item_enchantment_data_t, %d> __%sspell_item_ench%s_data { {\n' % (
+            len(ids),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
-        for i in sorted(ids) + [ 0 ]:
+        for i in sorted(ids):
             ench_data = self._spellitemenchantment_db[i]
 
-            fields = ench_data.field('id', 'slot')
+            fields = ench_data.field('id')
             fields += ench_data.get_link('gem_property').get_link('item').field('id')
             fields += ench_data.field('scaling_type', 'min_scaling_level', 'max_scaling_level', 'req_skill', 'req_skill_value')
             fields += [ '{ %s }' % ', '.join(ench_data.field('type_1', 'type_2', 'type_3')) ]
@@ -4123,7 +4114,7 @@ class SpellItemEnchantmentGenerator(DataGenerator):
             fields += ench_data.field('desc')
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-        self._out.write('};\n')
+        self._out.write('} };\n')
 
 class RandomPropertyPointsGenerator(DataGenerator):
     def __init__(self, options, data_store):

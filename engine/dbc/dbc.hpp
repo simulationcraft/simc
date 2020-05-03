@@ -22,6 +22,7 @@
 
 #include "dbc/azerite.hpp"
 #include "dbc/rand_prop_points.hpp"
+#include "dbc/spell_item_enchantment.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -88,9 +89,7 @@ std::size_t        n_items_noptr();
 std::size_t        n_items_ptr();
 const item_set_bonus_t* set_bonus( bool ptr );
 std::size_t             n_set_bonus( bool ptr );
-const item_enchantment_data_t* item_enchantments( bool ptr );
 const item_child_equipment_t* child_equipments( bool ptr );
-std::size_t        n_item_enchantments( bool ptr );
 const gem_property_data_t* gem_properties( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
 const char* specialization_string     ( specialization_e spec );
@@ -1469,12 +1468,6 @@ public:
   std::size_t n_items() const
   { return dbc::n_items( ptr ); }
 
-  const item_enchantment_data_t* item_enchantments() const
-  { return dbc::item_enchantments( ptr ); }
-
-  std::size_t n_item_enchantments() const
-  { return dbc::n_item_enchantments( ptr ); }
-
   const gem_property_data_t* gem_properties() const
   { return dbc::gem_properties( ptr ); }
 
@@ -1553,7 +1546,10 @@ public:
   { return find_by_id<talent_data_t>( talent_id ); }
 
   const item_data_t*             item( unsigned item_id ) const;
-  const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) const;
+
+  const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) const
+  { return item_enchantment_data_t::find( enchant_id, ptr ); }
+
   const gem_property_data_t&     gem_property( unsigned gem_id ) const;
 
   const random_prop_data_t&      random_property( unsigned ilevel ) const

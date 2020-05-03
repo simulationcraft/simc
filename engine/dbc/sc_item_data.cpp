@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 
 #include "dbc/item_effect.hpp"
+#include "dbc/spell_item_enchantment.hpp"
 
 #include "generated/sc_item_data2.inc"
 #if SC_USE_PTR
@@ -39,9 +40,7 @@ namespace {
   };
 
   item_data_t nil_item_data;
-  item_enchantment_data_t nil_ied;
   gem_property_data_t nil_gpd;
-  dbc_index_t<item_enchantment_data_t, id_member_policy> item_enchantment_data_index;
   dbc_index_t<item_data_t, id_member_policy> item_data_index;
 
   typedef filtered_dbc_index_t<item_data_t, potion_filter_t, id_member_policy> potion_data_t;
@@ -256,14 +255,6 @@ std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) co
   return entries;
 }
 
-const item_enchantment_data_t& dbc_t::item_enchantment( unsigned enchant_id ) const
-{
-  if ( const item_enchantment_data_t* p = item_enchantment_data_index.get( maybe_ptr( ptr ), enchant_id ) )
-    return *p;
-  else
-    return nil_ied;
-}
-
 const item_data_t* dbc_t::item( unsigned item_id ) const
 { return item_data_index.get( ptr, item_id ); }
 
@@ -307,31 +298,6 @@ size_t dbc::n_items( bool ptr )
 #if SC_USE_PTR
   if ( ptr )
     n = n_items_ptr();
-#endif
-
-  return n;
-}
-
-const item_enchantment_data_t* dbc::item_enchantments( bool ptr )
-{
-  ( void )ptr;
-
-  const item_enchantment_data_t* p = __spell_item_ench_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_spell_item_ench_data;
-#endif
-  return p;
-}
-
-size_t dbc::n_item_enchantments( bool ptr )
-{
-  ( void )ptr;
-
-  size_t n = SPELL_ITEM_ENCH_SIZE;
-#if SC_USE_PTR
-  if ( ptr )
-    n = PTR_SPELL_ITEM_ENCH_SIZE;
 #endif
 
   return n;
@@ -387,14 +353,12 @@ void dbc::init_item_data()
 {
   // Create id-indexes
   item_data_index.init( __items_noptr(), false );
-  item_enchantment_data_index.init( __spell_item_ench_data, false );
   potion_data_index.init( __items_noptr(), false );
   flask_data_index.init( __items_noptr(), false );
   food_data_index.init( __items_noptr(), false );
   gem_index.init( __items_noptr(), false );
 #if SC_USE_PTR
   item_data_index.init( __items_ptr(), true );
-  item_enchantment_data_index.init( __ptr_spell_item_ench_data, true );
   potion_data_index.init( __items_ptr(), true );
   flask_data_index.init( __items_ptr(), true );
   food_data_index.init( __items_ptr(), true );

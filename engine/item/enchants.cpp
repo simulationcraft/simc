@@ -11,6 +11,8 @@
 #include "dbc/item_database.hpp"
 #include "sim/sc_sim.hpp"
 
+#include "dbc/spell_item_enchantment.hpp"
+
 using namespace enchant;
 
 // TODO: Check if Power Torrent, Jade Spirit share buffs, or allow separate
@@ -192,26 +194,33 @@ std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantm
 const item_enchantment_data_t& enchant::find_item_enchant( const item_t& item,
                                                            const std::string& name )
 {
+  auto enchant_id = find_enchant_id( name );
   // Check additional mapping table first
-  if ( find_enchant_id( name ) > 0 )
-    return item.player -> dbc.item_enchantment( find_enchant_id( name ) );
-
-  for ( const item_enchantment_data_t* item_enchant = item.player -> dbc.item_enchantments();
-        item_enchant -> id != 0;
-        item_enchant++ )
+  if ( enchant_id > 0 )
   {
-    if ( ! item_enchant -> name && ! item_enchant -> id_spell )
-      continue;
-
-    const spell_data_t* enchant_spell = item.player -> dbc.spell( item_enchant -> id_spell );
-    if ( ! enchant_spell -> valid_item_enchantment( item.inv_type() ) )
-      continue;
-
-    if ( util::str_compare_ci( name, encoded_enchant_name( item.player -> dbc, *item_enchant ) ) )
-      return *item_enchant;
+    return item.player->dbc.item_enchantment( enchant_id );
   }
 
-  return item.player -> dbc.item_enchantment( 0 );
+  for ( const auto& item_enchant : item_enchantment_data_t::data( item.player->dbc.ptr ) )
+  {
+    if ( !item_enchant.name && !item_enchant.id_spell )
+    {
+      continue;
+    }
+
+    const spell_data_t* enchant_spell = item.player->dbc.spell( item_enchant.id_spell );
+    if ( !enchant_spell->valid_item_enchantment( item.inv_type() ) )
+    {
+      continue;
+    }
+
+    if ( util::str_compare_ci( name, encoded_enchant_name( item.player->dbc, item_enchant ) ) )
+    {
+      return item_enchant;
+    }
+  }
+
+  return item_enchantment_data_t::nil();
 }
 
 /**

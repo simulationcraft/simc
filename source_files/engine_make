@@ -101,3 +101,4 @@ SRC += \
     sc_util.cpp \
     dbc$(PATHSEP)azerite.cpp \
     dbc$(PATHSEP)rand_prop_points.cpp \
+    dbc$(PATHSEP)spell_item_enchantment.cpp \
