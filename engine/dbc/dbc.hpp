@@ -23,6 +23,7 @@
 #include "dbc/azerite.hpp"
 #include "dbc/rand_prop_points.hpp"
 #include "dbc/spell_item_enchantment.hpp"
+#include "dbc/item_armor.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -35,7 +36,7 @@ struct item_t;
 
 const unsigned NUM_SPELL_FLAGS = 14;
 const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
-#define SC_USE_PTR 0
+#define SC_USE_PTR 1
 
 struct stat_data_t
 {
@@ -1563,10 +1564,17 @@ public:
   const item_scale_data_t&       item_damage_caster_1h( unsigned ilevel ) const;
   const item_scale_data_t&       item_damage_caster_2h( unsigned ilevel ) const;
 
-  const item_scale_data_t&       item_armor_quality( unsigned ilevel ) const;
-  const item_scale_data_t&       item_armor_shield( unsigned ilevel ) const;
-  const item_armor_type_data_t&  item_armor_total( unsigned ilevel ) const;
-  const item_armor_type_data_t&  item_armor_inv_type( unsigned inv_type ) const;
+  const item_armor_quality_data_t&       item_armor_quality( unsigned ilevel ) const
+  { return item_armor_quality_data_t::find( ilevel, ptr ); }
+
+  const item_armor_shield_data_t& item_armor_shield( unsigned ilevel ) const
+  { return item_armor_shield_data_t::find( ilevel, ptr ); }
+
+  const item_armor_total_data_t&  item_armor_total( unsigned ilevel ) const
+  { return item_armor_total_data_t::find( ilevel, ptr ); }
+
+  const item_armor_location_data_t&  item_armor_inv_type( unsigned inv_type ) const
+  { return item_armor_location_data_t::find( inv_type, ptr ); }
 
   std::vector<const item_bonus_entry_t*> item_bonus( unsigned bonus_id ) const;
 

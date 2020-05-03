@@ -193,48 +193,6 @@ const item_scale_data_t& dbc_t::item_damage_caster_2h( unsigned ilevel ) const
 #endif
 }
 
-const item_scale_data_t& dbc_t::item_armor_quality( unsigned ilevel ) const
-{
-  static item_scale_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemarmorquality_data[ ilevel - 1 ] : __itemarmorquality_data[ ilevel - 1 ];
-#else
-  return __itemarmorquality_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_armor_shield( unsigned ilevel ) const
-{
-  static item_scale_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemarmorshield_data[ ilevel - 1 ] : __itemarmorshield_data[ ilevel - 1 ];
-#else
-  return __itemarmorshield_data[ ilevel - 1 ];
-#endif
-}
-
-const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) const
-{
-  static item_armor_type_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemarmortotal_data[ ilevel - 1 ] : __itemarmortotal_data[ ilevel - 1 ];
-#else
-  return __itemarmortotal_data[ ilevel - 1 ];
-#endif
-}
-
 std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) const
 {
 #if SC_USE_PTR
@@ -334,16 +292,6 @@ item_bonus_node_entry_t& dbc_t::resolve_item_bonus_map_data( unsigned level ) co
                  __item_bonus_map_data[level - 1];
 #else
     return __item_bonus_map_data[level - 1];
-#endif
-}
-
-const item_armor_type_data_t& dbc_t::item_armor_inv_type( unsigned inv_type ) const
-{
-  assert( inv_type > 0 && inv_type <= 23 );
-#if SC_USE_PTR
-  return ptr ? __ptr_armor_slot_data[ inv_type - 1 ] : __armor_slot_data[ inv_type - 1 ];
-#else
-  return __armor_slot_data[ inv_type - 1 ];
 #endif
 }
 
@@ -1036,7 +984,7 @@ uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, 
 
   // Shield have separate armor table, bypass normal calculation
   if ( item -> item_class == ITEM_CLASS_ARMOR && item -> item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
-    return ( uint32_t ) floor( dbc.item_armor_shield( ilevel ).values[ item -> quality ] + 0.5 );
+    return ( uint32_t ) floor( dbc.item_armor_shield( ilevel ).value( item -> quality ) + 0.5 );
 
   // Only Cloth, Leather, Mail and Plate armor has innate armor values
   if ( item -> item_subclass == ITEM_SUBCLASS_ARMOR_MISC || item -> item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
@@ -1057,11 +1005,11 @@ uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, 
     case INVTYPE_CLOAK:
     case INVTYPE_ROBE:
     {
-      total_armor = dbc.item_armor_total( ilevel ).armor_type[ item -> item_subclass - 1 ];
-      m_quality   = dbc.item_armor_quality( ilevel ).values[ item -> quality ];
+      total_armor = dbc.item_armor_total( ilevel ).value( item->item_subclass - 1 );
+      m_quality   = dbc.item_armor_quality( ilevel ).value( item->quality );
       unsigned invtype = item -> inventory_type;
       if ( invtype == INVTYPE_ROBE ) invtype = INVTYPE_CHEST;
-      m_invtype = dbc.item_armor_inv_type( invtype ).armor_type[ item -> item_subclass - 1 ];
+      m_invtype = dbc.item_armor_inv_type( invtype ).value( item->item_subclass - 1 );
       break;
     }
     default: return 0;

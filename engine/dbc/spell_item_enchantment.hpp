@@ -7,6 +7,8 @@
 
 #include "util/array_view.hpp"
 
+#include "client_data.hpp"
+
 struct item_enchantment_data_t
 {
   unsigned    id;
@@ -23,10 +25,13 @@ struct item_enchantment_data_t
   unsigned    id_spell;            // reverse mapped spell id for this enchant
   const char* name;
 
-  static const item_enchantment_data_t& find( unsigned id, bool ptr );
-  static arv::array_view<item_enchantment_data_t> data( bool ptr );
+  static const item_enchantment_data_t& find( unsigned id, bool ptr )
+  { return dbc::find<item_enchantment_data_t>( id, ptr ); }
 
-  static const item_enchantment_data_t& nil();
+  static const item_enchantment_data_t& nil()
+  { return dbc::nil<item_enchantment_data_t>(); }
+
+  static arv::array_view<item_enchantment_data_t> data( bool ptr );
 };
 
 #endif /* SPELL_ITEM_ENCHANTMENT */

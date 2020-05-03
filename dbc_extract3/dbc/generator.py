@@ -4200,13 +4200,16 @@ class ArmorValueDataGenerator(DataGenerator):
         for dbname in self._dbc:
             db = getattr(self, '_%s_db' % dbname.lower() )
 
-            self._out.write('// Item armor values data from %s.dbc, ilevels 1-%d, wow build %s\n' % (
+            self._out.write('// Item armor values data from %s.db2, ilevels 1-%d, wow build %s\n' % (
                 dbname, self._options.scale_ilevel, self._options.build ))
 
-            self._out.write('static struct %s __%s%s%s_data[] = {\n' % (
-                (dbname != 'ItemArmorTotal') and 'item_scale_data_t' or 'item_armor_type_data_t',
+            tokenized_name = '_'.join(re.findall('[A-Z][^A-Z]*', dbname)).lower()
+            struct_name = '{}_data_t'.format(tokenized_name)
+
+            self._out.write('static constexpr std::array<%s, %d> __%s%s%s_data { {\n' % (
+                struct_name, len(db.items()),
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
-                dbname.lower(),
+                tokenized_name,
                 self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
             for ilevel, data in db.items():
@@ -4220,35 +4223,30 @@ class ArmorValueDataGenerator(DataGenerator):
                     fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4')) ]
                 self._out.write('  { %s },\n' % (', '.join(fields)))
 
-            if dbname != 'ItemArmorTotal':
-                self._out.write('  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0, 0, 0, 0 }' ]) ))
-            else:
-                self._out.write('  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0 }' ]) ))
-            self._out.write('};\n\n')
+            self._out.write('} };\n\n')
 
-class ArmorSlotDataGenerator(DataGenerator):
+class ArmorLocationDataGenerator(DataGenerator):
     def __init__(self, options, data_store):
-        self._dbc = [ 'ArmorLocation' ]
         super().__init__(options, data_store)
 
-    def filter(self):
-        return None
+        self._dbc = [ 'ArmorLocation' ]
 
     def generate(self, ids = None):
-        s = '// Inventory type based armor multipliers, wow build %s\n' % ( self._options.build )
+        s = '// Armor location based multipliers, wow build %s\n' % ( self._options.build )
 
-        self._out.write('static struct item_armor_type_data_t __%sarmor_slot%s_data[] = {\n' % (
+        self._out.write('static constexpr std::array<item_armor_location_data_t, %d> __%sarmor_location%s_data { {\n' % (
+            len(self._armorlocation_db.keys()),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
         for inv_type in sorted(self._armorlocation_db.keys()):
             data = self._armorlocation_db[inv_type]
+
             fields = data.field('id')
             fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4')) ]
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-        self._out.write('  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0 }' ]) ))
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
 class GemPropertyDataGenerator(DataGenerator):
     def __init__(self, options, data_store):

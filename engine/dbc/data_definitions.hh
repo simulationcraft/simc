@@ -234,11 +234,6 @@ struct item_scale_data_t {
   double   values[7];             // quality based values for dps
 };
 
-struct item_armor_type_data_t {
-  unsigned ilevel;
-  double   armor_type[4];
-};
-
 struct item_socket_cost_data_t {
   unsigned ilevel;
   double   cost;

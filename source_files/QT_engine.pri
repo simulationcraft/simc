@@ -85,6 +85,7 @@
  HEADERS += engine/dbc/azerite.hpp
  HEADERS += engine/dbc/rand_prop_points.hpp
  HEADERS += engine/dbc/spell_item_enchantment.hpp
+ HEADERS += engine/dbc/item_armor.hpp
  HEADERS += engine/class_modules/paladin/sc_paladin.hpp
  HEADERS += engine/class_modules/warlock/sc_warlock.hpp
  HEADERS += engine/class_modules/priest/sc_priest.hpp
@@ -188,3 +189,4 @@
  SOURCES += engine/dbc/azerite.cpp
  SOURCES += engine/dbc/rand_prop_points.cpp
  SOURCES += engine/dbc/spell_item_enchantment.cpp
+ SOURCES += engine/dbc/item_armor.cpp
