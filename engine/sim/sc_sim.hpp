@@ -41,6 +41,14 @@ namespace unique_gear {
     struct pantheon_state_t;
 }
 
+struct sim_progress_t
+{
+  int current_iterations;
+  int total_iterations;
+  double pct() const
+  { return std::min( 1.0, current_iterations / static_cast<double>(total_iterations) ); }
+};
+
 /// Simulation engine
 struct sim_t : private sc_thread_t
 {

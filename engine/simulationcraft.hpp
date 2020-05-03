@@ -384,44 +384,6 @@ struct iteration_data_entry_t
   { target_health.push_back( h ); }
 };
 
-// Simulation Setup =========================================================
-
-struct player_description_t
-{
-  // Add just enough to describe a player
-
-  // name, class, talents, gear, professions, actions explicitly stored
-  std::string name;
-  // etc
-
-  // flesh out API, these functions cannot depend upon sim_t
-  // ideally they remain static, but if not then move to sim_control_t
-  static void load_bcp    ( player_description_t& /*etc*/ );
-  static void load_wowhead( player_description_t& /*etc*/ );
-};
-
-struct combat_description_t
-{
-  std::string name;
-  int target_seconds;
-  std::string raid_events;
-  // etc
-};
-
-struct sim_control_t
-{
-  combat_description_t combat;
-  std::vector<player_description_t> players;
-  option_db_t options;
-};
-
-struct sim_progress_t
-{
-  int current_iterations;
-  int total_iterations;
-  double pct() const
-  { return std::min( 1.0, current_iterations / static_cast<double>(total_iterations) ); }
-};
 
 #include "sim/progress_bar.hpp"
 
@@ -1043,35 +1005,7 @@ struct action_variable_t
   void optimize();
 };
 
-struct player_scaling_t
-{
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_normalized;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_error;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_delta_dps;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_compare_error;
-  std::array<double, SCALE_METRIC_MAX> scaling_lag, scaling_lag_error;
-  std::array<bool, STAT_MAX> scales_with;
-  std::array<double, STAT_MAX> over_cap;
-  std::array<std::vector<stat_e>, SCALE_METRIC_MAX> scaling_stats; // sorting vector
-
-  player_scaling_t()
-  {
-    range::fill( scaling_lag, 0 );
-    range::fill( scaling_lag_error, 0 );
-    range::fill( scales_with, false );
-    range::fill( over_cap, 0 );
-  }
-
-  void enable( stat_e stat )
-  { scales_with[ stat ] = true; }
-
-  void disable( stat_e stat )
-  { scales_with[ stat ] = false; }
-
-  void set( stat_e stat, bool state )
-  { scales_with[ stat ] = state; }
-};
+#include "player/player_scaling.hpp"
 
 #include "player/player_resources.hpp"
 

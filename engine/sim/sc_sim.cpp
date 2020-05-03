@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "sc_sim.hpp"
+#include "sim_control.hpp"
 #include "simulationcraft.hpp"
 #include "report/sc_highchart.hpp"
 #include "sc_profileset.hpp"

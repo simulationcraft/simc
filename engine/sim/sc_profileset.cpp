@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "sc_profileset.hpp"
+#include "sim_control.hpp"
 
 #ifndef SC_NO_THREADING
 
