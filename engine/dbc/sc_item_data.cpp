@@ -40,7 +40,6 @@ namespace {
   };
 
   item_data_t nil_item_data;
-  gem_property_data_t nil_gpd;
   dbc_index_t<item_data_t, id_member_policy> item_data_index;
 
   typedef filtered_dbc_index_t<item_data_t, potion_filter_t, id_member_policy> potion_data_t;
@@ -160,26 +159,6 @@ std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) co
 const item_data_t* dbc_t::item( unsigned item_id ) const
 { return item_data_index.get( ptr, item_id ); }
 
-const gem_property_data_t& dbc_t::gem_property( unsigned gem_id ) const
-{
-  ( void )ptr;
-
-#if SC_USE_PTR
-  const gem_property_data_t* p = ptr ? __ptr_gem_property_data : __gem_property_data;
-#else
-  const gem_property_data_t* p = __gem_property_data;
-#endif
-
-  do
-  {
-    if ( p -> id == gem_id )
-      return *p;
-  }
-  while ( ( p++ ) -> id );
-
-  return nil_gpd;
-}
-
 const item_data_t* dbc::items( bool ptr )
 {
   ( void )ptr;
@@ -203,18 +182,6 @@ size_t dbc::n_items( bool ptr )
 #endif
 
   return n;
-}
-
-const gem_property_data_t* dbc::gem_properties( bool ptr )
-{
-  ( void )ptr;
-
-  const gem_property_data_t* p = __gem_property_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_gem_property_data;
-#endif
-  return p;
 }
 
 item_bonus_tree_entry_t& dbc_t::resolve_item_bonus_tree_data( unsigned level ) const

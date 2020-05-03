@@ -104,3 +104,4 @@ SRC += \
     dbc$(PATHSEP)spell_item_enchantment.cpp \
     dbc$(PATHSEP)item_armor.cpp \
     dbc$(PATHSEP)item_weapon.cpp \
+    dbc$(PATHSEP)gem_data.cpp \

@@ -239,13 +239,6 @@ struct item_socket_cost_data_t {
   double   cost;
 };
 
-struct gem_property_data_t {
-  unsigned id;
-  unsigned enchant_id;
-  unsigned color;
-  unsigned min_ilevel;
-};
-
 
 #ifdef __OpenBSD__
 #pragma pack()

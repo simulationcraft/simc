@@ -8,6 +8,8 @@
 #include "config.hpp"
 #include "sc_enums.hpp"
 #include "item.hpp"
+#include "dbc/gem_data.hpp"
+
 #include <string>
 
 class dbc_t;

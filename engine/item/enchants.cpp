@@ -418,17 +418,15 @@ bool enchant::passive_enchant( item_t& item, unsigned spell_id )
  * (capacitive_primal_diamond), and the "short" form of the tokenized name
  * (capacitive_primal).
  */
-const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t&       dbc, 
+const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t&       dbc,
                                                        const std::string& encoding )
 {
-  for ( const gem_property_data_t* gem_property = dbc.gem_properties();
-        gem_property -> id != 0;
-        gem_property++ )
+  for ( const auto& gem_property : gem_property_data_t::data( dbc.ptr ) )
   {
-    if ( gem_property -> color != SOCKET_COLOR_META )
+    if ( gem_property.color != SOCKET_COLOR_META )
       continue;
 
-    const item_enchantment_data_t& data = dbc.item_enchantment( gem_property -> enchant_id );
+    const item_enchantment_data_t& data = dbc.item_enchantment( gem_property.enchant_id );
     if ( data.id == 0 )
       continue;
 
@@ -449,7 +447,7 @@ const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t&       dbc,
     std::string::size_type offset = tokenized_name.find( "_diamond" );
     if ( offset != std::string::npos )
       shortname = tokenized_name.substr( 0, offset );
-    
+
     if ( util::str_in_str_ci( encoding, tokenized_name ) ||
          ( ! shortname.empty() && util::str_in_str_ci( encoding, shortname ) ) )
     {

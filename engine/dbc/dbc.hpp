@@ -25,6 +25,7 @@
 #include "dbc/spell_item_enchantment.hpp"
 #include "dbc/item_armor.hpp"
 #include "dbc/item_weapon.hpp"
+#include "dbc/gem_data.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -91,7 +92,6 @@ std::size_t        n_items_ptr();
 const item_set_bonus_t* set_bonus( bool ptr );
 std::size_t             n_set_bonus( bool ptr );
 const item_child_equipment_t* child_equipments( bool ptr );
-const gem_property_data_t* gem_properties( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
 const char* specialization_string     ( specialization_e spec );
 double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
@@ -1469,9 +1469,6 @@ public:
   std::size_t n_items() const
   { return dbc::n_items( ptr ); }
 
-  const gem_property_data_t* gem_properties() const
-  { return dbc::gem_properties( ptr ); }
-
   // Gametables removed in Legion
   double melee_crit_base( player_e, unsigned ) const
   { return 0.05; }
@@ -1551,7 +1548,8 @@ public:
   const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) const
   { return item_enchantment_data_t::find( enchant_id, ptr ); }
 
-  const gem_property_data_t&     gem_property( unsigned gem_id ) const;
+  const gem_property_data_t&     gem_property( unsigned gem_id ) const
+  { return gem_property_data_t::find( gem_id, ptr ); }
 
   const random_prop_data_t&      random_property( unsigned ilevel ) const
   { return random_prop_data_t::find( ilevel, ptr ); }

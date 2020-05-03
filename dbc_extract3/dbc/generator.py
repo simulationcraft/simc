@@ -4170,7 +4170,7 @@ class WeaponDamageDataGenerator(DataGenerator):
             data = list(filter(lambda v: v.id <= self._options.scale_ilevel, db.values()))
 
             tokenized_name = '_'.join(re.findall('[A-Z][^A-Z]*', dbname)).lower()
-            struct_name = '{}_t'.format(tokenized_name)
+            struct_name = '{}_data_t'.format(tokenized_name)
 
             self._out.write('// Item damage data from %s.db2, ilevels 1-%d, wow build %s\n' % (
                 dbname, self._options.scale_ilevel, self._options.build ))
@@ -4245,33 +4245,27 @@ class ArmorLocationDataGenerator(DataGenerator):
 
 class GemPropertyDataGenerator(DataGenerator):
     def __init__(self, options, data_store):
-        self._dbc = [ 'GemProperties' ]
         super().__init__(options, data_store)
 
-    def filter(self):
-        ids = []
-        for id, data in self._gemproperties_db.items():
-            if not data.color or not data.id_enchant:
-                continue
+        self._dbc = [ 'GemProperties' ]
 
-            ids.append(id)
-        return ids
+    def filter(self):
+        return [ v for v in self._gemproperties_db.values() if v.color > 0 or v.id_enchant > 0 ]
 
     def generate(self, ids = None):
-        ids.sort()
+        ids.sort(key = lambda v: v.id)
         self._out.write('// Gem properties, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static struct gem_property_data_t __%sgem_property%s_data[] = {\n' % (
+        self._out.write('static constexpr std::array<gem_property_data_t, %d> __%sgem_property%s_data { {\n' % (
+            len(ids),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
-        for id in ids + [ 0 ]:
-            data = self._gemproperties_db[id]
-
+        for data in ids:
             fields = data.field('id', 'id_enchant', 'color', 'min_ilevel')
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
 class ItemBonusDataGenerator(DataGenerator):
     def __init__(self, options, data_store):

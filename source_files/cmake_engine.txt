@@ -83,6 +83,7 @@ dbc/rand_prop_points.hpp
 dbc/spell_item_enchantment.hpp
 dbc/item_armor.hpp
 dbc/item_weapon.hpp
+dbc/gem_data.hpp
 class_modules/paladin/sc_paladin.hpp
 class_modules/warlock/sc_warlock.hpp
 class_modules/priest/sc_priest.hpp
@@ -188,4 +189,5 @@ dbc/rand_prop_points.cpp
 dbc/spell_item_enchantment.cpp
 dbc/item_armor.cpp
 dbc/item_weapon.cpp
+dbc/gem_data.cpp
 )
