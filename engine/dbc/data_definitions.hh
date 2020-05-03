@@ -170,15 +170,6 @@ struct item_upgrade_t {
   unsigned ilevel_delta;
 };
 
-struct random_prop_data_t {
-  unsigned ilevel;
-  unsigned damage_replace_stat;
-  unsigned damage_secondary;
-  double   p_epic[5];
-  double   p_rare[5];
-  double   p_uncommon[5];
-};
-
 struct random_suffix_group_t {
   unsigned    id;
   unsigned    suffix_id[48];

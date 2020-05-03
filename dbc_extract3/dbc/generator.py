@@ -4127,9 +4127,9 @@ class SpellItemEnchantmentGenerator(DataGenerator):
 
 class RandomPropertyPointsGenerator(DataGenerator):
     def __init__(self, options, data_store):
-        self._dbc = [ 'RandPropPoints' ]
-
         super().__init__(options, data_store)
+
+        self._dbc = [ 'RandPropPoints' ]
 
     def filter(self):
         ids = [ ]
@@ -4143,33 +4143,24 @@ class RandomPropertyPointsGenerator(DataGenerator):
     def generate(self, ids = None):
         # Sort keys
         ids.sort()
-        self._out.write('#define %sRAND_PROP_POINTS%s_SIZE (%d)\n\n' % (
-            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
-            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
-            len(ids)
-        ))
         self._out.write('// Random property points for item levels 1-%d, wow build %s\n' % (
             self._options.scale_ilevel, self._options.build ))
-        self._out.write('static struct random_prop_data_t __%srand_prop_points%s_data[] = {\n' % (
+        self._out.write('static constexpr std::array<random_prop_data_t, %d> __%srand_prop_points%s_data { {\n' % (
+            len(ids),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
-        for id in ids + [ 0 ]:
+        for id in ids:
             rpp = self._randproppoints_db[id]
 
-            fields = rpp.field('id', 'damage_replace_stat')
-            if self._options.build >= dbc.WowVersion(8, 2, 0, 0):
-                fields += rpp.field('damage_secondary')
-            else:
-                fields += '0'
-
+            fields = rpp.field('id', 'damage_replace_stat', 'damage_secondary')
             fields += [ '{ %s }' % ', '.join(rpp.field('epic_points_1', 'epic_points_2', 'epic_points_3', 'epic_points_4', 'epic_points_5')) ]
             fields += [ '{ %s }' % ', '.join(rpp.field('rare_points_1', 'rare_points_2', 'rare_points_3', 'rare_points_4', 'rare_points_5')) ]
             fields += [ '{ %s }' % ', '.join(rpp.field('uncm_points_1', 'uncm_points_2', 'uncm_points_3', 'uncm_points_4', 'uncm_points_5')) ]
 
-            self._out.write('  { %s },\n' % (', '.join(fields)))
+            self._out.write(' { %s },\n' % (', '.join(fields)))
 
-        self._out.write('};\n')
+        self._out.write('} };\n')
 
 class WeaponDamageDataGenerator(DataGenerator):
     def __init__(self, options, data_store):

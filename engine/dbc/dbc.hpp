@@ -21,6 +21,7 @@
 #include "sc_util.hpp"
 
 #include "dbc/azerite.hpp"
+#include "dbc/rand_prop_points.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -1555,8 +1556,12 @@ public:
   const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) const;
   const gem_property_data_t&     gem_property( unsigned gem_id ) const;
 
-  const random_prop_data_t&      random_property( unsigned ilevel ) const;
-  unsigned                            random_property_max_level() const;
+  const random_prop_data_t&      random_property( unsigned ilevel ) const
+  { return random_prop_data_t::find( ilevel, ptr ); }
+
+  unsigned                       random_property_max_level() const
+  { return random_prop_data_t::data( ptr ).back().ilevel; }
+
   const item_scale_data_t&       item_damage_1h( unsigned ilevel ) const;
   const item_scale_data_t&       item_damage_2h( unsigned ilevel ) const;
   const item_scale_data_t&       item_damage_caster_1h( unsigned ilevel ) const;

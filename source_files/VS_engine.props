@@ -84,6 +84,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\config.hpp" />
 		<ClInclude Include="..\engine\dbc\data_enums.hh" />
 		<ClInclude Include="..\engine\dbc\data_definitions.hh" />
+		<ClInclude Include="..\engine\dbc\azerite.hpp" />
 		<ClInclude Include="..\engine\class_modules\paladin\sc_paladin.hpp" />
 		<ClInclude Include="..\engine\class_modules\warlock\sc_warlock.hpp" />
 		<ClInclude Include="..\engine\class_modules\priest\sc_priest.hpp" />
@@ -379,6 +380,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\azerite.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\dbc\rand_prop_points.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 	</ItemGroup>

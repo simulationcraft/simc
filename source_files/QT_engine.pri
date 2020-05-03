@@ -82,6 +82,7 @@
  HEADERS += engine/config.hpp
  HEADERS += engine/dbc/data_enums.hh
  HEADERS += engine/dbc/data_definitions.hh
+ HEADERS += engine/dbc/azerite.hpp
  HEADERS += engine/class_modules/paladin/sc_paladin.hpp
  HEADERS += engine/class_modules/warlock/sc_warlock.hpp
  HEADERS += engine/class_modules/priest/sc_priest.hpp
@@ -183,3 +184,4 @@
  SOURCES += engine/action/sc_action.cpp
  SOURCES += engine/sc_util.cpp
  SOURCES += engine/dbc/azerite.cpp
+ SOURCES += engine/dbc/rand_prop_points.cpp

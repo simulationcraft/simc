@@ -137,30 +137,6 @@ const char* dbc::item_name_description( unsigned id, bool ptr )
 
   return nullptr;
 }
-unsigned dbc_t::random_property_max_level() const
-{
-  int n = RAND_PROP_POINTS_SIZE;
-#if SC_USE_PTR
-  if ( ptr )
-    n = PTR_RAND_PROP_POINTS_SIZE;
-#endif
-  assert( n > 0 );
-  return as<unsigned>( n );
-}
-
-const random_prop_data_t& dbc_t::random_property( unsigned ilevel ) const
-{
-  static random_prop_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_rand_prop_points_data[ ilevel - 1 ] : __rand_prop_points_data[ ilevel - 1 ];
-#else
-  return __rand_prop_points_data[ ilevel - 1 ];
-#endif
-}
 
 const item_scale_data_t& dbc_t::item_damage_1h( unsigned ilevel ) const
 {
