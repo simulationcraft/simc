@@ -6,6 +6,7 @@
 #include "item/special_effect.hpp"
 #include "sim/sc_sim.hpp"
 #include "player/unique_gear.hpp"
+#include "sim/scale_factor_control.hpp"
 
 namespace
 {

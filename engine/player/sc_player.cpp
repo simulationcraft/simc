@@ -4,12 +4,13 @@
 // ==========================================================================
 
 #include "sc_player.hpp"
+#include "sim/scale_factor_control.hpp"
+#include "dbc/azerite.hpp"
 #include <cerrno>
 #include <memory>
 
 #include "simulationcraft.hpp"
 
-#include "dbc/azerite.hpp"
 
 namespace
 {

@@ -16,7 +16,7 @@ SRC += \
     sim$(PATHSEP)real_ppm.cpp \
     sim$(PATHSEP)spawner.cpp \
     sim$(PATHSEP)sc_sim.cpp \
-    sim$(PATHSEP)sc_scaling.cpp \
+    sim$(PATHSEP)scale_factor_control.cpp \
     sim$(PATHSEP)sc_reforge_plot.cpp \
     sim$(PATHSEP)sc_raid_event.cpp \
     sim$(PATHSEP)sc_progress_bar.cpp \

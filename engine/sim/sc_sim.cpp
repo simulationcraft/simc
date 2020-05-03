@@ -8,6 +8,9 @@
 #include "simulationcraft.hpp"
 #include "report/sc_highchart.hpp"
 #include "sc_profileset.hpp"
+#include "scale_factor_control.hpp"
+#include "player/sc_player.cpp"
+#include "simulationcraft.hpp"
 #ifdef SC_WINDOWS
 #include <direct.h>
 #endif
@@ -1400,7 +1403,7 @@ sim_t::sim_t() :
   default_aura_delay_stddev( timespan_t::from_millis( 5 ) ),
   azerite_status(azerite_control::ENABLED ),
   progress_bar( *this ),
-  scaling( new scaling_t( this ) ),
+  scaling( new scale_factor_control_t( this ) ),
   plot( new plot_t( this ) ),
   reforge_plot( new reforge_plot_t( this ) ),
   elapsed_cpu( 0.0 ),

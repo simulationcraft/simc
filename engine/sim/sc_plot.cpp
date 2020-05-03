@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "simulationcraft.hpp"
+#include "scale_factor_control.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================

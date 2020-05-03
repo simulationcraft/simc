@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
 #include "dbc/sc_spell_info.hpp"
+#include "sim/scale_factor_control.hpp"
 
 // ==========================================================================
 // Report

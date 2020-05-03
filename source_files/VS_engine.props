@@ -135,7 +135,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\sim\sc_sim.cpp">
 			
 		</ClCompile>
-		<ClCompile Include="..\engine\sim\sc_scaling.cpp">
+		<ClCompile Include="..\engine\sim\scale_factor_control.cpp">
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\sc_reforge_plot.cpp">
@@ -148,7 +148,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\sc_profileset.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\sc_plot.cpp">
 			

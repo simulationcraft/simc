@@ -34,7 +34,7 @@ struct reforge_plot_t;
 namespace rng {
   struct rng_t;
 }
-struct scaling_t;
+struct scale_factor_control_t;
 struct sim_control_t;
 struct spell_data_expr_t;
 namespace unique_gear {
@@ -369,7 +369,7 @@ struct sim_t : private sc_thread_t
 
   // Reporting
   progress_bar_t progress_bar;
-  std::unique_ptr<scaling_t> scaling;
+  std::unique_ptr<scale_factor_control_t> scaling;
   std::unique_ptr<plot_t> plot;
   std::unique_ptr<reforge_plot_t> reforge_plot;
   double elapsed_cpu;

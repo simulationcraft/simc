@@ -9,6 +9,7 @@
 #include "player/sc_player.hpp"
 #include "player/player_scaling.hpp"
 #include "sim_control.hpp"
+#include "scale_factor_control.hpp"
 #include "util/gsl-lite/gsl-lite.hpp"
 #include <sstream>
 #include "simulationcraft.hpp"

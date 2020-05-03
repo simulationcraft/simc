@@ -5,6 +5,7 @@
 
 #include "sc_report.hpp"
 #include "interfaces/sc_js.hpp"
+#include "sim/scale_factor_control.hpp"
 #include "simulationcraft.hpp"
 #include "util/git_info.hpp"
 

@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sim/scale_factor_control.hpp"
 
 using namespace unique_gear;
 

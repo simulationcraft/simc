@@ -101,7 +101,7 @@ sim/x6_pantheon.cpp
 sim/real_ppm.cpp
 sim/spawner.cpp
 sim/sc_sim.cpp
-sim/sc_scaling.cpp
+sim/scale_factor_control.cpp
 sim/sc_reforge_plot.cpp
 sim/sc_raid_event.cpp
 sim/sc_progress_bar.cpp

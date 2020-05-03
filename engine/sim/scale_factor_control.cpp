@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "scale_factor_control.hpp"
 #include <memory>
 
 #include "simulationcraft.hpp"
@@ -113,7 +114,7 @@ struct compare_scale_factors
 
 // scaling_t::scaling_t =====================================================
 
-scaling_t::scaling_t( sim_t* s ) :
+scale_factor_control_t::scale_factor_control_t( sim_t* s ) :
   sim( s ), baseline_sim( nullptr ), ref_sim( nullptr ), delta_sim( nullptr ), ref_sim2( nullptr ),
   delta_sim2( nullptr ),
   scale_stat( STAT_NONE ),
@@ -129,14 +130,15 @@ scaling_t::scaling_t( sim_t* s ) :
   current_scaling_stat( STAT_NONE ),
   num_scaling_stats( 0 ),
   remaining_scaling_stats( 0 ),
-  scale_over(), scaling_metric( SCALE_METRIC_DPS ), scale_over_player()
+  scale_over(), scaling_metric( SCALE_METRIC_DPS ), scale_over_player(),
+  stats(new gear_stats_t())
 {
   create_options();
 }
 
 // scaling_t::progress ======================================================
 
-double scaling_t::progress( std::string& phase, std::string* detailed )
+double scale_factor_control_t::progress( std::string& phase, std::string* detailed )
 {
   AUTO_LOCK( mutex );
 
@@ -173,45 +175,45 @@ double scaling_t::progress( std::string& phase, std::string* detailed )
 
 // scaling_t::init_deltas ===================================================
 
-void scaling_t::init_deltas()
+void scale_factor_control_t::init_deltas()
 {
   assert ( scale_delta_multiplier != 0 );
 
   // Use haste rating coefficient * 3.5 to determine default delta
   double default_delta = util::round( sim -> dbc.combat_rating( RATING_MELEE_HASTE, sim -> max_player_level ) * 0.035 ) * scale_delta_multiplier;
 
-  if ( stats.attribute[ ATTR_SPIRIT ] == 0 ) stats.attribute[ ATTR_SPIRIT ] = default_delta;
+  if ( stats->attribute[ ATTR_SPIRIT ] == 0 ) stats->attribute[ ATTR_SPIRIT ] = default_delta;
 
   for ( int i = ATTRIBUTE_NONE + 1; i < ATTRIBUTE_MAX; i++ )
   {
-    if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = default_delta;
+    if ( stats->attribute[ i ] == 0 ) stats->attribute[ i ] = default_delta;
   }
 
-  if ( stats.spell_power == 0 ) stats.spell_power = default_delta;
-  if ( stats.attack_power == 0 ) stats.attack_power = default_delta;
-  if ( stats.crit_rating  == 0 ) stats.crit_rating  = default_delta;
-  if ( stats.haste_rating == 0 ) stats.haste_rating = default_delta;
-  if ( stats.mastery_rating == 0 ) stats.mastery_rating = default_delta;
-  if ( stats.versatility_rating == 0 ) stats.versatility_rating = default_delta;
+  if ( stats->spell_power == 0 ) stats->spell_power = default_delta;
+  if ( stats->attack_power == 0 ) stats->attack_power = default_delta;
+  if ( stats->crit_rating  == 0 ) stats->crit_rating  = default_delta;
+  if ( stats->haste_rating == 0 ) stats->haste_rating = default_delta;
+  if ( stats->mastery_rating == 0 ) stats->mastery_rating = default_delta;
+  if ( stats->versatility_rating == 0 ) stats->versatility_rating = default_delta;
 
   // Defensive
-  if ( stats.armor == 0 ) stats.armor = default_delta;
-  if ( stats.bonus_armor == 0 ) stats.bonus_armor = default_delta;
-  if ( stats.dodge_rating  == 0 ) stats.dodge_rating  = default_delta;
-  if ( stats.parry_rating  == 0 ) stats.parry_rating  = default_delta;
-  if ( stats.block_rating  == 0 ) stats.block_rating  = default_delta;
+  if ( stats->armor == 0 ) stats->armor = default_delta;
+  if ( stats->bonus_armor == 0 ) stats->bonus_armor = default_delta;
+  if ( stats->dodge_rating  == 0 ) stats->dodge_rating  = default_delta;
+  if ( stats->parry_rating  == 0 ) stats->parry_rating  = default_delta;
+  if ( stats->block_rating  == 0 ) stats->block_rating  = default_delta;
 
-  if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = default_delta;
-  if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = default_delta;
+  if ( stats->weapon_dps            == 0 ) stats->weapon_dps            = default_delta;
+  if ( stats->weapon_offhand_dps    == 0 ) stats->weapon_offhand_dps    = default_delta;
 
-  if ( stats.leech_rating          == 0 ) stats.leech_rating          = default_delta;
-  if ( stats.avoidance_rating      == 0 ) stats.avoidance_rating      = default_delta;
-  if ( stats.speed_rating          == 0 ) stats.speed_rating          = default_delta;
+  if ( stats->leech_rating          == 0 ) stats->leech_rating          = default_delta;
+  if ( stats->avoidance_rating      == 0 ) stats->avoidance_rating      = default_delta;
+  if ( stats->speed_rating          == 0 ) stats->speed_rating          = default_delta;
 }
 
 // scaling_t::analyze_stats =================================================
 
-void scaling_t::analyze_stats()
+void scale_factor_control_t::analyze_stats()
 {
   if ( ! calculate_scale_factors ) return;
 
@@ -219,7 +221,7 @@ void scaling_t::analyze_stats()
 
   std::vector<stat_e> stats_to_scale;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-    if ( is_scaling_stat( sim, i ) && ( stats.get_stat( i ) != 0 ) )
+    if ( is_scaling_stat( sim, i ) && ( stats->get_stat( i ) != 0 ) )
       stats_to_scale.push_back( i );
 
   mutex.lock();
@@ -239,7 +241,7 @@ void scaling_t::analyze_stats()
     current_scaling_stat = stats_to_scale[ k ]; // Stat we're scaling over
     const stat_e& stat = current_scaling_stat;
 
-    double scale_delta = stats.get_stat( stat );
+    double scale_delta = stats->get_stat( stat );
     assert ( scale_delta );
 
     bool center = center_scale_delta && ! stat_may_cap( stat );
@@ -354,7 +356,7 @@ void scaling_t::analyze_stats()
  *
  */
 
-void scaling_t::analyze_ability_stats( stat_e stat, double delta, player_t* p, player_t* ref_p, player_t* delta_p )
+void scale_factor_control_t::analyze_ability_stats( stat_e stat, double delta, player_t* p, player_t* ref_p, player_t* delta_p )
 {
   if ( p -> sim -> statistics_level < 3 )
     return;
@@ -378,7 +380,7 @@ void scaling_t::analyze_ability_stats( stat_e stat, double delta, player_t* p, p
 
 // scaling_t::analyze_lag ===================================================
 
-void scaling_t::analyze_lag()
+void scale_factor_control_t::analyze_lag()
 {
   if ( ! calculate_scale_factors || ! scale_lag ) return;
 
@@ -441,7 +443,7 @@ void scaling_t::analyze_lag()
 
 // scaling_t::normalize =====================================================
 
-void scaling_t::normalize()
+void scale_factor_control_t::normalize()
 {
   if ( num_scaling_stats <= 0 ) return;
 
@@ -475,7 +477,7 @@ void scaling_t::normalize()
 
 // scaling_t::analyze =======================================================
 
-void scaling_t::analyze()
+void scale_factor_control_t::analyze()
 {
   if ( sim -> is_canceled() ) return;
   init_deltas();
@@ -510,7 +512,7 @@ void scaling_t::analyze()
 
 // scaling_t::create_options ================================================
 
-void scaling_t::create_options()
+void scale_factor_control_t::create_options()
 {
   sim->add_option(opt_bool("calculate_scale_factors", calculate_scale_factors));
   sim->add_option(opt_func("normalize_scale_factors", parse_normalize_scale_factors));
@@ -520,20 +522,20 @@ void scaling_t::create_options()
   sim->add_option(opt_bool("positive_scale_delta", positive_scale_delta));
   sim->add_option(opt_bool("scale_lag", scale_lag));
   sim->add_option(opt_float("scale_factor_noise", scale_factor_noise));
-  sim->add_option(opt_float("scale_strength", stats.attribute[ATTR_STRENGTH]));
-  sim->add_option(opt_float("scale_agility", stats.attribute[ATTR_AGILITY]));
-  sim->add_option(opt_float("scale_stamina", stats.attribute[ATTR_STAMINA]));
-  sim->add_option(opt_float("scale_intellect", stats.attribute[ATTR_INTELLECT]));
-  sim->add_option(opt_float("scale_spirit", stats.attribute[ATTR_SPIRIT]));
-  sim->add_option(opt_float("scale_spell_power", stats.spell_power));
-  sim->add_option(opt_float("scale_attack_power", stats.attack_power));
-  sim->add_option(opt_float("scale_crit_rating", stats.crit_rating));
-  sim->add_option(opt_float("scale_haste_rating", stats.haste_rating));
-  sim->add_option(opt_float("scale_mastery_rating", stats.mastery_rating));
-  sim->add_option(opt_float("scale_versatility_rating", stats.versatility_rating));
-  sim->add_option(opt_float("scale_weapon_dps", stats.weapon_dps));
-  sim->add_option(opt_float("scale_speed_rating", stats.speed_rating));
-  sim->add_option(opt_float("scale_offhand_weapon_dps", stats.weapon_offhand_dps));
+  sim->add_option(opt_float("scale_strength", stats->attribute[ATTR_STRENGTH]));
+  sim->add_option(opt_float("scale_agility", stats->attribute[ATTR_AGILITY]));
+  sim->add_option(opt_float("scale_stamina", stats->attribute[ATTR_STAMINA]));
+  sim->add_option(opt_float("scale_intellect", stats->attribute[ATTR_INTELLECT]));
+  sim->add_option(opt_float("scale_spirit", stats->attribute[ATTR_SPIRIT]));
+  sim->add_option(opt_float("scale_spell_power", stats->spell_power));
+  sim->add_option(opt_float("scale_attack_power", stats->attack_power));
+  sim->add_option(opt_float("scale_crit_rating", stats->crit_rating));
+  sim->add_option(opt_float("scale_haste_rating", stats->haste_rating));
+  sim->add_option(opt_float("scale_mastery_rating", stats->mastery_rating));
+  sim->add_option(opt_float("scale_versatility_rating", stats->versatility_rating));
+  sim->add_option(opt_float("scale_weapon_dps", stats->weapon_dps));
+  sim->add_option(opt_float("scale_speed_rating", stats->speed_rating));
+  sim->add_option(opt_float("scale_offhand_weapon_dps", stats->weapon_offhand_dps));
   sim->add_option(opt_string("scale_only", scale_only_str));
   sim->add_option(opt_string("scale_over", scale_over));
   sim->add_option(opt_string("scale_over_player", scale_over_player));
@@ -541,13 +543,13 @@ void scaling_t::create_options()
 
 // scaling_t::has_scale_factors =============================================
 
-bool scaling_t::has_scale_factors()
+bool scale_factor_control_t::has_scale_factors()
 {
   if ( ! calculate_scale_factors ) return false;
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( stats.get_stat( i ) != 0 )
+    if ( stats->get_stat( i ) != 0 )
     {
       return true;
     }

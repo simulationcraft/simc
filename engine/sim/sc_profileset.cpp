@@ -3,9 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "sc_profileset.hpp"
 #include "sim_control.hpp"
+#include "sc_sim.hpp"
+#include "report/sc_report.hpp"
+#include "player/sc_player.hpp"
+#include "player/artifact_data.hpp"
+#include "item/item.hpp"
 
 #ifndef SC_NO_THREADING
 

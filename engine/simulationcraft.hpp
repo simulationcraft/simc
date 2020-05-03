@@ -91,7 +91,7 @@ struct player_t;
 struct plot_t;
 struct proc_t;
 struct reforge_plot_t;
-struct scaling_t;
+struct scale_factor_control_t;
 struct sim_t;
 struct special_effect_t;
 struct spell_data_t;
@@ -465,49 +465,7 @@ struct module_t
   }
 };
 
-// Scaling ==================================================================
-
-struct scaling_t
-{
-  mutex_t mutex;
-  sim_t* sim;
-  sim_t* baseline_sim;
-  sim_t* ref_sim;
-  sim_t* delta_sim;
-  sim_t* ref_sim2;
-  sim_t* delta_sim2;
-  stat_e scale_stat;
-  double scale_value;
-  double scale_delta_multiplier;
-  int    calculate_scale_factors;
-  int    center_scale_delta;
-  int    positive_scale_delta;
-  int    scale_lag;
-  double scale_factor_noise;
-  int    normalize_scale_factors;
-  int    debug_scale_factors;
-  std::string scale_only_str;
-  stat_e current_scaling_stat;
-  int num_scaling_stats, remaining_scaling_stats;
-  std::string scale_over;
-  scale_metric_e scaling_metric;
-  std::string scale_over_player;
-
-  // Gear delta for determining scale factors
-  gear_stats_t stats;
-
-  scaling_t( sim_t* s );
-
-  void init_deltas();
-  void analyze();
-  void analyze_stats();
-  void analyze_ability_stats( stat_e, double, player_t*, player_t*, player_t* );
-  void analyze_lag();
-  void normalize();
-  double progress( std::string& phase, std::string* detailed = nullptr );
-  void create_options();
-  bool has_scale_factors();
-};
+#include "sim/scale_factor_control.hpp"
 
 // Plot =====================================================================
 

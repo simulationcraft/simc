@@ -8,6 +8,7 @@
 #include "data/report_data.inc"
 #include "interfaces/sc_js.hpp"
 #include "util/git_info.hpp"
+#include "sim/scale_factor_control.hpp"
 #include "fmt/chrono.h"
 
 namespace
@@ -750,7 +751,7 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
          << "<th class=\"left small\">Profile</th>\n";
       for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
       {
-        if ( sim.scaling->stats.get_stat( j ) != 0 && stat_effect_is_nonzero[ j ] > 0 )
+        if ( sim.scaling->stats->get_stat( j ) != 0 && stat_effect_is_nonzero[ j ] > 0 )
         {
           os << "<th class=\"small\">" << util::stat_type_abbrev( j )
              << "</th>\n";
@@ -769,7 +770,7 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
                util::encode_html( p->name() ).c_str() );
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
-      if ( sim.scaling->stats.get_stat( j ) != 0 &&
+      if ( sim.scaling->stats->get_stat( j ) != 0 &&
            stat_effect_is_nonzero[ j ] > 0 )
       {
         if ( p->scaling->scaling[ sm ].get_stat( j ) == 0 )

@@ -105,7 +105,7 @@
  SOURCES += engine/sim/real_ppm.cpp
  SOURCES += engine/sim/spawner.cpp
  SOURCES += engine/sim/sc_sim.cpp
- SOURCES += engine/sim/sc_scaling.cpp
+ SOURCES += engine/sim/scale_factor_control.cpp
  SOURCES += engine/sim/sc_reforge_plot.cpp
  SOURCES += engine/sim/sc_raid_event.cpp
  SOURCES += engine/sim/sc_progress_bar.cpp
