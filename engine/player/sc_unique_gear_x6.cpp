@@ -4432,7 +4432,7 @@ struct taint_of_the_sea_t : public proc_spell_t
     assert( d -> current_value >= -1.0 );
 
     if ( d -> current_value <= 0.0 )
-      d -> expire();
+      make_event( *sim, [ d ] { d -> expire(); } );
   }
 };
 
