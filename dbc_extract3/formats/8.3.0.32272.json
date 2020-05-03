@@ -337,19 +337,19 @@
   ],
   "ItemDamageOneHand": [
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%9.3f" } }
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
   ],
   "ItemDamageOneHandCaster": [
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%9.3f" } }
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
   ],
   "ItemDamageTwoHand": [
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%9.3f" } }
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
   ],
   "ItemDamageTwoHandCaster": [
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%9.3f" } }
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
   ],
   "ItemEffect": [
     { "data_type": "b", "field": "index", "formats": { "cpp": "%3d" } },

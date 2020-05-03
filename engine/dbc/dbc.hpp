@@ -24,6 +24,7 @@
 #include "dbc/rand_prop_points.hpp"
 #include "dbc/spell_item_enchantment.hpp"
 #include "dbc/item_armor.hpp"
+#include "dbc/item_weapon.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -1558,12 +1559,19 @@ public:
   unsigned                       random_property_max_level() const
   { return random_prop_data_t::data( ptr ).back().ilevel; }
 
-  const item_scale_data_t&       item_damage_1h( unsigned ilevel ) const;
-  const item_scale_data_t&       item_damage_2h( unsigned ilevel ) const;
-  const item_scale_data_t&       item_damage_caster_1h( unsigned ilevel ) const;
-  const item_scale_data_t&       item_damage_caster_2h( unsigned ilevel ) const;
+  const item_damage_one_hand_data_t& item_damage_1h( unsigned ilevel ) const
+  { return item_damage_one_hand_data_t::find( ilevel, ptr ); }
 
-  const item_armor_quality_data_t&       item_armor_quality( unsigned ilevel ) const
+  const item_damage_two_hand_data_t& item_damage_2h( unsigned ilevel ) const
+  { return item_damage_two_hand_data_t::find( ilevel, ptr ); }
+
+  const item_damage_one_hand_caster_data_t& item_damage_caster_1h( unsigned ilevel ) const
+  { return item_damage_one_hand_caster_data_t::find( ilevel, ptr ); }
+
+  const item_damage_two_hand_caster_data_t& item_damage_caster_2h( unsigned ilevel ) const
+  { return item_damage_two_hand_caster_data_t::find( ilevel, ptr ); }
+
+  const item_armor_quality_data_t& item_armor_quality( unsigned ilevel ) const
   { return item_armor_quality_data_t::find( ilevel, ptr ); }
 
   const item_armor_shield_data_t& item_armor_shield( unsigned ilevel ) const
@@ -1572,7 +1580,7 @@ public:
   const item_armor_total_data_t&  item_armor_total( unsigned ilevel ) const
   { return item_armor_total_data_t::find( ilevel, ptr ); }
 
-  const item_armor_location_data_t&  item_armor_inv_type( unsigned inv_type ) const
+  const item_armor_location_data_t& item_armor_inv_type( unsigned inv_type ) const
   { return item_armor_location_data_t::find( inv_type, ptr ); }
 
   std::vector<const item_bonus_entry_t*> item_bonus( unsigned bonus_id ) const;

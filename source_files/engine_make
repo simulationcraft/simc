@@ -103,3 +103,4 @@ SRC += \
     dbc$(PATHSEP)rand_prop_points.cpp \
     dbc$(PATHSEP)spell_item_enchantment.cpp \
     dbc$(PATHSEP)item_armor.cpp \
+    dbc$(PATHSEP)item_weapon.cpp \

@@ -4167,38 +4167,36 @@ class WeaponDamageDataGenerator(DataGenerator):
     def generate(self, ids = None):
         for dbname in self._dbc:
             db = getattr(self, '_%s_db' % dbname.lower() )
+            data = list(filter(lambda v: v.id <= self._options.scale_ilevel, db.values()))
 
-            self._out.write('// Item damage data from %s.dbc, ilevels 1-%d, wow build %s\n' % (
+            tokenized_name = '_'.join(re.findall('[A-Z][^A-Z]*', dbname)).lower()
+            struct_name = '{}_t'.format(tokenized_name)
+
+            self._out.write('// Item damage data from %s.db2, ilevels 1-%d, wow build %s\n' % (
                 dbname, self._options.scale_ilevel, self._options.build ))
-            self._out.write('static struct item_scale_data_t __%s%s%s_data[] = {\n' % (
+            self._out.write('static constexpr std::array<%s, %d> __%s%s%s_data { {\n' % (
+                struct_name, len(db.items()),
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
-                dbname.lower(),
+                tokenized_name,
                 self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
-            for ilevel, data in db.items():
-                if ilevel > self._options.scale_ilevel:
-                    continue
-
-                fields = data.field('ilevel')
-                fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
+            for entry in sorted(data, key = lambda v: v.id):
+                fields = entry.field('ilevel')
+                fields += [ '{ %s }' % ', '.join(entry.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
 
                 self._out.write('  { %s },\n' % (', '.join(fields)))
 
-            self._out.write('  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0, 0, 0, 0 }' ]) ))
-            self._out.write('};\n\n')
+            self._out.write('} };\n\n')
 
 class ArmorValueDataGenerator(DataGenerator):
     def __init__(self, options, data_store):
         self._dbc = [ 'ItemArmorQuality', 'ItemArmorShield', 'ItemArmorTotal' ]
         super().__init__(options, data_store)
 
-    def filter(self):
-
-        return None
-
     def generate(self, ids = None):
         for dbname in self._dbc:
             db = getattr(self, '_%s_db' % dbname.lower() )
+            data = list(filter(lambda v: v.id <= self._options.scale_ilevel, db.values()))
 
             self._out.write('// Item armor values data from %s.db2, ilevels 1-%d, wow build %s\n' % (
                 dbname, self._options.scale_ilevel, self._options.build ))
@@ -4207,20 +4205,17 @@ class ArmorValueDataGenerator(DataGenerator):
             struct_name = '{}_data_t'.format(tokenized_name)
 
             self._out.write('static constexpr std::array<%s, %d> __%s%s%s_data { {\n' % (
-                struct_name, len(db.items()),
+                struct_name, len(data),
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
                 tokenized_name,
                 self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
-            for ilevel, data in db.items():
-                if ilevel > self._options.scale_ilevel:
-                    continue
-
-                fields = data.field('id')
+            for entry in sorted(data, key = lambda v: v.id):
+                fields = entry.field('id')
                 if dbname != 'ItemArmorTotal':
-                    fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
+                    fields += [ '{ %s }' % ', '.join(entry.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
                 else:
-                    fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4')) ]
+                    fields += [ '{ %s }' % ', '.join(entry.field('v_1', 'v_2', 'v_3', 'v_4')) ]
                 self._out.write('  { %s },\n' % (', '.join(fields)))
 
             self._out.write('} };\n\n')

@@ -137,62 +137,6 @@ const char* dbc::item_name_description( unsigned id, bool ptr )
   return nullptr;
 }
 
-const item_scale_data_t& dbc_t::item_damage_1h( unsigned ilevel ) const
-{
-  static item_scale_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemdamageonehand_data[ ilevel - 1 ] : __itemdamageonehand_data[ ilevel - 1 ];
-#else
-  return __itemdamageonehand_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_2h( unsigned ilevel ) const
-{
-  static item_scale_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemdamagetwohand_data[ ilevel - 1 ] : __itemdamagetwohand_data[ ilevel - 1 ];
-#else
-  return __itemdamagetwohand_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_caster_1h( unsigned ilevel ) const
-{
-  static item_scale_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemdamageonehandcaster_data[ ilevel - 1 ] : __itemdamageonehandcaster_data[ ilevel - 1 ];
-#else
-  return __itemdamageonehandcaster_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_caster_2h( unsigned ilevel ) const
-{
-  static item_scale_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemdamagetwohandcaster_data[ ilevel - 1 ] : __itemdamagetwohandcaster_data[ ilevel - 1 ];
-#else
-  return __itemdamagetwohandcaster_data[ ilevel - 1 ];
-#endif
-}
-
 std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) const
 {
 #if SC_USE_PTR
