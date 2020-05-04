@@ -4,9 +4,13 @@
 // ==========================================================================
 
 #include "scale_factor_control.hpp"
+#include "sc_sim.hpp"
+#include "player/sc_player.hpp"
+#include "player/player_scaling.hpp"
+#include "player/stats.hpp"
+#include "report/sc_report.hpp"
+#include "sc_util.hpp"
 #include <memory>
-
-#include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE ==========================================
 

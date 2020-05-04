@@ -5,15 +5,15 @@
 
 #include "sc_sim.hpp"
 #include "sim_control.hpp"
-#include "simulationcraft.hpp"
+#include "sc_option.hpp"
 #include "report/sc_highchart.hpp"
 #include "sc_profileset.hpp"
 #include "scale_factor_control.hpp"
-#include "player/sc_player.cpp"
-#include "simulationcraft.hpp"
+#include "player/sc_player.hpp"
 #ifdef SC_WINDOWS
 #include <direct.h>
 #endif
+#include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE ============================================
 

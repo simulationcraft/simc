@@ -5,8 +5,12 @@
 
 #include <memory>
 
-#include "simulationcraft.hpp"
+#include "plot.hpp"
 #include "scale_factor_control.hpp"
+#include "sc_sim.hpp"
+#include "player/sc_player.hpp"
+#include "player/player_scaling.hpp"
+#include "report/sc_report.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================

@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "pet.hpp"
 #include "simulationcraft.hpp"
 
 namespace {
@@ -308,6 +309,11 @@ const spell_data_t* pet_t::find_pet_spell( const std::string& name )
   }
 
   return dbc::find_spell( this, spell_id );
+}
+
+bool pet_t::requires_data_collection() const
+{
+  return active_during_iteration || ( dynamic && sim -> report_pets_separately == 1 );
 }
 
 void pet_t::init_resources( bool force )

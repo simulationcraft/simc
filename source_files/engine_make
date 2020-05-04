@@ -27,7 +27,6 @@ SRC += \
     sim$(PATHSEP)sc_expressions.cpp \
     sim$(PATHSEP)sc_event.cpp \
     sim$(PATHSEP)sc_cooldown.cpp \
-    player$(PATHSEP)actor.cpp \
     report$(PATHSEP)sc_report_text.cpp \
     report$(PATHSEP)sc_report_json.cpp \
     report$(PATHSEP)sc_report_html_sim.cpp \
@@ -37,6 +36,8 @@ SRC += \
     report$(PATHSEP)sc_gear_weights.cpp \
     report$(PATHSEP)sc_color.cpp \
     report$(PATHSEP)sc_chart.cpp \
+    player$(PATHSEP)actor_target_data.cpp \
+    player$(PATHSEP)actor.cpp \
     player$(PATHSEP)player_talent_points.cpp \
     player$(PATHSEP)sc_unique_gear_x6.cpp \
     player$(PATHSEP)sc_unique_gear_x7.cpp \

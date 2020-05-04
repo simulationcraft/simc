@@ -133,21 +133,16 @@ namespace highchart {
 // Generic programming tools
 #include "util/generic.hpp"
 
-// Sample Data
 #include "util/sample_data.hpp"
 
-// Timeline
 #include "util/timeline.hpp"
 
-// Random Number Generators
 #include "util/rng.hpp"
 
-// mutex, thread
 #include "util/concurrency.hpp"
 
 #include "sc_enums.hpp"
 
-// Cache Control ============================================================
 #include "util/cache.hpp"
 
 #include "sim/sc_profileset.hpp"
@@ -159,11 +154,6 @@ namespace highchart {
 #include "sim/x6_pantheon.hpp"
 
 #include "action/sc_action_state.hpp"
-
-
-
-
-// Utilities ================================================================
 
 #include "interfaces/sc_http.hpp"
 
@@ -218,142 +208,12 @@ private:
   }
 };
 
-// Raid Event
-
-struct raid_event_t : private noncopyable
-{
-public:
-  sim_t* sim;
-  std::string name;
-  std::string type;
-  int64_t num_starts;
-  timespan_t first, last;
-  double first_pct, last_pct;
-  timespan_t cooldown;
-  timespan_t cooldown_stddev;
-  timespan_t cooldown_min;
-  timespan_t cooldown_max;
-  timespan_t duration;
-  timespan_t duration_stddev;
-  timespan_t duration_min;
-  timespan_t duration_max;
-
-  // Player filter options
-  double     distance_min; // Minimal player distance
-  double     distance_max; // Maximal player distance
-  bool players_only; // Don't affect pets
-  bool force_stop; // Stop immediately at last/last_pct
-  double player_chance; // Chance for individual player to be affected by raid event
-
-  std::string affected_role_str;
-  role_e     affected_role;
-  std::string player_if_expr_str;
-
-  timespan_t saved_duration;
-  std::vector<player_t*> affected_players;
-  std::unordered_map<size_t, std::unique_ptr<expr_t>> player_expressions;
-  std::vector<std::unique_ptr<option_t>> options;
-
-  raid_event_t( sim_t*, const std::string& );
-
-  virtual ~raid_event_t() {}
-
-  virtual bool filter_player( const player_t* );
-
-  void add_option( std::unique_ptr<option_t> new_option )
-  { options.insert( options.begin(), std::move(new_option) ); }
-  timespan_t cooldown_time();
-  timespan_t duration_time();
-  timespan_t next_time() const;
-  timespan_t until_next() const;
-  timespan_t remains() const;
-  bool up() const;
-  double distance() { return distance_max; }
-  double min_distance() { return distance_min; }
-  double max_distance() { return distance_max; }
-  void schedule();
-  virtual void reset();
-  void parse_options( const std::string& options_str );
-  static std::unique_ptr<raid_event_t> create( sim_t* sim, const std::string& name, const std::string& options_str );
-  static void init( sim_t* );
-  static void reset( sim_t* );
-  static void combat_begin( sim_t* );
-  static void combat_end( sim_t* ) {}
-  static double evaluate_raid_event_expression(sim_t* s, std::string& type, std::string& filter,
-      bool test_filter = false);
-
-  static bool has_raid_event( sim_t*, const std::string& type );
-private:
-  virtual void _start() = 0;
-  virtual void _finish() = 0;
-  void activate();
-  void deactivate();
-  void combat_begin();
-  void start();
-  void finish();
-
-  bool is_up;
-  enum class activation_status_e
-  {
-    // three different states so we can detect when raid event is deactivated before it is activated.
-    not_yet_activated,
-    activated,
-    deactivated
-  } activation_status;
-  event_t* cooldown_event;
-  event_t* duration_event;
-  event_t* start_event;
-  event_t* end_event;
-};
-std::ostream& operator<<(std::ostream&, const raid_event_t&);
-
-// Gear Stats ===============================================================
+#include "sim/raid_event.hpp"
 
 #include "player/gear_stats.hpp"
 
 #include "player/sc_actor_pair.hpp"
-
-struct actor_target_data_t : public actor_pair_t, private noncopyable
-{
-  struct atd_debuff_t
-  {
-    buff_t* mark_of_doom;
-    buff_t* poisoned_dreams;
-    buff_t* fel_burn;
-    buff_t* flame_wreath;
-    buff_t* thunder_ritual;
-    buff_t* brutal_haymaker;
-    buff_t* taint_of_the_sea;
-    buff_t* solar_collapse;
-    buff_t* volatile_magic;
-    buff_t* maddening_whispers;
-    buff_t* shadow_blades;
-    // BFA - Azerite
-    buff_t* azerite_globules;
-    buff_t* dead_ahead;
-    buff_t* battlefield_debuff;
-    // BFA - Trinkets
-    buff_t* wasting_infection;
-    buff_t* everchill;
-    buff_t* choking_brine;
-    buff_t* razor_coral;
-    buff_t* conductive_ink;
-    buff_t* luminous_algae;
-    buff_t* infinite_stars;
-    buff_t* psyche_shredder;
-    // BFA - Essences
-    buff_t* blood_of_the_enemy;
-    buff_t* condensed_lifeforce;
-    buff_t* focused_resolve;
-    buff_t* reaping_flames_tracker;
-  } debuff;
-
-  struct atd_dot_t
-  {
-  } dot;
-
-  actor_target_data_t( player_t* target, player_t* source );
-};
+#include "player/actor_target_data.hpp"
 
 #include "util/sc_uptime.hpp"
 #include "buff/sc_buff.hpp"
@@ -362,27 +222,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
 
 #include "dbc/spell_query/spell_data_expr.hpp"
 
-
-// Iteration data entry for replayability
-struct iteration_data_entry_t
-{
-  double   metric;
-  uint64_t seed;
-  uint64_t iteration;
-  double   iteration_length;
-  std::vector <uint64_t> target_health;
-
-  iteration_data_entry_t( double m, double il, uint64_t s, uint64_t h, uint64_t i ) :
-    metric( m ), seed( s ), iteration( i ), iteration_length( il )
-  { target_health.push_back( h ); }
-
-  iteration_data_entry_t( double m, double il, uint64_t s, uint64_t i ) :
-    metric( m ), seed( s ), iteration( i ), iteration_length( il )
-  { }
-
-  void add_health( uint64_t h )
-  { target_health.push_back( h ); }
-};
+#include "sim/iteration_data_entry.hpp"
 
 
 #include "sim/progress_bar.hpp"
@@ -391,136 +231,11 @@ struct iteration_data_entry_t
 
 #include "sim/sc_sim.hpp"
 
-// Module ===================================================================
-
-struct module_t
-{
-  player_e type;
-
-  module_t( player_e t ) :
-    type( t ) {}
-
-  virtual ~module_t() {}
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const = 0;
-  virtual bool valid() const = 0;
-  virtual void init( player_t* ) const = 0;
-  virtual void static_init() const { }
-  virtual void register_hotfixes() const { }
-  virtual void combat_begin( sim_t* ) const = 0;
-  virtual void combat_end( sim_t* ) const = 0;
-
-  static const module_t* death_knight();
-  static const module_t* demon_hunter();
-  static const module_t* druid();
-  static const module_t* hunter();
-  static const module_t* mage();
-  static const module_t* monk();
-  static const module_t* paladin();
-  static const module_t* priest();
-  static const module_t* rogue();
-  static const module_t* shaman();
-  static const module_t* warlock();
-  static const module_t* warrior();
-  static const module_t* enemy();
-  static const module_t* tank_dummy_enemy();
-  static const module_t* heal_enemy();
-
-  static const module_t* get( player_e t )
-  {
-    switch ( t )
-    {
-      case DEATH_KNIGHT: return death_knight();
-      case DEMON_HUNTER: return demon_hunter();
-      case DRUID:        return druid();
-      case HUNTER:       return hunter();
-      case MAGE:         return mage();
-      case MONK:         return monk();
-      case PALADIN:      return paladin();
-      case PRIEST:       return priest();
-      case ROGUE:        return rogue();
-      case SHAMAN:       return shaman();
-      case WARLOCK:      return warlock();
-      case WARRIOR:      return warrior();
-      case ENEMY:        return enemy();
-      case TANK_DUMMY:   return tank_dummy_enemy();
-      default: break;
-    }
-    return nullptr;
-  }
-  static const module_t* get( const std::string& n )
-  {
-    return get( util::parse_player_type( n ) );
-  }
-  static void init()
-  {
-    for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; i++ )
-    {
-      const module_t* m = get( i );
-      if ( m )
-      {
-        m -> static_init();
-        m -> register_hotfixes();
-      }
-    }
-  }
-};
+#include "class_modules/class_module.hpp"
 
 #include "sim/scale_factor_control.hpp"
-
-// Plot =====================================================================
-
-struct plot_t
-{
-public:
-  sim_t* sim;
-  std::string dps_plot_stat_str;
-  double dps_plot_step;
-  int    dps_plot_points;
-  int    dps_plot_iterations;
-  double dps_plot_target_error;
-  int    dps_plot_debug;
-  stat_e current_plot_stat;
-  int    num_plot_stats, remaining_plot_stats, remaining_plot_points;
-  bool   dps_plot_positive, dps_plot_negative;
-
-  plot_t( sim_t* s );
-  void analyze();
-  double progress( std::string& phase, std::string* detailed = nullptr );
-private:
-  void analyze_stats();
-  void write_output_file();
-  void create_options();
-};
-
-// Reforge Plot =============================================================
-
-struct reforge_plot_t
-{
-  sim_t* sim;
-  sim_t* current_reforge_sim;
-  std::string reforge_plot_stat_str;
-  std::vector<stat_e> reforge_plot_stat_indices;
-  int    reforge_plot_step;
-  int    reforge_plot_amount;
-  int    reforge_plot_iterations;
-  double reforge_plot_target_error;
-  int    reforge_plot_debug;
-  int    current_stat_combo;
-  int    num_stat_combos;
-
-  reforge_plot_t( sim_t* s );
-
-  void generate_stat_mods( std::vector<std::vector<int> > &stat_mods,
-                           const std::vector<stat_e> &stat_indices,
-                           int cur_mod_stat,
-                           std::vector<int> cur_stat_mods );
-  void analyze();
-  void analyze_stats();
-  double progress( std::string& phase, std::string* detailed = nullptr );
-private:
-  void write_output_file();
-  void create_options();
-};
+#include "sim/plot.hpp"
+#include "sim/reforge_plot.hpp"
 
 #include "util/plot_data.hpp"
 
@@ -528,7 +243,6 @@ private:
 
 #include "player/rating.hpp"
 
-// Weapon ===================================================================
 #include "player/weapon.hpp"
 
 #include "util/scoped_callback.hpp"
@@ -1009,133 +723,7 @@ struct player_demise_event_t : public player_event_t
   }
 };
 
-// Pet ======================================================================
-
-struct pet_t : public player_t
-{
-  typedef player_t base_t;
-
-  std::string full_name_str;
-  player_t* const owner;
-  double stamina_per_owner;
-  double intellect_per_owner;
-  bool summoned;
-  bool dynamic;
-  pet_e pet_type;
-  event_t* expiration;
-  timespan_t duration;
-  bool affects_wod_legendary_ring;
-
-  struct owner_coefficients_t
-  {
-    double armor = 1.0;
-    double health = 1.0;
-    double ap_from_ap = 0.0;
-    double ap_from_sp = 0.0;
-    double sp_from_ap = 0.0;
-    double sp_from_sp = 0.0;
-  } owner_coeff;
-
-public:
-  pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian = false, bool dynamic = false );
-  pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian = false, bool dynamic = false );
-
-  void create_options() override;
-  void create_buffs() override;
-  void init() override;
-  void init_base_stats() override;
-  void init_target() override;
-  void init_finished() override;
-  void reset() override;
-  void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
-
-  virtual void summon( timespan_t duration = timespan_t::zero() );
-  virtual void dismiss( bool expired = false );
-  // Adjust pet remaining duration. New duration of <= 0 dismisses pet. No-op on
-  // persistent pets.
-  virtual void adjust_duration( const timespan_t& adjustment );
-
-  const char* name() const override { return full_name_str.c_str(); }
-  const player_t* get_owner_or_self() const override
-  { return owner; }
-
-  const spell_data_t* find_pet_spell( const std::string& name );
-
-  double composite_attribute( attribute_e attr ) const override;
-  double composite_player_multiplier( school_e ) const override;
-  double composite_player_target_multiplier( player_t*, school_e ) const override;
-
-  // new pet scaling by Ghostcrawler, see http://us.battle.net/wow/en/forum/topic/5889309137?page=49#977
-  // http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
-
-  double hit_exp() const;
-
-  double composite_movement_speed() const override
-  { return owner -> composite_movement_speed(); }
-
-  double composite_melee_expertise( const weapon_t* ) const override
-  { return hit_exp(); }
-  double composite_melee_hit() const override
-  { return hit_exp(); }
-  double composite_spell_hit() const override
-  { return hit_exp() * 2.0; }
-
-  double pet_crit() const;
-
-  double composite_melee_crit_chance() const override
-  { return pet_crit(); }
-  double composite_spell_crit_chance() const override
-  { return pet_crit(); }
-
-  double composite_melee_speed() const override
-  { return owner -> cache.attack_speed(); }
-
-  double composite_melee_haste() const override
-  { return owner -> cache.attack_haste(); }
-
-  double composite_spell_haste() const override
-  { return owner -> cache.spell_haste(); }
-
-  double composite_spell_speed() const override
-  { return owner -> cache.spell_speed(); }
-
-  double composite_bonus_armor() const override
-  { return owner -> cache.bonus_armor(); }
-
-  double composite_damage_versatility() const override
-  { return owner -> cache.damage_versatility(); }
-
-  double composite_heal_versatility() const override
-  { return owner -> cache.heal_versatility(); }
-
-  double composite_mitigation_versatility() const override
-  { return owner -> cache.mitigation_versatility(); }
-
-  double composite_melee_attack_power() const override;
-
-  double composite_spell_power( school_e school ) const override;
-
-  double composite_player_critical_damage_multiplier( const action_state_t* s ) const override;
-
-  // Assuming diminishing returns are transfered to the pet as well
-  double composite_dodge() const override
-  { return owner -> cache.dodge(); }
-
-  double composite_parry() const override
-  { return owner -> cache.parry(); }
-
-  // Influenced by coefficients [ 0, 1 ]
-  double composite_armor() const override
-  { return owner -> cache.armor() * owner_coeff.armor; }
-
-  void init_resources( bool force ) override;
-  bool requires_data_collection() const override
-  { return active_during_iteration || ( dynamic && sim -> report_pets_separately == 1 ); }
-
-  timespan_t composite_active_time() const override;
-
-  void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr ) override;
-};
+#include "player/pet.hpp"
 
 #include "sim/gain.hpp"
 
@@ -2107,15 +1695,6 @@ inline double target_wrapper_expr_t::evaluate()
 
 inline player_t* target_wrapper_expr_t::target() const
 { return action.target; }
-
-inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :
-  actor_pair_t( target, source ), debuff(), dot()
-{
-  for (auto & elem : source -> sim -> target_data_initializer)
-  {
-    elem( this );
-  }
-}
 
 // Shuffle Proc inlines
 

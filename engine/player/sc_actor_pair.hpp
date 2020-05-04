@@ -5,6 +5,8 @@
 
 #pragma once
 
+struct player_t;
+
 struct actor_pair_t
 {
   player_t* target;
