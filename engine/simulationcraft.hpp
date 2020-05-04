@@ -116,16 +116,16 @@ namespace highchart {
 
 #include "dbc/data_enums.hh"
 #include "dbc/data_definitions.hh"
-#include "util/utf8-cpp/utf8.h"
+#include "utf8-cpp/utf8.h"
 
 // string formatting library
-#include "util/fmt/format.h"
-#include "util/fmt/ostream.h"
-#include "util/fmt/printf.h"
+#include "fmt/format.h"
+#include "fmt/ostream.h"
+#include "fmt/printf.h"
 
 // GSL-Lite: Guideline Support Library, light version
 // Lib to assist with CPP Core Guidelines.
-#include "util/gsl-lite/gsl-lite.hpp"
+#include "gsl-lite/gsl-lite.hpp"
 
 // Time class representing ingame time
 #include "sc_timespan.hpp"
@@ -224,7 +224,7 @@ private:
 
 #include "sim/iteration_data_entry.hpp"
 
-
+#include "sim/sim_control.hpp"
 #include "sim/progress_bar.hpp"
 
 #include "sim/event_manager.hpp"

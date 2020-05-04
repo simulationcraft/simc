@@ -9,10 +9,10 @@
 #include "simulationcraft.hpp"
 #include "util/git_info.hpp"
 
-#include "util/rapidjson/filewritestream.h"
-#include "util/rapidjson/document.h"
-#include "util/rapidjson/stringbuffer.h"
-#include "util/rapidjson/prettywriter.h"
+#include "rapidjson/filewritestream.h"
+#include "rapidjson/document.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/prettywriter.h"
 
 using namespace rapidjson;
 using namespace js;

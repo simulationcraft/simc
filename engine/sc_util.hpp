@@ -7,9 +7,9 @@
 
 #include "config.hpp"
 
-#include "util/fmt/format.h"
-#include "util/fmt/ostream.h"
-#include "util/fmt/printf.h"
+#include "fmt/format.h"
+#include "fmt/ostream.h"
+#include "fmt/printf.h"
 #include "sc_enums.hpp"
 #include "dbc/data_enums.hh"
 #include "dbc/specialization.hpp"

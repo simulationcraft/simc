@@ -6,8 +6,8 @@
 #pragma once
 
 #include "config.hpp"
-#include "generic.hpp"
-#include "stopwatch.hpp"
+#include "util/generic.hpp"
+#include "util/stopwatch.hpp"
 #include <string>
 
 struct sim_t;

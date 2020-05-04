@@ -6,7 +6,7 @@
 #include "real_ppm.hpp"
 #include "player/sc_player.hpp"
 #include "sim/sc_sim.hpp"
-#include "rng.hpp"
+#include "util/rng.hpp"
 #include "item/item.hpp"
 
 real_ppm_t::real_ppm_t( const std::string& name, player_t* p, const spell_data_t* data, const item_t* item )

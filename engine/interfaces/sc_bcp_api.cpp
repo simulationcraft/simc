@@ -5,11 +5,11 @@
 
 #include "simulationcraft.hpp"
 
-#include "util/rapidjson/document.h"
-#include "util/rapidjson/stringbuffer.h"
-#include "util/rapidjson/prettywriter.h"
+#include "rapidjson/document.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/prettywriter.h"
 
-#include "../util/utf8-h/utf8.h"
+#include "utf8-h/utf8.h"
 
 // ==========================================================================
 // Blizzard Community Platform API

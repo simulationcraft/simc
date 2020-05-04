@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "sc_sim.hpp"
+#include "simulationcraft.hpp"
 #include "sim_control.hpp"
 #include "sc_option.hpp"
 #include "report/sc_highchart.hpp"
@@ -13,7 +14,6 @@
 #ifdef SC_WINDOWS
 #include <direct.h>
 #endif
-#include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE ============================================
 

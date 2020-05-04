@@ -10,7 +10,7 @@
 #include "sim/event.hpp"
 #include "sim/sc_sim.hpp"
 #include "sim/real_ppm.hpp"
-#include "rng.hpp"
+#include "util/rng.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/sc_expressions.hpp"
 #include "dbc/item_database.hpp"

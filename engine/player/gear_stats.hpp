@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "generic.hpp"
+#include "util/generic.hpp"
 #include "sc_enums.hpp"
 #include <array>
 #include <functional>

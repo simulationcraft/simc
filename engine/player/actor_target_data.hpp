@@ -7,7 +7,7 @@
 
 #include "config.hpp"
 #include "sc_actor_pair.hpp"
-#include "generic.hpp"
+#include "util/generic.hpp"
 
 struct buff_t;
 struct player_t;

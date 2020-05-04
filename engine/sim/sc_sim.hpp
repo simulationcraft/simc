@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "concurrency.hpp"
+#include "util/concurrency.hpp"
 #include "sim_ostream.hpp"
 #include "util/vector_with_callback.hpp"
 #include "dbc/dbc.hpp"

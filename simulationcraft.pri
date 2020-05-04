@@ -2,7 +2,8 @@ ORG_NAME    = SimulationCraft
 APP_NAME    = SimulationCraft
 
 INCLUDEPATH = ../engine
-INCLUDEPATH += ../engine/util
+INCLUDEPATH += ../engine/include
+INCLUDEPATH += ../engine/lib
 DEPENDPATH  = ../engine
 VPATH       = ..
 CONFIG      += c++14

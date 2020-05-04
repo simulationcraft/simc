@@ -6,9 +6,9 @@
 #pragma once
 
 #include "config.hpp"
-#include "sample_data.hpp"
-#include "timeline.hpp"
-#include "concurrency.hpp"
+#include "util/sample_data.hpp"
+#include "util/timeline.hpp"
+#include "util/concurrency.hpp"
 #include "sc_enums.hpp"
 
 struct action_t;

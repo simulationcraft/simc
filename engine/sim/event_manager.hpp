@@ -7,7 +7,7 @@
 
 #include "config.hpp"
 #include "sc_timespan.hpp"
-#include "stopwatch.hpp"
+#include "util/stopwatch.hpp"
 #include <cstdint>
 #include <vector>
 

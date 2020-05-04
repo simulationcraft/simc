@@ -9,9 +9,9 @@
 #define RAPIDJSON_HAS_STDSTRING 1
 #endif
 
-#include "util/rapidjson/document.h"
-#include "util/rapidjson/stringbuffer.h"
-#include "util/rapidjson/prettywriter.h"
+#include "rapidjson/document.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/prettywriter.h"
 #include <utility>
 #include <string>
 #include <vector>

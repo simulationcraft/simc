@@ -5,7 +5,7 @@
 #ifndef ITEM_ARMOR_HPP
 #define ITEM_ARMOR_HPP
 
-#include "generic.hpp"
+#include "util/generic.hpp"
 #include "util/array_view.hpp"
 
 #include "client_data.hpp"

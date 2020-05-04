@@ -7,7 +7,7 @@ include(../source_files/cmake_engine.txt)
 
 # Define engine library
 add_library(engine ${source_files})
-target_include_directories(engine PUBLIC . ./util)
+target_include_directories(engine PUBLIC . ./include ./lib)
 
 # Make cmake selections visible to C++ code
 if(SC_NO_THREADING)

@@ -8,7 +8,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "util/fmt/format.h"
+#include "fmt/format.h"
 #include "util/io.hpp"
 #include "sc_util.hpp"
 

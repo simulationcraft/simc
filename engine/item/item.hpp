@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "generic.hpp"
+#include "util/generic.hpp"
 #include "sc_enums.hpp"
 #include "player/gear_stats.hpp"
 #include "sc_timespan.hpp"

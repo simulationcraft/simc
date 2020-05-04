@@ -10,7 +10,7 @@
 #include <functional>
 
 #include "sc_util.hpp"
-#include "util/rapidjson/document.h"
+#include "rapidjson/document.h"
 #include "report/sc_report.hpp"
 
 #include "sc_timespan.hpp"

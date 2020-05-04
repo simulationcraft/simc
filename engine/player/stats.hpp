@@ -8,7 +8,7 @@
 #include "config.hpp"
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
-#include "sample_data.hpp"
+#include "util/sample_data.hpp"
 #include "sim/gain.hpp"
 #include <vector>
 #include <string>

@@ -6,9 +6,10 @@
 #include "wowhead.hpp"
 #include "simulationcraft.hpp"
 
-#include "util/rapidjson/document.h"
-#include "util/rapidjson/stringbuffer.h"
-#include "util/rapidjson/prettywriter.h"
+#include "rapidjson/document.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/prettywriter.h"
 
 namespace {
 // source_str ===============================================================
