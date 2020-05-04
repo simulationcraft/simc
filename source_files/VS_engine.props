@@ -35,6 +35,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\specialization.hpp" />
 		<ClInclude Include="..\engine\dbc\spell_item_enchantment.hpp" />
 		<ClInclude Include="..\engine\dbc\spell_query\spell_data_expr.hpp" />
+		<ClInclude Include="..\engine\include\apis\bcp_api.hpp" />
 		<ClInclude Include="..\engine\interfaces\sc_http.hpp" />
 		<ClInclude Include="..\engine\interfaces\sc_http_curl.hpp" />
 		<ClInclude Include="..\engine\interfaces\sc_http_wininet.hpp" />
@@ -253,7 +254,7 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\interfaces\sc_bcp_api.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\interfaces\sc_http.cpp">
 			

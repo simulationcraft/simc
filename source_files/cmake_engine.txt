@@ -29,6 +29,7 @@ dbc/sc_spell_info.hpp
 dbc/specialization.hpp
 dbc/spell_item_enchantment.hpp
 dbc/spell_query/spell_data_expr.hpp
+include/apis/bcp_api.hpp
 interfaces/sc_http.hpp
 interfaces/sc_http_curl.hpp
 interfaces/sc_http_wininet.hpp

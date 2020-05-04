@@ -3,13 +3,22 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "apis/bcp_api.hpp"
 
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/prettywriter.h"
-
 #include "utf8-h/utf8.h"
+#include "sim/sc_sim.hpp"
+#include "interfaces/sc_http.hpp"
+#include "interfaces/sc_http_curl.hpp"
+#include "interfaces/sc_http_wininet.hpp"
+#include "item/item.hpp"
+#include "player/sc_player.hpp"
+#include "player/azerite_data.hpp"
+#include "class_modules/class_module.hpp"
+#include "dbc/item_database.hpp"
+#include <unordered_map>
 
 // ==========================================================================
 // Blizzard Community Platform API
@@ -140,7 +149,7 @@ bool authorize( sim_t* sim, const std::string& region )
   }
 
   rapidjson::Document response;
-  response.Parse< 0 >( handle->result() );
+  response.Parse< 0 >( handle->result().c_str() );
   if ( response.HasParseError() )
   {
     std::cerr << "Unable to parse response message from " << oauth_endpoint << std::endl;

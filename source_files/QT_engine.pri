@@ -31,6 +31,7 @@ HEADERS += engine/dbc/sc_spell_info.hpp
 HEADERS += engine/dbc/specialization.hpp
 HEADERS += engine/dbc/spell_item_enchantment.hpp
 HEADERS += engine/dbc/spell_query/spell_data_expr.hpp
+HEADERS += engine/include/apis/bcp_api.hpp
 HEADERS += engine/interfaces/sc_http.hpp
 HEADERS += engine/interfaces/sc_http_curl.hpp
 HEADERS += engine/interfaces/sc_http_wininet.hpp
