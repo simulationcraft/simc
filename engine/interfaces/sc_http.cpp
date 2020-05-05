@@ -3,7 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "sc_http.hpp"
+#include "util/concurrency.hpp"
+#include "sim/sc_sim.hpp"
 
 // Cross-Platform Support for HTTP-Download =================================
 

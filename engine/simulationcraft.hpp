@@ -5,13 +5,6 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "830"
-#define SC_MINOR_VERSION "02"
-#define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
-#define SC_BETA 0
-#if SC_BETA
-#define SC_BETA_STR "bfa"
-#endif
 
 // Platform, compiler and general configuration
 #include "config.hpp"

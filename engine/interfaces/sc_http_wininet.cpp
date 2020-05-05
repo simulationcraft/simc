@@ -1,12 +1,13 @@
-#include "simulationcraft.hpp"
+#include "config.hpp"
 
 #ifdef SC_USE_WININET
 
+#include "sc_http_wininet.hpp"
 #include <windows.h>
 #include <wincrypt.h>
 #include <WinBase.h>
 
-#include "sc_http_wininet.hpp"
+#include "fmt/format.h"
 
 namespace
 {

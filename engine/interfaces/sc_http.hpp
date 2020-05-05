@@ -5,9 +5,11 @@
 #ifndef SC_HTTP_HPP
 #define SC_HTTP_HPP
 
+#include "config.hpp"
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
 #include "util/cache.hpp"
 

@@ -1,10 +1,12 @@
-#include "simulationcraft.hpp"
+#include "config.hpp"
 
 #ifdef SC_USE_CURL
 
 #include "sc_http_curl.hpp"
 
 #include "util/generic.hpp"
+#include "util/util.hpp"
+#include "fmt/format.h"
 
 namespace
 {
