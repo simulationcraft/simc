@@ -5,9 +5,9 @@
 
 environment:
   matrix:
-  - image: Visual Studio 2015
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
     varProject: vs/simc_vs2015.vcxproj
-  - image: Visual Studio 2017
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     varProject: vs/simc_vs2017.vcxproj
     
 # fetch repository as zip archive
