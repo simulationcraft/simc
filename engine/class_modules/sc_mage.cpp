@@ -160,8 +160,8 @@ struct cooldown_reduction_data_t
 {
   const cooldown_t* cd;
 
-  luxurious_sample_data_t* effective;
-  luxurious_sample_data_t* wasted;
+  sample_data_helper_t* effective;
+  sample_data_helper_t* wasted;
 
   cooldown_reduction_data_t( const cooldown_t* cooldown, const std::string& name ) :
     cd( cooldown )

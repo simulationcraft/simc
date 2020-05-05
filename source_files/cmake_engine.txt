@@ -58,6 +58,7 @@ player/player_scaling.hpp
 player/player_stat_cache.hpp
 player/player_talent_points.hpp
 player/rating.hpp
+player/sample_data_helper.hpp
 player/scaling_metric_data.hpp
 player/sc_actor_pair.hpp
 player/sc_player.hpp

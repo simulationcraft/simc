@@ -44,7 +44,7 @@ struct event_t;
 struct expr_t;
 struct gain_t;
 struct instant_absorb_t;
-struct luxurious_sample_data_t;
+struct sample_data_helper_t;
 struct option_t;
 struct pet_t;
 struct player_description_t;
@@ -299,7 +299,7 @@ struct player_t : public actor_t
   std::vector<cooldown_t*> dynamic_cooldown_list;
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<plot_data_t> > reforge_plot_data;
-  auto_dispose< std::vector<luxurious_sample_data_t*> > sample_data_list;
+  auto_dispose< std::vector<sample_data_helper_t*> > sample_data_list;
 
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
@@ -718,7 +718,7 @@ public:
   proc_t*     find_proc    ( const std::string& name ) const;
   benefit_t*  find_benefit ( const std::string& name ) const;
   uptime_t*   find_uptime  ( const std::string& name ) const;
-  luxurious_sample_data_t* find_sample_data( const std::string& name ) const;
+  sample_data_helper_t* find_sample_data( const std::string& name ) const;
   action_priority_list_t* find_action_priority_list( const std::string& name ) const;
   int find_action_id( const std::string& name ) const;
 
@@ -732,7 +732,7 @@ public:
   stats_t*    get_stats   ( const std::string& name, action_t* action = nullptr );
   benefit_t*  get_benefit ( const std::string& name );
   uptime_t*   get_uptime  ( const std::string& name );
-  luxurious_sample_data_t* get_sample_data( const std::string& name );
+  sample_data_helper_t* get_sample_data( const std::string& name );
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
   int get_action_id( const std::string& name );
 

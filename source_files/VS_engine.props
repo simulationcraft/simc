@@ -64,6 +64,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\player_stat_cache.hpp" />
 		<ClInclude Include="..\engine\player\player_talent_points.hpp" />
 		<ClInclude Include="..\engine\player\rating.hpp" />
+		<ClInclude Include="..\engine\player\sample_data_helper.hpp" />
 		<ClInclude Include="..\engine\player\scaling_metric_data.hpp" />
 		<ClInclude Include="..\engine\player\sc_actor_pair.hpp" />
 		<ClInclude Include="..\engine\player\sc_player.hpp" />

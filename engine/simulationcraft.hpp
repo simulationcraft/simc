@@ -162,39 +162,7 @@ namespace highchart {
 #include "report/sc_report.hpp"
 
 #include "sim/artifact_power.hpp"
-
-/* Luxurious sample data container with automatic merge/analyze,
- * intended to be used in class modules for custom reporting.
- * Iteration based sampling
- */
-struct luxurious_sample_data_t : public extended_sample_data_t, private noncopyable
-{
-  luxurious_sample_data_t( player_t& p, std::string n );
-
-  void add( double x )
-  { buffer_value += x; }
-
-  void datacollection_begin()
-  {
-    reset_buffer();
-  }
-  void datacollection_end()
-  {
-    write_buffer_as_sample();
-  }
-  player_t& player;
-private:
-  double buffer_value;
-  void write_buffer_as_sample()
-  {
-    extended_sample_data_t::add( buffer_value );
-    reset_buffer();
-  }
-  void reset_buffer()
-  {
-    buffer_value = 0.0;
-  }
-};
+#include "player/sample_data_helper.hpp"
 
 #include "sim/raid_event.hpp"
 

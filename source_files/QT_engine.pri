@@ -60,6 +60,7 @@ HEADERS += engine/player/player_scaling.hpp
 HEADERS += engine/player/player_stat_cache.hpp
 HEADERS += engine/player/player_talent_points.hpp
 HEADERS += engine/player/rating.hpp
+HEADERS += engine/player/sample_data_helper.hpp
 HEADERS += engine/player/scaling_metric_data.hpp
 HEADERS += engine/player/sc_actor_pair.hpp
 HEADERS += engine/player/sc_player.hpp

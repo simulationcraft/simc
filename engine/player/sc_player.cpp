@@ -6,6 +6,7 @@
 #include "sc_player.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "dbc/azerite.hpp"
+#include "sample_data_helper.hpp"
 #include <cerrno>
 #include <memory>
 
@@ -882,6 +883,26 @@ bool parse_initial_resource( sim_t* sim, const std::string&, const std::string& 
     }
 
     player->resources.initial_opt[ resource ] = amount;
+  }
+
+  return true;
+}
+
+bool tank_container_type(const player_t* for_actor, int target_statistics_level)
+{
+  if (true) // FIXME: cannot use virtual function calls here! if ( for_actor->primary_role() == ROLE_TANK )
+  {
+    return for_actor->sim->statistics_level < target_statistics_level;
+  }
+
+  return true;
+}
+
+bool generic_container_type(const player_t* for_actor, int target_statistics_level)
+{
+  if (!for_actor->is_enemy() && (!for_actor->is_pet() || for_actor->sim->report_pets_separately))
+  {
+    return for_actor->sim->statistics_level < target_statistics_level;
   }
 
   return true;
@@ -4642,7 +4663,7 @@ void player_t::datacollection_begin()
   range::for_each( benefit_list, std::mem_fn( &benefit_t::datacollection_begin ) );
   range::for_each( proc_list, std::mem_fn( &proc_t::datacollection_begin ) );
   range::for_each( pet_list, std::mem_fn( &pet_t::datacollection_begin ) );
-  range::for_each( sample_data_list, std::mem_fn( &luxurious_sample_data_t::datacollection_begin ) );
+  range::for_each( sample_data_list, std::mem_fn( &sample_data_helper_t::datacollection_begin ) );
 }
 
 /**
@@ -4706,7 +4727,7 @@ void player_t::datacollection_end()
 
   range::for_each( benefit_list, std::mem_fn( &benefit_t::datacollection_end ) );
   range::for_each( proc_list, std::mem_fn( &proc_t::datacollection_end ) );
-  range::for_each( sample_data_list, std::mem_fn( &luxurious_sample_data_t::datacollection_end ) );
+  range::for_each( sample_data_list, std::mem_fn( &sample_data_helper_t::datacollection_end ) );
 }
 
 // player_t::merge ==========================================================
@@ -4919,8 +4940,8 @@ void player_t::merge( player_t& other )
   // Sample Data
   for ( size_t i = 0; i < sample_data_list.size(); ++i )
   {
-    luxurious_sample_data_t& sd = *sample_data_list[ i ];
-    if ( luxurious_sample_data_t* other_sd = other.find_sample_data( sd.name_str ) )
+    sample_data_helper_t& sd = *sample_data_list[ i ];
+    if ( sample_data_helper_t* other_sd = other.find_sample_data( sd.name_str ) )
       sd.merge( *other_sd );
     else
     {
@@ -6875,7 +6896,7 @@ proc_t* player_t::find_proc( const std::string& name ) const
   return find_vector_member( proc_list, name );
 }
 
-luxurious_sample_data_t* player_t::find_sample_data( const std::string& name ) const
+sample_data_helper_t* player_t::find_sample_data( const std::string& name ) const
 {
   return find_vector_member( sample_data_list, name );
 }
@@ -7007,13 +7028,13 @@ proc_t* player_t::get_proc( const std::string& name )
   return p;
 }
 
-luxurious_sample_data_t* player_t::get_sample_data( const std::string& name )
+sample_data_helper_t* player_t::get_sample_data( const std::string& name )
 {
-  luxurious_sample_data_t* sd = find_sample_data( name );
+  sample_data_helper_t* sd = find_sample_data( name );
 
   if ( !sd )
   {
-    sd = new luxurious_sample_data_t( *this, name );
+    sd = new sample_data_helper_t( name, generic_container_type(this, 3));
 
     sample_data_list.push_back( sd );
   }
@@ -11548,7 +11569,7 @@ void player_t::analyze( sim_t& s )
   if ( collected_data.fight_length.mean() == 0 )
     return;
 
-  range::for_each( sample_data_list, []( luxurious_sample_data_t* sd ) { sd->analyze(); } );
+  range::for_each( sample_data_list, []( sample_data_helper_t* sd ) { sd->analyze(); } );
 
   // Pet Chart Adjustment ===================================================
   size_t max_buckets = static_cast<size_t>( collected_data.fight_length.max() );
@@ -12098,29 +12119,6 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
   }
 }
 
-namespace
-{
-bool tank_container_type( const player_t* for_actor, int target_statistics_level )
-{
-  if ( true ) // FIXME: cannot use virtual function calls here! if ( for_actor->primary_role() == ROLE_TANK )
-  {
-    return for_actor->sim->statistics_level < target_statistics_level;
-  }
-
-  return true;
-}
-
-bool generic_container_type( const player_t* for_actor, int target_statistics_level )
-{
-  if ( !for_actor->is_enemy() && ( !for_actor->is_pet() || for_actor->sim->report_pets_separately ) )
-  {
-    return for_actor->sim->statistics_level < target_statistics_level;
-  }
-
-  return true;
-}
-}  // namespace
-
 player_collected_data_t::player_collected_data_t( const player_t* player ) :
   fight_length( player->name_str + " Fight Length", generic_container_type( player, 2 ) ),
   waiting_time( player->name_str + " Waiting Time", generic_container_type( player, 2 ) ),
@@ -12640,12 +12638,7 @@ std::string player_talent_points_t::to_string() const
   return ss.str();
 }
 
-luxurious_sample_data_t::luxurious_sample_data_t( player_t& p, std::string n ) :
-  extended_sample_data_t( n, generic_container_type( &p, 3 ) ),
-  player( p ),
-  buffer_value( 0.0 )
-{
-}
+
 
 // Note, root call needs to set player_t::visited_apls_ to 0
 action_t* player_t::select_action( const action_priority_list_t& list,
