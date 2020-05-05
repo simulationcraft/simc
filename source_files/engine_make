@@ -49,7 +49,7 @@ SRC += \
     dbc$(PATHSEP)sc_spell_data.cpp \
     dbc$(PATHSEP)sc_spell_info.cpp \
     dbc$(PATHSEP)spell_item_enchantment.cpp \
-    interfaces$(PATHSEP)sc_bcp_api.cpp \
+    interfaces$(PATHSEP)bcp_api.cpp \
     interfaces$(PATHSEP)sc_http.cpp \
     interfaces$(PATHSEP)sc_http_curl.cpp \
     interfaces$(PATHSEP)sc_http_wininet.cpp \

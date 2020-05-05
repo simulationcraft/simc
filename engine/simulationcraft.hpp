@@ -1427,7 +1427,7 @@ action_t* create_action( player_t*, const std::string& name, const std::string& 
 }
 
 #include "interfaces/wowhead.hpp"
-#include "apis/bcp_api.hpp"
+#include "interfaces/bcp_api.hpp"
 
 // XML ======================================================================
 #include "util/xml.hpp"

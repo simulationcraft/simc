@@ -29,7 +29,7 @@ dbc/sc_spell_info.hpp
 dbc/specialization.hpp
 dbc/spell_item_enchantment.hpp
 dbc/spell_query/spell_data_expr.hpp
-include/apis/bcp_api.hpp
+interfaces/bcp_api.hpp
 interfaces/sc_http.hpp
 interfaces/sc_http_curl.hpp
 interfaces/sc_http_wininet.hpp
@@ -153,7 +153,7 @@ dbc/sc_item_data_import_ptr.cpp
 dbc/sc_spell_data.cpp
 dbc/sc_spell_info.cpp
 dbc/spell_item_enchantment.cpp
-interfaces/sc_bcp_api.cpp
+interfaces/bcp_api.cpp
 interfaces/sc_http.cpp
 interfaces/sc_http_curl.cpp
 interfaces/sc_http_wininet.cpp

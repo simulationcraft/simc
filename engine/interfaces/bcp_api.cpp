@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "apis/bcp_api.hpp"
+#include "interfaces/bcp_api.hpp"
 
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
