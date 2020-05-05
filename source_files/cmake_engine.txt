@@ -83,6 +83,7 @@ sim/sc_expressions.hpp
 sim/sc_option.hpp
 sim/sc_profileset.hpp
 sim/sc_sim.hpp
+sim/shuffled_rng.hpp
 sim/sim_control.hpp
 sim/sim_ostream.hpp
 sim/unique_gear.hpp
@@ -201,6 +202,7 @@ sim/sc_progress_bar.cpp
 sim/sc_raid_event.cpp
 sim/sc_reforge_plot.cpp
 sim/sc_sim.cpp
+sim/shuffled_rng.cpp
 sim/spawner.cpp
 sim/x6_pantheon.cpp
 util/concurrency.cpp

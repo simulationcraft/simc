@@ -53,7 +53,7 @@ struct player_scaling_t;
 struct proc_t;
 struct real_ppm_t;
 struct set_bonus_t;
-struct shuffled_rng_t;
+class shuffled_rng_t;
 struct special_effect_t;
 struct stat_buff_t;
 struct stats_t;

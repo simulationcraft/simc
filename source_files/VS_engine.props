@@ -89,6 +89,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\sim\sc_option.hpp" />
 		<ClInclude Include="..\engine\sim\sc_profileset.hpp" />
 		<ClInclude Include="..\engine\sim\sc_sim.hpp" />
+		<ClInclude Include="..\engine\sim\shuffled_rng.hpp" />
 		<ClInclude Include="..\engine\sim\sim_control.hpp" />
 		<ClInclude Include="..\engine\sim\sim_ostream.hpp" />
 		<ClInclude Include="..\engine\sim\unique_gear.hpp" />
@@ -396,6 +397,9 @@ To change the list of source files run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\sc_sim.cpp">
 			
+		</ClCompile>
+		<ClCompile Include="..\engine\sim\shuffled_rng.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\spawner.cpp">
 			

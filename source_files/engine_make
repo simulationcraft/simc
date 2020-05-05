@@ -97,6 +97,7 @@ SRC += \
     sim$(PATHSEP)sc_raid_event.cpp \
     sim$(PATHSEP)sc_reforge_plot.cpp \
     sim$(PATHSEP)sc_sim.cpp \
+    sim$(PATHSEP)shuffled_rng.cpp \
     sim$(PATHSEP)spawner.cpp \
     sim$(PATHSEP)x6_pantheon.cpp \
     util$(PATHSEP)concurrency.cpp \

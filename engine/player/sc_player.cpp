@@ -6960,7 +6960,7 @@ shuffled_rng_t* player_t::get_shuffled_rng( const std::string& name, int success
     return *it;
   }
 
-  shuffled_rng_t* new_shuffled_rng = new shuffled_rng_t( name, this, success_entries, total_entries );
+  shuffled_rng_t* new_shuffled_rng = new shuffled_rng_t( name, rng(), success_entries, total_entries );
   shuffled_rng_list.push_back( new_shuffled_rng );
 
   return new_shuffled_rng;

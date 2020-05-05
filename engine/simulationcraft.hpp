@@ -93,7 +93,7 @@ struct travel_event_t;
 struct xml_node_t;
 class xml_writer_t;
 struct real_ppm_t;
-struct shuffled_rng_t;
+class shuffled_rng_t;
 struct ground_aoe_event_t;
 namespace spawner {
 class base_actor_spawner_t;
@@ -534,71 +534,7 @@ std::ostream& operator<<(std::ostream&, const set_bonus_t&);
 
 #include "sim/real_ppm.hpp"
 
-// "Deck of Cards" randomizer helper class ====================================
-// Described at https://www.reddit.com/r/wow/comments/6j2wwk/wow_class_design_ama_june_2017/djb8z68/
-
-struct shuffled_rng_t
-{
-private:
-  player_t*    player;
-  std::string  name_str;
-  int          success_entries;
-  int          total_entries;
-  int          success_entries_remaining;
-  int          total_entries_remaining;
-
-  shuffled_rng_t() : player(nullptr), success_entries(0), total_entries(0), success_entries_remaining(0), total_entries_remaining(0)
-  { }
-
-public:
-
-  shuffled_rng_t(const std::string& name, player_t* p, int success_entries = 0, int total_entries = 0) :
-    player(p),
-    name_str(name),
-    success_entries(success_entries),
-    total_entries(total_entries),
-    success_entries_remaining(success_entries),
-    total_entries_remaining(total_entries)
-  { }
-
-  const std::string& name() const
-  {
-    return name_str;
-  }
-
-  int get_success_entries() const
-  {
-    return success_entries;
-  }
-
-  int get_success_entries_remaining() const
-  {
-    return success_entries_remaining;
-  }
-
-  int get_total_entries() const
-  {
-    return total_entries;
-  }
-
-  int get_total_entries_remaining() const
-  {
-    return total_entries_remaining;
-  }
-
-  double get_remaining_success_chance() const
-  {
-    return (double)success_entries_remaining / (double)total_entries_remaining;
-  }
-
-  void reset()
-  {
-    success_entries_remaining = success_entries;
-    total_entries_remaining = total_entries;
-  }
-
-  bool trigger();
-};
+#include "sim/shuffled_rng.hpp"
 
 #include "sim/sc_cooldown.hpp"
 
@@ -1651,38 +1587,6 @@ inline player_t* target_wrapper_expr_t::target() const
 { return action.target; }
 
 // Shuffle Proc inlines
-
-inline bool shuffled_rng_t::trigger()
-{
-  if (total_entries <= 0 || success_entries <= 0)
-  {
-    return false;
-  }
-
-  if (total_entries_remaining <= 0)
-  {
-    reset(); // Re-Shuffle the "Deck"
-  }
-
-  bool result = false;
-  if (success_entries_remaining > 0)
-  {
-    result = player->rng().roll(get_remaining_success_chance());
-    if (result)
-    {
-      success_entries_remaining--;
-    }
-  }
-
-  total_entries_remaining--;
-
-  if (total_entries_remaining <= 0)
-  {
-    reset(); // Re-Shuffle the "Deck"
-  }
-
-  return result;
-}
 
 // Instant absorbs
 struct instant_absorb_t
