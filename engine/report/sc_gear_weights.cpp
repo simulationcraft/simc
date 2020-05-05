@@ -3,7 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "sc_report.hpp"
+#include "dbc/dbc.hpp"
+#include "player/sc_player.hpp"
+#include "player/player_scaling.hpp"
+#include "sim/sc_sim.hpp"
 
 namespace
 {
