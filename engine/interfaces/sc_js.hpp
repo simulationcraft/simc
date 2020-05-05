@@ -5,9 +5,7 @@
 #ifndef SC_JS_HPP
 #define SC_JS_HPP
 
-#ifndef RAPIDJSON_HAS_STDSTRING
-#define RAPIDJSON_HAS_STDSTRING 1
-#endif
+
 
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"

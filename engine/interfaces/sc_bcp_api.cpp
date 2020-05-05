@@ -149,7 +149,7 @@ bool authorize( sim_t* sim, const std::string& region )
   }
 
   rapidjson::Document response;
-  response.Parse< 0 >( handle->result().c_str() );
+  response.Parse< 0 >( handle->result() );
   if ( response.HasParseError() )
   {
     std::cerr << "Unable to parse response message from " << oauth_endpoint << std::endl;

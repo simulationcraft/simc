@@ -139,10 +139,17 @@ constexpr double m_pi = 3.14159265358979323846;
 #define ACTOR_EVENT_BOOKKEEPING
 #endif
 
+#define RAPIDJSON_HAS_STDSTRING 1
+
+#define SC_USE_PTR 0
+
+// ==========================================================================
+// Simc related value definitions
+// ==========================================================================
+
 constexpr int MAX_LEVEL = 120;
 constexpr int MAX_SCALING_LEVEL = 120;
 constexpr int MAX_ILEVEL = 1300;
 
-#define SC_USE_PTR 0
 
 #endif // CONFIG_H
