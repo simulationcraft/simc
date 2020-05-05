@@ -8,6 +8,7 @@
 #include <WinBase.h>
 
 #include "fmt/format.h"
+#include "util/util.hpp"
 
 namespace
 {
