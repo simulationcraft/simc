@@ -6,6 +6,7 @@
 #pragma once
 
 #include "config.hpp"
+#include "sim/sc_expressions.hpp"
 
 // Spell query expression types
 enum expr_data_e
