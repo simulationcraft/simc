@@ -2,7 +2,6 @@ set(source_files
 config.hpp
 sc_enums.hpp
 sc_timespan.hpp
-sc_util.hpp
 simulationcraft.hpp
 action/attack.hpp
 action/heal.hpp
@@ -102,11 +101,11 @@ util/sc_resourcepaths.hpp
 util/sc_uptime.hpp
 util/stopwatch.hpp
 util/timeline.hpp
+util/util.hpp
 util/vector_with_callback.hpp
 util/xml.hpp
 dbc/data_definitions.hh
 dbc/data_enums.hh
-sc_util.cpp
 action/sc_action.cpp
 action/sc_action_state.cpp
 action/sc_attack.cpp
@@ -211,5 +210,6 @@ util/rng.cpp
 util/sample_data.cpp
 util/stopwatch.cpp
 util/timeline.cpp
+util/util.cpp
 util/xml.cpp
 )

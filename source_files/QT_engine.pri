@@ -4,7 +4,6 @@
 HEADERS += engine/config.hpp
 HEADERS += engine/sc_enums.hpp
 HEADERS += engine/sc_timespan.hpp
-HEADERS += engine/sc_util.hpp
 HEADERS += engine/simulationcraft.hpp
 HEADERS += engine/action/attack.hpp
 HEADERS += engine/action/heal.hpp
@@ -104,12 +103,12 @@ HEADERS += engine/util/sc_resourcepaths.hpp
 HEADERS += engine/util/sc_uptime.hpp
 HEADERS += engine/util/stopwatch.hpp
 HEADERS += engine/util/timeline.hpp
+HEADERS += engine/util/util.hpp
 HEADERS += engine/util/vector_with_callback.hpp
 HEADERS += engine/util/xml.hpp
 HEADERS += engine/dbc/data_definitions.hh
 HEADERS += engine/dbc/data_enums.hh
 
-SOURCES += engine/sc_util.cpp
 SOURCES += engine/action/sc_action.cpp
 SOURCES += engine/action/sc_action_state.cpp
 SOURCES += engine/action/sc_attack.cpp
@@ -214,4 +213,5 @@ SOURCES += engine/util/rng.cpp
 SOURCES += engine/util/sample_data.cpp
 SOURCES += engine/util/stopwatch.cpp
 SOURCES += engine/util/timeline.cpp
+SOURCES += engine/util/util.cpp
 SOURCES += engine/util/xml.cpp

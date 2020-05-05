@@ -15,7 +15,7 @@
 #include "sc_enums.hpp"
 #include "sc_highchart.hpp"
 #include "util/io.hpp"
-#include "sc_util.hpp"
+#include "util/util.hpp"
 
 struct player_t;
 struct action_t;

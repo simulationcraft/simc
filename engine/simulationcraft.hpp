@@ -157,7 +157,7 @@ namespace highchart {
 
 #include "interfaces/sc_http.hpp"
 
-#include "sc_util.hpp"
+#include "util/util.hpp"
 
 #include "util/stopwatch.hpp"
 #include "sim/sc_option.hpp"

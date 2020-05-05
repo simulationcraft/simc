@@ -8,7 +8,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\config.hpp" />
 		<ClInclude Include="..\engine\sc_enums.hpp" />
 		<ClInclude Include="..\engine\sc_timespan.hpp" />
-		<ClInclude Include="..\engine\sc_util.hpp" />
 		<ClInclude Include="..\engine\simulationcraft.hpp" />
 		<ClInclude Include="..\engine\action\attack.hpp" />
 		<ClInclude Include="..\engine\action\heal.hpp" />
@@ -108,13 +107,11 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\util\sc_uptime.hpp" />
 		<ClInclude Include="..\engine\util\stopwatch.hpp" />
 		<ClInclude Include="..\engine\util\timeline.hpp" />
+		<ClInclude Include="..\engine\util\util.hpp" />
 		<ClInclude Include="..\engine\util\vector_with_callback.hpp" />
 		<ClInclude Include="..\engine\util\xml.hpp" />
 		<ClInclude Include="..\engine\dbc\data_definitions.hh" />
 		<ClInclude Include="..\engine\dbc\data_enums.hh" />
-		<ClCompile Include="..\engine\sc_util.cpp">
-			
-		</ClCompile>
 		<ClCompile Include="..\engine\action\sc_action.cpp">
 			
 		</ClCompile>
@@ -426,6 +423,9 @@ To change the list of source files run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\util\timeline.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\util\util.cpp">
+			
 		</ClCompile>
 		<ClCompile Include="..\engine\util\xml.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>

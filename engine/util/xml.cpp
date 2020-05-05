@@ -7,7 +7,7 @@
 #include "rapidxml/rapidxml.hpp"
 #include "rapidxml/rapidxml_print.hpp"
 #include "util/concurrency.hpp"
-#include "sc_util.hpp"
+#include "util/util.hpp"
 #include "sim/sc_sim.hpp"
 #include "interfaces/sc_http.hpp"
 #include <memory>

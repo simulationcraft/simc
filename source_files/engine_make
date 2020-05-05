@@ -2,7 +2,6 @@
 # To change the list of source files run synchronize.py
 
 SRC += \
-    sc_util.cpp \
     action$(PATHSEP)sc_action.cpp \
     action$(PATHSEP)sc_action_state.cpp \
     action$(PATHSEP)sc_attack.cpp \
@@ -107,4 +106,5 @@ SRC += \
     util$(PATHSEP)sample_data.cpp \
     util$(PATHSEP)stopwatch.cpp \
     util$(PATHSEP)timeline.cpp \
+    util$(PATHSEP)util.cpp \
     util$(PATHSEP)xml.cpp \

@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <functional>
 
-#include "sc_util.hpp"
+#include "util/util.hpp"
 #include "rapidjson/document.h"
 #include "report/sc_report.hpp"
 

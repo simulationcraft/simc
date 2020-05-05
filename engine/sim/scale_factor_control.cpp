@@ -9,7 +9,7 @@
 #include "player/player_scaling.hpp"
 #include "player/stats.hpp"
 #include "report/sc_report.hpp"
-#include "sc_util.hpp"
+#include "util/util.hpp"
 #include <memory>
 
 namespace { // UNNAMED NAMESPACE ==========================================

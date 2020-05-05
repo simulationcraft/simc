@@ -5,7 +5,7 @@
 
 #include "sc_spell_info.hpp"
 #include "dbc.hpp"
-#include "sc_util.hpp"
+#include "util/util.hpp"
 #include "util/xml.hpp"
 #include <vector>
 #include <unordered_map>

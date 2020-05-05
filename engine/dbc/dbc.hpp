@@ -18,7 +18,7 @@
 #include "data_enums.hh"
 #include "specialization.hpp"
 #include "sc_enums.hpp"
-#include "sc_util.hpp"
+#include "util/util.hpp"
 
 #include "dbc/azerite.hpp"
 #include "dbc/rand_prop_points.hpp"

@@ -3,7 +3,7 @@
 #include "azerite.hpp"
 
 #include "config.hpp"
-#include "sc_util.hpp"
+#include "util/util.hpp"
 
 #include "generated/azerite.inc"
 #if SC_USE_PTR == 1

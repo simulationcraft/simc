@@ -5,7 +5,7 @@
 
 #include "progress_bar.hpp"
 #include "sim/sc_sim.hpp"
-#include "sc_util.hpp"
+#include "util/util.hpp"
 #include "player/sc_player.hpp"
 #include "player/player_scaling.hpp"
 #include "sim_control.hpp"
