@@ -18,6 +18,7 @@
 #include "player/azerite_data.hpp"
 #include "class_modules/class_module.hpp"
 #include "dbc/item_database.hpp"
+#include "util/concurrency.hpp"
 #include <unordered_map>
 
 // ==========================================================================
@@ -1050,51 +1051,49 @@ slot_e bcp_api::translate_api_slot( const std::string& slot_str )
 
 // bcp_api::download_player =================================================
 
-player_t* bcp_api::download_player( sim_t*             sim,
-                                    const std::string& region,
-                                    const std::string& server,
-                                    const std::string& name,
-                                    const std::string& talents,
-                                    cache::behavior_e  caching,
-                                    bool               allow_failures )
+player_t* bcp_api::download_player(sim_t* sim,
+  const std::string& region,
+  const std::string& server,
+  const std::string& name,
+  const std::string& talents,
+  cache::behavior_e  caching,
+  bool               allow_failures)
 {
-  sim -> current_name = name;
+  sim->current_name = name;
 
   player_spec_t player;
 
-  std::vector<std::string::value_type> chars { name.begin(), name.end() };
-  chars.push_back( 0 );
+  std::vector<std::string::value_type> chars{ name.begin(), name.end() };
+  chars.push_back(0);
 
-  utf8lwr( reinterpret_cast<void*>( chars.data() ) );
+  utf8lwr(reinterpret_cast<void*>(chars.data()));
 
-  auto normalized_name = std::string { chars.begin(), chars.end() };
-  util::urlencode( normalized_name );
+  auto normalized_name = std::string{ chars.begin(), chars.end() };
+  util::urlencode(normalized_name);
 
   auto normalized_server = server;
-  util::tolower( normalized_server );
+  util::tolower(normalized_server);
 
-  if ( !util::str_compare_ci( region, "cn" ) )
+  if (!util::str_compare_ci(region, "cn"))
   {
-    player.url = fmt::format( GLOBAL_PLAYER_ENDPOINT_URI, region, normalized_server, normalized_name, region, LOCALES[ region ].first );
-    player.origin = fmt::format( GLOBAL_ORIGIN_URI, LOCALES[ region ].second, normalized_server, normalized_name );
+    player.url = fmt::format(GLOBAL_PLAYER_ENDPOINT_URI, region, normalized_server, normalized_name, region, LOCALES[region].first);
+    player.origin = fmt::format(GLOBAL_ORIGIN_URI, LOCALES[region].second, normalized_server, normalized_name);
   }
   else
   {
-    player.url = fmt::format( CHINA_PLAYER_ENDPOINT_URI, normalized_server, normalized_name );
-    player.origin = fmt::format( CHINA_ORIGIN_URI, normalized_server, normalized_name );
+    player.url = fmt::format(CHINA_PLAYER_ENDPOINT_URI, normalized_server, normalized_name);
+    player.origin = fmt::format(CHINA_ORIGIN_URI, normalized_server, normalized_name);
   }
 
 #ifdef SC_DEFAULT_APIKEY
-  if ( sim->apikey == std::string( SC_DEFAULT_APIKEY ) )
-//This is needed to prevent hitting the 'per second' api call limit.
-// If the character is cached, it still counts as a api use, even though we don't download anything.
-// With cached characters, it's common for 30-40 calls to be made per second when downloading a guild.
-// This is only enabled when the person is using the default apikey.
-#if defined ( SC_WINDOWS )
-    _sleep( 250 );
-#else
-    usleep( 250000 );
-#endif
+  if (sim->apikey == std::string(SC_DEFAULT_APIKEY))
+  {
+    //This is needed to prevent hitting the 'per second' api call limit.
+    // If the character is cached, it still counts as a api use, even though we don't download anything.
+    // With cached characters, it's common for 30-40 calls to be made per second when downloading a guild.
+    // This is only enabled when the person is using the default apikey.
+    sc_thread_t::sleep_seconds(0.25);
+  }
 #endif
 
   player.region = region;
