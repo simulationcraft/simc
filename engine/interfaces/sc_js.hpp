@@ -6,20 +6,22 @@
 #define SC_JS_HPP
 
 
-
+#include "config.hpp"
 #include "rapidjson/document.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/prettywriter.h"
+#include "sc_timespan.hpp"
 #include <utility>
 #include <string>
 #include <vector>
 
-#include "sc_timespan.hpp"
-#include "util/sample_data.hpp"
-#include "util/rng.hpp"
-#include "util/timeline.hpp"
 
 struct cooldown_t;
+class extended_sample_data_t;
+class simple_sample_data_t;
+class simple_sample_data_with_min_max_t;
+struct sc_timeline_t;
+namespace rng {
+  struct rng_t;
+}
 
 namespace js
 {
@@ -241,59 +243,19 @@ public:
 
   // Assign a simc-internal timespan object to the current value (v_). Timespan object is converted
   // to a double.
-  JsonOutput& operator=( const timespan_t& v )
-  { v_ = v.total_seconds(); return *this; }
+  JsonOutput& operator=(const timespan_t& v);
 
   // Assign a simc-internal sample data container to the current value (v_). The container is
   // converted to an object with fixed fields.
-  JsonOutput& operator=( const extended_sample_data_t& v )
-  {
-    assert( v_.IsObject() );
-
-    v_.AddMember( rapidjson::StringRef( "sum" ), v.sum(), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "count" ), as<unsigned>( v.count() ), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "mean" ), v.mean(), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "min" ), v.min(), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "max" ), v.max(), d_.GetAllocator() );
-    if ( ! v.simple )
-    {
-      v_.AddMember( rapidjson::StringRef( "median" ), v.percentile( 0.5 ), d_.GetAllocator() );
-      v_.AddMember( rapidjson::StringRef( "variance" ), v.variance, d_.GetAllocator() );
-      v_.AddMember( rapidjson::StringRef( "std_dev" ), v.std_dev, d_.GetAllocator() );
-      v_.AddMember( rapidjson::StringRef( "mean_variance" ), v.mean_variance, d_.GetAllocator() );
-      v_.AddMember( rapidjson::StringRef( "mean_std_dev" ), v.mean_std_dev, d_.GetAllocator() );
-    }
-
-    return *this;
-  }
+  JsonOutput& operator=(const extended_sample_data_t& v);
 
   // Assign a simc-internal sample data container to the current value (v_). The container is
   // converted to an object with fixed fields.
-  JsonOutput& operator=( const simple_sample_data_t& v )
-  {
-    assert( v_.IsObject() );
-
-    v_.AddMember( rapidjson::StringRef( "sum" ), v.sum(), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "count" ), as<unsigned>( v.count() ), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "mean" ), v.mean(), d_.GetAllocator() );
-
-    return *this;
-  }
+  JsonOutput& operator=(const simple_sample_data_t& v);
 
   // Assign a simc-internal sample data container to the current value (v_). The container is
   // converted to an object with fixed fields.
-  JsonOutput& operator=( const simple_sample_data_with_min_max_t& v )
-  {
-    assert( v_.IsObject() );
-
-    v_.AddMember( rapidjson::StringRef( "sum" ), v.sum(), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "count" ), as<unsigned>( v.count() ), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "mean" ), v.mean(), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "min" ), v.min(), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "max" ), v.max(), d_.GetAllocator() );
-
-    return *this;
-  }
+  JsonOutput& operator=(const simple_sample_data_with_min_max_t& v);
 
   JsonOutput& operator=( const std::vector<std::string>& v )
   {
@@ -320,33 +282,11 @@ public:
 
   // Assign a simc-internal timeline data container to the current value (v_). The container is
   // converted to an object with fixed fields.
-  JsonOutput& operator=( const sc_timeline_t& v )
-  {
-    assert( v_.IsObject() );
-
-    v_.AddMember( rapidjson::StringRef( "mean" ), v.mean(), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "mean_std_dev" ), v.mean_stddev(), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "min" ), v.min(), d_.GetAllocator() );
-    v_.AddMember( rapidjson::StringRef( "max" ), v.max(), d_.GetAllocator() );
-
-    rapidjson::Value data_arr( rapidjson::kArrayType );
-    range::for_each( v.data(), [ &data_arr, this ]( double dp ) {
-      data_arr.PushBack( dp, d_.GetAllocator() );
-    } );
-
-    v_.AddMember( rapidjson::StringRef( "data" ), data_arr, d_.GetAllocator() );
-    return *this;
-  }
+  JsonOutput& operator=(const sc_timeline_t& v);
 
   JsonOutput& operator=( const cooldown_t& v );
 
-  JsonOutput& operator=( const rng::rng_t& v )
-  {
-    assert( v_.IsObject() );
-    v_.AddMember( rapidjson::StringRef( "name" ), rapidjson::StringRef( v.name() ), d_.GetAllocator() );
-
-    return *this;
-  }
+  JsonOutput& operator=(const rng::rng_t& v);
 
   template <typename T>
   JsonOutput& add( T v )

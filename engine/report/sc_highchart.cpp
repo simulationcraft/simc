@@ -1,6 +1,16 @@
-#include "simulationcraft.hpp"
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
 
 #include "sc_highchart.hpp"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/prettywriter.h"
+#include "buff/sc_buff.hpp"
+#include "player/sc_player.hpp"
+#include "player/stats.hpp"
+#include "sim/sc_sim.hpp"
+#include "util/util.hpp"
 
 namespace
 {
@@ -17,6 +27,36 @@ static const char* TEXT_MAX_COLOR  = "#8888CC";
 
 static const char* CHART_BGCOLOR     = "#242424";
 static const char* CHART_BGCOLOR_ALT = "white";
+
+
+// Custom data formatter, we need to output doubles in a different way to save some room.
+template <typename Stream>
+struct sc_json_writer_t : public rapidjson::Writer<Stream>
+{
+  const sim_t& sim;
+
+  sc_json_writer_t(Stream& stream, const sim_t& s);
+  bool Double(double d);
+};
+
+template <typename Stream>
+sc_json_writer_t<Stream>::sc_json_writer_t(Stream& stream, const sim_t& s)
+  : rapidjson::Writer<Stream>(stream), sim(s)
+{
+}
+
+template <typename Stream>
+bool sc_json_writer_t<Stream>::Double(double d)
+{
+  this->Prefix(rapidjson::kNumberType);
+  fmt::memory_buffer buffer;
+  fmt::format_to(buffer, "{:.{}f}", d, sim.report_precision);
+  for (unsigned i = 0; i < buffer.size(); ++i)
+  {
+    this->os_->Put(buffer.data()[i]);
+  }
+  return true;
+}
 }
 
 using namespace js;
@@ -501,21 +541,3 @@ histogram_chart_t::histogram_chart_t( const std::string& id_str,
   set( "xAxis.type", "category" );
 }
 
-template <typename Stream>
-sc_json_writer_t<Stream>::sc_json_writer_t( Stream& stream, const sim_t& s )
-  : rapidjson::Writer<Stream>( stream ), sim( s )
-{
-}
-
-template <typename Stream>
-bool sc_json_writer_t<Stream>::Double( double d )
-{
-  this->Prefix( rapidjson::kNumberType );
-  fmt::memory_buffer buffer;
-  fmt::format_to(buffer, "{:.{}f}", d, sim.report_precision );
-  for ( unsigned i = 0; i < buffer.size(); ++i )
-  {
-    this->os_->Put( buffer.data()[ i ] );
-  }
-  return true;
-}
