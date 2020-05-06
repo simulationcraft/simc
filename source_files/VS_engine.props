@@ -10,6 +10,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\sc_timespan.hpp" />
 		<ClInclude Include="..\engine\simulationcraft.hpp" />
 		<ClInclude Include="..\engine\action\attack.hpp" />
+		<ClInclude Include="..\engine\action\dot.hpp" />
 		<ClInclude Include="..\engine\action\heal.hpp" />
 		<ClInclude Include="..\engine\action\sc_action.hpp" />
 		<ClInclude Include="..\engine\action\sc_action_state.hpp" />
@@ -127,7 +128,7 @@ To change the list of source files run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\action\sc_dot.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\action\sc_sequence.cpp">
 			

@@ -4230,6 +4230,11 @@ bool action_t::usable_during_current_gcd() const
   return player->readying && cooldown->queueable() < player->readying->occurs();
 }
 
+double action_t::last_tick_factor(const dot_t* /* d */, const timespan_t& time_to_tick, const timespan_t& duration) const
+{
+  return std::min(1.0, duration / time_to_tick);
+}
+
 std::ostream& operator<<(std::ostream &os, const action_t& p)
 {
   fmt::print(os, "action {}", p.name() );

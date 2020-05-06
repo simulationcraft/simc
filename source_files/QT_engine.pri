@@ -6,6 +6,7 @@ HEADERS += engine/sc_enums.hpp
 HEADERS += engine/sc_timespan.hpp
 HEADERS += engine/simulationcraft.hpp
 HEADERS += engine/action/attack.hpp
+HEADERS += engine/action/dot.hpp
 HEADERS += engine/action/heal.hpp
 HEADERS += engine/action/sc_action.hpp
 HEADERS += engine/action/sc_action_state.hpp

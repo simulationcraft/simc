@@ -4,6 +4,7 @@ sc_enums.hpp
 sc_timespan.hpp
 simulationcraft.hpp
 action/attack.hpp
+action/dot.hpp
 action/heal.hpp
 action/sc_action.hpp
 action/sc_action_state.hpp
