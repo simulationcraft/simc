@@ -84,6 +84,7 @@ SRC += \
     report$(PATHSEP)sc_report_text.cpp \
     sim$(PATHSEP)artifact_power.cpp \
     sim$(PATHSEP)event_manager.cpp \
+    sim$(PATHSEP)proc.cpp \
     sim$(PATHSEP)real_ppm.cpp \
     sim$(PATHSEP)scale_factor_control.cpp \
     sim$(PATHSEP)sc_cooldown.cpp \

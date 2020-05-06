@@ -4,6 +4,20 @@
 // ==========================================================================
 
 #include "action/sc_action.hpp"
+#include "action/sc_action_state.hpp"
+#include "buff/sc_buff.hpp"
+#include "action/dot.hpp"
+#include "player/actor_target_data.hpp"
+#include "player/player_event.hpp"
+#include "player/stats.hpp"
+#include "player/sc_player.hpp"
+#include "player/pet.hpp"
+#include "sim/event.hpp"
+#include "sim/proc.hpp"
+#include "sim/sc_expressions.hpp"
+#include "sim/sc_cooldown.hpp"
+#include "sim/sc_sim.hpp"
+#include "util/rng.hpp"
 #include "simulationcraft.hpp"
 
 // ==========================================================================

@@ -332,93 +332,7 @@ struct uptime_t : public uptime_common_t
   }
 };
 
-// Proc =====================================================================
-
-struct proc_t : private noncopyable
-{
-private:
-  sim_t& sim;
-  size_t iteration_count; // track number of procs during the current iteration
-  timespan_t last_proc; // track time of the last proc
-public:
-  const std::string name_str;
-  // These are initialized in SIMPLE mode. Only change mode for infrequent procs to keep memory usage reasonable.
-  extended_sample_data_t interval_sum;
-  extended_sample_data_t count;
-
-  proc_t( sim_t& s, const std::string& n ) :
-    sim( s ),
-    iteration_count(),
-    last_proc( timespan_t::min() ),
-    name_str( n ),
-    interval_sum( "Interval", true ),
-    count( "Count", true )
-  {}
-
-  void occur()
-  {
-    iteration_count++;
-    if ( last_proc >= timespan_t::zero() && last_proc < sim.current_time() )
-    {
-      interval_sum.add( ( sim.current_time() - last_proc ).total_seconds() );
-      reset();
-    }
-    if ( sim.debug )
-      sim.out_debug.printf( "[PROC] %s: iteration_count=%u count.sum=%u last_proc=%f",
-                  name(),
-                  static_cast<unsigned>( iteration_count ),
-                  static_cast<unsigned>( count.sum() ),
-                  last_proc.total_seconds() );
-
-    last_proc = sim.current_time();
-  }
-
-  void reset()
-  { last_proc = timespan_t::min(); }
-
-  void merge( const proc_t& other )
-  {
-    count.merge( other.count );
-    interval_sum.merge( other.interval_sum );
-  }
-
-  void analyze()
-  {
-    count.analyze();
-    interval_sum.analyze();
-  }
-
-  void datacollection_begin()
-  { iteration_count = 0; }
-
-  void datacollection_end()
-  { count.add( static_cast<double>( iteration_count ) ); }
-
-  const char* name() const
-  { return name_str.c_str(); }
-
-  proc_t* collect_count( bool collect = true )
-  {
-    if ( sim.report_details )
-    {
-      count.change_mode( !collect );
-      count.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
-    }
-
-    return this;
-  }
-
-  proc_t* collect_interval( bool collect = true )
-  {
-    if ( sim.report_details )
-    {
-      interval_sum.change_mode( !collect );
-      interval_sum.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
-    }
-
-    return this;
-  }
-};
+#include "sim/proc.hpp"
 
 // Set Bonus ================================================================
 
@@ -577,23 +491,7 @@ struct action_variable_t
 
 #include "player/target_specific.hpp"
 
-struct player_event_t : public event_t
-{
-  player_t* _player;
-  player_event_t( player_t& p, timespan_t delta_time ) :
-    event_t( p, delta_time ),
-    _player( &p ){}
-  player_t* p()
-  { return player(); }
-  const player_t* p() const
-  { return player(); }
-  player_t* player()
-  { return _player; }
-  const player_t* player() const
-  { return _player; }
-  virtual const char* name() const override
-  { return "event_t"; }
-};
+#include "player/player_event.hpp"
 
 /* Event which will demise the player
  * - Reason for it are that we need to finish the current action ( eg. a dot tick ) without

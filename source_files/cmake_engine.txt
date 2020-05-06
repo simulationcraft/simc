@@ -53,6 +53,7 @@ player/pet.hpp
 player/pet_spawner.hpp
 player/pet_spawner_impl.hpp
 player/player_collected_data.hpp
+player/player_event.hpp
 player/player_processed_report_information.hpp
 player/player_resources.hpp
 player/player_scaling.hpp
@@ -75,6 +76,7 @@ sim/event_manager.hpp
 sim/gain.hpp
 sim/iteration_data_entry.hpp
 sim/plot.hpp
+sim/proc.hpp
 sim/progress_bar.hpp
 sim/raid_event.hpp
 sim/real_ppm.hpp
@@ -191,6 +193,7 @@ report/sc_report_json.cpp
 report/sc_report_text.cpp
 sim/artifact_power.cpp
 sim/event_manager.cpp
+sim/proc.cpp
 sim/real_ppm.cpp
 sim/scale_factor_control.cpp
 sim/sc_cooldown.cpp

@@ -10,12 +10,14 @@
 #include "sc_timespan.hpp"
 #include "util/sample_data.hpp"
 #include "sim/gain.hpp"
+#include "player/gear_stats.hpp"
 #include <vector>
 #include <string>
 
 struct action_t;
 struct player_t;
 struct sim_t;
+struct sc_timeline_t;
 
 struct stats_t : private noncopyable
 {

@@ -3,8 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "player/stats.hpp"
 #include <memory>
-
 #include "simulationcraft.hpp"
 
 // stats_t::stats_t =========================================================
