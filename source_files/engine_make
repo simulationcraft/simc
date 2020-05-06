@@ -11,6 +11,14 @@ SRC += \
     action$(PATHSEP)sc_spell.cpp \
     action$(PATHSEP)sc_stats.cpp \
     buff$(PATHSEP)sc_buff.cpp \
+    class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin.cpp \
+    class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_holy.cpp \
+    class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_protection.cpp \
+    class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_retribution.cpp \
+    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest.cpp \
+    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_discipline.cpp \
+    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_holy.cpp \
+    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_shadow.cpp \
     class_modules$(PATHSEP)sc_death_knight.cpp \
     class_modules$(PATHSEP)sc_demon_hunter.cpp \
     class_modules$(PATHSEP)sc_druid.cpp \
@@ -21,14 +29,6 @@ SRC += \
     class_modules$(PATHSEP)sc_rogue.cpp \
     class_modules$(PATHSEP)sc_shaman.cpp \
     class_modules$(PATHSEP)sc_warrior.cpp \
-    class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin.cpp \
-    class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_holy.cpp \
-    class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_protection.cpp \
-    class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_retribution.cpp \
-    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest.cpp \
-    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_discipline.cpp \
-    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_holy.cpp \
-    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_shadow.cpp \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock.cpp \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_affliction.cpp \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_demonology.cpp \
@@ -86,7 +86,6 @@ SRC += \
     sim$(PATHSEP)event_manager.cpp \
     sim$(PATHSEP)proc.cpp \
     sim$(PATHSEP)real_ppm.cpp \
-    sim$(PATHSEP)scale_factor_control.cpp \
     sim$(PATHSEP)sc_cooldown.cpp \
     sim$(PATHSEP)sc_event.cpp \
     sim$(PATHSEP)sc_expressions.cpp \
@@ -98,6 +97,7 @@ SRC += \
     sim$(PATHSEP)sc_raid_event.cpp \
     sim$(PATHSEP)sc_reforge_plot.cpp \
     sim$(PATHSEP)sc_sim.cpp \
+    sim$(PATHSEP)scale_factor_control.cpp \
     sim$(PATHSEP)shuffled_rng.cpp \
     sim$(PATHSEP)spawner.cpp \
     sim$(PATHSEP)x6_pantheon.cpp \

@@ -184,6 +184,7 @@ def qmake_type_str(file_type, path, filters, prefix, exclude_match):
     if exclude_match is not None:
       header_files = filter(lambda x: not re.match(exclude_match, str(x)), header_files)
     header_files = [p.relative_to("../") for p in header_files]
+    header_files.sort(key=lambda p: str(p).lower())
     lines = ["{} += {}".format(prefix, entry) for entry in header_files]
     return "\n".join(lines)
   
