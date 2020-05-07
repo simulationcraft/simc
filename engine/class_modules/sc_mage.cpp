@@ -5670,6 +5670,7 @@ std::string mage_t::default_potion() const
 {
   std::string lvl120_potion =
     ( specialization() == MAGE_ARCANE ) ? "focused_resolve" :
+    ( specialization() == MAGE_FIRE )   ? "superior_battle_potion_of_intellect" :
                                           "unbridled_fury";
 
   std::string lvl110_potion =
