@@ -65,6 +65,7 @@ HEADERS += engine/player/sample_data_helper.hpp
 HEADERS += engine/player/sc_actor_pair.hpp
 HEADERS += engine/player/sc_player.hpp
 HEADERS += engine/player/scaling_metric_data.hpp
+HEADERS += engine/player/set_bonus.hpp
 HEADERS += engine/player/stats.hpp
 HEADERS += engine/player/target_specific.hpp
 HEADERS += engine/player/unique_gear.hpp

@@ -1,9 +1,16 @@
+#include "set_bonus.hpp"
+#include "set_bonus.hpp"
 // ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "set_bonus.hpp"
+#include "dbc/dbc.hpp"
+#include "item/item.hpp"
+#include "player/sc_player.hpp"
+#include "sim/sc_expressions.hpp"
+#include "sim/sc_sim.hpp"
 
 set_bonus_t::set_bonus_t( player_t* player ) :
   actor( player ),
@@ -17,7 +24,7 @@ set_bonus_t::set_bonus_t( player_t* player ) :
     // For now only 2, and 4 set bonuses
     for ( size_t j = 0; j < set_bonus_spec_data[ i ].size(); j++ )
     {
-      set_bonus_spec_data[ i ][ j ].resize( N_BONUSES, set_bonus_data_t() );
+      set_bonus_spec_data[ i ][ j ].resize( N_BONUSES, set_bonus_data_t(spell_data_t::not_found()) );
       set_bonus_spec_count[ i ][ j ] = 0;
     }
   }
@@ -135,6 +142,22 @@ std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
   }
 
   return bonuses;
+}
+
+// Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
+
+const spell_data_t* set_bonus_t::set(specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus) const
+{
+  if (specdata::spec_idx(spec) < 0)
+  {
+    return spell_data_t::nil();
+  }
+#ifndef NDEBUG
+  assert(set_bonus_spec_data.size() > (unsigned)set_bonus);
+  assert(set_bonus_spec_data[set_bonus].size() > (unsigned)specdata::spec_idx(spec));
+  assert(set_bonus_spec_data[set_bonus][specdata::spec_idx(spec)].size() > (unsigned)bonus);
+#endif
+  return set_bonus_spec_data[set_bonus][specdata::spec_idx(spec)][bonus].spell;
 }
 
 void set_bonus_t::initialize()

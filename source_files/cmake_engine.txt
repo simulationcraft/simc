@@ -63,6 +63,7 @@ player/sample_data_helper.hpp
 player/sc_actor_pair.hpp
 player/sc_player.hpp
 player/scaling_metric_data.hpp
+player/set_bonus.hpp
 player/stats.hpp
 player/target_specific.hpp
 player/unique_gear.hpp
