@@ -611,3 +611,30 @@ void cooldown_t::update_ready_thresholds()
     player->update_cast_while_casting_ready();
   }
 }
+
+timespan_t cooldown_t::queueable() const
+{
+  return ready - player->cooldown_tolerance();
+}
+
+bool cooldown_t::is_ready() const
+{
+  if (up())
+  {
+    return true;
+  }
+
+  // Cooldowns that are not bound to specific actions should not be considered as queueable in the
+  // simulator, ever, so just return up() here. This limits the actual queueable cooldowns to
+  // basically only abilities, where the user must press a button to initiate the execution. Note
+  // that off gcd abilities that bypass schedule_execute (i.e., action_t::use_off_gcd is set to
+  // true) will for now not use the queueing system.
+  if (!action || !player)
+  {
+    return up();
+  }
+
+  // Cooldown is not up, and is action-bound (essentially foreground action), check if it's within
+  // the player's (or default) cooldown tolerance for queueing.
+  return queueable() <= sim.current_time();
+}

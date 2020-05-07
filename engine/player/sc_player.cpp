@@ -13275,6 +13275,32 @@ int player_t::nth_iteration() const
           : sim -> current_iteration - creation_iteration;
 }
 
+bool player_t::is_my_pet(const player_t* t) const
+{
+  return t->is_pet() && t->cast_pet()->owner == this;
+}
+
+
+/**
+ * Perform dynamic resource regeneration
+ */
+void player_t::do_dynamic_regen()
+{
+  if (sim->current_time() == last_regen)
+    return;
+
+  regen(sim->current_time() - last_regen);
+  last_regen = sim->current_time();
+
+  if (dynamic_regen_pets)
+  {
+    for (auto& elem : active_pets)
+    {
+      if (elem->resource_regeneration == regen_type::DYNAMIC)
+        elem->do_dynamic_regen();
+    }
+  }
+}
 void action_variable_t::optimize()
 {
   player_t* player = variable_actions.front()->player;

@@ -1333,6 +1333,31 @@ std::unique_ptr<expr_t> expr_t::parse( action_t* action, const std::string& expr
   }
 }
 
+target_wrapper_expr_t::target_wrapper_expr_t(action_t& a, const std::string& name_str, const std::string& expr_str) :
+  expr_t(name_str), action(a), suffix_expr_str(expr_str)
+{
+  std::generate_n(std::back_inserter(proxy_expr), action.sim->actor_list.size(), [] { return std::unique_ptr<expr_t>(); });
+}
+
+double target_wrapper_expr_t::evaluate()
+{
+  assert(target());
+
+  size_t actor_index = target()->actor_index;
+
+  if (proxy_expr[actor_index] == nullptr)
+  {
+    proxy_expr[actor_index] = target()->create_expression(suffix_expr_str);
+  }
+
+  return proxy_expr[actor_index]->eval();
+}
+
+player_t* target_wrapper_expr_t::target() const
+{
+  return action.target;
+}
+
 #ifdef UNIT_TEST
 
 uint32_t dbc::get_school_mask( school_e )
