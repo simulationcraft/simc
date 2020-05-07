@@ -1,4 +1,5 @@
 set(source_files
+action/absorb.hpp
 action/attack.hpp
 action/dot.hpp
 action/heal.hpp
@@ -113,6 +114,7 @@ util/timeline.hpp
 util/util.hpp
 util/vector_with_callback.hpp
 util/xml.hpp
+action/absorb.cpp
 action/sc_action.cpp
 action/sc_action_state.cpp
 action/sc_attack.cpp

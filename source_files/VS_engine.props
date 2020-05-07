@@ -5,6 +5,7 @@ To change the list of source files run synchronize.py
 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup>
+		<ClInclude Include="..\engine\action\absorb.hpp" />
 		<ClInclude Include="..\engine\action\attack.hpp" />
 		<ClInclude Include="..\engine\action\dot.hpp" />
 		<ClInclude Include="..\engine\action\heal.hpp" />
@@ -119,6 +120,9 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\util\util.hpp" />
 		<ClInclude Include="..\engine\util\vector_with_callback.hpp" />
 		<ClInclude Include="..\engine\util\xml.hpp" />
+		<ClCompile Include="..\engine\action\absorb.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="..\engine\action\sc_action.cpp">
 			
 		</ClCompile>
