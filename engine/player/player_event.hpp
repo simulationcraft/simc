@@ -14,9 +14,7 @@ struct player_t;
 struct player_event_t : public event_t
 {
   player_t* _player;
-  player_event_t(player_t& p, timespan_t delta_time) :
-    event_t(p, delta_time),
-    _player(&p) {}
+  player_event_t(player_t& p, timespan_t delta_time);
   player_t* p()
   {
     return player();

@@ -5862,7 +5862,7 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
       struct heart_essence_dummy_t : public action_t
       {
         heart_essence_dummy_t( player_t* p ) :
-          action_t( ACTION_OTHER, "heart_essence", p )
+          action_t( ACTION_OTHER, "heart_essence", p, spell_data_t::nil() )
         {
           background = quiet = true;
           callbacks = false;

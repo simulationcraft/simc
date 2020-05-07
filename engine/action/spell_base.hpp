@@ -13,7 +13,8 @@ struct spell_base_t : public action_t
   // special item flags
   bool procs_courageous_primal_diamond;
 
-  spell_base_t( action_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
+  spell_base_t(action_e at, const std::string& token, player_t* p);
+  spell_base_t( action_e at, const std::string& token, player_t* p, const spell_data_t* s );
 
   // Spell Base Overrides
   virtual timespan_t execute_time() const override;
@@ -21,14 +22,11 @@ struct spell_base_t : public action_t
   virtual void   execute() override;
   virtual void   schedule_execute( action_state_t* execute_state = nullptr ) override;
 
-  virtual double composite_crit_chance() const override
-  { return action_t::composite_crit_chance() + player -> cache.spell_crit_chance(); }
+  virtual double composite_crit_chance() const override;
 
-  virtual double composite_haste() const override
-  { return action_t::composite_haste() * player -> cache.spell_speed(); }
+  virtual double composite_haste() const override;
 
-  virtual double composite_crit_chance_multiplier() const override
-  { return action_t::composite_crit_chance_multiplier() * player -> composite_spell_crit_chance_multiplier(); }
+  virtual double composite_crit_chance_multiplier() const override;
 
   double recharge_multiplier( const cooldown_t& cd ) const override;
 

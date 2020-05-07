@@ -3,6 +3,8 @@
 
 SRC += \
     action$(PATHSEP)absorb.cpp \
+    action$(PATHSEP)action_callback.cpp \
+    action$(PATHSEP)heal.cpp \
     action$(PATHSEP)sc_action.cpp \
     action$(PATHSEP)sc_action_state.cpp \
     action$(PATHSEP)sc_attack.cpp \
@@ -64,6 +66,7 @@ SRC += \
     player$(PATHSEP)actor_target_data.cpp \
     player$(PATHSEP)artifact_data.cpp \
     player$(PATHSEP)azerite_data.cpp \
+    player$(PATHSEP)player_event.cpp \
     player$(PATHSEP)player_stat_cache.cpp \
     player$(PATHSEP)player_talent_points.cpp \
     player$(PATHSEP)sc_consumable.cpp \
@@ -74,6 +77,7 @@ SRC += \
     player$(PATHSEP)sc_unique_gear.cpp \
     player$(PATHSEP)sc_unique_gear_x6.cpp \
     player$(PATHSEP)sc_unique_gear_x7.cpp \
+    player$(PATHSEP)target_specific.cpp \
     report$(PATHSEP)sc_chart.cpp \
     report$(PATHSEP)sc_color.cpp \
     report$(PATHSEP)sc_gear_weights.cpp \

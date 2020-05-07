@@ -17,7 +17,8 @@ public:
   double tick_pct_heal;
   gain_t* heal_gain;
 
-  heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
+  heal_t(const std::string& name, player_t* p);
+  heal_t( const std::string& name, player_t* p, const spell_data_t* s );
 
   virtual double composite_pct_heal( const action_state_t* ) const;
   virtual void assess_damage( result_amount_type, action_state_t* ) override;
@@ -34,29 +35,13 @@ public:
   virtual int num_targets() const override;
   void   parse_effect_data( const spelleffect_data_t& ) override;
 
-  virtual double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = action_multiplier() * action_da_multiplier() *
-           player -> cache.player_heal_multiplier( s ) *
-           player -> composite_player_dh_multiplier( get_school() );
+  virtual double composite_da_multiplier(const action_state_t* s) const override;
 
-    return m;
-  }
+  virtual double composite_ta_multiplier(const action_state_t* s) const override;
 
-  virtual double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double m = action_multiplier() * action_ta_multiplier() *
-           player -> cache.player_heal_multiplier( s ) *
-           player -> composite_player_th_multiplier( get_school() );
+  virtual double composite_player_critical_multiplier(const action_state_t* /* s */) const override;
 
-    return m;
-  }
-
-  virtual double composite_player_critical_multiplier( const action_state_t* /* s */ ) const override
-  { return player -> composite_player_critical_healing_multiplier(); }
-
-  virtual double composite_versatility( const action_state_t* state ) const override
-  { return spell_base_t::composite_versatility( state ) + player -> cache.heal_versatility(); }
+  virtual double composite_versatility(const action_state_t* state) const override;
 
   virtual std::unique_ptr<expr_t> create_expression( const std::string& name ) override;
 };

@@ -5,6 +5,7 @@
 
 #include "sc_buff.hpp"
 #include "player/target_specific.hpp"
+#include "player/sc_player.hpp"
 #include "sim/sc_expressions.hpp"
 #include "action/sc_action.hpp"
 #include "sim/event.hpp"

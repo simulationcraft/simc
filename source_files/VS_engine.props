@@ -6,6 +6,7 @@ To change the list of source files run synchronize.py
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup>
 		<ClInclude Include="..\engine\action\absorb.hpp" />
+		<ClInclude Include="..\engine\action\action_callback.hpp" />
 		<ClInclude Include="..\engine\action\attack.hpp" />
 		<ClInclude Include="..\engine\action\dot.hpp" />
 		<ClInclude Include="..\engine\action\heal.hpp" />
@@ -121,6 +122,12 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\util\vector_with_callback.hpp" />
 		<ClInclude Include="..\engine\util\xml.hpp" />
 		<ClCompile Include="..\engine\action\absorb.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\action\action_callback.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\action\heal.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\action\sc_action.cpp">
@@ -306,6 +313,9 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\azerite_data.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
+		<ClCompile Include="..\engine\player\player_event.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="..\engine\player\player_stat_cache.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
@@ -335,6 +345,9 @@ To change the list of source files run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_unique_gear_x7.cpp">
 			
+		</ClCompile>
+		<ClCompile Include="..\engine\player\target_specific.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\report\sc_chart.cpp">
 			

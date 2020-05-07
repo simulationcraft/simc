@@ -1,5 +1,6 @@
 set(source_files
 action/absorb.hpp
+action/action_callback.hpp
 action/attack.hpp
 action/dot.hpp
 action/heal.hpp
@@ -115,6 +116,8 @@ util/util.hpp
 util/vector_with_callback.hpp
 util/xml.hpp
 action/absorb.cpp
+action/action_callback.cpp
+action/heal.cpp
 action/sc_action.cpp
 action/sc_action_state.cpp
 action/sc_attack.cpp
@@ -176,6 +179,7 @@ player/actor.cpp
 player/actor_target_data.cpp
 player/artifact_data.cpp
 player/azerite_data.cpp
+player/player_event.cpp
 player/player_stat_cache.cpp
 player/player_talent_points.cpp
 player/sc_consumable.cpp
@@ -186,6 +190,7 @@ player/sc_set_bonus.cpp
 player/sc_unique_gear.cpp
 player/sc_unique_gear_x6.cpp
 player/sc_unique_gear_x7.cpp
+player/target_specific.cpp
 report/sc_chart.cpp
 report/sc_color.cpp
 report/sc_gear_weights.cpp

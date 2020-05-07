@@ -2,6 +2,7 @@
 # To change the list of source files run synchronize.py
 
 HEADERS += engine/action/absorb.hpp
+HEADERS += engine/action/action_callback.hpp
 HEADERS += engine/action/attack.hpp
 HEADERS += engine/action/dot.hpp
 HEADERS += engine/action/heal.hpp
@@ -118,6 +119,8 @@ HEADERS += engine/util/vector_with_callback.hpp
 HEADERS += engine/util/xml.hpp
 
 SOURCES += engine/action/absorb.cpp
+SOURCES += engine/action/action_callback.cpp
+SOURCES += engine/action/heal.cpp
 SOURCES += engine/action/sc_action.cpp
 SOURCES += engine/action/sc_action_state.cpp
 SOURCES += engine/action/sc_attack.cpp
@@ -179,6 +182,7 @@ SOURCES += engine/player/actor.cpp
 SOURCES += engine/player/actor_target_data.cpp
 SOURCES += engine/player/artifact_data.cpp
 SOURCES += engine/player/azerite_data.cpp
+SOURCES += engine/player/player_event.cpp
 SOURCES += engine/player/player_stat_cache.cpp
 SOURCES += engine/player/player_talent_points.cpp
 SOURCES += engine/player/sc_consumable.cpp
@@ -189,6 +193,7 @@ SOURCES += engine/player/sc_set_bonus.cpp
 SOURCES += engine/player/sc_unique_gear.cpp
 SOURCES += engine/player/sc_unique_gear_x6.cpp
 SOURCES += engine/player/sc_unique_gear_x7.cpp
+SOURCES += engine/player/target_specific.cpp
 SOURCES += engine/report/sc_chart.cpp
 SOURCES += engine/report/sc_color.cpp
 SOURCES += engine/report/sc_gear_weights.cpp

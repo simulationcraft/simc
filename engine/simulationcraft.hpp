@@ -418,56 +418,7 @@ inline proc_types2 action_state_t::cast_proc_type2() const
 
 #include "action/dot.hpp"
 
-
-// Action Callback ==========================================================
-
-struct action_callback_t : private noncopyable
-{
-  player_t* listener;
-  bool active;
-  bool allow_self_procs;
-  bool allow_procs;
-
-  action_callback_t( player_t* l, bool ap = false, bool asp = false ) :
-    listener( l ), active( true ), allow_self_procs( asp ), allow_procs( ap )
-  {
-    assert( l );
-    if ( std::find( l -> callbacks.all_callbacks.begin(), l -> callbacks.all_callbacks.end(), this )
-        == l -> callbacks.all_callbacks.end() )
-      l -> callbacks.all_callbacks.push_back( this );
-  }
-  virtual ~action_callback_t() {}
-  virtual void trigger( action_t*, void* call_data ) = 0;
-  virtual void reset() {}
-  virtual void initialize() { }
-  virtual void activate() { active = true; }
-  virtual void deactivate() { active = false; }
-
-  static void trigger( const std::vector<action_callback_t*>& v, action_t* a, void* call_data = nullptr )
-  {
-    if ( a && ! a -> player -> in_combat ) return;
-
-    std::size_t size = v.size();
-    for ( std::size_t i = 0; i < size; i++ )
-    {
-      action_callback_t* cb = v[ i ];
-      if ( cb -> active )
-      {
-        if ( ! cb -> allow_procs && a && a -> proc ) return;
-        cb -> trigger( a, call_data );
-      }
-    }
-  }
-
-  static void reset( const std::vector<action_callback_t*>& v )
-  {
-    std::size_t size = v.size();
-    for ( std::size_t i = 0; i < size; i++ )
-    {
-      v[ i ] -> reset();
-    }
-  }
-};
+#include "action/action_callback.hpp"
 
 // Generic proc callback ======================================================
 
@@ -768,7 +719,7 @@ action_t* create_action( player_t*, const std::string& name, const std::string& 
 struct wait_action_base_t : public action_t
 {
   wait_action_base_t( player_t* player, const std::string& name ):
-    action_t( ACTION_OTHER, name, player )
+    action_t( ACTION_OTHER, name, player, spell_data_t::nil() )
   {
     trigger_gcd = timespan_t::zero();
     interrupt_auto_attack = false;

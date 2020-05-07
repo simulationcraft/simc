@@ -10,6 +10,7 @@
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
 #include "player/target_specific.hpp"
+#include "dbc/data_definitions.hh"
 #include <vector>
 #include <memory>
 
@@ -23,9 +24,14 @@ struct event_t;
 struct expr_t;
 struct gain_t;
 struct item_t;
+struct option_t;
 struct sim_t;
 struct player_t;
 struct proc_t;
+namespace rng {
+  struct rng_t;
+}
+struct spelleffect_data_t;
 struct stats_t;
 struct travel_event_t;
 struct weapon_t;
@@ -502,7 +508,8 @@ private:
   action_state_t* state_cache;
   std::vector<travel_event_t*> travel_events;
 public:
-  action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
+  action_t(action_e type, const std::string& token, player_t* p);
+  action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s );
 
   virtual ~action_t();
 
@@ -528,17 +535,7 @@ public:
   { return ( *s_data ); }
 
   // return s_data_reporting if available, otherwise fallback to s_data
-  const spell_data_t& data_reporting() const
-  {
-    if (s_data_reporting == spell_data_t::nil())
-    {
-      return ( *s_data );
-    }
-    else
-    {
-      return ( *s_data_reporting );
-    }
-  }
+  const spell_data_t& data_reporting() const;
 
   dot_t* find_dot( player_t* target ) const;
 
@@ -629,8 +626,7 @@ public:
 
   virtual double calculate_crit_damage_bonus( action_state_t* s ) const;
 
-  virtual double target_armor( player_t* t ) const
-  { return t -> cache.armor(); }
+  virtual double target_armor(player_t* t) const;
 
   virtual double recharge_multiplier( const cooldown_t& ) const
   { return base_recharge_multiplier; }
@@ -758,64 +754,30 @@ public:
   virtual attack_power_type get_attack_power_type() const
   { return ap_type; }
 
-  virtual double composite_attack_power() const
-  { return player -> composite_melee_attack_power(get_attack_power_type() ); }
+  virtual double composite_attack_power() const;
 
-  virtual double composite_spell_power() const
-  {
-    double spell_power = 0;
-    double tmp;
-
-    for ( auto base_school : base_schools )
-    {
-      tmp = player -> cache.spell_power( base_school );
-      if ( tmp > spell_power ) spell_power = tmp;
-    }
-
-    return spell_power;
-  }
+  virtual double composite_spell_power() const;
 
   virtual double composite_target_crit_chance( player_t* target ) const;
 
-  virtual double composite_target_multiplier( player_t* target ) const
-  {
-    return player -> composite_player_target_multiplier( target, get_school() );
-  }
+  virtual double composite_target_multiplier(player_t* target) const;
 
-  virtual double composite_target_damage_vulnerability( player_t* target ) const
-  {
-    double target_vulnerability = 0.0;
-    double tmp;
-
-    for ( auto base_school : base_schools )
-    {
-      tmp = target -> composite_player_vulnerability( base_school );
-      if ( tmp > target_vulnerability ) target_vulnerability = tmp;
-    }
-
-    return target_vulnerability;
-  }
+  virtual double composite_target_damage_vulnerability(player_t* target) const;
 
   virtual double composite_versatility( const action_state_t* ) const
   { return 1.0; }
 
-  virtual double composite_leech( const action_state_t* ) const
-  { return player -> cache.leech(); }
+  virtual double composite_leech(const action_state_t*) const;
 
-  virtual double composite_run_speed() const
-  { return player -> cache.run_speed(); }
+  virtual double composite_run_speed() const;
 
-  virtual double composite_avoidance() const
-  { return player -> cache.avoidance(); }
+  virtual double composite_avoidance() const;
 
-  virtual double composite_corruption() const
-  { return player -> cache.corruption(); }
+  virtual double composite_corruption() const;
 
-  virtual double composite_corruption_resistance() const
-  { return player -> cache.corruption_resistance(); }
+  virtual double composite_corruption_resistance() const;
 
-  virtual double composite_total_corruption() const
-  { return player -> composite_total_corruption(); }
+  virtual double composite_total_corruption() const;
 
   /// Direct amount multiplier due to debuffs on the target
   virtual double composite_target_da_multiplier( player_t* target ) const
@@ -825,44 +787,13 @@ public:
   virtual double composite_target_ta_multiplier( player_t* target ) const
   { return composite_target_multiplier( target ); }
 
-  virtual double composite_da_multiplier( const action_state_t* /* s */ ) const
-  {
-    double base_multiplier = action_multiplier();
-    double direct_multiplier = action_da_multiplier();
-    double player_school_multiplier = 0.0;
-    double tmp;
-
-    for ( auto base_school : base_schools )
-    {
-      tmp = player -> cache.player_multiplier( base_school );
-      if ( tmp > player_school_multiplier ) player_school_multiplier = tmp;
-    }
-
-    return base_multiplier * direct_multiplier * player_school_multiplier *
-           player -> composite_player_dd_multiplier( get_school(), this );
-  }
+  virtual double composite_da_multiplier(const action_state_t* /* s */) const;
 
   /// Normal ticking modifiers that are updated every tick
-  virtual double composite_ta_multiplier( const action_state_t* /* s */ ) const
-  {
-    double base_multiplier = action_multiplier();
-    double tick_multiplier = action_ta_multiplier();
-    double player_school_multiplier = 0.0;
-    double tmp;
-
-    for ( auto base_school : base_schools )
-    {
-      tmp = player -> cache.player_multiplier( base_school );
-      if ( tmp > player_school_multiplier ) player_school_multiplier = tmp;
-    }
-
-    return base_multiplier * tick_multiplier * player_school_multiplier *
-           player -> composite_player_td_multiplier( get_school(), this );
-  }
+  virtual double composite_ta_multiplier(const action_state_t* /* s */) const;
 
   /// Persistent modifiers that are snapshot at the start of the spell cast
-  virtual double composite_persistent_multiplier( const action_state_t* ) const
-  { return player -> composite_persistent_multiplier( get_school() ); }
+  virtual double composite_persistent_multiplier(const action_state_t*) const;
 
   /**
    * @brief Generic aoe multiplier for the action.
@@ -873,11 +804,9 @@ public:
   virtual double composite_aoe_multiplier( const action_state_t* ) const
   { return 1.0; }
 
-  virtual double composite_target_mitigation( player_t* t, school_e s ) const
-  { return t -> composite_mitigation_multiplier( s ); }
+  virtual double composite_target_mitigation(player_t* t, school_e s) const;
 
-  virtual double composite_player_critical_multiplier( const action_state_t* s ) const
-  { return player -> composite_player_critical_damage_multiplier( s ); }
+  virtual double composite_player_critical_multiplier(const action_state_t* s) const;
 
   /// Action proc type, needed for dynamic aoe stuff and such.
   virtual proc_types proc_type() const

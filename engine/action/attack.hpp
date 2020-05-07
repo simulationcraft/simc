@@ -12,7 +12,8 @@ struct attack_t : public action_t
 {
   double base_attack_expertise;
 
-  attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
+  attack_t(const std::string& token, player_t* p);
+  attack_t( const std::string& token, player_t* p, const spell_data_t* s );
 
   // Attack Overrides
   virtual timespan_t execute_time() const override;
@@ -28,54 +29,27 @@ struct attack_t : public action_t
   virtual double  block_chance( action_state_t* s ) const override;
   virtual double  crit_block_chance( action_state_t* s ) const override;
 
-  virtual double action_multiplier() const override
-  {
-    double mul = action_t::action_multiplier();
+  virtual double action_multiplier() const override;
 
-    if ( ! special )
-    {
-      mul *= player -> auto_attack_multiplier;
-    }
+  virtual double composite_target_multiplier(player_t* target) const override;
 
-    return mul;
-  }
+  virtual double composite_hit() const override;
 
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double mul = action_t::composite_target_multiplier( target );
+  virtual double composite_crit_chance() const override;
 
-    mul *= composite_target_damage_vulnerability( target );
+  virtual double composite_crit_chance_multiplier() const override;
 
-    return mul;
-  }
+  virtual double composite_haste() const override;
 
-  virtual double composite_hit() const override
-  { return action_t::composite_hit() + player -> cache.attack_hit(); }
+  virtual double composite_expertise() const;
 
-  virtual double composite_crit_chance() const override
-  { return action_t::composite_crit_chance() + player -> cache.attack_crit_chance(); }
-
-  virtual double composite_crit_chance_multiplier() const override
-  { return action_t::composite_crit_chance_multiplier() * player -> composite_melee_crit_chance_multiplier(); }
-
-  virtual double composite_haste() const override
-  { return action_t::composite_haste() * player -> cache.attack_haste(); }
-
-  virtual double composite_expertise() const
-  { return base_attack_expertise + player -> cache.attack_expertise(); }
-
-  virtual double composite_versatility( const action_state_t* state ) const override
-  { return action_t::composite_versatility( state ) + player -> cache.damage_versatility(); }
+  virtual double composite_versatility(const action_state_t* state) const override;
 
   double recharge_multiplier( const cooldown_t& cd ) const override;
 
   virtual void reschedule_auto_attack( double old_swing_haste );
 
-  virtual void reset() override
-  {
-    attack_table.reset();
-    action_t::reset();
-  }
+  virtual void reset() override;
 
 private:
   /// attack table generator with caching
@@ -104,7 +78,8 @@ private:
 
 struct melee_attack_t : public attack_t
 {
-  melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
+  melee_attack_t(const std::string& token, player_t* p);
+  melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s );
 
   // Melee Attack Overrides
   virtual void init() override;
@@ -118,7 +93,8 @@ struct melee_attack_t : public attack_t
 
 struct ranged_attack_t : public attack_t
 {
-  ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
+  ranged_attack_t(const std::string& token, player_t* p);
+  ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s );
 
   // Ranged Attack Overrides
   virtual double composite_target_multiplier( player_t* ) const override;

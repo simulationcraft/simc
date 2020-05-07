@@ -330,6 +330,11 @@ action_t::options_t::options_t()
     target_str()
 {
 }
+action_t::action_t(action_e ty, const std::string& token, player_t* p)
+  : action_t(ty, token, p, spell_data_t::nil())
+{
+
+}
 
 action_t::action_t( action_e ty, const std::string& token, player_t* p, const spell_data_t* s )
   : s_data( s ? s : spell_data_t::nil() ),
@@ -1322,8 +1327,32 @@ double action_t::calculate_crit_damage_bonus( action_state_t* state ) const
   return state->result_total;
 }
 
+double action_t::target_armor(player_t* t) const
+{
+  return t->cache.armor();
+}
+
 result_amount_type action_t::report_amount_type( const action_state_t* state ) const
 { return state -> result_type; }
+
+double action_t::composite_attack_power() const
+{
+  return player->composite_melee_attack_power(get_attack_power_type());
+}
+
+double action_t::composite_spell_power() const
+{
+  double spell_power = 0;
+  double tmp;
+
+  for (auto base_school : base_schools)
+  {
+    tmp = player->cache.spell_power(base_school);
+    if (tmp > spell_power) spell_power = tmp;
+  }
+
+  return spell_power;
+}
 
 double action_t::composite_target_crit_chance( player_t* target ) const
 {
@@ -1344,6 +1373,11 @@ double action_t::composite_target_crit_chance( player_t* target ) const
   }
 
   return c;
+}
+
+double action_t::composite_target_multiplier(player_t* target) const
+{
+  return player->composite_player_target_multiplier(target, get_school());
 }
 
 void action_t::consume_resource()
@@ -3886,7 +3920,7 @@ bool action_t::dot_refreshable( const dot_t* dot, const timespan_t& triggered_du
 }
 
 call_action_list_t::call_action_list_t( player_t* player, const std::string& options_str )
-  : action_t( ACTION_CALL, "call_action_list", player ), alist( nullptr )
+  : action_t( ACTION_CALL, "call_action_list", player, spell_data_t::nil() ), alist( nullptr )
 {
   std::string alist_name;
   int randomtoggle = 0;
@@ -4069,6 +4103,21 @@ dot_t* action_t::get_dot( player_t* t )
   return dot;
 }
 
+
+// return s_data_reporting if available, otherwise fallback to s_data
+
+const spell_data_t& action_t::data_reporting() const
+{
+  if (s_data_reporting == spell_data_t::nil())
+  {
+    return (*s_data);
+  }
+  else
+  {
+    return (*s_data_reporting);
+  }
+}
+
 dot_t* action_t::find_dot( player_t* t ) const
 {
   if ( !t )
@@ -4097,6 +4146,103 @@ void action_t::add_child( action_t* child )
 
 void action_t::add_option( std::unique_ptr<option_t> new_option )
 { options.insert( options.begin(), std::move(new_option) ); }
+
+double action_t::composite_target_damage_vulnerability(player_t* target) const
+{
+  double target_vulnerability = 0.0;
+  double tmp;
+
+  for (auto base_school : base_schools)
+  {
+    tmp = target->composite_player_vulnerability(base_school);
+    if (tmp > target_vulnerability) target_vulnerability = tmp;
+  }
+
+  return target_vulnerability;
+}
+
+double action_t::composite_leech(const action_state_t*) const
+{
+  return player->cache.leech();
+}
+
+double action_t::composite_run_speed() const
+{
+  return player->cache.run_speed();
+}
+
+double action_t::composite_avoidance() const
+{
+  return player->cache.avoidance();
+}
+
+double action_t::composite_corruption() const
+{
+  return player->cache.corruption();
+}
+
+double action_t::composite_corruption_resistance() const
+{
+  return player->cache.corruption_resistance();
+}
+
+double action_t::composite_total_corruption() const
+{
+  return player->composite_total_corruption();
+}
+
+double action_t::composite_da_multiplier(const action_state_t*) const
+{
+  double base_multiplier = action_multiplier();
+  double direct_multiplier = action_da_multiplier();
+  double player_school_multiplier = 0.0;
+  double tmp;
+
+  for (auto base_school : base_schools)
+  {
+    tmp = player->cache.player_multiplier(base_school);
+    if (tmp > player_school_multiplier) player_school_multiplier = tmp;
+  }
+
+  return base_multiplier * direct_multiplier * player_school_multiplier *
+    player->composite_player_dd_multiplier(get_school(), this);
+}
+
+/// Normal ticking modifiers that are updated every tick
+
+double action_t::composite_ta_multiplier(const action_state_t*) const
+{
+  double base_multiplier = action_multiplier();
+  double tick_multiplier = action_ta_multiplier();
+  double player_school_multiplier = 0.0;
+  double tmp;
+
+  for (auto base_school : base_schools)
+  {
+    tmp = player->cache.player_multiplier(base_school);
+    if (tmp > player_school_multiplier) player_school_multiplier = tmp;
+  }
+
+  return base_multiplier * tick_multiplier * player_school_multiplier *
+    player->composite_player_td_multiplier(get_school(), this);
+}
+
+/// Persistent modifiers that are snapshot at the start of the spell cast
+
+double action_t::composite_persistent_multiplier(const action_state_t*) const
+{
+  return player->composite_persistent_multiplier(get_school());
+}
+
+double action_t::composite_target_mitigation(player_t* t, school_e s) const
+{
+  return t->composite_mitigation_multiplier(s);
+}
+
+double action_t::composite_player_critical_multiplier(const action_state_t* s) const
+{
+  return player->composite_player_critical_damage_multiplier(s);
+}
 
 bool action_t::has_movement_directionality() const
 {
@@ -4146,9 +4292,10 @@ void action_t::reschedule_queue_event()
     queue_event = make_event<queued_action_execute_event_t>( *sim, this, new_queue_delay, type );
   }
 }
-
 rng::rng_t& action_t::rng()
-{ return sim -> rng(); }
+{
+  return sim->rng();
+}
 
 rng::rng_t& action_t::rng() const
 { return sim -> rng(); }

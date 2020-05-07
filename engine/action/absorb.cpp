@@ -7,6 +7,7 @@
 #include "sc_action_state.hpp"
 #include "buff/sc_buff.hpp"
 #include "player/stats.hpp"
+#include "player/sc_player.hpp"
 #include "sim/sc_sim.hpp"
 
 absorb_t::absorb_t(const std::string& token,
@@ -82,6 +83,11 @@ void absorb_t::assess_damage(result_amount_type  /*heal_type*/, action_state_t* 
   stats->add_result(0.0, s->result_total, result_amount_type::ABSORB, s->result, s->block_result, s->target);
 }
 
+result_amount_type absorb_t::amount_type(const action_state_t*, bool) const
+{
+  return result_amount_type::ABSORB;
+}
+
 int absorb_t::num_targets() const
 {
   return as<int>(range::count_if(sim->actor_list,
@@ -90,6 +96,27 @@ int absorb_t::num_targets() const
       if (t->is_enemy()) return false;
       return true;
     }));
+}
+
+double absorb_t::composite_da_multiplier(const action_state_t* s) const
+{
+  double m = action_multiplier() * action_da_multiplier() *
+    player->composite_player_absorb_multiplier(s);
+
+  return m;
+}
+
+double absorb_t::composite_ta_multiplier(const action_state_t* s) const
+{
+  double m = action_multiplier() * action_ta_multiplier() *
+    player->composite_player_absorb_multiplier(s);
+
+  return m;
+}
+
+double absorb_t::composite_versatility(const action_state_t* state) const
+{
+  return spell_base_t::composite_versatility(state) + player->cache.heal_versatility();
 }
 
 size_t absorb_t::available_targets(std::vector<player_t*>& target_list) const
