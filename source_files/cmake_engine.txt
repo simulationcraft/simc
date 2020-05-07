@@ -72,6 +72,7 @@ report/sc_report.hpp
 sc_enums.hpp
 sc_timespan.hpp
 sim/artifact_power.hpp
+sim/benefit.hpp
 sim/event.hpp
 sim/event_manager.hpp
 sim/gain.hpp
@@ -92,6 +93,7 @@ sim/shuffled_rng.hpp
 sim/sim_control.hpp
 sim/sim_ostream.hpp
 sim/unique_gear.hpp
+sim/uptime.hpp
 sim/x6_pantheon.hpp
 simulationcraft.hpp
 util/array_view.hpp
@@ -104,7 +106,6 @@ util/plot_data.hpp
 util/rng.hpp
 util/sample_data.hpp
 util/sc_resourcepaths.hpp
-util/sc_uptime.hpp
 util/scoped_callback.hpp
 util/stopwatch.hpp
 util/timeline.hpp
@@ -209,6 +210,7 @@ sim/sc_sim.cpp
 sim/scale_factor_control.cpp
 sim/shuffled_rng.cpp
 sim/spawner.cpp
+sim/uptime_benefit.cpp
 sim/x6_pantheon.cpp
 util/concurrency.cpp
 util/git_info.cpp

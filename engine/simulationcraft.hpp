@@ -171,7 +171,6 @@ namespace highchart {
 #include "player/sc_actor_pair.hpp"
 #include "player/actor_target_data.hpp"
 
-#include "util/sc_uptime.hpp"
 #include "buff/sc_buff.hpp"
 
 #include "sim/sc_expressions.hpp"
@@ -206,132 +205,8 @@ namespace highchart {
 #include "item/special_effect.hpp"
 
 #include "item/item.hpp"
-
-// Benefit ==================================================================
-
-struct benefit_t : private noncopyable
-{
-private:
-  int up, down;
-public:
-  // This is initialized in SIMPLE mode. Only change mode for infrequent procs to keep memory usage reasonable.
-  extended_sample_data_t ratio;
-  const std::string name_str;
-  sim_t& sim;
-
-  explicit benefit_t( sim_t& s, const std::string& n ) :
-    up( 0 ),
-    down( 0 ),
-    ratio( "Ratio", true ),
-    name_str( n ),
-    sim( s )
-  {}
-
-  void update( bool is_up )
-  { if ( is_up ) up++; else down++; }
-
-  void analyze()
-  { ratio.analyze(); }
-
-  void datacollection_begin()
-  { up = down = 0; }
-
-  void datacollection_end()
-  { ratio.add( up != 0 ? 100.0 * up / ( down + up ) : 0.0 ); }
-
-  void merge( const benefit_t& other )
-  { ratio.merge( other.ratio ); }
-
-  const char* name() const
-  { return name_str.c_str(); }
-
-  benefit_t* collect_ratio( bool collect = true )
-  {
-    if ( sim.report_details )
-    {
-      ratio.change_mode( !collect );
-      ratio.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
-    }
-
-    return this;
-  }
-
-};
-
-// Uptime ===================================================================
-
-struct uptime_t : public uptime_common_t
-{
-  std::string name_str;
-  sim_t& sim;
-
-  extended_sample_data_t uptime_sum;
-  extended_sample_data_t uptime_instance;
-
-  uptime_t( sim_t& s, const std::string& n ) : uptime_common_t(),
-    name_str( n ),
-    sim( s ),
-    uptime_sum( "Uptime", true ),
-    uptime_instance( "Duration", true )
-  {}
-
-  void update( bool is_up, timespan_t current_time ) override
-  {
-    if ( is_up )
-    {
-      if ( last_start < timespan_t::zero() )
-        last_start = current_time;
-    }
-    else if ( last_start >= timespan_t::zero() )
-    {
-      auto delta = current_time - last_start;
-      iteration_uptime_sum += delta;
-      uptime_instance.add( delta.total_seconds() );
-      reset();
-    }
-  }
-
-  void analyze()
-  {
-    uptime_sum.analyze();
-    uptime_instance.analyze();
-  }
-
-  void merge( const uptime_common_t& other ) override
-  {
-    uptime_sum.merge( dynamic_cast<const uptime_t&>( other ).uptime_sum );
-    uptime_instance.merge( dynamic_cast<const uptime_t&>( other ).uptime_instance );
-  }
-
-  void datacollection_end( timespan_t t ) override
-  { uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 ); }
-
-  const char* name() const
-  { return name_str.c_str(); }
-
-  uptime_t* collect_uptime( bool collect = true )
-  {
-    if ( sim.report_details )
-    {
-      uptime_sum.change_mode( !collect );
-      uptime_sum.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
-    }
-
-    return this;
-  }
-
-  uptime_t* collect_duration( bool collect = true )
-  {
-    if ( sim.report_details )
-    {
-      uptime_instance.change_mode( !collect );
-      uptime_instance.reserve( std::min( as<unsigned>( sim.iterations ), 2048u ) );
-    }
-
-    return this;
-  }
-};
-
+#include "sim/benefit.hpp"
+#include "sim/uptime.hpp"
 #include "sim/proc.hpp"
 
 // Set Bonus ================================================================
