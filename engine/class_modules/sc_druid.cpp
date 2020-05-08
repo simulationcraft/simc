@@ -3452,10 +3452,11 @@ struct feral_frenzy_driver_t : public cat_attack_t
   };
 
   double tick_ap_ratio;
-  feral_frenzy_driver_t(druid_t* p, const std::string& /*options_str*/) :
+  feral_frenzy_driver_t(druid_t* p, const std::string& options_str) :
     cat_attack_t("feral_frenzy", p, p->find_spell(274837) )
   {
-    //ffdot = new feral_frenzy_dot_t(p);
+    parse_options(options_str);
+
     tick_action = new feral_frenzy_dot_t(p);
     tick_action->stats = stats;
     //hasted_ticks = true;
