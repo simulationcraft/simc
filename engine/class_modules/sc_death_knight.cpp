@@ -373,7 +373,6 @@ struct death_knight_td_t : public actor_target_data_t {
     // Frost
     dot_t* frost_fever;
     // Unholy
-    dot_t* outbreak;
     dot_t* soul_reaper;
     dot_t* virulent_plague;
   } dot;
@@ -405,9 +404,8 @@ public:
   double eternal_rune_weapon_counter;
   bool triggered_frozen_tempest;
 
-  // Enemies affected by festering wounds caching
-  int  festering_wounds_target_count;
-  bool festering_wounds_target_count_valid;
+  // Enemies affected by festering wounds
+  unsigned int festering_wounds_target_count;
 
   // Special azerite data
   double vision_of_perfection_minor_cdr, vision_of_perfection_major_coeff;
@@ -836,7 +834,6 @@ public:
     eternal_rune_weapon_counter( 0 ),
     triggered_frozen_tempest( false ),
     festering_wounds_target_count( 0 ),
-    festering_wounds_target_count_valid( true ),
     antimagic_shell( nullptr ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
@@ -928,7 +925,6 @@ public:
   void      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( const action_state_t* state, unsigned n = 1 );
-  int       count_festering_wounds_targets();
   void      default_apl_dps_precombat();
   void      default_apl_blood();
   void      default_apl_frost();
@@ -980,7 +976,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 {
   dot.blood_plague         = target -> get_dot( "blood_plague",         p );
   dot.frost_fever          = target -> get_dot( "frost_fever",          p );
-  dot.outbreak             = target -> get_dot( "outbreak",             p );
   dot.virulent_plague      = target -> get_dot( "virulent_plague",      p );
   dot.soul_reaper          = target -> get_dot( "soul_reaper",          p );
 
@@ -991,14 +986,14 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_period( 0_ms );
   debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
                            -> set_trigger_spell( p -> spec.festering_wound )
-                           -> set_cooldown( 0_ms ) // Handled by trigger_festering_wound
+                           -> set_cooldown( 0_ms ) // Handled by death_knight_t::trigger_festering_wound()
                            -> set_stack_change_callback( [ p ]( buff_t*, int old_, int new_ )
                            {
-                             // Invalidate the FW target count if needed
-                             if ( old_ == 0 || new_ == 0 )
-                             {
-                               p -> festering_wounds_target_count_valid = false;
-                             }
+                             // Update the FW target count if needed
+                             if ( old_ == 0 )
+                               p -> festering_wounds_target_count++;
+                             else if ( new_ == 0 )
+                               p -> festering_wounds_target_count--;
                            } );
 
   debuff.deep_cuts         = make_buff( *this, "deep_cuts", p -> find_spell( 272685 ) );
@@ -5003,11 +4998,9 @@ struct frost_fever_t : public death_knight_spell_t
     // Figure out what is up with the "30% proc chance, diminishing beyond the first target" from blue post.
     // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
 
-    // 2019-07-20: Logs analysis points at a 30% proc chance on main target, and 7% chance on additional enemies
-    // We're using the player's target to evalute the "main" enemy that will have a 30% proc chance
-    // TODO: fix this behavior for situations where p() -> target will not be affected by the dot
-    // (should only happen if they're invulnerable but targetable, or if HB was used on a different target that is too far away)
-    double chance = d -> target == p() -> target ? 0.3 : 0.07;
+    // 2020-05-05: It would seem that the proc chance is 0.30*(ãFeverCount)/FeverCount
+    unsigned ff_count = p() -> get_active_dots( internal_id );
+    double chance = 0.30 * std::sqrt( ff_count ) / ff_count;
 
     if ( rng().roll( chance ) )
     {
@@ -6521,9 +6514,6 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   // If the target wasn't affected by festering wound, return
   if ( n_wounds == 0 ) return;
 
-  // Invalidate the FW target count cache
-  festering_wounds_target_count_valid = false;
-
   // Generate the RP you'd have gained if you popped the wounds manually
   resource_gain( RESOURCE_RUNIC_POWER,
                  spec.festering_wound -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) * n_wounds,
@@ -6898,26 +6888,6 @@ void death_knight_t::vision_of_perfection_proc()
   }
 }
 
-int death_knight_t::count_festering_wounds_targets()
-{
-  // If the cache is valid, return the cached value
-  if ( festering_wounds_target_count_valid || specialization() != DEATH_KNIGHT_UNHOLY )
-    return festering_wounds_target_count;
-
-  int wounded_targets = 0;
-  for ( const auto fw_target : sim -> target_non_sleeping_list )
-  {
-    auto td = get_target_data( fw_target );
-
-    if ( td -> debuff.festering_wound -> check() )
-      wounded_targets++;
-  }
-  this -> festering_wounds_target_count = wounded_targets;
-  this -> festering_wounds_target_count_valid = true;
-
-  return wounded_targets;
-}
-
 
 // ==========================================================================
 // Death Knight Character Definition
@@ -7121,7 +7091,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( const std::string& na
 
     if ( util::str_compare_ci( splits[ 1 ], "fwounded_targets" ) && splits.size() == 2 )
       return make_fn_expr( "festering_wounds_target_count_expression", [ this ]() {
-        return this -> count_festering_wounds_targets();
+        return this -> festering_wounds_target_count;
       } );
   }
 
@@ -7648,7 +7618,7 @@ void death_knight_t::default_apl_blood()
   def -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
   def -> add_action( "call_action_list,name=essences" );
   def -> add_action( "call_action_list,name=standard" );
-  
+
   // Essences
   essences -> add_action( this, "Concentraded Flame", "if=dot.concentrated_flame_burn.remains<2&!buff.dancing_rune_weapon.up" );
   essences -> add_action( this, "Anima of Death", "if=buff.vampiric_blood.up&(raid_event.adds.exists|raid_event.adds.in>15)" );
