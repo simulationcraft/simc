@@ -1847,25 +1847,17 @@ template <typename T, typename Filter, typename KeyPolicy = id_function_policy>
 class filtered_dbc_index_t
 {
 #if SC_USE_PTR == 0
-  std::vector<T*> __filtered_index[ 1 ];
+  std::vector<const T*> __filtered_index[ 1 ];
 #else
-  std::vector<T*> __filtered_index[ 2 ];
+  std::vector<const T*> __filtered_index[ 2 ];
 #endif
   Filter f;
 
 public:
-  typedef typename std::vector<T*>::const_iterator citerator;
-
-  citerator begin( bool ptr ) const
-  { return __filtered_index[ maybe_ptr( ptr ) ].begin(); }
-
-  citerator end( bool ptr ) const
-  { return __filtered_index[ maybe_ptr( ptr ) ].end(); }
-
   // Initialize index from given list
-  void init( T* list, bool ptr )
+  void init( const T* list, bool ptr )
   {
-    T* i = list;
+    const T* i = list;
 
     while ( KeyPolicy::id( *i ) )
     {
@@ -1878,30 +1870,14 @@ public:
     }
   }
 
-  template<typename UnaryPredicate>
-  const T* get( bool ptr, UnaryPredicate f ) const
+  template <typename Predicate>
+  const T* get( bool ptr, Predicate&& pred ) const
   {
-    for ( citerator i = begin( ptr ), e = end( ptr ); i < e; ++i )
-    {
-      if ( f( *i ) )
-      {
-        return *i;
-      }
-    }
-
+    const auto& index = __filtered_index[ maybe_ptr( ptr ) ];
+    auto it = range::find_if( index, std::forward<Predicate>( pred ) );
+    if ( it != index.end() )
+      return *it;
     return nullptr;
-  }
-
-  const T* get( bool ptr, unsigned id ) const
-  {
-    const T* p = std::lower_bound( __filtered_index[ maybe_ptr( ptr ) ].begin(),
-                                   __filtered_index[ maybe_ptr( ptr ) ].end(),
-                                   id, id_compare<T, KeyPolicy>() );
-
-    if ( p != __filtered_index[ maybe_ptr( ptr ) ].end() && KeyPolicy::id( *p ) == id )
-      return p;
-    else
-      return nullptr;
   }
 };
 

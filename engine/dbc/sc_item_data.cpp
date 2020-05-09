@@ -14,10 +14,10 @@
 #endif
 
 namespace {
-  template<typename T, item_subclass_consumable CLASS>
+  template <item_subclass_consumable CLASS>
   struct consumable_filter_t
   {
-    bool operator()(const T* obj) const
+    bool operator()(const item_data_t* obj) const
     { return obj -> item_class == ITEM_CLASS_CONSUMABLE && obj -> item_subclass == CLASS; }
   };
 
@@ -43,8 +43,8 @@ namespace {
   dbc_index_t<item_data_t, id_member_policy> item_data_index;
 
   typedef filtered_dbc_index_t<item_data_t, potion_filter_t, id_member_policy> potion_data_t;
-  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<item_data_t, ITEM_SUBCLASS_FLASK>, id_member_policy> flask_data_t;
-  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<item_data_t, ITEM_SUBCLASS_FOOD>, id_member_policy> food_data_t;
+  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FLASK>, id_member_policy> flask_data_t;
+  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FOOD>, id_member_policy> food_data_t;
 
   potion_data_t potion_data_index;
   flask_data_t flask_data_index;
