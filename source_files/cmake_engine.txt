@@ -47,6 +47,7 @@ player/actor_target_data.hpp
 player/artifact_data.hpp
 player/assessor.hpp
 player/azerite_data.hpp
+player/consumable.hpp
 player/effect_callbacks.hpp
 player/expansion_effects.hpp
 player/gear_stats.hpp

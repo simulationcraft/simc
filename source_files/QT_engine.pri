@@ -49,6 +49,7 @@ HEADERS += engine/player/actor_target_data.hpp
 HEADERS += engine/player/artifact_data.hpp
 HEADERS += engine/player/assessor.hpp
 HEADERS += engine/player/azerite_data.hpp
+HEADERS += engine/player/consumable.hpp
 HEADERS += engine/player/effect_callbacks.hpp
 HEADERS += engine/player/expansion_effects.hpp
 HEADERS += engine/player/gear_stats.hpp

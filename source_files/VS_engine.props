@@ -53,6 +53,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\artifact_data.hpp" />
 		<ClInclude Include="..\engine\player\assessor.hpp" />
 		<ClInclude Include="..\engine\player\azerite_data.hpp" />
+		<ClInclude Include="..\engine\player\consumable.hpp" />
 		<ClInclude Include="..\engine\player\effect_callbacks.hpp" />
 		<ClInclude Include="..\engine\player\expansion_effects.hpp" />
 		<ClInclude Include="..\engine\player\gear_stats.hpp" />
@@ -323,7 +324,7 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_consumable.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_pet.cpp">
 			

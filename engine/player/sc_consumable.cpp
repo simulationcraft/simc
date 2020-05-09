@@ -3,7 +3,16 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "consumable.hpp"
+#include "sc_enums.hpp"
+#include "sc_player.hpp"
+#include "action/sc_action.hpp"
+#include "action/heal.hpp"
+#include "buff/sc_buff.hpp"
+#include "sim/sc_cooldown.hpp"
+#include "sim/sc_expressions.hpp"
+#include "sim/unique_gear.hpp"
+#include "util/rng.hpp"
 
 namespace { // UNNAMED NAMESPACE
 

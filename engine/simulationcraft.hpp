@@ -640,23 +640,13 @@ struct travel_event_t : public event_t
 
 #include "dbc/item_database.hpp"
 
-// Procs ====================================================================
-
 #include "item/enchants.hpp"
 
 #include "sim/unique_gear.hpp"
 
-// Consumable ===============================================================
-
-namespace consumable
-{
-action_t* create_action( player_t*, const std::string& name, const std::string& options );
-}
-
 #include "interfaces/wowhead.hpp"
 #include "interfaces/bcp_api.hpp"
 
-// XML ======================================================================
 #include "util/xml.hpp"
 
 // Handy Actions ============================================================

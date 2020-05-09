@@ -7,6 +7,7 @@
 #include "sim/scale_factor_control.hpp"
 #include "dbc/azerite.hpp"
 #include "sample_data_helper.hpp"
+#include "consumable.hpp"
 #include <cerrno>
 #include <memory>
 
