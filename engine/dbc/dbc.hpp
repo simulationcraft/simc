@@ -12,7 +12,7 @@
 #include <string>
 #include <functional>
 #include <unordered_map>
-#include <iostream>
+#include <iosfwd>
 
 #include "data_definitions.hh"
 #include "data_enums.hh"

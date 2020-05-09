@@ -8,7 +8,7 @@
 
 #include <array>
 #include <fstream>
-#include <iostream>
+#include <iosfwd>
 #include <sstream>
 
 #include "config.hpp"

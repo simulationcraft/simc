@@ -7,7 +7,7 @@
 
 #include <cstddef>
 #include <string>
-#include <iostream>
+#include <iosfwd>
 #include "config.hpp"
 #include "util/generic.hpp"
 #include "sc_enums.hpp"

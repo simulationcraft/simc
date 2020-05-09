@@ -187,7 +187,7 @@ To change the list of source files run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\class_modules\sc_death_knight.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\class_modules\sc_demon_hunter.cpp">
 			

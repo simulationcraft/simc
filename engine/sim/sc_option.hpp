@@ -8,7 +8,7 @@
 #include "config.hpp"
 
 #include <string>
-#include <iostream>
+#include <iosfwd>
 #include <unordered_map>
 #include <functional>
 #include <vector>
