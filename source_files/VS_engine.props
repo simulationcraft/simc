@@ -348,14 +348,14 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\sc_unique_gear.cpp">
 			
 		</ClCompile>
-		<ClCompile Include="..\engine\player\sc_unique_gear_x6.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\player\sc_unique_gear_x7.cpp">
-			
-		</ClCompile>
 		<ClCompile Include="..\engine\player\target_specific.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\player\unique_gear_bfa.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\engine\player\unique_gear_legion.cpp">
+			
 		</ClCompile>
 		<ClCompile Include="..\engine\report\sc_chart.cpp">
 			

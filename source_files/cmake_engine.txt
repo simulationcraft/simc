@@ -192,9 +192,9 @@ player/sc_player.cpp
 player/sc_proc.cpp
 player/sc_set_bonus.cpp
 player/sc_unique_gear.cpp
-player/sc_unique_gear_x6.cpp
-player/sc_unique_gear_x7.cpp
 player/target_specific.cpp
+player/unique_gear_bfa.cpp
+player/unique_gear_legion.cpp
 report/sc_chart.cpp
 report/sc_color.cpp
 report/sc_gear_weights.cpp

@@ -77,9 +77,9 @@ SRC += \
     player$(PATHSEP)sc_proc.cpp \
     player$(PATHSEP)sc_set_bonus.cpp \
     player$(PATHSEP)sc_unique_gear.cpp \
-    player$(PATHSEP)sc_unique_gear_x6.cpp \
-    player$(PATHSEP)sc_unique_gear_x7.cpp \
     player$(PATHSEP)target_specific.cpp \
+    player$(PATHSEP)unique_gear_bfa.cpp \
+    player$(PATHSEP)unique_gear_legion.cpp \
     report$(PATHSEP)sc_chart.cpp \
     report$(PATHSEP)sc_color.cpp \
     report$(PATHSEP)sc_gear_weights.cpp \
