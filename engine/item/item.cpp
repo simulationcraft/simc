@@ -14,7 +14,8 @@
 #include "dbc/item_database.hpp"
 #include "sc_enums.hpp"
 #include "interfaces/wowhead.hpp"
-#include "simulationcraft.hpp"
+#include "interfaces/bcp_api.hpp"
+#include "player/unique_gear.hpp"
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
