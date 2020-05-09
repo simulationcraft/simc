@@ -77,6 +77,7 @@ SRC += \
     player$(PATHSEP)sc_proc.cpp \
     player$(PATHSEP)sc_set_bonus.cpp \
     player$(PATHSEP)sc_unique_gear.cpp \
+    player$(PATHSEP)spawner_base.cpp \
     player$(PATHSEP)target_specific.cpp \
     player$(PATHSEP)unique_gear_bfa.cpp \
     player$(PATHSEP)unique_gear_legion.cpp \
@@ -106,7 +107,6 @@ SRC += \
     sim$(PATHSEP)sc_sim.cpp \
     sim$(PATHSEP)scale_factor_control.cpp \
     sim$(PATHSEP)shuffled_rng.cpp \
-    sim$(PATHSEP)spawner.cpp \
     sim$(PATHSEP)uptime_benefit.cpp \
     sim$(PATHSEP)x6_pantheon.cpp \
     util$(PATHSEP)concurrency.cpp \

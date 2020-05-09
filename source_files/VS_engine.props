@@ -75,6 +75,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\sc_player.hpp" />
 		<ClInclude Include="..\engine\player\scaling_metric_data.hpp" />
 		<ClInclude Include="..\engine\player\set_bonus.hpp" />
+		<ClInclude Include="..\engine\player\spawner_base.hpp" />
 		<ClInclude Include="..\engine\player\stats.hpp" />
 		<ClInclude Include="..\engine\player\target_specific.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear.hpp" />
@@ -348,6 +349,9 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\sc_unique_gear.cpp">
 			
 		</ClCompile>
+		<ClCompile Include="..\engine\player\spawner_base.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="..\engine\player\target_specific.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
@@ -434,9 +438,6 @@ To change the list of source files run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\shuffled_rng.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\spawner.cpp">
-			
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\uptime_benefit.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>

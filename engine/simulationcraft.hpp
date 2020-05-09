@@ -1085,73 +1085,7 @@ struct item_targetdata_initializer_t
   virtual void operator()( actor_target_data_t* ) const = 0;
 };
 
-
-namespace spawner
-{
-void merge( sim_t& parent_sim, sim_t& other_sim );
-void create_persistent_actors( player_t& player );
-
-// Minimal base class to store in owner actors automatically, all functionality should be
-// implemented in a templated class (pet_spawner_t for example). Methods that need to be invoked
-// from the core simulator should be declared here as pure virtual (must be implemented in the
-// derived class).
-class base_actor_spawner_t
-{
-protected:
-  std::string m_name;
-  player_t*   m_owner;
-
-public:
-  base_actor_spawner_t( const std::string& id, player_t* o ) :
-    m_name( id ), m_owner( o )
-  {
-    register_object();
-  }
-
-  virtual ~base_actor_spawner_t()
-  { }
-
-  const std::string& name() const
-  { return m_name; }
-
-  virtual void create_persistent_actors() = 0;
-
-  // Data merging
-  virtual void merge( base_actor_spawner_t* other ) = 0;
-
-  // Expressions
-  virtual std::unique_ptr<expr_t> create_expression( const arv::array_view<std::string>& expr ) = 0;
-
-  // Uptime
-  virtual timespan_t iteration_uptime() const = 0;
-
-  // State reset
-  virtual void reset() = 0;
-
-  // Data collection
-  virtual void datacollection_end() = 0;
-
-private:
-  // Register this pet spawner object to owner
-  void register_object()
-  {
-    auto it = range::find_if( m_owner -> spawners,
-        [ this ]( const base_actor_spawner_t* obj ) {
-          return util::str_compare_ci( obj -> name(), name() );
-        } );
-
-    if ( it == m_owner -> spawners.end() )
-    {
-      m_owner -> spawners.push_back( this );
-    }
-    else
-    {
-      m_owner -> sim -> errorf( "%s attempting to create duplicate pet spawner object %s",
-        m_owner -> name(), name().c_str() );
-    }
-  }
-};
-} // Namespace spawner ends
+#include "player/spawner_base.hpp"
 
 /**
  * Snapshot players stats during pre-combat to get raid-buffed stats values.
