@@ -63,6 +63,7 @@ SRC += \
     item$(PATHSEP)special_effect.cpp \
     lib$(PATHSEP)fmt$(PATHSEP)format.cpp \
     lib$(PATHSEP)fmt$(PATHSEP)os.cpp \
+    player$(PATHSEP)action_priority_list.cpp \
     player$(PATHSEP)actor.cpp \
     player$(PATHSEP)actor_target_data.cpp \
     player$(PATHSEP)artifact_data.cpp \

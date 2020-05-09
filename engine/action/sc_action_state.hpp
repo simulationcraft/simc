@@ -12,6 +12,7 @@
 #include "util/generic.hpp"
 #include "sc_enums.hpp"
 #include "dbc/data_enums.hh"
+#include "sim/event.hpp"
 
 struct action_t;
 struct player_t;
@@ -122,4 +123,17 @@ struct action_state_t : private noncopyable
   }
 
   virtual proc_types2 cast_proc_type2() const;
+};
+
+struct travel_event_t : public event_t
+{
+  action_t* action;
+  action_state_t* state;
+  travel_event_t(action_t* a, action_state_t* state, timespan_t time_to_travel);
+  virtual ~travel_event_t();
+  virtual void execute() override;
+  virtual const char* name() const override
+  {
+    return "Stateless Action Travel";
+  }
 };

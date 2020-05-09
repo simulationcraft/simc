@@ -43,6 +43,7 @@ item/special_effect.hpp
 lib/gsl-lite/gsl-lite.hpp
 lib/rapidxml/rapidxml.hpp
 lib/rapidxml/rapidxml_print.hpp
+player/action_priority_list.hpp
 player/actor.hpp
 player/actor_target_data.hpp
 player/artifact_data.hpp
@@ -179,6 +180,7 @@ item/item.cpp
 item/special_effect.cpp
 lib/fmt/format.cpp
 lib/fmt/os.cpp
+player/action_priority_list.cpp
 player/actor.cpp
 player/actor_target_data.cpp
 player/artifact_data.cpp

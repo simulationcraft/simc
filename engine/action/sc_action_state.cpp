@@ -240,6 +240,11 @@ travel_event_t::travel_event_t( action_t* a, action_state_t* state,
                             time_to_travel.total_seconds() );
 }
 
+travel_event_t::~travel_event_t()
+{
+  if (state && canceled) action_state_t::release(state);
+}
+
 void travel_event_t::execute()
 {
   if ( !state->target->is_sleeping() )

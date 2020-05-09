@@ -49,6 +49,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\lib\gsl-lite\gsl-lite.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml_print.hpp" />
+		<ClInclude Include="..\engine\player\action_priority_list.hpp" />
 		<ClInclude Include="..\engine\player\actor.hpp" />
 		<ClInclude Include="..\engine\player\actor_target_data.hpp" />
 		<ClInclude Include="..\engine\player\artifact_data.hpp" />
@@ -137,7 +138,7 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\action\sc_action.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\action\sc_action_state.cpp">
 			
@@ -305,6 +306,9 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\lib\fmt\os.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\player\action_priority_list.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\actor.cpp">
