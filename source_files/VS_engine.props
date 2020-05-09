@@ -8,6 +8,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\action\absorb.hpp" />
 		<ClInclude Include="..\engine\action\action_callback.hpp" />
 		<ClInclude Include="..\engine\action\attack.hpp" />
+		<ClInclude Include="..\engine\action\dbc_proc_callback.hpp" />
 		<ClInclude Include="..\engine\action\dot.hpp" />
 		<ClInclude Include="..\engine\action\heal.hpp" />
 		<ClInclude Include="..\engine\action\sc_action.hpp" />
@@ -54,6 +55,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\assessor.hpp" />
 		<ClInclude Include="..\engine\player\azerite_data.hpp" />
 		<ClInclude Include="..\engine\player\consumable.hpp" />
+		<ClInclude Include="..\engine\player\darkmoon_deck.hpp" />
 		<ClInclude Include="..\engine\player\effect_callbacks.hpp" />
 		<ClInclude Include="..\engine\player\expansion_effects.hpp" />
 		<ClInclude Include="..\engine\player\gear_stats.hpp" />
@@ -102,7 +104,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\sim\shuffled_rng.hpp" />
 		<ClInclude Include="..\engine\sim\sim_control.hpp" />
 		<ClInclude Include="..\engine\sim\sim_ostream.hpp" />
-		<ClInclude Include="..\engine\sim\unique_gear.hpp" />
 		<ClInclude Include="..\engine\sim\uptime.hpp" />
 		<ClInclude Include="..\engine\sim\x6_pantheon.hpp" />
 		<ClInclude Include="..\engine\simulationcraft.hpp" />
@@ -126,6 +127,9 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\action\action_callback.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\action\dbc_proc_callback.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\action\heal.cpp">
@@ -312,6 +316,9 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\azerite_data.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\engine\player\darkmoon_deck.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\player_event.cpp">

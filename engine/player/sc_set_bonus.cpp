@@ -1,5 +1,3 @@
-#include "set_bonus.hpp"
-#include "set_bonus.hpp"
 // ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com

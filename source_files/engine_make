@@ -4,6 +4,7 @@
 SRC += \
     action$(PATHSEP)absorb.cpp \
     action$(PATHSEP)action_callback.cpp \
+    action$(PATHSEP)dbc_proc_callback.cpp \
     action$(PATHSEP)heal.cpp \
     action$(PATHSEP)sc_action.cpp \
     action$(PATHSEP)sc_action_state.cpp \
@@ -66,6 +67,7 @@ SRC += \
     player$(PATHSEP)actor_target_data.cpp \
     player$(PATHSEP)artifact_data.cpp \
     player$(PATHSEP)azerite_data.cpp \
+    player$(PATHSEP)darkmoon_deck.cpp \
     player$(PATHSEP)player_event.cpp \
     player$(PATHSEP)player_stat_cache.cpp \
     player$(PATHSEP)player_talent_points.cpp \

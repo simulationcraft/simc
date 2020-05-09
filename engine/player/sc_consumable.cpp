@@ -11,7 +11,7 @@
 #include "buff/sc_buff.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/sc_expressions.hpp"
-#include "sim/unique_gear.hpp"
+#include "player/unique_gear.hpp"
 #include "util/rng.hpp"
 
 namespace { // UNNAMED NAMESPACE

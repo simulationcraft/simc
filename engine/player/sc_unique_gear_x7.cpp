@@ -6,8 +6,7 @@
 #include "simulationcraft.hpp"
 
 #include "pet_spawner.hpp"
-
-#include "unique_gear.hpp"
+#include "darkmoon_deck.hpp"
 
 using namespace unique_gear;
 

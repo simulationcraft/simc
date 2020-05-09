@@ -7,9 +7,9 @@
 #include "special_effect.hpp"
 #include "dbc/dbc.hpp"
 #include "player/sc_player.hpp"
-#include "player/unique_gear.hpp"
 #include "dbc/item_database.hpp"
 #include "sim/sc_sim.hpp"
+#include "player/unique_gear.hpp"
 
 #include "dbc/spell_item_enchantment.hpp"
 

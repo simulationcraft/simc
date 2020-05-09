@@ -1,12 +1,5 @@
 #include "azerite_data.hpp"
-#include "action/spell.hpp"
-#include "player/sc_player.hpp"
-#include "dbc/dbc.hpp"
-#include "item/item.hpp"
-#include "item/special_effect.hpp"
-#include "sim/sc_sim.hpp"
-#include "player/unique_gear.hpp"
-#include "sim/scale_factor_control.hpp"
+#include "simulationcraft.hpp"
 
 namespace
 {

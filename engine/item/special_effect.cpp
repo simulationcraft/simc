@@ -1159,3 +1159,111 @@ bool special_effect::usable_proc( const special_effect_t& effect )
 
   return true;
 }
+
+/**
+ * Cooldown name needs some special handling. Cooldowns in WoW are global, regardless of the
+ * number of procs (i.e., weapon enchants). Thus, we straight up use the driver's name, or
+ * override it with the special_effect_t name_str if it's defined. We can also fall back to using
+ * the item name and the slot of the item, if ids are not defined.
+ */
+std::string special_effect_t::cooldown_name() const
+{
+  if (!name_str.empty())
+  {
+    assert(name_str.size());
+    return name_str;
+  }
+
+  std::string n;
+  if (driver()->id() > 0)
+  {
+    n = driver()->name_cstr();
+    // Append the spell ID of the driver to the cooldown name. In some cases, the
+    // drivers of different trinket procs are actually named identically, causing
+    // issues when the trinkets are worn.
+    n += "_" + util::to_string(driver()->id());
+  }
+  else if (item)
+  {
+    n = item->name();
+    n += "_";
+    n += item->slot_name();
+  }
+
+  util::tokenize(n);
+
+  assert(!n.empty());
+
+  return n;
+}
+
+/**
+ * Item-based special effects may have a cooldown group (in the client data). Cooldown groups are a
+ * shared cooldown between all item effects (in essence, on-use effects) that use the same group
+ */
+std::string special_effect_t::cooldown_group_name() const
+{
+  if (!item)
+  {
+    return std::string();
+  }
+
+  unsigned cdgroup = cooldown_group();
+  if (cdgroup > 0)
+  {
+    return "item_cd_" + util::to_string(cdgroup);
+  }
+
+  return std::string();
+}
+
+int special_effect_t::cooldown_group() const
+{
+  if (!item)
+  {
+    return 0;
+  }
+
+  // New-style On-Use item spells may use a special cooldown category to signal the shared cooldown
+  if (driver()->category() == ITEM_TRINKET_BURST_CATEGORY)
+  {
+    return driver()->category();
+  }
+
+  // For everything else, look at the item effects for a cooldown group
+  for (size_t i = 0; i < MAX_ITEM_EFFECT; ++i)
+  {
+    if (item->parsed.data.cooldown_group[i] > 0)
+    {
+      return item->parsed.data.cooldown_group[i];
+    }
+  }
+
+  return 0;
+}
+
+timespan_t special_effect_t::cooldown_group_duration() const
+{
+  if (!item)
+  {
+    return timespan_t::zero();
+  }
+
+  // New-style On-Use items when using a special cooldown category signal the shared cooldown
+  // duration in the spell itself
+  if (driver()->category() == ITEM_TRINKET_BURST_CATEGORY)
+  {
+    return driver()->category_cooldown();
+  }
+
+  // For everything else, look at the item effects with a cooldown group
+  for (size_t i = 0; i < MAX_ITEM_EFFECT; ++i)
+  {
+    if (item->parsed.data.cooldown_group[i] > 0)
+    {
+      return timespan_t::from_millis(item->parsed.data.cooldown_group_duration[i]);
+    }
+  }
+
+  return 0_ms;
+}

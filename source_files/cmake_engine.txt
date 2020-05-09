@@ -2,6 +2,7 @@ set(source_files
 action/absorb.hpp
 action/action_callback.hpp
 action/attack.hpp
+action/dbc_proc_callback.hpp
 action/dot.hpp
 action/heal.hpp
 action/sc_action.hpp
@@ -48,6 +49,7 @@ player/artifact_data.hpp
 player/assessor.hpp
 player/azerite_data.hpp
 player/consumable.hpp
+player/darkmoon_deck.hpp
 player/effect_callbacks.hpp
 player/expansion_effects.hpp
 player/gear_stats.hpp
@@ -96,7 +98,6 @@ sim/scale_factor_control.hpp
 sim/shuffled_rng.hpp
 sim/sim_control.hpp
 sim/sim_ostream.hpp
-sim/unique_gear.hpp
 sim/uptime.hpp
 sim/x6_pantheon.hpp
 simulationcraft.hpp
@@ -118,6 +119,7 @@ util/vector_with_callback.hpp
 util/xml.hpp
 action/absorb.cpp
 action/action_callback.cpp
+action/dbc_proc_callback.cpp
 action/heal.cpp
 action/sc_action.cpp
 action/sc_action_state.cpp
@@ -180,6 +182,7 @@ player/actor.cpp
 player/actor_target_data.cpp
 player/artifact_data.cpp
 player/azerite_data.cpp
+player/darkmoon_deck.cpp
 player/player_event.cpp
 player/player_stat_cache.cpp
 player/player_talent_points.cpp
