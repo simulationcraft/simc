@@ -1769,23 +1769,6 @@ struct id_member_policy
   { return static_cast<unsigned>( t.id ); }
 };
 
-template<typename T, typename KeyPolicy = id_function_policy>
-struct id_compare
-{
-  bool operator () ( const T& t, unsigned int id ) const
-  { return KeyPolicy::id( t ) < id; }
-  bool operator () ( const T* t, unsigned int id ) const
-  { return KeyPolicy::id( *t ) < id; }
-  bool operator () ( unsigned int id, const T& t ) const
-  { return id < KeyPolicy::id( t ); }
-  bool operator () ( unsigned int id, const T* t ) const
-  { return id < KeyPolicy::id( *t ); }
-  bool operator () ( const T& l, const T& r ) const
-  { return KeyPolicy::id( l ) < KeyPolicy::id( r ); }
-  bool operator () ( const T* l, const T* r ) const
-  { return KeyPolicy::id( *l ) < KeyPolicy::id( *r ); }
-};
-
 template <typename T, typename KeyPolicy = id_function_policy>
 class dbc_index_t
 {
@@ -1835,11 +1818,14 @@ public:
   T* get( bool ptr, unsigned id ) const
   {
     assert( initialized( maybe_ptr( ptr ) ) );
-    T* p = std::lower_bound( idx[ maybe_ptr( ptr ) ].first, idx[ maybe_ptr( ptr ) ].second, id, id_compare<T, KeyPolicy>() );
-    if ( p != idx[ maybe_ptr( ptr ) ].second && KeyPolicy::id( *p ) == id )
+    const index_t& index = idx[ maybe_ptr( ptr ) ];
+    T* p = std::lower_bound( index.first, index.second, id,
+                             [](const T& lhs, unsigned rhs) {
+                               return KeyPolicy::id( lhs ) < rhs;
+                             } );
+    if ( p != index.second && KeyPolicy::id( *p ) == id )
       return p;
-    else
-      return nullptr;
+    return nullptr;
   }
 };
 
