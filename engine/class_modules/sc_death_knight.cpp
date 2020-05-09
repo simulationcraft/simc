@@ -4998,7 +4998,7 @@ struct frost_fever_t : public death_knight_spell_t
     // Figure out what is up with the "30% proc chance, diminishing beyond the first target" from blue post.
     // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
 
-    // 2020-05-05: It would seem that the proc chance is 0.30*(ãFeverCount)/FeverCount
+    // 2020-05-05: It would seem that the proc chance is 0.30 * sqrt(FeverCount) / FeverCount
     unsigned ff_count = p() -> get_active_dots( internal_id );
     double chance = 0.30 * std::sqrt( ff_count ) / ff_count;
 

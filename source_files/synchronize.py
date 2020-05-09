@@ -72,8 +72,8 @@ def VS_use_precompiled_header(filename):
                 return ""  # "<PrecompiledHeader />"
             else:
                 return VS_no_precompiled_header()
-    except UnicodeDecodeError:
-        logging.warning("Could not properly decode file '{}' for pre-compiled header detection.".format(filename))
+    except UnicodeDecodeError as ude:
+        logging.warning("Could not properly decode file '{}' for pre-compiled header detection: {}".format(filename, ude))
     except Exception as e:
         logging.error("could not open file '{}' for precompiled header settings!".format(filename), exc_info=True)
     return VS_no_precompiled_header()
