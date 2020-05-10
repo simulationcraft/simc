@@ -3,8 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "util.hpp"
 #include "util/git_info.hpp"
+#include "util/stopwatch.hpp"
+#include "player/sc_player.hpp"
+#include "sim/scale_factor_control.hpp"
+#include "dbc/dbc.hpp"
+#include <iomanip>
 
 #if !defined(SC_WINDOWS)
 #include <sys/time.h>
