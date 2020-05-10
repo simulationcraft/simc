@@ -4,14 +4,35 @@
 // ==========================================================================
 
 #include "sc_sim.hpp"
+
+#include "buff/sc_buff.hpp"
+#include "class_modules/class_module.hpp"
 #include "dbc/dbc.hpp"
-#include "simulationcraft.hpp"
-#include "sim_control.hpp"
-#include "sc_option.hpp"
-#include "report/sc_highchart.hpp"
-#include "sc_profileset.hpp"
-#include "scale_factor_control.hpp"
+#include "gsl-lite/gsl-lite.hpp"
+#include "interfaces/bcp_api.hpp"
+#include "interfaces/sc_http.hpp"
 #include "player/sc_player.hpp"
+#include "player/pet.hpp"
+#include "player/spawner_base.hpp"
+#include "player/unique_gear.hpp"
+#include "report/sc_report.hpp"
+#include "report/sc_highchart.hpp"
+#include "sim/sc_profileset.hpp"
+#include "sim/scale_factor_control.hpp"
+#include "sim/sim_control.hpp"
+#include "sim/sc_option.hpp"
+#include "sim/iteration_data_entry.hpp"
+#include "sim/event.hpp"
+#include "sim/sc_expressions.hpp"
+#include "sim/raid_event.hpp"
+#include "sim/plot.hpp"
+#include "sim/reforge_plot.hpp"
+#include "sim/sc_cooldown.hpp"
+#include "sim/x6_pantheon.hpp"
+#include "dbc/spell_query/spell_data_expr.hpp"
+#include "util/rng.hpp"
+#include "util/xml.hpp"
+#include <random>
 #ifdef SC_WINDOWS
 #include <direct.h>
 #endif

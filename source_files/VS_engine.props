@@ -482,7 +482,7 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\sc_sim.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\scale_factor_control.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
