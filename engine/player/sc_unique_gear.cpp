@@ -4568,18 +4568,12 @@ void proc_attack_t::override_data(const special_effect_t& e)
 
 } // unique_gear
 
-namespace
-{
-bool cmp_dbitem( const special_effect_db_item_t& elem, unsigned id )
-{ return elem.spell_id < id; }
-}
-
 static unique_gear::special_effect_set_t do_find_special_effect_db_item(
     const std::vector<special_effect_db_item_t>& db, unsigned spell_id )
 {
   special_effect_set_t entries;
 
-  auto it = std::lower_bound( db.begin(), db.end(), spell_id, cmp_dbitem );
+  auto it = range::lower_bound( db, spell_id, {}, &special_effect_db_item_t::spell_id );
 
   if ( it == db.end() || it -> spell_id != spell_id )
   {

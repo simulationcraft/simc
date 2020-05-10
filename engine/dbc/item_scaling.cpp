@@ -4,6 +4,8 @@
 
 #include "item_scaling.hpp"
 
+#include "util/generic.hpp"
+
 #include "generated/item_scaling.inc"
 #if SC_USE_PTR == 1
 #include "generated/item_scaling_ptr.inc"
@@ -41,20 +43,12 @@ util::span<const curve_point_t> curve_point_t::find( unsigned id, bool ptr )
 {
   const auto __data = data( ptr );
 
-  auto low = std::lower_bound( __data.cbegin(), __data.cend(), id,
-                              []( const curve_point_t& entry, const unsigned& id ) {
-                                return entry.curve_id < id;
-                              } );
-  if ( low == __data.cend() )
+  auto r = range::equal_range( __data, id, {}, &curve_point_t::curve_id );
+  if ( r.first == __data.end() )
   {
     return {};
   }
 
-  auto high = std::upper_bound( __data.cbegin(), __data.cend(), id,
-                              []( const unsigned& id, const curve_point_t& entry ) {
-                                return id < entry.curve_id;
-                              } );
-
-  return util::span<const curve_point_t>( low, high );
+  return util::span<const curve_point_t>( r.first, r.second );
 }
 

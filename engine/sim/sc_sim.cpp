@@ -4120,7 +4120,7 @@ void sim_t::enable_debug_seed()
   }
   else
   {
-    auto it = std::lower_bound( debug_seed.begin(), debug_seed.end(), seed );
+    auto it = range::lower_bound( debug_seed, seed );
     enabled = it != debug_seed.end() && *it == seed;
   }
 
@@ -4169,7 +4169,7 @@ void sim_t::disable_debug_seed()
   }
   else
   {
-    auto it = std::lower_bound( debug_seed.begin(), debug_seed.end(), seed );
+    auto it = range::lower_bound( debug_seed, seed );
     enabled = it != debug_seed.end() && *it == seed;
   }
 

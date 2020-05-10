@@ -16,6 +16,7 @@
 #include <array>
 #include <cassert>
 #include <cmath>
+#include <functional>
 #include <type_traits>
 
 #include "utf8-cpp/utf8.h"
@@ -272,6 +273,32 @@ inline iterator_t<const T> cend( const T& t )
   return range::end( t );
 }
 
+// Default projection for projection-enabled algorithms =====================
+
+struct identity {
+  template <typename T>
+  constexpr T&& operator()(T&& value) const noexcept {
+    return std::forward<T>(value);
+  }
+  using is_transparent = std::true_type;
+};
+
+// Bare-bones std::invoke ===================================================
+
+template <typename Fn, typename... Args,
+        std::enable_if_t<std::is_member_pointer<std::decay_t<Fn>>{}, int> = 0 >
+decltype(auto) invoke(Fn&& fn, Args&&... args)
+{
+  return std::mem_fn(fn)(std::forward<Args>(args)...);
+}
+
+template <typename Fn, typename... Args,
+         std::enable_if_t<!std::is_member_pointer<std::decay_t<Fn>>{}, int> = 0>
+decltype(auto) invoke(Fn&& fn, Args&&... args)
+{
+  return std::forward<Fn>(fn)(std::forward<Args>(args)...);
+}
+
 // Range-based generic algorithms ===========================================
 
 template <typename Range, typename Out>
@@ -488,6 +515,35 @@ inline auto count_if( Range& r, Predicate p ) -> typename std::iterator_traits<d
 {
   return std::count_if( range::begin( r ), range::end( r ), p );
 }
+
+template <typename Range, typename T, typename Compare = std::less<>, typename Proj = identity>
+iterator_t<Range> lower_bound( Range& r, const T& value, Compare comp = Compare{}, Proj proj = Proj{} )
+{
+  const auto pred = [&value, &proj, &comp]( auto&& v ) {
+    return range::invoke( comp, range::invoke( proj, std::forward<decltype(v)>( v ) ), value );
+  };
+  return std::partition_point( range::begin( r ), range::end( r ), pred );
+}
+
+template <typename Range, typename T, typename Compare = std::less<>, typename Proj = identity>
+iterator_t<Range> upper_bound( Range& r, const T& value, Compare comp = Compare{}, Proj proj = Proj{} )
+{
+  const auto pred = [&value, &proj, &comp]( auto&& v ) {
+    return !range::invoke( comp, value, range::invoke( proj, std::forward<decltype(v)>( v ) ) );
+  };
+  return std::partition_point( range::begin( r ), range::end( r ), pred );
+}
+
+template <typename Range, typename T, typename Compare = std::less<>, typename Proj = identity>
+std::pair<iterator_t<Range>, iterator_t<Range>>
+  equal_range( Range& r, const T& value, Compare comp = Compare{}, Proj proj = Proj{} )
+{
+  auto b = lower_bound( r, value, comp, proj );
+  if ( b == range::end( r ) )
+    return { b, b };
+  return { b, upper_bound( r, value, comp, proj ) };
+}
+
 }  // namespace range ========================================================
 
 // Adapter for container of owned pointers; automatically deletes the
