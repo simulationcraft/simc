@@ -72,6 +72,7 @@ SRC += \
     player$(PATHSEP)artifact_data.cpp \
     player$(PATHSEP)azerite_data.cpp \
     player$(PATHSEP)darkmoon_deck.cpp \
+    player$(PATHSEP)ground_aoe.cpp \
     player$(PATHSEP)player_event.cpp \
     player$(PATHSEP)player_stat_cache.cpp \
     player$(PATHSEP)player_talent_points.cpp \

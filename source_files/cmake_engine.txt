@@ -57,6 +57,7 @@ player/darkmoon_deck.hpp
 player/effect_callbacks.hpp
 player/expansion_effects.hpp
 player/gear_stats.hpp
+player/ground_aoe.hpp
 player/pet.hpp
 player/pet_spawner.hpp
 player/pet_spawner_impl.hpp
@@ -192,6 +193,7 @@ player/actor_target_data.cpp
 player/artifact_data.cpp
 player/azerite_data.cpp
 player/darkmoon_deck.cpp
+player/ground_aoe.cpp
 player/player_event.cpp
 player/player_stat_cache.cpp
 player/player_talent_points.cpp

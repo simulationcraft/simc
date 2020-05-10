@@ -63,6 +63,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\effect_callbacks.hpp" />
 		<ClInclude Include="..\engine\player\expansion_effects.hpp" />
 		<ClInclude Include="..\engine\player\gear_stats.hpp" />
+		<ClInclude Include="..\engine\player\ground_aoe.hpp" />
 		<ClInclude Include="..\engine\player\pet.hpp" />
 		<ClInclude Include="..\engine\player\pet_spawner.hpp" />
 		<ClInclude Include="..\engine\player\pet_spawner_impl.hpp" />
@@ -336,6 +337,9 @@ To change the list of source files run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\player\darkmoon_deck.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\player\ground_aoe.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\player_event.cpp">
