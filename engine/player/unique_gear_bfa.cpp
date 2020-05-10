@@ -246,7 +246,7 @@ void obsidian_destruction( special_effect_t& effect );
 namespace util
 {
 // feasts initialization helper
-void init_feast( special_effect_t& effect, arv::array_view<std::pair<stat_e, int>> stat_map )
+void init_feast( special_effect_t& effect, std::initializer_list<std::pair<stat_e, int>> stat_map )
 {
   effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
   // TODO: Is this actually spec specific?

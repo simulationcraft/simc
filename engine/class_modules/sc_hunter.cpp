@@ -1958,14 +1958,14 @@ struct active_pets_t
   using data_t = std::array<Pet*, N>;
 
   data_t data_;
-  arv::array_view<Pet*> active_;
+  util::span<Pet* const> active_;
 
   active_pets_t( data_t d, size_t n ):
     data_( d ), active_( data_.data(), n )
   {}
 
-  typename arv::array_view<Pet*>::iterator begin() const { return active_.begin(); }
-  typename arv::array_view<Pet*>::iterator end() const { return active_.end(); }
+  typename util::span<Pet* const>::iterator begin() const { return active_.begin(); }
+  typename util::span<Pet* const>::iterator end() const { return active_.end(); }
 };
 
 // returns the active pets from the list 'cast' to the supplied pet type

@@ -1484,7 +1484,7 @@ const azerite_power_entry_t& dbc_t::azerite_power( const std::string& name, bool
   return azerite_power_entry_t::nil();
 }
 
-arv::array_view<azerite_power_entry_t> dbc_t::azerite_powers() const
+util::span<const azerite_power_entry_t> dbc_t::azerite_powers() const
 { return azerite_power_entry_t::data( ptr ); }
 
 unsigned dbc_t::class_max_size() const

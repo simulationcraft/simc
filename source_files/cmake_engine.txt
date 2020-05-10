@@ -51,6 +51,7 @@ item/special_effect.hpp
 lib/gsl-lite/gsl-lite.hpp
 lib/rapidxml/rapidxml.hpp
 lib/rapidxml/rapidxml_print.hpp
+lib/tcb/span.hpp
 player/action_priority_list.hpp
 player/action_variable.hpp
 player/actor.hpp
@@ -115,7 +116,6 @@ sim/sim_ostream.hpp
 sim/uptime.hpp
 sim/x6_pantheon.hpp
 simulationcraft.hpp
-util/array_view.hpp
 util/cache.hpp
 util/concurrency.hpp
 util/generic.hpp
@@ -126,6 +126,7 @@ util/rng.hpp
 util/sample_data.hpp
 util/sc_resourcepaths.hpp
 util/scoped_callback.hpp
+util/span.hpp
 util/stopwatch.hpp
 util/timeline.hpp
 util/util.hpp

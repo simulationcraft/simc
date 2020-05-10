@@ -9,11 +9,11 @@
 #include "generated/item_armor_ptr.inc"
 #endif
 
-arv::array_view<item_armor_quality_data_t> item_armor_quality_data_t::data( bool ptr )
+util::span<const item_armor_quality_data_t> item_armor_quality_data_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
-  const auto data = ptr ? arv::array_view<item_armor_quality_data_t>( __ptr_item_armor_quality_data )
-                        : arv::array_view<item_armor_quality_data_t>( __item_armor_quality_data );
+  const auto data = ptr ? util::span<const item_armor_quality_data_t>( __ptr_item_armor_quality_data )
+                        : util::span<const item_armor_quality_data_t>( __item_armor_quality_data );
 #else
   ( void ) ptr;
   const auto& data = __item_armor_quality_data;
@@ -22,11 +22,11 @@ arv::array_view<item_armor_quality_data_t> item_armor_quality_data_t::data( bool
   return data;
 }
 
-arv::array_view<item_armor_shield_data_t> item_armor_shield_data_t::data( bool ptr )
+util::span<const item_armor_shield_data_t> item_armor_shield_data_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
-  const auto data = ptr ? arv::array_view<item_armor_shield_data_t>( __ptr_item_armor_shield_data )
-                        : arv::array_view<item_armor_shield_data_t>( __item_armor_shield_data );
+  const auto data = ptr ? util::span<const item_armor_shield_data_t>( __ptr_item_armor_shield_data )
+                        : util::span<const item_armor_shield_data_t>( __item_armor_shield_data );
 #else
   ( void ) ptr;
   const auto& data = __item_armor_shield_data;
@@ -35,11 +35,11 @@ arv::array_view<item_armor_shield_data_t> item_armor_shield_data_t::data( bool p
   return data;
 }
 
-arv::array_view<item_armor_total_data_t> item_armor_total_data_t::data( bool ptr )
+util::span<const item_armor_total_data_t> item_armor_total_data_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
-  const auto data = ptr ? arv::array_view<item_armor_total_data_t>( __ptr_item_armor_total_data )
-                        : arv::array_view<item_armor_total_data_t>( __item_armor_total_data );
+  const auto data = ptr ? util::span<const item_armor_total_data_t>( __ptr_item_armor_total_data )
+                        : util::span<const item_armor_total_data_t>( __item_armor_total_data );
 #else
   ( void ) ptr;
   const auto& data = __item_armor_total_data;
@@ -48,11 +48,11 @@ arv::array_view<item_armor_total_data_t> item_armor_total_data_t::data( bool ptr
   return data;
 }
 
-arv::array_view<item_armor_location_data_t> item_armor_location_data_t::data( bool ptr )
+util::span<const item_armor_location_data_t> item_armor_location_data_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
-  const auto data = ptr ? arv::array_view<item_armor_location_data_t>( __ptr_armor_location_data )
-                        : arv::array_view<item_armor_location_data_t>( __armor_location_data );
+  const auto data = ptr ? util::span<const item_armor_location_data_t>( __ptr_armor_location_data )
+                        : util::span<const item_armor_location_data_t>( __armor_location_data );
 #else
   ( void ) ptr;
   const auto& data = __armor_location_data;

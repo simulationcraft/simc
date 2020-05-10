@@ -9,11 +9,11 @@
 #include "generated/gem_data_ptr.inc"
 #endif
 
-arv::array_view<gem_property_data_t> gem_property_data_t::data( bool ptr )
+util::span<const gem_property_data_t> gem_property_data_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
-  const auto data = ptr ? arv::array_view<gem_property_data_t>( __ptr_gem_property_data )
-                        : arv::array_view<gem_property_data_t>( __gem_property_data );
+  const auto data = ptr ? util::span<const gem_property_data_t>( __ptr_gem_property_data )
+                        : util::span<const gem_property_data_t>( __gem_property_data );
 #else
   ( void ) ptr;
   const auto& data = __gem_property_data;

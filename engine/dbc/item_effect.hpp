@@ -5,7 +5,7 @@
 #ifndef ITEM_EFFECT_HPP
 #define ITEM_EFFECT_HPP
 
-#include "util/array_view.hpp"
+#include "util/span.hpp"
 
 #include "client_data.hpp"
 
@@ -25,7 +25,7 @@ struct item_effect_t
   static const item_effect_t& nil()
   { return dbc::nil<item_effect_t>(); }
 
-  static arv::array_view<item_effect_t> data( bool ptr );
+  static util::span<const item_effect_t> data( bool ptr );
 };
 
 #endif /* ITEM_EFFECT_HPP */

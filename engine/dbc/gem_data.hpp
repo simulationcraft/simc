@@ -5,7 +5,7 @@
 #ifndef GEM_DATA_HPP
 #define GEM_DATA_HPP
 
-#include "util/array_view.hpp"
+#include "util/span.hpp"
 
 #include "client_data.hpp"
 
@@ -22,7 +22,7 @@ struct gem_property_data_t
   static const gem_property_data_t& nil()
   { return dbc::nil<gem_property_data_t>(); }
 
-  static arv::array_view<gem_property_data_t> data( bool ptr );
+  static util::span<const gem_property_data_t> data( bool ptr );
 };
 
 #endif /* GEM_DATA_HPP */

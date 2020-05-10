@@ -57,6 +57,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\lib\gsl-lite\gsl-lite.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml_print.hpp" />
+		<ClInclude Include="..\engine\lib\tcb\span.hpp" />
 		<ClInclude Include="..\engine\player\action_priority_list.hpp" />
 		<ClInclude Include="..\engine\player\action_variable.hpp" />
 		<ClInclude Include="..\engine\player\actor.hpp" />
@@ -121,7 +122,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\sim\uptime.hpp" />
 		<ClInclude Include="..\engine\sim\x6_pantheon.hpp" />
 		<ClInclude Include="..\engine\simulationcraft.hpp" />
-		<ClInclude Include="..\engine\util\array_view.hpp" />
 		<ClInclude Include="..\engine\util\cache.hpp" />
 		<ClInclude Include="..\engine\util\concurrency.hpp" />
 		<ClInclude Include="..\engine\util\generic.hpp" />
@@ -132,6 +132,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\util\sample_data.hpp" />
 		<ClInclude Include="..\engine\util\sc_resourcepaths.hpp" />
 		<ClInclude Include="..\engine\util\scoped_callback.hpp" />
+		<ClInclude Include="..\engine\util\span.hpp" />
 		<ClInclude Include="..\engine\util\stopwatch.hpp" />
 		<ClInclude Include="..\engine\util\timeline.hpp" />
 		<ClInclude Include="..\engine\util\util.hpp" />

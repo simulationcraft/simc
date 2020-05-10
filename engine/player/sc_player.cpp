@@ -10229,8 +10229,8 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
     // rest of the info
     else
     {
-      auto rest = arv::make_view( splits );
-      if ( auto expr = spawner -> create_expression( rest.slice( 2, rest.size() - 2 ) ) )
+      auto expr = spawner -> create_expression( util::make_span( splits ).subspan( 2 ) );
+      if ( expr )
       {
         return expr;
       }

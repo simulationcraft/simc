@@ -1578,7 +1578,7 @@ public:
   const item_armor_location_data_t& item_armor_inv_type( unsigned inv_type ) const
   { return item_armor_location_data_t::find( inv_type, ptr ); }
 
-  const arv::array_view<item_bonus_entry_t> item_bonus( unsigned bonus_id ) const
+  util::span<const item_bonus_entry_t> item_bonus( unsigned bonus_id ) const
   { return item_bonus_entry_t::find( bonus_id, ptr ); }
 
   // Derived data access
@@ -1664,7 +1664,7 @@ public:
   // Azerite
   const azerite_power_entry_t& azerite_power( unsigned power_id ) const;
   const azerite_power_entry_t& azerite_power( const std::string& name, bool tokenized = false ) const;
-  arv::array_view<azerite_power_entry_t> azerite_powers() const;
+  util::span<const azerite_power_entry_t> azerite_powers() const;
 
   unsigned azerite_item_level( unsigned power_level ) const;
 

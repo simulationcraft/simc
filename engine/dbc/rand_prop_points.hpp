@@ -5,7 +5,7 @@
 #ifndef RAND_PROP_POINTS_HPP
 #define RAND_PROP_POINTS_HPP
 
-#include "util/array_view.hpp"
+#include "util/span.hpp"
 
 #include "client_data.hpp"
 
@@ -28,7 +28,7 @@ public:
   static const random_prop_data_t& nil()
   { return dbc::nil<random_prop_data_t>(); }
 
-  static arv::array_view<random_prop_data_t> data( bool ptr );
+  static util::span<const random_prop_data_t> data( bool ptr );
 };
 
 #endif /* RAND_PROP_POINTS_HPP */

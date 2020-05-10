@@ -5,7 +5,7 @@
 #ifndef ITEM_SCALING_HPP
 #define ITEM_SCALING_HPP
 
-#include "util/array_view.hpp"
+#include "util/span.hpp"
 
 #include "client_data.hpp"
 
@@ -22,7 +22,7 @@ struct scaling_stat_distribution_t
   static const scaling_stat_distribution_t& nil()
   { return dbc::nil<scaling_stat_distribution_t>(); }
 
-  static arv::array_view<scaling_stat_distribution_t> data( bool ptr );
+  static util::span<const scaling_stat_distribution_t> data( bool ptr );
 };
 
 struct curve_point_t
@@ -32,12 +32,12 @@ struct curve_point_t
   double   val1;
   double   val2;
 
-  static arv::array_view<curve_point_t> find( unsigned id, bool ptr );
+  static util::span<const curve_point_t> find( unsigned id, bool ptr );
 
   static const curve_point_t& nil()
   { return dbc::nil<curve_point_t>(); }
 
-  static arv::array_view<curve_point_t> data( bool ptr );
+  static util::span<const curve_point_t> data( bool ptr );
 };
 
 #endif /* ITEM_SCALING_HPP */

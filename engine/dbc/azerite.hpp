@@ -5,7 +5,7 @@
 #ifndef AZERITE_HPP
 #define AZERITE_HPP
 
-#include "util/array_view.hpp"
+#include "util/span.hpp"
 #include "client_data.hpp"
 
 struct azerite_power_entry_t
@@ -22,7 +22,7 @@ struct azerite_power_entry_t
   static const azerite_power_entry_t& nil()
   { return dbc::nil<azerite_power_entry_t>(); }
 
-  static arv::array_view<azerite_power_entry_t> data( bool ptr );
+  static util::span<const azerite_power_entry_t> data( bool ptr );
 };
 
 struct azerite_essence_entry_t
@@ -39,7 +39,7 @@ struct azerite_essence_entry_t
 
   static const azerite_essence_entry_t& find( const std::string& name, bool tokenized, bool ptr );
 
-  static arv::array_view<azerite_essence_entry_t> data( bool ptr );
+  static util::span<const azerite_essence_entry_t> data( bool ptr );
 };
 
 struct azerite_essence_power_entry_t
@@ -57,8 +57,8 @@ struct azerite_essence_power_entry_t
   { return dbc::nil<azerite_essence_power_entry_t>(); }
 
   static const azerite_essence_power_entry_t& find_by_spell_id( unsigned spell_id, bool ptr );
-  static arv::array_view<azerite_essence_power_entry_t> data( bool ptr );
-  static arv::array_view<azerite_essence_power_entry_t> data_by_essence_id( unsigned essence_id, bool ptr );
+  static util::span<const azerite_essence_power_entry_t> data( bool ptr );
+  static util::span<const azerite_essence_power_entry_t> data_by_essence_id( unsigned essence_id, bool ptr );
 };
 
 #endif /* AZERITE_HPP */

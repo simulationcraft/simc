@@ -11,11 +11,11 @@
 #include "generated/azerite_ptr.inc"
 #endif
 
-arv::array_view<azerite_power_entry_t> azerite_power_entry_t::data( bool ptr )
+util::span<const azerite_power_entry_t> azerite_power_entry_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
-  const auto data = ptr ? arv::array_view<azerite_power_entry_t>( __ptr_azerite_power_data )
-                        : arv::array_view<azerite_power_entry_t>( __azerite_power_data );
+  const auto data = ptr ? util::span<const azerite_power_entry_t>( __ptr_azerite_power_data )
+                        : util::span<const azerite_power_entry_t>( __azerite_power_data );
 #else
   ( void ) ptr;
   const auto& data = __azerite_power_data;
@@ -24,13 +24,13 @@ arv::array_view<azerite_power_entry_t> azerite_power_entry_t::data( bool ptr )
   return data;
 }
 
-arv::array_view<azerite_essence_entry_t> azerite_essence_entry_t::data( bool ptr )
+util::span<const azerite_essence_entry_t> azerite_essence_entry_t::data( bool ptr )
 {
   ( void ) ptr;
 
 #if SC_USE_PTR == 1
-  const auto data = ptr ? arv::array_view<azerite_essence_entry_t>( __ptr_azerite_essence_data )
-                        : arv::array_view<azerite_essence_entry_t>( __azerite_essence_data );
+  const auto data = ptr ? util::span<const azerite_essence_entry_t>( __ptr_azerite_essence_data )
+                        : util::span<const azerite_essence_entry_t>( __azerite_essence_data );
 #else
   const auto& data = __azerite_essence_data;
 #endif
@@ -67,13 +67,13 @@ azerite_essence_entry_t::find( const std::string& name, bool tokenized, bool ptr
   return nil();
 }
 
-arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data( bool ptr )
+util::span<const azerite_essence_power_entry_t> azerite_essence_power_entry_t::data( bool ptr )
 {
   ( void ) ptr;
 
 #if SC_USE_PTR == 1
-  const auto data = ptr ? arv::array_view<azerite_essence_power_entry_t>( __ptr_azerite_essence_power_data )
-                        : arv::array_view<azerite_essence_power_entry_t>( __azerite_essence_power_data );
+  const auto data = ptr ? util::span<const azerite_essence_power_entry_t>( __ptr_azerite_essence_power_data )
+                        : util::span<const azerite_essence_power_entry_t>( __azerite_essence_power_data );
 #else
   const auto data = __azerite_essence_power_data;
 #endif
@@ -81,7 +81,7 @@ arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::da
   return data;
 }
 
-arv::array_view<azerite_essence_power_entry_t>
+util::span<const azerite_essence_power_entry_t>
 azerite_essence_power_entry_t::data_by_essence_id( unsigned essence_id, bool ptr )
 {
   const auto __data = data( ptr );
@@ -101,7 +101,7 @@ azerite_essence_power_entry_t::data_by_essence_id( unsigned essence_id, bool ptr
                                 return id < a.essence_id;
                               } );
 
-  return arv::array_view<azerite_essence_power_entry_t>( begin, end );
+  return util::span<const azerite_essence_power_entry_t>( begin, end );
 }
 
 const azerite_essence_power_entry_t&
