@@ -1991,7 +1991,9 @@ void sim_t::analyze_error()
 
   work_queue -> lock();
 
-  int n_iterations = work_queue -> progress().current_iterations;
+  // First iterations of each thread are considered statistically insignificant and not
+  // collected
+  int n_iterations = work_queue -> progress().current_iterations - threads;
   if ( strict_work_queue )
   {
     range::for_each( children, [ &n_iterations ]( sim_t* c ) {
