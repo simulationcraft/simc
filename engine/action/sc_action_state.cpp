@@ -4,7 +4,9 @@
 // ==========================================================================
 
 #include "action/sc_action_state.hpp"
-#include "simulationcraft.hpp"
+#include "action/sc_action.hpp"
+#include "player/sc_player.hpp"
+#include <sstream>
 
 action_state_t* action_t::get_state( const action_state_t* other )
 {

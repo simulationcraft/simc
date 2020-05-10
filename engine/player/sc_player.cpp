@@ -12802,3 +12802,34 @@ void player_t::do_dynamic_regen()
   }
 }
 
+double player_t::get_position_distance(double m, double v) const
+{
+  double delta_x = this->x_position - m;
+  double delta_y = this->y_position - v;
+  double sqrtnum = delta_x * delta_x + delta_y * delta_y;
+  return util::approx_sqrt(sqrtnum);
+}
+
+double player_t::get_player_distance(const player_t& target) const
+{
+  if (sim->distance_targeting_enabled)
+  {
+    return get_position_distance(target.x_position, target.y_position);
+  }
+  else
+    return current.distance;
+}
+
+double player_t::get_ground_aoe_distance(const action_state_t& a) const
+{
+  return get_position_distance(a.original_x, a.original_y);
+}
+
+void player_t::init_distance_targeting()
+{
+  if (!sim->distance_targeting_enabled)
+    return;
+
+  x_position = -1 * base.distance;
+}
+

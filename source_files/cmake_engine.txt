@@ -139,7 +139,6 @@ action/residual_action.cpp
 action/sc_action.cpp
 action/sc_action_state.cpp
 action/sc_attack.cpp
-action/sc_distance_targeting.cpp
 action/sc_dot.cpp
 action/sc_spell.cpp
 action/sc_stats.cpp

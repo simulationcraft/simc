@@ -10,7 +10,6 @@ SRC += \
     action$(PATHSEP)sc_action.cpp \
     action$(PATHSEP)sc_action_state.cpp \
     action$(PATHSEP)sc_attack.cpp \
-    action$(PATHSEP)sc_distance_targeting.cpp \
     action$(PATHSEP)sc_dot.cpp \
     action$(PATHSEP)sc_spell.cpp \
     action$(PATHSEP)sc_stats.cpp \

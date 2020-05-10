@@ -142,7 +142,6 @@ SOURCES += engine/action/residual_action.cpp
 SOURCES += engine/action/sc_action.cpp
 SOURCES += engine/action/sc_action_state.cpp
 SOURCES += engine/action/sc_attack.cpp
-SOURCES += engine/action/sc_distance_targeting.cpp
 SOURCES += engine/action/sc_dot.cpp
 SOURCES += engine/action/sc_spell.cpp
 SOURCES += engine/action/sc_stats.cpp
