@@ -7,6 +7,7 @@
 #include "action/sc_action_state.hpp"
 #include "action/attack.hpp"
 #include "action/action_callback.hpp"
+#include "dbc/dbc.hpp"
 #include "buff/sc_buff.hpp"
 #include "action/dot.hpp"
 #include "player/actor_target_data.hpp"

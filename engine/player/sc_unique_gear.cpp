@@ -4509,6 +4509,29 @@ const item_data_t* unique_gear::find_item_by_spell( const dbc_t& dbc, unsigned s
 
 namespace unique_gear
 {
+  void proc_resource_t::__initialize()
+  {
+    may_miss = may_dodge = may_parry = may_block = harmful = false;
+    target = player;
+
+    for (size_t i = 1; i <= data().effect_count(); i++)
+    {
+      const spelleffect_data_t& effect = data().effectN(i);
+      if (effect.type() == E_ENERGIZE)
+      {
+        gain_da = effect.average(item);
+        gain_resource = effect.resource_gain_type();
+      }
+      else if (effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_ENERGIZE)
+      {
+        gain_ta = effect.average(item);
+        gain_resource = effect.resource_gain_type();
+      }
+    }
+
+    gain = player->get_gain(name());
+  }
+
 std::vector<special_effect_db_item_t> __special_effect_db, __fallback_effect_db;
 
 bool class_scoped_callback_t::valid(const special_effect_t& effect) const

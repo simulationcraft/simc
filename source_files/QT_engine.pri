@@ -216,6 +216,7 @@ SOURCES += engine/player/instant_absorb.cpp
 SOURCES += engine/player/player_event.cpp
 SOURCES += engine/player/player_stat_cache.cpp
 SOURCES += engine/player/player_talent_points.cpp
+SOURCES += engine/player/rating.cpp
 SOURCES += engine/player/sc_consumable.cpp
 SOURCES += engine/player/sc_pet.cpp
 SOURCES += engine/player/sc_player.cpp

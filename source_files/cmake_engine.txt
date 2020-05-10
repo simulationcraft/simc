@@ -213,6 +213,7 @@ player/instant_absorb.cpp
 player/player_event.cpp
 player/player_stat_cache.cpp
 player/player_talent_points.cpp
+player/rating.cpp
 player/sc_consumable.cpp
 player/sc_pet.cpp
 player/sc_player.cpp

@@ -7003,6 +7003,11 @@ cooldown_t* player_t::get_cooldown( const std::string& name, action_t* a )
   return c;
 }
 
+real_ppm_t* player_t::get_rppm(const std::string& name)
+{
+  return get_rppm(name, spell_data_t::nil(), nullptr);
+}
+
 real_ppm_t* player_t::get_rppm( const std::string& name, const spell_data_t* data, const item_t* item )
 {
   auto it = range::find_if( rppm_list,
@@ -12809,6 +12814,11 @@ double player_t::get_position_distance(double m, double v) const
   double delta_y = this->y_position - v;
   double sqrtnum = delta_x * delta_x + delta_y * delta_y;
   return util::approx_sqrt(sqrtnum);
+}
+
+double player_t::mastery_coefficient() const
+{
+  return _mastery->mastery_value();
 }
 
 double player_t::get_player_distance(const player_t& target) const

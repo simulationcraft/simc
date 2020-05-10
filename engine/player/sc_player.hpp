@@ -38,6 +38,7 @@ class azerite_essence_t;
 class azerite_power_t;
 class dbc_t;
 struct benefit_t;
+struct item_t;
 struct buff_t;
 struct cooldown_t;
 struct dot_t;
@@ -56,6 +57,7 @@ struct real_ppm_t;
 struct set_bonus_t;
 class shuffled_rng_t;
 struct special_effect_t;
+struct spelleffect_data_t;
 struct stat_buff_t;
 struct stats_t;
 struct uptime_t;
@@ -698,8 +700,7 @@ public:
   { return get_attribute( ATTR_INTELLECT ); }
   double spirit() const
   { return get_attribute( ATTR_SPIRIT ); }
-  double mastery_coefficient() const
-  { return _mastery -> mastery_value(); }
+  double mastery_coefficient() const;
   double get_player_distance( const player_t& ) const;
   double get_ground_aoe_distance( const action_state_t& ) const;
   double get_position_distance( double m = 0, double v = 0 ) const;
@@ -751,7 +752,8 @@ public:
   int find_action_id( const std::string& name ) const;
 
   cooldown_t* get_cooldown( const std::string& name, action_t* action = nullptr );
-  real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
+  real_ppm_t* get_rppm(const std::string& name);
+  real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data, const item_t* item = nullptr );
   real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
   shuffled_rng_t* get_shuffled_rng(const std::string& name, int success_entries = 0, int total_entries = 0);
   dot_t*      get_dot     ( const std::string& name, player_t* source );

@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "real_ppm.hpp"
+#include "dbc/dbc.hpp"
 #include "player/sc_player.hpp"
 #include "sim/sc_sim.hpp"
 #include "util/rng.hpp"

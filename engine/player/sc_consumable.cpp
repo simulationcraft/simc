@@ -4,6 +4,8 @@
 // ==========================================================================
 
 #include "consumable.hpp"
+
+#include "dbc/dbc.hpp"
 #include "sc_enums.hpp"
 #include "sc_player.hpp"
 #include "action/sc_action.hpp"

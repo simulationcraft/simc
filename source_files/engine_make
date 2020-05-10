@@ -82,6 +82,7 @@ SRC += \
     player$(PATHSEP)player_event.cpp \
     player$(PATHSEP)player_stat_cache.cpp \
     player$(PATHSEP)player_talent_points.cpp \
+    player$(PATHSEP)rating.cpp \
     player$(PATHSEP)sc_consumable.cpp \
     player$(PATHSEP)sc_pet.cpp \
     player$(PATHSEP)sc_player.cpp \

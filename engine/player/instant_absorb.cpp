@@ -6,6 +6,7 @@
 #include "instant_absorb.hpp"
 
 #include "action/sc_action_state.hpp"
+#include "dbc/dbc.hpp"
 #include "util/util.hpp"
 #include "player/stats.hpp"
 #include "player/sc_player.hpp"
