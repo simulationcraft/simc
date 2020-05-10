@@ -1,9 +1,10 @@
-#include <algorithm>
 #include <array>
 
 #include "config.hpp"
 
 #include "item_bonus.hpp"
+
+#include "util/generic.hpp"
 
 #include "generated/item_bonus.inc"
 #if SC_USE_PTR == 1
@@ -26,19 +27,11 @@ util::span<const item_bonus_entry_t> item_bonus_entry_t::find( unsigned bonus_id
 {
   const auto __data = data( ptr );
 
-  auto low = std::lower_bound( __data.cbegin(), __data.cend(), bonus_id,
-                              []( const item_bonus_entry_t& entry, const unsigned& id ) {
-                                return entry.bonus_id < id;
-                              } );
-  if ( low == __data.end() )
+  auto r = range::equal_range( __data, bonus_id, {}, &item_bonus_entry_t::bonus_id );
+  if ( r.first == __data.end() )
   {
     return {};
   }
 
-  auto high = std::upper_bound( __data.cbegin(), __data.cend(), bonus_id,
-                              []( const unsigned& id, const item_bonus_entry_t& entry ) {
-                                return id < entry.bonus_id;
-                              } );
-
-  return util::span<const item_bonus_entry_t>( low, high );
+  return util::span<const item_bonus_entry_t>( r.first, r.second );
 }

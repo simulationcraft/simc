@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <array>
 
 #include "config.hpp"
@@ -86,22 +85,13 @@ azerite_essence_power_entry_t::data_by_essence_id( unsigned essence_id, bool ptr
 {
   const auto __data = data( ptr );
 
-  auto begin = std::lower_bound( __data.cbegin(), __data.cend(), essence_id,
-                              []( const azerite_essence_power_entry_t& a, const unsigned& id ) {
-                                return a.essence_id < id;
-                              } );
-
-  if ( begin == __data.cend() )
+  auto r = range::equal_range( __data, essence_id, {}, &azerite_essence_power_entry_t::essence_id );
+  if ( r.first == __data.end() )
   {
     return {};
   }
 
-  auto end = std::upper_bound( __data.cbegin(), __data.cend(), essence_id,
-                              []( const unsigned& id, const azerite_essence_power_entry_t& a ) {
-                                return id < a.essence_id;
-                              } );
-
-  return util::span<const azerite_essence_power_entry_t>( begin, end );
+  return util::span<const azerite_essence_power_entry_t>( r.first, r.second );
 }
 
 const azerite_essence_power_entry_t&
