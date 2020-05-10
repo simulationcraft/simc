@@ -86,7 +86,6 @@ SRC += \
     player$(PATHSEP)sc_consumable.cpp \
     player$(PATHSEP)sc_pet.cpp \
     player$(PATHSEP)sc_player.cpp \
-    player$(PATHSEP)sc_proc.cpp \
     player$(PATHSEP)sc_set_bonus.cpp \
     player$(PATHSEP)sc_unique_gear.cpp \
     player$(PATHSEP)spawner_base.cpp \

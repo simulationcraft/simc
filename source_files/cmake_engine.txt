@@ -217,7 +217,6 @@ player/rating.cpp
 player/sc_consumable.cpp
 player/sc_pet.cpp
 player/sc_player.cpp
-player/sc_proc.cpp
 player/sc_set_bonus.cpp
 player/sc_unique_gear.cpp
 player/spawner_base.cpp

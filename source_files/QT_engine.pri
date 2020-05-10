@@ -220,7 +220,6 @@ SOURCES += engine/player/rating.cpp
 SOURCES += engine/player/sc_consumable.cpp
 SOURCES += engine/player/sc_pet.cpp
 SOURCES += engine/player/sc_player.cpp
-SOURCES += engine/player/sc_proc.cpp
 SOURCES += engine/player/sc_set_bonus.cpp
 SOURCES += engine/player/sc_unique_gear.cpp
 SOURCES += engine/player/spawner_base.cpp
