@@ -1078,7 +1078,7 @@ const item_data_t* dbc::find_consumable( item_subclass_consumable type, bool ptr
   return i ? i : &( nil_item_data );
 }
 
-static std::string get_bonus_id_desc( const dbc_t& dbc, const util::span<const item_bonus_entry_t>& entries )
+static std::string get_bonus_id_desc( const dbc_t& dbc, util::span<const item_bonus_entry_t> entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
@@ -1091,7 +1091,7 @@ static std::string get_bonus_id_desc( const dbc_t& dbc, const util::span<const i
   return std::string();
 }
 
-static std::string get_bonus_id_suffix( const dbc_t& dbc, const util::span<const item_bonus_entry_t>& entries )
+static std::string get_bonus_id_suffix( const dbc_t& dbc, util::span<const item_bonus_entry_t> entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
@@ -1104,7 +1104,7 @@ static std::string get_bonus_id_suffix( const dbc_t& dbc, const util::span<const
   return std::string();
 }
 
-static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_scaling( const dbc_t& dbc, const util::span<const item_bonus_entry_t>& entries )
+static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_scaling( const dbc_t& dbc, util::span<const item_bonus_entry_t> entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
@@ -1133,7 +1133,7 @@ static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_s
       std::pair<int, double>( -1, 0 ) );
 }
 
-static int get_bonus_id_ilevel( const util::span<const item_bonus_entry_t>& entries )
+static int get_bonus_id_ilevel( util::span<const item_bonus_entry_t> entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
@@ -1146,7 +1146,7 @@ static int get_bonus_id_ilevel( const util::span<const item_bonus_entry_t>& entr
   return 0;
 }
 
-static int get_bonus_id_base_ilevel( const util::span<const item_bonus_entry_t>& entries )
+static int get_bonus_id_base_ilevel( util::span<const item_bonus_entry_t> entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
@@ -1159,7 +1159,7 @@ static int get_bonus_id_base_ilevel( const util::span<const item_bonus_entry_t>&
   return 0;
 }
 
-static std::string get_bonus_id_quality( const util::span<const item_bonus_entry_t>& entries )
+static std::string get_bonus_id_quality( util::span<const item_bonus_entry_t> entries )
 {
   for ( auto& entry : entries )
   {
@@ -1172,7 +1172,7 @@ static std::string get_bonus_id_quality( const util::span<const item_bonus_entry
   return "";
 }
 
-static int get_bonus_id_sockets( const util::span<const item_bonus_entry_t>& entries )
+static int get_bonus_id_sockets( util::span<const item_bonus_entry_t> entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
@@ -1185,7 +1185,7 @@ static int get_bonus_id_sockets( const util::span<const item_bonus_entry_t>& ent
   return 0;
 }
 
-static int get_bonus_power_index( const util::span<const item_bonus_entry_t>& entries )
+static int get_bonus_power_index( util::span<const item_bonus_entry_t> entries )
 {
   auto it = range::find_if( entries, []( const item_bonus_entry_t& entry ) {
     return entry.type == ITEM_BONUS_ADD_RANK;
@@ -1199,7 +1199,7 @@ static int get_bonus_power_index( const util::span<const item_bonus_entry_t>& en
   return -1;
 }
 
-static std::string get_bonus_item_effect( const util::span<const item_bonus_entry_t>& entries, const dbc_t& dbc )
+static std::string get_bonus_item_effect( util::span<const item_bonus_entry_t> entries, const dbc_t& dbc )
 {
   std::vector<std::string> entries_str;
 
@@ -1248,7 +1248,7 @@ static std::string get_bonus_item_effect( const util::span<const item_bonus_entr
 }
 
 static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_stats(
-    const util::span<const item_bonus_entry_t>& entries )
+    util::span<const item_bonus_entry_t> entries )
 {
   double total = 0;
 

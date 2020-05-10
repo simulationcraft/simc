@@ -830,7 +830,7 @@ void spell_flags_xml( const spell_data_t* spell, xml_node_t* parent )
 }
 
 std::string azerite_essence_str( const spell_data_t* spell,
-                             const util::span<const azerite_essence_power_entry_t>& data )
+                             util::span<const azerite_essence_power_entry_t> data )
 {
   // Locate spell in the array
   auto it = range::find_if( data, [ spell ]( const azerite_essence_power_entry_t& e ) {
