@@ -23,10 +23,11 @@
 #include "dbc/azerite.hpp"
 #include "dbc/rand_prop_points.hpp"
 #include "dbc/spell_item_enchantment.hpp"
+#include "dbc/gem_data.hpp"
 #include "dbc/item_armor.hpp"
 #include "dbc/item_weapon.hpp"
-#include "dbc/gem_data.hpp"
 #include "dbc/item_bonus.hpp"
+#include "dbc/item_scaling.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -1641,7 +1642,9 @@ public:
   std::vector<const spelleffect_data_t*> effect_categories_affecting_spell( const spell_data_t* ) const;
 
   // Heirloomage and misc scaling hijinxery
-  const scaling_stat_distribution_t* scaling_stat_distribution( unsigned id ) const;
+  const scaling_stat_distribution_t& scaling_stat_distribution( unsigned id ) const
+  { return scaling_stat_distribution_t::find( id, ptr ); }
+
   std::pair<const curve_point_t*, const curve_point_t*> curve_point( unsigned curve_id, double value ) const;
 
   // Artifact stuff

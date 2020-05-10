@@ -4307,8 +4307,9 @@ def curve_point_sort(a, b):
 
 class ScalingStatDataGenerator(DataGenerator):
     def __init__(self, options, data_store):
-        self._dbc = [ 'ScalingStatDistribution', 'CurvePoint' ]
         super().__init__(options, data_store)
+
+        self._dbc = [ 'ScalingStatDistribution', 'CurvePoint' ]
 
     def generate(self, ids = None):
         # Bonus trees
@@ -4318,39 +4319,31 @@ class ScalingStatDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or '',
         )
 
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._scalingstatdistribution_db.keys()) + 1))
-
         self._out.write('// Scaling stat distributions, wow build %s\n' % ( self._options.build ))
+        self._out.write('static constexpr std::array<scaling_stat_distribution_t, %d> __%s_data { {\n' % (
+            len(self._scalingstatdistribution_db.keys()), data_str))
 
-        self._out.write('static struct scaling_stat_distribution_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
-
-        for key in sorted(self._scalingstatdistribution_db.keys()) + [0,]:
-            data = self._scalingstatdistribution_db[key]
-
+        for id, data in sorted(self._scalingstatdistribution_db.items()):
             fields = data.field('id', 'min_level', 'max_level', 'id_curve' )
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
         data_str = "%scurve_point%s" % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '',
         )
 
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._curvepoint_db.keys()) + 1))
-
         self._out.write('// Curve points data, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static struct curve_point_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
+        self._out.write('static constexpr std::array<curve_point_t, %d> __%s_data { {\n' % (
+            len(self._curvepoint_db.keys()), data_str))
 
-        vals = self._curvepoint_db.values()
-        for data in sorted(vals, key = lambda k: (k.id_distribution, k.curve_index)):
+        for id, data in sorted(self._curvepoint_db.items(), key = lambda k: (k[1].id_distribution, k[1].curve_index)):
             fields = data.field('id_distribution', 'curve_index', 'val_1', 'val_2' )
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-        self._out.write('  { %s },\n' % (', '.join(self._curvepoint_db[0].field('id_distribution', 'curve_index', 'val_1', 'val_2' ))))
-
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
 class ItemNameDescriptionDataGenerator(DataGenerator):
     def __init__(self, options, data_store):

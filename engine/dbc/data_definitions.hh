@@ -55,22 +55,6 @@ struct item_name_description_t
   const char* description;
 };
 
-struct scaling_stat_distribution_t
-{
-  unsigned id;
-  unsigned min_level;
-  unsigned max_level;
-  unsigned curve_id;
-};
-
-struct curve_point_t
-{
-  unsigned curve_id;
-  unsigned index;
-  double   val1;
-  double   val2;
-};
-
 struct item_set_bonus_t {
 #define SET_BONUS_ITEM_ID_MAX ( 10 )
   const char* set_name;

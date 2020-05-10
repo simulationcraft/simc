@@ -154,55 +154,24 @@ void dbc::init_item_data()
 #endif
 }
 
-const scaling_stat_distribution_t* dbc_t::scaling_stat_distribution( unsigned id ) const
-{
-#if SC_USE_PTR
-  const scaling_stat_distribution_t* table = ptr ? &__ptr_scaling_stat_distribution_data[ 0 ]
-                                                 : &__scaling_stat_distribution_data[ 0 ];
-#else
-  const scaling_stat_distribution_t* table = &__scaling_stat_distribution_data[ 0 ];
-#endif
-
-  while ( table -> id != 0 )
-  {
-    if ( table -> id == id )
-      return table;
-    table++;
-  }
-
-  return nullptr;
-}
-
 std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsigned curve_id, double value ) const
 {
-#if SC_USE_PTR
-  const curve_point_t* table = ptr ? &__ptr_curve_point_data[ 0 ]
-                                   : &__curve_point_data[ 0 ];
-#else
-  const curve_point_t* table = &__curve_point_data[ 0 ];
-#endif
+  auto data = curve_point_t::find( curve_id, ptr );
 
   const curve_point_t* lower_bound = nullptr, * upper_bound = nullptr;
-  while ( table -> curve_id != 0 )
+  for ( const auto& point : data )
   {
-    if ( table -> curve_id != curve_id )
+    assert( point.curve_id == curve_id );
+    if ( point.val1 <= value )
     {
-      table++;
-      continue;
+      lower_bound = &( point );
     }
 
-    if ( table -> val1 <= value )
+    if ( point.val1 >= value )
     {
-      lower_bound = table;
-    }
-
-    if ( table -> val1 >= value )
-    {
-      upper_bound = table;
+      upper_bound = &( point );
       break;
     }
-
-    table++;
   }
 
   if ( lower_bound == nullptr )
@@ -215,7 +184,8 @@ std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsign
     upper_bound = lower_bound;
   }
 
-  return std::pair<const curve_point_t*, const curve_point_t*>( lower_bound, upper_bound );
+  return std::pair<const curve_point_t*, const curve_point_t*>(
+      lower_bound, upper_bound );
 }
 
 item_data_t* item_data_t::find( unsigned id, bool ptr )
@@ -272,9 +242,9 @@ void item_database::apply_item_scaling( item_t& item, unsigned scaling_id, unsig
     return;
   }
 
-  const scaling_stat_distribution_t* data = item.player -> dbc.scaling_stat_distribution( scaling_id );
+  const auto& data = item.player->dbc.scaling_stat_distribution( scaling_id );
   // Unable to find the scaling stat distribution
-  if ( data == nullptr )
+  if ( data.id == 0 )
   {
     throw std::invalid_argument(fmt::format("Unable to find scaling information for {} scaling id {}.",
         item.name(), item.parsed.data.id_scaling_distribution));
@@ -282,14 +252,14 @@ void item_database::apply_item_scaling( item_t& item, unsigned scaling_id, unsig
 
   // Player level lower than item minimum scaling level, shouldnt happen but let item init go
   // through
-  if ( player_level < data -> min_level )
+  if ( player_level < data.min_level )
   {
     return;
   }
 
-  unsigned base_value = std::min( player_level, data -> max_level );
+  unsigned base_value = std::min( player_level, data.max_level );
 
-  double scaled_result = curve_point_value( item.player -> dbc, data -> curve_id, base_value );
+  double scaled_result = curve_point_value( item.player->dbc, data.curve_id, base_value );
 
   if ( item.sim -> debug )
   {
@@ -1198,16 +1168,16 @@ static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_s
 
     if ( entries[ i ].type == ITEM_BONUS_SCALING || entries[ i ].type == ITEM_BONUS_SCALING_2 )
     {
-      const scaling_stat_distribution_t* data = dbc.scaling_stat_distribution( entries[ i ].value_1 );
-      assert( data );
-      auto curve_data_min = dbc.curve_point( data->curve_id, data->min_level );
-      auto curve_data_max = dbc.curve_point( data->curve_id, data->max_level );
+      const auto& data = dbc.scaling_stat_distribution( entries[ i ].value_1 );
+      assert( data.id );
+      auto curve_data_min = dbc.curve_point( data.curve_id, data.min_level );
+      auto curve_data_max = dbc.curve_point( data.curve_id, data.max_level );
       assert(curve_data_min.first);
       assert(curve_data_max.first);
 
       return std::pair<std::pair<int, double>, std::pair<int, double>>(
-          std::pair<int, double>( data->min_level, curve_data_min.first->val2 ),
-          std::pair<int, double>( data->max_level, curve_data_max.first->val2 ) );
+          std::pair<int, double>( data.min_level, curve_data_min.first->val2 ),
+          std::pair<int, double>( data.max_level, curve_data_max.first->val2 ) );
     }
   }
 
