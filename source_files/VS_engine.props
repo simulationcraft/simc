@@ -11,10 +11,14 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\action\dbc_proc_callback.hpp" />
 		<ClInclude Include="..\engine\action\dot.hpp" />
 		<ClInclude Include="..\engine\action\heal.hpp" />
+		<ClInclude Include="..\engine\action\residual_action.hpp" />
 		<ClInclude Include="..\engine\action\sc_action.hpp" />
 		<ClInclude Include="..\engine\action\sc_action_state.hpp" />
+		<ClInclude Include="..\engine\action\sequence.hpp" />
+		<ClInclude Include="..\engine\action\snapshot_stats.hpp" />
 		<ClInclude Include="..\engine\action\spell.hpp" />
 		<ClInclude Include="..\engine\action\spell_base.hpp" />
+		<ClInclude Include="..\engine\action\variable.hpp" />
 		<ClInclude Include="..\engine\buff\sc_buff.hpp" />
 		<ClInclude Include="..\engine\class_modules\class_module.hpp" />
 		<ClInclude Include="..\engine\class_modules\paladin\sc_paladin.hpp" />
@@ -48,11 +52,13 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\interfaces\wowhead.hpp" />
 		<ClInclude Include="..\engine\item\enchants.hpp" />
 		<ClInclude Include="..\engine\item\item.hpp" />
+		<ClInclude Include="..\engine\item\item_targetdata_initializer.hpp" />
 		<ClInclude Include="..\engine\item\special_effect.hpp" />
 		<ClInclude Include="..\engine\lib\gsl-lite\gsl-lite.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml_print.hpp" />
 		<ClInclude Include="..\engine\player\action_priority_list.hpp" />
+		<ClInclude Include="..\engine\player\action_variable.hpp" />
 		<ClInclude Include="..\engine\player\actor.hpp" />
 		<ClInclude Include="..\engine\player\actor_target_data.hpp" />
 		<ClInclude Include="..\engine\player\artifact_data.hpp" />
@@ -64,10 +70,12 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\expansion_effects.hpp" />
 		<ClInclude Include="..\engine\player\gear_stats.hpp" />
 		<ClInclude Include="..\engine\player\ground_aoe.hpp" />
+		<ClInclude Include="..\engine\player\instant_absorb.hpp" />
 		<ClInclude Include="..\engine\player\pet.hpp" />
 		<ClInclude Include="..\engine\player\pet_spawner.hpp" />
 		<ClInclude Include="..\engine\player\pet_spawner_impl.hpp" />
 		<ClInclude Include="..\engine\player\player_collected_data.hpp" />
+		<ClInclude Include="..\engine\player\player_demise_event.hpp" />
 		<ClInclude Include="..\engine\player\player_event.hpp" />
 		<ClInclude Include="..\engine\player\player_processed_report_information.hpp" />
 		<ClInclude Include="..\engine\player\player_resources.hpp" />
@@ -141,6 +149,9 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\action\heal.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
+		<ClCompile Include="..\engine\action\residual_action.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="..\engine\action\sc_action.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
@@ -156,14 +167,20 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\action\sc_dot.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
-		<ClCompile Include="..\engine\action\sc_sequence.cpp">
-			
-		</ClCompile>
 		<ClCompile Include="..\engine\action\sc_spell.cpp">
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\action\sc_stats.cpp">
 			
+		</ClCompile>
+		<ClCompile Include="..\engine\action\sequence.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\action\snapshot_stats.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\action\variable.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\buff\sc_buff.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -312,6 +329,9 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\item\item.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
+		<ClCompile Include="..\engine\item\item_targetdata_initializer.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="..\engine\item\special_effect.cpp">
 			
 		</ClCompile>
@@ -322,6 +342,9 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\action_priority_list.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\player\action_variable.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\actor.cpp">
@@ -342,6 +365,9 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\ground_aoe.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
+		<ClCompile Include="..\engine\player\instant_absorb.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="..\engine\player\player_event.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
@@ -358,7 +384,7 @@ To change the list of source files run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_player.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_proc.cpp">
 			

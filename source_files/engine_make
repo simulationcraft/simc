@@ -6,14 +6,17 @@ SRC += \
     action$(PATHSEP)action_callback.cpp \
     action$(PATHSEP)dbc_proc_callback.cpp \
     action$(PATHSEP)heal.cpp \
+    action$(PATHSEP)residual_action.cpp \
     action$(PATHSEP)sc_action.cpp \
     action$(PATHSEP)sc_action_state.cpp \
     action$(PATHSEP)sc_attack.cpp \
     action$(PATHSEP)sc_distance_targeting.cpp \
     action$(PATHSEP)sc_dot.cpp \
-    action$(PATHSEP)sc_sequence.cpp \
     action$(PATHSEP)sc_spell.cpp \
     action$(PATHSEP)sc_stats.cpp \
+    action$(PATHSEP)sequence.cpp \
+    action$(PATHSEP)snapshot_stats.cpp \
+    action$(PATHSEP)variable.cpp \
     buff$(PATHSEP)sc_buff.cpp \
     class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin.cpp \
     class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_holy.cpp \
@@ -63,16 +66,19 @@ SRC += \
     interfaces$(PATHSEP)wowhead.cpp \
     item$(PATHSEP)enchants.cpp \
     item$(PATHSEP)item.cpp \
+    item$(PATHSEP)item_targetdata_initializer.cpp \
     item$(PATHSEP)special_effect.cpp \
     lib$(PATHSEP)fmt$(PATHSEP)format.cpp \
     lib$(PATHSEP)fmt$(PATHSEP)os.cpp \
     player$(PATHSEP)action_priority_list.cpp \
+    player$(PATHSEP)action_variable.cpp \
     player$(PATHSEP)actor.cpp \
     player$(PATHSEP)actor_target_data.cpp \
     player$(PATHSEP)artifact_data.cpp \
     player$(PATHSEP)azerite_data.cpp \
     player$(PATHSEP)darkmoon_deck.cpp \
     player$(PATHSEP)ground_aoe.cpp \
+    player$(PATHSEP)instant_absorb.cpp \
     player$(PATHSEP)player_event.cpp \
     player$(PATHSEP)player_stat_cache.cpp \
     player$(PATHSEP)player_talent_points.cpp \

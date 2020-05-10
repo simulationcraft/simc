@@ -3,7 +3,12 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "sequence.hpp"
+
+#include "player/sc_player.hpp"
+#include "sim/sc_option.hpp"
+#include "sim/sc_sim.hpp"
+#include "util/util.hpp"
 
 // ==========================================================================
 // Sequence Action
@@ -300,3 +305,9 @@ void strict_sequence_t::schedule_execute( action_state_t* state )
   }
 }
 
+void sequence_t::restart() { current_action = 0; restarted = true; last_restart = sim->current_time(); }
+
+bool sequence_t::can_restart()
+{
+  return !restarted && last_restart < sim->current_time();
+}

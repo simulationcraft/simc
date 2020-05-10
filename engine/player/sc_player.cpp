@@ -4,18 +4,81 @@
 // ==========================================================================
 
 #include "sc_player.hpp"
-#include "sim/scale_factor_control.hpp"
+
+#include "action/action_callback.hpp"
+#include "action/sc_action.hpp"
+#include "action/sc_action_state.hpp"
+#include "action/variable.hpp"
+#include "action/dot.hpp"
+#include "action/residual_action.hpp"
+#include "action/sequence.hpp"
+#include "action/snapshot_stats.hpp"
 #include "dbc/azerite.hpp"
-#include "sample_data_helper.hpp"
-#include "consumable.hpp"
+#include "item/item.hpp"
+#include "action/dbc_proc_callback.hpp"
+#include "player/actor_target_data.hpp"
+#include "player/azerite_data.hpp"
+#include "player/artifact_data.hpp"
+#include "sim/artifact_power.hpp"
+#include "player/sample_data_helper.hpp"
+#include "player/consumable.hpp"
+#include "player/instant_absorb.hpp"
+#include "player/action_variable.hpp"
+#include "player/action_priority_list.hpp"
+#include "player/player_event.hpp"
+#include "player/pet.hpp"
+#include "player/player_demise_event.hpp"
+#include "player/unique_gear.hpp"
+#include "player/set_bonus.hpp"
+#include "player/spawner_base.hpp"
+#include "player/stats.hpp"
+#include "player/player_scaling.hpp"
+#include "sim/benefit.hpp"
+#include "sim/sc_expressions.hpp"
+#include "sim/proc.hpp"
+#include "sim/sc_sim.hpp"
+#include "sim/scale_factor_control.hpp"
+#include "sim/shuffled_rng.hpp"
+#include "sim/real_ppm.hpp"
+#include "sim/sc_cooldown.hpp"
+#include "sim/event.hpp"
+#include "util/rng.hpp"
 #include <cerrno>
 #include <memory>
-
-#include "simulationcraft.hpp"
 
 
 namespace
 {
+
+  // Handy Actions ============================================================
+
+  struct wait_action_base_t : public action_t
+  {
+    wait_action_base_t(player_t* player, const std::string& name) :
+      action_t(ACTION_OTHER, name, player, spell_data_t::nil())
+    {
+      trigger_gcd = timespan_t::zero();
+      interrupt_auto_attack = false;
+    }
+
+    virtual void execute() override
+    {
+      player->iteration_waiting_time += time_to_execute;
+    }
+  };
+
+  // Wait For Cooldown Action =================================================
+
+  struct wait_for_cooldown_t : public wait_action_base_t
+  {
+    cooldown_t* wait_cd;
+    action_t* a;
+    wait_for_cooldown_t(player_t* player, const std::string& cd_name);
+    virtual bool usable_moving() const override { return a->usable_moving(); }
+    virtual timespan_t execute_time() const override;
+  };
+
+
 bool prune_specialized_execute_actions_internal( std::vector<action_t*>& apl, execute_type e,
   std::vector<std::vector<action_t*>*>& visited )
 {
@@ -7149,180 +7212,6 @@ timespan_t wait_for_cooldown_t::execute_time() const
   return wait_cd->remains();
 }
 
-snapshot_stats_t::snapshot_stats_t( player_t* player, const std::string& options_str ) :
-  action_t( ACTION_OTHER, "snapshot_stats", player ),
-  completed( false ),
-  proxy_spell( nullptr ),
-  proxy_attack( nullptr ),
-  role( player->primary_role() )
-{
-  parse_options( options_str );
-  trigger_gcd = timespan_t::zero();
-  harmful     = false;
-
-  if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
-  {
-    proxy_spell             = new spell_t( "snapshot_spell", player );
-    proxy_spell->background = true;
-    proxy_spell->callbacks  = false;
-  }
-
-  if ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK )
-  {
-    proxy_attack             = new melee_attack_t( "snapshot_attack", player );
-    proxy_attack->background = true;
-    proxy_attack->callbacks  = false;
-  }
-}
-
-void snapshot_stats_t::init_finished()
-{
-  player_t* p = player;
-  for ( size_t i = 0; sim->report_pets_separately && i < p->pet_list.size(); ++i )
-  {
-    pet_t* pet             = p->pet_list[ i ];
-    action_t* pet_snapshot = pet->find_action( "snapshot_stats" );
-    if ( !pet_snapshot )
-    {
-      pet_snapshot = pet->create_action( "snapshot_stats", "" );
-      pet_snapshot->init();
-    }
-  }
-
-  action_t::init_finished();
-}
-
-void snapshot_stats_t::execute()
-{
-  player_t* p = player;
-
-  if ( completed )
-    return;
-
-  completed = true;
-
-  if ( p -> nth_iteration() > 0 )
-    return;
-
-  if ( sim->log )
-    sim->out_log.printf( "%s performs %s", p->name(), name() );
-
-  player_collected_data_t::buffed_stats_t& buffed_stats = p->collected_data.buffed_stats_snapshot;
-
-  for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
-    buffed_stats.attribute[ i ] = floor( p->get_attribute( i ) );
-
-  buffed_stats.resource = p->resources.max;
-
-  buffed_stats.spell_haste            = p->cache.spell_haste();
-  buffed_stats.spell_speed            = p->cache.spell_speed();
-  buffed_stats.attack_haste           = p->cache.attack_haste();
-  buffed_stats.attack_speed           = p->cache.attack_speed();
-  buffed_stats.mastery_value          = p->cache.mastery_value();
-  buffed_stats.bonus_armor            = p->composite_bonus_armor();
-  buffed_stats.damage_versatility     = p->cache.damage_versatility();
-  buffed_stats.heal_versatility       = p->cache.heal_versatility();
-  buffed_stats.mitigation_versatility = p->cache.mitigation_versatility();
-  buffed_stats.run_speed              = p->cache.run_speed();
-  buffed_stats.avoidance              = p->cache.avoidance();
-  buffed_stats.corruption             = p->cache.corruption();
-  buffed_stats.corruption_resistance  = p->cache.corruption_resistance();
-  buffed_stats.leech                  = p->cache.leech();
-
-  buffed_stats.spell_power =
-      util::round( p->cache.spell_power( SCHOOL_MAX ) * p->composite_spell_power_multiplier() );
-  buffed_stats.spell_hit          = p->cache.spell_hit();
-  buffed_stats.spell_crit_chance  = p->cache.spell_crit_chance();
-  buffed_stats.manareg_per_second = p->resource_regen_per_second( RESOURCE_MANA );
-
-  buffed_stats.attack_power        = p->cache.attack_power() * p->composite_attack_power_multiplier();
-  buffed_stats.attack_hit          = p->cache.attack_hit();
-  buffed_stats.mh_attack_expertise = p->composite_melee_expertise( &( p->main_hand_weapon ) );
-  buffed_stats.oh_attack_expertise = p->composite_melee_expertise( &( p->off_hand_weapon ) );
-  buffed_stats.attack_crit_chance  = p->cache.attack_crit_chance();
-
-  buffed_stats.armor = p->composite_armor();
-  buffed_stats.miss  = p->composite_miss();
-  buffed_stats.dodge = p->cache.dodge();
-  buffed_stats.parry = p->cache.parry();
-  buffed_stats.block = p->cache.block();
-  buffed_stats.crit  = p->cache.crit_avoidance();
-
-  double spell_hit_extra = 0, attack_hit_extra = 0, expertise_extra = 0;
-
-  // The code below is not properly handling the case where the player has
-  // so much Hit Rating or Expertise Rating that the extra amount of stat
-  // they have is higher than the delta.
-
-  // In this case, the following line in sc_scaling.cpp
-  //     if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ i ];
-  // would give divisor a positive value (whereas it is expected to always
-  // remain negative).
-  // Also, if a player has an extra amount of Hit Rating or Expertise Rating
-  // that is equal to the ``delta'', the following line in sc_scaling.cpp
-  //     double score = ( delta_score - ref_score ) / divisor;
-  // will cause a division by 0 error.
-  // We would need to increase the delta before starting the scaling sim to remove this error
-
-  if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
-  {
-    double chance = proxy_spell->miss_chance( proxy_spell->composite_hit(), sim->target );
-    if ( chance < 0 )
-      spell_hit_extra = -chance * p->current.rating.spell_hit;
-  }
-
-  if ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK )
-  {
-    double chance = proxy_attack->miss_chance( proxy_attack->composite_hit(), sim->target );
-    if ( p->dual_wield() )
-      chance += 0.19;
-    if ( chance < 0 )
-      attack_hit_extra = -chance * p->current.rating.attack_hit;
-    if ( p->position() != POSITION_FRONT )
-    {
-      chance = proxy_attack->dodge_chance( p->cache.attack_expertise(), sim->target );
-      if ( chance < 0 )
-        expertise_extra = -chance * p->current.rating.expertise;
-    }
-    else if ( p->position() == POSITION_FRONT )
-    {
-      chance = proxy_attack->parry_chance( p->cache.attack_expertise(), sim->target );
-      if ( chance < 0 )
-        expertise_extra = -chance * p->current.rating.expertise;
-    }
-  }
-
-  if ( p->scaling )
-  {
-    p->scaling->over_cap[ STAT_HIT_RATING ]       = std::max( spell_hit_extra, attack_hit_extra );
-    p->scaling->over_cap[ STAT_EXPERTISE_RATING ] = expertise_extra;
-  }
-
-  for ( size_t i = 0; i < p->pet_list.size(); ++i )
-  {
-    pet_t* pet             = p->pet_list[ i ];
-    action_t* pet_snapshot = pet->find_action( "snapshot_stats" );
-    if ( pet_snapshot )
-    {
-      pet_snapshot->execute();
-    }
-  }
-}
-
-void snapshot_stats_t::reset()
-{
-  action_t::reset();
-
-  completed = false;
-}
-
-bool snapshot_stats_t::ready()
-{
-  if ( completed || player -> nth_iteration() > 0 )
-    return false;
-  return action_t::ready();
-}
-
 namespace
 {  // ANONYMOUS
 
@@ -7387,396 +7276,6 @@ struct stop_moving_t : public action_t
   }
 };
 
-struct variable_t : public action_t
-{
-  action_var_e operation;
-  action_variable_t* var;
-  std::string value_str, value_else_str, var_name_str, condition_str;
-  std::unique_ptr<expr_t> value_expression;
-  std::unique_ptr<expr_t> condition_expression;
-  std::unique_ptr<expr_t> value_else_expression;
-
-  variable_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_VARIABLE, "variable", player ),
-    operation( OPERATION_SET ),
-    var( nullptr ),
-    value_expression(),
-    condition_expression(),
-    value_else_expression()
-  {
-    quiet   = true;
-    harmful = proc = callbacks = may_miss = may_crit = may_block = may_parry = may_dodge = false;
-    trigger_gcd = timespan_t::zero();
-
-    std::string operation_;
-    double default_   = 0;
-    timespan_t delay_ = timespan_t::zero();
-
-    add_option( opt_string( "name", name_str ) );
-    add_option( opt_string( "value", value_str ) );
-    add_option( opt_string( "op", operation_ ) );
-    add_option( opt_float( "default", default_ ) );
-    add_option( opt_timespan( "delay", delay_ ) );
-    add_option( opt_string( "condition", condition_str ) );
-    add_option( opt_string( "value_else", value_else_str ) );
-    parse_options( options_str );
-
-    auto option_default = player->apl_variable_map.find( name_str );
-    if ( option_default != player->apl_variable_map.end() )
-    {
-      try
-      {
-        default_ = std::stod( option_default->second );
-      }
-      catch ( const std::exception& )
-      {
-        std::throw_with_nested(std::runtime_error(fmt::format( "Failed to parse player option for variable '{}'", name_str )));
-      }
-    }
-
-    if ( name_str.empty() )
-    {
-      sim->errorf( "Player %s unnamed 'variable' action used", player->name() );
-      background = true;
-      return;
-    }
-
-    // Figure out operation
-    if ( !operation_.empty() )
-    {
-      if ( util::str_compare_ci( operation_, "set" ) )
-        operation = OPERATION_SET;
-      else if ( util::str_compare_ci( operation_, "print" ) )
-        operation = OPERATION_PRINT;
-      else if ( util::str_compare_ci( operation_, "reset" ) )
-        operation = OPERATION_RESET;
-      else if ( util::str_compare_ci( operation_, "add" ) )
-        operation = OPERATION_ADD;
-      else if ( util::str_compare_ci( operation_, "sub" ) )
-        operation = OPERATION_SUB;
-      else if ( util::str_compare_ci( operation_, "mul" ) )
-        operation = OPERATION_MUL;
-      else if ( util::str_compare_ci( operation_, "div" ) )
-        operation = OPERATION_DIV;
-      else if ( util::str_compare_ci( operation_, "pow" ) )
-        operation = OPERATION_POW;
-      else if ( util::str_compare_ci( operation_, "mod" ) )
-        operation = OPERATION_MOD;
-      else if ( util::str_compare_ci( operation_, "min" ) )
-        operation = OPERATION_MIN;
-      else if ( util::str_compare_ci( operation_, "max" ) )
-        operation = OPERATION_MAX;
-      else if ( util::str_compare_ci( operation_, "floor" ) )
-        operation = OPERATION_FLOOR;
-      else if ( util::str_compare_ci( operation_, "ceil" ) )
-        operation = OPERATION_CEIL;
-      else if ( util::str_compare_ci( operation_, "setif" ) )
-        operation = OPERATION_SETIF;
-      else
-      {
-        sim->errorf(
-            "Player %s unknown operation '%s' given for variable, valid values are 'set', 'print', and 'reset'.",
-            player->name(), operation_.c_str() );
-        background = true;
-        return;
-      }
-    }
-
-    // Printing needs a delay, otherwise the action list will not progress
-    if ( operation == OPERATION_PRINT && delay_ == timespan_t::zero() )
-      delay_ = timespan_t::from_seconds( 1.0 );
-
-    if ( operation != OPERATION_FLOOR && operation != OPERATION_CEIL && operation != OPERATION_RESET &&
-         operation != OPERATION_PRINT )
-    {
-      if ( value_str.empty() )
-      {
-        sim->errorf( "Player %s no value expression given for variable '%s'", player->name(), name_str.c_str() );
-        background = true;
-        return;
-      }
-      if ( operation == OPERATION_SETIF )
-      {
-        if ( condition_str.empty() )
-        {
-          sim->errorf( "Player %s no condition expression given for variable '%s'", player->name(), name_str.c_str() );
-          background = true;
-          return;
-        }
-        if ( value_else_str.empty() )
-        {
-          sim->errorf( "Player %s no value_else expression given for variable '%s'", player->name(), name_str.c_str() );
-          background = true;
-          return;
-        }
-      }
-    }
-
-    // Add a delay
-    if ( delay_ > timespan_t::zero() )
-    {
-      std::string cooldown_name = "variable_actor";
-      cooldown_name += util::to_string( player->index );
-      cooldown_name += "_";
-      cooldown_name += name_str;
-
-      cooldown           = player->get_cooldown( cooldown_name );
-      cooldown->duration = delay_;
-    }
-
-    // Find the variable
-    for ( auto& elem : player->variables )
-    {
-      if ( util::str_compare_ci( elem->name_, name_str ) )
-      {
-        var = elem;
-        break;
-      }
-    }
-
-    if ( !var )
-    {
-      player->variables.push_back( new action_variable_t( name_str, default_ ) );
-      var = player->variables.back();
-    }
-  }
-
-  void init_finished() override
-  {
-    action_t::init_finished();
-
-    if ( !background && operation != OPERATION_FLOOR && operation != OPERATION_CEIL && operation != OPERATION_RESET &&
-         operation != OPERATION_PRINT )
-    {
-      value_expression = expr_t::parse( this, value_str, sim->optimize_expressions );
-      if ( !value_expression )
-      {
-        sim->errorf( "Player %s unable to parse 'variable' value '%s'", player->name(), value_str.c_str() );
-        background = true;
-      }
-      if ( operation == OPERATION_SETIF )
-      {
-        condition_expression = expr_t::parse( this, condition_str, sim->optimize_expressions );
-        if ( !condition_expression )
-        {
-          sim->errorf( "Player %s unable to parse 'condition' value '%s'", player->name(), condition_str.c_str() );
-          background = true;
-        }
-        value_else_expression = expr_t::parse( this, value_else_str, sim->optimize_expressions );
-        if ( !value_else_expression )
-        {
-          sim->errorf( "Player %s unable to parse 'value_else' value '%s'", player->name(), value_else_str.c_str() );
-          background = true;
-        }
-      }
-    }
-
-    if ( !background )
-    {
-      var->variable_actions.push_back( this );
-    }
-  }
-
-  void reset() override
-  {
-    action_t::reset();
-
-    double cv = 0;
-    // In addition to if= expression removing the variable from the APLs, if the the variable value
-    // is constant, we can remove any variable action referencing it from the APL
-    if ( action_list && sim->optimize_expressions && player->nth_iteration() == 1 &&
-         var->is_constant( &cv ) && ( ! if_expr || ( if_expr && if_expr->is_constant( &cv ) ) ) )
-    {
-      auto it = range::find( action_list->foreground_action_list, this );
-      if ( it != action_list->foreground_action_list.end() )
-      {
-        sim->print_debug( "{} removing variable action {} from APL because the variable value is "
-                          "constant (value={})",
-            player->name(), signature_str, var->current_value_ );
-
-        action_list->foreground_action_list.erase( it );
-      }
-    }
-  }
-
-  // A variable action is constant if
-  // 1) The operation is not SETIF and the value expression is constant
-  // 2) The operation is SETIF and both the condition expression and the value (or value expression)
-  //    are both constant
-  // 3) The operation is reset/floor/ceil and all of the other actions manipulating the variable are
-  //    constant
-  bool is_constant() const
-  {
-    double const_value = 0;
-    // If the variable action is conditionally executed, and the conditional execution is not
-    // constant, the variable cannot be constant.
-    if ( if_expr && !if_expr->is_constant( &const_value ) )
-    {
-      return false;
-    }
-
-    // Special casing, some actions are only constant, if all of the other action variables in the
-    // set (that manipulates a variable) are constant
-    if ( operation == OPERATION_RESET || operation == OPERATION_FLOOR ||
-         operation == OPERATION_CEIL )
-    {
-      auto it = range::find_if( var->variable_actions, [this]( const action_t* action ) {
-        return action != this && !debug_cast<const variable_t*>( action )->is_constant();
-      } );
-
-      return it == var->variable_actions.end();
-    }
-    else if ( operation != OPERATION_SETIF )
-    {
-      return value_expression ? value_expression->is_constant( &const_value ) : true;
-    }
-    else
-    {
-      bool constant = condition_expression->is_constant( &const_value );
-      if ( !constant )
-      {
-        return false;
-      }
-
-      if ( const_value != 0 )
-      {
-        return value_expression->is_constant( &const_value );
-      }
-      else
-      {
-        return value_else_expression->is_constant( &const_value );
-      }
-    }
-  }
-
-  // Variable action expressions have to do an optimization pass before other actions, so that
-  // actions with variable expressions can know if the associated variable is constant
-  void optimize_expressions()
-  {
-    expr_t::optimize_expression(if_expr);
-    expr_t::optimize_expression(value_expression);
-    expr_t::optimize_expression(condition_expression);
-    expr_t::optimize_expression(value_else_expression);
-  }
-
-  // Note note note, doesn't do anything that a real action does
-  void execute() override
-  {
-    if ( sim->debug && operation != OPERATION_PRINT )
-    {
-      sim->out_debug.printf( "%s variable name=%s op=%d value=%f default=%f sig=%s", player->name(), var->name_.c_str(),
-                             operation, var->current_value_, var->default_, signature_str.c_str() );
-    }
-
-    switch ( operation )
-    {
-      case OPERATION_SET:
-        var->current_value_ = value_expression->eval();
-        break;
-      case OPERATION_ADD:
-        var->current_value_ += value_expression->eval();
-        break;
-      case OPERATION_SUB:
-        var->current_value_ -= value_expression->eval();
-        break;
-      case OPERATION_MUL:
-        var->current_value_ *= value_expression->eval();
-        break;
-      case OPERATION_DIV:
-      {
-        auto v = value_expression->eval();
-        // Disallow division by zero, set value to zero
-        if ( v == 0 )
-        {
-          var->current_value_ = 0;
-        }
-        else
-        {
-          var->current_value_ /= v;
-        }
-        break;
-      }
-      case OPERATION_POW:
-        var->current_value_ = std::pow( var->current_value_, value_expression->eval() );
-        break;
-      case OPERATION_MOD:
-      {
-        // Disallow division by zero, set value to zero
-        auto v = value_expression->eval();
-        if ( v == 0 )
-        {
-          var->current_value_ = 0;
-        }
-        else
-        {
-          var->current_value_ = std::fmod( var->current_value_, value_expression->eval() );
-        }
-        break;
-      }
-      case OPERATION_MIN:
-        var->current_value_ = std::min( var->current_value_, value_expression->eval() );
-        break;
-      case OPERATION_MAX:
-        var->current_value_ = std::max( var->current_value_, value_expression->eval() );
-        break;
-      case OPERATION_FLOOR:
-        var->current_value_ = util::floor( var->current_value_ );
-        break;
-      case OPERATION_CEIL:
-        var->current_value_ = util::ceil( var->current_value_ );
-        break;
-      case OPERATION_PRINT:
-        // Only spit out prints in main thread
-        if ( sim->parent == nullptr )
-          std::cout << "actor=" << player->name_str << " time=" << sim->current_time().total_seconds()
-                    << " iteration=" << sim->current_iteration << " variable=" << var->name_.c_str()
-                    << " value=" << var->current_value_ << std::endl;
-        break;
-      case OPERATION_RESET:
-        var->reset();
-        break;
-      case OPERATION_SETIF:
-        if ( condition_expression->eval() != 0 )
-          var->current_value_ = value_expression->eval();
-        else
-          var->current_value_ = value_else_expression->eval();
-        break;
-      default:
-        assert( 0 );
-        break;
-    }
-  }
-};
-
-struct cycling_variable_t : public variable_t
-{
-	using variable_t::variable_t;
-
-	void execute() override
-	{
-		if (sim->target_non_sleeping_list.size() > 1)
-		{
-			player_t* saved_target = target;
-
-			// Note, need to take a copy of the original target list here, instead of a reference. Otherwise
-			// if spell_targets (or any expression that uses the target list) modifies it, the loop below
-			// may break, since the number of elements on the vector is not the same as it originally was
-			std::vector<player_t*> ctl = target_list();
-			size_t num_targets = ctl.size();
-
-			for (size_t i = 0; i < num_targets; i++)
-			{
-				target = ctl[i];
-				variable_t::execute();
-			}
-
-			target = saved_target;
-			return;
-		}
-
-		variable_t::execute();
-	}
-};
 
 // ===== Racial Abilities ===================================================
 
@@ -13302,41 +12801,4 @@ void player_t::do_dynamic_regen()
     }
   }
 }
-void action_variable_t::optimize()
-{
-  player_t* player = variable_actions.front()->player;
-  if ( !player->sim->optimize_expressions )
-  {
-    return;
-  }
 
-  if ( player->nth_iteration() != 1 )
-  {
-    return;
-  }
-
-  bool is_constant = true;
-  for ( auto action : variable_actions )
-  {
-    variable_t* var_action = debug_cast<variable_t*>( action );
-
-    var_action->optimize_expressions();
-
-    is_constant = var_action->is_constant();
-    if ( !is_constant )
-    {
-      break;
-    }
-  }
-
-  // This variable only has constant variable actions associated with it. The constant value will be
-  // whatever the value is in current_value_
-  if ( is_constant )
-  {
-    player->sim->print_debug( "{} variable {} is constant, value={}",
-        player->name(), name_, current_value_ );
-    constant_value_ = current_value_;
-    // Make default value also the constant value, so that debug output is sensible
-    default_ = current_value_;
-  }
-}
