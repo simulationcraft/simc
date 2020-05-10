@@ -9,11 +9,6 @@
 #include "dbc/spell_item_enchantment.hpp"
 #include "dbc/item_bonus.hpp"
 
-#include "generated/sc_item_data2.inc"
-#if SC_USE_PTR
-#include "generated/sc_item_data_ptr2.inc"
-#endif
-
 namespace {
   template <item_subclass_consumable CLASS>
   struct consumable_filter_t
@@ -1419,34 +1414,19 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
   return s.str();
 }
 
-const item_child_equipment_t* dbc::child_equipments( bool ptr )
-{
-#if SC_USE_PTR
-  const item_child_equipment_t* p = ptr ? __ptr_item_child_equipment_data : __item_child_equipment_data;
-#else
-  ( void ) ptr;
-  const item_child_equipment_t* p = __item_child_equipment_data;
-#endif
-
-  return p;
-}
-
 unsigned dbc_t::child_item( unsigned id ) const
 {
-  const item_child_equipment_t* p = dbc::child_equipments( ptr );
   if ( id == 0 )
   {
     return 0;
   }
 
-  while ( p -> id != 0 )
+  for ( const auto& entry : item_child_equipment_t::data( ptr ) )
   {
-    if ( id == p -> id_item )
+    if ( id == entry.id_item )
     {
-      return p -> id_child;
+      return entry.id_child;
     }
-
-    p++;
   }
 
   return 0;
@@ -1454,20 +1434,17 @@ unsigned dbc_t::child_item( unsigned id ) const
 
 unsigned dbc_t::parent_item( unsigned id ) const
 {
-  const item_child_equipment_t* p = dbc::child_equipments( ptr );
   if ( id == 0 )
   {
     return 0;
   }
 
-  while ( p -> id != 0 )
+  for ( const auto& entry : item_child_equipment_t::data( ptr ) )
   {
-    if ( id == p -> id_child )
+    if ( id == entry.id_child )
     {
-      return p -> id_item;
+      return entry.id_item;
     }
-
-    p++;
   }
 
   return 0;

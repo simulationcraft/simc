@@ -4370,31 +4370,21 @@ class ItemNameDescriptionDataGenerator(DataGenerator):
 
 class ItemChildEquipmentGenerator(DataGenerator):
     def __init__(self, options, data_store):
-        self._dbc = [ 'ItemChildEquipment' ]
         super().__init__(options, data_store)
 
+        self._dbc = [ 'ItemChildEquipment' ]
+
     def generate(self, ids = None):
-        data_str = "%sitem_child_equipment%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itemchildequipment_db.keys()) + 1))
-
         self._out.write('// Item child equipment, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static struct item_child_equipment_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
+        self._out.write('static const std::array<item_child_equipment_t, %d> __%s_data { {\n' % (
+            len(self._itemchildequipment_db.keys()), self.format_str('item_child_equipment')))
 
-        for key in sorted(self._itemchildequipment_db.keys()) + [0,]:
-            data = self._itemchildequipment_db[key]
-
-            if self._options.build >= dbc.WowVersion(8, 1, 0, 27826):
-                fields = data.field( 'id', 'id_item', 'id_child' )
-            else:
-                fields = data.field( 'id', self._options.build < 25600 and 'id_item' or 'id_parent', 'id_child' )
+        for id, data in sorted(self._itemchildequipment_db.items()):
+            fields = data.field( 'id', 'id_item', 'id_child' )
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
 class AzeriteDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
@@ -4670,7 +4660,8 @@ class ItemEffectGenerator(DataGenerator):
 
         self._out.write('// Item effects, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static const std::array<item_effect_t, %d> __%s_data { {\n' % (len(ids), data_str))
+        self._out.write('static const std::array<item_effect_t, %d> __%s_data { {\n' % (
+            len(ids), data_str))
 
         for key in sorted(ids):
             data = self._itemeffect_db[key]

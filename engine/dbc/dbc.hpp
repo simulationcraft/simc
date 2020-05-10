@@ -24,6 +24,7 @@
 #include "dbc/rand_prop_points.hpp"
 #include "dbc/spell_item_enchantment.hpp"
 #include "dbc/gem_data.hpp"
+#include "dbc/item_child.hpp"
 #include "dbc/item_armor.hpp"
 #include "dbc/item_bonus.hpp"
 #include "dbc/item_naming.hpp"
@@ -94,7 +95,6 @@ std::size_t        n_items_noptr();
 std::size_t        n_items_ptr();
 const item_set_bonus_t* set_bonus( bool ptr );
 std::size_t             n_set_bonus( bool ptr );
-const item_child_equipment_t* child_equipments( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
 const char* specialization_string     ( specialization_e spec );
 double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );

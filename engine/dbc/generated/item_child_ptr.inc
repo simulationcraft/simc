@@ -1,7 +1,5 @@
-#define ITEM_CHILD_EQUIPMENT_SIZE (22)
-
 // Item child equipment, wow build 8.3.0.34220
-static struct item_child_equipment_t __item_child_equipment_data[ITEM_CHILD_EQUIPMENT_SIZE] = {
+static const std::array<item_child_equipment_t, 21> __ptr_item_child_equipment_data { {
   {  2, 127417,   1728 },
   {  3, 127829, 127830 },
   { 23, 128292, 128293 },
@@ -23,6 +21,5 @@ static struct item_child_equipment_t __item_child_equipment_data[ITEM_CHILD_EQUI
   { 57, 128866, 128867 },
   { 61, 128943, 137246 },
   { 63, 137661, 128867 },
-  {  0,      0,      0 },
-};
+} };
 

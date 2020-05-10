@@ -28,6 +28,7 @@ dbc/dbc.hpp
 dbc/gem_data.hpp
 dbc/item_armor.hpp
 dbc/item_bonus.hpp
+dbc/item_child.hpp
 dbc/item_database.hpp
 dbc/item_effect.hpp
 dbc/item_naming.hpp
@@ -174,6 +175,7 @@ dbc/azerite.cpp
 dbc/gem_data.cpp
 dbc/item_armor.cpp
 dbc/item_bonus.cpp
+dbc/item_child.cpp
 dbc/item_effect.cpp
 dbc/item_naming.cpp
 dbc/item_scaling.cpp
