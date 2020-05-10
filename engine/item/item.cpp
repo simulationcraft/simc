@@ -600,7 +600,7 @@ std::string item_t::full_name() const
         continue;
       }
 
-      const char* suffix_name = dbc::item_name_description( bonus.value_1, sim->dbc.ptr );
+      const char* suffix_name = sim->dbc.item_description( bonus.value_1 ).description;
       if ( suffix_name )
       {
         n += " ";

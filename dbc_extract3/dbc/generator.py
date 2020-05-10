@@ -4347,8 +4347,9 @@ class ScalingStatDataGenerator(DataGenerator):
 
 class ItemNameDescriptionDataGenerator(DataGenerator):
     def __init__(self, options, data_store):
-        self._dbc = [ 'ItemNameDescription' ]
         super().__init__(options, data_store)
+
+        self._dbc = [ 'ItemNameDescription' ]
 
     def generate(self, ids = None):
         data_str = "%sitem_name_description%s" % (
@@ -4356,19 +4357,16 @@ class ItemNameDescriptionDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or '',
         )
 
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itemnamedescription_db.keys()) + 1))
-
         self._out.write('// Item name descriptions, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static struct item_name_description_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
+        self._out.write('static constexpr std::array<item_name_description_t, %d> __%s_data { {\n' % (
+            len(self._itemnamedescription_db.keys()), data_str))
 
-        for key in sorted(self._itemnamedescription_db.keys()) + [0,]:
-            data = self._itemnamedescription_db[key]
-
+        for id, data in sorted(self._itemnamedescription_db.items()):
             fields = data.field( 'id', 'desc' )
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
 class ItemChildEquipmentGenerator(DataGenerator):
     def __init__(self, options, data_store):

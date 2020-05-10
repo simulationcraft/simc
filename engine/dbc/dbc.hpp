@@ -25,9 +25,10 @@
 #include "dbc/spell_item_enchantment.hpp"
 #include "dbc/gem_data.hpp"
 #include "dbc/item_armor.hpp"
-#include "dbc/item_weapon.hpp"
 #include "dbc/item_bonus.hpp"
+#include "dbc/item_naming.hpp"
 #include "dbc/item_scaling.hpp"
+#include "dbc/item_weapon.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -99,11 +100,6 @@ const char* specialization_string     ( specialization_e spec );
 double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
 bool valid_gem_color( unsigned color );
 double stat_data_to_attribute( const stat_data_t&, attribute_e);
-
-const char* item_name_description( unsigned, bool ptr );
-
-const item_name_description_t* item_name_descriptions( bool ptr );
-std::size_t n_item_name_descriptions( bool ptr );
 
 std::string bonus_ids_str( const dbc_t& );
 
@@ -1545,6 +1541,9 @@ public:
 
   const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) const
   { return item_enchantment_data_t::find( enchant_id, ptr ); }
+
+  const item_name_description_t& item_description( unsigned description_id ) const
+  { return item_name_description_t::find( description_id, ptr ); }
 
   const gem_property_data_t&     gem_property( unsigned gem_id ) const
   { return gem_property_data_t::find( gem_id, ptr ); }

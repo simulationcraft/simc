@@ -49,12 +49,6 @@ struct artifact_power_data_t
   }
 };
 
-struct item_name_description_t
-{
-  unsigned id;
-  const char* description;
-};
-
 struct item_set_bonus_t {
 #define SET_BONUS_ITEM_ID_MAX ( 10 )
   const char* set_name;

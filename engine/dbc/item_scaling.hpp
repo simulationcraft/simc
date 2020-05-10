@@ -5,7 +5,6 @@
 #ifndef ITEM_SCALING_HPP
 #define ITEM_SCALING_HPP
 
-#include "util/generic.hpp"
 #include "util/array_view.hpp"
 
 #include "client_data.hpp"
@@ -41,7 +40,4 @@ struct curve_point_t
   static const arv::array_view<curve_point_t> data( bool ptr );
 };
 
-
 #endif /* ITEM_SCALING_HPP */
-
-

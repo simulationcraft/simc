@@ -54,59 +54,6 @@ namespace {
   filtered_dbc_index_t<item_data_t, gem_filter_t, id_member_policy> gem_index;
 }
 
-const item_name_description_t* dbc::item_name_descriptions( bool ptr )
-{
-  const item_name_description_t* p = __item_name_description_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_item_name_description_data;
-#else
-  (void)ptr;
-#endif
-
-  return p;
-}
-
-std::size_t dbc::n_item_name_descriptions( bool ptr )
-{
-#if SC_USE_PTR
-  if ( ptr )
-  {
-    return PTR_ITEM_NAME_DESCRIPTION_SIZE;
-  }
-  else
-  {
-    return ITEM_NAME_DESCRIPTION_SIZE;
-  }
-#else
-  (void)ptr;
-  return ITEM_NAME_DESCRIPTION_SIZE;
-#endif
-}
-
-const char* dbc::item_name_description( unsigned id, bool ptr )
-{
-  const item_name_description_t* p = __item_name_description_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_item_name_description_data;
-#else
-  ( void ) ptr;
-#endif
-
-  while ( p -> id != 0 )
-  {
-    if ( p -> id == id )
-    {
-      return p -> description;
-    }
-
-    p++;
-  }
-
-  return nullptr;
-}
-
 const item_data_t* dbc_t::item( unsigned item_id ) const
 { return item_data_index.get( ptr, item_id ); }
 
@@ -1131,26 +1078,26 @@ const item_data_t* dbc::find_consumable( item_subclass_consumable type, bool ptr
   return i ? i : &( nil_item_data );
 }
 
-static std::string get_bonus_id_desc( bool ptr, const arv::array_view<item_bonus_entry_t>& entries )
+static std::string get_bonus_id_desc( const dbc_t& dbc, const arv::array_view<item_bonus_entry_t>& entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
     if ( entries[ i ].type == ITEM_BONUS_DESC )
     {
-      return dbc::item_name_description( entries[ i ].value_1, ptr );
+      return dbc.item_description( entries[ i ].value_1 ).description;
     }
   }
 
   return std::string();
 }
 
-static std::string get_bonus_id_suffix( bool ptr, const arv::array_view<item_bonus_entry_t>& entries )
+static std::string get_bonus_id_suffix( const dbc_t& dbc, const arv::array_view<item_bonus_entry_t>& entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
     if ( entries[ i ].type == ITEM_BONUS_SUFFIX )
     {
-      return dbc::item_name_description( entries[ i ].value_1, ptr );
+      return dbc.item_description( entries[ i ].value_1 ).description;
     }
   }
 
