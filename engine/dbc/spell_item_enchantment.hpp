@@ -31,7 +31,7 @@ struct item_enchantment_data_t
   static const item_enchantment_data_t& nil()
   { return dbc::nil<item_enchantment_data_t>(); }
 
-  static arv::array_view<item_enchantment_data_t> data( bool ptr );
+  static const arv::array_view<item_enchantment_data_t> data( bool ptr );
 };
 
 #endif /* SPELL_ITEM_ENCHANTMENT */

@@ -25,7 +25,7 @@ public:
   static const item_damage_one_hand_data_t& nil()
   { return dbc::nil<item_damage_one_hand_data_t>(); }
 
-  static arv::array_view<item_damage_one_hand_data_t> data( bool ptr );
+  static const arv::array_view<item_damage_one_hand_data_t> data( bool ptr );
 
   double value( int quality ) const
   {
@@ -50,7 +50,7 @@ public:
   static const item_damage_one_hand_caster_data_t& nil()
   { return dbc::nil<item_damage_one_hand_caster_data_t>(); }
 
-  static arv::array_view<item_damage_one_hand_caster_data_t> data( bool ptr );
+  static const arv::array_view<item_damage_one_hand_caster_data_t> data( bool ptr );
 
   double value( int quality ) const
   {
@@ -75,7 +75,7 @@ public:
   static const item_damage_two_hand_data_t& nil()
   { return dbc::nil<item_damage_two_hand_data_t>(); }
 
-  static arv::array_view<item_damage_two_hand_data_t> data( bool ptr );
+  static const arv::array_view<item_damage_two_hand_data_t> data( bool ptr );
 
   double value( int quality ) const
   {
@@ -100,7 +100,7 @@ public:
   static const item_damage_two_hand_caster_data_t& nil()
   { return dbc::nil<item_damage_two_hand_caster_data_t>(); }
 
-  static arv::array_view<item_damage_two_hand_caster_data_t> data( bool ptr );
+  static const arv::array_view<item_damage_two_hand_caster_data_t> data( bool ptr );
 
   double value( int quality ) const
   {

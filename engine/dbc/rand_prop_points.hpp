@@ -28,7 +28,7 @@ public:
   static const random_prop_data_t& nil()
   { return dbc::nil<random_prop_data_t>(); }
 
-  static arv::array_view<random_prop_data_t> data( bool ptr );
+  static const arv::array_view<random_prop_data_t> data( bool ptr );
 };
 
 #endif /* RAND_PROP_POINTS_HPP */

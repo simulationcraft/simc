@@ -22,7 +22,6 @@ const arv::array_view<item_bonus_entry_t> item_bonus_entry_t::data( bool ptr )
   return data;
 }
 
-
 const arv::array_view<item_bonus_entry_t> item_bonus_entry_t::find( unsigned bonus_id, bool ptr )
 {
   const auto __data = data( ptr );

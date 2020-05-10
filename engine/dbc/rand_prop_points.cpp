@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <array>
 
 #include "config.hpp"
@@ -10,7 +9,7 @@
 #include "generated/rand_prop_points_ptr.inc"
 #endif
 
-arv::array_view<random_prop_data_t> random_prop_data_t::data( bool ptr )
+const arv::array_view<random_prop_data_t> random_prop_data_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<random_prop_data_t>( __ptr_rand_prop_points_data )
