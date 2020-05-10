@@ -10,6 +10,7 @@
 #include "sim/scale_factor_control.hpp"
 #include "dbc/dbc.hpp"
 #include <iomanip>
+#include <cctype>
 
 #if !defined(SC_WINDOWS)
 #include <sys/time.h>
