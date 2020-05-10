@@ -22,6 +22,7 @@
 #include "buff/sc_buff.hpp"
 #include "item/item.hpp"
 #include "sim/sc_sim.hpp"
+#include "dbc/dbc.hpp"
 
 struct player_t;
 struct action_t;
