@@ -63,7 +63,7 @@ pantheon_state_t::pantheon_state_t( player_t* player ) :
   // haste scaled (according to client data).
   range::for_each( pantheon_opts, [ & ]( const pantheon_opt_t& opt ) {
     auto driver = player -> find_spell( drivers[ opt.first ] );
-    auto rppm_scale = player -> dbc.real_ppm_scale( driver -> id() );
+    auto rppm_scale = player -> dbc->real_ppm_scale( driver -> id() );
 
     std::string name = driver -> name_cstr();
     util::tokenize( name );

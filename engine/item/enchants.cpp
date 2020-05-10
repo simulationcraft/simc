@@ -198,23 +198,23 @@ const item_enchantment_data_t& enchant::find_item_enchant( const item_t& item,
   // Check additional mapping table first
   if ( enchant_id > 0 )
   {
-    return item.player->dbc.item_enchantment( enchant_id );
+    return item.player->dbc->item_enchantment( enchant_id );
   }
 
-  for ( const auto& item_enchant : item_enchantment_data_t::data( item.player->dbc.ptr ) )
+  for ( const auto& item_enchant : item_enchantment_data_t::data( item.player->dbc->ptr ) )
   {
     if ( !item_enchant.name && !item_enchant.id_spell )
     {
       continue;
     }
 
-    const spell_data_t* enchant_spell = item.player->dbc.spell( item_enchant.id_spell );
+    const spell_data_t* enchant_spell = item.player->dbc->spell( item_enchant.id_spell );
     if ( !enchant_spell->valid_item_enchantment( item.inv_type() ) )
     {
       continue;
     }
 
-    if ( util::str_compare_ci( name, encoded_enchant_name( item.player->dbc, item_enchant ) ) )
+    if ( util::str_compare_ci( name, encoded_enchant_name( *item.player->dbc, item_enchant ) ) )
     {
       return item_enchant;
     }
@@ -293,9 +293,9 @@ void enchant::initialize_item_enchant( item_t& item,
         if ( passive_enchant( item, enchant.ench_prop[ i ] ) )
         {
           if ( source == SPECIAL_EFFECT_SOURCE_ENCHANT )
-            item.parsed.encoded_enchant = encoded_enchant_name( item.player -> dbc, enchant );
+            item.parsed.encoded_enchant = encoded_enchant_name( *item.player -> dbc, enchant );
           else if ( source == SPECIAL_EFFECT_SOURCE_ADDON )
-            item.parsed.encoded_addon = encoded_enchant_name( item.player -> dbc, enchant );
+            item.parsed.encoded_addon = encoded_enchant_name( *item.player -> dbc, enchant );
           continue;
         }
         else
@@ -317,7 +317,7 @@ void enchant::initialize_item_enchant( item_t& item,
       }
       case ITEM_ENCHANTMENT_APPLY_BONUS:
       {
-        auto bonuses = item.player -> dbc.item_bonus( enchant.ench_prop[ i ] );
+        auto bonuses = item.player -> dbc->item_bonus( enchant.ench_prop[ i ] );
         for ( auto bonus : bonuses )
         {
           item_database::apply_item_bonus( item, bonus );
@@ -340,9 +340,9 @@ void enchant::initialize_item_enchant( item_t& item,
     if ( effect.type != SPECIAL_EFFECT_NONE )
     {
       if ( source == SPECIAL_EFFECT_SOURCE_ENCHANT )
-        item.parsed.encoded_enchant = encoded_enchant_name( item.player -> dbc, enchant );
+        item.parsed.encoded_enchant = encoded_enchant_name( *item.player -> dbc, enchant );
       else if ( source == SPECIAL_EFFECT_SOURCE_ADDON )
-        item.parsed.encoded_addon = encoded_enchant_name( item.player -> dbc, enchant );
+        item.parsed.encoded_addon = encoded_enchant_name( *item.player -> dbc, enchant );
       item.parsed.special_effects.push_back( new special_effect_t( effect ) );
     }
   }
@@ -504,13 +504,13 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
     return SOCKET_COLOR_NONE;
   }
 
-  const item_data_t* gem = item.player -> dbc.item( gem_id );
+  const item_data_t* gem = item.player -> dbc->item( gem_id );
   if ( ! gem )
   {
     throw std::invalid_argument(fmt::format("No gem data for id {}.", gem_id));
   }
 
-  const gem_property_data_t& gem_prop = item.player -> dbc.gem_property( gem -> gem_properties );
+  const gem_property_data_t& gem_prop = item.player -> dbc->gem_property( gem -> gem_properties );
   if ( ! gem_prop.id )
     return SOCKET_COLOR_NONE;
 
@@ -520,7 +520,7 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
     return initialize_relic( item, gem_idx, gem_prop );
   }
 
-  const item_enchantment_data_t& data = item.player -> dbc.item_enchantment( gem_prop.enchant_id );
+  const item_enchantment_data_t& data = item.player -> dbc->item_enchantment( gem_prop.enchant_id );
 
   enchant::initialize_item_enchant( item,
                                            gem_prop.color != SOCKET_COLOR_META ? item.parsed.gem_stats : item.parsed.meta_gem_stats,
@@ -529,7 +529,7 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
 
   // TODO: This should really be removed, as should player -> meta_gem
   if ( gem_prop.color == SOCKET_COLOR_META )
-    item.player -> meta_gem = enchant::meta_gem_type( item.player -> dbc, data );
+    item.player -> meta_gem = enchant::meta_gem_type( *(item.player -> dbc), data );
 
   if (!dbc::valid_gem_color( gem_prop.color ) )
   {
@@ -548,14 +548,14 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
     return SOCKET_COLOR_NONE;
   }
 
-  const item_enchantment_data_t& data = item.player -> dbc.item_enchantment( gem_property.enchant_id );
+  const item_enchantment_data_t& data = item.player -> dbc->item_enchantment( gem_property.enchant_id );
   if ( data.id != gem_property.enchant_id )
   {
     return SOCKET_COLOR_NONE;
   }
 
   auto relic_id = item.parsed.gem_id[ relic_idx ];
-  auto relic_data = item.player -> dbc.item( relic_id );
+  auto relic_data = item.player -> dbc->item( relic_id );
   if ( ! relic_data )
   {
     return SOCKET_COLOR_NONE;
@@ -574,7 +574,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
     relic.parsed.bonus_id.push_back( as<int>( id ) );
   } );
 
-  auto powers = item.player -> dbc.artifact_powers( item.parsed.data.id_artifact );
+  auto powers = item.player -> dbc->artifact_powers( item.parsed.data.id_artifact );
 
   for ( size_t i = 0, end = sizeof_array( data.ench_type ); i < end; ++i )
   {
@@ -584,7 +584,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
       {
         for ( auto bonus_id : relic.parsed.bonus_id )
         {
-          auto bonuses = item.player -> dbc.item_bonus( bonus_id );
+          auto bonuses = item.player -> dbc->item_bonus( bonus_id );
           range::for_each( bonuses, [ &relic ]( const item_bonus_entry_t& entry ) {
             item_database::apply_item_bonus( relic, entry );
           } );
@@ -593,7 +593,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
       }
       case ITEM_ENCHANTMENT_APPLY_BONUS:
       {
-        auto bonuses = item.player -> dbc.item_bonus( data.ench_prop[ i ] );
+        auto bonuses = item.player -> dbc->item_bonus( data.ench_prop[ i ] );
         range::for_each( bonuses, [ &relic ]( const item_bonus_entry_t& entry ) {
           item_database::apply_item_bonus( relic, entry );
         } );
@@ -614,7 +614,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
 
   // Then, use a (seemingly) hard-coded curve point to figure out a scaled value for the +item level
   // increase
-  double ilevel_value = item_database::curve_point_value( item.player -> dbc,
+  double ilevel_value = item_database::curve_point_value( *item.player -> dbc,
       RELIC_ILEVEL_BONUS_CURVE, relic.parsed.data.level );
 
   item.player -> sim -> print_debug("relic: {} ilevel_increase=+{}", relic, util::floor( ilevel_value ));

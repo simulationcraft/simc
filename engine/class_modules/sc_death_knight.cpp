@@ -2050,7 +2050,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       std::vector<specialization_e> spec_list;
       auto _s = p() -> o() -> specialization();
 
-      if ( data().id() && p() -> o() -> dbc.ability_specialization( data().id(), spec_list ) &&
+      if ( data().id() && p() -> o() -> dbc->ability_specialization( data().id(), spec_list ) &&
            range::find( spec_list, _s ) == spec_list.end() )
       {
         sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
@@ -2077,7 +2077,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       std::vector<specialization_e> spec_list;
       auto _s = p() -> o() -> specialization();
 
-      if ( data().id() && p() -> o() -> dbc.ability_specialization( data().id(), spec_list ) &&
+      if ( data().id() && p() -> o() -> dbc->ability_specialization( data().id(), spec_list ) &&
            range::find( spec_list, _s ) == spec_list.end() )
       {
         sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
@@ -3445,7 +3445,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
     for ( size_t idx = 1; idx <= data().power_count(); idx++ )
     {
       const spellpower_data_t& power = data().powerN( idx );
-      if ( power.aura_id() == 0 || player -> dbc.spec_by_spell( power.aura_id() ) == player -> specialization() )
+      if ( power.aura_id() == 0 || player -> dbc->spec_by_spell( power.aura_id() ) == player -> specialization() )
       {
         this -> ticking_cost = power.cost_per_tick();
       }

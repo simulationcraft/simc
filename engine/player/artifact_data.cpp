@@ -261,7 +261,7 @@ void player_artifact_data_t::override_power( const std::string& name_str, unsign
     return;
   }
 
-  auto ranks = player() -> dbc.artifact_power_ranks( ( *it ) -> id );
+  auto ranks = player() -> dbc->artifact_power_ranks( ( *it ) -> id );
 
   if ( rank > ranks.size() )
   {
@@ -426,7 +426,7 @@ std::string player_artifact_data_t::encode() const
 
   std::stringstream s;
 
-  auto artifact_id = m_player -> dbc.artifact_by_spec( m_player -> specialization() );
+  auto artifact_id = m_player -> dbc->artifact_by_spec( m_player -> specialization() );
   if ( artifact_id == 0 )
   {
     return std::string();
@@ -457,7 +457,7 @@ std::string player_artifact_data_t::encode_crucible() const
 
   std::stringstream s;
 
-  auto artifact_id = m_player -> dbc.artifact_by_spec( m_player -> specialization() );
+  auto artifact_id = m_player -> dbc->artifact_by_spec( m_player -> specialization() );
   if ( artifact_id == 0 )
   {
     return std::string();
@@ -483,7 +483,7 @@ std::string player_artifact_data_t::artifact_option_string() const
     return std::string();
   }
 
-  auto artifact_id = m_player -> dbc.artifact_by_spec( m_player -> specialization() );
+  auto artifact_id = m_player -> dbc->artifact_by_spec( m_player -> specialization() );
   if ( artifact_id == 0 )
   {
     return std::string();
@@ -507,7 +507,7 @@ std::string player_artifact_data_t::crucible_option_string() const
     return std::string();
   }
 
-  auto artifact_id = m_player -> dbc.artifact_by_spec( m_player -> specialization() );
+  auto artifact_id = m_player -> dbc->artifact_by_spec( m_player -> specialization() );
   if ( artifact_id == 0 )
   {
     return std::string();
@@ -526,17 +526,17 @@ std::string player_artifact_data_t::crucible_option_string() const
 
 std::vector<const artifact_power_data_t*> player_artifact_data_t::powers() const
 {
-  auto artifact_id = player() -> dbc.artifact_by_spec( player() -> specialization() );
+  auto artifact_id = player() -> dbc->artifact_by_spec( player() -> specialization() );
   if ( artifact_id == 0 )
   {
     return { };
   }
 
-  return player() -> dbc.artifact_powers( artifact_id );
+  return player() -> dbc->artifact_powers( artifact_id );
 }
 
 const artifact_power_data_t* player_artifact_data_t::power( unsigned power_id ) const
-{ return player() -> dbc.artifact_power( power_id ); }
+{ return player() -> dbc->artifact_power( power_id ); }
 
 bool player_artifact_data_t::valid_power( unsigned power_id ) const
 {
@@ -585,7 +585,7 @@ js::JsonOutput&& player_artifact_data_t::generate_report( js::JsonOutput&& root 
     }
 
     // Unknown spell
-    auto spell = player() -> dbc.spell( power -> power_spell_id );
+    auto spell = player() -> dbc->spell( power -> power_spell_id );
     if ( spell == nullptr )
     {
       return;
@@ -646,7 +646,7 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
       return;
     }
 
-    auto spell = player() -> dbc.spell( power -> power_spell_id );
+    auto spell = player() -> dbc->spell( power -> power_spell_id );
 
     root << "<li>" << ( spell ? report::spell_data_decorator_t( player(), spell ).decorate()
                               : power -> name );
@@ -705,7 +705,7 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
         return;
       }
 
-      auto spell = player() -> dbc.spell( power -> power_spell_id );
+      auto spell = player() -> dbc->spell( power -> power_spell_id );
 
       root << "<li>" << ( spell ? report::spell_data_decorator_t( player(), spell ).decorate()
                                 : power -> name );
@@ -757,7 +757,7 @@ bool player_artifact_data_t::parse()
     return false;
   }
 
-  auto spec_artifact_id = player() -> dbc.artifact_by_spec( player() -> specialization() );
+  auto spec_artifact_id = player() -> dbc->artifact_by_spec( player() -> specialization() );
   if ( spec_artifact_id != artifact_id )
   {
     error( this, "Player %s invalid artifact identifier '%u', expected '%u'",
@@ -820,7 +820,7 @@ bool player_artifact_data_t::parse()
       continue;
     }
 
-    auto relic_data = player() -> dbc.artifact_relic_rank_index( artifact_id, item_id );
+    auto relic_data = player() -> dbc->artifact_relic_rank_index( artifact_id, item_id );
     if ( relic_data.first == 0 || relic_data.second == 0 )
     {
       debug( this, "Player %s relic data for relic %u invalid, power_id=%u, rank=%u",

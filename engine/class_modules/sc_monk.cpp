@@ -1992,8 +1992,8 @@ public:
   xuen_pet_t( sim_t* sim, monk_t* owner, std::string name ) : pet_t( sim, owner, name, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o()->type, level() );
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o()->type, level() );
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     owner_coeff.ap_from_ap      = 1.00;
@@ -2133,8 +2133,8 @@ public:
   fury_of_xuen_pet_t( sim_t* sim, monk_t* owner, std::string name ) : pet_t( sim, owner, name, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o()->type, level() );
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o()->type, level() );
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     owner_coeff.ap_from_ap      = 1.00;
@@ -2270,8 +2270,8 @@ public:
   niuzao_pet_t( sim_t* sim, monk_t* owner ) : pet_t( sim, owner, "niuzao_the_black_ox", true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o()->type, level() );
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o()->type, level() );
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_ap      = 1;
@@ -10290,9 +10290,9 @@ double monk_t::stagger_pct( int target_level )
   // End game raiding of each expansion uses the player's level for +1, +2, and +3 level targets
   if ( ( lvl == 60 || lvl == 70 || lvl == 80 || lvl == 85 || lvl == 90 || lvl == 100 || lvl == 110 ) &&
        0 <= level_check && level_check <= 3 )
-    k_value = dbc.armor_mitigation_constant( lvl );
+    k_value = dbc->armor_mitigation_constant( lvl );
   else
-    k_value = dbc.armor_mitigation_constant( target_level );
+    k_value = dbc->armor_mitigation_constant( target_level );
 
   double stagger = stagger_base / ( stagger_base + k_value );
   return std::min( stagger, 0.99 );
@@ -10531,7 +10531,7 @@ void monk_t::action_init_finished( action_t& action )
   // hasted cooldown
   for ( auto&& effect : {spec.brewmaster_monk->effectN( 4 ), spec.brewmaster_monk->effectN( 5 )} )
   {
-    if ( action.data().affected_by_category( dbc, effect ) )
+    if ( action.data().affected_by_category( *dbc, effect ) )
     {
       action.cooldown->hasted = true;
     }

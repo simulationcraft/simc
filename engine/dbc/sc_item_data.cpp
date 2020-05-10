@@ -184,7 +184,7 @@ void item_database::apply_item_scaling( item_t& item, unsigned scaling_id, unsig
     return;
   }
 
-  const auto& data = item.player->dbc.scaling_stat_distribution( scaling_id );
+  const auto& data = item.player->dbc->scaling_stat_distribution( scaling_id );
   // Unable to find the scaling stat distribution
   if ( data.id == 0 )
   {
@@ -201,7 +201,7 @@ void item_database::apply_item_scaling( item_t& item, unsigned scaling_id, unsig
 
   unsigned base_value = std::min( player_level, data.max_level );
 
-  double scaled_result = curve_point_value( item.player->dbc, data.curve_id, base_value );
+  double scaled_result = curve_point_value( *item.player->dbc, data.curve_id, base_value );
 
   if ( item.sim -> debug )
   {
@@ -349,7 +349,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       break;
     case ITEM_BONUS_ADD_ITEM_EFFECT:
     {
-      auto effect = item_effect_t::find( entry.value_1, item.player->dbc.ptr );
+      auto effect = item_effect_t::find( entry.value_1, item.player->dbc->ptr );
       if ( effect.id == 0 )
       {
         item.player->sim->error( "Player {} item '{}' unknown item effect id {}, ignoring",
@@ -452,7 +452,7 @@ stat_pair_t item_database::item_enchantment_effect_stats( player_t* player,
       if ( static_cast< unsigned >( level ) > enchantment.max_scaling_level )
         level = enchantment.max_scaling_level;
 
-      double budget = player -> dbc.spell_scaling( static_cast< player_e >( enchantment.id_scaling ), level );
+      double budget = player -> dbc->spell_scaling( static_cast< player_e >( enchantment.id_scaling ), level );
       value = util::round( budget * enchantment.ench_coeff[ index ] );
     }
   }
@@ -774,14 +774,14 @@ uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, 
 
 uint32_t item_database::armor_value( const item_t& item )
 {
-  return armor_value( &item.parsed.data, item.player -> dbc, item.item_level() );
+  return armor_value( &item.parsed.data, *item.player -> dbc, item.item_level() );
 }
 
 // item_database_t::weapon_dmg_min/max ======================================
 
 uint32_t item_database::weapon_dmg_min( item_t& item )
 {
-  return ( uint32_t ) floor( item.player -> dbc.weapon_dps( &item.parsed.data, item.item_level() ) *
+  return ( uint32_t ) floor( item.player -> dbc->weapon_dps( &item.parsed.data, item.item_level() ) *
                              item.parsed.data.delay / 1000.0 * ( 1 - item.parsed.data.dmg_range / 2 ) );
 }
 
@@ -799,7 +799,7 @@ uint32_t item_database::weapon_dmg_max( const item_data_t* item, const dbc_t& db
 
 uint32_t item_database::weapon_dmg_max( item_t& item )
 {
-  return ( uint32_t ) ceil( item.player -> dbc.weapon_dps( &item.parsed.data, item.item_level() ) *
+  return ( uint32_t ) ceil( item.player -> dbc->weapon_dps( &item.parsed.data, item.item_level() ) *
                             item.parsed.data.delay / 1000.0 * ( 1 + item.parsed.data.dmg_range / 2 ) + 0.5 );
 }
 
@@ -810,7 +810,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
 {
   if ( enchant_id == 0 ) return true;
 
-  const item_enchantment_data_t& item_enchant = item.player -> dbc.item_enchantment( enchant_id );
+  const item_enchantment_data_t& item_enchant = item.player -> dbc->item_enchantment( enchant_id );
   if ( ! item_enchant.id )
   {
     item.player -> sim -> errorf( "Unable to find enchant id %u from item enchantment database", enchant_id );
@@ -904,7 +904,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
 bool item_database::load_item_from_data( item_t& item )
 {
   // Simple copying of basic stats from item database (dbc) to the item object
-  const item_data_t* data = item.player->dbc.item( item.parsed.data.id );
+  const item_data_t* data = item.player->dbc->item( item.parsed.data.id );
   if ( ! data || !data->id ) return false;
 
   item.parsed.data = *data;
@@ -918,14 +918,14 @@ bool item_database::load_item_from_data( item_t& item )
   {
     if ( item.parsed.azerite_level > 0 )
     {
-      item.parsed.data.level = item.player->dbc.azerite_item_level( item.parsed.azerite_level );
+      item.parsed.data.level = item.player->dbc->azerite_item_level( item.parsed.azerite_level );
     }
   }
 
   // Apply any azerite powers that apply bonus ids
   for ( auto power_id : item.parsed.azerite_ids )
   {
-    const auto& power = item.player->dbc.azerite_power( power_id );
+    const auto& power = item.player->dbc->azerite_power( power_id );
     if ( power.id == 0 || power.bonus_id == 0 )
     {
       continue;
@@ -942,7 +942,7 @@ bool item_database::load_item_from_data( item_t& item )
   // something similar
   for ( size_t i = 0, end = item.parsed.bonus_id.size(); i < end; i++ )
   {
-    auto item_bonuses = item.player->dbc.item_bonus( item.parsed.bonus_id[ i ] );
+    auto item_bonuses = item.player->dbc->item_bonus( item.parsed.bonus_id[ i ] );
     // Apply bonuses
     for ( const auto bonus : item_bonuses )
     {
@@ -973,7 +973,7 @@ double item_database::item_budget( const player_t* player, unsigned ilevel )
     return 0.0;
   }
 
-  const random_prop_data_t& budget = player -> dbc.random_property( ilevel );
+  const random_prop_data_t& budget = player -> dbc->random_property( ilevel );
 
   // Since we don't know the quality of the "item", just return the uncommon item budget. The
   // budgets have been the same for all qualities for a long while, but this function will break if
@@ -989,7 +989,7 @@ double item_database::item_budget( const item_t* item, unsigned max_ilevel )
   if ( max_ilevel > 0 )
     scaling_level = std::min( scaling_level, max_ilevel );
 
-  const random_prop_data_t& budget = item -> player -> dbc.random_property( scaling_level );
+  const random_prop_data_t& budget = item -> player -> dbc->random_property( scaling_level );
 
   if ( item -> parsed.data.quality >= 4 )
     m_scale = budget.p_epic[ 0 ];
@@ -1455,7 +1455,7 @@ bool item_database::has_item_bonus_type( const item_t& item, item_bonus_type bon
   // For all parsed bonus ids ..
   //
   auto it = range::find_if( item.parsed.bonus_id, [ &item, bonus ]( int bonus_id ) {
-    auto bonuses = item.player -> dbc.item_bonus( bonus_id );
+    auto bonuses = item.player -> dbc->item_bonus( bonus_id );
     // If there's a bonus id of type bonus, return true
     return range::find_if( bonuses, [ bonus ]( const item_bonus_entry_t& entry ) {
       return entry.type == bonus;
@@ -1470,7 +1470,7 @@ double item_database::apply_combat_rating_multiplier( const player_t*           
                                                       unsigned                      ilevel,
                                                       double                        raw_amount )
 {
-  auto combat_rating_multiplier = player -> dbc.combat_rating_multiplier( ilevel, type );
+  auto combat_rating_multiplier = player -> dbc->combat_rating_multiplier( ilevel, type );
   if ( combat_rating_multiplier != 0 )
   {
     return raw_amount * combat_rating_multiplier;
@@ -1484,7 +1484,7 @@ double item_database::apply_stamina_multiplier( const player_t*               pl
                                                 unsigned                      ilevel,
                                                 double                        raw_amount )
 {
-  auto multiplier = player -> dbc.stamina_multiplier( ilevel, type );
+  auto multiplier = player -> dbc->stamina_multiplier( ilevel, type );
   if ( multiplier != 0 )
   {
     return raw_amount * multiplier;
@@ -1564,7 +1564,7 @@ void item_database::convert_stat_values( item_t& item )
     return;
   }
 
-  const auto& ilevel_data = item.player -> dbc.random_property( item.parsed.data.level );
+  const auto& ilevel_data = item.player -> dbc->random_property( item.parsed.data.level );
   double budget = 0.0;
   if ( item.parsed.data.quality == 4 || item.parsed.data.quality == 5 )
   {
@@ -1589,7 +1589,7 @@ void item_database::convert_stat_values( item_t& item )
       auto item_cr_type = item_database::item_combat_rating_type( &item.parsed.data );
       if ( item_cr_type != CR_MULTIPLIER_INVALID )
       {
-        cr_coeff = item.player -> dbc.combat_rating_multiplier( item.parsed.data.level,
+        cr_coeff = item.player -> dbc->combat_rating_multiplier( item.parsed.data.level,
             item_cr_type );
       }
     }

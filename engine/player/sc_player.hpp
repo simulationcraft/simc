@@ -8,7 +8,6 @@
 #include "config.hpp"
 #include "actor.hpp"
 #include "sc_enums.hpp"
-#include "dbc/dbc.hpp"
 #include "player_talent_points.hpp"
 #include "player_resources.hpp"
 #include "gear_stats.hpp"
@@ -37,6 +36,7 @@ struct actor_target_data_t;
 struct attack_t;
 class azerite_essence_t;
 class azerite_power_t;
+class dbc_t;
 struct benefit_t;
 struct buff_t;
 struct cooldown_t;
@@ -163,7 +163,7 @@ struct player_t : public actor_t
   timespan_t  cooldown_tolerance_;
 
   // Data access
-  dbc_t       dbc;
+  std::unique_ptr<dbc_t> dbc;
 
   // Option Parsing
   std::vector<std::unique_ptr<option_t>> options;

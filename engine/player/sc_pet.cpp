@@ -67,7 +67,7 @@ pet_t::pet_t( sim_t*             sim,
   resource_regeneration = owner ->resource_regeneration;
 
   // Inherit owner's dbc state
-  dbc.ptr = owner -> dbc.ptr;
+  dbc->ptr = owner -> dbc->ptr;
 
   // Set pet dps data collection to level 2 or higher, so our 32bit GUI users can at least
   // do scale factor simulations with default settings.
@@ -131,7 +131,7 @@ void pet_t::init_base_stats()
   base.spell_crit_chance  = 0.05;
   base.attack_crit_chance = 0.05;
 
-  base.armor_coeff = dbc.armor_mitigation_constant( level() );
+  base.armor_coeff = dbc->armor_mitigation_constant( level() );
   sim -> print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
 }
 
@@ -298,9 +298,9 @@ void pet_t::init_finished()
 
 const spell_data_t* pet_t::find_pet_spell( const std::string& name )
 {
-  unsigned spell_id = dbc.pet_ability_id( type, name.c_str() );
+  unsigned spell_id = dbc->pet_ability_id( type, name.c_str() );
 
-  if ( ! spell_id || ! dbc.spell( spell_id ) )
+  if ( ! spell_id || ! dbc->spell( spell_id ) )
   {
     if ( ! owner )
       return spell_data_t::not_found();

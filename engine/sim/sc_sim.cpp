@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "sc_sim.hpp"
+#include "dbc/dbc.hpp"
 #include "simulationcraft.hpp"
 #include "sim_control.hpp"
 #include "sc_option.hpp"
@@ -105,7 +106,7 @@ bool parse_ptr( sim_t*             sim,
   if ( name != "ptr" ) return false;
 
   if ( SC_USE_PTR )
-    sim -> dbc.ptr = std::stoi( value ) != 0;
+    sim -> dbc->ptr = std::stoi( value ) != 0;
   else
     sim -> errorf( "SimulationCraft has not been built with PTR data.  The 'ptr=' option is ignored.\n" );
 
@@ -612,15 +613,15 @@ bool parse_override_spell_data( sim_t*             sim,
 
   if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
   {
-    dbc_override::register_spell( sim -> dbc, id, splits[ 2 ], v );
+    dbc_override::register_spell( *(sim -> dbc), id, splits[ 2 ], v );
   }
   else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
   {
-    dbc_override::register_effect( sim -> dbc, id, splits[ 2 ], v );
+    dbc_override::register_effect(*(sim->dbc), id, splits[ 2 ], v );
   }
   else if ( util::str_compare_ci( splits[ 0 ], "power" ) )
   {
-    dbc_override::register_power( sim -> dbc, id, splits[ 2 ], v );
+    dbc_override::register_power(*(sim->dbc), id, splits[ 2 ], v );
   }
   else
   {
@@ -1391,6 +1392,7 @@ sim_t::sim_t() :
   enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
   target_adds( 0 ), desired_targets( 1 ), enable_taunts( false ),
   use_item_verification( true ),
+  dbc(new dbc_t()),
   challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ),

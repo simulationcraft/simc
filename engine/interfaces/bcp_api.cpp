@@ -442,7 +442,7 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
       }
 
       auto talent_id = talent_data[ "talent" ][ "id" ].GetUint();
-      const auto talent = p->dbc.talent( talent_id );
+      const auto talent = p->dbc->talent( talent_id );
       if ( talent->id() != talent_id )
       {
         p->sim->error( "Warning: Unable to find talent id {} for {} from Simulationcraft client data",
@@ -1177,7 +1177,7 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
 
   for ( size_t i = 0, end = item.parsed.bonus_id.size(); ret && i < end; i++ )
   {
-    auto item_bonuses = item.player->dbc.item_bonus( item.parsed.bonus_id[ i ] );
+    auto item_bonuses = item.player->dbc->item_bonus( item.parsed.bonus_id[ i ] );
     // Apply bonuses
     for ( const auto bonus : item_bonuses )
     {

@@ -152,7 +152,7 @@ std::vector<double> azerite_power_t::budget( const spell_data_t* scaling_spell )
     auto budget = item_database::item_budget( m_player, min_ilevel );
     if ( scaling_spell->scaling_class() == PLAYER_SPECIAL_SCALE8 )
     {
-      const auto& props = m_player->dbc.random_property( min_ilevel );
+      const auto& props = m_player->dbc->random_property( min_ilevel );
       budget = props.damage_replace_stat;
     }
     b.push_back( budget );
@@ -199,7 +199,7 @@ azerite_essence_t::azerite_essence_t( const player_t* player, essence_type type,
     const azerite_essence_entry_t* essence ) :
   m_player( player ), m_essence( essence ), m_rank( rank ), m_type( type )
 {
-  auto entries = azerite_essence_power_entry_t::data_by_essence_id( essence->id, player->dbc.ptr );
+  auto entries = azerite_essence_power_entry_t::data_by_essence_id( essence->id, player->dbc->ptr );
   range::for_each( entries, [ this ]( const azerite_essence_power_entry_t& entry ) {
     m_base_major.push_back( m_player->find_spell( entry.spell_id_base[ 0 ] ) );
     m_base_minor.push_back( m_player->find_spell( entry.spell_id_base[ 1 ] ) );
@@ -393,7 +393,7 @@ void azerite_state_t::initialize()
 {
   range::for_each( m_player -> items, [ this ]( const item_t& item ) {
     range::for_each( item.parsed.azerite_ids, [ & ]( unsigned id ) {
-      const auto& power = m_player->dbc.azerite_power( id );
+      const auto& power = m_player->dbc->azerite_power( id );
       if ( power.id )
       {
         m_items[ id ].push_back( &( item ) );
@@ -411,7 +411,7 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
     return {};
   }
 
-  const auto& power = m_player -> dbc.azerite_power( id );
+  const auto& power = m_player -> dbc->azerite_power( id );
 
   auto override_it = m_overrides.find( id );
   // Found an override, use the overridden ilevels instead
@@ -490,7 +490,7 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
 
 azerite_power_t azerite_state_t::get_power( const std::string& name, bool tokenized )
 {
-  const auto& power = m_player -> dbc.azerite_power( name, tokenized );
+  const auto& power = m_player -> dbc->azerite_power( name, tokenized );
 
   if ( power.id == 0 )
   {
@@ -525,7 +525,7 @@ std::string azerite_state_t::overrides_str() const
 
   // Iterate over the powers in order, grab all overrides into a vector
   range::for_each( powers, [ & ]( unsigned power_id ) {
-      const auto& power = m_player -> dbc.azerite_power( power_id );
+      const auto& power = m_player -> dbc->azerite_power( power_id );
       std::string power_name = power.name;
       util::tokenize( power_name );
 
@@ -585,14 +585,14 @@ bool azerite_state_t::parse_override( sim_t* sim, const std::string&, const std:
       return false;
     }
 
-    const auto* power = &( m_player->dbc.azerite_power( power_str, true ) );
+    const auto* power = &( m_player->dbc->azerite_power( power_str, true ) );
     // Additionally try with an azerite power id if the name-based lookup fails
     if ( power->id == 0 )
     {
       unsigned power_id = util::to_unsigned( opt_split[ 0 ] );
       if ( power_id > 0 )
       {
-        power = &( m_player->dbc.azerite_power( power_id ) );
+        power = &( m_player->dbc->azerite_power( power_id ) );
       }
     }
 
@@ -660,7 +660,7 @@ size_t azerite_state_t::rank( unsigned id ) const
 
 size_t azerite_state_t::rank( const std::string& name, bool tokenized ) const
 {
-  const auto& power = m_player -> dbc.azerite_power( name, tokenized );
+  const auto& power = m_player -> dbc->azerite_power( name, tokenized );
   if ( power.id == 0 )
   {
     return 0u;
@@ -676,7 +676,7 @@ bool azerite_state_t::is_enabled( unsigned id ) const
 
 bool azerite_state_t::is_enabled( const std::string& name, bool tokenized ) const
 {
-  const auto& power = m_player -> dbc.azerite_power( name, tokenized );
+  const auto& power = m_player -> dbc->azerite_power( name, tokenized );
   if ( power.id == 0 )
   {
     return false;
@@ -692,7 +692,7 @@ std::unique_ptr<expr_t> azerite_state_t::create_expression( const std::vector<st
     return nullptr;
   }
 
-  const auto& power = m_player -> dbc.azerite_power( expr_str[ 1 ], true );
+  const auto& power = m_player -> dbc->azerite_power( expr_str[ 1 ], true );
   if ( power.id == 0 )
   {
     throw std::invalid_argument( fmt::format( "Unknown azerite power '{}'.", expr_str[ 1 ] ) );
@@ -737,7 +737,7 @@ std::vector<unsigned> azerite_state_t::enabled_spells() const
       continue;
     }
 
-    const auto& power = m_player -> dbc.azerite_power( entry.first );
+    const auto& power = m_player -> dbc->azerite_power( entry.first );
     if ( power.id == 0 )
     {
       continue;
@@ -753,7 +753,7 @@ std::vector<unsigned> azerite_state_t::enabled_spells() const
       continue;
     }
 
-    const auto& power = m_player -> dbc.azerite_power( entry.first );
+    const auto& power = m_player -> dbc->azerite_power( entry.first );
     if ( power.id == 0 )
     {
       continue;
@@ -814,7 +814,7 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
           }
 
           auto decorator = report::spell_data_decorator_t(
-            m_player, m_player->find_spell( m_player->dbc.azerite_power( id ).spell_id ) );
+            m_player, m_player->find_spell( m_player->dbc->azerite_power( id ).spell_id ) );
           decorator.item( item );
 
           root << "<li>" << decorator.decorate() << "</li>\n";
@@ -838,7 +838,7 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
       for ( auto ilevel : override.second )
       {
         auto decorator = report::spell_data_decorator_t(
-          m_player, m_player->find_spell( m_player->dbc.azerite_power( override.first ).spell_id ) );
+          m_player, m_player->find_spell( m_player->dbc->azerite_power( override.first ).spell_id ) );
 
         if ( !is_enabled( override.first ) )
         {
@@ -960,7 +960,7 @@ azerite_essence_state_t::azerite_essence_state_t( const player_t* player ) : m_p
 // Get an azerite essence object by name
 azerite_essence_t azerite_essence_state_t::get_essence( const std::string& name, bool tokenized ) const
 {
-  const auto& essence = azerite_essence_entry_t::find( name, tokenized, m_player->dbc.ptr );
+  const auto& essence = azerite_essence_entry_t::find( name, tokenized, m_player->dbc->ptr );
   // Could also be a passive spell, so check if the passives logged for the player match this
   for ( size_t i = 0; essence.id == 0 && i < m_state.size(); ++i )
   {
@@ -995,7 +995,7 @@ azerite_essence_t azerite_essence_state_t::get_essence( const std::string& name,
 
 azerite_essence_t azerite_essence_state_t::get_essence( unsigned id ) const
 {
-  const auto& essence = azerite_essence_entry_t::find( id, m_player->dbc.ptr );
+  const auto& essence = azerite_essence_entry_t::find( id, m_player->dbc->ptr );
   // Could also be a passive spell, so check if the passives for the actor match the id
   for ( size_t i = 0; essence.id == 0 && i < m_state.size(); ++i )
   {
@@ -1143,7 +1143,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
     // For 2 and 3 element tokens, try to find the essence with a tokenized name
     if ( id == 0 && token_split.size() > 1 )
     {
-      const auto& essence = azerite_essence_entry_t::find( token_split[ 0 ], true, m_player->dbc.ptr );
+      const auto& essence = azerite_essence_entry_t::find( token_split[ 0 ], true, m_player->dbc->ptr );
       if ( essence.id == 0 )
       {
         sim->errorf( "Unable to find Azerite Essence with name '%s'", splits[ i ].c_str() );
@@ -1155,7 +1155,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
     // Verify the essence exists for 2 and 3 element tokens
     else if ( id > 0 && token_split.size() > 1 )
     {
-      const auto& essence = azerite_essence_entry_t::find( id, m_player->dbc.ptr );
+      const auto& essence = azerite_essence_entry_t::find( id, m_player->dbc->ptr );
       if ( essence.id != id )
       {
         sim->errorf( "Unable to find Azerite Essence with id %s", splits[ i ].c_str() );
@@ -1237,7 +1237,7 @@ std::unique_ptr<expr_t> azerite_essence_state_t::create_expression( const std::v
   if ( expr_str.size() <= 2 )
     return nullptr;
 
-  const auto& entry = azerite_essence_entry_t::find( expr_str[ 1 ], true, m_player->dbc.ptr );
+  const auto& entry = azerite_essence_entry_t::find( expr_str[ 1 ], true, m_player->dbc->ptr );
   if ( entry.id == 0 )
     throw std::invalid_argument( fmt::format( "Unknown azerite essence '{}'.", expr_str[ 1 ] ) );
 
@@ -5648,7 +5648,7 @@ void spark_of_inspiration( special_effect_t& effect )
   if ( essence.rank() >= 2 )
   {
     effect.ppm_ = -essence.spell_ref( 2u, essence_type::MINOR ).real_ppm();
-    effect.rppm_scale_ = effect.player->dbc.real_ppm_scale( essence.spell_ref( 2u, essence_type::MINOR ).id() );
+    effect.rppm_scale_ = effect.player->dbc->real_ppm_scale( essence.spell_ref( 2u, essence_type::MINOR ).id() );
   }
 
   register_essence_corruption_resistance( effect );

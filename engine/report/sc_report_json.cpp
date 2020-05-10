@@ -723,7 +723,7 @@ void talents_to_json( JsonOutput root, const player_t& p )
       continue;
     }
 
-    auto talent_data = talent_data_t::find( p.type, talent_row, talent_col, p.specialization(), p.dbc.ptr );
+    auto talent_data = talent_data_t::find( p.type, talent_row, talent_col, p.specialization(), p.dbc->ptr );
     if ( talent_data == nullptr )
     {
       continue;
@@ -795,7 +795,7 @@ void to_json( JsonOutput& arr, const player_t& p )
   root[ "world_lag_override" ] = p.world_lag_override;
   root[ "world_lag_stddev_override" ] = p.world_lag_stddev_override;
 
-  to_json( root[ "dbc" ], p.dbc );
+  to_json( root[ "dbc" ], *p.dbc );
 
   for ( auto i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
   {
@@ -964,7 +964,7 @@ void to_json( JsonOutput root, const sim_t& sim )
   options_root[ "default_aura_delay" ] = sim.default_aura_delay;
   options_root[ "default_aura_delay_stddev" ] = sim.default_aura_delay_stddev;
 
-  to_json( options_root[ "dbc" ], sim.dbc );
+  to_json( options_root[ "dbc" ], *sim.dbc );
 
   if ( sim.scaling -> calculate_scale_factors )
   {

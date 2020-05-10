@@ -41,7 +41,7 @@ struct penance_t final : public priest_spell_t
 {
   struct penance_tick_t final : public priest_spell_t
   {
-    penance_tick_t( priest_t& p, stats_t* stats ) : priest_spell_t( "penance_tick", p, p.dbc.spell( 47666 ) )
+    penance_tick_t( priest_t& p, stats_t* stats ) : priest_spell_t( "penance_tick", p, p.dbc->spell( 47666 ) )
     {
       background  = true;
       dual        = true;

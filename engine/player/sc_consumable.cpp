@@ -339,7 +339,7 @@ struct dbc_consumable_base_t : public action_t
 
     if ( ! disabled_consumable() )
     {
-      item_data = unique_gear::find_consumable( player -> dbc, consumable_name, type );
+      item_data = unique_gear::find_consumable( *player -> dbc, consumable_name, type );
 
       try
       {

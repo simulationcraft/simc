@@ -184,7 +184,7 @@ void scale_factor_control_t::init_deltas()
   assert ( scale_delta_multiplier != 0 );
 
   // Use haste rating coefficient * 3.5 to determine default delta
-  double default_delta = util::round( sim -> dbc.combat_rating( RATING_MELEE_HASTE, sim -> max_player_level ) * 0.035 ) * scale_delta_multiplier;
+  double default_delta = util::round( sim -> dbc->combat_rating( RATING_MELEE_HASTE, sim -> max_player_level ) * 0.035 ) * scale_delta_multiplier;
 
   if ( stats->attribute[ ATTR_SPIRIT ] == 0 ) stats->attribute[ ATTR_SPIRIT ] = default_delta;
 

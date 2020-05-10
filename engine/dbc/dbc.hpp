@@ -1684,14 +1684,14 @@ namespace dbc
 template <typename T>
 const spell_data_t* find_spell( const T* obj, const spell_data_t* spell )
 {
-  if ( const spell_data_t* override_spell = dbc_override::find_spell( spell -> id(), obj -> dbc.ptr ) )
+  if ( const spell_data_t* override_spell = dbc_override::find_spell( spell -> id(), obj -> dbc->ptr ) )
   {
     return override_spell;
   }
 
   if ( ! obj -> disable_hotfixes )
   {
-    return hotfix::find_spell( spell, obj -> dbc.ptr );
+    return hotfix::find_spell( spell, obj -> dbc->ptr );
   }
 
   return spell;
@@ -1700,30 +1700,30 @@ const spell_data_t* find_spell( const T* obj, const spell_data_t* spell )
 template <typename T>
 const spell_data_t* find_spell( const T* obj, unsigned spell_id )
 {
-  if ( const spell_data_t* override_spell = dbc_override::find_spell( spell_id, obj -> dbc.ptr ) )
+  if ( const spell_data_t* override_spell = dbc_override::find_spell( spell_id, obj -> dbc->ptr ) )
   {
     return override_spell;
   }
 
   if ( ! obj -> disable_hotfixes )
   {
-    return hotfix::find_spell( obj -> dbc.spell( spell_id ), obj -> dbc.ptr );
+    return hotfix::find_spell( obj -> dbc->spell( spell_id ), obj -> dbc->ptr );
   }
 
-  return obj -> dbc.spell( spell_id );
+  return obj -> dbc->spell( spell_id );
 }
 
 template <typename T>
 const spelleffect_data_t* find_effect( const T* obj, const spelleffect_data_t* effect )
 {
-  if ( const spelleffect_data_t* override_effect = dbc_override::find_effect( effect -> id(), obj -> dbc.ptr ) )
+  if ( const spelleffect_data_t* override_effect = dbc_override::find_effect( effect -> id(), obj -> dbc->ptr ) )
   {
     return override_effect;
   }
 
   if ( ! obj -> disable_hotfixes )
   {
-    return hotfix::find_effect( effect, obj -> dbc.ptr );
+    return hotfix::find_effect( effect, obj -> dbc->ptr );
   }
 
   return effect;
@@ -1732,17 +1732,17 @@ const spelleffect_data_t* find_effect( const T* obj, const spelleffect_data_t* e
 template <typename T>
 const spelleffect_data_t* find_effect( const T* obj, unsigned effect_id )
 {
-  if ( const spelleffect_data_t* override_effect = dbc_override::find_effect( effect_id, obj -> dbc.ptr ) )
+  if ( const spelleffect_data_t* override_effect = dbc_override::find_effect( effect_id, obj -> dbc->ptr ) )
   {
     return override_effect;
   }
 
   if ( ! obj -> disable_hotfixes )
   {
-    return hotfix::find_effect( obj -> dbc.effect( effect_id ), obj -> dbc.ptr );
+    return hotfix::find_effect( obj -> dbc.effect( effect_id ), obj -> dbc->ptr );
   }
 
-  return obj -> dbc.effect( effect_id );
+  return obj -> dbc->effect( effect_id );
 }
 } // dbc namespace ends
 

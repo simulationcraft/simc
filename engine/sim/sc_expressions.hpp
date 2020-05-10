@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "config.hpp"
 #include <string>
 #include <vector>
 #include <functional>

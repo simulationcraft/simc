@@ -1715,7 +1715,7 @@ double spelleffect_data_t::average( const player_t* p, unsigned level ) const
     unsigned scaling_level = level ? level : p -> level();
     if ( _spell -> max_scaling_level() > 0 )
       scaling_level = std::min( scaling_level, _spell -> max_scaling_level() );
-    m_scale = p -> dbc.spell_scaling( _spell -> scaling_class(), scaling_level );
+    m_scale = p -> dbc->spell_scaling( _spell -> scaling_class(), scaling_level );
   }
 
   return scaled_average( m_scale, level );
@@ -1733,13 +1733,13 @@ double spelleffect_data_t::average( const item_t* item ) const
   }
   else if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
   {
-    const auto& props = item -> player -> dbc.random_property( item -> item_level() );
+    const auto& props = item -> player -> dbc->random_property( item -> item_level() );
     budget = props.damage_replace_stat;
   }
   else if ( _spell->scaling_class() == PLAYER_NONE &&
             _spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
   {
-    const auto& props = item -> player -> dbc.random_property( item -> item_level() );
+    const auto& props = item -> player -> dbc->random_property( item -> item_level() );
     budget = props.damage_secondary;
   }
 
@@ -1797,7 +1797,7 @@ double spelleffect_data_t::delta( const player_t* p, unsigned level ) const
     unsigned scaling_level = level ? level : p -> level();
     if ( _spell -> max_scaling_level() > 0 )
       scaling_level = std::min( scaling_level, _spell -> max_scaling_level() );
-    m_scale = p -> dbc.spell_scaling( _spell -> scaling_class(), scaling_level );
+    m_scale = p -> dbc->spell_scaling( _spell -> scaling_class(), scaling_level );
   }
 
   return scaled_delta( m_scale );
@@ -1819,7 +1819,7 @@ double spelleffect_data_t::delta( const item_t* item ) const
   }
   else if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
   {
-    const auto& props = item -> player -> dbc.random_property( item -> item_level() );
+    const auto& props = item -> player -> dbc->random_property( item -> item_level() );
     m_scale = props.damage_replace_stat;
   }
 
@@ -1829,7 +1829,7 @@ double spelleffect_data_t::delta( const item_t* item ) const
 double spelleffect_data_t::bonus( const player_t* p, unsigned level ) const
 {
   assert( p );
-  return p -> dbc.effect_bonus( id(), level ? level : p -> level() );
+  return p -> dbc->effect_bonus( id(), level ? level : p -> level() );
 }
 
 double spelleffect_data_t::scaled_min( double avg, double delta ) const

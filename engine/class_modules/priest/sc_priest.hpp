@@ -757,8 +757,8 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   {
     direct_power_mod = 0.6;  // According to Sephuz 2018-02-07 -- N1gh7h4wk hardcoded
 
-    main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
-    main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
+    main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
+    main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
 
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
@@ -782,8 +782,8 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   {
     direct_power_mod = 0.65;  // According to Sephuz 2018-02-07 -- N1gh7h4wk hardcoded
 
-    main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
-    main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
+    main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
+    main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
 

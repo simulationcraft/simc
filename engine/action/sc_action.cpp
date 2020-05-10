@@ -807,7 +807,7 @@ bool action_t::verify_actor_spec() const
 {
   std::vector<specialization_e> spec_list;
   specialization_e _s = player->specialization();
-  if ( data().id() && player->dbc.ability_specialization( data().id(), spec_list ) &&
+  if ( data().id() && player->dbc->ability_specialization( data().id(), spec_list ) &&
        range::find( spec_list, _s ) == spec_list.end() )
   {
     // Note that this check can produce false positives for talent abilities which have a different spec set in their

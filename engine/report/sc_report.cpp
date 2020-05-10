@@ -160,7 +160,7 @@ public:
   }
 
   tooltip_parser_t( const player_t& p, const spell_data_t& s, const std::string& t )
-    : default_spell( s ), dbc( p.dbc ), player( &p ), level( p.true_level ), text( t ), pos( t.begin() )
+    : default_spell( s ), dbc( *p.dbc ), player( &p ), level( p.true_level ), text( t ), pos( t.begin() )
   {
   }
 
@@ -484,7 +484,7 @@ bool report::check_gear( player_t& p, sim_t& sim )
       // Check if the azerite power declared does exists
       for ( auto& azerite_id : item.parsed.azerite_ids )
       {
-        const auto& power = p.dbc.azerite_power( azerite_id );
+        const auto& power = p.dbc->azerite_power( azerite_id );
         if ( power.id == 0 )
           sim.errorf( "Player %s has %s with azerite power id %s which does not exists.", p.name(),
                       util::slot_type_string( slot ), util::to_string( azerite_id ).c_str() );
@@ -495,7 +495,7 @@ bool report::check_gear( player_t& p, sim_t& sim )
         int powers = 0;
         for ( auto& azerite_id : item.parsed.azerite_ids )
         {
-          const auto& power = p.dbc.azerite_power( azerite_id );
+          const auto& power = p.dbc->azerite_power( azerite_id );
           if ( power.tier == i )
             powers++;
         }
@@ -570,15 +570,15 @@ bool report::check_gear( player_t& p, sim_t& sim )
         item_t& unique = p.items[ slot2 ];
         if ( slot2 == slot )
           continue;
-        if ( p.dbc.item( unique.parsed.data.id ) == nullptr )
+        if ( p.dbc->item( unique.parsed.data.id ) == nullptr )
           continue;
-        if ( p.dbc.item( item.parsed.data.id ) == nullptr )
+        if ( p.dbc->item( item.parsed.data.id ) == nullptr )
           continue;
 
         if ( unique.parsed.data.id == item.parsed.data.id )
         {
-          if ( p.dbc.item( unique.parsed.data.id )->flags_1 == 524288 &&
-               p.dbc.item( item.parsed.data.id )->flags_1 == 524288 )
+          if ( p.dbc->item( unique.parsed.data.id )->flags_1 == 524288 &&
+               p.dbc->item( item.parsed.data.id )->flags_1 == 524288 )
             sim.errorf(
                 "Player %s has equipped more than 1 of a unique item in slots %s and %s, please remove one of the "
                 "unique items.\n",
@@ -760,23 +760,23 @@ void report::print_spell_query( std::ostream& out, const sim_t& sim, const spell
     switch ( data_type )
     {
       case DATA_TALENT:
-        out << spell_info::talent_to_str( sim.dbc, sim.dbc.talent( *i ), level );
+        out << spell_info::talent_to_str( *sim.dbc, sim.dbc->talent( *i ), level );
         break;
       case DATA_EFFECT:
       {
         std::ostringstream sqs;
-        const spelleffect_data_t* base_effect = sim.dbc.effect( *i );
+        const spelleffect_data_t* base_effect = sim.dbc->effect( *i );
         if ( const spell_data_t* spell = dbc::find_spell( &( sim ), base_effect->spell() ) )
         {
-          spell_info::effect_to_str( sim.dbc, spell, dbc::find_effect( &( sim ), base_effect ), sqs, level );
+          spell_info::effect_to_str( *sim.dbc, spell, dbc::find_effect( &( sim ), base_effect ), sqs, level );
           out << sqs.str();
         }
       }
       break;
       default:
       {
-        const spell_data_t* spell = dbc::find_spell( &( sim ), sim.dbc.spell( *i ) );
-        out << spell_info::to_str( sim.dbc, spell, level );
+        const spell_data_t* spell = dbc::find_spell( &( sim ), sim.dbc->spell( *i ) );
+        out << spell_info::to_str( *sim.dbc, spell, level );
       }
     }
   }
@@ -791,22 +791,22 @@ void report::print_spell_query( xml_node_t* root, FILE* file, const sim_t& sim, 
     switch ( data_type )
     {
       case DATA_TALENT:
-        spell_info::talent_to_xml( sim.dbc, sim.dbc.talent( *i ), root, level );
+        spell_info::talent_to_xml( *sim.dbc, sim.dbc->talent( *i ), root, level );
         break;
       case DATA_EFFECT:
       {
         std::ostringstream sqs;
-        const spelleffect_data_t* dbc_effect = sim.dbc.effect( *i );
+        const spelleffect_data_t* dbc_effect = sim.dbc->effect( *i );
         if ( const spell_data_t* spell = dbc::find_spell( &( sim ), dbc_effect->spell() ) )
         {
-          spell_info::effect_to_xml( sim.dbc, spell, dbc::find_effect( &( sim ), dbc_effect ), root, level );
+          spell_info::effect_to_xml( *sim.dbc, spell, dbc::find_effect( &( sim ), dbc_effect ), root, level );
         }
       }
       break;
       default:
       {
-        const spell_data_t* spell = dbc::find_spell( &( sim ), sim.dbc.spell( *i ) );
-        spell_info::to_xml( sim.dbc, spell, root, level );
+        const spell_data_t* spell = dbc::find_spell( &( sim ), sim.dbc->spell( *i ) );
+        spell_info::to_xml( *sim.dbc, spell, root, level );
       }
     }
   }
@@ -1006,7 +1006,7 @@ bool report::output_scale_factors( const player_t* p )
 std::string report::decoration_domain( const sim_t& sim )
 {
 #if SC_BETA == 0
-  if ( maybe_ptr( sim.dbc.ptr ) )
+  if ( maybe_ptr( sim.dbc->ptr ) )
   {
     return "ptr";
   }

@@ -984,7 +984,7 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
       "<h1><a href=\"%s\">SimulationCraft %s</a></h1>\n",
       "https://www.simulationcraft.org/", SC_VERSION);
 
-  const char* type =       ( sim.dbc.ptr ?
+  const char* type =       ( sim.dbc->ptr ?
 #if SC_BETA
                     "BETA"
 #else
@@ -996,14 +996,14 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
   {
   os.printf(
       "<h2>for World of Warcraft %s %s (wow build level %d)</h2>\n\n",
-      sim.dbc.wow_version(), type, sim.dbc.build_level());
+      sim.dbc->wow_version(), type, sim.dbc->build_level());
   }
   else
   {
     std::string commit_link = "https://github.com/simulationcraft/simc/commit/";
     commit_link += git_info::revision();
     os.printf("<h2>for World of Warcraft %s %s (wow build level %d, git build <a href=\"%s\">%s</a>)</h2>\n\n",
-        sim.dbc.wow_version(), type, sim.dbc.build_level(), commit_link.c_str(), git_info::revision());
+        sim.dbc->wow_version(), type, sim.dbc->build_level(), commit_link.c_str(), git_info::revision());
   }
 
   std::time_t rawtime = std::time(nullptr);
@@ -1085,13 +1085,13 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
       continue;
     }
 
-    if ( sim.dbc.ptr &&
+    if ( sim.dbc->ptr &&
          !( entry && ( entry->flags_ & hotfix::HOTFIX_FLAG_PTR ) ) )
     {
       continue;
     }
 
-    if ( entry && !sim.dbc.ptr &&
+    if ( entry && !sim.dbc->ptr &&
          !( entry->flags_ & hotfix::HOTFIX_FLAG_LIVE ) )
     {
       continue;
@@ -1130,7 +1130,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
     {
       os << "<tr>\n"
          << "<td></td>\n";
-      const spelleffect_data_t* effect = sim.dbc.effect( e->id_ );
+      const spelleffect_data_t* effect = sim.dbc->effect( e->id_ );
 
       std::string name = report::decorated_spell_name( sim, *effect->spell() );
       name += " (effect#" + util::to_string( effect->index() + 1 ) + ")";
@@ -1140,7 +1140,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
     {
       os << "<tr>\n"
          << "<td></td>\n";
-      const spell_data_t* spell = sim.dbc.spell( e->id_ );
+      const spell_data_t* spell = sim.dbc->spell( e->id_ );
       std::string name          = report::decorated_spell_name( sim, *spell );
       os << "<td class=\"left\">" << name << "</td>\n";
     }
@@ -1193,7 +1193,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
     os << "<tr>\n";
     if ( entry.type_ == dbc_override::DBC_OVERRIDE_SPELL )
     {
-      const spell_data_t* spell = hotfix::find_spell( sim.dbc.spell( entry.id_ ), sim.dbc.ptr );
+      const spell_data_t* spell = hotfix::find_spell( sim.dbc->spell( entry.id_ ), sim.dbc->ptr );
       std::string name = report::decorated_spell_name( sim, *spell );
       os << "<td class=\"left\">" << name << "</td>\n";
       os << "<td class=\"left\">" << util::encode_html( entry.field_ ) << "</td>\n";
@@ -1203,7 +1203,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
     }
     else if ( entry.type_ == dbc_override::DBC_OVERRIDE_EFFECT )
     {
-      const spelleffect_data_t* effect = hotfix::find_effect( sim.dbc.effect( entry.id_ ), sim.dbc.ptr );
+      const spelleffect_data_t* effect = hotfix::find_effect( sim.dbc->effect( entry.id_ ), sim.dbc->ptr );
       const spell_data_t* spell        = effect->spell();
       std::string name                 = report::decorated_spell_name( sim, *spell );
       name += " (effect#" + util::to_string( effect->index() + 1 ) + ")";

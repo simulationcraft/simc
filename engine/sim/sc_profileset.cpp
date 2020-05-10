@@ -1306,14 +1306,14 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
           continue;
         }
 
-        auto* talent_data = talent_data_t::find( player -> type, talent_row, talent_col, player -> specialization(), player -> dbc.ptr );
+        auto* talent_data = talent_data_t::find( player -> type, talent_row, talent_col, player -> specialization(), player -> dbc->ptr );
         if ( talent_data == nullptr )
         {
           continue;
         }
 
         const auto& p_talent_col = parent_player -> talent_points.choice( talent_row );
-        auto* p_talent_data = talent_data_t::find( parent_player -> type, talent_row, talent_col, parent_player -> specialization(), parent_player -> dbc.ptr );
+        auto* p_talent_data = talent_data_t::find( parent_player -> type, talent_row, talent_col, parent_player -> specialization(), parent_player -> dbc->ptr );
         if ( p_talent_col == -1 || p_talent_data == nullptr || p_talent_col != talent_col )
         {
           saved_talents.push_back( talent_data );

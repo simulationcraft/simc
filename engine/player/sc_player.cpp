@@ -1112,7 +1112,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r )
     world_lag_override( false ),
     world_lag_stddev_override( false ),
     cooldown_tolerance_( timespan_t::min() ),
-    dbc( s->dbc ),
+    dbc( new dbc_t(*(s->dbc)) ),
     talent_points(),
     profession(),
     artifact( nullptr ),
@@ -1487,19 +1487,19 @@ void player_t::init_base_stats()
   }
 
   if ( !is_enemy() )
-    base.rating.init( dbc, level() );
+    base.rating.init( *dbc, level() );
 
   sim->print_debug( "{} base ratings initialized: {}", *this, base.rating.to_string() );
 
   if ( !is_enemy() )
   {
     base.stats.attribute[ STAT_STRENGTH ] =
-        dbc.race_base( race ).strength + dbc.attribute_base( type, level() ).strength;
-    base.stats.attribute[ STAT_AGILITY ] = dbc.race_base( race ).agility + dbc.attribute_base( type, level() ).agility;
-    base.stats.attribute[ STAT_STAMINA ] = dbc.race_base( race ).stamina + dbc.attribute_base( type, level() ).stamina;
+        dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength;
+    base.stats.attribute[ STAT_AGILITY ] = dbc->race_base( race ).agility + dbc->attribute_base( type, level() ).agility;
+    base.stats.attribute[ STAT_STAMINA ] = dbc->race_base( race ).stamina + dbc->attribute_base( type, level() ).stamina;
     base.stats.attribute[ STAT_INTELLECT ] =
-        dbc.race_base( race ).intellect + dbc.attribute_base( type, level() ).intellect;
-    base.stats.attribute[ STAT_SPIRIT ] = dbc.race_base( race ).spirit + dbc.attribute_base( type, level() ).spirit;
+        dbc->race_base( race ).intellect + dbc->attribute_base( type, level() ).intellect;
+    base.stats.attribute[ STAT_SPIRIT ] = dbc->race_base( race ).spirit + dbc->attribute_base( type, level() ).spirit;
 
     // heroic presence is treated like base stats, floored before adding in; tested 2014-07-20
     base.stats.attribute[ STAT_STRENGTH ] += util::floor( racials.heroic_presence->effectN( 1 ).average( this ) );
@@ -1509,17 +1509,17 @@ void player_t::init_base_stats()
     // pres.
     base.stats.attribute[ STAT_STAMINA ] += util::floor( racials.endurance->effectN( 1 ).average( this ) );
 
-    base.spell_crit_chance        = dbc.spell_crit_base( type, level() );
-    base.attack_crit_chance       = dbc.melee_crit_base( type, level() );
-    base.spell_crit_per_intellect = dbc.spell_crit_scaling( type, level() );
-    base.attack_crit_per_agility  = dbc.melee_crit_scaling( type, level() );
+    base.spell_crit_chance        = dbc->spell_crit_base( type, level() );
+    base.attack_crit_chance       = dbc->melee_crit_base( type, level() );
+    base.spell_crit_per_intellect = dbc->spell_crit_scaling( type, level() );
+    base.attack_crit_per_agility  = dbc->melee_crit_scaling( type, level() );
     base.mastery                  = 8.0;
 
-    resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, level() );
-    resources.base[ RESOURCE_MANA ]   = dbc.resource_base( type, level() );
+    resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
+    resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
 
     // 1% of base mana as mana regen per second for all classes.
-    resources.base_regen_per_second[ RESOURCE_MANA ] = dbc.resource_base( type, level() ) * 0.01;
+    resources.base_regen_per_second[ RESOURCE_MANA ] = dbc->resource_base( type, level() ) * 0.01;
 
     // Automatically parse mana regen and max mana modifiers from class passives.
     for ( auto spell : dbc::class_passives( this ) )
@@ -1541,7 +1541,7 @@ void player_t::init_base_stats()
       }
     }
 
-    base.health_per_stamina = dbc.health_per_stamina( level() );
+    base.health_per_stamina = dbc->health_per_stamina( level() );
 
     // players have a base 7.5% hit/exp
     base.hit       = 0.075;
@@ -1551,7 +1551,7 @@ void player_t::init_base_stats()
       base.distance = 5;
 
     // Armor Coefficient, based on level (6300 @ 120)
-    base.armor_coeff = dbc.armor_mitigation_constant( level() );
+    base.armor_coeff = dbc->armor_mitigation_constant( level() );
     sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
 
   }
@@ -1559,12 +1559,12 @@ void player_t::init_base_stats()
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
   if ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN || type == DEMON_HUNTER )
     base.dodge_per_agility =
-        dbc.avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
+        dbc->avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
 
   // only certain classes get Str->Parry conversions, dodge_per_agility defaults to 0.00
   if ( type == PALADIN || type == WARRIOR || type == DEATH_KNIGHT )
     base.parry_per_strength =
-        dbc.avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
+        dbc->avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
 
   // All classes get 3% dodge and miss
   base.dodge = 0.03;
@@ -1574,7 +1574,7 @@ void player_t::init_base_stats()
   {
     // Dodge from base agillity isn't affected by diminishing returns and is added here
     base.dodge += racials.quickness->effectN(1).percent() +
-      (dbc.race_base(race).agility + dbc.attribute_base(type, level()).agility) * base.dodge_per_agility;
+      (dbc->race_base(race).agility + dbc->attribute_base(type, level()).agility) * base.dodge_per_agility;
   }
 
   // Only Warriors and Paladins (and enemies) can block, defaults to 0
@@ -1602,7 +1602,7 @@ void player_t::init_base_stats()
   if ( type == WARRIOR || type == PALADIN || type == ROGUE || type == DEATH_KNIGHT || type == MONK ||
        type == DEMON_HUNTER || specialization() == SHAMAN_ENHANCEMENT  )
   {
-    base.parry = 0.03 + ( dbc.race_base( race ).strength + dbc.attribute_base( type, level() ).strength ) * base.parry_per_strength;
+    base.parry = 0.03 + ( dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength ) * base.parry_per_strength;
   }
   else if ( type == ENEMY || type == TANK_DUMMY )
   {
@@ -1610,13 +1610,13 @@ void player_t::init_base_stats()
   }
 
   // Extract avoidance DR values from table in sc_extra_data.inc
-  def_dr.horizontal_shift       = dbc.horizontal_shift( type );
-  def_dr.block_vertical_stretch = dbc.block_vertical_stretch( type );
-  def_dr.vertical_stretch       = dbc.vertical_stretch( type );
-  def_dr.dodge_factor           = dbc.dodge_factor( type );
-  def_dr.parry_factor           = dbc.parry_factor( type );
-  def_dr.miss_factor            = dbc.miss_factor( type );
-  def_dr.block_factor           = dbc.block_factor( type );
+  def_dr.horizontal_shift       = dbc->horizontal_shift( type );
+  def_dr.block_vertical_stretch = dbc->block_vertical_stretch( type );
+  def_dr.vertical_stretch       = dbc->vertical_stretch( type );
+  def_dr.dodge_factor           = dbc->dodge_factor( type );
+  def_dr.parry_factor           = dbc->parry_factor( type );
+  def_dr.miss_factor            = dbc->miss_factor( type );
+  def_dr.block_factor           = dbc->block_factor( type );
 
   if ( ( meta_gem == META_EMBER_PRIMAL ) || ( meta_gem == META_EMBER_SHADOWSPIRIT ) ||
        ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
@@ -2369,9 +2369,9 @@ void player_t::override_talent( std::string& override_str )
     }
   }
 
-  unsigned spell_id = dbc.talent_ability_id( type, specialization(), override_str.c_str(), true );
+  unsigned spell_id = dbc->talent_ability_id( type, specialization(), override_str.c_str(), true );
 
-  if ( !spell_id || dbc.spell( spell_id )->id() != spell_id )
+  if ( !spell_id || dbc->spell( spell_id )->id() != spell_id )
   {
     throw std::invalid_argument(fmt::format("talent_override: Override talent '{}' not found.\n", override_str ));
   }
@@ -2380,7 +2380,7 @@ void player_t::override_talent( std::string& override_str )
   {
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      talent_data_t* t = talent_data_t::find( type, j, i, specialization(), dbc.ptr );
+      talent_data_t* t = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
       if ( t && ( t->spell_id() == spell_id ) )
       {
         if ( true_level < std::min( ( j + 1 ) * 15, 100 ) )
@@ -3711,8 +3711,8 @@ double player_t::composite_dodge() const
   double bonus_dodge = composite_dodge_rating() / current.rating.dodge;
   if ( !is_enemy() )
   {
-    bonus_dodge += ( cache.agility() - dbc.race_base( race ).agility -
-        dbc.attribute_base( type, level() ).agility ) * current.dodge_per_agility;
+    bonus_dodge += ( cache.agility() - dbc->race_base( race ).agility -
+        dbc->attribute_base( type, level() ).agility ) * current.dodge_per_agility;
   }
 
   // if we have any bonus_dodge, apply diminishing returns and add it to total_dodge.
@@ -3732,8 +3732,8 @@ double player_t::composite_parry() const
   double bonus_parry = composite_parry_rating() / current.rating.parry;
   if ( !is_enemy() )
   {
-    bonus_parry += ( cache.strength() - dbc.race_base( race ).strength -
-        dbc.attribute_base( type, level() ).strength ) * current.parry_per_strength;
+    bonus_parry += ( cache.strength() - dbc->race_base( race ).strength -
+        dbc->attribute_base( type, level() ).strength ) * current.parry_per_strength;
   }
 
   // if we have any bonus_parry, apply diminishing returns and add it to total_parry.
@@ -8852,7 +8852,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
         return false;
     }
 
-    _spec = dbc.spec_by_idx( type, specidx );
+    _spec = dbc->spec_by_idx( type, specidx );
   }
 
   std::string t_str = talent_string.substr( cut_pt + 1 );
@@ -9053,7 +9053,7 @@ void player_t::create_talents_wowhead()
   {
     uint32_t idx = 0;
     uint32_t cid = 0;
-    if ( dbc.spec_idx( _spec, cid, idx ) && ( (int)cid == util::class_id( type ) ) )
+    if ( dbc->spec_idx( _spec, cid, idx ) && ( (int)cid == util::class_id( type ) ) )
     {
       switch ( idx )
       {
@@ -9242,7 +9242,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     }
 
     if ( w_spec_idx >= 0 )
-      _spec = dbc.spec_by_idx( type, w_spec_idx );
+      _spec = dbc->spec_by_idx( type, w_spec_idx );
   }
 
   if ( talent_string.size() > idx + 2 )
@@ -9306,24 +9306,24 @@ void player_t::replace_spells()
 {
   uint32_t class_idx, spec_index;
 
-  if ( !dbc.spec_idx( _spec, class_idx, spec_index ) )
+  if ( !dbc->spec_idx( _spec, class_idx, spec_index ) )
     return;
 
   // Search spec spells for spells to replace.
   if ( _spec != SPEC_NONE )
   {
-    for ( unsigned int i = 0; i < dbc.specialization_ability_size(); i++ )
+    for ( unsigned int i = 0; i < dbc->specialization_ability_size(); i++ )
     {
-      unsigned id = dbc.specialization_ability( class_idx, spec_index, i );
+      unsigned id = dbc->specialization_ability( class_idx, spec_index, i );
       if ( id == 0 )
       {
         break;
       }
-      const spell_data_t* s = dbc.spell( id );
+      const spell_data_t* s = dbc->spell( id );
       if ( s->replace_spell_id() && ( (int)s->level() <= true_level ) )
       {
         // Found a spell we should replace
-        dbc.replace_id( s->replace_spell_id(), id );
+        dbc->replace_id( s->replace_spell_id(), id );
       }
     }
   }
@@ -9335,10 +9335,10 @@ void player_t::replace_spells()
     {
       if ( talent_points.has_row_col( j, i ) && true_level < std::min( ( j + 1 ) * 15, 100 ) )
       {
-        talent_data_t* td = talent_data_t::find( type, j, i, specialization(), dbc.ptr );
+        talent_data_t* td = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
         if ( td && td->replace_id() )
         {
-          dbc.replace_id( td->replace_id(), td->spell_id() );
+          dbc->replace_id( td->replace_id(), td->spell_id() );
           break;
         }
       }
@@ -9349,18 +9349,18 @@ void player_t::replace_spells()
   // later)
   if ( _spec != SPEC_NONE )
   {
-    for ( unsigned int i = 0; i < dbc.class_ability_size(); i++ )
+    for ( unsigned int i = 0; i < dbc->class_ability_size(); i++ )
     {
-      unsigned id = dbc.class_ability( class_idx, 0, i );
+      unsigned id = dbc->class_ability( class_idx, 0, i );
       if ( id == 0 )
       {
         break;
       }
-      const spell_data_t* s = dbc.spell( id );
+      const spell_data_t* s = dbc->spell( id );
       if ( s->replace_spell_id() && ( (int)s->level() <= true_level ) )
       {
         // Found a spell we should replace
-        dbc.replace_id( s->replace_spell_id(), id );
+        dbc->replace_id( s->replace_spell_id(), id );
       }
     }
   }
@@ -9382,7 +9382,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
   }
 
   // Get a talent's spell id for a given talent name
-  unsigned spell_id = dbc.talent_ability_id( type, s, n.c_str(), name_tokenized );
+  unsigned spell_id = dbc->talent_ability_id( type, s, n.c_str(), name_tokenized );
 
   if ( !spell_id )
   {
@@ -9394,7 +9394,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
   {
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      auto td = talent_data_t::find( type, j, i, s, dbc.ptr );
+      auto td = talent_data_t::find( type, j, i, s, dbc->ptr );
       if ( !td )
         continue;
       auto spell = dbc::find_spell( this, td->spell_id() );
@@ -9422,7 +9422,7 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
 {
   if ( s == SPEC_NONE || s == _spec )
   {
-    if ( unsigned spell_id = dbc.specialization_ability_id( _spec, name.c_str() ) )
+    if ( unsigned spell_id = dbc->specialization_ability_id( _spec, name.c_str() ) )
     {
       auto spell = dbc::find_spell( this, spell_id );
 
@@ -9441,7 +9441,7 @@ const spell_data_t* player_t::find_specialization_spell( unsigned spell_id, spec
   if ( s == SPEC_NONE || s == _spec )
   {
     auto spell = dbc::find_spell( this, spell_id );
-    if ( dbc.is_specialization_ability( _spec, spell_id ) && ( as<int>( spell->level() ) <= true_level ) )
+    if ( dbc->is_specialization_ability( _spec, spell_id ) && ( as<int>( spell->level() ) <= true_level ) )
     {
       return spell;
     }
@@ -9454,7 +9454,7 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, uint32_t i
 {
   if ( s != SPEC_NONE && s == _spec )
   {
-    if ( unsigned spell_id = dbc.mastery_ability_id( s, idx ) )
+    if ( unsigned spell_id = dbc->mastery_ability_id( s, idx ) )
     {
       const spell_data_t* spell = dbc::find_spell( this, spell_id );
       if ( as<int>( spell->level() ) <= true_level )
@@ -9575,9 +9575,9 @@ const spell_data_t* player_t::find_spell( const std::string& name, specializatio
 
 const spell_data_t* player_t::find_racial_spell( const std::string& name, race_e r ) const
 {
-  if ( unsigned spell_id = dbc.race_ability_id( type, ( r != RACE_NONE ) ? r : race, name.c_str() ) )
+  if ( unsigned spell_id = dbc->race_ability_id( type, ( r != RACE_NONE ) ? r : race, name.c_str() ) )
   {
-    const spell_data_t* s = dbc.spell( spell_id );
+    const spell_data_t* s = dbc->spell( spell_id );
     if ( s->id() == spell_id )
     {
       return dbc::find_spell( this, s );
@@ -9591,9 +9591,9 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, special
 {
   if ( s == SPEC_NONE || s == _spec )
   {
-    if ( unsigned spell_id = dbc.class_ability_id( type, _spec, name.c_str() ) )
+    if ( unsigned spell_id = dbc->class_ability_id( type, _spec, name.c_str() ) )
     {
-      const spell_data_t* spell = dbc.spell( spell_id );
+      const spell_data_t* spell = dbc->spell( spell_id );
       if ( spell->id() == spell_id && (int)spell->level() <= true_level )
       {
         return dbc::find_spell( this, spell );
@@ -9606,9 +9606,9 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, special
 
 const spell_data_t* player_t::find_pet_spell( const std::string& name ) const
 {
-  if ( unsigned spell_id = dbc.pet_ability_id( type, name.c_str() ) )
+  if ( unsigned spell_id = dbc->pet_ability_id( type, name.c_str() ) )
   {
-    const spell_data_t* s = dbc.spell( spell_id );
+    const spell_data_t* s = dbc->spell( spell_id );
     if ( s->id() == spell_id )
     {
       return dbc::find_spell( this, s );
@@ -9735,7 +9735,7 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
     return make_ref_expr( "in_combat", in_combat );
 
   if ( expression_str == "ptr" )
-    return expr_t::create_constant( "ptr", dbc.ptr );
+    return expr_t::create_constant( "ptr", dbc->ptr );
 
   if ( expression_str == "bugs" )
     return expr_t::create_constant( "bugs", bugs );
@@ -12277,7 +12277,7 @@ player_t* player_t::actor_by_name_str( const std::string& name ) const
 
 slot_e player_t::parent_item_slot( const item_t& item ) const
 {
-  unsigned parent = dbc.parent_item( item.parsed.data.id );
+  unsigned parent = dbc->parent_item( item.parsed.data.id );
   if ( parent == 0 )
   {
     return SLOT_INVALID;
@@ -12295,7 +12295,7 @@ slot_e player_t::parent_item_slot( const item_t& item ) const
 
 slot_e player_t::child_item_slot( const item_t& item ) const
 {
-  unsigned child = dbc.child_item( item.parsed.data.id );
+  unsigned child = dbc->child_item( item.parsed.data.id );
   if ( child == 0 )
   {
     return SLOT_INVALID;

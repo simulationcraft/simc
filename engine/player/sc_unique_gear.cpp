@@ -2413,7 +2413,7 @@ void item::readiness( special_effect_t& effect )
   player_t* p = effect.item -> player;
 
   const spell_data_t* cdr_spell = p -> find_spell( effect.spell_id );
-  const random_prop_data_t& budget = p -> dbc.random_property( effect.item -> item_level() );
+  const random_prop_data_t& budget = p -> dbc->random_property( effect.item -> item_level() );
   double cdr = 1.0 / ( 1.0 + budget.p_epic[ 0 ] * cdr_spell -> effectN( 1 ).m_coefficient() / 100.0 );
 
   if ( p -> level() > 90 )
@@ -2480,7 +2480,7 @@ void item::amplification( special_effect_t& effect )
     amp_value = &( p -> passive_values.amplification_2 );
   }
 
-  const random_prop_data_t& budget = p -> dbc.random_property( effect.item -> item_level() );
+  const random_prop_data_t& budget = p -> dbc->random_property( effect.item -> item_level() );
   *amp_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_coefficient() / 100.0;
   if ( p -> level() > 90 )
   { // We have no clue how the trinket actually scales down with level. This will linearly decrease amplification until it hits 0 at level 100.
@@ -2611,7 +2611,7 @@ void item::cleave( special_effect_t& effect )
   };
 
   player_t* p = effect.item -> player;
-  const random_prop_data_t& budget = p -> dbc.random_property( effect.item -> item_level() );
+  const random_prop_data_t& budget = p -> dbc->random_property( effect.item -> item_level() );
   const spell_data_t* cleave_driver_spell = p -> find_spell( effect.spell_id );
 
   // Needs a damaging result
@@ -3424,7 +3424,7 @@ struct blademaster_pet_t : public pet_t
 
     // Magical constants for base damage
     double damage_range = 0.4;
-    double base_dps = owner -> dbc.spell_scaling( PLAYER_SPECIAL_SCALE, owner -> level() ) * 4.725;
+    double base_dps = owner -> dbc->spell_scaling( PLAYER_SPECIAL_SCALE, owner -> level() ) * 4.725;
     double min_dps = base_dps * ( 1 - damage_range / 2.0 );
     double max_dps = base_dps * ( 1 + damage_range / 2.0 );
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
@@ -4094,13 +4094,13 @@ void unique_gear::initialize_racial_effects( player_t* player )
   }
 
   // Iterate over all race spells for the player
-  for ( unsigned n = 0; n < player -> dbc.race_ability_size(); ++n )
+  for ( unsigned n = 0; n < player -> dbc->race_ability_size(); ++n )
   {
-    auto cls_spell_id = player -> dbc.race_ability( rid, cid, n );
-    auto spell_id = player -> dbc.race_ability( rid, 0, n );
+    auto cls_spell_id = player -> dbc->race_ability( rid, cid, n );
+    auto spell_id = player -> dbc->race_ability( rid, 0, n );
     if ( cls_spell_id > 0 || spell_id > 0 )
     {
-      auto spell = player -> dbc.spell( cls_spell_id > 0 ? cls_spell_id : spell_id );
+      auto spell = player -> dbc->spell( cls_spell_id > 0 ? cls_spell_id : spell_id );
       if ( ! spell || ! spell -> ok() )
       {
         continue;
