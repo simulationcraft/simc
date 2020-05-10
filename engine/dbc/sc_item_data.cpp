@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 
 #include "dbc/item_effect.hpp"
+#include "dbc/spell_item_enchantment.hpp"
 
 #include "generated/sc_item_data2.inc"
 #if SC_USE_PTR
@@ -13,10 +14,10 @@
 #endif
 
 namespace {
-  template<typename T, item_subclass_consumable CLASS>
+  template <item_subclass_consumable CLASS>
   struct consumable_filter_t
   {
-    bool operator()(const T* obj) const
+    bool operator()(const item_data_t* obj) const
     { return obj -> item_class == ITEM_CLASS_CONSUMABLE && obj -> item_subclass == CLASS; }
   };
 
@@ -39,14 +40,11 @@ namespace {
   };
 
   item_data_t nil_item_data;
-  item_enchantment_data_t nil_ied;
-  gem_property_data_t nil_gpd;
-  dbc_index_t<item_enchantment_data_t, id_member_policy> item_enchantment_data_index;
   dbc_index_t<item_data_t, id_member_policy> item_data_index;
 
   typedef filtered_dbc_index_t<item_data_t, potion_filter_t, id_member_policy> potion_data_t;
-  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<item_data_t, ITEM_SUBCLASS_FLASK>, id_member_policy> flask_data_t;
-  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<item_data_t, ITEM_SUBCLASS_FOOD>, id_member_policy> food_data_t;
+  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FLASK>, id_member_policy> flask_data_t;
+  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FOOD>, id_member_policy> food_data_t;
 
   potion_data_t potion_data_index;
   flask_data_t flask_data_index;
@@ -137,128 +135,6 @@ const char* dbc::item_name_description( unsigned id, bool ptr )
 
   return nullptr;
 }
-unsigned dbc_t::random_property_max_level() const
-{
-  int n = RAND_PROP_POINTS_SIZE;
-#if SC_USE_PTR
-  if ( ptr )
-    n = PTR_RAND_PROP_POINTS_SIZE;
-#endif
-  assert( n > 0 );
-  return as<unsigned>( n );
-}
-
-const random_prop_data_t& dbc_t::random_property( unsigned ilevel ) const
-{
-  static random_prop_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_rand_prop_points_data[ ilevel - 1 ] : __rand_prop_points_data[ ilevel - 1 ];
-#else
-  return __rand_prop_points_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_1h( unsigned ilevel ) const
-{
-  static item_scale_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemdamageonehand_data[ ilevel - 1 ] : __itemdamageonehand_data[ ilevel - 1 ];
-#else
-  return __itemdamageonehand_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_2h( unsigned ilevel ) const
-{
-  static item_scale_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemdamagetwohand_data[ ilevel - 1 ] : __itemdamagetwohand_data[ ilevel - 1 ];
-#else
-  return __itemdamagetwohand_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_caster_1h( unsigned ilevel ) const
-{
-  static item_scale_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemdamageonehandcaster_data[ ilevel - 1 ] : __itemdamageonehandcaster_data[ ilevel - 1 ];
-#else
-  return __itemdamageonehandcaster_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_caster_2h( unsigned ilevel ) const
-{
-  static item_scale_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemdamagetwohandcaster_data[ ilevel - 1 ] : __itemdamagetwohandcaster_data[ ilevel - 1 ];
-#else
-  return __itemdamagetwohandcaster_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_armor_quality( unsigned ilevel ) const
-{
-  static item_scale_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemarmorquality_data[ ilevel - 1 ] : __itemarmorquality_data[ ilevel - 1 ];
-#else
-  return __itemarmorquality_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_armor_shield( unsigned ilevel ) const
-{
-  static item_scale_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemarmorshield_data[ ilevel - 1 ] : __itemarmorshield_data[ ilevel - 1 ];
-#else
-  return __itemarmorshield_data[ ilevel - 1 ];
-#endif
-}
-
-const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) const
-{
-  static item_armor_type_data_t __default {};
-  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
-  {
-    return __default;
-  }
-#if SC_USE_PTR
-  return ptr ? __ptr_itemarmortotal_data[ ilevel - 1 ] : __itemarmortotal_data[ ilevel - 1 ];
-#else
-  return __itemarmortotal_data[ ilevel - 1 ];
-#endif
-}
 
 std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) const
 {
@@ -280,36 +156,8 @@ std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) co
   return entries;
 }
 
-const item_enchantment_data_t& dbc_t::item_enchantment( unsigned enchant_id ) const
-{
-  if ( const item_enchantment_data_t* p = item_enchantment_data_index.get( maybe_ptr( ptr ), enchant_id ) )
-    return *p;
-  else
-    return nil_ied;
-}
-
 const item_data_t* dbc_t::item( unsigned item_id ) const
 { return item_data_index.get( ptr, item_id ); }
-
-const gem_property_data_t& dbc_t::gem_property( unsigned gem_id ) const
-{
-  ( void )ptr;
-
-#if SC_USE_PTR
-  const gem_property_data_t* p = ptr ? __ptr_gem_property_data : __gem_property_data;
-#else
-  const gem_property_data_t* p = __gem_property_data;
-#endif
-
-  do
-  {
-    if ( p -> id == gem_id )
-      return *p;
-  }
-  while ( ( p++ ) -> id );
-
-  return nil_gpd;
-}
 
 const item_data_t* dbc::items( bool ptr )
 {
@@ -336,43 +184,6 @@ size_t dbc::n_items( bool ptr )
   return n;
 }
 
-const item_enchantment_data_t* dbc::item_enchantments( bool ptr )
-{
-  ( void )ptr;
-
-  const item_enchantment_data_t* p = __spell_item_ench_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_spell_item_ench_data;
-#endif
-  return p;
-}
-
-size_t dbc::n_item_enchantments( bool ptr )
-{
-  ( void )ptr;
-
-  size_t n = SPELL_ITEM_ENCH_SIZE;
-#if SC_USE_PTR
-  if ( ptr )
-    n = PTR_SPELL_ITEM_ENCH_SIZE;
-#endif
-
-  return n;
-}
-
-const gem_property_data_t* dbc::gem_properties( bool ptr )
-{
-  ( void )ptr;
-
-  const gem_property_data_t* p = __gem_property_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_gem_property_data;
-#endif
-  return p;
-}
-
 item_bonus_tree_entry_t& dbc_t::resolve_item_bonus_tree_data( unsigned level ) const
 {
     assert(level > 0 && level <= MAX_LEVEL);
@@ -395,30 +206,18 @@ item_bonus_node_entry_t& dbc_t::resolve_item_bonus_map_data( unsigned level ) co
 #endif
 }
 
-const item_armor_type_data_t& dbc_t::item_armor_inv_type( unsigned inv_type ) const
-{
-  assert( inv_type > 0 && inv_type <= 23 );
-#if SC_USE_PTR
-  return ptr ? __ptr_armor_slot_data[ inv_type - 1 ] : __armor_slot_data[ inv_type - 1 ];
-#else
-  return __armor_slot_data[ inv_type - 1 ];
-#endif
-}
-
 /* Initialize item database
  */
 void dbc::init_item_data()
 {
   // Create id-indexes
   item_data_index.init( __items_noptr(), false );
-  item_enchantment_data_index.init( __spell_item_ench_data, false );
   potion_data_index.init( __items_noptr(), false );
   flask_data_index.init( __items_noptr(), false );
   food_data_index.init( __items_noptr(), false );
   gem_index.init( __items_noptr(), false );
 #if SC_USE_PTR
   item_data_index.init( __items_ptr(), true );
-  item_enchantment_data_index.init( __ptr_spell_item_ench_data, true );
   potion_data_index.init( __items_ptr(), true );
   flask_data_index.init( __items_ptr(), true );
   food_data_index.init( __items_ptr(), true );
@@ -1096,7 +895,7 @@ uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, 
 
   // Shield have separate armor table, bypass normal calculation
   if ( item -> item_class == ITEM_CLASS_ARMOR && item -> item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
-    return ( uint32_t ) floor( dbc.item_armor_shield( ilevel ).values[ item -> quality ] + 0.5 );
+    return ( uint32_t ) floor( dbc.item_armor_shield( ilevel ).value( item -> quality ) + 0.5 );
 
   // Only Cloth, Leather, Mail and Plate armor has innate armor values
   if ( item -> item_subclass == ITEM_SUBCLASS_ARMOR_MISC || item -> item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
@@ -1117,11 +916,11 @@ uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, 
     case INVTYPE_CLOAK:
     case INVTYPE_ROBE:
     {
-      total_armor = dbc.item_armor_total( ilevel ).armor_type[ item -> item_subclass - 1 ];
-      m_quality   = dbc.item_armor_quality( ilevel ).values[ item -> quality ];
+      total_armor = dbc.item_armor_total( ilevel ).value( item->item_subclass - 1 );
+      m_quality   = dbc.item_armor_quality( ilevel ).value( item->quality );
       unsigned invtype = item -> inventory_type;
       if ( invtype == INVTYPE_ROBE ) invtype = INVTYPE_CHEST;
-      m_invtype = dbc.item_armor_inv_type( invtype ).armor_type[ item -> item_subclass - 1 ];
+      m_invtype = dbc.item_armor_inv_type( invtype ).value( item->item_subclass - 1 );
       break;
     }
     default: return 0;

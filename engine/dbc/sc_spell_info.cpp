@@ -3,8 +3,16 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "sc_spell_info.hpp"
+#include "dbc.hpp"
+#include "util/util.hpp"
+#include "util/xml.hpp"
+#include <vector>
+#include <unordered_map>
+#include <iostream>
+#include <map>
+#include <iomanip>
+#include <cctype>
 
 namespace {
 struct proc_map_t

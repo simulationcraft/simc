@@ -5,6 +5,7 @@
 
 #include "sc_report.hpp"
 #include "sc_highchart.hpp"
+#include "sim/scale_factor_control.hpp"
 #include "simulationcraft.hpp"
 
 namespace
@@ -688,7 +689,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
           if ( !p.scaling->scales_with[ i ] )
             continue;
 
-          double value = p.sim->scaling->stats.get_stat( i );
+          double value = p.sim->scaling->stats->get_stat( i );
           std::string prefix;
           if ( p.sim->scaling->center_scale_delta == 1 && i != STAT_SPIRIT &&
                i != STAT_HIT_RATING && i != STAT_EXPERTISE_RATING )
@@ -1933,7 +1934,7 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, const sim
 
   for ( const auto& stat : scaling_stats )
   {
-    double value = p.sim->scaling->stats.get_stat( stat );
+    double value = p.sim->scaling->stats->get_stat( stat );
     std::string prefix;
     if ( p.sim->scaling->center_scale_delta == 1 && stat != STAT_SPIRIT && stat != STAT_HIT_RATING &&
          stat != STAT_EXPERTISE_RATING )

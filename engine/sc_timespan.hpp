@@ -19,8 +19,8 @@
 #include <type_traits>
 
 #include "util/generic.hpp"
-#include "util/fmt/format.h"
-#include "util/fmt/ostream.h"
+#include "fmt/format.h"
+#include "fmt/ostream.h"
 
 // if timespan_t is in the global namespace, there's a name lookup issue with
 // one of the Qt headers. Problem is avoided by defining in a sub-namespace

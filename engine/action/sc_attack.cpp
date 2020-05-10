@@ -3,11 +3,24 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "attack.hpp"
+#include "sc_action_state.hpp"
+#include "dbc/dbc.hpp"
+#include "player/sc_player.hpp"
+#include "player/stats.hpp"
+#include "sim/sc_cooldown.hpp"
+#include "sim/event.hpp"
+#include "util/rng.hpp"
 
 // ==========================================================================
 // Attack
 // ==========================================================================
+
+attack_t::attack_t(const std::string& n, player_t* p)
+  : attack_t(n, p, spell_data_t::nil())
+{
+
+}
 
 attack_t::attack_t( const std::string& n, player_t* p, const spell_data_t* s )
   : action_t( ACTION_ATTACK, n, p, s ),
@@ -141,6 +154,57 @@ double attack_t::crit_block_chance( action_state_t* s ) const
   // Crit Block does not suffer from level-based suppression, return cached
   // value directly
   return s->target->cache.crit_block();
+}
+
+double attack_t::action_multiplier() const
+{
+  double mul = action_t::action_multiplier();
+
+  if (!special)
+  {
+    mul *= player->auto_attack_multiplier;
+  }
+
+  return mul;
+}
+
+double attack_t::composite_target_multiplier(player_t* target) const
+{
+  double mul = action_t::composite_target_multiplier(target);
+
+  mul *= composite_target_damage_vulnerability(target);
+
+  return mul;
+}
+
+double attack_t::composite_hit() const
+{
+  return action_t::composite_hit() + player->cache.attack_hit();
+}
+
+double attack_t::composite_crit_chance() const
+{
+  return action_t::composite_crit_chance() + player->cache.attack_crit_chance();
+}
+
+double attack_t::composite_crit_chance_multiplier() const
+{
+  return action_t::composite_crit_chance_multiplier() * player->composite_melee_crit_chance_multiplier();
+}
+
+double attack_t::composite_haste() const
+{
+  return action_t::composite_haste() * player->cache.attack_haste();
+}
+
+double attack_t::composite_expertise() const
+{
+  return base_attack_expertise + player->cache.attack_expertise();
+}
+
+double attack_t::composite_versatility(const action_state_t* state) const
+{
+  return action_t::composite_versatility(state) + player->cache.damage_versatility();
 }
 
 void attack_t::attack_table_t::build_table( double miss_chance,
@@ -286,6 +350,18 @@ void attack_t::init()
     may_glance = false;
 }
 
+double attack_t::recharge_multiplier( const cooldown_t& cd ) const
+{
+  double m = action_t::recharge_multiplier( cd );
+
+  if ( cd.hasted )
+  {
+    m *= player->cache.attack_haste();
+  }
+
+  return m;
+}
+
 void attack_t::reschedule_auto_attack( double old_swing_haste )
 {
   if ( player->cache.attack_speed() == old_swing_haste )
@@ -321,9 +397,21 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
   }
 }
 
+void attack_t::reset()
+{
+  attack_table.reset();
+  action_t::reset();
+}
+
 // ==========================================================================
 // Melee Attack
 // ==========================================================================
+
+melee_attack_t::melee_attack_t(const std::string& n, player_t* p)
+  : melee_attack_t(n, p, spell_data_t::nil())
+{
+
+}
 
 melee_attack_t::melee_attack_t( const std::string& n, player_t* p, const spell_data_t* s )
   : attack_t( n, p, s )
@@ -403,6 +491,11 @@ proc_types melee_attack_t::proc_type() const
 // ==========================================================================
 // Ranged Attack
 // ==========================================================================
+
+ranged_attack_t::ranged_attack_t(const std::string& token, player_t* p)
+  : ranged_attack_t(token, p, spell_data_t::nil())
+{
+}
 
 ranged_attack_t::ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s )
   : attack_t( token, p, s )

@@ -5,21 +5,20 @@
 
 environment:
   matrix:
-  - image: Visual Studio 2015
-    varProject: vs/simc_vs2015.vcxproj
-
-# Disabled for now, MS Build not working properly with VS 2017
-#  - image: Visual Studio 2017
-#    varProject: vs/simc_vs2017.vcxproj
+#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+#    varProject: vs/simc_vs2015.vcxproj
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    varProject: vs/simc_vs2017.vcxproj
+    configuration: WebEngine-NoNetworking
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    varProject: vs/simc_vs2019.vcxproj
+    configuration: Debug-NoNetworking
     
 # fetch repository as zip archive
 shallow_clone: true
 
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: x64
-
-# build Configuration, i.e. Debug, Release, etc.
-configuration: WebEngine-NoNetworking
 
 
 # Custom build Configuration, i.e. Debug, Release, etc.

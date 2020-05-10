@@ -5,7 +5,7 @@
 
 # To build on Unix/Mac/Windows: make
 
-# To build debuggable executable, add OPTS=-g to cmd-line invocation
+# To build debuggable executable, add DEBUG=1 to cmd-line invocation
 # By default, 32-bit binary is built.  To build a 64-bit binary, add BITS=64 to the cmd-line invocation
 # Override MODULE on the cmd-line invocation if you want to build a custom named executable, e.g. 'simc64'
 # Override OBJ_DIR if you want your object files built somewhere other than the local directory
@@ -55,12 +55,12 @@ endif
 
 MKDIR      = mkdir
 CXX        = c++
-CPP_FLAGS  = -Wall -Wextra -W -I. -I./util -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++14 -O3 -MMD -MP \
+CPP_FLAGS  = -Wall -Wextra -W -I. -I./include -I./lib -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++14 -O3 -MMD -MP \
 -Wpedantic \
 -Wcast-qual \
 -Wconversion-null
 
-OPTS       =
+OPTS_INTERNAL       =
 GIT        = $(shell [ -d ../.git ] && which git)
 
 LINK_LIBS  =
@@ -68,7 +68,7 @@ LINK_LIBS  =
 ifeq (${SC_NO_NETWORKING},)
   LINK_LIBS += -lcurl
 else
-  OPTS += -DSC_NO_NETWORKING
+  OPTS_INTERNAL += -DSC_NO_NETWORKING
 endif
 
 # Include build setting from user configuration file
@@ -78,14 +78,14 @@ endif
 DUMPMACHINE =$(shell $(CXX) -dumpmachine)
 # SSE2 is explicitly disabled for 32bit MINGW.
 ifeq ($(findstring i686-w64-mingw32,${DUMPMACHINE}),)
-  OPTS += -msse2 -mfpmath=sse
+  OPTS_INTERNAL += -msse2 -mfpmath=sse
 endif
 
 # OSX
 ifeq (${FLAVOR},Darwin)
   # Workaround for XCode 11 issues when using optimized builds. Potentially related to
   # https://forums.developer.apple.com/thread/121887
-  CPP_FLAGS += -mmacosx-version-min=10.14
+  CPP_FLAGS += -mmacosx-version-min=10.12
 ifeq (${OPENSSL},)
   LINK_LIBS += -framework Security -framework CoreFoundation
 endif
@@ -93,6 +93,9 @@ endif
 
 ifneq (${DEBUG},)
   CPP_FLAGS += -g
+endif
+ifneq (${CURL_DEBUG},)
+  CPP_FLAGS += -DCURL_DEBUG
 endif
 ifneq (${EVENT_QUEUE_DEBUG},)
   CPP_FLAGS += -DEVENT_QUEUE_DEBUG
@@ -104,37 +107,37 @@ ifneq (${C++17},)
   CPP_FLAGS += --std=c++17
 endif
 ifneq (${LTO},)
-  OPTS += -flto
+  OPTS_INTERNAL += -flto
 endif
 
 ifneq (${LTO_THIN},)
-  OPTS += -flto=thin
+  OPTS_INTERNAL += -flto=thin
   -fuse-ld=lld
 endif
 ifneq (${MARCH_NATIVE},)
-  OPTS += -march=native
+  OPTS_INTERNAL += -march=native
 endif
 ifneq (${FFAST-MATH},)
-  OPTS += -ffast-math
+  OPTS_INTERNAL += -ffast-math
 endif
 
 ifeq (32,${BITS})
-  OPTS += -m32
+  OPTS_INTERNAL += -m32
 endif
 ifeq (64,${BITS})
-  OPTS += -m64
+  OPTS_INTERNAL += -m64
 endif
 
 ifneq (${SANITIZE},)
-  OPTS += -fsanitize=address
+  OPTS_INTERNAL += -fsanitize=address
 endif
 
 ifneq (${LLVM_PGO_GENERATE},)
-  OPTS += -fprofile-instr-generate
+  OPTS_INTERNAL += -fprofile-instr-generate
 endif
 
 ifneq (${LLVM_PGO_USE},)
-  OPTS += -fprofile-instr-use=${LLVM_PGO_USE}
+  OPTS_INTERNAL += -fprofile-instr-use=${LLVM_PGO_USE}
 endif
 
 ifneq (${SC_DEFAULT_APIKEY},)
@@ -146,7 +149,7 @@ ifneq (${OPENSSL},)
     CPP_FLAGS += -I${OPENSSL_PATH}/include
     LINK_LIBS += -L${OPENSSL_PATH}/lib
   endif
-  OPTS += -DSC_USE_OPENSSL
+  OPTS_INTERNAL += -DSC_USE_OPENSSL
 ifeq (WINDOWS,${OS})
   LINK_LIBS += -lssleay32
 else
@@ -189,8 +192,8 @@ include ../source_files/engine_make
 include ../source_files/engine_main_make
 
 ifneq (,${GIT})
-  OPTS += -DSC_GIT_REV="\"$(shell ${GIT} rev-parse --short HEAD)\""
-  OPTS += -DSC_GIT_BRANCH="\"$(shell ${GIT} rev-parse --abbrev-ref HEAD)\""
+  OPTS_INTERNAL += -DSC_GIT_REV="\"$(shell ${GIT} rev-parse --short HEAD)\""
+  OPTS_INTERNAL += -DSC_GIT_BRANCH="\"$(shell ${GIT} rev-parse --abbrev-ref HEAD)\""
 endif
 
 SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC)) $(filter %.inc, $(SRC))
@@ -208,14 +211,14 @@ all: $(MODULE)
 
 -include $(SRC_DEPS)
 
-debug:OPTS += -g -fno-omit-frame-pointer -O0 -fno-optimize-sibling-calls
+debug:OPTS_INTERNAL += -g -fno-omit-frame-pointer -O0 -fno-optimize-sibling-calls
 debug: $(MODULE)
 
 release:CPP_FLAGS += -DNDEBUG
 release: $(MODULE)
 
 optimized:CPP_FLAGS += -DNDEBUG
-optimized:OPTS += -march=native -ffast-math -fomit-frame-pointer
+optimized:OPTS_INTERNAL += -march=native -ffast-math -fomit-frame-pointer
 optimized: $(MODULE)
 
 install: all
@@ -230,15 +233,15 @@ endif
 
 $(MODULE): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
-	@$(CXX) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	@$(CXX) $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
-	-@echo [$(MODULE)] Compiling $(notdir $<)
-	@$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
+	-@echo [$(MODULE)] Compiling $<
+	@$(CXX) $(CPP_FLAGS) $(OPTS_INTERNAL) $(OPTS) -c $< -o $@
 
 %.s: %.cpp $(SRC_H)
-	-@echo [$(MODULE)] Compiling $(notdir $<)
-	$(CXX) $(CPP_FLAGS) $(OPTS) -S $< -o $@
+	-@echo [$(MODULE)] Compiling $<
+	$(CXX) $(CPP_FLAGS) $(OPTS_INTERNAL) $(OPTS) -S $< -o $@
 
 # Force regeneration of git_info.o on every recompilation to potntially get the
 # changed GIT shorthash into the binary
@@ -256,23 +259,23 @@ clean: mostlyclean
 # Unit Tests
 sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp util$(PATHSEP)sc_io.cpp sc_thread.cpp sc_util.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 rng$(MODULE_EXT): util$(PATHSEP)rng.cpp util$(PATHSEP)fmt$(PATHSEP)format.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 timeline$(MODULE_EXT): util$(PATHSEP)timeline.hpp util$(PATHSEP)timeline.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 sample_data$(MODULE_EXT): util$(PATHSEP)sample_data.hpp util$(PATHSEP)sample_data.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 sc_expressions$(MODULE_EXT): sim$(PATHSEP)sc_expressions.cpp sc_util.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 # Deprecated targets
 

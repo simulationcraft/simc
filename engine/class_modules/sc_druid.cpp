@@ -3452,10 +3452,11 @@ struct feral_frenzy_driver_t : public cat_attack_t
   };
 
   double tick_ap_ratio;
-  feral_frenzy_driver_t(druid_t* p, const std::string& /*options_str*/) :
+  feral_frenzy_driver_t(druid_t* p, const std::string& options_str) :
     cat_attack_t("feral_frenzy", p, p->find_spell(274837) )
   {
-    //ffdot = new feral_frenzy_dot_t(p);
+    parse_options(options_str);
+
     tick_action = new feral_frenzy_dot_t(p);
     tick_action->stats = stats;
     //hasted_ticks = true;
@@ -10862,8 +10863,8 @@ struct fangs_of_ashamane_t : public scoped_actor_callback_t<druid_t>
   {
     // Fangs of Ashamane act as a 2 handed weapon when in Cat Form.
     unsigned ilevel = p -> items[ SLOT_MAIN_HAND ].item_level();
-    double mod = p -> sim -> dbc.item_damage_2h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ]
-                / p -> sim -> dbc.item_damage_1h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ];
+    double mod = p -> sim -> dbc.item_damage_2h( ilevel ).value( ITEM_QUALITY_ARTIFACT )
+                / p -> sim -> dbc.item_damage_1h( ilevel ).value( ITEM_QUALITY_ARTIFACT );
     p -> cat_weapon.min_dmg *= mod;
     p -> cat_weapon.max_dmg *= mod;
     p -> cat_weapon.damage  *= mod;

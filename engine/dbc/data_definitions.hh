@@ -170,35 +170,9 @@ struct item_upgrade_t {
   unsigned ilevel_delta;
 };
 
-struct random_prop_data_t {
-  unsigned ilevel;
-  unsigned damage_replace_stat;
-  unsigned damage_secondary;
-  double   p_epic[5];
-  double   p_rare[5];
-  double   p_uncommon[5];
-};
-
 struct random_suffix_group_t {
   unsigned    id;
   unsigned    suffix_id[48];
-};
-
-struct item_enchantment_data_t {
-  unsigned    id;
-  int         slot;
-  unsigned    id_gem;
-  int         id_scaling;
-  unsigned    min_scaling_level;   // need to verify these
-  unsigned    max_scaling_level;
-  unsigned    req_skill;
-  unsigned    req_skill_value;
-  unsigned    ench_type[3];        // item_enchantment
-  int         ench_amount[3];
-  unsigned    ench_prop[3];        // item_mod_type
-  double      ench_coeff[3];       // item enchant scaling multiplier for data table
-  unsigned    id_spell;            // reverse mapped spell id for this enchant
-  const char* name;
 };
 
 #define MAX_ITEM_EFFECT 5
@@ -260,21 +234,9 @@ struct item_scale_data_t {
   double   values[7];             // quality based values for dps
 };
 
-struct item_armor_type_data_t {
-  unsigned ilevel;
-  double   armor_type[4];
-};
-
 struct item_socket_cost_data_t {
   unsigned ilevel;
   double   cost;
-};
-
-struct gem_property_data_t {
-  unsigned id;
-  unsigned enchant_id;
-  unsigned color;
-  unsigned min_ilevel;
 };
 
 

@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "config.hpp"
 #include <functional>
 #include <string>
 #include <vector>
@@ -14,7 +15,7 @@
 #include "player/sc_actor_pair.hpp"
 #include "util/sample_data.hpp"
 #include "util/timeline.hpp"
-#include "util/sc_uptime.hpp"
+#include "sim/uptime.hpp"
 
 struct buff_t;
 struct stat_buff_t;

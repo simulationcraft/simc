@@ -7,7 +7,7 @@ include(../source_files/cmake_engine.txt)
 
 # Define engine library
 add_library(engine ${source_files})
-target_include_directories(engine PUBLIC . ./util)
+target_include_directories(engine PUBLIC . ./include ./lib)
 
 # Make cmake selections visible to C++ code
 if(SC_NO_THREADING)
@@ -26,12 +26,17 @@ endif()
 
 # Networking libs
 if(NOT SC_NO_NETWORKING)
-    find_package(CURL REQUIRED)
-    if (CURL_FOUND)
-        target_link_libraries(engine ${CURL_LIBRARIES})
-        target_include_directories(engine PUBLIC ${CURL_INCLUDE_DIRS})
-    else(CURL_FOUND)
-        message(FATAL_ERROR "libcurl not found")
+    if(NOT WIN32)
+        find_package(CURL REQUIRED)
+        if (CURL_FOUND)
+            target_link_libraries(engine ${CURL_LIBRARIES})
+            target_include_directories(engine PUBLIC ${CURL_INCLUDE_DIRS})
+        else(CURL_FOUND)
+            message(FATAL_ERROR "libcurl not found")
+        endif()
+    else()
+        target_link_libraries(engine crypt32)
+        target_link_libraries(engine wininet)
     endif()
 endif()
 

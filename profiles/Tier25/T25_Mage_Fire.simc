@@ -9,7 +9,7 @@ talents=3031022
 azerite_essences=27:3/4:3/5:3/35:3
 
 # Default consumables
-potion=unbridled_fury
+potion=superior_battle_potion_of_intellect
 flask=greater_flask_of_endless_fathoms
 food=baked_port_tato
 augmentation=battle_scarred
@@ -182,16 +182,16 @@ legs=corporeal_supplicants_trousers,id=174127,bonus_id=4824/1517/6573
 feet=psychics_subtle_slippers,id=174123,bonus_id=4824/1517/6573
 finger1=logic_loop_of_division,id=169157,bonus_id=4779/1522,enchant=accord_of_versatility
 finger2=overclocking_bit_band,id=169159,bonus_id=4779/1522,enchant=accord_of_haste
-trinket1=psyche_shredder,id=174060,bonus_id=4824/1517
+trinket1=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 trinket2=corrupted_gladiators_badge,id=172669,ilevel=460
 main_hand=shglayos_astral_malignity,id=174108,bonus_id=4824/1517,enchant=torrent_of_elements
 off_hand=uhnish_vwah,id=172190,bonus_id=4824/1517/6573
 
 # Gear Summary
-# gear_ilvl=478.31
+# gear_ilvl=476.44
 # gear_stamina=20486
-# gear_intellect=12719
-# gear_crit_rating=1246
+# gear_intellect=11996
+# gear_crit_rating=1464
 # gear_haste_rating=1299
 # gear_mastery_rating=1041
 # gear_versatility_rating=633

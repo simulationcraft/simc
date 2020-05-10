@@ -2,7 +2,8 @@ ORG_NAME    = SimulationCraft
 APP_NAME    = SimulationCraft
 
 INCLUDEPATH = ../engine
-INCLUDEPATH += ../engine/util
+INCLUDEPATH += ../engine/include
+INCLUDEPATH += ../engine/lib
 DEPENDPATH  = ../engine
 VPATH       = ..
 CONFIG      += c++14
@@ -80,13 +81,13 @@ macx {
 }
 
 win32 {
-  LIBS += -lshell32
+  QMAKE_CXXFLAGS += /MP
   win32-msvc {
-    QMAKE_CXXFLAGS_RELEASE += /O2 /MP /GL
+    QMAKE_CXXFLAGS_RELEASE += /O2 /GL
     QMAKE_CXXFLAGS_WARN_ON += /w44800 /w44100 /w44065
   }
 
-  win32-msvc2017 {
+  win32-msvc2017|win32-msvc2019 {
     QMAKE_CXXFLAGS += /permissive-
   }
 
@@ -101,7 +102,7 @@ win32 {
       QMAKE_CXXFLAGS_RELEASE += /GL
     }
 
-    win32-msvc2015 {
+    win32-msvc2015|win32-msvc2017|win32-msvc2019 {
       QMAKE_CXXFLAGS_RELEASE += /GL
       QMAKE_LFLAGS_RELEASE   += /LTCG /USEPROFILE /PGD:"..\SimulationCraft.pgd"
     }
@@ -119,21 +120,12 @@ isEmpty(SC_NO_NETWORKING) {
     PKGCONFIG += libcurl
   }
 
-  macx:{
+  macx {
     LIBS += -lcurl
   }
 
   win32 {
-    isEmpty(CURL_ROOT) {
-      CURL_ROOT = $$(CURL_ROOT)
-    }
-
-    isEmpty(CURL_ROOT) {
-      error(Libcurl (https://curl.haxx.se) windows libraries must be built and output base directory set in CURL_ROOT)
-    }
-
-    INCLUDEPATH += "$$CURL_ROOT/include"
-    LIBS += "$$CURL_ROOT/lib/libcurl.lib"
+    LIBS += wininet.lib crypt32.lib
   }
 }
 

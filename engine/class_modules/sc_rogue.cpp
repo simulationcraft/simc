@@ -6062,7 +6062,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( this, "Shadow Dance", "use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Use Dance off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds -> add_action( this, "Symbols of Death", "use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
-    cds -> add_action( "call_action_list,name=essences,if=!stealthed.all&dot.nightblade.ticking" );
+    cds -> add_action( "call_action_list,name=essences,if=!stealthed.all&dot.nightblade.ticking|essence.breath_of_the_dying.major&time>=2" );
     cds -> add_action( "pool_resource,for_next=1,if=!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
     cds -> add_talent( this, "Shuriken Tornado", "if=energy>=60&dot.nightblade.ticking&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
     cds -> add_action( this, "Symbols of Death", "if=dot.nightblade.ticking&!cooldown.shadow_blades.up&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!essence.blood_of_the_enemy.major|cooldown.blood_of_the_enemy.remains>2)&(azerite.nights_vengeance.rank<2|buff.nights_vengeance.up)", "Use Symbols on cooldown (after first Nightblade) unless we are going to pop Tornado and do not have Shadow Focus." );

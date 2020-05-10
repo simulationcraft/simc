@@ -12,15 +12,20 @@
 #include <string>
 #include <functional>
 #include <unordered_map>
-#include <iostream>
+#include <iosfwd>
 
 #include "data_definitions.hh"
 #include "data_enums.hh"
 #include "specialization.hpp"
 #include "sc_enums.hpp"
-#include "sc_util.hpp"
+#include "util/util.hpp"
 
 #include "dbc/azerite.hpp"
+#include "dbc/rand_prop_points.hpp"
+#include "dbc/spell_item_enchantment.hpp"
+#include "dbc/item_armor.hpp"
+#include "dbc/item_weapon.hpp"
+#include "dbc/gem_data.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -33,7 +38,6 @@ struct item_t;
 
 const unsigned NUM_SPELL_FLAGS = 14;
 const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
-#define SC_USE_PTR 0
 
 struct stat_data_t
 {
@@ -87,10 +91,7 @@ std::size_t        n_items_noptr();
 std::size_t        n_items_ptr();
 const item_set_bonus_t* set_bonus( bool ptr );
 std::size_t             n_set_bonus( bool ptr );
-const item_enchantment_data_t* item_enchantments( bool ptr );
 const item_child_equipment_t* child_equipments( bool ptr );
-std::size_t        n_item_enchantments( bool ptr );
-const gem_property_data_t* gem_properties( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
 const char* specialization_string     ( specialization_e spec );
 double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
@@ -1468,15 +1469,6 @@ public:
   std::size_t n_items() const
   { return dbc::n_items( ptr ); }
 
-  const item_enchantment_data_t* item_enchantments() const
-  { return dbc::item_enchantments( ptr ); }
-
-  std::size_t n_item_enchantments() const
-  { return dbc::n_item_enchantments( ptr ); }
-
-  const gem_property_data_t* gem_properties() const
-  { return dbc::gem_properties( ptr ); }
-
   // Gametables removed in Legion
   double melee_crit_base( player_e, unsigned ) const
   { return 0.05; }
@@ -1552,20 +1544,42 @@ public:
   { return find_by_id<talent_data_t>( talent_id ); }
 
   const item_data_t*             item( unsigned item_id ) const;
-  const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) const;
-  const gem_property_data_t&     gem_property( unsigned gem_id ) const;
 
-  const random_prop_data_t&      random_property( unsigned ilevel ) const;
-  unsigned                            random_property_max_level() const;
-  const item_scale_data_t&       item_damage_1h( unsigned ilevel ) const;
-  const item_scale_data_t&       item_damage_2h( unsigned ilevel ) const;
-  const item_scale_data_t&       item_damage_caster_1h( unsigned ilevel ) const;
-  const item_scale_data_t&       item_damage_caster_2h( unsigned ilevel ) const;
+  const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) const
+  { return item_enchantment_data_t::find( enchant_id, ptr ); }
 
-  const item_scale_data_t&       item_armor_quality( unsigned ilevel ) const;
-  const item_scale_data_t&       item_armor_shield( unsigned ilevel ) const;
-  const item_armor_type_data_t&  item_armor_total( unsigned ilevel ) const;
-  const item_armor_type_data_t&  item_armor_inv_type( unsigned inv_type ) const;
+  const gem_property_data_t&     gem_property( unsigned gem_id ) const
+  { return gem_property_data_t::find( gem_id, ptr ); }
+
+  const random_prop_data_t&      random_property( unsigned ilevel ) const
+  { return random_prop_data_t::find( ilevel, ptr ); }
+
+  unsigned                       random_property_max_level() const
+  { return random_prop_data_t::data( ptr ).back().ilevel; }
+
+  const item_damage_one_hand_data_t& item_damage_1h( unsigned ilevel ) const
+  { return item_damage_one_hand_data_t::find( ilevel, ptr ); }
+
+  const item_damage_two_hand_data_t& item_damage_2h( unsigned ilevel ) const
+  { return item_damage_two_hand_data_t::find( ilevel, ptr ); }
+
+  const item_damage_one_hand_caster_data_t& item_damage_caster_1h( unsigned ilevel ) const
+  { return item_damage_one_hand_caster_data_t::find( ilevel, ptr ); }
+
+  const item_damage_two_hand_caster_data_t& item_damage_caster_2h( unsigned ilevel ) const
+  { return item_damage_two_hand_caster_data_t::find( ilevel, ptr ); }
+
+  const item_armor_quality_data_t& item_armor_quality( unsigned ilevel ) const
+  { return item_armor_quality_data_t::find( ilevel, ptr ); }
+
+  const item_armor_shield_data_t& item_armor_shield( unsigned ilevel ) const
+  { return item_armor_shield_data_t::find( ilevel, ptr ); }
+
+  const item_armor_total_data_t&  item_armor_total( unsigned ilevel ) const
+  { return item_armor_total_data_t::find( ilevel, ptr ); }
+
+  const item_armor_location_data_t& item_armor_inv_type( unsigned inv_type ) const
+  { return item_armor_location_data_t::find( inv_type, ptr ); }
 
   std::vector<const item_bonus_entry_t*> item_bonus( unsigned bonus_id ) const;
 
@@ -1755,23 +1769,6 @@ struct id_member_policy
   { return static_cast<unsigned>( t.id ); }
 };
 
-template<typename T, typename KeyPolicy = id_function_policy>
-struct id_compare
-{
-  bool operator () ( const T& t, unsigned int id ) const
-  { return KeyPolicy::id( t ) < id; }
-  bool operator () ( const T* t, unsigned int id ) const
-  { return KeyPolicy::id( *t ) < id; }
-  bool operator () ( unsigned int id, const T& t ) const
-  { return id < KeyPolicy::id( t ); }
-  bool operator () ( unsigned int id, const T* t ) const
-  { return id < KeyPolicy::id( *t ); }
-  bool operator () ( const T& l, const T& r ) const
-  { return KeyPolicy::id( l ) < KeyPolicy::id( r ); }
-  bool operator () ( const T* l, const T* r ) const
-  { return KeyPolicy::id( *l ) < KeyPolicy::id( *r ); }
-};
-
 template <typename T, typename KeyPolicy = id_function_policy>
 class dbc_index_t
 {
@@ -1821,11 +1818,14 @@ public:
   T* get( bool ptr, unsigned id ) const
   {
     assert( initialized( maybe_ptr( ptr ) ) );
-    T* p = std::lower_bound( idx[ maybe_ptr( ptr ) ].first, idx[ maybe_ptr( ptr ) ].second, id, id_compare<T, KeyPolicy>() );
-    if ( p != idx[ maybe_ptr( ptr ) ].second && KeyPolicy::id( *p ) == id )
+    const index_t& index = idx[ maybe_ptr( ptr ) ];
+    T* p = std::lower_bound( index.first, index.second, id,
+                             [](const T& lhs, unsigned rhs) {
+                               return KeyPolicy::id( lhs ) < rhs;
+                             } );
+    if ( p != index.second && KeyPolicy::id( *p ) == id )
       return p;
-    else
-      return nullptr;
+    return nullptr;
   }
 };
 
@@ -1833,25 +1833,17 @@ template <typename T, typename Filter, typename KeyPolicy = id_function_policy>
 class filtered_dbc_index_t
 {
 #if SC_USE_PTR == 0
-  std::vector<T*> __filtered_index[ 1 ];
+  std::vector<const T*> __filtered_index[ 1 ];
 #else
-  std::vector<T*> __filtered_index[ 2 ];
+  std::vector<const T*> __filtered_index[ 2 ];
 #endif
   Filter f;
 
 public:
-  typedef typename std::vector<T*>::const_iterator citerator;
-
-  citerator begin( bool ptr ) const
-  { return __filtered_index[ maybe_ptr( ptr ) ].begin(); }
-
-  citerator end( bool ptr ) const
-  { return __filtered_index[ maybe_ptr( ptr ) ].end(); }
-
   // Initialize index from given list
-  void init( T* list, bool ptr )
+  void init( const T* list, bool ptr )
   {
-    T* i = list;
+    const T* i = list;
 
     while ( KeyPolicy::id( *i ) )
     {
@@ -1864,84 +1856,14 @@ public:
     }
   }
 
-  template<typename UnaryPredicate>
-  const T* get( bool ptr, UnaryPredicate f ) const
+  template <typename Predicate>
+  const T* get( bool ptr, Predicate&& pred ) const
   {
-    for ( citerator i = begin( ptr ), e = end( ptr ); i < e; ++i )
-    {
-      if ( f( *i ) )
-      {
-        return *i;
-      }
-    }
-
+    const auto& index = __filtered_index[ maybe_ptr( ptr ) ];
+    auto it = range::find_if( index, std::forward<Predicate>( pred ) );
+    if ( it != index.end() )
+      return *it;
     return nullptr;
-  }
-
-  const T* get( bool ptr, unsigned id ) const
-  {
-    const T* p = std::lower_bound( __filtered_index[ maybe_ptr( ptr ) ].begin(),
-                                   __filtered_index[ maybe_ptr( ptr ) ].end(),
-                                   id, id_compare<T, KeyPolicy>() );
-
-    if ( p != __filtered_index[ maybe_ptr( ptr ) ].end() && KeyPolicy::id( *p ) == id )
-      return p;
-    else
-      return nullptr;
-  }
-};
-
-template <typename T, typename KeyPolicy = id_function_policy>
-class ordered_dbc_index_t
-{
-private:
-  typedef std::vector<T*> index_t;
-// array of size 1 or 2, depending on whether we have PTR data
-#if SC_USE_PTR == 0
-  index_t idx[ 1 ];
-#else
-  index_t idx[ 2 ];
-#endif
-
-  // Create an ordered vector of pointers to exported client data.
-  void populate( index_t& idx, T* list )
-  {
-    assert( list );
-    // for ( auto last_id = 0U; KeyPolicy::id( *list ); last_id = KeyPolicy::id( *list ), ++list )
-    for ( ; KeyPolicy::id( *list ); ++list )
-    {
-      idx.push_back( list );
-    }
-
-    range::sort( idx, id_compare<T, KeyPolicy>() );
-  }
-public:
-  // Initialize index from given list
-  void init( T* list, bool ptr )
-  {
-    assert( ! initialized( maybe_ptr( ptr ) ) );
-    populate( idx[ maybe_ptr( ptr ) ], list );
-  }
-
-  // Initialize index under the assumption that 'T::list( bool ptr )' returns a list of data
-  void init()
-  {
-    init( T::list( false ), false );
-    if ( SC_USE_PTR )
-      init( T::list( true ), true );
-  }
-
-  bool initialized( bool ptr = false ) const
-  { return idx[ maybe_ptr( ptr ) ].size() != 0; }
-
-  // Return the item with the given id, or NULL
-  T* get( bool ptr, unsigned id ) const
-  {
-    auto p = std::lower_bound( idx[ maybe_ptr( ptr ) ].begin(), idx[ maybe_ptr( ptr ) ].end(), id, id_compare<T, KeyPolicy>() );
-    if ( p != idx[ maybe_ptr( ptr ) ].end() && KeyPolicy::id( **p ) == id )
-      return *p;
-    else
-      return nullptr;
   }
 };
 

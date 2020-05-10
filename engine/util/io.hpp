@@ -7,7 +7,7 @@
 #define SC_IO_HPP
 
 #include "config.hpp"
-#include "util/fmt/printf.h"
+#include "fmt/printf.h"
 #include <string>
 #include <vector>
 #include <fstream>

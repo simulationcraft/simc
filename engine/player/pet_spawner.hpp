@@ -5,7 +5,9 @@
 #ifndef PET_SPAWNER_HPP
 #define PET_SPAWNER_HPP
 
-#include "simulationcraft.hpp"
+#include "config.hpp"
+#include "spawner_base.hpp"
+#include "player/sc_player.hpp"
 
 namespace spawner
 {

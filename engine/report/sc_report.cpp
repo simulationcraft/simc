@@ -3,9 +3,17 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "sc_report.hpp"
+#include "buff/sc_buff.hpp"
 #include "dbc/sc_spell_info.hpp"
+#include "dbc/spell_query/spell_data_expr.hpp"
+#include "item/item.hpp"
+#include "player/sc_player.hpp"
+#include "player/pet.hpp"
+#include "sim/artifact_power.hpp"
+#include "sim/scale_factor_control.hpp"
+#include "sim/sc_sim.hpp"
+#include "util/xml.hpp"
 
 // ==========================================================================
 // Report

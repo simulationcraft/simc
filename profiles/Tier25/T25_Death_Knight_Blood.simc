@@ -39,14 +39,19 @@ actions+=/fireblood
 actions+=/bag_of_tricks
 actions+=/use_items,if=cooldown.dancing_rune_weapon.remains>90
 actions+=/use_item,name=razdunks_big_red_button
-actions+=/use_item,name=merekthas_fang
+actions+=/use_item,name=cyclotronic_blast,if=cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>cast_time
+actions+=/use_item,name=azsharas_font_of_power,if=(cooldown.dancing_rune_weapon.remains<5&target.time_to_die>15)|(target.time_to_die<34)
+actions+=/use_item,name=merekthas_fang,if=(cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>3)&!raid_event.adds.exists|raid_event.adds.in>15
 actions+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down
 actions+=/use_item,name=ashvanes_razor_coral,if=target.health.pct<31&equipped.dribbling_inkpod
 actions+=/use_item,name=ashvanes_razor_coral,if=buff.dancing_rune_weapon.up&debuff.razor_coral_debuff.up&!equipped.dribbling_inkpod
+actions+=/vampiric_blood
 actions+=/potion,if=buff.dancing_rune_weapon.up
 actions+=/dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
 actions+=/tombstone,if=buff.bone_shield.stack>=7
+actions+=/call_action_list,name=essences
 actions+=/call_action_list,name=standard
+
 
 actions.standard=death_strike,if=runic_power.deficit<=10
 actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up

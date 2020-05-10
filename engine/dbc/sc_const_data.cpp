@@ -3,9 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "dbc.hpp"
 
 #include "data_definitions.hh"
+#include "item_database.hpp"
+
 #include "generated/sc_spec_list.inc"
 #include "generated/sc_scale_data.inc"
 #include "generated/sc_talent_data.inc"
@@ -20,6 +22,9 @@
 #include "generated/sc_spell_lists_ptr.inc"
 #include "sc_extra_data_ptr.inc"
 #endif
+
+#include "player/sc_player.hpp"
+#include "item/item.hpp"
 
 namespace { // ANONYMOUS namespace ==========================================
 
@@ -2703,17 +2708,17 @@ double dbc_t::weapon_dps( const item_data_t* item_data, unsigned ilevel ) const
     case INVTYPE_WEAPONOFFHAND:
     {
       if ( item_data -> flags_2 & ITEM_FLAG2_CASTER_WEAPON )
-        return item_damage_caster_1h( ilvl ).values[ quality ];
+        return item_damage_caster_1h( ilvl ).value( quality );
       else
-        return item_damage_1h( ilvl ).values[ quality ];
+        return item_damage_1h( ilvl ).value( quality );
       break;
     }
     case INVTYPE_2HWEAPON:
     {
       if ( item_data -> flags_2 & ITEM_FLAG2_CASTER_WEAPON )
-        return item_damage_caster_2h( ilvl ).values[ quality ];
+        return item_damage_caster_2h( ilvl ).value( quality );
       else
-        return item_damage_2h( ilvl ).values[ quality ];
+        return item_damage_2h( ilvl ).value( quality );
       break;
     }
     case INVTYPE_RANGED:
@@ -2727,17 +2732,17 @@ double dbc_t::weapon_dps( const item_data_t* item_data, unsigned ilevel ) const
         case ITEM_SUBCLASS_WEAPON_GUN:
         case ITEM_SUBCLASS_WEAPON_CROSSBOW:
         {
-          return item_damage_2h( ilvl ).values[ quality ];
+          return item_damage_2h( ilvl ).value( quality );
         }
         // TODO: DBC ItemDamageThrown got removed
         case ITEM_SUBCLASS_WEAPON_THROWN:
         {
-          return item_damage_1h( ilvl ).values[ quality ];
+          return item_damage_1h( ilvl ).value( quality );
         }
         // TODO: DBC ItemDamageWand got removed
         case ITEM_SUBCLASS_WEAPON_WAND:
         {
-          return item_damage_caster_1h( ilvl ).values[ quality ];
+          return item_damage_caster_1h( ilvl ).value( quality );
         }
         default: break;
       }

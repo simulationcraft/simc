@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 #include "util/git_info.hpp"
 #include "sim/sc_profileset.hpp"
+#include "sim/sim_control.hpp"
 #include <locale>
 
 

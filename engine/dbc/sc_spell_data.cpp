@@ -3,10 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "dbc.hpp"
 #include "sim/sc_expressions.hpp"
-
 #include "azerite.hpp"
+#include "spell_query/spell_data_expr.hpp"
+#include "sim/sc_sim.hpp"
 
 namespace { // anonymous namespace ==========================================
 

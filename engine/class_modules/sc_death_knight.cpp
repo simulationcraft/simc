@@ -373,7 +373,6 @@ struct death_knight_td_t : public actor_target_data_t {
     // Frost
     dot_t* frost_fever;
     // Unholy
-    dot_t* outbreak;
     dot_t* soul_reaper;
     dot_t* virulent_plague;
   } dot;
@@ -405,9 +404,8 @@ public:
   double eternal_rune_weapon_counter;
   bool triggered_frozen_tempest;
 
-  // Enemies affected by festering wounds caching
-  int  festering_wounds_target_count;
-  bool festering_wounds_target_count_valid;
+  // Enemies affected by festering wounds
+  unsigned int festering_wounds_target_count;
 
   // Special azerite data
   double vision_of_perfection_minor_cdr, vision_of_perfection_major_coeff;
@@ -836,7 +834,6 @@ public:
     eternal_rune_weapon_counter( 0 ),
     triggered_frozen_tempest( false ),
     festering_wounds_target_count( 0 ),
-    festering_wounds_target_count_valid( true ),
     antimagic_shell( nullptr ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
@@ -928,7 +925,6 @@ public:
   void      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( const action_state_t* state, unsigned n = 1 );
-  int       count_festering_wounds_targets();
   void      default_apl_dps_precombat();
   void      default_apl_blood();
   void      default_apl_frost();
@@ -980,7 +976,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 {
   dot.blood_plague         = target -> get_dot( "blood_plague",         p );
   dot.frost_fever          = target -> get_dot( "frost_fever",          p );
-  dot.outbreak             = target -> get_dot( "outbreak",             p );
   dot.virulent_plague      = target -> get_dot( "virulent_plague",      p );
   dot.soul_reaper          = target -> get_dot( "soul_reaper",          p );
 
@@ -991,14 +986,14 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_period( 0_ms );
   debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
                            -> set_trigger_spell( p -> spec.festering_wound )
-                           -> set_cooldown( 0_ms ) // Handled by trigger_festering_wound
+                           -> set_cooldown( 0_ms ) // Handled by death_knight_t::trigger_festering_wound()
                            -> set_stack_change_callback( [ p ]( buff_t*, int old_, int new_ )
                            {
-                             // Invalidate the FW target count if needed
-                             if ( old_ == 0 || new_ == 0 )
-                             {
-                               p -> festering_wounds_target_count_valid = false;
-                             }
+                             // Update the FW target count if needed
+                             if ( old_ == 0 )
+                               p -> festering_wounds_target_count++;
+                             else if ( new_ == 0 )
+                               p -> festering_wounds_target_count--;
                            } );
 
   debuff.deep_cuts         = make_buff( *this, "deep_cuts", p -> find_spell( 272685 ) );
@@ -1419,8 +1414,8 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack;
 
-  death_knight_pet_t( death_knight_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true ) :
-    pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack )
+  death_knight_pet_t( death_knight_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
+    pet_t( owner -> sim, owner, name, guardian, dynamic ), use_auto_attack( auto_attack )
   {
     if ( auto_attack )
     {
@@ -1647,13 +1642,13 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
 };
 
 // ==========================================================================
-// Generic Unholy "ghoul" (Ghoul, Army ghouls)
+// Generic Unholy energy ghoul (main pet and Army/Apoc ghouls)
 // ==========================================================================
 
 struct base_ghoul_pet_t : public death_knight_pet_t
 {
-  base_ghoul_pet_t( death_knight_t* owner, const std::string& name, bool guardian = false ) :
-    death_knight_pet_t( owner, name, guardian, true )
+  base_ghoul_pet_t( death_knight_t* owner, const std::string& name, bool guardian = false, bool dynamic = true ) :
+    death_knight_pet_t( owner, name, guardian, true, dynamic )
   {
     main_hand_weapon.swing_time = 2.0_s;
   }
@@ -1688,7 +1683,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 };
 
 // ==========================================================================
-// Unholy basic ghoul pet
+// Unholy's permanent ghoul pet
 // ==========================================================================
 
 struct ghoul_pet_t : public base_ghoul_pet_t
@@ -1733,7 +1728,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   };
 
   ghoul_pet_t( death_knight_t* owner ) :
-    base_ghoul_pet_t( owner, "ghoul" , false )
+    base_ghoul_pet_t( owner, "ghoul" , false, false )
   {
     gnaw_cd = get_cooldown( "gnaw" );
     gnaw_cd -> duration = owner -> spell.pet_gnaw -> cooldown();
@@ -1784,7 +1779,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 };
 
 // ==========================================================================
-// Army of the Dead (and Apocalypse) Ghouls
+// Army of the Dead and Apocalypse ghouls
 // ==========================================================================
 
 struct army_ghoul_pet_t : public base_ghoul_pet_t
@@ -1983,7 +1978,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
 };
 
 // ==========================================================================
-// Risen Skulker (All Will Serve skelebro)
+// Risen Skulker (All Will Serve talent)
 // ==========================================================================
 
 struct risen_skulker_pet_t : public death_knight_pet_t
@@ -2002,7 +1997,8 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     }
   };
 
-  risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "risen_skulker", true, false )
+  risen_skulker_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "risen_skulker", true, false, false )
   {
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
@@ -5002,11 +4998,9 @@ struct frost_fever_t : public death_knight_spell_t
     // Figure out what is up with the "30% proc chance, diminishing beyond the first target" from blue post.
     // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
 
-    // 2019-07-20: Logs analysis points at a 30% proc chance on main target, and 7% chance on additional enemies
-    // We're using the player's target to evalute the "main" enemy that will have a 30% proc chance
-    // TODO: fix this behavior for situations where p() -> target will not be affected by the dot
-    // (should only happen if they're invulnerable but targetable, or if HB was used on a different target that is too far away)
-    double chance = d -> target == p() -> target ? 0.3 : 0.07;
+    // 2020-05-05: It would seem that the proc chance is 0.30 * sqrt(FeverCount) / FeverCount
+    unsigned ff_count = p() -> get_active_dots( internal_id );
+    double chance = 0.30 * std::sqrt( ff_count ) / ff_count;
 
     if ( rng().roll( chance ) )
     {
@@ -6520,9 +6514,6 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   // If the target wasn't affected by festering wound, return
   if ( n_wounds == 0 ) return;
 
-  // Invalidate the FW target count cache
-  festering_wounds_target_count_valid = false;
-
   // Generate the RP you'd have gained if you popped the wounds manually
   resource_gain( RESOURCE_RUNIC_POWER,
                  spec.festering_wound -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) * n_wounds,
@@ -6897,26 +6888,6 @@ void death_knight_t::vision_of_perfection_proc()
   }
 }
 
-int death_knight_t::count_festering_wounds_targets()
-{
-  // If the cache is valid, return the cached value
-  if ( festering_wounds_target_count_valid || specialization() != DEATH_KNIGHT_UNHOLY )
-    return festering_wounds_target_count;
-
-  int wounded_targets = 0;
-  for ( const auto fw_target : sim -> target_non_sleeping_list )
-  {
-    auto td = get_target_data( fw_target );
-
-    if ( td -> debuff.festering_wound -> check() )
-      wounded_targets++;
-  }
-  this -> festering_wounds_target_count = wounded_targets;
-  this -> festering_wounds_target_count_valid = true;
-
-  return wounded_targets;
-}
-
 
 // ==========================================================================
 // Death Knight Character Definition
@@ -7120,7 +7091,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( const std::string& na
 
     if ( util::str_compare_ci( splits[ 1 ], "fwounded_targets" ) && splits.size() == 2 )
       return make_fn_expr( "festering_wounds_target_count_expression", [ this ]() {
-        return this -> count_festering_wounds_targets();
+        return this -> festering_wounds_target_count;
       } );
   }
 
@@ -7611,6 +7582,7 @@ std::string death_knight_t::default_rune() const
 void death_knight_t::default_apl_blood()
 {
   action_priority_list_t* def      = get_action_priority_list( "default" );
+  action_priority_list_t* essences = get_action_priority_list( "essences" );
   action_priority_list_t* standard = get_action_priority_list( "standard" );
 
   // Setup precombat APL for DPS spec
@@ -7632,6 +7604,8 @@ void death_knight_t::default_apl_blood()
   // On-use items
   def -> add_action( "use_items,if=cooldown.dancing_rune_weapon.remains>90" );
   def -> add_action( "use_item,name=razdunks_big_red_button" );
+  def -> add_action( "use_item,name=cyclotronic_blast,if=cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>cast_time" );
+  def -> add_action( "use_item,name=azsharas_font_of_power,if=(cooldown.dancing_rune_weapon.remains<5&target.time_to_die>15)|(target.time_to_die<34)" );
   def -> add_action( "use_item,name=merekthas_fang,if=(cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>3)&!raid_event.adds.exists|raid_event.adds.in>15" );
   def -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down" );
   def -> add_action( "use_item,name=ashvanes_razor_coral,if=target.health.pct<31&equipped.dribbling_inkpod" );
@@ -7642,10 +7616,17 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
   def -> add_action( this, "Dancing Rune Weapon", "if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready" );
   def -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
+  def -> add_action( "call_action_list,name=essences" );
   def -> add_action( "call_action_list,name=standard" );
 
+  // Essences
+  essences -> add_action( this, "Concentraded Flame", "if=dot.concentrated_flame_burn.remains<2&!buff.dancing_rune_weapon.up" );
+  essences -> add_action( this, "Anima of Death", "if=buff.vampiric_blood.up&(raid_event.adds.exists|raid_event.adds.in>15)" );
+  essences -> add_action( this, "Memory of Lucid Dreams", "if=rune.time_to_1>gcd&runic_power<40" );
+  essences -> add_action( this, "Worldvein Resonance" );
+  essences -> add_action( this, "Ripple in Space", "if=!buff.dancing_rune_weapon.up" );
+
   // Single Target Rotation
-  standard -> add_action( this, "Concentrated Flame", "if=dot.concentrated_flame_burn.remains=0&!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
   standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20" );
@@ -8044,8 +8025,11 @@ void death_knight_t::create_buffs()
         -> set_default_value( 1.0 / ( 1.0 + spell.bone_shield -> effectN( 4 ).percent() ) )
         -> set_stack_change_callback( talent.foul_bulwark -> ok() ? [ this ]( buff_t*, int old_stacks, int new_stacks )
           {
-            double health_change = talent.foul_bulwark -> effectN( 1 ).percent() * new_stacks / old_stacks;
+            double fb_health = talent.foul_bulwark -> effectN( 1 ).percent();
+            double health_change = ( 1.0 + new_stacks * fb_health ) / ( 1.0 + old_stacks * fb_health );
+
             resources.initial_multiplier[ RESOURCE_HEALTH ] *= health_change;
+
             recalculate_resource_max( RESOURCE_HEALTH );
           } : buff_stack_change_callback_t() )
         // The internal cd in spelldata is for stack loss, handled in bone_shield_handler

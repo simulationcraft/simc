@@ -148,13 +148,13 @@ public:
     sc_timeline_t stagger_effective_damage_timeline;
     sc_timeline_t stagger_damage_pct_timeline;
     sc_timeline_t stagger_pct_timeline;
-    luxurious_sample_data_t* stagger_damage;
-    luxurious_sample_data_t* stagger_total_damage;
-    luxurious_sample_data_t* light_stagger_damage;
-    luxurious_sample_data_t* moderate_stagger_damage;
-    luxurious_sample_data_t* heavy_stagger_damage;
-    luxurious_sample_data_t* purified_damage;
-    luxurious_sample_data_t* staggering_strikes_cleared;
+    sample_data_helper_t* stagger_damage;
+    sample_data_helper_t* stagger_total_damage;
+    sample_data_helper_t* light_stagger_damage;
+    sample_data_helper_t* moderate_stagger_damage;
+    sample_data_helper_t* heavy_stagger_damage;
+    sample_data_helper_t* purified_damage;
+    sample_data_helper_t* staggering_strikes_cleared;
     double buffed_stagger_base;
     double buffed_stagger_pct_player_level, buffed_stagger_pct_target_level;
   } sample_datas;
@@ -1723,7 +1723,7 @@ public:
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield,
                               weapon_e weapon_type )
-    : pet_t( sim, owner, name, true ),
+    : pet_t( sim, owner, name, true, true ),
       attacks( SEF_ATTACK_MAX ),
       spells( SEF_SPELL_MAX - SEF_SPELL_MIN ),
       sticky_target( false ),

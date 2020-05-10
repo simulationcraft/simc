@@ -3,7 +3,14 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "dot.hpp"
+#include "action/sc_action.hpp"
+#include "action/sc_action_state.hpp"
+#include "player/sc_player.hpp"
+#include "player/stats.hpp"
+#include "sim/sc_expressions.hpp"
+#include "sim/sc_sim.hpp"
+#include "util/rng.hpp"
 
 // ==========================================================================
 // Dot
@@ -1380,4 +1387,85 @@ void dot_t::adjust_full_ticks( double coefficient )
   tick_event       = make_event<dot_tick_event_t>( *sim, this, new_tick_remains );
   end_event        = make_event<dot_end_event_t>( *sim, this, new_dot_remains );
   num_ticks        = current_tick + rounded_full_ticks_left;
+}
+
+inline dot_tick_event_t::dot_tick_event_t(dot_t* d, timespan_t time_to_tick) :
+  event_t(*d -> source, time_to_tick),
+  dot(d)
+{
+  if (sim().debug)
+    sim().out_debug.printf("New DoT Tick Event: %s %s %d-of-%d %.4f",
+      d->source->name(), dot->name(), dot->current_tick + 1, dot->num_ticks, time_to_tick.total_seconds());
+}
+
+
+void dot_tick_event_t::execute()
+{
+  dot->tick_event = nullptr;
+  dot->current_tick++;
+
+  if (dot->current_action->channeled &&
+    dot->current_action->action_skill < 1.0 &&
+    dot->remains() >= dot->current_action->tick_time(dot->state))
+  {
+    if (rng().roll(std::max(0.0, dot->current_action->action_skill - dot->current_action->player->current.skill_debuff)))
+    {
+      dot->tick();
+    }
+  }
+  else // No skill-check required
+  {
+    dot->tick();
+  }
+
+  // Some dots actually cancel themselves mid-tick. If this happens, we presume
+  // that the cancel has been "proper", and just stop event execution here, as
+  // the dot no longer exists.
+  if (!dot->is_ticking())
+    return;
+
+  if (!dot->current_action->consume_cost_per_tick(*dot))
+  {
+    return;
+  }
+
+  if (dot->channel_interrupt())
+  {
+    return;
+  }
+
+  // continue ticking
+  dot->schedule_tick();
+}
+
+dot_end_event_t::dot_end_event_t(dot_t* d, timespan_t time_to_end) :
+  event_t(*d -> source, time_to_end),
+  dot(d)
+{
+  if (sim().debug)
+    sim().out_debug.printf("New DoT End Event: %s %s %.3f",
+      d->source->name(), dot->name(), time_to_end.total_seconds());
+}
+
+void dot_end_event_t::execute()
+{
+  dot->end_event = nullptr;
+  if (dot->current_tick < dot->num_ticks)
+  {
+    dot->current_tick++;
+    dot->tick();
+  }
+  // If for some reason the last tick has already ticked, ensure that the next tick has not
+  // consumed any time yet, i.e., the last tick has occurred on the same timestamp as this end
+  // event. This situation may occur in conjunction with extensive dot extension, where the last
+  // rescheduling of the dot-end-event occurs between the second to last and last ticks. That will
+  // in turn flip the order of the dot-tick-event and dot-end-event.
+  else
+  {
+    assert(!dot->tick_event || (dot->tick_event && dot->time_to_tick == dot->tick_event->remains()));
+  }
+
+  // Aand sanity check that the dot has consumed all ticks just in case./
+  assert(dot->current_tick == dot->num_ticks);
+  dot->last_tick();
 }

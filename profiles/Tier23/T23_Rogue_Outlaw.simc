@@ -122,7 +122,7 @@ actions.finish+=/between_the_eyes,if=azerite.ace_up_your_sleeve.enabled|azerite.
 actions.finish+=/dispatch
 
 # Stealth
-actions.stealth=cheap_shot,target_if=min:debuff.prey_on_the_weak.remains,if=talent.prey_on_the_weak.enabled&target.is_add
+actions.stealth=cheap_shot,target_if=min:debuff.prey_on_the_weak.remains,if=talent.prey_on_the_weak.enabled&!target.is_boss
 actions.stealth+=/ambush
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=129/562/30/13

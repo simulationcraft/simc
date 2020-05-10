@@ -58,11 +58,14 @@
 #  error "Visual Studio 12 ( 2013 ) or lower not supported"
 #endif
 
-// Last updated 2017-11-07: Support gcc4.8 with partial C++14 support for now
-// Debian 8 (Jessie) (EOL 2018-06-17, LTS EOL 2020-06-30)with gcc 4.9 and clang3.5
+// Last updated 2020-05-05: Support gcc5 / clang 3.5 which hav (full) C++14 support
+// Ubuntu LTS EOL is +5 years, Debian has ~+3year EOL, +5 years with separate LTS support
+// Debian 8 (Jessie) (Release 2015-04): gcc 4.9 and clang3.5
 // Ubuntu 16.04: gcc 5.3, clang3.8
-// Debian 9 (Stretch) (EOL ~2020, LTS EOL ~2020): gcc 6.3 clang 3.8
+// Debian 9 (Stretch) (Release 2017-06): gcc 6.3 clang 3.8
 // Ubuntu 18.04: gcc 7.3 clang 6.0
+// Debian 10 (Buster) (Release 2019-07): gcc 8.3 clang 7
+// Ubuntu 20.04: gcc 9.3 clang 10
 #if defined( SC_CLANG ) && SC_CLANG < 30500
 #  error "clang++ below version 3.5 not supported"
 #endif
@@ -111,6 +114,16 @@
 #endif
 
 // ==========================================================================
+// Networking library
+// ==========================================================================
+
+#if !defined( SC_NO_NETWORKING ) && !defined( SC_WINDOWS )
+#  define SC_USE_CURL
+#elif !defined( SC_NO_NETWORKING ) && defined( SC_WINDOWS )
+#  define SC_USE_WININET
+#endif
+
+// ==========================================================================
 // Floating Point
 // ==========================================================================
 
@@ -118,5 +131,36 @@
  * Define our own m_pi since M_PI constant is actually only in POSIX math.h
  * */
 constexpr double m_pi = 3.14159265358979323846;
+
+// ==========================================================================
+// Simc related compilation defines
+// ==========================================================================
+
+#define SC_USE_STAT_CACHE
+
+#ifndef NDEBUG
+#define ACTOR_EVENT_BOOKKEEPING
+#endif
+
+#define RAPIDJSON_HAS_STDSTRING 1
+
+#define SC_USE_PTR 0
+
+// ==========================================================================
+// Simc related value definitions
+// ==========================================================================
+
+#define SC_MAJOR_VERSION "830"
+#define SC_MINOR_VERSION "02"
+#define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
+#define SC_BETA 0
+#if SC_BETA
+#define SC_BETA_STR "bfa"
+#endif
+
+constexpr int MAX_LEVEL = 120;
+constexpr int MAX_SCALING_LEVEL = 120;
+constexpr int MAX_ILEVEL = 1300;
+
 
 #endif // CONFIG_H

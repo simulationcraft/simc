@@ -3,7 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "reforge_plot.hpp"
+#include "scale_factor_control.hpp"
+#include "sim/sc_sim.hpp"
+#include "player/sc_player.hpp"
+#include "player/player_scaling.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================

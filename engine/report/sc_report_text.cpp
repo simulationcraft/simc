@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
+#include "sim/scale_factor_control.hpp"
 #include "fmt/chrono.h"
 
 namespace

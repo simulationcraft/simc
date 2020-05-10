@@ -12,7 +12,7 @@
 #include <cassert>
 #include <numeric>
 
-#include "generic.hpp"
+#include "util/generic.hpp"
 #include "sample_data.hpp"
 #include "sc_timespan.hpp"
 

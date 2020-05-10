@@ -4,7 +4,10 @@
 // ==========================================================================
 
 #include "sc_expressions.hpp"
-#include "simulationcraft.hpp"
+#include "action/sc_action.hpp"
+#include "player/sc_player.hpp"
+#include "sim/sc_sim.hpp"
+#include <atomic>
 
 namespace expression
 {
@@ -1331,6 +1334,31 @@ std::unique_ptr<expr_t> expr_t::parse( action_t* action, const std::string& expr
     std::throw_with_nested(std::runtime_error(fmt::format("Cannot parse expression from '{}'",
         expr_str)));
   }
+}
+
+target_wrapper_expr_t::target_wrapper_expr_t(action_t& a, const std::string& name_str, const std::string& expr_str) :
+  expr_t(name_str), action(a), suffix_expr_str(expr_str)
+{
+  std::generate_n(std::back_inserter(proxy_expr), action.sim->actor_list.size(), [] { return std::unique_ptr<expr_t>(); });
+}
+
+double target_wrapper_expr_t::evaluate()
+{
+  assert(target());
+
+  size_t actor_index = target()->actor_index;
+
+  if (proxy_expr[actor_index] == nullptr)
+  {
+    proxy_expr[actor_index] = target()->create_expression(suffix_expr_str);
+  }
+
+  return proxy_expr[actor_index]->eval();
+}
+
+player_t* target_wrapper_expr_t::target() const
+{
+  return action.target;
 }
 
 #ifdef UNIT_TEST

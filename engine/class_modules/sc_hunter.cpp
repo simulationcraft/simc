@@ -5601,14 +5601,14 @@ void hunter_t::apl_surv()
   cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13");
   cds -> add_action( "potion,if=buff.guardian_of_azeroth.up&(buff.berserking.up|buff.blood_fury.up|!race.troll)|(consumable.potion_of_unbridled_fury&target.time_to_die<61|target.time_to_die<26)|!essence.condensed_lifeforce.major&buff.coordinated_assault.up" );
   cds -> add_action( this, "Aspect of the Eagle", "if=target.distance>=6" );
-  cds -> add_action( "use_item,name=ashvanes_razor_coral,if=equipped.dribbling_inkpod&(debuff.razor_coral_debuff.down|time_to_pct_30<1|(health.pct<30&buff.guardian_of_azeroth.up|buff.memory_of_lucid_dreams.up))|(!equipped.dribbling_inkpod&(buff.memory_of_lucid_dreams.up|buff.guardian_of_azeroth.up&cooldown.guardian_of_azeroth.remains>175)|debuff.razor_coral_debuff.down)|target.time_to_die<20" );
+  cds -> add_action( "use_item,name=ashvanes_razor_coral,if=buff.memory_of_lucid_dreams.up&target.time_to_die<cooldown.memory_of_lucid_dreams.remains+15|buff.guardian_of_azeroth.stack=5&target.time_to_die<cooldown.guardian_of_azeroth.remains+20|debuff.razor_coral_debuff.down|target.time_to_die<21|buff.worldvein_resonance.remains&target.time_to_die<cooldown.worldvein_resonance.remains+18|!talent.birds_of_prey.enabled&target.time_to_die<cooldown.coordinated_assault.remains+20&buff.coordinated_assault.remains" );
   cds -> add_action( "use_item,name=galecallers_boon,if=cooldown.memory_of_lucid_dreams.remains|talent.wildfire_infusion.enabled&cooldown.coordinated_assault.remains|!essence.memory_of_lucid_dreams.major&cooldown.coordinated_assault.remains" );
   cds -> add_action( "use_item,name=azsharas_font_of_power" );
 	
   // Essences
   cds->add_action( "focused_azerite_beam,if=raid_event.adds.in>90&focus<focus.max-25|(active_enemies>1&!talent.birds_of_prey.enabled|active_enemies>2)&(buff.blur_of_talons.up&buff.blur_of_talons.remains>3*gcd|!buff.blur_of_talons.up)" );
-  cds->add_action( "blood_of_the_enemy,if=buff.coordinated_assault.up" );
-  cds->add_action( "purifying_blast" );
+  cds->add_action( "blood_of_the_enemy,if=((raid_event.adds.remains>90|!raid_event.adds.exists)|(active_enemies>1&!talent.birds_of_prey.enabled|active_enemies>2))&focus<focus.max" );
+  cds->add_action( "purifying_blast,if=((raid_event.adds.remains>60|!raid_event.adds.exists)|(active_enemies>1&!talent.birds_of_prey.enabled|active_enemies>2))&focus<focus.max" );
   cds->add_action( "guardian_of_azeroth" );
   cds->add_action( "ripple_in_space" );
   cds->add_action( "concentrated_flame,if=full_recharge_time<1*gcd" );
@@ -5629,7 +5629,7 @@ void hunter_t::apl_surv()
   st -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
   st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&buff.vipers_venom.remains<1*gcd" );
   st -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
-  st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&!ticking&!buff.memory_of_lucid_dreams.up&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up|!dot.wildfire_bomb.ticking&buff.mongoose_fury.stack<1)|time_to_die<18&!dot.wildfire_bomb.ticking" );
+  st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&refreshable&full_recharge_time<gcd&!buff.memory_of_lucid_dreams.up|focus+cast_regen<focus.max&(!dot.wildfire_bomb.ticking&(!buff.coordinated_assault.up|buff.mongoose_fury.stack<1|time_to_die<18|!dot.wildfire_bomb.ticking&azerite.wilderness_survival.rank>0))&!buff.memory_of_lucid_dreams.up" );
   st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|dot.serpent_sting.refreshable&!buff.coordinated_assault.up" );
   st -> add_talent( this, "A Murder of Crows", "if=!buff.coordinated_assault.up" );
   st -> add_action( this, "Coordinated Assault", "if=!buff.coordinated_assault.up" );

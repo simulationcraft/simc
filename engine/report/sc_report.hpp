@@ -8,14 +8,20 @@
 
 #include <array>
 #include <fstream>
-#include <iostream>
+#include <iosfwd>
 #include <sstream>
 
 #include "config.hpp"
 #include "sc_enums.hpp"
 #include "sc_highchart.hpp"
 #include "util/io.hpp"
-#include "sc_util.hpp"
+#include "util/util.hpp"
+
+// see if we can get rid of these includes by adjusting spell_decorator_t
+#include "action/sc_action.hpp"
+#include "buff/sc_buff.hpp"
+#include "item/item.hpp"
+#include "sim/sc_sim.hpp"
 
 struct player_t;
 struct action_t;
@@ -480,6 +486,43 @@ public:
   bool can_decorate() const override;
   std::string url_name() const override;
   std::string token() const override;
+};
+
+class buff_decorator_t : public spell_decorator_t<buff_t>
+{
+  using super = spell_decorator_t<buff_t>;
+
+protected:
+  std::vector<std::string> parms() const override;
+
+public:
+  buff_decorator_t(const buff_t* obj) :
+    super(obj)
+  { }
+
+  buff_decorator_t(const buff_t& obj) :
+    buff_decorator_t(&obj)
+  { }
+
+  // Buffs have pet names included in them
+  std::string url_name_prefix() const override;
+};
+
+class action_decorator_t : public spell_decorator_t<action_t>
+{
+  using super = spell_decorator_t<action_t>;
+
+protected:
+  std::vector<std::string> parms() const override;
+
+public:
+  action_decorator_t(const action_t* obj) :
+    super(obj)
+  { }
+
+  action_decorator_t(const action_t& obj) :
+    action_decorator_t(&obj)
+  { }
 };
 
 }  // namespace report

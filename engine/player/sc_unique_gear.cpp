@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "unique_gear.hpp"
 #include "simulationcraft.hpp"
 
 using namespace unique_gear;
@@ -4509,7 +4510,40 @@ const item_data_t* unique_gear::find_item_by_spell( const dbc_t& dbc, unsigned s
 namespace unique_gear
 {
 std::vector<special_effect_db_item_t> __special_effect_db, __fallback_effect_db;
+
+bool class_scoped_callback_t::valid(const special_effect_t& effect) const
+{
+  assert(effect.player);
+
+  if (class_.size() > 0 && range::find(class_, effect.player->type) == class_.end())
+  {
+    return false;
+  }
+
+  if (spec_.size() > 0 && range::find(spec_, effect.player->specialization()) == spec_.end())
+  {
+    return false;
+  }
+
+  return true;
 }
+
+void proc_attack_t::override_data(const special_effect_t& e)
+{
+  super::override_data(e);
+
+  if ((e.override_result_es_mask & RESULT_DODGE_MASK))
+  {
+    this->may_dodge = e.result_es_mask & RESULT_DODGE_MASK;
+  }
+
+  if ((e.override_result_es_mask & RESULT_PARRY_MASK))
+  {
+    this->may_parry = e.result_es_mask & RESULT_PARRY_MASK;
+  }
+}
+
+} // unique_gear
 
 namespace
 {

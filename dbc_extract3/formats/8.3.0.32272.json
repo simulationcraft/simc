@@ -308,15 +308,15 @@
     { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%6.3f" } }
   ],
   "ItemArmorShield": [
-    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%8.3f" } },
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } },
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } }
   ],
   "ItemArmorTotal": [
     { "data_type": "h", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-    { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%9.4f" } }
+    { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%14.5f" } },
+    { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%14.5f" } },
+    { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%14.5f" } },
+    { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%14.5f" } }
   ],
   "ItemBonus": [
     { "data_type": "i", "field": "val", "elements": 3, "formats": { "cpp": "%6u" } },
@@ -337,19 +337,19 @@
   ],
   "ItemDamageOneHand": [
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%9.3f" } }
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
   ],
   "ItemDamageOneHandCaster": [
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%9.3f" } }
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
   ],
   "ItemDamageTwoHand": [
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%9.3f" } }
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
   ],
   "ItemDamageTwoHandCaster": [
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
-    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%9.3f" } }
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
   ],
   "ItemEffect": [
     { "data_type": "b", "field": "index", "formats": { "cpp": "%3d" } },
@@ -561,11 +561,11 @@
     { "data_type": "i", "field": "index" }
   ],
   "RandPropPoints": [
-    { "data_type": "i", "field": "damage_replace_stat", "formats": { "cpp": "%5u" } },
-    { "data_type": "i", "field": "damage_secondary", "formats": { "cpp": "%5u" } },
-    { "data_type": "I", "field": "epic_points", "elements": 5, "formats": { "cpp": "%5u" } },
-    { "data_type": "I", "field": "rare_points", "elements": 5, "formats": { "cpp": "%5u" } },
-    { "data_type": "I", "field": "uncm_points", "elements": 5, "formats": { "cpp": "%5u" } }
+    { "data_type": "i", "field": "damage_replace_stat", "formats": { "cpp": "%8u" } },
+    { "data_type": "i", "field": "damage_secondary", "formats": { "cpp": "%8u" } },
+    { "data_type": "I", "field": "epic_points", "elements": 5, "formats": { "cpp": "%8u" } },
+    { "data_type": "I", "field": "rare_points", "elements": 5, "formats": { "cpp": "%8u" } },
+    { "data_type": "I", "field": "uncm_points", "elements": 5, "formats": { "cpp": "%8u" } }
   ],
   "RelicTalent": [
     { "data_type": "i", "field": "row" },

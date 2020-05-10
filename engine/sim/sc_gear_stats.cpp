@@ -3,7 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "player/gear_stats.hpp"
+#include "util/util.hpp"
+#include <sstream>
 
 // ==========================================================================
 // Gear Stats

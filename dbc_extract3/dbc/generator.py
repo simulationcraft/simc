@@ -4061,12 +4061,7 @@ class SpellItemEnchantmentGenerator(DataGenerator):
     def __init__(self, options, data_store):
         super().__init__(options, data_store)
 
-        self._dbc = ['SpellName', 'SpellEffect', 'GemProperties', 'SpellItemEnchantment']
-
-        if options.build < 23436:
-            self._dbc.append('Item-sparse')
-        else:
-            self._dbc.append('ItemSparse')
+        self._dbc = ['SpellName', 'SpellEffect', 'GemProperties', 'SpellItemEnchantment', 'ItemSparse']
 
     def filter_linked_spells(self, source_db, data, target_db, target_attr):
         for effect in data._effects:
@@ -4081,14 +4076,14 @@ class SpellItemEnchantmentGenerator(DataGenerator):
         if not super().initialize():
             return False
 
-        self._data_store.link('SpellEffect', self._options.build < 25600 and 'id_spell' or 'id_parent', 'SpellName', 'add_effect' )
+        self._data_store.link('SpellEffect', 'id_parent', 'SpellName', 'add_effect' )
 
         # Map spell ids to spellitemenchantments, as there's no direct
         # link between them, and 5.4+, we need/want to scale enchants properly
         self._data_store.link('SpellName', self.filter_linked_spells, 'SpellItemEnchantment', 'spells')
 
         # Map items to gem properties
-        self._data_store.link(self._options.build < 23436 and 'Item-Sparse' or 'ItemSparse', 'gem_props', 'GemProperties', 'item')
+        self._data_store.link('ItemSparse', 'gem_props', 'GemProperties', 'item')
 
         # Map gem properties to enchants
         self._data_store.link('GemProperties', 'id_enchant', 'SpellItemEnchantment', 'gem_property')
@@ -4099,20 +4094,16 @@ class SpellItemEnchantmentGenerator(DataGenerator):
         return self._spellitemenchantment_db.keys()
 
     def generate(self, ids = None):
-        self._out.write('#define %sSPELL_ITEM_ENCH%s_SIZE (%d)\n\n' % (
-            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
-            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
-            len(ids)
-        ))
         self._out.write('// Item enchantment data, wow build %s\n' % self._options.build)
-        self._out.write('static struct item_enchantment_data_t __%sspell_item_ench%s_data[] = {\n' % (
+        self._out.write('static constexpr std::array<item_enchantment_data_t, %d> __%sspell_item_ench%s_data { {\n' % (
+            len(ids),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
-        for i in sorted(ids) + [ 0 ]:
+        for i in sorted(ids):
             ench_data = self._spellitemenchantment_db[i]
 
-            fields = ench_data.field('id', 'slot')
+            fields = ench_data.field('id')
             fields += ench_data.get_link('gem_property').get_link('item').field('id')
             fields += ench_data.field('scaling_type', 'min_scaling_level', 'max_scaling_level', 'req_skill', 'req_skill_value')
             fields += [ '{ %s }' % ', '.join(ench_data.field('type_1', 'type_2', 'type_3')) ]
@@ -4123,13 +4114,13 @@ class SpellItemEnchantmentGenerator(DataGenerator):
             fields += ench_data.field('desc')
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-        self._out.write('};\n')
+        self._out.write('} };\n')
 
 class RandomPropertyPointsGenerator(DataGenerator):
     def __init__(self, options, data_store):
-        self._dbc = [ 'RandPropPoints' ]
-
         super().__init__(options, data_store)
+
+        self._dbc = [ 'RandPropPoints' ]
 
     def filter(self):
         ids = [ ]
@@ -4143,33 +4134,24 @@ class RandomPropertyPointsGenerator(DataGenerator):
     def generate(self, ids = None):
         # Sort keys
         ids.sort()
-        self._out.write('#define %sRAND_PROP_POINTS%s_SIZE (%d)\n\n' % (
-            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
-            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
-            len(ids)
-        ))
         self._out.write('// Random property points for item levels 1-%d, wow build %s\n' % (
             self._options.scale_ilevel, self._options.build ))
-        self._out.write('static struct random_prop_data_t __%srand_prop_points%s_data[] = {\n' % (
+        self._out.write('static constexpr std::array<random_prop_data_t, %d> __%srand_prop_points%s_data { {\n' % (
+            len(ids),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
-        for id in ids + [ 0 ]:
+        for id in ids:
             rpp = self._randproppoints_db[id]
 
-            fields = rpp.field('id', 'damage_replace_stat')
-            if self._options.build >= dbc.WowVersion(8, 2, 0, 0):
-                fields += rpp.field('damage_secondary')
-            else:
-                fields += '0'
-
+            fields = rpp.field('id', 'damage_replace_stat', 'damage_secondary')
             fields += [ '{ %s }' % ', '.join(rpp.field('epic_points_1', 'epic_points_2', 'epic_points_3', 'epic_points_4', 'epic_points_5')) ]
             fields += [ '{ %s }' % ', '.join(rpp.field('rare_points_1', 'rare_points_2', 'rare_points_3', 'rare_points_4', 'rare_points_5')) ]
             fields += [ '{ %s }' % ', '.join(rpp.field('uncm_points_1', 'uncm_points_2', 'uncm_points_3', 'uncm_points_4', 'uncm_points_5')) ]
 
-            self._out.write('  { %s },\n' % (', '.join(fields)))
+            self._out.write(' { %s },\n' % (', '.join(fields)))
 
-        self._out.write('};\n')
+        self._out.write('} };\n')
 
 class WeaponDamageDataGenerator(DataGenerator):
     def __init__(self, options, data_store):
@@ -4185,118 +4167,105 @@ class WeaponDamageDataGenerator(DataGenerator):
     def generate(self, ids = None):
         for dbname in self._dbc:
             db = getattr(self, '_%s_db' % dbname.lower() )
+            data = list(filter(lambda v: v.id <= self._options.scale_ilevel, db.values()))
 
-            self._out.write('// Item damage data from %s.dbc, ilevels 1-%d, wow build %s\n' % (
+            tokenized_name = '_'.join(re.findall('[A-Z][^A-Z]*', dbname)).lower()
+            struct_name = '{}_data_t'.format(tokenized_name)
+
+            self._out.write('// Item damage data from %s.db2, ilevels 1-%d, wow build %s\n' % (
                 dbname, self._options.scale_ilevel, self._options.build ))
-            self._out.write('static struct item_scale_data_t __%s%s%s_data[] = {\n' % (
+            self._out.write('static constexpr std::array<%s, %d> __%s%s%s_data { {\n' % (
+                struct_name, len(db.items()),
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
-                dbname.lower(),
+                tokenized_name,
                 self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
-            for ilevel, data in db.items():
-                if ilevel > self._options.scale_ilevel:
-                    continue
-
-                fields = data.field('ilevel')
-                fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
+            for entry in sorted(data, key = lambda v: v.id):
+                fields = entry.field('ilevel')
+                fields += [ '{ %s }' % ', '.join(entry.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
 
                 self._out.write('  { %s },\n' % (', '.join(fields)))
 
-            self._out.write('  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0, 0, 0, 0 }' ]) ))
-            self._out.write('};\n\n')
+            self._out.write('} };\n\n')
 
 class ArmorValueDataGenerator(DataGenerator):
     def __init__(self, options, data_store):
         self._dbc = [ 'ItemArmorQuality', 'ItemArmorShield', 'ItemArmorTotal' ]
         super().__init__(options, data_store)
 
-    def filter(self):
-
-        return None
-
     def generate(self, ids = None):
         for dbname in self._dbc:
             db = getattr(self, '_%s_db' % dbname.lower() )
+            data = list(filter(lambda v: v.id <= self._options.scale_ilevel, db.values()))
 
-            self._out.write('// Item armor values data from %s.dbc, ilevels 1-%d, wow build %s\n' % (
+            self._out.write('// Item armor values data from %s.db2, ilevels 1-%d, wow build %s\n' % (
                 dbname, self._options.scale_ilevel, self._options.build ))
 
-            self._out.write('static struct %s __%s%s%s_data[] = {\n' % (
-                (dbname != 'ItemArmorTotal') and 'item_scale_data_t' or 'item_armor_type_data_t',
+            tokenized_name = '_'.join(re.findall('[A-Z][^A-Z]*', dbname)).lower()
+            struct_name = '{}_data_t'.format(tokenized_name)
+
+            self._out.write('static constexpr std::array<%s, %d> __%s%s%s_data { {\n' % (
+                struct_name, len(data),
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
-                dbname.lower(),
+                tokenized_name,
                 self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
-            for ilevel, data in db.items():
-                if ilevel > self._options.scale_ilevel:
-                    continue
-
-                fields = data.field('id')
+            for entry in sorted(data, key = lambda v: v.id):
+                fields = entry.field('id')
                 if dbname != 'ItemArmorTotal':
-                    fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
+                    fields += [ '{ %s }' % ', '.join(entry.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
                 else:
-                    fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4')) ]
+                    fields += [ '{ %s }' % ', '.join(entry.field('v_1', 'v_2', 'v_3', 'v_4')) ]
                 self._out.write('  { %s },\n' % (', '.join(fields)))
 
-            if dbname != 'ItemArmorTotal':
-                self._out.write('  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0, 0, 0, 0 }' ]) ))
-            else:
-                self._out.write('  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0 }' ]) ))
-            self._out.write('};\n\n')
+            self._out.write('} };\n\n')
 
-class ArmorSlotDataGenerator(DataGenerator):
+class ArmorLocationDataGenerator(DataGenerator):
     def __init__(self, options, data_store):
-        self._dbc = [ 'ArmorLocation' ]
         super().__init__(options, data_store)
 
-    def filter(self):
-        return None
+        self._dbc = [ 'ArmorLocation' ]
 
     def generate(self, ids = None):
-        s = '// Inventory type based armor multipliers, wow build %s\n' % ( self._options.build )
+        s = '// Armor location based multipliers, wow build %s\n' % ( self._options.build )
 
-        self._out.write('static struct item_armor_type_data_t __%sarmor_slot%s_data[] = {\n' % (
+        self._out.write('static constexpr std::array<item_armor_location_data_t, %d> __%sarmor_location%s_data { {\n' % (
+            len(self._armorlocation_db.keys()),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
         for inv_type in sorted(self._armorlocation_db.keys()):
             data = self._armorlocation_db[inv_type]
+
             fields = data.field('id')
             fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4')) ]
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-        self._out.write('  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0 }' ]) ))
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
 class GemPropertyDataGenerator(DataGenerator):
     def __init__(self, options, data_store):
-        self._dbc = [ 'GemProperties' ]
         super().__init__(options, data_store)
 
-    def filter(self):
-        ids = []
-        for id, data in self._gemproperties_db.items():
-            if not data.color or not data.id_enchant:
-                continue
+        self._dbc = [ 'GemProperties' ]
 
-            ids.append(id)
-        return ids
+    def filter(self):
+        return [ v for v in self._gemproperties_db.values() if v.color > 0 or v.id_enchant > 0 ]
 
     def generate(self, ids = None):
-        ids.sort()
+        ids.sort(key = lambda v: v.id)
         self._out.write('// Gem properties, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static struct gem_property_data_t __%sgem_property%s_data[] = {\n' % (
+        self._out.write('static constexpr std::array<gem_property_data_t, %d> __%sgem_property%s_data { {\n' % (
+            len(ids),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
-        for id in ids + [ 0 ]:
-            data = self._gemproperties_db[id]
-
+        for data in ids:
             fields = data.field('id', 'id_enchant', 'color', 'min_ilevel')
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
 class ItemBonusDataGenerator(DataGenerator):
     def __init__(self, options, data_store):

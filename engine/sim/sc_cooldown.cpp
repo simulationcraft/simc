@@ -3,7 +3,12 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "sc_cooldown.hpp"
+#include "action/sc_action.hpp"
+#include "player/sc_player.hpp"
+#include "sim/event.hpp"
+#include "sim/sc_expressions.hpp"
+#include "sim/sc_sim.hpp"
 
 namespace { // UNNAMED NAMESPACE
 
@@ -62,12 +67,14 @@ struct recharge_event_t : event_t
   }
 };
 
-struct ready_trigger_event_t : public player_event_t
+struct ready_trigger_event_t : public event_t
 {
+  player_t& player;
   cooldown_t* cooldown;
 
   ready_trigger_event_t( player_t& p, cooldown_t* cd ) :
-    player_event_t( p, cd -> ready - p.sim -> current_time() ),
+    event_t( p, cd -> ready - p.sim -> current_time() ),
+    player(p),
     cooldown( cd )
   { }
 
@@ -77,7 +84,7 @@ struct ready_trigger_event_t : public player_event_t
   void execute() override
   {
     cooldown -> ready_trigger_event = nullptr;
-    p() -> trigger_ready();
+    player.trigger_ready();
   }
 };
 
@@ -370,6 +377,23 @@ void cooldown_t::reset( bool require_reaction, int charges_ )
   }
 }
 
+timespan_t cooldown_t::remains() const
+{
+  return std::max( timespan_t::zero(), ready - sim.current_time() );
+}
+
+timespan_t cooldown_t::current_charge_remains() const
+{ return recharge_event ? recharge_event -> remains() : timespan_t::zero(); }
+
+bool cooldown_t::up() const
+{ return ready <= sim.current_time(); }
+
+bool cooldown_t::down() const
+{ return ready > sim.current_time(); }
+
+timespan_t cooldown_t::queue_delay() const
+{ return std::max( timespan_t::zero(), ready - sim.current_time() ); }
+
 void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
 {
   // Zero duration cooldowns are nonsense
@@ -586,4 +610,31 @@ void cooldown_t::update_ready_thresholds()
   {
     player->update_cast_while_casting_ready();
   }
+}
+
+timespan_t cooldown_t::queueable() const
+{
+  return ready - player->cooldown_tolerance();
+}
+
+bool cooldown_t::is_ready() const
+{
+  if (up())
+  {
+    return true;
+  }
+
+  // Cooldowns that are not bound to specific actions should not be considered as queueable in the
+  // simulator, ever, so just return up() here. This limits the actual queueable cooldowns to
+  // basically only abilities, where the user must press a button to initiate the execution. Note
+  // that off gcd abilities that bypass schedule_execute (i.e., action_t::use_off_gcd is set to
+  // true) will for now not use the queueing system.
+  if (!action || !player)
+  {
+    return up();
+  }
+
+  // Cooldown is not up, and is action-bound (essentially foreground action), check if it's within
+  // the player's (or default) cooldown tolerance for queueing.
+  return queueable() <= sim.current_time();
 }

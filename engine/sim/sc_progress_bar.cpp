@@ -3,6 +3,15 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "progress_bar.hpp"
+#include "sim/sc_sim.hpp"
+#include "util/util.hpp"
+#include "player/sc_player.hpp"
+#include "player/player_scaling.hpp"
+#include "sim_control.hpp"
+#include "scale_factor_control.hpp"
+#include "gsl-lite/gsl-lite.hpp"
+#include <sstream>
 #include "simulationcraft.hpp"
 
 std::string progress_bar_t::format_time( double t )

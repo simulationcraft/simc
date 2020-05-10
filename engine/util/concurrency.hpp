@@ -12,7 +12,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "generic.hpp"
+#include "util/generic.hpp"
 #include <memory>
 
 #ifndef SC_NO_THREADING

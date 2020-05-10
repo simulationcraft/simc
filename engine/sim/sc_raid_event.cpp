@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "raid_event.hpp"
 #include "simulationcraft.hpp"
 
 // ==========================================================================

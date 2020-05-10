@@ -3,8 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "sc_profileset.hpp"
+#include "sim_control.hpp"
+#include "sc_sim.hpp"
+#include "report/sc_report.hpp"
+#include "player/sc_player.hpp"
+#include "player/artifact_data.hpp"
+#include "item/item.hpp"
 
 #ifndef SC_NO_THREADING
 
@@ -373,6 +378,34 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
   }
 
   return options_copy;
+}
+
+profilesets_t::profilesets_t() : m_state( STARTED ), m_mode( SEQUENTIAL ),
+    m_original( nullptr ), m_insert_index( -1 ),
+    m_work_index( 0 )
+#ifndef SC_NO_THREADING
+    ,
+    m_control_lock( m_mutex, std::defer_lock ),
+    m_max_workers( 0 ), 
+    m_work_lock( m_work_mutex, std::defer_lock ),
+    m_start_time( 0 ), m_total_elapsed( 0 )
+#endif
+{ 
+
+}
+
+profilesets_t::~profilesets_t()
+{
+#ifndef SC_NO_THREADING
+  range::for_each( m_thread, []( std::thread& thread ) {
+    if ( thread.joinable() )
+    {
+      thread.join();
+    }
+  } );
+
+  range::for_each( m_current_work, []( std::unique_ptr<worker_t>& worker ) { worker -> thread().join(); } );
+#endif
 }
 
 profile_set_t::profile_set_t( const std::string& name, sim_control_t* opts, bool has_output ) :

@@ -1,6 +1,13 @@
-#include "simulationcraft.hpp"
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
 
 #include "artifact_data.hpp"
+#include "sim/sc_sim.hpp"
+#include "player/sc_player.hpp"
+#include "player/artifact_data.hpp"
+#include "sim/artifact_power.hpp"
 
 namespace
 {

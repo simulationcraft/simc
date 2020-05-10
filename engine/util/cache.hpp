@@ -5,6 +5,10 @@
 
 #pragma once
 
+#include "config.hpp"
+#include "util/generic.hpp"
+#include <iostream>
+
 // Cache Control ============================================================
 
 namespace cache {

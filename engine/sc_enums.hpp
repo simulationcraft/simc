@@ -6,6 +6,8 @@
 #pragma once
 
 #include "config.hpp"
+#include <cassert>
+#include <cstdint>
 
 // Enumerations =============================================================
 // annex _e to enumerations
@@ -1140,6 +1142,41 @@ inline cache_e cache_from_stat( stat_e st )
         break;
     }
   return CACHE_NONE;
+}
+
+// Gear Rating Conversions ==================================================
+
+inline cache_e cache_from_rating( rating_e r )
+{
+  switch ( r )
+  {
+    case RATING_SPELL_HASTE: return CACHE_SPELL_HASTE;
+    case RATING_SPELL_HIT: return CACHE_SPELL_HIT;
+    case RATING_SPELL_CRIT: return CACHE_SPELL_CRIT_CHANCE;
+    case RATING_MELEE_HASTE: return CACHE_ATTACK_HASTE;
+    case RATING_MELEE_HIT: return CACHE_ATTACK_HIT;
+    case RATING_MELEE_CRIT: return CACHE_ATTACK_CRIT_CHANCE;
+    case RATING_RANGED_HASTE: return CACHE_ATTACK_HASTE;
+    case RATING_RANGED_HIT: return CACHE_ATTACK_HIT;
+    case RATING_RANGED_CRIT: return CACHE_ATTACK_CRIT_CHANCE;
+    case RATING_EXPERTISE: return CACHE_EXP;
+    case RATING_DODGE: return CACHE_DODGE;
+    case RATING_PARRY: return CACHE_PARRY;
+    case RATING_BLOCK: return CACHE_BLOCK;
+    case RATING_MASTERY: return CACHE_MASTERY;
+    case RATING_PVP_POWER: return CACHE_NONE;
+    case RATING_PVP_RESILIENCE: return CACHE_NONE;
+    case RATING_DAMAGE_VERSATILITY: return CACHE_DAMAGE_VERSATILITY;
+    case RATING_HEAL_VERSATILITY: return CACHE_HEAL_VERSATILITY;
+    case RATING_MITIGATION_VERSATILITY: return CACHE_MITIGATION_VERSATILITY;
+    case RATING_LEECH: return CACHE_LEECH;
+    case RATING_SPEED: return CACHE_RUN_SPEED;
+    case RATING_AVOIDANCE: return CACHE_AVOIDANCE;
+    case RATING_CORRUPTION: return CACHE_CORRUPTION;
+    case RATING_CORRUPTION_RESISTANCE: return CACHE_CORRUPTION_RESISTANCE;
+    default: break;
+  }
+  assert( false ); return CACHE_NONE;
 }
 
 enum position_e
