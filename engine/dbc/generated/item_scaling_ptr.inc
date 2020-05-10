@@ -1,5 +1,5 @@
 // Scaling stat distributions, wow build 8.3.0.34220
-static constexpr std::array<scaling_stat_distribution_t, 648> __ptr_scaling_stat_distribution_data { {
+static const std::array<scaling_stat_distribution_t, 648> __ptr_scaling_stat_distribution_data { {
   {    1,   0,  80,   956 },
   {    2,   0,  80,   956 },
   {    3,   0,  80,   956 },
@@ -651,7 +651,7 @@ static constexpr std::array<scaling_stat_distribution_t, 648> __ptr_scaling_stat
 } };
 
 // Curve points data, wow build 8.3.0.34220
-static constexpr std::array<curve_point_t, 36046> __ptr_curve_point_data { {
+static const std::array<curve_point_t, 36046> __ptr_curve_point_data { {
   {    8,  0,    0.00000,    1.00000 },
   {    9,  0,    0.00000,    1.00000 },
   {   11,  0,    0.00000,    1.00000 },

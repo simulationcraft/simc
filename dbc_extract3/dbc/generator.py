@@ -4095,7 +4095,7 @@ class SpellItemEnchantmentGenerator(DataGenerator):
 
     def generate(self, ids = None):
         self._out.write('// Item enchantment data, wow build %s\n' % self._options.build)
-        self._out.write('static constexpr std::array<item_enchantment_data_t, %d> __%sspell_item_ench%s_data { {\n' % (
+        self._out.write('static const std::array<item_enchantment_data_t, %d> __%sspell_item_ench%s_data { {\n' % (
             len(ids),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
@@ -4136,7 +4136,7 @@ class RandomPropertyPointsGenerator(DataGenerator):
         ids.sort()
         self._out.write('// Random property points for item levels 1-%d, wow build %s\n' % (
             self._options.scale_ilevel, self._options.build ))
-        self._out.write('static constexpr std::array<random_prop_data_t, %d> __%srand_prop_points%s_data { {\n' % (
+        self._out.write('static const std::array<random_prop_data_t, %d> __%srand_prop_points%s_data { {\n' % (
             len(ids),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
@@ -4174,7 +4174,7 @@ class WeaponDamageDataGenerator(DataGenerator):
 
             self._out.write('// Item damage data from %s.db2, ilevels 1-%d, wow build %s\n' % (
                 dbname, self._options.scale_ilevel, self._options.build ))
-            self._out.write('static constexpr std::array<%s, %d> __%s%s%s_data { {\n' % (
+            self._out.write('static const std::array<%s, %d> __%s%s%s_data { {\n' % (
                 struct_name, len(db.items()),
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
                 tokenized_name,
@@ -4204,7 +4204,7 @@ class ArmorValueDataGenerator(DataGenerator):
             tokenized_name = '_'.join(re.findall('[A-Z][^A-Z]*', dbname)).lower()
             struct_name = '{}_data_t'.format(tokenized_name)
 
-            self._out.write('static constexpr std::array<%s, %d> __%s%s%s_data { {\n' % (
+            self._out.write('static const std::array<%s, %d> __%s%s%s_data { {\n' % (
                 struct_name, len(data),
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
                 tokenized_name,
@@ -4229,7 +4229,7 @@ class ArmorLocationDataGenerator(DataGenerator):
     def generate(self, ids = None):
         s = '// Armor location based multipliers, wow build %s\n' % ( self._options.build )
 
-        self._out.write('static constexpr std::array<item_armor_location_data_t, %d> __%sarmor_location%s_data { {\n' % (
+        self._out.write('static const std::array<item_armor_location_data_t, %d> __%sarmor_location%s_data { {\n' % (
             len(self._armorlocation_db.keys()),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
@@ -4256,7 +4256,7 @@ class GemPropertyDataGenerator(DataGenerator):
         ids.sort(key = lambda v: v.id)
         self._out.write('// Gem properties, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static constexpr std::array<gem_property_data_t, %d> __%sgem_property%s_data { {\n' % (
+        self._out.write('static const std::array<gem_property_data_t, %d> __%sgem_property%s_data { {\n' % (
             len(ids),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
@@ -4283,7 +4283,7 @@ class ItemBonusDataGenerator(DataGenerator):
 
         self._out.write('// Item bonuses, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static constexpr std::array<item_bonus_entry_t, %d> __%s_data { {\n' % (
+        self._out.write('static const std::array<item_bonus_entry_t, %d> __%s_data { {\n' % (
             len(self._itembonus_db.keys()), data_str))
 
         for id, data in sorted(self._itembonus_db.items(), key = lambda v: (v[1].id_node, v[1].id)):
@@ -4320,7 +4320,7 @@ class ScalingStatDataGenerator(DataGenerator):
         )
 
         self._out.write('// Scaling stat distributions, wow build %s\n' % ( self._options.build ))
-        self._out.write('static constexpr std::array<scaling_stat_distribution_t, %d> __%s_data { {\n' % (
+        self._out.write('static const std::array<scaling_stat_distribution_t, %d> __%s_data { {\n' % (
             len(self._scalingstatdistribution_db.keys()), data_str))
 
         for id, data in sorted(self._scalingstatdistribution_db.items()):
@@ -4336,7 +4336,7 @@ class ScalingStatDataGenerator(DataGenerator):
 
         self._out.write('// Curve points data, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static constexpr std::array<curve_point_t, %d> __%s_data { {\n' % (
+        self._out.write('static const std::array<curve_point_t, %d> __%s_data { {\n' % (
             len(self._curvepoint_db.keys()), data_str))
 
         for id, data in sorted(self._curvepoint_db.items(), key = lambda k: (k[1].id_distribution, k[1].curve_index)):
@@ -4359,7 +4359,7 @@ class ItemNameDescriptionDataGenerator(DataGenerator):
 
         self._out.write('// Item name descriptions, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static constexpr std::array<item_name_description_t, %d> __%s_data { {\n' % (
+        self._out.write('static const std::array<item_name_description_t, %d> __%s_data { {\n' % (
             len(self._itemnamedescription_db.keys()), data_str))
 
         for id, data in sorted(self._itemnamedescription_db.items()):
@@ -4457,7 +4457,7 @@ class AzeriteDataGenerator(DataGenerator):
 
         self._out.write('// Azerite powers, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static constexpr std::array<azerite_power_entry_t, %d> __%s_data { {\n' % (
+        self._out.write('static const std::array<azerite_power_entry_t, %d> __%s_data { {\n' % (
             len(ids), data_str))
 
         for id in sorted(ids):
@@ -4498,7 +4498,7 @@ class AzeriteEssenceDataGenerator(DataGenerator):
 
         self._out.write('// Azerite Essences, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static constexpr std::array<azerite_essence_entry_t, %d> __%s_data { {\n' % (
+        self._out.write('static const std::array<azerite_essence_entry_t, %d> __%s_data { {\n' % (
             len(ids), data_str))
 
         for id in ids:
@@ -4518,7 +4518,7 @@ class AzeriteEssenceDataGenerator(DataGenerator):
 
         self._out.write('// Azerite Essence Powers, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static constexpr std::array<azerite_essence_power_entry_t, %d> __%s_data { {\n' % (
+        self._out.write('static const std::array<azerite_essence_power_entry_t, %d> __%s_data { {\n' % (
             len(ids), data_str))
 
         for entry in ids:
@@ -4552,7 +4552,7 @@ class ArmorMitigationConstantValues(DataGenerator):
         self._out.write('// Armor mitigation constants (K-values), wow build %s\n' %
                 self._options.build)
 
-        self._out.write('static constexpr std::array<double, %d> __%s_data { {\n' % (
+        self._out.write('static const std::array<double, %d> __%s_data { {\n' % (
             len(entries), data_str))
 
         for index in range(0, len(entries), 5):
@@ -4587,7 +4587,7 @@ class NpcArmorValues(DataGenerator):
         self._out.write('// Npc base armor values, wow build %s\n' %
                 self._options.build)
 
-        self._out.write('static constexpr std::array<double, %d> __%s_data { {\n' % (
+        self._out.write('static const std::array<double, %d> __%s_data { {\n' % (
             len(entries), data_str))
 
         for index in range(0, len(entries), 5):
@@ -4670,7 +4670,7 @@ class ItemEffectGenerator(DataGenerator):
 
         self._out.write('// Item effects, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static struct std::array<item_effect_t, %d> __%s_data { {\n' % (len(ids), data_str))
+        self._out.write('static const std::array<item_effect_t, %d> __%s_data { {\n' % (len(ids), data_str))
 
         for key in sorted(ids):
             data = self._itemeffect_db[key]

@@ -1,5 +1,5 @@
 // Item bonuses, wow build 8.3.0.34220
-static constexpr std::array<item_bonus_entry_t, 8577> __ptr_item_bonus_data { {
+static const std::array<item_bonus_entry_t, 8577> __ptr_item_bonus_data { {
   {     1,    1,  1,     20,      0,  0 },
   {     2,    1,  2,      7,  15789,  1 },
   {   899,    1,  4,   2015,      0,  2 },
