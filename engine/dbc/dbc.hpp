@@ -26,6 +26,7 @@
 #include "dbc/item_armor.hpp"
 #include "dbc/item_weapon.hpp"
 #include "dbc/gem_data.hpp"
+#include "dbc/item_bonus.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -103,9 +104,7 @@ const char* item_name_description( unsigned, bool ptr );
 const item_name_description_t* item_name_descriptions( bool ptr );
 std::size_t n_item_name_descriptions( bool ptr );
 
-const item_bonus_entry_t* item_bonus_entries( bool ptr );
-std::size_t n_item_bonuses( bool ptr );
-std::string bonus_ids_str( dbc_t& );
+std::string bonus_ids_str( const dbc_t& );
 
 double item_level_squish( unsigned source_ilevel, bool ptr );
 
@@ -1510,8 +1509,6 @@ public:
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
 
   int resolve_item_scaling( unsigned level ) const;
-  item_bonus_tree_entry_t& resolve_item_bonus_tree_data( unsigned level ) const;
-  item_bonus_node_entry_t& resolve_item_bonus_map_data( unsigned level ) const;
   double resolve_level_scaling( unsigned level ) const;
   double avoid_per_str_agi_by_level( unsigned level ) const;
 
@@ -1581,7 +1578,8 @@ public:
   const item_armor_location_data_t& item_armor_inv_type( unsigned inv_type ) const
   { return item_armor_location_data_t::find( inv_type, ptr ); }
 
-  std::vector<const item_bonus_entry_t*> item_bonus( unsigned bonus_id ) const;
+  const arv::array_view<item_bonus_entry_t> item_bonus( unsigned bonus_id ) const
+  { return item_bonus_entry_t::find( bonus_id, ptr ); }
 
   // Derived data access
   unsigned class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
@@ -1643,8 +1641,8 @@ public:
   std::vector<const spelleffect_data_t*> effect_categories_affecting_spell( const spell_data_t* ) const;
 
   // Heirloomage and misc scaling hijinxery
-  const scaling_stat_distribution_t* scaling_stat_distribution( unsigned id );
-  std::pair<const curve_point_t*, const curve_point_t*> curve_point( unsigned curve_id, double value );
+  const scaling_stat_distribution_t* scaling_stat_distribution( unsigned id ) const;
+  std::pair<const curve_point_t*, const curve_point_t*> curve_point( unsigned curve_id, double value ) const;
 
   // Artifact stuff
   // TODO: Remove at some point after 8.0 prepatch

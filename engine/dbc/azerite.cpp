@@ -42,7 +42,7 @@ const azerite_power_entry_t& azerite_power_entry_t::nil()
   return __default;
 }
 
-arv::array_view<azerite_power_entry_t> azerite_power_entry_t::data( bool ptr )
+const arv::array_view<azerite_power_entry_t> azerite_power_entry_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<azerite_power_entry_t>( __ptr_azerite_power_data )
@@ -62,7 +62,7 @@ const azerite_essence_entry_t& azerite_essence_entry_t::nil()
   return __default;
 }
 
-arv::array_view<azerite_essence_entry_t> azerite_essence_entry_t::data( bool ptr )
+const arv::array_view<azerite_essence_entry_t> azerite_essence_entry_t::data( bool ptr )
 {
   ( void ) ptr;
 
@@ -146,7 +146,7 @@ const azerite_essence_power_entry_t& azerite_essence_power_entry_t::nil()
   return __default;
 }
 
-arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data( bool ptr )
+const arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data( bool ptr )
 {
   ( void ) ptr;
 
@@ -160,7 +160,7 @@ arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::da
   return data;
 }
 
-arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data_by_essence_id( unsigned essence_id, bool ptr )
+const arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data_by_essence_id( unsigned essence_id, bool ptr )
 {
   ( void ) ptr;
 

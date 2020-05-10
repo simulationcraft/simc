@@ -71,32 +71,6 @@ struct curve_point_t
   double   val2;
 };
 
-struct item_bonus_tree_entry_t
-{
-  unsigned id;
-  int      tree_id;
-  unsigned index; // Unsure
-  unsigned child_id; // Child item_bouns_tree_entry_t
-  unsigned bonus_id; // Node ID in ItemBonus.db2
-};
-
-struct item_bonus_node_entry_t
-{
-  unsigned id;
-  unsigned item_id;
-  unsigned tree_id;
-};
-
-struct item_bonus_entry_t
-{
-  unsigned id;
-  unsigned bonus_id;
-  unsigned type;
-  int      value_1;
-  int      value_2;
-  unsigned index;
-};
-
 struct item_set_bonus_t {
 #define SET_BONUS_ITEM_ID_MAX ( 10 )
   const char* set_name;

@@ -317,10 +317,10 @@ void enchant::initialize_item_enchant( item_t& item,
       }
       case ITEM_ENCHANTMENT_APPLY_BONUS:
       {
-        std::vector<const item_bonus_entry_t*> bonuses = item.player -> dbc.item_bonus( enchant.ench_prop[ i ] );
+        auto bonuses = item.player -> dbc.item_bonus( enchant.ench_prop[ i ] );
         for ( auto bonus : bonuses )
         {
-          item_database::apply_item_bonus( item, *bonus );
+          item_database::apply_item_bonus( item, bonus );
         }
         break;
       }
@@ -585,8 +585,8 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
         for ( auto bonus_id : relic.parsed.bonus_id )
         {
           auto bonuses = item.player -> dbc.item_bonus( bonus_id );
-          range::for_each( bonuses, [ &relic ]( const item_bonus_entry_t* entry ) {
-            item_database::apply_item_bonus( relic, *entry );
+          range::for_each( bonuses, [ &relic ]( const item_bonus_entry_t& entry ) {
+            item_database::apply_item_bonus( relic, entry );
           } );
         }
         break;
@@ -594,8 +594,8 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
       case ITEM_ENCHANTMENT_APPLY_BONUS:
       {
         auto bonuses = item.player -> dbc.item_bonus( data.ench_prop[ i ] );
-        range::for_each( bonuses, [ &relic ]( const item_bonus_entry_t* entry ) {
-          item_database::apply_item_bonus( relic, *entry );
+        range::for_each( bonuses, [ &relic ]( const item_bonus_entry_t& entry ) {
+          item_database::apply_item_bonus( relic, entry );
         } );
         break;
       }

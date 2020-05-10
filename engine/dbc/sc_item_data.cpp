@@ -7,6 +7,7 @@
 
 #include "dbc/item_effect.hpp"
 #include "dbc/spell_item_enchantment.hpp"
+#include "dbc/item_bonus.hpp"
 
 #include "generated/sc_item_data2.inc"
 #if SC_USE_PTR
@@ -83,36 +84,6 @@ std::size_t dbc::n_item_name_descriptions( bool ptr )
 #endif
 }
 
-const item_bonus_entry_t* dbc::item_bonus_entries( bool ptr )
-{
-  const item_bonus_entry_t* p = __item_bonus_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_item_bonus_data;
-#else
-  (void)ptr;
-#endif
-
-  return p;
-}
-
-std::size_t dbc::n_item_bonuses( bool ptr )
-{
-#if SC_USE_PTR
-  if ( ptr )
-  {
-    return PTR_ITEM_BONUS_SIZE;
-  }
-  else
-  {
-    return ITEM_BONUS_SIZE;
-  }
-#else
-  (void)ptr;
-  return ITEM_BONUS_SIZE;
-#endif
-}
-
 const char* dbc::item_name_description( unsigned id, bool ptr )
 {
   const item_name_description_t* p = __item_name_description_data;
@@ -134,26 +105,6 @@ const char* dbc::item_name_description( unsigned id, bool ptr )
   }
 
   return nullptr;
-}
-
-std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) const
-{
-#if SC_USE_PTR
-  const item_bonus_entry_t* p = ptr ? __ptr_item_bonus_data : __item_bonus_data;
-#else
-  const item_bonus_entry_t* p = __item_bonus_data;
-#endif
-
-  std::vector<const item_bonus_entry_t*> entries;
-
-  while ( p -> id != 0 )
-  {
-    if ( p -> bonus_id == bonus_id )
-      entries.push_back(p);
-    p++;
-  }
-
-  return entries;
 }
 
 const item_data_t* dbc_t::item( unsigned item_id ) const
@@ -184,28 +135,6 @@ size_t dbc::n_items( bool ptr )
   return n;
 }
 
-item_bonus_tree_entry_t& dbc_t::resolve_item_bonus_tree_data( unsigned level ) const
-{
-    assert(level > 0 && level <= MAX_LEVEL);
-#if SC_USE_PTR
-    return ptr ? __ptr_item_bonus_tree_data[level - 1]
-               : __item_bonus_tree_data[level - 1];
-#else
-    return __item_bonus_tree_data[level - 1];
-#endif
-}
-
-item_bonus_node_entry_t& dbc_t::resolve_item_bonus_map_data( unsigned level ) const
-{
-    assert(level > 0 && level <= MAX_LEVEL);
-#if SC_USE_PTR
-    return ptr ? __ptr_item_bonus_map_data[level - 1] :
-                 __item_bonus_map_data[level - 1];
-#else
-    return __item_bonus_map_data[level - 1];
-#endif
-}
-
 /* Initialize item database
  */
 void dbc::init_item_data()
@@ -225,7 +154,7 @@ void dbc::init_item_data()
 #endif
 }
 
-const scaling_stat_distribution_t* dbc_t::scaling_stat_distribution( unsigned id )
+const scaling_stat_distribution_t* dbc_t::scaling_stat_distribution( unsigned id ) const
 {
 #if SC_USE_PTR
   const scaling_stat_distribution_t* table = ptr ? &__ptr_scaling_stat_distribution_data[ 0 ]
@@ -244,7 +173,7 @@ const scaling_stat_distribution_t* dbc_t::scaling_stat_distribution( unsigned id
   return nullptr;
 }
 
-std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsigned curve_id, double value )
+std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsigned curve_id, double value ) const
 {
 #if SC_USE_PTR
   const curve_point_t* table = ptr ? &__ptr_curve_point_data[ 0 ]
@@ -1063,11 +992,11 @@ bool item_database::parse_item_spell_enchant( item_t& item,
 bool item_database::load_item_from_data( item_t& item )
 {
   // Simple copying of basic stats from item database (dbc) to the item object
-  const item_data_t* data = item.player -> dbc.item( item.parsed.data.id );
-  if ( ! data || ! data -> id ) return false;
+  const item_data_t* data = item.player->dbc.item( item.parsed.data.id );
+  if ( ! data || !data->id ) return false;
 
   item.parsed.data = *data;
-  item.name_str = data -> name;
+  item.name_str = data->name;
   item.parsed.data.name = item.name_str.c_str();
 
   util::tokenize( item.name_str );
@@ -1101,11 +1030,11 @@ bool item_database::load_item_from_data( item_t& item )
   // something similar
   for ( size_t i = 0, end = item.parsed.bonus_id.size(); i < end; i++ )
   {
-    auto item_bonuses = item.player -> dbc.item_bonus( item.parsed.bonus_id[ i ] );
+    auto item_bonuses = item.player->dbc.item_bonus( item.parsed.bonus_id[ i ] );
     // Apply bonuses
     for ( const auto bonus : item_bonuses )
     {
-      if ( ! apply_item_bonus( item, *bonus ) )
+      if ( !apply_item_bonus( item, bonus ) )
         return false;
     }
   }
@@ -1232,138 +1161,140 @@ const item_data_t* dbc::find_consumable( item_subclass_consumable type, bool ptr
   return i ? i : &( nil_item_data );
 }
 
-static std::string get_bonus_id_desc( bool ptr, const std::vector<const item_bonus_entry_t*>& entries )
+static std::string get_bonus_id_desc( bool ptr, const arv::array_view<item_bonus_entry_t>& entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_DESC )
+    if ( entries[ i ].type == ITEM_BONUS_DESC )
     {
-      return dbc::item_name_description( entries[ i ] -> value_1, ptr );
+      return dbc::item_name_description( entries[ i ].value_1, ptr );
     }
   }
 
   return std::string();
 }
 
-static std::string get_bonus_id_suffix( bool ptr, const std::vector<const item_bonus_entry_t*>& entries )
+static std::string get_bonus_id_suffix( bool ptr, const arv::array_view<item_bonus_entry_t>& entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_SUFFIX )
+    if ( entries[ i ].type == ITEM_BONUS_SUFFIX )
     {
-      return dbc::item_name_description( entries[ i ] -> value_1, ptr );
+      return dbc::item_name_description( entries[ i ].value_1, ptr );
     }
   }
 
   return std::string();
 }
 
-static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_scaling( dbc_t& dbc, const std::vector<const item_bonus_entry_t*>& entries )
+static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_scaling( const dbc_t& dbc, const arv::array_view<item_bonus_entry_t>& entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> value_1 == 0 )
+    if ( entries[ i ].value_1 == 0 )
     {
       continue;
     }
 
-    if ( entries[ i ] -> type == ITEM_BONUS_SCALING || entries[ i ] -> type == ITEM_BONUS_SCALING_2 )
+    if ( entries[ i ].type == ITEM_BONUS_SCALING || entries[ i ].type == ITEM_BONUS_SCALING_2 )
     {
-      const scaling_stat_distribution_t* data = dbc.scaling_stat_distribution( entries[ i ] -> value_1 );
+      const scaling_stat_distribution_t* data = dbc.scaling_stat_distribution( entries[ i ].value_1 );
       assert( data );
-      std::pair<const curve_point_t*, const curve_point_t*> curve_data_min = dbc.curve_point( data -> curve_id, data -> min_level );
-      std::pair<const curve_point_t*, const curve_point_t*> curve_data_max = dbc.curve_point( data -> curve_id, data -> max_level );
+      auto curve_data_min = dbc.curve_point( data->curve_id, data->min_level );
+      auto curve_data_max = dbc.curve_point( data->curve_id, data->max_level );
       assert(curve_data_min.first);
       assert(curve_data_max.first);
 
-      return std::pair<std::pair<int, double>, std::pair<int, double> >(
-          std::pair<int, double>( data -> min_level, curve_data_min.first -> val2 ),
-          std::pair<int, double>( data -> max_level, curve_data_max.first -> val2 ) );
+      return std::pair<std::pair<int, double>, std::pair<int, double>>(
+          std::pair<int, double>( data->min_level, curve_data_min.first->val2 ),
+          std::pair<int, double>( data->max_level, curve_data_max.first->val2 ) );
     }
   }
 
-  return std::pair<std::pair<int, double>, std::pair<int, double> >( std::pair<int, double>( -1, 0 ), std::pair<int, double>( -1, 0 ) );
+  return std::pair<std::pair<int, double>, std::pair<int, double> >(
+      std::pair<int, double>( -1, 0 ),
+      std::pair<int, double>( -1, 0 ) );
 }
 
-static int get_bonus_id_ilevel( const std::vector<const item_bonus_entry_t*>& entries )
+static int get_bonus_id_ilevel( const arv::array_view<item_bonus_entry_t>& entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_ILEVEL )
+    if ( entries[ i ].type == ITEM_BONUS_ILEVEL )
     {
-      return entries[ i ] -> value_1;
+      return entries[ i ].value_1;
     }
   }
 
   return 0;
 }
 
-static int get_bonus_id_base_ilevel( const std::vector<const item_bonus_entry_t*>& entries )
+static int get_bonus_id_base_ilevel( const arv::array_view<item_bonus_entry_t>& entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_SET_ILEVEL )
+    if ( entries[ i ].type == ITEM_BONUS_SET_ILEVEL )
     {
-      return entries[ i ] -> value_1;
+      return entries[ i ].value_1;
     }
   }
 
   return 0;
 }
 
-static std::string get_bonus_id_quality( const std::vector<const item_bonus_entry_t*>& entries )
+static std::string get_bonus_id_quality( const arv::array_view<item_bonus_entry_t>& entries )
 {
   for ( auto& entry : entries )
   {
-    if ( entry -> type == ITEM_BONUS_QUALITY )
+    if ( entry.type == ITEM_BONUS_QUALITY )
     {
-      return util::item_quality_string( entry -> value_1 );
+      return util::item_quality_string( entry.value_1 );
     }
   }
 
   return "";
 }
 
-static int get_bonus_id_sockets( const std::vector<const item_bonus_entry_t*>& entries )
+static int get_bonus_id_sockets( const arv::array_view<item_bonus_entry_t>& entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_SOCKET )
+    if ( entries[ i ].type == ITEM_BONUS_SOCKET )
     {
-      return entries[ i ] -> value_1;
+      return entries[ i ].value_1;
     }
   }
 
   return 0;
 }
 
-static int get_bonus_power_index( const std::vector<const item_bonus_entry_t*>& entries )
+static int get_bonus_power_index( const arv::array_view<item_bonus_entry_t>& entries )
 {
-  auto it = range::find_if( entries, []( const item_bonus_entry_t* entry ) {
-    return entry -> type == ITEM_BONUS_ADD_RANK;
+  auto it = range::find_if( entries, []( const item_bonus_entry_t& entry ) {
+    return entry.type == ITEM_BONUS_ADD_RANK;
   } );
 
   if ( it != entries.end() )
   {
-    return ( *it ) -> value_1;
+    return ( *it ).value_1;
   }
 
   return -1;
 }
 
-static std::string get_bonus_item_effect( const std::vector<const item_bonus_entry_t*>& entries, const dbc_t& dbc )
+static std::string get_bonus_item_effect( const arv::array_view<item_bonus_entry_t>& entries, const dbc_t& dbc )
 {
   std::vector<std::string> entries_str;
 
-  range::for_each( entries, [&entries_str, &dbc]( const item_bonus_entry_t* entry ) {
-    if ( entry->type != ITEM_BONUS_ADD_ITEM_EFFECT )
+  range::for_each( entries, [&entries_str, &dbc]( const item_bonus_entry_t& entry ) {
+    if ( entry.type != ITEM_BONUS_ADD_ITEM_EFFECT )
     {
       return;
     }
-    auto effect = item_effect_t::find( entry->value_1, dbc.ptr );
+    auto effect = item_effect_t::find( entry.value_1, dbc.ptr );
     if ( effect.id == 0 )
     {
-      entries_str.emplace_back( fmt::format( "Unknown Effect (id={})", entry->value_1 ) );
+      entries_str.emplace_back( fmt::format( "Unknown Effect (id={})", entry.value_1 ) );
     }
     else
     {
@@ -1400,38 +1331,38 @@ static std::string get_bonus_item_effect( const std::vector<const item_bonus_ent
 }
 
 static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_stats(
-    const std::vector<const item_bonus_entry_t*>& entries )
+    const arv::array_view<item_bonus_entry_t>& entries )
 {
   double total = 0;
 
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_MOD )
+    if ( entries[ i ].type == ITEM_BONUS_MOD )
     {
-      total += static_cast<double>( entries[ i ] -> value_2 );
+      total += static_cast<double>( entries[ i ].value_2 );
     }
   }
 
   std::vector<std::tuple<item_mod_type, double, double> > data;
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_MOD )
+    if ( entries[ i ].type == ITEM_BONUS_MOD )
     {
-      if ( entries[ i ]->value_1 != ITEM_MOD_CORRUPTION &&
-           entries[ i ]->value_1 != ITEM_MOD_CORRUPTION_RESISTANCE )
+      if ( entries[ i ].value_1 != ITEM_MOD_CORRUPTION &&
+           entries[ i ].value_1 != ITEM_MOD_CORRUPTION_RESISTANCE )
       {
         data.emplace_back(
-              static_cast<item_mod_type>( entries[ i ] -> value_1 ),
-              entries[ i ] -> value_2 / total,
-              entries[ i ] -> value_2 / 10000.0
+              static_cast<item_mod_type>( entries[ i ].value_1 ),
+              entries[ i ].value_2 / total,
+              entries[ i ].value_2 / 10000.0
         );
       }
       else
       {
         data.emplace_back(
-              static_cast<item_mod_type>( entries[ i ] -> value_1 ),
-              entries[ i ] -> value_2 / total,
-              entries[ i ] -> value_2
+              static_cast<item_mod_type>( entries[ i ].value_1 ),
+              entries[ i ].value_2 / total,
+              entries[ i ].value_2
         );
       }
     }
@@ -1440,47 +1371,41 @@ static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_s
   return data;
 }
 
-std::string dbc::bonus_ids_str( dbc_t& dbc)
+std::string dbc::bonus_ids_str( const dbc_t& dbc )
 {
   std::vector<unsigned> bonus_ids;
   std::stringstream s;
 
-  const item_bonus_entry_t* e = dbc::item_bonus_entries( dbc.ptr );
-  while ( e -> id != 0 )
+  for ( const auto& e : item_bonus_entry_t::data( dbc.ptr ) )
   {
-    if ( std::find( bonus_ids.begin(), bonus_ids.end(), e -> bonus_id ) != bonus_ids.end() )
+    if ( std::find( bonus_ids.begin(), bonus_ids.end(), e.bonus_id ) != bonus_ids.end() )
     {
-      e++;
       continue;
     }
 
     // Need at least one "relevant" type for us
-    if ( e -> type != ITEM_BONUS_ILEVEL && e -> type != ITEM_BONUS_MOD &&
-         e -> type != ITEM_BONUS_SOCKET && e -> type != ITEM_BONUS_SCALING &&
-         e -> type != ITEM_BONUS_SCALING_2 && e -> type != ITEM_BONUS_SET_ILEVEL &&
-         e -> type != ITEM_BONUS_ADD_RANK && e -> type != ITEM_BONUS_QUALITY &&
-         e -> type != ITEM_BONUS_ADD_ITEM_EFFECT )
+    if ( e.type != ITEM_BONUS_ILEVEL && e.type != ITEM_BONUS_MOD &&
+         e.type != ITEM_BONUS_SOCKET && e.type != ITEM_BONUS_SCALING &&
+         e.type != ITEM_BONUS_SCALING_2 && e.type != ITEM_BONUS_SET_ILEVEL &&
+         e.type != ITEM_BONUS_ADD_RANK && e.type != ITEM_BONUS_QUALITY &&
+         e.type != ITEM_BONUS_ADD_ITEM_EFFECT )
     {
-      e++;
       continue;
     }
 
-    if ( e -> type == ITEM_BONUS_ILEVEL && e -> value_1 == 0 )
+    if ( e.type == ITEM_BONUS_ILEVEL && e.value_1 == 0 )
     {
-      e++;
       continue;
     }
 
-    bonus_ids.push_back( e -> bonus_id );
-
-    e++;
+    bonus_ids.push_back( e.bonus_id );
   }
 
   range::sort( bonus_ids );
 
   for ( size_t i = 0; i < bonus_ids.size(); ++i )
   {
-    std::vector<const item_bonus_entry_t*> entries = dbc.item_bonus( bonus_ids[ i ] );
+    const auto entries = dbc.item_bonus( bonus_ids[ i ] );
     std::string desc = get_bonus_id_desc( dbc.ptr, entries );
     std::string suffix = get_bonus_id_suffix( dbc.ptr, entries );
     std::string quality = get_bonus_id_quality( entries );
@@ -1638,8 +1563,8 @@ bool item_database::has_item_bonus_type( const item_t& item, item_bonus_type bon
   auto it = range::find_if( item.parsed.bonus_id, [ &item, bonus ]( int bonus_id ) {
     auto bonuses = item.player -> dbc.item_bonus( bonus_id );
     // If there's a bonus id of type bonus, return true
-    return range::find_if( bonuses, [ bonus ]( const item_bonus_entry_t* entry ) {
-      return entry -> type == bonus;
+    return range::find_if( bonuses, [ bonus ]( const item_bonus_entry_t& entry ) {
+      return entry.type == bonus;
     } ) != bonuses.end();
   } );
 

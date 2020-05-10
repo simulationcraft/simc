@@ -4269,31 +4269,11 @@ class GemPropertyDataGenerator(DataGenerator):
 
 class ItemBonusDataGenerator(DataGenerator):
     def __init__(self, options, data_store):
-        self._dbc = [ 'ItemBonus', 'ItemBonusTreeNode', 'ItemXBonusTree' ]
         super().__init__(options, data_store)
 
+        self._dbc = [ 'ItemBonus' ]
+
     def generate(self, ids):
-        # Bonus trees
-
-        data_str = "%sitem_bonus_tree%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itembonustreenode_db.keys()) + 1))
-
-        self._out.write('// Item bonus trees, wow build %s\n' % ( self._options.build ))
-
-        self._out.write('static struct item_bonus_tree_entry_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
-
-        for key in sorted(self._itembonustreenode_db.keys()) + [0,]:
-            data = self._itembonustreenode_db[key]
-
-            fields = data.field('id', self._options.build < 25600 and 'id_tree' or 'id_parent', 'index', 'id_child', 'id_node')
-            self._out.write('  { %s },\n' % (', '.join(fields)))
-
-        self._out.write('};\n\n')
-
         # Bonus definitions
 
         data_str = "%sitem_bonus%s" % (
@@ -4301,36 +4281,16 @@ class ItemBonusDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or '',
         )
 
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itembonus_db.keys()) + 1))
         self._out.write('// Item bonuses, wow build %s\n' % ( self._options.build ))
 
-        self._out.write('static struct item_bonus_entry_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
+        self._out.write('static constexpr std::array<item_bonus_entry_t, %d> __%s_data { {\n' % (
+            len(self._itembonus_db.keys()), data_str))
 
-        for key in sorted(self._itembonus_db.keys()) + [0,]:
-            data = self._itembonus_db[key]
+        for id, data in sorted(self._itembonus_db.items(), key = lambda v: (v[1].id_node, v[1].id)):
             fields = data.field('id', 'id_node', 'type', 'val_1', 'val_2', 'index')
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-        self._out.write('};\n\n')
-
-        # Item bonuses (unsure as of yet if we need this, depends on how
-        # Blizzard exports the bonus id to third parties)
-        data_str = "%sitem_bonus_map%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itemxbonustree_db.keys()) + 1))
-        self._out.write('// Item bonus map, wow build %s\n' % ( self._options.build ))
-
-        self._out.write('static struct item_bonus_node_entry_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
-
-        for key in sorted(self._itemxbonustree_db.keys()) + [0,]:
-            data = self._itemxbonustree_db[key]
-            fields = data.field('id', self._options.build < 25600 and 'id_item' or 'id_parent', 'id_tree')
-            self._out.write('  { %s },\n' % (', '.join(fields)))
-
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
 def curve_point_sort(a, b):
     if a.id_distribution < b.id_distribution:

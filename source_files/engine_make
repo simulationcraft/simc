@@ -41,6 +41,7 @@ SRC += \
     dbc$(PATHSEP)azerite.cpp \
     dbc$(PATHSEP)gem_data.cpp \
     dbc$(PATHSEP)item_armor.cpp \
+    dbc$(PATHSEP)item_bonus.cpp \
     dbc$(PATHSEP)item_effect.cpp \
     dbc$(PATHSEP)item_weapon.cpp \
     dbc$(PATHSEP)rand_prop_points.cpp \

@@ -88,9 +88,9 @@ bool item_t::has_scaling_stat_bonus_id() const
 {
   for ( auto bonus_id : parsed.bonus_id )
   {
-    std::vector<const item_bonus_entry_t*> bonuses = player -> dbc.item_bonus( bonus_id );
-    if ( std::find_if( bonuses.begin(), bonuses.end(), []( const item_bonus_entry_t* e )
-          { return e -> type == ITEM_BONUS_SCALING; } ) != bonuses.end() )
+    auto bonuses = player -> dbc.item_bonus( bonus_id );
+    if ( std::find_if( bonuses.begin(), bonuses.end(), []( const item_bonus_entry_t& e )
+          { return e.type == ITEM_BONUS_SCALING; } ) != bonuses.end() )
     {
       return true;
     }
@@ -592,15 +592,15 @@ std::string item_t::full_name() const
 
   for ( auto bonus_id : parsed.bonus_id )
   {
-    std::vector<const item_bonus_entry_t*> bonuses = sim -> dbc.item_bonus( bonus_id );
+    auto bonuses = sim -> dbc.item_bonus( bonus_id );
     for ( const auto bonus : bonuses )
     {
-      if ( bonus -> type != ITEM_BONUS_SUFFIX )
+      if ( bonus.type != ITEM_BONUS_SUFFIX )
       {
         continue;
       }
 
-      const char* suffix_name = dbc::item_name_description( bonus -> value_1, sim -> dbc.ptr );
+      const char* suffix_name = dbc::item_name_description( bonus.value_1, sim->dbc.ptr );
       if ( suffix_name )
       {
         n += " ";

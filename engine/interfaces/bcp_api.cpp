@@ -1177,11 +1177,11 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
 
   for ( size_t i = 0, end = item.parsed.bonus_id.size(); ret && i < end; i++ )
   {
-    auto item_bonuses = item.player -> dbc.item_bonus( item.parsed.bonus_id[ i ] );
+    auto item_bonuses = item.player->dbc.item_bonus( item.parsed.bonus_id[ i ] );
     // Apply bonuses
     for ( const auto bonus : item_bonuses )
     {
-      if ( ! item_database::apply_item_bonus( item, *bonus ) )
+      if ( ! item_database::apply_item_bonus( item, bonus ) )
         return false;
     }
   }

@@ -23,6 +23,7 @@ dbc/data_enums.hh
 dbc/dbc.hpp
 dbc/gem_data.hpp
 dbc/item_armor.hpp
+dbc/item_bonus.hpp
 dbc/item_database.hpp
 dbc/item_effect.hpp
 dbc/item_weapon.hpp
@@ -158,6 +159,7 @@ class_modules/warlock/sc_warlock_pets.cpp
 dbc/azerite.cpp
 dbc/gem_data.cpp
 dbc/item_armor.cpp
+dbc/item_bonus.cpp
 dbc/item_effect.cpp
 dbc/item_weapon.cpp
 dbc/rand_prop_points.cpp
