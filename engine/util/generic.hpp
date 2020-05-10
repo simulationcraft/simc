@@ -17,31 +17,8 @@
 #include <cassert>
 #include <cmath>
 #include <type_traits>
+
 #include "utf8-cpp/utf8.h"
-
-// Type traits and metaprogramming tools ====================================
-
-template <bool Condition, typename T>
-struct enable_if
-{
-  typedef T type;
-};
-template <typename T>
-struct enable_if<false, T>
-{
-};
-
-template <typename T>
-struct iterator_type
-{
-  typedef typename T::iterator type;
-};
-
-template <typename T>
-struct iterator_type<const T>
-{
-  typedef typename T::const_iterator type;
-};
 
 // iterable enumeration templates ===========================================
 
@@ -68,15 +45,13 @@ struct is_iterable_enum : public std::is_enum<T>
 };
 
 template <typename T>
-inline typename enable_if<is_iterable_enum<T>::value, T&>::type operator--(
-    T& s )
+inline std::enable_if_t<is_iterable_enum<T>::value, T&> operator--( T& s )
 {
-  return s = static_cast<T>( static_cast<typename std::underlying_type<T>::type>(s) - 1 );
+  return s = static_cast<T>( static_cast<std::underlying_type_t<T>>(s) - 1 );
 }
 
 template <typename T>
-inline typename enable_if<is_iterable_enum<T>::value, T>::type operator--( T& s,
-                                                                           int )
+inline std::enable_if_t<is_iterable_enum<T>::value, T> operator--( T& s, int )
 {
   T tmp = s;
   --s;
@@ -84,15 +59,13 @@ inline typename enable_if<is_iterable_enum<T>::value, T>::type operator--( T& s,
 }
 
 template <typename T>
-inline typename enable_if<is_iterable_enum<T>::value, T&>::type operator++(
-    T& s )
+inline std::enable_if_t<is_iterable_enum<T>::value, T&> operator++( T& s )
 {
-  return s = static_cast<T>( static_cast<typename std::underlying_type<T>::type>(s) + 1 );
+  return s = static_cast<T>( static_cast<std::underlying_type_t<T>>(s) + 1 );
 }
 
 template <typename T>
-inline typename enable_if<is_iterable_enum<T>::value, T>::type operator++( T& s,
-                                                                           int )
+inline std::enable_if_t<is_iterable_enum<T>::value, T> operator++( T& s, int )
 {
   T tmp = s;
   ++s;
@@ -202,10 +175,21 @@ inline void dispose( I first, I last )
 
 namespace range
 {  // ========================================================
+namespace detail {
+template <typename T>
+struct iterator_type {
+  using type = typename T::iterator;
+};
+template <typename T>
+struct iterator_type<const T> {
+  using type = typename T::const_iterator;
+};
+} // namespace detail
+
 template <typename T>
 struct traits
 {
-  typedef typename iterator_type<T>::type iterator;
+  typedef typename detail::iterator_type<T>::type iterator;
   static iterator begin( T& t )
   {
     return std::begin( t );
@@ -258,34 +242,32 @@ struct traits<const std::pair<T, T> >
   }
 };
 
-template <typename T>
-struct value_type
-{
-  typedef
-      typename std::iterator_traits<typename traits<T>::iterator>::value_type
-          type;
-};
+template <typename R>
+using iterator_t = typename traits<R>::iterator;
+
+template <typename R>
+using value_type_t = typename std::iterator_traits<iterator_t<R>>::value_type;
 
 template <typename T>
-inline typename traits<T>::iterator begin( T& t )
+inline iterator_t<T> begin( T& t )
 {
   return traits<T>::begin( t );
 }
 
 template <typename T>
-inline typename traits<const T>::iterator cbegin( const T& t )
+inline iterator_t<const T> cbegin( const T& t )
 {
   return range::begin( t );
 }
 
 template <typename T>
-inline typename traits<T>::iterator end( T& t )
+inline iterator_t<T> end( T& t )
 {
   return traits<T>::end( t );
 }
 
 template <typename T>
-inline typename traits<const T>::iterator cend( const T& t )
+inline iterator_t<const T> cend( const T& t )
 {
   return range::end( t );
 }
@@ -318,7 +300,7 @@ inline Range& dispose( Range& r )
 }
 
 template <typename Range>
-inline Range& fill( Range& r, typename range::value_type<Range>::type const& t )
+inline Range& fill( Range& r, value_type_t<Range> const& t )
 {
   std::fill( range::begin( r ), range::end( r ), t );
   return r;
@@ -338,20 +320,19 @@ inline T ( &fill( T ( &r )[ N ], const T& t ) )[ N ]
 #endif
 
 template <typename Range, typename T>
-inline typename range::traits<Range>::iterator find( Range& r, T const& t )
+inline iterator_t<Range> find( Range& r, T const& t )
 {
   // Static assert for human-readable error message. Not 100% technically
   // correct, since "comparability" is enough, but for our purposes convertible
   // is good enough.
   static_assert(
-      std::is_convertible<T, typename range::value_type<Range>::type>::value,
+      std::is_convertible<T, value_type_t<Range>>::value,
       "Object to find must be convertible to value type of range" );
   return std::find( range::begin( r ), range::end( r ), t );
 }
 
 template <typename Range, typename UnaryPredicate>
-inline typename range::traits<Range>::iterator find_if( Range& r,
-                                                        UnaryPredicate p )
+inline iterator_t<Range> find_if( Range& r, UnaryPredicate p )
 {
   return std::find_if( range::begin( r ), range::end( r ), p );
 }
@@ -399,7 +380,7 @@ inline Out transform( Range& r, Range2& r2, Out o, F f )
 }
 
 template <typename Range, typename F>
-inline typename range::traits<Range>::iterator transform_self( Range& r, F f )
+inline iterator_t<Range> transform_self( Range& r, F f )
 {
   return std::transform( range::begin( r ), range::end( r ), range::begin( r ),
                          f );
@@ -467,13 +448,13 @@ inline Range& sort( Range& r, Comp c )
 }
 
 template <typename Range>
-inline typename range::traits<Range>::iterator unique( Range& r )
+inline iterator_t<Range> unique( Range& r )
 {
   return std::unique( range::begin( r ), range::end( r ) );
 }
 
 template <typename Range, typename Comp>
-inline typename range::traits<Range>::iterator unique( Range& r, Comp c )
+inline iterator_t<Range> unique( Range& r, Comp c )
 {
   return std::unique( range::begin( r ), range::end( r ), c );
 }
@@ -485,13 +466,13 @@ inline bool is_valid_utf8( const Range& r )
 }
 
 template <typename Range>
-inline typename range::traits<Range>::iterator max_element( Range& r )
+inline iterator_t<Range> max_element( Range& r )
 {
   return std::max_element( range::begin( r ), range::end( r ) );
 }
 
 template <typename Range>
-inline typename range::traits<Range>::iterator min_element( Range& r )
+inline iterator_t<Range> min_element( Range& r )
 {
   return std::min_element( range::begin( r ), range::end( r ) );
 }
