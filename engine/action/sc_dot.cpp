@@ -10,7 +10,41 @@
 #include "player/stats.hpp"
 #include "sim/sc_expressions.hpp"
 #include "sim/sc_sim.hpp"
+#include "sim/event.hpp"
 #include "util/rng.hpp"
+
+// Dot events
+
+struct dot_t::dot_tick_event_t : public event_t
+{
+public:
+  dot_tick_event_t(dot_t* d, timespan_t time_to_tick);
+
+private:
+  virtual void execute() override;
+  virtual const char* name() const override
+  {
+    return "Dot Tick";
+  }
+  dot_t* dot;
+};
+
+// DoT End Event ===========================================================
+
+struct dot_t::dot_end_event_t : public event_t
+{
+public:
+  dot_end_event_t(dot_t* d, timespan_t time_to_end);
+
+private:
+  virtual void execute() override;
+  virtual const char* name() const override
+  {
+    return "DoT End";
+  }
+  dot_t* dot;
+};
+
 
 // ==========================================================================
 // Dot
@@ -1389,7 +1423,7 @@ void dot_t::adjust_full_ticks( double coefficient )
   num_ticks        = current_tick + rounded_full_ticks_left;
 }
 
-inline dot_tick_event_t::dot_tick_event_t(dot_t* d, timespan_t time_to_tick) :
+dot_t::dot_tick_event_t::dot_tick_event_t(dot_t* d, timespan_t time_to_tick) :
   event_t(*d -> source, time_to_tick),
   dot(d)
 {
@@ -1399,7 +1433,7 @@ inline dot_tick_event_t::dot_tick_event_t(dot_t* d, timespan_t time_to_tick) :
 }
 
 
-void dot_tick_event_t::execute()
+void dot_t::dot_tick_event_t::execute()
 {
   dot->tick_event = nullptr;
   dot->current_tick++;
@@ -1438,7 +1472,7 @@ void dot_tick_event_t::execute()
   dot->schedule_tick();
 }
 
-dot_end_event_t::dot_end_event_t(dot_t* d, timespan_t time_to_end) :
+dot_t::dot_end_event_t::dot_end_event_t(dot_t* d, timespan_t time_to_end) :
   event_t(*d -> source, time_to_end),
   dot(d)
 {
@@ -1447,7 +1481,7 @@ dot_end_event_t::dot_end_event_t(dot_t* d, timespan_t time_to_end) :
       d->source->name(), dot->name(), time_to_end.total_seconds());
 }
 
-void dot_end_event_t::execute()
+void dot_t::dot_end_event_t::execute()
 {
   dot->end_event = nullptr;
   if (dot->current_tick < dot->num_ticks)
