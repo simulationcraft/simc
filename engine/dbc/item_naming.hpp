@@ -20,7 +20,7 @@ struct item_name_description_t
   static const item_name_description_t& nil()
   { return dbc::nil<item_name_description_t>(); }
 
-  static const arv::array_view<item_name_description_t> data( bool ptr );
+  static arv::array_view<item_name_description_t> data( bool ptr );
 };
 
 #endif /* ITEM_NAMING_HPP */

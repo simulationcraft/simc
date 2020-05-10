@@ -11,7 +11,7 @@
 #include "generated/azerite_ptr.inc"
 #endif
 
-const arv::array_view<azerite_power_entry_t> azerite_power_entry_t::data( bool ptr )
+arv::array_view<azerite_power_entry_t> azerite_power_entry_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<azerite_power_entry_t>( __ptr_azerite_power_data )
@@ -24,7 +24,7 @@ const arv::array_view<azerite_power_entry_t> azerite_power_entry_t::data( bool p
   return data;
 }
 
-const arv::array_view<azerite_essence_entry_t> azerite_essence_entry_t::data( bool ptr )
+arv::array_view<azerite_essence_entry_t> azerite_essence_entry_t::data( bool ptr )
 {
   ( void ) ptr;
 
@@ -67,7 +67,7 @@ azerite_essence_entry_t::find( const std::string& name, bool tokenized, bool ptr
   return nil();
 }
 
-const arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data( bool ptr )
+arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data( bool ptr )
 {
   ( void ) ptr;
 
@@ -81,7 +81,7 @@ const arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry
   return data;
 }
 
-const arv::array_view<azerite_essence_power_entry_t>
+arv::array_view<azerite_essence_power_entry_t>
 azerite_essence_power_entry_t::data_by_essence_id( unsigned essence_id, bool ptr )
 {
   const auto __data = data( ptr );

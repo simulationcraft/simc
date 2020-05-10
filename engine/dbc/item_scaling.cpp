@@ -9,7 +9,7 @@
 #include "generated/item_scaling_ptr.inc"
 #endif
 
-const arv::array_view<scaling_stat_distribution_t> scaling_stat_distribution_t::data( bool ptr )
+arv::array_view<scaling_stat_distribution_t> scaling_stat_distribution_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<scaling_stat_distribution_t>( __ptr_scaling_stat_distribution_data )
@@ -23,7 +23,7 @@ const arv::array_view<scaling_stat_distribution_t> scaling_stat_distribution_t::
 }
 
 
-const arv::array_view<curve_point_t> curve_point_t::data( bool ptr )
+arv::array_view<curve_point_t> curve_point_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<curve_point_t>( __ptr_curve_point_data )
@@ -37,7 +37,7 @@ const arv::array_view<curve_point_t> curve_point_t::data( bool ptr )
 }
 
 
-const arv::array_view<curve_point_t> curve_point_t::find( unsigned id, bool ptr )
+arv::array_view<curve_point_t> curve_point_t::find( unsigned id, bool ptr )
 {
   const auto __data = data( ptr );
 

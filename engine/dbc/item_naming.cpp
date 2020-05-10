@@ -9,7 +9,7 @@
 #include "generated/item_naming_ptr.inc"
 #endif
 
-const arv::array_view<item_name_description_t> item_name_description_t::data( bool ptr )
+arv::array_view<item_name_description_t> item_name_description_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<item_name_description_t>( __ptr_item_name_description_data )

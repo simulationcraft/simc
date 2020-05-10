@@ -10,7 +10,7 @@
 #include "generated/item_effect_ptr.inc"
 #endif
 
-const arv::array_view<item_effect_t> item_effect_t::data( bool ptr )
+arv::array_view<item_effect_t> item_effect_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto data = ptr

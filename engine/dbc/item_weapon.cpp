@@ -9,7 +9,7 @@
 #include "generated/item_weapon_ptr.inc"
 #endif
 
-const arv::array_view<item_damage_one_hand_data_t> item_damage_one_hand_data_t::data( bool ptr )
+arv::array_view<item_damage_one_hand_data_t> item_damage_one_hand_data_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto data = ptr
@@ -23,7 +23,7 @@ const arv::array_view<item_damage_one_hand_data_t> item_damage_one_hand_data_t::
   return data;
 }
 
-const arv::array_view<item_damage_one_hand_caster_data_t> item_damage_one_hand_caster_data_t::data( bool ptr )
+arv::array_view<item_damage_one_hand_caster_data_t> item_damage_one_hand_caster_data_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto data = ptr
@@ -37,7 +37,7 @@ const arv::array_view<item_damage_one_hand_caster_data_t> item_damage_one_hand_c
   return data;
 }
 
-const arv::array_view<item_damage_two_hand_data_t> item_damage_two_hand_data_t::data( bool ptr )
+arv::array_view<item_damage_two_hand_data_t> item_damage_two_hand_data_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto data = ptr
@@ -51,7 +51,7 @@ const arv::array_view<item_damage_two_hand_data_t> item_damage_two_hand_data_t::
   return data;
 }
 
-const arv::array_view<item_damage_two_hand_caster_data_t> item_damage_two_hand_caster_data_t::data( bool ptr )
+arv::array_view<item_damage_two_hand_caster_data_t> item_damage_two_hand_caster_data_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto data = ptr

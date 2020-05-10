@@ -25,7 +25,7 @@ public:
   static const item_armor_quality_data_t& nil()
   { return dbc::nil<item_armor_quality_data_t>(); }
 
-  static const arv::array_view<item_armor_quality_data_t> data( bool ptr );
+  static arv::array_view<item_armor_quality_data_t> data( bool ptr );
 
   double value( int quality ) const
   {
@@ -49,7 +49,7 @@ public:
   static const item_armor_shield_data_t& nil()
   { return dbc::nil<item_armor_shield_data_t>(); }
 
-  static const arv::array_view<item_armor_shield_data_t> data( bool ptr );
+  static arv::array_view<item_armor_shield_data_t> data( bool ptr );
 
   double value( int quality ) const
   {
@@ -74,7 +74,7 @@ public:
   static const item_armor_total_data_t& nil()
   { return dbc::nil<item_armor_total_data_t>(); }
 
-  static const arv::array_view<item_armor_total_data_t> data( bool ptr );
+  static arv::array_view<item_armor_total_data_t> data( bool ptr );
 
   double value( int subclass ) const
   {
@@ -103,7 +103,7 @@ public:
   static const item_armor_location_data_t& nil()
   { return dbc::nil<item_armor_location_data_t>(); }
 
-  static const arv::array_view<item_armor_location_data_t> data( bool ptr );
+  static arv::array_view<item_armor_location_data_t> data( bool ptr );
 
   double value( int subclass ) const
   {

@@ -18,12 +18,12 @@ struct item_bonus_entry_t
   int      value_2;
   unsigned index;
 
-  static const arv::array_view<item_bonus_entry_t> find( unsigned id, bool ptr );
+  static arv::array_view<item_bonus_entry_t> find( unsigned id, bool ptr );
 
   static const item_bonus_entry_t& nil()
   { return dbc::nil<item_bonus_entry_t>(); }
 
-  static const arv::array_view<item_bonus_entry_t> data( bool ptr );
+  static arv::array_view<item_bonus_entry_t> data( bool ptr );
 };
 
 #endif /* ITEM_BONUS_HPP */

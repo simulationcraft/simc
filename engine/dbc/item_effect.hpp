@@ -25,7 +25,7 @@ struct item_effect_t
   static const item_effect_t& nil()
   { return dbc::nil<item_effect_t>(); }
 
-  static const arv::array_view<item_effect_t> data( bool ptr );
+  static arv::array_view<item_effect_t> data( bool ptr );
 };
 
 #endif /* ITEM_EFFECT_HPP */

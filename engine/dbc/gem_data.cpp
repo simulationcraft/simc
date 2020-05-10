@@ -9,7 +9,7 @@
 #include "generated/gem_data_ptr.inc"
 #endif
 
-const arv::array_view<gem_property_data_t> gem_property_data_t::data( bool ptr )
+arv::array_view<gem_property_data_t> gem_property_data_t::data( bool ptr )
 {
 #if SC_USE_PTR == 1
   const auto data = ptr ? arv::array_view<gem_property_data_t>( __ptr_gem_property_data )
