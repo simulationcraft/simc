@@ -45,6 +45,7 @@
 #include "util/rng.hpp"
 #include <cerrno>
 #include <memory>
+#include <cctype>
 
 
 namespace
