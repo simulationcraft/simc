@@ -13,29 +13,13 @@
 
 util::span<const scaling_stat_distribution_t> scaling_stat_distribution_t::data( bool ptr )
 {
-#if SC_USE_PTR == 1
-  const auto data = ptr ? util::span<const scaling_stat_distribution_t>( __ptr_scaling_stat_distribution_data )
-                        : util::span<const scaling_stat_distribution_t>( __scaling_stat_distribution_data );
-#else
-  ( void ) ptr;
-  const auto& data = __scaling_stat_distribution_data;
-#endif
-
-  return data;
+  return SC_DBC_GET_DATA( __scaling_stat_distribution_data, __ptr_scaling_stat_distribution_data, ptr );
 }
 
 
 util::span<const curve_point_t> curve_point_t::data( bool ptr )
 {
-#if SC_USE_PTR == 1
-  const auto data = ptr ? util::span<const curve_point_t>( __ptr_curve_point_data )
-                        : util::span<const curve_point_t>( __curve_point_data );
-#else
-  ( void ) ptr;
-  const auto& data = __curve_point_data;
-#endif
-
-  return data;
+  return SC_DBC_GET_DATA( __curve_point_data, __ptr_curve_point_data, ptr );
 }
 
 

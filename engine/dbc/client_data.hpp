@@ -7,6 +7,8 @@
 
 #include <algorithm>
 
+#include "config.hpp"
+
 namespace dbc
 {
 struct ilevel_member_policy_t
@@ -49,5 +51,13 @@ const T& find( unsigned key, bool ptr )
 }
 
 } // Namespace dbc ends
+
+#if defined(SC_USE_PTR) && (SC_USE_PTR != 0)
+# define SC_DBC_GET_DATA( _data__, _data_ptr__, _ptr_flag__ ) \
+    ((_ptr_flag__) ? ::util::make_span( _data_ptr__ ).subspan( 0 ) : ::util::make_span( _data__ ).subspan( 0 ))
+#else
+# define SC_DBC_GET_DATA( _data__, _data_ptr__, _ptr_flag__ ) \
+    ((void)(_ptr_flag__), ::util::make_span( _data__ ))
+#endif
 
 #endif /* CLIENT_DATA_HPP */

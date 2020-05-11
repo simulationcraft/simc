@@ -12,15 +12,6 @@
 
 util::span<const item_effect_t> item_effect_t::data( bool ptr )
 {
-#if SC_USE_PTR == 1
-  const auto data = ptr
-    ? util::span<const item_effect_t>( __ptr_item_effect_data )
-    : util::span<const item_effect_t>( __item_effect_data );
-#else
-  ( void ) ptr;
-  const auto& data = __item_effect_data;
-#endif
-
-  return data;
+  return SC_DBC_GET_DATA( __item_effect_data, __ptr_item_effect_data, ptr );
 }
 

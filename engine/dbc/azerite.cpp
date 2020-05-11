@@ -12,29 +12,12 @@
 
 util::span<const azerite_power_entry_t> azerite_power_entry_t::data( bool ptr )
 {
-#if SC_USE_PTR == 1
-  const auto data = ptr ? util::span<const azerite_power_entry_t>( __ptr_azerite_power_data )
-                        : util::span<const azerite_power_entry_t>( __azerite_power_data );
-#else
-  ( void ) ptr;
-  const auto& data = __azerite_power_data;
-#endif
-
-  return data;
+  return SC_DBC_GET_DATA( __azerite_power_data, __ptr_azerite_power_data, ptr );
 }
 
 util::span<const azerite_essence_entry_t> azerite_essence_entry_t::data( bool ptr )
 {
-  ( void ) ptr;
-
-#if SC_USE_PTR == 1
-  const auto data = ptr ? util::span<const azerite_essence_entry_t>( __ptr_azerite_essence_data )
-                        : util::span<const azerite_essence_entry_t>( __azerite_essence_data );
-#else
-  const auto& data = __azerite_essence_data;
-#endif
-
-  return data;
+  return SC_DBC_GET_DATA( __azerite_essence_data, __ptr_azerite_essence_data, ptr );
 }
 
 const azerite_essence_entry_t&
@@ -68,16 +51,7 @@ azerite_essence_entry_t::find( const std::string& name, bool tokenized, bool ptr
 
 util::span<const azerite_essence_power_entry_t> azerite_essence_power_entry_t::data( bool ptr )
 {
-  ( void ) ptr;
-
-#if SC_USE_PTR == 1
-  const auto data = ptr ? util::span<const azerite_essence_power_entry_t>( __ptr_azerite_essence_power_data )
-                        : util::span<const azerite_essence_power_entry_t>( __azerite_essence_power_data );
-#else
-  const auto& data = __azerite_essence_power_data;
-#endif
-
-  return data;
+  return SC_DBC_GET_DATA( __azerite_essence_power_data, __ptr_azerite_essence_power_data, ptr );
 }
 
 util::span<const azerite_essence_power_entry_t>
