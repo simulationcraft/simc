@@ -74,7 +74,7 @@ util::span<const azerite_essence_power_entry_t> azerite_essence_power_entry_t::d
   const auto data = ptr ? util::span<const azerite_essence_power_entry_t>( __ptr_azerite_essence_power_data )
                         : util::span<const azerite_essence_power_entry_t>( __azerite_essence_power_data );
 #else
-  const auto data = __azerite_essence_power_data;
+  const auto& data = __azerite_essence_power_data;
 #endif
 
   return data;
