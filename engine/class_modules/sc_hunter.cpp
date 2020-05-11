@@ -137,7 +137,7 @@ struct player_data_t
 
   action_data_t* get( const action_t* a )
   {
-    auto it = range::find_if( data_, [ a ] ( const record_t& r ) { return a -> name_str == r.first; } );
+    auto it = range::find( data_, a -> name_str, &record_t::first );
     if ( it != data_.cend() )
       return it -> second.get();
 
@@ -646,7 +646,7 @@ public:
   template <typename T, typename... Ts>
   T* get_background_action( const std::string& n, Ts&&... args )
   {
-    auto it = range::find_if( background_actions, [ &n ]( action_t* a ) { return a -> name_str == n; } );
+    auto it = range::find( background_actions, n, &action_t::name_str );
     if ( it != background_actions.cend() )
       return dynamic_cast<T*>( *it );
 
