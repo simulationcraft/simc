@@ -4,7 +4,10 @@
 // ==========================================================================
 
 #include "wowhead.hpp"
-#include "simulationcraft.hpp"
+#include "item/item.hpp"
+#include "player/sc_player.hpp"
+#include "sim/sc_sim.hpp"
+#include "util/xml.hpp"
 
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
