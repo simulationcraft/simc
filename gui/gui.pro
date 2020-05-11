@@ -111,9 +111,6 @@ unix:!macx {
   locale.commands = @echo Installing localizations to $$SHAREPATH/locale
 }
 
-RESOURCES = \
-  qt/simcqt.qrc
-
 TRANSLATIONS = \
   ../locale/sc_de.ts \
   ../locale/sc_zh.ts \
