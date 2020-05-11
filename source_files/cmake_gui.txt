@@ -39,4 +39,5 @@ util/sc_relativepopup.cpp
 util/sc_searchbox.cpp
 util/sc_tabbar.cpp
 util/sc_textedit.cpp
+simcqt.qrc
 )
