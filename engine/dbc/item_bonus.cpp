@@ -13,14 +13,7 @@
 
 util::span<const item_bonus_entry_t> item_bonus_entry_t::data( bool ptr )
 {
-#if SC_USE_PTR == 1
-  const auto& data = ptr ? __ptr_item_bonus_data :  __item_bonus_data;
-#else
-  ( void ) ptr;
-  const auto& data = __item_bonus_data;
-#endif
-
-  return data;
+  return SC_DBC_GET_DATA( __item_bonus_data, __ptr_item_bonus_data, ptr );
 }
 
 util::span<const item_bonus_entry_t> item_bonus_entry_t::find( unsigned bonus_id, bool ptr )
