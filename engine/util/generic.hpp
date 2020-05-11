@@ -358,6 +358,15 @@ inline iterator_t<Range> find( Range& r, T const& t )
   return std::find( range::begin( r ), range::end( r ), t );
 }
 
+template <typename Range, typename T, typename Proj>
+inline iterator_t<Range> find( Range& r, T const& value, Proj proj )
+{
+  const auto pred = [&value, &proj]( auto&& v ) {
+    return range::invoke( proj, std::forward<decltype(v)>( v ) ) == value;
+  };
+  return std::find_if( range::begin( r ), range::end( r ), pred );
+}
+
 template <typename Range, typename UnaryPredicate>
 inline iterator_t<Range> find_if( Range& r, UnaryPredicate p )
 {
