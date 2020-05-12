@@ -10746,7 +10746,8 @@ public:
 
       if ( tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0 )
       {
-        std::string name_str = report::action_decorator_t( stats -> action_list[ 0 ] ).decorate();
+        const action_t& action = *(stats->action_list[0]);
+        std::string name_str = report_decorators::decorated_action(action);
 
         // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
         os.printf( "<tr><td class=\"left\">%s</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",

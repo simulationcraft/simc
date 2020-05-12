@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_report.hpp"
+#include "color.hpp"
 
 #include <iomanip>
 #include <sstream>

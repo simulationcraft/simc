@@ -3,13 +3,15 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_report.hpp"
+#include "report_helper.hpp"
+
 #include "buff/sc_buff.hpp"
 #include "dbc/sc_spell_info.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "item/item.hpp"
 #include "player/sc_player.hpp"
 #include "player/pet.hpp"
+#include "report/gear_weights.hpp"
 #include "sim/artifact_power.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sc_sim.hpp"
@@ -308,7 +310,7 @@ std::string tooltip_parser_t::parse()
           // for cycles of length 1 here (which should hopefully be enough).
           if ( spell->id() != default_spell.id() )
           {
-            replacement_text = report::pretty_spell_text( *spell, spell->desc(), *player );
+            replacement_text = report_helper::pretty_spell_text( *spell, spell->desc(), *player );
           }
           break;
         }
@@ -338,38 +340,16 @@ std::string tooltip_parser_t::parse()
   return result;
 }
 
-const color::rgb& item_quality_color( const item_t& item )
-{
-  switch ( item.parsed.data.quality )
-  {
-    case 1:
-      return color::COMMON;
-    case 2:
-      return color::UNCOMMON;
-    case 3:
-      return color::RARE;
-    case 4:
-      return color::EPIC;
-    case 5:
-      return color::LEGENDARY;
-    case 6:
-      return color::HEIRLOOM;
-    case 7:
-      return color::HEIRLOOM;
-    default:
-      return color::POOR;
-  }
-}
 }  // namespace
 
-std::string report::pretty_spell_text( const spell_data_t& default_spell, const std::string& text, const player_t& p )
+std::string report_helper::pretty_spell_text( const spell_data_t& default_spell, const std::string& text, const player_t& p )
 {
   return tooltip_parser_t( p, default_spell, text ).parse();
 }
 
 // report::check_gear =======================================================
 
-bool report::check_gear( player_t& p, sim_t& sim )
+bool report_helper::check_gear( player_t& p, sim_t& sim )
 {
   int max_ilevel_allowed         = 0;
   int max_azerite_ilevel_allowed = 0;
@@ -611,328 +591,7 @@ bool report::check_gear( player_t& p, sim_t& sim )
   return true;
 }
 
-// report::print_profiles ===================================================
-
-void report::print_profiles( sim_t* sim )
-{
-  int k = 0;
-  for ( unsigned int i = 0; i < sim->actor_list.size(); i++ )
-  {
-    player_t* p = sim->actor_list[ i ];
-    if ( p->is_pet() )
-      continue;
-
-    if ( !check_gear( *p, *sim ) )
-    {
-      continue;
-    }
-    k++;
-
-    if ( !p->report_information.save_gear_str.empty() )  // Save gear
-    {
-      io::cfile file( p->report_information.save_gear_str, "w" );
-      if ( !file )
-      {
-        sim->errorf( "Unable to save gear profile %s for player %s\n", p->report_information.save_gear_str.c_str(),
-                     p->name() );
-      }
-      else
-      {
-        std::string profile_str = p->create_profile( SAVE_GEAR );
-        fprintf( file, "%s", profile_str.c_str() );
-      }
-    }
-
-    if ( !p->report_information.save_talents_str.empty() )  // Save talents
-    {
-      io::cfile file( p->report_information.save_talents_str, "w" );
-      if ( !file )
-      {
-        sim->errorf( "Unable to save talents profile %s for player %s\n",
-                     p->report_information.save_talents_str.c_str(), p->name() );
-      }
-      else
-      {
-        std::string profile_str = p->create_profile( SAVE_TALENTS );
-        fprintf( file, "%s", profile_str.c_str() );
-      }
-    }
-
-    if ( !p->report_information.save_actions_str.empty() )  // Save actions
-    {
-      io::cfile file( p->report_information.save_actions_str, "w" );
-      if ( !file )
-      {
-        sim->errorf( "Unable to save actions profile %s for player %s\n",
-                     p->report_information.save_actions_str.c_str(), p->name() );
-      }
-      else
-      {
-        std::string profile_str = p->create_profile( SAVE_ACTIONS );
-        fprintf( file, "%s", profile_str.c_str() );
-      }
-    }
-
-    std::string file_name = p->report_information.save_str;
-
-    if ( file_name.empty() && sim->save_profiles )
-    {
-      file_name = sim->save_prefix_str;
-      file_name += p->name_str;
-      if ( sim->save_talent_str != 0 )
-      {
-        file_name += "_";
-        file_name += p->primary_tree_name();
-      }
-      file_name += sim->save_suffix_str;
-      file_name += ".simc";
-    }
-
-    if ( file_name.empty() )
-      continue;
-
-    io::cfile file( file_name, "w" );
-    if ( !file )
-    {
-      sim->errorf( "Unable to save profile %s for player %s\n", file_name.c_str(), p->name() );
-      continue;
-    }
-
-    unsigned save_type = SAVE_ALL;
-    if ( !sim->save_profile_with_actions )
-    {
-      save_type &= ~( SAVE_ACTIONS );
-    }
-    std::string profile_str = p->create_profile( static_cast<save_e>( save_type ) );
-    fprintf( file, "%s", profile_str.c_str() );
-  }
-
-  // Save overview file for Guild downloads
-  // if ( /* guild parse */ )
-  if ( sim->save_raid_summary )
-  {
-    static const char* const filename = "Raid_Summary.simc";
-    io::cfile file( filename, "w" );
-    if ( !file )
-    {
-      sim->errorf( "Unable to save overview profile %s\n", filename );
-    }
-    else
-    {
-      fprintf( file,
-               "#Raid Summary\n"
-               "# Contains %d Players.\n\n",
-               k );
-
-      for ( unsigned int i = 0; i < sim->actor_list.size(); ++i )
-      {
-        player_t* p = sim->actor_list[ i ];
-        if ( p->is_pet() )
-          continue;
-
-        if ( !p->report_information.save_str.empty() )
-          fprintf( file, "%s\n", p->report_information.save_str.c_str() );
-        else if ( sim->save_profiles )
-        {
-          fprintf( file,
-                   "# Player: %s Spec: %s Role: %s\n"
-                   "%s%s",
-                   p->name(), p->primary_tree_name(), util::role_type_string( p->primary_role() ),
-                   sim->save_prefix_str.c_str(), p->name() );
-
-          if ( sim->save_talent_str != 0 )
-            fprintf( file, "-%s", p->primary_tree_name() );
-
-          fprintf( file, "%s.simc\n\n", sim->save_suffix_str.c_str() );
-        }
-      }
-    }
-  }
-}
-
-// report::print_spell_query ================================================
-
-void report::print_spell_query( std::ostream& out, const sim_t& sim, const spell_data_expr_t& sq, unsigned level )
-{
-  expr_data_e data_type = sq.data_type;
-  for ( auto i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i )
-  {
-    switch ( data_type )
-    {
-      case DATA_TALENT:
-        out << spell_info::talent_to_str( *sim.dbc, sim.dbc->talent( *i ), level );
-        break;
-      case DATA_EFFECT:
-      {
-        std::ostringstream sqs;
-        const spelleffect_data_t* base_effect = sim.dbc->effect( *i );
-        if ( const spell_data_t* spell = dbc::find_spell( &( sim ), base_effect->spell() ) )
-        {
-          spell_info::effect_to_str( *sim.dbc, spell, dbc::find_effect( &( sim ), base_effect ), sqs, level );
-          out << sqs.str();
-        }
-      }
-      break;
-      default:
-      {
-        const spell_data_t* spell = dbc::find_spell( &( sim ), sim.dbc->spell( *i ) );
-        out << spell_info::to_str( *sim.dbc, spell, level );
-      }
-    }
-  }
-}
-
-void report::print_spell_query( xml_node_t* root, FILE* file, const sim_t& sim, const spell_data_expr_t& sq,
-                                unsigned level )
-{
-  expr_data_e data_type = sq.data_type;
-  for ( auto i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i )
-  {
-    switch ( data_type )
-    {
-      case DATA_TALENT:
-        spell_info::talent_to_xml( *sim.dbc, sim.dbc->talent( *i ), root, level );
-        break;
-      case DATA_EFFECT:
-      {
-        std::ostringstream sqs;
-        const spelleffect_data_t* dbc_effect = sim.dbc->effect( *i );
-        if ( const spell_data_t* spell = dbc::find_spell( &( sim ), dbc_effect->spell() ) )
-        {
-          spell_info::effect_to_xml( *sim.dbc, spell, dbc::find_effect( &( sim ), dbc_effect ), root, level );
-        }
-      }
-      break;
-      default:
-      {
-        const spell_data_t* spell = dbc::find_spell( &( sim ), sim.dbc->spell( *i ) );
-        spell_info::to_xml( *sim.dbc, spell, root, level );
-      }
-    }
-  }
-
-  util::fprintf( file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
-  root->print_xml( file );
-}
-// report::print_suite ======================================================
-
-void report::print_suite( sim_t* sim )
-{
-  if ( !sim->profileset_enabled )
-  {
-    std::cout << "\nGenerating reports...\n";
-  }
-
-  report::print_text( sim, sim->report_details != 0 );
-
-  report::print_html( *sim );
-  report::print_json( *sim );
-  report::print_profiles( sim );
-}
-
-void report::print_html_sample_data( report::sc_html_stream& os, const player_t& p, const extended_sample_data_t& data,
-                                     const std::string& name, int columns )
-{
-  // Print Statistics of a Sample Data Container
-  os << "<tbody>\n"
-     << "<tr>\n"
-     << "<td class=\"left small\" colspan=\"" << columns << "\">";
-
-  std::string tokenized_name = data.name_str;
-  util::tokenize( tokenized_name );
-  tokenized_name = util::remove_special_chars( tokenized_name );
-  os.printf( "<a id=\"actor%d_%s_stats_toggle\" class=\"toggle-details\">%s</a></td>\n</tr>\n",
-             p.index, tokenized_name.c_str(), name.c_str() );
-
-  os << "<tr class=\"details hide\">\n"
-     << "<td class=\"filler\" colspan=\"" << columns << "\">\n"
-     << "<table class=\"details\">\n"
-     << "<tr>\n"
-     << "<th class=\"left\" colspan=\"2\">" << util::encode_html( data.name_str ) << "</th>\n"
-     << "</tr>\n";
-
-  os.printf( "<tr>\n<td class=\"left\">Count</td>\n<td class=\"right\">%d</td>\n</tr>\n", (int)data.size() );
-  os.printf( "<tr>\n<td class=\"left\">Mean</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.mean() );
-  os.printf( "<tr>\n<td class=\"left\">Minimum</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.min() );
-  os.printf( "<tr>\n<td class=\"left\">Maximum</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.max() );
-  os.printf( "<tr>\n<td class=\"left\">Spread ( max - min )</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
-             data.max() - data.min() );
-  os.printf( "<tr>\n<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
-             "<td class=\"right\">%.2f%%</td>\n</tr>\n",
-             data.mean() ? ( ( data.max() - data.min() ) / 2 ) * 100 / data.mean() : 0 );
-  if ( !data.simple )
-  {
-    os.printf( "<tr>\n<td class=\"left\">Standard Deviation</td>\n<td class=\"right\">%.4f</td>\n</tr>\n",
-               data.std_dev );
-    os.printf( "<tr>\n<td class=\"left\">5th Percentile</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
-               data.percentile( 0.05 ) );
-    os.printf( "<tr>\n<td class=\"left\">95th Percentile</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
-               data.percentile( 0.95 ) );
-    os.printf( "<tr>\n<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
-               "<td class=\"right\">%.2f</td>\n</tr>\n",
-               data.percentile( 0.95 ) - data.percentile( 0.05 ) );
-
-    os << "<tr>\n"
-       << "<th class=\"left\" colspan=\"2\">Mean Distribution</th>\n"
-       << "</tr>\n";
-
-    os.printf( "<tr>\n<td class=\"left\">Standard Deviation</td>\n<td class=\"right\">%.4f</td>\n</tr>\n",
-               data.mean_std_dev );
-
-    double mean_error = data.mean_std_dev * p.sim->confidence_estimator;
-    os.printf( "<tr>\n<td class=\"left\">%.2f%% Confidence Interval</td>\n"
-               "<td class=\"right\">( %.2f - %.2f )</td>\n</tr>\n",
-               p.sim->confidence * 100.0,
-               data.mean() - mean_error,
-               data.mean() + mean_error );
-    os.printf( "<tr>\n<td class=\"left\">Normalized %.2f%% Confidence Interval</td>\n"
-               "<td class=\"right\">( %.2f%% - %.2f%% )</td>\n</tr>\n",
-               p.sim->confidence * 100.0,
-               data.mean() ? 100 - mean_error * 100 / data.mean() : 0,
-               data.mean() ? 100 + mean_error * 100 / data.mean() : 0 );
-
-    os << "<tr>\n"
-       << "<th class=\"left\" colspan=\"2\">Approx. Iterations needed for ( always use n>=50 )</th>\n"
-       << "</tr>\n";
-
-    os.printf( "<tr>\n<td class=\"left\">1%% Error</td>\n<td class=\"right\">%.0f</td>\n</tr>\n",
-      std::ceil( data.mean()
-        ? ( mean_error * mean_error * data.size() / ( 0.01 * data.mean() * 0.01 * data.mean() ) )
-        : 0 ) );
-    os.printf( "<tr>\n<td class=\"left\">0.1%% Error</td>\n<td class=\"right\">%.0f</td>\n</tr>\n",
-      std::ceil( data.mean()
-        ? ( mean_error * mean_error * data.size() / ( 0.001 * data.mean() * 0.001 * data.mean() ) )
-        : 0 ) );
-    os.printf( "<tr>\n<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
-               "<td class=\"right\">%.0f</td>\n</tr>\n",
-               std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 30.0 * 30.0 ) ) );
-    os.printf( "<tr>\n<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
-               "<td class=\"right\">%.0f</td>\n</tr>\n",
-               std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 15 * 15 ) ) );
-    os.printf( "<tr>\n<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
-               "<td class=\"right\">%.0f</td>\n</tr>\n",
-               std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 3 * 3 ) ) );
-  }
-
-  os << "</table>\n";
-
-  if ( !data.simple )
-  {
-    highchart::histogram_chart_t chart( tokenized_name + "_dist", *p.sim );
-    chart.set_toggle_id( "actor" + util::to_string( p.index ) + "_" + tokenized_name + "_stats_toggle" );
-    if ( chart::generate_distribution( chart, nullptr, data.distribution, name, data.mean(), data.min(), data.max() ) )
-    {
-      os << chart.to_target_div();
-      p.sim->add_chart_data( chart );
-    }
-  }
-
-  os << "</td>\n"
-     << "</tr>\n"
-     << "</tbody>\n";
-}
-
-void report::generate_player_buff_lists( player_t& p, player_processed_report_information_t& ri )
+void report_helper::generate_player_buff_lists( player_t& p, player_processed_report_information_t& ri )
 {
   if ( ri.buff_lists_generated )
     return;
@@ -962,7 +621,7 @@ void report::generate_player_buff_lists( player_t& p, player_processed_report_in
   ri.buff_lists_generated = true;
 }
 
-void report::generate_player_charts( player_t& p, player_processed_report_information_t& ri )
+void report_helper::generate_player_charts( player_t& p, player_processed_report_information_t& ri )
 {
   if ( ri.generated )
     return;
@@ -983,17 +642,8 @@ void report::generate_player_charts( player_t& p, player_processed_report_inform
   ri.generated = true;
 }
 
-std::string report::decorate_html_string( const std::string& value, const color::rgb& color )
-{
-  std::stringstream s;
 
-  s << "<span style=\"color:" << color;
-  s << "\">" << value << "</span>";
-
-  return s.str();
-}
-
-bool report::output_scale_factors( const player_t* p )
+bool report_helper::output_scale_factors( const player_t* p )
 {
   if ( !p->sim->scaling->has_scale_factors() || p->quiet || p->is_pet() || p->is_enemy() || p->type == HEALING_ENEMY )
   {
@@ -1003,116 +653,7 @@ bool report::output_scale_factors( const player_t* p )
   return true;
 }
 
-std::string report::decoration_domain( const sim_t& sim )
-{
-#if SC_BETA == 0
-  if ( maybe_ptr( sim.dbc->ptr ) )
-  {
-    return "ptr";
-  }
-  else
-  {
-    return "www";
-  }
-#else
-  return "beta";
-  (void)sim;
-#endif
-}
-
-std::string report::decorated_spell_name( const sim_t& sim, const spell_data_t& spell, const std::string& parms_str )
-{
-  std::stringstream s;
-
-  if ( sim.decorated_tooltips == false )
-  {
-    s << "<a href=\"#\">" << util::encode_html( spell.name_cstr() ) << "</a>";
-  }
-  else
-  {
-    s << "<a href=\"https://" << decoration_domain( sim ) << ".wowhead.com/spell=" << spell.id()
-      << ( !parms_str.empty() ? "?" + parms_str : "" ) << "\">" << util::encode_html( spell.name_cstr() ) << "</a>";
-  }
-
-  return s.str();
-}
-
-std::string report::decorated_item_name( const item_t* item )
-{
-  std::stringstream s;
-
-  if ( item->sim->decorated_tooltips == false || item->parsed.data.id == 0 )
-  {
-    s << "<a style=\"color:" << item_quality_color( *item ) << ";\" href=\"#\">" << util::encode_html( item->full_name() ) << "</a>";
-  }
-  else
-  {
-    std::vector<std::string> params;
-    if ( item->parsed.enchant_id > 0 )
-    {
-      params.push_back( "enchantment=" + util::to_string( item->parsed.enchant_id ) );
-    }
-
-    std::string gem_str = "";
-    for ( size_t i = 0; i < item->parsed.gem_id.size(); ++i )
-    {
-      if ( item->parsed.gem_id[ i ] == 0 )
-      {
-        continue;
-      }
-
-      if ( !gem_str.empty() )
-      {
-        gem_str += ",";
-      }
-
-      gem_str += util::to_string( item->parsed.gem_id[ i ] );
-    }
-
-    if ( !gem_str.empty() )
-    {
-      params.push_back( "gems=" + gem_str );
-    }
-
-    std::string bonus_str = "";
-    for ( size_t i = 0; i < item->parsed.bonus_id.size(); ++i )
-    {
-      bonus_str += util::to_string( item->parsed.bonus_id[ i ] );
-      if ( i < item->parsed.bonus_id.size() - 1 )
-      {
-        bonus_str += ",";
-      }
-    }
-
-    if ( !bonus_str.empty() )
-    {
-      params.push_back( "bonusIDs=" + bonus_str );
-    }
-
-    s << "<a style=\"color:" << item_quality_color( *item ) << ";\" href=\"https://" << decoration_domain( *item->sim )
-      << ".wowhead.com/item=" << item->parsed.data.id;
-
-    if ( params.size() > 0 )
-    {
-      s << "?";
-      for ( size_t i = 0; i < params.size(); ++i )
-      {
-        s << params[ i ];
-
-        if ( i < params.size() - 1 )
-        {
-          s << "&";
-        }
-      }
-    }
-
-    s << "\">" << util::encode_html( item->full_name() ) << "</a>";
-  }
-
-  return s.str();
-}
-
-std::vector<std::string> report::beta_warnings()
+std::vector<std::string> report_helper::beta_warnings()
 {
   std::vector<std::string> s = {"Beta! Beta! Beta! Beta! Beta! Beta!",
                                 "Not All classes are yet supported.",
@@ -1126,199 +667,104 @@ std::vector<std::string> report::beta_warnings()
   return s;
 }
 
-std::string report::buff_decorator_t::url_name_prefix() const
+void report_helper::print_html_sample_data(report::sc_html_stream& os, const player_t& p, const extended_sample_data_t& data,
+  const std::string& name, int columns)
 {
-  if ( m_obj->source && m_obj->source->is_pet() )
+  // Print Statistics of a Sample Data Container
+  os << "<tbody>\n"
+    << "<tr>\n"
+    << "<td class=\"left small\" colspan=\"" << columns << "\">";
+
+  std::string tokenized_name = data.name_str;
+  util::tokenize(tokenized_name);
+  tokenized_name = util::remove_special_chars(tokenized_name);
+  os.printf("<a id=\"actor%d_%s_stats_toggle\" class=\"toggle-details\">%s</a></td>\n</tr>\n",
+    p.index, tokenized_name.c_str(), name.c_str());
+
+  os << "<tr class=\"details hide\">\n"
+    << "<td class=\"filler\" colspan=\"" << columns << "\">\n"
+    << "<table class=\"details\">\n"
+    << "<tr>\n"
+    << "<th class=\"left\" colspan=\"2\">" << util::encode_html(data.name_str) << "</th>\n"
+    << "</tr>\n";
+
+  os.printf("<tr>\n<td class=\"left\">Count</td>\n<td class=\"right\">%d</td>\n</tr>\n", (int)data.size());
+  os.printf("<tr>\n<td class=\"left\">Mean</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.mean());
+  os.printf("<tr>\n<td class=\"left\">Minimum</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.min());
+  os.printf("<tr>\n<td class=\"left\">Maximum</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.max());
+  os.printf("<tr>\n<td class=\"left\">Spread ( max - min )</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
+    data.max() - data.min());
+  os.printf("<tr>\n<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
+    "<td class=\"right\">%.2f%%</td>\n</tr>\n",
+    data.mean() ? ((data.max() - data.min()) / 2) * 100 / data.mean() : 0);
+  if (!data.simple)
   {
-    return util::encode_html( m_obj->source->name_str ) + ":&#160;";
+    os.printf("<tr>\n<td class=\"left\">Standard Deviation</td>\n<td class=\"right\">%.4f</td>\n</tr>\n",
+      data.std_dev);
+    os.printf("<tr>\n<td class=\"left\">5th Percentile</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
+      data.percentile(0.05));
+    os.printf("<tr>\n<td class=\"left\">95th Percentile</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
+      data.percentile(0.95));
+    os.printf("<tr>\n<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
+      "<td class=\"right\">%.2f</td>\n</tr>\n",
+      data.percentile(0.95) - data.percentile(0.05));
+
+    os << "<tr>\n"
+      << "<th class=\"left\" colspan=\"2\">Mean Distribution</th>\n"
+      << "</tr>\n";
+
+    os.printf("<tr>\n<td class=\"left\">Standard Deviation</td>\n<td class=\"right\">%.4f</td>\n</tr>\n",
+      data.mean_std_dev);
+
+    double mean_error = data.mean_std_dev * p.sim->confidence_estimator;
+    os.printf("<tr>\n<td class=\"left\">%.2f%% Confidence Interval</td>\n"
+      "<td class=\"right\">( %.2f - %.2f )</td>\n</tr>\n",
+      p.sim->confidence * 100.0,
+      data.mean() - mean_error,
+      data.mean() + mean_error);
+    os.printf("<tr>\n<td class=\"left\">Normalized %.2f%% Confidence Interval</td>\n"
+      "<td class=\"right\">( %.2f%% - %.2f%% )</td>\n</tr>\n",
+      p.sim->confidence * 100.0,
+      data.mean() ? 100 - mean_error * 100 / data.mean() : 0,
+      data.mean() ? 100 + mean_error * 100 / data.mean() : 0);
+
+    os << "<tr>\n"
+      << "<th class=\"left\" colspan=\"2\">Approx. Iterations needed for ( always use n>=50 )</th>\n"
+      << "</tr>\n";
+
+    os.printf("<tr>\n<td class=\"left\">1%% Error</td>\n<td class=\"right\">%.0f</td>\n</tr>\n",
+      std::ceil(data.mean()
+        ? (mean_error * mean_error * data.size() / (0.01 * data.mean() * 0.01 * data.mean()))
+        : 0));
+    os.printf("<tr>\n<td class=\"left\">0.1%% Error</td>\n<td class=\"right\">%.0f</td>\n</tr>\n",
+      std::ceil(data.mean()
+        ? (mean_error * mean_error * data.size() / (0.001 * data.mean() * 0.001 * data.mean()))
+        : 0));
+    os.printf("<tr>\n<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
+      "<td class=\"right\">%.0f</td>\n</tr>\n",
+      std::ceil(2.0 * mean_error * mean_error * data.size() / (30.0 * 30.0)));
+    os.printf("<tr>\n<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
+      "<td class=\"right\">%.0f</td>\n</tr>\n",
+      std::ceil(2.0 * mean_error * mean_error * data.size() / (15 * 15)));
+    os.printf("<tr>\n<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
+      "<td class=\"right\">%.0f</td>\n</tr>\n",
+      std::ceil(2.0 * mean_error * mean_error * data.size() / (3 * 3)));
   }
 
-  return std::string();
-}
+  os << "</table>\n";
 
-std::vector<std::string> report::buff_decorator_t::parms() const
-{
-  std::vector<std::string> parms = super::parms();
-
-  // if ( m_obj -> source && m_obj -> source -> specialization() != SPEC_NONE )
-  //{
-  //  parms.push_back( "spec=" + util::to_string( m_obj -> source -> specialization() ) );
-  //}
-
-  return parms;
-}
-
-std::vector<std::string> report::action_decorator_t::parms() const
-{
-  std::vector<std::string> parms = super::parms();
-
-  // if ( m_obj -> player && m_obj -> player -> specialization() != SPEC_NONE )
-  //{
-  //  parms.push_back( "spec=" + util::to_string( m_obj -> player -> specialization() ) );
-  //}
-
-  return parms;
-}
-
-report::spell_data_decorator_t::spell_data_decorator_t( const player_t* obj, const spell_data_t* spell )
-  : html_decorator_t(), m_sim( obj->sim ), m_spell( spell ), m_item( nullptr ), m_power( nullptr )
-{
-}
-
-report::spell_data_decorator_t::spell_data_decorator_t( const player_t* obj, const artifact_power_t& power )
-  : spell_data_decorator_t( obj, power.data() )
-{
-  artifact_power( power );
-}
-
-bool report::spell_data_decorator_t::can_decorate() const
-{
-  return m_sim->decorated_tooltips && m_spell->id() > 0;
-}
-
-std::string report::spell_data_decorator_t::url_name() const
-{
-  return util::encode_html( m_spell->name_cstr() );
-}
-
-std::string report::spell_data_decorator_t::token() const
-{
-  std::string token = m_spell->name_cstr();
-  util::tokenize( token );
-  return util::encode_html( token );
-}
-
-std::vector<std::string> report::spell_data_decorator_t::parms() const
-{
-  auto params = html_decorator_t::parms();
-
-  // if ( m_player && m_player -> specialization() != SPEC_NONE )
-  //{
-  //  params.push_back( "spec=" + util::to_string( m_player -> specialization() ) );
-  //}
-
-  if ( m_item )
+  if (!data.simple)
   {
-    params.push_back( "ilvl=" + util::to_string( m_item->item_level() ) );
-  }
-
-  if ( m_power )
-  {
-    params.push_back( "artifactRank=" + util::to_string( m_power->rank() ) );
-  }
-
-  return params;
-}
-
-std::string report::spell_data_decorator_t::base_url() const
-{
-  std::stringstream s;
-
-  s << "<a href=\"https://" << decoration_domain( *m_sim ) << ".wowhead.com/spell=" << m_spell->id();
-
-  return s.str();
-}
-
-bool report::item_decorator_t::can_decorate() const
-{
-  return m_item->sim->decorated_tooltips && m_item->parsed.data.id > 0;
-}
-
-std::string report::item_decorator_t::base_url() const
-{
-  std::stringstream s;
-
-  s << "<a "
-    << "style=\"color:" << item_quality_color( *m_item ) << ";\" "
-    << "href=\"https://" << decoration_domain( *m_item->sim ) << ".wowhead.com/item=" << m_item->parsed.data.id;
-
-  return s.str();
-}
-
-std::string report::item_decorator_t::token() const
-{
-  return util::encode_html( m_item->name() );
-}
-
-std::string report::item_decorator_t::url_name() const
-{
-  return util::encode_html( m_item->full_name() );
-}
-
-std::vector<std::string> report::item_decorator_t::parms() const
-{
-  auto params = html_decorator_t::parms();
-
-  if ( m_item->parsed.enchant_id > 0 )
-  {
-    params.push_back( "ench=" + util::to_string( m_item->parsed.enchant_id ) );
-  }
-
-  std::stringstream gem_str;
-  for ( size_t i = 0, end = m_item->parsed.gem_id.size(); i < end; ++i )
-  {
-    if ( m_item->parsed.gem_id[ i ] == 0 )
+    highchart::histogram_chart_t chart(tokenized_name + "_dist", *p.sim);
+    chart.set_toggle_id("actor" + util::to_string(p.index) + "_" + tokenized_name + "_stats_toggle");
+    if (chart::generate_distribution(chart, nullptr, data.distribution, name, data.mean(), data.min(), data.max()))
     {
-      continue;
-    }
-
-    if ( gem_str.tellp() > 0 )
-    {
-      gem_str << ":";
-    }
-
-    gem_str << util::to_string( m_item->parsed.gem_id[ i ] );
-
-    // Include relic bonus ids
-    if ( i < m_item->parsed.gem_bonus_id.size() )
-    {
-      range::for_each( m_item->parsed.gem_bonus_id[ i ],
-                       [&gem_str]( unsigned bonus_id ) { gem_str << ":" << bonus_id; } );
+      os << chart.to_target_div();
+      p.sim->add_chart_data(chart);
     }
   }
 
-  if ( gem_str.tellp() > 0 )
-  {
-    params.push_back( "gems=" + gem_str.str() );
-  }
-
-  std::stringstream bonus_str;
-  for ( size_t i = 0, end = m_item->parsed.bonus_id.size(); i < end; ++i )
-  {
-    bonus_str << util::to_string( m_item->parsed.bonus_id[ i ] );
-
-    if ( i < end - 1 )
-    {
-      bonus_str << ":";
-    }
-  }
-
-  if ( bonus_str.tellp() > 0 )
-  {
-    params.push_back( "bonus=" + bonus_str.str() );
-  }
-
-  std::stringstream azerite_str;
-  if ( !m_item->parsed.azerite_ids.empty() )
-  {
-    azerite_str << util::class_id( m_item->player->type ) << ":";
-  }
-  for ( size_t i = 0, end = m_item->parsed.azerite_ids.size(); i < end; ++i )
-  {
-    azerite_str << util::to_string( m_item->parsed.azerite_ids[ i ] );
-
-    if ( i < end - 1 )
-    {
-      azerite_str << ":";
-    }
-  }
-
-  if ( azerite_str.tellp() > 0 )
-  {
-    params.push_back( "azerite-powers=" + azerite_str.str() );
-  }
-
-  params.push_back( "ilvl=" + util::to_string( m_item->item_level() ) );
-
-  return params;
+  os << "</td>\n"
+    << "</tr>\n"
+    << "</tbody>\n";
 }

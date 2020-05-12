@@ -3,8 +3,21 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "charts.hpp"
 #include "sc_highchart.hpp"
-#include "simulationcraft.hpp"
+
+#include "action/sc_action.hpp"
+#include "dbc/dbc.hpp"
+#include "player/player_scaling.hpp"
+#include "player/gear_stats.hpp"
+#include "player/sc_player.hpp"
+#include "player/stats.hpp"
+#include "player/pet.hpp"
+#include "report/color.hpp"
+#include "report/decorators.hpp"
+#include "sim/reforge_plot.hpp"
+#include "util/util.hpp"
+#include "util/sample_data.hpp"
 
 #include <clocale>
 #include <cmath>
@@ -480,7 +493,7 @@ bool chart::generate_raid_downtime( highchart::bar_chart_t& bc,
     const auto& c      = color::class_color( p->type );
     double waiting_pct = ( 100.0 * p->collected_data.waiting_time.mean() / p->collected_data.fight_length.mean() );
     sc_js_t e;
-    e.set( "name", report::decorate_html_string( util::encode_html( p->name_str ), c ) );
+    e.set( "name", report_decorators::decorate_html_string( util::encode_html( p->name_str ), c ) );
     e.set( "color", c.str() );
     e.set( "y", waiting_pct );
 
@@ -525,7 +538,7 @@ bool chart::generate_raid_gear( highchart::bar_chart_t& bc, const sim_t& sim )
 
       data_points[ i ].push_back( total * gear_stats_t::stat_mod( i ) );
       bc.add( "xAxis.categories",
-              report::decorate_html_string(
+        report_decorators::decorate_html_string(
                   util::encode_html( player->name_str ), color::class_color( player->type ) ) );
     }
   }
@@ -846,7 +859,7 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
       sc_js_t e;
       e.set( "color", color );
       e.set( "y", util::round( stats->total_time.total_seconds(), p.sim->report_precision ) );
-      e.set( "name", report::decorate_html_string( util::encode_html( stats->name_str ), color ) );
+      e.set( "name", report_decorators::decorate_html_string( util::encode_html( stats->name_str ), color ) );
       e.set( "id", "#actor" + util::to_string( stats->player->index ) + "_"
                     + util::remove_special_chars( stats->name_str ) + "_"
                     + util::stats_type_string( stats->type ) + "_toggle" );
@@ -909,7 +922,7 @@ bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& 
       name_str += util::encode_html( stats->player->name_str );
       name_str += "<br/>";
     }
-    name_str += report::decorate_html_string( util::encode_html( stats->name_str ), c );
+    name_str += report_decorators::decorate_html_string( util::encode_html( stats->name_str ), c );
 
     e.set( "name", name_str );
     e.set( "id", "#actor" + util::to_string( stats->player->index ) + "_"
@@ -1328,7 +1341,7 @@ bool chart::generate_apet( highchart::bar_chart_t& bc, const std::vector<stats_t
 
     sc_js_t e;
     e.set( "color", c.str() );
-    std::string name_str = report::decorate_html_string( util::encode_html( stats->name_str ), c );
+    std::string name_str = report_decorators::decorate_html_string( util::encode_html( stats->name_str ), c );
     if ( players.size() > 1 )
     {
       name_str += " (" + util::encode_html( stats->player->name() )+ ")";

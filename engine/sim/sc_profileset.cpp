@@ -4,9 +4,13 @@
 // ==========================================================================
 
 #include "sc_profileset.hpp"
+#include "dbc/dbc.hpp"
 #include "sim_control.hpp"
 #include "sc_sim.hpp"
-#include "report/sc_report.hpp"
+// maybe move profileset reporting to a separate file in report/
+#include "report/reports.hpp"
+#include "report/color.hpp"
+#include "report/sc_highchart.hpp"
 #include "player/sc_player.hpp"
 #include "player/artifact_data.hpp"
 #include "item/item.hpp"

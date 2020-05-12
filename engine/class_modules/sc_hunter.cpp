@@ -203,7 +203,7 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
     action_t* a = player.find_action( rec.first );
     std::string name_str = rec.first;
     if ( a )
-      name_str = report::action_decorator_t( a ).decorate();
+      name_str = report_decorators::decorated_action(*a);
     else
       name_str = util::encode_html( name_str );
 

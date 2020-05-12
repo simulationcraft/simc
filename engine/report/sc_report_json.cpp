@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_report.hpp"
+#include "reports.hpp"
 #include "interfaces/sc_js.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "simulationcraft.hpp"

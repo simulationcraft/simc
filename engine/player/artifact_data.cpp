@@ -5,9 +5,13 @@
 
 #include "artifact_data.hpp"
 #include "sim/sc_sim.hpp"
+#include "util/generic.hpp"
+#include "dbc/dbc.hpp"
 #include "player/sc_player.hpp"
 #include "player/artifact_data.hpp"
 #include "sim/artifact_power.hpp"
+#include "interfaces/sc_js.hpp"
+#include "report/decorators.hpp"
 
 namespace
 {
@@ -158,6 +162,152 @@ int player_artifact_data_t::ilevel_increase() const
 slot_e player_artifact_data_t::slot() const
 {
   return m_slot;
+}
+
+// Note, first purchased talent does not count towards total points
+
+unsigned player_artifact_data_t::points() const
+{
+  if (!enabled())
+  {
+    return 0;
+  }
+
+  return m_purchased_points > 0 ? m_total_points - 1 : m_total_points;
+}
+
+// The damage multiplier for the Artificial Damage trait
+
+
+// Note, first purchased talent does not count towards total points
+
+
+// Note, first purchased talent does not count towards total points
+
+unsigned player_artifact_data_t::purchased_points() const
+{
+  if (!enabled())
+  {
+    return 0;
+  }
+
+  return m_purchased_points > 0 ? m_purchased_points - 1 : m_purchased_points;
+}
+
+unsigned player_artifact_data_t::crucible_points() const
+{
+  if (!enabled())
+  {
+    return 0;
+  }
+
+  return m_crucible_points;
+}
+
+double player_artifact_data_t::artificial_damage_multiplier() const
+{
+  if (!enabled())
+  {
+    return 0.0;
+  }
+
+  auto full_effect = m_artificial_damage->effectN(ARTIFICIAL_DAMAGE_EFFECT_INDEX).percent()
+    * 0.01;
+
+  // After 75th point, Artificial Damage is 50 times less effective ( 0.5% -> 0.01% increase per trait )
+  auto reduced_effect = full_effect * 0.02;
+
+  auto full_points = std::min(ARTIFICIAL_DAMAGE_CUTOFF_TRAIT, purchased_points());
+  auto reduced_points = purchased_points() - full_points;
+
+  return full_effect * (full_points + BASE_TRAIT_INCREASE) + reduced_effect * reduced_points;
+}
+
+// The stamina multiplier for the Artificial Stamina trait
+
+double player_artifact_data_t::artificial_stamina_multiplier() const
+{
+  if (!enabled())
+  {
+    return 0.0;
+  }
+
+  auto full_effect = m_artificial_stamina->effectN(ARTIFICIAL_STAMINA_EFFECT_INDEX).percent()
+    * 0.01;
+
+  // After 52nd point, Artificial Stamina is 5 times less effective.
+  auto reduced_effect = full_effect * .2;
+
+  auto full_points = std::min(ARTIFICIAL_STAMINA_CUTOFF_TRAIT, purchased_points());
+  auto reduced_points = purchased_points() - full_points;
+
+  return full_effect * (full_points + BASE_TRAIT_INCREASE) + reduced_effect * reduced_points;
+}
+
+// Returns the purchased + bonus rank of a trait, or 0 if trait not purchased and/or bonused
+
+unsigned player_artifact_data_t::power_rank(unsigned power_id, override_type t) const
+{
+  if (!enabled())
+  {
+    return 0;
+  }
+
+  auto it = m_points.find(power_id);
+
+  return it != m_points.end()
+    ? t == ALLOW_OVERRIDE && it->second.overridden >= 0
+    ? it->second.overridden
+    : (it->second.purchased + it->second.bonus + it->second.crucible)
+    : 0u;
+}
+
+unsigned player_artifact_data_t::bonus_rank(unsigned power_id, override_type t) const
+{
+  if (!enabled())
+  {
+    return 0;
+  }
+
+  auto it = m_points.find(power_id);
+
+  return it != m_points.end()
+    ? t == ALLOW_OVERRIDE && it->second.overridden >= 0
+    ? 0
+    : it->second.bonus
+    : 0u;
+}
+
+unsigned player_artifact_data_t::crucible_rank(unsigned power_id, override_type t) const
+{
+  if (!enabled())
+  {
+    return 0;
+  }
+
+  auto it = m_points.find(power_id);
+
+  return it != m_points.end()
+    ? t == ALLOW_OVERRIDE && it->second.overridden >= 0
+    ? 0u
+    : it->second.crucible
+    : 0u;
+}
+
+unsigned player_artifact_data_t::purchased_power_rank(unsigned power_id, override_type t) const
+{
+  if (!enabled())
+  {
+    return 0;
+  }
+
+  auto it = m_points.find(power_id);
+
+  return it != m_points.end()
+    ? t == ALLOW_OVERRIDE && it->second.overridden >= 0
+    ? it->second.overridden
+    : it->second.purchased
+    : 0u;
 }
 
 bool player_artifact_data_t::add_power( unsigned power_id, unsigned rank )
@@ -648,7 +798,7 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
 
     auto spell = player() -> dbc->spell( power -> power_spell_id );
 
-    root << "<li>" << ( spell ? report::spell_data_decorator_t( player(), spell ).decorate()
+    root << "<li>" << ( spell ? report_decorators::decorated_spell_data( *player()->sim, spell )
                               : power -> name );
 
     if ( power -> max_rank > 1 && purchased_rank + relic_rank + crucible_rank_ > 0 )
@@ -707,7 +857,7 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
 
       auto spell = player() -> dbc->spell( power -> power_spell_id );
 
-      root << "<li>" << ( spell ? report::spell_data_decorator_t( player(), spell ).decorate()
+      root << "<li>" << ( spell ? report_decorators::decorated_spell_data( *player()->sim, spell )
                                 : power -> name );
 
       if ( crucible_rank_ > 0 )

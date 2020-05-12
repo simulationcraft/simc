@@ -7,6 +7,7 @@
 
 #include "config.hpp"
 #include "util/generic.hpp"
+#include "player/gear_stats.hpp"
 #include "sc_enums.hpp"
 #include <array>
 #include <vector>

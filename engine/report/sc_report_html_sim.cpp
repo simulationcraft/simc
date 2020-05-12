@@ -4,7 +4,8 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_report.hpp"
+#include "reports.hpp"
+#include "report/report_helper.hpp"
 #include "data/report_data.inc"
 #include "interfaces/sc_js.hpp"
 #include "util/git_info.hpp"
@@ -1132,7 +1133,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
          << "<td></td>\n";
       const spelleffect_data_t* effect = sim.dbc->effect( e->id_ );
 
-      std::string name = report::decorated_spell_name( sim, *effect->spell() );
+      std::string name = report_decorators::decorated_spell_name( sim, *effect->spell() );
       name += " (effect#" + util::to_string( effect->index() + 1 ) + ")";
       os << "<td class=\"left\">" << name << "</td>\n";
     }
@@ -1141,7 +1142,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
       os << "<tr>\n"
          << "<td></td>\n";
       const spell_data_t* spell = sim.dbc->spell( e->id_ );
-      std::string name          = report::decorated_spell_name( sim, *spell );
+      std::string name          = report_decorators::decorated_spell_name( sim, *spell );
       os << "<td class=\"left\">" << name << "</td>\n";
     }
 
@@ -1194,7 +1195,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
     if ( entry.type_ == dbc_override::DBC_OVERRIDE_SPELL )
     {
       const spell_data_t* spell = hotfix::find_spell( sim.dbc->spell( entry.id_ ), sim.dbc->ptr );
-      std::string name = report::decorated_spell_name( sim, *spell );
+      std::string name = report_decorators::decorated_spell_name( sim, *spell );
       os << "<td class=\"left\">" << name << "</td>\n";
       os << "<td class=\"left\">" << util::encode_html( entry.field_ ) << "</td>\n";
       os << "<td class=\"left\">" << entry.value_ << "</td>\n";
@@ -1205,7 +1206,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
     {
       const spelleffect_data_t* effect = hotfix::find_effect( sim.dbc->effect( entry.id_ ), sim.dbc->ptr );
       const spell_data_t* spell        = effect->spell();
-      std::string name                 = report::decorated_spell_name( sim, *spell );
+      std::string name                 = report_decorators::decorated_spell_name( sim, *spell );
       name += " (effect#" + util::to_string( effect->index() + 1 ) + ")";
       os << "<td class=\"left\">" << name << "</td>\n";
       os << "<td class=\"left\">" << util::encode_html( entry.field_ ) << "</td>\n";

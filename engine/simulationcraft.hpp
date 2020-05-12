@@ -127,7 +127,11 @@
 #include "player/spawner_base.hpp"
 #include "player/instant_absorb.hpp"
 
-#include "report/sc_report.hpp"
+#include "report/reports.hpp"
+#include "report/decorators.hpp"
+#include "report/color.hpp"
+#include "report/report_helper.hpp"
+#include "report/sc_highchart.hpp"
 
 #include "sim/sc_profileset.hpp"
 #include "sim/x6_pantheon.hpp" // Legion-specific "pantheon trinket" system

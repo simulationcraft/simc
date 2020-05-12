@@ -11,7 +11,7 @@
 
 #include "util/util.hpp"
 #include "rapidjson/document.h"
-#include "report/sc_report.hpp"
+#include "report/reports.hpp"
 
 #include "sc_timespan.hpp"
 

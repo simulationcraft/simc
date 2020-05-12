@@ -3,7 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_report.hpp"
+#include "reports.hpp"
+#include "report/report_helper.hpp"
+#include "report/decorators.hpp"
 #include "sc_highchart.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "simulationcraft.hpp"
@@ -236,7 +238,7 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   std::string name;
   if ( a )
   {
-    name = report::action_decorator_t( a ).decorate();
+    name = report_decorators::decorated_action(*a);
   }
   else
   {
@@ -648,9 +650,9 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     if ( !s.portion_aps.simple || !s.portion_apse.simple || !s.actual_amount.simple )
     {
       os << "<table class=\"details\">\n";
-      report::print_html_sample_data( os, p, s.actual_amount, "Actual Amount" );
-      report::print_html_sample_data( os, p, s.portion_aps, "portion Amount per Second ( pAPS )" );
-      report::print_html_sample_data( os, p, s.portion_apse, "portion Effective Amount per Second ( pAPSe )" );
+      report_helper::print_html_sample_data( os, p, s.actual_amount, "Actual Amount" );
+      report_helper::print_html_sample_data( os, p, s.portion_aps, "portion Amount per Second ( pAPS )" );
+      report_helper::print_html_sample_data( os, p, s.portion_apse, "portion Effective Amount per Second ( pAPSe )" );
       os << "</table>\n";
 
       if ( !s.portion_aps.simple && p.sim->scaling->has_scale_factors() && s.scaling )
@@ -1068,8 +1070,8 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    a->data().id(),
                    util::encode_html( a->data().name_cstr() ).c_str(),
                    util::school_type_string( a->data().get_school_type() ),
-                   util::encode_html( report::pretty_spell_text( a->data(), a->data().tooltip(), p ) ).c_str(),
-                   util::encode_html( report::pretty_spell_text( a->data(), a->data().desc(), p ) ).c_str() );
+                   util::encode_html( report_helper::pretty_spell_text( a->data(), a->data().tooltip(), p ) ).c_str(),
+                   util::encode_html( report_helper::pretty_spell_text( a->data(), a->data().desc(), p ) ).c_str() );
       }
       os << "</div>\n";  // Close details, damage/weapon, spell_data
     }
@@ -1169,7 +1171,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
         "</tr>\n",
         util::encode_html( item.source_str ).c_str(),
         util::inverse_tokenize( item.slot_name() ).c_str(),
-        report::item_decorator_t( item ).decorate().c_str() );
+        report_decorators::decorated_item( item ).c_str() );
 
     std::string item_sim_desc = "ilevel: " + util::to_string( item.item_level() );
 
@@ -1242,10 +1244,8 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
         }
 
         const auto spell = item.player -> find_spell( power.spell_id );
-        auto decorator = report::spell_data_decorator_t( item.player, spell );
-        decorator.item( item );
 
-        s << decorator.decorate();
+        s << report_decorators::decorated_spell_data_item(*item.sim, spell, item);
 
         if ( i < item.parsed.azerite_ids.size() - 1 )
         {
@@ -1275,10 +1275,8 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
         for ( size_t i = 0; i < spell_list.size(); ++i )
         {
           const auto spell = item.player->find_spell( spell_list[ i ] );
-          auto decorator = report::spell_data_decorator_t( item.player, spell );
-          decorator.item( item );
 
-          s2 << decorator.decorate();
+          s2 << report_decorators::decorated_spell_data_item(*item.sim, spell, item);
 
           if ( i < spell_list.size() - 1 )
             s2 << ", ";
@@ -1307,9 +1305,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
 
           s << util::item_spell_trigger_string( static_cast<item_spell_trigger_type>( item.parsed.data.trigger_spell[ i ] ) ) << ": ";
           auto spell = item.player->find_spell( id );
-          auto decorator = report::spell_data_decorator_t( item.player, spell );
-          decorator.item( item );
-          s << decorator.decorate();
+          s << report_decorators::decorated_spell_data_item(*item.sim, spell, item);
         }
       }
 
@@ -1840,7 +1836,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
         if ( t )
         {
           if ( t->spell() )
-            name = report::spell_data_decorator_t( &p, t->spell() ).decorate();
+            name = report_decorators::decorated_spell_data( *p.sim, t->spell() );
           else if ( t->name_cstr() )
             name = util::encode_html( t->name_cstr() );
 
@@ -2509,23 +2505,23 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
         "<div class=\"toggle-content hide\">\n"
         "<table class=\"sc stripebody\">\n";
 
-  report::print_html_sample_data( os, p, p.collected_data.fight_length, "Fight Length" );
-  report::print_html_sample_data( os, p, p.collected_data.dps, "DPS" );
-  report::print_html_sample_data( os, p, p.collected_data.prioritydps, "Priority Target DPS" );
-  report::print_html_sample_data( os, p, p.collected_data.dpse, "DPS(e)" );
-  report::print_html_sample_data( os, p, p.collected_data.dmg, "Damage" );
-  report::print_html_sample_data( os, p, p.collected_data.dtps, "DTPS" );
-  report::print_html_sample_data( os, p, p.collected_data.hps, "HPS" );
-  report::print_html_sample_data( os, p, p.collected_data.hpse, "HPS(e)" );
-  report::print_html_sample_data( os, p, p.collected_data.heal, "Heal" );
-  report::print_html_sample_data( os, p, p.collected_data.htps, "HTPS" );
-  report::print_html_sample_data( os, p, p.collected_data.theck_meloree_index, "TMI" );
-  report::print_html_sample_data( os, p, p.collected_data.effective_theck_meloree_index, "ETMI" );
-  report::print_html_sample_data( os, p, p.collected_data.max_spike_amount, "MSD" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.fight_length, "Fight Length" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.dps, "DPS" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.prioritydps, "Priority Target DPS" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.dpse, "DPS(e)" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.dmg, "Damage" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.dtps, "DTPS" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.hps, "HPS" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.hpse, "HPS(e)" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.heal, "Heal" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.htps, "HTPS" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.theck_meloree_index, "TMI" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.effective_theck_meloree_index, "ETMI" );
+  report_helper::print_html_sample_data( os, p, p.collected_data.max_spike_amount, "MSD" );
 
   for ( const auto& sample_data : p.sample_data_list )
   {
-    report::print_html_sample_data( os, p, *sample_data, util::encode_html( sample_data->name_str ) );
+    report_helper::print_html_sample_data( os, p, *sample_data, util::encode_html( sample_data->name_str ) );
   }
 
   os << "</table>\n"
@@ -3050,9 +3046,9 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
                 util::encode_html( data_name ).c_str(),
                 data.id(),
                 util::encode_html( data.name_cstr() ).c_str(),
-                b.player ? util::encode_html( report::pretty_spell_text( data, data.tooltip(), *b.player ) ).c_str()
+                b.player ? util::encode_html( report_helper::pretty_spell_text( data, data.tooltip(), *b.player ) ).c_str()
                          : util::encode_html( data.tooltip() ).c_str(),
-                b.player ? util::encode_html( report::pretty_spell_text( data, data.desc(), *b.player ) ).c_str()
+                b.player ? util::encode_html( report_helper::pretty_spell_text( data, data.desc(), *b.player ) ).c_str()
                          : util::encode_html( data.desc() ).c_str(),
                 data.max_stacks(),
                 data.duration().total_seconds(),
@@ -3071,7 +3067,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     buff_name += util::encode_html( b.player->name_str ) + "&#160;-&#160;";
 
   if ( b.data().id() )
-    buff_name += report::buff_decorator_t( b ).decorate();
+    buff_name += report_decorators::decorated_buff( b );
   else
     buff_name += util::encode_html( b.name_str );
 
@@ -3794,7 +3790,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
           if ( t )
           {
             if ( t->spell() )
-              name = report::spell_data_decorator_t( &p, t->spell() ).decorate();
+              name = report_decorators::decorated_spell_data( *p.sim, t->spell() );
             else if ( t->name_cstr() )
               name = util::encode_html( t->name_cstr() );
 
@@ -4725,8 +4721,8 @@ void build_action_markers( player_t& p )
 
 void build_player_report_data( player_t& p )
 {
-  report::generate_player_charts( p, p.report_information );
-  report::generate_player_buff_lists( p, p.report_information );
+  report_helper::generate_player_charts( p, p.report_information );
+  report_helper::generate_player_buff_lists( p, p.report_information );
   build_action_markers( p );
 }
 

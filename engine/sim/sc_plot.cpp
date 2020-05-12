@@ -10,7 +10,7 @@
 #include "sc_sim.hpp"
 #include "player/sc_player.hpp"
 #include "player/player_scaling.hpp"
-#include "report/sc_report.hpp"
+#include "report/reports.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================

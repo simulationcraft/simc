@@ -15,7 +15,7 @@
 #include "player/pet.hpp"
 #include "player/spawner_base.hpp"
 #include "player/unique_gear.hpp"
-#include "report/sc_report.hpp"
+#include "report/reports.hpp"
 #include "report/sc_highchart.hpp"
 #include "sim/sc_profileset.hpp"
 #include "sim/scale_factor_control.hpp"

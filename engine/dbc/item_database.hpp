@@ -12,6 +12,8 @@
 
 struct item_t;
 struct item_data_t;
+struct item_enchantment_data_t;
+struct item_bonus_entry_t;
 struct special_effect_t;
 struct stat_pair_t;
 

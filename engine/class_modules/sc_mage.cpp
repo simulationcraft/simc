@@ -6925,7 +6925,7 @@ public:
 
       std::string name = data->cd->name_str;
       if ( action_t* a = p.find_action( name ) )
-        name = report::action_decorator_t( a ).decorate();
+        name = report_decorators::decorated_action(*a);
       else
         name = util::encode_html( name );
 
@@ -7083,7 +7083,7 @@ public:
 
       std::string name = data->name_str;
       if ( action_t* a = p.find_action( name ) )
-        name = report::action_decorator_t( a ).decorate();
+        name = report_decorators::decorated_action(*a);
       else
         name = util::encode_html( name );
 

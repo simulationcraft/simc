@@ -6161,7 +6161,7 @@ public:
       std::string name_str = entry->first;
       if ( a )
       {
-        name_str = report::action_decorator_t( a ).decorate();
+        name_str = report_decorators::decorated_action(*a);
       }
       else
       {

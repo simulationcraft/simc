@@ -9,6 +9,7 @@
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/prettywriter.h"
 #include "utf8-h/utf8.h"
+#include "dbc/dbc.hpp"
 #include "sim/sc_sim.hpp"
 #include "interfaces/sc_http.hpp"
 #include "interfaces/sc_http_curl.hpp"

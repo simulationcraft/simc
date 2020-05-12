@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_report.hpp"
+#include "gear_weights.hpp"
 #include "dbc/dbc.hpp"
 #include "player/sc_player.hpp"
 #include "player/player_scaling.hpp"

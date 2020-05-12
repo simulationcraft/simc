@@ -795,7 +795,7 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
       root << "<tr class=\"left\">\n"
            << "<th></th>\n"
            << "<td><ul class=\"float\">\n"
-           << "<li>" << report::item_decorator_t( item ).decorate() << "&#160;(" << item.item_level() << ")</li>\n";
+           << "<li>" << report_decorators::decorated_item(item) << "&#160;(" << item.item_level() << ")</li>\n";
 
       if ( item.parsed.azerite_ids.size() )
       {
@@ -813,11 +813,10 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
             continue;
           }
 
-          auto decorator = report::spell_data_decorator_t(
-            m_player, m_player->find_spell( m_player->dbc->azerite_power( id ).spell_id ) );
-          decorator.item( item );
+          auto decorator = report_decorators::decorated_spell_data_item(
+            *m_player->sim, m_player->find_spell( m_player->dbc->azerite_power( id ).spell_id ), item );
 
-          root << "<li>" << decorator.decorate() << "</li>\n";
+          root << "<li>" << decorator << "</li>\n";
         }
       }
 
@@ -837,16 +836,16 @@ report::sc_html_stream& azerite_state_t::generate_report( report::sc_html_stream
     {
       for ( auto ilevel : override.second )
       {
-        auto decorator = report::spell_data_decorator_t(
-          m_player, m_player->find_spell( m_player->dbc->azerite_power( override.first ).spell_id ) );
+        auto decorator = report_decorators::decorated_spell_data(
+          *m_player->sim, m_player->find_spell( m_player->dbc->azerite_power( override.first ).spell_id ) );
 
         if ( !is_enabled( override.first ) )
         {
-          root << "<li><del>" << decorator.decorate() << "</del>&#160;(Disable)</li>\n";
+          root << "<li><del>" << decorator << "</del>&#160;(Disable)</li>\n";
         }
         else
         {
-          root << "<li>" << decorator.decorate() << "&#160;(" << ilevel << ")</li>\n";
+          root << "<li>" << decorator << "&#160;(" << ilevel << ")</li>\n";
         }
       }
     }
@@ -870,7 +869,7 @@ report::sc_html_stream& azerite_essence_state_t::generate_report( report::sc_htm
        << "<th>Azerite</th>\n"
        << "<td><ul class=\"float\">\n"
        << "<li>Level:&#160;<strong>" << hoa.parsed.azerite_level << "</strong>&#160;"
-       << report::item_decorator_t( hoa ).decorate() << "&#160;(" << hoa.item_level() << ")</li>\n";
+       << report_decorators::decorated_item(hoa) << "&#160;(" << hoa.item_level() << ")</li>\n";
 
   for ( const auto& slot : m_state )
   {
@@ -878,18 +877,16 @@ report::sc_html_stream& azerite_essence_state_t::generate_report( report::sc_htm
       continue;
 
     auto essence = get_essence( slot.id() );
-    auto decorator = report::spell_data_decorator_t( m_player, essence.spell( slot.rank(), slot.type() ) );
-    decorator.item( hoa );
+    auto decorated = report_decorators::decorated_spell_data_item( *m_player->sim, essence.spell( slot.rank(), slot.type() ), hoa );
 
-    root << "<li>Rank:&#160;<strong>" << slot.rank() << "</strong>&#160;" << decorator.decorate();
+    root << "<li>Rank:&#160;<strong>" << slot.rank() << "</strong>&#160;" << decorated;
 
     if ( essence.is_major() )
     {
-      auto decorator2 = report::spell_data_decorator_t( m_player, essence.spell( slot.rank(), essence_type::MINOR ) );
-      decorator2.item( hoa );
+      auto decorator2 = report_decorators::decorated_spell_data_item( *m_player->sim, essence.spell( slot.rank(), essence_type::MINOR ), hoa );
 
       root << " (Major)</li>\n"
-           << "<li>Rank:&#160;<strong>" << slot.rank() << "</strong>&#160;" << decorator2.decorate();
+           << "<li>Rank:&#160;<strong>" << slot.rank() << "</strong>&#160;" << decorator2;
     }
 
     root << "</li>\n";
