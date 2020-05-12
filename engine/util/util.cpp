@@ -2524,24 +2524,6 @@ int util::parse_item_quality( const std::string& quality )
   return i;
 }
 
-// string_strip_quotes ======================================================
-
-std::string util::string_strip_quotes( std::string str )
-{
-  std::string::size_type pos = str.find( '"' );
-  if ( pos == std::string::npos ) return str;
-
-  std::string::iterator dst = str.begin() + pos, src = dst;
-  while ( ++src != str.end() )
-  {
-    if ( *src != '"' )
-      *dst++ = *src;
-  }
-
-  str.resize( dst - str.begin() );
-  return str;
-}
-
 // to_string ================================================================
 
 std::string util::to_string( double f, int precision )
