@@ -6,6 +6,7 @@
 #define CLIENT_DATA_HPP
 
 #include <algorithm>
+#include <vector>
 
 #include "config.hpp"
 #include "util/generic.hpp"
