@@ -347,7 +347,6 @@ void initialize_special_effect_2( special_effect_t* effect );
 void initialize_racial_effects( player_t* );
 
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
-const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
 
 std::unique_ptr<expr_t> create_expression( player_t& player, const std::string& name_str );
 

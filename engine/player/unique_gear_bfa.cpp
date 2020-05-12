@@ -4782,7 +4782,7 @@ item_t init_punchcard( const special_effect_t& effect )
   }
 
   auto item_data = effect.player->dbc->item( effect.enchant_data->id_gem );
-  if ( !item_data )
+  if ( item_data.id == 0 )
   {
     return {};
   }
@@ -4795,8 +4795,8 @@ item_t init_punchcard( const special_effect_t& effect )
   }
 
   item_t punchcard( effect.player, "" );
-  punchcard.parsed.data = *item_data;
-  punchcard.name_str    = item_data->name;
+  punchcard.parsed.data = item_data;
+  punchcard.name_str    = item_data.name;
   ::util::tokenize( punchcard.name_str );
 
   // Punchcards use the item level of he trinket itself, apparently.
@@ -5033,12 +5033,12 @@ void items::subroutine_optimization( special_effect_t& effect )
 
       auto it = range::find_if( effect.item->parsed.gem_id, [this, &data]( unsigned gem_id ) {
         auto item_data = source->dbc->item( gem_id );
-        if ( !item_data )
+        if ( item_data.id == 0 )
         {
           return false;
         }
 
-        const auto& gem_props = source->dbc->gem_property( item_data->gem_properties );
+        const auto& gem_props = source->dbc->gem_property( item_data.gem_properties );
         if ( gem_props.id == 0 )
         {
           return false;

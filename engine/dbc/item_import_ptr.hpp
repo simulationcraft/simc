@@ -1,0 +1,20 @@
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+#ifndef ITEM_IMPORT_PTR_HPP
+#define ITEM_IMPORT_PTR_HPP
+
+#include "util/span.hpp"
+
+#include "dbc/item.hpp"
+
+namespace dbc
+{
+  util::span<const item_data_t> items_ptr();
+}
+
+#endif /* ITEM_IMPORT_PTR_HPP */
+
+
+

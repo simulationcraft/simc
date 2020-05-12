@@ -878,19 +878,14 @@ class ItemDataGenerator(DataGenerator):
     def generate_cpp(self, ids = None):
         ids.sort()
 
-        self._out.write('#define %sITEM%s_SIZE (%d)\n\n' % (
-            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
-            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
-            len(ids)))
-        self._out.write('// %d items, ilevel %d-%d, wow build level %s\n' % (
-            len(ids), self._options.min_ilevel, self._options.max_ilevel, self._options.build))
-        self._out.write('static struct item_data_t __%sitem%s_data[] = {\n' % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or ''))
+        self._out.write('// Items, ilevel %d-%d, wow build level %s\n' % (
+            self._options.min_ilevel, self._options.max_ilevel, self._options.build))
+        self._out.write('static const std::array<item_data_t, %d> __%s_data { {\n' % (
+            len(ids), self.format_str('item')))
 
         index = 0
-        for id in ids + [ 0 ]:
-            item = self._options.build < 23436 and self._item_sparse_db[id] or self._itemsparse_db[id]
+        for id in ids:
+            item = self._itemsparse_db[id]
             item2 = self._item_db[id]
 
             if not item.id and id > 0:
@@ -946,7 +941,7 @@ class ItemDataGenerator(DataGenerator):
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
             index += 1
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
     def generate_json(self, ids = None):
 

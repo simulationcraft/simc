@@ -7,6 +7,7 @@
 
 #include "data_definitions.hh"
 #include "item_database.hpp"
+#include "client_data.hpp"
 
 #include "generated/sc_spec_list.inc"
 #include "generated/sc_scale_data.inc"
@@ -28,10 +29,10 @@
 
 namespace { // ANONYMOUS namespace ==========================================
 
-dbc_index_t<spell_data_t> spell_data_index;
-dbc_index_t<spelleffect_data_t> spelleffect_data_index;
-dbc_index_t<talent_data_t> talent_data_index;
-dbc_index_t<spellpower_data_t> power_data_index;
+dbc::dbc_index_t<spell_data_t> spell_data_index;
+dbc::dbc_index_t<spelleffect_data_t> spelleffect_data_index;
+dbc::dbc_index_t<talent_data_t> talent_data_index;
+dbc::dbc_index_t<spellpower_data_t> power_data_index;
 
 // Wrapper class to map other data to specific spells, and also to map effects that manipulate that
 // data
@@ -2691,23 +2692,23 @@ specialization_e dbc_t::spec_by_spell( uint32_t spell_id ) const
   return SPEC_NONE;
 }
 
-double dbc_t::weapon_dps( const item_data_t* item_data, unsigned ilevel ) const
+double dbc_t::weapon_dps( const item_data_t& item_data, unsigned ilevel ) const
 {
-  assert( item_data );
+  assert( item_data.id > 0 );
 
-  unsigned quality = item_data -> quality;
+  unsigned quality = item_data.quality;
   if ( quality > 6 )
     quality = 4; // Heirlooms default to epic values?
 
-  unsigned ilvl = ilevel ? ilevel : item_data -> level;
+  unsigned ilvl = ilevel ? ilevel : item_data.level;
 
-  switch ( item_data -> inventory_type )
+  switch ( item_data.inventory_type )
   {
     case INVTYPE_WEAPON:
     case INVTYPE_WEAPONMAINHAND:
     case INVTYPE_WEAPONOFFHAND:
     {
-      if ( item_data -> flags_2 & ITEM_FLAG2_CASTER_WEAPON )
+      if ( item_data.flags_2 & ITEM_FLAG2_CASTER_WEAPON )
         return item_damage_caster_1h( ilvl ).value( quality );
       else
         return item_damage_1h( ilvl ).value( quality );
@@ -2715,7 +2716,7 @@ double dbc_t::weapon_dps( const item_data_t* item_data, unsigned ilevel ) const
     }
     case INVTYPE_2HWEAPON:
     {
-      if ( item_data -> flags_2 & ITEM_FLAG2_CASTER_WEAPON )
+      if ( item_data.flags_2 & ITEM_FLAG2_CASTER_WEAPON )
         return item_damage_caster_2h( ilvl ).value( quality );
       else
         return item_damage_2h( ilvl ).value( quality );
@@ -2725,7 +2726,7 @@ double dbc_t::weapon_dps( const item_data_t* item_data, unsigned ilevel ) const
     case INVTYPE_THROWN:
     case INVTYPE_RANGEDRIGHT:
     {
-      switch ( item_data -> item_subclass )
+      switch ( item_data.item_subclass )
       {
         // TODO: DBC ItemDamageRanged got removed
         case ITEM_SUBCLASS_WEAPON_BOW:
@@ -2756,9 +2757,9 @@ double dbc_t::weapon_dps( const item_data_t* item_data, unsigned ilevel ) const
 
 double dbc_t::weapon_dps( unsigned item_id, unsigned ilevel ) const
 {
-  const item_data_t* item_data = item( item_id );
+  const auto& item_data = item( item_id );
 
-  if ( ! item_data ) return 0.0;
+  if ( item_data.id == 0 ) return 0.0;
 
   return weapon_dps( item_data, ilevel );
 }

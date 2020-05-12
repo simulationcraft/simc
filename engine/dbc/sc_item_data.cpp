@@ -5,76 +5,47 @@
 
 #include "simulationcraft.hpp"
 
+#include "dbc/client_data.hpp"
 #include "dbc/item_effect.hpp"
 #include "dbc/spell_item_enchantment.hpp"
 #include "dbc/item_bonus.hpp"
+#include "dbc/item.hpp"
 
 namespace {
   template <item_subclass_consumable CLASS>
   struct consumable_filter_t
   {
-    bool operator()(const item_data_t* obj) const
-    { return obj -> item_class == ITEM_CLASS_CONSUMABLE && obj -> item_subclass == CLASS; }
+    bool operator()(const item_data_t& obj) const
+    { return obj.item_class == ITEM_CLASS_CONSUMABLE && obj.item_subclass == CLASS; }
   };
 
   struct gem_filter_t
   {
     // No "other" gems, nor relicn
-    bool operator()( const item_data_t* obj ) const
-    { return obj->item_class == ITEM_CLASS_GEM && obj->item_subclass != 9 && obj->item_subclass != 11; }
+    bool operator()( const item_data_t& obj ) const
+    { return obj.item_class == ITEM_CLASS_GEM && obj.item_subclass != 9 && obj.item_subclass != 11; }
   };
 
   // Potions need their own filter unfortunately, because some potions are of sub class 8 (other)
   struct potion_filter_t
   {
-    bool operator()( const item_data_t* obj ) const
+    bool operator()( const item_data_t& obj ) const
     {
-      return obj->item_class == ITEM_CLASS_CONSUMABLE &&
-             ( obj->item_subclass == ITEM_SUBCLASS_POTION ||
-               obj->item_subclass == ITEM_SUBCLASS_CONSUMABLE_OTHER );
+      return obj.item_class == ITEM_CLASS_CONSUMABLE &&
+             ( obj.item_subclass == ITEM_SUBCLASS_POTION ||
+               obj.item_subclass == ITEM_SUBCLASS_CONSUMABLE_OTHER );
     }
   };
 
-  item_data_t nil_item_data;
-  dbc_index_t<item_data_t, id_member_policy> item_data_index;
-
-  typedef filtered_dbc_index_t<item_data_t, potion_filter_t, id_member_policy> potion_data_t;
-  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FLASK>, id_member_policy> flask_data_t;
-  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FOOD>, id_member_policy> food_data_t;
+  typedef dbc::filtered_dbc_index_t<item_data_t, potion_filter_t, dbc::id_member_policy_t> potion_data_t;
+  typedef dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FLASK>, dbc::id_member_policy_t> flask_data_t;
+  typedef dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FOOD>, dbc::id_member_policy_t> food_data_t;
 
   potion_data_t potion_data_index;
   flask_data_t flask_data_index;
   food_data_t food_data_index;
 
-  filtered_dbc_index_t<item_data_t, gem_filter_t, id_member_policy> gem_index;
-}
-
-const item_data_t* dbc_t::item( unsigned item_id ) const
-{ return item_data_index.get( ptr, item_id ); }
-
-const item_data_t* dbc::items( bool ptr )
-{
-  ( void )ptr;
-
-  const item_data_t* p = __items_noptr();
-#if SC_USE_PTR
-  if ( ptr )
-    p = __items_ptr();
-#endif
-  return p;
-}
-
-size_t dbc::n_items( bool ptr )
-{
-  ( void )ptr;
-
-  size_t n = n_items_noptr();
-#if SC_USE_PTR
-  if ( ptr )
-    n = n_items_ptr();
-#endif
-
-  return n;
+  dbc::filtered_dbc_index_t<item_data_t, gem_filter_t, dbc::id_member_policy_t> gem_index;
 }
 
 /* Initialize item database
@@ -82,17 +53,15 @@ size_t dbc::n_items( bool ptr )
 void dbc::init_item_data()
 {
   // Create id-indexes
-  item_data_index.init( __items_noptr(), false );
-  potion_data_index.init( __items_noptr(), false );
-  flask_data_index.init( __items_noptr(), false );
-  food_data_index.init( __items_noptr(), false );
-  gem_index.init( __items_noptr(), false );
+  potion_data_index.init( item_data_t::data( false ), false );
+  flask_data_index.init( item_data_t::data( false ), false );
+  food_data_index.init( item_data_t::data( false ), false );
+  gem_index.init( item_data_t::data( false ), false );
 #if SC_USE_PTR
-  item_data_index.init( __items_ptr(), true );
-  potion_data_index.init( __items_ptr(), true );
-  flask_data_index.init( __items_ptr(), true );
-  food_data_index.init( __items_ptr(), true );
-  gem_index.init( __items_ptr(), true );
+  potion_data_index.init( item_data_t::data( true ), true );
+  flask_data_index.init( item_data_t::data( true ), true );
+  food_data_index.init( item_data_t::data( true ), true );
+  gem_index.init( item_data_t::data( true ), true );
 #endif
 }
 
@@ -128,14 +97,6 @@ std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsign
 
   return std::pair<const curve_point_t*, const curve_point_t*>(
       lower_bound, upper_bound );
-}
-
-item_data_t* item_data_t::find( unsigned id, bool ptr )
-{
-  item_data_t* i = item_data_index.get( ptr, id );
-  if ( ! i )
-    return &nil_item_data;
-  return i;
 }
 
 double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value )
@@ -519,7 +480,7 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
   //if ( item.level == ( int ) new_ilevel )
   //  return item.stat_val[ idx ];
 
-  int slot_type = random_suffix_type( &item.parsed.data );
+  int slot_type = random_suffix_type( item.parsed.data );
   double item_budget = 0/*, orig_budget = 0*/;
 
   if ( slot_type != -1 && item.parsed.data.quality > 0 )
@@ -614,12 +575,12 @@ bool item_database::initialize_item_sources( item_t& item, std::vector<std::stri
 
 // item_database_t::random_suffix_type ======================================
 
-int item_database::random_suffix_type( const item_data_t* item )
+int item_database::random_suffix_type( const item_data_t& item )
 {
-  switch ( item -> item_class )
+  switch ( item.item_class )
   {
     case ITEM_CLASS_WEAPON:
-      switch ( item -> item_subclass )
+      switch ( item.item_subclass )
       {
         case ITEM_SUBCLASS_WEAPON_AXE2:
         case ITEM_SUBCLASS_WEAPON_MACE2:
@@ -635,7 +596,7 @@ int item_database::random_suffix_type( const item_data_t* item )
           return 3;
       }
     case ITEM_CLASS_ARMOR:
-      switch ( item -> inventory_type )
+      switch ( item.inventory_type )
       {
         case INVTYPE_HEAD:
         case INVTYPE_CHEST:
@@ -727,24 +688,24 @@ int item_database::random_suffix_type( item_t& item )
   }
 }
 
-uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, unsigned item_level )
+uint32_t item_database::armor_value( const item_data_t& item, const dbc_t& dbc, unsigned item_level )
 {
-  if ( ! item || item -> quality > 5 )
+  if ( item.id == 0 || item.quality > 5 )
     return 0;
 
-  unsigned ilevel = item_level ? item_level : item -> level;
+  unsigned ilevel = item_level ? item_level : item.level;
 
   // Shield have separate armor table, bypass normal calculation
-  if ( item -> item_class == ITEM_CLASS_ARMOR && item -> item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
-    return ( uint32_t ) floor( dbc.item_armor_shield( ilevel ).value( item -> quality ) + 0.5 );
+  if ( item.item_class == ITEM_CLASS_ARMOR && item.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
+    return ( uint32_t ) floor( dbc.item_armor_shield( ilevel ).value( item.quality ) + 0.5 );
 
   // Only Cloth, Leather, Mail and Plate armor has innate armor values
-  if ( item -> item_subclass == ITEM_SUBCLASS_ARMOR_MISC || item -> item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
+  if ( item.item_subclass == ITEM_SUBCLASS_ARMOR_MISC || item.item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
     return 0;
 
   double m_invtype = 0, m_quality = 0, total_armor = 0;
 
-  switch ( item -> inventory_type )
+  switch ( item.inventory_type )
   {
     case INVTYPE_HEAD:
     case INVTYPE_SHOULDERS:
@@ -757,11 +718,11 @@ uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, 
     case INVTYPE_CLOAK:
     case INVTYPE_ROBE:
     {
-      total_armor = dbc.item_armor_total( ilevel ).value( item->item_subclass - 1 );
-      m_quality   = dbc.item_armor_quality( ilevel ).value( item->quality );
-      unsigned invtype = item -> inventory_type;
+      total_armor = dbc.item_armor_total( ilevel ).value( item.item_subclass - 1 );
+      m_quality   = dbc.item_armor_quality( ilevel ).value( item.quality );
+      unsigned invtype = item.inventory_type;
       if ( invtype == INVTYPE_ROBE ) invtype = INVTYPE_CHEST;
-      m_invtype = dbc.item_armor_inv_type( invtype ).value( item->item_subclass - 1 );
+      m_invtype = dbc.item_armor_inv_type( invtype ).value( item.item_subclass - 1 );
       break;
     }
     default: return 0;
@@ -774,32 +735,32 @@ uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, 
 
 uint32_t item_database::armor_value( const item_t& item )
 {
-  return armor_value( &item.parsed.data, *item.player -> dbc, item.item_level() );
+  return armor_value( item.parsed.data, *item.player->dbc, item.item_level() );
 }
 
 // item_database_t::weapon_dmg_min/max ======================================
 
 uint32_t item_database::weapon_dmg_min( item_t& item )
 {
-  return ( uint32_t ) floor( item.player -> dbc->weapon_dps( &item.parsed.data, item.item_level() ) *
+  return ( uint32_t ) floor( item.player->dbc->weapon_dps( item.parsed.data, item.item_level() ) *
                              item.parsed.data.delay / 1000.0 * ( 1 - item.parsed.data.dmg_range / 2 ) );
 }
 
-uint32_t item_database::weapon_dmg_min( const item_data_t* item, const dbc_t& dbc, unsigned item_level )
+uint32_t item_database::weapon_dmg_min( const item_data_t& item, const dbc_t& dbc, unsigned item_level )
 {
-  return ( uint32_t ) floor( dbc.weapon_dps( item, item_level ) * item -> delay / 1000.0 *
-                             ( 1 - item -> dmg_range / 2 ) );
+  return ( uint32_t ) floor( dbc.weapon_dps( item, item_level ) * item.delay / 1000.0 *
+                             ( 1 - item.dmg_range / 2 ) );
 }
 
-uint32_t item_database::weapon_dmg_max( const item_data_t* item, const dbc_t& dbc, unsigned item_level )
+uint32_t item_database::weapon_dmg_max( const item_data_t& item, const dbc_t& dbc, unsigned item_level )
 {
-  return ( uint32_t ) ceil( dbc.weapon_dps( item, item_level ) * item -> delay / 1000.0 *
-                            ( 1 + item -> dmg_range / 2 ) + 0.5 );
+  return ( uint32_t ) ceil( dbc.weapon_dps( item, item_level ) * item.delay / 1000.0 *
+                            ( 1 + item.dmg_range / 2 ) + 0.5 );
 }
 
 uint32_t item_database::weapon_dmg_max( item_t& item )
 {
-  return ( uint32_t ) ceil( item.player -> dbc->weapon_dps( &item.parsed.data, item.item_level() ) *
+  return ( uint32_t ) ceil( item.player->dbc->weapon_dps( item.parsed.data, item.item_level() ) *
                             item.parsed.data.delay / 1000.0 * ( 1 + item.parsed.data.dmg_range / 2 ) + 0.5 );
 }
 
@@ -904,11 +865,11 @@ bool item_database::parse_item_spell_enchant( item_t& item,
 bool item_database::load_item_from_data( item_t& item )
 {
   // Simple copying of basic stats from item database (dbc) to the item object
-  const item_data_t* data = item.player->dbc->item( item.parsed.data.id );
-  if ( ! data || !data->id ) return false;
+  const auto& data = item.player->dbc->item( item.parsed.data.id );
+  if ( data.id == 0 ) return false;
 
-  item.parsed.data = *data;
-  item.name_str = data->name;
+  item.parsed.data = data;
+  item.name_str = data.name;
   item.parsed.data.name = item.name_str.c_str();
 
   util::tokenize( item.name_str );
@@ -1034,9 +995,9 @@ std::vector<item_database::token_t> item_database::parse_tokens( const std::stri
   return tokens;
 }
 
-const item_data_t* dbc::find_gem( const std::string& gem, bool ptr, bool tokenized )
+const item_data_t& dbc::find_gem( const std::string& gem, bool ptr, bool tokenized )
 {
-  const item_data_t* i = gem_index.get( ptr, [&gem, tokenized]( const item_data_t* obj ) {
+  return gem_index.get( ptr, [&gem, tokenized]( const item_data_t* obj ) {
       if ( tokenized )
       {
         std::string n = obj->name;
@@ -1048,29 +1009,21 @@ const item_data_t* dbc::find_gem( const std::string& gem, bool ptr, bool tokeniz
         return gem == obj->name;
       }
   } );
-
-  return i ? i : &( nil_item_data );
 }
 
-const item_data_t* dbc::find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& f )
+const item_data_t& dbc::find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& f )
 {
-  const item_data_t* i = nullptr;
   switch ( type )
   {
     case ITEM_SUBCLASS_POTION:
-      i = potion_data_index.get( ptr, f );
-      break;
+      return potion_data_index.get( ptr, f );
     case ITEM_SUBCLASS_FLASK:
-      i = flask_data_index.get( ptr, f );
-      break;
+      return flask_data_index.get( ptr, f );
     case ITEM_SUBCLASS_FOOD:
-      i = food_data_index.get( ptr, f );
-      break;
+      return food_data_index.get( ptr, f );
     default:
-      break;
+      return item_data_t::nil();
   }
-
-  return i ? i : &( nil_item_data );
 }
 
 static std::string get_bonus_id_desc( const dbc_t& dbc, util::span<const item_bonus_entry_t> entries )
@@ -1495,7 +1448,7 @@ double item_database::apply_stamina_multiplier( const player_t*               pl
 
 double item_database::apply_combat_rating_multiplier( const item_t& item, double amount )
 {
-  auto type = item_combat_rating_type( &item.parsed.data );
+  auto type = item_combat_rating_type( item.parsed.data );
   if ( type == CR_MULTIPLIER_INVALID )
   {
     return amount;
@@ -1506,7 +1459,7 @@ double item_database::apply_combat_rating_multiplier( const item_t& item, double
 
 double item_database::apply_stamina_multiplier( const item_t& item, double amount )
 {
-  auto type = item_combat_rating_type( &item.parsed.data );
+  auto type = item_combat_rating_type( item.parsed.data );
   if ( type == CR_MULTIPLIER_INVALID )
   {
     return amount;
@@ -1515,9 +1468,9 @@ double item_database::apply_stamina_multiplier( const item_t& item, double amoun
   return apply_stamina_multiplier( item.player, type, item.item_level(), amount );
 }
 
-combat_rating_multiplier_type item_database::item_combat_rating_type( const item_data_t* data )
+combat_rating_multiplier_type item_database::item_combat_rating_type( const item_data_t& data )
 {
-  switch ( data -> inventory_type )
+  switch ( data.inventory_type )
   {
     case INVTYPE_NECK:
     case INVTYPE_FINGER:
@@ -1558,7 +1511,7 @@ void item_database::convert_stat_values( item_t& item )
     return;
   }
 
-  auto slot_type = item_database::random_suffix_type( &item.parsed.data );
+  auto slot_type = item_database::random_suffix_type( item.parsed.data );
   if ( slot_type == -1 )
   {
     return;
@@ -1586,7 +1539,7 @@ void item_database::convert_stat_values( item_t& item )
     double cr_coeff = 1.0;
     if ( util::is_combat_rating( static_cast<item_mod_type>( item.parsed.data.stat_type_e[ i ] ) ) )
     {
-      auto item_cr_type = item_database::item_combat_rating_type( &item.parsed.data );
+      auto item_cr_type = item_database::item_combat_rating_type( item.parsed.data );
       if ( item_cr_type != CR_MULTIPLIER_INVALID )
       {
         cr_coeff = item.player -> dbc->combat_rating_multiplier( item.parsed.data.level,

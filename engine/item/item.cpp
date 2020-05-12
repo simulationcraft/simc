@@ -581,9 +581,10 @@ std::string item_t::full_name() const
 {
   std::string n;
 
-  if ( const item_data_t* item = sim -> dbc->item( parsed.data.id ) )
+  const auto& item = sim->dbc->item( parsed.data.id );
+  if ( item.id > 0 )
   {
-    n = item -> name;
+    n = item.name;
   }
   else
   {
@@ -1220,8 +1221,8 @@ std::string item_t::encoded_weapon() const
   // insted of the weapon_dmg_min( item_data_t*, dbc_t&, unsigned ) variant,
   // since we want the normal weapon stats of the item in the encoded option
   // string.
-  unsigned min_dam = item_database::weapon_dmg_min( &parsed.data, *player -> dbc );
-  unsigned max_dam = item_database::weapon_dmg_max( &parsed.data, *player -> dbc );
+  unsigned min_dam = item_database::weapon_dmg_min( parsed.data, *player -> dbc );
+  unsigned max_dam = item_database::weapon_dmg_max( parsed.data, *player -> dbc );
 
   if ( ! speed || ! min_dam || ! max_dam )
     return str;
@@ -1518,9 +1519,9 @@ void item_t::decode_gems()
     for ( const auto& gem_str : split )
     {
       auto item = dbc::find_gem( gem_str, player->dbc->ptr );
-      if ( item->id > 0 )
+      if ( item.id > 0 )
       {
-        parsed.gem_id[ gem_index++ ] = item->id;
+        parsed.gem_id[ gem_index++ ] = item.id;
       }
 
       if ( gem_index == parsed.gem_id.size() - 1 )
@@ -1717,8 +1718,8 @@ void item_t::decode_weapon()
 
     w -> type = wc;
     w -> swing_time = timespan_t::from_millis( parsed.data.delay );
-    w -> dps = player -> dbc->weapon_dps( &parsed.data, item_level() );
-    w -> damage = player -> dbc->weapon_dps( &parsed.data, item_level() ) * parsed.data.delay / 1000.0;
+    w -> dps = player->dbc->weapon_dps( parsed.data, item_level() );
+    w -> damage = player->dbc->weapon_dps( parsed.data, item_level() ) * parsed.data.delay / 1000.0;
     w -> min_dmg = item_database::weapon_dmg_min( *this );
     w -> max_dmg = item_database::weapon_dmg_max( *this );
   }

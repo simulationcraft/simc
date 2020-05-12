@@ -24,6 +24,7 @@
 #include "dbc/rand_prop_points.hpp"
 #include "dbc/spell_item_enchantment.hpp"
 #include "dbc/gem_data.hpp"
+#include "dbc/item.hpp"
 #include "dbc/item_child.hpp"
 #include "dbc/item_armor.hpp"
 #include "dbc/item_bonus.hpp"
@@ -87,9 +88,6 @@ specialization_e spec_by_idx( const player_e c, unsigned idx );
 int build_level( bool ptr );
 const char* wow_version( bool ptr );
 const char* wow_ptr_status( bool ptr );
-const item_data_t* items( bool ptr );
-item_data_t* __items_noptr();
-item_data_t* __items_ptr();
 std::size_t        n_items( bool ptr );
 std::size_t        n_items_noptr();
 std::size_t        n_items_ptr();
@@ -106,8 +104,8 @@ std::string bonus_ids_str( const dbc_t& );
 double item_level_squish( unsigned source_ilevel, bool ptr );
 
 // Filtered data access
-const item_data_t* find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& finder );
-const item_data_t* find_gem( const std::string& gem, bool ptr, bool tokenized = true );
+const item_data_t& find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& finder );
+const item_data_t& find_gem( const std::string& gem, bool ptr, bool tokenized = true );
 
 // Class / Spec specific passives for an actor
 const spell_data_t* get_class_passive( const player_t&, specialization_e );
@@ -1459,8 +1457,8 @@ public:
   const char* wow_ptr_status() const
   { return dbc::wow_ptr_status( ptr ); }
 
-  const item_data_t* items() const
-  { return dbc::items( ptr ); }
+  util::span<const item_data_t> items() const
+  { return item_data_t::data( ptr ); }
 
   std::size_t n_items() const
   { return dbc::n_items( ptr ); }
@@ -1537,7 +1535,8 @@ public:
   const talent_data_t*           talent( unsigned talent_id ) const
   { return find_by_id<talent_data_t>( talent_id ); }
 
-  const item_data_t*             item( unsigned item_id ) const;
+  const item_data_t& item( unsigned item_id ) const
+  { return item_data_t::find( item_id, ptr ); }
 
   const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) const
   { return item_enchantment_data_t::find( enchant_id, ptr ); }
@@ -1604,7 +1603,7 @@ public:
 
   // Helper methods
   double   weapon_dps( unsigned item_id, unsigned ilevel = 0 ) const;
-  double   weapon_dps( const item_data_t*, unsigned ilevel = 0 ) const;
+  double   weapon_dps( const item_data_t&, unsigned ilevel = 0 ) const;
 
   double   effect_average( unsigned effect_id, unsigned level ) const;
   double   effect_average( const spelleffect_data_t* effect, unsigned level ) const;
@@ -1745,126 +1744,5 @@ const spelleffect_data_t* find_effect( const T* obj, unsigned effect_id )
   return obj -> dbc->effect( effect_id );
 }
 } // dbc namespace ends
-
-
-
-// ==========================================================================
-// Indices to provide log time, constant space access to spells, effects, and talents by id.
-// ==========================================================================
-
-/* id_function_policy and id_member_policy are here to give a standard interface
- * of accessing the id of a data type.
- * Eg. spell_data_t on which the id_function_policy is used has a function 'id()' which returns its id
- * and item_data_t on which id_member_policy is used has a member 'id' which stores its id.
- */
-struct id_function_policy
-{
-  template <typename T> static unsigned id( const T& t )
-  { return static_cast<unsigned>( t.id() ); }
-};
-
-struct id_member_policy
-{
-  template <typename T> static unsigned id( const T& t )
-  { return static_cast<unsigned>( t.id ); }
-};
-
-template <typename T, typename KeyPolicy = id_function_policy>
-class dbc_index_t
-{
-private:
-  typedef std::pair<T*, T*> index_t; // first = lowest data; second = highest data
-// array of size 1 or 2, depending on whether we have PTR data
-#if SC_USE_PTR == 0
-  index_t idx[ 1 ];
-#else
-  index_t idx[ 2 ];
-#endif
-
-  /* populate idx with pointer to lowest and highest data from a given list
-   */
-  void populate( index_t& idx, T* list )
-  {
-    assert( list );
-    idx.first = list;
-    for ( unsigned last_id = 0; KeyPolicy::id( *list ); last_id = KeyPolicy::id( *list ), ++list )
-    {
-      // Validate the input range is in fact sorted by id.
-      assert( KeyPolicy::id( *list ) > last_id ); ( void )last_id;
-    }
-    idx.second = list;
-  }
-
-public:
-  // Initialize index from given list
-  void init( T* list, bool ptr )
-  {
-    assert( ! initialized( maybe_ptr( ptr ) ) );
-    populate( idx[ maybe_ptr( ptr ) ], list );
-  }
-
-  // Initialize index under the assumption that 'T::list( bool ptr )' returns a list of data
-  void init()
-  {
-    init( T::list( false ), false );
-    if ( SC_USE_PTR )
-      init( T::list( true ), true );
-  }
-
-  bool initialized( bool ptr = false ) const
-  { return idx[ maybe_ptr( ptr ) ].first != 0; }
-
-  // Return the item with the given id, or NULL
-  T* get( bool ptr, unsigned id ) const
-  {
-    assert( initialized( maybe_ptr( ptr ) ) );
-    const index_t& index = idx[ maybe_ptr( ptr ) ];
-    T* p = std::lower_bound( index.first, index.second, id,
-                             [](const T& lhs, unsigned rhs) {
-                               return KeyPolicy::id( lhs ) < rhs;
-                             } );
-    if ( p != index.second && KeyPolicy::id( *p ) == id )
-      return p;
-    return nullptr;
-  }
-};
-
-template <typename T, typename Filter, typename KeyPolicy = id_function_policy>
-class filtered_dbc_index_t
-{
-#if SC_USE_PTR == 0
-  std::vector<const T*> __filtered_index[ 1 ];
-#else
-  std::vector<const T*> __filtered_index[ 2 ];
-#endif
-  Filter f;
-
-public:
-  // Initialize index from given list
-  void init( const T* list, bool ptr )
-  {
-    const T* i = list;
-
-    while ( KeyPolicy::id( *i ) )
-    {
-      if ( f( i ) )
-      {
-        __filtered_index[ maybe_ptr( ptr ) ].push_back( i );
-      }
-
-      i++;
-    }
-  }
-
-  template <typename Predicate>
-  const T* get( bool ptr, Predicate&& pred ) const
-  {
-    const auto& index = __filtered_index[ maybe_ptr( ptr ) ];
-    auto it = range::find_if( index, std::forward<Predicate>( pred ) );
-    if ( it != index.end() )
-      return *it;
-    return nullptr;
-  }
-};
 
 #endif // SC_DBC_HPP

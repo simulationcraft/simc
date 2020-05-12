@@ -433,15 +433,15 @@ const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t&       dbc,
     if ( data.id_gem == 0 )
       continue;
 
-    const item_data_t* gem = dbc.item( data.id_gem );
+    const auto& gem = dbc.item( data.id_gem );
     // A lot of the old meta gems no longer exist in game
-    if ( ! gem )
+    if ( gem.id == 0 )
       continue;
 
-    if ( gem -> id != data.id_gem )
+    if ( gem.id != data.id_gem )
       continue;
 
-    std::string tokenized_name = gem -> name;
+    std::string tokenized_name = gem.name;
     util::tokenize( tokenized_name );
     std::string shortname;
     std::string::size_type offset = tokenized_name.find( "_diamond" );
@@ -468,11 +468,11 @@ meta_gem_e enchant::meta_gem_type( const dbc_t&                   dbc,
   if ( data.id == 0 )
     return META_GEM_NONE;
 
-  const item_data_t* gem = dbc.item( data.id_gem );
-  if ( ! gem )
+  const auto& gem = dbc.item( data.id_gem );
+  if ( gem.id == 0 )
     return META_GEM_NONE;
 
-  std::string tokenized_name = gem -> name;
+  std::string tokenized_name = gem.name;
   util::tokenize( tokenized_name );
   std::string shortname;
   std::string::size_type offset = tokenized_name.find( "_diamond" );
@@ -504,13 +504,13 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
     return SOCKET_COLOR_NONE;
   }
 
-  const item_data_t* gem = item.player -> dbc->item( gem_id );
-  if ( ! gem )
+  const auto& gem = item.player->dbc->item( gem_id );
+  if ( gem.id == 0 )
   {
     throw std::invalid_argument(fmt::format("No gem data for id {}.", gem_id));
   }
 
-  const gem_property_data_t& gem_prop = item.player -> dbc->gem_property( gem -> gem_properties );
+  const gem_property_data_t& gem_prop = item.player->dbc->gem_property( gem.gem_properties );
   if ( ! gem_prop.id )
     return SOCKET_COLOR_NONE;
 
@@ -556,7 +556,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
 
   auto relic_id = item.parsed.gem_id[ relic_idx ];
   auto relic_data = item.player -> dbc->item( relic_id );
-  if ( ! relic_data )
+  if ( relic_data.id == 0 )
   {
     return SOCKET_COLOR_NONE;
   }
@@ -565,8 +565,8 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
   item_t relic( item.player, "" );
 
   // Apply base stats to relic
-  relic.parsed.data = *relic_data;
-  relic.name_str = relic_data -> name;
+  relic.parsed.data = relic_data;
+  relic.name_str = relic_data.name;
   util::tokenize( relic.name_str );
 
   // Apply evil relic data as relic bonus ids, so we can scale the relic ilevel correctly

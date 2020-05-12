@@ -570,15 +570,15 @@ bool report::check_gear( player_t& p, sim_t& sim )
         item_t& unique = p.items[ slot2 ];
         if ( slot2 == slot )
           continue;
-        if ( p.dbc->item( unique.parsed.data.id ) == nullptr )
+        if ( p.dbc->item( unique.parsed.data.id ).id == 0 )
           continue;
-        if ( p.dbc->item( item.parsed.data.id ) == nullptr )
+        if ( p.dbc->item( item.parsed.data.id ).id == 0 )
           continue;
 
         if ( unique.parsed.data.id == item.parsed.data.id )
         {
-          if ( p.dbc->item( unique.parsed.data.id )->flags_1 == 524288 &&
-               p.dbc->item( item.parsed.data.id )->flags_1 == 524288 )
+          if ( p.dbc->item( unique.parsed.data.id ).flags_1 == 524288 &&
+               p.dbc->item( item.parsed.data.id ).flags_1 == 524288 )
             sim.errorf(
                 "Player %s has equipped more than 1 of a unique item in slots %s and %s, please remove one of the "
                 "unique items.\n",
