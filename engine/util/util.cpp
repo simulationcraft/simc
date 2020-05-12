@@ -84,7 +84,7 @@ const html_named_character_t html_named_character_map[] =
 // parse_enum ===============================================================
 
 template <typename T, T Min, T Max, const char* F( T )>
-inline T parse_enum( const std::string& name )
+inline T parse_enum( util::string_view name )
 {
   for ( T i = Min; i < Max; ++i )
     if ( util::str_compare_ci( name, F( i ) ) )
@@ -93,7 +93,7 @@ inline T parse_enum( const std::string& name )
 }
 
 template <typename T, T Min, T Max, T not_found, const char* F( T )>
-inline T parse_enum_with_default( const std::string& name )
+inline T parse_enum_with_default( util::string_view name )
 {
   for ( T i = Min; i < Max; ++i )
     if ( util::str_compare_ci( name, F( i ) ) )
@@ -109,9 +109,9 @@ bool pred_ci ( char a, char b )
 }
 
 void stat_search( std::string&              encoding_str,
-                         std::vector<std::string>& description_tokens,
-                         stat_e                    type,
-                         const std::string&        stat_str )
+                  std::vector<std::string>& description_tokens,
+                  stat_e                    type,
+                  util::string_view         stat_str )
 {
   std::vector<std::string> stat_tokens = util::string_split( stat_str, " " );
   size_t num_descriptions = description_tokens.size();
@@ -294,8 +294,8 @@ stat_e util::highest_stat( const player_t* p, util::span<const stat_e> stats )
 
 
 /// case-insensitive string comparison
-bool util::str_compare_ci( const std::string& l,
-                           const std::string& r )
+bool util::str_compare_ci( util::string_view l,
+                           util::string_view r )
 {
   if ( l.size() != r.size() )
     return false;
@@ -306,8 +306,8 @@ bool util::str_compare_ci( const std::string& l,
 /**
  * Check if a string starts with a given prefix, case insensitive.
  */
-bool util::str_prefix_ci( const std::string& str,
-                          const std::string& prefix )
+bool util::str_prefix_ci( util::string_view str,
+                          util::string_view prefix )
 {
   if ( str.size() < prefix.size() )
     return false;
@@ -321,8 +321,8 @@ bool util::str_prefix_ci( const std::string& str,
  * @param l string to search in.
  * @param r substring to check.
  */
-bool util::str_in_str_ci( const std::string& l,
-                          const std::string& r )
+bool util::str_in_str_ci( util::string_view l,
+                          util::string_view r )
 {
   return std::search( l.begin(), l.end(), r.begin(), r.end(), pred_ci ) != l.end();
 }
@@ -389,7 +389,7 @@ const char* util::gcd_haste_type_string(gcd_haste_type gcd_type)
 
 // parse_role_type ==========================================================
 
-role_e util::parse_role_type( const std::string& name )
+role_e util::parse_role_type( util::string_view name )
 {
   return parse_enum<role_e, ROLE_NONE, ROLE_MAX, role_type_string>( name );
 }
@@ -456,7 +456,7 @@ const char* util::stats_type_string( stats_e type )
 
 // parse_race_type ==========================================================
 
-race_e util::parse_race_type( const std::string &name )
+race_e util::parse_race_type( util::string_view name )
 {
   if ( name == "forsaken" )           return RACE_UNDEAD;
 
@@ -485,7 +485,7 @@ const char* util::position_type_string( position_e type )
 
 // parse_position_type ======================================================
 
-position_e util::parse_position_type( const std::string &name )
+position_e util::parse_position_type( util::string_view name )
 {
   return parse_enum<position_e, POSITION_NONE, POSITION_MAX, position_type_string>( name );
 }
@@ -514,7 +514,7 @@ const char* util::profession_type_string( profession_e type )
 
 // parse_profession_type ====================================================
 
-profession_e util::parse_profession_type( const std::string& name )
+profession_e util::parse_profession_type( util::string_view name )
 {
   return parse_enum<profession_e, PROFESSION_NONE, PROFESSION_MAX, profession_type_string>( name );
 }
@@ -571,14 +571,14 @@ const char* util::player_type_string( player_e type )
 
 // parse_player_type ========================================================
 
-player_e util::parse_player_type( const std::string& name )
+player_e util::parse_player_type( util::string_view name )
 {
   return parse_enum<player_e, PLAYER_NONE, PLAYER_MAX, player_type_string>( name );
 }
 
 // translate_class_str ======================================================
 
-player_e util::translate_class_str( const std::string& s )
+player_e util::translate_class_str( util::string_view s )
 {
   return parse_enum<player_e, PLAYER_NONE, PLAYER_MAX, player_type_string>( s );
 }
@@ -657,7 +657,7 @@ const char* util::pet_type_string( pet_e type )
 
 // parse_pet_type ===========================================================
 
-pet_e util::parse_pet_type( const std::string& name )
+pet_e util::parse_pet_type( util::string_view name )
 {
   return parse_enum<pet_e, PET_NONE, PET_MAX, pet_type_string>( name );
 }
@@ -683,7 +683,7 @@ const char* util::attribute_type_string( attribute_e type )
 
 // parse_attribute_type =====================================================
 
-attribute_e util::parse_attribute_type( const std::string& name )
+attribute_e util::parse_attribute_type( util::string_view name )
 {
   return parse_enum<attribute_e, ATTRIBUTE_NONE, ATTRIBUTE_MAX, attribute_type_string>( name );
 }
@@ -775,7 +775,7 @@ const char* util::meta_gem_type_string( meta_gem_e type )
 
 // parse_meta_gem_type ======================================================
 
-meta_gem_e util::parse_meta_gem_type( const std::string& name )
+meta_gem_e util::parse_meta_gem_type( util::string_view name )
 {
   return parse_enum<meta_gem_e, META_GEM_NONE, META_GEM_MAX, meta_gem_type_string>( name );
 }
@@ -852,7 +852,7 @@ const char* util::amount_type_string( result_amount_type type )
 
 // parse_result_type ========================================================
 
-result_e util::parse_result_type( const std::string& name )
+result_e util::parse_result_type( util::string_view name )
 {
   return parse_enum<result_e, RESULT_NONE, RESULT_MAX, result_type_string>( name );
 }
@@ -886,7 +886,7 @@ const char* util::resource_type_string( resource_e resource_type )
 
 // parse_resource_type ======================================================
 
-resource_e util::parse_resource_type( const std::string& name )
+resource_e util::parse_resource_type( util::string_view name )
 {
   return parse_enum<resource_e, RESOURCE_NONE, RESOURCE_MAX, resource_type_string>( name );
 }
@@ -945,7 +945,7 @@ const char* util::school_type_string( school_e school )
 
 // parse_school_type ========================================================
 
-school_e util::parse_school_type( const std::string& name )
+school_e util::parse_school_type( util::string_view name )
 {
   return parse_enum<school_e, SCHOOL_NONE, SCHOOL_MAX, school_type_string>( name );
 }
@@ -1057,12 +1057,12 @@ const char* util::weapon_class_string( int weapon_class )
 
 // parse_weapon_type ========================================================
 
-weapon_e util::parse_weapon_type( const std::string& name )
+weapon_e util::parse_weapon_type( util::string_view name )
 {
   return parse_enum<weapon_e, WEAPON_NONE, WEAPON_MAX, weapon_type_string>( name );
 }
 
-profile_source util::parse_profile_source( const std::string& name )
+profile_source util::parse_profile_source( util::string_view name )
 {
   if ( util::str_compare_ci( name, "blizzard" ) )
   {
@@ -1165,14 +1165,14 @@ const char* util::armor_type_string( item_subclass_armor type )
   }
 }
 
-item_subclass_armor util::parse_armor_type( const std::string& name )
+item_subclass_armor util::parse_armor_type( util::string_view name )
 {
   return parse_enum<item_subclass_armor, ITEM_SUBCLASS_ARMOR_MISC, ITEM_SUBCLASS_ARMOR_LIBRAM, armor_type_string>( name );
 }
 
 // parse_slot_type ==========================================================
 
-slot_e util::parse_slot_type( const std::string& name )
+slot_e util::parse_slot_type( util::string_view name )
 {
   return parse_enum<slot_e, SLOT_INVALID, SLOT_MAX, slot_type_string>( name );
 }
@@ -1194,7 +1194,7 @@ const char* util::movement_direction_string( movement_direction_type m )
 
 // parse_movement_type ======================================================
 
-movement_direction_type util::parse_movement_direction( const std::string& name )
+movement_direction_type util::parse_movement_direction( util::string_view name )
 {
   return parse_enum<movement_direction_type, movement_direction_type::NONE, movement_direction_type::MAX, movement_direction_string>( name );
 }
@@ -1661,7 +1661,7 @@ const char* util::spec_string_no_class( const player_t& p )
 
 // parse_stat_type ==========================================================
 
-stat_e util::parse_stat_type( const std::string& name )
+stat_e util::parse_stat_type( util::string_view name )
 {
   stat_e s = parse_enum<stat_e, STAT_NONE, STAT_MAX, stat_type_string>( name );
   if ( s != STAT_NONE ) return s;
@@ -1740,7 +1740,7 @@ const char* util::scale_metric_type_abbrev( scale_metric_e sm )
 
 // parse_scale_metric =========================================================
 
-scale_metric_e util::parse_scale_metric( const std::string& name )
+scale_metric_e util::parse_scale_metric( util::string_view name )
 {
   scale_metric_e sm = parse_enum<scale_metric_e, SCALE_METRIC_NONE, SCALE_METRIC_MAX, scale_metric_type_abbrev>( name );
   if ( sm != SCALE_METRIC_NONE ) return sm;
@@ -1756,11 +1756,11 @@ scale_metric_e util::parse_scale_metric( const std::string& name )
 bool util::parse_origin( std::string& region,
                          std::string& server,
                          std::string& name,
-                         const std::string& origin )
+                         util::string_view origin )
 {
   auto tokens = string_split( origin, "/:.?&=" );
 
-  if ( origin.find( ".battle.net" ) != std::string::npos )
+  if ( origin.find( ".battle.net" ) != string_view::npos )
   {
     if ( tokens.size() < 2 || tokens[ 0 ] != "http" || tokens[ 1 ].empty() )
       return false;
@@ -1778,7 +1778,7 @@ bool util::parse_origin( std::string& region,
     return true;
   }
 
-  if ( origin.find( ".battlenet.com." ) != std::string::npos )
+  if ( origin.find( ".battlenet.com." ) != string_view::npos )
   {
     std::vector<std::string>::const_iterator pos = range::find( tokens, "battlenet" );
     if ( pos == tokens.end() || ++pos == tokens.end() || *pos != "com" )
@@ -2288,18 +2288,18 @@ bool util::socket_gem_match( item_socket_color socket, item_socket_color gem )
 
 // string_split =============================================================
 
-std::vector<std::string> util::string_split( const std::string& str, const std::string& delim )
+std::vector<std::string> util::string_split( util::string_view str, util::string_view delim )
 {
   std::vector<std::string> results;
   if ( str.empty() )
     return results;
 
-  std::string::size_type cut_pt, start = 0;
+  string_view::size_type cut_pt, start = 0;
 
-  while ( ( cut_pt = str.find_first_of( delim, start ) ) != std::string::npos )
+  while ( ( cut_pt = str.find_first_of( delim, start ) ) != string_view::npos )
   {
     if ( cut_pt > start ) // Found something, push to the vector
-      results.push_back( str.substr( start, cut_pt - start ) );
+      results.emplace_back( str.substr( start, cut_pt - start ) );
 
     start = cut_pt + 1; // skip the found delimeter
   }
@@ -2307,7 +2307,7 @@ std::vector<std::string> util::string_split( const std::string& str, const std::
   if ( start < str.size() )
   {
     // Push the tail
-    results.push_back( str.substr( start, str.size() - start ) );
+    results.emplace_back( str.substr( start, str.size() - start ) );
   }
 
   return results;
@@ -2315,14 +2315,14 @@ std::vector<std::string> util::string_split( const std::string& str, const std::
 
 /* Splits the string while skipping and stripping quoted parts in the string
  */
-std::vector<std::string> util::string_split_allow_quotes( std::string str, const char* delim )
+std::vector<std::string> util::string_split_allow_quotes( util::string_view str_, util::string_view delim )
 {
   std::vector<std::string> results;
   std::string::size_type cut_pt, start = 0;
 
-  std::string not_in_quote = delim;
-  not_in_quote += '"';
+  std::string str = to_string( str_ );
 
+  const std::string not_in_quote = to_string( delim ) + '"';
   static const std::string in_quote = "\"";
   const std::string* search = &not_in_quote;
 
@@ -2353,35 +2353,32 @@ std::vector<std::string> util::string_split_allow_quotes( std::string str, const
 /**
  * Replaces all occurrences of 'from' in the string 's', with 'to'.
  */
-void util::replace_all( std::string& s, const std::string& from, const std::string& to )
+void util::replace_all( std::string& s, util::string_view from, util::string_view to )
 {
-  std::string::size_type pos;
-  if ( ( pos = s.find( from ) ) != std::string::npos )
+  std::string::size_type pos = s.find( from.data(), 0, from.size() );
+  if ( pos!= std::string::npos )
   {
-    std::string::size_type from_length = from.length();
-    std::string::size_type to_len = to.length();
     do
     {
-      s.replace( pos, from_length, to );
-      pos += to_len;
+      s.replace( pos, from.size(), to.data(), to.size() );
+      pos += to.size();
     }
-    while ( ( pos = s.find( from, pos ) ) != std::string::npos );
+    while ( ( pos = s.find( from.data(), pos, from.size() ) ) != std::string::npos );
   }
 }
 
 // erase_all ================================================================
 
-void util::erase_all( std::string& s, const std::string& from )
+void util::erase_all( std::string& s, util::string_view from )
 {
-  std::string::size_type pos;
-
-  if ( ( pos = s.find( from ) ) != std::string::npos )
+  std::string::size_type pos = s.find( from.data(), 0, from.size() );
+  if ( pos != std::string::npos )
   {
     do
     {
       s.erase( pos, from.length() );
     }
-    while ( ( pos = s.find( from ) ) != std::string::npos );
+    while ( ( pos = s.find( from.data(), 0, from.size() ) ) != std::string::npos );
   }
 }
 
@@ -2519,7 +2516,7 @@ const char* util::specialization_string( specialization_e spec )
 
 // parse_position_type ======================================================
 
-specialization_e util::parse_specialization_type( const std::string &name )
+specialization_e util::parse_specialization_type( util::string_view name )
 {
   for ( const auto& entry : spec_map )
   {
@@ -2532,7 +2529,7 @@ specialization_e util::parse_specialization_type( const std::string &name )
 
 // parse_item_quality =======================================================
 
-int util::parse_item_quality( const std::string& quality )
+int util::parse_item_quality( util::string_view quality )
 {
   int i = 6;
 
@@ -2583,7 +2580,7 @@ int util::to_int( const std::string& str )
 
 // parse_date ===============================================================
 
-int64_t util::parse_date( const std::string& month_day_year )
+int64_t util::parse_date( util::string_view month_day_year )
 {
   std::vector<std::string> splits = string_split( month_day_year, " _,;-/ \t\n\r" );
   if ( splits.size() != 3 ) return 0;
@@ -2798,9 +2795,9 @@ std::string util::decode_html( const std::string& input )
   return output;
 }
 
-std::string util::remove_special_chars( const std::string& s )
+std::string util::remove_special_chars( util::string_view s )
 {
-  std::string r = s;
+  std::string r = to_string( s );
   // Allow alphanumeric characters, underscore and non-ASCII characters.
   auto pred = [] ( char c ) { return !std::isalnum( c ) && c != '_' && (unsigned char)c < 128; };
   r.erase( std::remove_if( r.begin(), r.end(), pred ), r.end() );
@@ -2876,9 +2873,9 @@ bool util::is_primary_stat( stat_e t )
 
 // encode_html ==============================================================
 
-std::string util::encode_html( const std::string& s )
+std::string util::encode_html( util::string_view s )
 {
-  std::string buffer = s;
+  std::string buffer = to_string( s );
   replace_all( buffer, "&", "&amp;" );
   replace_all( buffer, "<", "&lt;" );
   replace_all( buffer, ">", "&gt;" );
@@ -3019,15 +3016,16 @@ void util::tokenize( std::string& name )
   }
 }
 
-std::string util::tokenize_fn( std::string name )
+std::string util::tokenize_fn( util::string_view name_ )
 {
+  std::string name = to_string( name_ );
   tokenize(name);
   return name;
 }
 
-std::string util::inverse_tokenize( const std::string& name )
+std::string util::inverse_tokenize( util::string_view name )
 {
-  std::string s = name;
+  std::string s = to_string( name );
 
   for ( std::string::iterator i = s.begin(); i != s.end(); ++i )
   {
@@ -3050,9 +3048,9 @@ std::string util::inverse_tokenize( const std::string& name )
 
 // is_number ================================================================
 
-bool util::is_number( const std::string& s )
+bool util::is_number( util::string_view s )
 {
-  for (auto& elem : s)
+  for (char elem : s)
   {
     if ( ! std::isdigit( elem ) )
     {
@@ -3064,13 +3062,12 @@ bool util::is_number( const std::string& s )
 
 // fuzzy_stats ==============================================================
 
-void util::fuzzy_stats( std::string&       encoding,
-                        const std::string& description )
+void util::fuzzy_stats( std::string&      encoding,
+                        util::string_view description )
 {
   if ( description.empty() ) return;
 
-  std::string buffer = description;
-  util::tokenize( buffer );
+  std::string buffer = util::tokenize_fn( description );
 
   if ( is_proc_description( buffer ) )
     return;
@@ -3128,7 +3125,7 @@ int util::numDigits( T number )
   return digits;
 }
 
-bool util::contains_non_ascii( const std::string& s )
+bool util::contains_non_ascii( util::string_view s )
 {
   for (const auto & elem : s)
   {

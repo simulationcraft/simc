@@ -12,6 +12,7 @@
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
 #include "util/span.hpp"
+#include "util/string_view.hpp"
 
 #include "fmt/format.h"
 #include "fmt/ostream.h"
@@ -89,29 +90,29 @@ item_subclass_armor matching_armor_type ( player_e ptype );
 resource_e  translate_power_type      ( power_e );
 stat_e      power_type_to_stat        ( power_e );
 
-attribute_e parse_attribute_type ( const std::string& name );
-result_amount_type parse_dmg_type ( const std::string& name );
-meta_gem_e parse_meta_gem_type   ( const std::string& name );
-player_e parse_player_type       ( const std::string& name );
-pet_e parse_pet_type             ( const std::string& name );
-profession_e parse_profession_type( const std::string& name );
-position_e parse_position_type   ( const std::string& name );
-race_e parse_race_type           ( const std::string& name );
-role_e parse_role_type           ( const std::string& name );
-resource_e parse_resource_type   ( const std::string& name );
-result_e parse_result_type       ( const std::string& name );
-school_e parse_school_type       ( const std::string& name );
-slot_e parse_slot_type           ( const std::string& name );
-stat_e parse_stat_type           ( const std::string& name );
-scale_metric_e parse_scale_metric( const std::string& name );
-profile_source parse_profile_source( const std::string& name );
-specialization_e parse_specialization_type( const std::string &name );
-movement_direction_type parse_movement_direction( const std::string& name );
-item_subclass_armor parse_armor_type( const std::string& name );
-weapon_e parse_weapon_type       ( const std::string& name );
+attribute_e parse_attribute_type ( util::string_view name );
+result_amount_type parse_dmg_type ( util::string_view name );
+meta_gem_e parse_meta_gem_type   ( util::string_view name );
+player_e parse_player_type       ( util::string_view name );
+pet_e parse_pet_type             ( util::string_view name );
+profession_e parse_profession_type( util::string_view name );
+position_e parse_position_type   ( util::string_view name );
+race_e parse_race_type           ( util::string_view name );
+role_e parse_role_type           ( util::string_view name );
+resource_e parse_resource_type   ( util::string_view name );
+result_e parse_result_type       ( util::string_view name );
+school_e parse_school_type       ( util::string_view name );
+slot_e parse_slot_type           ( util::string_view name );
+stat_e parse_stat_type           ( util::string_view name );
+scale_metric_e parse_scale_metric( util::string_view name );
+profile_source parse_profile_source( util::string_view name );
+specialization_e parse_specialization_type( util::string_view name );
+movement_direction_type parse_movement_direction( util::string_view name );
+item_subclass_armor parse_armor_type( util::string_view name );
+weapon_e parse_weapon_type       ( util::string_view name );
 
-int parse_item_quality                ( const std::string& quality );
-bool parse_origin( std::string& region, std::string& server, std::string& name, const std::string& origin );
+int parse_item_quality                ( util::string_view quality );
+bool parse_origin( std::string& region, std::string& server, std::string& name, util::string_view origin );
 int class_id_mask( player_e type );
 int class_id( player_e type );
 unsigned race_mask( race_e race );
@@ -120,7 +121,7 @@ unsigned pet_mask( pet_e type );
 unsigned pet_id( pet_e type );
 player_e pet_class_type( pet_e type );
 player_e translate_class_id( int cid );
-player_e translate_class_str( const std::string& s );
+player_e translate_class_str( util::string_view s );
 race_e translate_race_id( int rid );
 bool is_alliance( race_e );
 bool is_horde( race_e );
@@ -140,12 +141,12 @@ profession_e translate_profession_id( int skill_id );
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 
-std::vector<std::string> string_split( const std::string& str, const std::string& delim );
-std::vector<std::string> string_split_allow_quotes( std::string str, const char* delim );
+std::vector<std::string> string_split( util::string_view str, util::string_view delim );
+std::vector<std::string> string_split_allow_quotes( util::string_view str, util::string_view delim );
 template <typename T>
-std::string string_join( const T& container, const std::string& delim = ", " );
-void replace_all( std::string& s, const std::string&, const std::string& );
-void erase_all( std::string& s, const std::string& from );
+std::string string_join( const T& container, util::string_view delim = ", " );
+void replace_all( std::string& s, util::string_view, util::string_view );
+void erase_all( std::string& s, util::string_view from );
 
 template <typename T>
 std::string to_string( const T& t );
@@ -156,7 +157,7 @@ unsigned to_unsigned( const std::string& str );
 unsigned to_unsigned( const char* str );
 int to_int( const std::string& str );
 
-int64_t parse_date( const std::string& month_day_year );
+int64_t parse_date( util::string_view month_day_year );
 
 template<typename Format, typename... Args>
 int printf(Format&& format, Args&& ... args)
@@ -169,18 +170,18 @@ int fprintf(std::FILE* stream, Format&& format, Args&& ... args)
   return fmt::fprintf(stream, std::forward<Format>(format), std::forward<Args>(args)... );
 }
 
-std::string encode_html( const std::string& );
+std::string encode_html( util::string_view );
 std::string decode_html( const std::string& );
 // Strips away all non-underscore, non-alphanumeric ASCII characters from the string.
-std::string remove_special_chars( const std::string& );
+std::string remove_special_chars( util::string_view );
 void urlencode( std::string& str );
 void urldecode( std::string& str );
 std::string create_blizzard_talent_url( const player_t& p );
 std::string create_wowhead_artifact_url( const player_t& p );
 
-bool str_compare_ci( const std::string& l, const std::string& r );
-bool str_in_str_ci ( const std::string& l, const std::string& r );
-bool str_prefix_ci ( const std::string& str, const std::string& prefix );
+bool str_compare_ci( util::string_view l, util::string_view r );
+bool str_in_str_ci ( util::string_view l, util::string_view r );
+bool str_prefix_ci ( util::string_view str, util::string_view prefix );
 
 bool str_begins_with( const std::string& str, const std::string& beginsWith );
 bool str_begins_with_ci( const std::string& str, const std::string& beginsWith );
@@ -193,17 +194,17 @@ double approx_sqrt( double X );
 void tolower( std::string& str );
 
 void tokenize( std::string& name );
-std::string tokenize_fn( std::string name );
-std::string inverse_tokenize( const std::string& name );
+std::string tokenize_fn( util::string_view );
+std::string inverse_tokenize( util::string_view name );
 
-bool is_number( const std::string& s );
+bool is_number( util::string_view s );
 
-void fuzzy_stats( std::string& encoding, const std::string& description );
+void fuzzy_stats( std::string& encoding, util::string_view description );
 
 template <class T>
 int numDigits( T number );
 
-bool contains_non_ascii( const std::string& );
+bool contains_non_ascii( util::string_view );
 
 // https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
 inline unsigned next_power_of_two( unsigned v )
@@ -231,7 +232,7 @@ std::string util::to_string( const T& t )
 }
 
 template <typename T>
-std::string util::string_join( const T& container, const std::string& delim )
+std::string util::string_join( const T& container, util::string_view delim )
 {
-  return fmt::format( "{}", fmt::join( container, delim ) );
+  return fmt::format( "{}", fmt::join( container, to_string_view( delim ) ) );
 }
