@@ -32,10 +32,10 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\data_enums.hh" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />
 		<ClInclude Include="..\engine\dbc\gem_data.hpp" />
-		<ClInclude Include="..\engine\dbc\item.hpp" />
 		<ClInclude Include="..\engine\dbc\item_armor.hpp" />
 		<ClInclude Include="..\engine\dbc\item_bonus.hpp" />
 		<ClInclude Include="..\engine\dbc\item_child.hpp" />
+		<ClInclude Include="..\engine\dbc\item_data.hpp" />
 		<ClInclude Include="..\engine\dbc\item_database.hpp" />
 		<ClInclude Include="..\engine\dbc\item_effect.hpp" />
 		<ClInclude Include="..\engine\dbc\item_import.hpp" />
@@ -262,9 +262,6 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\dbc\gem_data.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
 		<ClCompile Include="..\engine\dbc\item_armor.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
@@ -272,6 +269,9 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\item_child.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\dbc\item_data.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\item_effect.cpp">

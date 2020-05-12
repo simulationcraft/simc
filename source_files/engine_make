@@ -42,10 +42,10 @@ SRC += \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_pets.cpp \
     dbc$(PATHSEP)azerite.cpp \
     dbc$(PATHSEP)gem_data.cpp \
-    dbc$(PATHSEP)item.cpp \
     dbc$(PATHSEP)item_armor.cpp \
     dbc$(PATHSEP)item_bonus.cpp \
     dbc$(PATHSEP)item_child.cpp \
+    dbc$(PATHSEP)item_data.cpp \
     dbc$(PATHSEP)item_effect.cpp \
     dbc$(PATHSEP)item_import.cpp \
     dbc$(PATHSEP)item_import_ptr.cpp \
