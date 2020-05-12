@@ -10,7 +10,7 @@
 #include "sc_enums.hpp"
 #include "player/gear_stats.hpp"
 #include "sc_timespan.hpp"
-#include "dbc/item.hpp"
+#include "dbc/item_data.hpp"
 #include <array>
 #include <vector>
 #include <memory>

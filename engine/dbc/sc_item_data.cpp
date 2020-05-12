@@ -9,7 +9,7 @@
 #include "dbc/item_effect.hpp"
 #include "dbc/spell_item_enchantment.hpp"
 #include "dbc/item_bonus.hpp"
-#include "dbc/item.hpp"
+#include "dbc/item_data.hpp"
 
 namespace {
   template <item_subclass_consumable CLASS>

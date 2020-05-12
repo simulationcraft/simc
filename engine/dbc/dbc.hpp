@@ -24,7 +24,7 @@
 #include "dbc/rand_prop_points.hpp"
 #include "dbc/spell_item_enchantment.hpp"
 #include "dbc/gem_data.hpp"
-#include "dbc/item.hpp"
+#include "dbc/item_data.hpp"
 #include "dbc/item_child.hpp"
 #include "dbc/item_armor.hpp"
 #include "dbc/item_bonus.hpp"

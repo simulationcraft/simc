@@ -8,7 +8,7 @@
 #include "item_import.hpp"
 #include "item_import_ptr.hpp"
 
-#include "item.hpp"
+#include "item_data.hpp"
 
 util::span<const item_data_t> item_data_t::data( bool ptr )
 {

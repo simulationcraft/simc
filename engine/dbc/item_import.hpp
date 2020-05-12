@@ -7,7 +7,7 @@
 
 #include "util/span.hpp"
 
-#include "dbc/item.hpp"
+#include "dbc/item_data.hpp"
 
 namespace dbc
 {
