@@ -11,8 +11,16 @@
 #include "fmt/format.h"
 #include "util/io.hpp"
 #include "util/util.hpp"
+#include "util/generic.hpp"
+#include "lib/utf8-cpp/utf8.h"
 
 namespace { // UNNAMED NAMESPACE ============================================
+
+template <typename Range>
+inline bool is_valid_utf8(const Range& r)
+{
+  return utf8::is_valid(range::begin(r), range::end(r));
+}
 
 bool is_white_space( char c )
 {

@@ -19,8 +19,6 @@
 #include <functional>
 #include <type_traits>
 
-#include "utf8-cpp/utf8.h"
-
 // iterable enumeration templates ===========================================
 
 /*
@@ -493,12 +491,6 @@ template <typename Range, typename Comp>
 inline iterator_t<Range> unique( Range& r, Comp c )
 {
   return std::unique( range::begin( r ), range::end( r ), c );
-}
-
-template <typename Range>
-inline bool is_valid_utf8( const Range& r )
-{
-  return utf8::is_valid( range::begin( r ), range::end( r ) );
 }
 
 template <typename Range>

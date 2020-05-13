@@ -10,6 +10,7 @@
 #include "sc_enums.hpp"
 #include <array>
 #include <functional>
+#include <string>
 
 
 struct gear_stats_t
