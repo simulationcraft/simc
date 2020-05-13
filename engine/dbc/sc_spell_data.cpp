@@ -282,8 +282,8 @@ unsigned school_str_to_mask( const std::string& str )
 // For these expression types, you can only use two spell lists as parameters
 struct spell_list_expr_t : public spell_data_expr_t
 {
-  spell_list_expr_t( sim_t* sim, const std::string& name, expr_data_e type = DATA_SPELL, bool eq = false ) :
-    spell_data_expr_t( sim, name, type, eq, expression::TOK_SPELL_LIST ) { }
+  spell_list_expr_t( dbc_t& dbc, const std::string& name, expr_data_e type = DATA_SPELL, bool eq = false ) :
+    spell_data_expr_t( dbc, name, type, eq, expression::TOK_SPELL_LIST ) { }
 
   int evaluate() override
   {
@@ -295,25 +295,25 @@ struct spell_list_expr_t : public spell_data_expr_t
     {
       case DATA_SPELL:
       {
-        for ( const spell_data_t* spell = spell_data_t::list( sim -> dbc.ptr ); spell -> id(); spell++ )
+        for ( const spell_data_t* spell = spell_data_t::list( dbc.ptr ); spell -> id(); spell++ )
           result_spell_list.push_back( spell -> id() );
         break;
       }
       case DATA_TALENT:
       {
-        for ( const talent_data_t* talent = talent_data_t::list( sim -> dbc.ptr ); talent -> id(); talent++ )
+        for ( const talent_data_t* talent = talent_data_t::list( dbc.ptr ); talent -> id(); talent++ )
           result_spell_list.push_back( talent -> id() );
         break;
       }
       case DATA_EFFECT:
       {
-        for ( const spelleffect_data_t* effect = spelleffect_data_t::list( sim -> dbc.ptr ); effect -> id(); effect++ )
+        for ( const spelleffect_data_t* effect = spelleffect_data_t::list( dbc.ptr ); effect -> id(); effect++ )
           result_spell_list.push_back( effect -> id() );
         break;
       }
       case DATA_TALENT_SPELL:
       {
-        for ( const talent_data_t* talent = talent_data_t::list( sim -> dbc.ptr ); talent -> id(); talent++ )
+        for ( const talent_data_t* talent = talent_data_t::list( dbc.ptr ); talent -> id(); talent++ )
         {
           if ( ! talent -> spell_id() )
             continue;
@@ -323,13 +323,13 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_CLASS_SPELL:
       {
-        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
+        for ( unsigned cls = 0; cls < dbc.specialization_max_class(); cls++ )
         {
-          for ( unsigned tree = 0; tree < sim -> dbc.class_ability_tree_size(); tree++ )
+          for ( unsigned tree = 0; tree < dbc.class_ability_tree_size(); tree++ )
           {
-            for ( unsigned n = 0; n < sim -> dbc.class_ability_size(); n++ )
+            for ( unsigned n = 0; n < dbc.class_ability_size(); n++ )
             {
-              if ( ! ( spell_id = sim -> dbc.class_ability( cls, tree, n ) ) )
+              if ( ! ( spell_id = dbc.class_ability( cls, tree, n ) ) )
                 continue;
 
               result_spell_list.push_back( spell_id );
@@ -340,13 +340,13 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_RACIAL_SPELL:
       {
-        for ( unsigned race = 0; race < sim -> dbc.race_ability_tree_size(); race++ )
+        for ( unsigned race = 0; race < dbc.race_ability_tree_size(); race++ )
         {
-          for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class() - 1; cls++ )
+          for ( unsigned cls = 0; cls < dbc.specialization_max_class() - 1; cls++ )
           {
-            for ( unsigned n = 0; n < sim -> dbc.race_ability_size(); n++ )
+            for ( unsigned n = 0; n < dbc.race_ability_size(); n++ )
             {
-              if ( ! ( spell_id = sim -> dbc.race_ability( race, cls, n ) ) )
+              if ( ! ( spell_id = dbc.race_ability( race, cls, n ) ) )
                 continue;
 
               result_spell_list.push_back( spell_id );
@@ -357,13 +357,13 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_MASTERY_SPELL:
       {
-        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
+        for ( unsigned cls = 0; cls < dbc.specialization_max_class(); cls++ )
         {
-          for ( unsigned tree = 0; tree < sim -> dbc.specialization_max_per_class(); tree++ )
+          for ( unsigned tree = 0; tree < dbc.specialization_max_per_class(); tree++ )
           {
-            for ( unsigned n = 0; n < sim -> dbc.mastery_ability_size(); n++ )
+            for ( unsigned n = 0; n < dbc.mastery_ability_size(); n++ )
             {
-              if ( ! ( spell_id = sim -> dbc.mastery_ability( cls, tree, n ) ) )
+              if ( ! ( spell_id = dbc.mastery_ability( cls, tree, n ) ) )
                 continue;
 
               result_spell_list.push_back( spell_id );
@@ -374,13 +374,13 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_SPECIALIZATION_SPELL:
       {
-        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
+        for ( unsigned cls = 0; cls < dbc.specialization_max_class(); cls++ )
         {
-          for ( unsigned tree = 0; tree < sim -> dbc.specialization_max_per_class(); tree++ )
+          for ( unsigned tree = 0; tree < dbc.specialization_max_per_class(); tree++ )
           {
-            for ( unsigned n = 0; n < sim -> dbc.specialization_ability_size(); n++ )
+            for ( unsigned n = 0; n < dbc.specialization_ability_size(); n++ )
             {
-              if ( ! ( spell_id = sim -> dbc.specialization_ability( cls, tree, n ) ) )
+              if ( ! ( spell_id = dbc.specialization_ability( cls, tree, n ) ) )
                 continue;
 
               result_spell_list.push_back( spell_id );
@@ -391,7 +391,7 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_AZERITE_SPELL:
       {
-        for ( const auto& p : azerite_power_entry_t::data( sim -> dbc.ptr ) )
+        for ( const auto& p : azerite_power_entry_t::data( dbc.ptr ) )
         {
           if ( range::find( result_spell_list, p.spell_id ) == result_spell_list.end() )
           {
@@ -419,9 +419,7 @@ struct spell_list_expr_t : public spell_data_expr_t
     // Only or two spell lists together
     if ( other.result_tok != expression::TOK_SPELL_LIST )
     {
-      sim -> errorf( "Unsupported right side operand '%s' (%d) for operator &",
-                     other.name_str.c_str(),
-                     other.result_tok );
+      throw std::invalid_argument(fmt::format("Unsupported right side operand '{}' ({}) for operator &", other.name_str, other.result_tok));
     }
     else
       range::set_intersection( result_spell_list, other.result_spell_list, std::back_inserter( res ) );
@@ -437,9 +435,7 @@ struct spell_list_expr_t : public spell_data_expr_t
     // Only or two spell lists together
     if ( other.result_tok != expression::TOK_SPELL_LIST )
     {
-      sim -> errorf( "Unsupported right side operand '%s' (%d) for operator |",
-                     other.name_str.c_str(),
-                     other.result_tok );
+      throw std::invalid_argument(fmt::format("Unsupported right side operand '{}' ({}) for operator |", other.name_str, other.result_tok));
     }
     else
       range::set_union( result_spell_list, other.result_spell_list, std::back_inserter( res ) );
@@ -455,9 +451,7 @@ struct spell_list_expr_t : public spell_data_expr_t
     // Only or two spell lists together
     if ( other.result_tok != expression::TOK_SPELL_LIST )
     {
-      sim -> errorf( "Unsupported right side operand '%s' (%d) for operator -",
-                     other.name_str.c_str(),
-                     other.result_tok );
+      throw std::invalid_argument(fmt::format("Unsupported right side operand '{}' ({}) for operator -", other.name_str, other.result_tok));
     }
     else
       range::set_difference( result_spell_list, other.result_spell_list, std::back_inserter( res ) );
@@ -472,8 +466,8 @@ struct sd_expr_binary_t : public spell_list_expr_t
   spell_data_expr_t* left;
   spell_data_expr_t* right;
 
-  sd_expr_binary_t( sim_t* sim, const std::string& n, int o, spell_data_expr_t* l, spell_data_expr_t* r ) :
-    spell_list_expr_t( sim, n ), operation( o ), left( l ), right( r ) { }
+  sd_expr_binary_t( dbc_t& dbc, const std::string& n, int o, spell_data_expr_t* l, spell_data_expr_t* r ) :
+    spell_list_expr_t( dbc, n ), operation( o ), left( l ), right( r ) { }
 
   int evaluate() override
   {
@@ -507,7 +501,7 @@ struct sd_expr_binary_t : public spell_list_expr_t
         case expression::TOK_IN:    result_spell_list = left -> in( *right ); break;
         case expression::TOK_NOTIN: result_spell_list = left -> not_in( *right ); break;
         default:
-          sim -> errorf( "Unsupported spell query operator %d", operation );
+          throw std::invalid_argument(fmt::format("Unsupported spell query operator {}", operation));
           result_spell_list = std::vector<uint32_t>();
           result_tok = expression::TOK_UNKNOWN;
           break;
@@ -523,8 +517,8 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   int                offset;
   sdata_field_type_t field_type;
 
-  spell_data_filter_expr_t( sim_t* sim, expr_data_e type, const std::string& f_name, bool eq = false ) :
-    spell_list_expr_t( sim, f_name, type, eq ), offset( 0 ), field_type( SD_TYPE_INT )
+  spell_data_filter_expr_t(dbc_t& dbc, expr_data_e type, const std::string& f_name, bool eq = false ) :
+    spell_list_expr_t( dbc, f_name, type, eq ), offset( 0 ), field_type( SD_TYPE_INT )
   {
     const sdata_field_t      * fields = nullptr;
     size_t             fsize;
@@ -655,14 +649,14 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
 
       if ( effect_query )
       {
-        const spell_data_t& spell = *sim -> dbc.spell( result_spell );
+        const spell_data_t& spell = *dbc.spell( result_spell );
 
         // Compare against every spell effect
         for ( size_t j = 0; j < spell.effect_count(); j++ )
         {
           const spelleffect_data_t& effect = spell.effectN( j + 1 );
 
-          if ( effect.id() > 0 && sim -> dbc.effect( effect.id() ) &&
+          if ( effect.id() > 0 && dbc.effect( effect.id() ) &&
                compare( reinterpret_cast<const char*>( &effect ), other, t ) )
           {
             res.push_back( result_spell );
@@ -674,11 +668,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
       {
         const char* p_data;
         if ( data_type == DATA_TALENT )
-          p_data = reinterpret_cast<const char*>( sim -> dbc.talent( result_spell ) );
+          p_data = reinterpret_cast<const char*>( dbc.talent( result_spell ) );
         else if ( data_type == DATA_EFFECT )
-          p_data = reinterpret_cast<const char*>( sim -> dbc.effect( result_spell ) );
+          p_data = reinterpret_cast<const char*>( dbc.effect( result_spell ) );
         else
-          p_data = reinterpret_cast<const char*>( sim -> dbc.spell( result_spell ) );
+          p_data = reinterpret_cast<const char*>( dbc.spell( result_spell ) );
         if ( p_data && compare( p_data, other, t ) )
           res.push_back( result_spell );
       }
@@ -691,11 +685,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
 
     if ( other.result_tok != expression::TOK_NUM && other.result_tok != expression::TOK_STR )
     {
-      sim -> errorf( "Unsupported expression operator == for left=%s(%d), right=%s(%d)",
-                     name_str.c_str(),
-                     result_tok,
-                     other.name_str.c_str(),
-                     other.result_tok );
+      throw std::invalid_argument(fmt::format("Unsupported expression operator == for left='{}' ({}), right='{}' ({})",
+        name_str,
+        result_tok,
+        other.name_str,
+        other.result_tok));
     }
     else
       build_list( res, other, expression::TOK_EQ );
@@ -709,11 +703,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
 
     if ( other.result_tok != expression::TOK_NUM && other.result_tok != expression::TOK_STR )
     {
-      sim -> errorf( "Unsupported expression operator != for left=%s(%d), right=%s(%d)",
-                     name_str.c_str(),
-                     result_tok,
-                     other.name_str.c_str(),
-                     other.result_tok );
+      throw std::invalid_argument(fmt::format("Unsupported expression operator != for left='{}' ({}), right='{}' ({})",
+        name_str,
+        result_tok,
+        other.name_str,
+        other.result_tok));
     }
     else
       build_list( res, other, expression::TOK_NOTEQ );
@@ -728,12 +722,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     if ( other.result_tok != expression::TOK_NUM ||
          ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
     {
-      sim -> errorf( "Unsupported expression operator < for left=%s(%d), right=%s(%d) or field '%s' is not a number",
-                     name_str.c_str(),
-                     result_tok,
-                     other.name_str.c_str(),
-                     other.result_tok,
-                     name_str.c_str() );
+      throw std::invalid_argument(fmt::format("Unsupported expression operator < for left='{}' ({}), right='{}' ({})",
+        name_str,
+        result_tok,
+        other.name_str,
+        other.result_tok));
     }
     else
       build_list( res, other, expression::TOK_LT );
@@ -748,12 +741,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     if ( other.result_tok != expression::TOK_NUM ||
          ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
     {
-      sim -> errorf( "Unsupported expression operator <= for left=%s(%d), right=%s(%d) or field '%s' is not a number",
-                     name_str.c_str(),
-                     result_tok,
-                     other.name_str.c_str(),
-                     other.result_tok,
-                     name_str.c_str() );
+      throw std::invalid_argument(fmt::format("Unsupported expression operator <= for left='{}' ({}), right='{}' ({})",
+        name_str,
+        result_tok,
+        other.name_str,
+        other.result_tok));
     }
     else
       build_list( res, other, expression::TOK_LTEQ );
@@ -768,12 +760,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     if ( other.result_tok != expression::TOK_NUM ||
          ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
     {
-      sim -> errorf( "Unsupported expression operator > for left=%s(%d), right=%s(%d) or field '%s' is not a number",
-                     name_str.c_str(),
-                     result_tok,
-                     other.name_str.c_str(),
-                     other.result_tok,
-                     name_str.c_str() );
+      throw std::invalid_argument(fmt::format("Unsupported expression operator > for left='{}' ({}), right='{}' ({})",
+        name_str,
+        result_tok,
+        other.name_str,
+        other.result_tok));
     }
     else
       build_list( res, other, expression::TOK_GT );
@@ -788,12 +779,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     if ( other.result_tok != expression::TOK_NUM ||
          ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
     {
-      sim -> errorf( "Unsupported expression operator >= for left=%s(%d), right=%s(%d) or field '%s' is not a number",
-                     name_str.c_str(),
-                     result_tok,
-                     other.name_str.c_str(),
-                     other.result_tok,
-                     name_str.c_str() );
+      throw std::invalid_argument(fmt::format("Unsupported expression operator >= for left='{}' ({}), right='{}' ({})",
+        name_str,
+        result_tok,
+        other.name_str,
+        other.result_tok));
     }
     else
       build_list( res, other, expression::TOK_GTEQ );
@@ -807,12 +797,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
 
     if ( other.result_tok != expression::TOK_STR || field_type != SD_TYPE_STR )
     {
-      sim -> errorf( "Unsupported expression operator ~ for left=%s(%d), right=%s(%d) or field '%s' is not a string",
-                     name_str.c_str(),
-                     result_tok,
-                     other.name_str.c_str(),
-                     other.result_tok,
-                     name_str.c_str() );
+      throw std::invalid_argument(fmt::format("Unsupported expression operator ~ for left='{}' ({}), right='{}' ({})",
+        name_str,
+        result_tok,
+        other.name_str,
+        other.result_tok));
     }
     else
       build_list( res, other, expression::TOK_IN );
@@ -826,12 +815,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
 
     if ( other.result_tok != expression::TOK_STR || field_type != SD_TYPE_STR )
     {
-      sim -> errorf( "Unsupported expression operator !~ for left=%s(%d), right=%s(%d) or field '%s' is not a string",
-                     name_str.c_str(),
-                     result_tok,
-                     other.name_str.c_str(),
-                     other.result_tok,
-                     name_str.c_str() );
+      throw std::invalid_argument(fmt::format("Unsupported expression operator !~ for left='{}' ({}), right='{}' ({})",
+        name_str,
+        result_tok,
+        other.name_str,
+        other.result_tok));
     }
     else
       build_list( res, other, expression::TOK_NOTIN );
@@ -842,7 +830,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
 
 struct spell_class_expr_t : public spell_list_expr_t
 {
-  spell_class_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "class", type ) { }
+  spell_class_expr_t( dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "class", type ) { }
 
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
@@ -859,15 +847,15 @@ struct spell_class_expr_t : public spell_list_expr_t
     {
       if ( data_type == DATA_TALENT )
       {
-        if ( ! sim -> dbc.talent( result_spell ) )
+        if ( ! dbc.talent( result_spell ) )
           continue;
 
-        if ( sim -> dbc.talent( result_spell ) -> mask_class() & class_mask )
+        if ( dbc.talent( result_spell ) -> mask_class() & class_mask )
           res.push_back( result_spell );
       }
       else
       {
-        const spell_data_t* spell = sim -> dbc.spell( result_spell );
+        const spell_data_t* spell = dbc.spell( result_spell );
 
         if ( ! spell )
           continue;
@@ -895,15 +883,15 @@ struct spell_class_expr_t : public spell_list_expr_t
     {
       if ( data_type == DATA_TALENT )
       {
-        if ( ! sim -> dbc.talent( result_spell ) )
+        if ( ! dbc.talent( result_spell ) )
           continue;
 
-        if ( ( sim -> dbc.talent( result_spell ) -> mask_class() & class_mask ) == 0 )
+        if ( ( dbc.talent( result_spell ) -> mask_class() & class_mask ) == 0 )
           res.push_back( result_spell );
       }
       else
       {
-        const spell_data_t* spell = sim -> dbc.spell( result_spell );
+        const spell_data_t* spell = dbc.spell( result_spell );
         if ( ! spell )
           continue;
 
@@ -918,7 +906,7 @@ struct spell_class_expr_t : public spell_list_expr_t
 
 struct spell_race_expr_t : public spell_list_expr_t
 {
-  spell_race_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "race", type ) { }
+  spell_race_expr_t( dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "race", type ) { }
 
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
@@ -937,7 +925,7 @@ struct spell_race_expr_t : public spell_list_expr_t
 
     for ( const auto& result_spell : result_spell_list )
     {
-      const spell_data_t* spell = sim -> dbc.spell( result_spell );
+      const spell_data_t* spell = dbc.spell( result_spell );
 
       if ( ! spell )
         continue;
@@ -966,7 +954,7 @@ struct spell_race_expr_t : public spell_list_expr_t
 
     for ( const auto& result_spell : result_spell_list )
     {
-      const spell_data_t* spell = sim -> dbc.spell( result_spell );
+      const spell_data_t* spell = dbc.spell( result_spell );
       if ( ! spell )
         continue;
 
@@ -980,7 +968,7 @@ struct spell_race_expr_t : public spell_list_expr_t
 
 struct spell_flag_expr_t : public spell_list_expr_t
 {
-  spell_flag_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "flag", type ) { }
+  spell_flag_expr_t( dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "flag", type ) { }
 
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
@@ -996,7 +984,7 @@ struct spell_flag_expr_t : public spell_list_expr_t
 
     for ( const auto& result_spell : result_spell_list )
     {
-      const spell_data_t* spell = sim -> dbc.spell( result_spell );
+      const spell_data_t* spell = dbc.spell( result_spell );
 
       if ( ! spell )
         continue;
@@ -1011,7 +999,7 @@ struct spell_flag_expr_t : public spell_list_expr_t
 
 struct spell_attribute_expr_t : public spell_list_expr_t
 {
-  spell_attribute_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "attribute", type ) { }
+  spell_attribute_expr_t( dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "attribute", type ) { }
 
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
@@ -1032,7 +1020,7 @@ struct spell_attribute_expr_t : public spell_list_expr_t
 
     for ( const auto& result_spell : result_spell_list )
     {
-      const spell_data_t* spell = sim -> dbc.spell( result_spell );
+      const spell_data_t* spell = dbc.spell( result_spell );
 
       if ( ! spell )
         continue;
@@ -1047,7 +1035,7 @@ struct spell_attribute_expr_t : public spell_list_expr_t
 
 struct spell_school_expr_t : public spell_list_expr_t
 {
-  spell_school_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "school", type ) { }
+  spell_school_expr_t(dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "school", type ) { }
 
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
@@ -1062,7 +1050,7 @@ struct spell_school_expr_t : public spell_list_expr_t
 
     for ( const auto& result_spell : result_spell_list )
     {
-      const spell_data_t* spell = sim -> dbc.spell( result_spell );
+      const spell_data_t* spell = dbc.spell( result_spell );
 
       if ( ! spell )
         continue;
@@ -1087,7 +1075,7 @@ struct spell_school_expr_t : public spell_list_expr_t
 
     for ( const auto& result_spell : result_spell_list )
     {
-      const spell_data_t* spell = sim -> dbc.spell( result_spell );
+      const spell_data_t* spell = dbc.spell( result_spell );
 
       if ( ! spell )
         continue;
@@ -1100,7 +1088,7 @@ struct spell_school_expr_t : public spell_list_expr_t
   }
 };
 
-spell_data_expr_t* build_expression_tree( sim_t* sim,
+spell_data_expr_t* build_expression_tree( dbc_t& dbc,
                                           const std::vector<expression::expr_token_t>& tokens )
 {
   auto_dispose< std::vector<spell_data_expr_t*> > stack;
@@ -1108,15 +1096,14 @@ spell_data_expr_t* build_expression_tree( sim_t* sim,
   for ( auto& t : tokens )
   {
     if ( t.type == expression::TOK_NUM )
-      stack.push_back( new spell_data_expr_t( sim, t.label, std::stod( t.label ) ) );
+      stack.push_back( new spell_data_expr_t( dbc, t.label, std::stod( t.label ) ) );
     else if ( t.type == expression::TOK_STR )
     {
-      spell_data_expr_t* e = spell_data_expr_t::create_spell_expression( sim, t.label );
+      spell_data_expr_t* e = spell_data_expr_t::create_spell_expression( dbc, t.label );
 
       if ( ! e )
       {
-        sim -> errorf( "Unable to decode expression function '%s'\n", t.label.c_str() );
-        return nullptr;
+        throw std::invalid_argument(fmt::format("Unable to decode expression function '{}'.", t.label));
       }
       stack.push_back( e );
     }
@@ -1128,7 +1115,7 @@ spell_data_expr_t* build_expression_tree( sim_t* sim,
       spell_data_expr_t* left  = stack.back(); stack.pop_back();
       if ( ! left || ! right )
         return nullptr;
-      stack.push_back( new sd_expr_binary_t( sim, t.label, t.type, left, right ) );
+      stack.push_back( new sd_expr_binary_t( dbc, t.label, t.type, left, right ) );
     }
   }
 
@@ -1142,7 +1129,7 @@ spell_data_expr_t* build_expression_tree( sim_t* sim,
 
 } // anonymous namespace ====================================================
 
-spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const std::string& name_str )
+spell_data_expr_t* spell_data_expr_t::create_spell_expression( dbc_t& dbc, const std::string& name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
@@ -1155,9 +1142,9 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
   {
     // No split, access raw list or create a normal expression
     if ( data_type == ( expr_data_e ) - 1 )
-      return new spell_data_expr_t( sim, name_str, name_str );
+      return new spell_data_expr_t( dbc, name_str, name_str );
     else
-      return new spell_list_expr_t( sim, splits[ 0 ], data_type );
+      return new spell_list_expr_t( dbc, splits[ 0 ], data_type );
   }
 
   if ( data_type == ( expr_data_e ) - 1 )
@@ -1176,15 +1163,15 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
     splits.erase( splits.begin() + 1 );
   }
   else if ( util::str_compare_ci( splits[ 1 ], "class" ) )
-    return new spell_class_expr_t( sim, data_type );
+    return new spell_class_expr_t( dbc, data_type );
   else if ( util::str_compare_ci( splits[ 1 ], "race" ) )
-    return new spell_race_expr_t( sim, data_type );
+    return new spell_race_expr_t( dbc, data_type );
   else if ( util::str_compare_ci( splits[ 1 ], "attribute" ) )
-    return new spell_attribute_expr_t( sim, data_type );
+    return new spell_attribute_expr_t( dbc, data_type );
   else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "flag" ) )
-    return new spell_flag_expr_t( sim, data_type );
+    return new spell_flag_expr_t( dbc, data_type );
   else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "school" ) )
-    return new spell_school_expr_t( sim, data_type );
+    return new spell_school_expr_t( dbc, data_type );
 
   const sdata_field_t* fields;
   size_t fsize;
@@ -1208,7 +1195,7 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
   {
     if ( ! fields[ i ].name.empty() && util::str_compare_ci( splits[ 1 ], fields[ i ].name ) )
     {
-      return new spell_data_filter_expr_t( sim, data_type, fields[ i ].name, effect_query );
+      return new spell_data_filter_expr_t( dbc, data_type, fields[ i ].name, effect_query );
     }
   }
 
@@ -1234,12 +1221,18 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
 
   if ( sim -> debug ) expression::print_tokens( tokens, sim );
 
-  spell_data_expr_t* e = build_expression_tree( sim, tokens );
-
-  if ( ! e )
+  try
   {
-    throw std::invalid_argument(fmt::format("Unable to build expression tree from '{}'.", expr_str ));
-  }
+    spell_data_expr_t* e = build_expression_tree(*sim->dbc, tokens);
+    if (!e)
+    {
+      throw std::invalid_argument(fmt::format("Unable to build expression tree from '{}'.", expr_str));
+    }
 
-  return e;
+    return e;
+  }
+  catch (const std::exception & ex)
+  {
+    std::throw_with_nested(std::invalid_argument(fmt::format("Unable to build expression tree from '{}'.", expr_str)));
+  }
 }

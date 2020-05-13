@@ -4,6 +4,8 @@
 // ==========================================================================
 
 #include "consumable.hpp"
+
+#include "dbc/dbc.hpp"
 #include "sc_enums.hpp"
 #include "sc_player.hpp"
 #include "action/sc_action.hpp"
@@ -339,7 +341,7 @@ struct dbc_consumable_base_t : public action_t
 
     if ( ! disabled_consumable() )
     {
-      item_data = unique_gear::find_consumable( player -> dbc, consumable_name, type );
+      item_data = unique_gear::find_consumable( *player -> dbc, consumable_name, type );
 
       try
       {

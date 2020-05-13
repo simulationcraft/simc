@@ -8,7 +8,6 @@
 #include "config.hpp"
 #include "actor.hpp"
 #include "sc_enums.hpp"
-#include "dbc/dbc.hpp"
 #include "player_talent_points.hpp"
 #include "player_resources.hpp"
 #include "gear_stats.hpp"
@@ -21,6 +20,7 @@
 #include "player_stat_cache.hpp"
 #include "scaling_metric_data.hpp"
 #include "util/cache.hpp"
+#include "util/io.hpp"
 #include "assessor.hpp"
 #include <map>
 #include <set>
@@ -36,7 +36,9 @@ struct actor_target_data_t;
 struct attack_t;
 class azerite_essence_t;
 class azerite_power_t;
+class dbc_t;
 struct benefit_t;
+struct item_t;
 struct buff_t;
 struct cooldown_t;
 struct dot_t;
@@ -55,6 +57,7 @@ struct real_ppm_t;
 struct set_bonus_t;
 class shuffled_rng_t;
 struct special_effect_t;
+struct spelleffect_data_t;
 struct stat_buff_t;
 struct stats_t;
 struct uptime_t;
@@ -68,10 +71,37 @@ namespace azerite {
 namespace rng {
     struct rng_t;
 }
+namespace report {
+  using sc_html_stream = io::ofstream;
+}
 namespace js {
     struct JsonOutput;
 }
 
+/* Player Report Extension
+ * Allows class modules to write extension to the report sections based on the dynamic class of the player.
+ *
+ * To add sort functionaliy to custom tables:
+ *  1) add the 'sort' class to the table: <table="sc sort">
+ *    a) optionally add 'even' or 'odd' to automatically stripe the table: <table="sc sort even">
+ *  2) wrap <thead> around all header rows: <thead><tr><th> ... </th></tr></thead>
+ *  3) add the 'toggle-sort' class to each header to be sorted: <th class="toggle-sort"> ... </th>
+ *    a) default sort behavior is descending numerical sort
+ *    b) add 'data-sortdir="asc" to sort ascending: <th class="toggle-sort" data-sortdir="asc"> ... </th>
+ *    c) add 'data-sorttype="alpha" to sort alphabetically
+ */
+struct player_report_extension_t
+{
+public:
+  virtual ~player_report_extension_t()
+  {
+
+  }
+  virtual void html_customsection(report::sc_html_stream&)
+  {
+
+  }
+};
 
 struct player_t : public actor_t
 {
@@ -135,7 +165,7 @@ struct player_t : public actor_t
   timespan_t  cooldown_tolerance_;
 
   // Data access
-  dbc_t       dbc;
+  std::unique_ptr<dbc_t> dbc;
 
   // Option Parsing
   std::vector<std::unique_ptr<option_t>> options;
@@ -670,8 +700,7 @@ public:
   { return get_attribute( ATTR_INTELLECT ); }
   double spirit() const
   { return get_attribute( ATTR_SPIRIT ); }
-  double mastery_coefficient() const
-  { return _mastery -> mastery_value(); }
+  double mastery_coefficient() const;
   double get_player_distance( const player_t& ) const;
   double get_ground_aoe_distance( const action_state_t& ) const;
   double get_position_distance( double m = 0, double v = 0 ) const;
@@ -723,7 +752,8 @@ public:
   int find_action_id( const std::string& name ) const;
 
   cooldown_t* get_cooldown( const std::string& name, action_t* action = nullptr );
-  real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
+  real_ppm_t* get_rppm(const std::string& name);
+  real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data, const item_t* item = nullptr );
   real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
   shuffled_rng_t* get_shuffled_rng(const std::string& name, int success_entries = 0, int total_entries = 0);
   dot_t*      get_dot     ( const std::string& name, player_t* source );

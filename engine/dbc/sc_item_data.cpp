@@ -5,205 +5,47 @@
 
 #include "simulationcraft.hpp"
 
+#include "dbc/client_data.hpp"
 #include "dbc/item_effect.hpp"
 #include "dbc/spell_item_enchantment.hpp"
-
-#include "generated/sc_item_data2.inc"
-#if SC_USE_PTR
-#include "generated/sc_item_data_ptr2.inc"
-#endif
+#include "dbc/item_bonus.hpp"
+#include "dbc/item_data.hpp"
 
 namespace {
   template <item_subclass_consumable CLASS>
   struct consumable_filter_t
   {
-    bool operator()(const item_data_t* obj) const
-    { return obj -> item_class == ITEM_CLASS_CONSUMABLE && obj -> item_subclass == CLASS; }
+    bool operator()(const item_data_t& obj) const
+    { return obj.item_class == ITEM_CLASS_CONSUMABLE && obj.item_subclass == CLASS; }
   };
 
   struct gem_filter_t
   {
     // No "other" gems, nor relicn
-    bool operator()( const item_data_t* obj ) const
-    { return obj->item_class == ITEM_CLASS_GEM && obj->item_subclass != 9 && obj->item_subclass != 11; }
+    bool operator()( const item_data_t& obj ) const
+    { return obj.item_class == ITEM_CLASS_GEM && obj.item_subclass != 9 && obj.item_subclass != 11; }
   };
 
   // Potions need their own filter unfortunately, because some potions are of sub class 8 (other)
   struct potion_filter_t
   {
-    bool operator()( const item_data_t* obj ) const
+    bool operator()( const item_data_t& obj ) const
     {
-      return obj->item_class == ITEM_CLASS_CONSUMABLE &&
-             ( obj->item_subclass == ITEM_SUBCLASS_POTION ||
-               obj->item_subclass == ITEM_SUBCLASS_CONSUMABLE_OTHER );
+      return obj.item_class == ITEM_CLASS_CONSUMABLE &&
+             ( obj.item_subclass == ITEM_SUBCLASS_POTION ||
+               obj.item_subclass == ITEM_SUBCLASS_CONSUMABLE_OTHER );
     }
   };
 
-  item_data_t nil_item_data;
-  dbc_index_t<item_data_t, id_member_policy> item_data_index;
-
-  typedef filtered_dbc_index_t<item_data_t, potion_filter_t, id_member_policy> potion_data_t;
-  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FLASK>, id_member_policy> flask_data_t;
-  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FOOD>, id_member_policy> food_data_t;
+  typedef dbc::filtered_dbc_index_t<item_data_t, potion_filter_t, dbc::id_member_policy_t> potion_data_t;
+  typedef dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FLASK>, dbc::id_member_policy_t> flask_data_t;
+  typedef dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FOOD>, dbc::id_member_policy_t> food_data_t;
 
   potion_data_t potion_data_index;
   flask_data_t flask_data_index;
   food_data_t food_data_index;
 
-  filtered_dbc_index_t<item_data_t, gem_filter_t, id_member_policy> gem_index;
-}
-
-const item_name_description_t* dbc::item_name_descriptions( bool ptr )
-{
-  const item_name_description_t* p = __item_name_description_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_item_name_description_data;
-#else
-  (void)ptr;
-#endif
-
-  return p;
-}
-
-std::size_t dbc::n_item_name_descriptions( bool ptr )
-{
-#if SC_USE_PTR
-  if ( ptr )
-  {
-    return PTR_ITEM_NAME_DESCRIPTION_SIZE;
-  }
-  else
-  {
-    return ITEM_NAME_DESCRIPTION_SIZE;
-  }
-#else
-  (void)ptr;
-  return ITEM_NAME_DESCRIPTION_SIZE;
-#endif
-}
-
-const item_bonus_entry_t* dbc::item_bonus_entries( bool ptr )
-{
-  const item_bonus_entry_t* p = __item_bonus_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_item_bonus_data;
-#else
-  (void)ptr;
-#endif
-
-  return p;
-}
-
-std::size_t dbc::n_item_bonuses( bool ptr )
-{
-#if SC_USE_PTR
-  if ( ptr )
-  {
-    return PTR_ITEM_BONUS_SIZE;
-  }
-  else
-  {
-    return ITEM_BONUS_SIZE;
-  }
-#else
-  (void)ptr;
-  return ITEM_BONUS_SIZE;
-#endif
-}
-
-const char* dbc::item_name_description( unsigned id, bool ptr )
-{
-  const item_name_description_t* p = __item_name_description_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_item_name_description_data;
-#else
-  ( void ) ptr;
-#endif
-
-  while ( p -> id != 0 )
-  {
-    if ( p -> id == id )
-    {
-      return p -> description;
-    }
-
-    p++;
-  }
-
-  return nullptr;
-}
-
-std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) const
-{
-#if SC_USE_PTR
-  const item_bonus_entry_t* p = ptr ? __ptr_item_bonus_data : __item_bonus_data;
-#else
-  const item_bonus_entry_t* p = __item_bonus_data;
-#endif
-
-  std::vector<const item_bonus_entry_t*> entries;
-
-  while ( p -> id != 0 )
-  {
-    if ( p -> bonus_id == bonus_id )
-      entries.push_back(p);
-    p++;
-  }
-
-  return entries;
-}
-
-const item_data_t* dbc_t::item( unsigned item_id ) const
-{ return item_data_index.get( ptr, item_id ); }
-
-const item_data_t* dbc::items( bool ptr )
-{
-  ( void )ptr;
-
-  const item_data_t* p = __items_noptr();
-#if SC_USE_PTR
-  if ( ptr )
-    p = __items_ptr();
-#endif
-  return p;
-}
-
-size_t dbc::n_items( bool ptr )
-{
-  ( void )ptr;
-
-  size_t n = n_items_noptr();
-#if SC_USE_PTR
-  if ( ptr )
-    n = n_items_ptr();
-#endif
-
-  return n;
-}
-
-item_bonus_tree_entry_t& dbc_t::resolve_item_bonus_tree_data( unsigned level ) const
-{
-    assert(level > 0 && level <= MAX_LEVEL);
-#if SC_USE_PTR
-    return ptr ? __ptr_item_bonus_tree_data[level - 1]
-               : __item_bonus_tree_data[level - 1];
-#else
-    return __item_bonus_tree_data[level - 1];
-#endif
-}
-
-item_bonus_node_entry_t& dbc_t::resolve_item_bonus_map_data( unsigned level ) const
-{
-    assert(level > 0 && level <= MAX_LEVEL);
-#if SC_USE_PTR
-    return ptr ? __ptr_item_bonus_map_data[level - 1] :
-                 __item_bonus_map_data[level - 1];
-#else
-    return __item_bonus_map_data[level - 1];
-#endif
+  dbc::filtered_dbc_index_t<item_data_t, gem_filter_t, dbc::id_member_policy_t> gem_index;
 }
 
 /* Initialize item database
@@ -211,69 +53,36 @@ item_bonus_node_entry_t& dbc_t::resolve_item_bonus_map_data( unsigned level ) co
 void dbc::init_item_data()
 {
   // Create id-indexes
-  item_data_index.init( __items_noptr(), false );
-  potion_data_index.init( __items_noptr(), false );
-  flask_data_index.init( __items_noptr(), false );
-  food_data_index.init( __items_noptr(), false );
-  gem_index.init( __items_noptr(), false );
+  potion_data_index.init( item_data_t::data( false ), false );
+  flask_data_index.init( item_data_t::data( false ), false );
+  food_data_index.init( item_data_t::data( false ), false );
+  gem_index.init( item_data_t::data( false ), false );
 #if SC_USE_PTR
-  item_data_index.init( __items_ptr(), true );
-  potion_data_index.init( __items_ptr(), true );
-  flask_data_index.init( __items_ptr(), true );
-  food_data_index.init( __items_ptr(), true );
-  gem_index.init( __items_ptr(), true );
+  potion_data_index.init( item_data_t::data( true ), true );
+  flask_data_index.init( item_data_t::data( true ), true );
+  food_data_index.init( item_data_t::data( true ), true );
+  gem_index.init( item_data_t::data( true ), true );
 #endif
 }
 
-const scaling_stat_distribution_t* dbc_t::scaling_stat_distribution( unsigned id )
+std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsigned curve_id, double value ) const
 {
-#if SC_USE_PTR
-  const scaling_stat_distribution_t* table = ptr ? &__ptr_scaling_stat_distribution_data[ 0 ]
-                                                 : &__scaling_stat_distribution_data[ 0 ];
-#else
-  const scaling_stat_distribution_t* table = &__scaling_stat_distribution_data[ 0 ];
-#endif
-
-  while ( table -> id != 0 )
-  {
-    if ( table -> id == id )
-      return table;
-    table++;
-  }
-
-  return nullptr;
-}
-
-std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsigned curve_id, double value )
-{
-#if SC_USE_PTR
-  const curve_point_t* table = ptr ? &__ptr_curve_point_data[ 0 ]
-                                   : &__curve_point_data[ 0 ];
-#else
-  const curve_point_t* table = &__curve_point_data[ 0 ];
-#endif
+  auto data = curve_point_t::find( curve_id, ptr );
 
   const curve_point_t* lower_bound = nullptr, * upper_bound = nullptr;
-  while ( table -> curve_id != 0 )
+  for ( const auto& point : data )
   {
-    if ( table -> curve_id != curve_id )
+    assert( point.curve_id == curve_id );
+    if ( point.val1 <= value )
     {
-      table++;
-      continue;
+      lower_bound = &( point );
     }
 
-    if ( table -> val1 <= value )
+    if ( point.val1 >= value )
     {
-      lower_bound = table;
-    }
-
-    if ( table -> val1 >= value )
-    {
-      upper_bound = table;
+      upper_bound = &( point );
       break;
     }
-
-    table++;
   }
 
   if ( lower_bound == nullptr )
@@ -286,15 +95,8 @@ std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsign
     upper_bound = lower_bound;
   }
 
-  return std::pair<const curve_point_t*, const curve_point_t*>( lower_bound, upper_bound );
-}
-
-item_data_t* item_data_t::find( unsigned id, bool ptr )
-{
-  item_data_t* i = item_data_index.get( ptr, id );
-  if ( ! i )
-    return &nil_item_data;
-  return i;
+  return std::pair<const curve_point_t*, const curve_point_t*>(
+      lower_bound, upper_bound );
 }
 
 double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value )
@@ -343,9 +145,9 @@ void item_database::apply_item_scaling( item_t& item, unsigned scaling_id, unsig
     return;
   }
 
-  const scaling_stat_distribution_t* data = item.player -> dbc.scaling_stat_distribution( scaling_id );
+  const auto& data = item.player->dbc->scaling_stat_distribution( scaling_id );
   // Unable to find the scaling stat distribution
-  if ( data == nullptr )
+  if ( data.id == 0 )
   {
     throw std::invalid_argument(fmt::format("Unable to find scaling information for {} scaling id {}.",
         item.name(), item.parsed.data.id_scaling_distribution));
@@ -353,14 +155,14 @@ void item_database::apply_item_scaling( item_t& item, unsigned scaling_id, unsig
 
   // Player level lower than item minimum scaling level, shouldnt happen but let item init go
   // through
-  if ( player_level < data -> min_level )
+  if ( player_level < data.min_level )
   {
     return;
   }
 
-  unsigned base_value = std::min( player_level, data -> max_level );
+  unsigned base_value = std::min( player_level, data.max_level );
 
-  double scaled_result = curve_point_value( item.player -> dbc, data -> curve_id, base_value );
+  double scaled_result = curve_point_value( *item.player->dbc, data.curve_id, base_value );
 
   if ( item.sim -> debug )
   {
@@ -508,7 +310,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       break;
     case ITEM_BONUS_ADD_ITEM_EFFECT:
     {
-      auto effect = item_effect_t::find( entry.value_1, item.player->dbc.ptr );
+      auto effect = item_effect_t::find( entry.value_1, item.player->dbc->ptr );
       if ( effect.id == 0 )
       {
         item.player->sim->error( "Player {} item '{}' unknown item effect id {}, ignoring",
@@ -611,7 +413,7 @@ stat_pair_t item_database::item_enchantment_effect_stats( player_t* player,
       if ( static_cast< unsigned >( level ) > enchantment.max_scaling_level )
         level = enchantment.max_scaling_level;
 
-      double budget = player -> dbc.spell_scaling( static_cast< player_e >( enchantment.id_scaling ), level );
+      double budget = player -> dbc->spell_scaling( static_cast< player_e >( enchantment.id_scaling ), level );
       value = util::round( budget * enchantment.ench_coeff[ index ] );
     }
   }
@@ -678,7 +480,7 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
   //if ( item.level == ( int ) new_ilevel )
   //  return item.stat_val[ idx ];
 
-  int slot_type = random_suffix_type( &item.parsed.data );
+  int slot_type = random_suffix_type( item.parsed.data );
   double item_budget = 0/*, orig_budget = 0*/;
 
   if ( slot_type != -1 && item.parsed.data.quality > 0 )
@@ -773,12 +575,12 @@ bool item_database::initialize_item_sources( item_t& item, std::vector<std::stri
 
 // item_database_t::random_suffix_type ======================================
 
-int item_database::random_suffix_type( const item_data_t* item )
+int item_database::random_suffix_type( const item_data_t& item )
 {
-  switch ( item -> item_class )
+  switch ( item.item_class )
   {
     case ITEM_CLASS_WEAPON:
-      switch ( item -> item_subclass )
+      switch ( item.item_subclass )
       {
         case ITEM_SUBCLASS_WEAPON_AXE2:
         case ITEM_SUBCLASS_WEAPON_MACE2:
@@ -794,7 +596,7 @@ int item_database::random_suffix_type( const item_data_t* item )
           return 3;
       }
     case ITEM_CLASS_ARMOR:
-      switch ( item -> inventory_type )
+      switch ( item.inventory_type )
       {
         case INVTYPE_HEAD:
         case INVTYPE_CHEST:
@@ -886,24 +688,24 @@ int item_database::random_suffix_type( item_t& item )
   }
 }
 
-uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, unsigned item_level )
+uint32_t item_database::armor_value( const item_data_t& item, const dbc_t& dbc, unsigned item_level )
 {
-  if ( ! item || item -> quality > 5 )
+  if ( item.id == 0 || item.quality > 5 )
     return 0;
 
-  unsigned ilevel = item_level ? item_level : item -> level;
+  unsigned ilevel = item_level ? item_level : item.level;
 
   // Shield have separate armor table, bypass normal calculation
-  if ( item -> item_class == ITEM_CLASS_ARMOR && item -> item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
-    return ( uint32_t ) floor( dbc.item_armor_shield( ilevel ).value( item -> quality ) + 0.5 );
+  if ( item.item_class == ITEM_CLASS_ARMOR && item.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
+    return ( uint32_t ) floor( dbc.item_armor_shield( ilevel ).value( item.quality ) + 0.5 );
 
   // Only Cloth, Leather, Mail and Plate armor has innate armor values
-  if ( item -> item_subclass == ITEM_SUBCLASS_ARMOR_MISC || item -> item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
+  if ( item.item_subclass == ITEM_SUBCLASS_ARMOR_MISC || item.item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
     return 0;
 
   double m_invtype = 0, m_quality = 0, total_armor = 0;
 
-  switch ( item -> inventory_type )
+  switch ( item.inventory_type )
   {
     case INVTYPE_HEAD:
     case INVTYPE_SHOULDERS:
@@ -916,11 +718,11 @@ uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, 
     case INVTYPE_CLOAK:
     case INVTYPE_ROBE:
     {
-      total_armor = dbc.item_armor_total( ilevel ).value( item->item_subclass - 1 );
-      m_quality   = dbc.item_armor_quality( ilevel ).value( item->quality );
-      unsigned invtype = item -> inventory_type;
+      total_armor = dbc.item_armor_total( ilevel ).value( item.item_subclass - 1 );
+      m_quality   = dbc.item_armor_quality( ilevel ).value( item.quality );
+      unsigned invtype = item.inventory_type;
       if ( invtype == INVTYPE_ROBE ) invtype = INVTYPE_CHEST;
-      m_invtype = dbc.item_armor_inv_type( invtype ).value( item->item_subclass - 1 );
+      m_invtype = dbc.item_armor_inv_type( invtype ).value( item.item_subclass - 1 );
       break;
     }
     default: return 0;
@@ -933,32 +735,32 @@ uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, 
 
 uint32_t item_database::armor_value( const item_t& item )
 {
-  return armor_value( &item.parsed.data, item.player -> dbc, item.item_level() );
+  return armor_value( item.parsed.data, *item.player->dbc, item.item_level() );
 }
 
 // item_database_t::weapon_dmg_min/max ======================================
 
 uint32_t item_database::weapon_dmg_min( item_t& item )
 {
-  return ( uint32_t ) floor( item.player -> dbc.weapon_dps( &item.parsed.data, item.item_level() ) *
+  return ( uint32_t ) floor( item.player->dbc->weapon_dps( item.parsed.data, item.item_level() ) *
                              item.parsed.data.delay / 1000.0 * ( 1 - item.parsed.data.dmg_range / 2 ) );
 }
 
-uint32_t item_database::weapon_dmg_min( const item_data_t* item, const dbc_t& dbc, unsigned item_level )
+uint32_t item_database::weapon_dmg_min( const item_data_t& item, const dbc_t& dbc, unsigned item_level )
 {
-  return ( uint32_t ) floor( dbc.weapon_dps( item, item_level ) * item -> delay / 1000.0 *
-                             ( 1 - item -> dmg_range / 2 ) );
+  return ( uint32_t ) floor( dbc.weapon_dps( item, item_level ) * item.delay / 1000.0 *
+                             ( 1 - item.dmg_range / 2 ) );
 }
 
-uint32_t item_database::weapon_dmg_max( const item_data_t* item, const dbc_t& dbc, unsigned item_level )
+uint32_t item_database::weapon_dmg_max( const item_data_t& item, const dbc_t& dbc, unsigned item_level )
 {
-  return ( uint32_t ) ceil( dbc.weapon_dps( item, item_level ) * item -> delay / 1000.0 *
-                            ( 1 + item -> dmg_range / 2 ) + 0.5 );
+  return ( uint32_t ) ceil( dbc.weapon_dps( item, item_level ) * item.delay / 1000.0 *
+                            ( 1 + item.dmg_range / 2 ) + 0.5 );
 }
 
 uint32_t item_database::weapon_dmg_max( item_t& item )
 {
-  return ( uint32_t ) ceil( item.player -> dbc.weapon_dps( &item.parsed.data, item.item_level() ) *
+  return ( uint32_t ) ceil( item.player->dbc->weapon_dps( item.parsed.data, item.item_level() ) *
                             item.parsed.data.delay / 1000.0 * ( 1 + item.parsed.data.dmg_range / 2 ) + 0.5 );
 }
 
@@ -969,7 +771,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
 {
   if ( enchant_id == 0 ) return true;
 
-  const item_enchantment_data_t& item_enchant = item.player -> dbc.item_enchantment( enchant_id );
+  const item_enchantment_data_t& item_enchant = item.player -> dbc->item_enchantment( enchant_id );
   if ( ! item_enchant.id )
   {
     item.player -> sim -> errorf( "Unable to find enchant id %u from item enchantment database", enchant_id );
@@ -1063,11 +865,11 @@ bool item_database::parse_item_spell_enchant( item_t& item,
 bool item_database::load_item_from_data( item_t& item )
 {
   // Simple copying of basic stats from item database (dbc) to the item object
-  const item_data_t* data = item.player -> dbc.item( item.parsed.data.id );
-  if ( ! data || ! data -> id ) return false;
+  const auto& data = item.player->dbc->item( item.parsed.data.id );
+  if ( data.id == 0 ) return false;
 
-  item.parsed.data = *data;
-  item.name_str = data -> name;
+  item.parsed.data = data;
+  item.name_str = data.name;
   item.parsed.data.name = item.name_str.c_str();
 
   util::tokenize( item.name_str );
@@ -1077,14 +879,14 @@ bool item_database::load_item_from_data( item_t& item )
   {
     if ( item.parsed.azerite_level > 0 )
     {
-      item.parsed.data.level = item.player->dbc.azerite_item_level( item.parsed.azerite_level );
+      item.parsed.data.level = item.player->dbc->azerite_item_level( item.parsed.azerite_level );
     }
   }
 
   // Apply any azerite powers that apply bonus ids
   for ( auto power_id : item.parsed.azerite_ids )
   {
-    const auto& power = item.player->dbc.azerite_power( power_id );
+    const auto& power = item.player->dbc->azerite_power( power_id );
     if ( power.id == 0 || power.bonus_id == 0 )
     {
       continue;
@@ -1101,11 +903,11 @@ bool item_database::load_item_from_data( item_t& item )
   // something similar
   for ( size_t i = 0, end = item.parsed.bonus_id.size(); i < end; i++ )
   {
-    auto item_bonuses = item.player -> dbc.item_bonus( item.parsed.bonus_id[ i ] );
+    auto item_bonuses = item.player->dbc->item_bonus( item.parsed.bonus_id[ i ] );
     // Apply bonuses
     for ( const auto bonus : item_bonuses )
     {
-      if ( ! apply_item_bonus( item, *bonus ) )
+      if ( !apply_item_bonus( item, bonus ) )
         return false;
     }
   }
@@ -1132,7 +934,7 @@ double item_database::item_budget( const player_t* player, unsigned ilevel )
     return 0.0;
   }
 
-  const random_prop_data_t& budget = player -> dbc.random_property( ilevel );
+  const random_prop_data_t& budget = player -> dbc->random_property( ilevel );
 
   // Since we don't know the quality of the "item", just return the uncommon item budget. The
   // budgets have been the same for all qualities for a long while, but this function will break if
@@ -1148,7 +950,7 @@ double item_database::item_budget( const item_t* item, unsigned max_ilevel )
   if ( max_ilevel > 0 )
     scaling_level = std::min( scaling_level, max_ilevel );
 
-  const random_prop_data_t& budget = item -> player -> dbc.random_property( scaling_level );
+  const random_prop_data_t& budget = item -> player -> dbc->random_property( scaling_level );
 
   if ( item -> parsed.data.quality >= 4 )
     m_scale = budget.p_epic[ 0 ];
@@ -1193,9 +995,9 @@ std::vector<item_database::token_t> item_database::parse_tokens( const std::stri
   return tokens;
 }
 
-const item_data_t* dbc::find_gem( const std::string& gem, bool ptr, bool tokenized )
+const item_data_t& dbc::find_gem( const std::string& gem, bool ptr, bool tokenized )
 {
-  const item_data_t* i = gem_index.get( ptr, [&gem, tokenized]( const item_data_t* obj ) {
+  return gem_index.get( ptr, [&gem, tokenized]( const item_data_t* obj ) {
       if ( tokenized )
       {
         std::string n = obj->name;
@@ -1207,163 +1009,157 @@ const item_data_t* dbc::find_gem( const std::string& gem, bool ptr, bool tokeniz
         return gem == obj->name;
       }
   } );
-
-  return i ? i : &( nil_item_data );
 }
 
-const item_data_t* dbc::find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& f )
+const item_data_t& dbc::find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& f )
 {
-  const item_data_t* i = nullptr;
   switch ( type )
   {
     case ITEM_SUBCLASS_POTION:
-      i = potion_data_index.get( ptr, f );
-      break;
+      return potion_data_index.get( ptr, f );
     case ITEM_SUBCLASS_FLASK:
-      i = flask_data_index.get( ptr, f );
-      break;
+      return flask_data_index.get( ptr, f );
     case ITEM_SUBCLASS_FOOD:
-      i = food_data_index.get( ptr, f );
-      break;
+      return food_data_index.get( ptr, f );
     default:
-      break;
+      return item_data_t::nil();
   }
-
-  return i ? i : &( nil_item_data );
 }
 
-static std::string get_bonus_id_desc( bool ptr, const std::vector<const item_bonus_entry_t*>& entries )
+static std::string get_bonus_id_desc( const dbc_t& dbc, util::span<const item_bonus_entry_t> entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_DESC )
+    if ( entries[ i ].type == ITEM_BONUS_DESC )
     {
-      return dbc::item_name_description( entries[ i ] -> value_1, ptr );
+      return dbc.item_description( entries[ i ].value_1 ).description;
     }
   }
 
   return std::string();
 }
 
-static std::string get_bonus_id_suffix( bool ptr, const std::vector<const item_bonus_entry_t*>& entries )
+static std::string get_bonus_id_suffix( const dbc_t& dbc, util::span<const item_bonus_entry_t> entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_SUFFIX )
+    if ( entries[ i ].type == ITEM_BONUS_SUFFIX )
     {
-      return dbc::item_name_description( entries[ i ] -> value_1, ptr );
+      return dbc.item_description( entries[ i ].value_1 ).description;
     }
   }
 
   return std::string();
 }
 
-static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_scaling( dbc_t& dbc, const std::vector<const item_bonus_entry_t*>& entries )
+static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_scaling( const dbc_t& dbc, util::span<const item_bonus_entry_t> entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> value_1 == 0 )
+    if ( entries[ i ].value_1 == 0 )
     {
       continue;
     }
 
-    if ( entries[ i ] -> type == ITEM_BONUS_SCALING || entries[ i ] -> type == ITEM_BONUS_SCALING_2 )
+    if ( entries[ i ].type == ITEM_BONUS_SCALING || entries[ i ].type == ITEM_BONUS_SCALING_2 )
     {
-      const scaling_stat_distribution_t* data = dbc.scaling_stat_distribution( entries[ i ] -> value_1 );
-      assert( data );
-      std::pair<const curve_point_t*, const curve_point_t*> curve_data_min = dbc.curve_point( data -> curve_id, data -> min_level );
-      std::pair<const curve_point_t*, const curve_point_t*> curve_data_max = dbc.curve_point( data -> curve_id, data -> max_level );
+      const auto& data = dbc.scaling_stat_distribution( entries[ i ].value_1 );
+      assert( data.id );
+      auto curve_data_min = dbc.curve_point( data.curve_id, data.min_level );
+      auto curve_data_max = dbc.curve_point( data.curve_id, data.max_level );
       assert(curve_data_min.first);
       assert(curve_data_max.first);
 
-      return std::pair<std::pair<int, double>, std::pair<int, double> >(
-          std::pair<int, double>( data -> min_level, curve_data_min.first -> val2 ),
-          std::pair<int, double>( data -> max_level, curve_data_max.first -> val2 ) );
+      return std::pair<std::pair<int, double>, std::pair<int, double>>(
+          std::pair<int, double>( data.min_level, curve_data_min.first->val2 ),
+          std::pair<int, double>( data.max_level, curve_data_max.first->val2 ) );
     }
   }
 
-  return std::pair<std::pair<int, double>, std::pair<int, double> >( std::pair<int, double>( -1, 0 ), std::pair<int, double>( -1, 0 ) );
+  return std::pair<std::pair<int, double>, std::pair<int, double> >(
+      std::pair<int, double>( -1, 0 ),
+      std::pair<int, double>( -1, 0 ) );
 }
 
-static int get_bonus_id_ilevel( const std::vector<const item_bonus_entry_t*>& entries )
+static int get_bonus_id_ilevel( util::span<const item_bonus_entry_t> entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_ILEVEL )
+    if ( entries[ i ].type == ITEM_BONUS_ILEVEL )
     {
-      return entries[ i ] -> value_1;
+      return entries[ i ].value_1;
     }
   }
 
   return 0;
 }
 
-static int get_bonus_id_base_ilevel( const std::vector<const item_bonus_entry_t*>& entries )
+static int get_bonus_id_base_ilevel( util::span<const item_bonus_entry_t> entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_SET_ILEVEL )
+    if ( entries[ i ].type == ITEM_BONUS_SET_ILEVEL )
     {
-      return entries[ i ] -> value_1;
+      return entries[ i ].value_1;
     }
   }
 
   return 0;
 }
 
-static std::string get_bonus_id_quality( const std::vector<const item_bonus_entry_t*>& entries )
+static std::string get_bonus_id_quality( util::span<const item_bonus_entry_t> entries )
 {
   for ( auto& entry : entries )
   {
-    if ( entry -> type == ITEM_BONUS_QUALITY )
+    if ( entry.type == ITEM_BONUS_QUALITY )
     {
-      return util::item_quality_string( entry -> value_1 );
+      return util::item_quality_string( entry.value_1 );
     }
   }
 
   return "";
 }
 
-static int get_bonus_id_sockets( const std::vector<const item_bonus_entry_t*>& entries )
+static int get_bonus_id_sockets( util::span<const item_bonus_entry_t> entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_SOCKET )
+    if ( entries[ i ].type == ITEM_BONUS_SOCKET )
     {
-      return entries[ i ] -> value_1;
+      return entries[ i ].value_1;
     }
   }
 
   return 0;
 }
 
-static int get_bonus_power_index( const std::vector<const item_bonus_entry_t*>& entries )
+static int get_bonus_power_index( util::span<const item_bonus_entry_t> entries )
 {
-  auto it = range::find_if( entries, []( const item_bonus_entry_t* entry ) {
-    return entry -> type == ITEM_BONUS_ADD_RANK;
+  auto it = range::find_if( entries, []( const item_bonus_entry_t& entry ) {
+    return entry.type == ITEM_BONUS_ADD_RANK;
   } );
 
   if ( it != entries.end() )
   {
-    return ( *it ) -> value_1;
+    return ( *it ).value_1;
   }
 
   return -1;
 }
 
-static std::string get_bonus_item_effect( const std::vector<const item_bonus_entry_t*>& entries, const dbc_t& dbc )
+static std::string get_bonus_item_effect( util::span<const item_bonus_entry_t> entries, const dbc_t& dbc )
 {
   std::vector<std::string> entries_str;
 
-  range::for_each( entries, [&entries_str, &dbc]( const item_bonus_entry_t* entry ) {
-    if ( entry->type != ITEM_BONUS_ADD_ITEM_EFFECT )
+  range::for_each( entries, [&entries_str, &dbc]( const item_bonus_entry_t& entry ) {
+    if ( entry.type != ITEM_BONUS_ADD_ITEM_EFFECT )
     {
       return;
     }
-    auto effect = item_effect_t::find( entry->value_1, dbc.ptr );
+    auto effect = item_effect_t::find( entry.value_1, dbc.ptr );
     if ( effect.id == 0 )
     {
-      entries_str.emplace_back( fmt::format( "Unknown Effect (id={})", entry->value_1 ) );
+      entries_str.emplace_back( fmt::format( "Unknown Effect (id={})", entry.value_1 ) );
     }
     else
     {
@@ -1400,38 +1196,38 @@ static std::string get_bonus_item_effect( const std::vector<const item_bonus_ent
 }
 
 static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_stats(
-    const std::vector<const item_bonus_entry_t*>& entries )
+    util::span<const item_bonus_entry_t> entries )
 {
   double total = 0;
 
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_MOD )
+    if ( entries[ i ].type == ITEM_BONUS_MOD )
     {
-      total += static_cast<double>( entries[ i ] -> value_2 );
+      total += static_cast<double>( entries[ i ].value_2 );
     }
   }
 
   std::vector<std::tuple<item_mod_type, double, double> > data;
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ] -> type == ITEM_BONUS_MOD )
+    if ( entries[ i ].type == ITEM_BONUS_MOD )
     {
-      if ( entries[ i ]->value_1 != ITEM_MOD_CORRUPTION &&
-           entries[ i ]->value_1 != ITEM_MOD_CORRUPTION_RESISTANCE )
+      if ( entries[ i ].value_1 != ITEM_MOD_CORRUPTION &&
+           entries[ i ].value_1 != ITEM_MOD_CORRUPTION_RESISTANCE )
       {
         data.emplace_back(
-              static_cast<item_mod_type>( entries[ i ] -> value_1 ),
-              entries[ i ] -> value_2 / total,
-              entries[ i ] -> value_2 / 10000.0
+              static_cast<item_mod_type>( entries[ i ].value_1 ),
+              entries[ i ].value_2 / total,
+              entries[ i ].value_2 / 10000.0
         );
       }
       else
       {
         data.emplace_back(
-              static_cast<item_mod_type>( entries[ i ] -> value_1 ),
-              entries[ i ] -> value_2 / total,
-              entries[ i ] -> value_2
+              static_cast<item_mod_type>( entries[ i ].value_1 ),
+              entries[ i ].value_2 / total,
+              entries[ i ].value_2
         );
       }
     }
@@ -1440,47 +1236,41 @@ static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_s
   return data;
 }
 
-std::string dbc::bonus_ids_str( dbc_t& dbc)
+std::string dbc::bonus_ids_str( const dbc_t& dbc )
 {
   std::vector<unsigned> bonus_ids;
   std::stringstream s;
 
-  const item_bonus_entry_t* e = dbc::item_bonus_entries( dbc.ptr );
-  while ( e -> id != 0 )
+  for ( const auto& e : item_bonus_entry_t::data( dbc.ptr ) )
   {
-    if ( std::find( bonus_ids.begin(), bonus_ids.end(), e -> bonus_id ) != bonus_ids.end() )
+    if ( std::find( bonus_ids.begin(), bonus_ids.end(), e.bonus_id ) != bonus_ids.end() )
     {
-      e++;
       continue;
     }
 
     // Need at least one "relevant" type for us
-    if ( e -> type != ITEM_BONUS_ILEVEL && e -> type != ITEM_BONUS_MOD &&
-         e -> type != ITEM_BONUS_SOCKET && e -> type != ITEM_BONUS_SCALING &&
-         e -> type != ITEM_BONUS_SCALING_2 && e -> type != ITEM_BONUS_SET_ILEVEL &&
-         e -> type != ITEM_BONUS_ADD_RANK && e -> type != ITEM_BONUS_QUALITY &&
-         e -> type != ITEM_BONUS_ADD_ITEM_EFFECT )
+    if ( e.type != ITEM_BONUS_ILEVEL && e.type != ITEM_BONUS_MOD &&
+         e.type != ITEM_BONUS_SOCKET && e.type != ITEM_BONUS_SCALING &&
+         e.type != ITEM_BONUS_SCALING_2 && e.type != ITEM_BONUS_SET_ILEVEL &&
+         e.type != ITEM_BONUS_ADD_RANK && e.type != ITEM_BONUS_QUALITY &&
+         e.type != ITEM_BONUS_ADD_ITEM_EFFECT )
     {
-      e++;
       continue;
     }
 
-    if ( e -> type == ITEM_BONUS_ILEVEL && e -> value_1 == 0 )
+    if ( e.type == ITEM_BONUS_ILEVEL && e.value_1 == 0 )
     {
-      e++;
       continue;
     }
 
-    bonus_ids.push_back( e -> bonus_id );
-
-    e++;
+    bonus_ids.push_back( e.bonus_id );
   }
 
   range::sort( bonus_ids );
 
   for ( size_t i = 0; i < bonus_ids.size(); ++i )
   {
-    std::vector<const item_bonus_entry_t*> entries = dbc.item_bonus( bonus_ids[ i ] );
+    const auto entries = dbc.item_bonus( bonus_ids[ i ] );
     std::string desc = get_bonus_id_desc( dbc.ptr, entries );
     std::string suffix = get_bonus_id_suffix( dbc.ptr, entries );
     std::string quality = get_bonus_id_quality( entries );
@@ -1577,34 +1367,19 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
   return s.str();
 }
 
-const item_child_equipment_t* dbc::child_equipments( bool ptr )
-{
-#if SC_USE_PTR
-  const item_child_equipment_t* p = ptr ? __ptr_item_child_equipment_data : __item_child_equipment_data;
-#else
-  ( void ) ptr;
-  const item_child_equipment_t* p = __item_child_equipment_data;
-#endif
-
-  return p;
-}
-
 unsigned dbc_t::child_item( unsigned id ) const
 {
-  const item_child_equipment_t* p = dbc::child_equipments( ptr );
   if ( id == 0 )
   {
     return 0;
   }
 
-  while ( p -> id != 0 )
+  for ( const auto& entry : item_child_equipment_t::data( ptr ) )
   {
-    if ( id == p -> id_item )
+    if ( id == entry.id_item )
     {
-      return p -> id_child;
+      return entry.id_child;
     }
-
-    p++;
   }
 
   return 0;
@@ -1612,20 +1387,17 @@ unsigned dbc_t::child_item( unsigned id ) const
 
 unsigned dbc_t::parent_item( unsigned id ) const
 {
-  const item_child_equipment_t* p = dbc::child_equipments( ptr );
   if ( id == 0 )
   {
     return 0;
   }
 
-  while ( p -> id != 0 )
+  for ( const auto& entry : item_child_equipment_t::data( ptr ) )
   {
-    if ( id == p -> id_child )
+    if ( id == entry.id_child )
     {
-      return p -> id_item;
+      return entry.id_item;
     }
-
-    p++;
   }
 
   return 0;
@@ -1636,10 +1408,10 @@ bool item_database::has_item_bonus_type( const item_t& item, item_bonus_type bon
   // For all parsed bonus ids ..
   //
   auto it = range::find_if( item.parsed.bonus_id, [ &item, bonus ]( int bonus_id ) {
-    auto bonuses = item.player -> dbc.item_bonus( bonus_id );
+    auto bonuses = item.player -> dbc->item_bonus( bonus_id );
     // If there's a bonus id of type bonus, return true
-    return range::find_if( bonuses, [ bonus ]( const item_bonus_entry_t* entry ) {
-      return entry -> type == bonus;
+    return range::find_if( bonuses, [ bonus ]( const item_bonus_entry_t& entry ) {
+      return entry.type == bonus;
     } ) != bonuses.end();
   } );
 
@@ -1651,7 +1423,7 @@ double item_database::apply_combat_rating_multiplier( const player_t*           
                                                       unsigned                      ilevel,
                                                       double                        raw_amount )
 {
-  auto combat_rating_multiplier = player -> dbc.combat_rating_multiplier( ilevel, type );
+  auto combat_rating_multiplier = player -> dbc->combat_rating_multiplier( ilevel, type );
   if ( combat_rating_multiplier != 0 )
   {
     return raw_amount * combat_rating_multiplier;
@@ -1665,7 +1437,7 @@ double item_database::apply_stamina_multiplier( const player_t*               pl
                                                 unsigned                      ilevel,
                                                 double                        raw_amount )
 {
-  auto multiplier = player -> dbc.stamina_multiplier( ilevel, type );
+  auto multiplier = player -> dbc->stamina_multiplier( ilevel, type );
   if ( multiplier != 0 )
   {
     return raw_amount * multiplier;
@@ -1676,7 +1448,7 @@ double item_database::apply_stamina_multiplier( const player_t*               pl
 
 double item_database::apply_combat_rating_multiplier( const item_t& item, double amount )
 {
-  auto type = item_combat_rating_type( &item.parsed.data );
+  auto type = item_combat_rating_type( item.parsed.data );
   if ( type == CR_MULTIPLIER_INVALID )
   {
     return amount;
@@ -1687,7 +1459,7 @@ double item_database::apply_combat_rating_multiplier( const item_t& item, double
 
 double item_database::apply_stamina_multiplier( const item_t& item, double amount )
 {
-  auto type = item_combat_rating_type( &item.parsed.data );
+  auto type = item_combat_rating_type( item.parsed.data );
   if ( type == CR_MULTIPLIER_INVALID )
   {
     return amount;
@@ -1696,9 +1468,9 @@ double item_database::apply_stamina_multiplier( const item_t& item, double amoun
   return apply_stamina_multiplier( item.player, type, item.item_level(), amount );
 }
 
-combat_rating_multiplier_type item_database::item_combat_rating_type( const item_data_t* data )
+combat_rating_multiplier_type item_database::item_combat_rating_type( const item_data_t& data )
 {
-  switch ( data -> inventory_type )
+  switch ( data.inventory_type )
   {
     case INVTYPE_NECK:
     case INVTYPE_FINGER:
@@ -1739,13 +1511,13 @@ void item_database::convert_stat_values( item_t& item )
     return;
   }
 
-  auto slot_type = item_database::random_suffix_type( &item.parsed.data );
+  auto slot_type = item_database::random_suffix_type( item.parsed.data );
   if ( slot_type == -1 )
   {
     return;
   }
 
-  const auto& ilevel_data = item.player -> dbc.random_property( item.parsed.data.level );
+  const auto& ilevel_data = item.player -> dbc->random_property( item.parsed.data.level );
   double budget = 0.0;
   if ( item.parsed.data.quality == 4 || item.parsed.data.quality == 5 )
   {
@@ -1767,10 +1539,10 @@ void item_database::convert_stat_values( item_t& item )
     double cr_coeff = 1.0;
     if ( util::is_combat_rating( static_cast<item_mod_type>( item.parsed.data.stat_type_e[ i ] ) ) )
     {
-      auto item_cr_type = item_database::item_combat_rating_type( &item.parsed.data );
+      auto item_cr_type = item_database::item_combat_rating_type( item.parsed.data );
       if ( item_cr_type != CR_MULTIPLIER_INVALID )
       {
-        cr_coeff = item.player -> dbc.combat_rating_multiplier( item.parsed.data.level,
+        cr_coeff = item.player -> dbc->combat_rating_multiplier( item.parsed.data.level,
             item_cr_type );
       }
     }

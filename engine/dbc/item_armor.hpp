@@ -6,7 +6,7 @@
 #define ITEM_ARMOR_HPP
 
 #include "util/generic.hpp"
-#include "util/array_view.hpp"
+#include "util/span.hpp"
 
 #include "client_data.hpp"
 
@@ -25,7 +25,7 @@ public:
   static const item_armor_quality_data_t& nil()
   { return dbc::nil<item_armor_quality_data_t>(); }
 
-  static arv::array_view<item_armor_quality_data_t> data( bool ptr );
+  static util::span<const item_armor_quality_data_t> data( bool ptr );
 
   double value( int quality ) const
   {
@@ -49,7 +49,7 @@ public:
   static const item_armor_shield_data_t& nil()
   { return dbc::nil<item_armor_shield_data_t>(); }
 
-  static arv::array_view<item_armor_shield_data_t> data( bool ptr );
+  static util::span<const item_armor_shield_data_t> data( bool ptr );
 
   double value( int quality ) const
   {
@@ -74,7 +74,7 @@ public:
   static const item_armor_total_data_t& nil()
   { return dbc::nil<item_armor_total_data_t>(); }
 
-  static arv::array_view<item_armor_total_data_t> data( bool ptr );
+  static util::span<const item_armor_total_data_t> data( bool ptr );
 
   double value( int subclass ) const
   {
@@ -103,7 +103,7 @@ public:
   static const item_armor_location_data_t& nil()
   { return dbc::nil<item_armor_location_data_t>(); }
 
-  static arv::array_view<item_armor_location_data_t> data( bool ptr );
+  static util::span<const item_armor_location_data_t> data( bool ptr );
 
   double value( int subclass ) const
   {

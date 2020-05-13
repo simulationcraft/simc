@@ -7,10 +7,15 @@
 
 #include <unordered_map>
 #include <string>
+#include <limits>
+#include <memory>
+#include <vector>
 
 #include "sc_enums.hpp"
-#include "report/sc_report.hpp"
-#include "dbc/dbc.hpp"
+#include "report/reports.hpp"
+
+struct artifact_power_data_t;
+struct spell_data_t;
 
 namespace js
 {
@@ -136,142 +141,28 @@ public:
   slot_e   slot() const;
 
   // Note, first purchased talent does not count towards total points
-  unsigned points() const
-  {
-    if ( ! enabled() )
-    {
-      return 0;
-    }
-
-    return m_purchased_points > 0 ? m_total_points - 1 : m_total_points;
-  }
+  unsigned points() const;
 
   // Note, first purchased talent does not count towards total points
-  unsigned purchased_points() const
-  {
-    if ( ! enabled() )
-    {
-      return 0;
-    }
-
-    return m_purchased_points > 0 ? m_purchased_points - 1 : m_purchased_points;
-  }
+  unsigned purchased_points() const;
 
   // Note, first purchased talent does not count towards total points
-  unsigned crucible_points() const
-  {
-    if ( ! enabled() )
-    {
-      return 0;
-    }
-
-    return m_crucible_points;
-  }
+  unsigned crucible_points() const;
 
   // The damage multiplier for the Artificial Damage trait
-  double   artificial_damage_multiplier() const
-  {
-    if ( ! enabled() )
-    {
-      return 0.0;
-    }
-
-    auto full_effect =  m_artificial_damage -> effectN( ARTIFICIAL_DAMAGE_EFFECT_INDEX ).percent()
-                        * 0.01;
-
-    // After 75th point, Artificial Damage is 50 times less effective ( 0.5% -> 0.01% increase per trait )
-    auto reduced_effect = full_effect * 0.02;
-
-    auto full_points = std::min( ARTIFICIAL_DAMAGE_CUTOFF_TRAIT, purchased_points() );
-    auto reduced_points = purchased_points() - full_points;
-                        
-    return full_effect * ( full_points + BASE_TRAIT_INCREASE ) + reduced_effect * reduced_points;
-  }
+  double   artificial_damage_multiplier() const;
 
   // The stamina multiplier for the Artificial Stamina trait
-  double  artificial_stamina_multiplier() const
-  {
-    if ( ! enabled() )
-    {
-      return 0.0;
-    }
-
-    auto full_effect = m_artificial_stamina -> effectN( ARTIFICIAL_STAMINA_EFFECT_INDEX ).percent()
-                       * 0.01;
-
-    // After 52nd point, Artificial Stamina is 5 times less effective.
-    auto reduced_effect = full_effect * .2;
-
-    auto full_points = std::min( ARTIFICIAL_STAMINA_CUTOFF_TRAIT, purchased_points() );
-    auto reduced_points = purchased_points() - full_points;
-
-    return full_effect * ( full_points + BASE_TRAIT_INCREASE ) + reduced_effect * reduced_points;
-  }
+  double  artificial_stamina_multiplier() const;
 
   // Returns the purchased + bonus rank of a trait, or 0 if trait not purchased and/or bonused
-  unsigned power_rank( unsigned power_id, override_type t = ALLOW_OVERRIDE ) const
-  {
-    if ( ! enabled() )
-    {
-      return 0;
-    }
+  unsigned power_rank(unsigned power_id, override_type t = ALLOW_OVERRIDE) const;
 
-    auto it = m_points.find( power_id );
+  unsigned bonus_rank(unsigned power_id, override_type t = ALLOW_OVERRIDE) const;
 
-    return it != m_points.end()
-           ? t == ALLOW_OVERRIDE && it -> second.overridden >= 0
-             ? it -> second.overridden
-             : ( it -> second.purchased + it -> second.bonus + it -> second.crucible )
-           : 0u;
-  }
+  unsigned crucible_rank(unsigned power_id, override_type t = ALLOW_OVERRIDE) const;
 
-  unsigned bonus_rank( unsigned power_id, override_type t = ALLOW_OVERRIDE ) const
-  {
-    if ( ! enabled() )
-    {
-      return 0;
-    }
-
-    auto it = m_points.find( power_id );
-
-    return it != m_points.end()
-           ? t == ALLOW_OVERRIDE && it -> second.overridden >= 0
-             ? 0
-             : it -> second.bonus
-           : 0u;
-  }
-
-  unsigned crucible_rank( unsigned power_id, override_type t = ALLOW_OVERRIDE ) const
-  {
-    if ( ! enabled() )
-    {
-      return 0;
-    }
-
-    auto it = m_points.find( power_id );
-
-    return it != m_points.end()
-           ? t == ALLOW_OVERRIDE && it -> second.overridden >= 0
-             ? 0u
-             : it -> second.crucible
-           : 0u;
-  }
-
-  unsigned purchased_power_rank( unsigned power_id, override_type t = ALLOW_OVERRIDE ) const
-  {
-    if ( ! enabled() )
-    {
-      return 0;
-    }
-
-    auto it = m_points.find( power_id );
-
-    return it != m_points.end()
-           ? t == ALLOW_OVERRIDE && it -> second.overridden >= 0
-             ? it -> second.overridden
-             : it -> second.purchased
-           : 0u;
-  }
+  unsigned purchased_power_rank(unsigned power_id, override_type t = ALLOW_OVERRIDE) const;
 
   // Set the user-input artifact= option string
   void     set_artifact_str( const std::string& value );

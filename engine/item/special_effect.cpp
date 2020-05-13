@@ -699,7 +699,7 @@ unsigned special_effect_t::rppm_scale() const
     return 0;
   }
 
-  return player -> dbc.real_ppm_scale( driver() -> id() );
+  return player -> dbc->real_ppm_scale( driver() -> id() );
 }
 
 double special_effect_t::rppm_modifier() const
@@ -714,7 +714,7 @@ double special_effect_t::rppm_modifier() const
     return 0.0;
   }
 
-  return player -> dbc.real_ppm_modifier( driver() -> id(), player, item ? item -> item_level() : 0 );
+  return player -> dbc->real_ppm_modifier( driver() -> id(), player, item ? item -> item_level() : 0 );
 }
 
 /**

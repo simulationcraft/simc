@@ -14,7 +14,7 @@ struct player_t;
 namespace target_specific_helper
 {
   size_t get_actor_index(const player_t* player);
-};
+}
 
 template < class T >
 struct target_specific_t

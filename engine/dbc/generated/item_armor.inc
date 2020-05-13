@@ -1,5 +1,5 @@
 // Item armor values data from ItemArmorQuality.db2, ilevels 1-1300, wow build 8.3.0.34220
-static constexpr std::array<item_armor_quality_data_t, 1300> __item_armor_quality_data { {
+static const std::array<item_armor_quality_data_t, 1300> __item_armor_quality_data { {
   {    1, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
   {    2, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
   {    3, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
@@ -1303,7 +1303,7 @@ static constexpr std::array<item_armor_quality_data_t, 1300> __item_armor_qualit
 } };
 
 // Item armor values data from ItemArmorShield.db2, ilevels 1-1300, wow build 8.3.0.34220
-static constexpr std::array<item_armor_shield_data_t, 1300> __item_armor_shield_data { {
+static const std::array<item_armor_shield_data_t, 1300> __item_armor_shield_data { {
   {    1, {      20.55965,      21.70185,      22.84405,      22.84405,      22.84405,      22.84405,      22.84405 } },
   {    2, {      21.53868,      22.73527,      23.93186,      23.93186,      23.93186,      23.93186,      23.93186 } },
   {    3, {      22.51771,      23.76869,      25.01968,      25.01968,      25.01968,      25.01968,      25.01968 } },
@@ -2607,7 +2607,7 @@ static constexpr std::array<item_armor_shield_data_t, 1300> __item_armor_shield_
 } };
 
 // Item armor values data from ItemArmorTotal.db2, ilevels 1-1300, wow build 8.3.0.34220
-static constexpr std::array<item_armor_total_data_t, 1300> __item_armor_total_data { {
+static const std::array<item_armor_total_data_t, 1300> __item_armor_total_data { {
   {    1, {       12.79267,       21.66825,       31.75414,       47.55536 } },
   {    2, {       13.40184,       22.70007,       33.26624,       49.81990 } },
   {    3, {       14.01102,       23.73189,       34.77834,       52.08444 } },
@@ -3910,7 +3910,7 @@ static constexpr std::array<item_armor_total_data_t, 1300> __item_armor_total_da
   { 1300, {  4233858.00000,  7171317.50000, 10509340.00000, 15738907.00000 } },
 } };
 
-static constexpr std::array<item_armor_location_data_t, 23> __armor_location_data { {
+static const std::array<item_armor_location_data_t, 23> __armor_location_data { {
   {  1, {     0.130,     0.130,     0.130,     0.130 } },
   {  2, {     0.000,     0.000,     0.000,     0.000 } },
   {  3, {     0.120,     0.120,     0.120,     0.120 } },

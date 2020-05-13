@@ -4,13 +4,35 @@
 // ==========================================================================
 
 #include "sc_sim.hpp"
-#include "simulationcraft.hpp"
-#include "sim_control.hpp"
-#include "sc_option.hpp"
-#include "report/sc_highchart.hpp"
-#include "sc_profileset.hpp"
-#include "scale_factor_control.hpp"
+
+#include "buff/sc_buff.hpp"
+#include "class_modules/class_module.hpp"
+#include "dbc/dbc.hpp"
+#include "gsl-lite/gsl-lite.hpp"
+#include "interfaces/bcp_api.hpp"
+#include "interfaces/sc_http.hpp"
 #include "player/sc_player.hpp"
+#include "player/pet.hpp"
+#include "player/spawner_base.hpp"
+#include "player/unique_gear.hpp"
+#include "report/reports.hpp"
+#include "report/sc_highchart.hpp"
+#include "sim/sc_profileset.hpp"
+#include "sim/scale_factor_control.hpp"
+#include "sim/sim_control.hpp"
+#include "sim/sc_option.hpp"
+#include "sim/iteration_data_entry.hpp"
+#include "sim/event.hpp"
+#include "sim/sc_expressions.hpp"
+#include "sim/raid_event.hpp"
+#include "sim/plot.hpp"
+#include "sim/reforge_plot.hpp"
+#include "sim/sc_cooldown.hpp"
+#include "sim/x6_pantheon.hpp"
+#include "dbc/spell_query/spell_data_expr.hpp"
+#include "util/rng.hpp"
+#include "util/xml.hpp"
+#include <random>
 #ifdef SC_WINDOWS
 #include <direct.h>
 #endif
@@ -105,7 +127,7 @@ bool parse_ptr( sim_t*             sim,
   if ( name != "ptr" ) return false;
 
   if ( SC_USE_PTR )
-    sim -> dbc.ptr = std::stoi( value ) != 0;
+    sim -> dbc->ptr = std::stoi( value ) != 0;
   else
     sim -> errorf( "SimulationCraft has not been built with PTR data.  The 'ptr=' option is ignored.\n" );
 
@@ -612,15 +634,15 @@ bool parse_override_spell_data( sim_t*             sim,
 
   if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
   {
-    dbc_override::register_spell( sim -> dbc, id, splits[ 2 ], v );
+    dbc_override::register_spell( *(sim -> dbc), id, splits[ 2 ], v );
   }
   else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
   {
-    dbc_override::register_effect( sim -> dbc, id, splits[ 2 ], v );
+    dbc_override::register_effect(*(sim->dbc), id, splits[ 2 ], v );
   }
   else if ( util::str_compare_ci( splits[ 0 ], "power" ) )
   {
-    dbc_override::register_power( sim -> dbc, id, splits[ 2 ], v );
+    dbc_override::register_power(*(sim->dbc), id, splits[ 2 ], v );
   }
   else
   {
@@ -1391,6 +1413,7 @@ sim_t::sim_t() :
   enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
   target_adds( 0 ), desired_targets( 1 ), enable_taunts( false ),
   use_item_verification( true ),
+  dbc(new dbc_t()),
   challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ),
@@ -1991,7 +2014,9 @@ void sim_t::analyze_error()
 
   work_queue -> lock();
 
-  int n_iterations = work_queue -> progress().current_iterations;
+  // First iterations of each thread are considered statistically insignificant and not
+  // collected
+  int n_iterations = work_queue -> progress().current_iterations - threads;
   if ( strict_work_queue )
   {
     range::for_each( children, [ &n_iterations ]( sim_t* c ) {
@@ -4095,7 +4120,7 @@ void sim_t::enable_debug_seed()
   }
   else
   {
-    auto it = std::lower_bound( debug_seed.begin(), debug_seed.end(), seed );
+    auto it = range::lower_bound( debug_seed, seed );
     enabled = it != debug_seed.end() && *it == seed;
   }
 
@@ -4144,7 +4169,7 @@ void sim_t::disable_debug_seed()
   }
   else
   {
-    auto it = std::lower_bound( debug_seed.begin(), debug_seed.end(), seed );
+    auto it = range::lower_bound( debug_seed, seed );
     enabled = it != debug_seed.end() && *it == seed;
   }
 

@@ -4,9 +4,13 @@
 // ==========================================================================
 
 #include "sc_profileset.hpp"
+#include "dbc/dbc.hpp"
 #include "sim_control.hpp"
 #include "sc_sim.hpp"
-#include "report/sc_report.hpp"
+// maybe move profileset reporting to a separate file in report/
+#include "report/reports.hpp"
+#include "report/color.hpp"
+#include "report/sc_highchart.hpp"
 #include "player/sc_player.hpp"
 #include "player/artifact_data.hpp"
 #include "item/item.hpp"
@@ -1306,14 +1310,14 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
           continue;
         }
 
-        auto* talent_data = talent_data_t::find( player -> type, talent_row, talent_col, player -> specialization(), player -> dbc.ptr );
+        auto* talent_data = talent_data_t::find( player -> type, talent_row, talent_col, player -> specialization(), player -> dbc->ptr );
         if ( talent_data == nullptr )
         {
           continue;
         }
 
         const auto& p_talent_col = parent_player -> talent_points.choice( talent_row );
-        auto* p_talent_data = talent_data_t::find( parent_player -> type, talent_row, talent_col, parent_player -> specialization(), parent_player -> dbc.ptr );
+        auto* p_talent_data = talent_data_t::find( parent_player -> type, talent_row, talent_col, parent_player -> specialization(), parent_player -> dbc->ptr );
         if ( p_talent_col == -1 || p_talent_data == nullptr || p_talent_col != talent_col )
         {
           saved_talents.push_back( talent_data );

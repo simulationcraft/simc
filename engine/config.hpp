@@ -144,7 +144,9 @@ constexpr double m_pi = 3.14159265358979323846;
 
 #define RAPIDJSON_HAS_STDSTRING 1
 
+#ifndef SC_USE_PTR
 #define SC_USE_PTR 0
+#endif
 
 // ==========================================================================
 // Simc related value definitions

@@ -9,19 +9,21 @@
 #include "util/concurrency.hpp"
 #include "sim_ostream.hpp"
 #include "util/vector_with_callback.hpp"
-#include "dbc/dbc.hpp"
 #include "player/gear_stats.hpp"
 #include "progress_bar.hpp"
 #include "util/sample_data.hpp"
 #include "sc_option.hpp"
 #include "sc_profileset.hpp"
 #include "event_manager.hpp"
+#include "util/util.hpp"
 #include <map>
 #include <mutex>
+#include <memory>
 
 struct actor_target_data_t;
 struct buff_t;
 struct cooldown_t;
+class dbc_t;
 struct expr_t;
 namespace highchart {
     struct chart_t;
@@ -152,7 +154,7 @@ struct sim_t : private sc_thread_t
   bool        use_item_verification;
 
   // Data access
-  dbc_t       dbc;
+  std::unique_ptr<dbc_t>       dbc;
 
   // Default stat enchants
   gear_stats_t enchant;

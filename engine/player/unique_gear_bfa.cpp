@@ -246,7 +246,7 @@ void obsidian_destruction( special_effect_t& effect );
 namespace util
 {
 // feasts initialization helper
-void init_feast( special_effect_t& effect, arv::array_view<std::pair<stat_e, int>> stat_map )
+void init_feast( special_effect_t& effect, std::initializer_list<std::pair<stat_e, int>> stat_map )
 {
   effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
   // TODO: Is this actually spec specific?
@@ -4781,8 +4781,8 @@ item_t init_punchcard( const special_effect_t& effect )
     return {};
   }
 
-  auto item_data = effect.player->dbc.item( effect.enchant_data->id_gem );
-  if ( !item_data )
+  auto item_data = effect.player->dbc->item( effect.enchant_data->id_gem );
+  if ( item_data.id == 0 )
   {
     return {};
   }
@@ -4795,8 +4795,8 @@ item_t init_punchcard( const special_effect_t& effect )
   }
 
   item_t punchcard( effect.player, "" );
-  punchcard.parsed.data = *item_data;
-  punchcard.name_str    = item_data->name;
+  punchcard.parsed.data = item_data;
+  punchcard.name_str    = item_data.name;
   ::util::tokenize( punchcard.name_str );
 
   // Punchcards use the item level of he trinket itself, apparently.
@@ -5032,13 +5032,13 @@ void items::subroutine_optimization( special_effect_t& effect )
       const gem_property_data_t* data = nullptr;
 
       auto it = range::find_if( effect.item->parsed.gem_id, [this, &data]( unsigned gem_id ) {
-        auto item_data = source->dbc.item( gem_id );
-        if ( !item_data )
+        auto item_data = source->dbc->item( gem_id );
+        if ( item_data.id == 0 )
         {
           return false;
         }
 
-        const auto& gem_props = source->dbc.gem_property( item_data->gem_properties );
+        const auto& gem_props = source->dbc->gem_property( item_data.gem_properties );
         if ( gem_props.id == 0 )
         {
           return false;
@@ -5058,7 +5058,7 @@ void items::subroutine_optimization( special_effect_t& effect )
       }
 
       // Find the item enchantment associated with the gem
-      const auto& enchantment_data = source->dbc.item_enchantment( data->enchant_id );
+      const auto& enchantment_data = source->dbc->item_enchantment( data->enchant_id );
 
       for ( size_t i = 0u; i < sizeof_array( enchantment_data.ench_type ); ++i )
       {
@@ -6011,7 +6011,7 @@ void set_bonus::titanic_empowerment( special_effect_t& effect )
 
       int average_ilvl = ( vita_shard->item_level() + void_shard->item_level() ) / 2;
       buff = make_buff<stat_buff_t>( effect.player, "titanic_empowerment", effect.player->find_spell( 315858 ) );
-      const auto& budget = effect.player->dbc.random_property( average_ilvl );
+      const auto& budget = effect.player->dbc->random_property( average_ilvl );
       double value       = budget.p_epic[ 0 ] * buff->data().effectN( 1 ).m_coefficient();
       buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), value );
     }

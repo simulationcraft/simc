@@ -137,7 +137,7 @@ struct player_data_t
 
   action_data_t* get( const action_t* a )
   {
-    auto it = range::find_if( data_, [ a ] ( const record_t& r ) { return a -> name_str == r.first; } );
+    auto it = range::find( data_, a -> name_str, &record_t::first );
     if ( it != data_.cend() )
       return it -> second.get();
 
@@ -203,7 +203,7 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
     action_t* a = player.find_action( rec.first );
     std::string name_str = rec.first;
     if ( a )
-      name_str = report::action_decorator_t( a ).decorate();
+      name_str = report_decorators::decorated_action(*a);
     else
       name_str = util::encode_html( name_str );
 
@@ -646,7 +646,7 @@ public:
   template <typename T, typename... Ts>
   T* get_background_action( const std::string& n, Ts&&... args )
   {
-    auto it = range::find_if( background_actions, [ &n ]( action_t* a ) { return a -> name_str == n; } );
+    auto it = range::find( background_actions, n, &action_t::name_str );
     if ( it != background_actions.cend() )
       return dynamic_cast<T*>( *it );
 
@@ -1958,14 +1958,14 @@ struct active_pets_t
   using data_t = std::array<Pet*, N>;
 
   data_t data_;
-  arv::array_view<Pet*> active_;
+  util::span<Pet* const> active_;
 
   active_pets_t( data_t d, size_t n ):
     data_( d ), active_( data_.data(), n )
   {}
 
-  typename arv::array_view<Pet*>::iterator begin() const { return active_.begin(); }
-  typename arv::array_view<Pet*>::iterator end() const { return active_.end(); }
+  typename util::span<Pet* const>::iterator begin() const { return active_.begin(); }
+  typename util::span<Pet* const>::iterator end() const { return active_.end(); }
 };
 
 // returns the active pets from the list 'cast' to the supplied pet type

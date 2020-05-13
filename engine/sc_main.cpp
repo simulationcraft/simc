@@ -255,7 +255,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
     special_effect_initializer_t special_effect_init;
 
-    print_version_info(dbc);
+    print_version_info(*dbc);
 
     sim_control_t control;
 
@@ -282,13 +282,13 @@ int sim_t::main( const std::vector<std::string>& args )
 
     if ( display_hotfixes )
     {
-      std::cout << hotfix::to_str( dbc.ptr );
+      std::cout << hotfix::to_str( dbc->ptr );
       return 0;
     }
 
     if ( display_bonus_ids )
     {
-      std::cout << dbc::bonus_ids_str( dbc );
+      std::cout << dbc::bonus_ids_str( *dbc );
       return 0;
     }
 

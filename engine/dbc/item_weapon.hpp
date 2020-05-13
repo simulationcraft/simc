@@ -6,7 +6,7 @@
 #define ITEM_WEAPON_HPP
 
 #include "util/generic.hpp"
-#include "util/array_view.hpp"
+#include "util/span.hpp"
 
 #include "client_data.hpp"
 
@@ -25,7 +25,7 @@ public:
   static const item_damage_one_hand_data_t& nil()
   { return dbc::nil<item_damage_one_hand_data_t>(); }
 
-  static arv::array_view<item_damage_one_hand_data_t> data( bool ptr );
+  static util::span<const item_damage_one_hand_data_t> data( bool ptr );
 
   double value( int quality ) const
   {
@@ -50,7 +50,7 @@ public:
   static const item_damage_one_hand_caster_data_t& nil()
   { return dbc::nil<item_damage_one_hand_caster_data_t>(); }
 
-  static arv::array_view<item_damage_one_hand_caster_data_t> data( bool ptr );
+  static util::span<const item_damage_one_hand_caster_data_t> data( bool ptr );
 
   double value( int quality ) const
   {
@@ -75,7 +75,7 @@ public:
   static const item_damage_two_hand_data_t& nil()
   { return dbc::nil<item_damage_two_hand_data_t>(); }
 
-  static arv::array_view<item_damage_two_hand_data_t> data( bool ptr );
+  static util::span<const item_damage_two_hand_data_t> data( bool ptr );
 
   double value( int quality ) const
   {
@@ -100,7 +100,7 @@ public:
   static const item_damage_two_hand_caster_data_t& nil()
   { return dbc::nil<item_damage_two_hand_caster_data_t>(); }
 
-  static arv::array_view<item_damage_two_hand_caster_data_t> data( bool ptr );
+  static util::span<const item_damage_two_hand_caster_data_t> data( bool ptr );
 
   double value( int quality ) const
   {

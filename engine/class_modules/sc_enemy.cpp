@@ -1206,7 +1206,7 @@ void enemy_t::init_base_stats()
   }
 
   // Armor Coefficient, based on level (6300 @ 120-123)
-  base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : dbc.armor_mitigation_constant( level() );
+  base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : dbc->armor_mitigation_constant( level() );
   sim -> print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
 }
 
@@ -1221,7 +1221,7 @@ void enemy_t::init_defense()
   {
     double& a = initial.stats.armor;
 
-    a = dbc.npc_armor_value( level() );
+    a = dbc->npc_armor_value( level() );
   }
 }
 

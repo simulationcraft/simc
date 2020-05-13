@@ -5233,7 +5233,7 @@ struct tranquility_t : public druid_heal_t
     channeled         = true;
 
     // Healing is in spell effect 1
-    parse_spell_data( ( *player -> dbc.spell( data().effectN( 1 ).trigger_spell_id() ) ) );
+    parse_spell_data( ( *player -> dbc->spell( data().effectN( 1 ).trigger_spell_id() ) ) );
   }
 };
 
@@ -10300,7 +10300,7 @@ const spell_data_t* druid_t::find_affinity_spell( const std::string& name ) cons
     return spec_spell;
   }
 
-  spec_spell = find_spell( dbc.specialization_ability_id( get_affinity_spec(), util::inverse_tokenize( name ).c_str() ) );
+  spec_spell = find_spell( dbc->specialization_ability_id( get_affinity_spec(), util::inverse_tokenize( name ).c_str() ) );
 
   if ( spec_spell->found() )
   {
@@ -10366,8 +10366,8 @@ double druid_t::calculate_expected_max_health() const
       continue;
     }
 
-    const random_prop_data_t item_data = dbc.random_property( item -> item_level() );
-    int index = item_database::random_suffix_type( &item -> parsed.data );
+    const random_prop_data_t item_data = dbc->random_property( item -> item_level() );
+    int index = item_database::random_suffix_type( item -> parsed.data );
     if ( item_data.p_epic[ 0 ] == 0 )
     {
       continue;
@@ -10746,7 +10746,8 @@ public:
 
       if ( tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0 )
       {
-        std::string name_str = report::action_decorator_t( stats -> action_list[ 0 ] ).decorate();
+        const action_t& action = *(stats->action_list[0]);
+        std::string name_str = report_decorators::decorated_action(action);
 
         // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
         os.printf( "<tr><td class=\"left\">%s</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
@@ -10863,8 +10864,8 @@ struct fangs_of_ashamane_t : public scoped_actor_callback_t<druid_t>
   {
     // Fangs of Ashamane act as a 2 handed weapon when in Cat Form.
     unsigned ilevel = p -> items[ SLOT_MAIN_HAND ].item_level();
-    double mod = p -> sim -> dbc.item_damage_2h( ilevel ).value( ITEM_QUALITY_ARTIFACT )
-                / p -> sim -> dbc.item_damage_1h( ilevel ).value( ITEM_QUALITY_ARTIFACT );
+    double mod = p -> sim -> dbc->item_damage_2h( ilevel ).value( ITEM_QUALITY_ARTIFACT )
+                / p -> sim -> dbc->item_damage_1h( ilevel ).value( ITEM_QUALITY_ARTIFACT );
     p -> cat_weapon.min_dmg *= mod;
     p -> cat_weapon.max_dmg *= mod;
     p -> cat_weapon.damage  *= mod;

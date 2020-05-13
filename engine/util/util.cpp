@@ -3,8 +3,14 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "util.hpp"
 #include "util/git_info.hpp"
+#include "util/stopwatch.hpp"
+#include "player/sc_player.hpp"
+#include "sim/scale_factor_control.hpp"
+#include "dbc/dbc.hpp"
+#include <iomanip>
+#include <cctype>
 
 #if !defined(SC_WINDOWS)
 #include <sys/time.h>
@@ -3298,6 +3304,27 @@ bool is_horde( race_e race )
     default:
       return false;
   }
+}
+
+// Approximation of square root 
+// Used in calculation of distances instead of std::sqrt as it is significantly
+// faster and also returns similar values
+double approx_sqrt(double number)
+{
+  if (number > 0.0)
+  {
+    float xhalf = 0.5f * static_cast<float>(number);
+    union
+    {
+      float x;
+      int i;
+    } u;
+    u.x = static_cast<float>(number);
+    u.i = 0x5f3759df - (u.i >> 1);
+    u.x = u.x * (1.5f - xhalf * u.x * u.x);
+    return static_cast<double>(u.x * number);
+  }
+  return 0.0;
 }
 
 } // namespace util

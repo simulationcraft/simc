@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_report.hpp"
+#include "gear_weights.hpp"
 #include "dbc/dbc.hpp"
 #include "player/sc_player.hpp"
 #include "player/player_scaling.hpp"
@@ -98,7 +98,7 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::wowhead(
     bool first = true;
 
     std::stringstream s;
-    s << "https://" << wowhead_domain_name( p.dbc.ptr ) << "/?items&amp;filter=";
+    s << "https://" << wowhead_domain_name( p.dbc->ptr ) << "/?items&amp;filter=";
     s << "ub=" << util::class_id( p.type ) << ";";
 
     // Restrict wowhead to rare gems. When epic gems become

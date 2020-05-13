@@ -2050,7 +2050,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       std::vector<specialization_e> spec_list;
       auto _s = p() -> o() -> specialization();
 
-      if ( data().id() && p() -> o() -> dbc.ability_specialization( data().id(), spec_list ) &&
+      if ( data().id() && p() -> o() -> dbc->ability_specialization( data().id(), spec_list ) &&
            range::find( spec_list, _s ) == spec_list.end() )
       {
         sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
@@ -2077,7 +2077,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       std::vector<specialization_e> spec_list;
       auto _s = p() -> o() -> specialization();
 
-      if ( data().id() && p() -> o() -> dbc.ability_specialization( data().id(), spec_list ) &&
+      if ( data().id() && p() -> o() -> dbc->ability_specialization( data().id(), spec_list ) &&
            range::find( spec_list, _s ) == spec_list.end() )
       {
         sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
@@ -3445,7 +3445,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
     for ( size_t idx = 1; idx <= data().power_count(); idx++ )
     {
       const spellpower_data_t& power = data().powerN( idx );
-      if ( power.aura_id() == 0 || player -> dbc.spec_by_spell( power.aura_id() ) == player -> specialization() )
+      if ( power.aura_id() == 0 || player -> dbc->spec_by_spell( power.aura_id() ) == player -> specialization() )
       {
         this -> ticking_cost = power.cost_per_tick();
       }
@@ -7581,12 +7581,16 @@ std::string death_knight_t::default_rune() const
 
 void death_knight_t::default_apl_blood()
 {
-  action_priority_list_t* def      = get_action_priority_list( "default" );
-  action_priority_list_t* essences = get_action_priority_list( "essences" );
-  action_priority_list_t* standard = get_action_priority_list( "standard" );
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  action_priority_list_t* def       = get_action_priority_list( "default" );
+  action_priority_list_t* essences  = get_action_priority_list( "essences" );
+  action_priority_list_t* standard  = get_action_priority_list( "standard" );
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
+  
+  precombat -> add_action( "use_item,name=azsharas_font_of_power" );
+  precombat -> add_action( "use_item,effect_name=cyclotronic_blast" );
 
   def -> add_action( "auto_attack" );
   // Interrupt
@@ -7604,7 +7608,7 @@ void death_knight_t::default_apl_blood()
   // On-use items
   def -> add_action( "use_items,if=cooldown.dancing_rune_weapon.remains>90" );
   def -> add_action( "use_item,name=razdunks_big_red_button" );
-  def -> add_action( "use_item,name=cyclotronic_blast,if=cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>cast_time" );
+  def -> add_action( "use_item,effect_name=cyclotronic_blast,if=cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>cast_time" );
   def -> add_action( "use_item,name=azsharas_font_of_power,if=(cooldown.dancing_rune_weapon.remains<5&target.time_to_die>15)|(target.time_to_die<34)" );
   def -> add_action( "use_item,name=merekthas_fang,if=(cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>3)&!raid_event.adds.exists|raid_event.adds.in>15" );
   def -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down" );
@@ -7630,7 +7634,6 @@ void death_knight_t::default_apl_blood()
   standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
   standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20" );
-  standard -> add_action( "heart_essence,if=!buff.dancing_rune_weapon.up");
   standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
   standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15" );
   standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&!buff.dancing_rune_weapon.up" );

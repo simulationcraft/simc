@@ -12,6 +12,8 @@
 
 struct item_t;
 struct item_data_t;
+struct item_enchantment_data_t;
+struct item_bonus_entry_t;
 struct special_effect_t;
 struct stat_pair_t;
 
@@ -23,15 +25,15 @@ bool     download_item(      item_t& item );
 bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
 
 int      random_suffix_type( item_t& item );
-int      random_suffix_type( const item_data_t* );
+int      random_suffix_type( const item_data_t& );
 uint32_t armor_value(        const item_t& item );
-uint32_t armor_value(        const item_data_t*, const dbc_t&, unsigned item_level = 0 );
+uint32_t armor_value(        const item_data_t&, const dbc_t&, unsigned item_level = 0 );
 // Uses weapon's own (upgraded) ilevel to calculate the damage
 uint32_t weapon_dmg_min(     item_t& item );
 // Allows custom ilevel to be specified
-uint32_t weapon_dmg_min(     const item_data_t*, const dbc_t&, unsigned item_level = 0 );
+uint32_t weapon_dmg_min(     const item_data_t&, const dbc_t&, unsigned item_level = 0 );
 uint32_t weapon_dmg_max(     item_t& item );
-uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t&, unsigned item_level = 0 );
+uint32_t weapon_dmg_max(     const item_data_t&, const dbc_t&, unsigned item_level = 0 );
 
 bool     load_item_from_data( item_t& item );
 
@@ -68,7 +70,7 @@ double apply_stamina_multiplier( const player_t* player, combat_rating_multiplie
 void convert_stat_values( item_t& item );
 
 // Return the combat rating multiplier category for item data
-combat_rating_multiplier_type item_combat_rating_type( const item_data_t* data );
+combat_rating_multiplier_type item_combat_rating_type( const item_data_t& data );
 
 struct token_t
 {

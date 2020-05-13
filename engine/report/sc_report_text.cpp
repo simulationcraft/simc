@@ -4,7 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_report.hpp"
+#include "reports.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "fmt/chrono.h"
 
@@ -1145,8 +1145,8 @@ void print_collected_amount( std::ostream& os, const player_t& p, std::string na
 
 void print_player( std::ostream& os, player_t& p )
 {
-  report::generate_player_buff_lists( p, p.report_information );
-  report::generate_player_charts( p, p.report_information ); // For WoWhead/Pawn String
+  report_helper::generate_player_buff_lists( p, p.report_information );
+  report_helper::generate_player_charts( p, p.report_information ); // For WoWhead/Pawn String
 
   const player_collected_data_t& cd = p.collected_data;
 

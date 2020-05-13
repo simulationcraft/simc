@@ -11,7 +11,6 @@
 #include <vector>
 #include "sc_timespan.hpp"
 #include "sc_enums.hpp"
-#include "dbc/dbc.hpp"
 #include "player/sc_actor_pair.hpp"
 #include "util/sample_data.hpp"
 #include "util/timeline.hpp"
@@ -32,6 +31,7 @@ struct event_t;
 struct cooldown_t;
 struct real_ppm_t;
 struct expr_t;
+struct spell_data_t;
 namespace rng{
 struct rng_t;
 }
@@ -131,19 +131,15 @@ public:
 
   virtual ~buff_t() {}
 
-  buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
-  buff_t( sim_t* sim, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
+  buff_t(actor_pair_t q, const std::string& name);
+  buff_t( actor_pair_t q, const std::string& name, const spell_data_t*, const item_t* item = nullptr );
+  buff_t(sim_t* sim, const std::string& name);
+  buff_t( sim_t* sim, const std::string& name, const spell_data_t*, const item_t* item = nullptr );
 protected:
-  buff_t( sim_t* sim, player_t* target, player_t* source, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
+  buff_t( sim_t* sim, player_t* target, player_t* source, const std::string& name, const spell_data_t*, const item_t* item );
 public:
   const spell_data_t& data() const { return *s_data; }
-  const spell_data_t& data_reporting() const
-  {
-    if ( s_data_reporting == spell_data_t::nil() )
-      return *s_data;
-    else
-      return *s_data_reporting;
-  }
+  const spell_data_t& data_reporting() const;
 
   /**
    * Get current number of stacks, no benefit tracking.
@@ -349,7 +345,8 @@ struct stat_buff_t : public buff_t
 
   stat_buff_t* add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() );
 
-  stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
+  stat_buff_t(actor_pair_t q, const std::string& name);
+  stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t*, const item_t* item = nullptr );
 };
 
 struct absorb_buff_t : public buff_t
@@ -361,7 +358,8 @@ struct absorb_buff_t : public buff_t
   bool     high_priority; // For tank absorbs that should explicitly "go first"
   absorb_eligibility eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
 
-  absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
+  absorb_buff_t(actor_pair_t q, const std::string& name);
+  absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item = nullptr );
 protected:
 
   // Hook for derived classes to recieve notification when some of the absorb is consumed.
@@ -385,7 +383,8 @@ struct cost_reduction_buff_t : public buff_t
   double amount;
   school_e school;
 
-  cost_reduction_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
+  cost_reduction_buff_t(actor_pair_t q, const std::string& name);
+  cost_reduction_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item = nullptr );
   virtual void bump     ( int stacks = 1, double value = -1.0 ) override;
   virtual void decrement( int stacks = 1, double value = -1.0 ) override;
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;

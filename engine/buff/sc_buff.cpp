@@ -6,6 +6,7 @@
 #include "sc_buff.hpp"
 #include "player/target_specific.hpp"
 #include "player/sc_player.hpp"
+#include "dbc/dbc.hpp"
 #include "sim/sc_expressions.hpp"
 #include "action/sc_action.hpp"
 #include "sim/event.hpp"
@@ -508,8 +509,20 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
 
 }  // namespace
 
+
+buff_t::buff_t(actor_pair_t q, const std::string& name)
+  : buff_t(q, name, spell_data_t::nil(), nullptr)
+{
+
+}
+
 buff_t::buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell_data, const item_t* item )
   : buff_t( q.source->sim, q.target, q.source, name, spell_data, item )
+{
+}
+
+buff_t::buff_t(sim_t* sim, const std::string& name)
+  : buff_t(sim, nullptr, nullptr, name, spell_data_t::nil(), nullptr)
 {
 }
 
@@ -626,6 +639,14 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, const std::strin
   set_max_stack( _max_stack );
 
   update_trigger_calculations();
+}
+
+const spell_data_t& buff_t::data_reporting() const
+{
+  if (s_data_reporting == spell_data_t::nil())
+    return *s_data;
+  else
+    return *s_data_reporting;
 }
 
 void buff_t::update_trigger_calculations()
@@ -2009,8 +2030,8 @@ static buff_t* find_potion_buff( const std::vector<buff_t*>& buffs, player_t* so
     }
 
     auto item =
-        dbc::find_consumable( ITEM_SUBCLASS_POTION, maybe_ptr( b->player->dbc.ptr ), potion_spell_filter( b->data().id() ) );
-    if ( item && item->id != 0 )
+        dbc::find_consumable( ITEM_SUBCLASS_POTION, maybe_ptr( b->player->dbc->ptr ), potion_spell_filter( b->data().id() ) );
+    if ( item.id != 0 )
     {
       return b;
     }
@@ -2190,6 +2211,12 @@ std::ostream& operator<<(std::ostream &os, const buff_t& b)
 // ==========================================================================
 // STAT_BUFF
 // ==========================================================================
+
+stat_buff_t::stat_buff_t(actor_pair_t q, const std::string& name)
+  : stat_buff_t(q, name, spell_data_t::nil(), nullptr)
+{
+
+}
 
 stat_buff_t::stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
   : buff_t( q, name, spell, item ),
@@ -2376,6 +2403,12 @@ void stat_buff_t::expire_override( int expiration_stacks, timespan_t remaining_d
 // COST_REDUCTION_BUFF
 // ==========================================================================
 
+cost_reduction_buff_t::cost_reduction_buff_t(actor_pair_t q, const std::string& name)
+  : cost_reduction_buff_t(q, name, spell_data_t::nil(), nullptr)
+{
+
+}
+
 cost_reduction_buff_t::cost_reduction_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell,
                                               const item_t* item )
   : buff_t( q, name, spell, item ), amount(), school( SCHOOL_NONE )
@@ -2443,6 +2476,12 @@ cost_reduction_buff_t* cost_reduction_buff_t::set_reduction( school_e school, do
   this->amount = amount;
   this->school = school;
   return this;
+}
+
+absorb_buff_t::absorb_buff_t(actor_pair_t q, const std::string& name)
+  : absorb_buff_t(q, name, spell_data_t::nil(), nullptr)
+{
+
 }
 
 absorb_buff_t::absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )

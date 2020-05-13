@@ -61,7 +61,7 @@ item_t::item_t( player_t* p, const std::string& o ) :
   parent_slot( SLOT_INVALID ),
   unique( false ),
   unique_addon( false ),
-  is_ptr( p -> dbc.ptr ),
+  is_ptr( p -> dbc->ptr ),
   parsed(),
   xml(),
   options_str( o ), option_initial_cd(0)
@@ -88,9 +88,9 @@ bool item_t::has_scaling_stat_bonus_id() const
 {
   for ( auto bonus_id : parsed.bonus_id )
   {
-    std::vector<const item_bonus_entry_t*> bonuses = player -> dbc.item_bonus( bonus_id );
-    if ( std::find_if( bonuses.begin(), bonuses.end(), []( const item_bonus_entry_t* e )
-          { return e -> type == ITEM_BONUS_SCALING; } ) != bonuses.end() )
+    auto bonuses = player -> dbc->item_bonus( bonus_id );
+    if ( std::find_if( bonuses.begin(), bonuses.end(), []( const item_bonus_entry_t& e )
+          { return e.type == ITEM_BONUS_SCALING; } ) != bonuses.end() )
     {
       return true;
     }
@@ -535,7 +535,7 @@ unsigned item_t::base_item_level() const
   }
   else if ( parsed.azerite_level > 0 )
   {
-    return player -> dbc.azerite_item_level( parsed.azerite_level );
+    return player -> dbc->azerite_item_level( parsed.azerite_level );
   }
   else
     return parsed.data.level;
@@ -554,7 +554,7 @@ int item_t::stat_value( size_t idx ) const
   if ( idx >= sizeof_array( parsed.data.stat_type_e ) - 1 )
     return -1;
 
-  return item_database::scaled_stat( *this, player -> dbc, idx, item_level() );
+  return item_database::scaled_stat( *this, *player -> dbc, idx, item_level() );
 }
 
 // item_t::active ===========================================================
@@ -581,9 +581,10 @@ std::string item_t::full_name() const
 {
   std::string n;
 
-  if ( const item_data_t* item = sim -> dbc.item( parsed.data.id ) )
+  const auto& item = sim->dbc->item( parsed.data.id );
+  if ( item.id > 0 )
   {
-    n = item -> name;
+    n = item.name;
   }
   else
   {
@@ -592,15 +593,15 @@ std::string item_t::full_name() const
 
   for ( auto bonus_id : parsed.bonus_id )
   {
-    std::vector<const item_bonus_entry_t*> bonuses = sim -> dbc.item_bonus( bonus_id );
+    auto bonuses = sim -> dbc->item_bonus( bonus_id );
     for ( const auto bonus : bonuses )
     {
-      if ( bonus -> type != ITEM_BONUS_SUFFIX )
+      if ( bonus.type != ITEM_BONUS_SUFFIX )
       {
         continue;
       }
 
-      const char* suffix_name = dbc::item_name_description( bonus -> value_1, sim -> dbc.ptr );
+      const char* suffix_name = sim->dbc->item_description( bonus.value_1 ).description;
       if ( suffix_name )
       {
         n += " ";
@@ -801,7 +802,7 @@ void item_t::parse_options()
       // Try to convert the name to a power (id)
       else
       {
-        const auto& power = player->dbc.azerite_power( power_str, true );
+        const auto& power = player->dbc->azerite_power( power_str, true );
         if ( power.id > 0 )
         {
           parsed.azerite_ids.push_back( power.id );
@@ -1220,8 +1221,8 @@ std::string item_t::encoded_weapon() const
   // insted of the weapon_dmg_min( item_data_t*, dbc_t&, unsigned ) variant,
   // since we want the normal weapon stats of the item in the encoded option
   // string.
-  unsigned min_dam = item_database::weapon_dmg_min( &parsed.data, player -> dbc );
-  unsigned max_dam = item_database::weapon_dmg_max( &parsed.data, player -> dbc );
+  unsigned min_dam = item_database::weapon_dmg_min( parsed.data, *player -> dbc );
+  unsigned max_dam = item_database::weapon_dmg_max( parsed.data, *player -> dbc );
 
   if ( ! speed || ! min_dam || ! max_dam )
     return str;
@@ -1517,10 +1518,10 @@ void item_t::decode_gems()
     unsigned gem_index = 0;
     for ( const auto& gem_str : split )
     {
-      auto item = dbc::find_gem( gem_str, player->dbc.ptr );
-      if ( item->id > 0 )
+      auto item = dbc::find_gem( gem_str, player->dbc->ptr );
+      if ( item.id > 0 )
       {
-        parsed.gem_id[ gem_index++ ] = item->id;
+        parsed.gem_id[ gem_index++ ] = item.id;
       }
 
       if ( gem_index == parsed.gem_id.size() - 1 )
@@ -1540,7 +1541,7 @@ void item_t::decode_gems()
       // Socket bonus
       if ( socket_color_match() && parsed.socket_bonus_stats.size() == 0 )
       {
-        const item_enchantment_data_t& socket_bonus = player -> dbc.item_enchantment( parsed.data.id_socket_bonus );
+        const item_enchantment_data_t& socket_bonus = player -> dbc->item_enchantment( parsed.data.id_socket_bonus );
         enchant::initialize_item_enchant( *this, parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, socket_bonus );
       }
 
@@ -1551,8 +1552,8 @@ void item_t::decode_gems()
     // DBC data
     //
     // Detect meta gem through DBC data, instead of clunky prefix matching
-    const item_enchantment_data_t& meta_gem_enchant = enchant::find_meta_gem( player -> dbc, option_gems_str );
-    meta_gem_e meta_gem = enchant::meta_gem_type( player -> dbc, meta_gem_enchant );
+    const item_enchantment_data_t& meta_gem_enchant = enchant::find_meta_gem( *player -> dbc, option_gems_str );
+    meta_gem_e meta_gem = enchant::meta_gem_type( *player -> dbc, meta_gem_enchant );
 
     if ( meta_gem != META_GEM_NONE )
     {
@@ -1717,8 +1718,8 @@ void item_t::decode_weapon()
 
     w -> type = wc;
     w -> swing_time = timespan_t::from_millis( parsed.data.delay );
-    w -> dps = player -> dbc.weapon_dps( &parsed.data, item_level() );
-    w -> damage = player -> dbc.weapon_dps( &parsed.data, item_level() ) * parsed.data.delay / 1000.0;
+    w -> dps = player->dbc->weapon_dps( parsed.data, item_level() );
+    w -> damage = player->dbc->weapon_dps( parsed.data, item_level() ) * parsed.data.delay / 1000.0;
     w -> min_dmg = item_database::weapon_dmg_min( *this );
     w -> max_dmg = item_database::weapon_dmg_max( *this );
   }
@@ -1925,7 +1926,7 @@ bool item_t::download_item( item_t& item )
   if ( success && item.parsed.socket_bonus_stats.size() == 0 &&
        item.parsed.data.id_socket_bonus > 0 )
   {
-    const item_enchantment_data_t& bonus = item.player -> dbc.item_enchantment( item.parsed.data.id_socket_bonus );
+    const item_enchantment_data_t& bonus = item.player -> dbc->item_enchantment( item.parsed.data.id_socket_bonus );
     enchant::initialize_item_enchant( item, item.parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, bonus );
   }
 
@@ -1939,12 +1940,12 @@ void item_t::init_special_effects()
   special_effect_t proxy_effect( this );
 
   // Enchant
-  const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.enchant_id );
+  const item_enchantment_data_t& enchant_data = player -> dbc->item_enchantment( parsed.enchant_id );
   enchant::initialize_item_enchant( *this, parsed.enchant_stats,
         SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data );
 
   // Addon (tinker)
-  const item_enchantment_data_t& addon_data = player -> dbc.item_enchantment( parsed.addon_id );
+  const item_enchantment_data_t& addon_data = player -> dbc->item_enchantment( parsed.addon_id );
   enchant::initialize_item_enchant( *this, parsed.addon_stats,
         SPECIAL_EFFECT_SOURCE_ADDON, addon_data );
 

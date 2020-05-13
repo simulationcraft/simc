@@ -8,6 +8,8 @@
 #include "config.hpp"
 #include "sim/sc_expressions.hpp"
 
+class dbc_t;
+
 // Spell query expression types
 enum expr_data_e
 {
@@ -26,7 +28,7 @@ enum expr_data_e
 struct spell_data_expr_t
 {
   std::string name_str;
-  sim_t* sim;
+  dbc_t& dbc;
   expr_data_e data_type;
   bool effect_query;
 
@@ -35,11 +37,11 @@ struct spell_data_expr_t
   std::vector<uint32_t> result_spell_list;
   std::string result_str;
 
-  spell_data_expr_t( sim_t* sim, const std::string& n,
+  spell_data_expr_t( dbc_t& dbc, const std::string& n,
                      expr_data_e dt = DATA_SPELL, bool eq = false,
                      expression::token_e t = expression::TOK_UNKNOWN )
     : name_str( n ),
-      sim( sim ),
+      dbc( dbc ),
       data_type( dt ),
       effect_query( eq ),
       result_tok( t ),
@@ -48,9 +50,9 @@ struct spell_data_expr_t
       result_str( "" )
   {
   }
-  spell_data_expr_t( sim_t* sim, const std::string& n, double constant_value )
+  spell_data_expr_t(dbc_t& dbc, const std::string& n, double constant_value )
     : name_str( n ),
-      sim( sim ),
+      dbc(dbc),
       data_type( DATA_SPELL ),
       effect_query( false ),
       result_tok( expression::TOK_NUM ),
@@ -59,10 +61,10 @@ struct spell_data_expr_t
       result_str( "" )
   {
   }
-  spell_data_expr_t( sim_t* sim, const std::string& n,
+  spell_data_expr_t(dbc_t& dbc, const std::string& n,
                      const std::string& constant_value )
     : name_str( n ),
-      sim( sim ),
+      dbc(dbc),
       data_type( DATA_SPELL ),
       effect_query( false ),
       result_tok( expression::TOK_STR ),
@@ -71,10 +73,10 @@ struct spell_data_expr_t
       result_str( constant_value )
   {
   }
-  spell_data_expr_t( sim_t* sim, const std::string& n,
+  spell_data_expr_t(dbc_t& dbc, const std::string& n,
                      const std::vector<uint32_t>& constant_value )
     : name_str( n ),
-      sim( sim ),
+      dbc(dbc),
       data_type( DATA_SPELL ),
       effect_query( false ),
       result_tok( expression::TOK_SPELL_LIST ),
@@ -110,5 +112,5 @@ struct spell_data_expr_t
   virtual std::vector<uint32_t> not_in( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
 
   static spell_data_expr_t* parse( sim_t* sim, const std::string& expr_str );
-  static spell_data_expr_t* create_spell_expression( sim_t* sim, const std::string& name_str );
+  static spell_data_expr_t* create_spell_expression( dbc_t& dbc, const std::string& name_str );
 };

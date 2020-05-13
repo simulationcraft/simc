@@ -17,8 +17,8 @@ set_bonus_t::set_bonus_t( player_t* player ) :
 {
   for ( size_t i = 0; i < set_bonus_spec_data.size(); i++ )
   {
-    set_bonus_spec_data[ i ].resize( actor -> dbc.specialization_max_per_class() );
-    set_bonus_spec_count[ i ].resize( actor -> dbc.specialization_max_per_class() );
+    set_bonus_spec_data[ i ].resize( actor -> dbc->specialization_max_per_class() );
+    set_bonus_spec_count[ i ].resize( actor -> dbc->specialization_max_per_class() );
     // For now only 2, and 4 set bonuses
     for ( size_t j = 0; j < set_bonus_spec_data[ i ].size(); j++ )
     {
@@ -32,9 +32,9 @@ set_bonus_t::set_bonus_t( player_t* player ) :
 
   // Initialize the set bonus data structure with correct set bonus data.
   // Spells are not setup yet.
-  for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( maybe_ptr( actor -> dbc.ptr ) ); bonus_idx++ )
+  for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( maybe_ptr( actor -> dbc->ptr ) ); bonus_idx++ )
   {
-    const item_set_bonus_t& bonus = dbc::set_bonus( maybe_ptr( actor -> dbc.ptr ) )[ bonus_idx ];
+    const item_set_bonus_t& bonus = dbc::set_bonus( maybe_ptr( actor -> dbc->ptr ) )[ bonus_idx ];
     if ( bonus.class_id != -1 && bonus.class_id != util::class_id( actor -> type ) )
       continue;
 
@@ -85,9 +85,9 @@ void set_bonus_t::initialize_items()
     if ( item.parsed.data.id_set == 0 )
       continue;
 
-    for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( maybe_ptr( actor -> dbc.ptr ) ); bonus_idx++ )
+    for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( maybe_ptr( actor -> dbc->ptr ) ); bonus_idx++ )
     {
-      const item_set_bonus_t& bonus = dbc::set_bonus( maybe_ptr( actor -> dbc.ptr ) )[ bonus_idx ];
+      const item_set_bonus_t& bonus = dbc::set_bonus( maybe_ptr( actor -> dbc->ptr ) )[ bonus_idx ];
       if ( bonus.set_id != static_cast<unsigned>( item.parsed.data.id_set ) )
         continue;
 

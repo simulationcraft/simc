@@ -1,5 +1,5 @@
 // Gem properties, wow build 8.3.0.34220
-static constexpr std::array<gem_property_data_t, 1842> __gem_property_data { {
+static const std::array<gem_property_data_t, 1842> __gem_property_data { {
   {    2,  2686, 0x00000002,    0 },
   {    3,  2687, 0x00000008,    0 },
   {    4,  2688, 0x00000004,    0 },

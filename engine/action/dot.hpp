@@ -6,7 +6,6 @@
 #pragma once
 
 #include "config.hpp"
-#include "sim/event.hpp"
 #include "sc_timespan.hpp"
 #include "sc_enums.hpp"
 #include <string>
@@ -16,43 +15,10 @@
 struct action_t;
 struct action_state_t;
 struct dot_t;
+struct event_t;
 struct expr_t;
 struct player_t;
 struct sim_t;
-
-// DoT ======================================================================
-
-// DoT Tick Event ===========================================================
-
-struct dot_tick_event_t : public event_t
-{
-public:
-  dot_tick_event_t(dot_t* d, timespan_t time_to_tick);
-
-private:
-  virtual void execute() override;
-  virtual const char* name() const override
-  {
-    return "Dot Tick";
-  }
-  dot_t* dot;
-};
-
-// DoT End Event ===========================================================
-
-struct dot_end_event_t : public event_t
-{
-public:
-  dot_end_event_t(dot_t* d, timespan_t time_to_end);
-
-private:
-  virtual void execute() override;
-  virtual const char* name() const override
-  {
-    return "DoT End";
-  }
-  dot_t* dot;
-};
 
 struct dot_t : private noncopyable
 {
@@ -153,6 +119,6 @@ private:
   bool is_higher_priority_action_available() const;
   void recalculate_num_ticks();
 
-  friend struct dot_tick_event_t;
-  friend struct dot_end_event_t;
+  struct dot_tick_event_t;
+  struct dot_end_event_t;
 };

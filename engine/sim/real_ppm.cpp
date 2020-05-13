@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "real_ppm.hpp"
+#include "dbc/dbc.hpp"
 #include "player/sc_player.hpp"
 #include "sim/sc_sim.hpp"
 #include "util/rng.hpp"
@@ -13,11 +14,11 @@ real_ppm_t::real_ppm_t( const std::string& name, player_t* p, const spell_data_t
   : player( p ),
     name_str( name ),
     freq( data->real_ppm() ),
-    modifier( p->dbc.real_ppm_modifier( data->id(), player, item ? item->item_level() : 0 ) ),
+    modifier( p->dbc->real_ppm_modifier( data->id(), player, item ? item->item_level() : 0 ) ),
     rppm( freq * modifier ),
     last_trigger_attempt( timespan_t::zero() ),
     last_successful_trigger( timespan_t::zero() ),
-    scales_with( p->dbc.real_ppm_scale( data->id() ) ),
+    scales_with( p->dbc->real_ppm_scale( data->id() ) ),
     blp_state( BLP_ENABLED )
 {
 }

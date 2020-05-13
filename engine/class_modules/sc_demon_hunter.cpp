@@ -5638,8 +5638,8 @@ double demon_hunter_t::calculate_expected_max_health() const
       continue;
     }
 
-    const random_prop_data_t item_data = dbc.random_property(item.item_level());
-    int index = item_database::random_suffix_type(&item.parsed.data);
+    const random_prop_data_t item_data = dbc->random_property(item.item_level());
+    int index = item_database::random_suffix_type(item.parsed.data);
     if ( item_data.p_epic[0] == 0 )
     {
       continue;
@@ -6161,7 +6161,7 @@ public:
       std::string name_str = entry->first;
       if ( a )
       {
-        name_str = report::action_decorator_t( a ).decorate();
+        name_str = report_decorators::decorated_action(*a);
       }
       else
       {

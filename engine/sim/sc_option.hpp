@@ -13,8 +13,6 @@
 #include <functional>
 #include <vector>
 #include <memory>
-#include <cstring>
-#include <sstream>
 
 #include "sc_timespan.hpp"
 

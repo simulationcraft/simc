@@ -2413,7 +2413,7 @@ void item::readiness( special_effect_t& effect )
   player_t* p = effect.item -> player;
 
   const spell_data_t* cdr_spell = p -> find_spell( effect.spell_id );
-  const random_prop_data_t& budget = p -> dbc.random_property( effect.item -> item_level() );
+  const random_prop_data_t& budget = p -> dbc->random_property( effect.item -> item_level() );
   double cdr = 1.0 / ( 1.0 + budget.p_epic[ 0 ] * cdr_spell -> effectN( 1 ).m_coefficient() / 100.0 );
 
   if ( p -> level() > 90 )
@@ -2480,7 +2480,7 @@ void item::amplification( special_effect_t& effect )
     amp_value = &( p -> passive_values.amplification_2 );
   }
 
-  const random_prop_data_t& budget = p -> dbc.random_property( effect.item -> item_level() );
+  const random_prop_data_t& budget = p -> dbc->random_property( effect.item -> item_level() );
   *amp_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_coefficient() / 100.0;
   if ( p -> level() > 90 )
   { // We have no clue how the trinket actually scales down with level. This will linearly decrease amplification until it hits 0 at level 100.
@@ -2611,7 +2611,7 @@ void item::cleave( special_effect_t& effect )
   };
 
   player_t* p = effect.item -> player;
-  const random_prop_data_t& budget = p -> dbc.random_property( effect.item -> item_level() );
+  const random_prop_data_t& budget = p -> dbc->random_property( effect.item -> item_level() );
   const spell_data_t* cleave_driver_spell = p -> find_spell( effect.spell_id );
 
   // Needs a damaging result
@@ -3424,7 +3424,7 @@ struct blademaster_pet_t : public pet_t
 
     // Magical constants for base damage
     double damage_range = 0.4;
-    double base_dps = owner -> dbc.spell_scaling( PLAYER_SPECIAL_SCALE, owner -> level() ) * 4.725;
+    double base_dps = owner -> dbc->spell_scaling( PLAYER_SPECIAL_SCALE, owner -> level() ) * 4.725;
     double min_dps = base_dps * ( 1 - damage_range / 2.0 );
     double max_dps = base_dps * ( 1 + damage_range / 2.0 );
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
@@ -4094,13 +4094,13 @@ void unique_gear::initialize_racial_effects( player_t* player )
   }
 
   // Iterate over all race spells for the player
-  for ( unsigned n = 0; n < player -> dbc.race_ability_size(); ++n )
+  for ( unsigned n = 0; n < player -> dbc->race_ability_size(); ++n )
   {
-    auto cls_spell_id = player -> dbc.race_ability( rid, cid, n );
-    auto spell_id = player -> dbc.race_ability( rid, 0, n );
+    auto cls_spell_id = player -> dbc->race_ability( rid, cid, n );
+    auto spell_id = player -> dbc->race_ability( rid, 0, n );
     if ( cls_spell_id > 0 || spell_id > 0 )
     {
-      auto spell = player -> dbc.spell( cls_spell_id > 0 ? cls_spell_id : spell_id );
+      auto spell = player -> dbc->spell( cls_spell_id > 0 ? cls_spell_id : spell_id );
       if ( ! spell || ! spell -> ok() )
       {
         continue;
@@ -4481,34 +4481,43 @@ const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
   }
 
   // Poor man's longest matching prefix!
-  const item_data_t* item = dbc::find_consumable( type, dbc.ptr, [&name]( const item_data_t* i ) {
+  const auto& item = dbc::find_consumable( type, dbc.ptr, [&name]( const item_data_t* i ) {
     std::string n = i -> name ? i -> name : "unknown";
     util::tokenize( n );
     return util::str_in_str_ci( n, name );
   } );
 
-  if ( item -> id != 0 )
-    return item;
-
-  return nullptr;
-}
-
-const item_data_t* unique_gear::find_item_by_spell( const dbc_t& dbc, unsigned spell_id )
-{
-  for ( const item_data_t* item = dbc::items( maybe_ptr( dbc.ptr ) ); item -> id != 0; item++ )
-  {
-    for ( size_t spell_idx = 0, end = sizeof_array( item -> id_spell ); spell_idx < end; spell_idx++ )
-    {
-      if ( item -> id_spell[ spell_idx ] == static_cast<int>( spell_id ) )
-        return item;
-    }
-  }
+  if ( item.id != 0 )
+    return &item;
 
   return nullptr;
 }
 
 namespace unique_gear
 {
+  void proc_resource_t::__initialize()
+  {
+    may_miss = may_dodge = may_parry = may_block = harmful = false;
+    target = player;
+
+    for (size_t i = 1; i <= data().effect_count(); i++)
+    {
+      const spelleffect_data_t& effect = data().effectN(i);
+      if (effect.type() == E_ENERGIZE)
+      {
+        gain_da = effect.average(item);
+        gain_resource = effect.resource_gain_type();
+      }
+      else if (effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_ENERGIZE)
+      {
+        gain_ta = effect.average(item);
+        gain_resource = effect.resource_gain_type();
+      }
+    }
+
+    gain = player->get_gain(name());
+  }
+
 std::vector<special_effect_db_item_t> __special_effect_db, __fallback_effect_db;
 
 bool class_scoped_callback_t::valid(const special_effect_t& effect) const
@@ -4545,18 +4554,12 @@ void proc_attack_t::override_data(const special_effect_t& e)
 
 } // unique_gear
 
-namespace
-{
-bool cmp_dbitem( const special_effect_db_item_t& elem, unsigned id )
-{ return elem.spell_id < id; }
-}
-
 static unique_gear::special_effect_set_t do_find_special_effect_db_item(
     const std::vector<special_effect_db_item_t>& db, unsigned spell_id )
 {
   special_effect_set_t entries;
 
-  auto it = std::lower_bound( db.begin(), db.end(), spell_id, cmp_dbitem );
+  auto it = range::lower_bound( db, spell_id, {}, &special_effect_db_item_t::spell_id );
 
   if ( it == db.end() || it -> spell_id != spell_id )
   {

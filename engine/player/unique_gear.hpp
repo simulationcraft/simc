@@ -347,7 +347,6 @@ void initialize_special_effect_2( special_effect_t* effect );
 void initialize_racial_effects( player_t* );
 
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
-const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
 
 std::unique_ptr<expr_t> create_expression( player_t& player, const std::string& name_str );
 
@@ -553,28 +552,7 @@ struct proc_resource_t : public proc_action_t<spell_t>
   resource_e gain_resource;
 
   // Note, not called by proc_action_t
-  void __initialize()
-  {
-    may_miss = may_dodge = may_parry = may_block = harmful = false;
-    target = player;
-
-    for ( size_t i = 1; i <= data().effect_count(); i++ )
-    {
-      const spelleffect_data_t& effect = data().effectN( i );
-      if ( effect.type() == E_ENERGIZE )
-      {
-        gain_da = effect.average( item );
-        gain_resource = effect.resource_gain_type();
-      }
-      else if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_ENERGIZE )
-      {
-        gain_ta = effect.average( item );
-        gain_resource = effect.resource_gain_type();
-      }
-    }
-
-    gain = player -> get_gain( name() );
-  }
+  void __initialize();
 
   proc_resource_t( const special_effect_t& e ) :
     super( e ), gain_da( 0 ), gain_ta( 0 ), gain_resource( RESOURCE_NONE )

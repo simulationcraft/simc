@@ -4220,7 +4220,7 @@ static unsigned _ptr__azerite_level_to_item_level[300] = {
 };
 
 // Armor mitigation constants (K-values), wow build 8.3.0.34220
-static constexpr std::array<double, 123> __ptr_armor_mitigation_constants_data { {
+static const std::array<double, 123> __ptr_armor_mitigation_constants_data { {
    115.000,  121.000,  126.000,  132.000,  137.000,
    143.000,  148.000,  154.000,  159.000,  164.000,
    170.000,  175.000,  181.000,  186.000,  192.000,
@@ -4248,7 +4248,7 @@ static constexpr std::array<double, 123> __ptr_armor_mitigation_constants_data {
   6300.000, 6300.000, 6300.000,
 } };
 // Npc base armor values, wow build 8.3.0.34220
-static constexpr std::array<double, 123> __ptr_npc_armor_data { {
+static const std::array<double, 123> __ptr_npc_armor_data { {
     49.000,   52.000,   54.000,   56.000,   59.000,
     61.000,   63.000,   66.000,   68.000,   70.000,
     73.000,   75.000,   78.000,   80.000,   82.000,

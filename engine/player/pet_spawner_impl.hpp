@@ -570,7 +570,7 @@ void pet_spawner_t<T, O>::create_persistent_actors()
 }
 
 template <typename T, typename O>
-std::unique_ptr<expr_t> pet_spawner_t<T, O>::create_expression( const arv::array_view<std::string>& expr )
+std::unique_ptr<expr_t> pet_spawner_t<T, O>::create_expression( util::span<const std::string> expr )
 {
   if ( expr.size() == 0 )
   {
