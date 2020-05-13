@@ -1325,27 +1325,34 @@ struct innervate_buff_t : public druid_buff_t<buff_t>
 
 struct tigers_fury_buff_t : public druid_buff_t<buff_t>
 {
-  tigers_fury_buff_t(druid_t& p) : base_t(p, "tigers_fury", p.spec.tigers_fury)
+  tigers_fury_buff_t( druid_t& p ) : base_t( p, "tigers_fury", p.spec.tigers_fury )
   {
-    set_default_value(p.spec.tigers_fury->effectN(1).percent());
-    set_cooldown(timespan_t::zero());
+    set_default_value( p.spec.tigers_fury->effectN( 1 ).percent() );
+    set_cooldown( timespan_t::zero() );
   }
 
-  void start(int stacks, double value, timespan_t duration) override
+  void start( int stacks, double value, timespan_t duration ) override
   {
-    if (p().azerite.jungle_fury.enabled())
-      p().buff.jungle_fury->trigger(1, DEFAULT_VALUE(), 1.0, duration);
+    if ( p().azerite.jungle_fury.enabled() )
+      p().buff.jungle_fury->trigger( 1, DEFAULT_VALUE(), 1.0, duration );
 
-    base_t::start(stacks, value, duration);
+    base_t::start( stacks, value, duration );
   }
 
-  void expire_override(int expiration_stacks, timespan_t remaining_duration) override
+  void refresh( int stacks, double value, timespan_t duration ) override
+  {
+    if ( p().azerite.jungle_fury.enabled() )
+      p().buff.jungle_fury->refresh( 0, DEFAULT_VALUE(), duration );
+
+    base_t::refresh( stacks, value, duration );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     p().buff.jungle_fury->expire();
 
-    base_t::expire_override(expiration_stacks, remaining_duration);
+    base_t::expire_override( expiration_stacks, remaining_duration );
   }
-
 };
 
 //Tiger Dash Buff ===========================================================
