@@ -986,7 +986,7 @@ std::vector<item_database::token_t> item_database::parse_tokens( const std::stri
   return tokens;
 }
 
-const item_data_t& dbc::find_gem( const std::string& gem, bool ptr, bool tokenized )
+const item_data_t& dbc::find_gem( util::string_view gem, bool ptr, bool tokenized )
 {
   return gem_index.get( ptr, [&gem, tokenized]( const item_data_t* obj ) {
       if ( tokenized )

@@ -6,6 +6,7 @@
 #define SPECIALIZATION_SPELL_HPP
 
 #include "util/span.hpp"
+#include "util/string_view.hpp"
 
 #include "specialization.hpp"
 #include "client_data.hpp"
@@ -18,7 +19,7 @@ struct specialization_spell_entry_t
   unsigned    override_spell_id;
   const char* name;
 
-  static const specialization_spell_entry_t& find( const std::string& name, bool ptr, specialization_e spec = SPEC_NONE, bool tokenized = false );
+  static const specialization_spell_entry_t& find( util::string_view name, bool ptr, specialization_e spec = SPEC_NONE, bool tokenized = false );
 
   static const specialization_spell_entry_t& nil()
   { return dbc::nil<specialization_spell_entry_t>(); }
