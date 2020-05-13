@@ -59,7 +59,7 @@ const proxy_t& get_proxy();
 
 void cache_load( const std::string& file_name );
 void cache_save( const std::string& file_name );
-bool clear_cache( sim_t*, const std::string& name, const std::string& value );
+void clear_cache();
 
 std::tuple<std::string, std::string> normalize_header( const std::string& );
 

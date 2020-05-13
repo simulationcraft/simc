@@ -464,6 +464,18 @@ public:
   }
 };
 
+bool clear_http_cache(sim_t* sim,
+  const std::string& name,
+  const std::string& value)
+{
+  assert(name == "http_clear_cache"); (void)name;
+  if (value != "0" && !sim->parent)
+  {
+    http::clear_cache();
+  }
+  return true;
+}
+
 bool parse_armory( sim_t*             sim,
                    const std::string& name,
                    const std::string& value )
@@ -3509,7 +3521,7 @@ void sim_t::create_options()
   add_option( opt_func( "armory", parse_armory ) );
   add_option( opt_func( "guild", parse_guild ) );
   add_option( opt_func( "local_json", parse_armory ) );
-  add_option( opt_func( "http_clear_cache", http::clear_cache ) );
+  add_option( opt_func( "http_clear_cache", clear_http_cache ) );
   add_option( opt_func( "cache_items", parse_cache ) );
   add_option( opt_func( "cache_players", parse_cache ) );
   add_option( opt_string( "default_region", default_region_str ) );

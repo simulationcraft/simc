@@ -5,7 +5,9 @@
 
 #include "sc_http.hpp"
 #include "util/concurrency.hpp"
-#include "sim/sc_sim.hpp"
+#include "util/io.hpp"
+#include "util/util.hpp"
+#include <cstring>
 
 // Cross-Platform Support for HTTP-Download =================================
 
@@ -24,7 +26,7 @@ http_connection_pool_t* pool() { return nullptr; }
 
 void cache_load( const std::string&) {}
 void cache_save( const std::string&) {}
-bool clear_cache( sim_t*, const std::string&, const std::string&) { return true;}
+void clear_cache() {}
 
 int get( std::string& /*result */,
          const std::string& /* url */,
@@ -185,13 +187,9 @@ http::http_connection_pool_t::~http_connection_pool_t()
 
 // http::clear_cache ========================================================
 
-bool http::clear_cache( sim_t* sim,
-                        const std::string& name,
-                        const std::string& value )
+void http::clear_cache()
 {
-  assert( name == "http_clear_cache" ); ( void )name;
-  if ( value != "0" && ! sim -> parent ) cache_clear();
-  return true;
+  cache_clear();
 }
 
 // http::cache_load =========================================================
