@@ -558,7 +558,7 @@ std::vector< const spelleffect_data_t* > dbc_t::effects_affecting_spell( const s
 
 // translate_spec_str =======================================================
 
-specialization_e dbc::translate_spec_str( player_e ptype, const std::string& spec_str )
+specialization_e dbc::translate_spec_str( player_e ptype, util::string_view spec_str )
 {
   using namespace util;
   switch ( ptype )
@@ -1250,12 +1250,12 @@ double dbc_t::melee_crit_scaling( player_e t, unsigned level ) const
   */
   return 0;
 }
- 
+
 double dbc_t::melee_crit_scaling( pet_e t, unsigned level ) const
 {
   return melee_crit_scaling( util::pet_class_type( t ), level );
 }
- 
+
 double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
@@ -1272,7 +1272,7 @@ double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
   */
   return 0;
 }
- 
+
 double dbc_t::spell_crit_scaling( pet_e t, unsigned level ) const
 {
   return spell_crit_scaling( util::pet_class_type( t ), level );
@@ -1282,7 +1282,7 @@ int dbc_t::resolve_item_scaling( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_gt_item_scaling[level - 1] 
+  return ptr ? __ptr_gt_item_scaling[level - 1]
              : __gt_item_scaling[level - 1];
 #else
   return __gt_item_scaling[ level - 1 ];
@@ -1436,7 +1436,7 @@ const azerite_power_entry_t& dbc_t::azerite_power( unsigned power_id ) const
   return azerite_power_entry_t::find( power_id, ptr );
 }
 
-const azerite_power_entry_t& dbc_t::azerite_power( const std::string& name, bool tokenized ) const
+const azerite_power_entry_t& dbc_t::azerite_power( util::string_view name, bool tokenized ) const
 {
   for ( const auto& power : azerite_powers() )
   {
@@ -1823,20 +1823,20 @@ spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
   return s;
 }
 
-spell_data_t* spell_data_t::find( unsigned spell_id, const char* confirmation, bool ptr )
+spell_data_t* spell_data_t::find( unsigned spell_id, util::string_view confirmation, bool ptr )
 {
   ( void )confirmation;
 
   spell_data_t* p = find( spell_id, ptr );
-  assert( p && ! strcmp( confirmation, p -> name_cstr() ) );
+  assert( p && confirmation == p -> name_cstr() );
   return p;
 }
 
-spell_data_t* spell_data_t::find( const char* name, bool ptr )
+spell_data_t* spell_data_t::find( util::string_view name, bool ptr )
 {
   for ( spell_data_t* p = spell_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
-    if ( ! strcmp ( name, p -> name_cstr() ) )
+    if ( name == p -> name_cstr() )
     {
       return p;
     }
@@ -1901,20 +1901,20 @@ talent_data_t* talent_data_t::find( unsigned id, bool ptr )
   return t;
 }
 
-talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool ptr )
+talent_data_t* talent_data_t::find( unsigned id, util::string_view confirmation, bool ptr )
 {
 
   talent_data_t* p = find( id, ptr );
-  assert( !confirmation || (strcmp( confirmation, p -> name_cstr() ) == 0) );
+  assert( confirmation == p -> name_cstr() );
   ( void )confirmation;
   return p;
 }
 
-talent_data_t* talent_data_t::find( const char* name_cstr, specialization_e spec, bool ptr )
+talent_data_t* talent_data_t::find( util::string_view name, specialization_e spec, bool ptr )
 {
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
-    if ( ! strcmp( name_cstr, p -> name_cstr() ) && p -> specialization() == spec )
+    if ( name == p -> name_cstr() && p -> specialization() == spec )
     {
       return p;
     }
@@ -1923,7 +1923,7 @@ talent_data_t* talent_data_t::find( const char* name_cstr, specialization_e spec
   return nullptr;
 }
 
-talent_data_t* talent_data_t::find_tokenized( const char* name, specialization_e spec, bool ptr )
+talent_data_t* talent_data_t::find_tokenized( util::string_view name, specialization_e spec, bool ptr )
 {
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
@@ -2194,11 +2194,9 @@ double dbc_t::effect_max( const spelleffect_data_t* e, unsigned level ) const
   return result;
 }
 
-unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, const char* spell_name, bool name_tokenized ) const
+unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, util::string_view spell_name, bool name_tokenized ) const
 {
   uint32_t cid = util::class_id( c );
-
-  assert( spell_name && spell_name[ 0 ] );
 
   if ( ! cid )
     return 0;
@@ -2225,10 +2223,10 @@ unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, const char
   return 0;
 }
 
-unsigned dbc_t::class_ability_id( player_e           c,
-                                  specialization_e   spec_id,
-                                  const std::string& spell_name,
-                                  bool               name_tokenized ) const
+unsigned dbc_t::class_ability_id( player_e          c,
+                                  specialization_e  spec_id,
+                                  util::string_view spell_name,
+                                  bool              name_tokenized ) const
 {
   const active_class_spell_t* active_spell = nullptr;
   if ( spec_id != SPEC_NONE )
@@ -2274,7 +2272,7 @@ unsigned dbc_t::class_ability_id( player_e           c,
   }
 }
 
-unsigned dbc_t::pet_ability_id( player_e c, const std::string& name, bool tokenized ) const
+unsigned dbc_t::pet_ability_id( player_e c, util::string_view name, bool tokenized ) const
 {
   const active_pet_spell_t* active_spell = nullptr;
   if ( c != PLAYER_NONE )
@@ -2301,13 +2299,11 @@ unsigned dbc_t::pet_ability_id( player_e c, const std::string& name, bool tokeni
   }
 }
 
-unsigned dbc_t::race_ability_id( player_e c, race_e r, const char* spell_name ) const
+unsigned dbc_t::race_ability_id( player_e c, race_e r, util::string_view spell_name ) const
 {
   unsigned rid = util::race_id( r );
   unsigned cid = util::class_id( c );
   unsigned spell_id;
-
-  assert( spell_name && spell_name[ 0 ] );
 
   if ( !rid || !cid )
     return 0;
@@ -2355,7 +2351,7 @@ unsigned dbc_t::race_ability_id( player_e c, race_e r, const char* spell_name ) 
   return 0;
 }
 
-unsigned dbc_t::specialization_ability_id( specialization_e spec_id, const std::string& spell_name ) const
+unsigned dbc_t::specialization_ability_id( specialization_e spec_id, util::string_view spell_name ) const
 {
   unsigned class_idx = -1;
   unsigned spec_index = -1;
@@ -2406,12 +2402,10 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
   return !spec_list.empty();
 }
 
-unsigned dbc_t::mastery_ability_id( specialization_e spec, const char* spell_name ) const
+unsigned dbc_t::mastery_ability_id( specialization_e spec, util::string_view spell_name ) const
 {
   unsigned class_idx = -1;
   unsigned spec_index = -1;
-
-  assert( spell_name && spell_name[ 0 ] );
 
   if ( ! spec_idx( spec, class_idx, spec_index ) )
     return 0;

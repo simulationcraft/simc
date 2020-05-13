@@ -21,7 +21,7 @@ spell_data_not_found_t spell_data_not_found_t::singleton;
 
 // spell_data_t::override ===================================================
 
-bool spell_data_t::override_field( const std::string& field, double value )
+bool spell_data_t::override_field( util::string_view field, double value )
 {
   if ( util::str_compare_ci( field, "prj_speed" ) )
     _prj_speed = value;
@@ -74,7 +74,7 @@ bool spell_data_t::override_field( const std::string& field, double value )
   return true;
 }
 
-double spell_data_t::get_field( const std::string& field ) const
+double spell_data_t::get_field( util::string_view field ) const
 {
   if ( util::str_compare_ci( field, "prj_speed" ) )
     return _prj_speed;
@@ -128,7 +128,7 @@ double spell_data_t::get_field( const std::string& field ) const
 
 spelleffect_data_nil_t spelleffect_data_nil_t::singleton;
 
-bool spelleffect_data_t::override_field( const std::string& field, double value )
+bool spelleffect_data_t::override_field( util::string_view field, double value )
 {
   if ( util::str_compare_ci( field, "coefficient" ) )
     _m_coeff = value;
@@ -165,7 +165,7 @@ bool spelleffect_data_t::override_field( const std::string& field, double value 
   return true;
 }
 
-double spelleffect_data_t::get_field( const std::string& field ) const
+double spelleffect_data_t::get_field( util::string_view field ) const
 {
   if ( util::str_compare_ci( field, "coefficient" ) )
     return _m_coeff;
@@ -208,7 +208,7 @@ double spelleffect_data_t::get_field( const std::string& field ) const
 
 spellpower_data_nil_t spellpower_data_nil_t::singleton;
 
-bool spellpower_data_t::override_field( const std::string& field, double value )
+bool spellpower_data_t::override_field( util::string_view field, double value )
 {
   if ( util::str_compare_ci( field, "cost" ) )
   {
@@ -244,7 +244,7 @@ bool spellpower_data_t::override_field( const std::string& field, double value )
   return false;
 }
 
-double spellpower_data_t::get_field( const std::string& field ) const
+double spellpower_data_t::get_field( util::string_view field ) const
 {
   if ( util::str_compare_ci( field, "cost" ) )
   {
@@ -291,9 +291,9 @@ static custom_dbc_data_t hotfix_db_;
 // stuff here.
 struct hotfix_comparator_t
 {
-  const std::string& tag, &note;
+  util::string_view tag, note;
 
-  hotfix_comparator_t( const std::string& t, const std::string& n ) :
+  hotfix_comparator_t( util::string_view t, util::string_view n ) :
     tag( t ), note( n )
   { }
 
@@ -340,11 +340,11 @@ const spelleffect_data_t* hotfix::find_effect( const spelleffect_data_t* dbc_eff
   return dbc_effect;
 }
 
-spell_hotfix_entry_t& hotfix::register_spell( const std::string& group,
-                                              const std::string& tag,
-                                              const std::string& note,
-                                              unsigned           spell_id,
-                                              unsigned           flags )
+spell_hotfix_entry_t& hotfix::register_spell( util::string_view group,
+                                              util::string_view tag,
+                                              util::string_view note,
+                                              unsigned          spell_id,
+                                              unsigned          flags )
 {
   auto i = std::find_if( hotfixes_.begin(),
       hotfixes_.end(), hotfix_comparator_t( tag, note ) );
@@ -361,11 +361,11 @@ spell_hotfix_entry_t& hotfix::register_spell( const std::string& group,
   return *entry;
 }
 
-effect_hotfix_entry_t& hotfix::register_effect( const std::string& group,
-                                                const std::string& tag,
-                                                const std::string& note,
-                                                unsigned           effect_id,
-                                                unsigned           flags )
+effect_hotfix_entry_t& hotfix::register_effect( util::string_view group,
+                                                util::string_view tag,
+                                                util::string_view note,
+                                                unsigned          effect_id,
+                                                unsigned          flags )
 {
   auto i = std::find_if( hotfixes_.begin(),
       hotfixes_.end(), hotfix_comparator_t( tag, note ) );
@@ -382,11 +382,11 @@ effect_hotfix_entry_t& hotfix::register_effect( const std::string& group,
   return *entry;
 }
 
-power_hotfix_entry_t& hotfix::register_power( const std::string& group,
-                                              const std::string& tag,
-                                              const std::string& note,
-                                              unsigned           power_id,
-                                              unsigned           flags )
+power_hotfix_entry_t& hotfix::register_power( util::string_view group,
+                                              util::string_view tag,
+                                              util::string_view note,
+                                              unsigned          power_id,
+                                              unsigned          flags )
 {
   auto i = std::find_if( hotfixes_.begin(),
       hotfixes_.end(), hotfix_comparator_t( tag, note ) );
@@ -915,7 +915,7 @@ namespace dbc_override
 }
 
 // Applies overrides immediately, and records an entry
-void dbc_override::register_spell( dbc_t& dbc, unsigned spell_id, const std::string& field, double v )
+void dbc_override::register_spell( dbc_t& dbc, unsigned spell_id, util::string_view field, double v )
 {
   spell_data_t* spell = override_db_.clone_spell( spell_id, dbc.ptr );
   if (!spell)
@@ -930,7 +930,7 @@ void dbc_override::register_spell( dbc_t& dbc, unsigned spell_id, const std::str
   override_entries_.emplace_back( DBC_OVERRIDE_SPELL, field, spell_id, v );
 }
 
-void dbc_override::register_effect( dbc_t& dbc, unsigned effect_id, const std::string& field, double v )
+void dbc_override::register_effect( dbc_t& dbc, unsigned effect_id, util::string_view field, double v )
 {
   spelleffect_data_t* effect = override_db_.get_mutable_effect( effect_id, dbc.ptr );
   if ( ! effect )
@@ -952,7 +952,7 @@ void dbc_override::register_effect( dbc_t& dbc, unsigned effect_id, const std::s
   override_entries_.emplace_back( DBC_OVERRIDE_EFFECT, field, effect_id, v );
 }
 
-void dbc_override::register_power( dbc_t& dbc, unsigned power_id, const std::string& field, double v )
+void dbc_override::register_power( dbc_t& dbc, unsigned power_id, util::string_view field, double v )
 {
   auto power = override_db_.get_mutable_power( power_id, dbc.ptr );
   if ( power == nullptr )

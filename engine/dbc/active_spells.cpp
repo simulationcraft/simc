@@ -13,13 +13,13 @@
 
 namespace
 {
-const active_class_spell_t& __find_class( const std::string& name,
-                                    bool               ptr,
-                                    bool               tokenized,
-                                    player_e           class_,
-                                    specialization_e   spec )
+const active_class_spell_t& __find_class( util::string_view name,
+                                          bool              ptr,
+                                          bool              tokenized,
+                                          player_e          class_,
+                                          specialization_e  spec )
 {
-  std::string name_str = tokenized ? util::tokenize_fn( name ) : name;
+  std::string name_str = tokenized ? util::tokenize_fn( name ) : std::string( name );
   unsigned class_id = util::class_id( class_ );
   unsigned spec_id = static_cast<unsigned>( spec );
 
@@ -49,12 +49,12 @@ const active_class_spell_t& __find_class( const std::string& name,
   return *it;
 }
 
-const active_pet_spell_t& __find_pet( const std::string& name,
-                                      bool               ptr,
-                                      bool               tokenized,
-                                      player_e           class_)
+const active_pet_spell_t& __find_pet( util::string_view name,
+                                      bool              ptr,
+                                      bool              tokenized,
+                                      player_e          class_)
 {
-  std::string name_str = tokenized ? util::tokenize_fn( name ) : name;
+  std::string name_str = tokenized ? util::tokenize_fn( name ) : std::string( name );
   unsigned class_id = util::class_id( class_ );
 
   const auto __data = active_pet_spell_t::data( ptr );
@@ -85,25 +85,25 @@ util::span<const active_class_spell_t> active_class_spell_t::data( bool ptr )
 }
 
 const active_class_spell_t&
-active_class_spell_t::find( const std::string& name, bool ptr, bool tokenized )
+active_class_spell_t::find( util::string_view name, bool ptr, bool tokenized )
 {
   return __find_class( name, ptr, tokenized, PLAYER_NONE, SPEC_NONE );
 }
 
 const active_class_spell_t&
-active_class_spell_t::find( const std::string& name,
-                            player_e           class_,
-                            bool               ptr,
-                            bool               tokenized )
+active_class_spell_t::find( util::string_view name,
+                            player_e          class_,
+                            bool              ptr,
+                            bool              tokenized )
 {
   return __find_class( name, ptr, tokenized, class_, SPEC_NONE );
 }
 
 const active_class_spell_t&
-active_class_spell_t::find( const std::string& name,
-                            specialization_e   spec,
-                            bool               ptr,
-                            bool               tokenized )
+active_class_spell_t::find( util::string_view name,
+                            specialization_e  spec,
+                            bool              ptr,
+                            bool              tokenized )
 {
   return __find_class( name, ptr, tokenized, PLAYER_NONE, spec );
 }
@@ -114,16 +114,16 @@ util::span<const active_pet_spell_t> active_pet_spell_t::data( bool ptr )
 }
 
 const active_pet_spell_t&
-active_pet_spell_t::find( const std::string& name, bool ptr, bool tokenized )
+active_pet_spell_t::find( util::string_view name, bool ptr, bool tokenized )
 {
   return __find_pet( name, ptr, tokenized, PLAYER_NONE );
 }
 
 const active_pet_spell_t&
-active_pet_spell_t::find( const std::string& name,
-                            player_e           class_,
-                            bool               ptr,
-                            bool               tokenized )
+active_pet_spell_t::find( util::string_view name,
+                          player_e          class_,
+                          bool              ptr,
+                          bool              tokenized )
 {
   return __find_pet( name, ptr, tokenized, class_ );
 }

@@ -9,6 +9,7 @@
 #include "specialization.hpp"
 
 #include "util/span.hpp"
+#include "util/string_view.hpp"
 
 #include "client_data.hpp"
 
@@ -20,9 +21,9 @@ struct active_class_spell_t
   unsigned    override_spell_id;
   const char* name;
 
-  static const active_class_spell_t& find( const std::string& name, bool ptr, bool tokenized = false );
-  static const active_class_spell_t& find( const std::string& name, player_e class_, bool ptr, bool tokenized = false );
-  static const active_class_spell_t& find( const std::string& name, specialization_e spec, bool ptr, bool tokenized = false );
+  static const active_class_spell_t& find( util::string_view name, bool ptr, bool tokenized = false );
+  static const active_class_spell_t& find( util::string_view name, player_e class_, bool ptr, bool tokenized = false );
+  static const active_class_spell_t& find( util::string_view name, specialization_e spec, bool ptr, bool tokenized = false );
 
   static const active_class_spell_t& nil()
   { return dbc::nil<active_class_spell_t>(); }
@@ -36,8 +37,8 @@ struct active_pet_spell_t
   unsigned    spell_id;
   const char* name;
 
-  static const active_pet_spell_t& find( const std::string& name, bool ptr, bool tokenized = false );
-  static const active_pet_spell_t& find( const std::string& name, player_e player_class_, bool ptr, bool tokenized = false );
+  static const active_pet_spell_t& find( util::string_view name, bool ptr, bool tokenized = false );
+  static const active_pet_spell_t& find( util::string_view name, player_e player_class_, bool ptr, bool tokenized = false );
 
   static const active_pet_spell_t& nil()
   { return dbc::nil<active_pet_spell_t>(); }

@@ -37,7 +37,7 @@ struct azerite_essence_entry_t
   static const azerite_essence_entry_t& nil()
   { return dbc::nil<azerite_essence_entry_t>(); }
 
-  static const azerite_essence_entry_t& find( const std::string& name, bool tokenized, bool ptr );
+  static const azerite_essence_entry_t& find( util::string_view name, bool tokenized, bool ptr );
 
   static util::span<const azerite_essence_entry_t> data( bool ptr );
 };
