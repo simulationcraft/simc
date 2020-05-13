@@ -2087,7 +2087,7 @@ bool action_t::select_target()
     option.cycle_players   = false;
     bool found_ready       = false;
 
-    std::vector<player_t*>& tl = sim->player_no_pet_list.data();
+    const auto& tl = sim->player_no_pet_list.data();
 
     size_t num_targets = tl.size();
 

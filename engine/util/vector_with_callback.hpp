@@ -6,9 +6,10 @@
 #pragma once
 
 #include "config.hpp"
-#include <vector>
+#include "util/generic.hpp"
 
-struct player_t;
+#include <functional>
+#include <vector>
 
 /* Encapsulated Vector
  * const read access
@@ -17,60 +18,43 @@ struct player_t;
 template <typename T>
 struct vector_with_callback
 {
-private:
-  std::vector<T> _data;
-  std::vector<std::function<void(T)> > _callbacks ;
 public:
+  using callback_type = std::function<void(const T&)>;
+  using iterator = typename std::vector<T>::const_iterator;
+
   /* Register your custom callback, which will be called when the vector is modified
    */
-  void register_callback( std::function<void(T)> c )
+  void register_callback( callback_type c )
   {
     if ( c )
-      _callbacks.push_back( c );
+      _callbacks.push_back( std::move( c ) );
   }
 
-  typename std::vector<T>::iterator begin()
+  iterator begin() const
   { return _data.begin(); }
-  typename std::vector<T>::const_iterator begin() const
-  { return _data.begin(); }
-  typename std::vector<T>::iterator end()
+  iterator end() const
   { return _data.end(); }
-  typename std::vector<T>::const_iterator end() const
-  { return _data.end(); }
-
-  typedef typename std::vector<T>::iterator iterator;
-
-  void trigger_callbacks(T v) const
-  {
-    for ( size_t i = 0; i < _callbacks.size(); ++i )
-      _callbacks[i](v);
-  }
 
   void push_back( T x )
-  { _data.push_back( x ); trigger_callbacks( x ); }
-
-  void find_and_erase( T x )
   {
-    typename std::vector<T>::iterator it = range::find( _data, x );
-    if ( it != _data.end() )
-      erase( it );
+    _data.push_back( std::move( x ) );
+    trigger_callbacks( _data.back() );
   }
 
-  void find_and_erase_unordered( T x )
+  void find_and_erase( const T& x )
   {
-    typename std::vector<T>::iterator it = range::find( _data, x );
-    if ( it != _data.end() )
-      erase_unordered( it );
+    find_and_erase_impl( x, [this](auto it) { _data.erase( it ); } );
   }
 
-  // Warning: If you directly modify the vector, you need to trigger callbacks manually!
-  std::vector<T>& data()
-  { return _data; }
+  void find_and_erase_unordered( const T& x )
+  {
+    find_and_erase_impl( x, [this](auto it) { ::erase_unordered( _data, it ); } );
+  }
 
   const std::vector<T>& data() const
   { return _data; }
 
-  player_t* operator[]( size_t i ) const
+  const T& operator[]( size_t i ) const
   { return _data[ i ]; }
 
   size_t size() const
@@ -83,17 +67,24 @@ public:
   { _callbacks.clear(); }
 
 private:
-  void erase_unordered( typename std::vector<T>::iterator it )
+  void trigger_callbacks( const T& v ) const
   {
-    T _v = *it;
-    ::erase_unordered( _data, it );
-    trigger_callbacks( _v );
+    for ( auto&& callback : _callbacks )
+      callback( v );
   }
 
-  void erase( typename std::vector<T>::iterator it )
+  template <typename Erase>
+  void find_and_erase_impl( const T& v, Erase erase )
   {
-    T _v = *it;
-    _data.erase( it );
-    trigger_callbacks( _v );
+    auto it = range::find( _data, v );
+    if ( it != _data.end() )
+    {
+      const T value = std::move( *it );
+      erase( it );
+      trigger_callbacks( value );
+    }
   }
+
+  std::vector<T> _data;
+  std::vector<callback_type> _callbacks;
 };
