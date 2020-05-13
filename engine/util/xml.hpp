@@ -19,7 +19,6 @@
 #include "io.hpp"
 
 
-struct sim_t;
 namespace rapidxml {
   template<class Ch>
   class xml_node;
@@ -31,39 +30,22 @@ namespace rapidxml {
 
 struct sc_xml_t
 {
-  char *buf;
+  std::vector<char> buf;
   rapidxml::xml_node<char>* root;
+  std::unique_ptr<rapidxml::xml_node<char>> root_owner;
 
-  sc_xml_t() : buf( nullptr ), root( nullptr )
-  { }
+  sc_xml_t();
 
-  sc_xml_t( rapidxml::xml_node<char>* n ) : buf( nullptr ), root( n )
-  { }
+  sc_xml_t(rapidxml::xml_node<char>* n);
 
-  sc_xml_t( rapidxml::xml_node<char>* n, char* b ) : buf( b ), root( n )
-  { }
+  sc_xml_t(std::unique_ptr<rapidxml::xml_node<char>> n, std::vector<char> b);
 
   // We have only one releaseable source of xml_node* in the system, which will
   // be handled by the xml_cache release process. Thus, we only make a copy of
-  // the parsed XML, while buf will remain 0.
-  sc_xml_t( const sc_xml_t& other )
-  {
-    root = other.root;
-    buf = nullptr;
-  }
+  // the parsed XML
+  sc_xml_t(const sc_xml_t& other);
 
-  sc_xml_t& operator=( const sc_xml_t& other )
-  {
-    if ( this == &other )
-    {
-      return *this;
-    }
-
-    assert( buf == nullptr );
-    root = other.root;
-
-    return *this;
-  }
+  sc_xml_t& operator=(const sc_xml_t& other);
 
   bool valid() const
   { return root != nullptr; }
@@ -84,9 +66,9 @@ struct sc_xml_t
 
   void print( FILE* f = stdout, int spacing = 0 );
   void print_xml( FILE* f = stdout, int spacing = 0 );
-  static sc_xml_t get( sim_t* sim, const std::string& url, cache::behavior_e b,
+  static sc_xml_t get( const std::string& url, cache::behavior_e b,
                           const std::string& confirmation = std::string() );
-  static sc_xml_t create( sim_t* sim, const std::string& input, const std::string& cache_key );
+  static sc_xml_t create( const std::string& input, const std::string& cache_key );
 
   virtual ~sc_xml_t();
 
@@ -126,8 +108,8 @@ struct xml_node_t
   bool get_value( double&      value, const std::string& path = std::string() );
   xml_parm_t* get_parm( const std::string& parm_name );
 
-  std::shared_ptr<xml_node_t> create_node     ( sim_t* sim, const std::string& input, std::string::size_type& index );
-  int         create_children ( sim_t* sim, const std::string& input, std::string::size_type& index );
+  std::shared_ptr<xml_node_t> create_node     ( const std::string& input, std::string::size_type& index );
+  void         create_children ( const std::string& input, std::string::size_type& index );
   void        create_parameter( const std::string& input, std::string::size_type& index );
 
   xml_node_t* search_tree( const std::string& node_name );
@@ -136,9 +118,9 @@ struct xml_node_t
 
   void print( FILE* f = stdout, int spacing = 0 );
   void print_xml( FILE* f = stdout, int spacing = 0 );
-  static std::shared_ptr<xml_node_t> get( sim_t* sim, const std::string& url, cache::behavior_e b,
+  static std::shared_ptr<xml_node_t> get( const std::string& url, cache::behavior_e b,
                           const std::string& confirmation = std::string() );
-  static std::shared_ptr<xml_node_t> create( sim_t* sim, const std::string& input );
+  static std::shared_ptr<xml_node_t> create( const std::string& input );
 
   xml_node_t* add_child( const std::string& name );
   template <typename T>

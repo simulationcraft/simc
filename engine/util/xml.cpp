@@ -8,7 +8,6 @@
 #include "rapidxml/rapidxml_print.hpp"
 #include "util/concurrency.hpp"
 #include "util/util.hpp"
-#include "sim/sc_sim.hpp"
 #include "interfaces/sc_http.hpp"
 #include <memory>
 #include <unordered_map>
@@ -127,8 +126,7 @@ void xml_node_t::create_parameter( const std::string&      input,
 
 // xml_node_t::create_node ==================================================
 
-std::shared_ptr<xml_node_t> xml_node_t::create_node( sim_t*                  sim,
-                                                     const std::string&      input,
+std::shared_ptr<xml_node_t> xml_node_t::create_node( const std::string&      input,
                                                      std::string::size_type& index )
 {
   char c = input[ index ];
@@ -154,17 +152,13 @@ std::shared_ptr<xml_node_t> xml_node_t::create_node( sim_t*                  sim
   }
   else if ( c == '>' )
   {
-    node -> create_children( sim, input, ++index );
+    node -> create_children( input, ++index );
   }
   else
   {
-    if ( sim )
-    {
       int start = std::min( 0, ( ( int ) index - 32 ) );
       throw std::invalid_argument(fmt::format("Unexpected character '{}' at index={} node={} context={} from input '{}'.",
                      c, index, node -> name(), input.substr( start, index - start ), input ));
-    }
-    return std::shared_ptr<xml_node_t>();
   }
 
   return node;
@@ -172,81 +166,74 @@ std::shared_ptr<xml_node_t> xml_node_t::create_node( sim_t*                  sim
 
 // xml_node_t::create_children ==============================================
 
-int xml_node_t::create_children( sim_t*                  sim,
-                                 const std::string&      input,
+void xml_node_t::create_children( const std::string&      input,
                                  std::string::size_type& index )
 {
-  while ( ! sim || ! sim -> canceled )
+  while (index < input.size())
   {
-    while ( is_white_space( input[ index ] ) ) index++;
+    while (is_white_space(input[index])) index++;
 
-    if ( input[ index ] == '<' )
+    if (input[index] == '<')
     {
       index++;
 
-      if ( input[ index ] == '/' )
+      if (input[index] == '/')
       {
         std::string name_str;
-        parse_name( name_str, input, ++index );
+        parse_name(name_str, input, ++index);
         //assert( name_str == root -> name_str );
         index++;
-        break;
+        return;
       }
-      else if ( input[ index ] == '!' )
+      else if (input[index] == '!')
       {
         index++;
-        if ( input.substr( index, 7 ) == "[CDATA[" )
+        if (input.substr(index, 7) == "[CDATA[")
         {
           index += 7;
-          std::string::size_type finish = input.find( "]]>", index );
-          if ( finish == std::string::npos )
+          std::string::size_type finish = input.find("]]>", index);
+          if (finish == std::string::npos)
           {
-            if ( sim )
-            {
-              throw std::runtime_error(fmt::format("Unexpected EOF at index {} ({}).", index, name() ));
-            }
-            return 0;
+            throw std::runtime_error(fmt::format("Unexpected EOF at index {} ({}).", index, name()));
           }
-          parameters.emplace_back( "cdata", input.substr( index, finish - index ) );
+          parameters.emplace_back("cdata", input.substr(index, finish - index));
           index = finish + 2;
         }
         else
         {
-          while ( input[ index ] && input[ index ] != '>' ) index++;
-          if ( ! input[ index ] ) break;
+          while (input[index] && input[index] != '>') index++;
+          if (!input[index]) return;
         }
         index++;
       }
       else
       {
-        std::shared_ptr<xml_node_t> n = create_node( sim, input, index );
-        if ( ! n ) return 0;
-        children.push_back( n );
+        std::shared_ptr<xml_node_t> n = create_node(input, index);
+        if (!n) return;
+        children.push_back(n);
       }
     }
-    else if ( input[ index ] == '\0' )
+    else if (input[index] == '\0')
     {
-      break;
+      return;
     }
     else
     {
       std::string::size_type start = index;
-      while ( input[ index ] )
+      while (input[index])
       {
-        if ( input[ index ] == '<' )
+        if (input[index] == '<')
         {
-          if ( isalpha( input[ index + 1 ] ) ) break;
-          if ( input[ index + 1 ] == '/' ) break;
-          if ( input[ index + 1 ] == '?' ) break;
-          if ( input[ index + 1 ] == '!' ) break;
+          if (isalpha(input[index + 1])) break;
+          if (input[index + 1] == '/') break;
+          if (input[index + 1] == '?') break;
+          if (input[index + 1] == '!') break;
         }
         index++;
       }
-      parameters.emplace_back( ".", input.substr( start, index - start ) );
+      parameters.emplace_back(".", input.substr(start, index - start));
     }
   }
-
-  return ( int ) children.size();
 }
 
 // xml_node_t::search_tree ==================================================
@@ -322,8 +309,7 @@ xml_node_t* xml_node_t::split_path( std::string&       key,
 
 // xml_node_t::get ==========================================================
 
-std::shared_ptr<xml_node_t> xml_node_t::get( sim_t*             sim,
-                                             const std::string& url,
+std::shared_ptr<xml_node_t> xml_node_t::get( const std::string& url,
                                              cache::behavior_e  caching,
                                              const std::string& confirmation )
 {
@@ -337,7 +323,7 @@ std::shared_ptr<xml_node_t> xml_node_t::get( sim_t*             sim,
   if ( http::get( result, url, caching, confirmation ) != 200 )
     return std::shared_ptr<xml_node_t>();
 
-  if ( std::shared_ptr<xml_node_t> node = xml_node_t::create( sim, result ) )
+  if ( std::shared_ptr<xml_node_t> node = xml_node_t::create( result ) )
   {
     xml_cache_entry_t& c = xml_cache[ url ];
     c.root = node;
@@ -352,8 +338,7 @@ std::shared_ptr<xml_node_t> xml_node_t::get( sim_t*             sim,
 
 // xml_node_t::create =======================================================
 
-std::shared_ptr<xml_node_t> xml_node_t::create( sim_t* sim,
-                                                const std::string& input )
+std::shared_ptr<xml_node_t> xml_node_t::create( const std::string& input )
 {
   std::shared_ptr<xml_node_t> root = std::make_shared<xml_node_t>( "root" );
 
@@ -361,7 +346,7 @@ std::shared_ptr<xml_node_t> xml_node_t::create( sim_t* sim,
   std::string::size_type index = 0;
 
   if ( root )
-    root -> create_children( sim, buffer, index );
+    root -> create_children( buffer, index );
 
   return root;
 }
@@ -758,19 +743,43 @@ std::string xml_writer_t::sanitize( std::string v )
   return v;
 }
 
+sc_xml_t::sc_xml_t() : root(nullptr)
+{ }
+
+sc_xml_t::sc_xml_t(rapidxml::xml_node<char> * n) : buf(), root(n)
+{ }
+
+sc_xml_t::sc_xml_t(std::unique_ptr<rapidxml::xml_node<char>> n, std::vector<char> b) : buf(b), root(n.get()), root_owner(std::move(n))
+{
+}
+
+// We have only one releaseable source of xml_node* in the system, which will
+// be handled by the xml_cache release process. Thus, we only make a copy of
+// the parsed XML
+
+sc_xml_t::sc_xml_t(const sc_xml_t& other)
+{
+  root = other.root;
+}
+
 std::string sc_xml_t::name() const
 {
   return root ? std::string( root -> name() ) : std::string();
 }
 
-sc_xml_t::~sc_xml_t()
+sc_xml_t::~sc_xml_t() = default;
+
+sc_xml_t& sc_xml_t::operator=(const sc_xml_t& other)
 {
-  assert( ! buf || ( root && buf ) );
-  if ( buf && ! root -> parent() )
+  if (this == &other)
   {
-    delete[] buf;
-    delete root;
+    return *this;
   }
+
+  root = other.root;
+  buf = other.buf;
+
+  return *this;
 }
 
 void sc_xml_t::print_xml( FILE* f, int )
@@ -1187,8 +1196,7 @@ sc_xml_t sc_xml_t::split_path( std::string& key, const std::string& path ) const
   return node;
 }
 
-sc_xml_t sc_xml_t::create( sim_t* sim,
-                           const std::string& input,
+sc_xml_t sc_xml_t::create( const std::string& input,
                            const std::string& cache_key )
 {
   auto_lock_t lock( xml_mutex );
@@ -1199,32 +1207,27 @@ sc_xml_t sc_xml_t::create( sim_t* sim,
     return sc_xml_t( *p -> second.root );
   }
 
-  auto  document = new xml_document<>();
-  auto  tmp_buf = new char[ input.size() + 1 ];
-  memset( tmp_buf, 0, input.size() + 1 );
-  memcpy( tmp_buf, input.c_str(), input.size() );
+  auto  document = std::make_unique<xml_document<>>();
+  auto  tmp_buf = std::vector<char>(input.size() + 1, 0);
+  range::copy(input, tmp_buf.begin());
 
   try
   {
-    document -> parse< parse_trim_whitespace >( tmp_buf );
+    document -> parse< parse_trim_whitespace >( tmp_buf.data() );
   }
   catch( parse_error& e )
   {
-    sim -> errorf( "Unable to parse XML input: %s", e.what() );
-    delete document;
-    delete[] tmp_buf;
-    return sc_xml_t();
+    std::throw_with_nested("Unable to parse XML input");
   }
 
   new_xml_cache_entry_t& c = new_xml_cache[ cache_key ];
-  c.root = std::make_shared<sc_xml_t>( document, tmp_buf );
+  c.root = std::make_shared<sc_xml_t>( std::move(document), tmp_buf );
   c.era = cache::era();
 
   return *c.root;
 }
 
-sc_xml_t sc_xml_t::get( sim_t* sim,
-                        const std::string& url,
+sc_xml_t sc_xml_t::get( const std::string& url,
                         cache::behavior_e caching,
                         const std::string& confirmation )
 {
@@ -1239,9 +1242,12 @@ sc_xml_t sc_xml_t::get( sim_t* sim,
   }
 
   std::string result;
-  if ( http::get( result, url, caching, confirmation ) != 200 )
-    return sc_xml_t();
+  auto status = http::get(result, url, caching, confirmation);
+  if (status != 200)
+  {
+    throw std::runtime_error(fmt::format("Error obtaining http data. Status={}", status));
+  }
 
-  return sc_xml_t::create( sim, result, url );
+  return sc_xml_t::create( result, url );
 }
 
