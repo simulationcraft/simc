@@ -7624,11 +7624,11 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "call_action_list,name=standard" );
 
   // Essences
-  essences -> add_action( this, "Concentraded Flame", "if=dot.concentrated_flame_burn.remains<2&!buff.dancing_rune_weapon.up" );
-  essences -> add_action( this, "Anima of Death", "if=buff.vampiric_blood.up&(raid_event.adds.exists|raid_event.adds.in>15)" );
-  essences -> add_action( this, "Memory of Lucid Dreams", "if=rune.time_to_1>gcd&runic_power<40" );
-  essences -> add_action( this, "Worldvein Resonance" );
-  essences -> add_action( this, "Ripple in Space", "if=!buff.dancing_rune_weapon.up" );
+  essences -> add_action( "concentrated_flame,if=dot.concentrated_flame_burn.remains<2&!buff.dancing_rune_weapon.up" );
+  essences -> add_action( "anima_of_death,if=buff.vampiric_blood.up&(raid_event.adds.exists|raid_event.adds.in>15)" );
+  essences -> add_action( "memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40" );
+  essences -> add_action( "worldvein_resonance" );
+  essences -> add_action( "ripple_in_space,if=!buff.dancing_rune_weapon.up" );
 
   // Single Target Rotation
   standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
