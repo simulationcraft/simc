@@ -27,7 +27,7 @@ namespace js {
     fmt::print("\n\nSC_JS_T:: COPY CONSTRUCTOR USED!!!\n");
   }
 
-  rapidjson::Value* sc_js_t::path_value(const std::string& path_str)
+  rapidjson::Value* sc_js_t::path_value(util::string_view path_str)
   {
     std::vector<std::string> path = util::string_split(path_str, ".");
     rapidjson::Value* v = nullptr;
@@ -36,14 +36,14 @@ namespace js {
 
     assert(!util::is_number(path[0]));
 
-    if (!js_.HasMember(path[0].c_str()))
+    if (!js_.HasMember(path[0]))
     {
-      rapidjson::Value nn(path[0].c_str(), js_.GetAllocator());
+      rapidjson::Value nn(path[0], js_.GetAllocator());
       rapidjson::Value nv;
       js_.AddMember(nn, nv, js_.GetAllocator());
     }
 
-    v = &(js_[path[0].c_str()]);
+    v = &(js_[path[0]]);
 
     for (size_t i = 1, end = path.size(); i < end; i++)
     {
@@ -72,42 +72,33 @@ namespace js {
         if (v->GetType() != rapidjson::kObjectType)
           v->SetObject();
 
-        if (!v->HasMember(path[i].c_str()))
+        if (!v->HasMember(path[i]))
         {
-          rapidjson::Value nn(path[i].c_str(), js_.GetAllocator());
+          rapidjson::Value nn(path[i], js_.GetAllocator());
           rapidjson::Value nv;
           v->AddMember(nn, nv, js_.GetAllocator());
         }
 
-        v = &((*v)[path[i].c_str()]);
+        v = &((*v)[path[i]]);
       }
     }
 
     return v;
   }
 
-  rapidjson::Value& sc_js_t::value(const std::string& path)
+  rapidjson::Value& sc_js_t::value(util::string_view path)
   {
     return *path_value(path);
   }
 
-  sc_js_t& sc_js_t::set(const std::string& path, const char* value_)
+  sc_js_t& sc_js_t::set(util::string_view path, util::string_view value_)
   {
-    assert(value_);
     if (rapidjson::Value* obj = path_value(path))
-    {
-      rapidjson::Value v(value_, js_.GetAllocator());
-      *obj = v;
-    }
+      *obj = rapidjson::Value(value_.data(), value_.size(), js_.GetAllocator());
     return *this;
   }
 
-  sc_js_t& sc_js_t::set(const std::string& path, const std::string& value_)
-  {
-    return set(path, value_.c_str());
-  }
-
-  sc_js_t& sc_js_t::set(const std::string& path, const sc_js_t& value_)
+  sc_js_t& sc_js_t::set(util::string_view path, const sc_js_t& value_)
   {
     if (rapidjson::Value* obj = path_value(path))
     {
@@ -116,45 +107,30 @@ namespace js {
     return *this;
   }
 
-  sc_js_t& sc_js_t::set(const std::string& path, const size_t& value_)
+  sc_js_t& sc_js_t::set(util::string_view path, size_t value_)
   {
     if (rapidjson::Value* obj = path_value(path))
     {
-      rapidjson::Value v(static_cast<const uint64_t&>(value_));
+      rapidjson::Value v(static_cast<uint64_t>(value_));
       *obj = v;
     }
     return *this;
   }
 
-  sc_js_t& sc_js_t::add(const std::string& path, const char* value_)
-  {
-    assert(value_);
-    if (rapidjson::Value* obj = path_value(path))
-    {
-      if (obj->GetType() != rapidjson::kArrayType)
-        obj->SetArray();
-
-      rapidjson::Value v(value_, js_.GetAllocator());
-      obj->PushBack(v, js_.GetAllocator());
-    }
-    return *this;
-  }
-
-  sc_js_t& sc_js_t::add(const std::string& path, const std::string& value_)
+  sc_js_t& sc_js_t::add(util::string_view path, util::string_view value_)
   {
     if (rapidjson::Value* obj = path_value(path))
     {
       if (obj->GetType() != rapidjson::kArrayType)
         obj->SetArray();
 
-      rapidjson::Value v(value_, js_.GetAllocator());
-
+      rapidjson::Value v(value_.data(), value_.size(), js_.GetAllocator());
       obj->PushBack(v, js_.GetAllocator());
     }
     return *this;
   }
 
-  sc_js_t& sc_js_t::add(const std::string& path, const rapidjson::Value& value_)
+  sc_js_t& sc_js_t::add(util::string_view path, const rapidjson::Value& value_)
   {
     if (rapidjson::Value* obj = path_value(path))
     {
@@ -168,7 +144,7 @@ namespace js {
     return *this;
   }
 
-  sc_js_t& sc_js_t::add(const std::string& path, const sc_js_t& value_)
+  sc_js_t& sc_js_t::add(util::string_view path, const sc_js_t& value_)
   {
     if (rapidjson::Value* obj = path_value(path))
     {
@@ -182,7 +158,7 @@ namespace js {
     return *this;
   }
 
-  sc_js_t& sc_js_t::add(const std::string& path, double x, double low, double high)
+  sc_js_t& sc_js_t::add(util::string_view path, double x, double low, double high)
   {
     if (rapidjson::Value* obj = path_value(path))
     {
@@ -197,7 +173,7 @@ namespace js {
     return *this;
   }
 
-  sc_js_t& sc_js_t::add(const std::string& path, double x, double y)
+  sc_js_t& sc_js_t::add(util::string_view path, double x, double y)
   {
     if (rapidjson::Value* obj = path_value(path))
     {
@@ -212,19 +188,14 @@ namespace js {
     return *this;
   }
 
-  sc_js_t& sc_js_t::set(rapidjson::Value& obj, const std::string& name_, const char* value_)
+  sc_js_t& sc_js_t::set(rapidjson::Value& obj, util::string_view name_, util::string_view value_)
   {
     assert(obj.GetType() == rapidjson::kObjectType);
 
-    rapidjson::Value value_obj(value_, js_.GetAllocator());
+    rapidjson::Value value_obj(value_.data(), value_.size(), js_.GetAllocator());
 
-    do_set(obj, name_.c_str(), value_obj);
+    do_set(obj, name_, value_obj);
     return *this;
-  }
-
-  sc_js_t& sc_js_t::set(rapidjson::Value& obj, const std::string& name, const std::string& value_)
-  {
-    return set(obj, name, value_.c_str());
   }
 
   std::string sc_js_t::to_json() const
