@@ -5660,7 +5660,7 @@ void hunter_t::apl_surv()
   wfi -> add_action( this, "Raptor Strike", "if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd" );
   wfi -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&buff.vipers_venom.remains<1.5*gcd|!dot.serpent_sting.ticking" );
   wfi -> add_action( this, "Wildfire Bomb", "if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max|(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)" );
-  wfi -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max-focus.regen" );
+  wfi -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max-focus.regen" );
   wfi -> add_talent( this, "A Murder of Crows" );
   wfi -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
   wfi -> add_action( this, "Wildfire Bomb", "if=full_recharge_time<1.5*gcd" );
@@ -5683,14 +5683,14 @@ void hunter_t::apl_surv()
   apwfi -> add_action( this, "Wildfire Bomb", "if=full_recharge_time<1.5*gcd|focus+cast_regen<focus.max&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)" );
   apwfi -> add_action( this, "Coordinated Assault");
   apwfi -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.remains&next_wi_bomb.pheromone" );
-  apwfi -> add_action( this, "Kill Command", "if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-20" );
+  apwfi -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-20" );
   apwfi -> add_talent( this, "Steel Trap", "if=focus+cast_regen<focus.max" );
   apwfi -> add_action( this, "Raptor Strike", "if=buff.tip_of_the_spear.stack=3|dot.shrapnel_bomb.ticking" );
   apwfi -> add_talent( this, "Mongoose Bite", "if=dot.shrapnel_bomb.ticking" );
   apwfi -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.shrapnel&focus>30&dot.serpent_sting.remains>5*gcd" );
   apwfi -> add_talent( this, "Chakrams", "if=!buff.mongoose_fury.remains" );
   apwfi -> add_action( this, "Serpent Sting", "if=refreshable" );
-  apwfi -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)" );
+  apwfi -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)" );
   apwfi -> add_action( this, "Raptor Strike" );
   apwfi -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus>40|dot.shrapnel_bomb.ticking" );
   apwfi -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50" );
