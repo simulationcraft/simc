@@ -27,6 +27,8 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
+actions.precombat+=/use_item,name=azsharas_font_of_power
+actions.precombat+=/use_item,effect_name=cyclotronic_blast
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -39,7 +41,7 @@ actions+=/fireblood
 actions+=/bag_of_tricks
 actions+=/use_items,if=cooldown.dancing_rune_weapon.remains>90
 actions+=/use_item,name=razdunks_big_red_button
-actions+=/use_item,name=cyclotronic_blast,if=cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>cast_time
+actions+=/use_item,effect_name=cyclotronic_blast,if=cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>cast_time
 actions+=/use_item,name=azsharas_font_of_power,if=(cooldown.dancing_rune_weapon.remains<5&target.time_to_die>15)|(target.time_to_die<34)
 actions+=/use_item,name=merekthas_fang,if=(cooldown.dancing_rune_weapon.remains&!buff.dancing_rune_weapon.up&rune.time_to_4>3)&!raid_event.adds.exists|raid_event.adds.in>15
 actions+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down
@@ -52,11 +54,15 @@ actions+=/tombstone,if=buff.bone_shield.stack>=7
 actions+=/call_action_list,name=essences
 actions+=/call_action_list,name=standard
 
+actions.essences=concentrated_flame,if=dot.concentrated_flame_burn.remains<2&!buff.dancing_rune_weapon.up
+actions.essences+=/anima_of_death,if=buff.vampiric_blood.up&(raid_event.adds.exists|raid_event.adds.in>15)
+actions.essences+=/memory_of_lucid_dreams,if=rune.time_to_1>gcd&runic_power<40
+actions.essences+=/worldvein_resonance
+actions.essences+=/ripple_in_space,if=!buff.dancing_rune_weapon.up
 
 actions.standard=death_strike,if=runic_power.deficit<=10
 actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up
 actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
-actions.standard+=/heart_essence,if=!buff.dancing_rune_weapon.up
 actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
 actions.standard+=/marrowrend,if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15
 actions.standard+=/bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up
