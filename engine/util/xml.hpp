@@ -31,8 +31,8 @@ namespace rapidxml {
 struct sc_xml_t
 {
   std::vector<char> buf;
-  rapidxml::xml_node<char>* root;
   std::unique_ptr<rapidxml::xml_node<char>> root_owner;
+  rapidxml::xml_node<char>* root;
 
   sc_xml_t();
 

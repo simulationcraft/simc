@@ -70,7 +70,13 @@ bool wowhead::download_item_data( item_t&            item,
   try
   {
     std::shared_ptr<xml_node_t> xml = item.xml = download_id(item.sim, item.parsed.data.id, caching, source);
-
+    if ( ! xml )
+    {
+      if ( caching != cache::ONLY )
+        item.sim -> errorf( "Player %s unable to download item id '%u' from wowhead at slot %s.\n", item.player -> name(), item.parsed.data.id, item.slot_name() );
+      return false;
+    }
+    
     try
     {
       int id;

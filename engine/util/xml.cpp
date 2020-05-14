@@ -749,7 +749,7 @@ sc_xml_t::sc_xml_t() : root(nullptr)
 sc_xml_t::sc_xml_t(rapidxml::xml_node<char> * n) : buf(), root(n)
 { }
 
-sc_xml_t::sc_xml_t(std::unique_ptr<rapidxml::xml_node<char>> n, std::vector<char> b) : buf(b), root(n.get()), root_owner(std::move(n))
+sc_xml_t::sc_xml_t(std::unique_ptr<rapidxml::xml_node<char>> n, std::vector<char> b) : buf(b), root_owner(std::move(n)), root(root_owner.get())
 {
 }
 
