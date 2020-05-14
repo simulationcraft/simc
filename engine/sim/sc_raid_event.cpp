@@ -4,7 +4,18 @@
 // ==========================================================================
 
 #include "raid_event.hpp"
-#include "simulationcraft.hpp"
+
+#include "action/sc_action.hpp"
+#include "action/spell.hpp"
+#include "action/heal.hpp"
+#include "buff/sc_buff.hpp"
+#include "dbc/dbc.hpp"
+#include "player/sc_player.hpp"
+#include "player/pet.hpp"
+#include "sim/sc_sim.hpp"
+#include "sim/event.hpp"
+#include "sim/sc_expressions.hpp"
+#include "util/rng.hpp"
 
 // ==========================================================================
 // Raid Events

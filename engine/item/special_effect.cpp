@@ -4,11 +4,17 @@
 // ==========================================================================
 
 #include "special_effect.hpp"
+
+#include "action/attack.hpp"
+#include "action/spell.hpp"
+#include "action/heal.hpp"
+#include "buff/sc_buff.hpp"
 #include "dbc/dbc.hpp"
+#include "dbc/item_database.hpp"
 #include "item.hpp"
-#include "sim/real_ppm.hpp"
 #include "player/sc_player.hpp"
-#include "simulationcraft.hpp"
+#include "player/unique_gear.hpp"
+#include "sim/real_ppm.hpp"
 
 namespace {
 
