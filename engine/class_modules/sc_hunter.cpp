@@ -5697,7 +5697,7 @@ void hunter_t::apl_surv()
 
   cleave -> add_action( "variable,name=carve_cdr,op=setif,value=active_enemies,value_else=5,condition=active_enemies<5" );
   cleave -> add_talent( this, "Mongoose Bite", "if=azerite.blur_of_talons.rank>0&(buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd|buff.coordinated_assault.remains&!buff.blur_of_talons.remains))" );
-  cleave -> add_talent( this, "Mongoose Bite", "if=target_if=min:time_to_die,if=debuff.latent_poison.stack>(active_enemies|9)&target.time_to_die<active_enemies*gcd" );
+  cleave -> add_talent( this, "Mongoose Bite", "target_if=min:time_to_die,if=debuff.latent_poison.stack>(active_enemies|9)&target.time_to_die<active_enemies*gcd" );
   cleave -> add_talent( this, "A Murder of Crows" );
   cleave -> add_action( this, "Coordinated Assault" );
   cleave -> add_action( this, "Carve", "if=dot.shrapnel_bomb.ticking&!talent.hydras_bite.enabled|dot.shrapnel_bomb.ticking&active_enemies>5" );
