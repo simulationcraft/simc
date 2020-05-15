@@ -5696,22 +5696,25 @@ void hunter_t::apl_surv()
   apwfi -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50" );
 
   cleave -> add_action( "variable,name=carve_cdr,op=setif,value=active_enemies,value_else=5,condition=active_enemies<5" );
+  cleave -> add_talent( this, "Mongoose Bite", "if=azerite.blur_of_talons.rank>0&(buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd|buff.coordinated_assault.remains&!buff.blur_of_talons.remains))" );
+  cleave -> add_talent( this, "Mongoose Bite", "target_if=min:time_to_die,if=debuff.latent_poison.stack>(active_enemies|9)&target.time_to_die<active_enemies*gcd" );
   cleave -> add_talent( this, "A Murder of Crows" );
   cleave -> add_action( this, "Coordinated Assault" );
-  cleave -> add_action( this, "Carve", "if=dot.shrapnel_bomb.ticking" );
-  cleave -> add_action( this, "Wildfire Bomb", "if=!talent.guerrilla_tactics.enabled|full_recharge_time<gcd" );
-  cleave -> add_talent( this, "Mongoose Bite", "target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack=10" );
+  cleave -> add_action( this, "Carve", "if=dot.shrapnel_bomb.ticking&!talent.hydras_bite.enabled|dot.shrapnel_bomb.ticking&active_enemies>5" );
+  cleave -> add_action( this, "Wildfire Bomb", "if=!talent.guerrilla_tactics.enabled|full_recharge_time<gcd|raid_event.adds.remains<6&raid_event.adds.exists" );
+  cleave -> add_talent( this, "Butchery", "if=charges_fractional>2.5|dot.shrapnel_bomb.ticking|cooldown.wildfire_bomb.remains>active_enemies-gcd|debuff.blood_of_the_enemy.remains|raid_event.adds.remains<5&raid_event.adds.exists" );
+  cleave -> add_talent( this, "Mongoose Bite", "target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>8" );
   cleave -> add_talent( this, "Chakrams" );
   cleave -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
-  cleave -> add_talent( this, "Butchery", "if=full_recharge_time<gcd|!talent.wildfire_infusion.enabled|dot.shrapnel_bomb.ticking&dot.internal_bleeding.stack<3" );
+  cleave -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
   cleave -> add_action( this, "Carve", "if=talent.guerrilla_tactics.enabled" );
+  cleave -> add_talent( this, "Butchery", "if=cooldown.wildfire_bomb.remains>(active_enemies|5)" );
   cleave -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
   cleave -> add_action( this, "Wildfire Bomb", "if=dot.wildfire_bomb.refreshable|talent.wildfire_infusion.enabled" );
   cleave -> add_action( this, "Serpent Sting", "target_if=min:remains,if=buff.vipers_venom.react" );
   cleave -> add_action( this, "Carve", "if=cooldown.wildfire_bomb.remains>variable.carve_cdr%2" );
   cleave -> add_talent( this, "Steel Trap" );
-  cleave -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
-  cleave -> add_action( this, "Serpent Sting", "target_if=min:remains,if=refreshable&buff.tip_of_the_spear.stack<3" );
+  cleave -> add_action( this, "Serpent Sting", "target_if=min:remains,if=refreshable&buff.tip_of_the_spear.stack<3&next_wi_bomb.volatile|refreshable&azerite.latent_poison.rank>0" );
   cleave -> add_talent( this, "Mongoose Bite", "target_if=max:debuff.latent_poison.stack",
                         "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
   cleave -> add_action( this, "Raptor Strike", "target_if=max:debuff.latent_poison.stack" );
