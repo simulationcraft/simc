@@ -7924,9 +7924,9 @@ void death_knight_t::default_apl_unholy()
   aoe -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
   aoe -> add_talent( this, "Epidemic", "if=death_and_decay.ticking&runic_power.deficit<(14+death_knight.fwounded_targets*3)&!variable.pooling_for_gargoyle" );
   aoe -> add_talent( this, "Epidemic", "if=death_and_decay.ticking&(!death_knight.fwounded_targets&talent.bursting_sores.enabled)&!variable.pooling_for_gargoyle" );
-  aoe -> add_action( this, "Death Coil", "if=death_and_decay.ticking&runic_power.deficit<14&!variable.pooling_for_gargoyle" );
   aoe -> add_action( this, "Scourge Strike", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
   aoe -> add_talent( this, "Clawing Shadows", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
+  aoe -> add_action( this, "Death Coil", "if=death_and_decay.ticking&runic_power.deficit<14&!variable.pooling_for_gargoyle" );
   aoe -> add_talent( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
   aoe -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<=2&cooldown.death_and_decay.remains&cooldown.apocalypse.remains>5&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
   aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&rune.time_to_4>gcd" );
