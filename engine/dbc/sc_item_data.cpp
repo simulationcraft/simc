@@ -3,13 +3,17 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-
 #include "dbc/client_data.hpp"
 #include "dbc/item_effect.hpp"
 #include "dbc/spell_item_enchantment.hpp"
 #include "dbc/item_bonus.hpp"
 #include "dbc/item_data.hpp"
+#include "dbc/item_scaling.hpp"
+#include "dbc/dbc.hpp"
+#include "dbc/item_database.hpp"
+#include "item/special_effect.hpp"
+#include "item/item.hpp"
+#include "player/sc_player.hpp"
 #include <cctype>
 
 namespace {
