@@ -93,9 +93,10 @@ namespace residual_action
       residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>(dot->state);
 
       // If dot is ticking get current residual pool before we overwrite it
-      assert( dot_state != nullptr );
+      
       if (dot->is_ticking())
       {
+        assert( dot_state != nullptr );
         old_amount = dot_state->tick_amount;
         ticks_left = dot->ticks_left();
         current_amount = old_amount * dot->ticks_left();
