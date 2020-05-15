@@ -7922,7 +7922,7 @@ void death_knight_t::default_apl_unholy()
   // Generic AOE actions to be done
   aoe -> add_action( this, "Death and Decay", "if=cooldown.apocalypse.remains", "AoE rotation" );
   aoe -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
-  aoe -> add_talent( this, "Epidemic", "if=death_and_decay.ticking&runic_power.deficit<(14+death_knight.fwounded_targets*3)&!variable.pooling_for_gargoyle" );
+  aoe -> add_talent( this, "Epidemic", "if=death_and_decay.ticking&runic_power.deficit<14&!talent.bursting_sores.enabled!variable.pooling_for_gargoyle" );
   aoe -> add_talent( this, "Epidemic", "if=death_and_decay.ticking&(!death_knight.fwounded_targets&talent.bursting_sores.enabled)&!variable.pooling_for_gargoyle" );
   aoe -> add_action( this, "Scourge Strike", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
   aoe -> add_talent( this, "Clawing Shadows", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
