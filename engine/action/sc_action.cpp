@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
@@ -3874,14 +3876,16 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   }
 
   alist = player->find_action_priority_list( alist_name );
-
-  if ( randomtoggle == 1 )
-    alist->random = randomtoggle;
-
+  
   if ( !alist )
   {
     sim->errorf( "Player %s uses call_action_list with unknown action list %s\n", player->name(), alist_name.c_str() );
     sim->cancel();
+  }
+  else
+  {
+    if ( randomtoggle == 1 )
+      alist->random = randomtoggle;
   }
 }
 

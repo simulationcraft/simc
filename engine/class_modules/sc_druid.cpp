@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
@@ -6940,7 +6942,7 @@ struct starsurge_t : public druid_spell_t
     double tm = druid_spell_t::composite_target_multiplier( target );
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T19, B4 ) )
     {
-      bool apply = td( target )->dots.moonfire->is_ticking() & td( target )->dots.sunfire->is_ticking();
+      bool apply = td( target )->dots.moonfire->is_ticking() && td( target )->dots.sunfire->is_ticking();
 
       if ( apply )
         tm *= 1.0 + p()->sets->set( DRUID_BALANCE, T19, B4 )->effectN( 1 ).percent();
@@ -7315,9 +7317,9 @@ struct force_of_nature_t : public druid_spell_t
 
 double brambles_handler( const action_state_t* s )
 {
+  assert( s );
   druid_t* p = static_cast<druid_t*>( s -> target );
   assert( p -> talent.brambles -> ok() );
-  assert( s );
 
   /* Calculate the maximum amount absorbed. This is not affected by
      versatility (and likely other player modifiers). */
@@ -10837,9 +10839,9 @@ struct stalwart_guardian_callback_t : public scoped_actor_callback_t<druid_t>
 
   static double stalwart_guardian_handler( const action_state_t* s )
   {
+    assert( s );
     druid_t* p = static_cast<druid_t*>( s -> target );
     assert( p -> active.stalwart_guardian );
-    assert( s );
 
     // Pass incoming damage value so the absorb can be calculated.
     // TOCHECK: Does this use result_amount or result_mitigated?

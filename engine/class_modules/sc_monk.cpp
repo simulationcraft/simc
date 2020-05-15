@@ -1,4 +1,6 @@
-﻿
+﻿// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
 // ==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
@@ -1314,6 +1316,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( !mh->source_action )
       {
         background = true;
+        delete mh;
         return;
       }
       player->main_hand_attack = mh;

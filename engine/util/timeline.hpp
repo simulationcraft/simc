@@ -308,7 +308,7 @@ public:
           // We reached the target bucket.
 
           // Calculate linear interpolation x
-          double x = data()[ i ] ? ( count - target ) / data()[ i ] : 0.0;
+          double x = static_cast<double>( data()[ i ] ? ( count - target ) / data()[ i ] : 0.0 );
           assert( x >= 0.0 && x <= 1.0 );
 
           // Return result
@@ -327,7 +327,7 @@ public:
           // We reached the target bucket.
 
           // Calculate linear interpolation x
-          double x = data()[ i ] ? ( target - count ) / data()[ i ] : 0.0;
+          double x = static_cast<double>( data()[ i ] ? ( target - count ) / data()[ i ] : 0.0 );
           assert( x >= 0.0 && x <= 1.0 );
 
           // Return result

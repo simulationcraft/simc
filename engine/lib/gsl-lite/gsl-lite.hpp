@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 //
 // gsl-lite is based on GSL: Guideline Support Library.
 // For more information see https://github.com/martinmoene/gsl-lite

@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
@@ -91,6 +93,7 @@ namespace residual_action
       residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>(dot->state);
 
       // If dot is ticking get current residual pool before we overwrite it
+      assert( dot_state != nullptr );
       if (dot->is_ticking())
       {
         old_amount = dot_state->tick_amount;

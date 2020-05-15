@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
@@ -2342,12 +2344,12 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     for ( auto& buff_stat : stats )
     {
       double delta = buff_stat.amount * stacks;
-      if ( delta > 0 )
+      if ( delta > 0 && player )
       {
         player->stat_loss( buff_stat.stat, ( delta <= buff_stat.current_value ) ? delta : 0.0, stat_gain, nullptr,
                            buff_duration > timespan_t::zero() );
       }
-      else if ( delta < 0 )
+      else if ( delta < 0 && player )
       {
         player->stat_gain( buff_stat.stat, ( delta >= buff_stat.current_value ) ? std::fabs( delta ) : 0.0, stat_gain,
                            nullptr, buff_duration > timespan_t::zero() );

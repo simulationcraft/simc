@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
@@ -214,6 +216,7 @@ void dot_t::refresh_duration( uint32_t state_flags )
  */
 void dot_t::reset()
 {
+  assert( state != nullptr );
   if ( ticking )
     source->remove_active_dot( state->action->internal_id );
 

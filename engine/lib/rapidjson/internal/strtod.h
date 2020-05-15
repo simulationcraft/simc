@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // Tencent is pleased to support the open source community by making RapidJSON available.
 // 
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip. All rights reserved.
@@ -230,14 +232,15 @@ inline double StrtodFullPrecision(double d, int p, const char* decimals, size_t 
         return result;
 
     // Trim leading zeros
-    while (*decimals == '0' && length > 1) {
+    while ( length > 1  && * decimals == '0')
+    {
         length--;
         decimals++;
         decimalPosition--;
     }
 
     // Trim trailing zeros
-    while (decimals[length - 1] == '0' && length > 1) {
+    while (length > 1 && decimals[length - 1] == '0') {
         length--;
         decimalPosition--;
         exp++;
