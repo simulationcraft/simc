@@ -15,6 +15,7 @@
 #include "sc_UpdateCheck.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 #include "util/git_info.hpp"
+#include "interfaces/sc_http.hpp"
 #if defined( Q_OS_MAC )
 #include <CoreFoundation/CoreFoundation.h>
 #endif

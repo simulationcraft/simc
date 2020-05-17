@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 #include "sc_OptionsTab.hpp"
+#include "interfaces/bcp_api.hpp"
 
 #ifdef Q_OS_MAC
 #include <CoreFoundation/CoreFoundation.h>

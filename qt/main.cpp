@@ -1,6 +1,7 @@
 ﻿#include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 #include "sc_SimulateTab.hpp"
+#include "interfaces/bcp_api.hpp"
 
 #if 0
 #include <fstream>

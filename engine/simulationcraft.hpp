@@ -44,10 +44,6 @@
 #include "dbc/data_enums.hh"
 #include "dbc/data_definitions.hh"
 
-#include "interfaces/sc_http.hpp"
-#include "interfaces/wowhead.hpp"
-#include "interfaces/bcp_api.hpp"
-
 #include "item/special_effect.hpp"
 #include "item/item.hpp"
 #include "item/enchants.hpp"
