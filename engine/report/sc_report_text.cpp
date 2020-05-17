@@ -7,6 +7,7 @@
 #include "reports.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "fmt/chrono.h"
+#include <iomanip>
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================

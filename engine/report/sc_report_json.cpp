@@ -8,6 +8,7 @@
 #include "sim/scale_factor_control.hpp"
 #include "simulationcraft.hpp"
 #include "util/git_info.hpp"
+#include <ctime>
 
 #include "rapidjson/filewritestream.h"
 #include "rapidjson/document.h"

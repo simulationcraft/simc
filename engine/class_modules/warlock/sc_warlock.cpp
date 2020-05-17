@@ -1,6 +1,7 @@
 #include "simulationcraft.hpp"
 #include "sc_warlock.hpp"
 #include "sc_warlock_pets.hpp"
+#include <queue>
 
 namespace warlock
 {

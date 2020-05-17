@@ -9,58 +9,12 @@
 // Platform, compiler and general configuration
 #include "config.hpp"
 
-#include <algorithm>
-#include <cassert>
-#include <cctype>
-#include <cfloat>
-#include <cmath>
-#include <cstdarg>
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#include <fstream>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <iterator>
-#include <limits>
-#include <list>
-#include <map>
-#include <set>
-#include <memory>
-#include <numeric>
-#include <queue>
-#include <sstream>
-#include <stack>
-#include <string>
-#include <typeinfo>
-#include <vector>
-#include <bitset>
-#include <array>
-#include <functional>
-#include <memory>
-#include <type_traits>
-#include <unordered_map>
-#include <atomic>
-#include <random>
-#if defined( SC_OSX )
-#include <Availability.h>
-#endif
-
-#include "dbc/data_enums.hh"
-#include "dbc/data_definitions.hh"
-#include "utf8-cpp/utf8.h"
-
-// string formatting library
-#include "fmt/format.h"
-#include "fmt/ostream.h"
-#include "fmt/printf.h"
-
-// GSL-Lite: Guideline Support Library, light version
-// Lib to assist with CPP Core Guidelines.
-#include "gsl-lite/gsl-lite.hpp"
+// libraries
+#include "lib/utf8-cpp/utf8.h"
+#include "lib/fmt/format.h"
+#include "lib/fmt/ostream.h"
+#include "lib/fmt/printf.h"
+#include "lib/gsl-lite/gsl-lite.hpp"
 
 
 #include "sc_timespan.hpp" // Time class representing ingame time
@@ -87,6 +41,8 @@
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
+#include "dbc/data_enums.hh"
+#include "dbc/data_definitions.hh"
 
 #include "interfaces/sc_http.hpp"
 #include "interfaces/wowhead.hpp"

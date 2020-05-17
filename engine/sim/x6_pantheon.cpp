@@ -2,6 +2,7 @@
 
 #include "simulationcraft.hpp"
 #include <memory>
+#include <iomanip>
 
 namespace
 {
