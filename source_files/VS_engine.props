@@ -406,7 +406,7 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_unique_gear.cpp">
-			
+			<PrecompiledHeader>Create</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\spawner_base.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>

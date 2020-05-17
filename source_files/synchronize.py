@@ -63,7 +63,7 @@ def VS_no_precompiled_header():
 def VS_use_precompiled_header(filename):
     """Determine what precompiled header setting to use"""
     try:
-        if re.search(r"sc_main.cpp", filename):
+        if re.search(r"sc_unique_gear.cpp", filename):
             return "<PrecompiledHeader>Create</PrecompiledHeader>"
         transformed_filename = re.sub(r"\\", "/", filename)
         with open(transformed_filename) as f:

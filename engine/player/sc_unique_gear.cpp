@@ -5,6 +5,7 @@
 
 #include "unique_gear.hpp"
 #include "simulationcraft.hpp"
+#include <cctype>
 
 using namespace unique_gear;
 
