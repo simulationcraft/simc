@@ -22,13 +22,6 @@
 #include <sys/time.h>
 #endif
 
-// If you turn this on, you will need to add -lrt to LINK_LIBS in Makefile
-// #define SC_HIGH_PRECISION_STOPWATCH
-#if defined(SC_HIGH_PRECISION_STOPWATCH)
-#include <sys/resource.h>
-#include <sys/times.h>
-#endif
-
 namespace
 {
 /// Helper function to turn integral sec/usec pair into floating-point seconds.
@@ -105,6 +98,21 @@ stopwatch_t::time_point_t windows_user_thread_time()
   out.usec = ( t.QuadPart % 10000000 ) / 10;
   return out;
 }
+
+#else
+#if defined(SC_LINUX) || defined(SC_HIGH_PRECISION_STOPWATCH)
+
+stopwatch_t::time_point_t do_clock_gettime( clockid_t clock_id )
+{
+  struct timespec ts;
+  clock_gettime( clock_id, &ts );
+  stopwatch_t::time_point_t out;
+  out.sec = int64_t( ts.tv_sec );
+  out.usec = int64_t( ts.tv_nsec / 1000 );
+  return out;
+}
+
+#endif
 #endif
 }
 
@@ -123,34 +131,13 @@ stopwatch_t::time_point_t stopwatch_t::now() const
     return windows_user_thread_time();
   }
 #else
-#if defined(SC_HIGH_PRECISION_STOPWATCH)
+#if defined(SC_LINUX) || defined(SC_HIGH_PRECISION_STOPWATCH)
   if ( type == STOPWATCH_WALL )
-  {
-    struct timespec ts;
-    clock_gettime( CLOCK_REALTIME, &ts );
-    stopwatch_t::time_point_t out;
-    out.sec = int64_t( ts.tv_sec );
-    out.usec = int64_t( ts.tv_nsec / 1000 );
-    return out;
-  }
+    return do_clock_gettime( CLOCK_MONOTONIC );
   else if ( type == STOPWATCH_CPU )
-  {
-    struct rusage ru;
-    getrusage( RUSAGE_SELF, &ru );
-    stopwatch_t::time_point_t out;
-    out.sec = ru.ru_utime.tv_sec;
-    out.usec = ru.ru_utime.tv_usec;
-    return out;
-  }
+    return do_clock_gettime( CLOCK_PROCESS_CPUTIME_ID );
   else if ( type == STOPWATCH_THREAD )
-  {
-    struct rusage ru;
-    getrusage( RUSAGE_THREAD, &ru );
-    stopwatch_t::time_point_t out;
-    out.sec = ru.ru_utime.tv_sec;
-    out.usec = ru.ru_utime.tv_usec;
-    return out;
-  }
+    return do_clock_gettime( CLOCK_THREAD_CPUTIME_ID );
 #else
   if ( type == STOPWATCH_WALL ||
       type == STOPWATCH_THREAD )

@@ -32,6 +32,10 @@
 #  define SC_SIGACTION
 #endif
 
+#if defined(__linux) || defined(__linux__) || defined(linux)
+#  define SC_LINUX
+#endif
+
 // ==========================================================================
 // Compiler Definitions
 // ==========================================================================
