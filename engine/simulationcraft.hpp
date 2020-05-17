@@ -10,7 +10,6 @@
 #include "config.hpp"
 
 // libraries
-#include "lib/utf8-cpp/utf8.h"
 #include "lib/fmt/format.h"
 #include "lib/fmt/ostream.h"
 #include "lib/fmt/printf.h"
