@@ -172,23 +172,19 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
   if ( data.data_.empty() )
     return;
 
-  os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
-     << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+  os << "<h3 class='toggle open'>Cooldown waste details</h3>\n"
+     << "<div class='toggle-content'>\n";
 
-  os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
-     << "<tr>\n"
-     << "<th></th>\n"
-     << "<th colspan=\"3\">Seconds per Execute</th>\n"
-     << "<th colspan=\"3\">Seconds per Iteration</th>\n"
+  os << "<table class='sc' style='float: left;margin-right: 10px;'>\n"
+     << "<tr>"
+     << "<th></th>"
+     << "<th colspan='3'>Seconds per Execute</th>"
+     << "<th colspan='3'>Seconds per Iteration</th>"
      << "</tr>\n"
-     << "<tr>\n"
-     << "<th>Ability</th>\n"
-     << "<th>Average</th>\n"
-     << "<th>Minimum</th>\n"
-     << "<th>Maximum</th>\n"
-     << "<th>Average</th>\n"
-     << "<th>Minimum</th>\n"
-     << "<th>Maximum</th>\n"
+     << "<tr>"
+     << "<th>Ability</th>"
+     << "<th>Average</th><th>Minimum</th><th>Maximum</th>"
+     << "<th>Average</th><th>Minimum</th><th>Maximum</th>"
      << "</tr>\n";
 
   size_t n = 0;
@@ -199,34 +195,25 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
       continue;
 
     const auto& iter_entry = rec.second -> cumulative;
+    const action_t* a = player.find_action( rec.first );
 
-    action_t* a = player.find_action( rec.first );
-    std::string name_str = rec.first;
-    if ( a )
-      name_str = report_decorators::decorated_action(*a);
-    else
-      name_str = util::encode_html( name_str );
-
-    std::string row_class_str = "";
-    if ( ++n & 1 )
-      row_class_str = " class=\"odd\"";
-
-    os.printf( "<tr%s>", row_class_str.c_str() );
-    os << "<td class=\"left\">" << name_str << "</td>";
-    os.printf( "<td class=\"right\">%.3f</td>", entry.mean() );
-    os.printf( "<td class=\"right\">%.3f</td>", entry.min() );
-    os.printf( "<td class=\"right\">%.3f</td>", entry.max() );
-    os.printf( "<td class=\"right\">%.3f</td>", iter_entry.mean() );
-    os.printf( "<td class=\"right\">%.3f</td>", iter_entry.min() );
-    os.printf( "<td class=\"right\">%.3f</td>", iter_entry.max() );
-    os << "</tr>\n";
+    ++n;
+    fmt::print( os,
+      "<tr{}>"
+      "<td class='left'>{}</td>"
+      "<td class='right'>{.3f}</td><td class='right'>{.3f}</td><td class='right'>{.3f}</td>"
+      "<td class='right'>{.3f}</td><td class='right'>{.3f}</td><td class='right'>{.3f}</td>"
+      "</tr>\n",
+      n & 1 ? " class='odd'" : "",
+      a ? report_decorators::decorated_action( *a ) : util::encode_html( rec.first ),
+      entry.mean(), entry.min(), entry.max(),
+      iter_entry.mean(), iter_entry.min(), iter_entry.max()
+    );
   }
 
-  os << "</table>\n";
-
-  os << "\t\t\t\t\t</div>\n";
-
-  os << "<div class=\"clear\"></div>\n";
+  os << "</table>\n"
+     << "</div>\n"
+     << "<div class='clear'></div>\n";
 }
 
 } // namespace cd_waste
@@ -2772,7 +2759,7 @@ struct rapid_fire_t: public hunter_spell_t
     std::ostringstream& debug_str( std::ostringstream& s ) override
     {
       action_state_t::debug_str( s );
-      s << " double_tapped=" << double_tapped;
+      fmt::print( s, " double_tapped={:d}", double_tapped );
       return s;
     }
 
@@ -3173,7 +3160,7 @@ struct mongoose_bite_base_t: melee_focus_spender_t
     base_dd_adder += p -> azerite.wilderness_survival.value( 2 );
 
     for ( size_t i = 0; i < stats_.at_fury.size(); i++ )
-      stats_.at_fury[ i ] = p -> get_proc( "bite_at_" + std::to_string( i ) + "_fury" );
+      stats_.at_fury[ i ] = p -> get_proc( fmt::format( "bite_at_{}_fury", i ) );
 
     background = ! p -> talents.mongoose_bite -> ok();
   }
@@ -4997,7 +4984,7 @@ void hunter_t::create_buffs()
   for ( size_t i = 0; i < buffs.barbed_shot.size(); i++ )
   {
     buffs.barbed_shot[ i ] =
-      make_buff( this, "barbed_shot_" + util::to_string( i + 1 ), barbed_shot )
+      make_buff( this, fmt::format( "barbed_shot_{}", i + 1 ), barbed_shot )
         -> set_default_value( barbed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
                               talents.scent_of_blood -> effectN( 1 ).base_value() )
         -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
@@ -5995,9 +5982,9 @@ std::string hunter_t::create_profile( save_e stype )
   if ( options.summon_pet_str != defaults.summon_pet_str )
     profile_str += "summon_pet=" + options.summon_pet_str + "\n";
   if ( options.pet_attack_speed != defaults.pet_attack_speed )
-    profile_str += "hunter.pet_attack_speed=" + util::to_string( options.pet_attack_speed.total_seconds() ) + "\n";
+    fmt::format_to( std::back_inserter( profile_str ), "hunter.pet_attack_speed={}\n", options.pet_attack_speed );
   if ( options.pet_basic_attack_delay != defaults.pet_basic_attack_delay )
-    profile_str += "hunter.pet_basic_attack_delay=" + util::to_string( options.pet_basic_attack_delay.total_seconds() ) + "\n";
+    fmt::format_to( std::back_inserter( profile_str ), "hunter.pet_basic_attack_delay={}\n", options.pet_basic_attack_delay );
 
   return profile_str;
 }
