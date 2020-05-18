@@ -2552,9 +2552,7 @@ std::string util::string_strip_quotes( std::string str )
 
 std::string util::to_string( double f, int precision )
 {
-  std::ostringstream ss;
-  ss << std::fixed << std::setprecision( precision ) << f;
-  return ss.str();
+  return fmt::format( "{:.{}f}", f, precision );
 }
 
 // to_string ================================================================
