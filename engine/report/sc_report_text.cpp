@@ -535,7 +535,7 @@ void print_procs( std::ostream& os, const player_t& p )
         fmt::print( os, "  Procs:\n" );
         first = false;
       }
-      fmt::print( os, "    {} | {}sec : {}\n",
+      fmt::print( os, "    {:9.5f} | {:9.5f}sec : {}\n",
           proc->count.mean(),
           proc->interval_sum.pretty_mean(),
           proc->name() );
@@ -626,11 +626,6 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
 
   size_t n_spacer = ( sim.target_list.size() - 1 ) * 10 + ( sim.target_list.size() - 2 ) * 2 + 2;
   std::string spacer_str_1( n_spacer, '-' ), spacer_str_2( n_spacer, ' ' );
-  if ( sim.fixed_time == 1 )
-  {
-    spacer_str_1.clear();
-    spacer_str_2.clear();
-  }
 
   fmt::print( os, "\nIteration data:\n" );
   if ( sim.low_iteration_data.size() && sim.high_iteration_data.size() )
@@ -642,8 +637,8 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
         spacer_str_1, spacer_str_1 );
     fmt::print(
         os,
-        "| Low Iteration Data                                     {}| | High "
-        "Iteration Data                                    {}|\n",
+        "| Low Iteration Data                                     {}| "
+        "| High Iteration Data                                    {}|\n",
         spacer_str_2, spacer_str_2 );
     fmt::print(
         os,
@@ -651,9 +646,8 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
         "+--------+-----------+----------------------+------------{}+\n",
         spacer_str_1, spacer_str_1 );
     fmt::print( os,
-                   "|  Iter# |    Metric |                 Seed |  {}Health(s) "
-                   "| |  Iter# |    "
-                   "Metric |                 Seed |  {}Health(s) |\n",
+                   "|  Iter# |    Metric |                 Seed |  {}Health(s) | "
+                   "|  Iter# |    Metric |                 Seed |  {}Health(s) |\n",
                    spacer_str_2, spacer_str_2 );
     fmt::print(
         os,
@@ -663,31 +657,15 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
 
     for ( size_t i = 0; i < sim.low_iteration_data.size(); i++ )
     {
-      const iteration_data_entry_t& low_data  = sim.low_iteration_data[ i ];
-      const iteration_data_entry_t& high_data = sim.high_iteration_data[ i ];
-      std::ostringstream low_health_s, high_health_s;
-      for ( size_t health_idx = 0; health_idx < low_data.target_health.size();
-            ++health_idx )
-      {
-        low_health_s << std::setw( 10 ) << std::right
-                     << low_data.target_health[ health_idx ];
-        high_health_s << std::setw( 10 ) << std::right
-                      << high_data.target_health[ health_idx ];
-
-        if ( health_idx < low_data.target_health.size() - 1 )
-        {
-          low_health_s << ", ";
-          high_health_s << ", ";
-        }
-      }
-
-      fmt::print( os, "| {:6} | {:9.1f} | {:20} | {} | | {:6} | {:9.1f} | {:20} | {} |\n",
+      fmt::print( os, "| {:6} | {:9.1f} | {:20} | {:>10} | | {:6} | {:9.1f} | {:20} | {:>10} |\n",
           sim.low_iteration_data[ i ].iteration,
           sim.low_iteration_data[ i ].metric,
-          sim.low_iteration_data[ i ].seed, low_health_s.str(),
+          sim.low_iteration_data[ i ].seed,
+          fmt::join( sim.low_iteration_data[ i ].target_health, ", " ),
           sim.high_iteration_data[ i ].iteration,
           sim.high_iteration_data[ i ].metric,
-          sim.high_iteration_data[ i ].seed, high_health_s.str() );
+          sim.high_iteration_data[ i ].seed,
+          fmt::join( sim.high_iteration_data[ i ].target_health, ", " ) );
     }
     fmt::print(
         os,
@@ -697,6 +675,11 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
   }
   else
   {
+    if ( sim.fixed_time == 1 )
+    {
+      spacer_str_1.clear();
+      spacer_str_2.clear();
+    }
     fmt::print( os, ".--------------------------------------------------------{}.\n",
                    spacer_str_1 );
     fmt::print( os, "| Iteration Data                                         {}|\n",
@@ -720,23 +703,11 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
     {
       if ( sim.fixed_time == 0 )
       {
-        std::ostringstream health_s;
-        for ( size_t health_idx = 0; health_idx < data.target_health.size();
-              ++health_idx )
-        {
-          health_s << std::setw( 10 ) << std::right
-                   << data.target_health[ health_idx ];
-
-          if ( health_idx < data.target_health.size() - 1 )
-          {
-            health_s << ", ";
-          }
-        }
-
-        fmt::print( os, "| {:6} | {:9.1f} | {:20} | {} |\n",
+        fmt::print( os, "| {:6} | {:9.1f} | {:20} | {:>10} |\n",
             data.iteration,
             data.metric,
-            data.seed, health_s.str().c_str() );
+            data.seed,
+            fmt::join( data.target_health, ", " ) );
       }
       else
       {
@@ -754,23 +725,10 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
 void sim_summary_performance( std::ostream& os, sim_t* sim )
 {
   std::time_t cur_time = std::time( nullptr );
-  auto date_str = fmt::format("{:%Y-%m-%d %H:%M:%S%z}", fmt::localtime(cur_time) );
 
-  std::stringstream iterations_str;
+  std::string iterations_str;
   if ( sim -> threads > 1 )
-  {
-    iterations_str << " (";
-    for ( size_t i = 0; i < sim -> work_per_thread.size(); ++i )
-    {
-      iterations_str << sim -> work_per_thread[ i ];
-
-      if ( i < sim -> work_per_thread.size() - 1 )
-      {
-        iterations_str << ", ";
-      }
-    }
-    iterations_str << ")";
-  }
+    iterations_str = fmt::format( " ({})", fmt::join( sim -> work_per_thread, ", " ) );
 
   fmt::print(
       os,
@@ -796,10 +754,10 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
       "  MergeSeconds  = {}\n"
       "  AnalyzeSeconds= {}\n"
       "  SpeedUp       = {}\n"
-      "  EndTime       = {} ({})\n\n",
+      "  EndTime       = {:%Y-%m-%d %H:%M:%S%z} ({})\n\n",
       sim->rng().name(), sim->deterministic ? " (deterministic)" : "",
       sim->iterations,
-      sim -> threads > 1 ? iterations_str.str().c_str() : "",
+      sim -> threads > 1 ? iterations_str : "",
       sim->event_mgr.total_events_processed,
       sim->event_mgr.max_events_remaining,
 #ifdef EVENT_QUEUE_DEBUG
@@ -817,7 +775,7 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
       sim->merge_time,
       sim->analyze_time,
       sim->iterations * sim->simulation_length.mean() / sim->elapsed_cpu,
-      date_str, cur_time );
+      fmt::localtime(cur_time), cur_time );
 #ifdef EVENT_QUEUE_DEBUG
   double total_p = 0;
 
