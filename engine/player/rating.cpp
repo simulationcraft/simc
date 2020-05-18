@@ -99,11 +99,11 @@ void rating_t::init(dbc_t& dbc, int level)
 
 std::string rating_t::to_string()
 {
-  std::ostringstream s;
+  fmt::memory_buffer buf;
   for (rating_e i = static_cast<rating_e>(0); i < RATING_MAX; ++i)
   {
-    if (i > 0) s << " ";
-    s << util::cache_type_string(cache_from_rating(i)) << "=" << get(i); // hacky
+    fmt::format_to( buf, "{}{}={}",
+      i > 0 ? " " : "", util::cache_type_string(cache_from_rating(i)), get(i) ); // hacky
   }
-  return s.str();
+  return fmt::to_string( buf );
 }
