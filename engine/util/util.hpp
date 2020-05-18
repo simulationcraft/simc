@@ -225,7 +225,9 @@ void print_chained_exception( std::exception_ptr eptr, std::ostream& out, int le
 
 template <typename T>
 std::string util::to_string( const T& t )
-{ std::stringstream s; s << t; return s.str(); }
+{
+  return fmt::to_string( t );
+}
 
 template <typename T>
 std::string util::string_join( const T& container, const std::string& delim )
