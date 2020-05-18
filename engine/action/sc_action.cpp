@@ -840,9 +840,9 @@ bool action_t::verify_actor_weapon() const
         types.emplace_back(util::weapon_subclass_string( wt ) );
       }
     }
-    sim->errorf( "Player %s attempting to use action %s without the required main-hand weapon "
-                 "(requires %s, wielded %s).\n",
-      player->name(), name(), util::string_join( types ).c_str(),
+    sim->error( "Player {} attempting to use action {} without the required main-hand weapon "
+                "(requires {}, wielded {}).\n",
+      player->name(), name(), fmt::join( types, ", " ),
       util::weapon_subclass_string( util::translate_weapon( player->main_hand_weapon.type ) ) );
     return false;
   }
@@ -858,9 +858,9 @@ bool action_t::verify_actor_weapon() const
         types.emplace_back(util::weapon_subclass_string( wt ) );
       }
     }
-    sim->errorf( "Player %s attempting to use action %s without the required off-hand weapon "
-                 "(requires %s, wielded %s).\n",
-      player->name(), name(), util::string_join( types ).c_str(),
+    sim->error( "Player {} attempting to use action {} without the required off-hand weapon "
+                "(requires {}, wielded {}).\n",
+      player->name(), name(), fmt::join( types, ", " ),
       util::weapon_subclass_string( util::translate_weapon( player->off_hand_weapon.type ) ) );
     return false;
   }

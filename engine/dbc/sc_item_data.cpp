@@ -1192,7 +1192,7 @@ static std::string get_bonus_item_effect( util::span<const item_bonus_entry_t> e
         }
 
         entries_str.emplace_back( fmt::format( "{} ({})", spell->name_cstr(),
-          util::string_join( fields, ", " ) ) );
+          fmt::join( fields, ", " ) ) );
       }
     }
   } );
