@@ -7,17 +7,19 @@
 
 #include "config.hpp"
 
+#include "dbc/data_enums.hh"
+#include "dbc/specialization.hpp"
+#include "sc_enums.hpp"
+#include "sc_timespan.hpp"
+
 #include "fmt/format.h"
 #include "fmt/ostream.h"
 #include "fmt/printf.h"
-#include "sc_enums.hpp"
-#include "dbc/data_enums.hh"
-#include "dbc/specialization.hpp"
-#include "sc_timespan.hpp"
 
-#include <sstream>
-#include <vector>
+#include <exception>
+#include <iosfwd>
 #include <string>
+#include <vector>
 
 // Forward declarations
 struct player_t;
