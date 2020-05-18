@@ -601,7 +601,7 @@ bool parse_fight_style( sim_t*             sim,
   if ( it == FIGHT_STYLES.end() )
   {
     throw std::invalid_argument( fmt::format( "Unknown fight style {}, available values: {}",
-      value, util::string_join( FIGHT_STYLES ) ) );
+      value, fmt::join( FIGHT_STYLES, ", " ) ) );
   }
 
   sim->fight_style = *it;
