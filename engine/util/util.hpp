@@ -230,17 +230,5 @@ std::string util::to_string( const T& t )
 template <typename T>
 std::string util::string_join( const T& container, const std::string& delim )
 {
-  std::stringstream s;
-
-  for ( auto i = container.cbegin(); i < container.cend(); ++i )
-  {
-    if ( i != container.cbegin() && ! delim.empty() )
-    {
-      s << delim;
-    }
-
-    s << util::to_string( *i );
-  }
-
-  return s.str();
+  return fmt::format( "{}", fmt::join( container, delim ) );
 }
