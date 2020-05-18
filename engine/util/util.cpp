@@ -8,16 +8,10 @@
 #include "player/sc_player.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "dbc/dbc.hpp"
+
 #include "lib/utf8-cpp/utf8.h"
-#include <iomanip>
+
 #include <cctype>
-
-#if !defined(SC_WINDOWS)
-#include <sys/time.h>
-#endif
-
-
-#include <cerrno>
 
 namespace { // anonymous namespace ==========================================
 
