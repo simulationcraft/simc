@@ -1824,7 +1824,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
 
 std::ostream& operator<<( std::ostream& os, const raid_event_t& r )
 {
-  os << fmt::format( "Raid event (type={} name={})", r.type, r.name );
+  fmt::print( os, "Raid event (type={} name={})", r.type, r.name );
   return os;
 }
 
