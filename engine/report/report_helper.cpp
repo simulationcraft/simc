@@ -446,14 +446,12 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     {
       // Check azerite_level
       if ( item.parsed.azerite_level != hoa_level )
-        sim.errorf( "Player %s has HoA of level %s, level for %s should be %s.\n", p.name(),
-                    util::to_string( item.parsed.azerite_level ).c_str(), tier_name.c_str(),
-                    util::to_string( hoa_level ).c_str() );
+        sim.error( "Player {} has HoA of level {}, level for {} should be {}.\n", p.name(),
+                   item.parsed.azerite_level, tier_name, hoa_level );
       // Check final item level (since it's not only computed from azerite_level)
       if ( item.parsed.data.level != hoa_ilevel )
-        sim.errorf( "Player %s has HoA of ilevel %s, ilevel for %s should be %s.\n", p.name(),
-                    util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(),
-                    util::to_string( hoa_ilevel ).c_str() );
+        sim.error( "Player {} has HoA of ilevel {}, ilevel for {} should be {}.\n", p.name(),
+                   item.parsed.data.level, tier_name, hoa_ilevel );
     }
     // Azerite gear
     else if ( slot == SLOT_HEAD || slot == SLOT_SHOULDERS || slot == SLOT_CHEST )
@@ -466,8 +464,8 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
       {
         const auto& power = p.dbc->azerite_power( azerite_id );
         if ( power.id == 0 )
-          sim.errorf( "Player %s has %s with azerite power id %s which does not exists.", p.name(),
-                      util::slot_type_string( slot ), util::to_string( azerite_id ).c_str() );
+          sim.error( "Player {} has {} with azerite power id {} which does not exists.", p.name(),
+                     util::slot_type_string( slot ), azerite_id );
       }
       // Check if there is more than one azerite power per tier (two for tier 3) and less than one for all tiers but tier 1
       for ( unsigned i = 0; i < azerite_tiers; i++ )
@@ -480,29 +478,27 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
             powers++;
         }
         if ( i != 3 && powers > 1 )
-          sim.errorf( "Player %s has %s with %s azerite powers of tier %s, should have 1.", p.name(), util::slot_type_string( slot ),
-                      util::to_string( powers ).c_str(), util::to_string( i ).c_str() );
+          sim.error( "Player {} has {} with {} azerite powers of tier {}, should have 1.", p.name(),
+                      util::slot_type_string( slot ), powers, i );
         if ( i == 3 && powers > third_ring_traits )
-          sim.errorf( "Player %s has %s with %s azerite powers of tier %s, should have %s.", p.name(), util::slot_type_string( slot ),
-                      util::to_string( powers ).c_str(), util::to_string( i ).c_str(), util::to_string( third_ring_traits ) );
+          sim.error( "Player {} has {} with {} azerite powers of tier {}, should have {}.", p.name(),
+                     util::slot_type_string( slot ), powers, i, third_ring_traits );
         if ( i != 1 && powers == 0 )
-          sim.errorf( "Player %s has %s with 0 azerite power of tier %s, should have 1.", p.name(), util::slot_type_string( slot ),
-                      util::to_string( i ).c_str() );
+          sim.error( "Player {} has {} with 0 azerite power of tier {}, should have 1.", p.name(),
+                     util::slot_type_string( slot ), i );
       }
       // Check final item level (item level + bonus from azerite)
       if ( item.parsed.data.level > max_azerite_ilevel_allowed )
-        sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n", p.name(),
-                    util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(),
-                    tier_name.c_str(), util::to_string( max_azerite_ilevel_allowed ).c_str() );
+        sim.error( "Player {} has {} of ilevel {}, maximum allowed ilevel for {} is {}.\n", p.name(),
+                   util::slot_type_string( slot ), item.parsed.data.level, tier_name, max_azerite_ilevel_allowed );
     }
     // Legendary Cloak for T25 profile
     else if ( slot == SLOT_BACK && ( tier_name == "T25" || tier_name == "DS" ) )
     {
       // Check item level
       if ( item.parsed.data.level != max_cloak_ilevel )
-        sim.errorf( "Player %s has cloak of ilevel %s, ilevel for %s should be %s.\n", p.name(),
-                    util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(),
-                    util::to_string( max_cloak_ilevel ).c_str() );
+        sim.error( "Player {} has cloak of ilevel {}, ilevel for {} should be {}.\n", p.name(),
+                   item.parsed.data.level, tier_name, max_cloak_ilevel );
     }
     // Normal gear
     else
@@ -519,9 +515,8 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
       }
       // Check item level
       if ( !is_whitelisted && item.parsed.data.level > max_ilevel_allowed )
-        sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n", p.name(),
-                    util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(),
-                    tier_name.c_str(), util::to_string( max_ilevel_allowed ).c_str() );
+        sim.error( "Player {} has {} of ilevel {}, maximum allowed ilevel for {} is {}.\n", p.name(),
+                   util::slot_type_string( slot ), item.parsed.data.level, tier_name, max_ilevel_allowed );
     }
 
     size_t num_gems = 0;
