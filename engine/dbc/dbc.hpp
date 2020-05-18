@@ -1230,13 +1230,8 @@ public:
 
   std::string to_str() const
   {
-    std::ostringstream s;
-
-    s << " (ok=" << ( ok() ? "true" : "false" ) << ")";
-    s << " id=" << id();
-    s << " name=" << name_cstr();
-    s << " school=" << util::school_type_string( get_school_type() );
-    return s.str();
+    return fmt::format( " (ok={}) id={} name={} school={}",
+                        ok(), id(), name_cstr(), util::school_type_string( get_school_type() ) );
   }
 
   bool affected_by_all( dbc_t& dbc, const spelleffect_data_t& effect ) const;
