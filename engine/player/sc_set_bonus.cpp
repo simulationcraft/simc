@@ -257,16 +257,12 @@ std::ostream& operator<<(std::ostream& os, const set_bonus_t& sb)
         if ( data.overridden >= 1 ||
            ( data.overridden == -1 && sb.set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
         {
-          if ( i > 0 )
-            os << ", ";
-
-          std::string spec_role_str = util::specialization_string( sb.actor -> specialization() );
-
-          os << fmt::format("{{ {}, {}, {}, {} piece bonus {} }}",
+          fmt::print( os, "{}{{ {}, {}, {}, {} piece bonus {} }}",
+              i > 0 ? ", " : "",
               data.bonus -> set_name,
               data.bonus -> set_opt_name,
-              spec_role_str,
-              util::to_string( data.bonus -> bonus ),
+              util::specialization_string( sb.actor -> specialization() ),
+              data.bonus -> bonus,
               ( data.overridden >= 1 ) ? " (overridden)" : "");
           ++i;
         }
