@@ -366,7 +366,7 @@ int sim_t::main( const std::vector<std::string>& args )
   catch (const std::nested_exception& e) {
     // Only catch exception we have already re-thrown in init functions.
     std::cerr << "Error: ";
-    util::print_chained_exception(e.nested_ptr());
+    util::print_chained_exception(e.nested_ptr(), std::cerr);
     std::cerr << std::endl;
     return 1;
   }

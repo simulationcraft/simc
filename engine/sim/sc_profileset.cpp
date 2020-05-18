@@ -516,7 +516,7 @@ void worker_t::execute()
   catch (const std::exception& e )
   {
     std::cerr << "\n\nError in profileset worker: ";
-    util::print_chained_exception(e);
+    util::print_chained_exception(e, std::cerr);
     std::cerr << "\n\n" << std::flush;
     // TODO: find out how to cancel profilesets without deadlock.
   }
@@ -703,7 +703,7 @@ bool profilesets_t::parse( sim_t* sim )
     catch ( const std::exception& e )
     {
       std::cerr << "ERROR! Profileset '" << profileset_name << "' Setup failure: ";
-      util::print_chained_exception( e );
+      util::print_chained_exception( e, std::cerr );
       std::cerr << std::endl;
       set_state( DONE );
       m_control.notify_one();

@@ -15,12 +15,10 @@
 #include <cmath>
 #include <numeric>
 #include <limits>
-#include <iostream>
+#include <iosfwd>
 #include <type_traits>
-
-#include "util/generic.hpp"
-#include "fmt/format.h"
-#include "fmt/ostream.h"
+#include <cassert>
+#include <cstdint>
 
 // if timespan_t is in the global namespace, there's a name lookup issue with
 // one of the Qt headers. Problem is avoided by defining in a sub-namespace
@@ -269,11 +267,7 @@ namespace timespan_adl_barrier
     }
   };
 
-  inline std::ostream& operator<<(std::ostream &os, const timespan_t& x)
-  {
-    fmt::print(os, "{:.3f}", x.total_seconds() );
-    return os;
-  }
+  std::ostream& operator<<(std::ostream &os, const timespan_t& x);
 } // namespace timespan_adl_barrier
 
 using timespan_adl_barrier::timespan_t;

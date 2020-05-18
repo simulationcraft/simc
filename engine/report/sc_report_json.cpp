@@ -1138,7 +1138,7 @@ void print_json( sim_t& sim )
       {
         std::cout << "\nReport will be generated with full state for each action.\n";
       }
-      Timer t( "JSON report" );
+      Timer t( "JSON report", std::cout );
       if ( ! sim.profileset_enabled )
       {
         t.start();

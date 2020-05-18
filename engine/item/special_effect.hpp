@@ -9,6 +9,8 @@
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
 #include <string>
+#include <vector>
+#include <functional>
 
 struct absorb_buff_t;
 struct action_t;

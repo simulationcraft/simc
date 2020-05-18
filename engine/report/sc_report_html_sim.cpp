@@ -1468,7 +1468,7 @@ void print_html( sim_t& sim )
   if ( sim.html_file_str.empty() )
     return;
 
-  Timer t( "html report" );
+  Timer t( "html report", std::cout );
   if ( ! sim.profileset_enabled )
   {
     t.start();

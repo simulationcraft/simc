@@ -5,6 +5,7 @@
 
 #include "dbc.hpp"
 #include <iomanip>
+#include <iostream>
 
 using namespace hotfix;
 

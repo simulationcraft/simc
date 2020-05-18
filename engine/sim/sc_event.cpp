@@ -83,9 +83,7 @@ void event_t::cancel( event_t*& e )
     e->actor->event_counter--;
     if ( e->actor->event_counter < 0 )
     {
-      std::cerr << "event_t::cancel assertion error: e -> player -> events < 0."
-                << "event '" << e->name() << "' from '" << e->actor->name()
-                << "'.\n";
+      fmt::print(stderr, "event_t::cancel assertion error: e -> player -> events < 0. event '{}' from '{}'.\n", e->name(), e->actor->name());
       assert( false );
     }
   }

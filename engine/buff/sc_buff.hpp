@@ -9,6 +9,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <memory>
 #include "sc_timespan.hpp"
 #include "sc_enums.hpp"
 #include "player/sc_actor_pair.hpp"

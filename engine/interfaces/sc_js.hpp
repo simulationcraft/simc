@@ -12,6 +12,7 @@
 #include <utility>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 
 struct cooldown_t;
@@ -257,23 +258,14 @@ public:
   // converted to an object with fixed fields.
   JsonOutput& operator=(const simple_sample_data_with_min_max_t& v);
 
-  JsonOutput& operator=( const std::vector<std::string>& v )
-  {
-    v_.SetArray();
-
-    range::for_each( v, [ this ]( const std::string& value ) {
-      v_.PushBack( rapidjson::StringRef( value.c_str() ), d_.GetAllocator() );
-    } );
-
-    return *this;
-  }
+  JsonOutput& operator=( const std::vector<std::string>& v );
 
   template <typename T>
   JsonOutput& operator=( const std::vector<T>& v )
   {
     v_.SetArray();
 
-    range::for_each( v, [ this ]( const T& value ) {
+    std::for_each( v.begin(), v.end(), [ this ]( const T& value ) {
       v_.PushBack( value, d_.GetAllocator() );
     } );
 

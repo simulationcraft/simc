@@ -591,6 +591,16 @@ protected:
 
 } // opts
 
+opts::parse_status option_t::parse_option( sim_t* sim , const std::string& n, const std::string& value ) const
+{
+  try {
+    return parse( sim, n, value );
+  }
+  catch ( const std::exception& ) {
+    std::throw_with_nested(std::runtime_error(fmt::format("Option '{}' with value '{}'", n, value)));
+  }
+}
+
 // option_t::parse ==========================================================
 
 opts::parse_status opts::parse( sim_t*                                        sim,

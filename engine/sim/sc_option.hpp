@@ -40,15 +40,7 @@ public:
     _name( name )
 { }
   virtual ~option_t() { }
-  opts::parse_status parse_option( sim_t* sim , const std::string& n, const std::string& value ) const
-  {
-    try {
-      return parse( sim, n, value );
-    }
-    catch ( const std::exception& ) {
-      std::throw_with_nested(std::runtime_error(fmt::format("Option '{}' with value '{}'", n, value)));
-    }
-  }
+  opts::parse_status parse_option( sim_t* sim , const std::string& n, const std::string& value ) const;
   std::string name() const
   { return _name; }
   std::ostream& print_option( std::ostream& stream ) const

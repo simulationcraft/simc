@@ -52,7 +52,7 @@ private:
   bool started;
 
 public:
-  Timer( std::string title, std::ostream& out = std::cout )
+  Timer( std::string title, std::ostream& out )
     : title( std::move( title ) ),
       out( out ),
       start_time( std::chrono::high_resolution_clock::now() ),

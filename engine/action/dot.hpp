@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include "sc_timespan.hpp"
 #include "sc_enums.hpp"
+#include "util/generic.hpp"
 #include <string>
 #include <memory>
 #include <cstdint>

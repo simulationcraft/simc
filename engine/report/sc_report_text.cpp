@@ -1340,7 +1340,7 @@ void print_text( sim_t* sim, bool detail )
 
   try
   {
-    Timer t( "text report" );
+    Timer t( "text report", std::cout );
     if ( ! sim -> profileset_enabled )
     {
       t.start();

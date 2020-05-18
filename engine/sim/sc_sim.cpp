@@ -2905,6 +2905,14 @@ void sim_t::do_pause()
   }
 }
 
+void sim_t::set_error(std::string error)
+{
+    util::replace_all( error, "\n", "" );
+    std::cerr << error << "\n";
+
+    error_list.push_back( error );
+}
+
 /// merge sims
 void sim_t::merge( sim_t& other_sim )
 {

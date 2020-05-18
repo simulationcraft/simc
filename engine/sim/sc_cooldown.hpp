@@ -9,6 +9,7 @@
 #include "sc_timespan.hpp"
 #include "sc_enums.hpp"
 #include <string>
+#include <memory>
 
 struct action_t;
 struct event_t;

@@ -269,6 +269,7 @@ util/rng.cpp
 util/sample_data.cpp
 util/stopwatch.cpp
 util/timeline.cpp
+util/timespan.cpp
 util/util.cpp
 util/xml.cpp
 )

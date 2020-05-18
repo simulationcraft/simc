@@ -230,8 +230,8 @@ inline unsigned next_power_of_two( unsigned v )
   return v;
 }
 
-void print_chained_exception( const std::exception& e, std::ostream& out = std::cerr, int level =  0);
-void print_chained_exception( std::exception_ptr eptr, std::ostream& out = std::cerr, int level =  0);
+void print_chained_exception( const std::exception& e, std::ostream& out, int level =  0);
+void print_chained_exception( std::exception_ptr eptr, std::ostream& out, int level =  0);
 
 } // namespace util
 

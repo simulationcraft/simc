@@ -24,7 +24,7 @@ namespace js {
   sc_js_t::sc_js_t(const sc_js_t& o)
   {
     js_.CopyFrom(o.js_, js_.GetAllocator());
-    std::cout << "\n\nSC_JS_T:: COPY CONSTRUCTOR USED!!!\n";
+    fmt::print("\n\nSC_JS_T:: COPY CONSTRUCTOR USED!!!\n");
   }
 
   rapidjson::Value* sc_js_t::path_value(const std::string& path_str)
@@ -308,6 +308,17 @@ namespace js {
     return *this;
   }
 
+  JsonOutput& JsonOutput::operator=( const std::vector<std::string>& v )
+  {
+    v_.SetArray();
+
+    range::for_each( v, [ this ]( const std::string& value ) {
+      v_.PushBack( rapidjson::StringRef( value.c_str() ), d_.GetAllocator() );
+    } );
+
+    return *this;
+  }
+  
   JsonOutput& JsonOutput::operator=(const sc_timeline_t& v)
   {
     assert(v_.IsObject());

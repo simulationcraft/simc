@@ -618,10 +618,7 @@ struct sim_t : private sc_thread_t
       return;
 
     auto s = fmt::sprintf(std::forward<Format>(format), std::forward<Args>(args)... );
-    util::replace_all( s, "\n", "" );
-    std::cerr << s << "\n";
-
-    error_list.push_back( s );
+    set_error(std::move(s));
   }
 
   /**
@@ -634,11 +631,9 @@ struct sim_t : private sc_thread_t
       return;
 
     auto s = fmt::format(std::forward<Format>(format), std::forward<Args>(args)... );
-    util::replace_all( s, "\n", "" );
-    std::cerr << s << "\n";
-
-    error_list.push_back( s );
+    set_error(std::move(s));
   }
+  
   void abort();
   void combat();
   void combat_begin();
@@ -703,6 +698,7 @@ struct sim_t : private sc_thread_t
   }
 
 private:
+  void set_error(std::string error);
   void do_pause();
   void print_spell_query();
   void enable_debug_seed();
