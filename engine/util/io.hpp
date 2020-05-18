@@ -8,6 +8,7 @@
 
 #include "config.hpp"
 #include "fmt/printf.h"
+#include "fmt/ostream.h"
 #include <string>
 #include <vector>
 #include <fstream>
@@ -63,20 +64,20 @@ public:
   /**
    * Output using printf formatting syntax.
    */
-  template<typename Format, typename... Args>
-  ofstream& printf(Format&& format, Args&& ... args)
+  template <typename Format, typename... Args>
+  ofstream& printf(const Format& format, Args&& ... args)
   {
-    *this << fmt::sprintf(std::forward<Format>(format), std::forward<Args>(args)... );;
+    fmt::fprintf( *this, format, std::forward<Args>(args)... );;
 
     return *this;
   }
   /**
    * Output using fmt::format formatting syntax.
    */
-  template<typename Format, typename... Args>
-  ofstream& format(Format&& format, Args&& ... args)
+  template <typename Format, typename... Args>
+  ofstream& format(const Format& format, Args&& ... args)
   {
-    *this << fmt::format(std::forward<Format>(format), std::forward<Args>(args)... );
+    fmt::print( *this, format, std::forward<Args>(args)... );
 
     return *this;
   }

@@ -72,7 +72,7 @@ public:
       auto end            = std::chrono::high_resolution_clock::now();
       auto diff           = end - start_time;
       using float_seconds = std::chrono::duration<double>;
-      out << fmt::format("{} took {}seconds.",
+      fmt::print( out, "{} took {}seconds.",
           title, std::chrono::duration_cast<float_seconds>( diff ).count());
       out << std::endl;
     }
