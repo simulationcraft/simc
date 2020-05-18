@@ -173,7 +173,6 @@ std::string decode_html( const std::string& );
 std::string remove_special_chars( const std::string& );
 void urlencode( std::string& str );
 void urldecode( std::string& str );
-std::string uchar_to_hex( unsigned char );
 std::string create_blizzard_talent_url( const player_t& p );
 std::string create_wowhead_artifact_url( const player_t& p );
 
