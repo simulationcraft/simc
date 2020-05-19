@@ -2517,7 +2517,7 @@ void sim_t::init_actor_pets()
 
 void sim_t::init()
 {
-  auto start = std::chrono::high_resolution_clock::now();
+  const auto start_time = chrono::wall_clock::now();
 
   if ( initialized )
     return;
@@ -2720,7 +2720,7 @@ void sim_t::init()
 
   initialized = true;
 
-  init_time = chrono::elapsed_fp_seconds( start );
+  init_time = chrono::elapsed_fp_seconds( start_time );
 
   if (canceled)
   {
@@ -2734,7 +2734,7 @@ void sim_t::init()
 
 void sim_t::analyze()
 {
-  auto start = std::chrono::high_resolution_clock::now();
+  const auto start_time = chrono::wall_clock::now();
 
   simulation_length.analyze();
   if ( simulation_length.mean() == 0 ) return;
@@ -2766,7 +2766,7 @@ void sim_t::analyze()
 
   analyze_iteration_data();
 
-  analyze_time = chrono::elapsed_fp_seconds( start );
+  analyze_time = chrono::elapsed_fp_seconds( start_time );
 }
 
 /**
@@ -2917,7 +2917,7 @@ void sim_t::set_error(std::string error)
 void sim_t::merge( sim_t& other_sim )
 {
   auto_lock_t auto_lock( merge_mutex );
-  auto start = std::chrono::high_resolution_clock::now();
+  const auto start_time = chrono::wall_clock::now();
 
   if ( scaling -> scale_stat == STAT_NONE &&
        scaling -> calculate_scale_factors == 0 &&
@@ -2968,7 +2968,7 @@ void sim_t::merge( sim_t& other_sim )
   spawner::merge( *this, other_sim );
 
   range::append( iteration_data, other_sim.iteration_data );
-  merge_time += chrono::elapsed_fp_seconds( start );
+  merge_time += chrono::elapsed_fp_seconds( start_time );
   init_time += other_sim.init_time;
 }
 
@@ -3102,8 +3102,8 @@ void sim_t::partition()
 
 bool sim_t::execute()
 {
-  double start_cpu_time  = util::cpu_time();
-  double start_wall_time = util::wall_time();
+  const auto start_cpu_time  = chrono::cpu_clock::now();
+  const auto start_wall_time = chrono::wall_clock::now();
 
   bool success = false;
   {
@@ -3115,8 +3115,8 @@ bool sim_t::execute()
   if( success )
     analyze();
 
-  elapsed_cpu  = util::cpu_time()  - start_cpu_time;
-  elapsed_time = util::wall_time() - start_wall_time;
+  elapsed_cpu  = chrono::elapsed_fp_seconds( start_cpu_time );
+  elapsed_time = chrono::elapsed_fp_seconds( start_wall_time );
 
   return success;
 }
