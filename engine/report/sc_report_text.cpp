@@ -1094,21 +1094,14 @@ void print_reference_dps( std::ostream& os, sim_t& sim )
   }
 }
 
-#ifdef ACTOR_EVENT_BOOKKEEPING
-struct sort_by_event_stopwatch
-{
-  bool operator()( player_t* l, player_t* r )
-  {
-    return l->event_stopwatch.current() > r->event_stopwatch.current();
-  }
-};
-
-void event_manager_infos( std::ostream& os, const sim_t& sim )
+void print_event_manager_infos( std::ostream& os, const sim_t& sim )
 {
   if ( !sim.event_mgr.monitor_cpu )
     return;
 
   fmt::print( os, "\nEvent Manager CPU Report:\n" );
+
+#ifdef ACTOR_EVENT_BOOKKEEPING
   std::vector<player_t*> sorted_p = sim.player_list.data();
 
   double total_event_time = sim.event_mgr.event_stopwatch.current();
@@ -1120,7 +1113,9 @@ void event_manager_infos( std::ostream& os, const sim_t& sim )
       sim.event_mgr.event_stopwatch.current(),
       sim.event_mgr.event_stopwatch.current() / total_event_time * 100.0 );
 
-  range::sort( sorted_p, sort_by_event_stopwatch() );
+  range::sort( sorted_p, []( player_t* l, player_t* r ) {
+    return l->event_stopwatch.current() > r->event_stopwatch.current();
+  } );
   for ( const auto& p : sorted_p )
   {
     fmt::print( os, "{:10.3f}sec / {:5.2f}% : {}\n",
@@ -1128,8 +1123,10 @@ void event_manager_infos( std::ostream& os, const sim_t& sim )
         p->event_stopwatch.current() / total_event_time * 100.0,
         p->name() );
   }
+#else
+  fmt::print( os, "{:>12.6f}sec : All Events\n", sim.event_mgr.event_stopwatch.current() );
+#endif
 }
-#endif // ACTOR_EVENT_BOOKKEEPING
 
 void print_collected_amount( std::ostream& os, const player_t& p, std::string name, const extended_sample_data_t& sd )
 {
@@ -1306,9 +1303,7 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
     print_iteration_data( os, *sim );
     print_raid_scale_factors( os, sim );
     print_reference_dps( os, *sim );
-#ifdef ACTOR_EVENT_BOOKKEEPING
-    event_manager_infos( os, *sim );
-#endif
+    print_event_manager_infos( os, *sim );
   }
 
   fmt::print( os, "\n" );
