@@ -14,6 +14,7 @@
 #include "dbc/data_enums.hh"
 #include "dbc/specialization.hpp"
 #include "sc_timespan.hpp"
+
 #include <sstream>
 #include <vector>
 #include <string>
@@ -30,7 +31,6 @@ namespace util
 stat_e highest_stat( const player_t* p, const std::vector<stat_e>& stat );
 
 double wall_time();
-double cpu_time();
 
 std::string version_info_str( const dbc_t* dbc );
 

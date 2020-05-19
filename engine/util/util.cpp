@@ -245,9 +245,6 @@ double stat_value( const player_t* p, stat_e stat )
 double util::wall_time() {
   return chrono::to_fp_seconds( chrono::wall_clock::now().time_since_epoch() );
 }
-double util::cpu_time() {
-  return chrono::to_fp_seconds( chrono::cpu_clock::now().time_since_epoch() );
-}
 
 std::string util::version_info_str( const dbc_t* dbc )
 {
