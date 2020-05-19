@@ -15,6 +15,7 @@
 #endif
 
 #include "sc_option.hpp"
+#include "util/chrono.hpp"
 #include "util/generic.hpp"
 #include "util/io.hpp"
 #include "sc_enums.hpp"
@@ -500,7 +501,7 @@ class profilesets_t
   std::condition_variable                m_work;
 
   // Parallel profileset stats collection
-  double                                 m_start_time;
+  chrono::wall_clock::time_point         m_start_time;
   double                                 m_total_elapsed;
 #endif
 
