@@ -12,4 +12,4 @@ namespace target_specific_helper
   {
     return player->actor_index;
   }
-};
+}
