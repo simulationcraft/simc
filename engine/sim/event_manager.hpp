@@ -7,7 +7,9 @@
 
 #include "config.hpp"
 #include "sc_timespan.hpp"
+#include "util/chrono.hpp"
 #include "util/stopwatch.hpp"
+
 #include <cstdint>
 #include <vector>
 
@@ -31,7 +33,7 @@ struct event_manager_t
   timespan_t wheel_time;
   std::vector<event_t*> allocated_events;
 
-  stopwatch_t event_stopwatch;
+  stopwatch_t<chrono::thread_clock> event_stopwatch;
   bool monitor_cpu;
   bool canceled;
 #ifdef EVENT_QUEUE_DEBUG

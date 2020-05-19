@@ -4,8 +4,8 @@
 // ==========================================================================
 
 #include "util.hpp"
+#include "util/chrono.hpp"
 #include "util/git_info.hpp"
-#include "util/stopwatch.hpp"
 #include "player/sc_player.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "dbc/dbc.hpp"
@@ -114,10 +114,6 @@ bool pred_ci ( char a, char b )
 {
   return std::tolower( a ) == std::tolower( b );
 }
-
-stopwatch_t wall_sw( STOPWATCH_WALL );
-stopwatch_t  cpu_sw( STOPWATCH_CPU  );
-
 
 void stat_search( std::string&              encoding_str,
                          std::vector<std::string>& description_tokens,
@@ -246,8 +242,12 @@ double stat_value( const player_t* p, stat_e stat )
 } // anonymous namespace ============================================
 
 
-double util::wall_time() { return wall_sw.elapsed(); }
-double util::cpu_time() { return cpu_sw.elapsed(); }
+double util::wall_time() {
+  return chrono::to_fp_seconds( chrono::wall_clock::now().time_since_epoch() );
+}
+double util::cpu_time() {
+  return chrono::to_fp_seconds( chrono::cpu_clock::now().time_since_epoch() );
+}
 
 std::string util::version_info_str( const dbc_t* dbc )
 {

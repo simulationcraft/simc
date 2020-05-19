@@ -2720,7 +2720,7 @@ void sim_t::init()
 
   initialized = true;
 
-  init_time = util::duration_fp_seconds( start );
+  init_time = chrono::elapsed_fp_seconds( start );
 
   if (canceled)
   {
@@ -2766,7 +2766,7 @@ void sim_t::analyze()
 
   analyze_iteration_data();
 
-  analyze_time = util::duration_fp_seconds( start );
+  analyze_time = chrono::elapsed_fp_seconds( start );
 }
 
 /**
@@ -2968,7 +2968,7 @@ void sim_t::merge( sim_t& other_sim )
   spawner::merge( *this, other_sim );
 
   range::append( iteration_data, other_sim.iteration_data );
-  merge_time += util::duration_fp_seconds( start );
+  merge_time += chrono::elapsed_fp_seconds( start );
   init_time += other_sim.init_time;
 }
 

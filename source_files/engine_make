@@ -123,12 +123,12 @@ SRC += \
     sim$(PATHSEP)shuffled_rng.cpp \
     sim$(PATHSEP)uptime_benefit.cpp \
     sim$(PATHSEP)x6_pantheon.cpp \
+    util$(PATHSEP)chrono.cpp \
     util$(PATHSEP)concurrency.cpp \
     util$(PATHSEP)git_info.cpp \
     util$(PATHSEP)io.cpp \
     util$(PATHSEP)rng.cpp \
     util$(PATHSEP)sample_data.cpp \
-    util$(PATHSEP)stopwatch.cpp \
     util$(PATHSEP)timeline.cpp \
     util$(PATHSEP)timespan.cpp \
     util$(PATHSEP)util.cpp \

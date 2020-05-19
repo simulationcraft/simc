@@ -4,45 +4,33 @@
 // ==========================================================================
 
 #pragma once
-#include "config.hpp"
-#include <cstdint>
 
-enum stopwatch_e
-{
-  STOPWATCH_CPU,
-  STOPWATCH_WALL,
-  STOPWATCH_THREAD
-};
+#include <chrono>
 
-class stopwatch_t
-{
+template <typename Clock>
+class stopwatch_t {
+  using duration = std::chrono::duration<double>;
 public:
-  struct time_point_t
-  {
-    int64_t sec;
-    int64_t usec;
-  };
-  void mark();
-  void accumulate();
-  double elapsed();
-  double current() const;
-  stopwatch_t( stopwatch_e sw_type );
+  stopwatch_t()
+    : _start( Clock::now() ), _current( 0 )
+  {}
+
+  void mark() {
+    _start = Clock::now();
+  }
+
+  void accumulate() {
+    _current += Clock::now() - _start;
+  }
+
+  double elapsed() const {
+    return duration( Clock::now() - _start ).count();
+  }
+
+  double current() const {
+    return duration( _current ).count();
+  }
 private:
-  stopwatch_e type;
-  time_point_t _start, _current;
-  time_point_t now() const;
+  typename Clock::time_point _start;
+  typename Clock::duration _current;
 };
-
-/// Mark start
-inline void stopwatch_t::mark()
-{
-  _start = now();
-}
-
-/// Create new stopwatch and mark starting timepoint
-inline stopwatch_t::stopwatch_t( stopwatch_e t ) :
-    type( t )
-{
-  _current.sec = 0; _current.usec = 0;
-  mark();
-}

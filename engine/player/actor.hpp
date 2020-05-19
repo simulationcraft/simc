@@ -6,8 +6,10 @@
 #pragma once
 
 #include "config.hpp"
+#include "util/chrono.hpp"
 #include "util/generic.hpp"
 #include "util/stopwatch.hpp"
+
 #include <string>
 
 struct sim_t;
@@ -27,7 +29,7 @@ struct actor_t : private noncopyable
 
 #ifdef ACTOR_EVENT_BOOKKEEPING
   /// Measure cpu time for actor-specific events.
-  stopwatch_t event_stopwatch;
+  stopwatch_t<chrono::thread_clock> event_stopwatch;
 #endif // ACTOR_EVENT_BOOKKEEPING
 
   actor_t( sim_t* s, const std::string& name );
