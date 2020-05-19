@@ -6,6 +6,8 @@
 #pragma once
 
 #include "config.hpp"
+#include "util/chrono.hpp"
+
 #include <string>
 
 struct sim_progress_t;
@@ -15,7 +17,8 @@ struct progress_bar_t
 {
   sim_t& sim;
   int steps, updates, interval, update_number;
-  double start_time, last_update, max_interval_time;
+  chrono::wall_clock::time_point start_time, last_update;
+  chrono::wall_clock::duration max_interval_time;
   std::string status;
   std::string base_str, phase_str;
   size_t work_index, total_work_;
