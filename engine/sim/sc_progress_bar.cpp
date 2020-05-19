@@ -63,14 +63,14 @@ std::string progress_bar_t::format_time( double t )
 
 progress_bar_t::progress_bar_t( sim_t& s ) :
     sim( s ), steps( 20 ), updates( 100 ), interval( 0 ), update_number( 0 ),
-    start_time( 0 ), last_update( 0 ), max_interval_time( 1.0 ), work_index( 0 ), total_work_( 0 ),
+    max_interval_time( std::chrono::seconds( 1 ) ), work_index( 0 ), total_work_( 0 ),
     elapsed_time( 0 ), time_count( 0 )
 {
 }
 
 void progress_bar_t::init()
 {
-  start_time = util::wall_time();
+  start_time = chrono::wall_clock::now();
   if ( sim.target_error > 0 )
   {
     interval = sim.analyze_error_interval;
@@ -92,10 +92,10 @@ void progress_bar_t::init()
 
 void progress_bar_t::restart()
 {
-  add_simulation_time( util::wall_time() - start_time );
+  add_simulation_time( chrono::elapsed_fp_seconds( start_time ) );
 
-  start_time = util::wall_time();
-  last_update = util::wall_time();
+  start_time = chrono::wall_clock::now();
+  last_update = start_time;
   update_number = 0;
 }
 
@@ -124,14 +124,14 @@ bool progress_bar_t::update( bool finished, int index )
   auto progress = sim.progress( nullptr, index );
   if ( ! finished )
   {
-    double update_interval = last_update - util::wall_time();
+    auto update_interval = last_update - chrono::wall_clock::now();
     if ( progress.current_iterations < update_number + interval &&
          update_interval < max_interval_time )
     {
       return false;
     }
     update_number = progress.current_iterations;
-    last_update = util::wall_time();
+    last_update = chrono::wall_clock::now();
   }
 
   if ( sim.progressbar_type == 1 )
@@ -157,7 +157,7 @@ bool progress_bar_t::update_simple( const sim_progress_t& progress, bool finishe
     pct = 1.0;
   }
 
-  double current_time = util::wall_time() - start_time;
+  double current_time = chrono::elapsed_fp_seconds( start_time );
   double total_time = current_time / pct;
 
   double remaining_time = total_time - current_time;
@@ -195,7 +195,7 @@ bool progress_bar_t::update_simple( const sim_progress_t& progress, bool finishe
   {
     auto average_spent = average_simulation_time();
     auto phases_left = total_work() - current_progress();
-    auto time_left = std::max( 0.0, average_spent - ( util::wall_time() - start_time ) );
+    auto time_left = std::max( 0.0, average_spent - chrono::elapsed_fp_seconds( start_time ) );
     auto total_left = phases_left * average_spent + time_left;
 
     if ( total_left > 0 )
@@ -236,7 +236,7 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
     fmt::format_to(new_status, "{:.>{}}]", "", steps - progress_length);
   }
 
-  double current_time = util::wall_time() - start_time;
+  double current_time = chrono::elapsed_fp_seconds( start_time );
   double total_time = current_time / pct;
 
   int remaining_sec = static_cast<int>( total_time - current_time );
@@ -290,7 +290,7 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
   {
     auto average_spent = average_simulation_time();
     auto phases_left = total_work() - current_progress();
-    auto time_left = std::max( 0.0, average_spent - ( util::wall_time() - start_time ) );
+    auto time_left = std::max( 0.0, average_spent - chrono::elapsed_fp_seconds( start_time ) );
     auto total_left = phases_left * average_spent + time_left;
 
     if ( total_left > 0 )

@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "util.hpp"
-#include "util/chrono.hpp"
 #include "util/git_info.hpp"
 #include "player/sc_player.hpp"
 #include "sim/scale_factor_control.hpp"
@@ -240,11 +239,6 @@ double stat_value( const player_t* p, stat_e stat )
 }
 
 } // anonymous namespace ============================================
-
-
-double util::wall_time() {
-  return chrono::to_fp_seconds( chrono::wall_clock::now().time_since_epoch() );
-}
 
 std::string util::version_info_str( const dbc_t* dbc )
 {

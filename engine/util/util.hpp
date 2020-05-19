@@ -30,8 +30,6 @@ namespace util
 {
 stat_e highest_stat( const player_t* p, const std::vector<stat_e>& stat );
 
-double wall_time();
-
 std::string version_info_str( const dbc_t* dbc );
 
 const char* attribute_type_string     ( attribute_e type );
