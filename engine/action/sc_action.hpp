@@ -13,6 +13,7 @@
 #include "dbc/data_definitions.hh"
 #include <vector>
 #include <memory>
+#include <string>
 
 struct action_priority_t;
 struct action_priority_list_t;
