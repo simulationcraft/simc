@@ -27,7 +27,7 @@ event_manager_t::event_manager_t( sim_t* s )
     wheel_shift( 5 ),
     wheel_granularity( 0.0 ),
     wheel_time( timespan_t::zero() ),
-    event_stopwatch( STOPWATCH_THREAD ),
+    event_stopwatch(),
 #ifdef EVENT_QUEUE_DEBUG
     monitor_cpu( false ),
     max_queue_depth( 0 ),
@@ -241,11 +241,11 @@ bool event_manager_t::execute()
       if ( monitor_cpu )
       {
 #ifdef ACTOR_EVENT_BOOKKEEPING
-        stopwatch_t& sw =
+        auto& sw =
             e->actor ? e->actor->event_stopwatch : event_stopwatch;
 #else
 
-        stopwatch_t& sw = event_stopwatch;
+        auto& sw = event_stopwatch;
 #endif
         sw.mark();
         e->execute();

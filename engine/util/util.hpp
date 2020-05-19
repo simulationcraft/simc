@@ -17,8 +17,6 @@
 #include <sstream>
 #include <vector>
 #include <string>
-#include <cstdarg>
-#include <chrono>
 
 // Forward declarations
 struct player_t;
@@ -207,14 +205,6 @@ template <class T>
 int numDigits( T number );
 
 bool contains_non_ascii( const std::string& );
-
-template <class T>
-double duration_fp_seconds(const T& chrono_time)
-{
-  auto now = std::chrono::high_resolution_clock::now();
-
-  return std::chrono::duration<double, std::chrono::seconds::period>( now - chrono_time ).count();
-}
 
 // https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
 inline unsigned next_power_of_two( unsigned v )

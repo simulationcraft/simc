@@ -132,6 +132,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\sim\x6_pantheon.hpp" />
 		<ClInclude Include="..\engine\simulationcraft.hpp" />
 		<ClInclude Include="..\engine\util\cache.hpp" />
+		<ClInclude Include="..\engine\util\chrono.hpp" />
 		<ClInclude Include="..\engine\util\concurrency.hpp" />
 		<ClInclude Include="..\engine\util\generic.hpp" />
 		<ClInclude Include="..\engine\util\git_info.hpp" />
@@ -510,6 +511,9 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\sim\x6_pantheon.cpp">
 			
 		</ClCompile>
+		<ClCompile Include="..\engine\util\chrono.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="..\engine\util\concurrency.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
@@ -523,9 +527,6 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\util\sample_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\stopwatch.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\util\timeline.cpp">

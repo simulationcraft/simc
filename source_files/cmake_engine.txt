@@ -126,6 +126,7 @@ sim/uptime.hpp
 sim/x6_pantheon.hpp
 simulationcraft.hpp
 util/cache.hpp
+util/chrono.hpp
 util/concurrency.hpp
 util/generic.hpp
 util/git_info.hpp
@@ -262,12 +263,12 @@ sim/scale_factor_control.cpp
 sim/shuffled_rng.cpp
 sim/uptime_benefit.cpp
 sim/x6_pantheon.cpp
+util/chrono.cpp
 util/concurrency.cpp
 util/git_info.cpp
 util/io.cpp
 util/rng.cpp
 util/sample_data.cpp
-util/stopwatch.cpp
 util/timeline.cpp
 util/timespan.cpp
 util/util.cpp
