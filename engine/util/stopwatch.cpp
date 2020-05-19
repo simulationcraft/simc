@@ -19,7 +19,7 @@
 #endif
 
 #if !defined(SC_WINDOWS)
-#include <sys/time.h>
+#include <time.h>
 #endif
 
 namespace
