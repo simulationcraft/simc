@@ -16,6 +16,7 @@
 #include "sc_highchart.hpp"
 #include "util/io.hpp"
 #include "util/util.hpp"
+#include "util/chrono.hpp"
 
 // see if we can get rid of these includes by adjusting spell_decorator_t
 #include "action/sc_action.hpp"
@@ -38,7 +39,6 @@ struct sim_report_information_t;
 struct spell_data_expr_t;
 struct artifact_power_t;
 
-#include <chrono>
 /**
  * Automatic Timer reporting the time between construction and desctruction of
  * the object.
@@ -48,20 +48,19 @@ struct Timer
 private:
   std::string title;
   std::ostream& out;
-  std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
+  chrono::wall_clock::time_point start_time;
   bool started;
 
 public:
   Timer( std::string title, std::ostream& out )
     : title( std::move( title ) ),
       out( out ),
-      start_time( std::chrono::high_resolution_clock::now() ),
       started( false )
   { }
 
   void start()
   {
-    start_time = std::chrono::high_resolution_clock::now();
+    start_time = chrono::wall_clock::now();
     started = true;
   }
 
@@ -69,11 +68,7 @@ public:
   {
     if ( started )
     {
-      auto end            = std::chrono::high_resolution_clock::now();
-      auto diff           = end - start_time;
-      using float_seconds = std::chrono::duration<double>;
-      fmt::print( out, "{} took {}seconds.",
-          title, std::chrono::duration_cast<float_seconds>( diff ).count());
+      fmt::print( out, "{} took {}seconds.", title, chrono::elapsed_fp_seconds( start_time ) );
       out << std::endl;
     }
   }
