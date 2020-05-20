@@ -62,7 +62,6 @@ struct event_t : private noncopyable
   const sim_t& sim() const
   { return _sim; }
   rng::rng_t& rng();
-  rng::rng_t& rng() const;
 
   virtual void execute() = 0; // MUST BE IMPLEMENTED IN SUB-CLASS!
   virtual const char* name() const
