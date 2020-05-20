@@ -4513,6 +4513,12 @@ void hunter_t::vision_of_perfection_proc()
   {
   case HUNTER_BEAST_MASTERY:
   {
+    if ( azerite.primal_instincts.ok() )
+    {
+      timespan_t recharge = cooldown_t::cooldown_duration( cooldowns.barbed_shot ) * azerite_essence.vision_of_perfection_major_mult;
+      cooldowns.barbed_shot->adjust( -recharge );
+    }
+
     timespan_t dur = buffs.aspect_of_the_wild->buff_duration * azerite_essence.vision_of_perfection_major_mult;
     if ( buffs.aspect_of_the_wild->check() )
     {
@@ -5501,7 +5507,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( "use_item,name=ashvanes_razor_coral,if=prev_gcd.1.trueshot&(buff.guardian_of_azeroth.up|!essence.condensed_lifeforce.major&ca_execute)|debuff.razor_coral_debuff.down|target.time_to_die<20" );
   default_list -> add_action( "use_item,name=pocketsized_computation_device,if=!buff.trueshot.up&!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up|target.time_to_die<5" );
   default_list -> add_action( "use_items,if=prev_gcd.1.trueshot|!talent.calling_the_shots.enabled|target.time_to_die<20",
-	  "Try to line up activated trinkets with Trueshot" );
+        "Try to line up activated trinkets with Trueshot" );
   default_list -> add_action( "call_action_list,name=cds" );
   default_list -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_list -> add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
@@ -5596,7 +5602,8 @@ void hunter_t::apl_surv()
   default_list -> add_action( "bag_of_tricks" );
 
   for ( std::string racial : { "blood_fury", "ancestral_call", "fireblood" } )
-  cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
+    cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
+
   cds -> add_action( "lights_judgment" );
   cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13");
   cds -> add_action( "potion,if=buff.guardian_of_azeroth.up&(buff.berserking.up|buff.blood_fury.up|!race.troll)|(consumable.potion_of_unbridled_fury&target.time_to_die<61|target.time_to_die<26)|!essence.condensed_lifeforce.major&buff.coordinated_assault.up" );
@@ -5604,7 +5611,7 @@ void hunter_t::apl_surv()
   cds -> add_action( "use_item,name=ashvanes_razor_coral,if=buff.memory_of_lucid_dreams.up&target.time_to_die<cooldown.memory_of_lucid_dreams.remains+15|buff.guardian_of_azeroth.stack=5&target.time_to_die<cooldown.guardian_of_azeroth.remains+20|debuff.razor_coral_debuff.down|target.time_to_die<21|buff.worldvein_resonance.remains&target.time_to_die<cooldown.worldvein_resonance.remains+18|!talent.birds_of_prey.enabled&target.time_to_die<cooldown.coordinated_assault.remains+20&buff.coordinated_assault.remains" );
   cds -> add_action( "use_item,name=galecallers_boon,if=cooldown.memory_of_lucid_dreams.remains|talent.wildfire_infusion.enabled&cooldown.coordinated_assault.remains|!essence.memory_of_lucid_dreams.major&cooldown.coordinated_assault.remains" );
   cds -> add_action( "use_item,name=azsharas_font_of_power" );
-	
+
   // Essences
   cds->add_action( "focused_azerite_beam,if=raid_event.adds.in>90&focus<focus.max-25|(active_enemies>1&!talent.birds_of_prey.enabled|active_enemies>2)&(buff.blur_of_talons.up&buff.blur_of_talons.remains>3*gcd|!buff.blur_of_talons.up)" );
   cds->add_action( "blood_of_the_enemy,if=((raid_event.adds.remains>90|!raid_event.adds.exists)|(active_enemies>1&!talent.birds_of_prey.enabled|active_enemies>2))&focus<focus.max" );
