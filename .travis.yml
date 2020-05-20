@@ -19,7 +19,7 @@ os:
 compiler:
   - gcc
   - clang
-  
+
 addons:
   apt:
     sources:
@@ -31,6 +31,7 @@ addons:
       - bats
       - libcurl3
       - libcurl4-gnutls-dev
+      - docker
 
 osx_image:
   - xcode8.3
@@ -41,7 +42,7 @@ osx_image:
   # matrix is defined by the environment variables defined on the line, which
   # should be space-delimited. For example,
   # - ABC=ON DEF=OFF GHI=ON
-  
+
 matrix:
  exclude:
    - os: osx
@@ -65,6 +66,7 @@ notifications:
 install:
   # Build SimulationCraft
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make CXX=g++-5 DEBUG=1 -C engine -j 2; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then docker build --build-arg THREADS=2 --build-arg NONETWORKING=1 -t simulationcraft . ; fi
   - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then make DEBUG=1 SANITIZE=1 -C engine -j 2; fi
 
 script:
@@ -79,3 +81,5 @@ script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc PR_Raid.simc iterations=5 threads=1 fight_style=HelterSkelter output=/dev/null cleanup_threads=1; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc PR_Raid.simc iterations=5 threads=1 fight_style=HecticAddCleave output=/dev/null cleanup_threads=1; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --show-reachable=yes --leak-check=summary ./engine/simc PR_Raid.simc iterations=5 threads=1 fight_style=BeastLord output=/dev/null cleanup_threads=1; fi
+
+  - docker run simulationcraft ./simc spell_query=spell.name=frost_shock
