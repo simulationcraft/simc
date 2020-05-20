@@ -3873,7 +3873,7 @@ void racial::combat_analysis( special_effect_t& effect )
   {
     buff = make_buff<stat_buff_t>( effect.player, "combat_analysis", buff_spell )
                ->add_stat( effect.stat, buff_spell->effectN( 1 ).average( effect.player ) );
-    buff->set_max_stack( buff_spell->effectN( 3 ).base_value( ) );
+    buff->set_max_stack( as<int>( buff_spell->effectN( 3 ).base_value() ) );
   }
 
   effect.player->register_combat_begin( [buff, buff_spell]( player_t* ) {

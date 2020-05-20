@@ -1231,7 +1231,7 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
 
     return e;
   }
-  catch (const std::exception & ex)
+  catch (const std::exception &)
   {
     std::throw_with_nested(std::invalid_argument(fmt::format("Unable to build expression tree from '{}'.", expr_str)));
   }

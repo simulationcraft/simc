@@ -5454,11 +5454,11 @@ void items::shorting_bit_band( special_effect_t& effect )
 
     void execute() override
     {
-      double numTargets = targets_in_range_list( target_list() ).size();
+      auto numTargets = targets_in_range_list( target_list() ).size();
       if ( numTargets !=
            0 )  // We only do anything if target in range; we just eat the proc and do nothing if no targets <=8y
       {
-        size_t index = static_cast<size_t>( rng().range( 0, numTargets ) );
+        size_t index = rng().range( numTargets );
         set_target( targets_in_range_list( target_list() )[ index ] );
 
         proc_t::execute();

@@ -1215,7 +1215,7 @@ sc_xml_t sc_xml_t::create( const std::string& input,
   {
     document -> parse< parse_trim_whitespace >( tmp_buf.data() );
   }
-  catch( parse_error& e )
+  catch( const parse_error& )
   {
     std::throw_with_nested("Unable to parse XML input");
   }

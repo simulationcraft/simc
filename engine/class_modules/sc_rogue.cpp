@@ -1822,7 +1822,7 @@ void rogue_attack_t::execute()
 
     if ( affected_by.broadside_cp && p()->buffs.broadside->up() )
     {
-      const int cp_gain = p()->buffs.broadside->data().effectN( 2 ).base_value();
+      const int cp_gain = as<int>( p()->buffs.broadside->data().effectN( 2 ).base_value() );
       p()->trigger_combo_point_gain( cp_gain, p()->gains.broadside, this );
     }
   }
