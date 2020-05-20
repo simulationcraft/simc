@@ -7937,6 +7937,7 @@ void death_knight_t::default_apl_unholy()
   aoe -> add_action( this, "Festering Strike", "if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
   aoe -> add_action( this, "Scourge Strike", "if=death_and_decay.ticking" );
   aoe -> add_action( this, "Clawing Shadows", "if=death_and_decay.ticking" );
+  aoe -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
 }
 
 // death_knight_t::init_action_list =========================================
