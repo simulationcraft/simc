@@ -70,9 +70,9 @@ azerite_essences=4:3:1/27:3:0/32:3:0/35:3:0
 
 head=gibbering_maw,id=174134,bonus_id=4824/1517,azerite_powers=175/413/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulder=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517,azerite_powers=175/413/21/13
+shoulder=pauldrons_of_the_great_convergence,id=174133,bonus_id=4824/1517,azerite_powers=175/582/21/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=414/413/31/13
+chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517,azerite_powers=414/582/21/13
 wrists=bracers_of_dark_prophecy,id=174138,bonus_id=4824/1517/6573
 hands=chitinspine_gloves,id=174137,bonus_id=4824/1517/6573
 waist=belt_of_braided_vessels,id=174142,bonus_id=4824/1517/6573
