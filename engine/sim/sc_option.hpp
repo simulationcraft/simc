@@ -40,14 +40,14 @@ public:
     _name( name )
 { }
   virtual ~option_t() { }
-  opts::parse_status parse_option( sim_t* sim , const std::string& n, const std::string& value ) const;
+  opts::parse_status parse( sim_t* sim , const std::string& n, const std::string& value ) const;
   std::string name() const
   { return _name; }
-  std::ostream& print_option( std::ostream& stream ) const
-  { return print( stream ); }
+  std::ostream& print( std::ostream& stream ) const
+  { return do_print( stream ); }
 protected:
-  virtual opts::parse_status parse( sim_t*, const std::string& name, const std::string& value ) const = 0;
-  virtual std::ostream& print( std::ostream& stream ) const = 0;
+  virtual opts::parse_status do_parse( sim_t*, const std::string& name, const std::string& value ) const = 0;
+  virtual std::ostream& do_print( std::ostream& stream ) const = 0;
 private:
   std::string _name;
 };
@@ -66,7 +66,7 @@ void parse( sim_t*, const std::string& context, const std::vector<std::unique_pt
 void parse( sim_t*, const std::string& context, const std::vector<std::unique_ptr<option_t>>&, const std::vector<std::string>& strings, const parse_status_fn_t& fn = nullptr );
 }
 inline std::ostream& operator<<( std::ostream& stream, const std::unique_ptr<option_t>& opt )
-{ return opt -> print_option( stream ); }
+{ return opt -> print( stream ); }
 
 std::unique_ptr<option_t> opt_string( const std::string& n, std::string& v );
 std::unique_ptr<option_t> opt_append( const std::string& n, std::string& v );

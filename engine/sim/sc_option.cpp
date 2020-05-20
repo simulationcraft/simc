@@ -5,7 +5,6 @@
 
 #include "sc_option.hpp"
 
-#include <sstream>
 #include <iostream>
 
 #include "fmt/format.h"
@@ -81,9 +80,7 @@ void do_replace( const option_db_t& opts, std::string& str, std::string::size_ty
   static const int max_depth = 10;
   if ( depth > max_depth )
   {
-    std::stringstream s;
-    s << "Nesting depth exceeded for: '" << str << "' (max: " << max_depth << ")";
-    throw std::invalid_argument( s.str() );
+    throw std::invalid_argument( fmt::format( "Nesting depth exceeded for: '{}' (max: {})", str, max_depth ) );
   }
 
   if ( begin == std::string::npos )
@@ -100,17 +97,13 @@ void do_replace( const option_db_t& opts, std::string& str, std::string::size_ty
   auto end = str.find( ")", begin + 2 );
   if ( end == std::string::npos )
   {
-    std::stringstream s;
-    s << "Unbalanced parenthesis in template variable for: '" << str << "'";
-    throw std::invalid_argument( s.str() );
+    throw std::invalid_argument( fmt::format( "Unbalanced parenthesis in template variable for: '{}'", str ) );
   }
 
   auto var = str.substr( begin + 2, ( end - begin ) - 2 );
   if ( opts.var_map.find( var ) == opts.var_map.end() )
   {
-    std::stringstream s;
-    s << "Missing template variable: '" << var << "'";
-    throw std::invalid_argument( s.str() );
+    throw std::invalid_argument( fmt::format( "Missing template variable: '{}'", var ) );
   }
 
   str.replace( begin, end - begin + 1, opts.var_map.at( var ) );
@@ -189,7 +182,7 @@ struct opt_string_t : public option_t
     _ref( addr )
   { }
 protected:
-  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status do_parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
       return opts::parse_status::CONTINUE;
@@ -198,10 +191,10 @@ protected:
     return opts::parse_status::OK;
   }
 
-  std::ostream& print( std::ostream& stream ) const override
+  std::ostream& do_print( std::ostream& stream ) const override
   {
-     stream << name() << "="  <<  _ref << "\n";
-     return stream;
+    fmt::print( stream, "{}={}\n", name(), _ref );
+    return stream;
   }
 private:
   std::string& _ref;
@@ -215,7 +208,7 @@ struct opt_append_t : public option_t
   { }
 
 protected:
-  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status do_parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
       return opts::parse_status::CONTINUE;
@@ -224,10 +217,10 @@ protected:
     return opts::parse_status::OK;
   }
 
-  std::ostream& print( std::ostream& stream ) const override
+  std::ostream& do_print( std::ostream& stream ) const override
   {
-     stream << name() << "+="  <<  _ref << "\n";
-     return stream;
+    fmt::print( stream, "{}+={}\n", name(), _ref );
+    return stream;
   }
 private:
   std::string& _ref;
@@ -246,7 +239,7 @@ struct opt_numeric_t : public option_t
     _ref( addr )
   { }
 protected:
-  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status do_parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
       return opts::parse_status::CONTINUE;
@@ -259,10 +252,10 @@ protected:
     return opts::parse_status::OK;
   }
 
-  std::ostream& print( std::ostream& stream ) const override
+  std::ostream& do_print( std::ostream& stream ) const override
   {
-     stream << name() << "="  <<  _ref << "\n";
-     return stream;
+    fmt::print( stream, "{}={}\n", name(), _ref );
+    return stream;
   }
 private:
   T& _ref;
@@ -286,7 +279,7 @@ struct opt_numeric_mm_t : public option_t
   { }
 
 protected:
-  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status do_parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
       return opts::parse_status::CONTINUE;
@@ -299,19 +292,17 @@ protected:
 
     // Range checking
     if ( tmp < _min || tmp > _max ) {
-      std::stringstream s;
-      s << "Option '" << n << "' with value '" << v
-          << "' not within valid boundaries [" << _min << " - " << _max << "]";
-      throw std::invalid_argument(s.str());
+      throw std::invalid_argument( fmt::format(
+        "Option '{}' with value '{}' not within valid boundaries [{}..{}]", n, v, _min, _max ) );
     }
     _ref = tmp;
     return opts::parse_status::OK;
   }
 
-  std::ostream& print( std::ostream& stream ) const override
+  std::ostream& do_print( std::ostream& stream ) const override
   {
-     stream << name() << "="  <<  _ref << "\n";
-     return stream;
+    fmt::print( stream, "{}={}\n", name(), _ref );
+    return stream;
   }
 private:
   T& _ref;
@@ -325,25 +316,23 @@ struct opt_bool_t : public option_t
     _ref( addr )
   { }
 protected:
-  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status do_parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
       return opts::parse_status::CONTINUE;
 
     if ( v != "0" && v != "1" )
     {
-      std::stringstream s;
-      s << "Acceptable values for '" << n << "' are '1' or '0'";
-      throw std::invalid_argument( s.str() );
+      throw std::invalid_argument( fmt::format( "Acceptable values for '{}' are '1' or '0'", n ) );
     }
 
     _ref = std::stoi( v ) != 0;
     return opts::parse_status::OK;
   }
-  std::ostream& print( std::ostream& stream ) const override
+  std::ostream& do_print( std::ostream& stream ) const override
   {
-     stream << name() << "="  <<  _ref << "\n";
-     return stream;
+    fmt::print( stream, "{}={:d}\n", name(), _ref );
+    return stream;
   }
 private:
   bool& _ref;
@@ -356,25 +345,23 @@ struct opt_bool_int_t : public option_t
     _ref( addr )
   { }
 protected:
-  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status do_parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( n != name() )
       return opts::parse_status::CONTINUE;
 
     if ( v != "0" && v != "1" )
     {
-      std::stringstream s;
-      s << "Acceptable values for '" << n << "' are '1' or '0'";
-      throw std::invalid_argument( s.str() );
+      throw std::invalid_argument( fmt::format( "Acceptable values for '{}' are '1' or '0'", n ) );
     }
 
     _ref = std::stoi( v );
     return opts::parse_status::OK;
   }
-  std::ostream& print( std::ostream& stream ) const override
+  std::ostream& do_print( std::ostream& stream ) const override
   {
-     stream << name() << "="  <<  _ref << "\n";
-     return stream;
+    fmt::print( stream, "{}={}\n", name(), _ref );
+    return stream;
   }
 private:
   int& _ref;
@@ -387,15 +374,18 @@ struct opts_sim_func_t : public option_t
     _fun( ref )
   { }
 protected:
-  opts::parse_status parse( sim_t* sim, const std::string& n, const std::string& value ) const override
+  opts::parse_status do_parse( sim_t* sim, const std::string& n, const std::string& value ) const override
   {
     if ( name() != n )
       return opts::parse_status::CONTINUE;
 
      return _fun( sim, n, value ) == true ? opts::parse_status::OK : opts::parse_status::FAILURE;
   }
-  std::ostream& print( std::ostream& stream ) const override
-  { return stream << "function option: " << name() << "\n"; }
+  std::ostream& do_print( std::ostream& stream ) const override
+  {
+    fmt::print( stream, "function option: {}\n", name() );
+    return stream;
+  }
 private:
   opts::function_t _fun;
 };
@@ -407,7 +397,7 @@ struct opts_map_t : public option_t
     _ref( ref )
   { }
 protected:
-  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status do_parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     std::string::size_type last = n.size() - 1;
     bool append = false;
@@ -436,11 +426,11 @@ protected:
 
     return opts::parse_status::CONTINUE;
   }
-  std::ostream& print( std::ostream& stream ) const override
+  std::ostream& do_print( std::ostream& stream ) const override
   {
     for ( const auto& entry : _ref )
-          stream << name() << entry.first << "="<< entry.second << "\n";
-     return stream;
+      fmt::print( stream, "{}{}={}", name(), entry.first, entry.second );
+    return stream;
   }
   opts::map_t& _ref;
 };
@@ -452,7 +442,7 @@ struct opts_map_list_t : public option_t
   { }
 
 protected:
-  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status do_parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     std::string::size_type last = n.size() - 1;
     bool append = false;
@@ -489,25 +479,12 @@ protected:
     return opts::parse_status::CONTINUE;
   }
 
-  std::ostream& print( std::ostream& stream ) const override
+  std::ostream& do_print( std::ostream& stream ) const override
   {
     for ( auto& entry : _ref )
     {
       for ( auto i = 0u; i < entry.second.size(); ++i )
-      {
-        stream << name() << entry.first;
-
-        if ( i == 0 )
-        {
-          stream << "=";
-        }
-        else
-        {
-          stream << "+=";
-        }
-
-        stream << entry.second[ i ] << "\n";
-      }
+        fmt::print( stream, "{}{}{}{}\n", name(), entry.first, i == 0 ? "=" : "+=", entry.second[ i ] );
     }
     return stream;
   }
@@ -522,7 +499,7 @@ struct opts_list_t : public option_t
     _ref( ref )
   { }
 protected:
-  opts::parse_status parse( sim_t*, const std::string& n, const std::string& v ) const override
+  opts::parse_status do_parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     if ( name() != n )
       return opts::parse_status::CONTINUE;
@@ -531,14 +508,12 @@ protected:
 
     return opts::parse_status::OK;
   }
-  std::ostream& print( std::ostream& stream ) const override
+  std::ostream& do_print( std::ostream& stream ) const override
   {
-    stream << name() << "=";
+    fmt::print( stream, "{}=", name() );
     for ( auto& entry : _ref )
-    {
-      stream << name() << entry << " ";
-    }
-    stream << "\n";
+      fmt::print( stream, "{}{} ", name(), entry );
+    fmt::print( stream, "\n" );
     return stream;
   }
 private:
@@ -552,19 +527,17 @@ struct opts_deperecated_t : public option_t
     _new_option( new_option )
   { }
 protected:
-  opts::parse_status parse( sim_t*, const std::string& name, const std::string& ) const override
+  opts::parse_status do_parse( sim_t*, const std::string& name, const std::string& ) const override
   {
     if ( name != this -> name() )
       return opts::parse_status::CONTINUE;
-    std::stringstream s;
-    s << "Option '" << name << "' has been deprecated.";
-    s << " Please use option '" << _new_option << "' instead.";
-    throw std::invalid_argument( s.str() );
+    throw std::invalid_argument( fmt::format(
+      "Option '{}' has been deprecated. Please use option '{}' instead.", name, _new_option ) );
     return opts::parse_status::DEPRECATED;
   }
-  std::ostream& print( std::ostream& stream ) const override
+  std::ostream& do_print( std::ostream& stream ) const override
   {
-    stream << "Option '" << name() << "' has been deprecated. Please use '" << _new_option << "'.\n";
+    fmt::print( stream, "Option '{}' has been deprecated. Please use '{}'.\n", name(), _new_option );
     return stream;
   }
 private:
@@ -577,24 +550,25 @@ struct opts_obsoleted_t : public option_t
     option_t( name )
   { }
 protected:
-  opts::parse_status parse( sim_t*, const std::string& name, const std::string& ) const override
+  opts::parse_status do_parse( sim_t*, const std::string& name, const std::string& ) const override
   {
     if ( name != this -> name() )
       return opts::parse_status::CONTINUE;
 
-    std::cerr << "Option '" << name << "' has been obsoleted and will be removed in the future." << std::endl;
+    fmt::print( std::cerr, "Option '{}' has been obsoleted and will be removed in the future.", name );
+    std::cerr << std::endl;
     return opts::parse_status::OK;
   }
-  std::ostream& print( std::ostream& stream ) const override
+  std::ostream& do_print( std::ostream& stream ) const override
   { return stream; }
 };
 
 } // opts
 
-opts::parse_status option_t::parse_option( sim_t* sim , const std::string& n, const std::string& value ) const
+opts::parse_status option_t::parse( sim_t* sim , const std::string& n, const std::string& value ) const
 {
   try {
-    return parse( sim, n, value );
+    return do_parse( sim, n, value );
   }
   catch ( const std::exception& ) {
     std::throw_with_nested(std::runtime_error(fmt::format("Option '{}' with value '{}'", n, value)));
@@ -611,7 +585,7 @@ opts::parse_status opts::parse( sim_t*                                        si
 {
   for ( auto& option : options )
   {
-    auto ret = option->parse_option( sim, name, value );
+    auto ret = option->parse( sim, name, value );
     if ( ret != parse_status::CONTINUE )
     {
       if ( status_fn )
@@ -735,8 +709,8 @@ void option_db_t::parse_text( const std::string& text )
     auto last = text.find( '\n', first );
     if ( false )
     {
-      std::cerr << "first = " << first << ", last = " << last << " ["
-                << text.substr( first, last - first ) << ']' << std::endl;
+      fmt::print( std::cerr, "first = {}, last = {} [{}]", first, last, text.substr( first, last - first ) );
+      std::cerr << std::endl;
     }
     if ( text[ first ] != '#' )
     {
@@ -808,9 +782,7 @@ void option_db_t::parse_token( const std::string& token )
   {
     if ( name.size() < 3 || name[ 1 ] != '(' || name[ name.size() - 1 ] != ')' )
     {
-      std::stringstream s;
-      s << "Variable syntax error: '" << parsed_token << "'";
-      throw std::invalid_argument( s.str() );
+      throw std::invalid_argument( fmt::format( "Variable syntax error: '{}", parsed_token ) );
     }
     auto var_name = name.substr( 2, name.size() - 3 );
     do_replace( *this, var_name, var_name.find( "$(" ), 1 );
@@ -903,8 +875,8 @@ option_db_t::option_db_t()
     // Add profiles for each tier
     for ( unsigned i = 0; i < N_TIER; ++i )
     {
-      auto_path.push_back( path + "generators/Tier" + util::to_string( MIN_TIER + i ) );
-      auto_path.push_back( path + "Tier" + util::to_string( MIN_TIER + i ) );
+      auto_path.push_back( fmt::format( "{}generators/Tier{}", path, MIN_TIER + i ) );
+      auto_path.push_back( fmt::format( "{}Tier{}", path, MIN_TIER + i ) );
     }
   }
 
@@ -929,7 +901,7 @@ option_db_t::option_db_t()
       // Add bossevents for each tier
       for ( unsigned i = 0; i < N_TIER; ++i )
       {
-        std::string base_tier_path = path + "T" + util::to_string( MIN_TIER + i );
+        std::string base_tier_path = fmt::format( "{}T{}", path, MIN_TIER + i );
         auto_path.push_back( base_tier_path);
         auto_path.push_back( base_tier_path + "/Heroic" );
         auto_path.push_back( base_tier_path + "/Mythic" );
