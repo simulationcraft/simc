@@ -73,14 +73,14 @@ actions.apwfi+=/a_murder_of_crows
 actions.apwfi+=/wildfire_bomb,if=full_recharge_time<1.5*gcd|focus+cast_regen<focus.max&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
 actions.apwfi+=/coordinated_assault
 actions.apwfi+=/mongoose_bite,if=buff.mongoose_fury.remains&next_wi_bomb.pheromone
-actions.apwfi+=/kill_command,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-20
+actions.apwfi+=/kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-20
 actions.apwfi+=/steel_trap,if=focus+cast_regen<focus.max
 actions.apwfi+=/raptor_strike,if=buff.tip_of_the_spear.stack=3|dot.shrapnel_bomb.ticking
 actions.apwfi+=/mongoose_bite,if=dot.shrapnel_bomb.ticking
 actions.apwfi+=/wildfire_bomb,if=next_wi_bomb.shrapnel&focus>30&dot.serpent_sting.remains>5*gcd
 actions.apwfi+=/chakrams,if=!buff.mongoose_fury.remains
 actions.apwfi+=/serpent_sting,if=refreshable
-actions.apwfi+=/kill_command,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
+actions.apwfi+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
 actions.apwfi+=/raptor_strike
 actions.apwfi+=/mongoose_bite,if=buff.mongoose_fury.up|focus>40|dot.shrapnel_bomb.ticking
 actions.apwfi+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
@@ -110,22 +110,25 @@ actions.cds+=/wildfire_bomb,if=essence.memory_of_lucid_dreams.major&full_recharg
 actions.cds+=/memory_of_lucid_dreams,if=focus<action.mongoose_bite.cost&buff.coordinated_assault.up
 
 actions.cleave=variable,name=carve_cdr,op=setif,value=active_enemies,value_else=5,condition=active_enemies<5
+actions.cleave+=/mongoose_bite,if=azerite.blur_of_talons.rank>0&(buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd|buff.coordinated_assault.remains&!buff.blur_of_talons.remains))
+actions.cleave+=/mongoose_bite,target_if=min:time_to_die,if=debuff.latent_poison.stack>(active_enemies|9)&target.time_to_die<active_enemies*gcd
 actions.cleave+=/a_murder_of_crows
 actions.cleave+=/coordinated_assault
-actions.cleave+=/carve,if=dot.shrapnel_bomb.ticking
-actions.cleave+=/wildfire_bomb,if=!talent.guerrilla_tactics.enabled|full_recharge_time<gcd
-actions.cleave+=/mongoose_bite,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack=10
+actions.cleave+=/carve,if=dot.shrapnel_bomb.ticking&!talent.hydras_bite.enabled|dot.shrapnel_bomb.ticking&active_enemies>5
+actions.cleave+=/wildfire_bomb,if=!talent.guerrilla_tactics.enabled|full_recharge_time<gcd|raid_event.adds.remains<6&raid_event.adds.exists
+actions.cleave+=/butchery,if=charges_fractional>2.5|dot.shrapnel_bomb.ticking|cooldown.wildfire_bomb.remains>active_enemies-gcd|debuff.blood_of_the_enemy.remains|raid_event.adds.remains<5&raid_event.adds.exists
+actions.cleave+=/mongoose_bite,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>8
 actions.cleave+=/chakrams
 actions.cleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
-actions.cleave+=/butchery,if=full_recharge_time<gcd|!talent.wildfire_infusion.enabled|dot.shrapnel_bomb.ticking&dot.internal_bleeding.stack<3
+actions.cleave+=/harpoon,if=talent.terms_of_engagement.enabled
 actions.cleave+=/carve,if=talent.guerrilla_tactics.enabled
+actions.cleave+=/butchery,if=cooldown.wildfire_bomb.remains>(active_enemies|5)
 actions.cleave+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.cleave+=/wildfire_bomb,if=dot.wildfire_bomb.refreshable|talent.wildfire_infusion.enabled
 actions.cleave+=/serpent_sting,target_if=min:remains,if=buff.vipers_venom.react
 actions.cleave+=/carve,if=cooldown.wildfire_bomb.remains>variable.carve_cdr%2
 actions.cleave+=/steel_trap
-actions.cleave+=/harpoon,if=talent.terms_of_engagement.enabled
-actions.cleave+=/serpent_sting,target_if=min:remains,if=refreshable&buff.tip_of_the_spear.stack<3
+actions.cleave+=/serpent_sting,target_if=min:remains,if=refreshable&buff.tip_of_the_spear.stack<3&next_wi_bomb.volatile|refreshable&azerite.latent_poison.rank>0
 # To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name.
 actions.cleave+=/mongoose_bite,target_if=max:debuff.latent_poison.stack
 actions.cleave+=/raptor_strike,target_if=max:debuff.latent_poison.stack
@@ -152,7 +155,7 @@ actions.wfi+=/mongoose_bite,if=buff.blur_of_talons.up&buff.blur_of_talons.remain
 actions.wfi+=/raptor_strike,if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd
 actions.wfi+=/serpent_sting,if=buff.vipers_venom.up&buff.vipers_venom.remains<1.5*gcd|!dot.serpent_sting.ticking
 actions.wfi+=/wildfire_bomb,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max|(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
-actions.wfi+=/kill_command,if=focus+cast_regen<focus.max-focus.regen
+actions.wfi+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max-focus.regen
 actions.wfi+=/a_murder_of_crows
 actions.wfi+=/steel_trap,if=focus+cast_regen<focus.max
 actions.wfi+=/wildfire_bomb,if=full_recharge_time<1.5*gcd
