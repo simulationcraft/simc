@@ -4,8 +4,10 @@
 // ==========================================================================
 
 #include "dbc.hpp"
+
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 
 using namespace hotfix;
 
