@@ -7,7 +7,7 @@
 #
 #   Example usage:
 #   - creating the image (note the dot!)
-#   docker build --build-arg THREADS=2 -t --build-arg NONETWORKING=1 simulationcraft .
+#   docker build --build-arg THREADS=2 --build-arg NONETWORKING=1 -t simulationcraft .
 #                                    ^ your intended thread count to optimize simc for
 #                                                                    ^ name of the image
 #   - run the image
