@@ -40,9 +40,6 @@ timespan_t event_t::remains() const
 rng::rng_t& event_t::rng()
 { return sim().rng(); }
 
-rng::rng_t& event_t::rng() const
-{ return sim().rng(); }
-
 /// Placement-new operator for creating events. Do not use in user-code.
 void* event_t::operator new( std::size_t size, sim_t& sim )
 {

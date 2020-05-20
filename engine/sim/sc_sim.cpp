@@ -30,7 +30,6 @@
 #include "sim/sc_cooldown.hpp"
 #include "sim/x6_pantheon.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
-#include "util/rng.hpp"
 #include "util/xml.hpp"
 #include <random>
 #ifdef SC_WINDOWS
@@ -1565,7 +1564,7 @@ sim_t::~sim_t()
 
 // sim_t::iteration_time_adjust =============================================
 
-double sim_t::iteration_time_adjust() const
+double sim_t::iteration_time_adjust()
 {
   if ( iterations <= 1 )
     return 1.0;
@@ -2539,8 +2538,7 @@ void sim_t::init()
       seed  = uint64_t(rd()) | (uint64_t(rd()) << 32);
     }
   }
-  _rng = rng::create( rng::parse_type( rng_str ) );
-  _rng -> seed( seed + thread_index );
+  _rng.seed( seed + thread_index );
 
   if (   queue_lag_stddev == timespan_t::zero() )   queue_lag_stddev =   queue_lag * 0.25;
   if (     gcd_lag_stddev == timespan_t::zero() )     gcd_lag_stddev =     gcd_lag * 0.25;
@@ -3467,7 +3465,7 @@ void sim_t::create_options()
   // Regen
   add_option( opt_timespan( "regen_periodicity", regen_periodicity ) );
   // RNG
-  add_option( opt_string( "rng", rng_str ) );
+  add_option( opt_obsoleted( "rng" ) );
   add_option( opt_bool( "deterministic", deterministic ) );
   add_option( opt_bool( "strict_work_queue", strict_work_queue ) );
   add_option( opt_float( "report_iteration_data", report_iteration_data ) );

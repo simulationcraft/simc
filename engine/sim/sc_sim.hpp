@@ -16,6 +16,8 @@
 #include "sc_profileset.hpp"
 #include "event_manager.hpp"
 #include "util/util.hpp"
+#include "util/rng.hpp"
+
 #include <map>
 #include <mutex>
 #include <memory>
@@ -33,9 +35,6 @@ struct option_t;
 struct plot_t;
 struct raid_event_t;
 struct reforge_plot_t;
-namespace rng {
-  struct rng_t;
-}
 struct scale_factor_control_t;
 struct sim_control_t;
 struct spell_data_expr_t;
@@ -181,8 +180,7 @@ struct sim_t : private sc_thread_t
   std::vector<std::string> item_db_sources;
 
   // Random Number Generation
-  std::unique_ptr<rng::rng_t> _rng;
-  std::string rng_str;
+  rng::rng_t _rng;
   uint64_t seed;
   int deterministic;
   int strict_work_queue;
@@ -568,7 +566,7 @@ struct sim_t : private sc_thread_t
 
   virtual void run() override;
   int       main( const std::vector<std::string>& args );
-  double    iteration_time_adjust() const;
+  double    iteration_time_adjust();
   double    expected_max_time() const;
   bool      is_canceled() const;
   void      cancel_iteration();
@@ -650,8 +648,10 @@ struct sim_t : private sc_thread_t
   { return s.confidence_estimator * sd.mean_std_dev; }
   void register_target_data_initializer(std::function<void(actor_target_data_t*)> cb)
   { target_data_initializer.push_back( cb ); }
-  rng::rng_t& rng() const
-  { return *_rng; }
+  const rng::rng_t& rng() const
+  { return _rng; }
+  rng::rng_t& rng()
+  { return _rng; }
   double averaged_range( double min, double max );
 
   // Thread id of this sim_t object
