@@ -10,6 +10,7 @@
 
 #include "config.hpp"
 #include <memory>
+#include <string>
 #include "sc_timespan.hpp"
 
 /** \ingroup SC_RNG
@@ -20,7 +21,7 @@ namespace rng {
 
 /// rng engines
 enum class engine_type {
-  DEFAULT, MURMURHASH, SFMT, STD, TINYMT, XORSHIFT64, XORSHIFT128, XORSHIFT1024
+  DEFAULT, XORSHIFT128, XOSHIRO256PLUS, XORSHIFT1024
 };
 
 /**\ingroup SC_RNG
