@@ -339,7 +339,7 @@ private:
   bool is_sorted;
 
 public:
-  extended_sample_data_t( const std::string& n, bool s = true )
+  explicit extended_sample_data_t( const std::string& n, bool s = true )
     : base_t(),
       name_str( n ),
       _mean(),
