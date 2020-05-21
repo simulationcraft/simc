@@ -29,7 +29,7 @@ report_level_settings_t get_report_settings( report::report_type type )
     case report::report_type::HTML:
       return report_level_settings_t{1, 1, 1};
     case report::report_type::JSON:
-      return report_level_settings_t{1, 2, 2};
+      return report_level_settings_t{2, 2, 3};
     case report::report_type::TEXT:
       return report_level_settings_t{1, 1, 1};
   }

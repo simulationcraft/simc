@@ -270,7 +270,7 @@ bool in_player_scope( const option_tuple_t& opt )
   } ) != player_scope_opts.end();
 }
 
-}
+} // unnamed
 
 namespace profileset
 {
@@ -963,74 +963,6 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
 
   std::cout << s.str();
   fflush( stdout );
-}
-
-void profilesets_t::output_json( const sim_t& sim, js::JsonOutput& root ) const
-{
-  root[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric.front() );
-
-  auto results = root[ "results" ].make_array();
-
-  range::for_each( m_profilesets, [ &results, &sim ]( const profileset_entry_t& profileset ) {
-    const auto& result = profileset -> result();
-
-    if ( result.mean() == 0 )
-    {
-      return;
-    }
-
-    auto&& obj = results.add();
-
-    obj[ "name" ] = profileset -> name();
-    obj[ "mean" ] = result.mean();
-    obj[ "min" ] = result.min();
-    obj[ "max" ] = result.max();
-    obj[ "stddev" ] = result.stddev();
-    obj["mean_stddev"] = result.mean_stddev();
-    obj["mean_error"] = result.mean_stddev() * sim.confidence_estimator;
-
-    if ( result.median() != 0 )
-    {
-      obj[ "median" ] = result.median();
-      obj[ "first_quartile" ] = result.first_quartile();
-      obj[ "third_quartile" ] = result.third_quartile();
-    }
-
-    obj[ "iterations" ] = as<uint64_t>( result.iterations() );
-
-    if ( profileset -> results() > 1 )
-    {
-      auto results2 = obj[ "additional_metrics" ].make_array();
-      for ( size_t midx = 1; midx < sim.profileset_metric.size(); ++midx )
-      {
-        auto obj2 = results2.add();
-        const auto& result = profileset -> result( sim.profileset_metric[ midx ] );
-
-        obj2[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
-        obj2[ "mean" ] = result.mean();
-        obj2[ "min" ] = result.min();
-        obj2[ "max" ] = result.max();
-        obj2[ "stddev" ] = result.stddev();
-        obj2[ "mean_stddev" ] = result.mean_stddev();
-        obj2[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
-
-        if ( result.median() != 0 )
-        {
-          obj2[ "median" ] = result.median();
-          obj2[ "first_quartile" ] = result.first_quartile();
-          obj2[ "third_quartile" ] = result.third_quartile();
-        }
-      }
-    }
-
-    // Optional override ouput data
-    if ( ! sim.profileset_output_data.empty() ) {
-      const auto& output_data = profileset -> output_data();
-      // TODO: Create the overrides object only if there is at least one override registered
-      auto ovr = obj[ "overrides" ];
-      fetch_output_data( output_data, ovr);
-    }
-  } );
 }
 
 void profilesets_t::output_text( const sim_t& sim, std::ostream& out ) const

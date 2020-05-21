@@ -30,6 +30,10 @@ namespace js {
 struct JsonOutput;
 }
 
+namespace report {
+  class report_entry_t;
+}
+
 namespace profileset
 {
 class profilesets_t;
@@ -454,6 +458,11 @@ public:
 
 class profilesets_t
 {
+public:
+  
+  using profileset_entry_t = std::unique_ptr<profile_set_t>;
+  using profileset_vector_t = std::vector<profileset_entry_t>;
+private:
   enum simulation_mode
   {
     SEQUENTIAL = 0,
@@ -468,8 +477,6 @@ class profilesets_t
     DONE                // Finished profileset iterating
   };
 
-  using profileset_entry_t = std::unique_ptr<profile_set_t>;
-  using profileset_vector_t = std::vector<profileset_entry_t>;
 
   static const size_t MAX_CHART_ENTRIES = 500;
 
@@ -530,6 +537,9 @@ public:
   size_t n_profilesets() const
   { return m_profilesets.size(); }
 
+  const profileset_vector_t& profilesets() const
+  { return m_profilesets; }
+
   size_t done_profilesets() const;
 
   // Worker sim finished
@@ -542,7 +552,6 @@ public:
   void cancel();
   bool iterate( sim_t* parent_sim );
 
-  void output_json( const sim_t& sim, js::JsonOutput& out ) const;
   void output_text( const sim_t& sim, std::ostream& out ) const;
   void output_html( const sim_t& sim, std::ostream& out ) const;
 

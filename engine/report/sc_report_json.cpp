@@ -79,7 +79,7 @@ bool has_resources( const gain_t* gain )
 bool has_resources( const gain_t& gain )
 { return has_resources( &gain ); }
 
-void gain_to_json( JsonOutput root, const gain_t* g )
+void gain_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const gain_t* g )
 {
   root[ "name" ] = g -> name();
 
@@ -97,11 +97,11 @@ void gain_to_json( JsonOutput root, const gain_t* g )
   }
 }
 
-void gain_to_json( JsonOutput root, const gain_t& g )
-{ gain_to_json( root, &g ); }
+void gain_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const gain_t& g )
+{ gain_to_json( report_configuration, root, &g ); }
 
 
-void gains_to_json( JsonOutput root, const player_t& p )
+void gains_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
 {
   root.make_array();
 
@@ -111,11 +111,11 @@ void gains_to_json( JsonOutput root, const player_t& p )
       return;
     }
 
-    gain_to_json( root.add(), g );
+    gain_to_json( report_configuration, root.add(), g );
   } );
 }
 
-void to_json( JsonOutput root, const buff_t* b )
+void to_json( const report::report_entry_t& report_configuration, JsonOutput root, const buff_t* b )
 {
   root[ "name" ] = b -> name();
   root[ "spell_name" ] = b->data_reporting().name_cstr();
@@ -155,31 +155,31 @@ void to_json( JsonOutput root, const buff_t* b )
   }
 }
 
-void buffs_to_json( JsonOutput root, const player_t& p )
+void buffs_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
 {
   root.make_array();
-  range::for_each( p.report_information.dynamic_buffs, [ &root]( const buff_t* b ) {
+  range::for_each( p.report_information.dynamic_buffs, [ &]( const buff_t* b ) {
     if ( b -> avg_start.sum() == 0 )
     {
       return;
     }
-    to_json( root.add(), b );
+    to_json( report_configuration, root.add(), b );
   } );
 }
-void constant_buffs_to_json( JsonOutput root, const player_t& p )
+void constant_buffs_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
 {
   root.make_array();
   // constant buffs
-  range::for_each( p.report_information.constant_buffs, [ &root]( const buff_t* b ) {
+  range::for_each( p.report_information.constant_buffs, [ &]( const buff_t* b ) {
     if ( b -> avg_start.sum() == 0 )
     {
       return;
     }
-    to_json( root.add(), b );
+    to_json( report_configuration, root.add(), b );
   } );
 }
 
-void to_json( JsonOutput root, const stats_t::stats_results_t& sr )
+void to_json( const report::report_entry_t& report_configuration, JsonOutput root, const stats_t::stats_results_t& sr )
 {
   root[ "actual_amount" ] = sr.actual_amount;
   root[ "avg_actual_amount" ] = sr.avg_actual_amount;
@@ -191,7 +191,7 @@ void to_json( JsonOutput root, const stats_t::stats_results_t& sr )
   root[ "pct" ] = sr.pct;
 }
 
-void procs_to_json( JsonOutput root, const player_t& p )
+void procs_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
 {
   root.make_array();
   range::for_each( p.proc_list, [ & ]( const proc_t* proc ) {
@@ -241,7 +241,7 @@ bool has_valid_stats( const std::vector<stats_t*>& stats_list, int level = 0 )
   return it != stats_list.end();
 }
 
-void stats_to_json( JsonOutput root, const std::vector<stats_t*>& stats_list, int level = 0 )
+void stats_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const std::vector<stats_t*>& stats_list, int level = 0 )
 {
   root.make_array();
 
@@ -297,7 +297,7 @@ void stats_to_json( JsonOutput root, const std::vector<stats_t*>& stats_list, in
 
     if ( has_resources( s -> resource_gain ) )
     {
-      gain_to_json( node[ "resource_gain" ], s -> resource_gain );
+      gain_to_json( report_configuration, node[ "resource_gain" ], s -> resource_gain );
     }
 
 
@@ -327,7 +327,7 @@ void stats_to_json( JsonOutput root, const std::vector<stats_t*>& stats_list, in
     {
       if ( s -> direct_results[ r ].count.sum() != 0 )
       {
-        to_json( node[ "direct_results" ][ util::full_result_type_string( r ) ],
+        to_json( report_configuration, node[ "direct_results" ][ util::full_result_type_string( r ) ],
                  s -> direct_results[ r ] );
       }
     }
@@ -336,7 +336,7 @@ void stats_to_json( JsonOutput root, const std::vector<stats_t*>& stats_list, in
     {
       if ( s -> tick_results[ r ].count.sum() != 0 )
       {
-        to_json( node[ "tick_results" ][ util::result_type_string( r ) ],
+        to_json( report_configuration, node[ "tick_results" ][ util::result_type_string( r ) ],
                  s -> tick_results[ r ] );
       }
     }
@@ -344,12 +344,12 @@ void stats_to_json( JsonOutput root, const std::vector<stats_t*>& stats_list, in
     // add children stats
     if ( has_valid_stats( s->children, level + 1 ) )
     {
-      stats_to_json( node[ "children" ], s->children, level + 1 );
+      stats_to_json( report_configuration, node[ "children" ], s->children, level + 1 );
     }
   } );
 }
 
-void gear_to_json( JsonOutput root, const player_t& p )
+void gear_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
 {
   for ( slot_e slot = SLOT_MIN; slot < SLOT_MAX; slot++ )
   {
@@ -376,7 +376,7 @@ void gear_to_json( JsonOutput root, const player_t& p )
   }
 }
 
-void to_json( JsonOutput root, const player_t& p,
+void to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p,
                                const player_collected_data_t::buffed_stats_t& bs,
                                const std::vector<resource_e>& relevant_resources )
 {
@@ -451,7 +451,7 @@ void to_json( JsonOutput root, const player_t& p,
   add_non_zero( root[ "stats" ], "corruption_resistance", bs.corruption_resistance );
 }
 
-void to_json( JsonOutput root,
+void to_json( const report::report_entry_t& report_configuration, JsonOutput root,
               const std::vector<player_collected_data_t::action_sequence_data_t>& asd,
               const std::vector<resource_e>& relevant_resources,
               const sim_t& sim )
@@ -538,7 +538,7 @@ void to_json( JsonOutput root,
   } );
 }
 
-void collected_data_to_json( JsonOutput root, const player_t& p )
+void collected_data_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
 {
   const auto& sim = *p.sim;
   const auto& cd = p.collected_data;
@@ -606,7 +606,7 @@ void collected_data_to_json( JsonOutput root, const player_t& p )
   }
 
   // always include buffed_stats in JSON
-  to_json( root[ "buffed_stats" ], p, cd.buffed_stats_snapshot, relevant_resources );
+  to_json( report_configuration, root[ "buffed_stats" ], p, cd.buffed_stats_snapshot, relevant_resources );
 
   if ( sim.report_details != 0 )
   {
@@ -648,17 +648,17 @@ void collected_data_to_json( JsonOutput root, const player_t& p )
 
     if ( ! cd.action_sequence_precombat.empty() )
     {
-      to_json( root[ "action_sequence_precombat" ], cd.action_sequence_precombat, relevant_resources, sim );
+      to_json( report_configuration, root[ "action_sequence_precombat" ], cd.action_sequence_precombat, relevant_resources, sim );
     }
 
     if ( ! cd.action_sequence.empty() )
     {
-      to_json( root[ "action_sequence" ], cd.action_sequence, relevant_resources, sim );
+      to_json( report_configuration, root[ "action_sequence" ], cd.action_sequence, relevant_resources, sim );
     }
   }
 }
 
-void to_json( JsonOutput root, const dbc_t& dbc )
+void to_json( const report::report_entry_t& report_configuration, JsonOutput root, const dbc_t& dbc )
 {
   bool versions[] = { false, true };
   for ( const auto& ptr : versions )
@@ -673,7 +673,7 @@ void to_json( JsonOutput root, const dbc_t& dbc )
   root[ "version_used" ] = StringRef( dbc::wow_ptr_status( dbc.ptr ) );
 }
 
-void scale_factors_to_json( JsonOutput root, const player_t& p )
+void scale_factors_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
 {
   if ( p.sim -> report_precision < 0 )
     p.sim -> report_precision = 2;
@@ -692,7 +692,7 @@ void scale_factors_to_json( JsonOutput root, const player_t& p )
   }
 }
 
-void scale_factors_all_to_json( JsonOutput root, const player_t& p )
+void scale_factors_all_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
 {
   if ( p.sim -> report_precision < 0 )
     p.sim -> report_precision = 2;
@@ -715,7 +715,7 @@ void scale_factors_all_to_json( JsonOutput root, const player_t& p )
   }
 }
 
-void talents_to_json( JsonOutput root, const player_t& p )
+void talents_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
 {
   root.make_array();
 
@@ -741,7 +741,7 @@ void talents_to_json( JsonOutput root, const player_t& p )
   }
 }
 
-void to_json( JsonOutput& arr, const player_t& p )
+void to_json( const report::report_entry_t& report_configuration, JsonOutput& arr, const player_t& p )
 {
   auto root = arr.add(); // Add a fresh object to the players array and use it as root
 
@@ -752,7 +752,7 @@ void to_json( JsonOutput& arr, const player_t& p )
   root[ "specialization" ] = util::specialization_string( p.specialization() );
   root[ "profile_source" ] = util::profile_source_string( p.profile_source_ );
 
-  talents_to_json( root[ "talents" ], p );
+  talents_to_json( report_configuration, root[ "talents" ], p );
 
   if ( p.artifact && p.artifact -> purchased_points() > 0 )
   {
@@ -799,7 +799,7 @@ void to_json( JsonOutput& arr, const player_t& p )
   root[ "world_lag_override" ] = p.world_lag_override;
   root[ "world_lag_stddev_override" ] = p.world_lag_stddev_override;
 
-  to_json( root[ "dbc" ], *p.dbc );
+  to_json( report_configuration, root[ "dbc" ], *p.dbc );
 
   for ( auto i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
   {
@@ -839,28 +839,28 @@ void to_json( JsonOutput& arr, const player_t& p )
 
   if ( p.sim -> scaling -> has_scale_factors() )
   {
-    scale_factors_to_json( root[ "scale_factors" ], p );
-    scale_factors_all_to_json( root[ "scale_factors_all" ], p );
+    scale_factors_to_json( report_configuration, root[ "scale_factors" ], p );
+    scale_factors_all_to_json( report_configuration, root[ "scale_factors_all" ], p );
   }
 
-  collected_data_to_json( root[ "collected_data" ], p );
+  collected_data_to_json( report_configuration, root[ "collected_data" ], p );
 
   if ( p.sim -> report_details != 0 )
   {
-    buffs_to_json( root[ "buffs" ], p );
-    constant_buffs_to_json( root[ "buffs_constant" ], p );
+    buffs_to_json( report_configuration, root[ "buffs" ], p );
+    constant_buffs_to_json( report_configuration, root[ "buffs_constant" ], p );
 
     if ( p.proc_list.size() > 0 )
     {
-      procs_to_json( root[ "procs" ], p );
+      procs_to_json( report_configuration, root[ "procs" ], p );
     }
 
     if ( p.gain_list.size() > 0 )
     {
-      gains_to_json( root[ "gains" ], p );
+      gains_to_json( report_configuration, root[ "gains" ], p );
     }
 
-    stats_to_json( root[ "stats" ], p.stats_list );
+    stats_to_json( report_configuration, root[ "stats" ], p.stats_list );
 
     // add pet stats as a separate property
     JsonOutput stats_pets = root[ "stats_pets" ];
@@ -868,18 +868,18 @@ void to_json( JsonOutput& arr, const player_t& p )
     {
       if ( has_valid_stats( pet->stats_list ) )
       {
-        stats_to_json( stats_pets[ pet->name_str ], pet->stats_list );
+        stats_to_json( report_configuration, stats_pets[ pet->name_str ], pet->stats_list );
       }
     }
   }
 
-  gear_to_json( root[ "gear" ], p );
+  gear_to_json( report_configuration, root[ "gear" ], p );
 
   JsonOutput custom = root[ "custom" ];
   p.output_json_report( custom );
 }
 
-void to_json( JsonOutput& arr, const raid_event_t& event )
+void to_json( const report::report_entry_t& report_configuration, JsonOutput& arr, const raid_event_t& event )
 {
   auto root = arr.add();
   root[ "name" ] = event.name;
@@ -902,7 +902,7 @@ void to_json( JsonOutput& arr, const raid_event_t& event )
   add_non_zero( root, "saved_duration", event.saved_duration );
 }
 
-void iteration_data_to_json( JsonOutput root, const std::vector<iteration_data_entry_t>& entries )
+void iteration_data_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const std::vector<iteration_data_entry_t>& entries )
 {
   root.make_array();
 
@@ -915,7 +915,133 @@ void iteration_data_to_json( JsonOutput root, const std::vector<iteration_data_e
   } );
 }
 
-void to_json( JsonOutput root, const sim_t& sim )
+void profileset_json2( const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
+{
+root[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric.front() );
+
+  auto results = root[ "results" ].make_array();
+
+  range::for_each( profileset.profilesets(), [ &results, &sim ]( const profileset::profilesets_t::profileset_entry_t& profileset ) {
+    const auto& result = profileset -> result();
+
+    if ( result.mean() == 0 )
+    {
+      return;
+    }
+
+    auto&& obj = results.add();
+
+    obj[ "name" ] = profileset -> name();
+    obj[ "mean" ] = result.mean();
+    obj[ "min" ] = result.min();
+    obj[ "max" ] = result.max();
+    obj[ "stddev" ] = result.stddev();
+    obj["mean_stddev"] = result.mean_stddev();
+    obj["mean_error"] = result.mean_stddev() * sim.confidence_estimator;
+
+    if ( result.median() != 0 )
+    {
+      obj[ "median" ] = result.median();
+      obj[ "first_quartile" ] = result.first_quartile();
+      obj[ "third_quartile" ] = result.third_quartile();
+    }
+
+    obj[ "iterations" ] = as<uint64_t>( result.iterations() );
+
+    if ( profileset -> results() > 1 )
+    {
+      auto results2 = obj[ "additional_metrics" ].make_array();
+      for ( size_t midx = 1; midx < sim.profileset_metric.size(); ++midx )
+      {
+        auto obj2 = results2.add();
+        const auto& result = profileset -> result( sim.profileset_metric[ midx ] );
+
+        obj2[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
+        obj2[ "mean" ] = result.mean();
+        obj2[ "min" ] = result.min();
+        obj2[ "max" ] = result.max();
+        obj2[ "stddev" ] = result.stddev();
+        obj2[ "mean_stddev" ] = result.mean_stddev();
+        obj2[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
+
+        if ( result.median() != 0 )
+        {
+          obj2[ "median" ] = result.median();
+          obj2[ "first_quartile" ] = result.first_quartile();
+          obj2[ "third_quartile" ] = result.third_quartile();
+        }
+      }
+    }
+
+    // Optional override ouput data
+    if ( ! sim.profileset_output_data.empty() ) {
+      const auto& output_data = profileset -> output_data();
+      // TODO: Create the overrides object only if there is at least one override registered
+      auto ovr = obj[ "overrides" ];
+      profileset::fetch_output_data( output_data, ovr);
+    }
+  } );
+}
+
+void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t& sim, js::JsonOutput& root )
+{
+  auto results = root[ "results" ].make_array();
+
+  range::for_each( profilesets.profilesets(), [ &results, &sim ]( const profileset::profilesets_t::profileset_entry_t& profileset ) {
+    
+    auto&& obj = results.add();
+    obj[ "name" ] = profileset -> name();
+    auto results_obj = obj[ "metrics" ].make_array();
+    
+    for ( size_t midx = 0; midx < sim.profileset_metric.size(); ++midx )
+    {
+      const auto& result = profileset -> result( sim.profileset_metric[ midx ] );
+
+      
+      auto&& obj = results_obj.add();
+
+      obj[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
+      obj[ "mean" ] = result.mean();
+      obj[ "min" ] = result.min();
+      obj[ "max" ] = result.max();
+      obj[ "stddev" ] = result.stddev();
+      obj["mean_stddev"] = result.mean_stddev();
+      obj["mean_error"] = result.mean_stddev() * sim.confidence_estimator;
+
+      if ( result.median() != 0 )
+      {
+        obj[ "median" ] = result.median();
+        obj[ "first_quartile" ] = result.first_quartile();
+        obj[ "third_quartile" ] = result.third_quartile();
+      }
+
+      obj[ "iterations" ] = as<uint64_t>( result.iterations() );
+    }
+    
+    // Optional override ouput data
+    if ( ! sim.profileset_output_data.empty() ) {
+      const auto& output_data = profileset -> output_data();
+      // TODO: Create the overrides object only if there is at least one override registered
+      auto ovr = obj[ "overrides" ];
+      profileset::fetch_output_data( output_data, ovr);
+    }
+  } );
+}
+
+void profileset_json( const report::report_entry_t& report_configuration, const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
+{
+  if (report_configuration.is_less_than(3))
+  {
+    profileset_json2(profileset, sim, root);
+  }
+  else
+  {
+    profileset_json3(profileset, sim, root);
+  }
+  
+}
+
+void to_json( const report::report_entry_t& report_configuration, JsonOutput root, const sim_t& sim )
 {
   // Sim-scope options
   auto options_root = root[ "options" ];
@@ -968,7 +1094,7 @@ void to_json( JsonOutput root, const sim_t& sim )
   options_root[ "default_aura_delay" ] = sim.default_aura_delay;
   options_root[ "default_aura_delay_stddev" ] = sim.default_aura_delay_stddev;
 
-  to_json( options_root[ "dbc" ], *sim.dbc );
+  to_json( report_configuration, options_root[ "dbc" ], *sim.dbc );
 
   if ( sim.scaling -> calculate_scale_factors )
   {
@@ -1008,14 +1134,14 @@ void to_json( JsonOutput root, const sim_t& sim )
   // Players
   JsonOutput players_arr = root[ "players" ].make_array();
 
-  range::for_each( sim.player_no_pet_list.data(), [ &players_arr ]( const player_t* p ) {
-    to_json( players_arr, *p );
+  range::for_each( sim.player_no_pet_list.data(), [ & ]( const player_t* p ) {
+    to_json( report_configuration, players_arr, *p );
   } );
 
   if ( sim.profilesets.n_profilesets() > 0 )
   {
     auto profileset_root = root[ "profilesets" ];
-    sim.profilesets.output_json( sim, profileset_root );
+    profileset_json(report_configuration, sim.profilesets, sim, profileset_root );
   }
 
   auto stats_root = root[ "statistics" ];
@@ -1038,8 +1164,8 @@ void to_json( JsonOutput root, const sim_t& sim )
     // Targets
     JsonOutput targets_arr = root[ "targets" ].make_array();
 
-    range::for_each( sim.target_list.data(), [ &targets_arr ]( const player_t* p ) {
-      to_json( targets_arr, *p );
+    range::for_each( sim.target_list.data(), [ & ]( const player_t* p ) {
+      to_json( report_configuration, targets_arr, *p );
     } );
 
     // Raid events
@@ -1047,36 +1173,36 @@ void to_json( JsonOutput root, const sim_t& sim )
     {
       auto arr = root[ "raid_events" ].make_array();
 
-      range::for_each( sim.raid_events, [ &arr ]( const std::unique_ptr<raid_event_t>& event ) {
-        to_json( arr, *event );
+      range::for_each( sim.raid_events, [ & ]( const std::unique_ptr<raid_event_t>& event ) {
+        to_json( report_configuration, arr, *event );
       } );
     }
 
     if ( sim.buff_list.size() > 0 )
     {
       JsonOutput buffs_arr = root[ "sim_auras" ].make_array();
-      range::for_each( sim.buff_list, [ &buffs_arr ]( const buff_t* b ) {
+      range::for_each( sim.buff_list, [ & ]( const buff_t* b ) {
         if ( b -> avg_start.mean() == 0 )
         {
           return;
         }
-        to_json( buffs_arr.add(), b );
+        to_json( report_configuration, buffs_arr.add(), b );
       } );
     }
 
     if ( sim.low_iteration_data.size() > 0 )
     {
-      iteration_data_to_json( root[ "iteration_data" ][ "low" ], sim.low_iteration_data );
+      iteration_data_to_json( report_configuration, root[ "iteration_data" ][ "low" ], sim.low_iteration_data );
     }
 
     if ( sim.high_iteration_data.size() > 0 )
     {
-      iteration_data_to_json( root[ "iteration_data" ][ "high" ], sim.high_iteration_data );
+      iteration_data_to_json( report_configuration, root[ "iteration_data" ][ "high" ], sim.high_iteration_data );
     }
   }
 }
 
-void print_json_pretty( FILE* o, const sim_t& sim, const report::report_entry_t& entry )
+void print_json_pretty( FILE* o, const sim_t& sim, const report::report_entry_t& report_configuration )
 {
   Document doc;
   Value& v = doc;
@@ -1085,7 +1211,7 @@ void print_json_pretty( FILE* o, const sim_t& sim, const report::report_entry_t&
   JsonOutput root( doc, v );
 
   root[ "version" ] = SC_VERSION;
-  root[ "report_version" ] = entry.level();
+  root[ "report_version" ] = report_configuration.level();
   root[ "ptr_enabled" ] = SC_USE_PTR;
   root[ "beta_enabled" ] = SC_BETA;
   root[ "build_date" ] = __DATE__;
@@ -1101,7 +1227,7 @@ void print_json_pretty( FILE* o, const sim_t& sim, const report::report_entry_t&
     root[ "git_branch" ] = git_info::branch();
   }
 
-  to_json( root[ "sim" ], sim );
+  to_json( report_configuration, root[ "sim" ], sim );
 
   if ( sim.error_list.size() > 0 )
   {
@@ -1122,16 +1248,16 @@ void print_json_pretty( FILE* o, const sim_t& sim, const report::report_entry_t&
 
 namespace report
 {
-void print_json( sim_t& sim, const report::report_entry_t& entry)
+void print_json( sim_t& sim, const report::report_entry_t& report_configuration)
 {
-  if ( ! entry.destination().empty() )
+  if ( ! report_configuration.destination().empty() )
   {
     // Setup file stream and open file
-    io::cfile s( entry.destination(), "w" );
+    io::cfile s( report_configuration.destination(), "w" );
     if ( !s )
     {
       sim.errorf( "Failed to open JSON output file '%s'.",
-                  entry.destination().c_str() );
+                  report_configuration.destination().c_str() );
       return;
     }
 
@@ -1147,7 +1273,7 @@ void print_json( sim_t& sim, const report::report_entry_t& entry)
       {
         t.start();
       }
-      print_json_pretty( s, sim, entry );
+      print_json_pretty( s, sim, report_configuration );
     }
     catch ( const std::exception& e )
     {
