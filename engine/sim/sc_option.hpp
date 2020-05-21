@@ -59,6 +59,7 @@ typedef std::function<parse_status(parse_status, const std::string&, const std::
 typedef std::unordered_map<std::string, std::string> map_t;
 typedef std::unordered_map<std::string, std::vector<std::string>> map_list_t;
 typedef std::function<bool(sim_t*,const std::string&, const std::string&)> function_t;
+typedef std::function<opts::parse_status(sim_t*,const std::string&, const std::string&)> function_unfilterd_t;
 typedef std::vector<std::string> list_t;
 
 parse_status parse( sim_t*, const std::vector<std::unique_ptr<option_t>>&, const std::string& name, const std::string& value, const parse_status_fn_t& fn = nullptr );
@@ -85,6 +86,7 @@ std::unique_ptr<option_t> opt_list( const std::string& n, opts::list_t& v );
 std::unique_ptr<option_t> opt_map( const std::string& n, opts::map_t& v );
 std::unique_ptr<option_t> opt_map_list( const std::string& n, opts::map_list_t& v );
 std::unique_ptr<option_t> opt_func( const std::string& n, const opts::function_t& f );
+std::unique_ptr<option_t> opt_func_unfiltered( const std::string& n, const opts::function_unfilterd_t& f );
 std::unique_ptr<option_t> opt_deprecated( const std::string& n, const std::string& new_option );
 std::unique_ptr<option_t> opt_obsoleted( const std::string& n );
 

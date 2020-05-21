@@ -117,6 +117,42 @@ bool parse_debug_seed( sim_t* sim, const std::string&, const std::string& value 
   return true;
 }
 
+opts::parse_status parse_reports( sim_t* sim, const std::string& option_name, const std::string& value )
+{
+  auto reports = {report::report_type::JSON};
+  for ( const auto& report_type : reports )
+  {
+    auto report_name = report::get_report_type_string( report_type );
+    if ( option_name.find( report_name ) == 0 )  // check if option begins with
+    {
+      int report_level = 1;
+      if ( option_name.size() == report_name.size() )
+      {
+        report_level = 1;
+      }
+      else
+      {
+        try
+        {
+          report_level = util::to_int( option_name.substr( report_name.size() ) );
+        }
+        catch ( const std::exception& )
+        {
+          // if we can't parse the remainder as a number, just skip this, since it is likely a custom option for that report.
+          return opts::parse_status::CONTINUE;
+        }
+      }
+
+      auto entry = report::create_report_entry( *sim, report_type, report_level, value );
+
+      sim->report_entries.push_back( std::move( entry ) );
+      return opts::parse_status::OK;
+    }
+  }
+
+  return opts::parse_status::CONTINUE;
+}
+
 // parse_ptr ================================================================
 
 bool parse_ptr( sim_t*             sim,
@@ -3441,9 +3477,8 @@ void sim_t::create_options()
   add_option( opt_bool( "strict_parsing", strict_parsing ) );
   add_option( opt_bool( "debug_each", debug_each ) );
   add_option( opt_func( "debug_seed", parse_debug_seed ) );
+  add_option( opt_func_unfiltered( "parse_reports", parse_reports ) );
   add_option( opt_string( "html", html_file_str ) );
-  add_option( opt_string( "json", json_file_str ) );
-  add_option( opt_string( "json2", json_file_str ) );
   add_option( opt_bool( "hosted_html", hosted_html ) );
   add_option( opt_int( "healing", healing ) );
   add_option( opt_bool( "log", log ) );

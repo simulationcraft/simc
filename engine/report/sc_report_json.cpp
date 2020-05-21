@@ -1076,7 +1076,7 @@ void to_json( JsonOutput root, const sim_t& sim )
   }
 }
 
-void print_json_pretty( FILE* o, const sim_t& sim )
+void print_json_pretty( FILE* o, const sim_t& sim, const report::report_entry_t& entry )
 {
   Document doc;
   Value& v = doc;
@@ -1085,6 +1085,7 @@ void print_json_pretty( FILE* o, const sim_t& sim )
   JsonOutput root( doc, v );
 
   root[ "version" ] = SC_VERSION;
+  root[ "report_version" ] = entry.level();
   root[ "ptr_enabled" ] = SC_USE_PTR;
   root[ "beta_enabled" ] = SC_BETA;
   root[ "build_date" ] = __DATE__;
@@ -1121,16 +1122,16 @@ void print_json_pretty( FILE* o, const sim_t& sim )
 
 namespace report
 {
-void print_json( sim_t& sim )
+void print_json( sim_t& sim, const report::report_entry_t& entry)
 {
-  if ( ! sim.json_file_str.empty() )
+  if ( ! entry.destination().empty() )
   {
     // Setup file stream and open file
-    io::cfile s( sim.json_file_str, "w" );
+    io::cfile s( entry.destination(), "w" );
     if ( !s )
     {
       sim.errorf( "Failed to open JSON output file '%s'.",
-                  sim.json_file_str.c_str() );
+                  entry.destination().c_str() );
       return;
     }
 
@@ -1146,7 +1147,7 @@ void print_json( sim_t& sim )
       {
         t.start();
       }
-      print_json_pretty( s, sim );
+      print_json_pretty( s, sim, entry );
     }
     catch ( const std::exception& e )
     {
