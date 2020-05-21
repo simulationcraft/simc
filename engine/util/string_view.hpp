@@ -130,8 +130,7 @@ public:
   constexpr const_reference operator[](size_type pos) const noexcept { return data_[pos]; }
 
   constexpr const_reference at(size_t pos) const {
-    if (pos >= size_)
-      throw_out_of_range("string_view::at");
+    check_out_of_range(pos >= size_, "string_view::at");
     return data_[pos];
   }
 
@@ -174,8 +173,7 @@ public:
   size_type copy(char* s, size_type n, size_type pos = 0) const;
 
   constexpr string_view substr(size_type pos, size_type n = npos) const {
-    if (pos > size_)
-      throw_out_of_range("string_view::substr");
+    check_out_of_range(pos > size_, "string_view::substr");
     const size_type rlen = size_ - pos;
     return string_view(data_ + pos, n < rlen ? n : rlen);
   }
@@ -278,6 +276,16 @@ public:
 
 private:
   /* [[noreturn]] */ static void throw_out_of_range(const char* msg);
+  // XXX: While gcc 5.5 advertises C++14 is does not properly handle
+  // non-constexpr calls in C++14 style constexpr. We have to basically
+  // revert to C++11. See bugs:
+  //  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=67371 (fixed for gcc-6)
+  //  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=86678 (fixed only for gcc-9!)
+  // Fix it up by wrapping the check into a constexpr function that uses a
+  // ternary which is ok for gcc-5 /shrug
+  static constexpr void check_out_of_range(bool condition, const char* msg) {
+    (void)(condition ? (throw_out_of_range(msg), 0) : 1);
+  }
 
   const char* data_;
   std::size_t size_;
