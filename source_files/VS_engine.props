@@ -148,6 +148,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\util\scoped_callback.hpp" />
 		<ClInclude Include="..\engine\util\span.hpp" />
 		<ClInclude Include="..\engine\util\stopwatch.hpp" />
+		<ClInclude Include="..\engine\util\string_view.hpp" />
 		<ClInclude Include="..\engine\util\timeline.hpp" />
 		<ClInclude Include="..\engine\util\util.hpp" />
 		<ClInclude Include="..\engine\util\vector_with_callback.hpp" />
@@ -543,6 +544,9 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\util\sample_data.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\util\string_view.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\util\timeline.cpp">

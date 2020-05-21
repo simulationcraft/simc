@@ -117,6 +117,12 @@
 #  define SC_FALLTHROUGH
 #endif
 
+#if defined( _MSVC_LANG )
+#  define SC_CPP_LANG _MSVC_LANG
+#else
+#  define SC_CPP_LANG __cplusplus
+#endif
+
 // ==========================================================================
 // Networking library
 // ==========================================================================
