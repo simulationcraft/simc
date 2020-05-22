@@ -7341,6 +7341,11 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 
 void unique_gear::register_hotfixes_bfa()
 {
+  hotfix::register_effect( "Corruption", "2020-05-22", "Reduced the damage done by the Gushing Wound Corruption Effect by 35%", 803979 )
+    .field( "coefficient" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 2.3715 )
+    .verification_value( 3.648425 );
 }
 
 namespace expansion
