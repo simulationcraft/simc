@@ -4110,9 +4110,15 @@ struct concentrated_flame_t : public azerite_essence_major_t
 //Major Power: Memory of Lucid Dreams
 struct memory_of_lucid_dreams_t : public azerite_essence_major_t
 {
+  double precombat_time;
+
   memory_of_lucid_dreams_t( player_t* p, const std::string& options_str ) :
     azerite_essence_major_t( p, "memory_of_lucid_dreams", p->find_spell( 298357 ) )
   {
+    // Default the precombat timer to the player's base, unhasted gcd
+    precombat_time = p -> base_gcd.total_seconds();
+
+    add_option( opt_float( "precombat_time", precombat_time ) );
     parse_options( options_str );
 
     harmful = false;
@@ -4130,11 +4136,49 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
     }
   }
 
+  void init_finished() override
+  {
+    azerite_essence_major_t::init_finished();
+
+    if ( action_list -> name_str == "precombat" )
+    {
+      double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
+      double MAX_TIME = player -> buffs.memory_of_lucid_dreams -> buff_duration.total_seconds() - 1;
+
+      // Ensure that we're using a positive value
+      if ( precombat_time < 0 )
+        precombat_time = -precombat_time;
+
+      if ( precombat_time > MAX_TIME )
+      {
+        precombat_time = MAX_TIME;
+        sim -> error( "{} tried to use Memory of Lucid Dreams in precombat more than {} seconds before combat begins, setting to {}",
+                       player -> name(), MAX_TIME, MAX_TIME );
+      }
+      else if ( precombat_time < MIN_TIME )
+      {
+        precombat_time = MIN_TIME;
+        sim -> error( "{} tried to use Memory of Lucid Dreams in precombat less than {} before combat begins, setting to {} (has to be >= base gcd)",
+                       player -> name(), MIN_TIME, MIN_TIME );
+      }
+    }
+    else precombat_time = 0;
+  }
+
   void execute() override
   {
     azerite_essence_major_t::execute();
 
     player->buffs.memory_of_lucid_dreams->trigger();
+
+    if ( ! player -> in_combat && precombat_time > 0 )
+    {
+      player -> buffs.memory_of_lucid_dreams -> extend_duration( player, timespan_t::from_seconds( -precombat_time ) );
+      cooldown -> adjust( timespan_t::from_seconds( -precombat_time ), false );
+
+      sim -> print_debug( "{} used Memory of Lucid Dreams in precombat with precombat time = {}, adjusting duration and remaining cooldown.",
+                          player -> name(), precombat_time );
+    }
   }
 }; //End of Memory of Lucid Dreams
 
@@ -4543,10 +4587,17 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
 
   pet_t* rockboi;
   buff_t* azerite_volley;
+  double precombat_time;
+  timespan_t summon_duration;
 
   guardian_of_azeroth_t(player_t* p, const std::string& options_str) :
-    azerite_essence_major_t(p, "guardian_of_azeroth", p->find_spell(295840))
+    azerite_essence_major_t(p, "guardian_of_azeroth", p->find_spell(295840)),
+    summon_duration( player -> find_spell( 300091 ) -> duration() )
   {
+    // Default the precombat timer to the player's base, unhasted gcd
+    precombat_time = p -> base_gcd.total_seconds();
+
+    add_option( opt_float( "precombat_time", precombat_time ) );
     parse_options( options_str );
     harmful = may_crit = false;
     rockboi = p->find_pet( "guardian_of_azeroth" );
@@ -4554,12 +4605,49 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
       rockboi = new guardian_of_azeroth_pet_t(p, essence);
   }
 
+  void init_finished() override
+  {
+    azerite_essence_major_t::init_finished();
+
+    if ( action_list -> name_str == "precombat" )
+    {
+      double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
+      double MAX_TIME = summon_duration.total_seconds() - 1; // Summoning for 0s would spawn the pet permanently
+
+      // Ensure that we're using a positive value
+      if ( precombat_time < 0 )
+        precombat_time = -precombat_time;
+
+      if ( precombat_time > MAX_TIME )
+      {
+        precombat_time = MAX_TIME;
+        sim -> error( "{} tried to use Guardian of Azeroth in precombat more than {} seconds before combat begins, setting to {}",
+                       player -> name(), MAX_TIME, MAX_TIME );
+      }
+      else if ( precombat_time < MIN_TIME )
+      {
+        precombat_time = MIN_TIME;
+        sim -> error( "{} tried to use Guardian of Azeroth in precombat less than {} before combat begins, setting to {} (has to be >= base gcd)",
+                       player -> name(), MIN_TIME, MIN_TIME );
+      }
+    }
+    else precombat_time = 0;
+  }
+
   void execute() override
   {
     azerite_essence_major_t::execute();
 
-    if (rockboi->is_sleeping())
-      rockboi->summon(player->find_spell(300091)->duration());
+    if ( rockboi -> is_sleeping() )
+      rockboi -> summon( summon_duration - timespan_t::from_seconds( precombat_time ) );
+
+    if ( ! player -> in_combat && precombat_time > 0 )
+    {
+      cooldown -> adjust( timespan_t::from_seconds( -precombat_time ), false );
+
+      sim -> print_debug( "{} used Guardian of Azeroth in precombat with precombat time = {}, adjusting pet duration and remaining cooldown.",
+                          player -> name(), precombat_time );
+    }
   }
 }; //End of Condensed Life-Force
 
@@ -5140,6 +5228,8 @@ struct worldvein_resonance_buff_t : public buff_t
 
 struct worldvein_resonance_t : public azerite_essence_major_t
 {
+  double precombat_time;
+
   int stacks;
   buff_t* lifeblood;
   buff_t* worldvein_resonance;
@@ -5147,8 +5237,12 @@ struct worldvein_resonance_t : public azerite_essence_major_t
   worldvein_resonance_t( player_t* p, const std::string& options_str ) :
     azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) ), stacks()
   {
-    harmful = false;
+    // Default the precombat timer to the player's base, unhasted gcd
+    precombat_time = p -> base_gcd.total_seconds();
+
+    add_option( opt_float( "precombat_time", precombat_time ) );
     parse_options( options_str );
+    harmful = false;
     stacks = as<int>( data().effectN( 1 ).base_value() +
       essence.spell( 2, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).base_value() );
 
@@ -5161,11 +5255,52 @@ struct worldvein_resonance_t : public azerite_essence_major_t
       worldvein_resonance = make_buff<worldvein_resonance_buff_t>( p, essence );
   }
 
+  void init_finished() override
+  {
+    azerite_essence_major_t::init_finished();
+
+    if ( action_list -> name_str == "precombat" )
+    {
+      double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
+      double MAX_TIME = worldvein_resonance -> buff_duration.total_seconds() - 1;
+
+      // Ensure that we're using a positive value
+      if ( precombat_time < 0 )
+        precombat_time = -precombat_time;
+
+      if ( precombat_time > MAX_TIME )
+      {
+        precombat_time = MAX_TIME;
+        sim -> error( "{} tried to use Worldvein Resonance in precombat more than {} seconds before combat begins, setting to {}",
+                       player -> name(), MAX_TIME, MAX_TIME );
+      }
+      else if ( precombat_time < MIN_TIME )
+      {
+        precombat_time = MIN_TIME;
+        sim -> error( "{} tried to use Worldvein Resonance in precombat less than {} before combat begins, setting to {} (has to be >= base gcd)",
+                       player -> name(), MIN_TIME, MIN_TIME );
+      }
+    }
+    else precombat_time = 0;
+  }
+
   void execute() override
   {
     azerite_essence_major_t::execute();
-    lifeblood->trigger( stacks );
+
+    // Apply the duration penalty directly in trigger() because lifeblood stacks are asynchronous
+    lifeblood -> trigger( stacks, lifeblood -> DEFAULT_VALUE(), -1.0,
+                          lifeblood -> buff_duration - timespan_t::from_seconds( precombat_time ) );
     worldvein_resonance->trigger();
+
+    if ( ! player -> in_combat && precombat_time > 0 )
+    {
+      worldvein_resonance -> extend_duration( player, timespan_t::from_seconds( -precombat_time ) );
+      cooldown -> adjust( timespan_t::from_seconds( -precombat_time ), false );
+
+      sim -> print_debug( "{} used Worldvein Resonance in precombat with precombat time = {}, adjusting duration and remaining cooldown.",
+                          player -> name(), precombat_time );
+    }
   }
 
   //Minor and major power both summon Lifeblood shards that grant primary stat (max benefit of 4 shards)
