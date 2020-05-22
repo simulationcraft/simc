@@ -259,18 +259,23 @@ std::string util::version_info_str( const dbc_t* dbc )
 // Note, does not take into account that technically players could have different amounts of
 // melee/spell/ranged ratings for specific things. Blizzard has not used this system thus far in any
 // "normal" player-driven stuff.
-stat_e util::highest_stat( const player_t* p, const std::vector<stat_e>& stats )
+stat_e util::highest_stat( const player_t* p, util::span<const stat_e> stats )
 {
-  std::vector<double> values;
+  assert( !stats.empty() );
 
-  range::for_each( stats, [p, &values]( stat_e stat ) {
-      values.push_back( stat_value( p, stat ) );
-  } );
+  stat_e stat = stats.front();
+  double value = stat_value( p, stat );
+  for ( stat_e s : stats.subspan( 1 ) )
+  {
+    const double v = stat_value( p, s );
+    if ( value < v )
+    {
+      stat = s;
+      value = v;
+    }
+  }
 
-  auto it = std::max_element( values.cbegin(), values.cend() );
-  auto index = std::distance( values.cbegin(), it );
-
-  return stats[ index ];
+  return stat;
 }
 
 

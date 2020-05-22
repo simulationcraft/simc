@@ -719,10 +719,9 @@ struct bfa_82_enchant_functor_t
     haste->expire();
     mastery->expire();
 
-    stat_e highest_rating =
-        ::util::highest_stat( b->source, {STAT_CRIT_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING} );
+    static constexpr stat_e ratings[] = { STAT_CRIT_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING };
     buff_t* selected_buff = nullptr;
-    switch ( highest_rating )
+    switch ( ::util::highest_stat( b->source, ratings ) )
     {
       case STAT_CRIT_RATING:
         selected_buff = crit;

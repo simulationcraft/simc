@@ -3586,8 +3586,10 @@ void arcane_heart( special_effect_t& effect )
     omni->set_stack_change_callback( [omni]( buff_t*, int, int new_ ) {
       if ( new_ )
       {
-        omni->stats.front().stat = util::highest_stat(
-          omni->player, { STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING } );
+        static constexpr stat_e ratings[] = {
+          STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING
+        };
+        omni->stats.front().stat = util::highest_stat( omni->player, ratings );
       }
       omni->sim->print_debug( "arcane_heart omnipotence stack change: highest stat {} {} by {}",
         util::stat_type_string( omni->stats.front().stat ), new_ ? "increased" : "decreased",

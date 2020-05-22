@@ -11,6 +11,7 @@
 #include "dbc/specialization.hpp"
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
+#include "util/span.hpp"
 
 #include "fmt/format.h"
 #include "fmt/ostream.h"
@@ -30,7 +31,7 @@ class dbc_t;
  */
 namespace util
 {
-stat_e highest_stat( const player_t* p, const std::vector<stat_e>& stat );
+stat_e highest_stat( const player_t* p, util::span<const stat_e> stat );
 
 std::string version_info_str( const dbc_t* dbc );
 
