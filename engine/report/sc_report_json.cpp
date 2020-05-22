@@ -1030,7 +1030,7 @@ void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t
 
 void profileset_json( const report::report_configuration_t& report_configuration, const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
 {
-  if (report_configuration.is_less_than(3))
+  if (report_configuration.is_version_less_than(3))
   {
     profileset_json2(profileset, sim, root);
   }
@@ -1211,7 +1211,7 @@ void print_json_pretty( FILE* o, const sim_t& sim, const report::report_configur
   JsonOutput root( doc, v );
 
   root[ "version" ] = SC_VERSION;
-  root[ "report_version" ] = report_configuration.level();
+  root[ "report_version" ] = report_configuration.version();
   root[ "ptr_enabled" ] = SC_USE_PTR;
   root[ "beta_enabled" ] = SC_BETA;
   root[ "build_date" ] = __DATE__;

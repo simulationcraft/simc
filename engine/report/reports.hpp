@@ -30,22 +30,22 @@ namespace report
   class report_configuration_t
   {
     report_type _type;
-    int _level;
+    int _version;
     std::string _destination;
   public:
-    report_configuration_t(report_type type, int level, std::string destination);
+    report_configuration_t(report_type type, int version, std::string destination);
 
-    bool is_greater_than(int min_level) const;
-    bool is_between(int min_level, int max_level) const;
-    bool is_less_than(int max_level) const;
+    bool is_version_greater_than(int min_version) const;
+    bool is_version_between(int min_version, int max_version) const;
+    bool is_version_less_than(int max_version) const;
 
-    int level() const;
+    int version() const;
     std::string report_type_string() const;
     report_type report_type() const;
     std::string destination() const;
   };
   std::string get_report_type_string(report_type type);
-  report_configuration_t create_report_entry(sim_t& sim, report_type type, int level, std::string destination);
+  report_configuration_t create_report_entry(sim_t& sim, report_type type, int version, std::string destination);
 
   using sc_html_stream = io::ofstream;
 
