@@ -201,8 +201,8 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
     fmt::print( os,
       "<tr{}>"
       "<td class='left'>{}</td>"
-      "<td class='right'>{.3f}</td><td class='right'>{.3f}</td><td class='right'>{.3f}</td>"
-      "<td class='right'>{.3f}</td><td class='right'>{.3f}</td><td class='right'>{.3f}</td>"
+      "<td class='right'>{:.3f}</td><td class='right'>{:.3f}</td><td class='right'>{:.3f}</td>"
+      "<td class='right'>{:.3f}</td><td class='right'>{:.3f}</td><td class='right'>{:.3f}</td>"
       "</tr>\n",
       n & 1 ? " class='odd'" : "",
       a ? report_decorators::decorated_action( *a ) : util::encode_html( rec.first ),
