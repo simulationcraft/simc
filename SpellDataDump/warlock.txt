@@ -1,4 +1,4 @@
-SimulationCraft 830-02 for World of Warcraft 8.3.0 Live (wow build 33051)
+SimulationCraft 830-02 for World of Warcraft 8.3.0 Live (wow build 33051, git build bfa-dev 1c37f14269)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -9012,7 +9012,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=802122)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 54.16718 (coefficient=0.174171) | PvP Coefficient: 1.00000 | Trigger Spell: 316101 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 54.16718 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
 
 

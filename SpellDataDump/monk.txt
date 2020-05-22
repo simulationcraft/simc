@@ -1,4 +1,4 @@
-SimulationCraft 830-02 for World of Warcraft 8.3.0 Live (wow build 33051)
+SimulationCraft 830-02 for World of Warcraft 8.3.0 Live (wow build 33051, git build bfa-dev 1c37f14269)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -7230,6 +7230,7 @@ Effects          :
 Description      : While $?c3[Touch of Karma][Fortifying Brew] is active, heal for $s1 every second.
 
 Name             : Rising Mist (id=274909) [Spell Family (53), Passive] 
+Hotfixed         : Description
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7249,7 +7250,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=727561)   : Apply Aura (6) | Proc Trigger Spell (42): Rising Mist
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Trigger Spell: 274912 | Target: Self (1)
-Description      : Rising Sun Kick heals all allies with your Renewing Mist, Enveloping Mist, or Essence Font for $274912s1, and extends those effects by $s1 sec.
+#2 (id=823665)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: NEW EFFECT
+Description      : Rising Sun Kick heals all allies with your Renewing Mist, Enveloping Mist, or Essence Font for $274912s1, and extends those effects by $s1 sec, up to $s2% of their original duration.
 
 Name             : Rising Mist (id=274912) [Spell Family (53)] 
 Class            : Monk
@@ -9012,7 +9016,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=802122)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 54.16718 (coefficient=0.174171) | PvP Coefficient: 1.00000 | Trigger Spell: 316101 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 54.16718 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
 
 
