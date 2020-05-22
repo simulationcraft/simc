@@ -36,7 +36,7 @@ report_level_settings_t get_report_settings( report::report_type type )
   throw std::invalid_argument( "Unknown report type" );
 }
 
-void print_report( sim_t& sim, const report::report_entry_t& entry )
+void print_report( sim_t& sim, const report::report_configuration_t& entry )
 {
   switch ( entry.report_type() )
   {
@@ -58,42 +58,42 @@ void print_report( sim_t& sim, const report::report_entry_t& entry )
 // report::print_profiles ===================================================
 namespace report
 {
-report_entry_t::report_entry_t( enum report_type type, int level, std::string destination )
+report_configuration_t::report_configuration_t( enum report_type type, int level, std::string destination )
   : _type( type ), _level( level ), _destination( std::move( destination ) )
 {
 }
 
-bool report_entry_t::is_greater_than( int min_level ) const
+bool report_configuration_t::is_greater_than( int min_level ) const
 {
   return _level > min_level;
 }
 
-bool report_entry_t::is_between( int min_level, int max_level ) const
+bool report_configuration_t::is_between( int min_level, int max_level ) const
 {
   return _level > min_level && _level < max_level;
 }
 
-bool report_entry_t::is_less_than( int max_level ) const
+bool report_configuration_t::is_less_than( int max_level ) const
 {
   return _level < max_level;
 }
 
-int report_entry_t::level() const
+int report_configuration_t::level() const
 {
   return _level;
 }
 
-std::string report_entry_t::report_type_string() const
+std::string report_configuration_t::report_type_string() const
 {
   return get_report_type_string( _type );
 }
 
-report_type report_entry_t::report_type() const
+report_type report_configuration_t::report_type() const
 {
   return _type;
 }
 
-std::string report_entry_t::destination() const
+std::string report_configuration_t::destination() const
 {
   return _destination;
 }
@@ -112,7 +112,7 @@ std::string get_report_type_string( report_type type )
   throw std::invalid_argument( "Unknown report type" );
 }
 
-report_entry_t create_report_entry( sim_t& sim, report_type type, int level, std::string destination )
+report_configuration_t create_report_entry( sim_t& sim, report_type type, int level, std::string destination )
 {
   auto settings = get_report_settings( type );
 
@@ -134,7 +134,7 @@ report_entry_t create_report_entry( sim_t& sim, report_type type, int level, std
                      get_report_type_string( type ), level, settings.maximum_level ) );
   }
 
-  return report_entry_t( type, level, destination );
+  return report_configuration_t( type, level, destination );
 }
 
 void print_profiles(sim_t* sim)
@@ -340,7 +340,7 @@ void print_spell_query(xml_node_t* root, FILE* file, const sim_t& sim, const spe
 }
 // report::print_suite ======================================================
 
-void print_suite(sim_t* sim, std::vector<report_entry_t>& report_entries)
+void print_suite(sim_t* sim, const std::vector<report_configuration_t>& report_entries)
 {
   if (!sim->profileset_enabled)
   {

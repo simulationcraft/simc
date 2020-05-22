@@ -31,7 +31,7 @@ struct JsonOutput;
 }
 
 namespace report {
-  class report_entry_t;
+  class report_configuration_t;
 }
 
 namespace profileset

@@ -79,7 +79,7 @@ bool has_resources( const gain_t* gain )
 bool has_resources( const gain_t& gain )
 { return has_resources( &gain ); }
 
-void gain_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const gain_t* g )
+void gain_to_json( JsonOutput root, const gain_t* g )
 {
   root[ "name" ] = g -> name();
 
@@ -97,11 +97,11 @@ void gain_to_json( const report::report_entry_t& report_configuration, JsonOutpu
   }
 }
 
-void gain_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const gain_t& g )
-{ gain_to_json( report_configuration, root, &g ); }
+void gain_to_json( JsonOutput root, const gain_t& g )
+{ gain_to_json( root, &g ); }
 
 
-void gains_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
+void gains_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
 
@@ -111,11 +111,11 @@ void gains_to_json( const report::report_entry_t& report_configuration, JsonOutp
       return;
     }
 
-    gain_to_json( report_configuration, root.add(), g );
+    gain_to_json( root.add(), g );
   } );
 }
 
-void to_json( const report::report_entry_t& report_configuration, JsonOutput root, const buff_t* b )
+void to_json( JsonOutput root, const buff_t* b )
 {
   root[ "name" ] = b -> name();
   root[ "spell_name" ] = b->data_reporting().name_cstr();
@@ -155,7 +155,7 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput roo
   }
 }
 
-void buffs_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
+void buffs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
   range::for_each( p.report_information.dynamic_buffs, [ &]( const buff_t* b ) {
@@ -163,10 +163,10 @@ void buffs_to_json( const report::report_entry_t& report_configuration, JsonOutp
     {
       return;
     }
-    to_json( report_configuration, root.add(), b );
+    to_json( root.add(), b );
   } );
 }
-void constant_buffs_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
+void constant_buffs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
   // constant buffs
@@ -175,11 +175,11 @@ void constant_buffs_to_json( const report::report_entry_t& report_configuration,
     {
       return;
     }
-    to_json( report_configuration, root.add(), b );
+    to_json( root.add(), b );
   } );
 }
 
-void to_json( const report::report_entry_t& report_configuration, JsonOutput root, const stats_t::stats_results_t& sr )
+void to_json( JsonOutput root, const stats_t::stats_results_t& sr )
 {
   root[ "actual_amount" ] = sr.actual_amount;
   root[ "avg_actual_amount" ] = sr.avg_actual_amount;
@@ -191,7 +191,7 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput roo
   root[ "pct" ] = sr.pct;
 }
 
-void procs_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
+void procs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
   range::for_each( p.proc_list, [ & ]( const proc_t* proc ) {
@@ -241,7 +241,7 @@ bool has_valid_stats( const std::vector<stats_t*>& stats_list, int level = 0 )
   return it != stats_list.end();
 }
 
-void stats_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const std::vector<stats_t*>& stats_list, int level = 0 )
+void stats_to_json( JsonOutput root, const std::vector<stats_t*>& stats_list, int level = 0 )
 {
   root.make_array();
 
@@ -297,7 +297,7 @@ void stats_to_json( const report::report_entry_t& report_configuration, JsonOutp
 
     if ( has_resources( s -> resource_gain ) )
     {
-      gain_to_json( report_configuration, node[ "resource_gain" ], s -> resource_gain );
+      gain_to_json( node[ "resource_gain" ], s -> resource_gain );
     }
 
 
@@ -327,7 +327,7 @@ void stats_to_json( const report::report_entry_t& report_configuration, JsonOutp
     {
       if ( s -> direct_results[ r ].count.sum() != 0 )
       {
-        to_json( report_configuration, node[ "direct_results" ][ util::full_result_type_string( r ) ],
+        to_json( node[ "direct_results" ][ util::full_result_type_string( r ) ],
                  s -> direct_results[ r ] );
       }
     }
@@ -336,7 +336,7 @@ void stats_to_json( const report::report_entry_t& report_configuration, JsonOutp
     {
       if ( s -> tick_results[ r ].count.sum() != 0 )
       {
-        to_json( report_configuration, node[ "tick_results" ][ util::result_type_string( r ) ],
+        to_json( node[ "tick_results" ][ util::result_type_string( r ) ],
                  s -> tick_results[ r ] );
       }
     }
@@ -344,12 +344,12 @@ void stats_to_json( const report::report_entry_t& report_configuration, JsonOutp
     // add children stats
     if ( has_valid_stats( s->children, level + 1 ) )
     {
-      stats_to_json( report_configuration, node[ "children" ], s->children, level + 1 );
+      stats_to_json( node[ "children" ], s->children, level + 1 );
     }
   } );
 }
 
-void gear_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
+void gear_to_json( JsonOutput root, const player_t& p )
 {
   for ( slot_e slot = SLOT_MIN; slot < SLOT_MAX; slot++ )
   {
@@ -376,7 +376,7 @@ void gear_to_json( const report::report_entry_t& report_configuration, JsonOutpu
   }
 }
 
-void to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p,
+void to_json( JsonOutput root, const player_t& p,
                                const player_collected_data_t::buffed_stats_t& bs,
                                const std::vector<resource_e>& relevant_resources )
 {
@@ -451,7 +451,7 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput roo
   add_non_zero( root[ "stats" ], "corruption_resistance", bs.corruption_resistance );
 }
 
-void to_json( const report::report_entry_t& report_configuration, JsonOutput root,
+void to_json( JsonOutput root,
               const std::vector<player_collected_data_t::action_sequence_data_t>& asd,
               const std::vector<resource_e>& relevant_resources,
               const sim_t& sim )
@@ -538,7 +538,7 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput roo
   } );
 }
 
-void collected_data_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
+void collected_data_to_json( JsonOutput root, const player_t& p )
 {
   const auto& sim = *p.sim;
   const auto& cd = p.collected_data;
@@ -606,7 +606,7 @@ void collected_data_to_json( const report::report_entry_t& report_configuration,
   }
 
   // always include buffed_stats in JSON
-  to_json( report_configuration, root[ "buffed_stats" ], p, cd.buffed_stats_snapshot, relevant_resources );
+  to_json( root[ "buffed_stats" ], p, cd.buffed_stats_snapshot, relevant_resources );
 
   if ( sim.report_details != 0 )
   {
@@ -648,17 +648,17 @@ void collected_data_to_json( const report::report_entry_t& report_configuration,
 
     if ( ! cd.action_sequence_precombat.empty() )
     {
-      to_json( report_configuration, root[ "action_sequence_precombat" ], cd.action_sequence_precombat, relevant_resources, sim );
+      to_json( root[ "action_sequence_precombat" ], cd.action_sequence_precombat, relevant_resources, sim );
     }
 
     if ( ! cd.action_sequence.empty() )
     {
-      to_json( report_configuration, root[ "action_sequence" ], cd.action_sequence, relevant_resources, sim );
+      to_json( root[ "action_sequence" ], cd.action_sequence, relevant_resources, sim );
     }
   }
 }
 
-void to_json( const report::report_entry_t& report_configuration, JsonOutput root, const dbc_t& dbc )
+void to_json( JsonOutput root, const dbc_t& dbc )
 {
   bool versions[] = { false, true };
   for ( const auto& ptr : versions )
@@ -673,7 +673,7 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput roo
   root[ "version_used" ] = StringRef( dbc::wow_ptr_status( dbc.ptr ) );
 }
 
-void scale_factors_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
+void scale_factors_to_json( JsonOutput root, const player_t& p )
 {
   if ( p.sim -> report_precision < 0 )
     p.sim -> report_precision = 2;
@@ -692,7 +692,7 @@ void scale_factors_to_json( const report::report_entry_t& report_configuration, 
   }
 }
 
-void scale_factors_all_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
+void scale_factors_all_to_json( JsonOutput root, const player_t& p )
 {
   if ( p.sim -> report_precision < 0 )
     p.sim -> report_precision = 2;
@@ -715,7 +715,7 @@ void scale_factors_all_to_json( const report::report_entry_t& report_configurati
   }
 }
 
-void talents_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const player_t& p )
+void talents_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
 
@@ -741,7 +741,7 @@ void talents_to_json( const report::report_entry_t& report_configuration, JsonOu
   }
 }
 
-void to_json( const report::report_entry_t& report_configuration, JsonOutput& arr, const player_t& p )
+void to_json( JsonOutput& arr, const player_t& p )
 {
   auto root = arr.add(); // Add a fresh object to the players array and use it as root
 
@@ -752,7 +752,7 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput& ar
   root[ "specialization" ] = util::specialization_string( p.specialization() );
   root[ "profile_source" ] = util::profile_source_string( p.profile_source_ );
 
-  talents_to_json( report_configuration, root[ "talents" ], p );
+  talents_to_json( root[ "talents" ], p );
 
   if ( p.artifact && p.artifact -> purchased_points() > 0 )
   {
@@ -799,7 +799,7 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput& ar
   root[ "world_lag_override" ] = p.world_lag_override;
   root[ "world_lag_stddev_override" ] = p.world_lag_stddev_override;
 
-  to_json( report_configuration, root[ "dbc" ], *p.dbc );
+  to_json( root[ "dbc" ], *p.dbc );
 
   for ( auto i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
   {
@@ -839,28 +839,28 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput& ar
 
   if ( p.sim -> scaling -> has_scale_factors() )
   {
-    scale_factors_to_json( report_configuration, root[ "scale_factors" ], p );
-    scale_factors_all_to_json( report_configuration, root[ "scale_factors_all" ], p );
+    scale_factors_to_json( root[ "scale_factors" ], p );
+    scale_factors_all_to_json( root[ "scale_factors_all" ], p );
   }
 
-  collected_data_to_json( report_configuration, root[ "collected_data" ], p );
+  collected_data_to_json( root[ "collected_data" ], p );
 
   if ( p.sim -> report_details != 0 )
   {
-    buffs_to_json( report_configuration, root[ "buffs" ], p );
-    constant_buffs_to_json( report_configuration, root[ "buffs_constant" ], p );
+    buffs_to_json( root[ "buffs" ], p );
+    constant_buffs_to_json( root[ "buffs_constant" ], p );
 
     if ( p.proc_list.size() > 0 )
     {
-      procs_to_json( report_configuration, root[ "procs" ], p );
+      procs_to_json( root[ "procs" ], p );
     }
 
     if ( p.gain_list.size() > 0 )
     {
-      gains_to_json( report_configuration, root[ "gains" ], p );
+      gains_to_json( root[ "gains" ], p );
     }
 
-    stats_to_json( report_configuration, root[ "stats" ], p.stats_list );
+    stats_to_json( root[ "stats" ], p.stats_list );
 
     // add pet stats as a separate property
     JsonOutput stats_pets = root[ "stats_pets" ];
@@ -868,18 +868,18 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput& ar
     {
       if ( has_valid_stats( pet->stats_list ) )
       {
-        stats_to_json( report_configuration, stats_pets[ pet->name_str ], pet->stats_list );
+        stats_to_json( stats_pets[ pet->name_str ], pet->stats_list );
       }
     }
   }
 
-  gear_to_json( report_configuration, root[ "gear" ], p );
+  gear_to_json( root[ "gear" ], p );
 
   JsonOutput custom = root[ "custom" ];
   p.output_json_report( custom );
 }
 
-void to_json( const report::report_entry_t& report_configuration, JsonOutput& arr, const raid_event_t& event )
+void to_json( JsonOutput& arr, const raid_event_t& event )
 {
   auto root = arr.add();
   root[ "name" ] = event.name;
@@ -902,7 +902,7 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput& ar
   add_non_zero( root, "saved_duration", event.saved_duration );
 }
 
-void iteration_data_to_json( const report::report_entry_t& report_configuration, JsonOutput root, const std::vector<iteration_data_entry_t>& entries )
+void iteration_data_to_json( JsonOutput root, const std::vector<iteration_data_entry_t>& entries )
 {
   root.make_array();
 
@@ -1028,7 +1028,7 @@ void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t
   } );
 }
 
-void profileset_json( const report::report_entry_t& report_configuration, const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
+void profileset_json( const report::report_configuration_t& report_configuration, const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
 {
   if (report_configuration.is_less_than(3))
   {
@@ -1041,7 +1041,7 @@ void profileset_json( const report::report_entry_t& report_configuration, const 
   
 }
 
-void to_json( const report::report_entry_t& report_configuration, JsonOutput root, const sim_t& sim )
+void to_json( const report::report_configuration_t& report_configuration, JsonOutput root, const sim_t& sim )
 {
   // Sim-scope options
   auto options_root = root[ "options" ];
@@ -1094,7 +1094,7 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput roo
   options_root[ "default_aura_delay" ] = sim.default_aura_delay;
   options_root[ "default_aura_delay_stddev" ] = sim.default_aura_delay_stddev;
 
-  to_json( report_configuration, options_root[ "dbc" ], *sim.dbc );
+  to_json( options_root[ "dbc" ], *sim.dbc );
 
   if ( sim.scaling -> calculate_scale_factors )
   {
@@ -1135,13 +1135,13 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput roo
   JsonOutput players_arr = root[ "players" ].make_array();
 
   range::for_each( sim.player_no_pet_list.data(), [ & ]( const player_t* p ) {
-    to_json( report_configuration, players_arr, *p );
+    to_json( players_arr, *p );
   } );
 
   if ( sim.profilesets.n_profilesets() > 0 )
   {
     auto profileset_root = root[ "profilesets" ];
-    profileset_json(report_configuration, sim.profilesets, sim, profileset_root );
+    profileset_json( report_configuration, sim.profilesets, sim, profileset_root );
   }
 
   auto stats_root = root[ "statistics" ];
@@ -1165,7 +1165,7 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput roo
     JsonOutput targets_arr = root[ "targets" ].make_array();
 
     range::for_each( sim.target_list.data(), [ & ]( const player_t* p ) {
-      to_json( report_configuration, targets_arr, *p );
+      to_json( targets_arr, *p );
     } );
 
     // Raid events
@@ -1174,7 +1174,7 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput roo
       auto arr = root[ "raid_events" ].make_array();
 
       range::for_each( sim.raid_events, [ & ]( const std::unique_ptr<raid_event_t>& event ) {
-        to_json( report_configuration, arr, *event );
+        to_json( arr, *event );
       } );
     }
 
@@ -1186,23 +1186,23 @@ void to_json( const report::report_entry_t& report_configuration, JsonOutput roo
         {
           return;
         }
-        to_json( report_configuration, buffs_arr.add(), b );
+        to_json( buffs_arr.add(), b );
       } );
     }
 
     if ( sim.low_iteration_data.size() > 0 )
     {
-      iteration_data_to_json( report_configuration, root[ "iteration_data" ][ "low" ], sim.low_iteration_data );
+      iteration_data_to_json( root[ "iteration_data" ][ "low" ], sim.low_iteration_data );
     }
 
     if ( sim.high_iteration_data.size() > 0 )
     {
-      iteration_data_to_json( report_configuration, root[ "iteration_data" ][ "high" ], sim.high_iteration_data );
+      iteration_data_to_json( root[ "iteration_data" ][ "high" ], sim.high_iteration_data );
     }
   }
 }
 
-void print_json_pretty( FILE* o, const sim_t& sim, const report::report_entry_t& report_configuration )
+void print_json_pretty( FILE* o, const sim_t& sim, const report::report_configuration_t& report_configuration )
 {
   Document doc;
   Value& v = doc;
@@ -1248,7 +1248,7 @@ void print_json_pretty( FILE* o, const sim_t& sim, const report::report_entry_t&
 
 namespace report
 {
-void print_json( sim_t& sim, const report::report_entry_t& report_configuration)
+void print_json( sim_t& sim, const report::report_configuration_t& report_configuration)
 {
   if ( ! report_configuration.destination().empty() )
   {

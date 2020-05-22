@@ -27,13 +27,13 @@ namespace report
     JSON
   };
 
-  class report_entry_t
+  class report_configuration_t
   {
     report_type _type;
     int _level;
     std::string _destination;
   public:
-    report_entry_t(report_type type, int level, std::string destination);
+    report_configuration_t(report_type type, int level, std::string destination);
 
     bool is_greater_than(int min_level) const;
     bool is_between(int min_level, int max_level) const;
@@ -45,7 +45,7 @@ namespace report
     std::string destination() const;
   };
   std::string get_report_type_string(report_type type);
-  report_entry_t create_report_entry(sim_t& sim, report_type type, int level, std::string destination);
+  report_configuration_t create_report_entry(sim_t& sim, report_type type, int level, std::string destination);
 
   using sc_html_stream = io::ofstream;
 
@@ -54,7 +54,7 @@ namespace report
   void print_profiles(sim_t*);
   void print_text(sim_t*, bool detail);
   void print_html(sim_t&);
-  void print_json(sim_t&, const report::report_entry_t& entry);
+  void print_json(sim_t&, const report_configuration_t& entry);
   void print_html_player(report::sc_html_stream&, player_t&);
-  void print_suite(sim_t*, std::vector<report_entry_t>& report_entries);
+  void print_suite(sim_t*, const std::vector<report_configuration_t>& report_entries);
 }
