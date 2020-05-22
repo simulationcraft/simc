@@ -4140,7 +4140,7 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
   {
     azerite_essence_major_t::init_finished();
 
-    if ( action_list -> name_str == "precombat" )
+    if ( action_list -> name_str == "precombat" && !background )
     {
       double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
       double MAX_TIME = player -> buffs.memory_of_lucid_dreams -> buff_duration.total_seconds() - 1;
@@ -4609,7 +4609,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
   {
     azerite_essence_major_t::init_finished();
 
-    if ( action_list -> name_str == "precombat" )
+    if ( action_list -> name_str == "precombat" && !background )
     {
       double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
       double MAX_TIME = summon_duration.total_seconds() - 1; // Summoning for 0s would spawn the pet permanently
@@ -5259,7 +5259,7 @@ struct worldvein_resonance_t : public azerite_essence_major_t
   {
     azerite_essence_major_t::init_finished();
 
-    if ( action_list -> name_str == "precombat" )
+    if ( action_list -> name_str == "precombat" && !background )
     {
       double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
       double MAX_TIME = worldvein_resonance -> buff_duration.total_seconds() - 1;
