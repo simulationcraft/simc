@@ -29,7 +29,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/raise_dead
 actions.precombat+=/use_item,name=azsharas_font_of_power
-actions.precombat+=/army_of_the_dead,delay=2
+actions.precombat+=/army_of_the_dead,precombat_time=2
 
 # Executed every time the actor is available.
 actions=auto_attack
