@@ -3698,8 +3698,8 @@ bool player_t::is_moving() const
 }
 
 bool player_t::in_gcd() const
-{ 
-  return gcd_ready > sim -> current_time(); 
+{
+  return gcd_ready > sim -> current_time();
 }
 
 double player_t::composite_dodge() const
@@ -5960,7 +5960,7 @@ bool player_t::has_shield_equipped() const
 }
 
 bool player_t::record_healing() const
-{ 
+{
   return role == ROLE_TANK || role == ROLE_HEAL || sim -> enable_dps_healing;
 }
 
@@ -7505,40 +7505,49 @@ struct lights_judgment_t : public racial_spell_t
   };
 
   action_t* damage;
+  bool precombat;
 
   lights_judgment_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "lights_judgment", p->find_racial_spell( "Light's Judgment" ), options_str )
+    racial_spell_t( p, "lights_judgment", p->find_racial_spell( "Light's Judgment" ), options_str ),
+    precombat()
   {
     // The cast doesn't trigger combat
     may_miss = callbacks = harmful = false;
 
     damage = p->find_action( "lights_judgment_damage" );
     if ( damage == nullptr )
-    {
       damage = new lights_judgment_damage_t( p );
-    }
 
     add_child( damage );
+  }
+
+  void init_finished() override
+  {
+    racial_spell_t::init_finished();
+
+    precombat =  action_list -> name_str == "precombat";
   }
 
   void execute() override
   {
     racial_spell_t::execute();
-    // Reduce the cooldown by 1.5s when used during precombat
-    if ( ! player -> in_combat )
+    // Reduce the cooldown by the player's gcd when used during precombat
+    if ( ! player -> in_combat && precombat )
     {
-      cooldown -> adjust( timespan_t::from_seconds( -1.5 ) );
+      cooldown -> adjust( - player -> base_gcd );
+
+      sim -> print_debug( "{} used Light's Judgment in precombat with precombat time = {}, adjusting travel time and remaining cooldown.",
+                          player -> name(), player -> base_gcd.total_seconds() );
     }
   }
 
   // Missile travels for 3 seconds, stored in missile speed
   timespan_t travel_time() const override
   {
-    // Reduce the delay before the hit by 1.5s when used during precombat
-    if ( ! player -> in_combat )
-    {
-      return timespan_t::from_seconds( travel_speed - 1.5 );
-    }
+    // Reduce the delay before the hit by the player's gcd when used during precombat
+    if ( ! player -> in_combat && precombat )
+      return timespan_t::from_seconds( travel_speed ) - player -> base_gcd;
+
     return timespan_t::from_seconds( travel_speed );
   }
 
@@ -10323,7 +10332,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string&
         return resources.current[ r ] / collected_data.buffed_stats_snapshot.resource[ r ] * 100.0;
       } );
     }
-    
+
     else if ( splits[ 1 ] == "net_regen" )
     {
       return make_fn_expr( name_str, [ this, r ] {
@@ -10334,12 +10343,12 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string&
           return 0.0;
       } );
     }
-    
+
     else if ( splits[ 1 ] == "regen" )
     {
       return make_fn_expr( name_str, [ this, r ] { return resource_regen_per_second( r ); } );
     }
-    
+
     else if ( util::str_begins_with_ci( splits[ 1 ], "time_to_" ) )
     {
       std::vector<std::string> parts = util::string_split( splits[ 1 ], "_" );
@@ -10364,7 +10373,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string&
           // If the value is impossible to reach, return functional infinity
           return timespan_t::max().total_seconds();
         }
-        
+
         return ( amount - resources.current[ r ] ) / resource_regen_per_second( r );
       } );
     }
