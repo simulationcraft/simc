@@ -68,9 +68,8 @@ actions+=/call_action_list,name=generic
 # AoE rotation
 actions.aoe=death_and_decay,if=cooldown.apocalypse.remains
 actions.aoe+=/defile,if=cooldown.apocalypse.remains
-actions.aoe+=/epidemic,if=death_and_decay.ticking&runic_power.deficit<(14+death_knight.fwounded_targets*3)&!variable.pooling_for_gargoyle
+actions.aoe+=/epidemic,if=death_and_decay.ticking&runic_power.deficit<14&!talent.bursting_sores.enabled&!variable.pooling_for_gargoyle
 actions.aoe+=/epidemic,if=death_and_decay.ticking&(!death_knight.fwounded_targets&talent.bursting_sores.enabled)&!variable.pooling_for_gargoyle
-actions.aoe+=/death_coil,if=death_and_decay.ticking&runic_power.deficit<14&!variable.pooling_for_gargoyle
 actions.aoe+=/scourge_strike,if=death_and_decay.ticking&cooldown.apocalypse.remains
 actions.aoe+=/clawing_shadows,if=death_and_decay.ticking&cooldown.apocalypse.remains
 actions.aoe+=/epidemic,if=!variable.pooling_for_gargoyle
@@ -83,6 +82,7 @@ actions.aoe+=/clawing_shadows,target_if=((cooldown.army_of_the_dead.remains>5|de
 actions.aoe+=/death_coil,if=runic_power.deficit<20&!variable.pooling_for_gargoyle
 actions.aoe+=/festering_strike,if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)
 actions.aoe+=/scourge_strike,if=death_and_decay.ticking
+actions.aoe+=/death_coil,if=!variable.pooling_for_gargoyle
 
 actions.cooldowns=army_of_the_dead
 actions.cooldowns+=/apocalypse,if=debuff.festering_wound.stack>=4&(active_enemies>=2|!essence.vision_of_perfection.enabled|!azerite.magus_of_the_dead.enabled|essence.vision_of_perfection.enabled&(talent.unholy_frenzy.enabled&cooldown.unholy_frenzy.remains<=3|!talent.unholy_frenzy.enabled))
