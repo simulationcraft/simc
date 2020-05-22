@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ bfa-dev ]
+  push:
+    branches: [ bfa-dev ]
+
+env:
+  SIMC_PROFILE: profiles/T25_Raid.simc
+
+jobs:
+  ubuntu-gcc-9:
+    name: ubuntu-gcc-9
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install deps
+        run: sudo apt-get install libcurl4-openssl-dev cmake ninja-build gcc-9 lld
+
+      - name: Configure
+        run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
+              -DCMAKE_BUILD_TYPE=Debug
+              -DCMAKE_CXX_COMPILER=g++-9 -DCMAKE_C_COMPILER=gcc-9
+              -DCMAKE_CXX_FLAGS="-ffile-prefix-map=${{ runner.workspace }}/simc/=/"
+              -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"
+
+      - name: Build
+        run: ninja -C '${{ runner.workspace }}/b/ninja'
+
+      - name: Smoke Test
+        run: ${{ runner.workspace }}/b/ninja/simc $SIMC_PROFILE iterations=20
+              output=/dev/null html=/dev/null json2=/dev/null
+
+      - name: Spell Query
+        run: ${{ runner.workspace }}/b/ninja/simc spell_query=spell.name=auto_shot
+
+
+  ubuntu-clang-10:
+    name: ubuntu-clang-10-${{ matrix.type }}
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        type: [spell_query, log_debug, patchwerk, dungeon_slice]
+        include:
+          - type: spell_query
+            simc_flags: spell_query=spell > /dev/null
+          - type: log_debug
+            simc_flags: $SIMC_PROFILE log=1 debug=1 2>&1 | grep -v -E 'Player\s*[a-zA-Z0-9_]+\s*attempting'
+          - type: patchwerk
+            simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
+          - type: dungeon_slice
+            simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install deps
+        run: |
+          sudo apt-get install libcurl4-openssl-dev cmake ninja-build
+          sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+
+      - name: Configure
+        env:
+          UBSAN_STRIP_COUNT: "`echo \"${{ runner.workspace }}//\" | grep -o '/' - | wc -l`"
+        run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
+              -DCMAKE_BUILD_TYPE=Debug
+              -DCMAKE_CXX_COMPILER=clang++-10 -DCMAKE_C_COMPILER=clang-10
+              -DCMAKE_CXX_FLAGS="-ffile-prefix-map=${{ runner.workspace }}/simc/=/
+                -fno-omit-frame-pointer -fsanitize=address,undefined
+                -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
+              -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"
+
+      - name: Build
+        run: ninja -C '${{ runner.workspace }}/b/ninja'
+
+      - name: Smoke Test
+        env:
+          UBSAN_OPTIONS: print_stacktrace=1
+        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null ${{ matrix.simc_flags }}
+
+
+  build-docker:
+    name: docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install deps
+        run: sudo apt-get install docker
+
+      - name: Build
+        run: docker build --no-cache --build-arg THREADS=2 --build-arg NONETWORKING=1 -t simulationcraft .
+
+      - name: Test
+        run: docker run simulationcraft ./simc spell_query=spell.name=frost_shock
