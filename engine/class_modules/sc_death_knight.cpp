@@ -3100,7 +3100,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
 
 struct army_of_the_dead_t : public death_knight_spell_t
 {
-  int precombat_delay;
+  double precombat_time;
   timespan_t summon_duration;
   timespan_t magus_duration;
 
@@ -3131,32 +3131,53 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
   army_of_the_dead_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "army_of_the_dead", p, p -> spec.army_of_the_dead ),
-    precombat_delay( 6 ),
+    precombat_time( 6.0 ),
     summon_duration( p -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() ),
     magus_duration( p -> find_spell( 288544 ) -> duration() )
   {
-    // If used during precombat, army is casted around X seconds before the fight begins
-    // This is done to save rune regeneration time once the fight starts
-    // Default duration is 6, and can be changed by the user
+    // disable_aotd=1 can be added to the profile to disable aotd usage, for example for specific dungeon simming
 
     background = p -> options.disable_aotd;
 
-    add_option( opt_int( "delay", precombat_delay ) );
+    // If used during precombat, army is cast around X seconds before the fight begins
+    // This is done to save rune regeneration time once the fight starts
+    // Default duration is 6, and can be changed by the user
+
+    add_option( opt_float( "precombat_time", precombat_time ) );
     parse_options( options_str );
 
-    // Limit Army of the dead precast option between 10s before pull (because rune regeneration time is 10s at 0 haste) and on pull
-    if ( precombat_delay > 10 )
-    {
-      precombat_delay = 10;
-      sim -> print_debug( "{} tried to precast army of the dead more than 10s before combat begins", p -> name() );
-    }
-    else if ( precombat_delay < 1 )
-    {
-      precombat_delay = 1;
-      sim -> print_debug( "{} tried to precast army of the dead too late (delay has to be >= 1s", p -> name() );
-    }
-
     harmful = false;
+  }
+
+  void init_finished() override
+  {
+    death_knight_spell_t::init_finished();
+
+    if ( action_list -> name_str == "precombat" )
+    {
+      double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
+      double MAX_TIME = 10; // Using 10s as highest value because it's the time to recover the rune cost of AOTD at 0 haste
+
+      // Ensure that we're using a positive value
+      if ( precombat_time < 0 )
+        precombat_time = -precombat_time;
+
+      // Limit Army of the dead precast option between 10s before pull (because rune regeneration time is 10s at 0 haste) and on pull
+      if ( precombat_time > MAX_TIME )
+      {
+        precombat_time = MAX_TIME;
+        sim -> error( "{} tried to cast army of the dead more than {} seconds before combat begins, setting to {}",
+                       player -> name(), MAX_TIME, MAX_TIME );
+      }
+      else if ( precombat_time < MIN_TIME )
+      {
+        precombat_time = MIN_TIME;
+        sim -> error( "{} tried to cast army of the dead less than {} before combat begins, setting to {} (has to be >= base gcd)",
+                       player -> name(), MIN_TIME, MIN_TIME );
+      }
+    }
+    else precombat_time = 0;
+
   }
 
   // Army of the Dead should always cost resources
@@ -3172,13 +3193,9 @@ struct army_of_the_dead_t : public death_knight_spell_t
     // There's a 0.5s interval between each ghoul's spawn
     double const summon_interval = 0.5;
 
-    timespan_t precombat_time = 0_ms;
-
-    if ( ! p() -> in_combat )
+    if ( ! p() -> in_combat && precombat_time > 0 )
     {
-      precombat_time = timespan_t::from_seconds( precombat_delay );
-
-      double duration_penalty = precombat_delay - ( n_ghoul + 1 ) * summon_interval;
+      double duration_penalty = precombat_time - summon_interval;
       while ( duration_penalty >= 0 && n_ghoul < 8 )
       {
         p() -> pets.army_ghouls.spawn( summon_duration - timespan_t::from_seconds( duration_penalty ), 1 );
@@ -3186,16 +3203,19 @@ struct army_of_the_dead_t : public death_knight_spell_t
         n_ghoul++;
       }
 
-      p() -> cooldown.army_of_the_dead -> adjust( - precombat_time, false );
+      p() -> cooldown.army_of_the_dead -> adjust( timespan_t::from_seconds( -precombat_time ), false );
 
       // Simulate RP decay for X seconds
-      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * precombat_delay, nullptr, nullptr );
+      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * precombat_time, nullptr, nullptr );
 
       // Simulate rune regeneration for X seconds
-      p() -> _runes.regenerate_immediate( precombat_time );
+      p() -> _runes.regenerate_immediate( timespan_t::from_seconds( precombat_time ) );
 
       // If every ghoul was summoned, return
       if ( n_ghoul == 8 ) return;
+
+      sim -> print_debug( "{} used Army of the Dead in precombat with precombat time = {}, adjusting pets' duration and remaining cooldown.",
+                          player -> name(), precombat_time );
     }
 
     // If precombat didn't summon every ghoul (due to interval between each spawn)
@@ -3205,7 +3225,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
     if ( p() -> azerite.magus_of_the_dead.enabled() )
     {
-      p() -> pets.magus_of_the_dead.spawn( magus_duration - precombat_time, 1 );
+      p() -> pets.magus_of_the_dead.spawn( magus_duration - timespan_t::from_seconds( precombat_time ), 1 );
     }
   }
 };
@@ -7227,8 +7247,6 @@ void death_knight_t::init_base_stats()
 
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
 
-  base_gcd = 1.0_s;
-
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here.
@@ -7588,7 +7606,7 @@ void death_knight_t::default_apl_blood()
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
-  
+
   precombat -> add_action( "use_item,name=azsharas_font_of_power" );
   precombat -> add_action( "use_item,effect_name=cyclotronic_blast" );
 
@@ -7847,7 +7865,7 @@ void death_knight_t::default_apl_unholy()
 
   precombat -> add_action( this, "Raise Dead" );
   precombat -> add_action( "use_item,name=azsharas_font_of_power" );
-  precombat -> add_action( this, "Army of the Dead", "delay=2" );
+  precombat -> add_action( this, "Army of the Dead", "precombat_time=2" );
 
   def -> add_action( "auto_attack" );
   // Interrupt
