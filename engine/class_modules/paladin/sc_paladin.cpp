@@ -184,13 +184,15 @@ struct consecration_t : public paladin_spell_t
 {
   consecration_tick_t* damage_tick;
   ground_aoe_params_t cons_params;
-  bool precombat;
+
+  double precombat_time;
 
   consecration_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "consecration", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> talents.consecration :
                                           p -> find_specialization_spell( "Consecration" ) ),
-    damage_tick( new consecration_tick_t( p ) )
+    damage_tick( new consecration_tick_t( p ) ), precombat_time( 2.0 )
   {
+    add_option( opt_float( "precombat_time", precombat_time ) );
     parse_options( options_str );
 
     dot_duration = 0_ms; // the periodic event is handled by ground_aoe_event_t
@@ -203,16 +205,38 @@ struct consecration_t : public paladin_spell_t
   {
     paladin_spell_t::init_finished();
 
-    precombat = action_list -> name_str == "precombat";
+    if ( action_list -> name_str == "precombat" )
+    {
+      double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
+      double MAX_TIME = cooldown -> duration.total_seconds() - 1;
+
+      // Ensure that we're using a positive value
+      if ( precombat_time < 0 )
+        precombat_time = -precombat_time;
+
+      if ( precombat_time > MAX_TIME )
+      {
+        precombat_time = MAX_TIME;
+        sim -> error( "{} tried to use consecration in precombat more than {} seconds before combat begins, setting to {}",
+                       player -> name(), MAX_TIME, MAX_TIME );
+      }
+      else if ( precombat_time < MIN_TIME )
+      {
+        precombat_time = MIN_TIME;
+        sim -> error( "{} tried to use consecration in precombat less than {} before combat begins, setting to {} (has to be >= base gcd)",
+                       player -> name(), MIN_TIME, MIN_TIME );
+      }
+    }
+    else precombat_time = 0;
 
     timespan_t cons_duration = data().duration();
-    if ( precombat )
-    {
-      cons_duration -= 3_s;
-    }
+
+    // Add a one second penalty for the aoe's duration on top of the precombat time
+    // Simulates the boss moving to the area during the first second of the fight
+    if ( precombat_time > 0 )
+      cons_duration -= timespan_t::from_seconds( precombat_time + 1 );
 
     cons_params = ground_aoe_params_t()
-      // Lasts 3 less seconds if used during precombat, see execute()
       .duration( cons_duration )
       .hasted( ground_aoe_params_t::SPELL_HASTE )
       .action( damage_tick )
@@ -227,47 +251,43 @@ struct consecration_t : public paladin_spell_t
         break;
       default:
         break;
-      } } ) ;
+      } } );
   }
 
   void execute() override
   {
     // Cancel the current consecration if it exists
     if ( p() -> active_consecration != nullptr )
-    {
       event_t::cancel( p() -> active_consecration );
-    }
 
     paladin_spell_t::execute();
 
-    // Some parameters need to be updated on each cast
+    // Some parameters must be updated on each cast
     cons_params.target( execute_state -> target )
                .start_time( sim -> current_time() );
 
     if ( sim -> distance_targeting_enabled )
-    {
       cons_params.x( p() -> x_position )
                  .y( p() -> y_position );
-    }
 
-    // Consecration's duration is reduced by 3s if it is used during precombat
-    // Emulates the player putting down consecration in a distance 2s before combat starts
-    // And pulling the boss into it roughly 1s after combat starts
-    if ( precombat )
+    if ( ! player -> in_combat && precombat_time > 0 )
     {
-      p() -> cooldowns.consecration -> adjust( -2_s );
+      // Adjust cooldown if consecration is used in precombat
+      p() -> cooldowns.consecration -> adjust( timespan_t::from_seconds( -precombat_time ), false );
 
       // Create an event that starts consecration's aoe one second after combat starts
       make_event( *sim, 1_s, [ this ]( )
       {
         make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
-      });
+      } );
+
+      sim -> print_debug( "{} used Consecration in precombat with precombat time = {}, adjusting duration and remaining cooldown.",
+                          player -> name(), precombat_time );
+
     }
 
     else
-    {
       make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
-    }
   }
 };
 
