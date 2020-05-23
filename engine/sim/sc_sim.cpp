@@ -30,6 +30,7 @@
 #include "sim/sc_cooldown.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "util/xml.hpp"
+#include "util/string_view.hpp"
 #include <random>
 #ifdef SC_WINDOWS
 #include <direct.h>
@@ -479,7 +480,7 @@ class names_and_options_t
 private:
   static bool is_valid_region( const std::string& s )
   {
-    static const std::vector<std::string> REGIONS { "us", "eu", "kr", "tw", "cn" };
+    static constexpr std::array<util::string_view, 5> REGIONS { { "us", "eu", "kr", "tw", "cn" } };
     return s.size() == 2 && range::find( REGIONS, s ) != REGIONS.end();
   }
 
@@ -696,12 +697,12 @@ bool parse_fight_style( sim_t*             sim,
                         const std::string& /*name*/,
                         const std::string& value )
 {
-  static std::vector<std::string> FIGHT_STYLES {
+  static constexpr std::array<util::string_view, 10> FIGHT_STYLES { {
     "Patchwerk", "Ultraxion", "CleaveAdd", "HelterSkelter", "LightMovement", "HeavyMovement",
     "HecticAddCleave", "Beastlord", "CastingPatchwerk", "DungeonSlice"
-  };
+  } };
 
-  auto it = range::find_if( FIGHT_STYLES, [ &value ]( const std::string& n ) {
+  auto it = range::find_if( FIGHT_STYLES, [ &value ]( util::string_view n ) {
     return util::str_compare_ci( value, n );
   } );
 
@@ -711,7 +712,7 @@ bool parse_fight_style( sim_t*             sim,
       value, fmt::join( FIGHT_STYLES, ", " ) ) );
   }
 
-  sim->fight_style = *it;
+  sim->fight_style = to_string( *it );
 
   return true;
 }

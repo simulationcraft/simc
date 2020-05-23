@@ -225,14 +225,14 @@ spell_mapping_reference_t<spell_data_t, unsigned> spell_categories_index(
     return 0U;
   }
 );
+
 struct class_passives_entry_t
   {
     player_e         type;
     specialization_e spec;
     unsigned         spell_id;
   };
-
-const std::vector<class_passives_entry_t> _class_passives {
+static constexpr std::array<class_passives_entry_t, 48> _class_passives { {
   { DEATH_KNIGHT, SPEC_NONE,              137005 },
   { DEATH_KNIGHT, DEATH_KNIGHT_BLOOD,     137008 },
   { DEATH_KNIGHT, DEATH_KNIGHT_UNHOLY,    137007 },
@@ -281,7 +281,7 @@ const std::vector<class_passives_entry_t> _class_passives {
   { WARRIOR,      WARRIOR_ARMS,           137049 },
   { WARRIOR,      WARRIOR_FURY,           137050 },
   { WARRIOR,      WARRIOR_PROTECTION,     137048 },
-};
+} };
 
 } // ANONYMOUS namespace ====================================================
 

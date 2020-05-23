@@ -13,6 +13,7 @@
 #include "report/sc_highchart.hpp"
 #include "player/sc_player.hpp"
 #include "item/item.hpp"
+#include "util/string_view.hpp"
 
 #ifndef SC_NO_THREADING
 
@@ -258,13 +259,13 @@ void populate_chart_data( highchart::bar_chart_t& profileset,
 // Figure out if the option is the beginning of a player-scope option
 bool in_player_scope( const option_tuple_t& opt )
 {
-  static const std::vector<std::string> player_scope_opts {
+  static constexpr std::array<util::string_view, 14> player_scope_opts { {
     "demonhunter", "deathknight", "druid", "hunter", "mage", "monk",
     "paladin", "priest", "rogue", "shaman", "warrior", "warlock",
     "armory", "local_json"
-  };
+  } };
 
-  return range::find_if( player_scope_opts, [ &opt ]( const std::string& name ) {
+  return range::find_if( player_scope_opts, [ &opt ]( util::string_view name ) {
     return util::str_compare_ci( opt.name, name );
   } ) != player_scope_opts.end();
 }

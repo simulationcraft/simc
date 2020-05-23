@@ -20,11 +20,11 @@ namespace {
 
 struct proc_parse_opt_t
 {
-  const char* opt;
-  unsigned    flags;
+  util::string_view opt;
+  unsigned flags;
 };
 
-const proc_parse_opt_t __proc_opts[] =
+constexpr proc_parse_opt_t __proc_opts[] =
 {
   { "genericspell", PF_NONE_SPELL                                               },
   { "spell",        PF_MAGIC_SPELL | PF_PERIODIC                                },
@@ -43,7 +43,7 @@ const proc_parse_opt_t __proc_opts[] =
   { "sranged",      PF_RANGED_ABILITY                                           },
 };
 
-const proc_parse_opt_t __proc2_opts[] =
+constexpr proc_parse_opt_t __proc2_opts[] =
 {
   { "hit",         PF2_ALL_HIT          },
   { "crit",        PF2_CRIT             },
@@ -57,7 +57,7 @@ const proc_parse_opt_t __proc2_opts[] =
   { "tickdamage",  PF2_PERIODIC_DAMAGE  },
 };
 
-bool has_proc( const std::vector<std::string>& opts, const std::string& proc )
+bool has_proc( util::span<const std::string> opts, util::string_view proc )
 {
   for ( auto & opt : opts )
   {
@@ -67,9 +67,8 @@ bool has_proc( const std::vector<std::string>& opts, const std::string& proc )
   return false;
 }
 
-template<size_t N>
-void parse_proc_flags( const std::string&      flags,
-                       const proc_parse_opt_t ( &opts)[ N ],
+void parse_proc_flags( util::string_view flags,
+                       util::span<const proc_parse_opt_t> opts,
                        unsigned& proc_flags )
 {
   std::vector<std::string> splits = util::string_split( flags, "/" );

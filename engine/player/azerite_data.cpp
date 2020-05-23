@@ -1,5 +1,7 @@
 #include "azerite_data.hpp"
+
 #include "simulationcraft.hpp"
+#include "util/static_map.hpp"
 
 namespace
 {
@@ -2934,10 +2936,10 @@ void meticulous_scheming( special_effect_t& effect )
 {
   // Apparently meticulous scheming bugs and does not proc from some foreground abilities. Blacklist
   // specific abilities here
-  static std::unordered_map<unsigned, bool> __spell_blacklist {{
-    { 201427, true }, // Demon Hunter: Annihilation
-    { 210152, true }, // Demon Hunter: Death Sweep
-  } };
+  static constexpr auto __spell_blacklist = util::make_static_set<unsigned>( {
+    201427, // Demon Hunter: Annihilation
+    210152, // Demon Hunter: Death Sweep
+  } );
 
   struct seize_driver_t : public dbc_proc_callback_t
   {
