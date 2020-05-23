@@ -15,14 +15,6 @@ using namespace unique_gear;
 
 namespace { // UNNAMED NAMESPACE
 
-// Prefix/Suffix map to allow shorthand consumable names, when searching for the item (for potion
-// action).
-std::map<item_subclass_consumable, std::pair<std::vector<std::string>, std::vector<std::string>>> __consumable_substrings = {
-  { ITEM_SUBCLASS_POTION, { { "potion_of_the_", "potion_of_", "potion_" }, { "_potion" } } },
-  { ITEM_SUBCLASS_FLASK,  { { "flask_of_the_", "flask_of_", "flask_" }, { "_flask" } } }
-};
-
-
 /**
  * Forward declarations so we can reorganize the file a bit more sanely.
  */
