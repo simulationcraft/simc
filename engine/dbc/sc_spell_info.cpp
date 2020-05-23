@@ -3,31 +3,29 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include <vector>
-#include <unordered_map>
-#include <iostream>
-#include <map>
-#include <iomanip>
-#include <cctype>
-
 #include "sc_spell_info.hpp"
+
 #include "dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
+#include "util/static_map.hpp"
+#include "util/string_view.hpp"
 #include "util/util.hpp"
 #include "util/xml.hpp"
 
+#include <array>
+#include <vector>
+#include <iostream>
+#include <iomanip>
+#include <cctype>
+
+
 namespace {
-struct proc_map_t
-{
-  int         flag;
-  const char* proc;
-};
 
-static std::vector<std::string> _spell_type_map {
+static constexpr std::array<util::string_view, 4> _spell_type_map { {
   "None", "Magic", "Melee", "Ranged"
-};
+} };
 
-std::vector<std::string> _school_map = {
+static constexpr std::array<util::string_view, 7> _school_map { {
   "Physical",
   "Holy",
   "Fire",
@@ -35,9 +33,9 @@ std::vector<std::string> _school_map = {
   "Frost",
   "Shadow",
   "Arcane",
-};
+} };
 
-std::vector<std::string> _hotfix_effect_map = {
+static constexpr std::array<util::string_view, 28> _hotfix_effect_map { {
   "Id",
   "", // Hotfix field
   "Spell Id",
@@ -66,9 +64,9 @@ std::vector<std::string> _hotfix_effect_map = {
   "Target 2",
   "Value Multiplier",
   "PvP Coefficient"
-};
+} };
 
-std::vector<std::string> _hotfix_spell_map = {
+static constexpr std::array<util::string_view, 48> _hotfix_spell_map { {
   "Name",
   "Id",
   "", // Hotfix field
@@ -113,9 +111,9 @@ std::vector<std::string> _hotfix_spell_map = {
   "Rank",
   "Required Max Level",
   "Spell Type"
-};
+} };
 
-std::vector<std::string> _hotfix_power_map = {
+static constexpr std::array<util::string_view, 11> _hotfix_power_map { {
   "Id",
   "Spell Id",
   "Aura Id",
@@ -127,35 +125,26 @@ std::vector<std::string> _hotfix_power_map = {
   "Percent Cost",
   "Max Percent Cost",
   "Percent Cost per Tick"
-};
+} };
 
-template <typename T>
-bool map_has_string( const std::unordered_map<T, const std::string>& map, T key )
-{
-  return map.find( key ) != map.end();
-}
-
-template <typename T>
-std::string map_string( const std::unordered_map<T, const std::string>& map, T key )
+template <typename T, size_t N>
+std::string map_string( const util::static_map<T, util::string_view, N>& map, T key )
 {
   auto it = map.find( key );
-
   if ( it != map.end() )
-  {
-    return it -> second + " (" + util::to_string( key ) + ")";
-  }
-
-  return "Unknown(" + util::to_string( key ) + ")";
+    return fmt::format( "{} ({})", it -> second, key );
+  return fmt::format( "Unknown({})", key );
 }
 
-template <typename DATA_TYPE, typename MAP_TYPE>
-std::ostringstream& hotfix_map_str( const DATA_TYPE* data, std::ostringstream& s, const std::vector<std::string>& map )
+template <typename MAP_TYPE, typename DATA_TYPE, size_t N>
+std::string hotfix_map_str( const DATA_TYPE* data, const std::array<util::string_view, N>& map )
 {
   if ( data -> _hotfix == 0 )
   {
-    return s;
+    return {};
   }
 
+  fmt::memory_buffer buf;
   for ( size_t i = 0; i < map.size(); ++i )
   {
     MAP_TYPE shift = (static_cast<MAP_TYPE>( 1 ) << i);
@@ -165,31 +154,29 @@ std::ostringstream& hotfix_map_str( const DATA_TYPE* data, std::ostringstream& s
       continue;
     }
 
-    if ( s.tellp() > 0 )
-    {
-      s << ", ";
-    }
+    if ( buf.size() > 0 )
+      fmt::format_to( buf, ", " );
 
     if ( map[ i ].empty() )
     {
-      s << "Unknown(" << i << ")";
+      fmt::format_to( buf, "Unknown({})", i );
     }
     else
     {
-      s << map[ i ];
+      fmt::format_to( buf, "{}", map[ i ] );
       auto hotfix_entry = hotfix::hotfix_entry( data, static_cast<unsigned int>( i ) );
       if ( hotfix_entry != nullptr )
       {
         switch ( hotfix_entry -> field_type )
         {
           case hotfix::UINT:
-            s << " (" << hotfix_entry -> orig_value.u << " -> " << hotfix_entry -> hotfixed_value.u << ")";
+            fmt::format_to( buf, " ({} -> {})", hotfix_entry -> orig_value.u, hotfix_entry -> hotfixed_value.u );
             break;
           case hotfix::INT:
-            s << " (" << hotfix_entry -> orig_value.i << " -> " << hotfix_entry -> hotfixed_value.i << ")";
+            fmt::format_to( buf, " ({} -> {})", hotfix_entry -> orig_value.i, hotfix_entry -> hotfixed_value.i );
             break;
           case hotfix::FLOAT:
-            s << " (" << hotfix_entry -> orig_value.f << " -> " << hotfix_entry -> hotfixed_value.f << ")";
+            fmt::format_to( buf, " ({} -> {})", hotfix_entry -> orig_value.f, hotfix_entry -> hotfixed_value.f );
             break;
           // Don't print out the changed string for now, seems pointless
           case hotfix::STRING:
@@ -199,7 +186,7 @@ std::ostringstream& hotfix_map_str( const DATA_TYPE* data, std::ostringstream& s
     }
   }
 
-  return s;
+  return to_string( buf );
 }
 
 template <typename Range, typename Callback>
@@ -229,54 +216,36 @@ std::string concatenate( Range&& data,
 
 std::string spell_hotfix_map_str( const spell_data_t* spell )
 {
-  std::ostringstream s;
-
   if ( spell -> _hotfix == dbc::HOTFIX_SPELL_NEW )
   {
-    s << "NEW SPELL";
+    return "NEW SPELL";
   }
-  else
-  {
-    hotfix_map_str<spell_data_t, uint64_t>( spell, s, _hotfix_spell_map );
-  }
-
-  return s.str();
+  return hotfix_map_str<uint64_t>( spell, _hotfix_spell_map );
 }
 
 std::string effect_hotfix_map_str( const spelleffect_data_t* effect )
 {
-  std::ostringstream s;
-
   if ( effect -> _hotfix == dbc::HOTFIX_EFFECT_NEW )
   {
-    s << "NEW EFFECT";
+    return "NEW EFFECT";
   }
-  else
-  {
-    hotfix_map_str<spelleffect_data_t, unsigned>( effect, s, _hotfix_effect_map );
-  }
-
-  return s.str();
+  return hotfix_map_str<unsigned>( effect, _hotfix_effect_map );
 }
 
 std::string power_hotfix_map_str( const spellpower_data_t* power )
 {
-  std::ostringstream s;
-
   if ( power -> _hotfix == dbc::HOTFIX_POWER_NEW )
   {
-    s << "NEW POWER";
+    return "NEW POWER";
   }
-  else
-  {
-    hotfix_map_str<spellpower_data_t, unsigned>( power, s, _hotfix_power_map );
-  }
-
-  return s.str();
+  return hotfix_map_str<unsigned>( power, _hotfix_power_map );
 }
 
-const struct proc_map_t _proc_flag_map[] =
-{
+struct proc_map_entry_t {
+  int flag;
+  util::string_view proc;
+};
+static constexpr std::array<proc_map_entry_t, 26> _proc_flag_map { {
   { PF_KILLED,               "Killed"                      },
   { PF_KILLING_BLOW,         "Killing Blow"                },
   { PF_MELEE,                "White Melee"                 },
@@ -303,11 +272,13 @@ const struct proc_map_t _proc_flag_map[] =
   { PF_MAINHAND,             "Melee Main-Hand"             },
   { PF_OFFHAND,              "Melee Off-Hand"              },
   { PF_DEATH,                "Death"                       },
-  { 0,                       nullptr                       }
-};
+} };
 
-const struct { const char* name; player_e pt; } _class_map[] =
-{
+struct class_map_entry_t {
+  const char* name;
+  player_e pt;
+};
+static constexpr std::array<class_map_entry_t, 14> _class_map { {
   { nullptr, PLAYER_NONE },
   { "Warrior", WARRIOR },
   { "Paladin", PALADIN },
@@ -322,9 +293,9 @@ const struct { const char* name; player_e pt; } _class_map[] =
   { "Druid", DRUID },
   { "Demon Hunter", DEMON_HUNTER },
   { nullptr, PLAYER_NONE },
-};
+} };
 
-const std::unordered_map<unsigned, std::string> _race_map {
+static constexpr auto _race_map = util::make_static_map<unsigned, util::string_view>( {
   {  0, "Human"     },
   {  1, "Orc"       },
   {  2, "Dwarf"     },
@@ -348,9 +319,9 @@ const std::unordered_map<unsigned, std::string> _race_map {
   { 29, "Lightforged Draenei" },
   { 30, "Zandalari Troll" },
   { 31, "Kul Tiran" }
-};
+} );
 
-static const std::unordered_map<unsigned, const std::string> _targeting_strings = {
+static constexpr auto _targeting_strings = util::make_static_map<unsigned, util::string_view>( {
   {  1,  "Self"                },
   {  5,  "Active Pet"          },
   {  6,  "Enemy"               },
@@ -369,10 +340,9 @@ static const std::unordered_map<unsigned, const std::string> _targeting_strings 
   { 104, "Cone Front"          },
   { 53,  "At Enemy"            },
   { 56,  "Raid Members"        },
-};
+} );
 
-static const std::unordered_map<int, const std::string> _resource_strings =
-{
+static constexpr auto _resource_strings = util::make_static_map<int, util::string_view>( {
   { -2, "Health",        },
   {  0, "Base Mana",     },
   {  1, "Rage",          },
@@ -391,9 +361,9 @@ static const std::unordered_map<int, const std::string> _resource_strings =
   { 15, "Demonic Fury",  },
   { 17, "Fury",          },
   { 18, "Pain",          },
-};
+} );
 
-const std::map<unsigned, std::string> _attribute_strings = {
+static constexpr auto _attribute_strings = util::make_static_map<unsigned, util::string_view>( {
   {   1, "Ranged Ability"                    },
   {   5, "Tradeskill ability"                },
   {   6, "Passive"                           },
@@ -422,10 +392,9 @@ const std::map<unsigned, std::string> _attribute_strings = {
   { 221, "Disable player multipliers"        },
   { 265, "Periodic effect can crit"          },
   { 354, "Scales with item level"            }
-};
+} );
 
-static const std::unordered_map<int, const std::string> _property_type_strings =
-{
+static constexpr auto _property_type_strings = util::make_static_map<int, util::string_view>( {
   {  0, "Spell Direct Amount"       },
   {  1, "Spell Duration"            },
   {  2, "Spell Generated Threat"    },
@@ -457,10 +426,9 @@ static const std::unordered_map<int, const std::string> _property_type_strings =
   { 33, "Spell Effect 5"            },
   { 34, "Spell Resource Generation" },
   { 37, "Spell Max Stacks"          },
-};
+} );
 
-static const std::unordered_map<unsigned, const std::string> _effect_type_strings =
-{
+static constexpr auto _effect_type_strings = util::make_static_map<unsigned, util::string_view>( {
   {   0, "None"                     },
   {   1, "Instant Kill"             },
   {   2, "School Damage"            },
@@ -550,10 +518,9 @@ static const std::unordered_map<unsigned, const std::string> _effect_type_string
   { 156, "Add Socket"               },
   { 157, "Create Item"              },
   { 202, "Apply Player/Pet Aura"    },
-};
+} );
 
-static const std::unordered_map<unsigned, const std::string> _effect_subtype_strings =
-{
+static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, util::string_view>( {
   {   0, "None"                                         },
   {   2, "Possess"                                      },
   {   3, "Periodic Damage"                              },
@@ -745,10 +712,9 @@ static const std::unordered_map<unsigned, const std::string> _effect_subtype_str
   { 468, "Trigger Spell Based on Health%"               },
   { 471, "Modify Versatility%"                          },
   { 485, "Resist Forced Movement%"                      },
-};
+} );
 
-
-static const std::unordered_map<unsigned, const char*> _mechanic_strings { {
+static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
   { 126, "Charm"          },
   { 130, "Disorient"      },
   { 138, "Disarm"         },
@@ -779,17 +745,16 @@ static const std::unordered_map<unsigned, const char*> _mechanic_strings { {
   { 264, "Sap"            },
   { 267, "Enrage"         },
   { 271, "Wound"          },
-  { 275, "Taunt"          }
-} };
+  { 275, "Taunt"          },
+} );
 
 std::string mechanic_str( unsigned mechanic ) {
   auto it = _mechanic_strings.find( mechanic );
   if ( it != _mechanic_strings.end() )
   {
-    return it -> second;
+    return to_string( it -> second );
   }
-
-  return "Unknown(" + util::to_string( mechanic ) + ")";
+  return fmt::format( "Unknown({})", mechanic );
 }
 
 std::string spell_flags( const spell_data_t* spell )
@@ -1147,19 +1112,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       {
         if ( e -> misc_value1() & ( 1 << i ) )
         {
-          schools.push_back( _school_map[ i ] );
+          schools.emplace_back( _school_map[ i ] );
         }
       }
 
-      for ( size_t i = 0; i < schools.size(); ++i )
-      {
-        s << schools[ i ];
-
-        if ( i < schools.size() - 1 )
-        {
-          s << ", ";
-        }
-      }
+      fmt::print( s, "{}", fmt::join( schools, ", " ) );
     }
 
     s << std::endl;
@@ -1325,12 +1282,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     for ( unsigned int i = 0; i < sizeof( spell -> race_mask() ) * 8; i++ )
     {
       uint64_t mask = (uint64_t(1) << i );
-      if ( ( spell -> race_mask() & mask ) && _race_map.find( i ) != _race_map.end() )
+      if ( spell -> race_mask() & mask && _race_map.contains( i ) )
       {
         auto it = _race_map.find( i );
         if ( it != _race_map.end() )
         {
-          s << it -> second << ", ";
+          fmt::print( s, "{}, ", it -> second );
         }
       }
     }
@@ -1347,7 +1304,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   std::string spell_type_str = "Unknown(" + util::to_string( spell->dmg_class() ) + ")";
   if ( spell->dmg_class() < _spell_type_map.size() )
   {
-    spell_type_str = _spell_type_map[ spell->dmg_class() ];
+    spell_type_str = to_string( _spell_type_map[ spell->dmg_class() ] );
   }
   s << "Spell Type       : " << spell_type_str << std::endl;
 
@@ -1687,8 +1644,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     {
       if ( spell -> proc_flags() & info.flag )
       {
-        s << info.proc;
-        s << ", ";
+        fmt::print( s, "{}, ", info.proc );
       }
     }
     std::streampos x = s.tellp();
@@ -1778,11 +1734,8 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
         auto it = _attribute_strings.find( static_cast<unsigned int>( attr_idx ) );
         if ( it != _attribute_strings.end() )
         {
-          if ( ! attr_str.empty() )
-            attr_str += ", ";
-
-          attr_str += it -> second;
-          attr_str += " (" + util::to_string( attr_idx ) + ")";
+          fmt::format_to( std::back_inserter( attr_str ), "{}{} ({})",
+                          attr_str.empty() ? "" : ", ", it -> second, attr_idx );
         }
       }
       else
@@ -1892,7 +1845,7 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
   node -> add_parm( "id", e -> id() );
   node -> add_parm( "type", e -> type() );
 
-  if ( map_has_string( _effect_type_strings, e -> raw_type() ) )
+  if ( _effect_type_strings.contains( e -> raw_type() ) )
   {
     node -> add_parm( "type_text", map_string( _effect_type_strings, e -> raw_type() ) );
   }
@@ -1956,7 +1909,7 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
       case A_ADD_FLAT_MODIFIER:
       case A_ADD_PCT_MODIFIER:
         node -> add_parm( "modifier", e -> misc_value1() );
-        if ( map_has_string( _property_type_strings, e -> misc_value1() ) )
+        if ( _property_type_strings.contains( e -> misc_value1() ) )
         {
           node -> add_parm( "modifier_text", map_string( _property_type_strings, e -> misc_value1() ) );
         }
@@ -2119,7 +2072,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
         {
           xml_node_t* race_node = node -> add_child( "race" );
           race_node -> add_parm( "id", i );
-          race_node -> add_parm( "name", it -> second );
+          race_node -> add_parm( "name", to_string( it -> second ) );
         }
       }
     }
@@ -2140,7 +2093,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
     else
       resource_node -> add_parm( "cost", spell -> cost( pd -> type() ) );
 
-    if ( map_has_string( _resource_strings, pd -> raw_type() ) )
+    if ( _resource_strings.contains( pd -> raw_type() ) )
     {
       resource_node -> add_parm( "type_name", map_string( _resource_strings, pd -> raw_type() ) );
     }
