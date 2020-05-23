@@ -22,7 +22,8 @@
 #include "class_modules/class_module.hpp"
 #include "dbc/item_database.hpp"
 #include "util/concurrency.hpp"
-#include <unordered_map>
+#include "util/static_map.hpp"
+#include "util/string_view.hpp"
 
 // ==========================================================================
 // Blizzard Community Platform API
@@ -33,9 +34,9 @@ namespace { // UNNAMED NAMESPACE
 // Due to differences in item-level computation between in-game and armory profiles, some
 // items require simc to override the item ilevel with the armory import one (instead of
 // computing it using the in-game rules)
-static const std::unordered_map<unsigned, bool> __ILEVEL_OVERRIDE_MAP = {
-  { 167555U, true } // Pocket-Sized Computation Device
-};
+static constexpr auto __ILEVEL_OVERRIDE_MAP = util::make_static_set<unsigned>( {
+  167555U, // Pocket-Sized Computation Device
+} );
 
 struct player_spec_t
 {
@@ -47,27 +48,34 @@ struct player_spec_t
   std::string local_json_media;
 };
 
-static const std::string GLOBAL_OAUTH_ENDPOINT_URI = "https://{}.battle.net/oauth/token";
-static const std::string CHINA_OAUTH_ENDPOINT_URI = "https://www.battlenet.com.cn/oauth/token";
+static constexpr util::string_view GLOBAL_OAUTH_ENDPOINT_URI = "https://{}.battle.net/oauth/token";
+static constexpr util::string_view CHINA_OAUTH_ENDPOINT_URI = "https://www.battlenet.com.cn/oauth/token";
 
-static const std::string GLOBAL_GUILD_ENDPOINT_URI = "https://{}.api.blizzard.com/wow/guild/{}/{}?fields=members&locale={}";
-static const std::string CHINA_GUILD_ENDPOINT_URI = "https://gateway.battlenet.com.cn/wow/guild/{}/{}?fields=members&locale={}";
+static constexpr util::string_view GLOBAL_GUILD_ENDPOINT_URI = "https://{}.api.blizzard.com/wow/guild/{}/{}?fields=members&locale={}";
+static constexpr util::string_view CHINA_GUILD_ENDPOINT_URI = "https://gateway.battlenet.com.cn/wow/guild/{}/{}?fields=members&locale={}";
 
-static const std::string GLOBAL_PLAYER_ENDPOINT_URI = "https://{}.api.blizzard.com/profile/wow/character/{}/{}?namespace=profile-{}&locale={}";
-static const std::string CHINA_PLAYER_ENDPOINT_URI = "https://gateway.battlenet.com.cn/profile/wow/character/{}/{}?namespace=profile-cn";
+static constexpr util::string_view GLOBAL_PLAYER_ENDPOINT_URI = "https://{}.api.blizzard.com/profile/wow/character/{}/{}?namespace=profile-{}&locale={}";
+static constexpr util::string_view CHINA_PLAYER_ENDPOINT_URI = "https://gateway.battlenet.com.cn/profile/wow/character/{}/{}?namespace=profile-cn";
 
-static const std::string GLOBAL_ITEM_ENDPOINT_URI = "https://{}.api.blizzard.com/wow/item/{}?locale={}";
-static const std::string CHINA_ITEM_ENDPOINT_URI = "https://gateway.battlenet.com.cn/wow/item/{}";
+static constexpr util::string_view GLOBAL_ITEM_ENDPOINT_URI = "https://{}.api.blizzard.com/wow/item/{}?locale={}";
+static constexpr util::string_view CHINA_ITEM_ENDPOINT_URI = "https://gateway.battlenet.com.cn/wow/item/{}";
 
-static const std::string GLOBAL_ORIGIN_URI = "https://worldofwarcraft.com/{}/character/{}/{}";
-static const std::string CHINA_ORIGIN_URI = "https://www.wowchina.com/zh-cn/character/{}/{}";
+static constexpr util::string_view GLOBAL_ORIGIN_URI = "https://worldofwarcraft.com/{}/character/{}/{}";
+static constexpr util::string_view CHINA_ORIGIN_URI = "https://www.wowchina.com/zh-cn/character/{}/{}";
 
-static std::unordered_map<std::string, std::pair<std::string, std::string>> LOCALES {
-  { "us", { "en_US", "en-us" } },
-  { "eu", { "en_GB", "en-gb" } },
-  { "kr", { "ko_KR", "ko-kr" } },
-  { "tw", { "zh_TW", "zh-tw" } }
-};
+static constexpr auto LOCALES_DATA = util::make_static_map<util::string_view, std::array<util::string_view, 2>>( {
+  { "us", {{ "en_US", "en-us" }} },
+  { "eu", {{ "en_GB", "en-gb" }} },
+  { "kr", {{ "ko_KR", "ko-kr" }} },
+  { "tw", {{ "zh_TW", "zh-tw" }} }
+} );
+static constexpr struct {
+  const std::array<util::string_view, 2>& operator[](util::string_view str) const {
+    static constexpr std::array<util::string_view, 2> deflt{};
+    auto it = LOCALES_DATA.find( str );
+    return it != LOCALES_DATA.end() ? it->second : deflt;
+  };
+} LOCALES;
 
 static std::string token_path = "";
 static std::string token = "";
@@ -136,7 +144,7 @@ void authorize( sim_t* sim, const std::string& region )
     }
     else if ( util::str_compare_ci( region, "cn" ) )
     {
-      oauth_endpoint = CHINA_OAUTH_ENDPOINT_URI;
+      oauth_endpoint = std::string( CHINA_OAUTH_ENDPOINT_URI );
     }
 
     auto pool = http::pool();
@@ -321,7 +329,7 @@ void download_item( sim_t* sim,
 
   if ( !util::str_compare_ci( region, "cn" ) )
   {
-    url = fmt::format( GLOBAL_ITEM_ENDPOINT_URI, region, item_id, LOCALES[ region ].first );
+    url = fmt::format( GLOBAL_ITEM_ENDPOINT_URI, region, item_id, LOCALES[ region ][ 0 ] );
   }
   else
   {
@@ -874,7 +882,7 @@ void download_item_data( item_t& item, cache::behavior_e caching )
         item.parsed.data.stat_type_e[ i ] = stat[ "stat" ].GetInt();
         item.parsed.stat_val[ i ]         = stat[ "amount" ].GetInt();
 
-        if ( js.HasMember( "weaponInfo" ) && 
+        if ( js.HasMember( "weaponInfo" ) &&
             ( item.parsed.data.stat_type_e[ i ] == ITEM_MOD_INTELLECT ||
               item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPIRIT ||
               item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPELL_POWER ) )
@@ -995,7 +1003,7 @@ void download_roster( rapidjson::Document& d,
   std::string url;
   if ( !util::str_compare_ci( region, "cn" ) )
   {
-    url = fmt::format( GLOBAL_GUILD_ENDPOINT_URI, region, server, name, LOCALES[ region ].first );
+    url = fmt::format( GLOBAL_GUILD_ENDPOINT_URI, region, server, name, LOCALES[ region ][ 0 ] );
   }
   else
   {
@@ -1026,7 +1034,7 @@ void download_roster( rapidjson::Document& d,
 
 slot_e bcp_api::translate_api_slot( const std::string& slot_str )
 {
-  static const std::unordered_map<std::string, slot_e> slot_map = {
+  static constexpr auto slot_map = util::make_static_map<util::string_view, slot_e>( {
     { "HEAD",      SLOT_HEAD      },
     { "NECK",      SLOT_NECK      },
     { "SHOULDER",  SLOT_SHOULDERS },
@@ -1045,7 +1053,7 @@ slot_e bcp_api::translate_api_slot( const std::string& slot_str )
     { "MAIN_HAND", SLOT_MAIN_HAND },
     { "OFF_HAND",  SLOT_OFF_HAND  },
     { "TABARD",    SLOT_TABARD    }
-  };
+  } );
 
   auto it = slot_map.find( slot_str );
   if ( it == slot_map.end() )
@@ -1083,8 +1091,8 @@ player_t* bcp_api::download_player(sim_t* sim,
 
   if (!util::str_compare_ci(region, "cn"))
   {
-    player.url = fmt::format(GLOBAL_PLAYER_ENDPOINT_URI, region, normalized_server, normalized_name, region, LOCALES[region].first);
-    player.origin = fmt::format(GLOBAL_ORIGIN_URI, LOCALES[region].second, normalized_server, normalized_name);
+    player.url = fmt::format(GLOBAL_PLAYER_ENDPOINT_URI, region, normalized_server, normalized_name, region, LOCALES[region][0]);
+    player.origin = fmt::format(GLOBAL_ORIGIN_URI, LOCALES[region][1], normalized_server, normalized_name);
   }
   else
   {
@@ -1251,7 +1259,7 @@ bool bcp_api::download_guild( sim_t* sim,
       continue;
 
     int rank = member[ "rank" ].GetInt();
-    if ( ( max_rank > 0 && rank > max_rank ) || 
+    if ( ( max_rank > 0 && rank > max_rank ) ||
          ( ! ranks.empty() && range::find( ranks, rank ) == ranks.end() ) )
       continue;
 
