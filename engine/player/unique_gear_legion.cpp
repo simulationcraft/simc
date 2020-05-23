@@ -959,7 +959,7 @@ struct solar_collapse_t : public buff_t
 };
 struct fury_of_the_burning_sun_constructor_t : public item_targetdata_initializer_t
 {
-  fury_of_the_burning_sun_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+  fury_of_the_burning_sun_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   { }
 
@@ -1087,7 +1087,7 @@ struct thunder_ritual_driver_t : public proc_spell_t
 };
 struct mrrgrias_favor_constructor_t : public item_targetdata_initializer_t
 {
-  mrrgrias_favor_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+  mrrgrias_favor_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   { }
 
@@ -2149,7 +2149,7 @@ void item::terminus_signaling_beacon( special_effect_t& effect )
 // TODO: In-game debuff is 255870, buff is 255856. But the spell data contains nothing of relevance.
 struct shadow_blades_constructor_t : public item_targetdata_initializer_t
 {
-  shadow_blades_constructor_t( unsigned iid, const std::vector<slot_e>& s ) :
+  shadow_blades_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   { }
 
@@ -2953,7 +2953,7 @@ struct haymaker_driver_t : public dbc_proc_callback_t
 
 struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
 {
-  spiked_counterweight_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+  spiked_counterweight_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   {}
 
@@ -4004,7 +4004,7 @@ struct bough_of_corruption_driver_t : public dbc_proc_callback_t
 
 struct bough_of_corruption_constructor_t : public item_targetdata_initializer_t
 {
-  bough_of_corruption_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+  bough_of_corruption_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   { }
 
@@ -4466,7 +4466,7 @@ struct taint_of_the_sea_driver_t : public dbc_proc_callback_t
 
 struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initializer_t
 {
-  figurehead_of_the_naglfar_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+  figurehead_of_the_naglfar_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   {}
 
@@ -5148,7 +5148,7 @@ struct volatile_magic_debuff_t : public buff_t
 
 struct portable_manacracker_constructor_t : public item_targetdata_initializer_t
 {
-  portable_manacracker_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+  portable_manacracker_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   {}
 
@@ -5333,7 +5333,7 @@ struct wriggling_sinew_constructor_t : public item_targetdata_initializer_t
     }
   };
 
-  wriggling_sinew_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+  wriggling_sinew_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   {}
 
@@ -6877,9 +6877,7 @@ void unique_gear::register_hotfixes_legion()
 void unique_gear::register_target_data_initializers_legion( sim_t* sim )
 {
   using namespace legion;
-  std::vector< slot_e > trinkets;
-  trinkets.push_back( SLOT_TRINKET_1 );
-  trinkets.push_back( SLOT_TRINKET_2 );
+  static constexpr std::array<slot_e, 2> trinkets {{ SLOT_TRINKET_1, SLOT_TRINKET_2 }};
 
   sim -> register_target_data_initializer( spiked_counterweight_constructor_t( 136715, trinkets ) );
   sim -> register_target_data_initializer( figurehead_of_the_naglfar_constructor_t( 137329, trinkets ) );

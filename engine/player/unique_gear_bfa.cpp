@@ -1259,9 +1259,9 @@ void items::merekthas_fang( special_effect_t& effect )
 
 struct deadeye_spyglass_constructor_t : public item_targetdata_initializer_t
 {
-  deadeye_spyglass_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  deadeye_spyglass_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -1627,9 +1627,9 @@ void items::vial_of_animated_blood( special_effect_t& effect )
 
 struct briny_barnacle_constructor_t : public item_targetdata_initializer_t
 {
-  briny_barnacle_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  briny_barnacle_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   // Create the choking brine debuff that is checked on enemy demise
   void operator()( actor_target_data_t* td ) const override
@@ -2072,10 +2072,9 @@ void items::endless_tincture_of_fractional_power( special_effect_t& effect )
 
 struct syringe_of_bloodborne_infirmity_constructor_t : public item_targetdata_initializer_t
 {
-  syringe_of_bloodborne_infirmity_constructor_t( unsigned iid, const std::vector<slot_e>& s )
+  syringe_of_bloodborne_infirmity_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -2672,9 +2671,9 @@ void items::variable_intensity_gigavolt_oscillating_reactor_onuse( special_effec
 
 struct everchill_anchor_constructor_t : public item_targetdata_initializer_t
 {
-  everchill_anchor_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  everchill_anchor_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   // Create the everchill debuff to handle trinket icd
   void operator()( actor_target_data_t* td ) const override
@@ -3549,9 +3548,9 @@ void items::shiver_venom_relic_equip( special_effect_t& effect )
  */
 struct luminous_algae_constructor_t : public item_targetdata_initializer_t
 {
-  luminous_algae_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  luminous_algae_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   const special_effect_t* find_effect( player_t* player ) const override
   {
@@ -4244,9 +4243,9 @@ void items::shiver_venom_lance( special_effect_t& effect )
  */
 struct razor_coral_constructor_t : public item_targetdata_initializer_t
 {
-  razor_coral_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  razor_coral_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -4382,9 +4381,9 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
  */
 struct conductive_ink_constructor_t : public item_targetdata_initializer_t
 {
-  conductive_ink_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  conductive_ink_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -5804,9 +5803,9 @@ struct shredded_psyche_t : public proc_t
 
 struct psyche_shredder_constructor_t : public item_targetdata_initializer_t
 {
-  psyche_shredder_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  psyche_shredder_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -7315,7 +7314,7 @@ void unique_gear::register_special_effects_bfa()
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 {
   using namespace bfa;
-  const std::vector<slot_e> items = {SLOT_TRINKET_1, SLOT_TRINKET_2};
+  static constexpr std::array<slot_e, 2> items {{ SLOT_TRINKET_1, SLOT_TRINKET_2 }};
 
   sim->register_target_data_initializer( deadeye_spyglass_constructor_t( 159623, items ) );
   sim->register_target_data_initializer( syringe_of_bloodborne_infirmity_constructor_t( 160655, items ) );
