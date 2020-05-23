@@ -16,6 +16,8 @@
 #include "item/special_effect.hpp"
 #include "player/unique_gear.hpp"
 #include "util/rng.hpp"
+#include "util/static_map.hpp"
+#include "util/string_view.hpp"
 
 #include <string>
 
@@ -53,18 +55,17 @@ enum class elixir
 
 struct elixir_data_t
 {
-  std::string name;
+  util::string_view name;
   elixir type;
   stat_e st;
   int stat_amount;
 };
 
-const elixir_data_t elixir_data[] =
-{
+static constexpr std::array<elixir_data_t, 2> elixir_data { {
   // mop
   { "mantid", elixir::GUARDIAN, STAT_BONUS_ARMOR, 256 },
   { "mad_hozen", elixir::BATTLE, STAT_CRIT_RATING, 85 },
-};
+} };
 
 struct elixir_t : public action_t
 {
@@ -103,7 +104,7 @@ struct elixir_t : public action_t
     else
     {
       double amount = data -> stat_amount;
-      buff = make_buff<stat_buff_t>( player, data -> name + "_elixir" )
+      buff = make_buff<stat_buff_t>( player, fmt::format( "{}_elixir", data -> name ) )
              ->add_stat( data -> st, amount );
       buff->set_duration( timespan_t::from_minutes( 60 ) );
       if ( data -> type == elixir::BATTLE )
@@ -773,12 +774,18 @@ struct augmentation_t : public dbc_consumable_base_t
 // Food (DBC-backed)
 // ==========================================================================
 
+// Some foods (like Felmouth Frenzy) cannot be inferred from item data directly, so have a manual
+// map to bind consumable names to driver spells.
+static constexpr auto __manual_food_map = util::make_static_map<util::string_view, unsigned>( {
+  { "seafood_magnifique_feast",  87545 },
+  { "felmouth_frenzy",          188534 },
+  { "lemon_herb_filet",         185736 },
+  { "sugarcrusted_fish_feast",  185736 },
+  { "fancy_darkmoon_feast",     185786 },
+} );
+
 struct food_t : public dbc_consumable_base_t
 {
-  // Some foods (like Felmouth Frenzy) cannot be inferred from item data directly, so have a manual
-  // map to bind consumable names to driver spells. Initialized below.
-  static const std::map<std::string, unsigned> __map;
-
   food_t( player_t* p, util::string_view options_str ) :
     dbc_consumable_base_t( p, "food" )
   {
@@ -837,8 +844,8 @@ struct food_t : public dbc_consumable_base_t
   {
     // First, check the manual map for food buffs that are not sourced from actual consumable food
     // (Felmouth Frenzy for example)
-    auto it = __map.find( consumable_name );
-    if ( it != __map.end() )
+    auto it = __manual_food_map.find( consumable_name );
+    if ( it != __manual_food_map.end() )
     {
       return player -> find_spell( it -> second );
     }
@@ -902,14 +909,6 @@ struct food_t : public dbc_consumable_base_t
 
     return dbc_consumable_base_t::ready();
   }
-};
-
-const std::map<std::string, unsigned> food_t::__map = {
-  { "seafood_magnifique_feast",  87545 },
-  { "felmouth_frenzy",          188534 },
-  { "lemon_herb_filet",         185736 },
-  { "sugarcrusted_fish_feast",  185736 },
-  { "fancy_darkmoon_feast",     185786 },
 };
 
 } // END UNNAMED NAMESPACE
