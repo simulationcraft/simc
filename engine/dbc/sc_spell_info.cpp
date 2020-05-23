@@ -1561,26 +1561,24 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       s << spell -> initial_stacks() << " maximum, ";
 
     s.seekp( -2, std::ios_base::cur );
-  
+
     s << std::endl;
   }
 
   if ( spell -> proc_chance() > 0 )
     s << "Proc Chance      : " << spell -> proc_chance() * 100 << "%" << std::endl;
 
-  if ( spell -> real_ppm() != 0 )
+  if ( spell->real_ppm() != 0 )
   {
-    s << "Real PPM         : " << spell -> real_ppm();
+    s << "Real PPM         : " << spell->real_ppm();
     bool has_modifiers = false;
-    std::vector<const rppm_modifier_t*> modifiers = dbc.real_ppm_modifiers( spell -> id() );
-    for ( size_t i = 0; i < modifiers.size(); ++i )
+    auto modifiers = rppm_modifier_t::find( spell->id(), dbc.ptr );
+    for ( const auto& modifier : modifiers )
     {
-      const rppm_modifier_t* rppm_modifier = modifiers[ i ];
-
-      switch ( rppm_modifier -> modifier_type )
+      switch ( modifier.modifier_type )
       {
         case RPPM_MODIFIER_HASTE:
-          if ( ! has_modifiers )
+          if ( !has_modifiers )
           {
             s << " (";
           }
@@ -1588,7 +1586,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           has_modifiers = true;
           break;
         case RPPM_MODIFIER_CRIT:
-          if ( ! has_modifiers )
+          if ( !has_modifiers )
           {
             s << " (";
           }
@@ -1596,28 +1594,28 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           has_modifiers = true;
           break;
         case RPPM_MODIFIER_ILEVEL:
-          if ( ! has_modifiers )
+          if ( !has_modifiers )
           {
             s << " (";
           }
-          s << "Itemlevel multiplier [base=" << rppm_modifier -> type << "], ";
+          s << "Itemlevel multiplier [base=" << modifier.type << "], ";
           has_modifiers = true;
           break;
         case RPPM_MODIFIER_SPEC:
         {
-          if ( ! has_modifiers )
+          if ( !has_modifiers )
           {
             s << " (";
           }
 
           std::streamsize decimals = 3;
-          double rppm_val = spell -> real_ppm() * ( 1.0 + rppm_modifier -> coefficient );
+          double rppm_val = spell->real_ppm() * ( 1.0 + modifier.coefficient );
           if ( rppm_val >= 10 )
             decimals += 2;
           else if ( rppm_val >= 1 )
             decimals += 1;
           s.precision( decimals );
-          s << util::specialization_string( static_cast<specialization_e>( rppm_modifier -> type ) ) << ": " << rppm_val << ", ";
+          s << util::specialization_string( static_cast<specialization_e>( modifier.type ) ) << ": " << rppm_val << ", ";
           has_modifiers = true;
           break;
         }

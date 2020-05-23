@@ -64,6 +64,20 @@ const T& find( unsigned key, bool ptr )
   }
 }
 
+template <typename T, typename Compare = std::less<>, typename Proj = range::identity>
+util::span<const T> find_many( unsigned key, bool ptr, Compare comp = Compare{}, Proj proj = Proj{} )
+{
+  const auto __data = T::data( ptr );
+
+  auto r = range::equal_range( __data, key, comp, proj );
+  if ( r.first == __data.end() )
+  {
+    return {};
+  }
+
+  return util::span<const T>( r.first, r.second );
+}
+
 // ==========================================================================
 // Indices to provide log time, constant space access to spells, effects, and talents by id.
 // ==========================================================================

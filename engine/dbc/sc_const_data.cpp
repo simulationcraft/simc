@@ -1565,57 +1565,21 @@ unsigned dbc_t::mastery_ability_size() const
 #endif
 }
 
-std::vector<const rppm_modifier_t*> dbc_t::real_ppm_modifiers( unsigned spell_id ) const
-{
-#if SC_USE_PTR
-  const rppm_modifier_t* p = ptr ? __ptr_rppmmodifier_data : __rppmmodifier_data;
-#else
-  const rppm_modifier_t* p = __rppmmodifier_data;
-#endif
-
-  std::vector<const rppm_modifier_t*> data;
-
-  while ( p -> spell_id != 0 )
-  {
-    if ( p -> spell_id == spell_id )
-    {
-      data.push_back( p );
-    }
-    p++;
-  }
-
-  return data;
-}
-
 unsigned dbc_t::real_ppm_scale( unsigned spell_id ) const
 {
-#if SC_USE_PTR
-  const rppm_modifier_t* p = ptr ? __ptr_rppmmodifier_data : __rppmmodifier_data;
-#else
-  const rppm_modifier_t* p = __rppmmodifier_data;
-#endif
-
+  auto rppm_modifiers = rppm_modifier_t::find( spell_id, ptr );
   unsigned scale = 0;
 
-  while ( p -> spell_id != 0 )
+  for ( const auto& modifier : rppm_modifiers )
   {
-    if ( p -> spell_id != spell_id )
-    {
-      p++;
-      continue;
-    }
-
-    if ( p -> modifier_type == RPPM_MODIFIER_HASTE )
+    if ( modifier.modifier_type == RPPM_MODIFIER_HASTE )
     {
       scale |= RPPM_HASTE;
     }
-    else if ( p -> modifier_type == RPPM_MODIFIER_CRIT )
+    else if ( modifier.modifier_type == RPPM_MODIFIER_CRIT )
     {
       scale |= RPPM_CRIT;
     }
-
-
-    p++;
   }
 
   return scale;
@@ -1623,35 +1587,23 @@ unsigned dbc_t::real_ppm_scale( unsigned spell_id ) const
 
 double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level ) const
 {
-#if SC_USE_PTR
-  const rppm_modifier_t* p = ptr ? __ptr_rppmmodifier_data : __rppmmodifier_data;
-#else
-  const rppm_modifier_t* p = __rppmmodifier_data;
-#endif
+  auto rppm_modifiers = rppm_modifier_t::find( spell_id, ptr );
 
   double modifier = 1.0;
 
-  while ( p -> spell_id != 0 )
+  for ( const auto& rppm_modifier : rppm_modifiers )
   {
-    if ( p -> spell_id != spell_id )
+    if ( rppm_modifier.modifier_type == RPPM_MODIFIER_SPEC &&
+         player -> specialization() == static_cast<specialization_e>( rppm_modifier.type ) )
     {
-      p++;
-      continue;
-    }
-
-    if ( p -> modifier_type == RPPM_MODIFIER_SPEC &&
-         player -> specialization() == static_cast<specialization_e>( p -> type ) )
-    {
-      modifier *= 1.0 + p -> coefficient;
+      modifier *= 1.0 + rppm_modifier.coefficient;
     }
     // TODO: How does coefficient play into this?
-    else if ( p -> modifier_type == RPPM_MODIFIER_ILEVEL )
+    else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_ILEVEL )
     {
       assert( item_level > 0 && "Ilevel-based RPPM modifier requires non-zero item level parameter" );
-      modifier *= item_database::approx_scale_coefficient( p -> type, item_level );
+      modifier *= item_database::approx_scale_coefficient( rppm_modifier.type, item_level );
     }
-
-    p++;
   }
 
   return modifier;

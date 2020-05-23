@@ -1,5 +1,5 @@
 // Item name descriptions, wow build 8.3.0.34220
-static const std::array<item_name_description_t, 305> __ptr_item_name_description_data { {
+static const std::array<item_name_description_t, 321> __ptr_item_name_description_data { {
   {     2, "Now with extra description"   },
   {    20, "Season 10"                    },
   {   226, "Season 10 Elite"              },
@@ -305,5 +305,21 @@ static const std::array<item_name_description_t, 305> __ptr_item_name_descriptio
   { 13534, "Corrupted Gladiator"          },
   { 13535, "Corrupted Rival"              },
   { 13536, "Corrupted"                    },
+  { 13565, "66 Corruption"                },
+  { 13566, "35 Corruption"                },
+  { 13567, "15 Corruption"                },
+  { 13568, "20 Corruption"                },
+  { 13569, "10 Corruption"                },
+  { 13570, "75 Corruption"                },
+  { 13571, "50 Corruption"                },
+  { 13572, "25 Corruption"                },
+  { 13573, "45 Corruption"                },
+  { 13574, "28 Corruption"                },
+  { 13575, "17 Corruption"                },
+  { 13576, "30 Corruption"                },
+  { 13577, "12 Corruption"                },
+  { 13578, "16 Corruption"                },
+  { 13579, "8 Corruption"                 },
+  { 13580, "60 Corruption"                },
 } };
 

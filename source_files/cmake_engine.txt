@@ -38,6 +38,7 @@ dbc/item_naming.hpp
 dbc/item_scaling.hpp
 dbc/item_weapon.hpp
 dbc/rand_prop_points.hpp
+dbc/real_ppm.hpp
 dbc/sc_spell_info.hpp
 dbc/specialization.hpp
 dbc/spell_item_enchantment.hpp
@@ -193,6 +194,7 @@ dbc/item_naming.cpp
 dbc/item_scaling.cpp
 dbc/item_weapon.cpp
 dbc/rand_prop_points.cpp
+dbc/real_ppm.cpp
 dbc/sc_const_data.cpp
 dbc/sc_data.cpp
 dbc/sc_item_data.cpp

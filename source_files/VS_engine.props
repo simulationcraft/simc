@@ -44,6 +44,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\item_scaling.hpp" />
 		<ClInclude Include="..\engine\dbc\item_weapon.hpp" />
 		<ClInclude Include="..\engine\dbc\rand_prop_points.hpp" />
+		<ClInclude Include="..\engine\dbc\real_ppm.hpp" />
 		<ClInclude Include="..\engine\dbc\sc_spell_info.hpp" />
 		<ClInclude Include="..\engine\dbc\specialization.hpp" />
 		<ClInclude Include="..\engine\dbc\spell_item_enchantment.hpp" />
@@ -299,6 +300,9 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\rand_prop_points.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\dbc\real_ppm.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\sc_const_data.cpp">

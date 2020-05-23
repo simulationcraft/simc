@@ -315,55 +315,32 @@ class RealPPMModifierGenerator(DataGenerator):
         super().__init__(options, data_store)
 
         self._dbc = [ 'ChrSpecialization', 'SpellProcsPerMinute', 'SpellProcsPerMinuteMod', 'SpellAuraOptions' ]
-        self._specmap = { 0: 'SPEC_NONE' }
-
-    def initialize(self):
-        if not DataGenerator.initialize(self):
-            return False
-
-        for i, data in self._chrspecialization_db.items():
-            if data.class_id > 0:
-                self._specmap[i] = '%s_%s' % (
-                    DataGenerator._class_names[data.class_id].upper().replace(" ", "_"),
-                    data.name.upper().replace(" ", "_"),
-                )
-
-        return True
 
     def generate(self, ids = None):
         output_data = []
 
         for i, data in self._spellprocsperminutemod_db.items():
-            #if data.id_chr_spec not in self._specmap.keys() or data.id_chr_spec == 0:
-            #    continue
-
-            ppm_id = self._options.build < 25600 and data.id_ppm or data.id_parent
+            ppm_id = data.id_parent
             spell_id = 0
             for aopts_id, aopts_data in self._spellauraoptions_db.items():
                 if aopts_data.id_ppm != ppm_id:
                     continue
 
-                spell_id = self._options.build < 25600 and aopts_data.id_spell or aopts_data.id_parent
+                spell_id = aopts_data.id_parent
                 if spell_id == 0:
                     continue
 
                 output_data.append((data.id_chr_spec, data.coefficient, spell_id, data.unk_1))
 
-        output_data.sort(key = lambda v: v[2])
+        self._out.write('// RPPM Modifiers, wow build level %s\n' % self._options.build)
+        self._out.write('static const std::array<rppm_modifier_t, %d> __%s_data { {\n' % (
+            len(output_data), self.format_str('rppm_modifier')))
 
-        self._out.write('#define %sRPPMMOD%s_SIZE (%d)\n\n' % (
-            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
-            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
-            len(output_data)))
-        self._out.write('// %d RPPM Modifiers, wow build level %s\n' % (len(output_data), self._options.build))
-        self._out.write('static struct rppm_modifier_t __%srppmmodifier%s_data[] = {\n' % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or ''))
+        for data in sorted(output_data, key = lambda v: v[2]):
+            self._out.write('  { %6u, %4u, %2u, %7.4f },\n' % (
+                data[2], data[0], data[3], data[1]))
 
-        for data in output_data + [(0, 0, 0, 0)]:
-            self._out.write('  { %6u, %4u, %2u, %7.4f },\n' % (data[2], data[0], data[3], data[1]))
-
-        self._out.write('};\n')
+        self._out.write('} };\n')
 
 class SpecializationEnumGenerator(DataGenerator):
     def __init__(self, options, data_store):

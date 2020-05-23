@@ -31,6 +31,7 @@
 #include "dbc/item_naming.hpp"
 #include "dbc/item_scaling.hpp"
 #include "dbc/item_weapon.hpp"
+#include "dbc/real_ppm.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -1502,7 +1503,6 @@ public:
   double resolve_level_scaling( unsigned level ) const;
   double avoid_per_str_agi_by_level( unsigned level ) const;
 
-  std::vector<const rppm_modifier_t*> real_ppm_modifiers( unsigned ) const;
   unsigned real_ppm_scale( unsigned ) const;
   double real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level = 0 ) const;
 private:

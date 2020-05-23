@@ -95,13 +95,6 @@ struct item_set_bonus_t {
   }
 };
 
-struct rppm_modifier_t {
-  unsigned         spell_id;
-  unsigned         type;
-  unsigned         modifier_type;
-  double           coefficient;
-};
-
 struct item_upgrade_rule_t {
   unsigned id;
   unsigned upgrade_id;
