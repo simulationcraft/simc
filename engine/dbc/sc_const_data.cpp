@@ -240,31 +240,6 @@ const char* dbc::wow_ptr_status( bool ptr )
 { return ( maybe_ptr( ptr ) ? "PTR" : "Live" ); }
 #endif
 
-const item_set_bonus_t* dbc::set_bonus( bool ptr )
-{
-  ( void ) ptr;
-
-  const item_set_bonus_t* p = __set_bonus_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_set_bonus_data;
-#endif
-  return p;
-}
-
-std::size_t dbc::n_set_bonus( bool ptr )
-{
-  ( void ) ptr;
-
-  size_t n = SET_BONUS_DATA_SIZE;
-#if SC_USE_PTR
-  if ( ptr )
-    n = PTR_SET_BONUS_DATA_SIZE;
-#endif
-
-  return n;
-}
-
 static void generate_class_flags_index( bool ptr = false )
 {
   std::vector< std::vector< const spell_data_t* > >* l = &( class_family_index );

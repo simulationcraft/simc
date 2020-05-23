@@ -3901,13 +3901,9 @@ class SetBonusListGenerator(DataGenerator):
     ]
 
     def __init__(self, options, data_store):
-        self._dbc = [ 'ItemSet', 'ItemSetSpell', 'SpellName', 'ChrSpecialization' ]
-        if options.build < 23436:
-            self._dbc.append('Item-sparse')
-        else:
-            self._dbc.append('ItemSparse')
-
         super().__init__(options, data_store)
+
+        self._dbc = ['ItemSet', 'ItemSetSpell', 'SpellName', 'ChrSpecialization', 'ItemSparse']
 
     @staticmethod
     def is_extract_set_bonus(bonus):
@@ -3920,7 +3916,7 @@ class SetBonusListGenerator(DataGenerator):
     def filter(self):
         data = []
         for id, set_spell_data in self._itemsetspell_db.items():
-            set_id = self._options.build < 25600 and set_spell_data.id_item_set or set_spell_data.id_parent
+            set_id = set_spell_data.id_parent
             is_set_bonus, set_index = SetBonusListGenerator.is_extract_set_bonus(set_id)
             if not is_set_bonus:
                 continue
@@ -3951,7 +3947,7 @@ class SetBonusListGenerator(DataGenerator):
                 spec_ = -1
                 # TODO: Fetch from first available item if blizzard for some
                 # reason decides to not use _1 as the first one?
-                item_data = self._options.build < 23436 and self._item_sparse_db[item_set.id_item_1] or self._itemsparse_db[item_set.id_item_1]
+                item_data = self._itemsparse_db[item_set.id_item_1]
                 for idx in range(0, len(self._class_masks)):
                     mask = self._class_masks[idx]
                     if mask == None:
@@ -3976,30 +3972,33 @@ class SetBonusListGenerator(DataGenerator):
     def generate(self, ids = None):
         ids.sort(key = lambda v: (v['index'], v['class'], v['bonus'], v['set_bonus_id']))
 
-        data_str = "%sset_bonus_data%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        self._out.write('// Set bonus data, wow build %s\n' % self._options.build)
+        self._out.write('static const std::array<item_set_bonus_t, %d> __%s_data { {\n' % (
+            len(ids), self.format_str('set_bonus')))
+
+        _hdr_specifiers = (
+            '{: <43}', '{: <21}', '{: <6}', '{: <5}', '{: <4}', '{: <3}', '{: <3}', '{: <4}', '{: <7}', '{}'
         )
 
-        self._out.write('#define %s_SIZE (%d)\n\n' % (
-            data_str.upper(),
-            len(ids)
-        ))
+        _data_specifiers = (
+            '{: <44}', '{: <21}', '{: >6}', '{: >5}', '{: >4}', '{: >3}', '{: >3}', '{: >4}', '{: >7}', '{}'
+        )
 
-        self._out.write('// Set bonus data, wow build %s\n' % self._options.build)
-        self._out.write('static item_set_bonus_t __%s[%s_SIZE] = {\n' % (
-            data_str,
-            data_str.upper(),
-        ))
+        _hdr_format = ', '.join(_hdr_specifiers)
+        _hdr = _hdr_format.format(
+            'SetBonusName', 'OptName', 'EnumID', 'SetID', 'Tier', 'Bns', 'Cls', 'Spec',
+            'SpellID', 'ItemIDs')
+
+        _data_format = ', '.join(_data_specifiers)
 
         for data_idx in range(0, len(ids)):
             entry = ids[data_idx]
 
             if data_idx % 25 == 0:
-                self._out.write('  // %-44s,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items\n' % 'Set bonus name')
+                self._out.write('  // {}\n'.format(_hdr))
 
             item_set_spell = self._itemsetspell_db[entry['set_bonus_id']]
-            set_id = self._options.build < 25600 and item_set_spell.id_item_set or item_set_spell.id_parent
+            set_id = item_set_spell.id_parent
             item_set = self._itemset_db[set_id]
             map_entry = self.set_bonus_map[entry['index']]
 
@@ -4014,7 +4013,7 @@ class SetBonusListGenerator(DataGenerator):
             if len(items) < 17:
                 items.append(' 0')
 
-            self._out.write('  { %-45s, %12s, %6d, %5d, %4u, %3u, %3u, %4u, %6u, %s },\n' % (
+            self._out.write('  {{ {} }},\n'.format(_data_format.format(
                 '"%s"' % item_set.name.replace('"', '\\"'),
                 '"%s"' % map_entry['name'].replace('"', '\\"'),
                 entry['index'],
@@ -4024,10 +4023,9 @@ class SetBonusListGenerator(DataGenerator):
                 entry['class'],
                 entry['spec'],
                 item_set_spell.id_spell,
-                '{ %s }' % (', '.join(items))
-            ))
+                '{ %s }' % (', '.join(items)))))
 
-        self._out.write('};\n')
+        self._out.write('} };\n')
 
 class SpellItemEnchantmentGenerator(DataGenerator):
     def __init__(self, options, data_store):

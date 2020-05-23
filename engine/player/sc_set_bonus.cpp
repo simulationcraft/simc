@@ -5,6 +5,7 @@
 
 #include "set_bonus.hpp"
 #include "dbc/dbc.hpp"
+#include "dbc/item_set_bonus.hpp"
 #include "item/item.hpp"
 #include "player/sc_player.hpp"
 #include "sim/sc_expressions.hpp"
@@ -17,8 +18,8 @@ set_bonus_t::set_bonus_t( player_t* player ) :
 {
   for ( size_t i = 0; i < set_bonus_spec_data.size(); i++ )
   {
-    set_bonus_spec_data[ i ].resize( actor -> dbc->specialization_max_per_class() );
-    set_bonus_spec_count[ i ].resize( actor -> dbc->specialization_max_per_class() );
+    set_bonus_spec_data[ i ].resize( actor->dbc->specialization_max_per_class() );
+    set_bonus_spec_count[ i ].resize( actor->dbc->specialization_max_per_class() );
     // For now only 2, and 4 set bonuses
     for ( size_t j = 0; j < set_bonus_spec_data[ i ].size(); j++ )
     {
@@ -27,15 +28,16 @@ set_bonus_t::set_bonus_t( player_t* player ) :
     }
   }
 
-  if ( actor -> is_pet() || actor -> is_enemy() )
+  if ( actor->is_pet() || actor->is_enemy() )
     return;
+
+  auto set_bonuses = item_set_bonus_t::data( actor->dbc->ptr );
 
   // Initialize the set bonus data structure with correct set bonus data.
   // Spells are not setup yet.
-  for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( maybe_ptr( actor -> dbc->ptr ) ); bonus_idx++ )
+  for ( const auto& bonus : set_bonuses )
   {
-    const item_set_bonus_t& bonus = dbc::set_bonus( maybe_ptr( actor -> dbc->ptr ) )[ bonus_idx ];
-    if ( bonus.class_id != -1 && bonus.class_id != util::class_id( actor -> type ) )
+    if ( bonus.class_id != -1 && bonus.class_id != util::class_id( actor->type ) )
       continue;
 
     // Ensure Blizzard does not go crazy and add set bonuses past 8 item requirement
@@ -77,7 +79,7 @@ void set_bonus_t::initialize_items()
   // Don't allow 2 worn items of the same id to count as 2 slots
   std::vector<unsigned> item_ids;
 
-  for ( auto& item : actor -> items)
+  for ( auto& item : actor->items)
   {
     if ( item.parsed.data.id == 0 )
       continue;
@@ -85,13 +87,14 @@ void set_bonus_t::initialize_items()
     if ( item.parsed.data.id_set == 0 )
       continue;
 
-    for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( maybe_ptr( actor -> dbc->ptr ) ); bonus_idx++ )
+    auto set_bonuses = item_set_bonus_t::data( actor->dbc->ptr );
+
+    for ( const auto& bonus : set_bonuses )
     {
-      const item_set_bonus_t& bonus = dbc::set_bonus( maybe_ptr( actor -> dbc->ptr ) )[ bonus_idx ];
       if ( bonus.set_id != static_cast<unsigned>( item.parsed.data.id_set ) )
         continue;
 
-      if ( bonus.class_id != -1 && ! bonus.has_spec( static_cast< int >( actor -> _spec ) ) )
+      if ( bonus.class_id != -1 && ! bonus.has_spec( static_cast<int>( actor->_spec ) ) )
         continue;
 
       if ( range::find( item_ids, item.parsed.data.id ) != item_ids.end() )
@@ -100,7 +103,7 @@ void set_bonus_t::initialize_items()
       }
 
       // T17+ and PVP is spec specific, T16 and lower is "role specific"
-      set_bonus_spec_count[ bonus.enum_id ][ specdata::spec_idx( actor -> _spec ) ]++;
+      set_bonus_spec_count[ bonus.enum_id ][ specdata::spec_idx( actor->_spec ) ]++;
       item_ids.push_back( item.parsed.data.id );
       break;
     }
@@ -112,10 +115,10 @@ std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
   std::vector<const item_set_bonus_t*> bonuses;
 
   // Disable all set bonuses, and set bonus options if challenge mode is set
-  if ( actor -> sim -> challenge_mode == 1 )
+  if ( actor->sim->challenge_mode == 1 )
     return bonuses;
 
-  if ( actor -> sim -> disable_set_bonuses == 1 ) // Or if global disable set bonus override is used.
+  if ( actor->sim->disable_set_bonuses == 1 ) // Or if global disable set bonus override is used.
     return bonuses;
 
   for ( auto& spec_data : set_bonus_spec_data )
@@ -129,7 +132,7 @@ std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
         if ( bonus_data.bonus == nullptr )
           continue;
 
-        if ( bonus_data.spell -> id() == 0 )
+        if ( bonus_data.spell->id() == 0 )
         {
           continue;
         }
@@ -161,10 +164,10 @@ const spell_data_t* set_bonus_t::set(specialization_e spec, set_bonus_type_e set
 void set_bonus_t::initialize()
 {
   // Disable all set bonuses, and set bonus options if challenge mode is set
-  if ( actor -> sim -> challenge_mode == 1 )
+  if ( actor->sim->challenge_mode == 1 )
     return;
 
-  if ( actor -> sim -> disable_set_bonuses == 1 ) // Or if global disable set bonus override is used.
+  if ( actor->sim->disable_set_bonuses == 1 ) // Or if global disable set bonus override is used.
     return;
 
   initialize_items();
@@ -188,17 +191,17 @@ void set_bonus_t::initialize()
 
         // Set bonus is overridden, or we have sufficient number of items to enable the bonus
         if ( data.overridden >= 1 ||
-          ( set_bonus_spec_count[idx][spec_role_idx] >= data.bonus -> bonus && data.overridden == -1 ) ||
-          ( data.bonus -> has_spec( actor -> _spec ) &&
-          ( ! util::str_in_str_ci( data.bonus -> set_opt_name, "lfr" ) &&
-          ( ( actor -> sim -> enable_2_set == data.bonus -> tier && data.bonus -> bonus == 2 ) ||
-          ( actor -> sim -> enable_4_set == data.bonus -> tier && data.bonus -> bonus == 4 ) ) ) ) )
+          ( set_bonus_spec_count[idx][spec_role_idx] >= data.bonus->bonus && data.overridden == -1 ) ||
+          ( data.bonus->has_spec( actor->_spec ) &&
+          ( ! util::str_in_str_ci( data.bonus->set_opt_name, "lfr" ) &&
+          ( ( actor->sim->enable_2_set == data.bonus->tier && data.bonus->bonus == 2 ) ||
+          ( actor->sim->enable_4_set == data.bonus->tier && data.bonus->bonus == 4 ) ) ) ) )
         {
-          if ( data.bonus -> bonus == 2 )
+          if ( data.bonus->bonus == 2 )
           {
-            if ( actor -> sim -> disable_2_set != data.bonus -> tier ) 
+            if ( actor->sim->disable_2_set != data.bonus->tier )
             {
-              data.spell = actor -> find_spell( data.bonus -> spell_id );
+              data.spell = actor->find_spell( data.bonus->spell_id );
               data.enabled = true;
             }
             else
@@ -206,11 +209,11 @@ void set_bonus_t::initialize()
               data.enabled = false;
             }
           }
-          else if ( data.bonus -> bonus == 4 )
+          else if ( data.bonus->bonus == 4 )
           {
-            if ( actor -> sim -> disable_4_set != data.bonus -> tier )
+            if ( actor->sim->disable_4_set != data.bonus->tier )
             {
-              data.spell = actor -> find_spell( data.bonus -> spell_id );
+              data.spell = actor->find_spell( data.bonus->spell_id );
               data.enabled = true;
             }
             else
@@ -220,7 +223,7 @@ void set_bonus_t::initialize()
           }
           else
           {
-            data.spell = actor -> find_spell( data.bonus -> spell_id );
+            data.spell = actor->find_spell( data.bonus->spell_id );
             data.enabled = true;
           }
         }
@@ -228,7 +231,7 @@ void set_bonus_t::initialize()
     }
   }
 
-  actor -> sim -> print_debug("Initialized set bonus: {}", *this);
+  actor->sim->print_debug("Initialized set bonus: {}", *this);
 }
 
 std::string set_bonus_t::to_string() const
@@ -255,14 +258,14 @@ std::ostream& operator<<(std::ostream& os, const set_bonus_t& sb)
         unsigned spec_role_idx = static_cast<int>( spec_idx );
 
         if ( data.overridden >= 1 ||
-           ( data.overridden == -1 && sb.set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
+           ( data.overridden == -1 && sb.set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus ) )
         {
           fmt::print( os, "{}{{ {}, {}, {}, {} piece bonus {} }}",
               i > 0 ? ", " : "",
-              data.bonus -> set_name,
-              data.bonus -> set_opt_name,
-              util::specialization_string( sb.actor -> specialization() ),
-              data.bonus -> bonus,
+              data.bonus->set_name,
+              data.bonus->set_opt_name,
+              util::specialization_string( sb.actor->specialization() ),
+              data.bonus->bonus,
               ( data.overridden >= 1 ) ? " (overridden)" : "");
           ++i;
         }
@@ -290,11 +293,11 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
         unsigned spec_role_idx = static_cast<int>( spec_idx );
 
         if ( data.overridden >= 1 ||
-           ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
+           ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus ) )
         {
           s += fmt::format("# set_bonus={}_{}pc=1{}",
-              data.bonus -> set_opt_name,
-              data.bonus -> bonus,
+              data.bonus->set_opt_name,
+              data.bonus->bonus,
               newline);
         }
       }
@@ -314,7 +317,7 @@ std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t* , const 
     throw std::invalid_argument(fmt::format("Cannot parse set bonus '{}'.", type));
   }
 
-  bool state = set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( actor -> specialization() ) ][ bonus ].spell -> id() > 0;
+  bool state = set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( actor->specialization() ) ][ bonus ].spell->id() > 0;
 
   return expr_t::create_constant( type, static_cast<double>(state) );
 }
@@ -347,10 +350,11 @@ bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
 
   std::string set_name = opt_str.substr( 0, opt_str.size() - split.back().size() - 1 );
 
-  for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( SC_USE_PTR ); bonus_idx++ )
+  auto set_bonuses = item_set_bonus_t::data( SC_USE_PTR );
+
+  for ( const auto& bonus : set_bonuses )
   {
-    const item_set_bonus_t& bonus = dbc::set_bonus( SC_USE_PTR )[ bonus_idx ];
-    if ( bonus.class_id != -1 && bonus.class_id != util::class_id( actor -> type ) )
+    if ( bonus.class_id != -1 && bonus.class_id != util::class_id( actor->type ) )
       continue;
 
     if ( set_bonus == SET_BONUS_NONE && util::str_compare_ci( set_name, bonus.set_opt_name ) )
@@ -367,9 +371,10 @@ std::string set_bonus_t::generate_set_bonus_options() const
 {
   std::vector<std::string> opts;
 
-  for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( SC_USE_PTR ); bonus_idx++ )
+  auto set_bonuses = item_set_bonus_t::data( SC_USE_PTR );
+
+  for ( const auto& bonus : set_bonuses )
   {
-    const item_set_bonus_t& bonus = dbc::set_bonus( SC_USE_PTR )[ bonus_idx ];
     std::string opt = bonus.set_opt_name;
     opt += "_" + util::to_string( bonus.bonus ) + "pc";
 

@@ -3,16 +3,18 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_spell_info.hpp"
-#include "dbc.hpp"
-#include "util/util.hpp"
-#include "util/xml.hpp"
 #include <vector>
 #include <unordered_map>
 #include <iostream>
 #include <map>
 #include <iomanip>
 #include <cctype>
+
+#include "sc_spell_info.hpp"
+#include "dbc.hpp"
+#include "dbc/item_set_bonus.hpp"
+#include "util/util.hpp"
+#include "util/xml.hpp"
 
 namespace {
 struct proc_map_t
