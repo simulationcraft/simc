@@ -2384,7 +2384,7 @@ struct detection_t : public rogue_attack_t
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
     ignore_false_positive = true;
-    gcd_type = gcd_haste_type::SPELL_SPEED;
+    gcd_type = gcd_haste_type::ATTACK_HASTE;
     min_gcd = timespan_t::from_millis(750); // Force 750ms min gcd because rogue player base has a 1s min.
   }
 };
@@ -3405,6 +3405,8 @@ struct shadow_blades_t : public rogue_attack_t
     parse_options( options_str );
 
     harmful = may_miss = may_crit = false;
+    gcd_type = gcd_haste_type::ATTACK_HASTE;
+    min_gcd = timespan_t::from_millis(750); // Force 750ms min gcd because rogue player base has a 1s min.
 
     school = SCHOOL_SHADOW;
     add_child( p -> shadow_blades_attack );
@@ -3895,6 +3897,8 @@ struct vendetta_t : public rogue_attack_t
     parse_options( options_str );
 
     harmful = may_miss = may_crit = false;
+    gcd_type = gcd_haste_type::ATTACK_HASTE;
+    min_gcd = timespan_t::from_millis(750); // Force 750ms min gcd because rogue player base has a 1s min.
 
     if ( p -> azerite.nothing_personal.ok() )
     {
