@@ -1,4 +1,4 @@
-import struct, json, pathlib, sys, re, logging
+import struct, json, pathlib, sys, re, logging, pprint
 
 import dbc
 
@@ -10,6 +10,7 @@ class Field:
         self.name = data.get('field')
         self.elements = data.get('elements', 1)
         self.block = data.get('block', False)
+        self.db_reference = data.get('ref', None)
 
     def data_types(self):
         return [ self.data_type, ] * self.elements
@@ -79,6 +80,9 @@ class Field:
     def block_field(self):
         return self.block
 
+    def db_refs(self):
+        return [self.db_reference] * self.elements
+
     def field_size(self):
         if self.data_type in 'bB':
             return ( 1, )
@@ -101,8 +105,9 @@ class Field:
         return ()
 
     def __str__(self):
-        return 'index=%u name=%s type=%c output=%s elements=%d block=%s' % (
-            self.index, self.name, self.data_type, self.output_format, self.elements, self.block)
+        return 'index=%u name=%s type=%c output=%s elements=%d block=%s%s' % (
+            self.index, self.name, self.data_type, self.output_format, self.elements, self.block,
+            self.db_reference and ' references={}'.format(self.db_reference) or '')
 
 class DBFormat(object):
     def __find_newest_file(self, path):
@@ -147,15 +152,33 @@ class DBFormat(object):
     def __init__(self, opts):
         self.options = opts
         self.data = {}
+        self.parents = {}
 
         self.__do_init()
+
+    def __add_parent(self, db, parent_db, key_field = None, elements = 1):
+        if not parent_db:
+            return
+
+        if db not in self.parents:
+            self.parents[db] = []
+
+        parent_entry = {'db': parent_db, 'key': key_field, 'elements': elements}
+
+        if parent_entry not in self.parents[db]:
+            self.parents[db].append(parent_entry)
 
     def __do_init(self):
         js = json.load(self.__find_format_file().open())
 
         for dbcfile, data in js.items():
             field_idx = 0
-            for field_conf in data:
+            parent_dbname = data.get('parent', None)
+            parent_key_field = data.get('key', None)
+
+            self.__add_parent(dbcfile, parent_dbname, parent_key_field)
+
+            for field_conf in data.get('fields', []):
                 if dbcfile not in self.data:
                     self.data[dbcfile] = {
                         'data-format': [],
@@ -183,7 +206,15 @@ class DBFormat(object):
                 self.data[dbcfile]['cpp'        ].append(field_conf.get('formats', {}).get('cpp', outfmt))
                 self.data[dbcfile]['obj'        ].append(Field(field_idx, field_conf))
 
+                if field_conf.get('ref', None):
+                    self.__add_parent(dbcfile, field_conf.get('ref'), field_conf.get('field'), field_conf.get('elements', 1))
+
                 field_idx += 1
+
+        #sys.exit(1)
+
+    def parent_dbs(self, child):
+        return self.parents.get(child, [])
 
     def obj(self, file_name, **kwargs):
         if kwargs.hasattr('index'):
@@ -230,5 +261,16 @@ class DBFormat(object):
         for obj in self.objs(file_name, include_all):
             if include_all or (not include_all and not obj.block_field()):
                 v += obj.field_names()
+
+        return v
+
+    def refs(self, file_name, include_all = False):
+        if file_name not in self.data:
+            raise Exception('Unable to find data format for %s' % file_name)
+
+        v = []
+        for obj in self.objs(file_name, include_all):
+            if include_all or (not include_all and not obj.block_field()):
+                v += obj.db_refs()
 
         return v

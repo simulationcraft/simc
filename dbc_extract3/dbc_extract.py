@@ -10,7 +10,6 @@ except Exception as error:
 
 import dbc
 from dbc.data import initialize_data_model
-from dbc.db import DataStore
 from dbc.file import DBCFile, HotfixFile
 from dbc.generator import CSVDataGenerator, DataGenerator
 from dbc.config import Config
@@ -38,7 +37,7 @@ parser.add_argument("-t", "--type", dest = "type",
                   help    = "Processing type [output]", metavar = "TYPE", 
                   default = "output", action = "store",
                   choices = [ 'output', 'scale', 'view', 'csv', 'header', 'json',
-                              'class_flags', 'generator', 'validate', 'db2meta', 'generate_format' ])
+                              'generator', 'validate', 'db2meta', 'generate_format' ])
 parser.add_argument("-o",            dest = "output")
 parser.add_argument("-a",            dest = "append")
 parser.add_argument("--raw",         dest = "raw",          default = False, action = "store_true")
@@ -147,8 +146,7 @@ elif options.type == 'generator':
         logging.error('Unable to import %s', options.args[0])
         sys.exit(1)
 
-    db = DataStore(options)
-    obj = generator(options, db)
+    obj = generator(options)
 
     if not obj.initialize():
         sys.exit(1)

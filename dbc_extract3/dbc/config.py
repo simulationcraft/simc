@@ -5,7 +5,6 @@ import dbc.db
 class Config:
     def __init__(self, options):
         self.options = options
-        self.data_store = dbc.db.DataStore(self.options)
 
         self.config = {}
         self.base_module_path = None
@@ -64,7 +63,7 @@ class Config:
                     logging.error('Unable to instantiate generator %s', generator)
                     return False
 
-                config['objects'].append(obj(self.options, self.data_store))
+                config['objects'].append(obj(self.options, dbc.db.datastore(self.options)))
 
         for section, config in self.config.items():
             for generator in config['objects']:

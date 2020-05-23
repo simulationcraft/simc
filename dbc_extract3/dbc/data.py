@@ -1,6 +1,7 @@
 import struct, sys, math, types
 
 import dbc.fmt
+import dbc.db
 
 _FORMATDB = None
 
@@ -14,6 +15,11 @@ class RawDBCRecord:
     _key_format = '%u'
 
     _id_index = 0
+
+    # Parenting, can either use the key block, or if defined by the format
+    # files, a specific field (_parent_key) of the data
+    _parent_db = None
+    _parent_key_db = None
 
     @classmethod
     def has_key_block(cls, state):
@@ -35,11 +41,82 @@ class RawDBCRecord:
     def id_index(cls, index):
         cls._id_index = index
 
+    @classmethod
+    def parent(cls, parent, key = None, n_elements = 1):
+        # Key block, set the parent key database
+        if key == None:
+            cls._parent_key_db = parent
+        else:
+            if cls._parent_db == None:
+                cls._parent_db = [None,] * len(cls._cd)
+
+            if n_elements == 1:
+                field_idx = cls._cd.get(key, -1)
+                if field_idx == -1:
+                    raise ValueError(
+                        'Unknown db2 field "{}" for "()" when parenting to "{}"').format(
+                            key, cls.__name__, parent)
+
+                cls._parent_db[field_idx] = parent
+            else:
+                for i in range(1, n_elements + 1):
+                    key_str = '{}_{}'.format(key, i)
+                    field_idx = cls._cd.get(key_str)
+                    if field_idx == -1:
+                        raise ValueError(
+                            'Unknown db2 field "{}" for "()" when parenting to "{}"').format(
+                                key_str, cls.__name__, parent)
+
+                    cls._parent_db[field_idx] = parent
+
     def dbc_name(self):
         return self.__class__.__name__.replace('_', '-')
 
     def is_hotfixed(self):
         return self._flags != 0
+
+    # Get the child objects if defined by the data format.
+    # Currently allows indexing of any data table
+    #
+    # TODO: Add checks for linkage
+    def children(self, child_db):
+        if not dbc.db.datastore():
+            return []
+
+        db = dbc.db.datastore().get(child_db)
+        return db.records_for_parent(self._id)
+
+    def child_refs(self, child_db):
+        if not dbc.db.datastore():
+            return []
+
+        db = dbc.db.datastore().get(child_db)
+        return db.records_for_references(self.dbc_name(), self._id)
+
+    # Get the parent object if defined by the data format
+    def parent_record(self, field = None):
+        # Key block handling
+        if not dbname:
+            if self._parent_key_db:
+                db = dbc.db.datastore().get(dbname)
+                return db[self._key]
+            else:
+                raise ValueError('No key-block based parent database defined for "{}"',
+                    self.__name__)
+        else:
+            if not self._parent_db:
+                raise ValueError('No parent reference defined for field "{}"'.format(field))
+
+            if field not in self._cd:
+                raise ValueError('Invalid field name "{}" for parent reference'.format(field))
+
+            field_idx = self._cd[field]
+            if self._parent_db[field_idx] == None:
+                raise ValueError('No parent reference for field "{}"'.format(field))
+
+            db = dbc.db.datastore().get(self._parent_db[field_idx])
+
+            return db[self._d[field_idx]]
 
     def __init__(self, parser, dbc_id, data, key = 0):
         self._dbcp = parser
@@ -80,7 +157,8 @@ class RawDBCRecord:
 class DBCRecord(RawDBCRecord):
     __l = None
     __d = None
-    __slots__ = ('_l', '_hotfix_data' ) # Lazy initialized in add_link, Hotfixed field data
+    # Lazy initialized in add_link, Hotfixed field data
+    __slots__ = ('_l', '_hotfix_data', '_child_data', '_parent', '_ref_cache' ) 
 
     # Default value if database is accessed with a missing key (id)
     @classmethod
@@ -99,6 +177,24 @@ class DBCRecord(RawDBCRecord):
             return
 
         cls.__l[attr_name] = attr_default
+
+    # Get the reference object for a specific field
+    def ref(self, field_name):
+        field_idx = self._cd.get(field_name, -1)
+        if field_idx == -1:
+            return None
+
+        if self._dbr[field_idx] == None:
+            return None
+
+        if not hasattr(self, '_ref_cache'):
+            self._ref_cache = [None] * len(self._cd)
+
+        if self._ref_cache[field_idx] == None:
+            db = dbc.db.datastore().get(self._dbr[field_idx])
+            self._ref_cache[field_idx] = db[self._d[field_idx]]
+
+        return self._ref_cache[field_idx]
 
     # Field_name of -1 indicates new entry, otherwise, collect original value
     # to _hotfix_data so we can output it later on
@@ -490,6 +586,9 @@ def initialize_data_model(options):
     if not requires_data_model(options):
         return
 
+    # Initialize data store
+    dbc.db.datastore(options)
+
     global _FORMATDB
     _FORMATDB = dbc.fmt.DBFormat(options)
 
@@ -510,6 +609,7 @@ def initialize_data_model(options):
         setattr(cls, '_fi', tuple(_FORMATDB.fields(dbc_file_name, True)))
         setattr(cls, '_fo', tuple(_FORMATDB.types(dbc_file_name, True)))
         setattr(cls, '_ff', tuple(_FORMATDB.formats(dbc_file_name, True)))
+        setattr(cls, '_dbr', tuple(_FORMATDB.refs(dbc_file_name, True)))
 
         # Setup index lookup table for fields to speedup __getattr__ access
         setattr(cls, '_cd', {})
@@ -518,6 +618,9 @@ def initialize_data_model(options):
                 continue
 
             cls._cd[cls._fi[fidx]] = fidx
+
+        for parent in _FORMATDB.parent_dbs(dbc_file_name):
+            cls.parent(parent['db'], parent['key'], parent['elements'])
 
     if 'SpellName' in dir(this_module):
         SpellName.link('level', SpellLevels)

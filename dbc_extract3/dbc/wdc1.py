@@ -565,6 +565,10 @@ class WDC1Column:
         self.__is_signed = False
         self.__default_value = 0
 
+        if not self.__parser.options.raw and not self.__format:
+            raise ValueError('{}: Column {} must have a format defined'.format(
+                self.__parser.class_name(), index))
+
     def parser(self):
         return self.__parser
 
