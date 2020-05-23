@@ -20,7 +20,7 @@
 #include "class_modules/class_module.hpp"
 #include "dbc/item_database.hpp"
 #include "util/concurrency.hpp"
-#include <unordered_map>
+#include "util/static_map.hpp"
 
 // ==========================================================================
 // Blizzard Community Platform API
@@ -31,9 +31,9 @@ namespace { // UNNAMED NAMESPACE
 // Due to differences in item-level computation between in-game and armory profiles, some
 // items require simc to override the item ilevel with the armory import one (instead of
 // computing it using the in-game rules)
-static const std::unordered_map<unsigned, bool> __ILEVEL_OVERRIDE_MAP = {
-  { 167555U, true } // Pocket-Sized Computation Device
-};
+static constexpr auto __ILEVEL_OVERRIDE_MAP = util::make_static_set<unsigned>( {
+  167555U, // Pocket-Sized Computation Device
+} );
 
 struct player_spec_t
 {

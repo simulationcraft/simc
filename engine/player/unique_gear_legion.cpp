@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "darkmoon_deck.hpp"
+#include "util/static_map.hpp"
 
 using namespace unique_gear;
 
@@ -5762,12 +5763,12 @@ struct cinidaria_the_symbiote_t : public class_scoped_callback_t
   void initialize( special_effect_t& effect ) override
   {
     // Vector of blacklisted spell ids that cannot proc Cinidaria.
-    const std::unordered_map<unsigned, bool> spell_blacklist = {
-      { 207694, true }, // Symbiote Strike (Cinidaria itself)
-      { 191259, true }, // Mark of the Hidden Satyr
-      { 191380, true }, // Mark of the Distant Army
-      { 220893, true }, // Soul Rip (Subtlety Rogue Akaari pet)
-    };
+    static constexpr auto spell_blacklist = ::util::make_static_set<unsigned>( {
+      207694, // Symbiote Strike (Cinidaria itself)
+      191259, // Mark of the Hidden Satyr
+      191380, // Mark of the Distant Army
+      220893, // Soul Rip (Subtlety Rogue Akaari pet)
+    } );
 
     // Health percentage threshold and damage multiplier
     const double threshold = effect.driver() -> effectN( 2 ).base_value();
@@ -5781,7 +5782,7 @@ struct cinidaria_the_symbiote_t : public class_scoped_callback_t
     // also resolved, and that state -> result_amount will hold the "final actual damage" of the
     // ability.
     effect.player -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1,
-      [ spell_blacklist, threshold, multiplier, spell ](result_amount_type, action_state_t* state )
+      [ threshold, multiplier, spell ](result_amount_type, action_state_t* state )
       {
         const auto source_action = state -> action;
         const auto target = state -> target;

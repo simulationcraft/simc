@@ -7,6 +7,7 @@
 
 #include "pet_spawner.hpp"
 #include "darkmoon_deck.hpp"
+#include "util/static_map.hpp"
 
 using namespace unique_gear;
 
@@ -948,10 +949,11 @@ enum resource_category : unsigned
 // Add different resource systems here
 // Todo : values were changed, need confirmation on :
 // rage, runic power, shield of the righteous charges
-static const std::unordered_map<int, std::tuple<double, double>> __resource_map{
-    {{RESOURCE_HOLY_POWER, std::tuple<double, double>{0.800, 0.800}},
-     {RESOURCE_RUNIC_POWER, std::tuple<double, double>{0.075, 0.054}},
-     {RESOURCE_RAGE, std::tuple<double, double>{0.025, 0.050}}}};
+static constexpr auto __resource_map = ::util::make_static_map<int, std::array<double, 2>>( {
+  { RESOURCE_HOLY_POWER,  {{ 0.800, 0.800 }} },
+  { RESOURCE_RUNIC_POWER, {{ 0.075, 0.054 }} },
+  { RESOURCE_RAGE,        {{ 0.025, 0.050 }} },
+} );
 
 struct bba_cb_t : public dbc_proc_callback_t
 {
@@ -5492,34 +5494,34 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
   spell_tracker->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
   effect.player->special_effects.push_back( spell_tracker );
 
-  static std::unordered_map<unsigned, bool> spell_blacklist{
+  static constexpr auto spell_blacklist = ::util::make_static_set<unsigned>( {
       // Racials
-      {26297, true},   // Berserking
-      {28730, true},   // Arcane Torrent
-      {33702, true},   // Blood Fury
-      {58984, true},   // Shadowmeld
-      {65116, true},   // Stoneform
-      {68992, true},   // Darkflight
-      {69041, true},   // Rocket Barrage
-      {232633, true},  // Arcane Torrent
-      {255647, true},  // Light's Judgment
-      {256893, true},  // Light's Judgment
-      {260364, true},  // Arcane Pulse
-      {265221, true},  // Fireblood
-      {274738, true},  // Ancestral Call
-      {287712, true},  // Haymaker
-      {312411, true},  // Bag of Tricks
+      26297,   // Berserking
+      28730,   // Arcane Torrent
+      33702,   // Blood Fury
+      58984,   // Shadowmeld
+      65116,   // Stoneform
+      68992,   // Darkflight
+      69041,   // Rocket Barrage
+      232633,  // Arcane Torrent
+      255647,  // Light's Judgment
+      256893,  // Light's Judgment
+      260364,  // Arcane Pulse
+      265221,  // Fireblood
+      274738,  // Ancestral Call
+      287712,  // Haymaker
+      312411,  // Bag of Tricks
       // Major Essences
-      {295373, true},  // Concentrated Flame
-      {298357, true},  // Memory of Lucid Dreams
-      {297108, true},  // Blood of The Enemy
-      {295258, true},  // Focused Azerite Beam
-      {295840, true},  // Guardian of Azeroth
-      {295337, true},  // Purifying Blast
-      {302731, true},  // Ripple in Space
-      {298452, true},  // The Unbound Force
-      {295186, true}   // Worldvein Resonance
-  };
+      295373,  // Concentrated Flame
+      298357,  // Memory of Lucid Dreams
+      297108,  // Blood of The Enemy
+      295258,  // Focused Azerite Beam
+      295840,  // Guardian of Azeroth
+      295337,  // Purifying Blast
+      302731,  // Ripple in Space
+      298452,  // The Unbound Force
+      295186,  // Worldvein Resonance
+  } );
 
   struct spell_tracker_cb_t : public dbc_proc_callback_t
   {

@@ -7,6 +7,8 @@
 #include "dbc.hpp"
 #include "util/util.hpp"
 #include "util/xml.hpp"
+#include "util/static_map.hpp"
+
 #include <vector>
 #include <unordered_map>
 #include <iostream>
@@ -746,7 +748,7 @@ static const std::unordered_map<unsigned, const std::string> _effect_subtype_str
 };
 
 
-static const std::unordered_map<unsigned, const char*> _mechanic_strings { {
+static constexpr auto _mechanic_strings = util::make_static_map<unsigned, const char*>( {
   { 130, "Charm"          },
   { 134, "Disorient"      },
   { 142, "Disarm"         },
@@ -779,7 +781,7 @@ static const std::unordered_map<unsigned, const char*> _mechanic_strings { {
   { 274, "Enrage"         },
   { 278, "Wound"          },
   { 282, "Taunt"          }
-} };
+} );
 
 std::string mechanic_str( unsigned mechanic ) {
   auto it = _mechanic_strings.find( mechanic );

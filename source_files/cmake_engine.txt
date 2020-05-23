@@ -138,6 +138,7 @@ util/sample_data.hpp
 util/sc_resourcepaths.hpp
 util/scoped_callback.hpp
 util/span.hpp
+util/static_map.hpp
 util/stopwatch.hpp
 util/timeline.hpp
 util/util.hpp
