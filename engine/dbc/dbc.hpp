@@ -86,7 +86,6 @@ unsigned specialization_max_per_class();
 specialization_e spec_by_idx( const player_e c, unsigned idx );
 
 // Data Access
-int build_level( bool ptr );
 const char* wow_version( bool ptr );
 const char* wow_ptr_status( bool ptr );
 std::size_t        n_items( bool ptr );
@@ -1441,12 +1440,6 @@ public:
 
   dbc_t( bool ptr = false ) :
     ptr( ptr ) { }
-
-  int build_level() const
-  { return dbc::build_level( ptr ); }
-
-  const char* wow_version() const
-  { return dbc::wow_version( ptr ); }
 
   const char* wow_ptr_status() const
   { return dbc::wow_ptr_status( ptr ); }

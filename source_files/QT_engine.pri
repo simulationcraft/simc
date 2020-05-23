@@ -186,6 +186,7 @@ SOURCES += engine/class_modules/warlock/sc_warlock_demonology.cpp
 SOURCES += engine/class_modules/warlock/sc_warlock_destruction.cpp
 SOURCES += engine/class_modules/warlock/sc_warlock_pets.cpp
 SOURCES += engine/dbc/azerite.cpp
+SOURCES += engine/dbc/client_data.cpp
 SOURCES += engine/dbc/gem_data.cpp
 SOURCES += engine/dbc/item_armor.cpp
 SOURCES += engine/dbc/item_bonus.cpp

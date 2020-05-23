@@ -183,6 +183,7 @@ class_modules/warlock/sc_warlock_demonology.cpp
 class_modules/warlock/sc_warlock_destruction.cpp
 class_modules/warlock/sc_warlock_pets.cpp
 dbc/azerite.cpp
+dbc/client_data.cpp
 dbc/gem_data.cpp
 dbc/item_armor.cpp
 dbc/item_bonus.cpp

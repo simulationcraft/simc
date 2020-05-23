@@ -663,8 +663,11 @@ void to_json( JsonOutput root, const dbc_t& dbc )
   bool versions[] = { false, true };
   for ( const auto& ptr : versions )
   {
-    root[ dbc::wow_ptr_status( ptr ) ][ "build_level" ] = dbc::build_level( ptr );
-    root[ dbc::wow_ptr_status( ptr ) ][ "wow_version" ] = StringRef( dbc::wow_version( ptr ) );
+    root[ dbc::wow_ptr_status( ptr ) ][ "build_level" ] = dbc::client_data_build( ptr );
+    root[ dbc::wow_ptr_status( ptr ) ][ "wow_version" ] = dbc::client_data_version_str( ptr );
+    root[ dbc::wow_ptr_status( ptr ) ][ "hotfix_date" ] = dbc::hotfix_date_str( ptr );
+    root[ dbc::wow_ptr_status( ptr ) ][ "hotfix_build" ] = dbc::hotfix_build_version( ptr );
+    root[ dbc::wow_ptr_status( ptr ) ][ "hotfix_hash" ]  = dbc::hotfix_hash_str( ptr );
   }
 
   root[ "version_used" ] = StringRef( dbc::wow_ptr_status( dbc.ptr ) );

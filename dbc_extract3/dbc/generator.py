@@ -1,4 +1,4 @@
-import sys, os, re, types, html.parser, urllib, datetime, signal, json, pathlib, csv, logging, io, fnmatch, traceback, binascii
+import sys, os, re, types, html.parser, urllib, datetime, signal, json, pathlib, csv, logging, io, fnmatch, traceback, binascii, time
 
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
@@ -234,6 +234,8 @@ class DataGenerator(object):
         self._options = options
         self._data_store = data_store
         self._out = None
+        if not hasattr(self, '_dbc'):
+            self._dbc = []
 
         self._class_map = { }
         # Build some maps to help us output things
@@ -344,9 +346,9 @@ class RealPPMModifierGenerator(DataGenerator):
 
 class SpecializationEnumGenerator(DataGenerator):
     def __init__(self, options, data_store):
-        self._dbc = [ 'ChrSpecialization' ]
-
         super().__init__(options, data_store)
+
+        self._dbc = [ 'ChrSpecialization' ]
 
     def generate(self, ids = None):
         enum_ids = [
@@ -4645,4 +4647,42 @@ class ItemEffectGenerator(DataGenerator):
             self._out.write('  { %s }, // %s\n' % (', '.join(fields), spell.name))
 
         self._out.write('} };\n\n')
+
+class ClientDataVersionGenerator(DataGenerator):
+    # Note, just returns the moddified time of the hotfix file. Hotfix file
+    # does not have any kind of timestamping in the contents.
+    def generate_hotfix_mtime(self):
+        if not os.access(self._options.hotfix_file.name, os.R_OK):
+            return ""
+
+        stat_obj = os.stat(self._options.hotfix_file.name)
+        return time.strftime('%Y-%m-%d', time.gmtime(stat_obj.st_mtime))
+
+    def generate(self, ids = None):
+        self._out.write('#ifndef {}_INC\n'.format(
+            self.format_str('CLIENT_DATA_VERSION').upper()))
+        self._out.write('#define {}_INC\n'.format(
+            self.format_str('CLIENT_DATA_VERSION').upper()))
+
+        self._out.write('\n// Client data versioning information for {}\n\n'.format(self._options.build))
+        self._out.write('#define {} "{}"\n'.format(
+            self.format_str('CLIENT_DATA_WOW_VERSION').upper(),
+            self._options.build))
+
+        if self._options.hotfix_file:
+            self._out.write('\n// Hotfix data versioning information\n\n')
+            self._out.write('#define {} "{}"\n'.format(
+                self.format_str('CLIENT_DATA_HOTFIX_DATE').upper(),
+                self.generate_hotfix_mtime()))
+
+            self._out.write('#define {} ({})\n'.format(
+                self.format_str('CLIENT_DATA_HOTFIX_BUILD').upper(),
+                self._data_store.cache.parser.build))
+
+            self._out.write('#define {} "{}"\n'.format(
+                self.format_str('CLIENT_DATA_HOTFIX_HASH').upper(),
+                self._data_store.cache.parser.verify_hash.hex()))
+
+        self._out.write('\n#endif /* {}_INC*/\n'.format(
+            self.format_str('CLIENT_DATA_VERSION').upper()))
 

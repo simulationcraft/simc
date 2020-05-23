@@ -241,10 +241,22 @@ std::string util::version_info_str( const dbc_t* dbc )
     return {};
   }
 
-  std::string build_info = fmt::format( "wow build {}", dbc->build_level() );
+  std::string build_info;
+  if ( !dbc::hotfix_date_str( dbc->ptr ).empty() )
+  {
+    build_info += fmt::format( "hotfix {}/{}",
+        dbc::hotfix_date_str( dbc->ptr ),
+        dbc::hotfix_build_version( dbc->ptr ) );
+  }
+
   if ( git_info::available() )
   {
-    build_info += fmt::format(", git build {} {}",
+    if ( !build_info.empty() )
+    {
+      build_info += ", ";
+    }
+
+    build_info += fmt::format( "git build {} {}",
         git_info::branch(), git_info::revision());
   }
 
@@ -253,7 +265,9 @@ std::string util::version_info_str( const dbc_t* dbc )
 #endif
 
   return fmt::format( "SimulationCraft {} for World of Warcraft {} {} ({})",
-      SC_VERSION, dbc->wow_version(), dbc->wow_ptr_status(), build_info );
+      SC_VERSION, dbc::client_data_version_str( dbc->ptr ),
+      dbc->wow_ptr_status(),
+      build_info );
 }
 
 // Note, does not take into account that technically players could have different amounts of

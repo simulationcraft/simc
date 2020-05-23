@@ -5,10 +5,12 @@
 #ifndef CLIENT_DATA_HPP
 #define CLIENT_DATA_HPP
 
+#include "config.hpp"
+
 #include <algorithm>
 #include <vector>
+#include <string>
 
-#include "config.hpp"
 #include "util/generic.hpp"
 #include "util/span.hpp"
 
@@ -179,6 +181,21 @@ public:
     return T::nil();
   }
 };
+
+// Return World of Warcraft client data version used to generate the current client data
+std::string client_data_version_str( bool ptr );
+// Return World of Warcraft client data build version used to generate the current client data
+int client_data_build( bool ptr );
+// Return the modified timestamp of the hotfix cache file used to generated the current
+// client data.
+std::string hotfix_date_str( bool ptr );
+// Return the build number contained in the hotfix cache file used to generate the current
+// client data.
+int hotfix_build_version( bool ptr );
+// Return the verification hash associated with the hotfix cache file used to generate the
+// current client data.
+std::string hotfix_hash_str( bool ptr );
+
 
 } // Namespace dbc ends
 

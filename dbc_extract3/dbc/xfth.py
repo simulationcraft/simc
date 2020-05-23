@@ -8,10 +8,10 @@ from dbc.parser import DBCParserBase
 
 class XFTHParser(DBCParserBase):
     __XFTH_HEADER_FIELDS = [
-        HeaderFieldInfo('magic', '4s' ),
-        HeaderFieldInfo('unk_1', 'I'  ),
-        HeaderFieldInfo('build', 'I'  ),
-        HeaderFieldInfo('unk_4', '32s')
+        HeaderFieldInfo('magic',       '4s' ),
+        HeaderFieldInfo('version',     'I'  ),
+        HeaderFieldInfo('build',       'I'  ),
+        HeaderFieldInfo('verify_hash', '32s')
     ]
 
     def is_magic(self): return self.magic == b'XFTH'
