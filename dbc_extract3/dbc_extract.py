@@ -146,7 +146,7 @@ elif options.type == 'generator':
         logging.error('Unable to import %s', options.args[0])
         sys.exit(1)
 
-    obj = generator(options)
+    obj = generator(options, dbc.db.datastore(options))
 
     if not obj.initialize():
         sys.exit(1)
