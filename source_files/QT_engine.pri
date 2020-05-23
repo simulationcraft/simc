@@ -149,6 +149,7 @@ HEADERS += engine/util/sample_data.hpp
 HEADERS += engine/util/sc_resourcepaths.hpp
 HEADERS += engine/util/scoped_callback.hpp
 HEADERS += engine/util/span.hpp
+HEADERS += engine/util/static_map.hpp
 HEADERS += engine/util/stopwatch.hpp
 HEADERS += engine/util/string_view.hpp
 HEADERS += engine/util/timeline.hpp
