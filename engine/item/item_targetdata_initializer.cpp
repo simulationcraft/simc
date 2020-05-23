@@ -8,8 +8,8 @@
 #include "item/item.hpp"
 #include "player/sc_player.hpp"
 
-item_targetdata_initializer_t::item_targetdata_initializer_t(unsigned iid, const std::vector<slot_e>& s) :
-  item_id(iid), slots_(s)
+item_targetdata_initializer_t::item_targetdata_initializer_t(unsigned iid, util::span<const slot_e> s) :
+  item_id(iid), slots_( s.begin(), s.end() )
 { }
 
 item_targetdata_initializer_t::~item_targetdata_initializer_t() = default;
@@ -25,11 +25,11 @@ const special_effect_t* item_targetdata_initializer_t::find_effect(player_t * pl
     return 0;
   }
 
-  for (size_t i = 0; i < slots_.size(); ++i)
+  for ( slot_e slot : slots_ )
   {
-    if (player->items[slots_[i]].parsed.data.id == item_id)
+    if (player->items[slot].parsed.data.id == item_id)
     {
-      return player->items[slots_[i]].parsed.special_effects[0];
+      return player->items[slot].parsed.special_effects[0];
     }
   }
 

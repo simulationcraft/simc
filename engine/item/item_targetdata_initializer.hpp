@@ -7,6 +7,8 @@
 
 #include "config.hpp"
 #include "sc_enums.hpp"
+#include "util/span.hpp"
+
 #include <vector>
 
 struct actor_target_data_t;
@@ -30,7 +32,7 @@ struct item_targetdata_initializer_t
   unsigned item_id;
   std::vector< slot_e > slots_;
 
-  item_targetdata_initializer_t(unsigned iid, const std::vector< slot_e >& s);
+  item_targetdata_initializer_t(unsigned iid, util::span<const slot_e> s);
 
   virtual ~item_targetdata_initializer_t();
 

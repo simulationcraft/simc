@@ -2877,7 +2877,7 @@ struct empty_drinking_horn_cb_t : public dbc_proc_callback_t
 
 struct empty_drinking_horn_constructor_t : public item_targetdata_initializer_t
 {
-  empty_drinking_horn_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+  empty_drinking_horn_constructor_t( unsigned iid, util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   { }
 
@@ -3177,7 +3177,7 @@ struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
 
 struct prophecy_of_fear_constructor_t : public item_targetdata_initializer_t
 {
-  prophecy_of_fear_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+  prophecy_of_fear_constructor_t( unsigned iid, util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   { }
 
@@ -4929,9 +4929,7 @@ void unique_gear::register_hotfixes()
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
 {
-  std::vector< slot_e > trinkets;
-  trinkets.push_back( SLOT_TRINKET_1 );
-  trinkets.push_back( SLOT_TRINKET_2 );
+  static constexpr std::array<slot_e, 2> trinkets {{ SLOT_TRINKET_1, SLOT_TRINKET_2 }};
 
   sim -> register_target_data_initializer( empty_drinking_horn_constructor_t( 124238, trinkets ) );
   sim -> register_target_data_initializer( prophecy_of_fear_constructor_t( 124230, trinkets ) );
