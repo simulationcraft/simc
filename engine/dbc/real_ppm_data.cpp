@@ -2,11 +2,11 @@
 
 #include "config.hpp"
 
-#include "real_ppm.hpp"
+#include "real_ppm_data.hpp"
 
-#include "generated/real_ppm.inc"
+#include "generated/real_ppm_data.inc"
 #if SC_USE_PTR == 1
-#include "generated/real_ppm_ptr.inc"
+#include "generated/real_ppm_data_ptr.inc"
 #endif
 
 util::span<const rppm_modifier_t> rppm_modifier_t::data( bool ptr )

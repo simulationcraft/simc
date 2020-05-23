@@ -53,7 +53,7 @@ SRC += \
     dbc$(PATHSEP)item_scaling.cpp \
     dbc$(PATHSEP)item_weapon.cpp \
     dbc$(PATHSEP)rand_prop_points.cpp \
-    dbc$(PATHSEP)real_ppm.cpp \
+    dbc$(PATHSEP)real_ppm_data.cpp \
     dbc$(PATHSEP)sc_const_data.cpp \
     dbc$(PATHSEP)sc_data.cpp \
     dbc$(PATHSEP)sc_item_data.cpp \

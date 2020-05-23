@@ -31,7 +31,7 @@
 #include "dbc/item_naming.hpp"
 #include "dbc/item_scaling.hpp"
 #include "dbc/item_weapon.hpp"
-#include "dbc/real_ppm.hpp"
+#include "dbc/real_ppm_data.hpp"
 
 // ==========================================================================
 // Forward declaration
