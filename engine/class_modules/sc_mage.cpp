@@ -5857,7 +5857,7 @@ void mage_t::apl_fire()
   default_list->add_action( "purifying_blast" );
   default_list->add_action( "ripple_in_space" );
   default_list->add_action( "the_unbound_force" );
-  default_list->add_talent( this, "Rune of Power", "if=buff.combustion.down&(variable.time_to_combustion>full_recharge_time|variable.time_to_combustion>target.time_to_die)|variable.disable_combustion" );
+  default_list->add_talent( this, "Rune of Power", "if=buff.combustion.down&buff.rune_of_power.down&(variable.time_to_combustion>full_recharge_time|variable.time_to_combustion>target.time_to_die)|variable.disable_combustion" );
   default_list->add_action( "call_action_list,name=combustion_phase,if=!variable.disable_combustion&variable.time_to_combustion<=0" );
   default_list->add_action( this, "Fire Blast", "use_off_gcd=1,use_while_casting=1,if=(essence.memory_of_lucid_dreams.major|essence.memory_of_lucid_dreams.minor&azerite.blaster_master.enabled)&charges=max_charges&!buff.hot_streak.react&!(buff.heating_up.react&(buff.combustion.up&(action.fireball.in_flight|action.pyroblast.in_flight|action.scorch.executing)|target.health.pct<=30&action.scorch.executing))&!(!buff.heating_up.react&!buff.hot_streak.react&buff.combustion.down&(action.fireball.in_flight|action.pyroblast.in_flight))" );
   default_list->add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&(variable.time_to_combustion>0|variable.disable_combustion)" );
@@ -5909,7 +5909,6 @@ void mage_t::apl_fire()
   combustion_phase->add_action( this, "Dragon's Breath", "if=buff.combustion.remains<gcd.max&buff.combustion.up" );
   combustion_phase->add_action( this, "Scorch", "if=target.health.pct<=30&talent.searing_touch.enabled" );
 
-  rop_phase->add_talent( this, "Rune of Power" );
   rop_phase->add_action( this, "Flamestrike", "if=(active_enemies>=variable.hot_streak_flamestrike&(time-buff.combustion.last_expire>variable.delay_flamestrike|variable.disable_combustion))&buff.hot_streak.react" );
   rop_phase->add_action( this, "Pyroblast", "if=buff.hot_streak.react" );
   rop_phase->add_action( this, "Fire Blast", "use_off_gcd=1,use_while_casting=1,if=!(active_enemies>=variable.hard_cast_flamestrike&(time-buff.combustion.last_expire>variable.delay_flamestrike|variable.disable_combustion))&!firestarter.active&(!buff.heating_up.react&!buff.hot_streak.react&!prev_off_gcd.fire_blast&(action.fire_blast.charges>=2|(action.phoenix_flames.charges>=1&talent.phoenix_flames.enabled)|(talent.alexstraszas_fury.enabled&cooldown.dragons_breath.ready)|(talent.searing_touch.enabled&target.health.pct<=30)))" );
