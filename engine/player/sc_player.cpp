@@ -14,6 +14,7 @@
 #include "action/sequence.hpp"
 #include "action/snapshot_stats.hpp"
 #include "dbc/azerite.hpp"
+#include "dbc/item_set_bonus.hpp"
 #include "item/item.hpp"
 #include "action/dbc_proc_callback.hpp"
 #include "player/actor_target_data.hpp"
