@@ -380,6 +380,7 @@ static const std::array<azerite_power_entry_t, 379> __azerite_power_data { {
   { 579, 312928,     0, "Perseverance"                      , 0 },
   { 582, 317137,     0, "Heart of Darkness"                 , 3 },
 } };
+
 // Azerite Essences, wow build 8.3.0.34220
 static const std::array<azerite_essence_entry_t, 28> __azerite_essence_data { {
   {  2,   1, "Azeroth's Undying Gift"       },
@@ -527,3 +528,4 @@ static const std::array<azerite_essence_power_entry_t, 112> __azerite_essence_po
   { 143,  37,   3, { 313922, 313920 }, { 312768, 312774 } }, // The Formless Void
   { 144,  37,   4, { 313922, 313920 }, { 312770, 312775 } }, // The Formless Void
 } };
+

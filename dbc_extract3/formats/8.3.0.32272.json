@@ -480,7 +480,7 @@
   },
   "ItemNameDescription": {
     "fields": [
-      { "data_type": "S", "field": "desc", "formats": { "cpp": "%-30s" } },
+      { "data_type": "S", "field": "desc", "formats": { "cpp": "%-45s" } },
       { "data_type": "I", "field": "flags"                               }
     ]
   },

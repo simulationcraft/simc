@@ -1,5 +1,7 @@
 import sys, os, re, types, html.parser, urllib, datetime, signal, json, pathlib, csv, logging, io, fnmatch, traceback, binascii, time
 
+from collections import defaultdict
+
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants
@@ -254,6 +256,54 @@ class DataGenerator(object):
 
             self._race_map[DataGenerator._race_names[i]] = i
             self._race_map[1 << (i - 1)] = i
+
+    def db(self, dbname):
+        return dbc.db.datastore(self._options).get(dbname)
+
+    def output_record(self, *args, fmt = None, comment = None):
+        if fmt == None:
+            fmt = '  {{ {} }},{}\n'
+
+        a = list(*args)
+        if comment:
+            comment_str = ' // {}'.format(comment)
+        else:
+            comment_str = ''
+
+        self._out.write(fmt.format(', '.join(a), comment_str))
+
+    def output_header(self, *args, **kwargs):
+        header_str = kwargs.get('header', None)
+        typename = kwargs.get('type', None)
+        l = kwargs.get('length', None)
+        arrayname = kwargs.get('array', None)
+
+        if not l or not isinstance(l, int):
+            logging.error('Array length for {} must be a postive integer, not {}'.format(
+                self.__class__.__name__, l))
+            return
+
+        if not typename or not isinstance(typename, str):
+            logging.error('Structure name for {} must be a string'.format(
+                self.__class__.__name__))
+            return
+
+        if not header_str and not arrayname:
+            logging.error('Name or array for {} must be given'.format(
+                self.__class__.__name__))
+            return
+
+        if not arrayname:
+            arrayname = header_str.lower().replace(' ', '_')
+
+        if header_str:
+            self._out.write('// {}, wow build {}\n'.format(header_str, self._options.build))
+
+        self._out.write('static const std::array<{}, {}> __{}_data {{ {{\n'.format(
+            typename, l, self.format_str(arrayname)))
+
+    def output_footer(self):
+        self._out.write('} };\n\n')
 
     def format_str(self, string):
         return '%s%s%s' % (
@@ -1576,36 +1626,35 @@ class SpellDataGenerator(DataGenerator):
           ( 213229, 0 ),
           ( 243050, 0 ),        # Fire Rift
           ( 242922, 0 ),        # Jaws of Shadow
-		  ( 270569, 2 ),		# From the Shadows debuff
-		  ( 265279, 5 ),		# Demonic Tyrant - Demonfire Blast
-		  ( 270481, 5 ),		# Demonic Tyrant - Demonfire
-		  ( 267971, 5 ),		# Demonic Tyrant - Demonic Consumption
-		  ( 267972, 5 ),		# Demonic Tyrant - Demonic Consumption (not sure which is needed)
-		  ( 267997, 5 ),		# Vilefiend - Bile Spit
-		  ( 267999, 5 ),		# Vilefiend - Headbutt
-		  ( 279910, 2 ),		# Summon Wild Imp - Inner Demons version
-		  ( 267994, 2 ),		# Summon Shivarra
-		  ( 267996, 2 ),		# Summon Darkhound
-		  ( 267992, 2 ),		# Summon Bilescourge
-		  ( 268001, 2 ),		# Summon Ur'zul
-		  ( 267991, 2 ),		# Summon Void Terror
-		  ( 267995, 2 ),		# Summon Wrathguard
-		  ( 267988, 2 ),		# Summon Vicious Hellhound
-		  ( 267987, 2 ),		# Summon Illidari Satyr
-		  ( 267989, 2 ),		# Summon Eyes of Gul'dan
-		  ( 267986, 2 ),		# Summon Prince Malchezaar
-		  ( 272172, 5 ),		# Shivarra - Multi-Slash
-		  ( 272435, 5 ),		# Darkhound - Fel Bite
-		  ( 272167, 5 ),		# Bilescourge - Toxic Bile
-		  ( 272439, 5 ),		# Ur'zul - Many Faced Bite
-		  ( 272156, 5 ),		# Void Terror - Double Breath
-		  ( 272432, 5 ),		# Wrathguard - Overhead Assault
-		  ( 272013, 5 ),		# Vicious Hellhound - Demon Fangs
-		  ( 272012, 5 ),		# Illidari Satyr - Shadow Slash
-		  ( 272131, 5 ),		# Eye of Gul'dan - Eye of Gul'dan
-		  ( 267964, 0 ),		# new soul strike?
-		  ( 289367, 1 )			# Pandemic Invocation Damage
-
+          ( 270569, 2 ),	# From the Shadows debuff
+          ( 265279, 5 ),	# Demonic Tyrant - Demonfire Blast
+          ( 270481, 5 ),	# Demonic Tyrant - Demonfire
+          ( 267971, 5 ),	# Demonic Tyrant - Demonic Consumption
+          ( 267972, 5 ),	# Demonic Tyrant - Demonic Consumption (not sure which is needed)
+          ( 267997, 5 ),	# Vilefiend - Bile Spit
+          ( 267999, 5 ),	# Vilefiend - Headbutt
+          ( 279910, 2 ),	# Summon Wild Imp - Inner Demons version
+          ( 267994, 2 ),	# Summon Shivarra
+          ( 267996, 2 ),	# Summon Darkhound
+          ( 267992, 2 ),	# Summon Bilescourge
+          ( 268001, 2 ),	# Summon Ur'zul
+          ( 267991, 2 ),	# Summon Void Terror
+          ( 267995, 2 ),	# Summon Wrathguard
+          ( 267988, 2 ),	# Summon Vicious Hellhound
+          ( 267987, 2 ),	# Summon Illidari Satyr
+          ( 267989, 2 ),	# Summon Eyes of Gul'dan
+          ( 267986, 2 ),	# Summon Prince Malchezaar
+          ( 272172, 5 ),	# Shivarra - Multi-Slash
+          ( 272435, 5 ),	# Darkhound - Fel Bite
+          ( 272167, 5 ),	# Bilescourge - Toxic Bile
+          ( 272439, 5 ),	# Ur'zul - Many Faced Bite
+          ( 272156, 5 ),	# Void Terror - Double Breath
+          ( 272432, 5 ),	# Wrathguard - Overhead Assault
+          ( 272013, 5 ),	# Vicious Hellhound - Demon Fangs
+          ( 272012, 5 ),	# Illidari Satyr - Shadow Slash
+          ( 272131, 5 ),	# Eye of Gul'dan - Eye of Gul'dan
+          ( 267964, 0 ),	# new soul strike?
+          ( 289367, 1 )		# Pandemic Invocation Damage
         ),
 
         # Monk:
@@ -4030,492 +4079,359 @@ class SetBonusListGenerator(DataGenerator):
         self._out.write('} };\n')
 
 class SpellItemEnchantmentGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = ['SpellName', 'SpellEffect', 'GemProperties', 'SpellItemEnchantment', 'ItemSparse']
-
-    def filter_linked_spells(self, source_db, data, target_db, target_attr):
-        for effect in data._effects:
-            if not effect or effect.type != 53:
-                continue
-
-            return effect.misc_value_1
-
-        return 0
-
     def initialize(self):
         if not super().initialize():
             return False
 
-        self._data_store.link('SpellEffect', 'id_parent', 'SpellName', 'add_effect' )
-
-        # Map spell ids to spellitemenchantments, as there's no direct
-        # link between them, and 5.4+, we need/want to scale enchants properly
-        self._data_store.link('SpellName', self.filter_linked_spells, 'SpellItemEnchantment', 'spells')
-
-        # Map items to gem properties
-        self._data_store.link('ItemSparse', 'gem_props', 'GemProperties', 'item')
-
-        # Map gem properties to enchants
-        self._data_store.link('GemProperties', 'id_enchant', 'SpellItemEnchantment', 'gem_property')
+        # Create a mapping of enchant id <-> spell
+        self._spell_map = defaultdict(list)
+        [
+            self._spell_map[e.misc_value_1].append(e.id_parent)
+                for e in self.db('SpellEffect').values() if e.type == 53 and e.misc_value_1 > 0
+        ]
 
         return True
 
-    def filter(self):
-        return self._spellitemenchantment_db.keys()
+    def generate(self, data = None):
+        self.output_header(
+                header = 'Item enchantment data',
+                type = 'item_enchantment_data_t',
+                array = 'spell_item_ench',
+                length = len(self.db('SpellItemEnchantment')))
 
-    def generate(self, ids = None):
-        self._out.write('// Item enchantment data, wow build %s\n' % self._options.build)
-        self._out.write('static const std::array<item_enchantment_data_t, %d> __%sspell_item_ench%s_data { {\n' % (
-            len(ids),
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '' ))
-
-        for i in sorted(ids):
-            ench_data = self._spellitemenchantment_db[i]
-
-            fields = ench_data.field('id')
-            fields += ench_data.get_link('gem_property').get_link('item').field('id')
-            fields += ench_data.field('scaling_type', 'min_scaling_level', 'max_scaling_level', 'req_skill', 'req_skill_value')
-            fields += [ '{ %s }' % ', '.join(ench_data.field('type_1', 'type_2', 'type_3')) ]
-            fields += [ '{ %s }' % ', '.join(ench_data.field('amount_1', 'amount_2', 'amount_3')) ]
-            fields += [ '{ %s }' % ', '.join(ench_data.field('id_property_1', 'id_property_2', 'id_property_3')) ]
-            fields += [ '{ %s }' % ', '.join(ench_data.field('coeff_1', 'coeff_2', 'coeff_3')) ]
-            fields += ench_data.get_link('spells').field('id')
-            fields += ench_data.field('desc')
-            self._out.write('  { %s },\n' % (', '.join(fields)))
-
-        self._out.write('} };\n')
-
-class RandomPropertyPointsGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = [ 'RandPropPoints' ]
-
-    def filter(self):
-        ids = [ ]
-
-        for ilevel, data in self._randproppoints_db.items():
-            if ilevel >= 1 and ilevel <= self._options.scale_ilevel:
-                ids.append(ilevel)
-
-        return ids
-
-    def generate(self, ids = None):
-        # Sort keys
-        ids.sort()
-        self._out.write('// Random property points for item levels 1-%d, wow build %s\n' % (
-            self._options.scale_ilevel, self._options.build ))
-        self._out.write('static const std::array<random_prop_data_t, %d> __%srand_prop_points%s_data { {\n' % (
-            len(ids),
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '' ))
-
-        for id in ids:
-            rpp = self._randproppoints_db[id]
-
-            fields = rpp.field('id', 'damage_replace_stat', 'damage_secondary')
-            fields += [ '{ %s }' % ', '.join(rpp.field('epic_points_1', 'epic_points_2', 'epic_points_3', 'epic_points_4', 'epic_points_5')) ]
-            fields += [ '{ %s }' % ', '.join(rpp.field('rare_points_1', 'rare_points_2', 'rare_points_3', 'rare_points_4', 'rare_points_5')) ]
-            fields += [ '{ %s }' % ', '.join(rpp.field('uncm_points_1', 'uncm_points_2', 'uncm_points_3', 'uncm_points_4', 'uncm_points_5')) ]
-
-            self._out.write(' { %s },\n' % (', '.join(fields)))
-
-        self._out.write('} };\n')
-
-class WeaponDamageDataGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        self._dbc = [ 'ItemDamageOneHand', 'ItemDamageOneHandCaster',
-                      'ItemDamageTwoHand', 'ItemDamageTwoHandCaster',  ]
-
-        super().__init__(options, data_store)
-
-    def filter(self):
-
-        return None
-
-    def generate(self, ids = None):
-        for dbname in self._dbc:
-            db = getattr(self, '_%s_db' % dbname.lower() )
-            data = list(filter(lambda v: v.id <= self._options.scale_ilevel, db.values()))
-
-            tokenized_name = '_'.join(re.findall('[A-Z][^A-Z]*', dbname)).lower()
-            struct_name = '{}_data_t'.format(tokenized_name)
-
-            self._out.write('// Item damage data from %s.db2, ilevels 1-%d, wow build %s\n' % (
-                dbname, self._options.scale_ilevel, self._options.build ))
-            self._out.write('static const std::array<%s, %d> __%s%s%s_data { {\n' % (
-                struct_name, len(db.items()),
-                self._options.prefix and ('%s_' % self._options.prefix) or '',
-                tokenized_name,
-                self._options.suffix and ('_%s' % self._options.suffix) or '' ))
-
-            for entry in sorted(data, key = lambda v: v.id):
-                fields = entry.field('ilevel')
-                fields += [ '{ %s }' % ', '.join(entry.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
-
-                self._out.write('  { %s },\n' % (', '.join(fields)))
-
-            self._out.write('} };\n\n')
-
-class ArmorValueDataGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        self._dbc = [ 'ItemArmorQuality', 'ItemArmorShield', 'ItemArmorTotal' ]
-        super().__init__(options, data_store)
-
-    def generate(self, ids = None):
-        for dbname in self._dbc:
-            db = getattr(self, '_%s_db' % dbname.lower() )
-            data = list(filter(lambda v: v.id <= self._options.scale_ilevel, db.values()))
-
-            self._out.write('// Item armor values data from %s.db2, ilevels 1-%d, wow build %s\n' % (
-                dbname, self._options.scale_ilevel, self._options.build ))
-
-            tokenized_name = '_'.join(re.findall('[A-Z][^A-Z]*', dbname)).lower()
-            struct_name = '{}_data_t'.format(tokenized_name)
-
-            self._out.write('static const std::array<%s, %d> __%s%s%s_data { {\n' % (
-                struct_name, len(data),
-                self._options.prefix and ('%s_' % self._options.prefix) or '',
-                tokenized_name,
-                self._options.suffix and ('_%s' % self._options.suffix) or '' ))
-
-            for entry in sorted(data, key = lambda v: v.id):
-                fields = entry.field('id')
-                if dbname != 'ItemArmorTotal':
-                    fields += [ '{ %s }' % ', '.join(entry.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
-                else:
-                    fields += [ '{ %s }' % ', '.join(entry.field('v_1', 'v_2', 'v_3', 'v_4')) ]
-                self._out.write('  { %s },\n' % (', '.join(fields)))
-
-            self._out.write('} };\n\n')
-
-class ArmorLocationDataGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = [ 'ArmorLocation' ]
-
-    def generate(self, ids = None):
-        s = '// Armor location based multipliers, wow build %s\n' % ( self._options.build )
-
-        self._out.write('static const std::array<item_armor_location_data_t, %d> __%sarmor_location%s_data { {\n' % (
-            len(self._armorlocation_db.keys()),
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '' ))
-
-        for inv_type in sorted(self._armorlocation_db.keys()):
-            data = self._armorlocation_db[inv_type]
+        for id, data in sorted(self.db('SpellItemEnchantment').items()):
+            # Find spell item enchantments mapped to unique items
+            items = [
+                item for gem_property in data.child_refs('GemProperties')
+                     for item in gem_property.child_refs('ItemSparse')
+            ]
 
             fields = data.field('id')
-            fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4')) ]
-            self._out.write('  { %s },\n' % (', '.join(fields)))
+            if len(items) == 1:
+                fields += items[0].field('id')
+            else:
+                fields += self.db('ItemSparse').default().field('id')
 
-        self._out.write('} };\n\n')
+            fields += data.field('scaling_type', 'min_scaling_level', 'max_scaling_level',
+                                 'req_skill', 'req_skill_value')
+            fields += [ '{ %s }' % ', '.join(data.field('type_1', 'type_2', 'type_3')) ]
+            fields += [ '{ %s }' % ', '.join(
+                data.field('amount_1', 'amount_2', 'amount_3')) ]
+            fields += [ '{ %s }' % ', '.join(
+                data.field('id_property_1', 'id_property_2', 'id_property_3')) ]
+            fields += [ '{ %s }' % ', '.join(
+                data.field('coeff_1', 'coeff_2', 'coeff_3')) ]
+
+            if len(self._spell_map[id]) >= 1:
+                fields += self.db('SpellName')[self._spell_map[id][0]].field('id')
+            else:
+                fields += self.db('SpellName').default().field('id')
+
+            fields += data.field('desc')
+
+            self.output_record(fields)
+
+        self.output_footer()
+
+class RandomPropertyPointsGenerator(DataGenerator):
+    def filter(self):
+        return [
+            v for v in self.db('RandPropPoints').values()
+                if v.id >= 1 and v.id <= self._options.scale_ilevel
+        ]
+
+    def generate(self, data = None):
+        self.output_header(
+                header   = 'Random property points for item levels 1-{}'.format(
+                    self._options.scale_ilevel),
+                type = 'random_prop_data_t',
+                array = 'rand_prop_points',
+                length = len(data))
+
+        for rpp in sorted(data, key = lambda e: e.id):
+            fields = rpp.field('id', 'damage_replace_stat', 'damage_secondary')
+            fields += [ '{ %s }' % ', '.join(
+                rpp.field('epic_points_1', 'epic_points_2', 'epic_points_3',
+                          'epic_points_4', 'epic_points_5')) ]
+            fields += [ '{ %s }' % ', '.join(
+                rpp.field('rare_points_1', 'rare_points_2', 'rare_points_3',
+                          'rare_points_4', 'rare_points_5')) ]
+            fields += [ '{ %s }' % ', '.join(
+                rpp.field('uncm_points_1', 'uncm_points_2', 'uncm_points_3',
+                          'uncm_points_4', 'uncm_points_5')) ]
+
+            self.output_record(fields)
+
+        self.output_footer()
+
+class WeaponDamageDataGenerator(DataGenerator):
+    def generate(self, data = None):
+        for dbname in ['ItemDamageOneHand', 'ItemDamageOneHandCaster',
+                       'ItemDamageTwoHand', 'ItemDamageTwoHandCaster']:
+
+            tokenized_name = '_'.join(re.findall('[A-Z][^A-Z]*', dbname)).lower()
+            struct_name = '{}_data_t'.format(tokenized_name)
+
+            data = [
+                v for v in self.db(dbname).values()
+                    if v.id >= 1 and v.id <= self._options.scale_ilevel
+            ]
+
+            self.output_header(
+                    header   = 'Item damage data from {}.db2'.format(dbname),
+                    type = struct_name,
+                    array = tokenized_name,
+                    length = len(data))
+
+            for entry in sorted(data, key = lambda e: e.id):
+                fields = entry.field('ilevel')
+                fields += [ '{ %s }' % ', '.join(
+                    entry.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
+
+                self.output_record(fields)
+
+            self.output_footer()
+
+class ArmorValueDataGenerator(DataGenerator):
+    def generate(self, data  = None):
+        for dbname in ('ItemArmorQuality', 'ItemArmorShield', 'ItemArmorTotal'):
+            tokenized_name = '_'.join(re.findall('[A-Z][^A-Z]*', dbname)).lower()
+            struct_name = '{}_data_t'.format(tokenized_name)
+
+            data = [
+                v for v in self.db(dbname).values()
+                    if v.id >= 1 and v.id <= self._options.scale_ilevel
+            ]
+
+            self.output_header(
+                    headere   = 'Item armor values data from {}.db2'.format(dbname),
+                    type = struct_name,
+                    array = tokenized_name,
+                    length = len(data))
+
+            for entry in sorted(data, key = lambda e: e.id):
+                fields = entry.field('id')
+                if dbname != 'ItemArmorTotal':
+                    fields += ['{ %s }' % ', '.join(
+                        entry.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7'))]
+                else:
+                    fields += ['{ %s }' % ', '.join(entry.field('v_1', 'v_2', 'v_3', 'v_4'))]
+
+                self.output_record(fields)
+
+            self.output_footer()
+
+class ArmorLocationDataGenerator(DataGenerator):
+    def generate(self, data = None):
+        self.output_header(
+                header = 'Armor location based multipliers',
+                type = 'item_armor_location_data_t',
+                array = 'armor_location',
+                length = len(self.db('ArmorLocation')))
+
+        for inv_type, data in sorted(self.db('ArmorLocation').items()):
+            fields = data.field('id')
+            fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4')) ]
+            self.output_record(fields)
+
+        self.output_footer()
 
 class GemPropertyDataGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = [ 'GemProperties' ]
-
     def filter(self):
-        return [ v for v in self._gemproperties_db.values() if v.color > 0 or v.id_enchant > 0 ]
+        return [
+            v for v in self.db('GemProperties').values() if v.color > 0 or v.ref('id_enchant').id != 0
+        ]
 
-    def generate(self, ids = None):
-        ids.sort(key = lambda v: v.id)
-        self._out.write('// Gem properties, wow build %s\n' % ( self._options.build ))
+    def generate(self, data = None):
+        data.sort(key = lambda v: v.id)
 
-        self._out.write('static const std::array<gem_property_data_t, %d> __%sgem_property%s_data { {\n' % (
-            len(ids),
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '' ))
+        self.output_header(
+                header = 'Gem properties',
+                type = 'gem_property_data_t',
+                array = 'gem_property',
+                length = len(data))
 
-        for data in ids:
-            fields = data.field('id', 'id_enchant', 'color', 'min_ilevel')
-            self._out.write('  { %s },\n' % (', '.join(fields)))
+        for entry in data:
+            self.output_record(entry.field('id', 'id_enchant', 'color', 'min_ilevel'),
+                    comment = entry.ref('id_enchant').id and entry.ref('id_enchant').desc or '')
 
-        self._out.write('} };\n\n')
+        self.output_footer()
 
 class ItemBonusDataGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
+    def generate(self, data = None):
+        self.output_header(
+                header = 'Item bonuses',
+                type = 'item_bonus_entry_t',
+                array = 'item_bonus',
+                length = len(self.db('ItemBonus')))
 
-        self._dbc = [ 'ItemBonus' ]
+        for id, data in sorted(self.db('ItemBonus').items(), key = lambda v: (v[1].id_node, v[1].id)):
+            self.output_record(data.field('id', 'id_node', 'type', 'val_1', 'val_2', 'index'))
 
-    def generate(self, ids):
-        # Bonus definitions
-
-        data_str = "%sitem_bonus%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        self._out.write('// Item bonuses, wow build %s\n' % ( self._options.build ))
-
-        self._out.write('static const std::array<item_bonus_entry_t, %d> __%s_data { {\n' % (
-            len(self._itembonus_db.keys()), data_str))
-
-        for id, data in sorted(self._itembonus_db.items(), key = lambda v: (v[1].id_node, v[1].id)):
-            fields = data.field('id', 'id_node', 'type', 'val_1', 'val_2', 'index')
-            self._out.write('  { %s },\n' % (', '.join(fields)))
-
-        self._out.write('} };\n\n')
-
-def curve_point_sort(a, b):
-    if a.id_distribution < b.id_distribution:
-        return -1
-    elif a.id_distribution > b.id_distribution:
-        return 1
-    else:
-        if a.curve_index < b.curve_index:
-            return -1
-        elif a.curve_index > b.curve_index:
-            return 1
-        else:
-            return 0
+        self.output_footer()
 
 class ScalingStatDataGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
+    def generate(self, data = None):
+        self.output_header(
+                header = 'Scaling stat distributions',
+                type = 'scaling_stat_distribution_t',
+                array = 'scaling_stat_distribution',
+                length = len(self.db('ScalingStatDistribution')))
 
-        self._dbc = [ 'ScalingStatDistribution', 'CurvePoint' ]
+        for id, data in sorted(self.db('ScalingStatDistribution').items()):
+            self.output_record(data.field('id', 'min_level', 'max_level', 'id_curve' ))
 
-    def generate(self, ids = None):
-        # Bonus trees
+        self.output_footer()
 
-        data_str = "%sscaling_stat_distribution%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
+        self.output_header(
+                header = 'Curve points data',
+                type = 'curve_point_t',
+                array = 'curve_point',
+                length = len(self.db('CurvePoint')))
 
-        self._out.write('// Scaling stat distributions, wow build %s\n' % ( self._options.build ))
-        self._out.write('static const std::array<scaling_stat_distribution_t, %d> __%s_data { {\n' % (
-            len(self._scalingstatdistribution_db.keys()), data_str))
+        for id, data in sorted(self.db('CurvePoint').items(), key = lambda k: (k[1].id_distribution, k[1].curve_index)):
+            self.output_record(data.field('id_distribution', 'curve_index', 'val_1', 'val_2' ))
 
-        for id, data in sorted(self._scalingstatdistribution_db.items()):
-            fields = data.field('id', 'min_level', 'max_level', 'id_curve' )
-            self._out.write('  { %s },\n' % (', '.join(fields)))
-
-        self._out.write('} };\n\n')
-
-        data_str = "%scurve_point%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        self._out.write('// Curve points data, wow build %s\n' % ( self._options.build ))
-
-        self._out.write('static const std::array<curve_point_t, %d> __%s_data { {\n' % (
-            len(self._curvepoint_db.keys()), data_str))
-
-        for id, data in sorted(self._curvepoint_db.items(), key = lambda k: (k[1].id_distribution, k[1].curve_index)):
-            fields = data.field('id_distribution', 'curve_index', 'val_1', 'val_2' )
-            self._out.write('  { %s },\n' % (', '.join(fields)))
-
-        self._out.write('} };\n\n')
+        self.output_footer()
 
 class ItemNameDescriptionDataGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
+    def generate(self, data = None):
+        self.output_header(
+                header = 'Item name descriptions',
+                type = 'item_name_description_t',
+                array = 'item_name_description',
+                length = len(self.db('ItemNameDescription')))
 
-        self._dbc = [ 'ItemNameDescription' ]
+        for id, data in sorted(self.db('ItemNameDescription').items()):
+            self.output_record(data.field( 'id', 'desc' ))
 
-    def generate(self, ids = None):
-        data_str = "%sitem_name_description%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        self._out.write('// Item name descriptions, wow build %s\n' % ( self._options.build ))
-
-        self._out.write('static const std::array<item_name_description_t, %d> __%s_data { {\n' % (
-            len(self._itemnamedescription_db.keys()), data_str))
-
-        for id, data in sorted(self._itemnamedescription_db.items()):
-            fields = data.field( 'id', 'desc' )
-            self._out.write('  { %s },\n' % (', '.join(fields)))
-
-        self._out.write('} };\n\n')
+        self.output_footer()
 
 class ItemChildEquipmentGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
+    def generate(self, data = None):
+        self.output_header(
+                header = 'Item child equipment',
+                type = 'item_child_equipment_t',
+                length = len(self.db('ItemChildEquipment')))
 
-        self._dbc = [ 'ItemChildEquipment' ]
+        for id, data in sorted(self.db('ItemChildEquipment').items()):
+            self.output_record(data.field( 'id', 'id_item', 'id_child' ),
+                comment = 'parent={}, child={}'.format(
+                    data.ref('id_item').name, data.ref('id_child').name))
 
-    def generate(self, ids = None):
-        self._out.write('// Item child equipment, wow build %s\n' % ( self._options.build ))
-
-        self._out.write('static const std::array<item_child_equipment_t, %d> __%s_data { {\n' % (
-            len(self._itemchildequipment_db.keys()), self.format_str('item_child_equipment')))
-
-        for id, data in sorted(self._itemchildequipment_db.items()):
-            fields = data.field( 'id', 'id_item', 'id_child' )
-            self._out.write('  { %s },\n' % (', '.join(fields)))
-
-        self._out.write('} };\n\n')
+        self.output_footer()
 
 class AzeriteDataGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
-        super().__init__(options, data_store)
-
-        self._dbc = [ 'AzeriteEmpoweredItem', 'AzeritePower', 'AzeritePowerSetMember', 'SpellName',
-            'ItemSparse', 'AzeriteItemMilestonePower' ]
-
     def filter(self):
-        ids = set()
+        power_data = set()
         power_sets = set()
 
         # Figure out a valid set of power set ids
-        for id, data in self._azeriteempowereditem_db.items():
-            if data.id_item not in self._itemsparse_db:
+        for id, data in self.db('AzeriteEmpoweredItem').items():
+            if data.ref('id_item').id == 0:
                 continue
 
             power_sets.add(data.id_power_set)
 
-        for id, data in self._azeritepowersetmember_db.items():
+        for id, data in self.db('AzeritePowerSetMember').items():
             # Only use azerite power sets that are associated with items
             if data.id_parent not in power_sets:
                 continue
 
-            power = self._azeritepower_db[data.id_power]
-            if power.id != data.id_power:
+            if data.ref('id_power').ref('id_spell').id == 0:
                 continue
 
-            if power.id_spell == 0:
+            power_data.add(data.ref('id_power'))
+
+        for id, data in self.db('AzeriteItemMilestonePower').items():
+            if data.ref('id_power').ref('id_spell').id == 0:
                 continue
 
-            spell = self._spellname_db[power.id_spell]
-            if spell.id != power.id_spell:
-                continue
+            power_data.add(data.ref('id_power'))
 
-            ids.add(power.id)
+        return list(power_data)
 
-        if self._options.build >= dbc.WowVersion(8, 2, 0, 30080):
-            for id, data in self._azeriteitemmilestonepower_db.items():
-                power = self._azeritepower_db[data.id_power]
-                if power.id != data.id_power:
-                    continue
+    def generate(self, data = None):
+        data = sorted(data, key = lambda e: e.id)
 
-                if power.id_spell == 0:
-                    continue
+        self.output_header(
+                header = 'Azerite powers',
+                type = 'azerite_power_entry_t',
+                array = 'azerite_power',
+                length = len(data))
 
-                spell = self._spellname_db[power.id_spell]
-                if spell.id != power.id_spell:
-                    continue
-
-                ids.add(power.id)
-
-        return list(ids)
-
-    def generate(self, ids = None):
-        data_str = "%sazerite_power%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        self._out.write('// Azerite powers, wow build %s\n' % ( self._options.build ))
-
-        self._out.write('static const std::array<azerite_power_entry_t, %d> __%s_data { {\n' % (
-            len(ids), data_str))
-
-        for id in sorted(ids):
-            entry = self._azeritepower_db[id]
-            spell = self._spellname_db[entry.id_spell]
+        for entry in data:
             fields = entry.field('id', 'id_spell', 'id_bonus')
-            fields += spell.field('name')
+            fields += entry.ref('id_spell').field('name')
+
             # Azerite essence stuff needs special handling, fake a tier 0 for
             # them since they are not "real" azerite powers
-            if spell.name == 'Perseverance' or id in [574, 581]:
-                fields += self._azeritepowersetmember_db[0].field('tier')
+            if entry.ref('id_spell').name == 'Perseverance' or entry.id in [574, 581]:
+                fields += self.db('AzeritePowerSetMember')[0].field('tier')
             else:
-                for id, data in self._azeritepowersetmember_db.items():
-                    if data.id_parent == 1:
+                for id, set_entry in self.db('AzeritePowerSetMember').items():
+                    if set_entry.id_parent == 1:
                         continue
 
-                    if entry.id != data.id_power:
+                    if entry.id != set_entry.id_power:
                         continue
-                    fields += data.field('tier')
+
+                    fields += set_entry.field('tier')
                     break
 
-            self._out.write('  { %s },\n' % ', '.join(fields))
+            self.output_record(fields)
 
-        self._out.write('} };\n')
+        self.output_footer()
 
 class AzeriteEssenceDataGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
-        super().__init__(options, data_store)
+    def generate(self, data = None):
+        data = sorted(self.db('AzeriteEssence').values(), key = lambda e: e.id)
 
-        self._dbc = ['AzeriteEssence', 'AzeriteEssencePower']
+        self.output_header(
+                header = 'Azerite Essences',
+                type = 'azerite_essence_entry_t',
+                array = 'azerite_essence',
+                length = len(data))
 
-    def generate(self, ids = None):
-        ids = sorted(self._azeriteessence_db.keys())
-        data_str = "%sazerite_essence%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
+        for entry in data:
+            self.output_record(entry.field('id', 'category', 'name'))
 
-        self._out.write('// Azerite Essences, wow build %s\n' % ( self._options.build ))
+        self.output_footer()
 
-        self._out.write('static const std::array<azerite_essence_entry_t, %d> __%s_data { {\n' % (
-            len(ids), data_str))
+        data = sorted(self.db('AzeriteEssencePower').values(),
+                key = lambda x: (x.id_essence, x.rank))
 
-        for id in ids:
-            entry = self._azeriteessence_db[id]
-            fields = entry.field('id', 'category', 'name')
+        self.output_header(
+                header = 'Azerite Essence Powers',
+                type = 'azerite_essence_power_entry_t',
+                array = 'azerite_essence_power',
+                length = len(data))
 
-            self._out.write('  { %s },\n' % ', '.join(fields))
-
-        self._out.write('} };\n\n')
-
-        ids = sorted(self._azeriteessencepower_db.values(), key = lambda x: (x.id_essence, x.rank))
-
-        data_str = "%sazerite_essence_power%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        self._out.write('// Azerite Essence Powers, wow build %s\n' % ( self._options.build ))
-
-        self._out.write('static const std::array<azerite_essence_power_entry_t, %d> __%s_data { {\n' % (
-            len(ids), data_str))
-
-        for entry in ids:
+        for entry in data:
             fields = entry.field('id', 'id_essence', 'rank')
 
-            fields.append('{ %s }' % ', '.join(entry.field('id_spell_major_base', 'id_spell_minor_base')))
-            fields.append('{ %s }' % ', '.join(entry.field('id_spell_major_upgrade', 'id_spell_minor_upgrade')))
+            fields.append('{ %s }' % ', '.join(
+                entry.field('id_spell_major_base', 'id_spell_minor_base')))
+            fields.append('{ %s }' % ', '.join(
+                entry.field('id_spell_major_upgrade', 'id_spell_minor_upgrade')))
 
-            self._out.write('  { %s }, // %s\n' % (', '.join(fields), self._azeriteessence_db[entry.id_essence].name))
+            self.output_record(fields, comment = entry.ref('id_essence').name)
 
-        self._out.write('} };\n')
+        self.output_footer()
 
 class ArmorMitigationConstantValues(DataGenerator):
-    def __init__(self, options, data_store = None):
-        super().__init__(options, data_store)
-
-        self._dbc = ['ExpectedStat']
-
-    def generate(self, ids = None):
-        data_str = "%sarmor_mitigation_constants%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
+    def generate(self, data = None):
         filtered_entries = [
-            v for _, v in self._expectedstat_db.items()
+            v for _, v in self.db('ExpectedStat').items()
                 if v.id_expansion == -2 and v.id_parent <= self._options.level + 3
         ]
         entries = sorted(filtered_entries, key = lambda v: v.id_parent)
 
-        self._out.write('// Armor mitigation constants (K-values), wow build %s\n' %
-                self._options.build)
-
-        self._out.write('static const std::array<double, %d> __%s_data { {\n' % (
-            len(entries), data_str))
+        self.output_header(
+                header = 'Armor mitigation constants (K-values)',
+                type = 'double',
+                array = 'armor_mitigation_constants',
+                length = len(entries))
 
         for index in range(0, len(entries), 5):
             n_entries = min(len(entries) - index, 5)
@@ -4526,31 +4442,21 @@ class ArmorMitigationConstantValues(DataGenerator):
 
             self._out.write('  {},\n'.format(', '.join(values)))
 
-        self._out.write('} };\n')
+        self.output_footer()
 
 class NpcArmorValues(DataGenerator):
-    def __init__(self, options, data_store = None):
-        super().__init__(options, data_store)
-
-        self._dbc = ['ExpectedStat']
-
-    def generate(self, ids = None):
-        data_str = "%snpc_armor%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
+    def generate(self, data = None):
         filtered_entries = [
-            v for _, v in self._expectedstat_db.items()
+            v for _, v in self.db('ExpectedStat').items()
                 if v.id_expansion == -2 and v.id_parent <= self._options.level + 3
         ]
         entries = sorted(filtered_entries, key = lambda v: v.id_parent)
 
-        self._out.write('// Npc base armor values, wow build %s\n' %
-                self._options.build)
-
-        self._out.write('static const std::array<double, %d> __%s_data { {\n' % (
-            len(entries), data_str))
+        self.output_header(
+                header = 'Npc base armor values',
+                type = 'double',
+                array = 'npc_armor',
+                length = len(entries))
 
         for index in range(0, len(entries), 5):
             n_entries = min(len(entries) - index, 5)
@@ -4561,19 +4467,13 @@ class NpcArmorValues(DataGenerator):
 
             self._out.write('  {},\n'.format(', '.join(values)))
 
-        self._out.write('} };\n')
-
+        self.output_footer()
 
 class TactKeyGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
-        super().__init__(options, data_store)
-
-        self._dbc = ['TactKey', 'TactKeyLookup']
-
-    def generate(self, ids = None):
+    def generate(self, data = None):
         map_ = {}
 
-        for id, data in self._tactkeylookup_db.items():
+        for id, data in self.db('TactKeyLookup').items():
             vals = []
             for idx in range(0, 8):
                 vals.append('{:02x}'.format(getattr(data, 'key_name_{}'.format(idx + 1))))
@@ -4581,7 +4481,7 @@ class TactKeyGenerator(DataGenerator):
             map_[id] = {'id': id, 'key_name': ''.join(vals), 'key': None}
 
 
-        for id, data in self._tactkey_db.items():
+        for id, data in self.db('TactKey').items():
             if id not in map_:
                 map_[id] = {'id': id, 'key_name': None, 'key': None}
 
@@ -4599,54 +4499,39 @@ class TactKeyGenerator(DataGenerator):
         self._out.write('[\n{}\n]'.format(',\n'.join(out)))
 
 class ItemEffectGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = [ 'ItemEffect', 'ItemBonus', 'SpellName' ]
-
     # For now export only the 8.3 required item effects for Corrupted gear
     def filter(self):
         ids = []
 
-        for bonus in self._itembonus_db.values():
+        for id, bonus in self.db('ItemBonus').items():
             if bonus.type != 23:
                 continue
 
-            effect = self._itemeffect_db[bonus.val_1]
+            effect = self.db('ItemEffect')[bonus.val_1]
             if effect.id == 0:
                 continue
 
-            spell = self._spellname_db[effect.id_spell]
-            if spell.id == 0:
+            if effect.ref('id_spell').id == 0:
                 continue
 
-            ids.append(effect.id)
+            ids.append(effect)
 
         return ids
 
-    def generate(self, ids = None):
-        data_str = "%sitem_effect%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
+    def generate(self, data = None):
+        self.output_header(
+                header = 'Item effects',
+                type = 'item_effect_t',
+                array = 'item_effect',
+                length = len(data))
 
-        self._out.write('// Item effects, wow build %s\n' % ( self._options.build ))
-
-        self._out.write('static const std::array<item_effect_t, %d> __%s_data { {\n' % (
-            len(ids), data_str))
-
-        for key in sorted(ids):
-            data = self._itemeffect_db[key]
-            spell = self._spellname_db[data.id_spell]
-            if spell.id == 0:
-                continue
-
-            fields = data.field( 'id', 'id_spell', 'index', 'trigger_type',
+        for entry in sorted(data, key = lambda e: e.id):
+            fields = entry.field( 'id', 'id_spell', 'index', 'trigger_type',
                     'cooldown_duration', 'cooldown_group', 'cooldown_group_duration' )
 
-            self._out.write('  { %s }, // %s\n' % (', '.join(fields), spell.name))
+            self.output_record(fields, comment = entry.ref('id_spell').name)
 
-        self._out.write('} };\n\n')
+        self.output_footer()
 
 class ClientDataVersionGenerator(DataGenerator):
     # Note, just returns the moddified time of the hotfix file. Hotfix file

@@ -91,14 +91,14 @@ class RawDBCRecord:
             return []
 
         db = dbc.db.datastore().get(child_db)
-        return db.records_for_references(self.dbc_name(), self._id)
+        return db.records_for_reference(self.dbc_name(), self._id)
 
     # Get the parent object if defined by the data format
     def parent_record(self, field = None):
         # Key block handling
-        if not dbname:
+        if not field:
             if self._parent_key_db:
-                db = dbc.db.datastore().get(dbname)
+                db = dbc.db.datastore().get(self._parent_key_db)
                 return db[self._key]
             else:
                 raise ValueError('No key-block based parent database defined for "{}"',

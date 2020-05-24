@@ -36,10 +36,10 @@ class DBCDB(dict):
         if referencedb_name not in self.__references:
             return []
 
-        if reference_id not in self.__references[reference_name]:
+        if reference_id not in self.__references[referencedb_name]:
             return []
 
-        return self.__references[reference_name][reference_id]
+        return self.__references[referencedb_name][reference_id]
 
     def __add_parent_entry(self, value):
         if value.id_parent not in self.__parent:
