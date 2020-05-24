@@ -5787,7 +5787,7 @@ void mage_t::apl_arcane()
     "since the AB was free anyway." );
   burn->add_action( "lights_judgment,if=buff.arcane_power.down" );
   burn->add_action( "bag_of_tricks,if=buff.arcane_power.down" );
-  burn->add_talent( this, "Rune of Power", "if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
+  burn->add_talent( this, "Rune of Power", "if=buff.rune_of_power.down&!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
   burn->add_action( "berserking" );
   burn->add_action( this, "Arcane Power" );
   burn->add_action( "use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains" );
@@ -5816,7 +5816,7 @@ void mage_t::apl_arcane()
   conserve->add_action( this, "Arcane Blast", "if=buff.rule_of_threes.up&buff.arcane_charge.stack>3", "Arcane Blast shifts up in priority when running rule of threes." );
   conserve->add_action( "use_item,name=tidestorm_codex,if=buff.rune_of_power.down&!buff.arcane_power.react&cooldown.arcane_power.remains>20" );
   conserve->add_action( "use_item,effect_name=cyclotronic_blast,if=buff.rune_of_power.down&!buff.arcane_power.react&cooldown.arcane_power.remains>20" );
-  conserve->add_talent( this, "Rune of Power", "if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|full_recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)" );
+  conserve->add_talent( this, "Rune of Power", "if=buff.rune_of_power.down&buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|full_recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)" );
   conserve->add_action( this, "Arcane Missiles", "if=mana.pct<=95&buff.clearcasting.react&active_enemies<3,chain=1" );
   conserve->add_action( this, "Arcane Barrage", "if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&((mana.pct<=variable.conserve_mana)|(talent.rune_of_power.enabled&cooldown.arcane_power.remains>cooldown.rune_of_power.full_recharge_time&mana.pct<=variable.conserve_mana+25))|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)", "During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible (aka conserve_mana threshhold) and then swap to a 4x AB->Abarr conserve rotation. If we do not have 4 AC, we can dip slightly lower to get a 4th AC. We also sustain at a higher mana percentage when we plan to use a Rune of Power during conserve phase, so we can burn during the Rune of Power." );
   conserve->add_talent( this, "Supernova", "if=mana.pct<=95", "Supernova is barely worth casting, which is why it is so far down, only just above AB. " );
@@ -5857,7 +5857,7 @@ void mage_t::apl_fire()
   default_list->add_action( "purifying_blast" );
   default_list->add_action( "ripple_in_space" );
   default_list->add_action( "the_unbound_force" );
-  default_list->add_talent( this, "Rune of Power", "if=buff.combustion.down&buff.rune_of_power.down&(variable.time_to_combustion>full_recharge_time|variable.time_to_combustion>target.time_to_die)|variable.disable_combustion" );
+  default_list->add_talent( this, "Rune of Power", "if=buff.rune_of_power.down&(buff.combustion.down&(variable.time_to_combustion>full_recharge_time|variable.time_to_combustion>target.time_to_die)|variable.disable_combustion)" );
   default_list->add_action( "call_action_list,name=combustion_phase,if=!variable.disable_combustion&variable.time_to_combustion<=0" );
   default_list->add_action( this, "Fire Blast", "use_off_gcd=1,use_while_casting=1,if=(essence.memory_of_lucid_dreams.major|essence.memory_of_lucid_dreams.minor&azerite.blaster_master.enabled)&charges=max_charges&!buff.hot_streak.react&!(buff.heating_up.react&(buff.combustion.up&(action.fireball.in_flight|action.pyroblast.in_flight|action.scorch.executing)|target.health.pct<=30&action.scorch.executing))&!(!buff.heating_up.react&!buff.hot_streak.react&buff.combustion.down&(action.fireball.in_flight|action.pyroblast.in_flight))" );
   default_list->add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&(variable.time_to_combustion>0|variable.disable_combustion)" );
@@ -5886,7 +5886,7 @@ void mage_t::apl_fire()
     "and also while casting Scorch even if Heating Up is already active. The latter allows two Hot Streak Pyroblasts to be cast in succession after the Scorch. "
     "Additionally with Blaster Master and Flame On, Fire Blasts should not be used unless Blaster Master is about to expire "
     "or there are more than enough Fire Blasts to extend Blaster Master to the end of Combustion." );
-  combustion_phase->add_talent( this, "Rune of Power", "if=buff.combustion.down" );
+  combustion_phase->add_talent( this, "Rune of Power", "if=buff.rune_of_power.down&buff.combustion.down" );
   combustion_phase->add_action( this, "Fire Blast", "use_while_casting=1,if=azerite.blaster_master.enabled&(essence.memory_of_lucid_dreams.major|!essence.memory_of_lucid_dreams.minor)&talent.meteor.enabled&talent.flame_on.enabled&buff.blaster_master.down&(talent.rune_of_power.enabled&action.rune_of_power.executing&action.rune_of_power.execute_remains<0.6|(variable.time_to_combustion<=0|buff.combustion.up)&!talent.rune_of_power.enabled&!action.pyroblast.in_flight&!action.fireball.in_flight)",
     "A Fire Blast should be used to apply Blaster Master while casting Rune of Power when using Blaster Master, Flame On, and Meteor. If only Memory of Lucid Dreams Minor is equipped, this line is ignored because it will sometimes result in going into Combustion with few Fire Blast charges." );
   combustion_phase->add_action( "call_action_list,name=active_talents" );
@@ -6100,7 +6100,7 @@ void mage_t::apl_frost()
   cooldowns->add_action( options.rotation == ROTATION_FROZEN_ORB ? "guardian_of_azeroth,if=cooldown.frozen_orb.remains<5" : "guardian_of_azeroth" );
   cooldowns->add_action( this, "Icy Veins", options.rotation == ROTATION_FROZEN_ORB ? "if=cooldown.frozen_orb.remains<5" : "" );
   cooldowns->add_talent( this, "Mirror Image" );
-  cooldowns->add_talent( this, "Rune of Power", "if=prev_gcd.1.frozen_orb|target.time_to_die>10+cast_time&target.time_to_die<20",
+  cooldowns->add_talent( this, "Rune of Power", "if=buff.rune_of_power.down&(prev_gcd.1.frozen_orb|target.time_to_die>10+cast_time&target.time_to_die<20)",
     "Rune of Power is always used with Frozen Orb. Any leftover charges at the end of the fight should be used, ideally "
     "if the boss doesn't die in the middle of the Rune buff." );
   cooldowns->add_action( "call_action_list,name=talent_rop,if=talent.rune_of_power.enabled&active_enemies=1&"
@@ -6151,11 +6151,12 @@ void mage_t::apl_frost()
   }
 
   talent_rop->add_talent( this, "Rune of Power",
-    "if=talent.glacial_spike.enabled&buff.icicles.stack=5&(buff.brain_freeze.react|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time)",
+    "if=buff.rune_of_power.down&talent.glacial_spike.enabled&buff.icicles.stack=5&(buff.brain_freeze.react"
+    "|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time)",
     "With Glacial Spike, Rune of Power should be used right before the Glacial Spike combo (i.e. with 5 Icicles and a Brain Freeze). "
     "When Ebonbolt is off cooldown, Rune of Power can also be used just with 5 Icicles." );
   talent_rop->add_talent( this, "Rune of Power",
-    "if=!talent.glacial_spike.enabled&(talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time"
+    "if=buff.rune_of_power.down&!talent.glacial_spike.enabled&(talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time"
     "|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time"
     "|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time"
     "|charges_fractional>1.9)",
