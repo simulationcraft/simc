@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "dbc.hpp"
+#include "specialization_spell.hpp"
 #include "sim/sc_expressions.hpp"
 #include "azerite.hpp"
 #include "spell_query/spell_data_expr.hpp"
@@ -374,19 +375,10 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_SPECIALIZATION_SPELL:
       {
-        for ( unsigned cls = 0; cls < dbc.specialization_max_class(); cls++ )
-        {
-          for ( unsigned tree = 0; tree < dbc.specialization_max_per_class(); tree++ )
-          {
-            for ( unsigned n = 0; n < dbc.specialization_ability_size(); n++ )
-            {
-              if ( ! ( spell_id = dbc.specialization_ability( cls, tree, n ) ) )
-                continue;
-
-              result_spell_list.push_back( spell_id );
-            }
-          }
-        }
+        range::for_each( specialization_spell_entry_t::data( dbc.ptr ),
+            [this]( const specialization_spell_entry_t& e ) {
+              result_spell_list.push_back( e.spell_id );
+        } );
         break;
       }
       case DATA_AZERITE_SPELL:

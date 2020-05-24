@@ -4247,6 +4247,7 @@ static const std::array<double, 123> __ptr_armor_mitigation_constants_data { {
   2522.000, 3824.000, 4741.000, 5163.000, 6300.000,
   6300.000, 6300.000, 6300.000,
 } };
+
 // Npc base armor values, wow build 8.3.0.34220
 static const std::array<double, 123> __ptr_npc_armor_data { {
     49.000,   52.000,   54.000,   56.000,   59.000,
@@ -4275,3 +4276,4 @@ static const std::array<double, 123> __ptr_npc_armor_data { {
   1081.000, 1639.000, 2032.000, 2213.000, 2700.000,
   2700.000, 2700.000, 2700.000,
 } };
+

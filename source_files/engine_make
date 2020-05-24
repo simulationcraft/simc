@@ -61,6 +61,7 @@ SRC += \
     dbc$(PATHSEP)sc_item_data.cpp \
     dbc$(PATHSEP)sc_spell_data.cpp \
     dbc$(PATHSEP)sc_spell_info.cpp \
+    dbc$(PATHSEP)specialization_spell.cpp \
     dbc$(PATHSEP)spell_item_enchantment.cpp \
     interfaces$(PATHSEP)bcp_api.cpp \
     interfaces$(PATHSEP)sc_http.cpp \

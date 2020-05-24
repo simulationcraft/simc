@@ -1,4 +1,4 @@
-// Item damage data from ItemDamageOneHand.db2, ilevels 1-1300, wow build 8.3.0.34220
+// Item damage data from ItemDamageOneHand.db2, wow build 8.3.0.34220
 static const std::array<item_damage_one_hand_data_t, 1300> __ptr_item_damage_one_hand_data { {
   {    1, {       0.26035,       0.41873,       0.43392,       0.43392,       0.43392,       0.43392,       0.43392 } },
   {    2, {       0.30374,       0.48852,       0.50624,       0.50624,       0.50624,       0.50624,       0.50624 } },
@@ -1302,7 +1302,7 @@ static const std::array<item_damage_one_hand_data_t, 1300> __ptr_item_damage_one
   { 1300, {  564839.81250,  908450.75000,  941399.75000,  941399.75000,  941399.75000,  941399.75000,  941399.75000 } },
 } };
 
-// Item damage data from ItemDamageOneHandCaster.db2, ilevels 1-1300, wow build 8.3.0.34220
+// Item damage data from ItemDamageOneHandCaster.db2, wow build 8.3.0.34220
 static const std::array<item_damage_one_hand_caster_data_t, 1300> __ptr_item_damage_one_hand_caster_data { {
   {    1, {       0.13018,       0.20937,       0.21696,       0.21696,       0.21696,       0.21696,       0.21696 } },
   {    2, {       0.15187,       0.24426,       0.25312,       0.25312,       0.25312,       0.25312,       0.25312 } },
@@ -2606,7 +2606,7 @@ static const std::array<item_damage_one_hand_caster_data_t, 1300> __ptr_item_dam
   { 1300, {  282419.90625,  454225.37500,  470699.87500,  470699.87500,  470699.87500,  470699.87500,  470699.87500 } },
 } };
 
-// Item damage data from ItemDamageTwoHand.db2, ilevels 1-1300, wow build 8.3.0.34220
+// Item damage data from ItemDamageTwoHand.db2, wow build 8.3.0.34220
 static const std::array<item_damage_two_hand_data_t, 1300> __ptr_item_damage_two_hand_data { {
   {    1, {       0.34481,       0.55456,       0.57468,       0.57468,       0.57468,       0.57468,       0.57468 } },
   {    2, {       0.40227,       0.64699,       0.67046,       0.67046,       0.67046,       0.67046,       0.67046 } },
@@ -3910,7 +3910,7 @@ static const std::array<item_damage_two_hand_data_t, 1300> __ptr_item_damage_two
   { 1300, {  748064.31250, 1203136.75000, 1246773.87500, 1246773.87500, 1246773.87500, 1246773.87500, 1246773.87500 } },
 } };
 
-// Item damage data from ItemDamageTwoHandCaster.db2, ilevels 1-1300, wow build 8.3.0.34220
+// Item damage data from ItemDamageTwoHandCaster.db2, wow build 8.3.0.34220
 static const std::array<item_damage_two_hand_caster_data_t, 1300> __ptr_item_damage_two_hand_caster_data { {
   {    1, {       0.17240,       0.27728,       0.28734,       0.28734,       0.28734,       0.28734,       0.28734 } },
   {    2, {       0.20114,       0.32349,       0.33523,       0.33523,       0.33523,       0.33523,       0.33523 } },

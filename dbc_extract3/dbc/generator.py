@@ -3356,83 +3356,44 @@ class RacialSpellGenerator(SpellDataGenerator):
         self._out.write('};\n')
 
 class SpecializationSpellGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = [ 'Spell', 'SpellName', 'SpecializationSpells', 'ChrSpecialization' ]
-
-    def generate(self, ids = None):
-        max_ids = 0
-        keys = [
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-        ]
-        spells = []
-
-        for ssid, data in self._specializationspells_db.items():
-            chrspec = self._chrspecialization_db[data.spec_id]
+    def filter(self):
+        spec_spells = []
+        for ssid, data in self.db('SpecializationSpells').items():
+            chrspec = data.ref('spec_id')
             if chrspec.id == 0:
                 continue
 
-            spell = self._spellname_db[data.spell_id]
+            if chrspec.flags == 0:
+                continue
+
+            spell = data.ref('spell_id')
             if spell.id == 0:
                 continue
 
-            spec_tuple = (chrspec.class_id, chrspec.index, spell.id)
-            if spec_tuple in spells:
+            spec_tuple = (chrspec, data)
+            if spec_tuple in spec_spells:
                 continue
 
-            keys[chrspec.class_id][chrspec.index].append((spell, chrspec.name, data.unk_2, self._spell_db[data.spell_id]))
-            spells.append(spec_tuple)
+            spec_spells.append(spec_tuple)
 
-        # Figure out tree with most abilities
-        for cls in range(0, len(keys)):
-            for tree in range(0, len(keys[cls])):
-                if len(keys[cls][tree]) > max_ids:
-                    max_ids = len(keys[cls][tree])
+        return spec_spells
 
-        data_str = "%stree_specialization%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
+    def generate(self, data = None):
+        self.output_header(
+                header = 'Talent tree specialization abilities',
+                type = 'specialization_spell_entry_t',
+                array = 'specialization_spell',
+                length = len(data))
 
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), max_ids))
+        for chrspec, spell_data in sorted(data, key = lambda e: (e[0].class_id, e[0].index)):
+            fields = chrspec.field('class_id', 'id')
+            fields += spell_data.ref('spell_id').field('id')
+            fields += spell_data.field('replace_spell_id')
+            fields += spell_data.ref('spell_id').field('name')
 
-        self._out.write('// Talent tree specialization abilities, wow build %s\n' % self._options.build)
-        self._out.write('static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
-            data_str,
-            data_str.upper(),
-        ))
+            self.output_record(fields)
 
-        for cls in range(0, len(keys)):
-            self._out.write('  // Specialization abilities for %s\n' % (cls > 0 and DataGenerator._class_names[cls] or 'Hunter pets'))
-            self._out.write('  {\n')
-
-            for tree in range(0, len(keys[cls])):
-                if len(keys[cls][tree]) > 0:
-                    self._out.write('    // Specialization abilities for %s\n' % keys[cls][tree][0][1])
-                self._out.write('    {\n')
-                for ability in sorted(keys[cls][tree], key = lambda i: i[2]):
-                    self._out.write('      %6u, // %s%s\n' % (ability[0].id, ability[0].name,
-                        ability[3].rank and (' (%s)' % ability[3].rank) or ''))
-
-                if len(keys[cls][tree]) < max_ids:
-                    self._out.write('      %6u,\n' % 0)
-
-                self._out.write('    },\n')
-            self._out.write('  },\n')
-        self._out.write('};\n')
+        self.output_footer()
 
 class SpellListGenerator(SpellDataGenerator):
     def spell_state(self, spell, enabled_effects = None):
@@ -3705,132 +3666,6 @@ class SpellListGenerator(SpellDataGenerator):
 
         self._out.write('};\n')
 
-class ClassFlagGenerator(SpellDataGenerator):
-    _masks = {
-            'mage': 3,
-            'warrior': 4,
-            'warlock': 5,
-            'priest': 6,
-            'druid': 7,
-            'rogue': 8,
-            'hunter': 9,
-            'paladin': 10,
-            'shaman': 11,
-            'deathknight': 15
-    }
-    def __init__(self, options):
-        SpellDataGenerator.__init__(self, options)
-
-    def filter(self, class_name):
-        ids = { }
-        mask = ClassFlagGenerator._masks.get(class_name.lower(), -1)
-        if mask == -1:
-            return ids
-
-        for id, data in self._spellname_db.items():
-            if data.id_class_opts == 0:
-                continue
-
-            opts = self._spellclassoptions_db[data.id_class_opts]
-
-            if opts.spell_family_name != mask:
-                continue
-
-            ids[id] = { }
-        return ids
-
-    def generate(self, ids = None):
-        spell_data = []
-        effect_data = { }
-        for i in range(0, 128):
-            spell_data.append({ 'spells' : [ ], 'effects': [ ] })
-
-        for spell_id, data in ids.items():
-            spell = self._spellname_db[spell_id]
-            if not spell.id_class_opts:
-                continue
-
-            copts = self._spellclassoptions_db[spell.id_class_opts]
-
-            # Assign this spell to bitfield entries
-            for i in range(1, 5):
-                f = getattr(copts, 'spell_family_flags_%u' % i)
-
-                for bit in range(0, 32):
-                    if not (f & (1 << bit)):
-                        continue
-
-                    bfield = ((i - 1) * 32) + bit
-                    spell_data[bfield]['spells'].append( spell )
-
-            # Loop through spell effects, assigning them to effects
-            for effect in spell._effects:
-                if not effect:
-                    continue
-
-                for i in range(1, 5):
-                    f = getattr(effect, 'class_mask_%u' % i)
-                    for bit in range(0, 32):
-                        if not (f & (1 << bit)):
-                            continue
-
-                        bfield = ((i - 1) * 32) + bit
-                        spell_data[bfield]['effects'].append( effect )
-
-        # Build effect data
-
-        for bit_data in spell_data:
-            for effect in bit_data['effects']:
-                if effect.id_spell not in effect_data:
-                    effect_data[effect.id_spell] = {
-                        'effects': { },
-                        'spell': self._spellname_db[effect.id_spell]
-                    }
-
-                if effect.index not in effect_data[effect.id_spell]['effects']:
-                    effect_data[effect.id_spell]['effects'][effect.index] = []
-
-                effect_data[effect.id_spell]['effects'][effect.index] += bit_data['spells']
-
-        field = 0
-        for bit_field in spell_data:
-            field += 1
-            if not len(bit_field['spells']):
-                continue
-
-            if not len(bit_field['effects']):
-                continue
-
-            self._out.write('  [%-3d] ===================================================\n' % field)
-            for spell in sorted(bit_field['spells'], key = lambda s: s.name):
-                self._out.write('       %s (%u)\n' % ( spell.name, spell.id ))
-
-            for effect in sorted(bit_field['effects'], key = lambda e: e.id_spell):
-                rstr = ''
-                if self._spellname_db[effect.id_spell].rank:
-                    rstr = ' (%s)' % self._spellname_db[effect.id_spell].rank
-                self._out.write('         [%u] {%u} %s%s\n' % ( effect.index, effect.id_spell, self._spellname_db[effect.id_spell].name, rstr))
-
-            self._out.write('\n')
-
-        for spell_id in sorted(effect_data.keys()):
-            spell = effect_data[spell_id]['spell']
-            self._out.write('Spell: %s (%u)' % (spell.name, spell.id))
-            if spell.rank:
-                self._out.write(' %s' % spell.rank)
-            self._out.write('\n')
-
-            effects = effect_data[spell_id]['effects']
-            for effect_index in sorted(effects.keys()):
-                self._out.write('  Effect#%u:\n' % effect_index)
-                for spell in sorted(effects[effect_index], key = lambda s: s.id):
-                    self._out.write('    %s (%u)' % (spell.name, spell.id))
-                    if spell.rank:
-                        self._out.write(' %s' % spell.rank)
-                    self._out.write('\n')
-                self._out.write('\n')
-            self._out.write('\n')
-
 class SetBonusListGenerator(DataGenerator):
     # These set bonuses map directly to set bonuses in ItemSet/ItemSetSpell
     # (the bonuses array is the id in ItemSet, and
@@ -3951,11 +3786,6 @@ class SetBonusListGenerator(DataGenerator):
         }
     ]
 
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = ['ItemSet', 'ItemSetSpell', 'SpellName', 'ChrSpecialization', 'ItemSparse']
-
     @staticmethod
     def is_extract_set_bonus(bonus):
         for idx in range(0, len(SetBonusListGenerator.set_bonus_map)):
@@ -3966,18 +3796,17 @@ class SetBonusListGenerator(DataGenerator):
 
     def filter(self):
         data = []
-        for id, set_spell_data in self._itemsetspell_db.items():
+        for id, set_spell_data in self.db('ItemSetSpell').items():
             set_id = set_spell_data.id_parent
             is_set_bonus, set_index = SetBonusListGenerator.is_extract_set_bonus(set_id)
             if not is_set_bonus:
                 continue
 
-            item_set = self._itemset_db[set_id]
+            item_set = set_spell_data.parent_record()
             if not item_set.id:
                 continue
 
-            spell_data = self._spellname_db[set_spell_data.id_spell]
-            if not spell_data.id:
+            if not set_spell_data.ref('id_spell').id:
                 continue
 
             base_entry = {
@@ -3986,11 +3815,11 @@ class SetBonusListGenerator(DataGenerator):
                 'bonus'       : set_spell_data.n_req_items
             }
 
-            spec_ = set_spell_data.id_spec
             class_ = []
 
-            if spec_ > 0:
-                spec_data = self._chrspecialization_db[spec_]
+            if set_spell_data.ref('id_spec').id > 0:
+                spec_ = set_spell_data.ref('id_spec').id
+                spec_data = set_spell_data.ref('id_spec')
                 class_.append(spec_data.class_id)
             # No spec id, set spec to "-1" (all specs), and try to use set
             # items to figure out the class (or many classes)
@@ -3998,7 +3827,7 @@ class SetBonusListGenerator(DataGenerator):
                 spec_ = -1
                 # TODO: Fetch from first available item if blizzard for some
                 # reason decides to not use _1 as the first one?
-                item_data = self._itemsparse_db[item_set.id_item_1]
+                item_data = item_set.ref('id_item_1')
                 for idx in range(0, len(self._class_masks)):
                     mask = self._class_masks[idx]
                     if mask == None:
@@ -4020,12 +3849,14 @@ class SetBonusListGenerator(DataGenerator):
 
         return data
 
-    def generate(self, ids = None):
-        ids.sort(key = lambda v: (v['index'], v['class'], v['bonus'], v['set_bonus_id']))
+    def generate(self, data = None):
+        data.sort(key = lambda v: (v['index'], v['class'], v['bonus'], v['set_bonus_id']))
 
-        self._out.write('// Set bonus data, wow build %s\n' % self._options.build)
-        self._out.write('static const std::array<item_set_bonus_t, %d> __%s_data { {\n' % (
-            len(ids), self.format_str('set_bonus')))
+        self.output_header(
+                header = 'Set bonus data',
+                type = 'item_set_bonus_t',
+                array = 'set_bonus',
+                length = len(data))
 
         _hdr_specifiers = (
             '{: <43}', '{: <21}', '{: <6}', '{: <5}', '{: <4}', '{: <3}', '{: <3}', '{: <4}', '{: <7}', '{}'
@@ -4042,15 +3873,15 @@ class SetBonusListGenerator(DataGenerator):
 
         _data_format = ', '.join(_data_specifiers)
 
-        for data_idx in range(0, len(ids)):
-            entry = ids[data_idx]
+        for data_idx in range(0, len(data)):
+            entry = data[data_idx]
 
             if data_idx % 25 == 0:
                 self._out.write('  // {}\n'.format(_hdr))
 
-            item_set_spell = self._itemsetspell_db[entry['set_bonus_id']]
+            item_set_spell = self.db('ItemSetSpell')[entry['set_bonus_id']]
             set_id = item_set_spell.id_parent
-            item_set = self._itemset_db[set_id]
+            item_set = item_set_spell.parent_record()
             map_entry = self.set_bonus_map[entry['index']]
 
             item_set_str = ""
@@ -4204,7 +4035,8 @@ class ArmorValueDataGenerator(DataGenerator):
             ]
 
             self.output_header(
-                    headere   = 'Item armor values data from {}.db2'.format(dbname),
+                    header   = 'Item armor values data from {}.db2, ilevels 1-{}'.format(
+                        dbname, self._options.scale_ilevel),
                     type = struct_name,
                     array = tokenized_name,
                     length = len(data))

@@ -1577,8 +1577,6 @@ public:
   unsigned race_ability_size() const;
   unsigned race_ability_tree_size() const;
 
-  unsigned specialization_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
-  unsigned specialization_ability_size() const;
   unsigned specialization_max_per_class() const;
   unsigned specialization_max_class() const;
   bool     ability_specialization( uint32_t spell_id, std::vector<specialization_e>& spec_list ) const;

@@ -129,11 +129,11 @@
       { "data_type": "S", "field": "name",       "formats": { "cpp": "%25s" } },
       { "data_type": "S", "field": "desc",       "formats": { } },
       { "data_type": "i", "field": "id",         "formats": { "cpp": "%-6u" } },
-      { "data_type": "b", "field": "class_id",   "formats": { "cpp": "%-2u" } },
+      { "data_type": "b", "field": "class_id",   "formats": { "cpp": "%2u" } },
       { "data_type": "b", "field": "index",      "formats": { "cpp": "%-2u" } },
       { "data_type": "b", "field": "f9",         "formats": { } },
       { "data_type": "b", "field": "spec_type",  "formats": { "cpp": "%-2u" } },
-      { "data_type": "i", "field": "unk_2",      "formats": { } },
+      { "data_type": "i", "field": "flags",      "formats": { } },
       { "data_type": "i", "field": "id_icon",    "formats": { "cpp": "%-5u" } },
       { "data_type": "b", "field": "unk_6",      "formats": { } },
       { "data_type": "i", "field": "unk_3",      "formats": { } },
@@ -792,9 +792,9 @@
     "fields": [
       { "data_type": "S", "field": "unk_1" },
       { "data_type": "i", "field": "id"  },
-      { "data_type": "H", "field": "spec_id", "ref": "ChrSpecialization" },
-      { "data_type": "i", "field": "spell_id", "ref": "SpellName" },
-      { "data_type": "I", "field": "replace_spell_id", "ref": "SpellName" },
+      { "data_type": "H", "field": "spec_id", "formats": { "cpp": "%3u" }, "ref": "ChrSpecialization" },
+      { "data_type": "i", "field": "spell_id", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "I", "field": "replace_spell_id", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
       { "data_type": "B", "field": "unk_2" }
     ]
   },

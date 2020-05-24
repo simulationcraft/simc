@@ -3910,6 +3910,7 @@ static const std::array<item_armor_total_data_t, 1300> __ptr_item_armor_total_da
   { 1300, {  4233858.00000,  7171317.50000, 10509340.00000, 15738907.00000 } },
 } };
 
+// Armor location based multipliers, wow build 8.3.0.34220
 static const std::array<item_armor_location_data_t, 23> __ptr_armor_location_data { {
   {  1, {     0.130,     0.130,     0.130,     0.130 } },
   {  2, {     0.000,     0.000,     0.000,     0.000 } },

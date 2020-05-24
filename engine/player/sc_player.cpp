@@ -15,6 +15,7 @@
 #include "action/snapshot_stats.hpp"
 #include "dbc/azerite.hpp"
 #include "dbc/item_set_bonus.hpp"
+#include "dbc/specialization_spell.hpp"
 #include "item/item.hpp"
 #include "action/dbc_proc_callback.hpp"
 #include "player/actor_target_data.hpp"
@@ -9327,18 +9328,18 @@ void player_t::replace_spells()
   // Search spec spells for spells to replace.
   if ( _spec != SPEC_NONE )
   {
-    for ( unsigned int i = 0; i < dbc->specialization_ability_size(); i++ )
+    for ( const auto& spec_spell : specialization_spell_entry_t::data( dbc->ptr ) )
     {
-      unsigned id = dbc->specialization_ability( class_idx, spec_index, i );
-      if ( id == 0 )
+      if ( spec_spell.specialization_id != _spec )
       {
-        break;
+        continue;
       }
-      const spell_data_t* s = dbc->spell( id );
+
+      const spell_data_t* s = dbc->spell( spec_spell.spell_id );
       if ( s->replace_spell_id() && ( (int)s->level() <= true_level ) )
       {
         // Found a spell we should replace
-        dbc->replace_id( s->replace_spell_id(), id );
+        dbc->replace_id( s->replace_spell_id(), spec_spell.spell_id );
       }
     }
   }

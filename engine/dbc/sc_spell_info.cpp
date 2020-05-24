@@ -1292,7 +1292,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       {
         if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
           pet_ability = true;
-        s << util::inverse_tokenize( dbc::specialization_string( *iter ) ) << " ";
+        auto specialization_str = util::inverse_tokenize( dbc::specialization_string( *iter ) );
+        if ( util::str_compare_ci( specialization_str, "Unknown" ) )
+        {
+          specialization_str += " (" + util::to_string( *iter ) + ")";
+        }
+
+        s << specialization_str << " ";
       }
       spec_list.clear();
     }

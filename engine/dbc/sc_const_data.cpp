@@ -8,6 +8,7 @@
 #include "data_definitions.hh"
 #include "item_database.hpp"
 #include "client_data.hpp"
+#include "specialization_spell.hpp"
 
 #include "generated/sc_spec_list.inc"
 #include "generated/sc_scale_data.inc"
@@ -1372,20 +1373,6 @@ unsigned dbc_t::race_ability( unsigned race_id, unsigned class_id, unsigned n ) 
 #endif
 }
 
-unsigned dbc_t::specialization_ability( unsigned class_id, unsigned tree_id, unsigned n ) const
-{
-  assert( class_id < dbc_t::class_max_size() );
-  assert( tree_id < specialization_max_per_class() );
-  assert( n < specialization_ability_size() );
-
-#if SC_USE_PTR
-  return ptr ? __ptr_tree_specialization_data[ class_id ][ tree_id ][ n ]
-             : __tree_specialization_data[ class_id ][ tree_id ][ n ];
-#else
-  return __tree_specialization_data[ class_id ][ tree_id ][ n ];
-#endif
-}
-
 unsigned dbc_t::mastery_ability( unsigned class_id, unsigned specialization, unsigned n ) const
 {
   assert( class_id < dbc_t::class_max_size() );
@@ -1511,15 +1498,6 @@ unsigned dbc_t::race_ability_tree_size() const
   return ptr ? ptr_MAX_RACE : MAX_RACE;
 #else
   return MAX_RACE;
-#endif
-}
-
-unsigned dbc_t::specialization_ability_size() const
-{
-#if SC_USE_PTR
-  return ptr ? PTR_TREE_SPECIALIZATION_SIZE : TREE_SPECIALIZATION_SIZE;
-#else
-  return TREE_SPECIALIZATION_SIZE;
 #endif
 }
 
@@ -2426,21 +2404,20 @@ unsigned dbc_t::specialization_ability_id( specialization_e spec_id, const char*
 
   assert( ( int )class_idx >= 0 && class_idx < specialization_max_class() && ( int )spec_index >= 0 && spec_index < specialization_max_per_class() );
 
-  for ( unsigned n = 0; n < specialization_ability_size(); n++ )
+  for ( const auto& spec_spell : specialization_spell_entry_t::data( ptr ) )
   {
-    unsigned spell_id;
-    if ( ! ( spell_id = specialization_ability( class_idx, spec_index, n ) ) )
-      break;
-
-    if ( ! spell( spell_id ) -> id() )
+    if ( spec_id != SPEC_NONE &&
+         static_cast<unsigned>( spec_id ) != spec_spell.specialization_id )
+    {
       continue;
+    }
 
-    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+    if ( util::str_compare_ci( spec_spell.name, spell_name ) )
     {
       // Spell has been replaced by another, so don't return id
-      if ( ! replaced_id( spell_id ) )
+      if ( ! replaced_id( spec_spell.spell_id ) )
       {
-        return spell_id;
+        return spec_spell.spell_id;
       }
       else
       {
@@ -2454,28 +2431,18 @@ unsigned dbc_t::specialization_ability_id( specialization_e spec_id, const char*
 
 bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specialization_e>& spec_list ) const
 {
-  unsigned s = 0;
-
-  if ( ! spell_id )
+  if ( !spell_id )
     return false;
 
-  for ( unsigned class_idx = 0; class_idx < specialization_max_class(); class_idx++ )
+  for ( const auto& spec_spell : specialization_spell_entry_t::data( ptr ) )
   {
-    for ( unsigned spec_index = 0; spec_index < specialization_max_per_class(); spec_index++ )
+    if ( spec_spell.spell_id == spell_id )
     {
-      for ( unsigned n = 0; n < specialization_ability_size(); n++ )
-      {
-        if ( ( s = specialization_ability( class_idx, spec_index, n ) ) == spell_id )
-        {
-          spec_list.push_back( __class_spec_id[ class_idx ][ spec_index ] );
-        }
-        if ( ! s )
-          break;
-      }
+      spec_list.push_back( static_cast<const specialization_e>( spec_spell.specialization_id ) );
     }
   }
 
-  return ! spec_list.empty();
+  return !spec_list.empty();
 }
 
 unsigned dbc_t::mastery_ability_id( specialization_e spec, const char* spell_name ) const
@@ -2557,18 +2524,14 @@ int dbc_t::mastery_ability_tree( player_e c, uint32_t spell_id ) const
 
 bool dbc_t::is_specialization_ability( specialization_e spec, unsigned spell_id ) const
 {
-  unsigned class_idx = -1;
-  unsigned spec_idx_ = -1;
-
-  if ( spec == SPEC_NONE )
-    return false;
-
-  if ( ! spec_idx( spec, class_idx, spec_idx_ ) )
-    return false;
-
-  for ( unsigned n = 0; n < specialization_ability_size(); n++ )
+  for ( const auto& spec_spell : specialization_spell_entry_t::data( ptr ) )
   {
-    if ( specialization_ability( class_idx, spec_idx_, n ) == spell_id )
+    if ( spec != SPEC_NONE && spec_spell.specialization_id != spec )
+    {
+      continue;
+    }
+
+    if ( spec_spell.spell_id == spell_id )
     {
       return true;
     }
@@ -2579,32 +2542,16 @@ bool dbc_t::is_specialization_ability( specialization_e spec, unsigned spell_id 
 
 bool dbc_t::is_specialization_ability( uint32_t spell_id ) const
 {
-  for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
-  {
-    for ( unsigned tree = 0; tree < specialization_max_per_class(); tree++ )
-    {
-      for ( unsigned n = 0; n < specialization_ability_size(); n++ )
-      {
-        if ( specialization_ability( cls, tree, n ) == spell_id )
-          return true;
-      }
-    }
-  }
-
-  return false;
+  return is_specialization_ability( SPEC_NONE, spell_id );
 }
 
 specialization_e dbc_t::spec_by_spell( uint32_t spell_id ) const
 {
-  for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
+  for ( const auto& spec_spell : specialization_spell_entry_t::data( ptr ) )
   {
-    for ( unsigned tree = 0; tree < specialization_max_per_class(); tree++ )
+    if ( spec_spell.spell_id == spell_id )
     {
-      for ( unsigned n = 0; n < specialization_ability_size(); n++ )
-      {
-        if ( specialization_ability( cls, tree, n ) == spell_id )
-          return spec_by_idx( util::translate_class_id( cls ), tree );
-      }
+      return static_cast<specialization_e>( spec_spell.specialization_id );
     }
   }
 

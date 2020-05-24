@@ -42,6 +42,7 @@ dbc/rand_prop_points.hpp
 dbc/real_ppm_data.hpp
 dbc/sc_spell_info.hpp
 dbc/specialization.hpp
+dbc/specialization_spell.hpp
 dbc/spell_item_enchantment.hpp
 dbc/spell_query/spell_data_expr.hpp
 interfaces/bcp_api.hpp
@@ -203,6 +204,7 @@ dbc/sc_data.cpp
 dbc/sc_item_data.cpp
 dbc/sc_spell_data.cpp
 dbc/sc_spell_info.cpp
+dbc/specialization_spell.cpp
 dbc/spell_item_enchantment.cpp
 interfaces/bcp_api.cpp
 interfaces/sc_http.cpp
