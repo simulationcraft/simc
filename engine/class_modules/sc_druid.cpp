@@ -8293,7 +8293,7 @@ std::string druid_t::default_food() const
     switch (specialization())
     {
       case DRUID_BALANCE:
-        return "baked_port_tato";
+        return "mechdowels_big_mech";
       case DRUID_FERAL:
         return "mechdowels_big_mech";
       case DRUID_RESTORATION:
