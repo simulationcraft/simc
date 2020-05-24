@@ -372,7 +372,7 @@ inline iterator_t<Range> find_if( Range& r, UnaryPredicate p )
 }
 
 template <typename Range, typename UnaryPredicate>
-inline bool any_of( Range& r, UnaryPredicate p )
+inline bool any_of( Range&& r, UnaryPredicate p )
 {
   return std::any_of( range::begin( r ), range::end( r ), p );
 }
@@ -383,13 +383,13 @@ inline bool any_of( Range& r, UnaryPredicate p )
  * Equal to std::any_of with equality predicate, or std::find with checking for end of range.
  */
 template <typename Range, typename Value>
-inline bool contains_value( Range& r, Value v )
+inline bool contains_value( Range&& r, Value v )
 {
   return std::find( range::begin( r ), range::end( r ), v ) != range::end( r );
 }
 
 template <typename Range, typename F>
-inline F for_each( Range& r, F f )
+inline F for_each( Range&& r, F f )
 {
   return std::for_each( range::begin( r ), range::end( r ), f );
 }
@@ -401,13 +401,13 @@ inline Out remove_copy_if( Range& r, Out o, Predicate p )
 }
 
 template <typename Range, typename Out, typename F>
-inline Out transform( Range& r, Out o, F f )
+inline Out transform( Range&& r, Out o, F f )
 {
   return std::transform( range::begin( r ), range::end( r ), o, f );
 }
 
 template <typename Range, typename Range2, typename Out, typename F>
-inline Out transform( Range& r, Range2& r2, Out o, F f )
+inline Out transform( Range&& r, Range2&& r2, Out o, F f )
 {
   return std::transform( range::begin( r ), range::end( r ), range::begin( r2 ),
                          o, f );
@@ -506,13 +506,13 @@ inline iterator_t<Range> min_element( Range& r )
 }
 
 template <typename Range1, typename Range2>
-inline void append( Range1& destination, Range2& source )
+inline void append( Range1& destination, Range2&& source )
 {
   destination.insert( destination.end(), source.begin(), source.end() );
 }
 
 template <typename Range, typename Predicate>
-inline auto count_if( Range& r, Predicate p ) -> typename std::iterator_traits<decltype(range::begin( r ))>::difference_type
+inline auto count_if( Range&& r, Predicate p ) -> typename std::iterator_traits<decltype(range::begin( r ))>::difference_type
 {
   return std::count_if( range::begin( r ), range::end( r ), p );
 }
