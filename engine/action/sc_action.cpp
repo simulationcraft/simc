@@ -828,14 +828,14 @@ bool action_t::verify_actor_weapon() const
     return true;
   }
 
-  auto mask = data().equipped_subclass_mask();
+  const unsigned mask = data().equipped_subclass_mask();
   if ( data().flags( spell_attribute::SX_REQ_MAIN_HAND ) &&
-       !( mask & ( 1 << util::translate_weapon( player->main_hand_weapon.type ) ) ) )
+       !( mask & ( 1u << util::translate_weapon( player->main_hand_weapon.type ) ) ) )
   {
     std::vector<std::string> types;
     for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
     {
-      if ( data().equipped_subclass_mask() & ( 1 << static_cast<unsigned>( wt ) ) )
+      if ( mask & ( 1u << static_cast<unsigned>( wt ) ) )
       {
         types.emplace_back(util::weapon_subclass_string( wt ) );
       }
@@ -848,12 +848,12 @@ bool action_t::verify_actor_weapon() const
   }
 
   if ( data().flags( spell_attribute::SX_REQ_OFF_HAND ) &&
-       !( mask & ( 1 << util::translate_weapon( player->off_hand_weapon.type ) ) ) )
+       !( mask & ( 1u << util::translate_weapon( player->off_hand_weapon.type ) ) ) )
   {
     std::vector<std::string> types;
     for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
     {
-      if ( data().equipped_subclass_mask() & ( 1 << static_cast<unsigned>( wt ) ) )
+      if ( mask & ( 1u << static_cast<unsigned>( wt ) ) )
       {
         types.emplace_back(util::weapon_subclass_string( wt ) );
       }

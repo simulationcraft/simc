@@ -1474,9 +1474,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     std::vector<std::string> weapon_types;
     for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
     {
-      if ( spell->equipped_subclass_mask() & ( 1 << static_cast<unsigned>( wt ) ) )
+      if ( spell->equipped_subclass_mask() & ( 1u << static_cast<unsigned>( wt ) ) )
       {
-        weapon_types.emplace_back(util::weapon_subclass_string( wt ) );
+        weapon_types.emplace_back( util::weapon_subclass_string( wt ) );
       }
     }
     s << "Requires weapon  : ";
