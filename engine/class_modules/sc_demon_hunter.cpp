@@ -787,8 +787,10 @@ struct soul_fragment_t
 
     timespan_t travel_time() const
     {
-      double distance = frag->get_distance( frag->dh );
       double velocity = frag->dh->spec.consume_soul_greater->missile_speed();
+      if ( velocity == 0 )
+        return timespan_t::zero();
+      double distance = frag->get_distance( frag->dh );
       return timespan_t::from_seconds( distance / velocity );
     }
 
