@@ -894,8 +894,8 @@ public:
   unsigned equipped_invtype_mask() const
   { return _equipped_invtype_mask; }
 
-  item_class equipped_subclass_mask() const
-  { return static_cast<item_class>( _equipped_subclass_mask ); }
+  unsigned equipped_subclass_mask() const
+  { return _equipped_subclass_mask; }
 
   // Direct member access functions
   unsigned category() const
