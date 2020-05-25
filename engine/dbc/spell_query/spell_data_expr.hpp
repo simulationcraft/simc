@@ -11,7 +11,7 @@
 class dbc_t;
 
 // Spell query expression types
-enum expr_data_e
+enum expr_data_e : int
 {
   DATA_SPELL = 0,
   DATA_TALENT,
