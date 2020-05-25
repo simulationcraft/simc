@@ -39,35 +39,6 @@ namespace timespan_adl_barrier
   private:
     using time_t = int_least64_t;
 
-    static constexpr time_t native_to_milli(time_t t)
-    {
-      return t;
-    }
-    static constexpr double native_to_second(time_t t)
-    {
-      return static_cast<double>(t) * (1.0 / 1000);
-    }
-    static constexpr double native_to_minute(time_t t)
-    {
-      return static_cast<double>(t) * (1.0 / (60 * 1000));
-    }
-
-    template<typename Rep>
-    static constexpr time_t milli_to_native(Rep t)
-    {
-      return static_cast<time_t>(t);
-    }
-    template<typename Rep>
-    static constexpr time_t second_to_native(Rep t)
-    {
-      return static_cast<time_t>(t * 1000);
-    }
-    template<typename Rep>
-    static constexpr time_t minute_to_native(Rep t)
-    {
-      return static_cast<time_t>(t * (60 * 1000));
-    }
-
     time_t time;
 
     template<typename Rep>
@@ -80,62 +51,59 @@ namespace timespan_adl_barrier
     constexpr timespan_t() : time( 0 )
     { }
 
-    double total_minutes() const
+    constexpr double total_minutes() const
     {
-      return native_to_minute(time);
+      return static_cast<double>(time) * (1.0 / (60 * 1000));
     }
-    double total_seconds() const
+    constexpr double total_seconds() const
     {
-      return native_to_second(time);
+      return static_cast<double>(time) * (1.0 / 1000);
     }
-    time_t total_millis() const
+    constexpr time_t total_millis() const
     {
-      return native_to_milli(time);
-    }
-
-    template<typename Rep>
-    static constexpr typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type from_millis(
-        Rep millis)
-    {
-      return timespan_t(milli_to_native(millis));
+      return time;
     }
 
-    template<typename Rep>
-    static constexpr typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type from_seconds(
-        Rep seconds)
+    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic<Rep>::value>>
+    static constexpr timespan_t from_millis(Rep millis)
     {
-      return timespan_t(second_to_native(seconds));
+      return timespan_t(millis);
     }
 
-    template<typename Rep>
-    static constexpr typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type from_minutes(
-        Rep minutes)
+    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic<Rep>::value>>
+    static constexpr timespan_t from_seconds(Rep seconds)
     {
-      return timespan_t(minute_to_native(minutes));
+      return timespan_t(static_cast<time_t>(seconds * 1000));
     }
 
-    bool operator==(timespan_t right) const
+    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic<Rep>::value>>
+    static constexpr timespan_t from_minutes(Rep minutes)
+    {
+      return timespan_t(static_cast<time_t>(minutes * (60 * 1000)));
+    }
+
+    constexpr bool operator==(timespan_t right) const
     {
       return time == right.time;
     }
-    bool operator!=(timespan_t right) const
+    constexpr bool operator!=(timespan_t right) const
     {
       return time != right.time;
     }
 
-    bool operator>(timespan_t right) const
+    constexpr bool operator>(timespan_t right) const
     {
       return time > right.time;
     }
-    bool operator>=(timespan_t right) const
+    constexpr bool operator>=(timespan_t right) const
     {
       return time >= right.time;
     }
-    bool operator<(timespan_t right) const
+    constexpr bool operator<(timespan_t right) const
     {
       return time < right.time;
     }
-    bool operator<=(timespan_t right) const
+    constexpr bool operator<=(timespan_t right) const
     {
       return time <= right.time;
     }
@@ -161,17 +129,15 @@ namespace timespan_adl_barrier
       return *this;
     }
 
-    template<typename Rep>
-    typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t&>::type operator*=(
-        Rep right)
+    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic<Rep>::value>>
+    timespan_t& operator*=(Rep right)
     {
       time = static_cast<time_t>(time * right);
       return *this;
     }
 
-    template<typename Rep>
-    typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t&>::type operator/=(
-        Rep right)
+    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic<Rep>::value>>
+    timespan_t& operator/=(Rep right)
     {
       time = static_cast<time_t>(time / right);
       return *this;
@@ -200,23 +166,20 @@ namespace timespan_adl_barrier
       return timespan_t(left.time - right.time);
     }
 
-    template<typename Rep>
-    friend typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type operator*(
-        timespan_t left, Rep right)
+    template <typename Rep>
+    friend auto operator*(timespan_t left, Rep right) -> std::enable_if_t<std::is_arithmetic<Rep>::value, timespan_t>
     {
       return timespan_t(left.time * right);
     }
 
-    template<typename Rep>
-    friend typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type operator*(
-        Rep left, timespan_t right)
+    template <typename Rep>
+    friend auto operator*(Rep left, timespan_t right) -> std::enable_if_t<std::is_arithmetic<Rep>::value, timespan_t>
     {
       return timespan_t(left * right.time);
     }
 
-    template<typename Rep>
-    friend typename std::enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type operator/(
-        timespan_t left, Rep right)
+    template <typename Rep>
+    friend auto operator/(timespan_t left, Rep right) -> std::enable_if_t<std::is_arithmetic<Rep>::value, timespan_t>
     {
       return timespan_t(left.time / right);
     }
@@ -236,7 +199,7 @@ namespace timespan_adl_barrier
 
     // Only to be used to convert without loss of precision for a computation
     // that will later be converted back via from_native().
-    static native_t to_native(timespan_t t)
+    static constexpr native_t to_native(timespan_t t)
     {
       return t.time;
     }
@@ -248,22 +211,18 @@ namespace timespan_adl_barrier
       return timespan_t(t);
     }
 
-    static timespan_t zero()
+    static constexpr timespan_t zero()
     {
-      static constexpr timespan_t cached_zero = timespan_t();
-      return cached_zero;
+      return timespan_t();
     }
-    static timespan_t max()
+    static constexpr timespan_t max()
     {
-      static constexpr timespan_t cached_max = timespan_t( std::numeric_limits<time_t>::max() );
-      return cached_max;
+      return timespan_t( std::numeric_limits<time_t>::max() );
     }
-    static timespan_t min()
+    static constexpr timespan_t min()
     {
-      static constexpr timespan_t cached_min = std::is_floating_point<time_t>::value
-                                                   ? timespan_t( -std::numeric_limits<time_t>::max() )
-                                                   : timespan_t( std::numeric_limits<time_t>::min() );
-      return cached_min;
+      static_assert(!std::is_floating_point<time_t>::value, "");
+      return timespan_t( std::numeric_limits<time_t>::min() );
     }
   };
 
