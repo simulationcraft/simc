@@ -99,8 +99,9 @@ stat_e stat_buff_type( const spelleffect_data_t& effect )
   {
     case A_MOD_STAT:
       if ( effect.misc_value1() == -1 )
-        stat = STAT_ALL;
-      // Primary stats only, ratings are A_MOD_RATING
+        stat = STAT_ALL; // Primary stats only, ratings are A_MOD_RATING
+      else if ( effect.misc_value1() == -2 )
+        stat = STAT_STR_AGI_INT;
       else
         stat = static_cast< stat_e >( effect.misc_value1() + 1 );
       break;
