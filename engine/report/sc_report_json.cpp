@@ -14,7 +14,7 @@
 #include "rapidjson/filewritestream.h"
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
-#include "rapidjson/prettywriter.h"
+#include "rapidjson/writer.h"
 
 using namespace rapidjson;
 using namespace js;
@@ -1237,7 +1237,7 @@ void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_
 
   std::array<char, 16384> buffer;
   FileWriteStream b( o, buffer.data(), buffer.size() );
-  PrettyWriter<FileWriteStream> writer( b );
+  Writer<FileWriteStream> writer( b );
   auto accepted = doc.Accept( writer );
   if ( !accepted )
   {
@@ -1265,7 +1265,7 @@ void print_json_report( sim_t& sim, const ::report::json::report_configuration_t
       {
         std::cout << "\nReport will be generated with full state for each action.\n";
       }
-      Timer t( "JSON report", std::cout );
+      Timer t( fmt::format("JSON report version {}", report_configuration.version()), std::cout );
       if ( ! sim.profileset_enabled )
       {
         t.start();
