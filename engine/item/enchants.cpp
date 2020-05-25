@@ -387,6 +387,8 @@ bool enchant::passive_enchant( item_t& item, unsigned spell_id )
       case A_MOD_STAT:
         if ( effect.misc_value1() == -1 )
           stat = STAT_ALL;
+        else if ( effect.misc_value1() == -2 )
+          stat = item.player -> convert_hybrid_stat( STAT_STR_AGI_INT );
         else
           stat = static_cast< stat_e >( effect.misc_value1() + 1 );
         break;

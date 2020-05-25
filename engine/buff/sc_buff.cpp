@@ -2246,6 +2246,10 @@ stat_buff_t::stat_buff_t( actor_pair_t q, const std::string& name, const spell_d
       {
         s = STAT_ALL;
       }
+      else if ( effect.misc_value1() == -2 )
+      {
+        s = player->convert_hybrid_stat( STAT_STR_AGI_INT );
+      }
     }
     else if ( effect.subtype() == A_MOD_RATING )
     {
