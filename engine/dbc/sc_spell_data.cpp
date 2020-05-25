@@ -206,7 +206,7 @@ expr_data_e parse_data_type( const std::string& name )
       return entry.type;
   }
 
-  return ( expr_data_e ) - 1;
+  return static_cast<expr_data_e>( -1 );
 }
 
 unsigned class_str_to_mask( const std::string& str )
@@ -1133,13 +1133,13 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( dbc_t& dbc, const
   if ( splits.size() == 1 )
   {
     // No split, access raw list or create a normal expression
-    if ( data_type == ( expr_data_e ) - 1 )
+    if ( data_type == static_cast<expr_data_e>( -1 ) )
       return new spell_data_expr_t( dbc, name_str, name_str );
     else
       return new spell_list_expr_t( dbc, splits[ 0 ], data_type );
   }
 
-  if ( data_type == ( expr_data_e ) - 1 )
+  if ( data_type == static_cast<expr_data_e>( -1 ) )
     return nullptr;
 
   // Effect handling, set flag and remove effect keyword from tokens
