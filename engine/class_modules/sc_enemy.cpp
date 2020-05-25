@@ -931,13 +931,15 @@ struct add_t : public pet_t
   {
     if ( duration > timespan_t::zero() )
     {
-      double ttp;
-      ttp = ( 100 - health_percentage() ) / ( duration - expiration -> remains() ).total_seconds();
-      ttp = ( health_percentage() - percent ) / ttp;
-      return timespan_t::from_seconds( ttp );
+      if ( duration == expiration -> remains() )
+        return duration * ( percent * ( 1.0 / 100 ) );
+
+      const double health_pct = health_percentage();
+      const double scale = ( health_pct - percent ) / ( 100 - health_pct );
+      return ( duration - expiration -> remains() ) * scale;
     }
-    else
-      return pet_t::time_to_percent( percent );
+
+    return pet_t::time_to_percent( percent );
   }
 
   resource_e primary_resource() const override
