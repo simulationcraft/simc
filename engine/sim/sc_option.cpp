@@ -397,11 +397,11 @@ struct opts_sim_func_unfiltered_t : public option_t
     _fun( ref )
   { }
 protected:
-  opts::parse_status parse( sim_t* sim, const std::string& n, const std::string& value ) const override
+  opts::parse_status do_parse( sim_t* sim, const std::string& n, const std::string& value ) const override
   {
     return _fun( sim, n, value );
   }
-  std::ostream& print( std::ostream& stream ) const override
+  std::ostream& do_print( std::ostream& stream ) const override
   { return stream << "function option: " << name() << "\n"; }
 private:
   opts::function_unfilterd_t _fun;
