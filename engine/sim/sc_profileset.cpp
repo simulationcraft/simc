@@ -125,7 +125,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
 
     if ( set.has_output() )
     {
-      report::print_suite( profile_sim, profile_sim -> report_entries );
+      report::print_suite( profile_sim );
     }
   }
 

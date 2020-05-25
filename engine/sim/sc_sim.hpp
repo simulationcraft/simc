@@ -403,7 +403,7 @@ struct sim_t : private sc_thread_t
   std::vector<player_t*> targets_by_name;
   std::vector<std::string> id_dictionary;
   std::map<double, std::vector<double> > divisor_timeline_cache;
-  std::vector<report::report_configuration_t> report_entries;
+  std::vector<report::json::report_configuration_t> json_reports;
   std::string output_file_str, html_file_str, json_file_str;
   std::string reforge_plot_output_file_str;
   std::vector<std::string> error_list;

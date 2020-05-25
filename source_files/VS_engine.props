@@ -105,6 +105,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\report\color.hpp" />
 		<ClInclude Include="..\engine\report\decorators.hpp" />
 		<ClInclude Include="..\engine\report\gear_weights.hpp" />
+		<ClInclude Include="..\engine\report\json\report_configuration.hpp" />
 		<ClInclude Include="..\engine\report\report_helper.hpp" />
 		<ClInclude Include="..\engine\report\reports.hpp" />
 		<ClInclude Include="..\engine\report\sc_highchart.hpp" />
@@ -443,6 +444,9 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\report\decorators.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\report\json\report_configuration.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\report\report_helper.cpp">

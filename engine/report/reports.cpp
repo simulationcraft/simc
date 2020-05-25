@@ -13,129 +13,10 @@
 #include "sim/sc_sim.hpp"
 #include "util/xml.hpp"
 
-namespace
-{
-struct report_version_settings_t
-{
-  int minimum_version;
-  int minimum_non_deprecated_version;
-  int maximum_version;
-};
-
-report_version_settings_t get_report_settings( report::report_type type )
-{
-  switch ( type )
-  {
-    case report::report_type::HTML:
-      return report_version_settings_t{1, 1, 1};
-    case report::report_type::JSON:
-      return report_version_settings_t{2, 2, 3};
-    case report::report_type::TEXT:
-      return report_version_settings_t{1, 1, 1};
-  }
-  throw std::invalid_argument( "Unknown report type" );
-}
-
-void print_report( sim_t& sim, const report::report_configuration_t& entry )
-{
-  switch ( entry.report_type() )
-  {
-    case report::report_type::HTML:
-      report::print_html( sim );
-      break;
-    case report::report_type::JSON:
-      report::print_json( sim, entry );
-      break;
-    case report::report_type::TEXT:
-      report::print_text( &sim, sim.report_details );
-      break;
-    default:
-      throw std::invalid_argument( "Unknown report type" );
-  }
-}
-}  // namespace
-
 // report::print_profiles ===================================================
 namespace report
 {
-report_configuration_t::report_configuration_t( enum report_type type, int version, std::string destination )
-  : _type( type ), _version( version ), _destination( std::move( destination ) )
-{
-}
 
-bool report_configuration_t::is_version_greater_than( int min_version ) const
-{
-  return _version > min_version;
-}
-
-bool report_configuration_t::is_version_between( int min_version, int max_version ) const
-{
-  return _version > min_version && _version < max_version;
-}
-
-bool report_configuration_t::is_version_less_than( int max_version ) const
-{
-  return _version < max_version;
-}
-
-int report_configuration_t::version() const
-{
-  return _version;
-}
-
-std::string report_configuration_t::report_type_string() const
-{
-  return get_report_type_string( _type );
-}
-
-report_type report_configuration_t::report_type() const
-{
-  return _type;
-}
-
-std::string report_configuration_t::destination() const
-{
-  return _destination;
-}
-
-std::string get_report_type_string( report_type type )
-{
-  switch ( type )
-  {
-    case report_type::HTML:
-      return "html";
-    case report_type::JSON:
-      return "json";
-    case report_type::TEXT:
-      return "text";
-  }
-  throw std::invalid_argument( "Unknown report type" );
-}
-
-report_configuration_t create_report_entry( sim_t& sim, report_type type, int version, std::string destination )
-{
-  auto settings = get_report_settings( type );
-
-  if ( version < settings.minimum_version )
-  {
-    throw std::invalid_argument(
-        fmt::format( "Cannot generate report {} with version {}, which is less than the supported minimum version {}",
-                     get_report_type_string( type ), version, settings.minimum_version ) );
-  }
-  if ( version < settings.minimum_non_deprecated_version )
-  {
-    sim.error( "Report {} with version {} is deprecated. Minimum non-deprecated version is {}.",
-               get_report_type_string( type ), version, settings.minimum_non_deprecated_version );
-  }
-  if ( version > settings.maximum_version )
-  {
-    throw std::invalid_argument(
-        fmt::format( "Cannot generate report {} with version {}, which greater than the supported maximum version {}",
-                     get_report_type_string( type ), version, settings.maximum_version ) );
-  }
-
-  return report_configuration_t( type, version, destination );
-}
 
 void print_profiles(sim_t* sim)
 {
@@ -340,7 +221,7 @@ void print_spell_query(xml_node_t* root, FILE* file, const sim_t& sim, const spe
 }
 // report::print_suite ======================================================
 
-void print_suite(sim_t* sim, const std::vector<report_configuration_t>& report_entries)
+void print_suite( sim_t* sim )
 {
   if (!sim->profileset_enabled)
   {
@@ -348,13 +229,8 @@ void print_suite(sim_t* sim, const std::vector<report_configuration_t>& report_e
   }
 
   report::print_text(sim, sim->report_details != 0);
-
+  report::print_json(*sim);
   report::print_html(*sim);
   report::print_profiles(sim);
-
-  for(const auto& entry : report_entries)
-  {
-    print_report(*sim, entry);
-  }
 }
 }  // namespace report

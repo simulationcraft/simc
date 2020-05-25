@@ -5,6 +5,7 @@
 
 #include "reports.hpp"
 #include "interfaces/sc_js.hpp"
+#include "report/json/report_configuration.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "simulationcraft.hpp"
 #include "util/git_info.hpp"
@@ -1028,7 +1029,7 @@ void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t
   } );
 }
 
-void profileset_json( const report::report_configuration_t& report_configuration, const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
+void profileset_json( const ::report::json::report_configuration_t& report_configuration, const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
 {
   if (report_configuration.is_version_less_than(3))
   {
@@ -1041,7 +1042,7 @@ void profileset_json( const report::report_configuration_t& report_configuration
   
 }
 
-void to_json( const report::report_configuration_t& report_configuration, JsonOutput root, const sim_t& sim )
+void to_json( const ::report::json::report_configuration_t& report_configuration, JsonOutput root, const sim_t& sim )
 {
   // Sim-scope options
   auto options_root = root[ "options" ];
@@ -1202,7 +1203,7 @@ void to_json( const report::report_configuration_t& report_configuration, JsonOu
   }
 }
 
-void print_json_pretty( FILE* o, const sim_t& sim, const report::report_configuration_t& report_configuration )
+void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_configuration_t& report_configuration )
 {
   Document doc;
   Value& v = doc;
@@ -1244,11 +1245,7 @@ void print_json_pretty( FILE* o, const sim_t& sim, const report::report_configur
   }
 }
 
-}  // unnamed namespace
-
-namespace report
-{
-void print_json( sim_t& sim, const report::report_configuration_t& report_configuration)
+void print_json_report( sim_t& sim, const ::report::json::report_configuration_t& report_configuration)
 {
   if ( ! report_configuration.destination().empty() )
   {
@@ -1281,5 +1278,16 @@ void print_json( sim_t& sim, const report::report_configuration_t& report_config
     }
   }
 }
+}  // unnamed namespace
+
+namespace report
+{
+  void print_json( sim_t& sim )
+  {
+    for(const auto& report_configuration : sim.json_reports)
+    {
+      print_json_report(sim, report_configuration);
+    }
+  }
 
 }  // report

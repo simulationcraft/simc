@@ -349,7 +349,7 @@ int sim_t::main( const std::vector<std::string>& args )
         }
         else
         {
-          report::print_suite( this, report_entries );
+          report::print_suite( this );
         }
       }
       else

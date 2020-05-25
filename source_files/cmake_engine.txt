@@ -99,6 +99,7 @@ report/charts.hpp
 report/color.hpp
 report/decorators.hpp
 report/gear_weights.hpp
+report/json/report_configuration.hpp
 report/report_helper.hpp
 report/reports.hpp
 report/sc_highchart.hpp
@@ -243,6 +244,7 @@ player/unique_gear_legion.cpp
 report/charts.cpp
 report/color.cpp
 report/decorators.cpp
+report/json/report_configuration.cpp
 report/report_helper.cpp
 report/reports.cpp
 report/sc_gear_weights.cpp
