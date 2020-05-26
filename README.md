@@ -80,3 +80,8 @@ Boost Software License, Version 1.0 (see LICENSE.BOOST for more information).
 
 Copyright (c) 2012 - 2016, Victor Zverovich. All rights reserved.
 BSD 2-Clause "Simplified" License (see LICENSE.BSD2 for more information).
+
+cpp-semver (https://github.com/easz/cpp-semver)
+
+Copyright (c) 2018 Cas Perl. All rights reserved.
+MIT License (see LICENSE.MIT for more information).

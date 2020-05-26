@@ -5,20 +5,22 @@
 
 #include "report_configuration.hpp"
 
+#include <stdexcept> // included because cpp-semver seems to lack this internal dependency
+
+#include "lib/cpp-semver/cpp-semver.hpp"
 #include "sim/sc_sim.hpp"
 
 namespace
 {
 struct report_version_settings_t
 {
-  int minimum_version;
-  int minimum_non_deprecated_version;
-  int maximum_version;
+  std::string version;
+  bool is_deprecated;
 };
 
-constexpr report_version_settings_t get_report_settings()
+std::vector<report_version_settings_t> get_report_settings()
 {
-  return report_version_settings_t{ 2, 2, 3 };
+  return std::vector<report_version_settings_t>{ { "3.0.0", false }, { "2.0.0", false } };
 }
 }  // namespace
 
@@ -26,64 +28,71 @@ namespace report
 {
 namespace json
 {
-report_configuration_t::report_configuration_t( int version, std::string destination )
-  : _version( version ), _destination( std::move( destination ) )
+report_configuration_t::report_configuration_t( std::string version, std::string destination )
+  : _version( std::move( version ) ), _destination( std::move( destination ) )
 {
 }
 
-bool report_configuration_t::is_version_greater_than( int min_version ) const
+bool report_configuration_t::version_intersects( const std::string& version ) const
 {
-  return _version > min_version;
+  return semver::intersects( _version, version );
 }
 
-bool report_configuration_t::is_version_between( int min_version, int max_version ) const
-{
-  return _version > min_version && _version < max_version;
-}
-
-bool report_configuration_t::is_version_less_than( int max_version ) const
-{
-  return _version < max_version;
-}
-
-int report_configuration_t::version() const
+const std::string& report_configuration_t::version() const
 {
   return _version;
 }
 
-std::string report_configuration_t::destination() const
+const std::string& report_configuration_t::destination() const
 {
   return _destination;
 }
 
-report_configuration_t create_report_entry( sim_t& sim, int version, std::string destination )
+report_configuration_t create_report_entry( sim_t& sim, std::string version, std::string destination )
 {
-  auto settings = get_report_settings();
-  if (version <= 0 )
+  // valid reports, ordered from current to oldest
+  auto valid_report_versions = get_report_settings();
+  auto max_report            = valid_report_versions.front();
+  std::vector<std::string> available_non_deprecated_versions;
+  for ( const auto& entry : valid_report_versions )
   {
-    // if no version > 0 is specified, use current max version available.
-    version = settings.maximum_version;
+    if ( !entry.is_deprecated )
+    {
+      available_non_deprecated_versions.push_back( entry.version );
+    }
+  }
+  auto available_non_deprecated_version_string = util::string_join( available_non_deprecated_versions, " / " );
+
+  if ( version.empty() )
+  {
+    // if no version is specified, use current max version available.
+    version = valid_report_versions.front().version;
   }
 
-  if ( version < settings.minimum_version )
+  if ( !semver::valid( version ) )
   {
     throw std::invalid_argument(
-        fmt::format( "Cannot generate JSON report with version {}, which is less than the supported minimum version {}",
-                     version, settings.minimum_version ) );
+        fmt::format( "Specified JSON report version {} is not a valid semver version.", version ) );
   }
-  if ( version < settings.minimum_non_deprecated_version )
-  {
-    sim.error( "JSON Report with version {} is deprecated. Minimum non-deprecated version is {}.", version,
-               settings.minimum_non_deprecated_version );
-  }
-  if ( version > settings.maximum_version )
+  auto parsed_version = semver::parse_simple( version );
+
+  auto it = range::find_if( valid_report_versions, [ &version ]( const auto& entry ) {
+    return semver::intersects( entry.version, version );
+  } );
+  if ( it == valid_report_versions.end() )
   {
     throw std::invalid_argument(
-        fmt::format( "Cannot generate JSON report with version {}, which greater than the supported maximum version {}",
-                     version, settings.maximum_version ) );
+        fmt::format( "Cannot generate JSON report with version {}. Available non-deprecated versions: {}.", version,
+                     available_non_deprecated_version_string ) );
+  }
+  auto selected_entry = *it;
+  if ( selected_entry.is_deprecated )
+  {
+    sim.error( "JSON Report with version {} ({} requested) is deprecated. Available non-deprecated versions: {}.",
+               selected_entry.version, version, available_non_deprecated_version_string );
   }
 
-  return report_configuration_t( version, destination );
+  return report_configuration_t( selected_entry.version, destination );
 }
 
 }  // namespace json

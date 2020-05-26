@@ -15,22 +15,20 @@ namespace json
 {
 class report_configuration_t
 {
-  int _version;
+  std::string _version;
   std::string _destination;
 
 public:
   bool full_states;
 
-  report_configuration_t( int version, std::string destination );
+  report_configuration_t( std::string version, std::string destination );
 
-  bool is_version_greater_than( int min_version ) const;
-  bool is_version_between( int min_version, int max_version ) const;
-  bool is_version_less_than( int max_version ) const;
+  bool version_intersects( const std::string& version ) const;
 
-  int version() const;
-  std::string destination() const;
+  const std::string& version() const;
+  const std::string& destination() const;
 };
 
-report_configuration_t create_report_entry( sim_t& sim, int version, std::string destination );
+report_configuration_t create_report_entry( sim_t& sim, std::string version, std::string destination );
 }  // namespace json
 }  // namespace report

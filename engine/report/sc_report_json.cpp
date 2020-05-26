@@ -1032,13 +1032,13 @@ void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t
 
 void profileset_json( const ::report::json::report_configuration_t& report_configuration, const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
 {
-  if (report_configuration.is_version_less_than(3))
+  if (report_configuration.version_intersects(">=3.0.0"))
   {
-    profileset_json2(profileset, sim, root);
+    profileset_json3(profileset, sim, root);
   }
   else
   {
-    profileset_json3(profileset, sim, root);
+    profileset_json2(profileset, sim, root);
   }
   
 }

@@ -121,11 +121,11 @@ bool parse_json_reports( sim_t* sim, const std::string& /* option_name */, const
 {
   auto splits = util::string_split( value, "," );
 
-  int report_level = 0;
+  std::string report_version;
   bool fullStates = false;
   if (splits.size() > 1)
   {
-    for(int i = 1; i < splits.size(); ++i)
+    for(std::size_t i = 1; i < splits.size(); ++i)
     {
       const auto& split = splits[i];
 
@@ -136,14 +136,7 @@ bool parse_json_reports( sim_t* sim, const std::string& /* option_name */, const
       }
       if (splitOptions[0] == "version")
       {
-        try
-        {
-          report_level = util::to_int( splitOptions[1] );
-        }
-        catch ( const std::exception& )
-        {
-          std::throw_with_nested(std::runtime_error("Error parsing json report version"));
-        }
+        report_version = splitOptions[1];
       }
       if (splitOptions[0] == "full_states")
       {
@@ -157,7 +150,7 @@ bool parse_json_reports( sim_t* sim, const std::string& /* option_name */, const
     }
   }
 
-  auto entry = report::json::create_report_entry( *sim, report_level, value );
+  auto entry = report::json::create_report_entry( *sim, report_version, value );
   entry.full_states = fullStates;
 
   sim->json_reports.push_back( std::move( entry ) );

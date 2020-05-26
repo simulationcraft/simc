@@ -17,7 +17,7 @@
 #include "event_manager.hpp"
 #include "util/util.hpp"
 #include "util/rng.hpp"
-#include "report/reports.hpp"
+#include "report/json/report_configuration.hpp"
 #include <map>
 #include <mutex>
 #include <memory>
