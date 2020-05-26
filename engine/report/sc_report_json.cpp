@@ -1212,6 +1212,10 @@ void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_
 
   JsonOutput root( doc, v );
 
+  if (report_configuration.version_intersects(">=3.0.0"))
+  {
+    root["$id"] = fmt::format("https://www.simulationcraft.org/reports/{}.schema.json", report_configuration.version());
+  }
   root[ "version" ] = SC_VERSION;
   root[ "report_version" ] = report_configuration.version();
   root[ "ptr_enabled" ] = SC_USE_PTR;
