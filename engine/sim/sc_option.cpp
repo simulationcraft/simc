@@ -390,23 +390,6 @@ private:
   opts::function_t _fun;
 };
 
-struct opts_sim_func_unfiltered_t : public option_t
-{
-  opts_sim_func_unfiltered_t( const std::string& name, const opts::function_unfilterd_t& ref ) :
-    option_t( name ),
-    _fun( ref )
-  { }
-protected:
-  opts::parse_status do_parse( sim_t* sim, const std::string& n, const std::string& value ) const override
-  {
-    return _fun( sim, n, value );
-  }
-  std::ostream& do_print( std::ostream& stream ) const override
-  { return stream << "function option: " << name() << "\n"; }
-private:
-  opts::function_unfilterd_t _fun;
-};
-
 struct opts_map_t : public option_t
 {
   opts_map_t( const std::string& name, opts::map_t& ref ) :
@@ -980,9 +963,6 @@ std::unique_ptr<option_t> opt_map_list( const std::string& n, opts::map_list_t& 
 
 std::unique_ptr<option_t> opt_func( const std::string& n, const opts::function_t& f )
 { return std::unique_ptr<option_t>(new opts_sim_func_t( n, f )); }
-
-std::unique_ptr<option_t> opt_func_unfiltered( const std::string& n, const opts::function_unfilterd_t& f )
-{ return std::unique_ptr<option_t>(new opts_sim_func_unfiltered_t( n, f )); }
 
 std::unique_ptr<option_t> opt_deprecated( const std::string& n, const std::string& new_option )
 { return std::unique_ptr<option_t>(new opts_deperecated_t( n, new_option )); }

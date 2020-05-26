@@ -117,37 +117,58 @@ bool parse_debug_seed( sim_t* sim, const std::string&, const std::string& value 
   return true;
 }
 
-opts::parse_status parse_json_reports( sim_t* sim, const std::string& option_name, const std::string& value )
+bool parse_json_reports( sim_t* sim, const std::string& /* option_name */, const std::string& value )
 {
+  auto splits = util::string_split( value, "," );
 
-  auto report_name = std::string("json");
-  if ( option_name.find( report_name ) == 0 )  // check if option begins with
+  int report_level = 0;
+  bool fullStates = false;
+  if (splits.size() > 1)
   {
-    int report_level = 1;
-    if ( option_name.size() == report_name.size() )
+    for(int i = 1; i < splits.size(); ++i)
     {
-      report_level = 1;
-    }
-    else
-    {
-      try
-      {
-        report_level = util::to_int( option_name.substr( report_name.size() ) );
-      }
-      catch ( const std::exception& )
-      {
-        // if we can't parse the remainder as a number, just skip this, since it is likely a custom option for that report.
-        return opts::parse_status::CONTINUE;
-      }
-    }
+      const auto& split = splits[i];
 
-    auto entry = report::json::create_report_entry( *sim, report_level, value );
-
-    sim->json_reports.push_back( std::move( entry ) );
-    return opts::parse_status::OK;
+      auto splitOptions = util::string_split( split, "=" );
+      if (splitOptions.size() != 2)
+      {
+        continue;
+      }
+      if (splitOptions[0] == "version")
+      {
+        try
+        {
+          report_level = util::to_int( splitOptions[1] );
+        }
+        catch ( const std::exception& )
+        {
+          std::throw_with_nested(std::runtime_error("Error parsing json report version"));
+        }
+      }
+      if (splitOptions[0] == "full_states")
+      {
+        fullStates = util::to_int( splitOptions[1] );
+        if (fullStates)
+        {
+          // We need to set the global json full states so extra data gets produced if one report requests it.
+          sim->json_full_states = true;
+        }
+      }
+    }
   }
 
-  return opts::parse_status::CONTINUE;
+  auto entry = report::json::create_report_entry( *sim, report_level, value );
+  entry.full_states = fullStates;
+
+  sim->json_reports.push_back( std::move( entry ) );
+
+  return true;
+}
+
+bool replace_json2( sim_t* sim, const std::string& /*option_name*/, const std::string& value )
+{
+  // Redirect existing json2=value option to json=value,version=2
+  return parse_json_reports(sim, "json", fmt::format("{},version=2", value));
 }
 
 // parse_ptr ================================================================
@@ -3474,7 +3495,8 @@ void sim_t::create_options()
   add_option( opt_bool( "strict_parsing", strict_parsing ) );
   add_option( opt_bool( "debug_each", debug_each ) );
   add_option( opt_func( "debug_seed", parse_debug_seed ) );
-  add_option( opt_func_unfiltered( "parse_reports", parse_json_reports ) );
+  add_option( opt_func( "json", parse_json_reports ) );
+  add_option( opt_func( "json2", replace_json2 ) );
   add_option( opt_string( "html", html_file_str ) );
   add_option( opt_bool( "hosted_html", hosted_html ) );
   add_option( opt_int( "healing", healing ) );
@@ -3484,7 +3506,7 @@ void sim_t::create_options()
   add_option( opt_bool( "save_gear_comments", save_gear_comments ) );
   add_option( opt_bool( "buff_uptime_timeline", buff_uptime_timeline ) );
   add_option( opt_bool( "buff_stack_uptime_timeline", buff_stack_uptime_timeline ) );
-  add_option( opt_bool( "json_full_states", json_full_states ) );
+  add_option( opt_deprecated( "json_full_states", "json=,full_states=" ) );
   // Bloodlust
   add_option( opt_int( "bloodlust_percent", bloodlust_percent ) );
   add_option( opt_timespan( "bloodlust_time", bloodlust_time ) );

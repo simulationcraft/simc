@@ -453,13 +453,14 @@ void to_json( JsonOutput root, const player_t& p,
 }
 
 void to_json( JsonOutput root,
+              const ::report::json::report_configuration_t& report_configuration,
               const std::vector<player_collected_data_t::action_sequence_data_t>& asd,
               const std::vector<resource_e>& relevant_resources,
               const sim_t& sim )
 {
   root.make_array();
 
-  range::for_each( asd, [ &root, &relevant_resources, &sim ]( const player_collected_data_t::action_sequence_data_t& entry ) {
+  range::for_each( asd, [ &root, &relevant_resources, &sim, &report_configuration ]( const player_collected_data_t::action_sequence_data_t& entry ) {
     auto json = root.add();
 
     json[ "time" ] = entry.time;
@@ -483,13 +484,13 @@ void to_json( JsonOutput root,
     {
       auto buffs = json[ "buffs" ];
       buffs.make_array();
-      range::for_each( entry.buff_list, [ &buffs, &sim ]( const std::pair< buff_t*, std::vector<double> > data ) {
+      range::for_each( entry.buff_list, [ &buffs, &sim, &report_configuration ]( const std::pair< buff_t*, std::vector<double> > data ) {
         auto entry = buffs.add();
 
         entry[ "id" ] = data.first -> data_reporting().id();
         entry[ "name" ] = data.first -> name();
         entry[ "stacks" ] = data.second[0];
-        if ( sim.json_full_states )
+        if ( report_configuration.full_states )
         {
           entry[ "remains" ] = data.second[1];
         }
@@ -497,7 +498,7 @@ void to_json( JsonOutput root,
     }
 
     // Writing cooldown and debuffs data if asking for json full states
-    if ( sim.json_full_states && !entry.cooldown_list.empty() )
+    if ( report_configuration.full_states && !entry.cooldown_list.empty() )
     {
       auto cooldowns = json[ "cooldowns" ];
       cooldowns.make_array();
@@ -510,7 +511,7 @@ void to_json( JsonOutput root,
       } );
     }
 
-    if ( sim.json_full_states && !entry.target_list.empty() )
+    if ( report_configuration.full_states && !entry.target_list.empty() )
     {
       auto targets = json[ "targets" ];
       targets.make_array();
@@ -539,7 +540,7 @@ void to_json( JsonOutput root,
   } );
 }
 
-void collected_data_to_json( JsonOutput root, const player_t& p )
+void collected_data_to_json( JsonOutput root, const ::report::json::report_configuration_t& report_configuration, const player_t& p )
 {
   const auto& sim = *p.sim;
   const auto& cd = p.collected_data;
@@ -649,12 +650,12 @@ void collected_data_to_json( JsonOutput root, const player_t& p )
 
     if ( ! cd.action_sequence_precombat.empty() )
     {
-      to_json( root[ "action_sequence_precombat" ], cd.action_sequence_precombat, relevant_resources, sim );
+      to_json( root[ "action_sequence_precombat" ], report_configuration, cd.action_sequence_precombat, relevant_resources, sim );
     }
 
     if ( ! cd.action_sequence.empty() )
     {
-      to_json( root[ "action_sequence" ], cd.action_sequence, relevant_resources, sim );
+      to_json( root[ "action_sequence" ], report_configuration, cd.action_sequence, relevant_resources, sim );
     }
   }
 }
@@ -742,7 +743,7 @@ void talents_to_json( JsonOutput root, const player_t& p )
   }
 }
 
-void to_json( JsonOutput& arr, const player_t& p )
+void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& report_configuration, const player_t& p )
 {
   auto root = arr.add(); // Add a fresh object to the players array and use it as root
 
@@ -844,7 +845,7 @@ void to_json( JsonOutput& arr, const player_t& p )
     scale_factors_all_to_json( root[ "scale_factors_all" ], p );
   }
 
-  collected_data_to_json( root[ "collected_data" ], p );
+  collected_data_to_json( root[ "collected_data" ], report_configuration, p );
 
   if ( p.sim -> report_details != 0 )
   {
@@ -1136,7 +1137,7 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   JsonOutput players_arr = root[ "players" ].make_array();
 
   range::for_each( sim.player_no_pet_list.data(), [ & ]( const player_t* p ) {
-    to_json( players_arr, *p );
+    to_json( players_arr, report_configuration, *p );
   } );
 
   if ( sim.profilesets.n_profilesets() > 0 )
@@ -1166,7 +1167,7 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
     JsonOutput targets_arr = root[ "targets" ].make_array();
 
     range::for_each( sim.target_list.data(), [ & ]( const player_t* p ) {
-      to_json( targets_arr, *p );
+      to_json( targets_arr, report_configuration, *p );
     } );
 
     // Raid events
@@ -1261,7 +1262,7 @@ void print_json_report( sim_t& sim, const ::report::json::report_configuration_t
     // Print JSON report
     try
     {
-      if( sim.json_full_states )
+      if( report_configuration.full_states )
       {
         std::cout << "\nReport will be generated with full state for each action.\n";
       }

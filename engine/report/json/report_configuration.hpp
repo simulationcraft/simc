@@ -19,6 +19,8 @@ class report_configuration_t
   std::string _destination;
 
 public:
+  bool full_states;
+
   report_configuration_t( int version, std::string destination );
 
   bool is_version_greater_than( int min_version ) const;

@@ -59,6 +59,11 @@ std::string report_configuration_t::destination() const
 report_configuration_t create_report_entry( sim_t& sim, int version, std::string destination )
 {
   auto settings = get_report_settings();
+  if (version <= 0 )
+  {
+    // if no version > 0 is specified, use current max version available.
+    version = settings.maximum_version;
+  }
 
   if ( version < settings.minimum_version )
   {
