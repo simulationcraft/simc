@@ -108,58 +108,57 @@ namespace simc
       return time <= right.time;
     }
 
-    timespan_t& operator+=(timespan_t right)
+    constexpr timespan_t& operator+=(timespan_t right)
     {
       assert(right < zero() || *this < zero() || *this <= max() - right);
       assert(right > zero() || *this >= min() - right);
       time += right.time;
       return *this;
     }
-    timespan_t& operator-=(timespan_t right)
+    constexpr timespan_t& operator-=(timespan_t right)
     {
       assert(right < zero() || *this >= right + min());
       assert(right > zero() || *this <= right + max());
       *this = *this - right;
       return *this;
     }
-    timespan_t&
-    operator %=(timespan_t right)
+    constexpr timespan_t& operator %=(timespan_t right)
     {
       time %= right.time;
       return *this;
     }
 
     template <typename Rep, typename = std::enable_if_t<std::is_arithmetic<Rep>::value>>
-    timespan_t& operator*=(Rep right)
+    constexpr timespan_t& operator*=(Rep right)
     {
       time = static_cast<time_t>(time * right);
       return *this;
     }
 
     template <typename Rep, typename = std::enable_if_t<std::is_arithmetic<Rep>::value>>
-    timespan_t& operator/=(Rep right)
+    constexpr timespan_t& operator/=(Rep right)
     {
       time = static_cast<time_t>(time / right);
       return *this;
     }
 
-    friend timespan_t operator+(timespan_t right)
+    friend constexpr timespan_t operator+(timespan_t right)
     {
       return right;
     }
-    friend timespan_t operator-(timespan_t right)
+    friend constexpr timespan_t operator-(timespan_t right)
     {
       return timespan_t(-right.time);
     }
 
-    friend timespan_t operator+(timespan_t left, timespan_t right)
+    friend constexpr timespan_t operator+(timespan_t left, timespan_t right)
     {
       assert(right < zero() || left < zero() || left <= max() - right);
       assert(right > zero() || left >= min() - right);
       return timespan_t(left.time + right.time);
     }
 
-    friend timespan_t operator-(timespan_t left, timespan_t right)
+    friend constexpr timespan_t operator-(timespan_t left, timespan_t right)
     {
       assert(right < zero() || left >= right + min());
       assert(right > zero() || left <= right + max());
@@ -167,29 +166,29 @@ namespace simc
     }
 
     template <typename Rep>
-    friend auto operator*(timespan_t left, Rep right) -> std::enable_if_t<std::is_arithmetic<Rep>::value, timespan_t>
+    friend constexpr auto operator*(timespan_t left, Rep right) -> std::enable_if_t<std::is_arithmetic<Rep>::value, timespan_t>
     {
       return timespan_t(left.time * right);
     }
 
     template <typename Rep>
-    friend auto operator*(Rep left, timespan_t right) -> std::enable_if_t<std::is_arithmetic<Rep>::value, timespan_t>
+    friend constexpr auto operator*(Rep left, timespan_t right) -> std::enable_if_t<std::is_arithmetic<Rep>::value, timespan_t>
     {
       return timespan_t(left * right.time);
     }
 
     template <typename Rep>
-    friend auto operator/(timespan_t left, Rep right) -> std::enable_if_t<std::is_arithmetic<Rep>::value, timespan_t>
+    friend constexpr auto operator/(timespan_t left, Rep right) -> std::enable_if_t<std::is_arithmetic<Rep>::value, timespan_t>
     {
       return timespan_t(left.time / right);
     }
 
-    friend double operator/(timespan_t left, timespan_t right)
+    friend constexpr double operator/(timespan_t left, timespan_t right)
     {
       return static_cast<double>(left.time) / right.time;
     }
 
-    friend timespan_t operator%(timespan_t left, timespan_t right)
+    friend constexpr timespan_t operator%(timespan_t left, timespan_t right)
     {
       left %= right;
       return left;
