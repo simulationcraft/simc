@@ -32,6 +32,7 @@ report_configuration_t::report_configuration_t( std::string version, std::string
   : _version( std::move( version ) ),
     _destination( std::move( destination ) ),
     full_states( false ),
+    pretty_print( false ),
     decimal_places( 0 )
 {
 }

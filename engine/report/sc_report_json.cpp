@@ -15,6 +15,7 @@
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
+#include "rapidjson/prettywriter.h"
 
 using namespace rapidjson;
 using namespace js;
@@ -1204,6 +1205,34 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   }
 }
 
+void normal_print(FileWriteStream& stream, Document& doc, const ::report::json::report_configuration_t& report_configuration  )
+{
+  Writer<FileWriteStream> writer( stream );
+  if (report_configuration.decimal_places > 0)
+  {
+    writer.SetMaxDecimalPlaces(report_configuration.decimal_places);
+  }
+  auto accepted = doc.Accept( writer );
+  if ( !accepted )
+  {
+    throw std::runtime_error("JSON Writer did not accept document.");
+  }
+}
+
+void pretty_print(FileWriteStream& stream, Document& doc, const ::report::json::report_configuration_t& report_configuration  )
+{
+  PrettyWriter<FileWriteStream> writer( stream );
+  if (report_configuration.decimal_places > 0)
+  {
+    writer.SetMaxDecimalPlaces(report_configuration.decimal_places);
+  }
+  auto accepted = doc.Accept( writer );
+  if ( !accepted )
+  {
+    throw std::runtime_error("JSON Writer did not accept document.");
+  }
+}
+
 void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_configuration_t& report_configuration )
 {
   Document doc;
@@ -1242,16 +1271,15 @@ void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_
 
   std::array<char, 16384> buffer;
   FileWriteStream b( o, buffer.data(), buffer.size() );
-  Writer<FileWriteStream> writer( b );
-  if (report_configuration.decimal_places > 0)
+  if (report_configuration.pretty_print)
   {
-    writer.SetMaxDecimalPlaces(report_configuration.decimal_places);
+    pretty_print(b, doc, report_configuration);
   }
-  auto accepted = doc.Accept( writer );
-  if ( !accepted )
+  else
   {
-    throw std::runtime_error("JSON Writer did not accept document.");
+    normal_print(b, doc, report_configuration);
   }
+  
 }
 
 void print_json_report( sim_t& sim, const ::report::json::report_configuration_t& report_configuration)
@@ -1266,7 +1294,7 @@ void print_json_report( sim_t& sim, const ::report::json::report_configuration_t
                   report_configuration.destination().c_str() );
       return;
     }
-    
+
     // Print JSON report
     try
     {

@@ -20,6 +20,7 @@ class report_configuration_t
 
 public:
   bool full_states;
+  bool pretty_print;
   int decimal_places;
 
   report_configuration_t( std::string version, std::string destination );

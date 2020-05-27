@@ -117,6 +117,19 @@ bool parse_debug_seed( sim_t* sim, const std::string&, const std::string& value 
   return true;
 }
 
+/**
+ * Parse json= option.
+ * 
+ * General structure is: json=destination[,<option>=<value>]
+ * 
+ * destination: path to which the report is written.
+ * 
+ * Valid options:
+ * - version [string]: Requested report version, which follow semver. This option can be a specific report version, or a semver interval like ">=2.0.0".
+ * - full_states [bool]: Collects and reports full action and other states, greatly increasing the report size.
+ * - pretty_print [bool]: Pretty-print (whitespaces and indentation) the report.
+ * - decimal_places [int]: limit floating point decimal places. Valid if > 0
+ */
 bool parse_json_reports( sim_t* sim, const std::string& /* option_name */, const std::string& value )
 {
   auto splits = util::string_split( value, ",", false );
@@ -132,6 +145,7 @@ bool parse_json_reports( sim_t* sim, const std::string& /* option_name */, const
   }
   std::string report_version;
   bool fullStates = false;
+  bool pretty_print = false;
   int decimal_places = 0;
   if ( splits.size() > 1 )
   {
@@ -164,6 +178,17 @@ bool parse_json_reports( sim_t* sim, const std::string& /* option_name */, const
           std::throw_with_nested( std::runtime_error( "Canot parse JSON report option 'full_states'" ) );
         }
       }
+      if ( splitOptions[ 0 ] == "pretty_print" )
+      {
+        try
+        {
+          pretty_print = std::stoi( splitOptions[ 1 ] );
+        }
+        catch ( const std::exception& )
+        {
+          std::throw_with_nested( std::runtime_error( "Canot parse JSON report option 'pretty_print'" ) );
+        }
+      }
       if ( splitOptions[ 0 ] == "decimal_places" )
       {
         // limit floating point decimal places. Valid if > 0
@@ -182,6 +207,7 @@ bool parse_json_reports( sim_t* sim, const std::string& /* option_name */, const
   auto entry = report::json::create_report_entry( *sim, report_version, destination );
   entry.full_states = fullStates;
   entry.decimal_places = decimal_places;
+  entry.pretty_print = pretty_print;
 
   sim->json_reports.push_back( std::move( entry ) );
 
