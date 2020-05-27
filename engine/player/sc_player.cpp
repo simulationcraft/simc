@@ -1763,7 +1763,8 @@ void player_t::init_items()
 
   // Sort items with children before items without children
   range::sort( init_slots, [this]( slot_e first, slot_e second ) {
-    const item_t &fi = items[ first ], si = items[ second ];
+    const item_t &fi = items[ first ];
+    const item_t &si = items[ second ];
     if ( fi.parent_slot != SLOT_INVALID && si.parent_slot == SLOT_INVALID )
     {
       return false;

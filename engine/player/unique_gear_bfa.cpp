@@ -4780,7 +4780,7 @@ item_t init_punchcard( const special_effect_t& effect )
     return {};
   }
 
-  auto item_data = effect.player->dbc->item( effect.enchant_data->id_gem );
+  const auto& item_data = effect.player->dbc->item( effect.enchant_data->id_gem );
   if ( item_data.id == 0 )
   {
     return {};
@@ -5031,7 +5031,7 @@ void items::subroutine_optimization( special_effect_t& effect )
       const gem_property_data_t* data = nullptr;
 
       auto it = range::find_if( effect.item->parsed.gem_id, [this, &data]( unsigned gem_id ) {
-        auto item_data = source->dbc->item( gem_id );
+        const auto& item_data = source->dbc->item( gem_id );
         if ( item_data.id == 0 )
         {
           return false;

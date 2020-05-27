@@ -557,7 +557,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
   }
 
   auto relic_id = item.parsed.gem_id[ relic_idx ];
-  auto relic_data = item.player -> dbc->item( relic_id );
+  const auto& relic_data = item.player -> dbc->item( relic_id );
   if ( relic_data.id == 0 )
   {
     return SOCKET_COLOR_NONE;

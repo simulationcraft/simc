@@ -1518,7 +1518,7 @@ void item_t::decode_gems()
     unsigned gem_index = 0;
     for ( const auto& gem_str : split )
     {
-      auto item = dbc::find_gem( gem_str, player->dbc->ptr );
+      const auto& item = dbc::find_gem( gem_str, player->dbc->ptr );
       if ( item.id > 0 )
       {
         parsed.gem_id[ gem_index++ ] = item.id;

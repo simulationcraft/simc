@@ -2029,8 +2029,8 @@ static buff_t* find_potion_buff( const std::vector<buff_t*>& buffs, player_t* so
       continue;
     }
 
-    auto item =
-        dbc::find_consumable( ITEM_SUBCLASS_POTION, maybe_ptr( b->player->dbc->ptr ), potion_spell_filter( b->data().id() ) );
+    const auto& item = dbc::find_consumable( ITEM_SUBCLASS_POTION, maybe_ptr( b->player->dbc->ptr ),
+                                             potion_spell_filter( b->data().id() ) );
     if ( item.id != 0 )
     {
       return b;
