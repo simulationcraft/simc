@@ -3641,7 +3641,6 @@ struct moc_t : public hunter_spell_t
 
 struct summon_pet_t: public hunter_spell_t
 {
-  std::string pet_name;
   bool opt_disabled;
   pet_t* pet;
 
@@ -3649,26 +3648,24 @@ struct summon_pet_t: public hunter_spell_t
     hunter_spell_t( "summon_pet", p, p -> find_spell( 883 ) ),
     opt_disabled( false ), pet( nullptr )
   {
-    add_option( opt_string( "name", pet_name ) );
+    add_option( opt_obsoleted( "name" ) );
     parse_options( options_str );
 
     harmful = may_hit = false;
     callbacks = false;
     ignore_false_positive = true;
 
-    if ( pet_name.empty() )
-      pet_name = p -> options.summon_pet_str;
-    opt_disabled = util::str_compare_ci( pet_name, "disabled" );
+    opt_disabled = util::str_compare_ci( p -> options.summon_pet_str, "disabled" );
   }
 
   void init_finished() override
   {
     if ( ! pet && ! opt_disabled )
-      pet = player -> find_pet( pet_name );
+      pet = player -> find_pet( p() -> options.summon_pet_str );
 
     if ( ! pet && p() -> specialization() != HUNTER_MARKSMANSHIP )
     {
-      throw std::invalid_argument(fmt::format("Unable to find pet '{}' for summons.", pet_name));
+      throw std::invalid_argument(fmt::format("Unable to find pet '{}' for summons.", p() -> options.summon_pet_str));
     }
 
     hunter_spell_t::init_finished();
