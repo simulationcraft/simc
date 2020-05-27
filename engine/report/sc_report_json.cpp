@@ -1243,6 +1243,10 @@ void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_
   std::array<char, 16384> buffer;
   FileWriteStream b( o, buffer.data(), buffer.size() );
   Writer<FileWriteStream> writer( b );
+  if (report_configuration.decimal_places > 0)
+  {
+    writer.SetMaxDecimalPlaces(report_configuration.decimal_places);
+  }
   auto accepted = doc.Accept( writer );
   if ( !accepted )
   {
@@ -1262,7 +1266,7 @@ void print_json_report( sim_t& sim, const ::report::json::report_configuration_t
                   report_configuration.destination().c_str() );
       return;
     }
-
+    
     // Print JSON report
     try
     {

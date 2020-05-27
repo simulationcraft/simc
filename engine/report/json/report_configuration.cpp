@@ -5,7 +5,7 @@
 
 #include "report_configuration.hpp"
 
-#include <stdexcept> // included because cpp-semver seems to lack this internal dependency
+#include <stdexcept>  // included because cpp-semver seems to lack this internal dependency
 
 #include "lib/cpp-semver/cpp-semver.hpp"
 #include "sim/sc_sim.hpp"
@@ -29,7 +29,10 @@ namespace report
 namespace json
 {
 report_configuration_t::report_configuration_t( std::string version, std::string destination )
-  : _version( std::move( version ) ), _destination( std::move( destination ) )
+  : _version( std::move( version ) ),
+    _destination( std::move( destination ) ),
+    full_states( false ),
+    decimal_places( 0 )
 {
 }
 

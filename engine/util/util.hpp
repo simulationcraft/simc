@@ -140,7 +140,7 @@ profession_e translate_profession_id( int skill_id );
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 
-std::vector<std::string> string_split( const std::string& str, const std::string& delim );
+std::vector<std::string> string_split( const std::string& str, const std::string& delim, bool skip_empty_entries = true );
 std::vector<std::string> string_split_allow_quotes( std::string str, const char* delim );
 template <typename T>
 std::string string_join( const T& container, const std::string& delim = ", " );

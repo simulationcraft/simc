@@ -119,39 +119,69 @@ bool parse_debug_seed( sim_t* sim, const std::string&, const std::string& value 
 
 bool parse_json_reports( sim_t* sim, const std::string& /* option_name */, const std::string& value )
 {
-  auto splits = util::string_split( value, "," );
+  auto splits = util::string_split( value, ",", false );
 
+  std::string destination;
+  if (splits.size() > 0)
+  {
+    destination = splits[0];
+  }
+  if (destination.empty())
+  {
+    throw std::runtime_error("Cannot generate JSON report with no destination. Please specify a value after json=");
+  }
   std::string report_version;
   bool fullStates = false;
-  if (splits.size() > 1)
+  int decimal_places = 0;
+  if ( splits.size() > 1 )
   {
-    for(std::size_t i = 1; i < splits.size(); ++i)
+    for ( std::size_t i = 1; i < splits.size(); ++i )
     {
-      const auto& split = splits[i];
+      const auto& split = splits[ i ];
 
       auto splitOptions = util::string_split( split, "=" );
-      if (splitOptions.size() != 2)
+      if ( splitOptions.size() != 2 )
       {
         continue;
       }
-      if (splitOptions[0] == "version")
+      if ( splitOptions[ 0 ] == "version" )
       {
-        report_version = splitOptions[1];
+        report_version = splitOptions[ 1 ];
       }
-      if (splitOptions[0] == "full_states")
+      if ( splitOptions[ 0 ] == "full_states" )
       {
-        fullStates = util::to_int( splitOptions[1] );
-        if (fullStates)
+        try
         {
-          // We need to set the global json full states so extra data gets produced if one report requests it.
-          sim->json_full_states = true;
+          fullStates = std::stoi( splitOptions[ 1 ] );
+          if ( fullStates )
+          {
+            // We need to set the global json full states so extra data gets produced if one report requests it.
+            sim->json_full_states = true;
+          }
+        }
+        catch ( const std::exception& )
+        {
+          std::throw_with_nested( std::runtime_error( "Canot parse JSON report option 'full_states'" ) );
+        }
+      }
+      if ( splitOptions[ 0 ] == "decimal_places" )
+      {
+        // limit floating point decimal places. Valid if > 0
+        try
+        {
+          decimal_places = std::stoi( splitOptions[ 1 ] );
+        }
+        catch ( const std::exception& )
+        {
+          std::throw_with_nested( std::runtime_error( "Canot parse JSON report option 'decimal places'" ) );
         }
       }
     }
   }
 
-  auto entry = report::json::create_report_entry( *sim, report_version, value );
+  auto entry = report::json::create_report_entry( *sim, report_version, destination );
   entry.full_states = fullStates;
+  entry.decimal_places = decimal_places;
 
   sim->json_reports.push_back( std::move( entry ) );
 

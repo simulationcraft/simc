@@ -2288,7 +2288,7 @@ bool util::socket_gem_match( item_socket_color socket, item_socket_color gem )
 
 // string_split =============================================================
 
-std::vector<std::string> util::string_split( const std::string& str, const std::string& delim )
+std::vector<std::string> util::string_split( const std::string& str, const std::string& delim, bool skip_empty_entries )
 {
   std::vector<std::string> results;
   if ( str.empty() )
@@ -2298,7 +2298,7 @@ std::vector<std::string> util::string_split( const std::string& str, const std::
 
   while ( ( cut_pt = str.find_first_of( delim, start ) ) != std::string::npos )
   {
-    if ( cut_pt > start ) // Found something, push to the vector
+    if ( !skip_empty_entries || cut_pt > start ) // Found something, push to the vector
       results.push_back( str.substr( start, cut_pt - start ) );
 
     start = cut_pt + 1; // skip the found delimeter
