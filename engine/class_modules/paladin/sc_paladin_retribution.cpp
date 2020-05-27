@@ -743,7 +743,8 @@ void empyrean_power( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* ) override
     {
-      proc_buff -> trigger();
+      if ( proc_buff )
+        proc_buff -> trigger();
     }
   };
 
