@@ -5518,13 +5518,14 @@ struct frostwhelps_indignation_t : public death_knight_spell_t
   }
 };
 
+// Ingame it seems to only change Pillar of frost's strength bonus
+// The simc implementation creates a dummy buff to better track the strength increase through stack count
 struct pillar_of_frost_bonus_buff_t : public buff_t
 {
   pillar_of_frost_bonus_buff_t( death_knight_t* p ) :
     buff_t( p, "pillar_of_frost_bonus" )
   {
-    // PoF lasts 15s, which is at most 20 gcds, which is at most 40 runes
-    set_max_stack( 40 );
+    set_max_stack( 99 );
     set_duration( p -> spec.pillar_of_frost -> duration() );
     set_default_value( p -> spec.pillar_of_frost -> effectN( 2 ).percent() );
 
@@ -5542,10 +5543,16 @@ struct pillar_of_frost_buff_t : public buff_t
     add_invalidate( CACHE_STRENGTH );
   }
 
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    // Refreshing Pillar of Frost resets the ramping strength bonus
+    debug_cast<death_knight_t*>( player ) -> buffs.pillar_of_frost_bonus -> expire();
+
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+
   void expire_override( int s, timespan_t t ) override
   {
-    buff_t::expire_override( s, t );
-
     death_knight_t* p = debug_cast<death_knight_t*>( player );
 
     p -> buffs.pillar_of_frost_bonus -> expire();
@@ -7748,7 +7755,7 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)&active_enemies=1|buff.seething_rage.up&active_enemies=1" );
 
   // Pillar of Frost
-  cooldowns -> add_action( this, "Pillar of Frost", "if=cooldown.empower_rune_weapon.remains|talent.icecap.enabled", "Frost cooldowns" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=(cooldown.empower_rune_weapon.remains|talent.icecap.enabled)&!buff.pillar_of_frost.up", "Frost cooldowns" );
   cooldowns -> add_talent( this, "Breath of Sindragosa", "use_off_gcd=1,if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&talent.obliteration.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.1.time_to_die<20" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=(cooldown.pillar_of_frost.ready|target.1.time_to_die<20)&talent.breath_of_sindragosa.enabled&runic_power>60" );
