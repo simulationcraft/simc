@@ -23,7 +23,7 @@
 // if timespan_t is in the global namespace, there's a name lookup issue with
 // one of the Qt headers. Problem is avoided by defining in a sub-namespace
 // and then lifting into the global namespace with a using declaration.
-namespace timespan_adl_barrier
+namespace simc
 {
 
   /**
@@ -227,9 +227,9 @@ namespace timespan_adl_barrier
   };
 
   std::ostream& operator<<(std::ostream &os, const timespan_t& x);
-} // namespace timespan_adl_barrier
+} // namespace simc
 
-using timespan_adl_barrier::timespan_t;
+using simc::timespan_t;
 
 constexpr timespan_t operator"" _ms( unsigned long long time )
 {
