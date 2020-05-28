@@ -8,6 +8,8 @@ on:
 
 env:
   SIMC_PROFILE: profiles/T25_Raid.simc
+  CCACHE_COMPRESS: true # always enable ccache compression
+  ccache-generation: 0 # bump if you need to "clean" ccache
 
 jobs:
   ubuntu-gcc-9:
@@ -16,8 +18,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/cache@v2
+        env: { ccache-prefix: 'ubuntu-gcc-9-ccache-${{ env.ccache-generation }}' }
+        with:
+          path: ${{ runner.workspace }}/.ccache
+          key: ${{ env.ccache-prefix }}-${{ github.sha }}
+          restore-keys: ${{ env.ccache-prefix }}-
+
       - name: Install deps
-        run: sudo apt-get install libcurl4-openssl-dev cmake ninja-build gcc-9 lld
+        run: sudo apt-get install libcurl4-openssl-dev ninja-build lld ccache
 
       - name: Configure
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
@@ -25,9 +34,17 @@ jobs:
               -DCMAKE_CXX_COMPILER=g++-9 -DCMAKE_C_COMPILER=gcc-9
               -DCMAKE_CXX_FLAGS="-ffile-prefix-map=${{ runner.workspace }}/simc/=/"
               -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"
+              -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
       - name: Build
-        run: ninja -C '${{ runner.workspace }}/b/ninja'
+        env:
+          CCACHE_BASEDIR: ${{ runner.workspace }}
+          CCACHE_DIR: ${{ runner.workspace }}/.ccache
+          CCACHE_MAXSIZE: 192M # full build consumes around ~80, ~2x that to be safe
+        run: |
+          ccache -z
+          ninja -C '${{ runner.workspace }}/b/ninja'
+          ccache -s
 
       - name: Smoke Test
         run: ${{ runner.workspace }}/b/ninja/simc $SIMC_PROFILE iterations=20
@@ -57,10 +74,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/cache@v2
+        env: { ccache-prefix: 'ubuntu-clang-10-ccache-${{ env.ccache-generation }}' }
+        with:
+          path: ${{ runner.workspace }}/.ccache
+          key: ${{ env.ccache-prefix }}-${{ github.sha }}
+          restore-keys: ${{ env.ccache-prefix }}-
+
       - name: Install deps
         run: |
-          sudo apt-get install libcurl4-openssl-dev cmake ninja-build
-          sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache clang-10 lld-10
 
       - name: Configure
         env:
@@ -72,9 +96,17 @@ jobs:
                 -fno-omit-frame-pointer -fsanitize=address,undefined
                 -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
               -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"
+              -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
       - name: Build
-        run: ninja -C '${{ runner.workspace }}/b/ninja'
+        env:
+          CCACHE_BASEDIR: ${{ runner.workspace }}
+          CCACHE_DIR: ${{ runner.workspace }}/.ccache
+          CCACHE_MAXSIZE: 256M # full build consumes around ~124, ~2x that to be safe
+        run: |
+          ccache -z
+          ninja -C '${{ runner.workspace }}/b/ninja'
+          ccache -s
 
       - name: Smoke Test
         env:
