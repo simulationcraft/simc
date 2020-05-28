@@ -5545,8 +5545,20 @@ struct pillar_of_frost_buff_t : public buff_t
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    // Refreshing Pillar of Frost resets the ramping strength bonus
-    debug_cast<death_knight_t*>( player ) -> buffs.pillar_of_frost_bonus -> expire();
+    // Refreshing Pillar of Frost resets the ramping strength bonus and triggers Icy Citadel
+    death_knight_t* p = debug_cast<death_knight_t*>( player );
+    if ( p -> buffs.pillar_of_frost -> up() )
+    {
+      p -> buffs.pillar_of_frost_bonus -> expire();
+
+      if ( p -> azerite.icy_citadel.enabled() )
+      {
+        p -> buffs.icy_citadel -> trigger();
+        p -> buffs.icy_citadel -> extend_duration( p, p -> azerite.icy_citadel.spell() -> effectN( 2 ).time_value() *
+                                                   p -> buffs.icy_citadel_builder -> stack() );
+        p -> buffs.icy_citadel_builder -> expire();
+      }
+    }
 
     return buff_t::trigger( stacks, value, chance, duration );
   }
