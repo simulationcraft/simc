@@ -818,14 +818,23 @@ void SC_MainWindow::startSim()
   QString simc_version;
   if ( !git_info::available())
   {
-    simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4) %5 ###\n").
-        arg(SC_VERSION).arg(sim->dbc->wow_version()).arg(sim->dbc->wow_ptr_status()).arg(sim->dbc->build_level()).arg(noNetworking);
+    simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4) %5 ###\n")
+      .arg(SC_VERSION)
+      .arg(QString::fromStdString(dbc::client_data_version_str(sim->dbc->ptr)))
+      .arg(sim->dbc->wow_ptr_status())
+      .arg(dbc::client_data_build(sim->dbc->ptr))
+      .arg(noNetworking);
   }
   else
   {
-    simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4, git build %5 %6) %7 ###\n").
-            arg(SC_VERSION).arg(sim->dbc->wow_version()).arg(sim->dbc->wow_ptr_status()).arg(sim->dbc->build_level()).
-            arg(git_info::branch()).arg(git_info::revision()).arg(noNetworking);
+    simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4, git build %5 %6) %7 ###\n")
+      .arg(SC_VERSION)
+      .arg(QString::fromStdString(dbc::client_data_version_str(sim->dbc->ptr)))
+      .arg(sim->dbc->wow_ptr_status())
+      .arg(dbc::client_data_build(sim->dbc->ptr))
+      .arg(git_info::branch())
+      .arg(git_info::revision())
+      .arg(noNetworking);
   }
   QString gui_version = QString("### Using QT %1 with %2 ###\n\n").arg(QTCORE_VERSION_STR).arg(webEngineName());
   simc_gui_profile = simc_version + gui_version + simc_gui_profile;
