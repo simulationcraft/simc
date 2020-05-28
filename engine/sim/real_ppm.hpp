@@ -41,12 +41,12 @@ private:
   static double max_interval() { return 3.5; }
   static double max_bad_luck_prot() { return 1000.0; }
 public:
-  static double proc_chance( player_t*         player,
-                             double            PPM,
-                             const timespan_t& last_trigger,
-                             const timespan_t& last_successful_proc,
-                             unsigned          scales_with,
-                             blp               blp_state );
+  static double proc_chance( player_t*  player,
+                             double     PPM,
+                             timespan_t last_trigger,
+                             timespan_t last_successful_proc,
+                             unsigned   scales_with,
+                             blp        blp_state );
 
   real_ppm_t( const std::string& name, player_t* p, double frequency = 0, double mod = 1.0, unsigned s = RPPM_NONE, blp b = BLP_ENABLED ) :
     player( p ),
@@ -94,10 +94,10 @@ public:
   blp get_blp_state() const
   { return blp_state; }
 
-  void set_last_trigger_attempt( const timespan_t& ts )
+  void set_last_trigger_attempt( timespan_t ts )
   { last_trigger_attempt = ts; }
 
-  void set_last_trigger_success( const timespan_t& ts )
+  void set_last_trigger_success( timespan_t ts )
   { last_successful_trigger = ts; }
 
   void reset()

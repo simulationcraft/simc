@@ -220,7 +220,7 @@ namespace simc
     }
   };
 
-  std::ostream& operator<<(std::ostream &os, const timespan_t& x);
+  std::ostream& operator<<(std::ostream &os, timespan_t x);
 } // namespace simc
 
 using simc::timespan_t;

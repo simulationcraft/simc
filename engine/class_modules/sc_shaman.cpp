@@ -696,9 +696,9 @@ public:
 
   // Misc
   bool active_elemental_pet() const;
-  void summon_feral_spirits( const timespan_t& duration );
-  void summon_fire_elemental( const timespan_t& duration, bool essence_proc );
-  void summon_storm_elemental( const timespan_t& duration, bool essence_proc );
+  void summon_feral_spirits( timespan_t duration );
+  void summon_fire_elemental( timespan_t duration, bool essence_proc );
+  void summon_storm_elemental( timespan_t duration, bool essence_proc );
 
   // 8.2 Vision of Perfection minor
   void vision_of_perfection_proc() override;
@@ -849,7 +849,7 @@ struct resonance_totem_buff_t : public buff_t
     set_duration( p->talent.totem_mastery->effectN( 1 ).trigger()->duration() );
     set_period( s_data->effectN( 1 ).period() );
 
-    set_tick_callback( [ p ]( buff_t* b, int, const timespan_t& ) {
+    set_tick_callback( [ p ]( buff_t* b, int, timespan_t ) {
       double g = b->data().effectN( 1 ).base_value();
       p->trigger_maelstrom_gain( g, p->gain.resonance_totem );
     } );
@@ -907,7 +907,7 @@ struct roiling_storm_buff_driver_t : public buff_t
 
     if ( p->azerite.roiling_storm.ok() )
     {
-      set_tick_callback( [ p ]( buff_t*, int, const timespan_t& ) {
+      set_tick_callback( [ p ]( buff_t*, int, timespan_t ) {
         p->buff.stormbringer->trigger( p->buff.stormbringer->max_stack() );
         p->cooldown.strike->reset( true );
       } );
@@ -1026,7 +1026,7 @@ struct ascendance_buff_t : public buff_t
       lava_burst( nullptr )
   {
     set_trigger_spell( p->talent.ascendance );
-    set_tick_callback( [ p ]( buff_t* b, int, const timespan_t& ) {
+    set_tick_callback( [ p ]( buff_t* b, int, timespan_t ) {
       double g = b->data().effectN( 4 ).base_value();
       p->trigger_maelstrom_gain( g, p->gain.ascendance );
     } );
@@ -1956,7 +1956,7 @@ namespace pet
 {
 // Simple helper to summon n (default 1) sleeping pet(s) from a container
 template <typename T>
-void summon( const T& container, const timespan_t& duration, size_t n = 1 )
+void summon( const T& container, timespan_t duration, size_t n = 1 )
 {
   size_t summoned = 0;
 
@@ -7161,7 +7161,7 @@ bool shaman_t::active_elemental_pet() const
   }
 }
 
-void shaman_t::summon_feral_spirits( const timespan_t& duration )
+void shaman_t::summon_feral_spirits( timespan_t duration )
 {
   // No elemental spirits selected, just summon normal pets and exit
   if ( !talent.elemental_spirits->ok() )
@@ -7199,7 +7199,7 @@ void shaman_t::summon_feral_spirits( const timespan_t& duration )
   }
 }
 
-void shaman_t::summon_fire_elemental( const timespan_t& duration, bool essence_proc )
+void shaman_t::summon_fire_elemental( timespan_t duration, bool essence_proc )
 {
   if ( talent.storm_elemental->ok() )
   {
@@ -7241,7 +7241,7 @@ void shaman_t::summon_fire_elemental( const timespan_t& duration, bool essence_p
   }
 }
 
-void shaman_t::summon_storm_elemental( const timespan_t& duration, bool essence_proc )
+void shaman_t::summon_storm_elemental( timespan_t duration, bool essence_proc )
 {
   if ( !talent.storm_elemental->ok() )
   {
@@ -7842,7 +7842,7 @@ void shaman_t::create_buffs()
                           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                           ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
                           ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                          ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                             assert( action.earthen_rage );
                             action.earthen_rage->set_target( recent_target );
                             action.earthen_rage->execute();
@@ -7943,7 +7943,7 @@ void shaman_t::create_buffs()
                           ->set_activated( false )
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
   buff.fury_of_air = make_buff( this, "fury_of_air", talent.fury_of_air )
-                         ->set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                         ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                            action.fury_of_air->set_target( target );
                            action.fury_of_air->execute();
 

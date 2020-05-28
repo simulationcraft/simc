@@ -2316,7 +2316,7 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
   }
 
-  void do_schedule_travel( action_state_t* s, const timespan_t& ) override
+  void do_schedule_travel( action_state_t* s, timespan_t ) override
   {
     damage[ current_damage_action ] -> set_target( s -> target );
     damage[ current_damage_action ] -> execute();
@@ -4968,7 +4968,7 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms )
       -> set_activated( true )
       -> set_default_value( specs.aspect_of_the_wild -> effectN( 1 ).percent() )
-      -> set_tick_callback( [ this ]( buff_t *b, int, const timespan_t& ){
+      -> set_tick_callback( [ this ]( buff_t *b, int, timespan_t ){
                         resource_gain( RESOURCE_FOCUS, b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild );
                         if ( auto pet = pets.main )
                           pet -> resource_gain( RESOURCE_FOCUS, b -> data().effectN( 5 ).resource( RESOURCE_FOCUS ), pet -> gains.aspect_of_the_wild );
@@ -4987,7 +4987,7 @@ void hunter_t::create_buffs()
       make_buff( this, fmt::format( "barbed_shot_{}", i + 1 ), barbed_shot )
         -> set_default_value( barbed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
                               talents.scent_of_blood -> effectN( 1 ).base_value() )
-        -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+        -> set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                           resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot );
                         } );
   }
@@ -5012,7 +5012,7 @@ void hunter_t::create_buffs()
   buffs.spitting_cobra =
     make_buff( this, "spitting_cobra", talents.spitting_cobra )
       -> set_default_value( find_spell( 194407 ) -> effectN( 2 ).resource( RESOURCE_FOCUS ) )
-      -> set_tick_callback( [ this ]( buff_t *buff, int, const timespan_t& ){
+      -> set_tick_callback( [ this ]( buff_t *buff, int, timespan_t ){
                         resource_gain( RESOURCE_FOCUS, buff -> default_value, gains.spitting_cobra );
                       } );
 
@@ -5146,7 +5146,7 @@ void hunter_t::create_buffs()
     make_buff( this, "unerring_vision_driver", find_spell( 274446 ) )
       -> set_quiet( true )
       -> set_tick_zero( true )
-      -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buffs.unerring_vision -> trigger(); } )
+      -> set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { buffs.unerring_vision -> trigger(); } )
       -> set_trigger_spell( azerite.unerring_vision );
   buffs.unerring_vision_driver->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
     if ( cur == 0 )

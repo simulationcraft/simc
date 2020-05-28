@@ -53,7 +53,7 @@ void warlock_pet_t::create_buffs()
   buffs.embers = make_buff(this, "embers", find_spell(264364))
     ->set_period(timespan_t::from_seconds(0.5))
     ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
-    ->set_tick_callback([this](buff_t*, int, const timespan_t&)
+    ->set_tick_callback([this](buff_t*, int, timespan_t)
   {
     o()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, o()->gains.infernal);
   });
@@ -1433,7 +1433,7 @@ void infernal_t::create_buffs()
 
   immolation = make_buff<buff_t>( this, "immolation", find_spell( 19483 ) )
     ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-    ->set_tick_callback( [damage, this]( buff_t* /* b  */, int /* stacks */, const timespan_t& /* tick_time */ ) {
+    ->set_tick_callback( [damage, this]( buff_t* /* b  */, int /* stacks */, timespan_t /* tick_time */ ) {
       damage->set_target( target );
       damage->execute();
     } );

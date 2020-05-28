@@ -23,8 +23,8 @@ real_ppm_t::real_ppm_t( const std::string& name, player_t* p, const spell_data_t
 {
 }
 
-double real_ppm_t::proc_chance( player_t* player, double PPM, const timespan_t& last_trigger,
-                                const timespan_t& last_successful_proc, unsigned scales_with, blp blp_state )
+double real_ppm_t::proc_chance( player_t* player, double PPM, timespan_t last_trigger,
+                                timespan_t last_successful_proc, unsigned scales_with, blp blp_state )
 {
   auto sim       = player->sim;
   double coeff   = 1.0;

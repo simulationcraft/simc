@@ -546,7 +546,7 @@ void consumables::potion_of_focused_resolve( special_effect_t& effect )
     }
   } );
 
-  buff->set_tick_callback( [cb]( buff_t*, int, const timespan_t& ) { cb->add_stack(); } );
+  buff->set_tick_callback( [cb]( buff_t*, int, timespan_t ) { cb->add_stack(); } );
 }
 
 // Potion of Empowered Proximity ============================================
@@ -1188,7 +1188,7 @@ void items::merekthas_fang( special_effect_t& effect )
       return triggered_duration * dot->state->haste;
     }
 
-    double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
+    double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
     {
       return 1.0;
     }
@@ -2418,7 +2418,7 @@ struct vigor_engaged_t : public special_effect_t
     } );
   }
 
-  void extend_oscillation( const timespan_t& by_seconds )
+  void extend_oscillation( timespan_t by_seconds )
   {
     if ( player->sim->debug )
     {
@@ -4059,7 +4059,7 @@ void items::arcane_tempest( special_effect_t& effect )
 
   auto action = create_proc_action<arcane_tempest_t>( "arcane_tempest", effect, buff );
 
-  buff->set_tick_callback( [action]( buff_t* buff, int /* current_tick */, const timespan_t& /* tick_time */ ) {
+  buff->set_tick_callback( [action]( buff_t* buff, int /* current_tick */, timespan_t /* tick_time */ ) {
     action->set_target( buff->source->target );
     action->execute();
   } );

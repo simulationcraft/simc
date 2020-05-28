@@ -12,7 +12,7 @@ struct pantheon_ticker_t : public event_t
 {
   unique_gear::pantheon_state_t& obj;
 
-  pantheon_ticker_t( unique_gear::pantheon_state_t& o, const timespan_t& delay ) :
+  pantheon_ticker_t( unique_gear::pantheon_state_t& o, timespan_t delay ) :
     event_t( *o.player ), obj( o )
   {
     // TODO: Configurable

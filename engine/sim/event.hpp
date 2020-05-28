@@ -106,14 +106,14 @@ inline Event* make_event( sim_t& sim, Args&&... args )
 }
 
 template <typename T>
-inline event_t* make_event( sim_t& s, const timespan_t& t, const T& f )
+inline event_t* make_event( sim_t& s, timespan_t t, const T& f )
 {
   class fn_event_t : public event_t
   {
     T fn;
 
     public:
-      fn_event_t( sim_t& s, const timespan_t& t, const T& f ) :
+      fn_event_t( sim_t& s, timespan_t t, const T& f ) :
         event_t( s, t ), fn( f )
       { }
 
@@ -128,7 +128,7 @@ inline event_t* make_event( sim_t& s, const timespan_t& t, const T& f )
 }
 
 template <typename T>
-inline event_t* make_repeating_event( sim_t& s, const timespan_t& t, const T& fn, int n = -1 )
+inline event_t* make_repeating_event( sim_t& s, timespan_t t, const T& fn, int n = -1 )
 {
   class fn_event_repeating_t : public event_t
   {
@@ -137,7 +137,7 @@ inline event_t* make_repeating_event( sim_t& s, const timespan_t& t, const T& fn
     int n;
 
     public:
-      fn_event_repeating_t( sim_t& s, const timespan_t& t, const T& f, int n ) :
+      fn_event_repeating_t( sim_t& s, timespan_t t, const T& f, int n ) :
         event_t( s, t ), fn( f ), time( t ), n( n )
       { }
 
@@ -158,7 +158,7 @@ inline event_t* make_repeating_event( sim_t& s, const timespan_t& t, const T& fn
 }
 
 template <typename T>
-inline event_t* make_event( sim_t* s, const timespan_t& t, const T& f )
+inline event_t* make_event( sim_t* s, timespan_t t, const T& f )
 { return make_event( *s, t, f ); }
 
 template <typename T>
@@ -170,5 +170,5 @@ inline event_t* make_event( sim_t& s, const T& f )
 { return make_event( s, timespan_t::zero(), f ); }
 
 template <typename T>
-inline event_t* make_repeating_event( sim_t* s, const timespan_t& t, const T& f, int n = -1 )
+inline event_t* make_repeating_event( sim_t* s, timespan_t t, const T& f, int n = -1 )
 { return make_repeating_event( *s, t, f, n ); }

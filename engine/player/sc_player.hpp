@@ -351,8 +351,8 @@ struct player_t : public actor_t
 
   player_processed_report_information_t report_information;
 
-  void sequence_add( const action_t* a, const player_t* target, const timespan_t& ts );
-  void sequence_add_wait( const timespan_t& amount, const timespan_t& ts );
+  void sequence_add( const action_t* a, const player_t* target, timespan_t ts );
+  void sequence_add_wait( timespan_t amount, timespan_t ts );
 
   // Gear
   std::string items_str, meta_gem_str, potion_str, flask_str, food_str, rune_str;

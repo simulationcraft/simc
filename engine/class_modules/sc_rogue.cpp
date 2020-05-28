@@ -1183,11 +1183,11 @@ struct secondary_ability_trigger_t : public event_t
   int cp;
   secondary_trigger_e source;
 
-  secondary_ability_trigger_t( action_state_t* s, secondary_trigger_e source_, const timespan_t& delay = timespan_t::zero() ) :
+  secondary_ability_trigger_t( action_state_t* s, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
     event_t( *s -> action -> sim, delay ), action( s -> action ), state( s ), target( nullptr ), cp( 0 ), source( source_ )
   { }
 
-  secondary_ability_trigger_t( player_t* target, action_t* action, int cp, secondary_trigger_e source_, const timespan_t& delay = timespan_t::zero() ) :
+  secondary_ability_trigger_t( player_t* target, action_t* action, int cp, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
     event_t( *action -> sim, delay ), action( action ), state( nullptr ), target( target ), cp( cp ), source( source_ )
   { }
 
@@ -4709,7 +4709,7 @@ struct shuriken_tornado_t : public buff_t
   {
     set_cooldown( timespan_t::zero() );
     set_period( timespan_t::from_seconds( 1.0 ) ); // Not explicitly in spell data
-    set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       if ( !shuriken_storm_action )
         shuriken_storm_action = rogue -> find_action( "shuriken_storm" );
       if ( shuriken_storm_action )
@@ -6939,7 +6939,7 @@ void rogue_t::create_buffs()
   buffs.blade_flurry          = new buffs::blade_flurry_t( this );
   buffs.blade_rush            = make_buff( this, "blade_rush", find_spell( 271896 ) )
                                 -> set_period( find_spell( 271896 ) -> effectN( 1 ).period() )
-                                -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                                -> set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                   resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.blade_rush );
                                 } );
   buffs.opportunity           = make_buff( this, "opportunity", find_spell( 195627 ) );
@@ -6994,7 +6994,7 @@ void rogue_t::create_buffs()
   buffs.hidden_blades_driver    = make_buff( this, "hidden_blades_driver", talent.hidden_blades )
                                   -> set_period( talent.hidden_blades -> effectN( 1 ).period() )
                                   -> set_quiet( true )
-                                  -> set_tick_callback( [this]( buff_t*, int, const timespan_t& ) { buffs.hidden_blades -> trigger(); } )
+                                  -> set_tick_callback( [this]( buff_t*, int, timespan_t ) { buffs.hidden_blades -> trigger(); } )
                                   -> set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
   buffs.hidden_blades           = make_buff( this, "hidden_blades", find_spell( 270070 ) )
                                   -> set_default_value( find_spell( 270070 ) -> effectN( 1 ).percent() );
@@ -7011,7 +7011,7 @@ void rogue_t::create_buffs()
   // Subtlety
   buffs.master_of_shadows       = make_buff( this, "master_of_shadows", find_spell( 196980 ) )
                                   -> set_period( find_spell( 196980 ) -> effectN( 1 ).period() )
-                                  -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                                  -> set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                     resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.master_of_shadows );
                                   } )
                                   -> set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -7031,7 +7031,7 @@ void rogue_t::create_buffs()
   buffs.brigands_blitz_driver              = make_buff( this, "brigands_blitz_driver", find_spell( 277725 ) )
                                              -> set_trigger_spell( azerite.brigands_blitz.spell_ref().effectN( 1 ).trigger() )
                                              -> set_quiet( true )
-                                             -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                                             -> set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                                   buffs.brigands_blitz -> trigger();
                                                 });
   buffs.deadshot                           = make_buff( this, "deadshot", find_spell( 272940 ) )

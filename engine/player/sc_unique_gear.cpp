@@ -1231,7 +1231,7 @@ void set_bonus::t18_lfr_4pc_clothcaster( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-void fel_winds_callback( buff_t* buff, int ct, const timespan_t& )
+void fel_winds_callback( buff_t* buff, int ct, timespan_t )
 {
   double old_mas = buff -> player -> cache.attack_speed();
   // .. aand force recomputation of attack speed so reschedule_auto_attack will see the new value.
@@ -3534,7 +3534,7 @@ void item::mirror_of_the_blademaster( special_effect_t& effect )
   effect.type = SPECIAL_EFFECT_USE;
 }
   
-static void tyrants_decree_driver_callback( buff_t* buff, int, const timespan_t& )
+static void tyrants_decree_driver_callback( buff_t* buff, int, timespan_t )
 {
   if ( buff -> player -> resources.pct( RESOURCE_HEALTH ) >= buff -> data().effectN( 2 ).percent() )
     buff -> player -> buffs.tyrants_immortality -> trigger();

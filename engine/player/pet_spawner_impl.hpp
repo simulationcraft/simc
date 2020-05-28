@@ -98,7 +98,7 @@ size_t pet_spawner_t<T, O>::max_pets() const
 { return m_max_pets; }
 
 template <typename T, typename O>
-const timespan_t& pet_spawner_t<T, O>::duration() const
+timespan_t pet_spawner_t<T, O>::duration() const
 { return m_duration; }
 
 template <typename T, typename O>
@@ -152,7 +152,7 @@ pet_spawner_t<T, O>& pet_spawner_t<T, O>::set_default_duration( const spell_data
 { m_duration = spell.duration(); return *this; }
 
 template <typename T, typename O>
-pet_spawner_t<T, O>& pet_spawner_t<T, O>::set_default_duration( const timespan_t& duration )
+pet_spawner_t<T, O>& pet_spawner_t<T, O>::set_default_duration( timespan_t duration )
 { m_duration = duration; return *this; }
 
 template <typename T, typename O>
@@ -230,7 +230,7 @@ size_t pet_spawner_t<T, O>::despawn( const check_arg_fn_t& fn )
 // Time adjustments
 
 template <typename T, typename O>
-void pet_spawner_t<T, O>::extend_expiration( const timespan_t& adjustment )
+void pet_spawner_t<T, O>::extend_expiration( timespan_t adjustment )
 {
   if ( adjustment <= timespan_t::zero() )
   {
@@ -330,7 +330,7 @@ std::vector<T*> pet_spawner_t<T, O>::spawn( unsigned n )
 }
 
 template <typename T, typename O>
-std::vector<T*> pet_spawner_t<T, O>::spawn( const timespan_t& duration, unsigned n )
+std::vector<T*> pet_spawner_t<T, O>::spawn( timespan_t duration, unsigned n )
 {
   std::vector<T*> pets;
 

@@ -258,7 +258,7 @@ namespace js {
     return *this;
   }
 
-  JsonOutput& JsonOutput::operator=(const timespan_t& v)
+  JsonOutput& JsonOutput::operator=(timespan_t v)
   {
     v_ = v.total_seconds(); return *this;
   }

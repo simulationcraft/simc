@@ -886,7 +886,7 @@ public:
 
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
-  void summon_storm_earth_and_fire( const timespan_t& duration );
+  void summon_storm_earth_and_fire( timespan_t duration );
   void retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& targets, size_t n_targets ) const;
   void retarget_storm_earth_and_fire_pets() const;
 
@@ -1851,7 +1851,7 @@ public:
                                      ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                      ->set_duration( sim->expected_iteration_time * 2 )
                                      ->set_tick_behavior( buff_tick_behavior::CLIP )
-                                     ->set_tick_callback( [this]( buff_t* d, int, const timespan_t& ) {
+                                     ->set_tick_callback( [this]( buff_t* d, int, timespan_t ) {
                                        if ( o()->buff.rushing_jade_wind->up() )
                                          active_actions.rushing_jade_wind_sef->execute();
                                        else
@@ -6978,7 +6978,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
   // gonna assume this is 1 buff per monk combatant
   timespan_t _period;
 
-  static void rjw_callback( buff_t* b, int, const timespan_t& )
+  static void rjw_callback( buff_t* b, int, timespan_t )
   {
     monk_t* p = debug_cast<monk_t*>( b->player );
 
@@ -8506,7 +8506,7 @@ void monk_t::recalculate_resource_max( resource_e r )
 
 // monk_t::summon_storm_earth_and_fire ================================================
 
-void monk_t::summon_storm_earth_and_fire( const timespan_t& duration )
+void monk_t::summon_storm_earth_and_fire( timespan_t duration )
 {
   auto targets   = create_storm_earth_and_fire_target_list();
   auto n_targets = targets.size();

@@ -1012,7 +1012,7 @@ namespace warlock {
     buffs.chaos_shards = make_buff<stat_buff_t>( this, "chaos_shards", find_spell( 287660 ) )
       ->set_period( find_spell( 287660 )->effectN( 1 ).period() )
       ->set_tick_zero( true )
-      ->set_tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
+      ->set_tick_callback( [this]( buff_t* b, int, timespan_t ) {
       resource_gain( RESOURCE_SOUL_SHARD, b->data().effectN( 1 ).base_value() / 10.0, gains.chaos_shards );
     } );
   }
