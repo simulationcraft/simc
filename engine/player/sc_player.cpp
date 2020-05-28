@@ -372,7 +372,7 @@ struct resource_threshold_event_t : public event_t
 {
   player_t* player;
 
-  resource_threshold_event_t( player_t* p, const timespan_t& delay ) : event_t( *p, delay ), player( p )
+  resource_threshold_event_t( player_t* p, timespan_t delay ) : event_t( *p, delay ), player( p )
   {
   }
 
@@ -4496,7 +4496,7 @@ void invalidate_cache( cache_e )
 }
 #endif
 
-void player_t::sequence_add_wait( const timespan_t& amount, const timespan_t& ts )
+void player_t::sequence_add_wait( timespan_t amount, timespan_t ts )
 {
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) ||
@@ -4523,7 +4523,7 @@ void player_t::sequence_add_wait( const timespan_t& amount, const timespan_t& ts
   }
 }
 
-void player_t::sequence_add( const action_t* a, const player_t* target, const timespan_t& ts )
+void player_t::sequence_add( const action_t* a, const player_t* target, timespan_t ts )
 {
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( a->sim->iterations <= 1 && a->sim->current_iteration == 0 ) ||
@@ -11504,7 +11504,7 @@ void player_t::do_update_movement( double yards )
 
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t,
-                                                                         const timespan_t& ts, const player_t* p ) :
+                                                                         timespan_t ts, const player_t* p ) :
   action( a ),
   target( t ),
   time( ts ),
@@ -11570,7 +11570,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
   }
 }
 
-player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const timespan_t& ts, const timespan_t& wait,
+player_collected_data_t::action_sequence_data_t::action_sequence_data_t( timespan_t ts, timespan_t wait,
                                                                          const player_t* p ) :
   action( nullptr ),
   target( nullptr ),

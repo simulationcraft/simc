@@ -924,7 +924,7 @@ namespace warlock {
     buffs.inner_demons = make_buff(this, "inner_demons", find_spell(267216))
       ->set_period( talents.inner_demons->effectN(1).period() )
       ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
-      ->set_tick_callback([this](buff_t*, int, const timespan_t&)
+      ->set_tick_callback([this](buff_t*, int, timespan_t)
       {
         warlock_pet_list.wild_imps.spawn();
         if ( rng().roll( talents.inner_demons->effectN( 1 ).percent() ) ) 

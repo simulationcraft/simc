@@ -130,8 +130,8 @@ struct player_collected_data_t
     std::array<double, RESOURCE_MAX> resource_snapshot;
     std::array<double, RESOURCE_MAX> resource_max_snapshot;
 
-    action_sequence_data_t( const timespan_t& ts, const timespan_t& wait, const player_t* p );
-    action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p );
+    action_sequence_data_t( timespan_t ts, timespan_t wait, const player_t* p );
+    action_sequence_data_t( const action_t* a, const player_t* t, timespan_t ts, const player_t* p );
   };
   std::vector<action_sequence_data_t> action_sequence;
   std::vector<action_sequence_data_t> action_sequence_precombat;

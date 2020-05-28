@@ -251,7 +251,7 @@ void pet_t::create_buffs()
   }
 }
 
-void pet_t::adjust_duration( const timespan_t& adjustment )
+void pet_t::adjust_duration( timespan_t adjustment )
 {
   if ( !expiration || adjustment == 0_ms )
   {

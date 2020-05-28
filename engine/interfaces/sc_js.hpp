@@ -244,7 +244,7 @@ public:
 
   // Assign a simc-internal timespan object to the current value (v_). Timespan object is converted
   // to a double.
-  JsonOutput& operator=(const timespan_t& v);
+  JsonOutput& operator=(timespan_t v);
 
   // Assign a simc-internal sample data container to the current value (v_). The container is
   // converted to an object with fixed fields.

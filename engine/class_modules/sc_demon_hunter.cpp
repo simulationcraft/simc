@@ -4311,7 +4311,7 @@ void demon_hunter_t::create_buffs()
   if(specialization() == DEMON_HUNTER_HAVOC )
   {
     buff.immolation_aura = make_buff( this, "immolation_aura", spec.immolation_aura )
-      ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
         active.immolation_aura->execute();
       } )
       ->set_cooldown( timespan_t::zero() );
@@ -4319,7 +4319,7 @@ void demon_hunter_t::create_buffs()
   else // DEMON_HUNTER_VENGEANCE
   {
     buff.immolation_aura = make_buff( this, "immolation_aura", spec.immolation_aura )
-      ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
         active.immolation_aura->execute();
       } )
       ->set_default_value( talent.agonizing_flames->effectN( 2 ).percent() )
@@ -4368,7 +4368,7 @@ void demon_hunter_t::create_buffs()
     ->set_default_value( prepared_value )
     ->set_trigger_spell( talent.momentum )
     ->set_period( timespan_t::from_millis( 100 ) )
-    ->set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
       resource_gain( RESOURCE_FURY, b->check_value(), gain.prepared );
     } );
 
@@ -4378,7 +4378,7 @@ void demon_hunter_t::create_buffs()
     ->set_duration( spec.eye_beam->duration() * ( 1.0 + talent.blind_fury->effectN( 1 ).percent() ) )
     ->set_period( timespan_t::from_millis( 100 ) )
     ->set_tick_zero( true )
-    ->set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
       resource_gain( RESOURCE_FURY, b->check_value(), gain.blind_fury );
     } );
 
@@ -4425,7 +4425,7 @@ void demon_hunter_t::create_buffs()
     ->set_trigger_spell( azerite.thirsting_blades )
     ->set_quiet( true )
     ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-    ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buff.thirsting_blades->trigger(); } );
+    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { buff.thirsting_blades->trigger(); } );
 
   buff.thirsting_blades = make_buff<buff_t>( this, "thirsting_blades", thirsting_blades_buff )
     ->set_trigger_spell( thirsting_blades_trigger )

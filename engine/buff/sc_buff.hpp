@@ -38,9 +38,9 @@ struct rng_t;
 }
 
 
-using buff_tick_callback_t = std::function<void(buff_t*, int, const timespan_t&)>;
+using buff_tick_callback_t = std::function<void(buff_t*, int, timespan_t)>;
 using buff_tick_time_callback_t = std::function<timespan_t(const buff_t*, unsigned)>;
-using buff_refresh_duration_callback_t = std::function<timespan_t(const buff_t*, const timespan_t&)>;
+using buff_refresh_duration_callback_t = std::function<timespan_t(const buff_t*, timespan_t)>;
 using buff_stack_change_callback_t = std::function<void(buff_t*, int, int)>;
 
 // Buffs ====================================================================
@@ -212,7 +212,7 @@ public:
   }
 
   timespan_t remains() const;
-  timespan_t elapsed( const timespan_t& t ) const { return t - last_start; }
+  timespan_t elapsed( timespan_t t ) const { return t - last_start; }
   timespan_t last_trigger_time() const { return last_trigger; }
   timespan_t last_expire_time() const { return last_expire; }
   bool   remains_gt( timespan_t time ) const;
@@ -245,7 +245,7 @@ public:
   virtual void datacollection_begin();
   virtual void datacollection_end();
 
-  virtual timespan_t refresh_duration( const timespan_t& new_duration ) const;
+  virtual timespan_t refresh_duration( timespan_t new_duration ) const;
   virtual timespan_t tick_time() const;
 
 #if defined(SC_USE_STAT_CACHE)

@@ -1083,7 +1083,7 @@ struct combustion_buff_t : public buff_t
       }
     } );
 
-    set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
+    set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
     {
       double new_amount = multiplier * player->composite_spell_crit_rating();
       double diff = new_amount - current_amount;
@@ -5306,7 +5306,7 @@ void mage_t::create_buffs()
                                  ->set_default_value( find_spell( 210126 )->effectN( 1 ).percent() )
                                  ->set_period( 3.0_s )
                                  ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-                                 ->set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
+                                 ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
                                    {
                                      action.arcane_assault->set_target( target );
                                      action.arcane_assault->execute();
@@ -5406,7 +5406,7 @@ void mage_t::create_buffs()
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
   buffs.gbow    = make_buff( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
-    ->set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
+    ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
       { resource_gain( RESOURCE_MANA, resources.max[ RESOURCE_MANA ] * 0.002 * options.gbow_count, gains.gbow ); } )
     ->set_period( 2.0_s )
     ->set_chance( options.gbow_count > 0 );

@@ -1563,7 +1563,7 @@ void resounding_protection( special_effect_t& effect )
     timespan_t period;
 
 public:
-    rp_event_t( buff_t* b, const timespan_t& t ) :
+    rp_event_t( buff_t* b, timespan_t t ) :
       event_t( *b -> source, t ), buff( b ), period( t )
     { }
 
@@ -2540,7 +2540,7 @@ void wandering_soul( special_effect_t& effect )
     if ( ruinous_bolt.enabled() )
     {
       auto action = unique_gear::create_proc_action<ruinous_bolt_t>( "ruinous_bolt", effect, ruinous_bolt );
-      buff -> set_tick_callback( [ action ]( buff_t*, int, const timespan_t& ) {
+      buff -> set_tick_callback( [ action ]( buff_t*, int, timespan_t ) {
         const auto& tl = action -> target_list();
         if ( tl.empty() )
           return;
@@ -3411,7 +3411,7 @@ void bonded_souls( special_effect_t& effect )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION )
       ->set_tick_behavior( buff_tick_behavior::CLIP )
       ->set_tick_zero( true )
-      ->set_tick_callback( [ haste_buff ] ( buff_t*, int, const timespan_t& )
+      ->set_tick_callback( [ haste_buff ] ( buff_t*, int, timespan_t )
         { haste_buff->trigger(); } );
   }
 
@@ -3675,7 +3675,7 @@ void clockwork_heart( special_effect_t& effect )
       ->set_quiet( true )
       ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
       ->set_tick_on_application( true )
-      ->set_tick_callback( [clockwork]( buff_t*, int, const timespan_t& ) {
+      ->set_tick_callback( [clockwork]( buff_t*, int, timespan_t ) {
         clockwork->trigger();
       } );
   }
@@ -4563,7 +4563,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
       azerite_volley = make_buff(this, "azerite_volley", find_spell(303347))
         ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
         ->set_quiet(true)
-        ->set_tick_callback([volley, this](buff_t*, int, const timespan_t&) {
+        ->set_tick_callback([volley, this](buff_t*, int, timespan_t) {
           volley->set_target(target);
           volley->execute();
         });
@@ -4968,7 +4968,7 @@ struct the_unbound_force_t : public azerite_essence_major_t
     if (essence.rank() >= 3)
       max_shard = 5;
   }
-  double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
+  double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
   {
     return 1.0;
   }

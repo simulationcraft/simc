@@ -75,7 +75,7 @@ struct queued_action_execute_event_t : public event_t
   action_t* action;
   execute_type type;
 
-  queued_action_execute_event_t( action_t* a, const timespan_t& t, execute_type type_ )
+  queued_action_execute_event_t( action_t* a, timespan_t t, execute_type type_ )
     : event_t( *a->sim, t ), action( a ), type( type_ )
   { }
 
@@ -3672,7 +3672,7 @@ event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* exe
   return make_event<action_execute_event_t>( *sim, this, t, execute_event );
 }
 
-void action_t::do_schedule_travel( action_state_t* state, const timespan_t& time_ )
+void action_t::do_schedule_travel( action_state_t* state, timespan_t time_ )
 {
   if ( time_ <= timespan_t::zero() )
   {
@@ -3840,7 +3840,7 @@ timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_
   }
 }
 
-bool action_t::dot_refreshable( const dot_t* dot, const timespan_t& triggered_duration ) const
+bool action_t::dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const
 {
   if ( !channeled )
   {
@@ -4324,7 +4324,7 @@ bool action_t::usable_during_current_gcd() const
   return player->readying && cooldown->queueable() < player->readying->occurs();
 }
 
-double action_t::last_tick_factor(const dot_t* /* d */, const timespan_t& time_to_tick, const timespan_t& duration) const
+double action_t::last_tick_factor(const dot_t* /* d */, timespan_t time_to_tick, timespan_t duration) const
 {
   return std::min(1.0, duration / time_to_tick);
 }

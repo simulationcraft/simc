@@ -641,7 +641,7 @@ public:
   virtual int n_targets() const
   { return aoe; }
 
-  virtual double last_tick_factor( const dot_t* d, const timespan_t& time_to_tick, const timespan_t& duration ) const;
+  virtual double last_tick_factor( const dot_t* d, timespan_t time_to_tick, timespan_t duration ) const;
 
   virtual result_amount_type amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const
   { return result_amount_type::NONE; }
@@ -822,7 +822,7 @@ public:
       timespan_t triggered_duration) const;
 
   // Helper for dot refresh expression, overridable on action level
-  virtual bool dot_refreshable( const dot_t* dot, const timespan_t& triggered_duration ) const;
+  virtual bool dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const;
 
   virtual double composite_energize_amount( const action_state_t* ) const
   { return energize_amount; }
@@ -904,7 +904,7 @@ private:
   friend struct action_state_t;
   virtual void release_state( action_state_t* );
 public:
-  virtual void do_schedule_travel( action_state_t*, const timespan_t& );
+  virtual void do_schedule_travel( action_state_t*, timespan_t );
 
   virtual void schedule_travel( action_state_t* );
 

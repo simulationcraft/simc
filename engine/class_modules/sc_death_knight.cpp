@@ -77,7 +77,7 @@ struct dynamic_event_t : public event_t
 
   virtual T* clone() = 0;
 
-  virtual timespan_t adjust( const timespan_t& by_time )
+  virtual timespan_t adjust( timespan_t by_time )
   {
     auto this_ = this;
     // Execute early and cancel the event, if the adjustment would trigger the event
@@ -178,7 +178,7 @@ struct dynamic_event_t : public event_t
 
   // Actually schedules the event into the core event system, by default, applies the coefficient
   // associated with the event to the duration given
-  T* schedule( const timespan_t& duration, bool use_coeff = true )
+  T* schedule( timespan_t duration, bool use_coeff = true )
   {
     event_t::schedule( duration * ( use_coeff ? coefficient() : 1.0 ) );
     return cast();
@@ -248,7 +248,7 @@ struct rune_t
   void start_regenerating();
 
   // Directly adjust regeneration by time units
-  void adjust_regen_event( const timespan_t& adjustment );
+  void adjust_regen_event( timespan_t adjustment );
 
   void reset()
   {
@@ -354,7 +354,7 @@ struct runes_t
   void consume( unsigned runes );
 
   // Perform seconds of rune regeneration time instantaneously
-  void regenerate_immediate( const timespan_t& seconds );
+  void regenerate_immediate( timespan_t seconds );
 
   // Time it takes with the current rune regeneration speed to regenerate n_runes by the Death
   // Knight.
@@ -1086,7 +1086,7 @@ inline void runes_t::consume( unsigned runes )
 
 }
 
-inline void runes_t::regenerate_immediate( const timespan_t& seconds )
+inline void runes_t::regenerate_immediate( timespan_t seconds )
 {
   if ( seconds <= 0_ms )
   {
@@ -1361,7 +1361,7 @@ inline void rune_t::start_regenerating()
     -> schedule( timespan_t::from_seconds( RUNE_REGEN_BASE ) );
 }
 
-inline void rune_t::adjust_regen_event( const timespan_t& adjustment )
+inline void rune_t::adjust_regen_event( timespan_t adjustment )
 {
   if ( ! event )
   {
@@ -3111,7 +3111,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     timespan_t summon_duration;
     death_knight_t* p;
 
-    summon_army_event_t( death_knight_t* dk, int n, const timespan_t& interval, const timespan_t& duration ) :
+    summon_army_event_t( death_knight_t* dk, int n, timespan_t interval, timespan_t duration ) :
       event_t( *dk, interval ),
       n_ghoul( n ),
       summon_interval( interval ),
@@ -4447,7 +4447,7 @@ struct empower_rune_weapon_buff_t : public buff_t
     //Vision of Perfection proc'd ERW is refreshed by a manual ERW cast
     //A partial RP gain at the end of ERW was observed
 
-    set_tick_callback( [ p ]( buff_t* b, int, const timespan_t& )
+    set_tick_callback( [ p ]( buff_t* b, int, timespan_t )
     {
       p -> replenish_rune( as<unsigned int>( b -> data().effectN( 1 ).base_value() ),
                            p -> gains.empower_rune_weapon );

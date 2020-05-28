@@ -62,9 +62,9 @@ struct ground_aoe_params_t
   double y() const { return y_; }
   hasted_with hasted() const { return hasted_; }
   action_t* action() const { return action_; }
-  const timespan_t& pulse_time() const { return pulse_time_; }
-  const timespan_t& start_time() const { return start_time_; }
-  const timespan_t& duration() const { return duration_; }
+  timespan_t pulse_time() const { return pulse_time_; }
+  timespan_t start_time() const { return start_time_; }
+  timespan_t duration() const { return duration_; }
   expiration_pulse_type expiration_pulse() const { return expiration_pulse_; }
   unsigned n_pulses() const { return n_pulses_; }
   const param_cb_t& expiration_callback() const { return expiration_cb_; }
@@ -89,17 +89,17 @@ struct ground_aoe_params_t
     hasted_ = state; return *this;
   }
 
-  ground_aoe_params_t& pulse_time(const timespan_t& t)
+  ground_aoe_params_t& pulse_time(timespan_t t)
   {
     pulse_time_ = t; return *this;
   }
 
-  ground_aoe_params_t& start_time(const timespan_t& t)
+  ground_aoe_params_t& start_time(timespan_t t)
   {
     start_time_ = t; return *this;
   }
 
-  ground_aoe_params_t& duration(const timespan_t& t)
+  ground_aoe_params_t& duration(timespan_t t)
   {
     duration_ = t; return *this;
   }
@@ -130,7 +130,7 @@ struct expiration_callback_event_t : public event_t
 {
   ground_aoe_params_t::param_cb_t callback;
 
-  expiration_callback_event_t(sim_t& sim, const ground_aoe_params_t* p, const timespan_t& delay) :
+  expiration_callback_event_t(sim_t& sim, const ground_aoe_params_t* p, timespan_t delay) :
     event_t(sim, delay), callback(p -> expiration_callback())
   { }
 
