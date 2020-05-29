@@ -752,7 +752,7 @@ public:
     unsigned index = flag / 32;
     unsigned bit = flag % 32;
 
-    assert( index < sizeof_array( _class_flags ) );
+    assert( index < range::size( _class_flags ) );
     return ( _class_flags[ index ] & ( 1u << bit ) ) != 0;
   }
 
@@ -1188,7 +1188,7 @@ public:
     unsigned index = static_cast<unsigned>( attr ) / 32u;
     uint32_t mask = 1u << bit;
 
-    assert( index < sizeof_array( _attributes ) );
+    assert( index < range::size( _attributes ) );
 
     return ( _attributes[ index ] & mask ) != 0;
   }
@@ -1198,15 +1198,15 @@ public:
     unsigned index = flag / 32;
     unsigned bit = flag % 32;
 
-    assert( index < sizeof_array( _class_flags ) );
+    assert( index < range::size( _class_flags ) );
     return ( _class_flags[ index ] & ( 1u << bit ) ) != 0;
   }
 
   unsigned attribute( unsigned idx ) const
-  { assert( idx < sizeof_array( _attributes ) ); return _attributes[ idx ]; }
+  { assert( idx < range::size( _attributes ) ); return _attributes[ idx ]; }
 
   unsigned class_flags( unsigned idx ) const
-  { assert( idx < sizeof_array( _class_flags ) ); return _class_flags[ idx ]; }
+  { assert( idx < range::size( _class_flags ) ); return _class_flags[ idx ]; }
 
   unsigned class_family() const
   { return _class_flags_family; }

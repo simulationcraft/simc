@@ -213,7 +213,7 @@ unsigned class_str_to_mask( const std::string& str )
 {
   int cls_id = -1;
 
-  for ( unsigned int i = 0; i < sizeof_array(_class_strings); ++i )
+  for ( unsigned int i = 0; i < range::size(_class_strings); ++i )
   {
     if ( _class_strings[ i ].empty() )
       continue;
@@ -232,7 +232,7 @@ uint64_t race_str_to_mask( const std::string& str )
 {
   int race_id = -1;
 
-  for ( unsigned int i = 0; i < sizeof_array( _race_strings ); ++i )
+  for ( unsigned int i = 0; i < range::size( _race_strings ); ++i )
   {
     if ( _race_strings[ i ].empty() )
       continue;
@@ -517,17 +517,17 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     if ( type == DATA_TALENT )
     {
       fields = _talent_data_fields;
-      fsize  = sizeof_array( _talent_data_fields );
+      fsize  = range::size( _talent_data_fields );
     }
     else if ( effect_query || type == DATA_EFFECT )
     {
       fields = _effect_data_fields;
-      fsize  = sizeof_array( _effect_data_fields );
+      fsize  = range::size( _effect_data_fields );
     }
     else
     {
       fields = _spell_data_fields;
-      fsize  = sizeof_array( _spell_data_fields );
+      fsize  = range::size( _spell_data_fields );
     }
 
     for ( size_t i = 0, end = fsize; i < end; ++i )
@@ -1170,17 +1170,17 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( dbc_t& dbc, const
   if ( data_type == DATA_TALENT )
   {
     fields = _talent_data_fields;
-    fsize  = sizeof_array( _talent_data_fields );
+    fsize  = range::size( _talent_data_fields );
   }
   else if ( effect_query || data_type == DATA_EFFECT )
   {
     fields = _effect_data_fields;
-    fsize  = sizeof_array( _effect_data_fields );
+    fsize  = range::size( _effect_data_fields );
   }
   else
   {
     fields = _spell_data_fields;
-    fsize  = sizeof_array( _spell_data_fields );
+    fsize  = range::size( _spell_data_fields );
   }
 
   for ( size_t i = 0; i < fsize; i++ )

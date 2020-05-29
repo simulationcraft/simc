@@ -744,7 +744,7 @@ bool parse_item_sources( sim_t*             sim,
 
   for ( size_t j = 0; j < sources.size(); j++ )
   {
-    for ( size_t i = 0; i < sizeof_array( default_item_db_sources ); ++i )
+    for ( size_t i = 0; i < range::size( default_item_db_sources ); ++i )
     {
       if ( util::str_compare_ci( sources[ j ], default_item_db_sources[ i ] ) )
       {
@@ -756,16 +756,8 @@ bool parse_item_sources( sim_t*             sim,
 
   if ( sim -> item_db_sources.empty() )
   {
-    std::string all_known_sources;
-
-    for ( size_t i = 0; i < sizeof_array( default_item_db_sources ); ++i )
-    {
-      all_known_sources += ' ';
-      all_known_sources += default_item_db_sources[ i ];
-    }
-
     throw std::invalid_argument(fmt::format("Your global data source string '{}' contained no valid data sources. "
-        "Valid identifiers are: {}", value, all_known_sources ));
+        "Valid identifiers are: {}", value, fmt::join(default_item_db_sources, " ")));
   }
 
   return true;

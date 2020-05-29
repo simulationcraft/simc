@@ -868,7 +868,7 @@ bool download_item_data( item_t& item, cache::behavior_e caching )
     {
       const rapidjson::Value& sockets = js[ "socketInfo" ][ "sockets" ];
 
-    for (rapidjson::SizeType i = 0, n = as<rapidjson::SizeType>( std::min(static_cast< size_t >(sockets.Size()), sizeof_array(item.parsed.data.socket_color))); i < n; ++i)
+    for (rapidjson::SizeType i = 0, n = as<rapidjson::SizeType>( std::min(static_cast< size_t >(sockets.Size()), range::size(item.parsed.data.socket_color))); i < n; ++i)
       {
         if ( ! sockets[ i ].HasMember( "type" ) )
           continue;
@@ -925,7 +925,7 @@ bool download_item_data( item_t& item, cache::behavior_e caching )
     {
       const rapidjson::Value& spells = js[ "itemSpells" ];
       size_t spell_idx = 0;
-      for ( rapidjson::SizeType i = 0, n = spells.Size(); i < n && spell_idx < sizeof_array( item.parsed.data.id_spell ); ++i )
+      for ( rapidjson::SizeType i = 0, n = spells.Size(); i < n && spell_idx < range::size( item.parsed.data.id_spell ); ++i )
       {
         const rapidjson::Value& spell = spells[ i ];
         if ( ! spell.HasMember( "spellId" ) || ! spell.HasMember( "trigger" ) )

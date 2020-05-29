@@ -589,7 +589,7 @@ struct potion_t : public dbc_consumable_base_t
     dbc_consumable_base_t::initialize_consumable();
 
     // Setup a cooldown duration for the potion
-    for ( size_t i = 0; i < sizeof_array( item_data -> cooldown_group ); i++ )
+    for ( size_t i = 0; i < range::size( item_data -> cooldown_group ); i++ )
     {
       if ( item_data -> cooldown_group[ i ] > 0 && item_data -> cooldown_group_duration[ i ] > 0 )
       {

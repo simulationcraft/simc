@@ -737,8 +737,8 @@ std::string xml_writer_t::sanitize( std::string v )
       { ">", "&gt;" },
   };
 
-  for ( unsigned int i = 0; i < sizeof_array( replacements ); ++i )
-    util::replace_all( v, replacements[ i ].from, replacements[ i ].to );
+  for ( const auto& repl : replacements )
+    util::replace_all( v, repl.from, repl.to );
 
   return v;
 }
