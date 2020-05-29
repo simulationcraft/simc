@@ -20,7 +20,7 @@ struct item_effect_t
   int      cooldown_group_duration;
 
   static const item_effect_t& find( unsigned id, bool ptr )
-  { return dbc::find<item_effect_t>( id, ptr ); }
+  { return dbc::find<item_effect_t>( id, ptr, &item_effect_t::id ); }
 
   static const item_effect_t& nil()
   { return dbc::nil<item_effect_t>(); }

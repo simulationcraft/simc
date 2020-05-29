@@ -11,10 +11,6 @@
 
 struct random_prop_data_t
 {
-private:
-  using key_t = dbc::ilevel_member_policy_t;
-
-public:
   unsigned ilevel;
   unsigned damage_replace_stat;
   unsigned damage_secondary;
@@ -23,7 +19,7 @@ public:
   double   p_uncommon[5];
 
   static const random_prop_data_t& find( unsigned ilevel, bool ptr )
-  { return dbc::find<random_prop_data_t, key_t>( ilevel, ptr ); }
+  { return dbc::find<random_prop_data_t>( ilevel, ptr, &random_prop_data_t::ilevel ); }
 
   static const random_prop_data_t& nil()
   { return dbc::nil<random_prop_data_t>(); }

@@ -16,22 +16,6 @@
 
 namespace dbc
 {
-struct ilevel_member_policy_t
-{
-  template <typename T> static constexpr unsigned key( const T& entry )
-  { return static_cast<unsigned>( entry.ilevel ); }
-};
-
-/* id_function_policy and id_member_policy are here to give a standard interface
- * of accessing the id of a data type.
- * Eg. spell_data_t on which the id_function_policy is used has a function 'id()' which returns its id
- * and item_data_t on which id_member_policy is used has a member 'id' which stores its id.
- */
-struct id_member_policy_t
-{
-  template <typename T> static constexpr unsigned key( const T& t )
-  { return static_cast<unsigned>( t.id ); }
-};
 
 template <typename T>
 const T& nil()
@@ -40,24 +24,18 @@ const T& nil()
   return __default;
 }
 
-template <typename T, typename KeyPolicy = id_member_policy_t>
-const T& find( unsigned key, bool ptr )
+template <typename T, typename Proj>
+const T& find( unsigned key, bool ptr, Proj proj )
 {
   const auto __data = T::data( ptr );
 
-  auto it = std::lower_bound( __data.cbegin(), __data.cend(), key,
-                              []( const T& entry, const unsigned& key ) {
-                                return KeyPolicy::key( entry ) < key;
-                              } );
-
-  if ( it != __data.cend() && KeyPolicy::key( *it ) == key )
+  auto it = range::lower_bound( __data, key, {}, proj );
+  if ( it != __data.cend() && range::invoke( proj, *it ) == key )
   {
     return *it;
   }
-  else
-  {
-    return nil<T>();
-  }
+
+  return nil<T>();
 }
 
 template <typename T, typename Compare = std::less<>, typename Proj = range::identity>

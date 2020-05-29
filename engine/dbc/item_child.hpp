@@ -16,7 +16,7 @@ struct item_child_equipment_t
   unsigned id_child;
 
   static const item_child_equipment_t& find( unsigned id, bool ptr )
-  { return dbc::find<item_child_equipment_t>( id, ptr ); }
+  { return dbc::find<item_child_equipment_t>( id, ptr, &item_child_equipment_t::id ); }
 
   static const item_child_equipment_t& nil()
   { return dbc::nil<item_child_equipment_t>(); }
