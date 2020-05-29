@@ -10,7 +10,6 @@
 #include "dbc/dbc.hpp"
 #include "item/item.hpp"
 #include "player/sc_player.hpp"
-#include "sim/artifact_power.hpp"
 #include "util/util.hpp"
 #include "report/color.hpp"
 #include <vector>
@@ -235,18 +234,17 @@ namespace {
     }
   };
 
-  // Generic spell data decorator, supports player, item, and artifact-power driven spell data
+  // Generic spell data decorator, supports player and item driven spell data
   class spell_data_decorator_t : public html_decorator_t<spell_data_decorator_t>
   {
     const sim_t* m_sim;
     const spell_data_t* m_spell;
     const item_t* m_item;
-    const artifact_power_t* m_power;
 
   public:
     spell_data_decorator_t(const sim_t* obj, const spell_data_t* spell) :
       html_decorator_t(), m_sim(obj), m_spell(spell),
-      m_item(nullptr), m_power(nullptr)
+      m_item(nullptr)
     { }
 
     spell_data_decorator_t(const sim_t* obj, const spell_data_t& spell) :
@@ -254,19 +252,13 @@ namespace {
     { }
 
     spell_data_decorator_t(const player_t* obj, const spell_data_t* spell)
-      : html_decorator_t(), m_sim(obj->sim), m_spell(spell), m_item(nullptr), m_power(nullptr)
+      : html_decorator_t(), m_sim(obj->sim), m_spell(spell), m_item(nullptr)
     {
     }
 
     spell_data_decorator_t(const player_t* obj, const spell_data_t& spell) :
       spell_data_decorator_t(obj, &spell)
     { }
-
-    spell_data_decorator_t(const player_t* obj, const artifact_power_t& power)
-      : spell_data_decorator_t(obj, power.data())
-    {
-      artifact_power(power);
-    }
 
     std::vector<std::string> parms() const override
     {
@@ -280,11 +272,6 @@ namespace {
       if (m_item)
       {
         params.push_back("ilvl=" + util::to_string(m_item->item_level()));
-      }
-
-      if (m_power)
-      {
-        params.push_back("artifactRank=" + util::to_string(m_power->rank()));
       }
 
       return params;
@@ -306,16 +293,6 @@ namespace {
     spell_data_decorator_t& item(const item_t& obj)
     {
       m_item = &obj; return *this;
-    }
-
-    spell_data_decorator_t& artifact_power(const artifact_power_t* obj)
-    {
-      m_power = obj; return *this;
-    }
-
-    spell_data_decorator_t& artifact_power(const artifact_power_t& obj)
-    {
-      m_power = &obj; return *this;
     }
 
     bool can_decorate() const override

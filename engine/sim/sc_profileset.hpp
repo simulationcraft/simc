@@ -206,8 +206,6 @@ class profile_output_data_t
 {
   race_e                                       m_race;
   std::vector<talent_data_t*>                  m_talents;
-  std::string                                  m_artifact;
-  std::string                                  m_crucible;
   std::vector<profile_output_data_item_t>      m_gear;
 
   double    m_crit_rating,
@@ -246,18 +244,6 @@ public:
 
   profile_output_data_t& talents( const std::vector<talent_data_t*>& v )
   { m_talents = v; return *this; }
-
-  const std::string& artifact() const
-  { return m_artifact; }
-
-  profile_output_data_t& artifact( const std::string& v )
-  { m_artifact = v; return *this; }
-
-  const std::string& crucible() const
-  { return m_crucible; }
-
-  profile_output_data_t& crucible( const std::string& v )
-  { m_crucible = v; return *this; }
 
   const std::vector<profile_output_data_item_t>& gear() const
   { return m_gear; }

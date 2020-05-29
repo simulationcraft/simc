@@ -177,7 +177,6 @@ std::string remove_special_chars( util::string_view );
 void urlencode( std::string& str );
 void urldecode( std::string& str );
 std::string create_blizzard_talent_url( const player_t& p );
-std::string create_wowhead_artifact_url( const player_t& p );
 
 bool str_compare_ci( util::string_view l, util::string_view r );
 bool str_in_str_ci ( util::string_view l, util::string_view r );

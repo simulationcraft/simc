@@ -2443,8 +2443,7 @@ void sim_t::init_actor( player_t* p )
 
     // Create all actor pets before special effects get initialized. This ensures that we can use
     // stuff like the presence of an action (created with create_actions()) to determine if a pet
-    // needs to be created or not. Similarly, talent, artifact, spec, and item based qualifiers would
-    // work.
+    // needs to be created or not. Similarly, talent, spec, and item based qualifiers would work.
     p -> create_pets();
 
     // Second-phase initialize all special effects and register them to actors
@@ -3239,16 +3238,6 @@ std::unique_ptr<expr_t> sim_t::create_expression( const std::string& name_str )
           {
             switch ( p->specialization() )
             {
-              case HUNTER_MARKSMANSHIP:
-                if ( p->true_level > 100 )  // Assume Bullseye artifact trait
-                {
-                  execute += 1.0;
-                }
-                else
-                {
-                  nonexecute += 1.0;
-                }
-                break;
               case PRIEST_SHADOW:
               case WARRIOR_ARMS:
               case WARRIOR_FURY:

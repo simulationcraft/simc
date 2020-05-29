@@ -555,11 +555,6 @@ public:
     const spell_data_t* graceful_spirit;
   } talent;
 
-  // Artifact
-  struct artifact_spell_data_t
-  {
-  } artifact;
-
   // Azerite traits
   struct
   {

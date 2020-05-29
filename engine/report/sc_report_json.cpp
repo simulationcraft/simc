@@ -756,11 +756,6 @@ void to_json( JsonOutput& arr, const player_t& p )
 
   talents_to_json( root[ "talents" ], p );
 
-  if ( p.artifact && p.artifact -> purchased_points() > 0 )
-  {
-    p.artifact -> generate_report( root[ "artifact" ] );
-  }
-
   root[ "party" ] = p.party;
   root[ "ready_type" ] = p.ready_type;
   root[ "bugs" ] = p.bugs;

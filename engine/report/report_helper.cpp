@@ -12,7 +12,6 @@
 #include "player/sc_player.hpp"
 #include "player/pet.hpp"
 #include "report/gear_weights.hpp"
-#include "sim/artifact_power.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sc_sim.hpp"
 #include "util/xml.hpp"
