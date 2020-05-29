@@ -130,33 +130,6 @@ struct delete_disposer_t
 
 // Generic algorithms =======================================================
 
-// Wrappers for std::fill, std::fill_n, and std::find that perform any type
-// conversions for t at the callsite instead of per assignment in the loop body.
-// (i.e., fill( T**, T**, 0 ) will deduce T* for the third argument, as opposed
-//  to std::fill( T**, T**, 0 ) simply defaulting to int and failing to
-//  compile).
-template <typename I>
-inline void fill( I first, I last,
-                  typename std::iterator_traits<I>::value_type const& t )
-{
-  std::fill( first, last, t );
-}
-
-template <typename I>
-inline void fill_n( I first,
-                    typename std::iterator_traits<I>::difference_type n,
-                    typename std::iterator_traits<I>::value_type const& t )
-{
-  std::fill_n( first, n, t );
-}
-
-template <typename I>
-inline I find( I first, I last,
-               typename std::iterator_traits<I>::value_type const& t )
-{
-  return std::find( first, last, t );
-}
-
 template <typename I, typename D>
 void dispose( I first, I last, D disposer )
 {
