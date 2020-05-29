@@ -17,7 +17,7 @@ struct gem_property_data_t
   unsigned min_ilevel;
 
   static const gem_property_data_t& find( unsigned id, bool ptr )
-  { return dbc::find<gem_property_data_t>( id, ptr ); }
+  { return dbc::find<gem_property_data_t>( id, ptr, &gem_property_data_t::id ); }
 
   static const gem_property_data_t& nil()
   { return dbc::nil<gem_property_data_t>(); }

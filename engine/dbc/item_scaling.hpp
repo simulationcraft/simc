@@ -17,7 +17,7 @@ struct scaling_stat_distribution_t
   unsigned curve_id;
 
   static const scaling_stat_distribution_t& find( unsigned id, bool ptr )
-  { return dbc::find<scaling_stat_distribution_t>( id, ptr ); }
+  { return dbc::find<scaling_stat_distribution_t>( id, ptr, &scaling_stat_distribution_t::id ); }
 
   static const scaling_stat_distribution_t& nil()
   { return dbc::nil<scaling_stat_distribution_t>(); }
