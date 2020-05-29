@@ -1303,7 +1303,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       spec_list.clear();
     }
 
-    for ( unsigned int i = 1; i < sizeof_array( _class_map ); i++ )
+    for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
     {
       if ( ( spell -> class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
       {
@@ -1684,11 +1684,11 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
     s << std::endl;
     s << "                 : ";
-    for ( size_t i = 0; i < sizeof_array( _proc_flag_map ); i++ )
+    for ( const auto& info : _proc_flag_map )
     {
-      if ( spell -> proc_flags() & _proc_flag_map[ i ].flag )
+      if ( spell -> proc_flags() & info.flag )
       {
-        s << _proc_flag_map[ i ].proc;
+        s << info.proc;
         s << ", ";
       }
     }
@@ -1841,7 +1841,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const talent_data
   if ( talent -> mask_class() )
   {
     s << "Class        : ";
-    for ( unsigned int i = 1; i < sizeof_array( _class_map ); i++ )
+    for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
     {
       if ( ( talent -> mask_class() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
         s << _class_map[ i ].name << ", ";
@@ -2092,7 +2092,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
       spec_list.clear();
     }
 
-    for ( unsigned int i = 1; i < sizeof_array( _class_map ); i++ )
+    for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
     {
       if ( ( spell -> class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
       {
@@ -2269,7 +2269,7 @@ void spell_info::talent_to_xml( const dbc_t& /* dbc */, const talent_data_t* tal
 
   if ( talent -> mask_class() )
   {
-    for ( unsigned int i = 1; i < sizeof_array( _class_map ); i++ )
+    for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
     {
       if ( ( talent -> mask_class() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
         node -> add_child( "class" ) -> add_parm( ".",  _class_map[ i ].name );

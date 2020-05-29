@@ -13,7 +13,6 @@
 #include "config.hpp"
 
 #include <algorithm>
-#include <array>
 #include <cassert>
 #include <cmath>
 #include <functional>
@@ -72,18 +71,6 @@ inline std::enable_if_t<is_iterable_enum<T>::value, T> operator++( T& s, int )
 }
 
 // Generic programming tools ================================================
-
-template <typename T, std::size_t N>
-inline std::size_t sizeof_array( const T ( & )[ N ] )
-{
-  return N;
-}
-
-template <typename T, std::size_t N>
-inline std::size_t sizeof_array( const std::array<T, N>& )
-{
-  return N;
-}
 
 /**
  * @brief helper class to make a class non-copyable
@@ -242,6 +229,17 @@ template <typename T>
 inline iterator_t<const T> cend( const T& t )
 {
   return range::end( t );
+}
+
+// std::size ================================================================
+
+template <typename C>
+constexpr auto size(const C& c) -> decltype(c.size()) {
+  return c.size();
+}
+template <typename T, size_t N>
+constexpr size_t size(const T (&)[N]) noexcept {
+  return N;
 }
 
 // Default projection for projection-enabled algorithms =====================

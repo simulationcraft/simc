@@ -983,17 +983,17 @@ double dbc::item_level_squish( unsigned source_ilevel, bool ptr )
 #if SC_USE_PTR == 1
   if ( ptr )
   {
-    assert( sizeof_array( _ptr__item_level_squish ) >= source_ilevel );
+    assert( range::size( _ptr__item_level_squish ) >= source_ilevel );
     return _ptr__item_level_squish[ source_ilevel - 1 ];
   }
   else
   {
-    assert( sizeof_array( __item_level_squish ) >= source_ilevel );
+    assert( range::size( __item_level_squish ) >= source_ilevel );
     return __item_level_squish[ source_ilevel - 1 ];
   }
 #else
   ( void ) ptr;
-  assert( sizeof_array( __item_level_squish ) >= source_ilevel );
+  assert( range::size( __item_level_squish ) >= source_ilevel );
   return __item_level_squish[ source_ilevel - 1 ];
 #endif
 }

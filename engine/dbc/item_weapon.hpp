@@ -29,7 +29,7 @@ public:
 
   double value( int quality ) const
   {
-    return as<unsigned>( quality ) < sizeof_array( dps )
+    return as<unsigned>( quality ) < range::size( dps )
       ? dps[ as<unsigned>( quality ) ]
       : 0.0;
   }
@@ -54,7 +54,7 @@ public:
 
   double value( int quality ) const
   {
-    return as<unsigned>( quality ) < sizeof_array( dps )
+    return as<unsigned>( quality ) < range::size( dps )
       ? dps[ as<unsigned>( quality ) ]
       : 0.0;
   }
@@ -79,7 +79,7 @@ public:
 
   double value( int quality ) const
   {
-    return as<unsigned>( quality ) < sizeof_array( dps )
+    return as<unsigned>( quality ) < range::size( dps )
       ? dps[ as<unsigned>( quality ) ]
       : 0.0;
   }
@@ -104,7 +104,7 @@ public:
 
   double value( int quality ) const
   {
-    return as<unsigned>( quality ) < sizeof_array( dps )
+    return as<unsigned>( quality ) < range::size( dps )
       ? dps[ as<unsigned>( quality ) ]
       : 0.0;
   }

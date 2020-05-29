@@ -29,7 +29,7 @@ public:
 
   double value( int quality ) const
   {
-    return as<unsigned>( quality ) < sizeof_array( multiplier )
+    return as<unsigned>( quality ) < range::size( multiplier )
       ? multiplier[ as<unsigned>( quality ) ]
       : 0.0;
   }
@@ -53,7 +53,7 @@ public:
 
   double value( int quality ) const
   {
-    return as<unsigned>( quality ) < sizeof_array( values )
+    return as<unsigned>( quality ) < range::size( values )
       ? values[ as<unsigned>( quality ) ]
       : 0.0;
   }
@@ -78,7 +78,7 @@ public:
 
   double value( int subclass ) const
   {
-    return as<unsigned>( subclass ) < sizeof_array( values )
+    return as<unsigned>( subclass ) < range::size( values )
       ? values[ as<unsigned>( subclass ) ]
       : 0.0;
   }
@@ -107,7 +107,7 @@ public:
 
   double value( int subclass ) const
   {
-    return as<unsigned>( subclass ) < sizeof_array( multiplier )
+    return as<unsigned>( subclass ) < range::size( multiplier )
       ? multiplier[ as<unsigned>( subclass ) ]
       : 0.0;
   }

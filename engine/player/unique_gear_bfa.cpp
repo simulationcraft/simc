@@ -5059,7 +5059,7 @@ void items::subroutine_optimization( special_effect_t& effect )
       // Find the item enchantment associated with the gem
       const auto& enchantment_data = source->dbc->item_enchantment( data->enchant_id );
 
-      for ( size_t i = 0u; i < sizeof_array( enchantment_data.ench_type ); ++i )
+      for ( size_t i = 0u; i < range::size( enchantment_data.ench_type ); ++i )
       {
         if ( enchantment_data.ench_type[ i ] == ITEM_ENCHANTMENT_EQUIP_SPELL )
         {

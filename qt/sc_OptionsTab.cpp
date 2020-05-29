@@ -750,7 +750,7 @@ void SC_OptionsTab::decodeOptions()
   }
   else
   {
-    for ( unsigned i = 0; i < sizeof_array( itemSourceOptions ); ++i )
+    for ( unsigned i = 0; i < range::size( itemSourceOptions ); ++i )
     {
       for( int k = 0; k < itemDbOrder->count(); ++k)
       {
@@ -1318,7 +1318,7 @@ void SC_OptionsTab::createItemDataSourceSelector( QFormLayout* layout )
   itemDbOrder -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   itemDbOrder -> setMaximumWidth( 200 );
 
-  for ( unsigned i = 0; i < sizeof_array( itemSourceOptions ); ++i )
+  for ( unsigned i = 0; i < range::size( itemSourceOptions ); ++i )
   {
     QListWidgetItem* item = new QListWidgetItem( itemSourceOptions[ i ].label );
     item -> setData( Qt::UserRole, QVariant( itemSourceOptions[ i ].option ) );

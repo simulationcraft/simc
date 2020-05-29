@@ -194,7 +194,7 @@ bool wowhead::download_item_data( item_t&            item,
       size_t n = 0;
       stat_e hybrid_stat = STAT_NONE;
       for (rapidjson::Value::ConstMemberIterator i = jsonequip.MemberBegin();
-        i != jsonequip.MemberEnd() && n < sizeof_array(item.parsed.data.stat_type_e); i++)
+        i != jsonequip.MemberEnd() && n < range::size(item.parsed.data.stat_type_e); i++)
       {
         stat_e type = util::parse_stat_type(i->name.GetString());
         // wowhead josnEquip contains redundant entries for queries, take note so we can purge
@@ -203,7 +203,7 @@ bool wowhead::download_item_data( item_t&            item,
       }
 
       for (rapidjson::Value::ConstMemberIterator i = jsonequip.MemberBegin();
-        i != jsonequip.MemberEnd() && n < sizeof_array(item.parsed.data.stat_type_e); i++)
+        i != jsonequip.MemberEnd() && n < range::size(item.parsed.data.stat_type_e); i++)
       {
         stat_e type = util::parse_stat_type(i->name.GetString());
         if (type == STAT_NONE || type == STAT_ARMOR || util::translate_stat(type) == ITEM_MOD_NONE)
@@ -239,7 +239,7 @@ bool wowhead::download_item_data( item_t&            item,
       if (jsonequip.HasMember("nsockets"))
         n_sockets = jsonequip["nsockets"].GetUint();
 
-      assert(n_sockets <= static_cast<int>(sizeof_array(item.parsed.data.socket_color)));
+      assert(n_sockets <= static_cast<int>(range::size(item.parsed.data.socket_color)));
       for (int i = 0; i < n_sockets; i++)
       {
         std::string socket_str = fmt::format("socket{:d}", i + 1);
