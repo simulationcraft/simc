@@ -183,25 +183,6 @@ namespace item
   */
 }
 
-namespace artifact_power
-{
-  // Shadow
-  void torment_the_weak( special_effect_t& );
-  void shadowbind( special_effect_t& );
-  void chaotic_darkness( special_effect_t& );
-  void dark_sorrows( special_effect_t& );
-  void master_of_shadows( special_effect_t& );
-  void murderous_intent( special_effect_t& );
-
-  // Light
-  void shocklight( special_effect_t& );
-  void light_speed( special_effect_t& );
-  void secure_in_the_light( special_effect_t& );
-  void infusion_of_light( special_effect_t& );
-  // void lights_embrace( special_effect_t& );
-  // void refractive_shell( special_effect_t& );
-}
-
 namespace util
 {
 /**
@@ -224,26 +205,6 @@ double composite_karazhan_empower_multiplier( const player_t* player )
   }
 
   return 1.0;
-}
-
-// 7.3 Insignia rings. We get to go on faith here that the function is called on the correct spells
-// (which is the case here), since the class flags that control the aura effects point to
-// server-side effects which have no direct relation to the actual damage spells, it seems.
-double composite_insignia_value( double base, const player_t* player )
-{
-  auto it = range::find_if( player -> items, []( const item_t& item ) {
-    return item.parsed.data.id == 152626;
-  } );
-
-  if ( it != player -> items.end() )
-  {
-    const auto insignia_spell = player -> find_spell( 251977 );
-    return base * ( 1.0 + insignia_spell -> effectN( 1 ).percent() );
-  }
-  else
-  {
-    return base;
-  }
 }
 }
 
@@ -6504,191 +6465,6 @@ struct netherlight_base_t : public proc_spell_t
   }
 };
 
-// Torment the Weak =========================================================
-
-void artifact_power::torment_the_weak( special_effect_t& effect )
-{
-  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
-
-  effect.execute_action = create_proc_action<netherlight_base_t>( "torment_the_weak",
-                                                                  effect,
-                                                                  effect.player -> find_spell( 252907 ) );
-
-  effect.execute_action -> base_td = util::composite_insignia_value( power.value(), effect.player );
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-// Shadowbind ===============================================================
-
-void artifact_power::shadowbind( special_effect_t& effect )
-{
-  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
-
-  effect.execute_action = create_proc_action<netherlight_base_t>( "shadowbind", effect, effect.player -> find_spell( 252879 ) );
-  effect.execute_action -> dot_max_stack = effect.execute_action -> data().max_stacks();
-  effect.execute_action -> base_dd_min = util::composite_insignia_value( power.value(), effect.player );
-  effect.execute_action -> base_dd_max = effect.execute_action -> base_dd_min;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-// Chaotic Darkness =========================================================
-
-// TODO: The base damage is done in steps of 600(?)
-void artifact_power::chaotic_darkness( special_effect_t& effect )
-{
-  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
-
-  effect.execute_action = create_proc_action<netherlight_base_t>( "chaotic_darkness", effect, effect.player -> find_spell( 252896 ) );
-  effect.execute_action -> dot_max_stack = effect.execute_action -> data().max_stacks();
-  // TODO: What is the damage exactly? A massive range, or some other system
-  effect.execute_action -> base_dd_min = util::composite_insignia_value( power.value(), effect.player );
-  effect.execute_action -> base_dd_max = effect.execute_action -> base_dd_min * 5; // Hardcoded into the tooltip
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-// Dark Sorrows =========================================================
-
-void artifact_power::dark_sorrows( special_effect_t& effect )
-{
-  // TODO: What happens if Dark Sorrows refreshes on target?
-  struct dark_sorrows_driver_t : public spell_t
-  {
-    action_t* damage;
-
-    dark_sorrows_driver_t( const special_effect_t& effect, const artifact_power_t& power ) :
-      spell_t( effect.driver() -> name_cstr(), effect.player, effect.player -> find_spell( 252921 ) )
-    {
-      may_crit = tick_may_crit = callbacks = hasted_ticks = false;
-      background = quiet = dual = true;
-      dot_behavior = DOT_CLIP;
-
-      dot_duration = data().duration();
-      base_tick_time = data().duration();
-
-      auto d = player -> find_action( "sorrow" );
-      if ( d == nullptr )
-      {
-        d = player -> create_proc_action( "sorrow", effect );
-      }
-
-      if ( d == nullptr )
-      {
-        d = new netherlight_base_t( effect, effect.player -> find_spell( 253022 ) );
-        d -> base_dd_min = d -> base_dd_max = util::composite_insignia_value( power.value(), player );
-      }
-
-      damage = d;
-    }
-
-    void last_tick( dot_t* d ) override
-    {
-      spell_t::last_tick( d );
-
-      damage -> set_target( d -> target );
-      damage -> execute();
-    }
-  };
-
-  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
-
-  auto dot = effect.player -> find_action( "dark_sorrows" );
-  if ( dot == nullptr )
-  {
-    dot = new dark_sorrows_driver_t( effect, power );
-  }
-
-  effect.execute_action = dot;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-// Master of Shadows ====================================================
-
-void artifact_power::master_of_shadows( special_effect_t& effect )
-{
-  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
-  double value = util::composite_insignia_value( power.value(), effect.player );
-
-  effect.player -> passive.add_stat( STAT_MASTERY_RATING, value );
-  effect.player -> passive.add_stat( STAT_AVOIDANCE_RATING, value );
-}
-
-// Murderous Intent =====================================================
-
-void artifact_power::murderous_intent( special_effect_t& effect )
-{
-  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
-
-  double value = util::composite_insignia_value( power.value(), effect.player );
-
-  auto concordance = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "concordance_of_the_legionfall" ) );
-  if ( concordance == nullptr )
-  {
-    return;
-  }
-
-  concordance -> stats.emplace_back( STAT_VERSATILITY_RATING, value );
-}
-
-// Shocklight ===========================================================
-
-void artifact_power::shocklight( special_effect_t& effect )
-{
-  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
-
-  double value = util::composite_insignia_value( power.value(), effect.player );
-
-  auto concordance = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "concordance_of_the_legionfall" ) );
-  if ( concordance == nullptr )
-  {
-    return;
-  }
-
-  concordance -> stats.emplace_back( STAT_CRIT_RATING, value );
-}
-
-// Light Speed ==========================================================
-
-void artifact_power::light_speed( special_effect_t& effect )
-{
-  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
-  double value = util::composite_insignia_value( power.value(), effect.player );
-
-  effect.player -> passive.add_stat( STAT_HASTE_RATING, value );
-  effect.player -> passive.add_stat( STAT_SPEED_RATING, value );
-}
-
-// Secure in the Light ==================================================
-
-void artifact_power::secure_in_the_light( special_effect_t& effect )
-{
-  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
-
-  effect.execute_action = create_proc_action<netherlight_base_t>( "secure_in_the_light", effect, effect.player -> find_spell( 253073 ) );
-  effect.execute_action -> dot_max_stack = effect.execute_action -> data().max_stacks();
-  effect.execute_action -> base_dd_min = util::composite_insignia_value( power.value(), effect.player );
-  effect.execute_action -> base_dd_max = effect.execute_action -> base_dd_min;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-// Infusion of Light ====================================================
-
-void artifact_power::infusion_of_light( special_effect_t& effect )
-{
-  auto power = effect.player -> find_artifact_spell( effect.driver() -> name_cstr() );
-
-  effect.execute_action = create_proc_action<netherlight_base_t>( "infusion_of_light", effect, effect.player -> find_spell( 253098 ) );
-  effect.execute_action -> dot_max_stack = effect.execute_action -> data().max_stacks();
-  effect.execute_action -> base_dd_min = util::composite_insignia_value( power.value(), effect.player );
-  effect.execute_action -> base_dd_max = effect.execute_action -> base_dd_min;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
 } // Namespace legion ends
 } // unnamed namespace
 
@@ -6848,18 +6624,6 @@ void unique_gear::register_special_effects_legion()
   register_special_effect( 225601, consumables::pepper_breath );
   register_special_effect( 201336, consumables::pepper_breath );
   register_special_effect( 185786, consumables::darkmoon_faire_food );
-
-  /* Artifact powers */
-  register_special_effect( 252906, artifact_power::torment_the_weak );
-  register_special_effect( 252875, artifact_power::shadowbind );
-  register_special_effect( 252888, artifact_power::chaotic_darkness );
-  register_special_effect( 252922, artifact_power::dark_sorrows );
-  register_special_effect( 252091, artifact_power::master_of_shadows );
-  register_special_effect( 252191, artifact_power::murderous_intent );
-  register_special_effect( 252799, artifact_power::shocklight );
-  register_special_effect( 252088, artifact_power::light_speed );
-  register_special_effect( 253070, artifact_power::secure_in_the_light );
-  register_special_effect( 253093, artifact_power::infusion_of_light );
 }
 
 void unique_gear::register_hotfixes_legion()

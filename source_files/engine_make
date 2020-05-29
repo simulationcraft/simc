@@ -80,7 +80,6 @@ SRC += \
     player$(PATHSEP)action_variable.cpp \
     player$(PATHSEP)actor.cpp \
     player$(PATHSEP)actor_target_data.cpp \
-    player$(PATHSEP)artifact_data.cpp \
     player$(PATHSEP)azerite_data.cpp \
     player$(PATHSEP)darkmoon_deck.cpp \
     player$(PATHSEP)ground_aoe.cpp \
@@ -110,7 +109,6 @@ SRC += \
     report$(PATHSEP)sc_report_html_sim.cpp \
     report$(PATHSEP)sc_report_json.cpp \
     report$(PATHSEP)sc_report_text.cpp \
-    sim$(PATHSEP)artifact_power.cpp \
     sim$(PATHSEP)event_manager.cpp \
     sim$(PATHSEP)proc.cpp \
     sim$(PATHSEP)real_ppm.cpp \

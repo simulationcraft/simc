@@ -64,7 +64,6 @@ player/action_priority_list.hpp
 player/action_variable.hpp
 player/actor.hpp
 player/actor_target_data.hpp
-player/artifact_data.hpp
 player/assessor.hpp
 player/azerite_data.hpp
 player/consumable.hpp
@@ -106,7 +105,6 @@ report/reports.hpp
 report/sc_highchart.hpp
 sc_enums.hpp
 sc_timespan.hpp
-sim/artifact_power.hpp
 sim/benefit.hpp
 sim/event.hpp
 sim/event_manager.hpp
@@ -226,7 +224,6 @@ player/action_priority_list.cpp
 player/action_variable.cpp
 player/actor.cpp
 player/actor_target_data.cpp
-player/artifact_data.cpp
 player/azerite_data.cpp
 player/darkmoon_deck.cpp
 player/ground_aoe.cpp
@@ -256,7 +253,6 @@ report/sc_report_html_player.cpp
 report/sc_report_html_sim.cpp
 report/sc_report_json.cpp
 report/sc_report_text.cpp
-sim/artifact_power.cpp
 sim/event_manager.cpp
 sim/proc.cpp
 sim/real_ppm.cpp

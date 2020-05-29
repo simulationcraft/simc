@@ -417,43 +417,6 @@ namespace dbc_override
 }
 
 // ==========================================================================
-// Artifact Power Rank Data - ArtifactPowerRank.db2
-// ==========================================================================
-
-struct artifact_power_rank_t
-{
-  unsigned _id;
-  unsigned _id_power;
-  unsigned _index;
-  unsigned _id_spell;
-  double   _value;
-  unsigned _hotfix;
-
-  unsigned id() const
-  { return _id; }
-
-  unsigned id_power() const
-  { return _id_power; }
-
-  unsigned index() const
-  { return _index; }
-
-  unsigned id_spell() const
-  { return _id_spell; }
-
-  double value() const
-  { return _value; }
-
-  const hotfix::client_hotfix_entry_t* _hotfix_entry;
-
-  static artifact_power_rank_t* nil()
-  {
-    static artifact_power_rank_t __nil;
-    return &( __nil );
-  }
-};
-
-// ==========================================================================
 // Spell Label Data - SpellLabel.db2
 // ==========================================================================
 
@@ -1620,21 +1583,6 @@ public:
   std::vector<const spelleffect_data_t*> effect_categories_affecting_spell( const spell_data_t* ) const;
 
   std::pair<const curve_point_t*, const curve_point_t*> curve_point( unsigned curve_id, double value ) const;
-
-  // Artifact stuff
-  // TODO: Remove at some point after 8.0 prepatch
-  unsigned artifact_by_spec( specialization_e ) const
-  { return 0; }
-  std::vector<const artifact_power_data_t*> artifact_powers( unsigned ) const
-  { return {}; }
-  const artifact_power_data_t* artifact_power( unsigned ) const
-  { return nullptr; }
-  std::vector<const artifact_power_rank_t*> artifact_power_ranks( unsigned ) const
-  { return {}; }
-  unsigned artifact_power_spell_id( specialization_e, unsigned, unsigned ) const
-  { return 0; }
-  std::pair<unsigned, unsigned> artifact_relic_rank_index( unsigned, unsigned ) const
-  { return { 0, 0 }; }
 
   // Azerite
   const azerite_power_entry_t& azerite_power( unsigned power_id ) const;

@@ -576,8 +576,6 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
     relic.parsed.bonus_id.push_back( as<int>( id ) );
   } );
 
-  auto powers = item.player -> dbc->artifact_powers( item.parsed.data.id_artifact );
-
   for ( size_t i = 0, end = range::size( data.ench_type ); i < end; ++i )
   {
     switch ( data.ench_type[ i ] )

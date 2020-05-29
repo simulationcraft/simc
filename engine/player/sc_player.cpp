@@ -21,8 +21,6 @@
 #include "action/dbc_proc_callback.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/azerite_data.hpp"
-#include "player/artifact_data.hpp"
-#include "sim/artifact_power.hpp"
 #include "player/sample_data_helper.hpp"
 #include "player/consumable.hpp"
 #include "player/instant_absorb.hpp"
@@ -1111,7 +1109,6 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r )
     dbc( new dbc_t(*(s->dbc)) ),
     talent_points(),
     profession(),
-    artifact( nullptr ),
     azerite( nullptr ),
     base(),
     initial(),
@@ -1225,11 +1222,6 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r )
 {
   actor_index = sim->actor_list.size();
   sim->actor_list.push_back( this );
-
-  if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
-  {
-    artifact = artifact::player_artifact_data_t::create( this );
-  }
 
   if ( ! is_enemy() && ! is_pet() )
   {
@@ -1741,14 +1733,6 @@ void player_t::init_items()
   // Once item data is initialized, initialize the parent - child relationships of each item
   range::for_each( items, [this]( item_t& i ) {
     i.parent_slot = parent_item_slot( i );
-
-    // Set the primary artifact slot for this player, if the item is (after data download)
-    // determined to be the primary artifact slot.
-    if ( i.parsed.data.id_artifact > 0 && i.parent_slot == SLOT_INVALID )
-    {
-      assert( artifact->slot() == SLOT_INVALID );
-      artifact->set_artifact_slot( i.slot );
-    }
   } );
 
   // Slot initialization order vector. Needed to ensure parents of children get initialized first
@@ -9358,16 +9342,6 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, uint32_t i
   return spell_data_t::not_found();
 }
 
-artifact_power_t player_t::find_artifact_spell( const std::string&, bool ) const
-{
-  return {};
-}
-
-artifact_power_t player_t::find_artifact_spell( unsigned ) const
-{
-  return {};
-}
-
 azerite_power_t player_t::find_azerite_spell( unsigned id ) const
 {
   if ( ! azerite )
@@ -10031,21 +10005,6 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
         return expr_t::create_constant( expression_str, s->ok() );
       }
       throw std::invalid_argument(fmt::format("Unsupported talent expression '{}'.", splits[ 2 ]));
-    }
-
-    if ( splits[ 0 ] == "artifact" )
-    {
-      artifact_power_t power = find_artifact_spell( splits[ 1 ], true );
-
-      if ( splits[ 2 ] == "enabled" )
-      {
-        return expr_t::create_constant( expression_str, power.rank() > 0 );
-      }
-      else if ( splits[ 2 ] == "rank" )
-      {
-        return expr_t::create_constant( expression_str, power.rank() );
-      }
-      throw std::invalid_argument(fmt::format("Unsupported artifact expression '{}'.", splits[ 2 ]));
     }
   } // splits.size() == 3
 

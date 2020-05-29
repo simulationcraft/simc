@@ -31,7 +31,6 @@ struct action_state_t;
 struct action_priority_list_t;
 struct action_callback_t;
 struct action_variable_t;
-struct artifact_power_t;
 struct actor_target_data_t;
 struct attack_t;
 class azerite_essence_t;
@@ -61,9 +60,6 @@ struct spelleffect_data_t;
 struct stat_buff_t;
 struct stats_t;
 struct uptime_t;
-namespace artifact {
-    class player_artifact_data_t;
-}
 namespace azerite {
     class azerite_state_t;
     class azerite_essence_state_t;
@@ -179,9 +175,6 @@ struct player_t : public actor_t
 
   // Profs
   std::array<int, PROFESSION_MAX> profession;
-
-  // Artifact
-  std::unique_ptr<artifact::player_artifact_data_t> artifact;
 
   /// Azerite state object
   std::unique_ptr<azerite::azerite_state_t> azerite;
@@ -717,8 +710,6 @@ public:
   pet_t* cast_pet();
   const pet_t* cast_pet() const;
 
-  artifact_power_t find_artifact_spell( const std::string&, bool = false ) const;
-  artifact_power_t find_artifact_spell( unsigned ) const;
   azerite_power_t find_azerite_spell( const std::string& name, bool tokenized = false ) const;
   azerite_power_t find_azerite_spell( unsigned power_id ) const;
   azerite_essence_t find_azerite_essence( const std::string& name, bool tokenized = false ) const;

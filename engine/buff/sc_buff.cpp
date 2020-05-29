@@ -671,7 +671,7 @@ void buff_t::update_trigger_calculations()
         }
       }
       // Note, if the spell is "not found", then the buff is disabled.  This allows the system to
-      // easily enable/disable spells based on conditional things (such as talents, artifacts,
+      // easily enable/disable spells based on conditional things (such as talents,
       // specialization, etc.).
       else if ( !trigger_data->found() )
       {

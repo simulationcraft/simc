@@ -3831,12 +3831,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
       p.azerite->generate_report( os );
     }
 
-    // Artifact
-    if ( p.artifact )
-    {
-      p.artifact -> generate_report( os );
-    }
-
     // Professions
     if ( !p.professions_str.empty() )
     {

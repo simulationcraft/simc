@@ -1136,10 +1136,6 @@ void print_player( std::ostream& os, player_t& p )
     fmt::print( os, "  Origin: {}\n", p.origin_str );
   if ( !p.talents_str.empty() )
     fmt::print( os, "  Talents: {}\n", p.talents_str );
-  if ( p.artifact && !p.artifact->artifact_option_string().empty() )
-    fmt::print( os, "  Artifact: {}\n", p.artifact->crucible_option_string() );
-  if ( p.artifact && !p.artifact->crucible_option_string().empty() )
-    fmt::print( os, "  Crucible: {}\n", p.artifact->crucible_option_string() );
   print_core_stats( os, p );
   print_generic_stats( os, p );
   print_spell_stats( os, p );

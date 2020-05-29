@@ -21,18 +21,6 @@ enum combat_rating_multiplier_type
   CR_MULTIPLIER_MAX
 };
 
-enum artifact_trait_type
-{
-  ARTIFACT_TRAIT_MINOR      = 0, // Single-rank minor traits
-  ARTIFACT_TRAIT_MAJOR      = 1, // Gold traits
-  ARTIFACT_TRAIT_DAMAGEBUFF2= 2, // Initial trait of the additional trait set
-  ARTIFACT_TRAIT_DAMAGEBUFF = 5, // The trait you get after 35
-  ARTIFACT_TRAIT_PASSIVE    = 8, // Artificial Damage / Stamina:
-  ARTIFACT_TRAIT_INITIAL    = 18,
-  ARTIFACT_TRAIT_MINOR2     = 32,
-  ARTIFACT_TRAIT_RELIC      = 64 // Netherlight traits
-};
-
 enum spell_mechanic {
   MECHANIC_CHARM = 130,
   MECHANIC_DISARM = 142,

@@ -10,7 +10,6 @@
 #include "player/sc_player.hpp"
 #include "player/weapon.hpp"
 #include "sim/sc_sim.hpp"
-#include "player/artifact_data.hpp"
 #include "dbc/item_database.hpp"
 #include "sc_enums.hpp"
 #include "interfaces/wowhead.hpp"
@@ -499,22 +498,11 @@ unsigned item_t::item_level() const
   if ( sim -> scale_to_itemlevel > 0 && ! sim -> scale_itemlevel_down_only )
     return sim -> scale_to_itemlevel;
 
-  unsigned ilvl;
+  unsigned ilvl = parsed.data.level;
 
   // Overridden Option-based item level
   if ( parsed.item_level > 0 )
-  {
     ilvl = parsed.item_level;
-  }
-  // Otherwise, normal ilevel processing (base ilevel + artifact ilevel increase)
-  else
-  {
-    ilvl = parsed.data.level;
-    if ( slot == player -> artifact -> slot() )
-    {
-      ilvl += player -> artifact -> ilevel_increase();
-    }
-  }
 
   if ( sim -> scale_to_itemlevel > 0 && sim -> scale_itemlevel_down_only )
     return std::min( (unsigned) sim -> scale_to_itemlevel, ilvl );
