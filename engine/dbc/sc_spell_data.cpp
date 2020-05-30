@@ -282,10 +282,10 @@ unsigned school_str_to_mask( const std::string& str )
 util::span<const sdata_field_t> data_fields_by_type( expr_data_e type, bool effect_query )
 {
   if ( type == DATA_TALENT )
-    return _talent_data_fields;
+    return { _talent_data_fields };
   else if ( effect_query || type == DATA_EFFECT )
-    return _effect_data_fields;
-  return _spell_data_fields;
+    return { _effect_data_fields };
+  return { _spell_data_fields };
 }
 
 // Generic spell list based expression, holds intersection, union for list
