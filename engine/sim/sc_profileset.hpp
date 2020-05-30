@@ -5,6 +5,7 @@
 #ifndef SC_PROFILESET_HH
 #define SC_PROFILESET_HH
 
+#include <array>
 #include <vector>
 #include <string>
 

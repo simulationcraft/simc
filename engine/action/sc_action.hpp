@@ -11,6 +11,8 @@
 #include "sc_timespan.hpp"
 #include "player/target_specific.hpp"
 #include "dbc/data_definitions.hh"
+
+#include <array>
 #include <vector>
 #include <memory>
 #include <string>
