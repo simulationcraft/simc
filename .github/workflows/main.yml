@@ -128,3 +128,17 @@ jobs:
 
       - name: Test
         run: docker run simulationcraft ./simc spell_query=spell.name=frost_shock
+
+
+  build-osx:
+    name: macos-latest
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build
+        run: make SANITIZE=1 -C engine debug -j 2
+
+      - name: Smoke Test
+        run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
+
