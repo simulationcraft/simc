@@ -279,6 +279,15 @@ unsigned school_str_to_mask( const std::string& str )
   return mask;
 }
 
+util::span<const sdata_field_t> data_fields_by_type( expr_data_e type, bool effect_query )
+{
+  if ( type == DATA_TALENT )
+    return _talent_data_fields;
+  else if ( effect_query || type == DATA_EFFECT )
+    return _effect_data_fields;
+  return _spell_data_fields;
+}
+
 // Generic spell list based expression, holds intersection, union for list
 // For these expression types, you can only use two spell lists as parameters
 struct spell_list_expr_t : public spell_data_expr_t
@@ -512,30 +521,12 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   spell_data_filter_expr_t(dbc_t& dbc, expr_data_e type, const std::string& f_name, bool eq = false ) :
     spell_list_expr_t( dbc, f_name, type, eq ), offset( 0 ), field_type( SD_TYPE_INT )
   {
-    const sdata_field_t      * fields = nullptr;
-    size_t             fsize;
-    if ( type == DATA_TALENT )
+    for ( const auto& field : data_fields_by_type( type, effect_query ) )
     {
-      fields = _talent_data_fields;
-      fsize  = range::size( _talent_data_fields );
-    }
-    else if ( effect_query || type == DATA_EFFECT )
-    {
-      fields = _effect_data_fields;
-      fsize  = range::size( _effect_data_fields );
-    }
-    else
-    {
-      fields = _spell_data_fields;
-      fsize  = range::size( _spell_data_fields );
-    }
-
-    for ( size_t i = 0, end = fsize; i < end; ++i )
-    {
-      if ( util::str_compare_ci( f_name, fields[ i ].name ) )
+      if ( util::str_compare_ci( f_name, field.name ) )
       {
-        offset = static_cast<int>( fields[ i ].offset );
-        field_type = fields[ i ].type;
+        offset = static_cast<int>( field.offset );
+        field_type = field.type;
         break;
       }
     }
@@ -1165,29 +1156,11 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( dbc_t& dbc, const
   else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "school" ) )
     return new spell_school_expr_t( dbc, data_type );
 
-  const sdata_field_t* fields;
-  size_t fsize;
-  if ( data_type == DATA_TALENT )
+  for ( const auto& field : data_fields_by_type( data_type, effect_query ) )
   {
-    fields = _talent_data_fields;
-    fsize  = range::size( _talent_data_fields );
-  }
-  else if ( effect_query || data_type == DATA_EFFECT )
-  {
-    fields = _effect_data_fields;
-    fsize  = range::size( _effect_data_fields );
-  }
-  else
-  {
-    fields = _spell_data_fields;
-    fsize  = range::size( _spell_data_fields );
-  }
-
-  for ( size_t i = 0; i < fsize; i++ )
-  {
-    if ( ! fields[ i ].name.empty() && util::str_compare_ci( splits[ 1 ], fields[ i ].name ) )
+    if ( ! field.name.empty() && util::str_compare_ci( splits[ 1 ], field.name ) )
     {
-      return new spell_data_filter_expr_t( dbc, data_type, fields[ i ].name, effect_query );
+      return new spell_data_filter_expr_t( dbc, data_type, field.name, effect_query );
     }
   }
 
