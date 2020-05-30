@@ -5563,7 +5563,7 @@ struct pillar_of_frost_buff_t : public buff_t
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
-  void expire_override( int s, timespan_t t ) override
+  void expire_override( int, timespan_t ) override
   {
     death_knight_t* p = debug_cast<death_knight_t*>( player );
 
