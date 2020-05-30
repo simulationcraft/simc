@@ -5,6 +5,9 @@ on:
     branches: [ bfa-dev ]
   push:
     branches: [ bfa-dev ]
+    paths-ignore:
+      - 'SpellDataDump/**'
+      - 'dbc_extract/**'
 
 env:
   SIMC_PROFILE: profiles/T25_Raid.simc
