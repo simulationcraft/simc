@@ -297,7 +297,7 @@ class WDC1BitPackedValue(WDC1ExtendedColumnValue):
         super().__init__(column)
 
         self.unpacker = None
-        if column.value_bit_size() % 8 == 0:
+        if column.value_bit_size() != 24 and column.value_bit_size() % 8 == 0:
             struct_type = get_struct_type(column.is_float(),
                                           column.is_signed(),
                                           column.value_bit_size())
