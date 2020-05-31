@@ -16,6 +16,7 @@
 #include "dbc/azerite.hpp"
 #include "dbc/item_set_bonus.hpp"
 #include "dbc/specialization_spell.hpp"
+#include "dbc/active_spells.hpp"
 #include "item/item.hpp"
 #include "action/dbc_proc_callback.hpp"
 #include "player/actor_target_data.hpp"
@@ -9329,20 +9330,24 @@ void player_t::replace_spells()
   // Search spec spells for spells to replace.
   if ( _spec != SPEC_NONE )
   {
-    for ( const auto& spec_spell : specialization_spell_entry_t::data( dbc->ptr ) )
-    {
-      if ( spec_spell.specialization_id != _spec )
-      {
-        continue;
-      }
+    range::for_each( specialization_spell_entry_t::data( dbc->ptr ),
+      [this]( const specialization_spell_entry_t& entry ) {
+        if ( static_cast<unsigned>( _spec ) != entry.specialization_id )
+        {
+          return;
+        }
 
-      const spell_data_t* s = dbc->spell( spec_spell.spell_id );
-      if ( s->replace_spell_id() && ( (int)s->level() <= true_level ) )
-      {
-        // Found a spell we should replace
-        dbc->replace_id( s->replace_spell_id(), spec_spell.spell_id );
-      }
-    }
+        if ( entry.override_spell_id == 0 )
+        {
+          return;
+        }
+
+        const spell_data_t* s = dbc->spell( entry.spell_id );
+        if ( as<int>( s->level() ) <= true_level )
+        {
+          dbc->replace_id( entry.override_spell_id, entry.spell_id );
+        }
+    } );
   }
 
   // Search talents for spells to replace.
@@ -9362,24 +9367,33 @@ void player_t::replace_spells()
     }
   }
 
-  // Search general spells for spells to replace (a spell you learn earlier might be replaced by one you learn
-  // later)
+  // Search general spells for spells to replace (a spell you learn earlier might be
+  // replaced by one you learn later)
   if ( _spec != SPEC_NONE )
   {
-    for ( unsigned int i = 0; i < dbc->class_ability_size(); i++ )
-    {
-      unsigned id = dbc->class_ability( class_idx, 0, i );
-      if ( id == 0 )
-      {
-        break;
-      }
-      const spell_data_t* s = dbc->spell( id );
-      if ( s->replace_spell_id() && ( (int)s->level() <= true_level ) )
-      {
-        // Found a spell we should replace
-        dbc->replace_id( s->replace_spell_id(), id );
-      }
-    }
+    range::for_each( active_class_spell_t::data( dbc->ptr ),
+      [this, class_idx]( const active_class_spell_t& entry ) {
+        if ( class_idx != entry.class_id )
+        {
+          return;
+        }
+
+        if ( entry.spec_id != 0 && static_cast<unsigned>( _spec ) != entry.spec_id )
+        {
+          return;
+        }
+
+        if ( entry.override_spell_id == 0 )
+        {
+          return;
+        }
+
+        const spell_data_t* s = dbc->spell( entry.spell_id );
+        if ( as<int>( s->level() ) <= true_level )
+        {
+          dbc->replace_id( entry.override_spell_id, entry.spell_id );
+        }
+    } );
   }
 }
 
@@ -9611,7 +9625,7 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, special
     if ( unsigned spell_id = dbc->class_ability_id( type, _spec, name.c_str() ) )
     {
       const spell_data_t* spell = dbc->spell( spell_id );
-      if ( spell->id() == spell_id && (int)spell->level() <= true_level )
+      if ( spell->id() == spell_id && as<int>( spell->level() ) <= true_level )
       {
         return dbc::find_spell( this, spell );
       }
@@ -9623,7 +9637,7 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, special
 
 const spell_data_t* player_t::find_pet_spell( const std::string& name ) const
 {
-  if ( unsigned spell_id = dbc->pet_ability_id( type, name.c_str() ) )
+  if ( unsigned spell_id = dbc->pet_ability_id( type, name ) )
   {
     const spell_data_t* s = dbc->spell( spell_id );
     if ( s->id() == spell_id )

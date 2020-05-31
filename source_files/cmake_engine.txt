@@ -20,6 +20,7 @@ class_modules/priest/sc_priest.hpp
 class_modules/warlock/sc_warlock.hpp
 class_modules/warlock/sc_warlock_pets.hpp
 config.hpp
+dbc/active_spells.hpp
 dbc/azerite.hpp
 dbc/client_data.hpp
 dbc/data_definitions.hh
@@ -183,6 +184,7 @@ class_modules/warlock/sc_warlock_affliction.cpp
 class_modules/warlock/sc_warlock_demonology.cpp
 class_modules/warlock/sc_warlock_destruction.cpp
 class_modules/warlock/sc_warlock_pets.cpp
+dbc/active_spells.cpp
 dbc/azerite.cpp
 dbc/client_data.cpp
 dbc/gem_data.cpp

@@ -40,6 +40,7 @@ SRC += \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_demonology.cpp \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_destruction.cpp \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_pets.cpp \
+    dbc$(PATHSEP)active_spells.cpp \
     dbc$(PATHSEP)azerite.cpp \
     dbc$(PATHSEP)client_data.cpp \
     dbc$(PATHSEP)gem_data.cpp \

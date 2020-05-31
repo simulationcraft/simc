@@ -9,6 +9,7 @@
 #include "item_database.hpp"
 #include "client_data.hpp"
 #include "specialization_spell.hpp"
+#include "active_spells.hpp"
 
 #include "generated/sc_spec_list.inc"
 #include "generated/sc_scale_data.inc"
@@ -1337,30 +1338,6 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 #endif
 }
 
-unsigned dbc_t::class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const
-{
-  assert( class_id < dbc_t::class_max_size() && tree_id < class_ability_tree_size() && n < class_ability_size() );
-
-#if SC_USE_PTR
-  return ptr ? __ptr_class_ability_data[ class_id ][ tree_id ][ n ]
-             : __class_ability_data[ class_id ][ tree_id ][ n ];
-#else
-  return __class_ability_data[ class_id ][ tree_id ][ n ];
-#endif
-}
-
-unsigned dbc_t::pet_ability( unsigned class_id, unsigned n ) const
-{
-  assert( class_id < dbc_t::class_max_size() && n < class_ability_size() );
-
-#if SC_USE_PTR
-  return ptr ? __ptr_class_ability_data[ class_id ][ class_ability_tree_size() - 1 ][ n ]
-             : __class_ability_data[ class_id ][ class_ability_tree_size() - 1 ][ n ];
-#else
-  return __class_ability_data[ class_id ][ class_ability_tree_size() - 1 ][ n ];
-#endif
-}
-
 unsigned dbc_t::race_ability( unsigned race_id, unsigned class_id, unsigned n ) const
 {
   assert( race_id < race_ability_tree_size() && class_id < dbc_t::class_max_size() && n < race_ability_size() );
@@ -1445,24 +1422,6 @@ util::span<const azerite_power_entry_t> dbc_t::azerite_powers() const
 unsigned dbc_t::class_max_size() const
 {
   return MAX_CLASS;
-}
-
-unsigned dbc_t::class_ability_tree_size() const
-{
-#if SC_USE_PTR
-  return ptr ? PTR_CLASS_ABILITY_TREE_SIZE : CLASS_ABILITY_TREE_SIZE;
-#else
-  return CLASS_ABILITY_TREE_SIZE;
-#endif
-}
-
-unsigned dbc_t::class_ability_size() const
-{
-#if SC_USE_PTR
-  return ptr ? PTR_CLASS_ABILITY_SIZE : CLASS_ABILITY_SIZE;
-#else
-  return CLASS_ABILITY_SIZE;
-#endif
 }
 
 unsigned dbc_t::specialization_max_per_class() const
@@ -2221,121 +2180,80 @@ unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, const char
   return 0;
 }
 
-unsigned dbc_t::class_ability_id( player_e c, specialization_e spec_id, const char* spell_name ) const
+unsigned dbc_t::class_ability_id( player_e           c,
+                                  specialization_e   spec_id,
+                                  const std::string& spell_name,
+                                  bool               name_tokenized ) const
 {
-  uint32_t cid = util::class_id( c );
-  unsigned spell_id;
-
-  assert( spell_name && spell_name[ 0 ] );
-
-  if ( ! cid )
-    return 0;
-
+  const active_class_spell_t* active_spell = nullptr;
   if ( spec_id != SPEC_NONE )
   {
-    unsigned class_idx = -1;
-    unsigned spec_index = -1;
+    active_spell = &active_class_spell_t::find( spell_name, spec_id, ptr, name_tokenized );
 
-    if ( ! spec_idx( spec_id, class_idx, spec_index ) )
-      return 0;
-
-    if ( class_idx == 0 ) // pet
+    // Try to find in class-specific general spells
+    if ( active_spell->spell_id == 0u )
     {
-      spec_index = class_ability_size() - 1;
-    }
-    else if ( class_idx != cid )
-    {
-      return 0;
-    }
-    else
-    {
-      spec_index++;
-    }
+      unsigned class_idx = 0;
+      unsigned spec_index = 0;
 
-    // Now test spec based class abilities.
-    for ( unsigned n = 0; n < class_ability_size(); n++ )
-    {
-      if ( ! ( spell_id = class_ability( cid, spec_index, n ) ) )
-        break;
-
-      if ( ! spell( spell_id ) -> id() )
-        continue;
-
-      if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+      if ( !spec_idx( spec_id, class_idx, spec_index ) )
       {
-        // Spell has been replaced by another, so don't return id
-        if ( ! replaced_id( spell_id ) )
-        {
-          return spell_id;
-        }
-        else
-        {
-          return 0;
-        }
+        return 0u;
       }
+
+      active_spell = &active_class_spell_t::find( spell_name,
+          util::translate_class_id( class_idx ), ptr, name_tokenized );
     }
   }
-
-  // Test general spells
-  for ( unsigned n = 0; n < class_ability_size(); n++ )
+  else if ( c != PLAYER_NONE )
   {
-    if ( ! ( spell_id = class_ability( cid, 0, n ) ) )
-      break;
-
-    if ( ! spell( spell_id ) -> id() )
-      continue;
-
-    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
-    {
-      // Spell has been replaced by another, so don't return id
-      if ( ! replaced_id( spell_id ) )
-      {
-        return spell_id;
-      }
-      else
-      {
-        return 0;
-      }
-    }
+    active_spell = &active_class_spell_t::find( spell_name, c, ptr, name_tokenized );
+  }
+  else
+  {
+    active_spell = &active_class_spell_t::find( spell_name, ptr, name_tokenized );
   }
 
-  return 0;
+  if ( active_spell->spell_id == 0u )
+  {
+    return 0u;
+  }
+
+  if ( !replaced_id( active_spell->spell_id ) )
+  {
+    return active_spell->spell_id;
+  }
+  else
+  {
+    return 0u;
+  }
 }
 
-
-unsigned dbc_t::pet_ability_id( player_e c, const char* spell_name ) const
+unsigned dbc_t::pet_ability_id( player_e c, const std::string& name, bool tokenized ) const
 {
-  uint32_t cid = util::class_id( c );
-
-  assert( spell_name && spell_name[ 0 ] );
-
-  if ( ! cid )
-    return 0;
-
-  for ( unsigned n = 0; n < class_ability_size(); n++ )
+  const active_pet_spell_t* active_spell = nullptr;
+  if ( c != PLAYER_NONE )
   {
-    unsigned spell_id;
-    if ( ! ( spell_id = pet_ability( cid, n ) ) )
-      break;
-
-    if ( ! spell( spell_id ) -> id() )
-      continue;
-
-    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
-    {
-      // Spell has been replaced by another, so don't return id
-      if ( ! replaced_id( spell_id ) )
-      {
-        return spell_id;
-      }
-      else
-      {
-        return 0;
-      }
-    }
+    active_spell = &active_pet_spell_t::find( name, c, ptr, tokenized );
+  }
+  else
+  {
+    active_spell = &active_pet_spell_t::find( name, ptr, tokenized );
   }
 
-  return 0;
+  if ( active_spell->spell_id == 0u )
+  {
+    return 0u;
+  }
+
+  if ( !replaced_id( active_spell->spell_id ) )
+  {
+    return active_spell->spell_id;
+  }
+  else
+  {
+    return 0u;
+  }
 }
 
 unsigned dbc_t::race_ability_id( player_e c, race_e r, const char* spell_name ) const
@@ -2392,12 +2310,10 @@ unsigned dbc_t::race_ability_id( player_e c, race_e r, const char* spell_name ) 
   return 0;
 }
 
-unsigned dbc_t::specialization_ability_id( specialization_e spec_id, const char* spell_name ) const
+unsigned dbc_t::specialization_ability_id( specialization_e spec_id, const std::string& spell_name ) const
 {
   unsigned class_idx = -1;
   unsigned spec_index = -1;
-
-  assert( spell_name && spell_name[ 0 ] );
 
   if ( ! spec_idx( spec_id, class_idx, spec_index ) )
     return 0;

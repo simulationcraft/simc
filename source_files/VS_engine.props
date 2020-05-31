@@ -26,6 +26,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\class_modules\warlock\sc_warlock.hpp" />
 		<ClInclude Include="..\engine\class_modules\warlock\sc_warlock_pets.hpp" />
 		<ClInclude Include="..\engine\config.hpp" />
+		<ClInclude Include="..\engine\dbc\active_spells.hpp" />
 		<ClInclude Include="..\engine\dbc\azerite.hpp" />
 		<ClInclude Include="..\engine\dbc\client_data.hpp" />
 		<ClInclude Include="..\engine\dbc\data_definitions.hh" />
@@ -264,6 +265,9 @@ To change the list of source files run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_pets.cpp">
 			
+		</ClCompile>
+		<ClCompile Include="..\engine\dbc\active_spells.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\azerite.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>

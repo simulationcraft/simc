@@ -8167,7 +8167,7 @@ void shaman_t::init_action_list_elemental()
   precombat->add_talent( this, "Totem Mastery" );
   precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
   precombat->add_action( "use_item,name=azsharas_font_of_power" );
-  precombat->add_action( this, "Stormkeeper",
+  precombat->add_talent( this, "Stormkeeper",
                          "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
                          "Use Stormkeeper precombat unless some adds will spawn soon." );
   precombat->add_action( "potion" );
@@ -8266,7 +8266,7 @@ void shaman_t::init_action_list_elemental()
                    "if=talent.elemental_blast.enabled&spell_targets.chain_lightning<4&(!talent.storm_elemental.enabled|"
                    "cooldown.storm_elemental.remains<(cooldown.storm_elemental.duration-30))",
                    "Use Elemental Blast against up to 3 targets as long as Storm Elemental is not active." );
-  aoe->add_action( this, "Lava Beam", "if=talent.ascendance.enabled" );
+  aoe->add_action( "lava_beam,if=talent.ascendance.enabled" );
   aoe->add_action( this, "Chain Lightning" );
   aoe->add_action( this, "Lava Burst", "moving=1,if=talent.ascendance.enabled" );
   aoe->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
@@ -8684,7 +8684,7 @@ void shaman_t::init_action_list_enhancement()
 
   asc->add_action( this, "Crash Lightning", "if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck_CL" );
   asc->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
-  asc->add_action( this, "Windstrike" );
+  asc->add_action( "windstrike" );
 
   priority->add_action( this, "Crash Lightning",
                         "if=active_enemies>=(8-(talent.forceful_winds.enabled*3))"

@@ -8783,9 +8783,9 @@ void druid_t::apl_balance()
                                     "&floor(target.time_to_die%(2*spell_haste))>=5"
                                     "&(!variable.az_ss|!buff.ca_inc.up|!prev.stellar_flare)");
   // Generators
-  default_list->add_action( this, "New Moon", "if=ap_check", "Generators" );
-  default_list->add_action( this, "Half Moon", "if=ap_check" );
-  default_list->add_action( this, "Full Moon", "if=ap_check" );
+  default_list->add_talent( this, "New Moon", "if=ap_check", "Generators" );
+  default_list->add_action( this, spec.half_moon, "half_moon", "if=ap_check" );
+  default_list->add_action( this, spec.full_moon, "full_moon", "if=ap_check" );
   default_list->add_action( this, "Lunar Strike", "if=buff.solar_empowerment.stack<3"
                                     "&(ap_check|buff.lunar_empowerment.stack=3)"
                                     "&((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=2&!buff.solar_empowerment.up)"

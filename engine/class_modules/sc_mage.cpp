@@ -956,7 +956,7 @@ struct mirror_image_spell_t : public mage_pet_spell_t
 struct arcane_blast_t : public mirror_image_spell_t
 {
   arcane_blast_t( const std::string& n, mirror_image_pet_t* p, const std::string& options_str ) :
-    mirror_image_spell_t( n, p, p->find_pet_spell( "Arcane Blast" ) )
+    mirror_image_spell_t( n, p, p->find_spell( 88084 ) )
   {
     parse_options( options_str );
   }
@@ -980,7 +980,7 @@ struct arcane_blast_t : public mirror_image_spell_t
 struct fireball_t : public mirror_image_spell_t
 {
   fireball_t( const std::string& n, mirror_image_pet_t* p, const std::string& options_str ) :
-    mirror_image_spell_t( n, p, p->find_pet_spell( "Fireball" ) )
+    mirror_image_spell_t( n, p, p->find_spell( 88082 ) )
   {
     parse_options( options_str );
   }
@@ -989,7 +989,7 @@ struct fireball_t : public mirror_image_spell_t
 struct frostbolt_t : public mirror_image_spell_t
 {
   frostbolt_t( const std::string& n, mirror_image_pet_t* p, const std::string& options_str ) :
-    mirror_image_spell_t( n, p, p->find_pet_spell( "Frostbolt" ) )
+    mirror_image_spell_t( n, p, p->find_spell( 59638 ) )
   {
     parse_options( options_str );
   }

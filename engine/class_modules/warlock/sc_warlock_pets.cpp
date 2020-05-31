@@ -860,7 +860,8 @@ struct bile_spit_t : public warlock_pet_spell_t
 
 struct headbutt_t : public warlock_pet_melee_attack_t
 {
-  headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( p, "Headbutt" )
+  headbutt_t( warlock_pet_t* p ) :
+    warlock_pet_melee_attack_t( "headbutt", p, p->find_spell( 267999 ) )
   {
     cooldown->duration = timespan_t::from_seconds( 5 );
   }
@@ -1022,7 +1023,8 @@ action_t* shivarra_t::create_action( const std::string& name, const std::string&
 // darkhound
 struct fel_bite_t : public warlock_pet_melee_attack_t
 {
-  fel_bite_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( p, "Fel Bite" )
+  fel_bite_t( warlock_pet_t* p ) :
+    warlock_pet_melee_attack_t( "fel_bite", p, p->find_spell( 272435 ) )
   { }
 
   void update_ready( timespan_t /* cd = timespan_t::min() */ ) override

@@ -1567,10 +1567,6 @@ public:
   { return item_bonus_entry_t::find( bonus_id, ptr ); }
 
   // Derived data access
-  unsigned class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
-  unsigned pet_ability( unsigned class_id, unsigned n ) const;
-  unsigned class_ability_tree_size() const;
-  unsigned class_ability_size() const;
   unsigned class_max_size() const;
 
   unsigned race_ability( unsigned race_id, unsigned class_id, unsigned n ) const;
@@ -1601,11 +1597,11 @@ public:
   double   effect_bonus( unsigned effect_id, unsigned level ) const;
   double   effect_bonus( const spelleffect_data_t* effect, unsigned level ) const;
 
-  unsigned talent_ability_id( player_e c, specialization_e spec_id, const char* spell_name, bool name_tokenized = false ) const;
-  unsigned class_ability_id( player_e c, specialization_e spec_id, const char* spell_name ) const;
-  unsigned pet_ability_id( player_e c, const char* spell_name ) const;
+  unsigned talent_ability_id( player_e c, specialization_e spec_id, const char* spell_name, bool tokenized = false ) const;
+  unsigned class_ability_id( player_e c, specialization_e spec_id, const std::string& spell_name, bool tokenized = false ) const;
+  unsigned pet_ability_id( player_e c, const std::string& spell_name, bool tokenized = false ) const;
   unsigned race_ability_id( player_e c, race_e r, const char* spell_name ) const;
-  unsigned specialization_ability_id( specialization_e spec_id, const char* spell_name ) const;
+  unsigned specialization_ability_id( specialization_e spec_id, const std::string& spell_name ) const;
   unsigned mastery_ability_id( specialization_e spec, const char* spell_name ) const;
   unsigned mastery_ability_id( specialization_e spec, uint32_t idx ) const;
 

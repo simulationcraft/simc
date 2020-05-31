@@ -9819,7 +9819,7 @@ void monk_t::apl_combat_windwalker()
   }
 
   def->add_action(
-      this, "Reverse Harm",
+      this, spec.reverse_harm, "reverse_harm",
       "if=chi.max-chi>=2&(talent.serenity.enabled|!dot.touch_of_death.remains)&buff.serenity.down&(energy.time_to_max<"
       "1|talent.serenity.enabled&cooldown.serenity.remains<2|!talent.serenity.enabled&cooldown.touch_of_death.remains<"
       "3&!variable.hold_tod|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)" );
@@ -10071,7 +10071,7 @@ void monk_t::apl_combat_windwalker()
   serenity->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
   serenity->add_action( this, "Fists of Fury", "interrupt_if=gcd.remains=0", "This will cast FoF and interrupt the channel if the GCD is ready and something higher on the priority list (RSK) is avaible" );
   serenity->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
-  serenity->add_action( this, "Reverse Harm", "if=chi.max-chi>1&energy.time_to_max<1" );
+  serenity->add_action( this, spec.reverse_harm, "reverse_harm", "if=chi.max-chi>1&energy.time_to_max<1" );
   serenity->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike|!talent.hit_combo.enabled", "Use BoK, it will only break mastery if Hit Combo is NOT talented" );
   serenity->add_action( this, "Spinning Crane Kick" );
 
@@ -10084,7 +10084,7 @@ void monk_t::apl_combat_windwalker()
   aoe->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   aoe->add_action( this, "Spinning Crane Kick",
                    "if=combo_strike&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3|buff.dance_of_chiji.react)" );
-  aoe->add_action( this, "Reverse Harm", "if=chi.max-chi>=2" );
+  aoe->add_action( this, spec.reverse_harm, "reverse_harm", "if=chi.max-chi>=2" );
   aoe->add_talent( this, "Chi Burst", "if=chi.max-chi>=3" );
   aoe->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
   aoe->add_action( this, "Tiger Palm",
@@ -10099,7 +10099,7 @@ void monk_t::apl_combat_windwalker()
   st->add_action( this, "Fists of Fury", "if=talent.serenity.enabled|cooldown.touch_of_death.remains>6|variable.hold_tod" );
   st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.touch_of_death.remains>2|variable.hold_tod", "Use RSK on targets without Mark of the Crane debuff, if possible, and if ToD is at least 2 seconds away" );
   st->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down&active_enemies>1" );
-  st->add_action( this, "Reverse Harm", "if=chi.max-chi>1" );
+  st->add_action( this, spec.reverse_harm, "reverse_harm", "if=chi.max-chi>1" );
   st->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
   st->add_talent( this, "Energizing Elixir", "if=chi<=3&energy<50" );
   st->add_talent( this, "Chi Burst", "if=chi.max-chi>0&active_enemies=1|chi.max-chi>1", "Use CB if you are more than 0 Chi away from max and have 1 enemy, or are more than 1 Chi away from max" );

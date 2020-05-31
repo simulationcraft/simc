@@ -4774,7 +4774,7 @@ void demon_hunter_t::init_spells()
   // Specialization =========================================================
 
   // General
-  spec.demon_hunter           = find_class_spell( "Demon Hunter" );
+  spec.demon_hunter           = find_specialization_spell( "Demon Hunter" );
   spec.consume_magic          = find_class_spell( "Consume Magic" );
   spec.chaos_brand            = find_spell( 255260 );
   spec.critical_strikes       = find_spell( 221351 );
