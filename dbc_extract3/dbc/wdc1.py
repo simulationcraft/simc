@@ -942,6 +942,9 @@ class WDC1Parser(DBCParserBase):
         return self.__key_format
 
     def sparse_data_offset(self, column, id_):
+        if column.index() >= len(self.sparse_blocks):
+            return -1
+
         return self.sparse_blocks[column.index()].get(id_, -1)
 
     def create_raw_parser(self, hotfix_parser = False):
