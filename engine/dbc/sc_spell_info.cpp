@@ -202,9 +202,9 @@ std::ostringstream& hotfix_map_str( const DATA_TYPE* data, std::ostringstream& s
   return s;
 }
 
-template <typename T>
-std::string concatenate( const std::vector<const T*>& data,
-                         const std::function<void(std::stringstream&, const T*)> fn,
+template <typename Range, typename Callback>
+std::string concatenate( Range&& data,
+                         Callback&& fn,
                          const std::string& delim = ", " )
 {
   if ( data.size() == 0 )
@@ -1197,7 +1197,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   {
     auto affected_spells = dbc.spells_by_category( e -> misc_value1() );
     s << "                   Affected Spells (Category): ";
-    s << concatenate<spell_data_t>( affected_spells,
+    s << concatenate( affected_spells,
         []( std::stringstream& s, const spell_data_t* spell ) {
           s << spell -> name_cstr() << " (" << spell -> id() << ")";
         } );
@@ -1505,7 +1505,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( affecting_effects.size() > 0 )
     {
       s << ": ";
-      s << concatenate<spelleffect_data_t>( affecting_effects,
+      s << concatenate( affecting_effects,
         []( std::stringstream& s, const spelleffect_data_t* e ) {
           s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id() << " effect#" << ( e -> index() + 1 ) << ")";
         } );
@@ -1541,7 +1541,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
       if ( affecting_effects.size() > 0 )
       {
-        s << ": " << concatenate<spelleffect_data_t>( affecting_effects,
+        s << ": " << concatenate( affecting_effects,
           []( std::stringstream& s, const spelleffect_data_t* e ) {
             s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id()
               << " effect#" << ( e -> index() + 1 ) << ")";

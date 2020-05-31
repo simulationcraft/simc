@@ -170,7 +170,7 @@ public:
     }
   }
 
-  std::vector<const spell_data_t*> affects_spells( V value, bool ptr )
+  util::span<const spell_data_t* const> affects_spells( V value, bool ptr ) const
   {
     auto it = m_db[ ptr ].find( value );
 
@@ -179,24 +179,19 @@ public:
       return it -> second;
     }
 
-    return std::vector<const spell_data_t*>();
+    return {};
   }
 
-  std::vector<const spelleffect_data_t*> affected_by( V value, bool ptr )
+  util::span<const spelleffect_data_t* const> affected_by( V value, bool ptr ) const
   {
-    std::vector<const spelleffect_data_t*> effects;
     auto it = m_effects_db[ ptr ].find( value );
 
-    if ( it == m_effects_db[ ptr ].end() )
+    if ( it != m_effects_db[ ptr ].end() )
     {
-      return effects;
+      return it -> second;
     }
 
-    range::for_each( m_effects_db[ ptr ][ value ], [ &effects ]( const spelleffect_data_t* e ) {
-      effects.push_back( e );
-    } );
-
-    return effects;
+    return {};
   }
 };
 
@@ -2722,12 +2717,12 @@ bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
 bool spell_data_t::affected_by( const spelleffect_data_t& effect ) const
 { return affected_by( &effect ); }
 
-std::vector<const spell_data_t*> dbc_t::spells_by_label( size_t label ) const
+util::span<const spell_data_t* const> dbc_t::spells_by_label( size_t label ) const
 {
   return spell_label_index.affects_spells( as<unsigned>( label ), ptr );
 }
 
-std::vector<const spell_data_t*> dbc_t::spells_by_category( unsigned category ) const
+util::span<const spell_data_t* const> dbc_t::spells_by_category( unsigned category ) const
 {
   return spell_categories_index.affects_spells( category, ptr );
 }
