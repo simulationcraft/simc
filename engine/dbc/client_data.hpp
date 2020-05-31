@@ -33,12 +33,6 @@ struct id_member_policy_t
   { return static_cast<unsigned>( t.id ); }
 };
 
-struct id_function_policy_t
-{
-  template <typename T> static unsigned id( const T& t )
-  { return static_cast<unsigned>( t.id() ); }
-};
-
 template <typename T>
 const T& nil()
 {
@@ -80,71 +74,7 @@ util::span<const T> find_many( unsigned key, bool ptr, Compare comp = Compare{},
   return util::span<const T>( r.first, r.second );
 }
 
-// ==========================================================================
-// Indices to provide log time, constant space access to spells, effects, and talents by id.
-// ==========================================================================
-
-template <typename T, typename KeyPolicy = id_function_policy_t>
-class dbc_index_t
-{
-private:
-  typedef std::pair<T*, T*> index_t; // first = lowest data; second = highest data
-// array of size 1 or 2, depending on whether we have PTR data
-#if SC_USE_PTR == 0
-  index_t idx[ 1 ];
-#else
-  index_t idx[ 2 ];
-#endif
-
-  /* populate idx with pointer to lowest and highest data from a given list
-   */
-  void populate( index_t& idx, T* list )
-  {
-    assert( list );
-    idx.first = list;
-    for ( unsigned last_id = 0; KeyPolicy::id( *list ); last_id = KeyPolicy::id( *list ), ++list )
-    {
-      // Validate the input range is in fact sorted by id.
-      assert( KeyPolicy::id( *list ) > last_id ); ( void )last_id;
-    }
-    idx.second = list;
-  }
-
-public:
-  // Initialize index from given list
-  void init( T* list, bool ptr )
-  {
-    assert( ! initialized( ptr ) );
-    populate( idx[ ptr ], list );
-  }
-
-  // Initialize index under the assumption that 'T::list( bool ptr )' returns a list of data
-  void init()
-  {
-    init( T::list( false ), false );
-#if SC_USE_PTR == 1
-    init( T::list( true ), true );
-#endif
-  }
-
-  bool initialized( bool ptr = false ) const
-  { return idx[ ptr ].first != 0; }
-
-  // Return the item with the given id, or NULL
-  T* get( bool ptr, unsigned id ) const
-  {
-    assert( initialized( ptr ) );
-    const index_t& index = idx[ ptr ];
-    T* p = std::lower_bound( index.first, index.second, id,
-                             [](const T& lhs, unsigned rhs) {
-                               return KeyPolicy::id( lhs ) < rhs;
-                             } );
-    if ( p != index.second && KeyPolicy::id( *p ) == id )
-      return p;
-    return nullptr;
-  }
-};
-
+// "Index" to provide access to a filtered list of dbc data.
 template <typename T, typename Filter>
 class filtered_dbc_index_t
 {
