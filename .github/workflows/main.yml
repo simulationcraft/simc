@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [ bfa-dev ]
+    branches: [ bfa-dev, shadowlands ]
   push:
-    branches: [ bfa-dev ]
+    branches: [ bfa-dev, shadowlands ]
     paths-ignore:
       - 'SpellDataDump/**'
       - 'dbc_extract/**'
