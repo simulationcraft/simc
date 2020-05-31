@@ -5710,7 +5710,7 @@ void items::whispering_eldritch_bow( special_effect_t& effect )
 {
   struct whispered_truths_callback_t : public dbc_proc_callback_t
   {
-    std::set<cooldown_t*> cooldowns;
+    std::vector<cooldown_t*> cooldowns;
     timespan_t amount;
 
     whispered_truths_callback_t( const special_effect_t& effect )
@@ -5719,9 +5719,10 @@ void items::whispering_eldritch_bow( special_effect_t& effect )
     {
       for ( action_t* a : effect.player->action_list )
       {
-        if ( util::is_adjustable_class_spell( a ) )
+        if ( util::is_adjustable_class_spell( a ) &&
+             range::find( cooldowns, a->cooldown ) == cooldowns.end() )
         {
-          cooldowns.insert( a->cooldown );
+          cooldowns.push_back( a->cooldown );
         }
       }
     }
@@ -5731,27 +5732,17 @@ void items::whispering_eldritch_bow( special_effect_t& effect )
       if ( !rng().roll( effect.player->sim->bfa_opts.whispered_truths_offensive_chance ) )
         return;
 
-      std::set<cooldown_t*> down_cooldowns;
-      for ( cooldown_t* cd : cooldowns )
-      {
-        if ( cd->down() )
-        {
-          down_cooldowns.insert( cd );
-        }
-      }
-
+      const auto it = range::partition( cooldowns, &cooldown_t::down );
+      auto down_cooldowns = ::util::make_span( cooldowns ).subspan( 0, it - cooldowns.begin() );
       if ( !down_cooldowns.empty() )
       {
-        auto it = down_cooldowns.begin();
-        std::advance( it, rng().range( down_cooldowns.size() ) );
-        cooldown_t* chosen = *it;
+        cooldown_t* chosen = down_cooldowns[ rng().range( down_cooldowns.size() ) ];
         chosen->adjust( amount );
 
         if ( effect.player->sim->debug )
         {
-          effect.player->sim->out_debug.printf( "%s of %s adjusted cooldown for %s, remains=%.3f", effect.item->name(),
-                                                effect.player->name(), chosen->name(),
-                                                chosen->remains().total_seconds() );
+          effect.player->sim->out_debug.print( "{} of {} adjusted cooldown for {}, remains={}", effect.item->name(),
+                                               effect.player->name(), chosen->name(), chosen->remains() );
         }
       }
     }

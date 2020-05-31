@@ -477,6 +477,15 @@ std::pair<iterator_t<Range>, iterator_t<Range>>
   return { b, upper_bound( r, value, comp, proj ) };
 }
 
+template <typename Range, typename Pred, typename Proj = identity>
+iterator_t<Range> partition( Range& r, Pred pred_, Proj proj = Proj{} )
+{
+  auto pred = [&pred_, &proj]( auto&& v ) -> bool {
+    return range::invoke( pred_, range::invoke( proj, std::forward<decltype(v)>( v ) ) );
+  };
+  return std::partition( range::begin( r ), range::end( r ), pred );
+}
+
 }  // namespace range ========================================================
 
 // Adapter for container of owned pointers; automatically deletes the
