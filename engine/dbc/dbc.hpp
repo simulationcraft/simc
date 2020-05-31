@@ -1652,9 +1652,9 @@ public:
   unsigned parent_item( unsigned ) const;
 
   // Labeled spells
-  std::vector<const spell_data_t*> spells_by_label( size_t label ) const;
+  util::span<const spell_data_t* const> spells_by_label( size_t label ) const;
   // Categorized spells
-  std::vector<const spell_data_t*> spells_by_category( unsigned category ) const;
+  util::span<const spell_data_t* const> spells_by_category( unsigned category ) const;
 };
 
 namespace dbc
