@@ -9781,7 +9781,6 @@ void monk_t::apl_combat_windwalker()
 
   def->add_action( "auto_attack" );
   def->add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
-  def->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
 
   if ( sim->allow_potions )
   {
@@ -9879,9 +9878,11 @@ void monk_t::apl_combat_windwalker()
         cd_serenity->add_action( "use_item,name=" + items[ i ].name_str + ",if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<25" );
       else if ( items[ i ].name_str == "gladiators_medallion" )
         cd_serenity->add_action( "use_item,name=" + items[ i ].name_str + ",if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<20" );
+      else if ( items[ i ].name_str == "gladiators_emblem" )
+        cd_serenity->add_action( "use_item,name=" + items[ i ].name_str );
     }
   }
-
+  cd_serenity->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
   cd_serenity->add_action( this, "Touch of Death", "if=!variable.hold_tod" );
 
   // Serenity On-use w/ Pocketsized Computation Device
@@ -9984,11 +9985,14 @@ void monk_t::apl_combat_windwalker()
         cd_sef->add_action( "use_item,name=" + items[ i ].name_str +
                                  ",if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable."
                                  "hold_tod|target.time_to_die<20" );
+      else if ( items[ i ].name_str == "gladiators_emblem" )
+        cd_sef->add_action( "use_item,name=" + items[ i ].name_str );
     }
   }
 
   cd_sef->add_action( this, "Touch of Death", "if=!variable.hold_tod&(!equipped.cyclotronic_blast|cooldown.cyclotronic_blast.remains<=1)&(chi>1|energy<40)" );
-  cd_sef->add_action( this, "Storm, Earth, and Fire", ",if=cooldown.storm_earth_and_fire.charges=2|dot.touch_of_death.remains|target.time_to_die<20|(buff.worldvein_resonance.remains>10|cooldown.worldvein_resonance.remains>cooldown.storm_earth_and_fire.full_recharge_time|!essence.worldvein_resonance.major)&cooldown.touch_of_death.remains>cooldown.storm_earth_and_fire.full_recharge_time&cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=13" );
+  cd_sef->add_action( this, "Storm, Earth, and Fire", ",if=cooldown.storm_earth_and_fire.charges=2|dot.touch_of_death.remains|target.time_to_die<20|(buff.worldvein_resonance.remains>10|cooldown.worldvein_resonance.remains>cooldown.storm_earth_and_fire.full_recharge_time|!essence.worldvein_resonance.major)&(cooldown.touch_of_death.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_tod&!equipped.dribbling_inkpod)&cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=13" );
+  cd_sef->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
   cd_sef->add_action( "blood_of_the_enemy,if=cooldown.touch_of_death.remains>45|variable.hold_tod&cooldown.fists_of_fury.remains<2|target.time_to_die<12|target.time_to_die>100&target.time_to_die<110&(cooldown.fists_of_fury.remains<3|cooldown.whirling_dragon_punch.remains<5|cooldown.rising_sun_kick.remains<5)" );
   cd_sef->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&((cooldown.concentrated_flame.remains<=cooldown.touch_of_death.remains+1|variable.hold_tod)&(!talent.whirling_dragon_punch.enabled|cooldown.whirling_dragon_punch.remains)&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&buff.storm_earth_and_fire.down|dot.touch_of_death.remains)|target.time_to_die<8" );
 
