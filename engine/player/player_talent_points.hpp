@@ -12,6 +12,7 @@
 #include <vector>
 #include <functional>
 #include <string>
+#include <ostream>
 
 struct spell_data_t;
 
