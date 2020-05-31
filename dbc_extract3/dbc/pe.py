@@ -337,8 +337,8 @@ class PeStructParser:
         formats = header.formats(self)
         elements = header.elements(self)
 
-        logging.info('{}.db2: fields={}, record_size={}, table_hash={:#08x}, layout_hash={:#08x}'.format(
-            name, header.fields, header.size, header.table_hash, header.layout_hash))
+        logging.info('{}.db2: fields={}, record_size={}, file_data_id={}, table_hash={:#08x}, layout_hash={:#08x}'.format(
+            name, header.fields, header.size, header.file_data_id, header.table_hash, header.layout_hash))
 
         fields_str = []
         offsets_str = []

@@ -627,6 +627,7 @@
 1758037, DBFilesClient\SceneScriptText.db2
 1797864, DBFilesClient\ZoneStory.db2
 1802988, DBFilesClient\BattlePetDisplayOverride.db2
+1805807, DBFilesClient\ItemBonusList.db2
 1815417, DBFilesClient\CharacterServiceInfo.db2
 1846040, DBFilesClient\AzeritePowerSetMember.db2
 1846043, DBFilesClient\AzeriteTierUnlock.db2
@@ -727,4 +728,13 @@
 2960257, DBFilesClient\ContentTuningXExpectedStatMod.db2
 2965645, DBFilesClient\ChallengeModeItemBonusOverride.db2
 2966426, DBFilesClient\PvpSeason.db2
+3055899, DBFilesClient\SpellScript.db2
+3055901, DBFilesClient\SpellScriptText.db2
+3384973, DBFilesClient\Covenant.db2
+3488583, DBFilesClient\SoulBind.db2
+3490472, DBFilesClient\SoulBindUiDisplayInfo.db2
+3500241, DBFilesClient\RuneforgeLegendaryAbility.db2
+3502042, DBFilesClient\UiCovenantAbility.db2
+3507821, DBFilesClient\ChrRaceRacialAbility.db2
+3509132, DBFilesClient\UiCovenantDisplayInfo.db2
 
