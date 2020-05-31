@@ -436,18 +436,12 @@ std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family
   if ( family == 0 )
     return affected_spells;
 
-  if ( ptr && family >= ptr_class_family_index.size() )
-    return affected_spells;
-  else if ( family >= class_family_index.size() )
+  auto index = ptr ? util::make_span( ptr_class_family_index ) : util::make_span( class_family_index );
+  if ( family >= index.size() )
     return affected_spells;
 
-  const std::vector< const spell_data_t* >* l = &( class_family_index[ family ] );
-  if ( ptr )
-    l = &( ptr_class_family_index[ family ] );
-
-  for (auto s : *l)
+  for ( auto s : index[ family ] )
   {
-    
     for ( unsigned int j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
     {
       if ( effect -> class_flag(j ) && s -> class_flag( j ) )
@@ -537,19 +531,12 @@ std::vector< const spelleffect_data_t* > dbc_t::effects_affecting_spell( const s
   if ( spell -> class_family() == 0 )
     return affecting_effects;
 
-  if ( ptr && spell -> class_family() >= ptr_class_family_index.size() )
-    return affecting_effects;
-  else if ( spell -> class_family() >= class_family_index.size() )
+  auto index = ptr ? util::make_span( ptr_class_family_index ) : util::make_span( class_family_index );
+  if ( spell -> class_family() >= index.size() )
     return affecting_effects;
 
-  const std::vector< const spell_data_t* >* l = &( class_family_index[ spell -> class_family() ] );
-  if ( ptr )
-    l = &( ptr_class_family_index[ spell -> class_family() ] );
-
-  for (auto s : *l)
+  for ( auto s : index[ spell -> class_family() ] )
   {
-    
-
     // Skip itself
     if ( s -> id() == spell -> id() )
       continue;
