@@ -145,7 +145,7 @@ public:
   }
 };
 
-template <typename T, typename Filter, typename KeyPolicy = id_function_policy_t>
+template <typename T, typename Filter>
 class filtered_dbc_index_t
 {
 #if SC_USE_PTR == 0
