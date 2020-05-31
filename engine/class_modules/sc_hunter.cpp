@@ -3878,7 +3878,7 @@ struct dire_beast_t: public hunter_spell_t
     int base_attacks_per_summon;
     std::tie( summon_duration, base_attacks_per_summon ) = pets::dire_beast_duration( p() );
 
-    sim -> print_debug( "Dire Beast summoned with {:4.1f} autoattacks", base_attacks_per_summon );
+    sim -> print_debug( "Dire Beast summoned with {} autoattacks", base_attacks_per_summon );
 
     p() -> pets.dire_beast -> summon( summon_duration );
   }
