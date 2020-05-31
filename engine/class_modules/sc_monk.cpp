@@ -9882,8 +9882,9 @@ void monk_t::apl_combat_windwalker()
         cd_serenity->add_action( "use_item,name=" + items[ i ].name_str );
     }
   }
-  cd_serenity->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
+	
   cd_serenity->add_action( this, "Touch of Death", "if=!variable.hold_tod" );
+  cd_serenity->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
 
   // Serenity On-use w/ Pocketsized Computation Device
   for ( size_t i = 0; i < items.size(); i++ )
