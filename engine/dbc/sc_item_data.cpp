@@ -42,15 +42,10 @@ namespace {
     }
   };
 
-  typedef dbc::filtered_dbc_index_t<item_data_t, potion_filter_t, dbc::id_member_policy_t> potion_data_t;
-  typedef dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FLASK>, dbc::id_member_policy_t> flask_data_t;
-  typedef dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FOOD>, dbc::id_member_policy_t> food_data_t;
-
-  potion_data_t potion_data_index;
-  flask_data_t flask_data_index;
-  food_data_t food_data_index;
-
-  dbc::filtered_dbc_index_t<item_data_t, gem_filter_t, dbc::id_member_policy_t> gem_index;
+  dbc::filtered_dbc_index_t<item_data_t, potion_filter_t> potion_data_index;
+  dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FLASK>> flask_data_index;
+  dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FOOD>> food_data_index;
+  dbc::filtered_dbc_index_t<item_data_t, gem_filter_t> gem_index;
 }
 
 /* Initialize item database
