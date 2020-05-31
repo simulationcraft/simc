@@ -7,7 +7,8 @@ on:
     branches: [ bfa-dev, shadowlands ]
     paths-ignore:
       - 'SpellDataDump/**'
-      - 'dbc_extract/**'
+      - 'dbc_extract3/**'
+      - 'casc_extract/**'
 
 env:
   SIMC_PROFILE: profiles/T25_Raid.simc
