@@ -9907,10 +9907,10 @@ void monk_t::apl_combat_windwalker()
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       name_str = items[ i ].name_str;
-      if ( name_str != "azsharas_font_of_power" || name_str != "lustrous_golden_plumage" ||
-           name_str != "gladiators_medallion" || name_str != "pocketsized_computation_device" ||
-           name_str != "remote_guidance_device" || name_str != "gladiators_badge" || name_str != "galecallers_boon" ||
-           name_str != "writhing_segment_of_drestagath" || name_str != "ashvanes_razor_coral" )
+      if ( name_str != "azsharas_font_of_power" && name_str != "lustrous_golden_plumage" &&
+           name_str != "gladiators_medallion" && name_str != "pocketsized_computation_device" &&
+           name_str != "remote_guidance_device" && name_str != "gladiators_badge" && name_str != "galecallers_boon" &&
+           name_str != "writhing_segment_of_drestagath" && name_str != "ashvanes_razor_coral" )
       {
           cd_serenity->add_action( "use_item,name=" + name_str );
       }
@@ -10003,10 +10003,10 @@ void monk_t::apl_combat_windwalker()
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       name_str = items[ i ].name_str;
-      if ( name_str != "azsharas_font_of_power" || name_str != "lustrous_golden_plumage" ||
-           name_str != "gladiators_medallion" || name_str != "pocketsized_computation_device" ||
-           name_str != "remote_guidance_device" || name_str != "gladiators_badge" || name_str != "galecallers_boon" ||
-           name_str != "writhing_segment_of_drestagath" || name_str != "ashvanes_razor_coral" )
+      if ( name_str != "azsharas_font_of_power" && name_str != "lustrous_golden_plumage" &&
+           name_str != "gladiators_medallion" && name_str != "pocketsized_computation_device" &&
+           name_str != "remote_guidance_device" && name_str != "gladiators_badge" && name_str != "galecallers_boon" &&
+           name_str != "writhing_segment_of_drestagath" && name_str != "ashvanes_razor_coral" )
       {
         cd_sef->add_action( "use_item,name=" + name_str );
       }
