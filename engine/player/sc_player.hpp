@@ -666,7 +666,6 @@ public:
   void parse_talents_numbers( const std::string& talent_string );
   bool parse_talents_armory( const std::string& talent_string );
   bool parse_talents_armory2( const std::string& talent_string );
-  bool parse_talents_wowhead( const std::string& talent_string );
 
   bool is_moving() const;
   double composite_block_dr( double extra_block ) const;
