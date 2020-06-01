@@ -156,18 +156,17 @@ constexpr double m_pi = 3.14159265358979323846;
 // Simc related value definitions
 // ==========================================================================
 
-#define SC_MAJOR_VERSION "830"
-#define SC_MINOR_VERSION "02"
+#define SC_MAJOR_VERSION "901"
+#define SC_MINOR_VERSION "01"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
-#define SC_BETA 0
+#define SC_BETA 1
 #if SC_BETA
-#define SC_BETA_STR "bfa"
+#define SC_BETA_STR "shadowlands"
 #endif
 
 constexpr int MAX_LEVEL = 120;
 constexpr int MAX_SCALING_LEVEL = 120;
 constexpr int MAX_ILEVEL = 1300;
 constexpr int MAX_CLASS = 13;
-
 
 #endif // CONFIG_H
