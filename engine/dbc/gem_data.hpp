@@ -14,7 +14,6 @@ struct gem_property_data_t
   unsigned id;
   unsigned enchant_id;
   unsigned color;
-  unsigned min_ilevel;
 
   static const gem_property_data_t& find( unsigned id, bool ptr )
   { return dbc::find<gem_property_data_t>( id, ptr, &gem_property_data_t::id ); }

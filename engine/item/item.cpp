@@ -1474,7 +1474,7 @@ void item_t::decode_stats()
   // wrong.
   if ( ! has_scaling_stat_bonus_id() )
   {
-    item_database::apply_item_scaling( *this, parsed.data.id_scaling_distribution, player -> level() );
+    item_database::apply_item_scaling( *this, parsed.data.id_curve, player -> level() );
   }
 
   for ( size_t i = 0; i < range::size( parsed.data.stat_type_e ); i++ )

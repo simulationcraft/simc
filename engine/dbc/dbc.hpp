@@ -1619,10 +1619,6 @@ public:
   std::vector<const spelleffect_data_t*> effect_labels_affecting_label( short label ) const;
   std::vector<const spelleffect_data_t*> effect_categories_affecting_spell( const spell_data_t* ) const;
 
-  // Heirloomage and misc scaling hijinxery
-  const scaling_stat_distribution_t& scaling_stat_distribution( unsigned id ) const
-  { return scaling_stat_distribution_t::find( id, ptr ); }
-
   std::pair<const curve_point_t*, const curve_point_t*> curve_point( unsigned curve_id, double value ) const;
 
   // Artifact stuff

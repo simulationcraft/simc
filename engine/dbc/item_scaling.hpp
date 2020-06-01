@@ -9,28 +9,14 @@
 
 #include "client_data.hpp"
 
-struct scaling_stat_distribution_t
-{
-  unsigned id;
-  unsigned min_level;
-  unsigned max_level;
-  unsigned curve_id;
-
-  static const scaling_stat_distribution_t& find( unsigned id, bool ptr )
-  { return dbc::find<scaling_stat_distribution_t>( id, ptr, &scaling_stat_distribution_t::id ); }
-
-  static const scaling_stat_distribution_t& nil()
-  { return dbc::nil<scaling_stat_distribution_t>(); }
-
-  static util::span<const scaling_stat_distribution_t> data( bool ptr );
-};
-
 struct curve_point_t
 {
   unsigned curve_id;
   unsigned index;
-  double   val1;
-  double   val2;
+  double   primary1;
+  double   primary2;
+  double   secondary1;
+  double   secondary2;
 
   static util::span<const curve_point_t> find( unsigned id, bool ptr );
 

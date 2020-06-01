@@ -73,12 +73,12 @@ std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsign
   for ( const auto& point : data )
   {
     assert( point.curve_id == curve_id );
-    if ( point.val1 <= value )
+    if ( point.primary1 <= value )
     {
       lower_bound = &( point );
     }
 
-    if ( point.val1 >= value )
+    if ( point.primary1 >= value )
     {
       upper_bound = &( point );
       break;
@@ -105,21 +105,21 @@ double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double p
 
   double scaled_result = 0;
   // Lands on a value, use data
-  if ( curve_data.first -> val1 == point_value )
+  if ( curve_data.first->primary1 == point_value )
   {
-    scaled_result = curve_data.first -> val2;
+    scaled_result = curve_data.first->primary2;
   }
   // Below lower bound, use lower bound value
-  else if ( curve_data.first -> val1 > point_value )
+  else if ( curve_data.first->primary1 > point_value )
   {
-    scaled_result = curve_data.first -> val2;
+    scaled_result = curve_data.first->primary2;
   }
   // Above upper bound, use upper bound value
-  else if ( curve_data.second -> val1 < point_value )
+  else if ( curve_data.second->primary1 < point_value )
   {
-    scaled_result = curve_data.second -> val2;
+    scaled_result = curve_data.second->primary2;
   }
-  else if ( curve_data.second -> val1 == point_value )
+  else if ( curve_data.second->primary1 == point_value )
   {
     // Should never happen
     assert( 0 );
@@ -127,8 +127,8 @@ double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double p
   else
   {
     // Linear interpolation
-    scaled_result = curve_data.first -> val2 + ( curve_data.second -> val2 - curve_data.first -> val2 ) *
-      ( point_value - curve_data.first -> val1 ) / ( curve_data.second -> val1 - curve_data.first -> val1 );
+    scaled_result = curve_data.first->primary2 + ( curve_data.second->primary2 - curve_data.first->primary2 ) *
+      ( point_value - curve_data.first->primary1 ) / ( curve_data.second->primary1 - curve_data.first->primary1 );
   }
 
   return scaled_result;
@@ -137,32 +137,23 @@ double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double p
 // TODO: Needs some way to figure what value to pass, for now presume min of player level, max
 // level. Also presumes we are only scaling itemlevel for now, this is almost certainly not 100%
 // true in all cases for the use of curve data.
-void item_database::apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level )
+void item_database::apply_item_scaling( item_t& item, unsigned curve_id, unsigned player_level )
 {
   // No scaling needed
-  if ( scaling_id == 0 )
+  if ( curve_id == 0 )
   {
     return;
   }
 
-  const auto& data = item.player->dbc->scaling_stat_distribution( scaling_id );
-  // Unable to find the scaling stat distribution
-  if ( data.id == 0 )
-  {
-    throw std::invalid_argument(fmt::format("Unable to find scaling information for {} scaling id {}.",
-        item.name(), item.parsed.data.id_scaling_distribution));
-  }
-
-  // Player level lower than item minimum scaling level, shouldnt happen but let item init go
-  // through
-  if ( player_level < data.min_level )
+  auto curve_data = curve_point_t::find( curve_id, item.player->dbc->ptr );
+  if ( curve_data.size() == 0 )
   {
     return;
   }
 
-  unsigned base_value = std::min( player_level, data.max_level );
+  unsigned base_value = std::min( player_level, as<unsigned>( curve_data.back().primary1 ) );
 
-  double scaled_result = curve_point_value( *item.player->dbc, data.curve_id, base_value );
+  double scaled_result = curve_point_value( *item.player->dbc, curve_id, base_value );
 
   if ( item.sim -> debug )
   {
@@ -291,7 +282,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // ITEM_BONUS_SCALING_2).
     case ITEM_BONUS_SCALING:
     {
-      item_database::apply_item_scaling( item, entry.value_1, item.player -> level() );
+      item_database::apply_item_scaling( item, entry.value_4, item.player -> level() );
       break;
     }
     // This bonus type uses a curve point to scale the base item level, however it seems to also
@@ -305,7 +296,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     case ITEM_BONUS_SCALING_2:
       if ( item.parsed.drop_level > 0 )
       {
-        item_database::apply_item_scaling( item, entry.value_1, item.parsed.drop_level );
+        item_database::apply_item_scaling( item, entry.value_4, item.parsed.drop_level );
       }
       break;
     case ITEM_BONUS_ADD_ITEM_EFFECT:
@@ -1063,16 +1054,22 @@ static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_s
 
     if ( entries[ i ].type == ITEM_BONUS_SCALING || entries[ i ].type == ITEM_BONUS_SCALING_2 )
     {
-      const auto& data = dbc.scaling_stat_distribution( entries[ i ].value_1 );
-      assert( data.id );
-      auto curve_data_min = dbc.curve_point( data.curve_id, data.min_level );
-      auto curve_data_max = dbc.curve_point( data.curve_id, data.max_level );
+      auto curve_data = curve_point_t::find( entries[ i ].value_4, dbc.ptr );
+      if ( curve_data.size() == 0 )
+      {
+        return std::pair<std::pair<int, double>, std::pair<int, double> >(
+            std::pair<int, double>( -1, 0 ),
+            std::pair<int, double>( -1, 0 ) );
+      }
+
+      auto curve_data_min = dbc.curve_point( entries[ i ].value_4, curve_data.front().primary1 );
+      auto curve_data_max = dbc.curve_point( entries[ i ].value_4, curve_data.back().primary2 );
       assert(curve_data_min.first);
       assert(curve_data_max.first);
 
       return std::pair<std::pair<int, double>, std::pair<int, double>>(
-          std::pair<int, double>( data.min_level, curve_data_min.first->val2 ),
-          std::pair<int, double>( data.max_level, curve_data_max.first->val2 ) );
+          std::pair<int, double>( as<int>( curve_data.front().primary1 ), curve_data_min.first->primary2 ),
+          std::pair<int, double>( as<int>( curve_data.back().primary1 ), curve_data_max.first->primary2 ) );
     }
   }
 

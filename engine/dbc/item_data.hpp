@@ -46,7 +46,7 @@ struct item_data_t {
   int      gem_properties;
   int      id_socket_bonus;
   int      id_set;
-  int      id_scaling_distribution;
+  int      id_curve;
   unsigned id_artifact;
 
   bool is_armor()
