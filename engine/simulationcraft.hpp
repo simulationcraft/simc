@@ -85,7 +85,6 @@
 #include "report/sc_highchart.hpp"
 
 #include "sim/sc_profileset.hpp"
-#include "sim/x6_pantheon.hpp" // Legion-specific "pantheon trinket" system
 #include "sim/sc_option.hpp"
 #include "sim/artifact_power.hpp"
 #include "sim/raid_event.hpp"
