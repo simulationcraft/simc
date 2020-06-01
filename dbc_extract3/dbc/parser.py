@@ -25,7 +25,8 @@ class DBCParserBase:
                 sys.exit(1)
         else:
             self.file = fname
-            self.file.seek(0)
+            if self.file:
+                self.file.seek(0)
 
         # Data format storage
         self.fmt = dbc.fmt.DBFormat(options)
