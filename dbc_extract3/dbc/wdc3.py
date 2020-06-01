@@ -16,12 +16,9 @@ class WDC3Section(WDC2Section):
         )
 
     def set_data(self, data):
-        # Redo the fields
-        self.tact_key_id = data[0]
-        self.ptr_records = data[1]
-        self.total_records = data[2]
-        self.string_block_size = data[3]
-        # Note, used to be called (for us) "offset map offset" in WDC2
+        super().set_data(data)
+
+        # Reassign changed fields
         self.ptr_blocks = data[4]
         self.id_block_size = data[5]
         self.key_block_size = data[6]
