@@ -4285,8 +4285,7 @@ struct chained_overload_base_t : public elemental_overload_spell_t
 struct chain_lightning_overload_t : public chained_overload_base_t
 {
   chain_lightning_overload_t( shaman_t* p )
-    : chained_overload_base_t( p, "chain_lightning_overload", p->find_spell( 45297 ),
-                               p->find_spell( 190493 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
+    : chained_overload_base_t( p, "chain_lightning_overload", p->find_spell( 45297 ), 0 )
   {
     affected_by_master_of_the_elements = true;
   }
@@ -4305,8 +4304,7 @@ struct chain_lightning_overload_t : public chained_overload_base_t
 struct lava_beam_overload_t : public chained_overload_base_t
 {
   lava_beam_overload_t( shaman_t* p )
-    : chained_overload_base_t( p, "lava_beam_overload", p->find_spell( 114738 ),
-                               p->find_spell( 190493 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
+    : chained_overload_base_t( p, "lava_beam_overload", p->find_spell( 114738 ), 0 )
   {
   }
 };
@@ -4374,7 +4372,7 @@ struct chain_lightning_t : public chained_base_t
 {
   chain_lightning_t( shaman_t* player, const std::string& options_str )
     : chained_base_t( player, "chain_lightning", player->find_specialization_spell( "Chain Lightning" ),
-                      player->find_spell( 190493 )->effectN( 3 ).resource( RESOURCE_MAELSTROM ), options_str )
+                      0, options_str )
   {
     if ( player->mastery.elemental_overload->ok() )
     {
@@ -4500,8 +4498,6 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   lava_burst_overload_t( shaman_t* player )
     : elemental_overload_spell_t( player, "lava_burst_overload", player->find_spell( 77451 ) ), impact_flags()
   {
-    maelstrom_gain = player->find_spell( 190493 )->effectN( 5 ).resource( RESOURCE_MAELSTROM );
-
     spell_power_mod.direct = player->find_spell( 285466 )->effectN( 1 ).sp_coeff();
   }
 
@@ -4719,7 +4715,6 @@ struct lava_burst_t : public shaman_spell_t
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
       base_costs[ RESOURCE_MANA ] = 0;
-      maelstrom_gain              = player->find_spell( 190493 )->effectN( 2 ).resource( RESOURCE_MAELSTROM );
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -4883,7 +4878,6 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   lightning_bolt_overload_t( shaman_t* p )
     : elemental_overload_spell_t( p, "lightning_bolt_overload", p->find_spell( 45284 ) )
   {
-    maelstrom_gain                     = player->find_spell( 190493 )->effectN( 4 ).resource( RESOURCE_MAELSTROM );
     affected_by_master_of_the_elements = true;
   }
 
@@ -4919,12 +4913,11 @@ struct lightning_bolt_t : public shaman_spell_t
   double m_overcharge;
 
   lightning_bolt_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "lightning_bolt", player, player->find_specialization_spell( "Lightning Bolt" ), options_str ),
+    : shaman_spell_t( "lightning_bolt", player, player->find_class_spell( "Lightning Bolt" ), options_str ),
       m_overcharge( 0 )
   {
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
-      maelstrom_gain                     = player->find_spell( 190493 )->effectN( 1 ).resource( RESOURCE_MAELSTROM );
       affected_by_master_of_the_elements = true;
     }
 
@@ -5174,7 +5167,6 @@ struct icefury_overload_t : public elemental_overload_spell_t
 {
   icefury_overload_t( shaman_t* p ) : elemental_overload_spell_t( p, "icefury_overload", p->find_spell( 219271 ) )
   {
-    maelstrom_gain                     = player->find_spell( 190493 )->effectN( 8 ).resource( RESOURCE_MAELSTROM );
     affected_by_master_of_the_elements = true;
   }
 };
@@ -5184,7 +5176,6 @@ struct icefury_t : public shaman_spell_t
   icefury_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "icefury", player, player->talent.icefury, options_str )
   {
-    maelstrom_gain                     = player->find_spell( 190493 )->effectN( 7 ).resource( RESOURCE_MAELSTROM );
     affected_by_master_of_the_elements = true;
 
     if ( player->mastery.elemental_overload->ok() )
@@ -5729,11 +5720,6 @@ struct frost_shock_t : public shaman_spell_t
 
   void execute() override
   {
-    if ( p()->buff.icefury->up() )
-    {
-      maelstrom_gain = player->find_spell( 190493 )->effectN( 9 ).resource( RESOURCE_MAELSTROM );
-    }
-
     shaman_spell_t::execute();
 
     maelstrom_gain = 0.0;
@@ -7836,7 +7822,7 @@ void shaman_t::create_buffs()
 
   buff.icefury = make_buff( this, "icefury", talent.icefury )
                      ->set_cooldown( timespan_t::zero() )  // Handled by the action
-                     ->set_default_value( talent.icefury->effectN( 3 ).percent() );
+                     ->set_default_value( talent.icefury->effectN( 2 ).percent() );
 
   buff.earthen_rage = make_buff( this, "earthen_rage", find_spell( 170377 ) )
                           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
@@ -8314,7 +8300,7 @@ void shaman_t::init_action_list_elemental()
   funnel->add_action(
       this, "Earth Shock",
       "if=!buff.surge_of_power.up&talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|cooldown.lava_"
-      "burst.remains>0&maelstrom>=92+30*talent.call_the_thunder.enabled|(azerite.lava_shock.rank*buff.lava_shock.stack<"
+      "burst.remains>0|(azerite.lava_shock.rank*buff.lava_shock.stack<"
       "36)&buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)",
       "Cast Earth Shock with Master of the Elements talent but no active Surge of Power buff, "
       "and active Stormkeeper buff and Lava Burst coming off CD within the next GCD, and either active Master of the "
@@ -8324,7 +8310,7 @@ void shaman_t::init_action_list_elemental()
   funnel->add_action(
       this, "Earth Shock",
       "if=!talent.master_of_the_elements.enabled&!(azerite.igneous_potential.rank>2&buff.ascendance.up)&(buff."
-      "stormkeeper.up|maelstrom>=90+30*talent.call_the_thunder.enabled|!(cooldown.storm_elemental.remains>(cooldown."
+      "stormkeeper.up|!(cooldown.storm_elemental.remains>(cooldown."
       "storm_elemental.duration-30)&talent.storm_elemental.enabled)&expected_combat_length-time-cooldown.storm_"
       "elemental.remains-cooldown.storm_elemental.duration*floor((expected_combat_length-time-cooldown.storm_elemental."
       "remains)%cooldown.storm_elemental.duration)>=30*(1+(azerite.echo_of_the_elementals.rank>=2)))",
@@ -8462,13 +8448,13 @@ void shaman_t::init_action_list_elemental()
       "lava_shock.rank<1)&azerite.lava_shock.rank*buff.lava_shock.stack<(36+3*azerite.tectonic_thunder.rank*spell_"
       "targets.chain_lightning)&(!talent.surge_of_power.enabled|!dot.flame_shock.refreshable|cooldown.storm_elemental."
       "remains>(cooldown.storm_elemental.duration-30))&(!talent.master_of_the_elements.enabled|buff.master_of_the_"
-      "elements.up|cooldown.lava_burst.remains>0&maelstrom>=92+30*talent.call_the_thunder.enabled)",
+      "elements.up|cooldown.lava_burst.remains>0)",
       "Use Earthquake versus 2 targets, unless you have Lava Shock. Use Earthquake versus 1 target if you have "
       "Tectonic Thunder 3 times and NO Surge of Power enabled and NO Lava Shock." );
   single_target->add_action(
       this, "Earth Shock",
       "if=!buff.surge_of_power.up&talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|cooldown.lava_"
-      "burst.remains>0&maelstrom>=92+30*talent.call_the_thunder.enabled|spell_targets.chain_lightning<2&(azerite.lava_"
+      "burst.remains>0|spell_targets.chain_lightning<2&(azerite.lava_"
       "shock.rank*buff.lava_shock.stack<26)&buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)",
       "Cast Earth Shock with Master of the Elements talent but no active Surge of Power buff, and active Stormkeeper "
       "buff and Lava Burst coming off CD within the next GCD, and either active Master of the Elements buff, or no "
@@ -8476,7 +8462,7 @@ void shaman_t::init_action_list_elemental()
   single_target->add_action(
       this, "Earth Shock",
       "if=!talent.master_of_the_elements.enabled&!(azerite.igneous_potential.rank>2&buff.ascendance.up)&(buff."
-      "stormkeeper.up|maelstrom>=90+30*talent.call_the_thunder.enabled|!(cooldown.storm_elemental.remains>cooldown."
+      "stormkeeper.up|!(cooldown.storm_elemental.remains>cooldown."
       "storm_elemental.duration&talent.storm_elemental.enabled)&expected_combat_length-time-cooldown.storm_elemental."
       "remains-cooldown.storm_elemental.duration*floor((expected_combat_length-time-cooldown.storm_elemental.remains)%"
       "cooldown.storm_elemental.duration)>=30*(1+(azerite.echo_of_the_elementals.rank>=2)))",
@@ -9778,13 +9764,6 @@ struct shaman_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Shaman", "2019-01-07",
-                             "Incorrect Maelstrom generation value for Chain Lightning Overloads.",
-                             723964 )  // spell 190493
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 2 )
-        .verification_value( 3 );
   }
 
   void combat_begin( sim_t* ) const override
