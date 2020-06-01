@@ -436,6 +436,11 @@ class SpecializationEnumGenerator(DataGenerator):
         spec_to_idx_map = [ ]
         max_specialization = 0
         for spec_id, spec_data in self._chrspecialization_db.items():
+            # Ignore "Initial" specializations for now
+            # TODO: Revisit
+            if spec_data.name == 'Initial':
+                continue
+
             if spec_data.class_id > 0:
                 spec_name = '%s_%s' % (
                     DataGenerator._class_names[spec_data.class_id].upper().replace(" ", "_"),
@@ -545,6 +550,9 @@ class SpecializationListGenerator(DataGenerator):
 
         max_specialization = 0
         for spec_id, spec_data in self._chrspecialization_db.items():
+            if spec_data.name == 'Initial':
+                continue
+
             if spec_data.class_id > 0:
                 spec_name = '%s_%s' % (
                     DataGenerator._class_names[spec_data.class_id].upper().replace(" ", "_"),
@@ -923,7 +931,7 @@ class ItemDataGenerator(DataGenerator):
             fields += [ '{ %s }' % ', '.join(cooldown_group_duration) ]
 
             fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
-            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'scale_stat_dist', 'id_artifact' )
+            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
 
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
@@ -2261,6 +2269,9 @@ class SpellDataGenerator(DataGenerator):
             if spec_data.id == 0:
                 continue
 
+            if spec_data.name == 'Initial':
+                continue
+
             spell_id = spec_spell_data.spell_id
             spell = self._spellname_db[spell_id]
             if not spell.id:
@@ -3085,6 +3096,9 @@ class MasteryAbilityGenerator(DataGenerator):
     def filter(self):
         ids = {}
         for k, v in self._chrspecialization_db.items():
+            if v.name == 'Initial':
+                continue
+
             if v.class_id == 0:
                 continue
 
@@ -3738,7 +3752,7 @@ class GemPropertyDataGenerator(DataGenerator):
                 length = len(data))
 
         for entry in data:
-            self.output_record(entry.field('id', 'id_enchant', 'color', 'min_ilevel'),
+            self.output_record(entry.field('id', 'id_enchant', 'color'),
                     comment = entry.ref('id_enchant').id and entry.ref('id_enchant').desc or '')
 
         self.output_footer()
@@ -3752,23 +3766,12 @@ class ItemBonusDataGenerator(DataGenerator):
                 length = len(self.db('ItemBonus')))
 
         for id, data in sorted(self.db('ItemBonus').items(), key = lambda v: (v[1].id_node, v[1].id)):
-            self.output_record(data.field('id', 'id_node', 'type', 'val_1', 'val_2', 'index'))
+            self.output_record(data.field('id', 'id_node', 'type', 'val_1', 'val_2', 'val_3', 'val_4', 'index'))
 
         self.output_footer()
 
 class ScalingStatDataGenerator(DataGenerator):
     def generate(self, data = None):
-        self.output_header(
-                header = 'Scaling stat distributions',
-                type = 'scaling_stat_distribution_t',
-                array = 'scaling_stat_distribution',
-                length = len(self.db('ScalingStatDistribution')))
-
-        for id, data in sorted(self.db('ScalingStatDistribution').items()):
-            self.output_record(data.field('id', 'min_level', 'max_level', 'id_curve' ))
-
-        self.output_footer()
-
         self.output_header(
                 header = 'Curve points data',
                 type = 'curve_point_t',
@@ -3776,7 +3779,7 @@ class ScalingStatDataGenerator(DataGenerator):
                 length = len(self.db('CurvePoint')))
 
         for id, data in sorted(self.db('CurvePoint').items(), key = lambda k: (k[1].id_distribution, k[1].curve_index)):
-            self.output_record(data.field('id_distribution', 'curve_index', 'val_1', 'val_2' ))
+            self.output_record(data.field('id_distribution', 'curve_index', 'val_1', 'val_2', 'level_1', 'level_2' ))
 
         self.output_footer()
 

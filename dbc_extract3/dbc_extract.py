@@ -54,7 +54,7 @@ parser.add_argument("--prefix",      dest = "prefix",       default = '',
                     help = "Data structure prefix string")
 parser.add_argument("--suffix",      dest = "suffix",       default = '',
                     help = "Data structure suffix string")
-parser.add_argument("--min-ilvl",    dest = "min_ilevel",   default = 90, type = int,
+parser.add_argument("--min-ilvl",    dest = "min_ilevel",   default = 33, type = int,
                     help = "Minimum inclusive ilevel for item-related extraction")
 parser.add_argument("--max-ilvl",    dest = "max_ilevel",   default = 1300, type = int,
                     help = "Maximum inclusive ilevel for item-related extraction")
