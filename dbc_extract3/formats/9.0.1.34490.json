@@ -957,10 +957,10 @@
     "parent": "SpellName",
     "fields": [
       { "data_type": "B", "field": "unk_1" },
-      { "data_type": "h", "field": "base_level" },
-      { "data_type": "B", "field": "max_level" },
-      { "data_type": "i", "field": "spell_level" },
-      { "data_type": "i", "field": "req_max_level" }
+      { "data_type": "h", "field": "max_level" },
+      { "data_type": "B", "field": "req_max_level" },
+      { "data_type": "i", "field": "base_level" },
+      { "data_type": "i", "field": "spell_level" }
     ]
   },
   "SpellMechanic": {
