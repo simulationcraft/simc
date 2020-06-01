@@ -1,6 +1,7 @@
-// Item effects, wow build 8.3.0.34220
-static const std::array<item_effect_t, 204> __item_effect_data { {
+// Item effects, wow build 9.0.1.34490
+static const std::array<item_effect_t, 233> __item_effect_data { {
   {    420,  13518,   0,   2,     -1,    0,     -1 }, // Poison
+  {  30489, 207438,   0,   1,     -1,    0,     -1 }, // Aggramar's Stride
   { 116155, 315277,   2,   1,     -1,    0,     -1 }, // Strikethrough
   { 116156, 315281,   3,   1,     -1,    0,     -1 }, // Strikethrough
   { 116157, 315282,   4,   1,     -1,    0,     -1 }, // Strikethrough
@@ -204,5 +205,33 @@ static const std::array<item_effect_t, 204> __item_effect_data { {
   { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
   { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
   { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
+  { 117368, 324375,   0,   1,     -1,    0,     -1 }, // Alchemical Longevity
+  { 117369, 324376,   0,   1,     -1,    0,     -1 }, // Culinary Longevity
+  { 117575, 327508,   0,   1,     -1,    0,     -1 }, // Slick Ice
+  { 117914, 327284,   0,   1,     -1,    0,     -1 }, // Cold Front
+  { 117915, 327364,   0,   1,     -1,    0,     -1 }, // Freezing Winds
+  { 117916, 327492,   0,   1,     -1,    0,     -1 }, // Glacial Fragments
+  { 117917, 327489,   0,   1,     -1,    0,     -1 }, // Expanded Potential
+  { 117918, 327365,   0,   1,     -1,    0,     -1 }, // Disciplinary Command
+  { 117919, 327273,   0,   1,     -1,    0,     -1 }, // Elemental Redirection
+  { 117920, 327351,   0,   1,     -1,    0,     -1 }, // Temporal Warp
+  { 117932, 329049,   0,   1,     -1,    0,     -1 }, // Luxurious Feather
+  { 117933, 329058,   0,   1,     -1,    0,     -1 }, // Shadowy Rabbit's Paw
+  { 117945, 329169,   0,   1,     -1,    0,     -1 }, // Hydrodynamic Accelerator
+  { 125523, 330767,   2,   1,     -1,    0,     -1 }, // Unbound Changeling
+  { 125525, 330739,   2,   1,     -1,    0,     -1 }, // Unbound Changeling
+  { 125526, 330740,   2,   1,     -1,    0,     -1 }, // Unbound Changeling
+  { 125527, 330741,   2,   1,     -1,    0,     -1 }, // Unbound Changeling
+  { 125657, 332299,   2,   0,     -1,    0,     -1 }, // Mistcaller Ocarina
+  { 125658, 332300,   2,   0,     -1,    0,     -1 }, // Mistcaller Ocarina
+  { 125659, 332301,   2,   0,     -1,    0,     -1 }, // Mistcaller Ocarina
+  { 125660, 330067,   2,   0,     -1,    0,     -1 }, // Mistcaller Ocarina
+  { 125672, 332618,   0,   1,     -1,    0,     -1 }, // Reinforced Girdle
+  { 125673, 332684,   0,   1,     -1,    0,     -1 }, // Craftman's Pouch
+  { 125679, 332769,   0,   1,     -1,    0,     -1 }, // Arcane Infinity
+  { 125682, 332892,   0,   1,     -1,    0,     -1 }, // Arcane Bombardment
+  { 125683, 332928,   0,   1,     -1,    0,     -1 }, // Siphon Storm
+  { 125684, 332950,   0,   1,     -1,    0,     -1 }, // Fire Proc (DNT)
+  { 125685, 332979,   0,   1,     -1,    0,     -1 }, // Necrostatic Micro Capacitor
 } };
 

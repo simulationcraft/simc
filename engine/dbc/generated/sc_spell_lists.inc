@@ -1,6 +1,6 @@
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 8.3.0.34220
+// Class mastery abilities, wow build 9.0.1.34490
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -200,7 +200,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
   {
     // Masteries for Balance specialization
     {
-      77492, // Mastery: Starlight
+     326085, // Mastery: Total Eclipse
     },
     // Masteries for Feral specialization
     {
@@ -239,7 +239,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (33)
 #endif
 
-// Racial abilities, wow build 8.3.0.34220
+// Racial abilities, wow build 9.0.1.34490
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
