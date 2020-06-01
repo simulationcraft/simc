@@ -7,6 +7,7 @@
 
 #include "config.hpp"
 #include "util/generic.hpp"
+#include "util/span.hpp"
 #include "sc_enums.hpp"
 #include <array>
 #include <vector>
@@ -31,13 +32,15 @@ public:
   int choice( int row ) const
   {
     row_check( row );
-    return choices[ row ];
+    return _choices[ row ];
   }
+
+  util::span<const int> choices() const;
 
   void clear( int row )
   {
     row_check( row );
-    choices[ row ] = -1;
+    _choices[ row ] = -1;
   }
 
   bool has_row_col( int row, int col ) const
@@ -46,7 +49,7 @@ public:
   void select_row_col( int row, int col )
   {
     row_col_check( row, col );
-    choices[ row ] = col;
+    _choices[ row ] = col;
   }
 
   void clear();
@@ -54,15 +57,12 @@ public:
 
   bool validate( const spell_data_t* spell, int row, int col ) const;
 
-  friend std::ostream& operator << ( std::ostream& os, const player_talent_points_t& tp )
-  { os << tp.to_string(); return os; }
-
   void register_validity_fn( const validity_fn_t& fn )
-  { validity_fns.push_back( fn ); }
+  { _validity_fns.push_back( fn ); }
 
 private:
-  std::array<int, MAX_TALENT_ROWS> choices;
-  std::vector<validity_fn_t> validity_fns;
+  std::array<int, MAX_TALENT_ROWS> _choices;
+  std::vector<validity_fn_t> _validity_fns;
 
   static void row_check( int row )
   { assert( row >= 0 && row < MAX_TALENT_ROWS ); ( void )row; }

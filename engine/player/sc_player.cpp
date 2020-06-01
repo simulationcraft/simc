@@ -12149,29 +12149,6 @@ std::ostream& player_collected_data_t::data_str( std::ostream& s ) const
   return s;
 }
 
-void player_talent_points_t::clear()
-{
-  range::fill( choices, -1 );
-}
-
-std::string player_talent_points_t::to_string() const
-{
-  std::ostringstream ss;
-
-  ss << "{ ";
-  for ( int i = 0; i < MAX_TALENT_ROWS; ++i )
-  {
-    if ( i )
-      ss << ", ";
-    ss << choice( i );
-  }
-  ss << " }";
-
-  return ss.str();
-}
-
-
-
 // Note, root call needs to set player_t::visited_apls_ to 0
 action_t* player_t::select_action( const action_priority_list_t& list,
                                    execute_type                  type,
