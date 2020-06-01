@@ -30,7 +30,7 @@ struct buff_expr_t : public expr_t
   target_specific_t<buff_t> specific_buff;
   double default_value;
 
-  buff_expr_t( const std::string& n, const std::string& bn, action_t* a, buff_t* b, double default_ = 0 )
+  buff_expr_t( util::string_view n, util::string_view bn, action_t* a, buff_t* b, double default_ = 0 )
     : expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false ),
       default_value( default_ )
   { }
@@ -278,7 +278,7 @@ struct expiration_delay_t : public buff_event_t
   }
 };
 
-std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std::string& type, action_t* action, buff_t* static_buff )
+std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, util::string_view type, action_t* action, buff_t* static_buff )
 {
   if ( !static_buff && !action )
   {
@@ -290,7 +290,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct duration_expr_t : public buff_expr_t
     {
-      duration_expr_t( std::string bn, action_t* a, buff_t* b ) :
+      duration_expr_t( util::string_view bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_duration", bn, a, b )
       { }
 
@@ -304,7 +304,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct remains_expr_t : public buff_expr_t
     {
-      remains_expr_t( std::string bn, action_t* a, buff_t* b ) :
+      remains_expr_t( util::string_view bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_remains", bn, a, b )
       { }
 
@@ -318,7 +318,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct cooldown_remains_expr_t : public buff_expr_t
     {
-      cooldown_remains_expr_t( std::string bn, action_t* a, buff_t* b )
+      cooldown_remains_expr_t( util::string_view bn, action_t* a, buff_t* b )
         : buff_expr_t( "buff_cooldown_remains", bn, a, b )
       { }
 
@@ -332,7 +332,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct up_expr_t : public buff_expr_t
     {
-      up_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_up", bn, a, b )
+      up_expr_t( util::string_view bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_up", bn, a, b )
       { }
 
       double evaluate() override
@@ -345,7 +345,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct down_expr_t : public buff_expr_t
     {
-      down_expr_t( std::string bn, action_t* a, buff_t* b ) :
+      down_expr_t( util::string_view bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_down", bn, a, b, 1.0 )
       { }
 
@@ -359,7 +359,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct stack_expr_t : public buff_expr_t
     {
-      stack_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_stack", bn, a, b )
+      stack_expr_t( util::string_view bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_stack", bn, a, b )
       { }
 
       double evaluate() override
@@ -372,7 +372,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct stack_pct_expr_t : public buff_expr_t
     {
-      stack_pct_expr_t( std::string bn, action_t* a, buff_t* b ) :
+      stack_pct_expr_t( util::string_view bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_stack_pct", bn, a, b )
       { }
 
@@ -386,7 +386,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct max_stack_expr_t : public buff_expr_t
     {
-      max_stack_expr_t( std::string bn, action_t* a, buff_t* b ) :
+      max_stack_expr_t( util::string_view bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_max_stack", bn, a, b, 1.0 )
       { }
 
@@ -400,7 +400,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct value_expr_t : public buff_expr_t
     {
-      value_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_value", bn, a, b )
+      value_expr_t( util::string_view bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_value", bn, a, b )
       { }
 
       double evaluate() override
@@ -413,7 +413,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct react_expr_t : public buff_expr_t
     {
-      react_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_react", bn, a, b )
+      react_expr_t( util::string_view bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_react", bn, a, b )
       {
         if ( b )
           b->reactable = true;
@@ -436,7 +436,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct react_pct_expr_t : public buff_expr_t
     {
-      react_pct_expr_t( std::string bn, action_t* a, buff_t* b ) :
+      react_pct_expr_t( util::string_view bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_react_pct", bn, a, b )
       {
         if ( b )
@@ -460,7 +460,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct cooldown_react_expr_t : public buff_expr_t
     {
-      cooldown_react_expr_t( std::string bn, action_t* a, buff_t* b ) :
+      cooldown_react_expr_t( util::string_view bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_cooldown_react", bn, a, b )
       { }
 
@@ -479,7 +479,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct last_trigger_expr_t : public buff_expr_t
     {
-      last_trigger_expr_t( std::string bn, action_t* a, buff_t* b ) :
+      last_trigger_expr_t( util::string_view bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_last_trigger", bn, a, b )
       { }
 
@@ -493,7 +493,7 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
   {
     struct last_expire_expr_t : public buff_expr_t
     {
-      last_expire_expr_t( std::string bn, action_t* a, buff_t* b ) :
+      last_expire_expr_t( util::string_view bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_last_expire", bn, a, b )
       { }
 
@@ -510,28 +510,28 @@ std::unique_ptr<expr_t> create_buff_expression( std::string buff_name, const std
 }  // namespace
 
 
-buff_t::buff_t(actor_pair_t q, const std::string& name)
+buff_t::buff_t(actor_pair_t q, util::string_view name)
   : buff_t(q, name, spell_data_t::nil(), nullptr)
 {
 
 }
 
-buff_t::buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell_data, const item_t* item )
+buff_t::buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell_data, const item_t* item )
   : buff_t( q.source->sim, q.target, q.source, name, spell_data, item )
 {
 }
 
-buff_t::buff_t(sim_t* sim, const std::string& name)
+buff_t::buff_t(sim_t* sim, util::string_view name)
   : buff_t(sim, nullptr, nullptr, name, spell_data_t::nil(), nullptr)
 {
 }
 
-buff_t::buff_t( sim_t* sim, const std::string& name, const spell_data_t* spell_data, const item_t* item )
+buff_t::buff_t( sim_t* sim, util::string_view name, const spell_data_t* spell_data, const item_t* item )
   : buff_t( sim, nullptr, nullptr, name, spell_data, item )
 {
 }
 
-buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, const std::string& name, const spell_data_t* spell_data, const item_t* item )
+buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_view name, const spell_data_t* spell_data, const item_t* item )
   : sim( sim ),
     player( target ),
     item( item ),
@@ -1980,7 +1980,7 @@ void buff_t::analyze()
   }
 }
 
-buff_t* buff_t::find( const std::vector<buff_t*>& buffs, const std::string& name_str, player_t* source )
+buff_t* buff_t::find( util::span<buff_t* const> buffs, util::string_view name_str, player_t* source )
 {
   for ( buff_t* buff : buffs )
   {
@@ -2015,7 +2015,7 @@ struct potion_spell_filter
 };
 }  // namespace
 
-static buff_t* find_potion_buff( const std::vector<buff_t*>& buffs, player_t* source )
+static buff_t* find_potion_buff( util::span<buff_t* const> buffs, player_t* source )
 {
   for ( auto b : buffs )
   {
@@ -2040,7 +2040,7 @@ static buff_t* find_potion_buff( const std::vector<buff_t*>& buffs, player_t* so
   return nullptr;
 }
 
-buff_t* buff_t::find_expressable( const std::vector<buff_t*>& buffs, const std::string& name, player_t* source )
+buff_t* buff_t::find_expressable( util::span<buff_t* const> buffs, util::string_view name, player_t* source )
 {
   if ( util::str_compare_ci( "potion", name ) )
     return find_potion_buff( buffs, source );
@@ -2062,12 +2062,12 @@ std::string buff_t::to_str() const
   return s.str();
 }
 
-std::unique_ptr<expr_t> buff_t::create_expression( std::string buff_name, const std::string& type, action_t& action )
+std::unique_ptr<expr_t> buff_t::create_expression( util::string_view buff_name, util::string_view type, action_t& action )
 {
   return create_buff_expression( buff_name, type, &action, nullptr );
 }
 
-std::unique_ptr<expr_t> buff_t::create_expression( std::string buff_name, const std::string& type, buff_t& static_buff )
+std::unique_ptr<expr_t> buff_t::create_expression( util::string_view buff_name, util::string_view type, buff_t& static_buff )
 {
   return create_buff_expression( buff_name, type, nullptr, &static_buff );
 }
@@ -2096,17 +2096,17 @@ void buff_t::invalidate_cache()
 
 #endif
 
-buff_t* buff_t::find( sim_t* s, const std::string& name )
+buff_t* buff_t::find( sim_t* s, util::string_view name )
 {
   return find( s->buff_list, name );
 }
 
-buff_t* buff_t::find( player_t* p, const std::string& name, player_t* source )
+buff_t* buff_t::find( player_t* p, util::string_view name, player_t* source )
 {
   return find( p->buff_list, name, source );
 }
 
-std::string buff_t::source_name() const
+util::string_view buff_t::source_name() const
 {
   if ( source )
     return source->name_str;
@@ -2212,15 +2212,15 @@ std::ostream& operator<<(std::ostream &os, const buff_t& b)
 // STAT_BUFF
 // ==========================================================================
 
-stat_buff_t::stat_buff_t(actor_pair_t q, const std::string& name)
+stat_buff_t::stat_buff_t(actor_pair_t q, util::string_view name)
   : stat_buff_t(q, name, spell_data_t::nil(), nullptr)
 {
 
 }
 
-stat_buff_t::stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
+stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const item_t* item )
   : buff_t( q, name, spell, item ),
-    stat_gain( player->get_gain( name + "_buff" ) ),  // append _buff for now to check usage
+    stat_gain( player->get_gain( std::string( name ) + "_buff" ) ),  // append _buff for now to check usage
     manual_stats_added( false )
 {
   bool has_ap = false;
@@ -2407,13 +2407,13 @@ void stat_buff_t::expire_override( int expiration_stacks, timespan_t remaining_d
 // COST_REDUCTION_BUFF
 // ==========================================================================
 
-cost_reduction_buff_t::cost_reduction_buff_t(actor_pair_t q, const std::string& name)
+cost_reduction_buff_t::cost_reduction_buff_t(actor_pair_t q, util::string_view name)
   : cost_reduction_buff_t(q, name, spell_data_t::nil(), nullptr)
 {
 
 }
 
-cost_reduction_buff_t::cost_reduction_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell,
+cost_reduction_buff_t::cost_reduction_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell,
                                               const item_t* item )
   : buff_t( q, name, spell, item ), amount(), school( SCHOOL_NONE )
 {
@@ -2482,13 +2482,13 @@ cost_reduction_buff_t* cost_reduction_buff_t::set_reduction( school_e school, do
   return this;
 }
 
-absorb_buff_t::absorb_buff_t(actor_pair_t q, const std::string& name)
+absorb_buff_t::absorb_buff_t(actor_pair_t q, util::string_view name)
   : absorb_buff_t(q, name, spell_data_t::nil(), nullptr)
 {
 
 }
 
-absorb_buff_t::absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
+absorb_buff_t::absorb_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const item_t* item )
   : buff_t( q, name, spell, item ),
     absorb_school( SCHOOL_CHAOS ),
     absorb_source(),
