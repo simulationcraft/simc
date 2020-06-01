@@ -95,6 +95,7 @@ player/spawner_base.hpp
 player/stats.hpp
 player/target_specific.hpp
 player/unique_gear.hpp
+player/unique_gear_shadowlands.hpp
 player/weapon.hpp
 report/charts.hpp
 report/color.hpp
@@ -240,6 +241,7 @@ player/sc_unique_gear.cpp
 player/spawner_base.cpp
 player/target_specific.cpp
 player/unique_gear_bfa.cpp
+player/unique_gear_shadowlands.cpp
 report/charts.cpp
 report/color.cpp
 report/decorators.cpp

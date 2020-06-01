@@ -97,6 +97,7 @@ SRC += \
     player$(PATHSEP)spawner_base.cpp \
     player$(PATHSEP)target_specific.cpp \
     player$(PATHSEP)unique_gear_bfa.cpp \
+    player$(PATHSEP)unique_gear_shadowlands.cpp \
     report$(PATHSEP)charts.cpp \
     report$(PATHSEP)color.cpp \
     report$(PATHSEP)decorators.cpp \

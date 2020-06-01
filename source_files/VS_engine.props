@@ -101,6 +101,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\stats.hpp" />
 		<ClInclude Include="..\engine\player\target_specific.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear.hpp" />
+		<ClInclude Include="..\engine\player\unique_gear_shadowlands.hpp" />
 		<ClInclude Include="..\engine\player\weapon.hpp" />
 		<ClInclude Include="..\engine\report\charts.hpp" />
 		<ClInclude Include="..\engine\report\color.hpp" />
@@ -435,6 +436,9 @@ To change the list of source files run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\player\unique_gear_bfa.cpp">
 			
+		</ClCompile>
+		<ClCompile Include="..\engine\player\unique_gear_shadowlands.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\report\charts.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>

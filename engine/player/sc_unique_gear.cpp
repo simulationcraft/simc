@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "unique_gear.hpp"
+#include "unique_gear_shadowlands.hpp"
 #include "simulationcraft.hpp"
 #include <cctype>
 
@@ -4694,8 +4695,8 @@ void unique_gear::register_special_effects()
   // Register azerite special effects
   azerite::register_azerite_powers();
 
-  // Register bfa special effects
   register_special_effects_bfa();
+  shadowlands::register_special_effects();
 
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */
@@ -4921,6 +4922,7 @@ void unique_gear::unregister_special_effects()
 void unique_gear::register_hotfixes()
 {
   register_hotfixes_bfa();
+  shadowlands::register_hotfixes();
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
@@ -4932,6 +4934,8 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
 
   register_target_data_initializers_bfa( sim );
   azerite::register_azerite_target_data_initializers( sim );
+  
+  shadowlands::register_target_data_initializers( *sim );
 }
 
 special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )
