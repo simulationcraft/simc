@@ -1181,7 +1181,7 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
 {
 #if SC_BETA
   fmt::print( os, "\n" );
-  auto beta_warnings = report::beta_warnings();
+  auto beta_warnings = report_helper::beta_warnings();
   for ( const auto& line : beta_warnings )
   {
     fmt::print( os, " * {} \n", line );
