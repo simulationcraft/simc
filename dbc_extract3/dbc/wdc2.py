@@ -15,6 +15,10 @@ class WDC2Section:
         self.clone_block_data = []
         self.key_block = collections.defaultdict(lambda : 0)
         self.offset_map = []
+        self.total_record_data = 0
+        # Calculate base record id in a continuous record data segment for the
+        # section from existing sections in parser
+        self.record_id_base = sum([s.total_records for s in self.parser.section_data])
 
     def __str__(self):
         return ('Section{}: key_id={:#018x}, ptr_records={}, total_records={}, sz_string_block={}, ' +
@@ -34,6 +38,8 @@ class WDC2Section:
         self.ptr_offset_map = data[5]
         self.id_block_size = data[6]
         self.key_block_size = data[7]
+
+        self.total_record_data = self.parser.record_size * self.total_records
 
     def compute_block_offsets(self):
         if self.ptr_offset_map > 0:
@@ -289,6 +295,8 @@ class WDC2Parser(WDC1Parser):
             self.section_data.append(new_section)
             self.parse_offset += parser.size
 
+        self.total_record_data = sum([s.total_record_data for s in self.section_data])
+
         return True
 
     def parse_offset_map(self):
@@ -361,21 +369,37 @@ class WDC2Parser(WDC1Parser):
     def get_dbc_info(self, dbc_id):
         return self.id_table[dbc_id]
 
+    # https://wowdev.wiki/DB2#WDC2
     def get_string_offset(self, raw_offset, dbc_id, field_index):
         column = self.data_column(field_index)
         record = self.id_table[dbc_id]
         section = self.section_data[record.section_id]
-        # String arrays need to figure out the element indices so that string
-        # offsets begin from the start of the corrent array element (instead
-        # from the beginning of the array)
-        element_index = field_index - column.index()
 
-        # Compute relative (to the section's string block offset) string offset inside the section
-        string_offset = raw_offset + record.record_offset + column.field_byte_offset()
-        string_offset += element_index * column.field_whole_bytes()
-        string_offset -= (self.records - section.total_records) * self.record_size
+        # Record index in a continous record data segment
+        record_id_cont  = section.record_id_base
+        record_id_cont += (record.record_offset - section.ptr_records) // self.record_size
 
-        return string_offset
+        # Bytes remaining in a continuous record data segment after this field
+        bremain  = self.total_record_data
+        bremain -= record_id_cont * self.record_size + column.field_byte_offset()
+        bremain -= (field_index - column.index()) * column.field_whole_bytes()
+
+        # Absolute position of the string in a continious string block
+        sb_offset = raw_offset - bremain
+
+        # Calculate section string block and absolute offset into it where the
+        # string is located
+        for section in self.section_data:
+            sb_size = section.string_block_size
+            if sb_offset >= sb_size:
+                sb_offset -= sb_size
+            else:
+                sb_ptr = section.ptr_string_block
+                break
+
+        #print(raw_offset, sb_ptr, sb_offset, sb_ptr + sb_offset)
+
+        return sb_ptr + sb_offset
 
     # WDC2 string field offsets are not relative to the string block, but
     # rather relative to the position of the (data, field index) tuple of the
