@@ -24,7 +24,7 @@ class expr_unary_t : public expr_t
   std::unique_ptr<expr_t> input;
 
 public:
-  expr_unary_t( const std::string& n, token_e o, std::unique_ptr<expr_t> i )
+  expr_unary_t( util::string_view n, token_e o, std::unique_ptr<expr_t> i )
     : expr_t( n, o ), input( std::move(i) )
   {
     assert(input);
@@ -83,7 +83,7 @@ namespace binary
 
 }
 
-std::unique_ptr<expr_t> select_unary( const std::string& name, token_e op, std::unique_ptr<expr_t> input )
+std::unique_ptr<expr_t> select_unary( util::string_view name, token_e op, std::unique_ptr<expr_t> input )
 {
   switch ( op )
   {
@@ -114,7 +114,7 @@ public:
   std::unique_ptr<expr_t> left;
   std::unique_ptr<expr_t> right;
 
-  binary_base_t( const std::string& n, token_e o, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
+  binary_base_t( util::string_view n, token_e o, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
     : expr_t( n, o ), left( std::move(l) ), right( std::move(r) )
   {
     assert(left);
@@ -125,7 +125,7 @@ public:
 class logical_and_t : public binary_base_t
 {
 public:
-  logical_and_t( const std::string& n, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
+  logical_and_t( util::string_view n, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
     : binary_base_t( n, TOK_AND, std::move(l), std::move(r) )
   {
   }
@@ -139,7 +139,7 @@ public:
 class logical_or_t : public binary_base_t
 {
 public:
-  logical_or_t( const std::string& n, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
+  logical_or_t( util::string_view n, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
     : binary_base_t( n, TOK_OR, std::move(l), std::move(r) )
   {
   }
@@ -153,7 +153,7 @@ public:
 class logical_xor_t : public binary_base_t
 {
 public:
-  logical_xor_t( const std::string& n, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
+  logical_xor_t( util::string_view n, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
     : binary_base_t( n, TOK_XOR, std::move(l), std::move(r) )
   {
   }
@@ -168,7 +168,7 @@ template <template <typename> class F>
 class expr_binary_t : public binary_base_t
 {
 public:
-  expr_binary_t( const std::string& n, token_e o, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
+  expr_binary_t( util::string_view n, token_e o, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
     : binary_base_t( n, o, std::move(l), std::move(r) )
   {
   }
@@ -179,7 +179,7 @@ public:
   }
 };
 
-std::unique_ptr<expr_t> select_binary( const std::string& name, token_e op, std::unique_ptr<expr_t> left,
+std::unique_ptr<expr_t> select_binary( util::string_view name, token_e op, std::unique_ptr<expr_t> left,
                        std::unique_ptr<expr_t> right )
 {
   switch ( op )
@@ -232,7 +232,7 @@ class expr_analyze_unary_t : public expr_t
   std::unique_ptr<expr_t> input;
 
 public:
-  expr_analyze_unary_t( const std::string& n, token_e o, std::unique_ptr<expr_t> i )
+  expr_analyze_unary_t( util::string_view n, token_e o, std::unique_ptr<expr_t> i )
     : expr_t( n, o ), input( std::move(i) )
   {
     assert( input );
@@ -269,7 +269,7 @@ public:
   }
 };
 
-std::unique_ptr<expr_t> select_analyze_unary( const std::string& name, token_e op,
+std::unique_ptr<expr_t> select_analyze_unary( util::string_view name, token_e op,
                               std::unique_ptr<expr_t> input )
 {
   switch ( op )
@@ -308,7 +308,7 @@ protected:
   uint64_t left_false, right_false;
 
 public:
-  analyze_binary_base_t( const std::string& n, token_e o, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
+  analyze_binary_base_t( util::string_view n, token_e o, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
     : expr_t( n, o ),
       op(),
       left( std::move(l) ),
@@ -342,7 +342,7 @@ public:
 class analyze_logical_and_t : public analyze_binary_base_t
 {
 public:
-  analyze_logical_and_t( const std::string& n, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
+  analyze_logical_and_t( util::string_view n, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
     : analyze_binary_base_t( n, TOK_AND, std::move(l), std::move(r) )
   {
   }
@@ -449,7 +449,7 @@ public:
 class analyze_logical_or_t : public analyze_binary_base_t
 {
 public:
-  analyze_logical_or_t( const std::string& n, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
+  analyze_logical_or_t( util::string_view n, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
     : analyze_binary_base_t( n, TOK_OR, std::move(l), std::move(r) )
   {
   }
@@ -554,7 +554,7 @@ public:
 class analyze_logical_xor_t : public analyze_binary_base_t
 {
 public:
-  analyze_logical_xor_t( const std::string& n, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
+  analyze_logical_xor_t( util::string_view n, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
     : analyze_binary_base_t( n, TOK_XOR, std::move(l), std::move(r) )
   {
   }
@@ -636,7 +636,7 @@ template <template <typename> class F>
 class expr_analyze_binary_t : public analyze_binary_base_t
 {
 public:
-  expr_analyze_binary_t( const std::string& n, token_e o, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
+  expr_analyze_binary_t( util::string_view n, token_e o, std::unique_ptr<expr_t> l, std::unique_ptr<expr_t> r )
     : analyze_binary_base_t( n, o, std::move(l), std::move(r) )
   {
   }
@@ -680,7 +680,7 @@ public:
       {
         double left;
         std::unique_ptr<expr_t> right;
-        left_reduced_t( const std::string& n, token_e o, double l, std::unique_ptr<expr_t> r )
+        left_reduced_t( util::string_view n, token_e o, double l, std::unique_ptr<expr_t> r )
           : expr_t( n, o ), left( l ), right( std::move(r) )
         {
         }
@@ -702,7 +702,7 @@ public:
       {
         std::unique_ptr<expr_t> left;
         double right;
-        right_reduced_t( const std::string& n, token_e o, std::unique_ptr<expr_t> l, double r )
+        right_reduced_t( util::string_view n, token_e o, std::unique_ptr<expr_t> l, double r )
           : expr_t( n, o ), left( std::move(l) ), right( r )
         {
         }
@@ -719,7 +719,7 @@ public:
   }
 };
 
-std::unique_ptr<expr_t> select_analyze_binary( const std::string& name, token_e op,
+std::unique_ptr<expr_t> select_analyze_binary( util::string_view name, token_e op,
                                std::unique_ptr<expr_t> left, std::unique_ptr<expr_t> right )
 {
   switch ( op )
@@ -1336,7 +1336,7 @@ std::unique_ptr<expr_t> expr_t::parse( action_t* action, const std::string& expr
   }
 }
 
-target_wrapper_expr_t::target_wrapper_expr_t(action_t& a, const std::string& name_str, const std::string& expr_str) :
+target_wrapper_expr_t::target_wrapper_expr_t(action_t& a, util::string_view name_str, util::string_view expr_str) :
   expr_t(name_str), action(a), suffix_expr_str(expr_str)
 {
   std::generate_n(std::back_inserter(proxy_expr), action.sim->actor_list.size(), [] { return std::unique_ptr<expr_t>(); });
