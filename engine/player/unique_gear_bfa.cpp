@@ -2591,7 +2591,7 @@ void items::variable_intensity_gigavolt_oscillating_reactor_onuse( special_effec
   {
     vigor_engaged_t* driver;
 
-    oscillating_overload_t( player_t* p, const std::string& name, const spell_data_t* spell, const item_t* item )
+    oscillating_overload_t( player_t* p, ::util::string_view name, const spell_data_t* spell, const item_t* item )
       : buff_t( p, name, spell, item ), driver( nullptr )
     {
     }

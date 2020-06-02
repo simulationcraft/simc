@@ -2155,7 +2155,7 @@ struct reorigination_array_buff_t : public buff_t
     current_stat = highest_stat;
   }
 
-  reorigination_array_buff_t( player_t* p, const std::string& name, const special_effect_t& effect ) :
+  reorigination_array_buff_t( player_t* p, util::string_view name, const special_effect_t& effect ) :
     buff_t( p, name, effect.player->find_spell( 280573 ), effect.item ),
     proc_crit( p->get_proc( "Reorigination Array: Critical Strike" ) ),
     proc_haste( p->get_proc( "Reorigination Array: Haste" ) ),

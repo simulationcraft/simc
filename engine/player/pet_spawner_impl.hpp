@@ -27,7 +27,7 @@ namespace spawner
 // Constructors
 
 template<typename T, typename O>
-pet_spawner_t<T, O>::pet_spawner_t( const std::string& id, O* p, pet_spawn_type st ) :
+pet_spawner_t<T, O>::pet_spawner_t( util::string_view id, O* p, pet_spawn_type st ) :
   base_actor_spawner_t( id, p ), m_max_pets( st == PET_SPAWN_DYNAMIC ? 0 : 1 ),
   m_creator( []( O* p ) { return new T( p ); } ),
   m_duration( timespan_t::zero() ), m_type( st ),
@@ -36,7 +36,7 @@ pet_spawner_t<T, O>::pet_spawner_t( const std::string& id, O* p, pet_spawn_type 
 { }
 
 template<typename T, typename O>
-pet_spawner_t<T, O>::pet_spawner_t( const std::string& id, O* p, unsigned max_pets,
+pet_spawner_t<T, O>::pet_spawner_t( util::string_view id, O* p, unsigned max_pets,
                                         pet_spawn_type st ) :
   base_actor_spawner_t( id, p ), m_max_pets( max_pets ),
   m_creator( []( O* p ) { return new T( p ); } ),
@@ -46,7 +46,7 @@ pet_spawner_t<T, O>::pet_spawner_t( const std::string& id, O* p, unsigned max_pe
 { }
 
 template<typename T, typename O>
-pet_spawner_t<T, O>::pet_spawner_t( const std::string& id, O* p, unsigned max_pets,
+pet_spawner_t<T, O>::pet_spawner_t( util::string_view id, O* p, unsigned max_pets,
                                      const create_fn_t& creator, pet_spawn_type st ) :
   base_actor_spawner_t( id, p ), m_max_pets( max_pets ), m_creator( creator ),
   m_duration( timespan_t::zero() ), m_type( st ),
@@ -55,7 +55,7 @@ pet_spawner_t<T, O>::pet_spawner_t( const std::string& id, O* p, unsigned max_pe
 { }
 
 template<typename T, typename O>
-pet_spawner_t<T, O>::pet_spawner_t( const std::string& id, O* p, const create_fn_t& creator,
+pet_spawner_t<T, O>::pet_spawner_t( util::string_view id, O* p, const create_fn_t& creator,
                                         pet_spawn_type st ) :
   base_actor_spawner_t( id, p ), m_max_pets( st == PET_SPAWN_DYNAMIC ? 0 : 1 ), m_creator( creator ),
   m_duration( timespan_t::zero() ), m_type( st ),

@@ -601,9 +601,9 @@ struct sim_t : private sc_thread_t
   bool      parse_option( const std::string& name, const std::string& value );
   void      setup( sim_control_t* );
   bool      time_to_think( timespan_t proc_time );
-  player_t* find_player( const std::string& name ) const;
+  player_t* find_player( util::string_view name ) const;
   player_t* find_player( int index ) const;
-  cooldown_t* get_cooldown( const std::string& name );
+  cooldown_t* get_cooldown( util::string_view name );
   void      use_optimal_buffs_and_debuffs( int value );
   std::unique_ptr<expr_t>   create_expression( const std::string& name );
   /**

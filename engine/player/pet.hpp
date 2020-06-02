@@ -59,7 +59,7 @@ public:
   const player_t* get_owner_or_self() const override
   { return owner; }
 
-  const spell_data_t* find_pet_spell( const std::string& name );
+  const spell_data_t* find_pet_spell( util::string_view name );
 
   double composite_attribute( attribute_e attr ) const override;
   double composite_player_multiplier( school_e ) const override;

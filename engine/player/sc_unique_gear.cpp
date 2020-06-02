@@ -4474,7 +4474,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, const 
 // Find a consumable of a given subtype, see data_enum.hh for type values.
 // Returns 0 if not found.
 const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
-                                                 const std::string& name,
+                                                 util::string_view name,
                                                  item_subclass_consumable type )
 {
   if ( name.empty() )
@@ -4483,7 +4483,7 @@ const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
   }
 
   // Poor man's longest matching prefix!
-  const auto& item = dbc::find_consumable( type, dbc.ptr, [&name]( const item_data_t* i ) {
+  const auto& item = dbc::find_consumable( type, dbc.ptr, [name]( const item_data_t* i ) {
     std::string n = i -> name ? i -> name : "unknown";
     util::tokenize( n );
     return util::str_in_str_ci( n, name );
