@@ -1970,9 +1970,8 @@ class SpellDataGenerator(DataGenerator):
                 'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment',
                 'SpellEquippedItems', 'SpecializationSpells', 'ChrSpecialization',
                 'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell',
-                'ItemEffect', 'MinorTalent', 'ArtifactPowerRank', 'ArtifactPower', 'Artifact',
-                'SpellShapeshift', 'SpellMechanic', 'SpellLabel', 'AzeritePower', 'AzeritePowerSetMember',
-                'SpellName' ]
+                'ItemEffect', 'MinorTalent', 'SpellShapeshift', 'SpellMechanic', 'SpellLabel',
+                'AzeritePower', 'AzeritePowerSetMember', 'SpellName' ]
 
         if self._options.build < 25600:
             self._dbc.append('SpellEffectScaling')
