@@ -16,7 +16,7 @@ struct absorb_t : public spell_base_t
 {
   target_specific_t<absorb_buff_t> target_specific;
 
-  absorb_t(const std::string& name, player_t* p, const spell_data_t* s);
+  absorb_t(util::string_view name, player_t* p, const spell_data_t* s);
 
   // Allows customization of the absorb_buff_t that we are creating.
   virtual absorb_buff_t* create_buff(const action_state_t* s);

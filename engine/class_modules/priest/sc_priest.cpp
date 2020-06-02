@@ -1440,11 +1440,6 @@ void priest_t::target_mitigation( school_e school, result_amount_type dt, action
   }
 }
 
-action_t* priest_t::create_proc_action( const std::string& /*name*/, const special_effect_t& /*effect*/ )
-{
-  return nullptr;
-}
-
 void priest_t::create_options()
 {
   base_t::create_options();

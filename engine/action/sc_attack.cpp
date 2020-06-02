@@ -16,13 +16,13 @@
 // Attack
 // ==========================================================================
 
-attack_t::attack_t(const std::string& n, player_t* p)
+attack_t::attack_t( util::string_view n, player_t* p )
   : attack_t(n, p, spell_data_t::nil())
 {
 
 }
 
-attack_t::attack_t( const std::string& n, player_t* p, const spell_data_t* s )
+attack_t::attack_t( util::string_view n, player_t* p, const spell_data_t* s )
   : action_t( ACTION_ATTACK, n, p, s ),
     base_attack_expertise( 0 ),
     attack_table()
@@ -407,13 +407,13 @@ void attack_t::reset()
 // Melee Attack
 // ==========================================================================
 
-melee_attack_t::melee_attack_t(const std::string& n, player_t* p)
+melee_attack_t::melee_attack_t( util::string_view n, player_t* p )
   : melee_attack_t(n, p, spell_data_t::nil())
 {
 
 }
 
-melee_attack_t::melee_attack_t( const std::string& n, player_t* p, const spell_data_t* s )
+melee_attack_t::melee_attack_t( util::string_view n, player_t* p, const spell_data_t* s )
   : attack_t( n, p, s )
 {
   may_miss = may_dodge = may_parry = may_glance = may_block = true;
@@ -492,12 +492,12 @@ proc_types melee_attack_t::proc_type() const
 // Ranged Attack
 // ==========================================================================
 
-ranged_attack_t::ranged_attack_t(const std::string& token, player_t* p)
+ranged_attack_t::ranged_attack_t( util::string_view token, player_t* p )
   : ranged_attack_t(token, p, spell_data_t::nil())
 {
 }
 
-ranged_attack_t::ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s )
+ranged_attack_t::ranged_attack_t( util::string_view token, player_t* p, const spell_data_t* s )
   : attack_t( token, p, s )
 {
   may_miss  = true;

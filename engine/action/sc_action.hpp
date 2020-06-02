@@ -6,11 +6,12 @@
 #pragma once
 
 #include "config.hpp"
-#include "util/generic.hpp"
+#include "dbc/data_definitions.hh"
+#include "player/target_specific.hpp"
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
-#include "player/target_specific.hpp"
-#include "dbc/data_definitions.hh"
+#include "util/generic.hpp"
+#include "util/string_view.hpp"
 
 #include <array>
 #include <vector>
@@ -511,8 +512,8 @@ private:
   action_state_t* state_cache;
   std::vector<travel_event_t*> travel_events;
 public:
-  action_t(action_e type, const std::string& token, player_t* p);
-  action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s );
+  action_t( action_e type, util::string_view token, player_t* p );
+  action_t( action_e type, util::string_view token, player_t* p, const spell_data_t* s );
 
   virtual ~action_t();
 
@@ -975,7 +976,7 @@ struct swap_action_list_t : public action_t
   action_priority_list_t* alist;
 
   swap_action_list_t( player_t* player, const std::string& options_str,
-    const std::string& name = "swap_action_list" );
+    util::string_view name = "swap_action_list" );
 
   void execute() override;
   bool ready() override;
