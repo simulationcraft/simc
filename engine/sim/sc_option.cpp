@@ -167,7 +167,7 @@ struct opts_helper_t : public option_t
 {
   using base_t = opts_helper_t<T>;
 
-  opts_helper_t( const std::string& name, T& ref ) :
+  opts_helper_t( util::string_view name, T& ref ) :
     option_t( name ),
     _ref( ref )
   { }
@@ -177,7 +177,7 @@ protected:
 
 struct opt_string_t : public option_t
 {
-  opt_string_t( const std::string& name, std::string& addr ) :
+  opt_string_t( util::string_view name, std::string& addr ) :
     option_t( name ),
     _ref( addr )
   { }
@@ -202,7 +202,7 @@ private:
 
 struct opt_append_t : public option_t
 {
-  opt_append_t( const std::string& name, std::string& addr ) :
+  opt_append_t( util::string_view name, std::string& addr ) :
     option_t( name ),
     _ref( addr )
   { }
@@ -234,7 +234,7 @@ private:
 template<typename T, typename Converter>
 struct opt_numeric_t : public option_t
 {
-  opt_numeric_t( const std::string& name, T& addr ) :
+  opt_numeric_t( util::string_view name, T& addr ) :
     option_t( name ),
     _ref( addr )
   { }
@@ -271,7 +271,7 @@ private:
 template<typename T, typename Converter>
 struct opt_numeric_mm_t : public option_t
 {
-  opt_numeric_mm_t( const std::string& name, T& addr, T min, T max ) :
+  opt_numeric_mm_t( util::string_view name, T& addr, T min, T max ) :
     option_t( name ),
     _ref( addr ),
     _min( min ),
@@ -311,7 +311,7 @@ private:
 
 struct opt_bool_t : public option_t
 {
-  opt_bool_t( const std::string& name, bool& addr ) :
+  opt_bool_t( util::string_view name, bool& addr ) :
     option_t( name ),
     _ref( addr )
   { }
@@ -340,7 +340,7 @@ private:
 
 struct opt_bool_int_t : public option_t
 {
-  opt_bool_int_t( const std::string& name, int& addr ) :
+  opt_bool_int_t( util::string_view name, int& addr ) :
     option_t( name ),
     _ref( addr )
   { }
@@ -369,7 +369,7 @@ private:
 
 struct opts_sim_func_t : public option_t
 {
-  opts_sim_func_t( const std::string& name, const opts::function_t& ref ) :
+  opts_sim_func_t( util::string_view name, const opts::function_t& ref ) :
     option_t( name ),
     _fun( ref )
   { }
@@ -392,7 +392,7 @@ private:
 
 struct opts_map_t : public option_t
 {
-  opts_map_t( const std::string& name, opts::map_t& ref ) :
+  opts_map_t( util::string_view name, opts::map_t& ref ) :
     option_t( name ),
     _ref( ref )
   { }
@@ -437,7 +437,7 @@ protected:
 
 struct opts_map_list_t : public option_t
 {
-  opts_map_list_t( const std::string& name, opts::map_list_t& ref ) :
+  opts_map_list_t( util::string_view name, opts::map_list_t& ref ) :
     option_t( name ), _ref( ref )
   { }
 
@@ -494,7 +494,7 @@ protected:
 
 struct opts_list_t : public option_t
 {
-  opts_list_t( const std::string& name, opts::list_t& ref ) :
+  opts_list_t( util::string_view name, opts::list_t& ref ) :
     option_t( name ),
     _ref( ref )
   { }
@@ -522,7 +522,7 @@ private:
 
 struct opts_deperecated_t : public option_t
 {
-  opts_deperecated_t( const std::string& name, const std::string& new_option ) :
+  opts_deperecated_t( util::string_view name, util::string_view new_option ) :
     option_t( name ),
     _new_option( new_option )
   { }
@@ -546,7 +546,7 @@ private:
 
 struct opts_obsoleted_t : public option_t
 {
-  opts_obsoleted_t( const std::string& name ) :
+  opts_obsoleted_t( util::string_view name ) :
     option_t( name )
   { }
 protected:
@@ -913,59 +913,59 @@ option_db_t::option_db_t()
   auto_path.resize( std::distance(auto_path.begin(), it) );
 }
 
-std::unique_ptr<option_t> opt_string( const std::string& n, std::string& v )
+std::unique_ptr<option_t> opt_string( util::string_view n, std::string& v )
 { return std::unique_ptr<option_t>(new opt_string_t( n, v )); }
 
-std::unique_ptr<option_t> opt_append( const std::string& n, std::string& v )
+std::unique_ptr<option_t> opt_append( util::string_view n, std::string& v )
 { return std::unique_ptr<option_t>(new opt_append_t( n, v )); }
 
-std::unique_ptr<option_t> opt_bool( const std::string& n, int& v )
+std::unique_ptr<option_t> opt_bool( util::string_view n, int& v )
 { return std::unique_ptr<option_t>(new opt_bool_int_t( n, v )); }
 
-std::unique_ptr<option_t> opt_bool( const std::string& n, bool& v )
+std::unique_ptr<option_t> opt_bool( util::string_view n, bool& v )
 { return std::unique_ptr<option_t>(new opt_bool_t( n, v )); }
 
-std::unique_ptr<option_t> opt_uint64( const std::string& n, uint64_t& v )
+std::unique_ptr<option_t> opt_uint64( util::string_view n, uint64_t& v )
 { return std::unique_ptr<option_t>(new opt_numeric_t<uint64_t, converter_uint64_t>( n, v )); }
 
-std::unique_ptr<option_t> opt_int( const std::string& n, int& v )
+std::unique_ptr<option_t> opt_int( util::string_view n, int& v )
 { return std::unique_ptr<option_t>(new opt_numeric_t<int, converter_int_t>( n, v )); }
 
-std::unique_ptr<option_t> opt_int( const std::string& n, int& v, int min, int max )
+std::unique_ptr<option_t> opt_int( util::string_view n, int& v, int min, int max )
 { return std::unique_ptr<option_t>(new opt_numeric_mm_t<int, converter_int_t>( n, v, min, max )); }
 
-std::unique_ptr<option_t> opt_uint( const std::string& n, unsigned& v )
+std::unique_ptr<option_t> opt_uint( util::string_view n, unsigned& v )
 { return std::unique_ptr<option_t>(new opt_numeric_t<unsigned, converter_uint_t>( n, v )); }
 
-std::unique_ptr<option_t> opt_uint( const std::string& n, unsigned& v, unsigned min, unsigned max )
+std::unique_ptr<option_t> opt_uint( util::string_view n, unsigned& v, unsigned min, unsigned max )
 { return std::unique_ptr<option_t>(new opt_numeric_mm_t<unsigned, converter_uint_t>( n, v, min, max )); }
 
-std::unique_ptr<option_t> opt_float( const std::string& n, double& v )
+std::unique_ptr<option_t> opt_float( util::string_view n, double& v )
 { return std::unique_ptr<option_t>(new opt_numeric_t<double, converter_double_t>( n, v )); }
 
-std::unique_ptr<option_t> opt_float( const std::string& n, double& v, double min, double max )
+std::unique_ptr<option_t> opt_float( util::string_view n, double& v, double min, double max )
 { return std::unique_ptr<option_t>(new opt_numeric_mm_t<double, converter_double_t>( n, v, min, max )); }
 
-std::unique_ptr<option_t> opt_timespan( const std::string& n, timespan_t& v )
+std::unique_ptr<option_t> opt_timespan( util::string_view n, timespan_t& v )
 { return std::unique_ptr<option_t>(new opt_numeric_t<timespan_t, converter_timespan_t>( n, v )); }
 
-std::unique_ptr<option_t> opt_timespan( const std::string& n, timespan_t& v, timespan_t min, timespan_t max )
+std::unique_ptr<option_t> opt_timespan( util::string_view n, timespan_t& v, timespan_t min, timespan_t max )
 { return std::unique_ptr<option_t>(new opt_numeric_mm_t<timespan_t, converter_timespan_t>( n, v, min, max )); }
 
-std::unique_ptr<option_t> opt_list( const std::string& n, opts::list_t& v )
+std::unique_ptr<option_t> opt_list( util::string_view n, opts::list_t& v )
 { return std::unique_ptr<option_t>(new opts_list_t( n, v )); }
 
-std::unique_ptr<option_t> opt_map( const std::string& n, opts::map_t& v )
+std::unique_ptr<option_t> opt_map( util::string_view n, opts::map_t& v )
 { return std::unique_ptr<option_t>(new opts_map_t( n, v )); }
 
-std::unique_ptr<option_t> opt_map_list( const std::string& n, opts::map_list_t& v )
+std::unique_ptr<option_t> opt_map_list( util::string_view n, opts::map_list_t& v )
 { return std::unique_ptr<option_t>(new opts_map_list_t( n, v )); }
 
-std::unique_ptr<option_t> opt_func( const std::string& n, const opts::function_t& f )
+std::unique_ptr<option_t> opt_func( util::string_view n, const opts::function_t& f )
 { return std::unique_ptr<option_t>(new opts_sim_func_t( n, f )); }
 
-std::unique_ptr<option_t> opt_deprecated( const std::string& n, const std::string& new_option )
+std::unique_ptr<option_t> opt_deprecated( util::string_view n, util::string_view new_option )
 { return std::unique_ptr<option_t>(new opts_deperecated_t( n, new_option )); }
 
-std::unique_ptr<option_t> opt_obsoleted( const std::string& n )
+std::unique_ptr<option_t> opt_obsoleted( util::string_view n )
 { return std::unique_ptr<option_t>(new opts_obsoleted_t( n )); }
