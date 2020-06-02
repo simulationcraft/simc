@@ -147,7 +147,7 @@ const special_effect_t* item_t::special_effect( special_effect_source_e source, 
 
 // item_t::special_effect_with_name =========================================
 
-const special_effect_t* item_t::special_effect_with_name( const std::string& name, special_effect_source_e source, special_effect_e type ) const
+const special_effect_t* item_t::special_effect_with_name( util::string_view name, special_effect_source_e source, special_effect_e type ) const
 {
   for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
   {

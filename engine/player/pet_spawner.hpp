@@ -108,12 +108,12 @@ private:
   /// Recreate m_active pets, m_inactive pets if m_dirty == 1
   void update_state();
 public:
-  pet_spawner_t( const std::string& id, O* p, pet_spawn_type st = PET_SPAWN_DYNAMIC );
-  pet_spawner_t( const std::string& id, O* p, unsigned max_pets,
+  pet_spawner_t( util::string_view id, O* p, pet_spawn_type st = PET_SPAWN_DYNAMIC );
+  pet_spawner_t( util::string_view id, O* p, unsigned max_pets,
                    pet_spawn_type st = PET_SPAWN_DYNAMIC );
-  pet_spawner_t( const std::string& id, O* p, unsigned max_pets, const create_fn_t& creator,
+  pet_spawner_t( util::string_view id, O* p, unsigned max_pets, const create_fn_t& creator,
                    pet_spawn_type st = PET_SPAWN_DYNAMIC );
-  pet_spawner_t( const std::string& id, O* p, const create_fn_t& creator,
+  pet_spawner_t( util::string_view id, O* p, const create_fn_t& creator,
                    pet_spawn_type st = PET_SPAWN_DYNAMIC );
 
   /// Spawn n new pets (defaults, 1 for dynamic, max_pets for persistent),

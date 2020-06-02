@@ -3100,9 +3100,9 @@ bool sim_t::execute()
 }
 
 /// find player in sim by name
-player_t* sim_t::find_player( const std::string& name ) const
+player_t* sim_t::find_player( util::string_view name ) const
 {
-  auto it = range::find_if( actor_list, [name](const player_t* p) { return name == p -> name(); });
+  auto it = range::find( actor_list, name, &player_t::name );
   if ( it != actor_list.end())
     return *it;
   return nullptr;
@@ -3111,7 +3111,7 @@ player_t* sim_t::find_player( const std::string& name ) const
 /// find player in sim by actor index
 player_t* sim_t::find_player( int index ) const
 {
-  auto it = range::find_if( actor_list, [index](const player_t* p) { return index == p -> index; });
+  auto it = range::find( actor_list, index, &player_t::index );
   if ( it != actor_list.end())
     return *it;
   return nullptr;
@@ -3119,18 +3119,13 @@ player_t* sim_t::find_player( int index ) const
 
 // sim_t::get_cooldown ======================================================
 
-cooldown_t* sim_t::get_cooldown( const std::string& name )
+cooldown_t* sim_t::get_cooldown( util::string_view name )
 {
-  cooldown_t* c;
+  auto it = range::find( cooldown_list, name, &cooldown_t::name_str );
+  if ( it != cooldown_list.end() )
+    return *it;
 
-  for ( size_t i = 0; i < cooldown_list.size(); ++i )
-  {
-    c = cooldown_list[ i ];
-    if ( c -> name_str == name )
-      return c;
-  }
-
-  c = new cooldown_t( name, *this );
+  cooldown_t* c = new cooldown_t( name, *this );
 
   cooldown_list.push_back( c );
 

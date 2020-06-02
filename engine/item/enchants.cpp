@@ -39,7 +39,7 @@ thread_local std::unordered_map<size_t, std::string> cached_enchant_names;
 
 } /* ANONYMOUS NAMESPACE */
 
-unsigned enchant::find_enchant_id( const std::string& name )
+unsigned enchant::find_enchant_id( util::string_view name )
 {
   for ( auto& enchant_entry : __enchant_db )
   {
@@ -192,7 +192,7 @@ std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantm
  * Tailoring enchant mappings in the array above.
  */
 const item_enchantment_data_t& enchant::find_item_enchant( const item_t& item,
-                                                           const std::string& name )
+                                                           util::string_view name )
 {
   auto enchant_id = find_enchant_id( name );
   // Check additional mapping table first
@@ -420,8 +420,8 @@ bool enchant::passive_enchant( item_t& item, unsigned spell_id )
  * (capacitive_primal_diamond), and the "short" form of the tokenized name
  * (capacitive_primal).
  */
-const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t&       dbc,
-                                                       const std::string& encoding )
+const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t&      dbc,
+                                                       util::string_view encoding )
 {
   for ( const auto& gem_property : gem_property_data_t::data( dbc.ptr ) )
   {
@@ -445,10 +445,10 @@ const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t&       dbc,
 
     std::string tokenized_name = gem.name;
     util::tokenize( tokenized_name );
-    std::string shortname;
+    util::string_view shortname;
     std::string::size_type offset = tokenized_name.find( "_diamond" );
     if ( offset != std::string::npos )
-      shortname = tokenized_name.substr( 0, offset );
+      shortname = util::string_view( tokenized_name ).substr( 0, offset );
 
     if ( util::str_in_str_ci( encoding, tokenized_name ) ||
          ( ! shortname.empty() && util::str_in_str_ci( encoding, shortname ) ) )
