@@ -9,8 +9,10 @@
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
 #include "util/sample_data.hpp"
+#include "util/string_view.hpp"
 #include "sim/gain.hpp"
 #include "player/gear_stats.hpp"
+
 #include <vector>
 #include <string>
 
@@ -87,7 +89,7 @@ public:
   std::unique_ptr<stats_scaling_t> scaling;
   std::unique_ptr<sc_timeline_t> timeline_amount;
 
-  stats_t( const std::string& name, player_t* );
+  stats_t( util::string_view name, player_t* );
 
   void add_child( stats_t* child );
   void consume_resource( resource_e resource_type, double resource_amount );

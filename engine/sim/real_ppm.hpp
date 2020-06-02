@@ -8,6 +8,8 @@
 #include "config.hpp"
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
+#include "util/string_view.hpp"
+
 #include <string>
 
 struct item_t;
@@ -48,7 +50,7 @@ public:
                              unsigned   scales_with,
                              blp        blp_state );
 
-  real_ppm_t( const std::string& name, player_t* p, double frequency = 0, double mod = 1.0, unsigned s = RPPM_NONE, blp b = BLP_ENABLED ) :
+  real_ppm_t( util::string_view name, player_t* p, double frequency = 0, double mod = 1.0, unsigned s = RPPM_NONE, blp b = BLP_ENABLED ) :
     player( p ),
     name_str( name ),
     freq( frequency ),
@@ -60,7 +62,7 @@ public:
     blp_state( b )
   { }
 
-  real_ppm_t( const std::string& name, player_t* p, const spell_data_t* data, const item_t* item = nullptr );
+  real_ppm_t( util::string_view name, player_t* p, const spell_data_t* data, const item_t* item = nullptr );
 
   void set_scaling( unsigned s )
   { scales_with = s; }

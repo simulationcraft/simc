@@ -10,7 +10,7 @@
 #include "util/rng.hpp"
 #include "item/item.hpp"
 
-real_ppm_t::real_ppm_t( const std::string& name, player_t* p, const spell_data_t* data, const item_t* item )
+real_ppm_t::real_ppm_t( util::string_view name, player_t* p, const spell_data_t* data, const item_t* item )
   : player( p ),
     name_str( name ),
     freq( data->real_ppm() ),

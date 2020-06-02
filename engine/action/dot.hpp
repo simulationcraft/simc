@@ -9,6 +9,8 @@
 #include "sc_timespan.hpp"
 #include "sc_enums.hpp"
 #include "util/generic.hpp"
+#include "util/string_view.hpp"
+
 #include <string>
 #include <memory>
 #include <cstdint>
@@ -47,7 +49,7 @@ public:
   timespan_t time_to_tick;
   std::string name_str;
 
-  dot_t(const std::string& n, player_t* target, player_t* source);
+  dot_t(util::string_view n, player_t* target, player_t* source);
 
   void   extend_duration(timespan_t extra_seconds, timespan_t max_total_time = timespan_t::min(), uint32_t state_flags = -1);
   void   extend_duration(timespan_t extra_seconds, uint32_t state_flags)

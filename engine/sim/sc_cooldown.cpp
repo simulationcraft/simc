@@ -90,7 +90,7 @@ struct ready_trigger_event_t : public event_t
 
 } // UNNAMED NAMESPACE
 
-cooldown_t::cooldown_t( const std::string& n, player_t& p ) :
+cooldown_t::cooldown_t( util::string_view n, player_t& p ) :
   sim( *p.sim ),
   player( &p ),
   name_str( n ),
@@ -110,7 +110,7 @@ cooldown_t::cooldown_t( const std::string& n, player_t& p ) :
   base_duration( 0_ms )
 { }
 
-cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
+cooldown_t::cooldown_t( util::string_view n, sim_t& s ) :
   sim( s ),
   player( nullptr ),
   name_str( n ),

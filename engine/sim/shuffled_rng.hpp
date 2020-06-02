@@ -6,6 +6,8 @@
 #pragma once
 
 #include "config.hpp"
+#include "util/string_view.hpp"
+
 #include <string>
 
 namespace rng {
@@ -26,8 +28,8 @@ private:
   int          total_entries_remaining;
   
 public:
-  
-  shuffled_rng_t(const std::string& name, rng::rng_t& rng, int success_entries = 0, int total_entries = 0) :
+
+  shuffled_rng_t(util::string_view name, rng::rng_t& rng, int success_entries = 0, int total_entries = 0) :
     rng(rng),
     name_str(name),
     success_entries(success_entries),

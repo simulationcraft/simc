@@ -8,6 +8,8 @@
 #include "config.hpp"
 #include "sc_timespan.hpp"
 #include "sc_enums.hpp"
+#include "util/string_view.hpp"
+
 #include <string>
 #include <memory>
 
@@ -43,8 +45,8 @@ struct cooldown_t
   double recharge_multiplier;
   timespan_t base_duration;
 
-  cooldown_t( const std::string& name, player_t& );
-  cooldown_t( const std::string& name, sim_t& );
+  cooldown_t( util::string_view name, player_t& );
+  cooldown_t( util::string_view name, sim_t& );
 
   // Adjust the CD. If "requires_reaction" is true (or not provided), then the CD change is something
   // the user would react to rather than plan ahead for.
