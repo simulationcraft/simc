@@ -19,7 +19,7 @@ benefit_t* benefit_t::collect_ratio(bool collect)
   return this;
 }
 
-void uptime_common_t::update(bool is_up, timespan_t current_time)
+void uptime_base_t::update(bool is_up, timespan_t current_time)
 {
   if (is_up)
   {

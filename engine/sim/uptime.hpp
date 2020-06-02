@@ -12,25 +12,19 @@
 
 struct sim_t;
 
-struct uptime_common_t
+struct uptime_base_t
 {
 protected:
   timespan_t last_start;
   timespan_t iteration_uptime_sum;
 
-public:
-  uptime_common_t() :
+  uptime_base_t() :
     last_start(timespan_t::min()),
     iteration_uptime_sum(timespan_t::zero())
   {}
+  ~uptime_base_t() = default;
 
-  virtual ~uptime_common_t() {}
-
-  virtual void update(bool is_up, timespan_t current_time);
-
-  virtual void merge(const uptime_common_t&) {}
-
-  virtual void datacollection_end(timespan_t) {}
+  void update(bool is_up, timespan_t current_time);
 
   void datacollection_begin()
   {
@@ -43,43 +37,47 @@ public:
   }
 };
 
-struct uptime_simple_t : public uptime_common_t
+struct uptime_simple_t : public uptime_base_t
 {
   simple_sample_data_t uptime_sum;
 
-  uptime_simple_t() : uptime_common_t(),
-    uptime_sum()
-  {}
+  uptime_simple_t() = default;
 
-  void merge(const uptime_common_t& other) override
+  using uptime_base_t::update;
+  using uptime_base_t::datacollection_begin;
+  using uptime_base_t::reset;
+
+  void merge(const uptime_simple_t& other)
   {
-    uptime_sum.merge(dynamic_cast<const uptime_simple_t&>(other).uptime_sum);
+    uptime_sum.merge(other.uptime_sum);
   }
 
-  void datacollection_end(timespan_t t) override
+  void datacollection_end(timespan_t t)
   {
     uptime_sum.add(t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0);
   }
 };
 
 
-struct uptime_t : public uptime_common_t
+struct uptime_t : public uptime_base_t
 {
-public:
   std::string name_str;
   sim_t& sim;
 
   extended_sample_data_t uptime_sum;
   extended_sample_data_t uptime_instance;
 
-  uptime_t(sim_t& s, util::string_view n) : uptime_common_t(),
+  uptime_t(sim_t& s, util::string_view n) :
     name_str(n),
     sim(s),
     uptime_sum("Uptime", true),
     uptime_instance("Duration", true)
   {}
 
-  void update(bool is_up, timespan_t current_time) override;
+  using uptime_base_t::datacollection_begin;
+  using uptime_base_t::reset;
+
+  void update(bool is_up, timespan_t current_time);
 
   void analyze()
   {
@@ -87,13 +85,13 @@ public:
     uptime_instance.analyze();
   }
 
-  void merge(const uptime_common_t& other) override
+  void merge(const uptime_t& other)
   {
-    uptime_sum.merge(dynamic_cast<const uptime_t&>(other).uptime_sum);
-    uptime_instance.merge(dynamic_cast<const uptime_t&>(other).uptime_instance);
+    uptime_sum.merge(other.uptime_sum);
+    uptime_instance.merge(other.uptime_instance);
   }
 
-  void datacollection_end(timespan_t t) override
+  void datacollection_end(timespan_t t)
   {
     uptime_sum.add(t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0);
   }
