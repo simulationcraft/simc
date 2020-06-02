@@ -9,6 +9,7 @@
 
 #include "config.hpp"
 #include "util/sample_data.hpp"
+#include "util/string_view.hpp"
 
 struct sim_t;
 
@@ -23,7 +24,7 @@ public:
   const std::string name_str;
   sim_t& sim;
 
-  explicit benefit_t( sim_t& s, const std::string& n )
+  explicit benefit_t( sim_t& s, util::string_view n )
     : up( 0 ), down( 0 ), ratio( "Ratio", true ), name_str( n ), sim( s )
   {
   }

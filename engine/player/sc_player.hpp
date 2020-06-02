@@ -741,18 +741,18 @@ public:
   action_priority_list_t* find_action_priority_list( util::string_view name ) const;
   int find_action_id( util::string_view name ) const;
 
-  cooldown_t* get_cooldown( const std::string& name, action_t* action = nullptr );
-  real_ppm_t* get_rppm(const std::string& name);
-  real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data, const item_t* item = nullptr );
-  real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
-  shuffled_rng_t* get_shuffled_rng(const std::string& name, int success_entries = 0, int total_entries = 0);
-  dot_t*      get_dot     ( const std::string& name, player_t* source );
-  gain_t*     get_gain    ( const std::string& name );
-  proc_t*     get_proc    ( const std::string& name );
-  stats_t*    get_stats   ( const std::string& name, action_t* action = nullptr );
-  benefit_t*  get_benefit ( const std::string& name );
-  uptime_t*   get_uptime  ( const std::string& name );
-  sample_data_helper_t* get_sample_data( const std::string& name );
+  cooldown_t* get_cooldown( util::string_view name, action_t* action = nullptr );
+  real_ppm_t* get_rppm    ( util::string_view );
+  real_ppm_t* get_rppm    ( util::string_view, const spell_data_t* data, const item_t* item = nullptr );
+  real_ppm_t* get_rppm    ( util::string_view, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
+  shuffled_rng_t* get_shuffled_rng( util::string_view name, int success_entries = 0, int total_entries = 0);
+  dot_t*      get_dot     ( util::string_view name, player_t* source );
+  gain_t*     get_gain    ( util::string_view name );
+  proc_t*     get_proc    ( util::string_view name );
+  stats_t*    get_stats   ( util::string_view name, action_t* action = nullptr );
+  benefit_t*  get_benefit ( util::string_view name );
+  uptime_t*   get_uptime  ( util::string_view name );
+  sample_data_helper_t* get_sample_data( util::string_view name );
   action_priority_list_t* get_action_priority_list( util::string_view name, util::string_view comment = {} );
   int get_action_id( util::string_view name );
 

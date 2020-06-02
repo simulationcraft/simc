@@ -50,7 +50,7 @@ private:
 // Dot
 // ==========================================================================
 
-dot_t::dot_t( const std::string& n, player_t* t, player_t* s )
+dot_t::dot_t( util::string_view n, player_t* t, player_t* s )
   : sim( *( t->sim ) ),
     ticking( false ),
     current_duration( timespan_t::zero() ),

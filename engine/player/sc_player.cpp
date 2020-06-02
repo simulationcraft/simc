@@ -6967,7 +6967,7 @@ action_t* player_t::find_action( util::string_view name ) const
   return find_vector_member( action_list, name );
 }
 
-cooldown_t* player_t::get_cooldown( const std::string& name, action_t* a )
+cooldown_t* player_t::get_cooldown( util::string_view name, action_t* a )
 {
   cooldown_t* c = find_cooldown( name );
 
@@ -6984,12 +6984,12 @@ cooldown_t* player_t::get_cooldown( const std::string& name, action_t* a )
   return c;
 }
 
-real_ppm_t* player_t::get_rppm(const std::string& name)
+real_ppm_t* player_t::get_rppm( util::string_view name )
 {
   return get_rppm(name, spell_data_t::nil(), nullptr);
 }
 
-real_ppm_t* player_t::get_rppm( const std::string& name, const spell_data_t* data, const item_t* item )
+real_ppm_t* player_t::get_rppm( util::string_view name, const spell_data_t* data, const item_t* item )
 {
   auto it = range::find_if( rppm_list,
                             [&name]( const real_ppm_t* rppm ) { return util::str_compare_ci( rppm->name(), name ); } );
@@ -7005,7 +7005,7 @@ real_ppm_t* player_t::get_rppm( const std::string& name, const spell_data_t* dat
   return new_rppm;
 }
 
-real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod, unsigned s )
+real_ppm_t* player_t::get_rppm( util::string_view name, double freq, double mod, unsigned s )
 {
   auto it = range::find_if( rppm_list,
                             [&name]( const real_ppm_t* rppm ) { return util::str_compare_ci( rppm->name(), name ); } );
@@ -7021,7 +7021,7 @@ real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod
   return new_rppm;
 }
 
-shuffled_rng_t* player_t::get_shuffled_rng( const std::string& name, int success_entries, int total_entries )
+shuffled_rng_t* player_t::get_shuffled_rng( util::string_view name, int success_entries, int total_entries )
 {
   auto it = range::find_if( shuffled_rng_list, [&name]( const shuffled_rng_t* shuffled_rng ) {
     return util::str_compare_ci( shuffled_rng->name(), name );
@@ -7038,7 +7038,7 @@ shuffled_rng_t* player_t::get_shuffled_rng( const std::string& name, int success
   return new_shuffled_rng;
 }
 
-dot_t* player_t::get_dot( const std::string& name, player_t* source )
+dot_t* player_t::get_dot( util::string_view name, player_t* source )
 {
   dot_t* d = find_dot( name, source );
 
@@ -7051,7 +7051,7 @@ dot_t* player_t::get_dot( const std::string& name, player_t* source )
   return d;
 }
 
-gain_t* player_t::get_gain( const std::string& name )
+gain_t* player_t::get_gain( util::string_view name )
 {
   gain_t* g = find_gain( name );
 
@@ -7065,7 +7065,7 @@ gain_t* player_t::get_gain( const std::string& name )
   return g;
 }
 
-proc_t* player_t::get_proc( const std::string& name )
+proc_t* player_t::get_proc( util::string_view name )
 {
   proc_t* p = find_proc( name );
 
@@ -7079,7 +7079,7 @@ proc_t* player_t::get_proc( const std::string& name )
   return p;
 }
 
-sample_data_helper_t* player_t::get_sample_data( const std::string& name )
+sample_data_helper_t* player_t::get_sample_data( util::string_view name )
 {
   sample_data_helper_t* sd = find_sample_data( name );
 
@@ -7093,7 +7093,7 @@ sample_data_helper_t* player_t::get_sample_data( const std::string& name )
   return sd;
 }
 
-stats_t* player_t::get_stats( const std::string& n, action_t* a )
+stats_t* player_t::get_stats( util::string_view n, action_t* a )
 {
   stats_t* stats = find_stats( n );
 
@@ -7112,7 +7112,7 @@ stats_t* player_t::get_stats( const std::string& n, action_t* a )
   return stats;
 }
 
-benefit_t* player_t::get_benefit( const std::string& name )
+benefit_t* player_t::get_benefit( util::string_view name )
 {
   benefit_t* u = find_benefit( name );
 
@@ -7126,7 +7126,7 @@ benefit_t* player_t::get_benefit( const std::string& name )
   return u;
 }
 
-uptime_t* player_t::get_uptime( const std::string& name )
+uptime_t* player_t::get_uptime( util::string_view name )
 {
   uptime_t* u = find_uptime( name );
 

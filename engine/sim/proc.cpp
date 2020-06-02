@@ -6,7 +6,7 @@
 
 #include "sim/sc_sim.hpp"
 
-proc_t::proc_t( sim_t& s, const std::string& n )
+proc_t::proc_t( sim_t& s, util::string_view n )
   : sim( s ),
     iteration_count(),
     last_proc( timespan_t::min() ),

@@ -6,7 +6,9 @@
 
 #include "config.hpp"
 #include "util/sample_data.hpp"
+#include "util/string_view.hpp"
 #include "sc_timespan.hpp"
+
 #include <string>
 
 struct sim_t;
@@ -25,7 +27,7 @@ public:
   extended_sample_data_t interval_sum;
   extended_sample_data_t count;
 
-  proc_t(sim_t& s, const std::string& n);
+  proc_t(sim_t& s, util::string_view n);
 
   void occur();
 

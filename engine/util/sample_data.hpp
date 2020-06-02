@@ -10,7 +10,9 @@
 #include <numeric>
 #include <sstream>
 #include <vector>
+
 #include "util/generic.hpp"
+#include "util/string_view.hpp"
 
 /* Collection of statistical formulas for sequences
  * Note: Returns 0 for empty sequences
@@ -339,7 +341,7 @@ private:
   bool is_sorted;
 
 public:
-  explicit extended_sample_data_t( const std::string& n, bool s = true )
+  explicit extended_sample_data_t( util::string_view n, bool s = true )
     : base_t(),
       name_str( n ),
       _mean(),
