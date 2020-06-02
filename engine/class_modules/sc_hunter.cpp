@@ -4523,7 +4523,7 @@ void hunter_t::vision_of_perfection_proc()
   {
     timespan_t ts_dur = buffs.trueshot->buff_duration * azerite_essence.vision_of_perfection_major_mult;
     timespan_t uv_dur = buffs.unerring_vision_driver->buff_duration * azerite_essence.vision_of_perfection_major_mult;
-    
+
     if ( buffs.trueshot->check() )
     {
       buffs.trueshot->extend_duration( this, ts_dur );
@@ -4918,7 +4918,7 @@ void hunter_t::init_spells()
     azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR ) -> effectN( 1 ).percent();
 
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
-  azerite_essence.vision_of_perfection_major_mult = 
+  azerite_essence.vision_of_perfection_major_mult =
     azerite_essence.vision_of_perfection.spell( 1u )->effectN( 1 ).percent() +
     azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE )->effectN( 1 ).percent();
 }
@@ -5010,11 +5010,12 @@ void hunter_t::create_buffs()
     -> set_quiet( true );
 
   buffs.spitting_cobra =
-    make_buff( this, "spitting_cobra", talents.spitting_cobra )
-      -> set_default_value( find_spell( 194407 ) -> effectN( 2 ).resource( RESOURCE_FOCUS ) )
-      -> set_tick_callback( [ this ]( buff_t *buff, int, timespan_t ){
-                        resource_gain( RESOURCE_FOCUS, buff -> default_value, gains.spitting_cobra );
-                      } );
+    make_buff( this, "spitting_cobra", talents.spitting_cobra );
+      // TODO: XXX: Beta!
+      // -> set_default_value( find_spell( 194407 ) -> effectN( 2 ).resource( RESOURCE_FOCUS ) )
+      // -> set_tick_callback( [ this ]( buff_t *buff, int, timespan_t ){
+      //                   resource_gain( RESOURCE_FOCUS, buff -> default_value, gains.spitting_cobra );
+      //                 } );
 
   // Marksmanship
 
@@ -5155,7 +5156,7 @@ void hunter_t::create_buffs()
         buffs.unerring_vision->trigger();
     }
   } );
-  
+
   buffs.unerring_vision =
     make_buff<stat_buff_t>( this, "unerring_vision", find_spell( 274447 ) )
       -> add_stat( STAT_CRIT_RATING, azerite.unerring_vision.value( 1 ) );
@@ -5409,7 +5410,7 @@ void hunter_t::apl_bm()
   default_list -> add_action( "call_action_list,name=cds" );
   default_list -> add_action( "call_action_list,name=st,if=active_enemies<2" );
   default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1" );
-  
+
   cds -> add_action( "ancestral_call,if=cooldown.bestial_wrath.remains>30" );
   cds -> add_action( "fireblood,if=cooldown.bestial_wrath.remains>30" );
   cds -> add_action( "berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<13" );
@@ -5563,18 +5564,18 @@ void hunter_t::apl_surv()
   action_priority_list_t* st             = get_action_priority_list( "st" );
   action_priority_list_t* cleave         = get_action_priority_list( "cleave" );
 
-  precombat -> add_action( "use_item,name=azsharas_font_of_power" );	
+  precombat -> add_action( "use_item,name=azsharas_font_of_power" );
   precombat -> add_action( "guardian_of_azeroth" );
-  precombat -> add_action( this, "Coordinated Assault" );	
+  precombat -> add_action( this, "Coordinated Assault" );
   precombat -> add_action( "worldvein_resonance" );
   precombat -> add_action( "potion,dynamic_prepot=1" );
   precombat -> add_talent( this, "Steel Trap" );
-  precombat -> add_action( this, "Harpoon" );	
+  precombat -> add_action( this, "Harpoon" );
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "use_items" );
   default_list -> add_action( "call_action_list,name=cds" );
-  default_list -> add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(action.mongoose_bite.cost-cast_regen)*gcd" );	
+  default_list -> add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(action.mongoose_bite.cost-cast_regen)*gcd" );
   default_list -> add_action( "call_action_list,name=apwfi,if=active_enemies<3&talent.chakrams.enabled&talent.alpha_predator.enabled" );
   default_list -> add_action( "call_action_list,name=wfi,if=active_enemies<3&talent.chakrams.enabled");
   default_list -> add_action( "call_action_list,name=st,if=active_enemies<3&!talent.alpha_predator.enabled&!talent.wildfire_infusion.enabled" );
@@ -5582,7 +5583,7 @@ void hunter_t::apl_surv()
   default_list -> add_action( "call_action_list,name=apwfi,if=active_enemies<3&talent.alpha_predator.enabled&talent.wildfire_infusion.enabled" );
   default_list -> add_action( "call_action_list,name=wfi,if=active_enemies<3&!talent.alpha_predator.enabled&talent.wildfire_infusion.enabled" );
   default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1&!talent.birds_of_prey.enabled|active_enemies>2" );
-  
+
   // Fillers, cast if nothing else is available.
   default_list -> add_action( "concentrated_flame" );
   default_list -> add_action( "arcane_torrent" );
@@ -5608,8 +5609,8 @@ void hunter_t::apl_surv()
   cds->add_action( "concentrated_flame,if=full_recharge_time<1*gcd" );
   cds->add_action( "the_unbound_force,if=buff.reckless_force.up" );
   cds->add_action( "worldvein_resonance" );
-  cds->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );	
-  // lucid Major Focusdump phase	
+  cds->add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
+  // lucid Major Focusdump phase
   cds->add_action( this, "Serpent Sting", "if=essence.memory_of_lucid_dreams.major&refreshable&buff.vipers_venom.up&!cooldown.memory_of_lucid_dreams.remains" );
   cds->add_talent( this, "Mongoose Bite", "if=essence.memory_of_lucid_dreams.major&!cooldown.memory_of_lucid_dreams.remains" );
   cds->add_action( this, "Wildfire Bomb", "if=essence.memory_of_lucid_dreams.major&full_recharge_time<1.5*gcd&focus<action.mongoose_bite.cost&!cooldown.memory_of_lucid_dreams.remains" );

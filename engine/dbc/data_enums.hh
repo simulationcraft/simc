@@ -103,8 +103,8 @@ enum proc_types
   // Relevant blizzard flags end here
 
   // We need to separate heal ticks and damage ticks for our
-  // system, so define a separate cooldown for them. Registering 
-  // cooldowns will automatically infer the correct type from 
+  // system, so define a separate cooldown for them. Registering
+  // cooldowns will automatically infer the correct type from
   // given proc flags.
   PROC1_PERIODIC_HEAL,
   PROC1_PERIODIC_HEAL_TAKEN,
@@ -132,7 +132,7 @@ enum proc_types2
   PROC2_CAST_HEAL,              // Healing proc_types1 cast finished
   PROC2_TYPE_MAX,
 
-  // Pseudo types 
+  // Pseudo types
   PROC2_PERIODIC_HEAL,          // Tick healing, when only PROC1_PERIODIC is defined
   PROC2_PERIODIC_DAMAGE,        // Tick damage, when only PROC1_PERIODIC is defined
 
