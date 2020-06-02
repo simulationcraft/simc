@@ -3295,7 +3295,7 @@ std::unique_ptr<expr_t> sim_t::create_expression( const std::string& name_str )
       std::string type;
       std::string filter;
 
-      raid_event_expr_t( sim_t* s, std::string& type, std::string& filter ) :
+      raid_event_expr_t( sim_t* s, util::string_view type, util::string_view filter ) :
         expr_t( "raid_event" ), s( s ), type( type ), filter( filter )
       {}
 

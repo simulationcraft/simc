@@ -1618,7 +1618,7 @@ std::unique_ptr<expr_t> enemy_t::create_expression( const std::string& name_str 
         enemy_t* boss;
         std::string debuff_str;
 
-        current_target_debuff_expr_t( enemy_t* e, const std::string& debuff_str ) :
+        current_target_debuff_expr_t( enemy_t* e, util::string_view debuff_str ) :
           expr_t( "current_target_debuff" ), boss( e ), debuff_str( debuff_str )
         {}
 
