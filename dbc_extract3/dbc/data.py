@@ -632,7 +632,6 @@ def initialize_data_model(options):
         SpellName.link('class_option', SpellClassOptions)
         SpellName.link('shapeshift', SpellShapeshift)
         SpellName.link('scaling', SpellScaling)
-        SpellName.link('artifact_power', ArtifactPowerRank)
         SpellName.link('azerite_power', AzeritePower)
         SpellName.link('label', SpellLabel)
         SpellName.link('misc', SpellMisc)
