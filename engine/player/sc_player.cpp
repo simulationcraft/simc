@@ -3332,9 +3332,9 @@ void player_t::create_buffs()
   }
 }
 
-item_t* player_t::find_item_by_name( const std::string& item_name )
+item_t* player_t::find_item_by_name( util::string_view item_name )
 {
-  auto it = range::find_if(items, [item_name](const item_t& item) { return item_name == item.name();});
+  auto it = range::find(items, item_name, &item_t::name );
 
   if ( it != items.end())
   {
@@ -3356,7 +3356,7 @@ item_t* player_t::find_item_by_id( unsigned item_id )
   return nullptr;
 }
 
-item_t* player_t::find_item_by_use_effect_name( const std::string& effect_name )
+item_t* player_t::find_item_by_use_effect_name( util::string_view effect_name )
 {
   auto it = range::find_if(items, [effect_name](const item_t& item) {
     return item.has_use_special_effect() && effect_name == item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name();
@@ -6840,20 +6840,20 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
   iteration_heal_taken += s->result_amount;
 }
 
-void player_t::summon_pet( const std::string& pet_name, const timespan_t duration )
+void player_t::summon_pet( util::string_view pet_name, const timespan_t duration )
 {
   if ( pet_t* p = find_pet( pet_name ) )
     p->summon( duration );
   else
-    sim->errorf( "Player %s is unable to summon pet '%s'\n", name(), pet_name.c_str() );
+    sim->error( "Player {} is unable to summon pet '{}'\n", name(), pet_name );
 }
 
-void player_t::dismiss_pet( const std::string& pet_name )
+void player_t::dismiss_pet( util::string_view pet_name )
 {
   pet_t* p = find_pet( pet_name );
   if ( !p )
   {
-    sim->errorf( "Player %s: Could not find pet with name '%s' to dismiss.", name(), pet_name.c_str() );
+    sim->error( "Player {}: Could not find pet with name '{}' to dismiss.", name(), pet_name );
     return;
   }
   p->dismiss();
@@ -6865,11 +6865,10 @@ bool player_t::recent_cast() const
          ( ( last_cast + timespan_t::from_seconds( 5.0 ) ) > sim->current_time() );
 }
 
-dot_t* player_t::find_dot( const std::string& name, player_t* source ) const
+dot_t* player_t::find_dot( util::string_view name, player_t* source ) const
 {
-  for ( size_t i = 0; i < dot_list.size(); ++i )
+  for ( dot_t* d : dot_list )
   {
-    dot_t* d = dot_list[ i ];
     if ( d->source == source && d->name_str == name )
       return d;
   }
@@ -6889,7 +6888,7 @@ void player_t::clear_action_priority_lists() const
 /**
  * Replaces "old_list" action_priority_list data with "new_list" action_priority_list data
  */
-void player_t::copy_action_priority_list( const std::string& old_list, const std::string& new_list )
+void player_t::copy_action_priority_list( util::string_view old_list, util::string_view new_list )
 {
   action_priority_list_t* ol = find_action_priority_list( old_list );
   action_priority_list_t* nl = find_action_priority_list( new_list );
@@ -6905,7 +6904,7 @@ void player_t::copy_action_priority_list( const std::string& old_list, const std
 }
 
 template <typename T>
-T* find_vector_member( const std::vector<T*>& list, const std::string& name )
+T* find_vector_member( const std::vector<T*>& list, util::string_view name )
 {
   for ( auto t : list )
   {
@@ -6917,52 +6916,52 @@ T* find_vector_member( const std::vector<T*>& list, const std::string& name )
 
 // player_t::find_action_priority_list( const std::string& name ) ===========
 
-action_priority_list_t* player_t::find_action_priority_list( const std::string& name ) const
+action_priority_list_t* player_t::find_action_priority_list( util::string_view name ) const
 {
   return find_vector_member( action_priority_list, name );
 }
 
-pet_t* player_t::find_pet( const std::string& name ) const
+pet_t* player_t::find_pet( util::string_view name ) const
 {
   return find_vector_member( pet_list, name );
 }
 
-stats_t* player_t::find_stats( const std::string& name ) const
+stats_t* player_t::find_stats( util::string_view name ) const
 {
   return find_vector_member( stats_list, name );
 }
 
-gain_t* player_t::find_gain( const std::string& name ) const
+gain_t* player_t::find_gain( util::string_view name ) const
 {
   return find_vector_member( gain_list, name );
 }
 
-proc_t* player_t::find_proc( const std::string& name ) const
+proc_t* player_t::find_proc( util::string_view name ) const
 {
   return find_vector_member( proc_list, name );
 }
 
-sample_data_helper_t* player_t::find_sample_data( const std::string& name ) const
+sample_data_helper_t* player_t::find_sample_data( util::string_view name ) const
 {
   return find_vector_member( sample_data_list, name );
 }
 
-benefit_t* player_t::find_benefit( const std::string& name ) const
+benefit_t* player_t::find_benefit( util::string_view name ) const
 {
   return find_vector_member( benefit_list, name );
 }
 
-uptime_t* player_t::find_uptime( const std::string& name ) const
+uptime_t* player_t::find_uptime( util::string_view name ) const
 {
   return find_vector_member( uptime_list, name );
 }
 
-cooldown_t* player_t::find_cooldown( const std::string& name ) const
+cooldown_t* player_t::find_cooldown( util::string_view name ) const
 {
   return find_vector_member( cooldown_list, name );
 }
 
-action_t* player_t::find_action( const std::string& name ) const
+action_t* player_t::find_action( util::string_view name ) const
 {
   return find_vector_member( action_list, name );
 }
@@ -7160,7 +7159,7 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
   return a;
 }
 
-int player_t::find_action_id( const std::string& name ) const
+int player_t::find_action_id( util::string_view name ) const
 {
   for ( size_t i = 0; i < action_map.size(); i++ )
   {
@@ -7171,7 +7170,7 @@ int player_t::find_action_id( const std::string& name ) const
   return -1;
 }
 
-int player_t::get_action_id( const std::string& name )
+int player_t::get_action_id( util::string_view name )
 {
   auto id = find_action_id( name );
   if ( id != -1 )
@@ -7179,7 +7178,7 @@ int player_t::get_action_id( const std::string& name )
     return id;
   }
 
-  action_map.push_back( name );
+  action_map.emplace_back( name );
   return static_cast<int>(action_map.size() - 1);
 }
 
@@ -9248,7 +9247,7 @@ void player_t::replace_spells()
  * spell_data_t::not_found() is returned.
  * The talent search by name is case sensitive, including all special characters!
  */
-const spell_data_t* player_t::find_talent_spell( const std::string& n, specialization_e s, bool name_tokenized,
+const spell_data_t* player_t::find_talent_spell( util::string_view n, specialization_e s, bool name_tokenized,
                                                  bool check_validity ) const
 {
   if ( s == SPEC_NONE )
@@ -9257,7 +9256,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
   }
 
   // Get a talent's spell id for a given talent name
-  unsigned spell_id = dbc->talent_ability_id( type, s, n.c_str(), name_tokenized );
+  unsigned spell_id = dbc->talent_ability_id( type, s, n, name_tokenized );
 
   if ( !spell_id )
   {
@@ -9293,11 +9292,11 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
   return spell_data_t::not_found();
 }
 
-const spell_data_t* player_t::find_specialization_spell( const std::string& name, specialization_e s ) const
+const spell_data_t* player_t::find_specialization_spell( util::string_view name, specialization_e s ) const
 {
   if ( s == SPEC_NONE || s == _spec )
   {
-    if ( unsigned spell_id = dbc->specialization_ability_id( _spec, name.c_str() ) )
+    if ( unsigned spell_id = dbc->specialization_ability_id( _spec, name ) )
     {
       auto spell = dbc::find_spell( this, spell_id );
 
@@ -9352,7 +9351,7 @@ azerite_power_t player_t::find_azerite_spell( unsigned id ) const
   return azerite -> get_power( id );
 }
 
-azerite_power_t player_t::find_azerite_spell( const std::string& name, bool tokenized ) const
+azerite_power_t player_t::find_azerite_spell( util::string_view name, bool tokenized ) const
 {
   if ( ! azerite )
   {
@@ -9373,7 +9372,7 @@ azerite_essence_t player_t::find_azerite_essence( unsigned id ) const
   return azerite_essence->get_essence( id );
 }
 
-azerite_essence_t player_t::find_azerite_essence( const std::string& name, bool tokenized ) const
+azerite_essence_t player_t::find_azerite_essence( util::string_view name, bool tokenized ) const
 {
   if ( !azerite_essence )
   {
@@ -9400,7 +9399,7 @@ void player_t::vision_of_perfection_proc()
  * It does this by going through various spell lists in following order:
  * class spell, specialization spell, mastery spell, talent spell, racial spell, pet_spell
  */
-const spell_data_t* player_t::find_spell( const std::string& name, specialization_e s ) const
+const spell_data_t* player_t::find_spell( util::string_view name, specialization_e s ) const
 {
   const spell_data_t* sp = find_class_spell( name, s );
   assert( sp );
@@ -9438,9 +9437,9 @@ const spell_data_t* player_t::find_spell( const std::string& name, specializatio
   return spell_data_t::not_found();
 }
 
-const spell_data_t* player_t::find_racial_spell( const std::string& name, race_e r ) const
+const spell_data_t* player_t::find_racial_spell( util::string_view name, race_e r ) const
 {
-  if ( unsigned spell_id = dbc->race_ability_id( type, ( r != RACE_NONE ) ? r : race, name.c_str() ) )
+  if ( unsigned spell_id = dbc->race_ability_id( type, ( r != RACE_NONE ) ? r : race, name ) )
   {
     const spell_data_t* s = dbc->spell( spell_id );
     if ( s->id() == spell_id )
@@ -9452,11 +9451,11 @@ const spell_data_t* player_t::find_racial_spell( const std::string& name, race_e
   return spell_data_t::not_found();
 }
 
-const spell_data_t* player_t::find_class_spell( const std::string& name, specialization_e s ) const
+const spell_data_t* player_t::find_class_spell( util::string_view name, specialization_e s ) const
 {
   if ( s == SPEC_NONE || s == _spec )
   {
-    if ( unsigned spell_id = dbc->class_ability_id( type, _spec, name.c_str() ) )
+    if ( unsigned spell_id = dbc->class_ability_id( type, _spec, name ) )
     {
       const spell_data_t* spell = dbc->spell( spell_id );
       if ( spell->id() == spell_id && as<int>( spell->level() ) <= true_level )
@@ -9469,7 +9468,7 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, special
   return spell_data_t::not_found();
 }
 
-const spell_data_t* player_t::find_pet_spell( const std::string& name ) const
+const spell_data_t* player_t::find_pet_spell( util::string_view name ) const
 {
   if ( unsigned spell_id = dbc->pet_ability_id( type, name ) )
   {
@@ -12075,7 +12074,7 @@ action_t* player_t::select_action( const action_priority_list_t& list,
   return nullptr;
 }
 
-player_t* player_t::actor_by_name_str( const std::string& name ) const
+player_t* player_t::actor_by_name_str( util::string_view name ) const
 {
   // Check player pets first
   for ( size_t i = 0; i < pet_list.size(); i++ )
@@ -12582,9 +12581,9 @@ std::ostream& operator<<(std::ostream &os, const player_t& p)
   return os;
 }
 
-spawner::base_actor_spawner_t* player_t::find_spawner( const std::string& id ) const
+spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
 {
-  auto it = range::find_if( spawners, [ &id ]( spawner::base_actor_spawner_t* o ) {
+  auto it = range::find_if( spawners, [ id ]( spawner::base_actor_spawner_t* o ) {
     return util::str_compare_ci( id, o -> name() );
   } );
 
