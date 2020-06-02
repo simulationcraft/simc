@@ -488,7 +488,7 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
   }
 }
 
-azerite_power_t azerite_state_t::get_power( const std::string& name, bool tokenized )
+azerite_power_t azerite_state_t::get_power( util::string_view name, bool tokenized )
 {
   const auto& power = m_player -> dbc->azerite_power( name, tokenized );
 
@@ -658,7 +658,7 @@ size_t azerite_state_t::rank( unsigned id ) const
   return 0u;
 }
 
-size_t azerite_state_t::rank( const std::string& name, bool tokenized ) const
+size_t azerite_state_t::rank( util::string_view name, bool tokenized ) const
 {
   const auto& power = m_player -> dbc->azerite_power( name, tokenized );
   if ( power.id == 0 )
@@ -674,7 +674,7 @@ bool azerite_state_t::is_enabled( unsigned id ) const
   return rank( id ) > 0;
 }
 
-bool azerite_state_t::is_enabled( const std::string& name, bool tokenized ) const
+bool azerite_state_t::is_enabled( util::string_view name, bool tokenized ) const
 {
   const auto& power = m_player -> dbc->azerite_power( name, tokenized );
   if ( power.id == 0 )
@@ -955,7 +955,7 @@ azerite_essence_state_t::azerite_essence_state_t( const player_t* player ) : m_p
 { }
 
 // Get an azerite essence object by name
-azerite_essence_t azerite_essence_state_t::get_essence( const std::string& name, bool tokenized ) const
+azerite_essence_t azerite_essence_state_t::get_essence( util::string_view name, bool tokenized ) const
 {
   const auto& essence = azerite_essence_entry_t::find( name, tokenized, m_player->dbc->ptr );
   // Could also be a passive spell, so check if the passives logged for the player match this

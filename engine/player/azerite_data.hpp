@@ -204,16 +204,16 @@ public:
   /// Get an azerite_power_t object for a given power identifier
   azerite_power_t get_power( unsigned id );
   /// Get an azerite_power_t object for a given power name, potentially tokenized
-  azerite_power_t get_power( const std::string& name, bool tokenized = false );
+  azerite_power_t get_power( util::string_view name, bool tokenized = false );
 
   /// Check the enable status of an azerite power
   bool is_enabled( unsigned id ) const;
   /// Check the enable status of an azerite power
-  bool is_enabled( const std::string& name, bool tokenized = false ) const;
+  bool is_enabled( util::string_view name, bool tokenized = false ) const;
   /// Rank of the azrerite power (how many items have the selected power)
   size_t rank( unsigned id ) const;
   /// Rank of the azrerite power (how many items have the selected power)
-  size_t rank( const std::string& name, bool tokenized = false ) const;
+  size_t rank( util::string_view name, bool tokenized = false ) const;
 
   /// Parse and sanitize azerite_override option
   bool parse_override( sim_t*, const std::string& /*name*/, const std::string& /*value*/ );
@@ -276,7 +276,7 @@ public:
   azerite_essence_state_t( const player_t* player );
 
   azerite_essence_t get_essence( unsigned id ) const;
-  azerite_essence_t get_essence( const std::string& name, bool tokenized = false ) const;
+  azerite_essence_t get_essence( util::string_view name, bool tokenized = false ) const;
 
   /// Add an azerite essence
   bool add_essence( essence_type type, unsigned id, unsigned rank );
