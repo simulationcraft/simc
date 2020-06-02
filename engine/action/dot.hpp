@@ -79,7 +79,7 @@ public:
   // bad things will happen.
   void   adjust_full_ticks(double coefficient);
   static std::unique_ptr<expr_t> create_expression(dot_t* dot, action_t* action, action_t* source_action,
-    const std::string& name_str, bool dynamic);
+    util::string_view name_str, bool dynamic);
 
   timespan_t remains() const;
   timespan_t time_to_next_tick() const;

@@ -524,9 +524,66 @@ void dot_t::copy( dot_t* other_dot ) const
 }
 
 // dot_t::create_expression =================================================
+namespace {
+
+struct dot_expr_t : public expr_t
+{
+  dot_t* static_dot;
+  action_t* action, * source_action;
+  bool dynamic;
+  target_specific_t<dot_t> specific_dot;
+
+  dot_expr_t( util::string_view n, dot_t* d, action_t* a, action_t* sa, bool dy )
+    : expr_t( n ),
+      static_dot( d ),
+      action( a ),
+      source_action( sa ),
+      dynamic( dy ),
+      specific_dot( false )
+  {
+  }
+
+  // Note, the target of the dot is sourced from the action (APL line) we are creating this action
+  // for. This is required so that cycle_targets and target_if work properly in the cases where
+  // the option is used on a line where the dot expression refers to a completely different
+  // action.
+  dot_t* dot()
+  {
+    if ( !dynamic )
+      return static_dot;
+
+    player_t* dot_target = source_action->target;
+
+    action->player->get_target_data( dot_target );
+
+    dot_t*& dot = specific_dot[ dot_target ];
+    if ( !dot )
+      dot = dot_target->get_dot( action->name_str, action->player );
+
+    return dot;
+  }
+};
+
+template <typename Fn>
+struct fn_dot_expr_t final : public dot_expr_t
+{
+  Fn fn;
+
+  template <typename T = Fn>
+  fn_dot_expr_t( util::string_view n, dot_t* d, action_t* a, action_t* sa, bool dy, T&& fn )
+    : dot_expr_t( n, d, a, sa, dy ), fn( std::forward<T>( fn ) )
+  { }
+
+  double evaluate() override
+  {
+    return coerce( fn( dot() ) );
+  }
+};
+
+} // anon namespace
 
 std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, action_t* source_action,
-                                  const std::string& name_str, bool dynamic )
+                                  util::string_view name_str, bool dynamic )
 {
   if (!dynamic)
   {
@@ -537,417 +594,192 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
     assert( action && "dynamic dot expressions require a action.");
   }
 
-  struct dot_expr_t : public expr_t
-  {
-    dot_t* static_dot;
-    action_t* action, * source_action;
-    bool dynamic;
-    target_specific_t<dot_t> specific_dot;
-
-    dot_expr_t( const std::string& n, dot_t* d, action_t* a, action_t* sa, bool dy )
-      : expr_t( n ),
-        static_dot( d ),
-        action( a ),
-        source_action( sa ),
-        dynamic( dy ),
-        specific_dot( false )
-    {
-    }
-
-    // Note, the target of the dot is sourced from the action (APL line) we are creating this action
-    // for. This is required so that cycle_targets and target_if work properly in the cases where
-    // the option is used on a line where the dot expression refers to a completely different
-    // action.
-    dot_t* dot()
-    {
-      if ( !dynamic )
-        return static_dot;
-
-      player_t* dot_target = source_action->target;
-
-      action->player->get_target_data( dot_target );
-
-      dot_t*& dot = specific_dot[ dot_target ];
-      if ( !dot )
-        dot = dot_target->get_dot( action->name_str, action->player );
-
-      return dot;
-    }
+  auto make_dot_expr = [dot, action, source_action, dynamic]( util::string_view n, auto&& fn ) {
+    using Fn = decltype(fn);
+    return std::make_unique<fn_dot_expr_t<std::decay_t<Fn>>>(
+            n, dot, action, source_action, dynamic, std::forward<Fn>( fn ) );
   };
 
   if ( name_str == "ticks" )
   {
-    struct ticks_expr_t : public dot_expr_t
-    {
-      ticks_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_ticks", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->current_tick;
-      }
-    };
-    return std::make_unique<ticks_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_ticks",
+      []( dot_t* dot ) {
+        return dot->current_tick;
+      } );
   }
   else if ( name_str == "extended_time" )
   {
-    struct extended_time_expr_t : public dot_expr_t
-    {
-      extended_time_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "extended_time", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->extended_time.total_seconds();
-      }
-    };
-    return std::make_unique<extended_time_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_extended_time",
+      []( dot_t* dot ) {
+        return dot->extended_time;
+      } );
   }
   else if ( name_str == "duration" )
   {
-    struct duration_expr_t : public dot_expr_t
-    {
-      // DoT duration expression, returns total duration of current dot.
-      duration_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_duration", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        dot_t* dot = this->dot();
+    return make_dot_expr( "dot_duration",
+      []( dot_t* dot ) {
         if ( !dot->state )
-          return 0;  // DoT isn't active, return 0. Doing otherwise would
-                     // require some effort.
-        return dot->current_action->composite_dot_duration( dot->state )
-            .total_seconds();
-      }
-    };
-    return std::make_unique<duration_expr_t>( dot, action, source_action, dynamic );
+          return 0_ms; // DoT isn't active, return 0. Doing otherwise would
+                       // require some effort.
+        return dot->current_action->composite_dot_duration( dot->state );
+      } );
   }
   else if ( name_str == "refreshable" )
   {
-    struct refresh_expr_t : public dot_expr_t
-    {
-      action_state_t* state;
-
-      refresh_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_refresh", d, a, sa, dynamic ), state( nullptr )
-      {
-      }
-
-      // Don't recycle the event here, since initialization order can break
-      // things
-      ~refresh_expr_t() override
-      {
-        delete state;
-      }
-
-      double evaluate() override
-      {
-        dot_t* d = dot();
-
+    return make_dot_expr( "dot_refresh",
+      [state = std::unique_ptr<action_state_t>()]( dot_t* dot ) mutable {
         // No dot up, thus it'll be refreshable (to full duration)
-        if ( d == nullptr || !d->is_ticking() )
+        if ( dot == nullptr || !dot->is_ticking() )
         {
-          return 1;
+          return true;
         }
 
         if ( !state )
         {
-          state = d->current_action->get_state();
+          state.reset( dot->current_action->get_state() );
         }
 
-        d->current_action->snapshot_state( state, result_amount_type::DMG_OVER_TIME );
+        dot->current_action->snapshot_state( state.get(), result_amount_type::DMG_OVER_TIME );
         timespan_t new_duration =
-            d->current_action->composite_dot_duration( state );
+            dot->current_action->composite_dot_duration( state.get() );
 
-        return d->current_action->dot_refreshable( d, new_duration );
-      }
-    };
-
-    return std::make_unique<refresh_expr_t>( dot, action, source_action, dynamic );
+        return dot->current_action->dot_refreshable( dot, new_duration );
+      } );
   }
   else if ( name_str == "remains" )
   {
-    struct remains_expr_t : public dot_expr_t
-    {
-      remains_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_remains", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->remains().total_seconds();
-      }
-    };
-    return std::make_unique<remains_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_remains",
+      []( dot_t* dot ) {
+        return dot->remains();
+      } );
   }
   else if ( name_str == "tick_dmg" )
   {
-    struct tick_result_amount_typexpr_t : public dot_expr_t
-    {
-      action_state_t* s;
+    return make_dot_expr( "dot_tick_dmg",
+      [state = std::unique_ptr<action_state_t>()]( dot_t* dot ) mutable {
+        if ( !dot->state )
+          return 0.0;
 
-      tick_result_amount_typexpr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_tick_dmg", d, a, sa, dynamic ), s( nullptr )
-      {
-      }
-
-      double evaluate() override
-      {
-        if ( dot()->state )
+        if ( !state )
         {
-          if ( !s )
-          {
-            s = dot()->current_action->get_state();
-          }
-          s->copy_state( dot()->state );
-          s->result = RESULT_HIT;
-          return s->action->calculate_tick_amount( s, dot()->current_stack() );
+          state.reset( dot->current_action->get_state() );
         }
-        return 0.0;
-      }
-
-      ~tick_result_amount_typexpr_t() override
-      {
-        delete s;
-      }
-    };
-    return std::make_unique<tick_result_amount_typexpr_t>( dot, action, source_action, dynamic );
+        state->copy_state( dot->state );
+        state->result = RESULT_HIT;
+        return state->action->calculate_tick_amount( state.get(), dot->current_stack() );
+      } );
   }
   else if ( name_str == "crit_dmg" )
   {
-    struct crit_result_amount_typexpr_t : public dot_expr_t
-    {
-      action_state_t* s;
+    return make_dot_expr( "dot_crit_dmg",
+      [state = std::unique_ptr<action_state_t>()]( dot_t* dot ) mutable {
+        if ( !dot->state )
+          return 0.0;
 
-      crit_result_amount_typexpr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_crit_dmg", d, a, sa, dynamic ), s( nullptr )
-      {
-      }
-
-      double evaluate() override
-      {
-        if ( dot()->state )
+        if ( !state )
         {
-          if ( !s )
-          {
-            s = dot()->current_action->get_state();
-          }
-          s->copy_state( dot()->state );
-          s->result = RESULT_CRIT;
-          return s->action->calculate_tick_amount( s, dot()->current_stack() );
+          state.reset( dot->current_action->get_state() );
         }
-        return 0.0;
-      }
-    };
-    return std::make_unique<crit_result_amount_typexpr_t>( dot, action, source_action, dynamic );
+        state->copy_state( dot->state );
+        state->result = RESULT_CRIT;
+        return state->action->calculate_tick_amount( state.get(), dot->current_stack() );
+      } );
   }
   else if ( name_str == "tick_time_remains" )
   {
-    struct tick_time_remain_expr_t : public dot_expr_t
-    {
-      tick_time_remain_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_tick_time_remain", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->is_ticking()
-                   ? dot()->tick_event->remains().total_seconds()
-                   : 0;
-      }
-    };
-    return std::make_unique<tick_time_remain_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_tick_time_remain",
+      []( dot_t* dot ) {
+        return dot->is_ticking() ? dot->tick_event->remains() : 0_ms;
+      } );
   }
   else if ( name_str == "ticks_remain" )
   {
-    struct ticks_remain_expr_t : public dot_expr_t
-    {
-      ticks_remain_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_ticks_remain", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->ticks_left();
-      }
-    };
-    return std::make_unique<ticks_remain_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_ticks_remain",
+      []( dot_t* dot ) {
+        return dot->ticks_left();
+      } );
   }
   else if ( name_str == "ticks_remain_fractional" )
   {
-    struct ticks_remain_fractional_expr_t : public dot_expr_t
-    {
-      ticks_remain_fractional_expr_t(dot_t* d, action_t* a, action_t* sa, bool dynamic)
-        : dot_expr_t("dot_ticks_remain_fractional", d, a, sa, dynamic)
-      {
-      }
-      double evaluate() override
-      {
-        dot_t* dt = dot();
+    return make_dot_expr( "dot_ticks_remain_fractional",
+      []( dot_t* dot ) {
+        if (!dot->current_action)
+          return 0.0;
+        if (!dot->is_ticking())
+          return 0.0;
 
-        if (!dt->current_action)
-          return 0;
-        if (!dt->is_ticking())
-          return 0;
-
-        return dt->remains() / dt->current_action->tick_time(dt->state);
-      }
-    };
-    return std::make_unique<ticks_remain_fractional_expr_t>(dot, action, source_action, dynamic);
+        return dot->remains() / dot->current_action->tick_time(dot->state);
+      } );
   }
   else if ( name_str == "ticking" )
   {
-    struct ticking_expr_t : public dot_expr_t
-    {
-      ticking_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_ticking", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->ticking;
-      }
-    };
-    return std::make_unique<ticking_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_ticking",
+      []( dot_t* dot ) {
+        return dot->is_ticking();
+      } );
   }
   else if ( name_str == "spell_power" )
   {
-    struct dot_spell_power_expr_t : public dot_expr_t
-    {
-      dot_spell_power_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_spell_power", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->state ? dot()->state->composite_spell_power() : 0;
-      }
-    };
-    return std::make_unique<dot_spell_power_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_spell_power",
+      []( dot_t* dot ) {
+        return dot->state ? dot->state->composite_spell_power() : 0;
+      } );
   }
   else if ( name_str == "attack_power" )
   {
-    struct dot_attack_power_expr_t : public dot_expr_t
-    {
-      dot_attack_power_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_attack_power", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->state ? dot()->state->composite_attack_power() : 0;
-      }
-    };
-    return std::make_unique<dot_attack_power_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_attack_power",
+      []( dot_t* dot ) {
+        return dot->state ? dot->state->composite_attack_power() : 0;
+      } );
   }
   else if ( name_str == "multiplier" )
   {
-    struct dot_multiplier_expr_t : public dot_expr_t
-    {
-      dot_multiplier_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_multiplier", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->state ? dot()->state->ta_multiplier : 0;
-      }
-    };
-    return std::make_unique<dot_multiplier_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_multiplier",
+      []( dot_t* dot ) {
+        return dot->state ? dot->state->ta_multiplier : 0;
+      } );
   }
   else if ( name_str == "pmultiplier" )
   {
-    struct dot_pmultiplier_expr_t : public dot_expr_t
-    {
-      dot_pmultiplier_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_pmultiplier", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->state ? dot()->state->persistent_multiplier : 0;
-      }
-    };
-    return std::make_unique<dot_pmultiplier_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_pmultiplier",
+      []( dot_t* dot ) {
+        return dot->state ? dot->state->persistent_multiplier : 0;
+      } );
   }
   else if ( name_str == "haste_pct" )
   {
-    struct dot_haste_pct_expr_t : public dot_expr_t
-    {
-      dot_haste_pct_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_haste_pct", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->state ? ( 1.0 / dot()->state->haste - 1.0 ) * 100 : 0;
-      }
-    };
-    return std::make_unique<dot_haste_pct_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_haste_pct",
+      []( dot_t* dot ) {
+        return dot->state ? ( 1.0 / dot->state->haste - 1.0 ) * 100 : 0;
+      } );
   }
   else if ( name_str == "current_ticks" )
   {
-    struct current_ticks_expr_t : public dot_expr_t
-    {
-      current_ticks_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_current_ticks", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->num_ticks;
-      }
-    };
-    return std::make_unique<current_ticks_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_current_ticks",
+      []( dot_t* dot ) {
+        return dot->num_ticks;
+      } );
   }
   else if ( name_str == "crit_pct" )
   {
-    struct dot_crit_pct_expr_t : public dot_expr_t
-    {
-      dot_crit_pct_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_crit_pct", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->state ? dot()->state->crit_chance * 100.0 : 0;
-      }
-    };
-    return std::make_unique<dot_crit_pct_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_crit_pct",
+      []( dot_t* dot ) {
+        return dot->state ? dot->state->crit_chance * 100.0 : 0;
+      } );
   }
   else if ( name_str == "stack" )
   {
-    struct dot_stack_expr_t : public dot_expr_t
-    {
-      dot_stack_expr_t( dot_t* d, action_t* a, action_t* sa, bool dynamic )
-        : dot_expr_t( "dot_stack", d, a, sa, dynamic )
-      {
-      }
-      double evaluate() override
-      {
-        return dot()->current_stack();
-      }
-    };
-    return std::make_unique<dot_stack_expr_t>( dot, action, source_action, dynamic );
+    return make_dot_expr( "dot_stack",
+      []( dot_t* dot ) {
+        return dot->current_stack();
+      } );
   }
   else if (name_str == "max_stacks")
   {
-    struct max_stack_expr_t : public dot_expr_t
-    {
-      max_stack_expr_t(dot_t* d, action_t* a, action_t* sa, bool dynamic)
-        : dot_expr_t("dot_max_stacks", d, a, sa, dynamic)
-      {}
-
-      double evaluate() override
-      {
-        return dot()->max_stack;
-      }
-    };
-    return std::make_unique<max_stack_expr_t>(dot, action, source_action, dynamic);
+    return make_dot_expr( "dot_max_stacks",
+      []( dot_t* dot ) {
+        return dot->max_stack;
+      } );
   }
 
 
