@@ -649,7 +649,7 @@ public:
   void create_talents_armory();
   void create_talents_wowhead();
   void clear_action_priority_lists() const;
-  void copy_action_priority_list( const std::string& old_list, const std::string& new_list );
+  void copy_action_priority_list( util::string_view old_list, util::string_view new_list );
   void change_position( position_e );
   void register_resource_callback(resource_e resource, double value, resource_callback_function_t callback,
       bool use_pct, bool fire_once = true);
@@ -710,36 +710,36 @@ public:
   pet_t* cast_pet();
   const pet_t* cast_pet() const;
 
-  azerite_power_t find_azerite_spell( const std::string& name, bool tokenized = false ) const;
+  azerite_power_t find_azerite_spell( util::string_view name, bool tokenized = false ) const;
   azerite_power_t find_azerite_spell( unsigned power_id ) const;
-  azerite_essence_t find_azerite_essence( const std::string& name, bool tokenized = false ) const;
+  azerite_essence_t find_azerite_essence( util::string_view name, bool tokenized = false ) const;
   azerite_essence_t find_azerite_essence( unsigned power_id ) const;
-  const spell_data_t* find_racial_spell( const std::string& name, race_e s = RACE_NONE ) const;
-  const spell_data_t* find_class_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_pet_spell( const std::string& name ) const;
-  const spell_data_t* find_talent_spell( const std::string& name, specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
-  const spell_data_t* find_specialization_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_racial_spell( util::string_view name, race_e s = RACE_NONE ) const;
+  const spell_data_t* find_class_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_pet_spell( util::string_view name ) const;
+  const spell_data_t* find_talent_spell( util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
+  const spell_data_t* find_specialization_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_specialization_spell( unsigned spell_id, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_mastery_spell( specialization_e s, uint32_t idx = 0 ) const;
-  const spell_data_t* find_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_spell( unsigned int id, specialization_e s ) const;
   const spell_data_t* find_spell( unsigned int id ) const;
 
-  pet_t*      find_pet( const std::string& name ) const;
-  item_t*     find_item_by_name( const std::string& name );
+  pet_t*      find_pet( util::string_view name ) const;
+  item_t*     find_item_by_name( util::string_view name );
   item_t*     find_item_by_id( unsigned id );
-  item_t*     find_item_by_use_effect_name( const std::string& name );
-  action_t*   find_action( const std::string& ) const;
-  cooldown_t* find_cooldown( const std::string& name ) const;
-  dot_t*      find_dot     ( const std::string& name, player_t* source ) const;
-  stats_t*    find_stats   ( const std::string& name ) const;
-  gain_t*     find_gain    ( const std::string& name ) const;
-  proc_t*     find_proc    ( const std::string& name ) const;
-  benefit_t*  find_benefit ( const std::string& name ) const;
-  uptime_t*   find_uptime  ( const std::string& name ) const;
-  sample_data_helper_t* find_sample_data( const std::string& name ) const;
-  action_priority_list_t* find_action_priority_list( const std::string& name ) const;
-  int find_action_id( const std::string& name ) const;
+  item_t*     find_item_by_use_effect_name( util::string_view name );
+  action_t*   find_action( util::string_view ) const;
+  cooldown_t* find_cooldown( util::string_view name ) const;
+  dot_t*      find_dot     ( util::string_view name, player_t* source ) const;
+  stats_t*    find_stats   ( util::string_view name ) const;
+  gain_t*     find_gain    ( util::string_view name ) const;
+  proc_t*     find_proc    ( util::string_view name ) const;
+  benefit_t*  find_benefit ( util::string_view name ) const;
+  uptime_t*   find_uptime  ( util::string_view name ) const;
+  sample_data_helper_t* find_sample_data( util::string_view name ) const;
+  action_priority_list_t* find_action_priority_list( util::string_view name ) const;
+  int find_action_id( util::string_view name ) const;
 
   cooldown_t* get_cooldown( const std::string& name, action_t* action = nullptr );
   real_ppm_t* get_rppm(const std::string& name);
@@ -754,7 +754,7 @@ public:
   uptime_t*   get_uptime  ( const std::string& name );
   sample_data_helper_t* get_sample_data( const std::string& name );
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
-  int get_action_id( const std::string& name );
+  int get_action_id( util::string_view name );
 
 
   // Virtual methods
@@ -974,8 +974,8 @@ public:
 
   virtual bool taunt( player_t* /* source */ ) { return false; }
 
-  virtual void  summon_pet( const std::string& name, timespan_t duration = timespan_t::zero() );
-  virtual void dismiss_pet( const std::string& name );
+  virtual void  summon_pet( util::string_view name, timespan_t duration = timespan_t::zero() );
+  virtual void dismiss_pet( util::string_view name );
 
   virtual std::unique_ptr<expr_t> create_expression( const std::string& name );
   virtual std::unique_ptr<expr_t> create_action_expression( action_t&, const std::string& name );
@@ -1091,7 +1091,7 @@ public:
 
   // Figure out another actor, by name. Prioritizes pets > harmful targets >
   // other players. Used by "actor.<name>" expression currently.
-  virtual player_t* actor_by_name_str( const std::string& ) const;
+  virtual player_t* actor_by_name_str( util::string_view ) const;
 
   // Wicked resource threshold trigger-ready stuff .. work in progress
   event_t* resource_threshold_trigger;
@@ -1123,7 +1123,7 @@ public:
   // Stuff, testing
   std::vector<spawner::base_actor_spawner_t*> spawners;
 
-  spawner::base_actor_spawner_t* find_spawner( const std::string& id ) const;
+  spawner::base_actor_spawner_t* find_spawner( util::string_view id ) const;
   int nth_iteration() const;
 };
 
