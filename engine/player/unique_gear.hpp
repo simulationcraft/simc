@@ -420,7 +420,7 @@ struct proc_action_t : public T_ACTION
     }
   }
 
-  proc_action_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
+  proc_action_t( util::string_view token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
     super( token, p, s ),
     effect(nullptr)
   {
@@ -509,7 +509,7 @@ struct proc_spell_t : public proc_action_t<spell_t>
     super( e )
   { }
 
-  proc_spell_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
+  proc_spell_t( util::string_view token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
     super( token, p, s, i )
   { }
 };
@@ -518,7 +518,7 @@ struct proc_heal_t : public proc_action_t<heal_t>
 {
   using super = proc_action_t<heal_t>;
 
-  proc_heal_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
+  proc_heal_t( util::string_view token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
     super( token, p, s, i )
   { }
 
@@ -536,7 +536,7 @@ struct proc_attack_t : public proc_action_t<attack_t>
   {
   }
 
-  proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
+  proc_attack_t( util::string_view token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
     super( token, p, s, i )
   { }
 
@@ -560,7 +560,7 @@ struct proc_resource_t : public proc_action_t<spell_t>
     __initialize();
   }
 
-  proc_resource_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* item_ = nullptr ) :
+  proc_resource_t( util::string_view token, player_t* p, const spell_data_t* s, const item_t* item_ = nullptr ) :
     super( token, p, s, item_ ), gain_da( 0 ), gain_ta( 0 ), gain_resource( RESOURCE_NONE )
   {
     __initialize();
@@ -592,7 +592,7 @@ struct proc_resource_t : public proc_action_t<spell_t>
 };
 
 template <typename CLASS, typename ...ARGS>
-action_t* create_proc_action( const std::string& name, const special_effect_t& effect, ARGS&&... args )
+action_t* create_proc_action( util::string_view name, const special_effect_t& effect, ARGS&&... args )
 {
   auto player = effect.player;
   auto a = player -> find_action( name );

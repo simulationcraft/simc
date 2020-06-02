@@ -19,7 +19,7 @@
 // ==========================================================================
 
 spell_base_t::spell_base_t(action_e at,
-  const std::string& token,
+  util::string_view token,
   player_t* p) :
   spell_base_t(at, token, p, spell_data_t::nil())
 {
@@ -27,7 +27,7 @@ spell_base_t::spell_base_t(action_e at,
 }
 
 spell_base_t::spell_base_t( action_e at,
-                            const std::string& token,
+                            util::string_view token,
                             player_t* p,
                             const spell_data_t* s ) :
   action_t( at, token, p, s ),
@@ -164,13 +164,13 @@ proc_types spell_base_t::proc_type() const
 // Harmful Spell
 // ==========================================================================
 
-spell_t::spell_t(const std::string& token,
+spell_t::spell_t(util::string_view token,
   player_t* p) :
   spell_t(token, p, spell_data_t::nil())
 {
 }
 
-spell_t::spell_t( const std::string&  token,
+spell_t::spell_t( util::string_view   token,
                   player_t*           p,
                   const spell_data_t* s ) :
   spell_base_t( ACTION_SPELL, token, p, s )

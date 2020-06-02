@@ -12,8 +12,8 @@ struct attack_t : public action_t
 {
   double base_attack_expertise;
 
-  attack_t(const std::string& token, player_t* p);
-  attack_t( const std::string& token, player_t* p, const spell_data_t* s );
+  attack_t( util::string_view token, player_t* p );
+  attack_t( util::string_view token, player_t* p, const spell_data_t* s );
 
   // Attack Overrides
   virtual timespan_t execute_time() const override;
@@ -78,8 +78,8 @@ private:
 
 struct melee_attack_t : public attack_t
 {
-  melee_attack_t(const std::string& token, player_t* p);
-  melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s );
+  melee_attack_t( util::string_view token, player_t* p );
+  melee_attack_t( util::string_view token, player_t* p, const spell_data_t* s );
 
   // Melee Attack Overrides
   virtual void init() override;
@@ -93,8 +93,8 @@ struct melee_attack_t : public attack_t
 
 struct ranged_attack_t : public attack_t
 {
-  ranged_attack_t(const std::string& token, player_t* p);
-  ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s );
+  ranged_attack_t( util::string_view token, player_t* p );
+  ranged_attack_t( util::string_view token, player_t* p, const spell_data_t* s );
 
   // Ranged Attack Overrides
   virtual double composite_target_multiplier( player_t* ) const override;

@@ -1025,7 +1025,7 @@ public:
 
   scaling_metric_data_t scaling_for_metric( scale_metric_e metric ) const;
 
-  virtual action_t* create_proc_action( const std::string& /* name */, const special_effect_t& /* effect */ )
+  virtual action_t* create_proc_action( util::string_view /* name */, const special_effect_t& /* effect */ )
   { return nullptr; }
   virtual bool requires_data_collection() const
   { return active_during_iteration; }

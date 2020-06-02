@@ -263,13 +263,13 @@ action_t::options_t::options_t()
     target_str()
 {
 }
-action_t::action_t(action_e ty, const std::string& token, player_t* p)
+action_t::action_t( action_e ty, util::string_view token, player_t* p )
   : action_t(ty, token, p, spell_data_t::nil())
 {
 
 }
 
-action_t::action_t( action_e ty, const std::string& token, player_t* p, const spell_data_t* s )
+action_t::action_t( action_e ty, util::string_view token, player_t* p, const spell_data_t* s )
   : s_data( s ? s : spell_data_t::nil() ),
     s_data_reporting(spell_data_t::nil()),
     sim( p->sim ),
@@ -3886,7 +3886,7 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
 }
 
 swap_action_list_t::swap_action_list_t( player_t* player, const std::string& options_str,
-                                        const std::string& name ) :
+                                        util::string_view name ) :
     action_t( ACTION_OTHER, name, player ),
     alist( nullptr )
 {
@@ -3898,7 +3898,7 @@ swap_action_list_t::swap_action_list_t( player_t* player, const std::string& opt
   ignore_false_positive = true;
   if ( alist_name.empty() )
   {
-    sim->errorf( "Player %s uses %s without specifying the name of the action list\n", player->name(), name.c_str() );
+    sim->error( "Player {} uses {} without specifying the name of the action list\n", player->name(), name );
     sim->cancel();
   }
 
@@ -3906,8 +3906,7 @@ swap_action_list_t::swap_action_list_t( player_t* player, const std::string& opt
 
   if ( !alist )
   {
-    sim->errorf( "Player %s uses %s with unknown action list %s\n", player->name(), name.c_str(),
-                 alist_name.c_str() );
+    sim->error( "Player {} uses {} with unknown action list {}\n", player->name(), name, alist_name );
     sim->cancel();
   }
   else if ( randomtoggle == 1 )
