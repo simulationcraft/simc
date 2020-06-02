@@ -9520,7 +9520,7 @@ struct player_expr_t : public expr_t
 {
   player_t& player;
 
-  player_expr_t( const std::string& n, player_t& p ) : expr_t( n ), player( p )
+  player_expr_t( util::string_view n, player_t& p ) : expr_t( n ), player( p )
   {
   }
 };
@@ -9528,7 +9528,7 @@ struct player_expr_t : public expr_t
 struct position_expr_t : public player_expr_t
 {
   int mask;
-  position_expr_t( const std::string& n, player_t& p, int m ) : player_expr_t( n, p ), mask( m )
+  position_expr_t( util::string_view n, player_t& p, int m ) : player_expr_t( n, p ), mask( m )
   {
   }
   double evaluate() override
@@ -9724,7 +9724,7 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
       {
         const action_variable_t* var_;
 
-        variable_expr_t( player_t* p, const std::string& name ) : expr_t( "variable" ),
+        variable_expr_t( player_t* p, util::string_view name ) : expr_t( "variable" ),
           var_( nullptr )
         {
           auto it = range::find_if( p->variables, [&name]( const action_variable_t* var ) {

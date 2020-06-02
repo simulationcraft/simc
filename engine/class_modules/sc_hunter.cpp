@@ -4602,7 +4602,7 @@ std::unique_ptr<expr_t> hunter_t::create_expression( const std::string& expressi
         hunter_t* hunter;
         cooldown_t* cooldown;
 
-        cooldown_remains_guess_t( hunter_t* h, const std::string& str, cooldown_t* cd ) :
+        cooldown_remains_guess_t( hunter_t* h, util::string_view str, cooldown_t* cd ) :
           expr_t( str ), hunter( h ), cooldown( cd )
         { }
 
@@ -4629,7 +4629,7 @@ std::unique_ptr<expr_t> hunter_t::create_expression( const std::string& expressi
         hunter_t* hunter;
         cooldown_t* cooldown;
 
-        cooldown_duration_guess_t( hunter_t* h, const std::string& str, cooldown_t* cd ) :
+        cooldown_duration_guess_t( hunter_t* h, util::string_view str, cooldown_t* cd ) :
           expr_t( str ), hunter( h ), cooldown( cd )
         { }
 
