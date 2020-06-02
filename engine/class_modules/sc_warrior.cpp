@@ -5431,12 +5431,11 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
   default_list -> add_action( this, "Ignore Pain", "if=rage.deficit<25+20*talent.booming_voice.enabled*cooldown.demoralizing_shout.ready", "use Ignore Pain to avoid rage capping" );
-  default_list -> add_action( "worldvein_resonance,if=cooldown.avatar.remains<=2");
+  default_list -> add_action( "worldvein_resonance,if=cooldown.avatar.remains<=2" );
   default_list -> add_action( "memory_of_lucid_dreams,if=cooldown.avatar.remains<=gcd" );
-  default_list -> add_action( "concentrated_flame,if=buff.avatar.down&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3");
+  default_list -> add_action( "concentrated_flame,if=buff.avatar.down&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3" );
   default_list -> add_action( this, "Last Stand", "if=essence.anima_of_life_and_death.major" );
-  default_list -> add_action( "anima_of_death");
-  default_list -> add_action("heart_essence,if=!(essence.the_crucible_of_flame.major|essence.worldvein_resonance.major|essence.anima_of_life_and_death.major|essence.memory_of_lucid_dreams.major)");
+  default_list -> add_action( "heart_essence,if=!(essence.the_crucible_of_flame.major|essence.worldvein_resonance.major|essence.anima_of_life_and_death.major|essence.memory_of_lucid_dreams.major)" );
   default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
   default_list -> add_action( this, "Avatar" );
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
@@ -5444,7 +5443,7 @@ void warrior_t::apl_prot()
 
   st -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap=2&talent.unstoppable_force.enabled&buff.avatar.up" );
   st -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down" );
-  st -> add_action( this, "Shield Slam");
+  st -> add_action( this, "Shield Slam" );
   st -> add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up)" );
   st -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
   st -> add_action( "use_item,name=ashvanes_razor_coral,target_if=debuff.razor_coral_debuff.stack=0" );
@@ -5455,12 +5454,12 @@ void warrior_t::apl_prot()
   st -> add_action( "use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.shield_slam.remains>=4" );
   st -> add_talent( this, "Ravager" );
   st -> add_action( this, "Devastate" );
-  st -> add_action( this, "Storm Bolt");
+  st -> add_action( this, "Storm Bolt" );
 
   aoe -> add_action( this, "Thunder Clap" );
   aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
-  aoe -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down&buff.memory_of_lucid_dreams.up");
-  aoe -> add_action( this, "Shield Slam", "if=buff.memory_of_lucid_dreams.up");
+  aoe -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down&buff.memory_of_lucid_dreams.up" );
+  aoe -> add_action( this, "Shield Slam", "if=buff.memory_of_lucid_dreams.up" );
   aoe -> add_talent( this, "Dragon Roar" );
   aoe -> add_action( this, "Revenge" );
   aoe -> add_action( "use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.thunder_clap.remains>=4" );
