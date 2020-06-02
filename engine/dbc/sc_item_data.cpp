@@ -1047,7 +1047,7 @@ static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_s
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ].value_1 == 0 )
+    if ( entries[ i ].value_4 == 0 )
     {
       continue;
     }
