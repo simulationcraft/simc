@@ -653,8 +653,8 @@ public:
   void change_position( position_e );
   void register_resource_callback(resource_e resource, double value, resource_callback_function_t callback,
       bool use_pct, bool fire_once = true);
-  bool add_action( std::string action, std::string options = "", std::string alist = "default" );
-  bool add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
+  bool add_action( util::string_view action, util::string_view options = "", util::string_view alist = "default" );
+  bool add_action( const spell_data_t* s, util::string_view options = "", util::string_view alist = "default" );
   void add_option( std::unique_ptr<option_t> o );
   void parse_talents_numbers( const std::string& talent_string );
   bool parse_talents_armory( const std::string& talent_string );
@@ -753,7 +753,7 @@ public:
   benefit_t*  get_benefit ( const std::string& name );
   uptime_t*   get_uptime  ( const std::string& name );
   sample_data_helper_t* get_sample_data( const std::string& name );
-  action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
+  action_priority_list_t* get_action_priority_list( util::string_view name, util::string_view comment = {} );
   int get_action_id( util::string_view name );
 
 

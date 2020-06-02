@@ -2261,7 +2261,7 @@ std::vector<std::string> player_t::get_racial_actions()
  * and check if that spell data is ok()
  * returns true if spell data is ok(), false otherwise
  */
-bool player_t::add_action( std::string action, std::string options, std::string alist )
+bool player_t::add_action( util::string_view action, util::string_view options, util::string_view alist )
 {
   return add_action( find_class_spell( action ), options, alist );
 }
@@ -2272,7 +2272,7 @@ bool player_t::add_action( std::string action, std::string options, std::string 
  * Helper function to add actions to the action list if given spell data is ok()
  * returns true if spell data is ok(), false otherwise
  */
-bool player_t::add_action( const spell_data_t* s, std::string options, std::string alist )
+bool player_t::add_action( const spell_data_t* s, util::string_view options, util::string_view alist )
 {
   if ( s->ok() )
   {
@@ -2283,7 +2283,8 @@ bool player_t::add_action( const spell_data_t* s, std::string options, std::stri
     str += "/" + name;
     if ( !options.empty() )
     {
-      str += "," + options;
+      str += ",";
+      str.append( options.data(), options.size() );
     }
     return true;
   }
@@ -7139,7 +7140,7 @@ uptime_t* player_t::get_uptime( const std::string& name )
   return u;
 }
 
-action_priority_list_t* player_t::get_action_priority_list( const std::string& name, const std::string& comment )
+action_priority_list_t* player_t::get_action_priority_list( util::string_view name, util::string_view comment )
 {
   action_priority_list_t* a = find_action_priority_list( name );
   if ( !a )
@@ -7149,10 +7150,9 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
       throw std::invalid_argument("Maximum number of action lists is 64");
     }
 
-    a                          = new action_priority_list_t( name, this );
-    a->action_list_comment_str = comment;
-    a->internal_id             = action_list_id_++;
-    a->internal_id_mask        = 1ULL << ( a->internal_id );
+    a                   = new action_priority_list_t( name, this, comment );
+    a->internal_id      = action_list_id_++;
+    a->internal_id_mask = 1ULL << ( a->internal_id );
 
     action_priority_list.push_back( a );
   }
