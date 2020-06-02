@@ -1,4 +1,4 @@
-SimulationCraft 830-02 for World of Warcraft 8.3.0 Live (wow build 33051, git build bfa-dev 1c37f14269)
+SimulationCraft 830-02 for World of Warcraft 8.3.0.34220 Live (hotfix 2020-06-02/34220)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
