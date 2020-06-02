@@ -15,6 +15,7 @@
 #include <memory>
 
 #include "sc_timespan.hpp"
+#include "util/string_view.hpp"
 
 struct sim_t;
 
@@ -36,12 +37,12 @@ enum class parse_status : unsigned
 struct option_t
 {
 public:
-  option_t( const std::string& name ) :
+  option_t( util::string_view name ) :
     _name( name )
 { }
   virtual ~option_t() { }
   opts::parse_status parse( sim_t* sim , const std::string& n, const std::string& value ) const;
-  std::string name() const
+  const std::string& name() const
   { return _name; }
   std::ostream& print( std::ostream& stream ) const
   { return do_print( stream ); }
@@ -68,30 +69,30 @@ void parse( sim_t*, const std::string& context, const std::vector<std::unique_pt
 inline std::ostream& operator<<( std::ostream& stream, const std::unique_ptr<option_t>& opt )
 { return opt -> print( stream ); }
 
-std::unique_ptr<option_t> opt_string( const std::string& n, std::string& v );
-std::unique_ptr<option_t> opt_append( const std::string& n, std::string& v );
-std::unique_ptr<option_t> opt_bool( const std::string& n, int& v );
-std::unique_ptr<option_t> opt_bool( const std::string& n, bool& v );
-std::unique_ptr<option_t> opt_uint64( const std::string& n, uint64_t& v );
-std::unique_ptr<option_t> opt_int( const std::string& n, int& v );
-std::unique_ptr<option_t> opt_int( const std::string& n, int& v, int , int );
-std::unique_ptr<option_t> opt_uint( const std::string& n, unsigned& v );
-std::unique_ptr<option_t> opt_uint( const std::string& n, unsigned& v, unsigned , unsigned  );
-std::unique_ptr<option_t> opt_float( const std::string& n, double& v );
-std::unique_ptr<option_t> opt_float( const std::string& n, double& v, double , double  );
-std::unique_ptr<option_t> opt_timespan( const std::string& n, timespan_t& v );
-std::unique_ptr<option_t> opt_timespan( const std::string& n, timespan_t& v, timespan_t , timespan_t  );
-std::unique_ptr<option_t> opt_list( const std::string& n, opts::list_t& v );
-std::unique_ptr<option_t> opt_map( const std::string& n, opts::map_t& v );
-std::unique_ptr<option_t> opt_map_list( const std::string& n, opts::map_list_t& v );
-std::unique_ptr<option_t> opt_func( const std::string& n, const opts::function_t& f );
-std::unique_ptr<option_t> opt_deprecated( const std::string& n, const std::string& new_option );
-std::unique_ptr<option_t> opt_obsoleted( const std::string& n );
+std::unique_ptr<option_t> opt_string( util::string_view n, std::string& v );
+std::unique_ptr<option_t> opt_append( util::string_view n, std::string& v );
+std::unique_ptr<option_t> opt_bool( util::string_view n, int& v );
+std::unique_ptr<option_t> opt_bool( util::string_view n, bool& v );
+std::unique_ptr<option_t> opt_uint64( util::string_view n, uint64_t& v );
+std::unique_ptr<option_t> opt_int( util::string_view n, int& v );
+std::unique_ptr<option_t> opt_int( util::string_view n, int& v, int , int );
+std::unique_ptr<option_t> opt_uint( util::string_view n, unsigned& v );
+std::unique_ptr<option_t> opt_uint( util::string_view n, unsigned& v, unsigned , unsigned  );
+std::unique_ptr<option_t> opt_float( util::string_view n, double& v );
+std::unique_ptr<option_t> opt_float( util::string_view n, double& v, double , double  );
+std::unique_ptr<option_t> opt_timespan( util::string_view n, timespan_t& v );
+std::unique_ptr<option_t> opt_timespan( util::string_view n, timespan_t& v, timespan_t , timespan_t  );
+std::unique_ptr<option_t> opt_list( util::string_view n, opts::list_t& v );
+std::unique_ptr<option_t> opt_map( util::string_view n, opts::map_t& v );
+std::unique_ptr<option_t> opt_map_list( util::string_view n, opts::map_list_t& v );
+std::unique_ptr<option_t> opt_func( util::string_view n, const opts::function_t& f );
+std::unique_ptr<option_t> opt_deprecated( util::string_view n, util::string_view new_option );
+std::unique_ptr<option_t> opt_obsoleted( util::string_view n );
 
 struct option_tuple_t
 {
   std::string scope, name, value;
-  option_tuple_t( const std::string& s, const std::string& n, const std::string& v ) : scope( s ), name( n ), value( v ) {}
+  option_tuple_t( util::string_view s, util::string_view n, util::string_view v ) : scope( s ), name( n ), value( v ) {}
 };
 
 struct option_db_t : public std::vector<option_tuple_t>
@@ -100,9 +101,9 @@ struct option_db_t : public std::vector<option_tuple_t>
   std::unordered_map<std::string, std::string> var_map;
 
   option_db_t();
-  void add( const std::string& scope, const std::string& name, const std::string& value )
+  void add( util::string_view scope, util::string_view name, util::string_view value )
   {
-    push_back( option_tuple_t( scope, name, value ) );
+    emplace_back( scope, name, value );
   }
   bool parse_file( std::istream& file );
   void parse_token( const std::string& token );
