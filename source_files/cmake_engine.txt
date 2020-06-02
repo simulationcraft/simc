@@ -128,6 +128,7 @@ sim/shuffled_rng.hpp
 sim/sim_control.hpp
 sim/sim_ostream.hpp
 sim/uptime.hpp
+sim/x6_pantheon.hpp
 simulationcraft.hpp
 util/cache.hpp
 util/chrono.hpp
@@ -242,6 +243,7 @@ player/sc_unique_gear.cpp
 player/spawner_base.cpp
 player/target_specific.cpp
 player/unique_gear_bfa.cpp
+player/unique_gear_legion.cpp
 player/unique_gear_shadowlands.cpp
 report/charts.cpp
 report/color.cpp
@@ -272,6 +274,7 @@ sim/sc_sim.cpp
 sim/scale_factor_control.cpp
 sim/shuffled_rng.cpp
 sim/uptime_benefit.cpp
+sim/x6_pantheon.cpp
 util/chrono.cpp
 util/concurrency.cpp
 util/git_info.cpp

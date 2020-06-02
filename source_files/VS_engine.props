@@ -134,6 +134,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\sim\sim_control.hpp" />
 		<ClInclude Include="..\engine\sim\sim_ostream.hpp" />
 		<ClInclude Include="..\engine\sim\uptime.hpp" />
+		<ClInclude Include="..\engine\sim\x6_pantheon.hpp" />
 		<ClInclude Include="..\engine\simulationcraft.hpp" />
 		<ClInclude Include="..\engine\util\cache.hpp" />
 		<ClInclude Include="..\engine\util\chrono.hpp" />
@@ -438,6 +439,9 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\unique_gear_bfa.cpp">
 			
 		</ClCompile>
+		<ClCompile Include="..\engine\player\unique_gear_legion.cpp">
+			
+		</ClCompile>
 		<ClCompile Include="..\engine\player\unique_gear_shadowlands.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
@@ -527,6 +531,9 @@ To change the list of source files run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\uptime_benefit.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\sim\x6_pantheon.cpp">
+			
 		</ClCompile>
 		<ClCompile Include="..\engine\util\chrono.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>

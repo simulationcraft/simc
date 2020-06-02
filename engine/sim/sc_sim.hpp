@@ -349,6 +349,12 @@ struct sim_t : private sc_thread_t
     double infinite_stars_miss_chance = 0;
   } bfa_opts;
 
+  // Expansion specific data
+  struct legion_data_t
+  {
+    std::unique_ptr<unique_gear::pantheon_state_t> pantheon_proxy;
+  } legion_data;
+
   // Auras and De-Buffs
   auto_dispose<std::vector<buff_t*>> buff_list;
 

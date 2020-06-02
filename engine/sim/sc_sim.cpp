@@ -28,6 +28,7 @@
 #include "sim/plot.hpp"
 #include "sim/reforge_plot.hpp"
 #include "sim/sc_cooldown.hpp"
+#include "sim/x6_pantheon.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "util/xml.hpp"
 #include <random>
@@ -1739,6 +1740,11 @@ void sim_t::reset()
   }
 
   raid_event_t::reset( this );
+
+  if ( legion_data.pantheon_proxy )
+  {
+    legion_data.pantheon_proxy -> reset();
+  }
 }
 
 /// Start combat.
@@ -1828,6 +1834,11 @@ void sim_t::combat_begin()
     target -> death_pct = enemy_death_pct;
   }
   make_event<sim_safeguard_end_event_t>( *this, *this, expected_iteration_time + expected_iteration_time );
+
+  if ( legion_data.pantheon_proxy )
+  {
+    legion_data.pantheon_proxy -> start();
+  }
 
   raid_event_t::combat_begin( this );
 }

@@ -4692,6 +4692,9 @@ void unique_gear::register_special_effect( unsigned spell_id, const char* encode
  */
 void unique_gear::register_special_effects()
 {
+  // Register legion special effects
+  register_special_effects_legion();
+
   // Register azerite special effects
   azerite::register_azerite_powers();
 
@@ -4921,6 +4924,7 @@ void unique_gear::unregister_special_effects()
 
 void unique_gear::register_hotfixes()
 {
+  register_hotfixes_legion();
   register_hotfixes_bfa();
   shadowlands::register_hotfixes();
 }
@@ -4932,6 +4936,7 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   sim -> register_target_data_initializer( empty_drinking_horn_constructor_t( 124238, trinkets ) );
   sim -> register_target_data_initializer( prophecy_of_fear_constructor_t( 124230, trinkets ) );
 
+  register_target_data_initializers_legion( sim );
   register_target_data_initializers_bfa( sim );
   azerite::register_azerite_target_data_initializers( sim );
   
