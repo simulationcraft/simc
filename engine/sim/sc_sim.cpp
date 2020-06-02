@@ -28,7 +28,6 @@
 #include "sim/plot.hpp"
 #include "sim/reforge_plot.hpp"
 #include "sim/sc_cooldown.hpp"
-#include "sim/x6_pantheon.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "util/xml.hpp"
 #include <random>
@@ -1740,11 +1739,6 @@ void sim_t::reset()
   }
 
   raid_event_t::reset( this );
-
-  if ( legion_data.pantheon_proxy )
-  {
-    legion_data.pantheon_proxy -> reset();
-  }
 }
 
 /// Start combat.
@@ -1834,11 +1828,6 @@ void sim_t::combat_begin()
     target -> death_pct = enemy_death_pct;
   }
   make_event<sim_safeguard_end_event_t>( *this, *this, expected_iteration_time + expected_iteration_time );
-
-  if ( legion_data.pantheon_proxy )
-  {
-    legion_data.pantheon_proxy -> start();
-  }
 
   raid_event_t::combat_begin( this );
 }
@@ -3576,9 +3565,9 @@ void sim_t::create_options()
   add_option( opt_int( "legion.void_stalkers_contract_targets", legion_opts.void_stalkers_contract_targets ) );
   add_option( opt_float( "legion.specter_of_betrayal_overlap", legion_opts.specter_of_betrayal_overlap, 0, 1 ) );
   add_option( opt_float( "legion.archimondes_hatred_reborn_damage", legion_opts.archimondes_hatred_reborn_damage, 0, 1 ) );
-  add_option( opt_string( "legion.pantheon_trinket_users", legion_opts.pantheon_trinket_users ) );
-  add_option( opt_timespan( "legion.pantheon_trinket_interval", legion_opts.pantheon_trinket_interval ) );
-  add_option( opt_float( "legion.pantheon_trinket_interval_stddev", legion_opts.pantheon_trinket_interval_stddev ) );
+  add_option( opt_obsoleted( "legion.pantheon_trinket_users" ) );
+  add_option( opt_obsoleted( "legion.pantheon_trinket_interval" ) );
+  add_option( opt_obsoleted( "legion.pantheon_trinket_interval_stddev" ) );
   add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, const std::string&, const std::string& value ) {
     auto split = util::string_split( value, ":/," );
     range::for_each( split, [ sim ]( const std::string& str ) {
