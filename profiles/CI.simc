@@ -2,7 +2,7 @@ optimal_raid=1
 default_actions=1
 bfa.worldvein_allies=5
 
-# T25_Death_Knight_Blood.simc
+T25_Death_Knight_Blood.simc
 # T25_Death_Knight_Frost.simc
 # T25_Death_Knight_Unholy.simc
 
@@ -15,12 +15,12 @@ bfa.worldvein_allies=5
 # T25_Druid_Restoration.simc
 
 T25_Hunter_Beast_Mastery.simc
-T25_Hunter_Marksmanship.simc
+# T25_Hunter_Marksmanship.simc
 T25_Hunter_Survival.simc
 
 T25_Mage_Arcane.simc
 # T25_Mage_Fire.simc
-T25_Mage_Frost.simc
+# T25_Mage_Frost.simc
 
 # T25_Monk_Brewmaster.simc
 # T25_Monk_Windwalker.simc
