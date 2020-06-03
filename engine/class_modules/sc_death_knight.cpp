@@ -403,6 +403,7 @@ public:
   // Counters
   double eternal_rune_weapon_counter;
   bool triggered_frozen_tempest;
+  unsigned int km_proc_attempts;
 
   // Enemies affected by festering wounds
   unsigned int festering_wounds_target_count;
@@ -821,6 +822,7 @@ public:
   {
     double lucid_dreams_minor_proc_chance = 0.15;
     bool disable_aotd = false;
+    bool killing_machine_rppm = false;
   } options;
 
   // Runes
@@ -833,6 +835,7 @@ public:
     deprecated_dnd_expression( false ),
     eternal_rune_weapon_counter( 0 ),
     triggered_frozen_tempest( false ),
+    km_proc_attempts( 0 ),
     festering_wounds_target_count( 0 ),
     antimagic_shell( nullptr ),
     buffs( buffs_t() ),
@@ -6484,6 +6487,7 @@ void death_knight_t::create_options()
 
   add_option( opt_float( "lucid_dreams_rune_proc_chance", options.lucid_dreams_minor_proc_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "disable_aotd", options.disable_aotd ) );
+  add_option( opt_bool( "killing_machine_rppm", options.killing_machine_rppm ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -6646,10 +6650,22 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
 {
   bool triggered = false;
   bool wasted = buffs.killing_machine -> up();
-  // If the given chance is 0, use the rppm effect
+  // If the given chance is 0, use the auto attack proc mechanic (new system, or rppm if the option is selected)
+  // Melekus, 2020-06-03: It appears that Killing Machine now procs from auto attacks following a custom system
+  // Every critical auto attack has a 30% * number of missed proc attempts to trigger Killing Machine
+  // Originally found by Bicepspump, made public on 2020-05-17
+  // This may have been added to the game on patch 8.2, when rppm data from Killing Machine was removed from the game
   if ( chance == 0 )
   {
-    if ( rppm.killing_machine -> trigger() )
+    if ( !options.killing_machine_rppm )
+    {
+      if ( rng().roll( ++km_proc_attempts * 0.3 ) )
+      {
+        triggered = true;
+        km_proc_attempts = 0;
+      }
+    }
+    else if ( rppm.killing_machine -> trigger() )
     {
       triggered = true;
     }
@@ -8323,6 +8339,7 @@ void death_knight_t::reset()
   _runes.reset();
   active_dnd = nullptr;
   eternal_rune_weapon_counter = 0;
+  km_proc_attempts = 0;
 }
 
 // death_knight_t::assess_heal ==============================================
