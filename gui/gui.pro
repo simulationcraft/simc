@@ -113,7 +113,7 @@ unix:!macx {
 
 TRANSLATIONS = \
   ../locale/sc_de.ts \
-  ../locale/sc_zh.ts \
+  ../locale/sc_cn.ts \
   ../locale/sc_it.ts
 
 include(../source_files/QT_gui.pri)
