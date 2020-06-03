@@ -1031,7 +1031,14 @@ void paladin_t::vision_of_perfection_proc()
     main_buff -> extend_duration( this, trigger_duration );
 
     if ( azerite.avengers_might.enabled() )
+    {
+      // BUG: With Crusade talented, the Avenger's Might buff extension is based on AW's duration, not Crusade's
+      // https://github.com/simulationcraft/simc/issues/5138
+      if ( bugs && talents.crusade -> ok() )
+        trigger_duration =  vision_multiplier * buffs.avenging_wrath -> data().duration();
+
       buffs.avengers_might -> extend_duration( this, trigger_duration );
+    }
   }
   else
   {
