@@ -2815,6 +2815,9 @@ class SpellDataGenerator(DataGenerator):
             fields += category.field('dmg_class')
             hotfix.add(category, ('dmg_class', 47))
 
+            fields += spell.child('SpellTargetRestrictions').field('max_affected_targets')
+            hotfix.add(spell.child('SpellTargetRestrictions'), ('max_affected_targets', 48))
+
             duration_entry = self._spellduration_db[misc.id_duration]
             fields += duration_entry.field('duration_1')
             hotfix.add(duration_entry, ('duration_1', 19))

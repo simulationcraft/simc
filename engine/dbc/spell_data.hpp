@@ -388,6 +388,7 @@ struct spell_data_t
   // SpellCategories.dbc
   unsigned    _category;           // Spell category (for shared cooldowns, effects?)
   unsigned    _dmg_class;          // Classification for the spell
+  int         _max_targets;        // Max number of targets
   // SpellDuration.dbc
   double      _duration;           // Spell duration in milliseconds
   // SpellAuraOptions.dbc
@@ -519,6 +520,9 @@ struct spell_data_t
 
   unsigned mechanic() const
   { return _mechanic; }
+
+  int max_targets() const
+  { return _max_targets; }
 
   unsigned power_id() const
   { return _power_id; }
