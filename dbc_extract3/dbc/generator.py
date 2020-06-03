@@ -2856,6 +2856,11 @@ class SpellDataGenerator(DataGenerator):
             fields += category.field('dmg_class')
             f, hfd = category.get_hotfix_info(('dmg_class', 47))
 
+            # 48
+            targeting = spell.child('SpellTargetRestrictions')
+            fields += targeting.field('max_affected_targets')
+            f, hfd = targeting.get_hotfix_info(('max_affected_targets', 48))
+
             # Pad struct with empty pointers for direct access to spell effect data
             # 47, 48, 49, 50, 51
             fields += [ u'0', u'0', u'0', u'0', u'0', ]

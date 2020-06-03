@@ -115,7 +115,8 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_STR,      "desc_vars",         O_SD( _desc_vars )              },
   { SD_TYPE_STR,      "rank",              O_SD( _rank_str )               },
   { SD_TYPE_UNSIGNED, "req_max_level",     O_SD( _req_max_level )          },
-  { SD_TYPE_UNSIGNED, "dmg_class",         O_SD( _dmg_class )              }
+  { SD_TYPE_UNSIGNED, "dmg_class",         O_SD( _dmg_class )              },
+  { SD_TYPE_INT,      "max_targets",       O_SD( _max_targets )            },
 };
 
 const std::string _class_strings[] =

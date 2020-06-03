@@ -1435,6 +1435,15 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << ( int ) spell -> max_range() << " yards" << std::endl;
   }
 
+  if ( spell -> max_targets() != 0 )
+  {
+    fmt::print( s, "Max Targets      : {}{}{}\n",
+      spell -> max_targets() == -1 ? "Unlimited(" :
+        spell -> max_targets() < 0 ? "Unknown(" : "",
+      spell -> max_targets(),
+      spell -> max_targets() < 0 ? ")" : "" );
+  }
+
   if ( spell -> _cast_min > 0 || spell -> _cast_max > 0 )
   {
     s << "Cast Time        : ";

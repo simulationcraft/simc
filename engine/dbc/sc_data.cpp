@@ -69,6 +69,8 @@ bool spell_data_t::override_field( util::string_view field, double value )
     _rppm = value;
   else if ( util::str_compare_ci( field, "dmg_class" ) )
     _dmg_class = static_cast<unsigned>( value );
+  else if ( util::str_compare_ci( field, "max_targets" ) )
+    _max_targets = static_cast<int>( value );
   else
     return false;
   return true;
@@ -118,6 +120,8 @@ double spell_data_t::get_field( util::string_view field ) const
     return static_cast<double>( _cast_max );
   else if ( util::str_compare_ci( field, "rppm" ) )
     return _rppm;
+  else if ( util::str_compare_ci( field, "max_targets" ) )
+    return static_cast<double>( _max_targets );
 
   return -std::numeric_limits<double>::max();
 }

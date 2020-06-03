@@ -843,6 +843,7 @@ public:
 
   unsigned    _req_max_level;      // 46
   unsigned    _dmg_class;          // 47 SpellCategories.db2 classification for the spell
+  int         _max_targets;        // 48 SpellTargetRestrictions.db2 max number of targets
 
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
@@ -965,6 +966,9 @@ public:
 
   unsigned mechanic() const
   { return _mechanic; }
+
+  int max_targets() const
+  { return _max_targets; }
 
   unsigned power_id() const
   { return _power_id; }
