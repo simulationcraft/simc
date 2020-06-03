@@ -175,7 +175,7 @@ struct spell_desc_vars_t : func_field_t<spell_desc_vars_t, spell_data_t> {
   }
 };
 
-static constexpr std::array<sdata_field_t, 37> _spell_data_fields { {
+static constexpr std::array<sdata_field_t, 38> _spell_data_fields { {
   { "name",              FIELD( &spell_data_t::_name ) },
   { "id",                FIELD( &spell_data_t::_id ) },
   { "speed",             FIELD( &spell_data_t::_prj_speed ) },
@@ -213,6 +213,7 @@ static constexpr std::array<sdata_field_t, 37> _spell_data_fields { {
   { "desc_vars",         spell_desc_vars_t{} },
   { "req_max_level",     FIELD( &spell_data_t::_req_max_level ) },
   { "dmg_class",         FIELD( &spell_data_t::_dmg_class ) },
+  { "max_targets",       FIELD( &spell_data_t::_max_targets ) },
 } };
 
 #undef FIELD

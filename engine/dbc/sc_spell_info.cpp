@@ -97,6 +97,7 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 41, "Azerite Essence Id" },
   { 46, "Required Max Level" },
   { 47, "Spell Type" },
+  { 48, "Max Targets" },
 } );
 
 static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, util::string_view>( {
@@ -1362,6 +1363,15 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       s << ( int ) spell -> min_range() << " - ";
 
     s << ( int ) spell -> max_range() << " yards" << std::endl;
+  }
+
+  if ( spell -> max_targets() != 0 )
+  {
+    fmt::print( s, "Max Targets      : {}{}{}\n",
+      spell -> max_targets() == -1 ? "Unlimited(" :
+        spell -> max_targets() < 0 ? "Unknown(" : "",
+      spell -> max_targets(),
+      spell -> max_targets() < 0 ? ")" : "" );
   }
 
   if ( spell -> cast_time() > 0_ms )
