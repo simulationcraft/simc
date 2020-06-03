@@ -64,7 +64,7 @@ jobs:
 
     strategy:
       matrix:
-        type: [spell_query, log_debug, patchwerk, dungeon_slice]
+        type: [spell_query, log_debug, patchwerk]
         include:
           - type: spell_query
             simc_flags: spell_query=spell > /dev/null
@@ -72,8 +72,8 @@ jobs:
             simc_flags: $SIMC_PROFILE log=1 debug=1 2>&1 | grep -v -E 'Player\s*[a-zA-Z0-9_]+\s*attempting'
           - type: patchwerk
             simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
-          - type: dungeon_slice
-            simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
+          #- type: dungeon_slice
+          #  simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
 
     steps:
       - uses: actions/checkout@v2
