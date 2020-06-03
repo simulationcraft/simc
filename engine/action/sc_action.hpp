@@ -6,11 +6,14 @@
 #pragma once
 
 #include "config.hpp"
-#include "util/generic.hpp"
+#include "dbc/data_definitions.hh"
+#include "player/target_specific.hpp"
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
-#include "player/target_specific.hpp"
-#include "dbc/data_definitions.hh"
+#include "util/generic.hpp"
+#include "util/string_view.hpp"
+
+#include <array>
 #include <vector>
 #include <memory>
 #include <string>
@@ -509,8 +512,8 @@ private:
   action_state_t* state_cache;
   std::vector<travel_event_t*> travel_events;
 public:
-  action_t(action_e type, const std::string& token, player_t* p);
-  action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s );
+  action_t( action_e type, util::string_view token, player_t* p );
+  action_t( action_e type, util::string_view token, player_t* p, const spell_data_t* s );
 
   virtual ~action_t();
 
@@ -641,7 +644,7 @@ public:
   virtual int n_targets() const
   { return aoe; }
 
-  virtual double last_tick_factor( const dot_t* d, const timespan_t& time_to_tick, const timespan_t& duration ) const;
+  virtual double last_tick_factor( const dot_t* d, timespan_t time_to_tick, timespan_t duration ) const;
 
   virtual result_amount_type amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const
   { return result_amount_type::NONE; }
@@ -822,7 +825,7 @@ public:
       timespan_t triggered_duration) const;
 
   // Helper for dot refresh expression, overridable on action level
-  virtual bool dot_refreshable( const dot_t* dot, const timespan_t& triggered_duration ) const;
+  virtual bool dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const;
 
   virtual double composite_energize_amount( const action_state_t* ) const
   { return energize_amount; }
@@ -904,7 +907,7 @@ private:
   friend struct action_state_t;
   virtual void release_state( action_state_t* );
 public:
-  virtual void do_schedule_travel( action_state_t*, const timespan_t& );
+  virtual void do_schedule_travel( action_state_t*, timespan_t );
 
   virtual void schedule_travel( action_state_t* );
 
@@ -973,7 +976,7 @@ struct swap_action_list_t : public action_t
   action_priority_list_t* alist;
 
   swap_action_list_t( player_t* player, const std::string& options_str,
-    const std::string& name = "swap_action_list" );
+    util::string_view name = "swap_action_list" );
 
   void execute() override;
   bool ready() override;

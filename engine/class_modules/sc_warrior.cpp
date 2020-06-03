@@ -5641,7 +5641,7 @@ struct protection_rage_t : public warrior_buff_t<buff_t>
   protection_rage_t( warrior_t& p, const std::string& n, const spell_data_t* s )
     : base_t( p, n, s )
   {
-    set_tick_callback( [&p]( buff_t*, int, const timespan_t& ) {
+    set_tick_callback( [&p]( buff_t*, int, timespan_t ) {
             p.resource_gain(
                 RESOURCE_RAGE,
                 p.sets->set( WARRIOR_PROTECTION, T20, B2 )->effectN( 1 ).trigger()->effectN( 2 ).resource( RESOURCE_RAGE ),
@@ -5890,7 +5890,7 @@ void warrior_t::create_buffs()
           ->set_trigger_spell( azerite.bloodcraze )
           ->set_quiet( true )
           ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-          ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) { buff.bloodcraze->trigger(); } );
+          ->set_tick_callback( [this]( buff_t*, int, timespan_t ) { buff.bloodcraze->trigger(); } );
 
   buff.bloodcraze = make_buff( this, "bloodcraze", bloodcraze_buff )
                         ->set_trigger_spell( bloodcraze_trigger )

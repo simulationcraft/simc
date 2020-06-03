@@ -241,7 +241,7 @@ class PeStructParser:
         return True
 
     def find_db_header_by_name(self, name):
-        name_bytes = name.encode('utf-8')
+        name_bytes = name.encode('utf-8') + b'\x00'
         # Find the absolute offset to the file name in .rdata
         ofs_name = self.handle.find(name_bytes, self.rdata_start, self.rdata_end)
         while ofs_name < self.rdata_end:
@@ -337,8 +337,8 @@ class PeStructParser:
         formats = header.formats(self)
         elements = header.elements(self)
 
-        logging.info('{}.db2: fields={}, record_size={}, table_hash={:#08x}, layout_hash={:#08x}'.format(
-            name, header.fields, header.size, header.table_hash, header.layout_hash))
+        logging.info('{}.db2: fields={}, record_size={}, file_data_id={}, table_hash={:#08x}, layout_hash={:#08x}'.format(
+            name, header.fields, header.size, header.file_data_id, header.table_hash, header.layout_hash))
 
         fields_str = []
         offsets_str = []

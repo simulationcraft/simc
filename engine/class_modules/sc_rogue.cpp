@@ -1183,11 +1183,11 @@ struct secondary_ability_trigger_t : public event_t
   int cp;
   secondary_trigger_e source;
 
-  secondary_ability_trigger_t( action_state_t* s, secondary_trigger_e source_, const timespan_t& delay = timespan_t::zero() ) :
+  secondary_ability_trigger_t( action_state_t* s, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
     event_t( *s -> action -> sim, delay ), action( s -> action ), state( s ), target( nullptr ), cp( 0 ), source( source_ )
   { }
 
-  secondary_ability_trigger_t( player_t* target, action_t* action, int cp, secondary_trigger_e source_, const timespan_t& delay = timespan_t::zero() ) :
+  secondary_ability_trigger_t( player_t* target, action_t* action, int cp, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
     event_t( *action -> sim, delay ), action( action ), state( nullptr ), target( target ), cp( cp ), source( source_ )
   { }
 
@@ -4709,7 +4709,7 @@ struct shuriken_tornado_t : public buff_t
   {
     set_cooldown( timespan_t::zero() );
     set_period( timespan_t::from_seconds( 1.0 ) ); // Not explicitly in spell data
-    set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       if ( !shuriken_storm_action )
         shuriken_storm_action = rogue -> find_action( "shuriken_storm" );
       if ( shuriken_storm_action )
@@ -5874,7 +5874,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(variable.ss_vanish_condition|!azerite.shrouded_suffocation.enabled&(dot.garrote.refreshable|debuff.vendetta.up&dot.garrote.pmultiplier<=1))&combo_points.deficit>=((1+2*azerite.shrouded_suffocation.enabled)*spell_targets.fan_of_knives)>?4&raid_event.adds.in>12" );
     cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.vendetta.up&(!talent.toxic_blade.enabled|debuff.toxic_blade.up)&(!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up)|essence.vision_of_perfection.enabled)", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB+BotE (unless using VoP)" );
     cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
-    cds -> add_talent( this, "Exsanguinate", "if=!stealthed.rogue&!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
+    cds -> add_talent( this, "Exsanguinate", "if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
     cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking&(!equipped.azsharas_font_of_power|cooldown.vendetta.remains>10)" );
 
     // Non-spec stuff with lower prio
@@ -5884,7 +5884,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "fireblood,if=debuff.vendetta.up" );
     cds -> add_action( "ancestral_call,if=debuff.vendetta.up" );
 
-    cds -> add_action( "use_item,name=galecallers_boon,if=(debuff.vendetta.up|(!talent.exsanguinate.enabled&cooldown.vendetta.remains>45|talent.exsanguinate.enabled&cooldown.exsanguinate.remains<6))&!exsanguinated.rupture" );
+    cds -> add_action( "use_item,name=galecallers_boon,if=(debuff.vendetta.up|(!talent.exsanguinate.enabled&cooldown.vendetta.remains>45|talent.exsanguinate.enabled&(cooldown.exsanguinate.remains<6|cooldown.exsanguinate.remains>20&fight_remains>65)))&!exsanguinated.rupture" );
     cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|target.time_to_die<20" );
     cds -> add_action( "use_item,name=ashvanes_razor_coral,if=(!talent.exsanguinate.enabled|!talent.subterfuge.enabled)&debuff.vendetta.remains>10-4*equipped.azsharas_font_of_power" );
     cds -> add_action( "use_item,name=ashvanes_razor_coral,if=(talent.exsanguinate.enabled&talent.subterfuge.enabled)&debuff.vendetta.up&(exsanguinated.garrote|azerite.shrouded_suffocation.enabled&dot.garrote.pmultiplier>1)" );
@@ -5928,14 +5928,16 @@ void rogue_t::init_action_list()
     dot -> add_action( "variable,name=skip_cycle_garrote,value=priority_rotation&spell_targets.fan_of_knives>3&(dot.garrote.remains<cooldown.garrote.duration|poisoned_bleeds>5)", "Limit Garrotes on non-primrary targets for the priority rotation if 5+ bleeds are already up" );
     dot -> add_action( "variable,name=skip_cycle_rupture,value=priority_rotation&spell_targets.fan_of_knives>3&(debuff.toxic_blade.up|(poisoned_bleeds>5&!azerite.scent_of_blood.enabled))", "Limit Ruptures on non-primrary targets for the priority rotation if 5+ bleeds are already up" );
     dot -> add_action( "variable,name=skip_rupture,value=debuff.vendetta.up&(debuff.toxic_blade.up|master_assassin_remains>0)&dot.rupture.remains>2", "Limit Ruptures if Vendetta+Toxic Blade/Master Assassin is up and we have 2+ seconds left on the Rupture DoT" );
-    dot -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2)))", "Special Rupture setup for Exsg" );
+    dot -> add_action( this, "Garrote", "if=talent.exsanguinate.enabled&!exsanguinated.garrote&dot.garrote.pmultiplier<=1&cooldown.exsanguinate.remains<2&spell_targets.fan_of_knives=1&raid_event.adds.in>6&dot.garrote.remains*0.5<target.time_to_die", "Special Garrote and Rupture setup prior to Exsanguinate cast" );
+    dot -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&(combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&dot.rupture.remains*0.5<target.time_to_die)" );
     dot -> add_action( "pool_resource,for_next=1", "Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher" );
-    dot -> add_action( this, "Garrote", "if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1+3*(azerite.shrouded_suffocation.enabled&cooldown.vanish.up)&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains)>4&(master_assassin_remains=0|!ticking&azerite.shrouded_suffocation.enabled)" );
+    dot -> add_action( this, "Garrote", "if=refreshable&combo_points.deficit>=1+3*(azerite.shrouded_suffocation.enabled&cooldown.vanish.up)&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains)>4&(master_assassin_remains=0|!ticking&azerite.shrouded_suffocation.enabled)" );
     dot -> add_action( "pool_resource,for_next=1" );
-    dot -> add_action( this, "Garrote", "cycle_targets=1,if=!variable.skip_cycle_garrote&target!=self.target&(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1+3*(azerite.shrouded_suffocation.enabled&cooldown.vanish.up)&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains)>12&(master_assassin_remains=0|!ticking&azerite.shrouded_suffocation.enabled)" );
-    dot -> add_talent( this, "Crimson Tempest", "if=spell_targets>=2&remains<2+(spell_targets>=5)&combo_points>=4", "Crimson Tempest only on multiple targets at 4+ CP when running out in 2s (up to 4 targets) or 3s (5+ targets)" );
-    dot -> add_action( this, "Rupture", "if=!variable.skip_rupture&combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
+    dot -> add_action( this, "Garrote", "cycle_targets=1,if=!variable.skip_cycle_garrote&target!=self.target&refreshable&combo_points.deficit>=1+3*(azerite.shrouded_suffocation.enabled&cooldown.vanish.up)&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains)>12&(master_assassin_remains=0|!ticking&azerite.shrouded_suffocation.enabled)" );
+    dot -> add_talent( this, "Crimson Tempest", "if=spell_targets>=2&remains<2+(spell_targets>=5)&combo_points>=4", "Crimson Tempest on multiple targets at 4+ CP when running out in 2s (up to 4 targets) or 3s (5+ targets)" );
+    dot -> add_action( this, "Rupture", "if=!variable.skip_rupture&(combo_points>=4&refreshable|!ticking&(time>10|combo_points>=2))&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
     dot -> add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4" );
+    dot -> add_talent( this, "Crimson Tempest", "if=spell_targets=1&combo_points>=(cp_max_spend-1)&refreshable&!exsanguinated&!debuff.toxic_blade.up&master_assassin_remains=0&!azerite.twist_the_knife.enabled&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and it will do less damage than Envenom due to TB/MA/TtK" );
 
     // Direct damage abilities
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
@@ -6937,7 +6939,7 @@ void rogue_t::create_buffs()
   buffs.blade_flurry          = new buffs::blade_flurry_t( this );
   buffs.blade_rush            = make_buff( this, "blade_rush", find_spell( 271896 ) )
                                 -> set_period( find_spell( 271896 ) -> effectN( 1 ).period() )
-                                -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                                -> set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                   resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.blade_rush );
                                 } );
   buffs.opportunity           = make_buff( this, "opportunity", find_spell( 195627 ) );
@@ -6992,7 +6994,7 @@ void rogue_t::create_buffs()
   buffs.hidden_blades_driver    = make_buff( this, "hidden_blades_driver", talent.hidden_blades )
                                   -> set_period( talent.hidden_blades -> effectN( 1 ).period() )
                                   -> set_quiet( true )
-                                  -> set_tick_callback( [this]( buff_t*, int, const timespan_t& ) { buffs.hidden_blades -> trigger(); } )
+                                  -> set_tick_callback( [this]( buff_t*, int, timespan_t ) { buffs.hidden_blades -> trigger(); } )
                                   -> set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
   buffs.hidden_blades           = make_buff( this, "hidden_blades", find_spell( 270070 ) )
                                   -> set_default_value( find_spell( 270070 ) -> effectN( 1 ).percent() );
@@ -7009,7 +7011,7 @@ void rogue_t::create_buffs()
   // Subtlety
   buffs.master_of_shadows       = make_buff( this, "master_of_shadows", find_spell( 196980 ) )
                                   -> set_period( find_spell( 196980 ) -> effectN( 1 ).period() )
-                                  -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                                  -> set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                     resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.master_of_shadows );
                                   } )
                                   -> set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -7029,7 +7031,7 @@ void rogue_t::create_buffs()
   buffs.brigands_blitz_driver              = make_buff( this, "brigands_blitz_driver", find_spell( 277725 ) )
                                              -> set_trigger_spell( azerite.brigands_blitz.spell_ref().effectN( 1 ).trigger() )
                                              -> set_quiet( true )
-                                             -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                                             -> set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                                   buffs.brigands_blitz -> trigger();
                                                 });
   buffs.deadshot                           = make_buff( this, "deadshot", find_spell( 272940 ) )

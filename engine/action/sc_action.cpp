@@ -75,7 +75,7 @@ struct queued_action_execute_event_t : public event_t
   action_t* action;
   execute_type type;
 
-  queued_action_execute_event_t( action_t* a, const timespan_t& t, execute_type type_ )
+  queued_action_execute_event_t( action_t* a, timespan_t t, execute_type type_ )
     : event_t( *a->sim, t ), action( a ), type( type_ )
   { }
 
@@ -263,13 +263,13 @@ action_t::options_t::options_t()
     target_str()
 {
 }
-action_t::action_t(action_e ty, const std::string& token, player_t* p)
+action_t::action_t( action_e ty, util::string_view token, player_t* p )
   : action_t(ty, token, p, spell_data_t::nil())
 {
 
 }
 
-action_t::action_t( action_e ty, const std::string& token, player_t* p, const spell_data_t* s )
+action_t::action_t( action_e ty, util::string_view token, player_t* p, const spell_data_t* s )
   : s_data( s ? s : spell_data_t::nil() ),
     s_data_reporting(spell_data_t::nil()),
     sim( p->sim ),
@@ -2668,7 +2668,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
   public:
     action_t& action;
 
-    action_expr_t( const std::string& name, action_t& a ) : expr_t( name ), action( a )
+    action_expr_t( util::string_view name, action_t& a ) : expr_t( name ), action( a )
     {
     }
   };
@@ -2677,7 +2677,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
   {
   public:
     action_state_t* state;
-    action_state_expr_t( const std::string& name, action_t& a ) : action_expr_t( name, a ), state( a.get_state() )
+    action_state_expr_t( util::string_view name, action_t& a ) : action_expr_t( name, a ), state( a.get_state() )
     {
     }
 
@@ -2694,7 +2694,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
     result_e result_type;
     bool average_crit;
 
-    amount_expr_t( const std::string& name, result_amount_type at, action_t& a, result_e rt = RESULT_NONE )
+    amount_expr_t( util::string_view name, result_amount_type at, action_t& a, result_e rt = RESULT_NONE )
       : action_state_expr_t( name, a ), amount_type( at ), result_type( rt ), average_crit( false )
     {
       if ( result_type == RESULT_NONE )
@@ -3110,7 +3110,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
       struct prev_expr_t : public action_expr_t
       {
         action_t* prev;
-        prev_expr_t( action_t& a, const std::string& prev_action )
+        prev_expr_t( action_t& a, util::string_view prev_action )
           : action_expr_t( "prev", a ), prev( a.player->find_action( prev_action ) )
         {
         }
@@ -3128,7 +3128,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
       struct prev_gcd_expr_t : public action_expr_t
       {
         action_t* previously_off_gcd;
-        prev_gcd_expr_t( action_t& a, const std::string& offgcdaction )
+        prev_gcd_expr_t( action_t& a, util::string_view offgcdaction )
           : action_expr_t( "prev_off_gcd", a ), previously_off_gcd( a.player->find_action( offgcdaction ) )
         {
         }
@@ -3210,7 +3210,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
         action_t& original_spell;
         const std::string name_of_spell;
         bool second_attempt;
-        spell_targets_t( action_t& a, const std::string spell_name )
+        spell_targets_t( action_t& a, util::string_view spell_name )
           : expr_t( "spell_targets" ), original_spell( a ), name_of_spell( spell_name ), second_attempt( false )
         {
           spell = a.player->find_action( spell_name );
@@ -3285,7 +3285,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
       int gcd;
       action_t* previously_used;
 
-      prevgcd_expr_t( action_t& a, int gcd, const std::string& prev_action )
+      prevgcd_expr_t( action_t& a, int gcd, util::string_view prev_action )
         : action_expr_t( "prev_gcd", a ),
           gcd( gcd ),  // prevgcd.1.action will mean 1 gcd ago, prevgcd.2.action will mean 2 gcds ago, etc.
           previously_used( a.player->find_action( prev_action ) )
@@ -3426,7 +3426,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
       std::vector<std::unique_ptr<expr_t>> proxy_expr;
       std::string suffix_expr_str;
 
-      target_proxy_expr_t( action_t& a, const std::string& expr_str )
+      target_proxy_expr_t( action_t& a, util::string_view expr_str )
         : action_expr_t( "target_proxy_expr", a ), suffix_expr_str( expr_str )
       {
       }
@@ -3672,7 +3672,7 @@ event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* exe
   return make_event<action_execute_event_t>( *sim, this, t, execute_event );
 }
 
-void action_t::do_schedule_travel( action_state_t* state, const timespan_t& time_ )
+void action_t::do_schedule_travel( action_state_t* state, timespan_t time_ )
 {
   if ( time_ <= timespan_t::zero() )
   {
@@ -3840,7 +3840,7 @@ timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_
   }
 }
 
-bool action_t::dot_refreshable( const dot_t* dot, const timespan_t& triggered_duration ) const
+bool action_t::dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const
 {
   if ( !channeled )
   {
@@ -3886,7 +3886,7 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
 }
 
 swap_action_list_t::swap_action_list_t( player_t* player, const std::string& options_str,
-                                        const std::string& name ) :
+                                        util::string_view name ) :
     action_t( ACTION_OTHER, name, player ),
     alist( nullptr )
 {
@@ -3898,7 +3898,7 @@ swap_action_list_t::swap_action_list_t( player_t* player, const std::string& opt
   ignore_false_positive = true;
   if ( alist_name.empty() )
   {
-    sim->errorf( "Player %s uses %s without specifying the name of the action list\n", player->name(), name.c_str() );
+    sim->error( "Player {} uses {} without specifying the name of the action list\n", player->name(), name );
     sim->cancel();
   }
 
@@ -3906,8 +3906,7 @@ swap_action_list_t::swap_action_list_t( player_t* player, const std::string& opt
 
   if ( !alist )
   {
-    sim->errorf( "Player %s uses %s with unknown action list %s\n", player->name(), name.c_str(),
-                 alist_name.c_str() );
+    sim->error( "Player {} uses {} with unknown action list {}\n", player->name(), name, alist_name );
     sim->cancel();
   }
   else if ( randomtoggle == 1 )
@@ -4324,7 +4323,7 @@ bool action_t::usable_during_current_gcd() const
   return player->readying && cooldown->queueable() < player->readying->occurs();
 }
 
-double action_t::last_tick_factor(const dot_t* /* d */, const timespan_t& time_to_tick, const timespan_t& duration) const
+double action_t::last_tick_factor(const dot_t* /* d */, timespan_t time_to_tick, timespan_t duration) const
 {
   return std::min(1.0, duration / time_to_tick);
 }

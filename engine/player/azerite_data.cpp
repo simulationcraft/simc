@@ -488,7 +488,7 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
   }
 }
 
-azerite_power_t azerite_state_t::get_power( const std::string& name, bool tokenized )
+azerite_power_t azerite_state_t::get_power( util::string_view name, bool tokenized )
 {
   const auto& power = m_player -> dbc->azerite_power( name, tokenized );
 
@@ -658,7 +658,7 @@ size_t azerite_state_t::rank( unsigned id ) const
   return 0u;
 }
 
-size_t azerite_state_t::rank( const std::string& name, bool tokenized ) const
+size_t azerite_state_t::rank( util::string_view name, bool tokenized ) const
 {
   const auto& power = m_player -> dbc->azerite_power( name, tokenized );
   if ( power.id == 0 )
@@ -674,7 +674,7 @@ bool azerite_state_t::is_enabled( unsigned id ) const
   return rank( id ) > 0;
 }
 
-bool azerite_state_t::is_enabled( const std::string& name, bool tokenized ) const
+bool azerite_state_t::is_enabled( util::string_view name, bool tokenized ) const
 {
   const auto& power = m_player -> dbc->azerite_power( name, tokenized );
   if ( power.id == 0 )
@@ -955,7 +955,7 @@ azerite_essence_state_t::azerite_essence_state_t( const player_t* player ) : m_p
 { }
 
 // Get an azerite essence object by name
-azerite_essence_t azerite_essence_state_t::get_essence( const std::string& name, bool tokenized ) const
+azerite_essence_t azerite_essence_state_t::get_essence( util::string_view name, bool tokenized ) const
 {
   const auto& essence = azerite_essence_entry_t::find( name, tokenized, m_player->dbc->ptr );
   // Could also be a passive spell, so check if the passives logged for the player match this
@@ -1563,7 +1563,7 @@ void resounding_protection( special_effect_t& effect )
     timespan_t period;
 
 public:
-    rp_event_t( buff_t* b, const timespan_t& t ) :
+    rp_event_t( buff_t* b, timespan_t t ) :
       event_t( *b -> source, t ), buff( b ), period( t )
     { }
 
@@ -2155,7 +2155,7 @@ struct reorigination_array_buff_t : public buff_t
     current_stat = highest_stat;
   }
 
-  reorigination_array_buff_t( player_t* p, const std::string& name, const special_effect_t& effect ) :
+  reorigination_array_buff_t( player_t* p, util::string_view name, const special_effect_t& effect ) :
     buff_t( p, name, effect.player->find_spell( 280573 ), effect.item ),
     proc_crit( p->get_proc( "Reorigination Array: Critical Strike" ) ),
     proc_haste( p->get_proc( "Reorigination Array: Haste" ) ),
@@ -2540,7 +2540,7 @@ void wandering_soul( special_effect_t& effect )
     if ( ruinous_bolt.enabled() )
     {
       auto action = unique_gear::create_proc_action<ruinous_bolt_t>( "ruinous_bolt", effect, ruinous_bolt );
-      buff -> set_tick_callback( [ action ]( buff_t*, int, const timespan_t& ) {
+      buff -> set_tick_callback( [ action ]( buff_t*, int, timespan_t ) {
         const auto& tl = action -> target_list();
         if ( tl.empty() )
           return;
@@ -3411,7 +3411,7 @@ void bonded_souls( special_effect_t& effect )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION )
       ->set_tick_behavior( buff_tick_behavior::CLIP )
       ->set_tick_zero( true )
-      ->set_tick_callback( [ haste_buff ] ( buff_t*, int, const timespan_t& )
+      ->set_tick_callback( [ haste_buff ] ( buff_t*, int, timespan_t )
         { haste_buff->trigger(); } );
   }
 
@@ -3675,7 +3675,7 @@ void clockwork_heart( special_effect_t& effect )
       ->set_quiet( true )
       ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
       ->set_tick_on_application( true )
-      ->set_tick_callback( [clockwork]( buff_t*, int, const timespan_t& ) {
+      ->set_tick_callback( [clockwork]( buff_t*, int, timespan_t ) {
         clockwork->trigger();
       } );
   }
@@ -4563,7 +4563,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
       azerite_volley = make_buff(this, "azerite_volley", find_spell(303347))
         ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
         ->set_quiet(true)
-        ->set_tick_callback([volley, this](buff_t*, int, const timespan_t&) {
+        ->set_tick_callback([volley, this](buff_t*, int, timespan_t) {
           volley->set_target(target);
           volley->execute();
         });
@@ -4968,7 +4968,7 @@ struct the_unbound_force_t : public azerite_essence_major_t
     if (essence.rank() >= 3)
       max_shard = 5;
   }
-  double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
+  double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
   {
     return 1.0;
   }

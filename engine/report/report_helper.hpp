@@ -37,7 +37,6 @@ class extended_sample_data_t;
 struct player_processed_report_information_t;
 struct sim_report_information_t;
 struct spell_data_expr_t;
-struct artifact_power_t;
 
 /**
  * Automatic Timer reporting the time between construction and desctruction of

@@ -10,7 +10,7 @@
 #include "player/sc_player.hpp"
 #include "sim/sc_sim.hpp"
 
-absorb_t::absorb_t(const std::string& token,
+absorb_t::absorb_t(util::string_view token,
   player_t* p,
   const spell_data_t* s) :
   spell_base_t(ACTION_ABSORB, token, p, s),

@@ -48,7 +48,6 @@
 #include "item/enchants.hpp"
 #include "item/item_targetdata_initializer.hpp"
 
-#include "player/artifact_data.hpp"
 #include "player/azerite_data.hpp"
 #include "player/consumable.hpp"
 #include "player/sample_data_helper.hpp"
@@ -85,9 +84,7 @@
 #include "report/sc_highchart.hpp"
 
 #include "sim/sc_profileset.hpp"
-#include "sim/x6_pantheon.hpp" // Legion-specific "pantheon trinket" system
 #include "sim/sc_option.hpp"
-#include "sim/artifact_power.hpp"
 #include "sim/raid_event.hpp"
 #include "sim/sc_expressions.hpp"
 #include "sim/iteration_data_entry.hpp"

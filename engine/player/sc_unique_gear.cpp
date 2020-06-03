@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "unique_gear.hpp"
+#include "unique_gear_shadowlands.hpp"
 #include "simulationcraft.hpp"
 #include <cctype>
 
@@ -1231,7 +1232,7 @@ void set_bonus::t18_lfr_4pc_clothcaster( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-void fel_winds_callback( buff_t* buff, int ct, const timespan_t& )
+void fel_winds_callback( buff_t* buff, int ct, timespan_t )
 {
   double old_mas = buff -> player -> cache.attack_speed();
   // .. aand force recomputation of attack speed so reschedule_auto_attack will see the new value.
@@ -2877,7 +2878,7 @@ struct empty_drinking_horn_cb_t : public dbc_proc_callback_t
 
 struct empty_drinking_horn_constructor_t : public item_targetdata_initializer_t
 {
-  empty_drinking_horn_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+  empty_drinking_horn_constructor_t( unsigned iid, util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   { }
 
@@ -3177,7 +3178,7 @@ struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
 
 struct prophecy_of_fear_constructor_t : public item_targetdata_initializer_t
 {
-  prophecy_of_fear_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+  prophecy_of_fear_constructor_t( unsigned iid, util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   { }
 
@@ -3534,7 +3535,7 @@ void item::mirror_of_the_blademaster( special_effect_t& effect )
   effect.type = SPECIAL_EFFECT_USE;
 }
   
-static void tyrants_decree_driver_callback( buff_t* buff, int, const timespan_t& )
+static void tyrants_decree_driver_callback( buff_t* buff, int, timespan_t )
 {
   if ( buff -> player -> resources.pct( RESOURCE_HEALTH ) >= buff -> data().effectN( 2 ).percent() )
     buff -> player -> buffs.tyrants_immortality -> trigger();
@@ -4473,7 +4474,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, const 
 // Find a consumable of a given subtype, see data_enum.hh for type values.
 // Returns 0 if not found.
 const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
-                                                 const std::string& name,
+                                                 util::string_view name,
                                                  item_subclass_consumable type )
 {
   if ( name.empty() )
@@ -4482,7 +4483,7 @@ const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
   }
 
   // Poor man's longest matching prefix!
-  const auto& item = dbc::find_consumable( type, dbc.ptr, [&name]( const item_data_t* i ) {
+  const auto& item = dbc::find_consumable( type, dbc.ptr, [name]( const item_data_t* i ) {
     std::string n = i -> name ? i -> name : "unknown";
     util::tokenize( n );
     return util::str_in_str_ci( n, name );
@@ -4697,8 +4698,8 @@ void unique_gear::register_special_effects()
   // Register azerite special effects
   azerite::register_azerite_powers();
 
-  // Register bfa special effects
   register_special_effects_bfa();
+  shadowlands::register_special_effects();
 
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */
@@ -4925,13 +4926,12 @@ void unique_gear::register_hotfixes()
 {
   register_hotfixes_legion();
   register_hotfixes_bfa();
+  shadowlands::register_hotfixes();
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
 {
-  std::vector< slot_e > trinkets;
-  trinkets.push_back( SLOT_TRINKET_1 );
-  trinkets.push_back( SLOT_TRINKET_2 );
+  static constexpr std::array<slot_e, 2> trinkets {{ SLOT_TRINKET_1, SLOT_TRINKET_2 }};
 
   sim -> register_target_data_initializer( empty_drinking_horn_constructor_t( 124238, trinkets ) );
   sim -> register_target_data_initializer( prophecy_of_fear_constructor_t( 124230, trinkets ) );
@@ -4939,6 +4939,8 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   register_target_data_initializers_legion( sim );
   register_target_data_initializers_bfa( sim );
   azerite::register_azerite_target_data_initializers( sim );
+  
+  shadowlands::register_target_data_initializers( *sim );
 }
 
 special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )

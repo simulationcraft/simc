@@ -39,7 +39,7 @@ thread_local std::unordered_map<size_t, std::string> cached_enchant_names;
 
 } /* ANONYMOUS NAMESPACE */
 
-unsigned enchant::find_enchant_id( const std::string& name )
+unsigned enchant::find_enchant_id( util::string_view name )
 {
   for ( auto& enchant_entry : __enchant_db )
   {
@@ -96,7 +96,7 @@ namespace {
 			std::string::size_type enchant_pos = enchant_name.find("Enchant ");
 			std::string::size_type enchant_hyphen_pos = enchant_name.find("-");
 
-			// Cut out "Enchant XXX -" from the string, if it exists, also remove any 
+			// Cut out "Enchant XXX -" from the string, if it exists, also remove any
 			// following whitespace. Consider that to be the enchant name. If "Enchant
 			// XXX -" is not found, just consider the linked spell's full name to be
 			// the enchant name.
@@ -121,7 +121,7 @@ namespace {
 			enchant_name = enchant.name ? enchant.name : "unknown";
 			util::tokenize(enchant_name);
 
-			for (size_t i = 0; i < sizeof_array(enchant.ench_prop); i++)
+			for (size_t i = 0; i < range::size(enchant.ench_prop); i++)
 			{
 				if (enchant.ench_prop[i] == 0 || enchant.ench_type[i] == 0)
 					continue;
@@ -192,7 +192,7 @@ std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantm
  * Tailoring enchant mappings in the array above.
  */
 const item_enchantment_data_t& enchant::find_item_enchant( const item_t& item,
-                                                           const std::string& name )
+                                                           util::string_view name )
 {
   auto enchant_id = find_enchant_id( name );
   // Check additional mapping table first
@@ -260,7 +260,7 @@ void enchant::initialize_item_enchant( item_t& item,
     if ( item.player -> profession[ profession ] < static_cast<int>( enchant.req_skill_value ) )
     {
       item.sim -> errorf( "Player %s attempting to use %s '%s' without %s skill level of %d (has %d), disabling enchant.",
-          item.player -> name(), util::special_effect_source_string( source ), enchant.name, 
+          item.player -> name(), util::special_effect_source_string( source ), enchant.name,
           util::profession_type_string( profession ),
           enchant.req_skill_value, item.player -> profession[ profession ] );
       // Don't initialize the special effects, but do "succeed" the
@@ -269,7 +269,7 @@ void enchant::initialize_item_enchant( item_t& item,
     }
   }
 
-  for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
+  for ( size_t i = 0; i < range::size( enchant.ench_prop ); i++ )
   {
     special_effect_t effect( &item );
     effect.source = source;
@@ -420,8 +420,8 @@ bool enchant::passive_enchant( item_t& item, unsigned spell_id )
  * (capacitive_primal_diamond), and the "short" form of the tokenized name
  * (capacitive_primal).
  */
-const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t&       dbc,
-                                                       const std::string& encoding )
+const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t&      dbc,
+                                                       util::string_view encoding )
 {
   for ( const auto& gem_property : gem_property_data_t::data( dbc.ptr ) )
   {
@@ -445,10 +445,10 @@ const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t&       dbc,
 
     std::string tokenized_name = gem.name;
     util::tokenize( tokenized_name );
-    std::string shortname;
+    util::string_view shortname;
     std::string::size_type offset = tokenized_name.find( "_diamond" );
     if ( offset != std::string::npos )
-      shortname = tokenized_name.substr( 0, offset );
+      shortname = util::string_view( tokenized_name ).substr( 0, offset );
 
     if ( util::str_in_str_ci( encoding, tokenized_name ) ||
          ( ! shortname.empty() && util::str_in_str_ci( encoding, shortname ) ) )
@@ -557,7 +557,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
   }
 
   auto relic_id = item.parsed.gem_id[ relic_idx ];
-  auto relic_data = item.player -> dbc->item( relic_id );
+  const auto& relic_data = item.player -> dbc->item( relic_id );
   if ( relic_data.id == 0 )
   {
     return SOCKET_COLOR_NONE;
@@ -576,9 +576,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
     relic.parsed.bonus_id.push_back( as<int>( id ) );
   } );
 
-  auto powers = item.player -> dbc->artifact_powers( item.parsed.data.id_artifact );
-
-  for ( size_t i = 0, end = sizeof_array( data.ench_type ); i < end; ++i )
+  for ( size_t i = 0, end = range::size( data.ench_type ); i < end; ++i )
   {
     switch ( data.ench_type[ i ] )
     {

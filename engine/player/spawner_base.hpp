@@ -8,6 +8,8 @@
 #include "config.hpp"
 #include "sc_timespan.hpp"
 #include "util/span.hpp"
+#include "util/string_view.hpp"
+
 #include <string>
 #include <memory>
 
@@ -31,7 +33,7 @@ namespace spawner
     player_t* m_owner;
 
   public:
-    base_actor_spawner_t(const std::string& id, player_t* o) :
+    base_actor_spawner_t(util::string_view id, player_t* o) :
       m_name(id), m_owner(o)
     {
       register_object();

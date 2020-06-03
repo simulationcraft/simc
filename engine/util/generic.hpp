@@ -13,7 +13,6 @@
 #include "config.hpp"
 
 #include <algorithm>
-#include <array>
 #include <cassert>
 #include <cmath>
 #include <functional>
@@ -73,18 +72,6 @@ inline std::enable_if_t<is_iterable_enum<T>::value, T> operator++( T& s, int )
 
 // Generic programming tools ================================================
 
-template <typename T, std::size_t N>
-inline std::size_t sizeof_array( const T ( & )[ N ] )
-{
-  return N;
-}
-
-template <typename T, std::size_t N>
-inline std::size_t sizeof_array( const std::array<T, N>& )
-{
-  return N;
-}
-
 /**
  * @brief helper class to make a class non-copyable
  *
@@ -130,33 +117,6 @@ struct delete_disposer_t
 
 // Generic algorithms =======================================================
 
-// Wrappers for std::fill, std::fill_n, and std::find that perform any type
-// conversions for t at the callsite instead of per assignment in the loop body.
-// (i.e., fill( T**, T**, 0 ) will deduce T* for the third argument, as opposed
-//  to std::fill( T**, T**, 0 ) simply defaulting to int and failing to
-//  compile).
-template <typename I>
-inline void fill( I first, I last,
-                  typename std::iterator_traits<I>::value_type const& t )
-{
-  std::fill( first, last, t );
-}
-
-template <typename I>
-inline void fill_n( I first,
-                    typename std::iterator_traits<I>::difference_type n,
-                    typename std::iterator_traits<I>::value_type const& t )
-{
-  std::fill_n( first, n, t );
-}
-
-template <typename I>
-inline I find( I first, I last,
-               typename std::iterator_traits<I>::value_type const& t )
-{
-  return std::find( first, last, t );
-}
-
 template <typename I, typename D>
 void dispose( I first, I last, D disposer )
 {
@@ -175,100 +135,72 @@ inline void dispose( I first, I last )
 namespace range
 {  // ========================================================
 namespace detail {
-template <typename T>
-struct iterator_type {
-  using type = typename T::iterator;
+
+struct begin_ {
+  template <typename R>
+  auto operator()( R&& r ) const {
+    using std::begin;
+    return begin( std::forward<R>( r ) );
+  }
+  template <typename T>
+  auto operator()( const std::pair<T, T>& p ) const {
+    return p.first;
+  }
 };
-template <typename T>
-struct iterator_type<const T> {
-  using type = typename T::const_iterator;
+
+struct end_ {
+  template <typename R>
+  auto operator()( R&& r ) const {
+    using std::end;
+    return end( std::forward<R>( r ) );
+  }
+  template <typename T>
+  auto operator()( const std::pair<T, T>& p ) const {
+    return p.second;
+  }
 };
+
 } // namespace detail
 
 template <typename T>
-struct traits
+auto begin( T&& t )
 {
-  typedef typename detail::iterator_type<T>::type iterator;
-  static iterator begin( T& t )
-  {
-    return std::begin( t );
-  }
-  static iterator end( T& t )
-  {
-    return std::end( t );
-  }
-};
-
-template <typename T, size_t N>
-struct traits<T[ N ]>
-{
-  typedef T* iterator;
-  static iterator begin( T ( &t )[ N ] )
-  {
-    return std::begin( t );
-  }
-  static iterator end( T ( &t )[ N ] )
-  {
-    return std::end( t );
-  }
-};
-
-template <typename T>
-struct traits<std::pair<T, T> >
-{
-  typedef T iterator;
-  static iterator begin( const std::pair<T, T>& t )
-  {
-    return t.first;
-  }
-  static iterator end( const std::pair<T, T>& t )
-  {
-    return t.second;
-  }
-};
-
-template <typename T>
-struct traits<const std::pair<T, T> >
-{
-  typedef T iterator;
-  static iterator begin( const std::pair<T, T>& t )
-  {
-    return t.first;
-  }
-  static iterator end( const std::pair<T, T>& t )
-  {
-    return t.second;
-  }
-};
-
-template <typename R>
-using iterator_t = typename traits<R>::iterator;
-
-template <typename R>
-using value_type_t = typename std::iterator_traits<iterator_t<R>>::value_type;
-
-template <typename T>
-inline iterator_t<T> begin( T& t )
-{
-  return traits<T>::begin( t );
+  return detail::begin_{}( std::forward<T>( t ) );
 }
 
 template <typename T>
-inline iterator_t<const T> cbegin( const T& t )
+auto cbegin( const T& t )
 {
   return range::begin( t );
 }
 
 template <typename T>
-inline iterator_t<T> end( T& t )
+auto end( T&& t )
 {
-  return traits<T>::end( t );
+  return detail::end_{}( std::forward<T>( t ) );
 }
 
 template <typename T>
-inline iterator_t<const T> cend( const T& t )
+auto cend( const T& t )
 {
   return range::end( t );
+}
+
+template <typename R>
+using iterator_t = decltype(range::begin(std::declval<R&>()));
+
+template <typename R>
+using value_type_t = typename std::iterator_traits<iterator_t<R>>::value_type;
+
+// std::size ================================================================
+
+template <typename C>
+constexpr auto size(const C& c) -> decltype(c.size()) {
+  return c.size();
+}
+template <typename T, size_t N>
+constexpr size_t size(const T (&)[N]) noexcept {
+  return N;
 }
 
 // Default projection for projection-enabled algorithms =====================
@@ -543,6 +475,15 @@ std::pair<iterator_t<Range>, iterator_t<Range>>
   if ( b == range::end( r ) )
     return { b, b };
   return { b, upper_bound( r, value, comp, proj ) };
+}
+
+template <typename Range, typename Pred, typename Proj = identity>
+iterator_t<Range> partition( Range& r, Pred pred_, Proj proj = Proj{} )
+{
+  auto pred = [&pred_, &proj]( auto&& v ) -> bool {
+    return range::invoke( pred_, range::invoke( proj, std::forward<decltype(v)>( v ) ) );
+  };
+  return std::partition( range::begin( r ), range::end( r ), pred );
 }
 
 }  // namespace range ========================================================

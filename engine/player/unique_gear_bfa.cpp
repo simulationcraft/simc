@@ -546,7 +546,7 @@ void consumables::potion_of_focused_resolve( special_effect_t& effect )
     }
   } );
 
-  buff->set_tick_callback( [cb]( buff_t*, int, const timespan_t& ) { cb->add_stack(); } );
+  buff->set_tick_callback( [cb]( buff_t*, int, timespan_t ) { cb->add_stack(); } );
 }
 
 // Potion of Empowered Proximity ============================================
@@ -1188,7 +1188,7 @@ void items::merekthas_fang( special_effect_t& effect )
       return triggered_duration * dot->state->haste;
     }
 
-    double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
+    double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
     {
       return 1.0;
     }
@@ -1259,9 +1259,9 @@ void items::merekthas_fang( special_effect_t& effect )
 
 struct deadeye_spyglass_constructor_t : public item_targetdata_initializer_t
 {
-  deadeye_spyglass_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  deadeye_spyglass_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -1627,9 +1627,9 @@ void items::vial_of_animated_blood( special_effect_t& effect )
 
 struct briny_barnacle_constructor_t : public item_targetdata_initializer_t
 {
-  briny_barnacle_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  briny_barnacle_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   // Create the choking brine debuff that is checked on enemy demise
   void operator()( actor_target_data_t* td ) const override
@@ -2072,10 +2072,9 @@ void items::endless_tincture_of_fractional_power( special_effect_t& effect )
 
 struct syringe_of_bloodborne_infirmity_constructor_t : public item_targetdata_initializer_t
 {
-  syringe_of_bloodborne_infirmity_constructor_t( unsigned iid, const std::vector<slot_e>& s )
+  syringe_of_bloodborne_infirmity_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -2418,7 +2417,7 @@ struct vigor_engaged_t : public special_effect_t
     } );
   }
 
-  void extend_oscillation( const timespan_t& by_seconds )
+  void extend_oscillation( timespan_t by_seconds )
   {
     if ( player->sim->debug )
     {
@@ -2592,7 +2591,7 @@ void items::variable_intensity_gigavolt_oscillating_reactor_onuse( special_effec
   {
     vigor_engaged_t* driver;
 
-    oscillating_overload_t( player_t* p, const std::string& name, const spell_data_t* spell, const item_t* item )
+    oscillating_overload_t( player_t* p, ::util::string_view name, const spell_data_t* spell, const item_t* item )
       : buff_t( p, name, spell, item ), driver( nullptr )
     {
     }
@@ -2672,9 +2671,9 @@ void items::variable_intensity_gigavolt_oscillating_reactor_onuse( special_effec
 
 struct everchill_anchor_constructor_t : public item_targetdata_initializer_t
 {
-  everchill_anchor_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  everchill_anchor_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   // Create the everchill debuff to handle trinket icd
   void operator()( actor_target_data_t* td ) const override
@@ -3549,9 +3548,9 @@ void items::shiver_venom_relic_equip( special_effect_t& effect )
  */
 struct luminous_algae_constructor_t : public item_targetdata_initializer_t
 {
-  luminous_algae_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  luminous_algae_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   const special_effect_t* find_effect( player_t* player ) const override
   {
@@ -4059,7 +4058,7 @@ void items::arcane_tempest( special_effect_t& effect )
 
   auto action = create_proc_action<arcane_tempest_t>( "arcane_tempest", effect, buff );
 
-  buff->set_tick_callback( [action]( buff_t* buff, int /* current_tick */, const timespan_t& /* tick_time */ ) {
+  buff->set_tick_callback( [action]( buff_t* buff, int /* current_tick */, timespan_t /* tick_time */ ) {
     action->set_target( buff->source->target );
     action->execute();
   } );
@@ -4244,9 +4243,9 @@ void items::shiver_venom_lance( special_effect_t& effect )
  */
 struct razor_coral_constructor_t : public item_targetdata_initializer_t
 {
-  razor_coral_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  razor_coral_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -4382,9 +4381,9 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
  */
 struct conductive_ink_constructor_t : public item_targetdata_initializer_t
 {
-  conductive_ink_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  conductive_ink_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -4780,7 +4779,7 @@ item_t init_punchcard( const special_effect_t& effect )
     return {};
   }
 
-  auto item_data = effect.player->dbc->item( effect.enchant_data->id_gem );
+  const auto& item_data = effect.player->dbc->item( effect.enchant_data->id_gem );
   if ( item_data.id == 0 )
   {
     return {};
@@ -5031,7 +5030,7 @@ void items::subroutine_optimization( special_effect_t& effect )
       const gem_property_data_t* data = nullptr;
 
       auto it = range::find_if( effect.item->parsed.gem_id, [this, &data]( unsigned gem_id ) {
-        auto item_data = source->dbc->item( gem_id );
+        const auto& item_data = source->dbc->item( gem_id );
         if ( item_data.id == 0 )
         {
           return false;
@@ -5059,7 +5058,7 @@ void items::subroutine_optimization( special_effect_t& effect )
       // Find the item enchantment associated with the gem
       const auto& enchantment_data = source->dbc->item_enchantment( data->enchant_id );
 
-      for ( size_t i = 0u; i < sizeof_array( enchantment_data.ench_type ); ++i )
+      for ( size_t i = 0u; i < range::size( enchantment_data.ench_type ); ++i )
       {
         if ( enchantment_data.ench_type[ i ] == ITEM_ENCHANTMENT_EQUIP_SPELL )
         {
@@ -5710,7 +5709,7 @@ void items::whispering_eldritch_bow( special_effect_t& effect )
 {
   struct whispered_truths_callback_t : public dbc_proc_callback_t
   {
-    std::set<cooldown_t*> cooldowns;
+    std::vector<cooldown_t*> cooldowns;
     timespan_t amount;
 
     whispered_truths_callback_t( const special_effect_t& effect )
@@ -5719,9 +5718,10 @@ void items::whispering_eldritch_bow( special_effect_t& effect )
     {
       for ( action_t* a : effect.player->action_list )
       {
-        if ( util::is_adjustable_class_spell( a ) )
+        if ( util::is_adjustable_class_spell( a ) &&
+             range::find( cooldowns, a->cooldown ) == cooldowns.end() )
         {
-          cooldowns.insert( a->cooldown );
+          cooldowns.push_back( a->cooldown );
         }
       }
     }
@@ -5731,27 +5731,17 @@ void items::whispering_eldritch_bow( special_effect_t& effect )
       if ( !rng().roll( effect.player->sim->bfa_opts.whispered_truths_offensive_chance ) )
         return;
 
-      std::set<cooldown_t*> down_cooldowns;
-      for ( cooldown_t* cd : cooldowns )
-      {
-        if ( cd->down() )
-        {
-          down_cooldowns.insert( cd );
-        }
-      }
-
+      const auto it = range::partition( cooldowns, &cooldown_t::down );
+      auto down_cooldowns = ::util::make_span( cooldowns ).subspan( 0, it - cooldowns.begin() );
       if ( !down_cooldowns.empty() )
       {
-        auto it = down_cooldowns.begin();
-        std::advance( it, rng().range( down_cooldowns.size() ) );
-        cooldown_t* chosen = *it;
+        cooldown_t* chosen = down_cooldowns[ rng().range( down_cooldowns.size() ) ];
         chosen->adjust( amount );
 
         if ( effect.player->sim->debug )
         {
-          effect.player->sim->out_debug.printf( "%s of %s adjusted cooldown for %s, remains=%.3f", effect.item->name(),
-                                                effect.player->name(), chosen->name(),
-                                                chosen->remains().total_seconds() );
+          effect.player->sim->out_debug.print( "{} of {} adjusted cooldown for {}, remains={}", effect.item->name(),
+                                               effect.player->name(), chosen->name(), chosen->remains() );
         }
       }
     }
@@ -5813,9 +5803,9 @@ struct shredded_psyche_t : public proc_t
 
 struct psyche_shredder_constructor_t : public item_targetdata_initializer_t
 {
-  psyche_shredder_constructor_t( unsigned iid, const std::vector<slot_e>& s ) : item_targetdata_initializer_t( iid, s )
-  {
-  }
+  psyche_shredder_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s )
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -7324,7 +7314,7 @@ void unique_gear::register_special_effects_bfa()
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 {
   using namespace bfa;
-  const std::vector<slot_e> items = {SLOT_TRINKET_1, SLOT_TRINKET_2};
+  static constexpr std::array<slot_e, 2> items {{ SLOT_TRINKET_1, SLOT_TRINKET_2 }};
 
   sim->register_target_data_initializer( deadeye_spyglass_constructor_t( 159623, items ) );
   sim->register_target_data_initializer( syringe_of_bloodborne_infirmity_constructor_t( 160655, items ) );

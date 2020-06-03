@@ -77,7 +77,7 @@ struct dynamic_event_t : public event_t
 
   virtual T* clone() = 0;
 
-  virtual timespan_t adjust( const timespan_t& by_time )
+  virtual timespan_t adjust( timespan_t by_time )
   {
     auto this_ = this;
     // Execute early and cancel the event, if the adjustment would trigger the event
@@ -178,7 +178,7 @@ struct dynamic_event_t : public event_t
 
   // Actually schedules the event into the core event system, by default, applies the coefficient
   // associated with the event to the duration given
-  T* schedule( const timespan_t& duration, bool use_coeff = true )
+  T* schedule( timespan_t duration, bool use_coeff = true )
   {
     event_t::schedule( duration * ( use_coeff ? coefficient() : 1.0 ) );
     return cast();
@@ -248,7 +248,7 @@ struct rune_t
   void start_regenerating();
 
   // Directly adjust regeneration by time units
-  void adjust_regen_event( const timespan_t& adjustment );
+  void adjust_regen_event( timespan_t adjustment );
 
   void reset()
   {
@@ -354,7 +354,7 @@ struct runes_t
   void consume( unsigned runes );
 
   // Perform seconds of rune regeneration time instantaneously
-  void regenerate_immediate( const timespan_t& seconds );
+  void regenerate_immediate( timespan_t seconds );
 
   // Time it takes with the current rune regeneration speed to regenerate n_runes by the Death
   // Knight.
@@ -1086,7 +1086,7 @@ inline void runes_t::consume( unsigned runes )
 
 }
 
-inline void runes_t::regenerate_immediate( const timespan_t& seconds )
+inline void runes_t::regenerate_immediate( timespan_t seconds )
 {
   if ( seconds <= 0_ms )
   {
@@ -1361,7 +1361,7 @@ inline void rune_t::start_regenerating()
     -> schedule( timespan_t::from_seconds( RUNE_REGEN_BASE ) );
 }
 
-inline void rune_t::adjust_regen_event( const timespan_t& adjustment )
+inline void rune_t::adjust_regen_event( timespan_t adjustment )
 {
   if ( ! event )
   {
@@ -3111,7 +3111,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     timespan_t summon_duration;
     death_knight_t* p;
 
-    summon_army_event_t( death_knight_t* dk, int n, const timespan_t& interval, const timespan_t& duration ) :
+    summon_army_event_t( death_knight_t* dk, int n, timespan_t interval, timespan_t duration ) :
       event_t( *dk, interval ),
       n_ghoul( n ),
       summon_interval( interval ),
@@ -4447,7 +4447,7 @@ struct empower_rune_weapon_buff_t : public buff_t
     //Vision of Perfection proc'd ERW is refreshed by a manual ERW cast
     //A partial RP gain at the end of ERW was observed
 
-    set_tick_callback( [ p ]( buff_t* b, int, const timespan_t& )
+    set_tick_callback( [ p ]( buff_t* b, int, timespan_t )
     {
       p -> replenish_rune( as<unsigned int>( b -> data().effectN( 1 ).base_value() ),
                            p -> gains.empower_rune_weapon );
@@ -5518,13 +5518,14 @@ struct frostwhelps_indignation_t : public death_knight_spell_t
   }
 };
 
+// Ingame it seems to only change Pillar of frost's strength bonus
+// The simc implementation creates a dummy buff to better track the strength increase through stack count
 struct pillar_of_frost_bonus_buff_t : public buff_t
 {
   pillar_of_frost_bonus_buff_t( death_knight_t* p ) :
     buff_t( p, "pillar_of_frost_bonus" )
   {
-    // PoF lasts 15s, which is at most 20 gcds, which is at most 40 runes
-    set_max_stack( 40 );
+    set_max_stack( 99 );
     set_duration( p -> spec.pillar_of_frost -> duration() );
     set_default_value( p -> spec.pillar_of_frost -> effectN( 2 ).percent() );
 
@@ -5542,10 +5543,28 @@ struct pillar_of_frost_buff_t : public buff_t
     add_invalidate( CACHE_STRENGTH );
   }
 
-  void expire_override( int s, timespan_t t ) override
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    buff_t::expire_override( s, t );
+    // Refreshing Pillar of Frost resets the ramping strength bonus and triggers Icy Citadel
+    death_knight_t* p = debug_cast<death_knight_t*>( player );
+    if ( p -> buffs.pillar_of_frost -> up() )
+    {
+      p -> buffs.pillar_of_frost_bonus -> expire();
 
+      if ( p -> azerite.icy_citadel.enabled() )
+      {
+        p -> buffs.icy_citadel -> trigger();
+        p -> buffs.icy_citadel -> extend_duration( p, p -> azerite.icy_citadel.spell() -> effectN( 2 ).time_value() *
+                                                   p -> buffs.icy_citadel_builder -> stack() );
+        p -> buffs.icy_citadel_builder -> expire();
+      }
+    }
+
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  void expire_override( int, timespan_t ) override
+  {
     death_knight_t* p = debug_cast<death_knight_t*>( player );
 
     p -> buffs.pillar_of_frost_bonus -> expire();
@@ -7748,7 +7767,7 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)&active_enemies=1|buff.seething_rage.up&active_enemies=1" );
 
   // Pillar of Frost
-  cooldowns -> add_action( this, "Pillar of Frost", "if=cooldown.empower_rune_weapon.remains|talent.icecap.enabled", "Frost cooldowns" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=(cooldown.empower_rune_weapon.remains|talent.icecap.enabled)&!buff.pillar_of_frost.up", "Frost cooldowns" );
   cooldowns -> add_talent( this, "Breath of Sindragosa", "use_off_gcd=1,if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&talent.obliteration.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.1.time_to_die<20" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=(cooldown.pillar_of_frost.ready|target.1.time_to_die<20)&talent.breath_of_sindragosa.enabled&runic_power>60" );

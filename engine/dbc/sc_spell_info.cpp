@@ -202,9 +202,9 @@ std::ostringstream& hotfix_map_str( const DATA_TYPE* data, std::ostringstream& s
   return s;
 }
 
-template <typename T>
-std::string concatenate( const std::vector<const T*>& data,
-                         const std::function<void(std::stringstream&, const T*)> fn,
+template <typename Range, typename Callback>
+std::string concatenate( Range&& data,
+                         Callback&& fn,
                          const std::string& delim = ", " )
 {
   if ( data.size() == 0 )
@@ -749,38 +749,37 @@ static const std::unordered_map<unsigned, const std::string> _effect_subtype_str
 
 
 static const std::unordered_map<unsigned, const char*> _mechanic_strings { {
-  { 130, "Charm"          },
-  { 134, "Disorient"      },
-  { 142, "Disarm"         },
-  { 147, "Distract"       },
-  { 154, "Flee"           },
-  { 158, "Grip"           },
-  { 162, "Root"           },
-  { 165, "Slow"           },
-  { 168, "Silence"        },
-  { 173, "Sleep"          },
-  { 176, "Snare"          },
-  { 179, "Stun"           },
-  { 183, "Freeze"         },
-  { 186, "Incapacitate"   },
-  { 196, "Bleed"          },
-  { 201, "Heal"           },
-  { 205, "Polymorph"      },
-  { 213, "Banish"         },
-  { 218, "Shield"         },
-  { 223, "Shackle"        },
-  { 228, "Mount"          },
-  { 232, "Infect"         },
-  { 237, "Turn"           },
-  { 240, "Horrify"        },
-  { 246, "Invulneraility" },
-  { 255, "Interrupt"      },
-  { 263, "Daze"           },
-  { 265, "Discover"       },
-  { 271, "Sap"            },
-  { 274, "Enrage"         },
-  { 278, "Wound"          },
-  { 282, "Taunt"          }
+  { 126, "Charm"          },
+  { 130, "Disorient"      },
+  { 138, "Disarm"         },
+  { 143, "Distract"       },
+  { 150, "Flee"           },
+  { 154, "Grip"           },
+  { 158, "Root"           },
+  { 161, "Silence"        },
+  { 166, "Sleep"          },
+  { 169, "Snare"          },
+  { 172, "Stun"           },
+  { 176, "Freeze"         },
+  { 179, "Incapacitate"   },
+  { 189, "Bleed"          },
+  { 194, "Heal"           },
+  { 198, "Polymorph"      },
+  { 206, "Banish"         },
+  { 211, "Shield"         },
+  { 216, "Shackle"        },
+  { 221, "Mount"          },
+  { 225, "Infect"         },
+  { 230, "Turn"           },
+  { 233, "Horrify"        },
+  { 239, "Invulneraility" },
+  { 248, "Interrupt"      },
+  { 256, "Daze"           },
+  { 258, "Discover"       },
+  { 264, "Sap"            },
+  { 267, "Enrage"         },
+  { 271, "Wound"          },
+  { 275, "Taunt"          }
 } };
 
 std::string mechanic_str( unsigned mechanic ) {
@@ -1197,7 +1196,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   {
     auto affected_spells = dbc.spells_by_category( e -> misc_value1() );
     s << "                   Affected Spells (Category): ";
-    s << concatenate<spell_data_t>( affected_spells,
+    s << concatenate( affected_spells,
         []( std::stringstream& s, const spell_data_t* spell ) {
           s << spell -> name_cstr() << " (" << spell -> id() << ")";
         } );
@@ -1303,7 +1302,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       spec_list.clear();
     }
 
-    for ( unsigned int i = 1; i < sizeof_array( _class_map ); i++ )
+    for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
     {
       if ( ( spell -> class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
       {
@@ -1505,7 +1504,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( affecting_effects.size() > 0 )
     {
       s << ": ";
-      s << concatenate<spelleffect_data_t>( affecting_effects,
+      s << concatenate( affecting_effects,
         []( std::stringstream& s, const spelleffect_data_t* e ) {
           s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id() << " effect#" << ( e -> index() + 1 ) << ")";
         } );
@@ -1541,7 +1540,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
       if ( affecting_effects.size() > 0 )
       {
-        s << ": " << concatenate<spelleffect_data_t>( affecting_effects,
+        s << ": " << concatenate( affecting_effects,
           []( std::stringstream& s, const spelleffect_data_t* e ) {
             s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id()
               << " effect#" << ( e -> index() + 1 ) << ")";
@@ -1684,11 +1683,11 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
     s << std::endl;
     s << "                 : ";
-    for ( size_t i = 0; i < sizeof_array( _proc_flag_map ); i++ )
+    for ( const auto& info : _proc_flag_map )
     {
-      if ( spell -> proc_flags() & _proc_flag_map[ i ].flag )
+      if ( spell -> proc_flags() & info.flag )
       {
-        s << _proc_flag_map[ i ].proc;
+        s << info.proc;
         s << ", ";
       }
     }
@@ -1841,7 +1840,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const talent_data
   if ( talent -> mask_class() )
   {
     s << "Class        : ";
-    for ( unsigned int i = 1; i < sizeof_array( _class_map ); i++ )
+    for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
     {
       if ( ( talent -> mask_class() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
         s << _class_map[ i ].name << ", ";
@@ -2092,7 +2091,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
       spec_list.clear();
     }
 
-    for ( unsigned int i = 1; i < sizeof_array( _class_map ); i++ )
+    for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
     {
       if ( ( spell -> class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
       {
@@ -2269,7 +2268,7 @@ void spell_info::talent_to_xml( const dbc_t& /* dbc */, const talent_data_t* tal
 
   if ( talent -> mask_class() )
   {
-    for ( unsigned int i = 1; i < sizeof_array( _class_map ); i++ )
+    for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
     {
       if ( ( talent -> mask_class() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
         node -> add_child( "class" ) -> add_parm( ".",  _class_map[ i ].name );

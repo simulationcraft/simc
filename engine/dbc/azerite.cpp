@@ -21,7 +21,7 @@ util::span<const azerite_essence_entry_t> azerite_essence_entry_t::data( bool pt
 }
 
 const azerite_essence_entry_t&
-azerite_essence_entry_t::find( const std::string& name, bool tokenized, bool ptr )
+azerite_essence_entry_t::find( util::string_view name, bool tokenized, bool ptr )
 {
   const auto __data = data( ptr );
 

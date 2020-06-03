@@ -17,20 +17,21 @@ util::span<const specialization_spell_entry_t> specialization_spell_entry_t::dat
 }
 
 const specialization_spell_entry_t&
-specialization_spell_entry_t::find( const std::string& name,
-                                    bool               ptr,
-                                    specialization_e   spec,
-                                    bool               tokenized )
+specialization_spell_entry_t::find( util::string_view name,
+                                    bool              ptr,
+                                    specialization_e  spec,
+                                    bool              tokenized )
 {
   auto __data = data( ptr );
 
-  std::string cmp_str = name;
+  std::string cmp_str;
   if ( tokenized )
   {
-    util::tokenize( cmp_str );
+    cmp_str = util::tokenize_fn( name );
+    name = cmp_str;
   }
 
-  auto it = range::find_if( __data, [tokenized, spec, &cmp_str]( const auto& entry ) {
+  auto it = range::find_if( __data, [tokenized, spec, name]( const auto& entry ) {
       if ( spec != SPEC_NONE && spec != entry.specialization_id )
       {
         return false;
@@ -39,11 +40,11 @@ specialization_spell_entry_t::find( const std::string& name,
       if ( tokenized )
       {
         auto spell_str = util::tokenize_fn( entry.name );
-        return util::str_compare_ci( spell_str, cmp_str );
+        return util::str_compare_ci( spell_str, name );
       }
       else
       {
-        return util::str_compare_ci( entry.name, cmp_str );
+        return util::str_compare_ci( entry.name, name );
       }
   } );
 

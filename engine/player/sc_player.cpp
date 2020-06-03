@@ -16,12 +16,11 @@
 #include "dbc/azerite.hpp"
 #include "dbc/item_set_bonus.hpp"
 #include "dbc/specialization_spell.hpp"
+#include "dbc/active_spells.hpp"
 #include "item/item.hpp"
 #include "action/dbc_proc_callback.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/azerite_data.hpp"
-#include "player/artifact_data.hpp"
-#include "sim/artifact_power.hpp"
 #include "player/sample_data_helper.hpp"
 #include "player/consumable.hpp"
 #include "player/instant_absorb.hpp"
@@ -372,7 +371,7 @@ struct resource_threshold_event_t : public event_t
 {
   player_t* player;
 
-  resource_threshold_event_t( player_t* p, const timespan_t& delay ) : event_t( *p, delay ), player( p )
+  resource_threshold_event_t( player_t* p, timespan_t delay ) : event_t( *p, delay ), player( p )
   {
   }
 
@@ -584,13 +583,6 @@ bool parse_talent_url( sim_t* sim, const std::string& name, const std::string& u
       if ( sim->talent_input_format == talent_format::UNCHANGED )
         sim->talent_input_format = talent_format::ARMORY;
       return p->parse_talents_armory2( url );
-    }
-    else if ( url.find( ".wowhead.com" ) != url.npos )
-    {
-      if ( sim->talent_input_format == talent_format::UNCHANGED )
-        sim->talent_input_format = talent_format::WOWHEAD;
-      std::string::size_type end = url.find( '|', cut_pt );
-      return p->parse_talents_wowhead( url.substr( cut_pt, end - cut_pt ) );
     }
   }
   else
@@ -1117,7 +1109,6 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r )
     dbc( new dbc_t(*(s->dbc)) ),
     talent_points(),
     profession(),
-    artifact( nullptr ),
     azerite( nullptr ),
     base(),
     initial(),
@@ -1231,11 +1222,6 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r )
 {
   actor_index = sim->actor_list.size();
   sim->actor_list.push_back( this );
-
-  if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
-  {
-    artifact = artifact::player_artifact_data_t::create( this );
-  }
 
   if ( ! is_enemy() && ! is_pet() )
   {
@@ -1747,14 +1733,6 @@ void player_t::init_items()
   // Once item data is initialized, initialize the parent - child relationships of each item
   range::for_each( items, [this]( item_t& i ) {
     i.parent_slot = parent_item_slot( i );
-
-    // Set the primary artifact slot for this player, if the item is (after data download)
-    // determined to be the primary artifact slot.
-    if ( i.parsed.data.id_artifact > 0 && i.parent_slot == SLOT_INVALID )
-    {
-      assert( artifact->slot() == SLOT_INVALID );
-      artifact->set_artifact_slot( i.slot );
-    }
   } );
 
   // Slot initialization order vector. Needed to ensure parents of children get initialized first
@@ -1763,7 +1741,8 @@ void player_t::init_items()
 
   // Sort items with children before items without children
   range::sort( init_slots, [this]( slot_e first, slot_e second ) {
-    const item_t &fi = items[ first ], si = items[ second ];
+    const item_t &fi = items[ first ];
+    const item_t &si = items[ second ];
     if ( fi.parent_slot != SLOT_INVALID && si.parent_slot == SLOT_INVALID )
     {
       return false;
@@ -2282,7 +2261,7 @@ std::vector<std::string> player_t::get_racial_actions()
  * and check if that spell data is ok()
  * returns true if spell data is ok(), false otherwise
  */
-bool player_t::add_action( std::string action, std::string options, std::string alist )
+bool player_t::add_action( util::string_view action, util::string_view options, util::string_view alist )
 {
   return add_action( find_class_spell( action ), options, alist );
 }
@@ -2293,7 +2272,7 @@ bool player_t::add_action( std::string action, std::string options, std::string 
  * Helper function to add actions to the action list if given spell data is ok()
  * returns true if spell data is ok(), false otherwise
  */
-bool player_t::add_action( const spell_data_t* s, std::string options, std::string alist )
+bool player_t::add_action( const spell_data_t* s, util::string_view options, util::string_view alist )
 {
   if ( s->ok() )
   {
@@ -2304,7 +2283,8 @@ bool player_t::add_action( const spell_data_t* s, std::string options, std::stri
     str += "/" + name;
     if ( !options.empty() )
     {
-      str += "," + options;
+      str += ",";
+      str.append( options.data(), options.size() );
     }
     return true;
   }
@@ -3353,9 +3333,9 @@ void player_t::create_buffs()
   }
 }
 
-item_t* player_t::find_item_by_name( const std::string& item_name )
+item_t* player_t::find_item_by_name( util::string_view item_name )
 {
-  auto it = range::find_if(items, [item_name](const item_t& item) { return item_name == item.name();});
+  auto it = range::find(items, item_name, &item_t::name );
 
   if ( it != items.end())
   {
@@ -3377,7 +3357,7 @@ item_t* player_t::find_item_by_id( unsigned item_id )
   return nullptr;
 }
 
-item_t* player_t::find_item_by_use_effect_name( const std::string& effect_name )
+item_t* player_t::find_item_by_use_effect_name( util::string_view effect_name )
 {
   auto it = range::find_if(items, [effect_name](const item_t& item) {
     return item.has_use_special_effect() && effect_name == item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name();
@@ -4495,7 +4475,7 @@ void invalidate_cache( cache_e )
 }
 #endif
 
-void player_t::sequence_add_wait( const timespan_t& amount, const timespan_t& ts )
+void player_t::sequence_add_wait( timespan_t amount, timespan_t ts )
 {
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) ||
@@ -4522,7 +4502,7 @@ void player_t::sequence_add_wait( const timespan_t& amount, const timespan_t& ts
   }
 }
 
-void player_t::sequence_add( const action_t* a, const player_t* target, const timespan_t& ts )
+void player_t::sequence_add( const action_t* a, const player_t* target, timespan_t ts )
 {
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( a->sim->iterations <= 1 && a->sim->current_iteration == 0 ) ||
@@ -6861,20 +6841,20 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
   iteration_heal_taken += s->result_amount;
 }
 
-void player_t::summon_pet( const std::string& pet_name, const timespan_t duration )
+void player_t::summon_pet( util::string_view pet_name, const timespan_t duration )
 {
   if ( pet_t* p = find_pet( pet_name ) )
     p->summon( duration );
   else
-    sim->errorf( "Player %s is unable to summon pet '%s'\n", name(), pet_name.c_str() );
+    sim->error( "Player {} is unable to summon pet '{}'\n", name(), pet_name );
 }
 
-void player_t::dismiss_pet( const std::string& pet_name )
+void player_t::dismiss_pet( util::string_view pet_name )
 {
   pet_t* p = find_pet( pet_name );
   if ( !p )
   {
-    sim->errorf( "Player %s: Could not find pet with name '%s' to dismiss.", name(), pet_name.c_str() );
+    sim->error( "Player {}: Could not find pet with name '{}' to dismiss.", name(), pet_name );
     return;
   }
   p->dismiss();
@@ -6886,11 +6866,10 @@ bool player_t::recent_cast() const
          ( ( last_cast + timespan_t::from_seconds( 5.0 ) ) > sim->current_time() );
 }
 
-dot_t* player_t::find_dot( const std::string& name, player_t* source ) const
+dot_t* player_t::find_dot( util::string_view name, player_t* source ) const
 {
-  for ( size_t i = 0; i < dot_list.size(); ++i )
+  for ( dot_t* d : dot_list )
   {
-    dot_t* d = dot_list[ i ];
     if ( d->source == source && d->name_str == name )
       return d;
   }
@@ -6910,7 +6889,7 @@ void player_t::clear_action_priority_lists() const
 /**
  * Replaces "old_list" action_priority_list data with "new_list" action_priority_list data
  */
-void player_t::copy_action_priority_list( const std::string& old_list, const std::string& new_list )
+void player_t::copy_action_priority_list( util::string_view old_list, util::string_view new_list )
 {
   action_priority_list_t* ol = find_action_priority_list( old_list );
   action_priority_list_t* nl = find_action_priority_list( new_list );
@@ -6926,7 +6905,7 @@ void player_t::copy_action_priority_list( const std::string& old_list, const std
 }
 
 template <typename T>
-T* find_vector_member( const std::vector<T*>& list, const std::string& name )
+T* find_vector_member( const std::vector<T*>& list, util::string_view name )
 {
   for ( auto t : list )
   {
@@ -6938,57 +6917,57 @@ T* find_vector_member( const std::vector<T*>& list, const std::string& name )
 
 // player_t::find_action_priority_list( const std::string& name ) ===========
 
-action_priority_list_t* player_t::find_action_priority_list( const std::string& name ) const
+action_priority_list_t* player_t::find_action_priority_list( util::string_view name ) const
 {
   return find_vector_member( action_priority_list, name );
 }
 
-pet_t* player_t::find_pet( const std::string& name ) const
+pet_t* player_t::find_pet( util::string_view name ) const
 {
   return find_vector_member( pet_list, name );
 }
 
-stats_t* player_t::find_stats( const std::string& name ) const
+stats_t* player_t::find_stats( util::string_view name ) const
 {
   return find_vector_member( stats_list, name );
 }
 
-gain_t* player_t::find_gain( const std::string& name ) const
+gain_t* player_t::find_gain( util::string_view name ) const
 {
   return find_vector_member( gain_list, name );
 }
 
-proc_t* player_t::find_proc( const std::string& name ) const
+proc_t* player_t::find_proc( util::string_view name ) const
 {
   return find_vector_member( proc_list, name );
 }
 
-sample_data_helper_t* player_t::find_sample_data( const std::string& name ) const
+sample_data_helper_t* player_t::find_sample_data( util::string_view name ) const
 {
   return find_vector_member( sample_data_list, name );
 }
 
-benefit_t* player_t::find_benefit( const std::string& name ) const
+benefit_t* player_t::find_benefit( util::string_view name ) const
 {
   return find_vector_member( benefit_list, name );
 }
 
-uptime_t* player_t::find_uptime( const std::string& name ) const
+uptime_t* player_t::find_uptime( util::string_view name ) const
 {
   return find_vector_member( uptime_list, name );
 }
 
-cooldown_t* player_t::find_cooldown( const std::string& name ) const
+cooldown_t* player_t::find_cooldown( util::string_view name ) const
 {
   return find_vector_member( cooldown_list, name );
 }
 
-action_t* player_t::find_action( const std::string& name ) const
+action_t* player_t::find_action( util::string_view name ) const
 {
   return find_vector_member( action_list, name );
 }
 
-cooldown_t* player_t::get_cooldown( const std::string& name, action_t* a )
+cooldown_t* player_t::get_cooldown( util::string_view name, action_t* a )
 {
   cooldown_t* c = find_cooldown( name );
 
@@ -7005,12 +6984,12 @@ cooldown_t* player_t::get_cooldown( const std::string& name, action_t* a )
   return c;
 }
 
-real_ppm_t* player_t::get_rppm(const std::string& name)
+real_ppm_t* player_t::get_rppm( util::string_view name )
 {
   return get_rppm(name, spell_data_t::nil(), nullptr);
 }
 
-real_ppm_t* player_t::get_rppm( const std::string& name, const spell_data_t* data, const item_t* item )
+real_ppm_t* player_t::get_rppm( util::string_view name, const spell_data_t* data, const item_t* item )
 {
   auto it = range::find_if( rppm_list,
                             [&name]( const real_ppm_t* rppm ) { return util::str_compare_ci( rppm->name(), name ); } );
@@ -7026,7 +7005,7 @@ real_ppm_t* player_t::get_rppm( const std::string& name, const spell_data_t* dat
   return new_rppm;
 }
 
-real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod, unsigned s )
+real_ppm_t* player_t::get_rppm( util::string_view name, double freq, double mod, unsigned s )
 {
   auto it = range::find_if( rppm_list,
                             [&name]( const real_ppm_t* rppm ) { return util::str_compare_ci( rppm->name(), name ); } );
@@ -7042,7 +7021,7 @@ real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod
   return new_rppm;
 }
 
-shuffled_rng_t* player_t::get_shuffled_rng( const std::string& name, int success_entries, int total_entries )
+shuffled_rng_t* player_t::get_shuffled_rng( util::string_view name, int success_entries, int total_entries )
 {
   auto it = range::find_if( shuffled_rng_list, [&name]( const shuffled_rng_t* shuffled_rng ) {
     return util::str_compare_ci( shuffled_rng->name(), name );
@@ -7059,7 +7038,7 @@ shuffled_rng_t* player_t::get_shuffled_rng( const std::string& name, int success
   return new_shuffled_rng;
 }
 
-dot_t* player_t::get_dot( const std::string& name, player_t* source )
+dot_t* player_t::get_dot( util::string_view name, player_t* source )
 {
   dot_t* d = find_dot( name, source );
 
@@ -7072,7 +7051,7 @@ dot_t* player_t::get_dot( const std::string& name, player_t* source )
   return d;
 }
 
-gain_t* player_t::get_gain( const std::string& name )
+gain_t* player_t::get_gain( util::string_view name )
 {
   gain_t* g = find_gain( name );
 
@@ -7086,7 +7065,7 @@ gain_t* player_t::get_gain( const std::string& name )
   return g;
 }
 
-proc_t* player_t::get_proc( const std::string& name )
+proc_t* player_t::get_proc( util::string_view name )
 {
   proc_t* p = find_proc( name );
 
@@ -7100,7 +7079,7 @@ proc_t* player_t::get_proc( const std::string& name )
   return p;
 }
 
-sample_data_helper_t* player_t::get_sample_data( const std::string& name )
+sample_data_helper_t* player_t::get_sample_data( util::string_view name )
 {
   sample_data_helper_t* sd = find_sample_data( name );
 
@@ -7114,7 +7093,7 @@ sample_data_helper_t* player_t::get_sample_data( const std::string& name )
   return sd;
 }
 
-stats_t* player_t::get_stats( const std::string& n, action_t* a )
+stats_t* player_t::get_stats( util::string_view n, action_t* a )
 {
   stats_t* stats = find_stats( n );
 
@@ -7133,7 +7112,7 @@ stats_t* player_t::get_stats( const std::string& n, action_t* a )
   return stats;
 }
 
-benefit_t* player_t::get_benefit( const std::string& name )
+benefit_t* player_t::get_benefit( util::string_view name )
 {
   benefit_t* u = find_benefit( name );
 
@@ -7147,7 +7126,7 @@ benefit_t* player_t::get_benefit( const std::string& name )
   return u;
 }
 
-uptime_t* player_t::get_uptime( const std::string& name )
+uptime_t* player_t::get_uptime( util::string_view name )
 {
   uptime_t* u = find_uptime( name );
 
@@ -7161,7 +7140,7 @@ uptime_t* player_t::get_uptime( const std::string& name )
   return u;
 }
 
-action_priority_list_t* player_t::get_action_priority_list( const std::string& name, const std::string& comment )
+action_priority_list_t* player_t::get_action_priority_list( util::string_view name, util::string_view comment )
 {
   action_priority_list_t* a = find_action_priority_list( name );
   if ( !a )
@@ -7171,17 +7150,16 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
       throw std::invalid_argument("Maximum number of action lists is 64");
     }
 
-    a                          = new action_priority_list_t( name, this );
-    a->action_list_comment_str = comment;
-    a->internal_id             = action_list_id_++;
-    a->internal_id_mask        = 1ULL << ( a->internal_id );
+    a                   = new action_priority_list_t( name, this, comment );
+    a->internal_id      = action_list_id_++;
+    a->internal_id_mask = 1ULL << ( a->internal_id );
 
     action_priority_list.push_back( a );
   }
   return a;
 }
 
-int player_t::find_action_id( const std::string& name ) const
+int player_t::find_action_id( util::string_view name ) const
 {
   for ( size_t i = 0; i < action_map.size(); i++ )
   {
@@ -7192,7 +7170,7 @@ int player_t::find_action_id( const std::string& name ) const
   return -1;
 }
 
-int player_t::get_action_id( const std::string& name )
+int player_t::get_action_id( util::string_view name )
 {
   auto id = find_action_id( name );
   if ( id != -1 )
@@ -7200,7 +7178,7 @@ int player_t::get_action_id( const std::string& name )
     return id;
   }
 
-  action_map.push_back( name );
+  action_map.emplace_back( name );
   return static_cast<int>(action_map.size() - 1);
 }
 
@@ -9168,139 +9146,6 @@ void player_t::create_talents_numbers()
   }
 }
 
-bool player_t::parse_talents_wowhead( const std::string& talent_string )
-{
-  talent_points.clear();
-
-  if ( talent_string.empty() )
-  {
-    sim->errorf( "Player %s has empty wowhead talent string.\n", name() );
-    return false;
-  }
-
-  // Verify class
-  {
-    player_e w_class;
-    switch ( talent_string[ 0 ] )
-    {
-      case 'k':
-        w_class = DEATH_KNIGHT;
-        break;
-      case 'd':
-        w_class = DRUID;
-        break;
-      case 'h':
-        w_class = HUNTER;
-        break;
-      case 'm':
-        w_class = MAGE;
-        break;
-      case 'n':
-        w_class = MONK;
-        break;
-      case 'l':
-        w_class = PALADIN;
-        break;
-      case 'p':
-        w_class = PRIEST;
-        break;
-      case 'r':
-        w_class = ROGUE;
-        break;
-      case 's':
-        w_class = SHAMAN;
-        break;
-      case 'o':
-        w_class = WARLOCK;
-        break;
-      case 'w':
-        w_class = WARRIOR;
-        break;
-      default:
-        sim->errorf( "Player %s has malformed wowhead talent string '%s': invalid class character '%c'.\n", name(),
-                     talent_string.c_str(), talent_string[ 0 ] );
-        return false;
-    }
-
-    if ( w_class != type )
-    {
-      sim->errorf(
-          "Player %s has malformed wowhead talent string '%s': specified class %s does not match player class "
-          "%s.\n",
-          name(), talent_string.c_str(), util::player_type_string( w_class ), util::player_type_string( type ) );
-      return false;
-    }
-  }
-
-  std::string::size_type idx = 1;
-
-  // Parse spec if specified
-  {
-    int w_spec_idx;
-    switch ( talent_string[ idx++ ] )
-    {
-      case '!':
-        w_spec_idx = 0;
-        break;
-      case 'x':
-        w_spec_idx = 1;
-        break;
-      case 'y':
-        w_spec_idx = 2;
-        break;
-      case 'z':
-        w_spec_idx = 3;
-        break;
-      default:
-        w_spec_idx = -1;
-        --idx;
-        break;
-    }
-
-    if ( w_spec_idx >= 0 )
-      _spec = dbc->spec_by_idx( type, w_spec_idx );
-  }
-
-  if ( talent_string.size() > idx + 2 )
-  {
-    sim->errorf( "Player %s has malformed wowhead talent string '%s': too long.\n", name(), talent_string.c_str() );
-    return false;
-  }
-
-  for ( int tier = 0; tier < 2 && idx + tier < talent_string.size(); ++tier )
-  {
-    // Process 3 rows of talents per encoded character.
-    int total = static_cast<unsigned char>( talent_string[ idx + tier ] );
-
-    if ( ( total < '0' ) || ( total > '/' + 3 * ( 1 + 4 + 16 ) ) )
-    {
-      sim->errorf(
-          "Player %s has malformed wowhead talent string '%s': encoded character '%c' in position %d is invalid.\n",
-          name(), talent_string.c_str(), total, (int)idx );
-      return false;
-    }
-
-    total -= '/';
-
-    for ( int row = 0; row < 3; ++row, total /= 4 )
-    {
-      int selection = total % 4;
-      if ( selection )
-        talent_points.select_row_col( 3 * tier + row, selection - 1 );
-    }
-  }
-
-  if ( sim->debug )
-  {
-    sim->out_debug.printf( "Player %s wowhead talent string translation: '%s'\n", name(),
-                           talent_points.to_string().c_str() );
-  }
-
-  create_talents_wowhead();
-
-  return true;
-}
-
 static bool parse_min_gcd( sim_t* sim, const std::string& name, const std::string& value )
 {
   if ( name != "min_gcd" )
@@ -9328,20 +9173,24 @@ void player_t::replace_spells()
   // Search spec spells for spells to replace.
   if ( _spec != SPEC_NONE )
   {
-    for ( const auto& spec_spell : specialization_spell_entry_t::data( dbc->ptr ) )
-    {
-      if ( spec_spell.specialization_id != _spec )
-      {
-        continue;
-      }
+    range::for_each( specialization_spell_entry_t::data( dbc->ptr ),
+      [this]( const specialization_spell_entry_t& entry ) {
+        if ( static_cast<unsigned>( _spec ) != entry.specialization_id )
+        {
+          return;
+        }
 
-      const spell_data_t* s = dbc->spell( spec_spell.spell_id );
-      if ( s->replace_spell_id() && ( (int)s->level() <= true_level ) )
-      {
-        // Found a spell we should replace
-        dbc->replace_id( s->replace_spell_id(), spec_spell.spell_id );
-      }
-    }
+        if ( entry.override_spell_id == 0 )
+        {
+          return;
+        }
+
+        const spell_data_t* s = dbc->spell( entry.spell_id );
+        if ( as<int>( s->level() ) <= true_level )
+        {
+          dbc->replace_id( entry.override_spell_id, entry.spell_id );
+        }
+    } );
   }
 
   // Search talents for spells to replace.
@@ -9361,24 +9210,33 @@ void player_t::replace_spells()
     }
   }
 
-  // Search general spells for spells to replace (a spell you learn earlier might be replaced by one you learn
-  // later)
+  // Search general spells for spells to replace (a spell you learn earlier might be
+  // replaced by one you learn later)
   if ( _spec != SPEC_NONE )
   {
-    for ( unsigned int i = 0; i < dbc->class_ability_size(); i++ )
-    {
-      unsigned id = dbc->class_ability( class_idx, 0, i );
-      if ( id == 0 )
-      {
-        break;
-      }
-      const spell_data_t* s = dbc->spell( id );
-      if ( s->replace_spell_id() && ( (int)s->level() <= true_level ) )
-      {
-        // Found a spell we should replace
-        dbc->replace_id( s->replace_spell_id(), id );
-      }
-    }
+    range::for_each( active_class_spell_t::data( dbc->ptr ),
+      [this, class_idx]( const active_class_spell_t& entry ) {
+        if ( class_idx != entry.class_id )
+        {
+          return;
+        }
+
+        if ( entry.spec_id != 0 && static_cast<unsigned>( _spec ) != entry.spec_id )
+        {
+          return;
+        }
+
+        if ( entry.override_spell_id == 0 )
+        {
+          return;
+        }
+
+        const spell_data_t* s = dbc->spell( entry.spell_id );
+        if ( as<int>( s->level() ) <= true_level )
+        {
+          dbc->replace_id( entry.override_spell_id, entry.spell_id );
+        }
+    } );
   }
 }
 
@@ -9389,7 +9247,7 @@ void player_t::replace_spells()
  * spell_data_t::not_found() is returned.
  * The talent search by name is case sensitive, including all special characters!
  */
-const spell_data_t* player_t::find_talent_spell( const std::string& n, specialization_e s, bool name_tokenized,
+const spell_data_t* player_t::find_talent_spell( util::string_view n, specialization_e s, bool name_tokenized,
                                                  bool check_validity ) const
 {
   if ( s == SPEC_NONE )
@@ -9398,7 +9256,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
   }
 
   // Get a talent's spell id for a given talent name
-  unsigned spell_id = dbc->talent_ability_id( type, s, n.c_str(), name_tokenized );
+  unsigned spell_id = dbc->talent_ability_id( type, s, n, name_tokenized );
 
   if ( !spell_id )
   {
@@ -9434,11 +9292,11 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
   return spell_data_t::not_found();
 }
 
-const spell_data_t* player_t::find_specialization_spell( const std::string& name, specialization_e s ) const
+const spell_data_t* player_t::find_specialization_spell( util::string_view name, specialization_e s ) const
 {
   if ( s == SPEC_NONE || s == _spec )
   {
-    if ( unsigned spell_id = dbc->specialization_ability_id( _spec, name.c_str() ) )
+    if ( unsigned spell_id = dbc->specialization_ability_id( _spec, name ) )
     {
       auto spell = dbc::find_spell( this, spell_id );
 
@@ -9483,16 +9341,6 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, uint32_t i
   return spell_data_t::not_found();
 }
 
-artifact_power_t player_t::find_artifact_spell( const std::string&, bool ) const
-{
-  return {};
-}
-
-artifact_power_t player_t::find_artifact_spell( unsigned ) const
-{
-  return {};
-}
-
 azerite_power_t player_t::find_azerite_spell( unsigned id ) const
 {
   if ( ! azerite )
@@ -9503,7 +9351,7 @@ azerite_power_t player_t::find_azerite_spell( unsigned id ) const
   return azerite -> get_power( id );
 }
 
-azerite_power_t player_t::find_azerite_spell( const std::string& name, bool tokenized ) const
+azerite_power_t player_t::find_azerite_spell( util::string_view name, bool tokenized ) const
 {
   if ( ! azerite )
   {
@@ -9524,7 +9372,7 @@ azerite_essence_t player_t::find_azerite_essence( unsigned id ) const
   return azerite_essence->get_essence( id );
 }
 
-azerite_essence_t player_t::find_azerite_essence( const std::string& name, bool tokenized ) const
+azerite_essence_t player_t::find_azerite_essence( util::string_view name, bool tokenized ) const
 {
   if ( !azerite_essence )
   {
@@ -9551,7 +9399,7 @@ void player_t::vision_of_perfection_proc()
  * It does this by going through various spell lists in following order:
  * class spell, specialization spell, mastery spell, talent spell, racial spell, pet_spell
  */
-const spell_data_t* player_t::find_spell( const std::string& name, specialization_e s ) const
+const spell_data_t* player_t::find_spell( util::string_view name, specialization_e s ) const
 {
   const spell_data_t* sp = find_class_spell( name, s );
   assert( sp );
@@ -9589,9 +9437,9 @@ const spell_data_t* player_t::find_spell( const std::string& name, specializatio
   return spell_data_t::not_found();
 }
 
-const spell_data_t* player_t::find_racial_spell( const std::string& name, race_e r ) const
+const spell_data_t* player_t::find_racial_spell( util::string_view name, race_e r ) const
 {
-  if ( unsigned spell_id = dbc->race_ability_id( type, ( r != RACE_NONE ) ? r : race, name.c_str() ) )
+  if ( unsigned spell_id = dbc->race_ability_id( type, ( r != RACE_NONE ) ? r : race, name ) )
   {
     const spell_data_t* s = dbc->spell( spell_id );
     if ( s->id() == spell_id )
@@ -9603,14 +9451,14 @@ const spell_data_t* player_t::find_racial_spell( const std::string& name, race_e
   return spell_data_t::not_found();
 }
 
-const spell_data_t* player_t::find_class_spell( const std::string& name, specialization_e s ) const
+const spell_data_t* player_t::find_class_spell( util::string_view name, specialization_e s ) const
 {
   if ( s == SPEC_NONE || s == _spec )
   {
-    if ( unsigned spell_id = dbc->class_ability_id( type, _spec, name.c_str() ) )
+    if ( unsigned spell_id = dbc->class_ability_id( type, _spec, name ) )
     {
       const spell_data_t* spell = dbc->spell( spell_id );
-      if ( spell->id() == spell_id && (int)spell->level() <= true_level )
+      if ( spell->id() == spell_id && as<int>( spell->level() ) <= true_level )
       {
         return dbc::find_spell( this, spell );
       }
@@ -9620,9 +9468,9 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, special
   return spell_data_t::not_found();
 }
 
-const spell_data_t* player_t::find_pet_spell( const std::string& name ) const
+const spell_data_t* player_t::find_pet_spell( util::string_view name ) const
 {
-  if ( unsigned spell_id = dbc->pet_ability_id( type, name.c_str() ) )
+  if ( unsigned spell_id = dbc->pet_ability_id( type, name ) )
   {
     const spell_data_t* s = dbc->spell( spell_id );
     if ( s->id() == spell_id )
@@ -9672,7 +9520,7 @@ struct player_expr_t : public expr_t
 {
   player_t& player;
 
-  player_expr_t( const std::string& n, player_t& p ) : expr_t( n ), player( p )
+  player_expr_t( util::string_view n, player_t& p ) : expr_t( n ), player( p )
   {
   }
 };
@@ -9680,7 +9528,7 @@ struct player_expr_t : public expr_t
 struct position_expr_t : public player_expr_t
 {
   int mask;
-  position_expr_t( const std::string& n, player_t& p, int m ) : player_expr_t( n, p ), mask( m )
+  position_expr_t( util::string_view n, player_t& p, int m ) : player_expr_t( n, p ), mask( m )
   {
   }
   double evaluate() override
@@ -9876,7 +9724,7 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
       {
         const action_variable_t* var_;
 
-        variable_expr_t( player_t* p, const std::string& name ) : expr_t( "variable" ),
+        variable_expr_t( player_t* p, util::string_view name ) : expr_t( "variable" ),
           var_( nullptr )
         {
           auto it = range::find_if( p->variables, [&name]( const action_variable_t* var ) {
@@ -10156,21 +10004,6 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
         return expr_t::create_constant( expression_str, s->ok() );
       }
       throw std::invalid_argument(fmt::format("Unsupported talent expression '{}'.", splits[ 2 ]));
-    }
-
-    if ( splits[ 0 ] == "artifact" )
-    {
-      artifact_power_t power = find_artifact_spell( splits[ 1 ], true );
-
-      if ( splits[ 2 ] == "enabled" )
-      {
-        return expr_t::create_constant( expression_str, power.rank() > 0 );
-      }
-      else if ( splits[ 2 ] == "rank" )
-      {
-        return expr_t::create_constant( expression_str, power.rank() );
-      }
-      throw std::invalid_argument(fmt::format("Unsupported artifact expression '{}'.", splits[ 2 ]));
     }
   } // splits.size() == 3
 
@@ -11503,7 +11336,7 @@ void player_t::do_update_movement( double yards )
 
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t,
-                                                                         const timespan_t& ts, const player_t* p ) :
+                                                                         timespan_t ts, const player_t* p ) :
   action( a ),
   target( t ),
   time( ts ),
@@ -11569,7 +11402,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
   }
 }
 
-player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const timespan_t& ts, const timespan_t& wait,
+player_collected_data_t::action_sequence_data_t::action_sequence_data_t( timespan_t ts, timespan_t wait,
                                                                          const player_t* p ) :
   action( nullptr ),
   target( nullptr ),
@@ -12134,29 +11967,6 @@ std::ostream& player_collected_data_t::data_str( std::ostream& s ) const
   return s;
 }
 
-void player_talent_points_t::clear()
-{
-  range::fill( choices, -1 );
-}
-
-std::string player_talent_points_t::to_string() const
-{
-  std::ostringstream ss;
-
-  ss << "{ ";
-  for ( int i = 0; i < MAX_TALENT_ROWS; ++i )
-  {
-    if ( i )
-      ss << ", ";
-    ss << choice( i );
-  }
-  ss << " }";
-
-  return ss.str();
-}
-
-
-
 // Note, root call needs to set player_t::visited_apls_ to 0
 action_t* player_t::select_action( const action_priority_list_t& list,
                                    execute_type                  type,
@@ -12264,7 +12074,7 @@ action_t* player_t::select_action( const action_priority_list_t& list,
   return nullptr;
 }
 
-player_t* player_t::actor_by_name_str( const std::string& name ) const
+player_t* player_t::actor_by_name_str( util::string_view name ) const
 {
   // Check player pets first
   for ( size_t i = 0; i < pet_list.size(); i++ )
@@ -12771,9 +12581,9 @@ std::ostream& operator<<(std::ostream &os, const player_t& p)
   return os;
 }
 
-spawner::base_actor_spawner_t* player_t::find_spawner( const std::string& id ) const
+spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
 {
-  auto it = range::find_if( spawners, [ &id ]( spawner::base_actor_spawner_t* o ) {
+  auto it = range::find_if( spawners, [ id ]( spawner::base_actor_spawner_t* o ) {
     return util::str_compare_ci( id, o -> name() );
   } );
 

@@ -11,17 +11,10 @@
 #include "generated/item_scaling_ptr.inc"
 #endif
 
-util::span<const scaling_stat_distribution_t> scaling_stat_distribution_t::data( bool ptr )
-{
-  return SC_DBC_GET_DATA( __scaling_stat_distribution_data, __ptr_scaling_stat_distribution_data, ptr );
-}
-
-
 util::span<const curve_point_t> curve_point_t::data( bool ptr )
 {
   return SC_DBC_GET_DATA( __curve_point_data, __ptr_curve_point_data, ptr );
 }
-
 
 util::span<const curve_point_t> curve_point_t::find( unsigned id, bool ptr )
 {

@@ -10,10 +10,13 @@
 #include <string>
 #include <vector>
 #include <memory>
+
 #include "sc_timespan.hpp"
 #include "sc_enums.hpp"
 #include "player/sc_actor_pair.hpp"
 #include "util/sample_data.hpp"
+#include "util/span.hpp"
+#include "util/string_view.hpp"
 #include "util/timeline.hpp"
 #include "sim/uptime.hpp"
 
@@ -38,9 +41,9 @@ struct rng_t;
 }
 
 
-using buff_tick_callback_t = std::function<void(buff_t*, int, const timespan_t&)>;
+using buff_tick_callback_t = std::function<void(buff_t*, int, timespan_t)>;
 using buff_tick_time_callback_t = std::function<timespan_t(const buff_t*, unsigned)>;
-using buff_refresh_duration_callback_t = std::function<timespan_t(const buff_t*, const timespan_t&)>;
+using buff_refresh_duration_callback_t = std::function<timespan_t(const buff_t*, timespan_t)>;
 using buff_stack_change_callback_t = std::function<void(buff_t*, int, int)>;
 
 // Buffs ====================================================================
@@ -132,12 +135,12 @@ public:
 
   virtual ~buff_t() {}
 
-  buff_t(actor_pair_t q, const std::string& name);
-  buff_t( actor_pair_t q, const std::string& name, const spell_data_t*, const item_t* item = nullptr );
-  buff_t(sim_t* sim, const std::string& name);
-  buff_t( sim_t* sim, const std::string& name, const spell_data_t*, const item_t* item = nullptr );
+  buff_t(actor_pair_t q, util::string_view name);
+  buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
+  buff_t(sim_t* sim, util::string_view name);
+  buff_t( sim_t* sim, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
 protected:
-  buff_t( sim_t* sim, player_t* target, player_t* source, const std::string& name, const spell_data_t*, const item_t* item );
+  buff_t( sim_t* sim, player_t* target, player_t* source, util::string_view name, const spell_data_t*, const item_t* item );
 public:
   const spell_data_t& data() const { return *s_data; }
   const spell_data_t& data_reporting() const;
@@ -212,7 +215,7 @@ public:
   }
 
   timespan_t remains() const;
-  timespan_t elapsed( const timespan_t& t ) const { return t - last_start; }
+  timespan_t elapsed( timespan_t t ) const { return t - last_start; }
   timespan_t last_trigger_time() const { return last_trigger; }
   timespan_t last_expire_time() const { return last_expire; }
   bool   remains_gt( timespan_t time ) const;
@@ -245,7 +248,7 @@ public:
   virtual void datacollection_begin();
   virtual void datacollection_end();
 
-  virtual timespan_t refresh_duration( const timespan_t& new_duration ) const;
+  virtual timespan_t refresh_duration( timespan_t new_duration ) const;
   virtual timespan_t tick_time() const;
 
 #if defined(SC_USE_STAT_CACHE)
@@ -256,22 +259,22 @@ public:
 
   virtual int total_stack();
 
-  static std::unique_ptr<expr_t> create_expression( std::string buff_name,
-                                    const std::string& type,
+  static std::unique_ptr<expr_t> create_expression( util::string_view buff_name,
+                                    util::string_view type,
                                     action_t& action );
-  static std::unique_ptr<expr_t> create_expression( std::string buff_name,
-                                    const std::string& type,
+  static std::unique_ptr<expr_t> create_expression( util::string_view buff_name,
+                                    util::string_view type,
                                     buff_t& static_buff );
   std::string to_str() const;
 
   static double DEFAULT_VALUE() { return -std::numeric_limits< double >::min(); }
-  static buff_t* find( const std::vector<buff_t*>&, const std::string& name, player_t* source = nullptr );
-  static buff_t* find(    sim_t*, const std::string& name );
-  static buff_t* find( player_t*, const std::string& name, player_t* source = nullptr );
-  static buff_t* find_expressable( const std::vector<buff_t*>&, const std::string& name, player_t* source = nullptr );
+  static buff_t* find( util::span<buff_t* const>, util::string_view name, player_t* source = nullptr );
+  static buff_t* find(    sim_t*, util::string_view name );
+  static buff_t* find( player_t*, util::string_view name, player_t* source = nullptr );
+  static buff_t* find_expressable( util::span<buff_t* const>, util::string_view name, player_t* source = nullptr );
 
   const char* name() const { return name_str.c_str(); }
-  std::string source_name() const;
+  util::string_view source_name() const;
   int max_stack() const { return _max_stack; }
   const spell_data_t* get_trigger_data() const
   { return trigger_data; }
@@ -346,8 +349,8 @@ struct stat_buff_t : public buff_t
 
   stat_buff_t* add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() );
 
-  stat_buff_t(actor_pair_t q, const std::string& name);
-  stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t*, const item_t* item = nullptr );
+  stat_buff_t(actor_pair_t q, util::string_view name);
+  stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
 };
 
 struct absorb_buff_t : public buff_t
@@ -359,8 +362,8 @@ struct absorb_buff_t : public buff_t
   bool     high_priority; // For tank absorbs that should explicitly "go first"
   absorb_eligibility eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
 
-  absorb_buff_t(actor_pair_t q, const std::string& name);
-  absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item = nullptr );
+  absorb_buff_t(actor_pair_t q, util::string_view name);
+  absorb_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const item_t* item = nullptr );
 protected:
 
   // Hook for derived classes to recieve notification when some of the absorb is consumed.
@@ -384,8 +387,8 @@ struct cost_reduction_buff_t : public buff_t
   double amount;
   school_e school;
 
-  cost_reduction_buff_t(actor_pair_t q, const std::string& name);
-  cost_reduction_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item = nullptr );
+  cost_reduction_buff_t(actor_pair_t q, util::string_view name);
+  cost_reduction_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const item_t* item = nullptr );
   virtual void bump     ( int stacks = 1, double value = -1.0 ) override;
   virtual void decrement( int stacks = 1, double value = -1.0 ) override;
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;

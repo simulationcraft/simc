@@ -8,6 +8,7 @@
 #include "sc_OptionsTab.hpp"
 #include "sc_SimulateTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
+#include "dbc/client_data.hpp"
 #include <QtCore/QDateTime>
 
 namespace { // unnamed namespace
@@ -749,7 +750,7 @@ void SC_OptionsTab::decodeOptions()
   }
   else
   {
-    for ( unsigned i = 0; i < sizeof_array( itemSourceOptions ); ++i )
+    for ( unsigned i = 0; i < range::size( itemSourceOptions ); ++i )
     {
       for( int k = 0; k < itemDbOrder->count(); ++k)
       {
@@ -829,12 +830,12 @@ void SC_OptionsTab::encodeOptions()
 
 void SC_OptionsTab::createToolTips()
 {
-  choice.version -> setToolTip( tr( "Live:  Use mechanics on Live servers. ( WoW Build %1 )" ).arg( dbc::build_level( false ) ) + "\n" +
+  choice.version -> setToolTip( tr( "Live:  Use mechanics on Live servers. ( WoW Build %1 )" ).arg( dbc::client_data_build( false ) ) + "\n" +
                               #if SC_BETA
-                                tr( "Beta:  Use mechanics on Beta servers. ( WoW Build %1 )" ).arg( dbc::build_level( true ) ) + "\n" +
+                                tr( "Beta:  Use mechanics on Beta servers. ( WoW Build %1 )" ).arg( dbc::client_data_build( true ) ) + "\n" +
                                 tr( "Both: Create Evil Twin with Beta mechanics" ) );
 #else
-                                tr( "PTR:  Use mechanics on PTR servers. ( WoW Build %1 )" ).arg( dbc::build_level( true ) ) + "\n" +
+                                tr( "PTR:  Use mechanics on PTR servers. ( WoW Build %1 )" ).arg( dbc::client_data_build( true ) ) + "\n" +
                                 tr( "Both: Create Evil Twin with PTR mechanics" ) );
 #endif
   choice.target_error -> setToolTip( tr( "This options sets a target error threshold and\n"
@@ -1317,7 +1318,7 @@ void SC_OptionsTab::createItemDataSourceSelector( QFormLayout* layout )
   itemDbOrder -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   itemDbOrder -> setMaximumWidth( 200 );
 
-  for ( unsigned i = 0; i < sizeof_array( itemSourceOptions ); ++i )
+  for ( unsigned i = 0; i < range::size( itemSourceOptions ); ++i )
   {
     QListWidgetItem* item = new QListWidgetItem( itemSourceOptions[ i ].label );
     item -> setData( Qt::UserRole, QVariant( itemSourceOptions[ i ].option ) );

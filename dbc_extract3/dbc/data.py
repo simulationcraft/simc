@@ -391,8 +391,8 @@ class DBCRecord(RawDBCRecord):
             if type_ == 'S' and self._d[i] > 0:
                 str_ = self._dbcp.get_string(self._d[i], self._id, i)
                 s.append('%s=%s%s' % (field,
-                    len(str_) and repr(str_) or '0',
-                    len(str_) and ' ({})'.format(self._d[i]) or ''
+                    (str_ and len(str_)) and repr(str_) or '0',
+                    (str_ and len(str_)) and ' ({})'.format(self._d[i]) or ''
                 ))
             elif type_ == 'f':
                 s.append('%s=%f' % (field, self._d[i]))
@@ -632,7 +632,6 @@ def initialize_data_model(options):
         SpellName.link('class_option', SpellClassOptions)
         SpellName.link('shapeshift', SpellShapeshift)
         SpellName.link('scaling', SpellScaling)
-        SpellName.link('artifact_power', ArtifactPowerRank)
         SpellName.link('azerite_power', AzeritePower)
         SpellName.link('label', SpellLabel)
         SpellName.link('misc', SpellMisc)

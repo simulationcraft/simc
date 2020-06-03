@@ -42,15 +42,10 @@ namespace {
     }
   };
 
-  typedef dbc::filtered_dbc_index_t<item_data_t, potion_filter_t, dbc::id_member_policy_t> potion_data_t;
-  typedef dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FLASK>, dbc::id_member_policy_t> flask_data_t;
-  typedef dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FOOD>, dbc::id_member_policy_t> food_data_t;
-
-  potion_data_t potion_data_index;
-  flask_data_t flask_data_index;
-  food_data_t food_data_index;
-
-  dbc::filtered_dbc_index_t<item_data_t, gem_filter_t, dbc::id_member_policy_t> gem_index;
+  dbc::filtered_dbc_index_t<item_data_t, potion_filter_t> potion_data_index;
+  dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FLASK>> flask_data_index;
+  dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FOOD>> food_data_index;
+  dbc::filtered_dbc_index_t<item_data_t, gem_filter_t> gem_index;
 }
 
 /* Initialize item database
@@ -78,12 +73,12 @@ std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsign
   for ( const auto& point : data )
   {
     assert( point.curve_id == curve_id );
-    if ( point.val1 <= value )
+    if ( point.primary1 <= value )
     {
       lower_bound = &( point );
     }
 
-    if ( point.val1 >= value )
+    if ( point.primary1 >= value )
     {
       upper_bound = &( point );
       break;
@@ -110,21 +105,21 @@ double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double p
 
   double scaled_result = 0;
   // Lands on a value, use data
-  if ( curve_data.first -> val1 == point_value )
+  if ( curve_data.first->primary1 == point_value )
   {
-    scaled_result = curve_data.first -> val2;
+    scaled_result = curve_data.first->primary2;
   }
   // Below lower bound, use lower bound value
-  else if ( curve_data.first -> val1 > point_value )
+  else if ( curve_data.first->primary1 > point_value )
   {
-    scaled_result = curve_data.first -> val2;
+    scaled_result = curve_data.first->primary2;
   }
   // Above upper bound, use upper bound value
-  else if ( curve_data.second -> val1 < point_value )
+  else if ( curve_data.second->primary1 < point_value )
   {
-    scaled_result = curve_data.second -> val2;
+    scaled_result = curve_data.second->primary2;
   }
-  else if ( curve_data.second -> val1 == point_value )
+  else if ( curve_data.second->primary1 == point_value )
   {
     // Should never happen
     assert( 0 );
@@ -132,8 +127,8 @@ double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double p
   else
   {
     // Linear interpolation
-    scaled_result = curve_data.first -> val2 + ( curve_data.second -> val2 - curve_data.first -> val2 ) *
-      ( point_value - curve_data.first -> val1 ) / ( curve_data.second -> val1 - curve_data.first -> val1 );
+    scaled_result = curve_data.first->primary2 + ( curve_data.second->primary2 - curve_data.first->primary2 ) *
+      ( point_value - curve_data.first->primary1 ) / ( curve_data.second->primary1 - curve_data.first->primary1 );
   }
 
   return scaled_result;
@@ -142,32 +137,23 @@ double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double p
 // TODO: Needs some way to figure what value to pass, for now presume min of player level, max
 // level. Also presumes we are only scaling itemlevel for now, this is almost certainly not 100%
 // true in all cases for the use of curve data.
-void item_database::apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level )
+void item_database::apply_item_scaling( item_t& item, unsigned curve_id, unsigned player_level )
 {
   // No scaling needed
-  if ( scaling_id == 0 )
+  if ( curve_id == 0 )
   {
     return;
   }
 
-  const auto& data = item.player->dbc->scaling_stat_distribution( scaling_id );
-  // Unable to find the scaling stat distribution
-  if ( data.id == 0 )
-  {
-    throw std::invalid_argument(fmt::format("Unable to find scaling information for {} scaling id {}.",
-        item.name(), item.parsed.data.id_scaling_distribution));
-  }
-
-  // Player level lower than item minimum scaling level, shouldnt happen but let item init go
-  // through
-  if ( player_level < data.min_level )
+  auto curve_data = curve_point_t::find( curve_id, item.player->dbc->ptr );
+  if ( curve_data.size() == 0 )
   {
     return;
   }
 
-  unsigned base_value = std::min( player_level, data.max_level );
+  unsigned base_value = std::min( player_level, as<unsigned>( curve_data.back().primary1 ) );
 
-  double scaled_result = curve_point_value( *item.player->dbc, data.curve_id, base_value );
+  double scaled_result = curve_point_value( *item.player->dbc, curve_id, base_value );
 
   if ( item.sim -> debug )
   {
@@ -207,7 +193,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       // First, check if the item already has that stat
       int found = -1;
       int offset = -1;
-      for ( size_t i = 0, end = sizeof_array( item.parsed.data.stat_type_e ); i < end; i++ )
+      for ( size_t i = 0, end = range::size( item.parsed.data.stat_type_e ); i < end; i++ )
       {
         // Put the new stat in first available slot
         if ( offset == -1 && item.parsed.data.stat_type_e[ i ] == ITEM_MOD_NONE )
@@ -273,7 +259,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
         item.player -> sim -> out_debug.printf( "Player %s item '%s' adding %d socket(s) (type=%d)",
             item.player -> name(), item.name(), entry.value_1, entry.value_2 );
       int n_added = 0;
-      for ( size_t i = 0, end = sizeof_array( item.parsed.data.socket_color ); i < end && n_added < entry.value_1; i++ )
+      for ( size_t i = 0, end = range::size( item.parsed.data.socket_color ); i < end && n_added < entry.value_1; i++ )
       {
         if ( item.parsed.data.socket_color[ i ] != SOCKET_COLOR_NONE )
           continue;
@@ -296,7 +282,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // ITEM_BONUS_SCALING_2).
     case ITEM_BONUS_SCALING:
     {
-      item_database::apply_item_scaling( item, entry.value_1, item.player -> level() );
+      item_database::apply_item_scaling( item, entry.value_4, item.player -> level() );
       break;
     }
     // This bonus type uses a curve point to scale the base item level, however it seems to also
@@ -310,7 +296,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     case ITEM_BONUS_SCALING_2:
       if ( item.parsed.drop_level > 0 )
       {
-        item_database::apply_item_scaling( item, entry.value_1, item.parsed.drop_level );
+        item_database::apply_item_scaling( item, entry.value_4, item.parsed.drop_level );
       }
       break;
     case ITEM_BONUS_ADD_ITEM_EFFECT:
@@ -332,7 +318,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       }
 
       size_t index = 0;
-      for ( index = 0; index < sizeof_array( item.parsed.data.trigger_spell ); ++index )
+      for ( index = 0; index < range::size( item.parsed.data.trigger_spell ); ++index )
       {
         if ( item.parsed.data.id_spell[ index ] <= 0 )
         {
@@ -467,7 +453,7 @@ double item_database::approx_scale_coefficient( unsigned current_ilevel, unsigne
 int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel )
 {
   // Safeguard against array overflow, should never happen in any case
-  if ( idx >= sizeof_array( item.parsed.data.stat_type_e ) - 1 )
+  if ( idx >= range::size( item.parsed.data.stat_type_e ) - 1 )
     return -1;
 
   if ( item.parsed.data.level == 0 )
@@ -1000,7 +986,7 @@ std::vector<item_database::token_t> item_database::parse_tokens( const std::stri
   return tokens;
 }
 
-const item_data_t& dbc::find_gem( const std::string& gem, bool ptr, bool tokenized )
+const item_data_t& dbc::find_gem( util::string_view gem, bool ptr, bool tokenized )
 {
   return gem_index.get( ptr, [&gem, tokenized]( const item_data_t* obj ) {
       if ( tokenized )
@@ -1061,23 +1047,29 @@ static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_s
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
-    if ( entries[ i ].value_1 == 0 )
+    if ( entries[ i ].value_4 == 0 )
     {
       continue;
     }
 
     if ( entries[ i ].type == ITEM_BONUS_SCALING || entries[ i ].type == ITEM_BONUS_SCALING_2 )
     {
-      const auto& data = dbc.scaling_stat_distribution( entries[ i ].value_1 );
-      assert( data.id );
-      auto curve_data_min = dbc.curve_point( data.curve_id, data.min_level );
-      auto curve_data_max = dbc.curve_point( data.curve_id, data.max_level );
+      auto curve_data = curve_point_t::find( entries[ i ].value_4, dbc.ptr );
+      if ( curve_data.size() == 0 )
+      {
+        return std::pair<std::pair<int, double>, std::pair<int, double> >(
+            std::pair<int, double>( -1, 0 ),
+            std::pair<int, double>( -1, 0 ) );
+      }
+
+      auto curve_data_min = dbc.curve_point( entries[ i ].value_4, curve_data.front().primary1 );
+      auto curve_data_max = dbc.curve_point( entries[ i ].value_4, curve_data.back().primary2 );
       assert(curve_data_min.first);
       assert(curve_data_max.first);
 
       return std::pair<std::pair<int, double>, std::pair<int, double>>(
-          std::pair<int, double>( data.min_level, curve_data_min.first->val2 ),
-          std::pair<int, double>( data.max_level, curve_data_max.first->val2 ) );
+          std::pair<int, double>( as<int>( curve_data.front().primary1 ), curve_data_min.first->primary2 ),
+          std::pair<int, double>( as<int>( curve_data.back().primary1 ), curve_data_max.first->primary2 ) );
     }
   }
 

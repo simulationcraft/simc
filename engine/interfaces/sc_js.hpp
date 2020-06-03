@@ -9,6 +9,8 @@
 #include "config.hpp"
 #include "rapidjson/document.h"
 #include "sc_timespan.hpp"
+#include "util/string_view.hpp"
+
 #include <utility>
 #include <string>
 #include <vector>
@@ -37,58 +39,55 @@ struct sc_js_t
 
   virtual std::string to_json() const;
 
-  sc_js_t& set( rapidjson::Value& obj, const std::string& name_, const rapidjson::Value& value_ );
+  sc_js_t& set( rapidjson::Value& obj, util::string_view name_, const rapidjson::Value& value_ );
 
   // Direct data access to a rapidjson value.
-  rapidjson::Value& value( const std::string& path );
+  rapidjson::Value& value( util::string_view path );
 
   // Set the value of JSON object indicated by path to value_
-  template <typename T>
-  sc_js_t& set( const std::string& path, const T& value_ );
+  template <typename T, typename = std::enable_if_t<!std::is_convertible<T, util::string_view>::value>>
+  sc_js_t& set( util::string_view path, const T& value_ );
   // Set the value of JSON object indicated by path to an array of values_
   template <typename T>
-  sc_js_t& set( const std::string& path, const std::vector<T>& values_ );
+  sc_js_t& set( util::string_view path, const std::vector<T>& values_ );
+
+  sc_js_t& set( util::string_view path, const sc_js_t& value_ );
+  sc_js_t& set( util::string_view path, size_t value_ );
+  sc_js_t& set( util::string_view path, util::string_view value );
+
   // Set the JSON object property name_ to value_
-  template<typename T>
-  sc_js_t& set( rapidjson::Value& obj, const std::string& name_, const T& value_ );
+  template <typename T, typename = std::enable_if_t<!std::is_convertible<T, util::string_view>::value>>
+  sc_js_t& set( rapidjson::Value& obj, util::string_view name_, const T& value_ );
   // Set the JSON object property name_ to a JSON array value_
-  template<typename T>
-  sc_js_t& set( rapidjson::Value& obj, const std::string& name_, const std::vector<T>& value_ );
+  template <typename T>
+  sc_js_t& set( rapidjson::Value& obj, util::string_view name_, const std::vector<T>& value_ );
 
-  sc_js_t& set( const std::string& path, const sc_js_t& value_ );
-  sc_js_t& set( const std::string& path, const size_t& value_ );
-
-  // Specializations for const char* (we need copies), and std::string
-  sc_js_t& set( const std::string& path, const char* value );
-  sc_js_t& set( const std::string& path, const std::string& value );
-  sc_js_t& set( rapidjson::Value& obj, const std::string& name, const char* value_ );
-  sc_js_t& set( rapidjson::Value& obj, const std::string& name, const std::string& value_ );
+  sc_js_t& set( rapidjson::Value& obj, util::string_view name, util::string_view value );
 
   // Add elements to a JSON array indicated by path by appending value_
-  template <typename T>
-  sc_js_t& add( const std::string& path, const T& value_ );
+  template <typename T, typename = std::enable_if_t<!std::is_convertible<T, util::string_view>::value>>
+  sc_js_t& add( util::string_view path, const T& value_ );
   // Add elements to a JSON array indicated by path by appending data
   template <typename T>
-  sc_js_t& add( const std::string& path, const std::vector<T>& data );
+  sc_js_t& add( util::string_view path, const std::vector<T>& data );
 
   // Specializations for adding elements to a JSON array for various types
-  sc_js_t& add( const std::string& path, const rapidjson::Value& obj );
-  sc_js_t& add( const std::string& path, const sc_js_t& obj );
-  sc_js_t& add( const std::string& path, const std::string& value_ );
-  sc_js_t& add( const std::string& path, const char* value_ );
-  sc_js_t& add( const std::string& path, double x, double low, double high );
-  sc_js_t& add( const std::string& path, double x, double y );
+  sc_js_t& add( util::string_view path, const rapidjson::Value& obj );
+  sc_js_t& add( util::string_view path, const sc_js_t& obj );
+  sc_js_t& add( util::string_view path, util::string_view value );
+  sc_js_t& add( util::string_view path, double x, double low, double high );
+  sc_js_t& add( util::string_view path, double x, double y );
 
 protected:
   // Find the Value object given by a path, and construct any missing objects along the way
-  rapidjson::Value* path_value( const std::string& path );
+  rapidjson::Value* path_value( util::string_view path );
 
   // Note, value_ will transfer ownership to this object after the call.
-  rapidjson::Value& do_set( rapidjson::Value& obj, const char* name_, rapidjson::Value& value_ )
+  rapidjson::Value& do_set( rapidjson::Value& obj, util::string_view name_, rapidjson::Value& value_ )
   {
     assert( obj.GetType() == rapidjson::kObjectType );
 
-    rapidjson::Value name_value( name_, js_.GetAllocator() );
+    rapidjson::Value name_value( name_.data(), name_.size(), js_.GetAllocator() );
 
     return obj.AddMember( name_value, value_, js_.GetAllocator() );
   }
@@ -98,15 +97,15 @@ protected:
   {
     assert( obj.GetType() == rapidjson::kArrayType );
 
-    for ( size_t i = 0, end = values.size(); i < end; i++ )
-      obj.PushBack( values[ i ], js_.GetAllocator() );
+    for ( const T& value : values )
+      obj.PushBack( value, js_.GetAllocator() );
 
     return obj;
   }
 };
 
-template <typename T>
-sc_js_t& sc_js_t::set( const std::string& path, const T& value_ )
+template <typename T, typename /* enable_if junk */>
+sc_js_t& sc_js_t::set( util::string_view path, const T& value_ )
 {
   if ( rapidjson::Value* obj = path_value( path ) )
     *obj = value_;
@@ -114,7 +113,7 @@ sc_js_t& sc_js_t::set( const std::string& path, const T& value_ )
 }
 
 template<typename T>
-sc_js_t& sc_js_t::set( const std::string& path, const std::vector<T>& values )
+sc_js_t& sc_js_t::set( util::string_view path, const std::vector<T>& values )
 {
   if ( rapidjson::Value* obj = path_value( path ) )
   {
@@ -128,8 +127,8 @@ sc_js_t& sc_js_t::set( const std::string& path, const std::vector<T>& values )
   return *this;
 }
 
-template <typename T>
-sc_js_t& sc_js_t::add( const std::string& path, const T& value_ )
+template <typename T, typename /* enable_if junk */>
+sc_js_t& sc_js_t::add( util::string_view path, const T& value_ )
 {
   if ( rapidjson::Value* obj = path_value( path ) )
   {
@@ -143,7 +142,7 @@ sc_js_t& sc_js_t::add( const std::string& path, const T& value_ )
 }
 
 template<typename T>
-sc_js_t& sc_js_t::add( const std::string& path, const std::vector<T>& values )
+sc_js_t& sc_js_t::add( util::string_view path, const std::vector<T>& values )
 {
   if ( rapidjson::Value* obj = path_value( path ) )
   {
@@ -155,35 +154,35 @@ sc_js_t& sc_js_t::add( const std::string& path, const std::vector<T>& values )
   return *this;
 }
 
-template<typename T>
-sc_js_t& sc_js_t::set( rapidjson::Value& obj, const std::string& name_, const T& value_ )
+template <typename T, typename /* enable_if junk */>
+sc_js_t& sc_js_t::set( rapidjson::Value& obj, util::string_view name_, const T& value_ )
 {
   assert( obj.GetType() == rapidjson::kObjectType );
 
   rapidjson::Value value_obj( value_ );
 
-  do_set( obj, name_.c_str(), value_obj );
+  do_set( obj, name_, value_obj );
   return *this;
 }
 
 template<typename T>
-sc_js_t& sc_js_t::set( rapidjson::Value& obj, const std::string& name_, const std::vector<T>& value_ )
+sc_js_t& sc_js_t::set( rapidjson::Value& obj, util::string_view name_, const std::vector<T>& value_ )
 {
   assert( obj.GetType() == rapidjson::kObjectType );
 
   rapidjson::Value value_obj( rapidjson::kArrayType );
 
-  do_set( obj, name_.c_str(), do_insert( value_obj, value_ ) );
+  do_set( obj, name_, do_insert( value_obj, value_ ) );
   return *this;
 }
 
-inline sc_js_t& sc_js_t::set( rapidjson::Value& obj, const std::string& name_, const rapidjson::Value& value_ )
+inline sc_js_t& sc_js_t::set( rapidjson::Value& obj, util::string_view name_, const rapidjson::Value& value_ )
 {
   assert( obj.GetType() == rapidjson::kObjectType );
 
   rapidjson::Value new_value( value_, js_.GetAllocator() );
 
-  do_set( obj, name_.c_str(), new_value );
+  do_set( obj, name_, new_value );
   return *this;
 }
 
@@ -198,23 +197,20 @@ public:
   { }
 
   // Create a new object member (n) to the current object (v_), and return a reference to it
-  JsonOutput operator[]( const char* n )
+  JsonOutput operator[]( util::string_view n )
   {
-    if ( ! v_.HasMember( n ) )
+    rapidjson::Value name( n.data(), n.size() );
+    auto member = v_.FindMember( name );
+    if ( member == v_.MemberEnd() )
     {
-      auto obj = rapidjson::Value();
-      obj.SetObject();
-
-      rapidjson::Value key { n, d_.GetAllocator() };
-
+      rapidjson::Value key( n.data(), n.size(), d_.GetAllocator() );
+      rapidjson::Value obj( rapidjson::kObjectType );
       v_.AddMember( key, obj, d_.GetAllocator() );
+      member = std::prev( v_.MemberEnd() );
+      assert( member -> value == v_[ name ] );
     }
-
-    return JsonOutput( d_, v_[ n ] );
+    return JsonOutput( d_, member -> value );
   }
-
-  JsonOutput operator[]( const std::string& n )
-  { return operator[]( n.c_str() ); }
 
   rapidjson::Value& val()
   { return v_; }
@@ -227,16 +223,13 @@ public:
   { v_.SetArray(); return *this; }
 
   // Assign any primitive (supported value by RapidJSON) to the current value (v_)
-  template <typename T>
-  JsonOutput& operator=( T v )
+  template <typename T, typename = std::enable_if_t<!std::is_convertible<T, util::string_view>::value>>
+  JsonOutput& operator=( const T& v )
   { v_ = v; return *this; }
 
   // Assign a string to the current value (v_), and have RapidJSON do the copy.
-  JsonOutput& operator=( const char* v )
-  { v_.SetString( v, d_.GetAllocator() ); return *this; }
-
-  JsonOutput operator=( const std::string& v )
-  { v_.SetString( v.c_str(), d_.GetAllocator() ); return *this; }
+  JsonOutput& operator=( util::string_view v )
+  { v_.SetString( v.data(), v.size(), d_.GetAllocator() ); return *this; }
 
   // Assign an external RapidJSON Value to the current value (v_)
   JsonOutput operator=( rapidjson::Value& v )
@@ -244,7 +237,7 @@ public:
 
   // Assign a simc-internal timespan object to the current value (v_). Timespan object is converted
   // to a double.
-  JsonOutput& operator=(const timespan_t& v);
+  JsonOutput& operator=(timespan_t v);
 
   // Assign a simc-internal sample data container to the current value (v_). The container is
   // converted to an object with fixed fields.
@@ -284,14 +277,11 @@ public:
   JsonOutput& add( T v )
   { assert( v_.IsArray() ); v_.PushBack( v, d_.GetAllocator() ); return *this; }
 
-  JsonOutput& add( const char* v )
-  { assert( v_.IsArray() ); v_.PushBack( rapidjson::StringRef( v ), d_.GetAllocator() ); return *this; }
-
   JsonOutput add( rapidjson::Value& v )
   { assert( v_.IsArray() ); v_.PushBack( v, d_.GetAllocator() ); return JsonOutput( d_, v_[ v_.Size() - 1 ] ); }
 
   JsonOutput add()
-  { auto v = rapidjson::Value(); v.SetObject(); return add( v ); }
+  { auto v = rapidjson::Value( rapidjson::kObjectType ); return add( v ); }
 };
 
 } /* namespace js */

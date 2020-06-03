@@ -53,7 +53,7 @@ void warlock_pet_t::create_buffs()
   buffs.embers = make_buff(this, "embers", find_spell(264364))
     ->set_period(timespan_t::from_seconds(0.5))
     ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
-    ->set_tick_callback([this](buff_t*, int, const timespan_t&)
+    ->set_tick_callback([this](buff_t*, int, timespan_t)
   {
     o()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, o()->gains.infernal);
   });
@@ -860,7 +860,8 @@ struct bile_spit_t : public warlock_pet_spell_t
 
 struct headbutt_t : public warlock_pet_melee_attack_t
 {
-  headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( p, "Headbutt" )
+  headbutt_t( warlock_pet_t* p ) :
+    warlock_pet_melee_attack_t( "headbutt", p, p->find_spell( 267999 ) )
   {
     cooldown->duration = timespan_t::from_seconds( 5 );
   }
@@ -1022,7 +1023,8 @@ action_t* shivarra_t::create_action( const std::string& name, const std::string&
 // darkhound
 struct fel_bite_t : public warlock_pet_melee_attack_t
 {
-  fel_bite_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( p, "Fel Bite" )
+  fel_bite_t( warlock_pet_t* p ) :
+    warlock_pet_melee_attack_t( "fel_bite", p, p->find_spell( 272435 ) )
   { }
 
   void update_ready( timespan_t /* cd = timespan_t::min() */ ) override
@@ -1433,7 +1435,7 @@ void infernal_t::create_buffs()
 
   immolation = make_buff<buff_t>( this, "immolation", find_spell( 19483 ) )
     ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-    ->set_tick_callback( [damage, this]( buff_t* /* b  */, int /* stacks */, const timespan_t& /* tick_time */ ) {
+    ->set_tick_callback( [damage, this]( buff_t* /* b  */, int /* stacks */, timespan_t /* tick_time */ ) {
       damage->set_target( target );
       damage->execute();
     } );

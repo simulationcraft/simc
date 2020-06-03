@@ -16,6 +16,8 @@ struct item_bonus_entry_t
   unsigned type;
   int      value_1;
   int      value_2;
+  int      value_3;
+  int      value_4;
   unsigned index;
 
   static util::span<const item_bonus_entry_t> find( unsigned id, bool ptr );

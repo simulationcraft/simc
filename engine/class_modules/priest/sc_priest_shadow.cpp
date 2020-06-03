@@ -1569,7 +1569,7 @@ struct priest_t::insanity_end_event_t : public event_t
 {
   priest_t& actor;
 
-  insanity_end_event_t( priest_t& actor_, const timespan_t& duration_ )
+  insanity_end_event_t( priest_t& actor_, timespan_t duration_ )
     : event_t( *actor_.sim, duration_ ), actor( actor_ )
   {
   }

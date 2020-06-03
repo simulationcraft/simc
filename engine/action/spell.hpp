@@ -11,8 +11,8 @@
 struct spell_t : public spell_base_t
 {
 public:
-  spell_t(const std::string& token, player_t* p);
-  spell_t( const std::string& token, player_t* p, const spell_data_t* s );
+  spell_t( util::string_view token, player_t* p );
+  spell_t( util::string_view token, player_t* p, const spell_data_t* s );
 
   // Harmful Spell Overrides
   virtual result_amount_type amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;

@@ -7,6 +7,8 @@
 
 #include "config.hpp"
 #include "sc_enums.hpp"
+#include "util/string_view.hpp"
+
 #include <array>
 #include <string>
 
@@ -17,7 +19,7 @@ public:
   std::array<double, RESOURCE_MAX> actual, overflow, count;
   const std::string name_str;
 
-  gain_t( const std::string& n ) :
+  gain_t( util::string_view n ) :
     actual(),
     overflow(),
     count(),

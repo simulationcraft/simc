@@ -93,6 +93,9 @@ public:
     // Talents
     propagate_const<buff_t*> twist_of_fate;
 
+    // Shared
+    propagate_const<buff_t*> power_infusion;
+
     // Discipline
     propagate_const<buff_t*> archangel;
     propagate_const<buff_t*> borrowed_time;
@@ -102,7 +105,7 @@ public:
     propagate_const<buff_t*> sins_of_the_many;
 
     // Holy
-	propagate_const<buff_t*> apotheosis;
+	  propagate_const<buff_t*> apotheosis;
 
     // Shadow
     propagate_const<buff_t*> dispersion;
@@ -273,6 +276,9 @@ public:
   // Cooldowns
   struct
   {
+    // Shared
+    propagate_const<cooldown_t*> power_infusion;
+    
     // Discipline
     propagate_const<cooldown_t*> chakra;
     propagate_const<cooldown_t*> mindbender;
@@ -404,7 +410,7 @@ public:
     azerite_power_t whispers_of_the_damned;
   } azerite;
 
-  struct 
+  struct
   {
     const spell_data_t* lucid_dreams;
     const spell_data_t* memory_of_lucid_dreams;
@@ -427,7 +433,6 @@ public:
   void create_options() override;
   std::string create_profile( save_e ) override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
-  virtual action_t* create_proc_action( const std::string& name, const special_effect_t& effect ) override;
   pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
   void create_pets() override;
   void copy_from( player_t* source ) override;

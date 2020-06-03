@@ -1136,10 +1136,6 @@ void print_player( std::ostream& os, player_t& p )
     fmt::print( os, "  Origin: {}\n", p.origin_str );
   if ( !p.talents_str.empty() )
     fmt::print( os, "  Talents: {}\n", p.talents_str );
-  if ( p.artifact && !p.artifact->artifact_option_string().empty() )
-    fmt::print( os, "  Artifact: {}\n", p.artifact->crucible_option_string() );
-  if ( p.artifact && !p.artifact->crucible_option_string().empty() )
-    fmt::print( os, "  Crucible: {}\n", p.artifact->crucible_option_string() );
   print_core_stats( os, p );
   print_generic_stats( os, p );
   print_spell_stats( os, p );
@@ -1181,7 +1177,7 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
 {
 #if SC_BETA
   fmt::print( os, "\n" );
-  auto beta_warnings = report::beta_warnings();
+  auto beta_warnings = report_helper::beta_warnings();
   for ( const auto& line : beta_warnings )
   {
     fmt::print( os, " * {} \n", line );

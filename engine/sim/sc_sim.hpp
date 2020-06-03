@@ -38,9 +38,6 @@ struct reforge_plot_t;
 struct scale_factor_control_t;
 struct sim_control_t;
 struct spell_data_expr_t;
-namespace unique_gear {
-    struct pantheon_state_t;
-}
 
 struct sim_progress_t
 {
@@ -227,9 +224,6 @@ struct sim_t : private sc_thread_t
     int                 void_stalkers_contract_targets = -1;
     double              specter_of_betrayal_overlap = 1.0;
     std::vector<double> cradle_of_anguish_resets;
-    std::string         pantheon_trinket_users;
-    timespan_t          pantheon_trinket_interval = timespan_t::from_seconds( 1.0 );
-    double              pantheon_trinket_interval_stddev = 0.0;
     double              archimondes_hatred_reborn_damage = 1.0;
   } legion_opts;
 
@@ -348,12 +342,6 @@ struct sim_t : private sc_thread_t
     /// Chance for Infinite Stars to not hit the primary target (for single target sims)
     double infinite_stars_miss_chance = 0;
   } bfa_opts;
-
-  // Expansion specific data
-  struct legion_data_t
-  {
-    std::unique_ptr<unique_gear::pantheon_state_t> pantheon_proxy;
-  } legion_data;
 
   // Auras and De-Buffs
   auto_dispose<std::vector<buff_t*>> buff_list;
@@ -602,9 +590,9 @@ struct sim_t : private sc_thread_t
   bool      parse_option( const std::string& name, const std::string& value );
   void      setup( sim_control_t* );
   bool      time_to_think( timespan_t proc_time );
-  player_t* find_player( const std::string& name ) const;
+  player_t* find_player( util::string_view name ) const;
   player_t* find_player( int index ) const;
-  cooldown_t* get_cooldown( const std::string& name );
+  cooldown_t* get_cooldown( util::string_view name );
   void      use_optimal_buffs_and_debuffs( int value );
   std::unique_ptr<expr_t>   create_expression( const std::string& name );
   /**

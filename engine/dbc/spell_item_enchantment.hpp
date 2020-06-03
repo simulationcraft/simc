@@ -26,7 +26,7 @@ struct item_enchantment_data_t
   const char* name;
 
   static const item_enchantment_data_t& find( unsigned id, bool ptr )
-  { return dbc::find<item_enchantment_data_t>( id, ptr ); }
+  { return dbc::find<item_enchantment_data_t>( id, ptr, &item_enchantment_data_t::id ); }
 
   static const item_enchantment_data_t& nil()
   { return dbc::nil<item_enchantment_data_t>(); }

@@ -297,7 +297,7 @@ class WDC1BitPackedValue(WDC1ExtendedColumnValue):
         super().__init__(column)
 
         self.unpacker = None
-        if column.value_bit_size() % 8 == 0:
+        if column.value_bit_size() != 24 and column.value_bit_size() % 8 == 0:
             struct_type = get_struct_type(column.is_float(),
                                           column.is_signed(),
                                           column.value_bit_size())
@@ -942,6 +942,9 @@ class WDC1Parser(DBCParserBase):
         return self.__key_format
 
     def sparse_data_offset(self, column, id_):
+        if column.index() >= len(self.sparse_blocks):
+            return -1
+
         return self.sparse_blocks[column.index()].get(id_, -1)
 
     def create_raw_parser(self, hotfix_parser = False):

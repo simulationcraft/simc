@@ -108,17 +108,17 @@ private:
   /// Recreate m_active pets, m_inactive pets if m_dirty == 1
   void update_state();
 public:
-  pet_spawner_t( const std::string& id, O* p, pet_spawn_type st = PET_SPAWN_DYNAMIC );
-  pet_spawner_t( const std::string& id, O* p, unsigned max_pets,
+  pet_spawner_t( util::string_view id, O* p, pet_spawn_type st = PET_SPAWN_DYNAMIC );
+  pet_spawner_t( util::string_view id, O* p, unsigned max_pets,
                    pet_spawn_type st = PET_SPAWN_DYNAMIC );
-  pet_spawner_t( const std::string& id, O* p, unsigned max_pets, const create_fn_t& creator,
+  pet_spawner_t( util::string_view id, O* p, unsigned max_pets, const create_fn_t& creator,
                    pet_spawn_type st = PET_SPAWN_DYNAMIC );
-  pet_spawner_t( const std::string& id, O* p, const create_fn_t& creator,
+  pet_spawner_t( util::string_view id, O* p, const create_fn_t& creator,
                    pet_spawn_type st = PET_SPAWN_DYNAMIC );
 
   /// Spawn n new pets (defaults, 1 for dynamic, max_pets for persistent),
   /// return spawned pets as a vector of pointers
-  std::vector<T*> spawn( const timespan_t& duration = timespan_t::min(), unsigned n = 0 );
+  std::vector<T*> spawn( timespan_t duration = timespan_t::min(), unsigned n = 0 );
   /// Spawns n pets using the default summon duration
   std::vector<T*> spawn( unsigned n );
   /// Despawn all active pets, return number of pets despawned
@@ -131,7 +131,7 @@ public:
   size_t despawn( const check_arg_fn_t& fn );
 
   /// Adjust the expiration time of active pets of type T
-  void extend_expiration( const timespan_t& adjustment );
+  void extend_expiration( timespan_t adjustment );
 
   /// Number of active pets of type T
   size_t n_active_pets() const;
@@ -144,7 +144,7 @@ public:
   /// Maximum number of active pets
   size_t max_pets() const;
   /// Default spawning duration
-  const timespan_t& duration() const;
+  timespan_t duration() const;
 
   // Iteration
   typename std::vector<T*>::iterator begin();
@@ -165,7 +165,7 @@ public:
   /// Set default duration based on a spell
   pet_spawner_t<T, O>& set_default_duration( const spell_data_t& spell );
   /// Set default duration based on a timespan object
-  pet_spawner_t<T, O>& set_default_duration( const timespan_t& duration );
+  pet_spawner_t<T, O>& set_default_duration( timespan_t duration );
   /// Registers custom expressions for the pet type
   pet_spawner_t<T, O>& add_expression( const std::string& name, const expr_fn_t& fn );
 

@@ -17,8 +17,8 @@ public:
   double tick_pct_heal;
   gain_t* heal_gain;
 
-  heal_t(const std::string& name, player_t* p);
-  heal_t( const std::string& name, player_t* p, const spell_data_t* s );
+  heal_t( util::string_view name, player_t* p );
+  heal_t( util::string_view name, player_t* p, const spell_data_t* s );
 
   virtual double composite_pct_heal( const action_state_t* ) const;
   virtual void assess_damage( result_amount_type, action_state_t* ) override;

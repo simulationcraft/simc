@@ -28,7 +28,6 @@
 #include "sim/plot.hpp"
 #include "sim/reforge_plot.hpp"
 #include "sim/sc_cooldown.hpp"
-#include "sim/x6_pantheon.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "util/xml.hpp"
 #include <random>
@@ -847,7 +846,7 @@ bool parse_item_sources( sim_t*             sim,
 
   for ( size_t j = 0; j < sources.size(); j++ )
   {
-    for ( size_t i = 0; i < sizeof_array( default_item_db_sources ); ++i )
+    for ( size_t i = 0; i < range::size( default_item_db_sources ); ++i )
     {
       if ( util::str_compare_ci( sources[ j ], default_item_db_sources[ i ] ) )
       {
@@ -859,16 +858,8 @@ bool parse_item_sources( sim_t*             sim,
 
   if ( sim -> item_db_sources.empty() )
   {
-    std::string all_known_sources;
-
-    for ( size_t i = 0; i < sizeof_array( default_item_db_sources ); ++i )
-    {
-      all_known_sources += ' ';
-      all_known_sources += default_item_db_sources[ i ];
-    }
-
     throw std::invalid_argument(fmt::format("Your global data source string '{}' contained no valid data sources. "
-        "Valid identifiers are: {}", value, all_known_sources ));
+        "Valid identifiers are: {}", value, fmt::join(default_item_db_sources, " ")));
   }
 
   return true;
@@ -1851,11 +1842,6 @@ void sim_t::reset()
   }
 
   raid_event_t::reset( this );
-
-  if ( legion_data.pantheon_proxy )
-  {
-    legion_data.pantheon_proxy -> reset();
-  }
 }
 
 /// Start combat.
@@ -1945,11 +1931,6 @@ void sim_t::combat_begin()
     target -> death_pct = enemy_death_pct;
   }
   make_event<sim_safeguard_end_event_t>( *this, *this, expected_iteration_time + expected_iteration_time );
-
-  if ( legion_data.pantheon_proxy )
-  {
-    legion_data.pantheon_proxy -> start();
-  }
 
   raid_event_t::combat_begin( this );
 }
@@ -2554,8 +2535,7 @@ void sim_t::init_actor( player_t* p )
 
     // Create all actor pets before special effects get initialized. This ensures that we can use
     // stuff like the presence of an action (created with create_actions()) to determine if a pet
-    // needs to be created or not. Similarly, talent, artifact, spec, and item based qualifiers would
-    // work.
+    // needs to be created or not. Similarly, talent, spec, and item based qualifiers would work.
     p -> create_pets();
 
     // Second-phase initialize all special effects and register them to actors
@@ -3223,9 +3203,9 @@ bool sim_t::execute()
 }
 
 /// find player in sim by name
-player_t* sim_t::find_player( const std::string& name ) const
+player_t* sim_t::find_player( util::string_view name ) const
 {
-  auto it = range::find_if( actor_list, [name](const player_t* p) { return name == p -> name(); });
+  auto it = range::find( actor_list, name, &player_t::name );
   if ( it != actor_list.end())
     return *it;
   return nullptr;
@@ -3234,7 +3214,7 @@ player_t* sim_t::find_player( const std::string& name ) const
 /// find player in sim by actor index
 player_t* sim_t::find_player( int index ) const
 {
-  auto it = range::find_if( actor_list, [index](const player_t* p) { return index == p -> index; });
+  auto it = range::find( actor_list, index, &player_t::index );
   if ( it != actor_list.end())
     return *it;
   return nullptr;
@@ -3242,18 +3222,13 @@ player_t* sim_t::find_player( int index ) const
 
 // sim_t::get_cooldown ======================================================
 
-cooldown_t* sim_t::get_cooldown( const std::string& name )
+cooldown_t* sim_t::get_cooldown( util::string_view name )
 {
-  cooldown_t* c;
+  auto it = range::find( cooldown_list, name, &cooldown_t::name_str );
+  if ( it != cooldown_list.end() )
+    return *it;
 
-  for ( size_t i = 0; i < cooldown_list.size(); ++i )
-  {
-    c = cooldown_list[ i ];
-    if ( c -> name_str == name )
-      return c;
-  }
-
-  c = new cooldown_t( name, *this );
+  cooldown_t* c = new cooldown_t( name, *this );
 
   cooldown_list.push_back( c );
 
@@ -3303,6 +3278,9 @@ std::unique_ptr<expr_t> sim_t::create_expression( const std::string& name_str )
   if ( util::str_compare_ci( name_str, "expected_combat_length" ) )
     return make_ref_expr( name_str, expected_iteration_time );
 
+  if ( util::str_compare_ci( name_str, "fight_remains" ) )
+    return make_fn_expr( name_str, [ this ] { return expected_iteration_time - event_mgr.current_time; } );
+
   if ( name_str == "channel_lag" )
     return expr_t::create_constant( name_str, channel_lag );
 
@@ -3347,16 +3325,6 @@ std::unique_ptr<expr_t> sim_t::create_expression( const std::string& name_str )
           {
             switch ( p->specialization() )
             {
-              case HUNTER_MARKSMANSHIP:
-                if ( p->true_level > 100 )  // Assume Bullseye artifact trait
-                {
-                  execute += 1.0;
-                }
-                else
-                {
-                  nonexecute += 1.0;
-                }
-                break;
               case PRIEST_SHADOW:
               case WARRIOR_ARMS:
               case WARRIOR_FURY:
@@ -3425,7 +3393,7 @@ std::unique_ptr<expr_t> sim_t::create_expression( const std::string& name_str )
       std::string type;
       std::string filter;
 
-      raid_event_expr_t( sim_t* s, std::string& type, std::string& filter ) :
+      raid_event_expr_t( sim_t* s, util::string_view type, util::string_view filter ) :
         expr_t( "raid_event" ), s( s ), type( type ), filter( filter )
       {}
 
@@ -3695,9 +3663,9 @@ void sim_t::create_options()
   add_option( opt_int( "legion.void_stalkers_contract_targets", legion_opts.void_stalkers_contract_targets ) );
   add_option( opt_float( "legion.specter_of_betrayal_overlap", legion_opts.specter_of_betrayal_overlap, 0, 1 ) );
   add_option( opt_float( "legion.archimondes_hatred_reborn_damage", legion_opts.archimondes_hatred_reborn_damage, 0, 1 ) );
-  add_option( opt_string( "legion.pantheon_trinket_users", legion_opts.pantheon_trinket_users ) );
-  add_option( opt_timespan( "legion.pantheon_trinket_interval", legion_opts.pantheon_trinket_interval ) );
-  add_option( opt_float( "legion.pantheon_trinket_interval_stddev", legion_opts.pantheon_trinket_interval_stddev ) );
+  add_option( opt_obsoleted( "legion.pantheon_trinket_users" ) );
+  add_option( opt_obsoleted( "legion.pantheon_trinket_interval" ) );
+  add_option( opt_obsoleted( "legion.pantheon_trinket_interval_stddev" ) );
   add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, const std::string&, const std::string& value ) {
     auto split = util::string_split( value, ":/," );
     range::for_each( split, [ sim ]( const std::string& str ) {

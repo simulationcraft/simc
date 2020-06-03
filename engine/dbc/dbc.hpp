@@ -91,7 +91,7 @@ const char* wow_ptr_status( bool ptr );
 std::size_t        n_items( bool ptr );
 std::size_t        n_items_noptr();
 std::size_t        n_items_ptr();
-specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
+specialization_e translate_spec_str   ( player_e ptype, util::string_view spec_str );
 const char* specialization_string     ( specialization_e spec );
 double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
 bool valid_gem_color( unsigned color );
@@ -103,7 +103,7 @@ double item_level_squish( unsigned source_ilevel, bool ptr );
 
 // Filtered data access
 const item_data_t& find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& finder );
-const item_data_t& find_gem( const std::string& gem, bool ptr, bool tokenized = true );
+const item_data_t& find_gem( util::string_view gem, bool ptr, bool tokenized = true );
 
 // Class / Spec specific passives for an actor
 const spell_data_t* get_class_passive( const player_t&, specialization_e );
@@ -263,7 +263,7 @@ namespace hotfix
       group_(), tag_(), note_(), flags_( 0 )
     { }
 
-    hotfix_entry_t( const std::string& g, const std::string& t, const std::string& n, unsigned f ) :
+    hotfix_entry_t( util::string_view g, util::string_view t, util::string_view n, unsigned f ) :
       group_( g ), tag_( t ), note_( n ), flags_( f )
     { }
 
@@ -290,7 +290,7 @@ namespace hotfix
       orig_value_( -std::numeric_limits<double>::max() ), dbc_value_( 0 ), hotfix_value_( 0 )
     { }
 
-    dbc_hotfix_entry_t( const std::string& g, const std::string& t, unsigned id, const std::string& n, unsigned f ) :
+    dbc_hotfix_entry_t( util::string_view g, util::string_view t, unsigned id, util::string_view n, unsigned f ) :
       hotfix_entry_t( g, t, n, f ),
       id_( id ), field_name_(), operation_( HOTFIX_NONE ), modifier_( 0 ),
       orig_value_( -std::numeric_limits<double>::max() ), dbc_value_( 0 ), hotfix_value_( 0 )
@@ -317,8 +317,8 @@ namespace hotfix
 #endif
     }
 
-    dbc_hotfix_entry_t& field( const std::string& fn )
-    { field_name_ = fn; return *this; }
+    dbc_hotfix_entry_t& field( util::string_view fn )
+    { field_name_.assign( fn.data(), fn.size() ); return *this; }
 
     dbc_hotfix_entry_t& operation( hotfix::hotfix_op_e op )
     { operation_ = op; return *this; }
@@ -335,7 +335,7 @@ namespace hotfix
 
   struct spell_hotfix_entry_t : public dbc_hotfix_entry_t
   {
-    spell_hotfix_entry_t( const std::string& g, const std::string& t, unsigned id, const std::string& n, unsigned f ) :
+    spell_hotfix_entry_t( util::string_view g, util::string_view t, unsigned id, util::string_view n, unsigned f ) :
       dbc_hotfix_entry_t( g, t, id, n, f )
     { }
 
@@ -347,7 +347,7 @@ namespace hotfix
 
   struct effect_hotfix_entry_t : public dbc_hotfix_entry_t
   {
-    effect_hotfix_entry_t( const std::string& g, const std::string& t, unsigned id, const std::string& n, unsigned f ) :
+    effect_hotfix_entry_t( util::string_view g, util::string_view t, unsigned id, util::string_view n, unsigned f ) :
       dbc_hotfix_entry_t( g, t, id, n, f )
     { }
 
@@ -359,7 +359,7 @@ namespace hotfix
 
   struct power_hotfix_entry_t : public dbc_hotfix_entry_t
   {
-    power_hotfix_entry_t( const std::string& g, const std::string& t, unsigned id, const std::string& n, unsigned f ) :
+    power_hotfix_entry_t( util::string_view g, util::string_view t, unsigned id, util::string_view n, unsigned f ) :
       dbc_hotfix_entry_t( g, t, id, n, f )
     { }
 
@@ -369,9 +369,9 @@ namespace hotfix
     void apply_hotfix( bool ptr ) override;
   };
 
-  spell_hotfix_entry_t& register_spell( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
-  effect_hotfix_entry_t& register_effect( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
-  power_hotfix_entry_t& register_power( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
+  spell_hotfix_entry_t& register_spell( util::string_view, util::string_view, util::string_view, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
+  effect_hotfix_entry_t& register_effect( util::string_view, util::string_view, util::string_view, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
+  power_hotfix_entry_t& register_power( util::string_view, util::string_view, util::string_view, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
 
   void apply();
   std::string to_str( bool ptr );
@@ -400,14 +400,14 @@ namespace dbc_override
     unsigned       id_;
     double         value_;
 
-    dbc_override_entry_t( dbc_override_e et, const std::string& f, unsigned i, double v ) :
+    dbc_override_entry_t( dbc_override_e et, util::string_view f, unsigned i, double v ) :
       type_( et ), field_( f ), id_( i ), value_( v )
     { }
   };
 
-  void register_effect( dbc_t&, unsigned, const std::string&, double );
-  void register_spell( dbc_t&, unsigned, const std::string&, double );
-  void register_power( dbc_t&, unsigned, const std::string&, double );
+  void register_effect( dbc_t&, unsigned, util::string_view, double );
+  void register_spell( dbc_t&, unsigned, util::string_view, double );
+  void register_power( dbc_t&, unsigned, util::string_view, double );
 
   const spell_data_t* find_spell( unsigned, bool ptr = false );
   const spelleffect_data_t* find_effect( unsigned, bool ptr = false );
@@ -415,43 +415,6 @@ namespace dbc_override
 
   const std::vector<dbc_override_entry_t>& override_entries();
 }
-
-// ==========================================================================
-// Artifact Power Rank Data - ArtifactPowerRank.db2
-// ==========================================================================
-
-struct artifact_power_rank_t
-{
-  unsigned _id;
-  unsigned _id_power;
-  unsigned _index;
-  unsigned _id_spell;
-  double   _value;
-  unsigned _hotfix;
-
-  unsigned id() const
-  { return _id; }
-
-  unsigned id_power() const
-  { return _id_power; }
-
-  unsigned index() const
-  { return _index; }
-
-  unsigned id_spell() const
-  { return _id_spell; }
-
-  double value() const
-  { return _value; }
-
-  const hotfix::client_hotfix_entry_t* _hotfix_entry;
-
-  static artifact_power_rank_t* nil()
-  {
-    static artifact_power_rank_t __nil;
-    return &( __nil );
-  }
-};
 
 // ==========================================================================
 // Spell Label Data - SpellLabel.db2
@@ -560,8 +523,8 @@ public:
   static spellpower_data_t* list( bool ptr = false );
   static void               link( bool ptr = false );
 
-  bool override_field( const std::string& field, double value );
-  double get_field( const std::string& field ) const;
+  bool override_field( util::string_view field, double value );
+  double get_field( util::string_view field ) const;
 };
 
 class spellpower_data_nil_t : public spellpower_data_t
@@ -752,7 +715,7 @@ public:
     unsigned index = flag / 32;
     unsigned bit = flag % 32;
 
-    assert( index < sizeof_array( _class_flags ) );
+    assert( index < range::size( _class_flags ) );
     return ( _class_flags[ index ] & ( 1u << bit ) ) != 0;
   }
 
@@ -779,8 +742,8 @@ public:
   double min( const item_t& item ) const { return min( &item ); }
   double max( const item_t& item ) const { return max( &item ); }
 
-  bool override_field( const std::string& field, double value );
-  double get_field( const std::string& field ) const;
+  bool override_field( util::string_view field, double value );
+  double get_field( util::string_view field ) const;
 
   spell_data_t* spell() const;
 
@@ -1188,7 +1151,7 @@ public:
     unsigned index = static_cast<unsigned>( attr ) / 32u;
     uint32_t mask = 1u << bit;
 
-    assert( index < sizeof_array( _attributes ) );
+    assert( index < range::size( _attributes ) );
 
     return ( _attributes[ index ] & mask ) != 0;
   }
@@ -1198,21 +1161,21 @@ public:
     unsigned index = flag / 32;
     unsigned bit = flag % 32;
 
-    assert( index < sizeof_array( _class_flags ) );
+    assert( index < range::size( _class_flags ) );
     return ( _class_flags[ index ] & ( 1u << bit ) ) != 0;
   }
 
   unsigned attribute( unsigned idx ) const
-  { assert( idx < sizeof_array( _attributes ) ); return _attributes[ idx ]; }
+  { assert( idx < range::size( _attributes ) ); return _attributes[ idx ]; }
 
   unsigned class_flags( unsigned idx ) const
-  { assert( idx < sizeof_array( _class_flags ) ); return _class_flags[ idx ]; }
+  { assert( idx < range::size( _class_flags ) ); return _class_flags[ idx ]; }
 
   unsigned class_family() const
   { return _class_flags_family; }
 
-  bool override_field( const std::string& field, double value );
-  double get_field( const std::string& field ) const;
+  bool override_field( util::string_view field, double value );
+  double get_field( util::string_view field ) const;
 
   bool valid_item_enchantment( inventory_type inv_type ) const
   {
@@ -1250,9 +1213,9 @@ public:
   // static functions
   static spell_data_t* nil();
   static spell_data_t* not_found();
-  static spell_data_t* find( const char* name, bool ptr = false );
+  static spell_data_t* find( util::string_view name, bool ptr = false );
   static spell_data_t* find( unsigned id, bool ptr = false );
-  static spell_data_t* find( unsigned id, const char* confirmation, bool ptr = false );
+  static spell_data_t* find( unsigned id, util::string_view confirmation, bool ptr = false );
   static spell_data_t* list( bool ptr = false );
   static void de_link( bool ptr = false );
 };
@@ -1391,9 +1354,9 @@ public:
   // static functions
   static talent_data_t* nil();
   static talent_data_t* find( unsigned, bool ptr = false );
-  static talent_data_t* find( unsigned, const char* confirmation, bool ptr = false );
-  static talent_data_t* find( const char* name, specialization_e spec, bool ptr = false );
-  static talent_data_t* find_tokenized( const char* name, specialization_e spec, bool ptr = false );
+  static talent_data_t* find( unsigned, util::string_view confirmation, bool ptr = false );
+  static talent_data_t* find( util::string_view name, specialization_e spec, bool ptr = false );
+  static talent_data_t* find_tokenized( util::string_view name, specialization_e spec, bool ptr = false );
   static talent_data_t* find( player_e c, unsigned int row, unsigned int col, specialization_e spec, bool ptr = false );
   static talent_data_t* list( bool ptr = false );
   static void           link( bool ptr = false );
@@ -1567,10 +1530,6 @@ public:
   { return item_bonus_entry_t::find( bonus_id, ptr ); }
 
   // Derived data access
-  unsigned class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
-  unsigned pet_ability( unsigned class_id, unsigned n ) const;
-  unsigned class_ability_tree_size() const;
-  unsigned class_ability_size() const;
   unsigned class_max_size() const;
 
   unsigned race_ability( unsigned race_id, unsigned class_id, unsigned n ) const;
@@ -1601,12 +1560,12 @@ public:
   double   effect_bonus( unsigned effect_id, unsigned level ) const;
   double   effect_bonus( const spelleffect_data_t* effect, unsigned level ) const;
 
-  unsigned talent_ability_id( player_e c, specialization_e spec_id, const char* spell_name, bool name_tokenized = false ) const;
-  unsigned class_ability_id( player_e c, specialization_e spec_id, const char* spell_name ) const;
-  unsigned pet_ability_id( player_e c, const char* spell_name ) const;
-  unsigned race_ability_id( player_e c, race_e r, const char* spell_name ) const;
-  unsigned specialization_ability_id( specialization_e spec_id, const char* spell_name ) const;
-  unsigned mastery_ability_id( specialization_e spec, const char* spell_name ) const;
+  unsigned talent_ability_id( player_e c, specialization_e spec_id, util::string_view spell_name, bool tokenized = false ) const;
+  unsigned class_ability_id( player_e c, specialization_e spec_id, util::string_view spell_name, bool tokenized = false ) const;
+  unsigned pet_ability_id( player_e c, util::string_view spell_name, bool tokenized = false ) const;
+  unsigned race_ability_id( player_e c, race_e r, util::string_view spell_name ) const;
+  unsigned specialization_ability_id( specialization_e spec_id, util::string_view spell_name ) const;
+  unsigned mastery_ability_id( specialization_e spec, util::string_view spell_name ) const;
   unsigned mastery_ability_id( specialization_e spec, uint32_t idx ) const;
 
   bool     is_specialization_ability( uint32_t spell_id ) const;
@@ -1623,30 +1582,11 @@ public:
   std::vector<const spelleffect_data_t*> effect_labels_affecting_label( short label ) const;
   std::vector<const spelleffect_data_t*> effect_categories_affecting_spell( const spell_data_t* ) const;
 
-  // Heirloomage and misc scaling hijinxery
-  const scaling_stat_distribution_t& scaling_stat_distribution( unsigned id ) const
-  { return scaling_stat_distribution_t::find( id, ptr ); }
-
   std::pair<const curve_point_t*, const curve_point_t*> curve_point( unsigned curve_id, double value ) const;
-
-  // Artifact stuff
-  // TODO: Remove at some point after 8.0 prepatch
-  unsigned artifact_by_spec( specialization_e ) const
-  { return 0; }
-  std::vector<const artifact_power_data_t*> artifact_powers( unsigned ) const
-  { return {}; }
-  const artifact_power_data_t* artifact_power( unsigned ) const
-  { return nullptr; }
-  std::vector<const artifact_power_rank_t*> artifact_power_ranks( unsigned ) const
-  { return {}; }
-  unsigned artifact_power_spell_id( specialization_e, unsigned, unsigned ) const
-  { return 0; }
-  std::pair<unsigned, unsigned> artifact_relic_rank_index( unsigned, unsigned ) const
-  { return { 0, 0 }; }
 
   // Azerite
   const azerite_power_entry_t& azerite_power( unsigned power_id ) const;
-  const azerite_power_entry_t& azerite_power( const std::string& name, bool tokenized = false ) const;
+  const azerite_power_entry_t& azerite_power( util::string_view name, bool tokenized = false ) const;
   util::span<const azerite_power_entry_t> azerite_powers() const;
 
   unsigned azerite_item_level( unsigned power_level ) const;
@@ -1656,9 +1596,9 @@ public:
   unsigned parent_item( unsigned ) const;
 
   // Labeled spells
-  std::vector<const spell_data_t*> spells_by_label( size_t label ) const;
+  util::span<const spell_data_t* const> spells_by_label( size_t label ) const;
   // Categorized spells
-  std::vector<const spell_data_t*> spells_by_category( unsigned category ) const;
+  util::span<const spell_data_t* const> spells_by_category( unsigned category ) const;
 };
 
 namespace dbc

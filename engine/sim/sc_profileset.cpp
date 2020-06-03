@@ -12,7 +12,6 @@
 #include "report/color.hpp"
 #include "report/sc_highchart.hpp"
 #include "player/sc_player.hpp"
-#include "player/artifact_data.hpp"
 #include "item/item.hpp"
 
 #ifndef SC_NO_THREADING
@@ -1260,16 +1259,6 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
         profileset.output_data().talents( saved_talents );
       }
     }
-  } else if ( option == "artifact" ) {
-    if ( parent_player -> artifact -> encode() != player -> artifact -> encode() )
-    {
-      profileset.output_data().artifact( player -> artifact -> encode() );
-    }
-  } else if ( option == "crucible" ) {
-    if ( parent_player -> artifact -> encode_crucible() != player -> artifact -> encode_crucible() )
-    {
-      profileset.output_data().crucible( player -> artifact -> encode_crucible() );
-    }
   } else if ( option == "gear" ) {
     const auto& parent_items = parent_player -> items;
     const auto& items = player -> items;
@@ -1362,14 +1351,6 @@ void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput&
       ovr_talent[ "spell_id" ] = talent -> spell_id();
       ovr_talent[ "name"     ] = talent -> name_cstr();
     }
-  }
-  if ( ! output_data.artifact().empty() )
-  {
-    ovr[ "artifact" ] = output_data.artifact();
-  }
-  if ( ! output_data.crucible().empty() )
-  {
-    ovr[ "crucible" ] = output_data.crucible();
   }
   if ( output_data.gear().size() > 0 ) {
     const auto& gear = output_data.gear();

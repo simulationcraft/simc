@@ -72,7 +72,7 @@ public:
   extended_sample_data_t uptime_sum;
   extended_sample_data_t uptime_instance;
 
-  uptime_t(sim_t& s, const std::string& n) : uptime_common_t(),
+  uptime_t(sim_t& s, util::string_view n) : uptime_common_t(),
     name_str(n),
     sim(s),
     uptime_sum("Uptime", true),

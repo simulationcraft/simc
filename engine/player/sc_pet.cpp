@@ -251,7 +251,7 @@ void pet_t::create_buffs()
   }
 }
 
-void pet_t::adjust_duration( const timespan_t& adjustment )
+void pet_t::adjust_duration( timespan_t adjustment )
 {
   if ( !expiration || adjustment == 0_ms )
   {
@@ -303,9 +303,9 @@ void pet_t::init_finished()
     quiet = ! sim -> report_pets_separately;
 }
 
-const spell_data_t* pet_t::find_pet_spell( const std::string& name )
+const spell_data_t* pet_t::find_pet_spell( util::string_view name )
 {
-  unsigned spell_id = dbc->pet_ability_id( type, name.c_str() );
+  unsigned spell_id = dbc->pet_ability_id( type, name );
 
   if ( ! spell_id || ! dbc->spell( spell_id ) )
   {

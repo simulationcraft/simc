@@ -17,7 +17,7 @@ struct azerite_power_entry_t
   unsigned    tier;
 
   static const azerite_power_entry_t& find( unsigned id, bool ptr )
-  { return dbc::find<azerite_power_entry_t>( id, ptr ); }
+  { return dbc::find<azerite_power_entry_t>( id, ptr, &azerite_power_entry_t::id ); }
 
   static const azerite_power_entry_t& nil()
   { return dbc::nil<azerite_power_entry_t>(); }
@@ -32,12 +32,12 @@ struct azerite_essence_entry_t
   const char* name;
 
   static const azerite_essence_entry_t& find( unsigned id, bool ptr )
-  { return dbc::find<azerite_essence_entry_t>( id, ptr ); }
+  { return dbc::find<azerite_essence_entry_t>( id, ptr, &azerite_essence_entry_t::id ); }
 
   static const azerite_essence_entry_t& nil()
   { return dbc::nil<azerite_essence_entry_t>(); }
 
-  static const azerite_essence_entry_t& find( const std::string& name, bool tokenized, bool ptr );
+  static const azerite_essence_entry_t& find( util::string_view name, bool tokenized, bool ptr );
 
   static util::span<const azerite_essence_entry_t> data( bool ptr );
 };
@@ -51,7 +51,7 @@ struct azerite_essence_power_entry_t
   unsigned spell_id_upgrade[2];
 
   static const azerite_essence_power_entry_t& find( unsigned id, bool ptr )
-  { return dbc::find<azerite_essence_power_entry_t>( id, ptr ); }
+  { return dbc::find<azerite_essence_power_entry_t>( id, ptr, &azerite_essence_power_entry_t::id ); }
 
   static const azerite_essence_power_entry_t& nil()
   { return dbc::nil<azerite_essence_power_entry_t>(); }

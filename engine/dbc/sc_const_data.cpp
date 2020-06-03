@@ -9,6 +9,7 @@
 #include "item_database.hpp"
 #include "client_data.hpp"
 #include "specialization_spell.hpp"
+#include "active_spells.hpp"
 
 #include "generated/sc_spec_list.inc"
 #include "generated/sc_scale_data.inc"
@@ -30,10 +31,73 @@
 
 namespace { // ANONYMOUS namespace ==========================================
 
-dbc::dbc_index_t<spell_data_t> spell_data_index;
-dbc::dbc_index_t<spelleffect_data_t> spelleffect_data_index;
-dbc::dbc_index_t<talent_data_t> talent_data_index;
-dbc::dbc_index_t<spellpower_data_t> power_data_index;
+// Indices to provide log time, constant space access to spells, effects, and talents by id.
+// XXX: Temprorary untill we switch to spans
+template <typename T>
+class dbc_index_t
+{
+private:
+  typedef std::pair<T*, T*> index_t; // first = lowest data; second = highest data
+// array of size 1 or 2, depending on whether we have PTR data
+#if SC_USE_PTR == 0
+  index_t idx[ 1 ];
+#else
+  index_t idx[ 2 ];
+#endif
+
+  /* populate idx with pointer to lowest and highest data from a given list
+   */
+  void populate( index_t& idx, T* list )
+  {
+    assert( list );
+    idx.first = list;
+    for ( unsigned last_id = 0; list->id(); last_id = list->id(), ++list )
+    {
+      // Validate the input range is in fact sorted by id.
+      assert( list->id() > last_id ); ( void )last_id;
+    }
+    idx.second = list;
+  }
+
+public:
+  // Initialize index from given list
+  void init( T* list, bool ptr )
+  {
+    assert( ! initialized( ptr ) );
+    populate( idx[ ptr ], list );
+  }
+
+  // Initialize index under the assumption that 'T::list( bool ptr )' returns a list of data
+  void init()
+  {
+    init( T::list( false ), false );
+#if SC_USE_PTR == 1
+    init( T::list( true ), true );
+#endif
+  }
+
+  bool initialized( bool ptr = false ) const
+  { return idx[ ptr ].first != 0; }
+
+  // Return the item with the given id, or NULL
+  T* get( bool ptr, unsigned id ) const
+  {
+    assert( initialized( ptr ) );
+    const index_t& index = idx[ ptr ];
+    T* p = std::lower_bound( index.first, index.second, id,
+                             [](const T& lhs, unsigned rhs) {
+                               return lhs.id() < rhs;
+                             } );
+    if ( p != index.second && p->id() == id )
+      return p;
+    return nullptr;
+  }
+};
+
+dbc_index_t<spell_data_t> spell_data_index;
+dbc_index_t<spelleffect_data_t> spelleffect_data_index;
+dbc_index_t<talent_data_t> talent_data_index;
+dbc_index_t<spellpower_data_t> power_data_index;
 
 // Wrapper class to map other data to specific spells, and also to map effects that manipulate that
 // data
@@ -106,7 +170,7 @@ public:
     }
   }
 
-  std::vector<const spell_data_t*> affects_spells( V value, bool ptr )
+  util::span<const spell_data_t* const> affects_spells( V value, bool ptr ) const
   {
     auto it = m_db[ ptr ].find( value );
 
@@ -115,24 +179,19 @@ public:
       return it -> second;
     }
 
-    return std::vector<const spell_data_t*>();
+    return {};
   }
 
-  std::vector<const spelleffect_data_t*> affected_by( V value, bool ptr )
+  util::span<const spelleffect_data_t* const> affected_by( V value, bool ptr ) const
   {
-    std::vector<const spelleffect_data_t*> effects;
     auto it = m_effects_db[ ptr ].find( value );
 
-    if ( it == m_effects_db[ ptr ].end() )
+    if ( it != m_effects_db[ ptr ].end() )
     {
-      return effects;
+      return it -> second;
     }
 
-    range::for_each( m_effects_db[ ptr ][ value ], [ &effects ]( const spelleffect_data_t* e ) {
-      effects.push_back( e );
-    } );
-
-    return effects;
+    return {};
   }
 };
 
@@ -372,18 +431,12 @@ std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family
   if ( family == 0 )
     return affected_spells;
 
-  if ( ptr && family >= ptr_class_family_index.size() )
-    return affected_spells;
-  else if ( family >= class_family_index.size() )
+  auto index = ptr ? util::make_span( ptr_class_family_index ) : util::make_span( class_family_index );
+  if ( family >= index.size() )
     return affected_spells;
 
-  const std::vector< const spell_data_t* >* l = &( class_family_index[ family ] );
-  if ( ptr )
-    l = &( ptr_class_family_index[ family ] );
-
-  for (auto s : *l)
+  for ( auto s : index[ family ] )
   {
-    
     for ( unsigned int j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
     {
       if ( effect -> class_flag(j ) && s -> class_flag( j ) )
@@ -473,19 +526,12 @@ std::vector< const spelleffect_data_t* > dbc_t::effects_affecting_spell( const s
   if ( spell -> class_family() == 0 )
     return affecting_effects;
 
-  if ( ptr && spell -> class_family() >= ptr_class_family_index.size() )
-    return affecting_effects;
-  else if ( spell -> class_family() >= class_family_index.size() )
+  auto index = ptr ? util::make_span( ptr_class_family_index ) : util::make_span( class_family_index );
+  if ( spell -> class_family() >= index.size() )
     return affecting_effects;
 
-  const std::vector< const spell_data_t* >* l = &( class_family_index[ spell -> class_family() ] );
-  if ( ptr )
-    l = &( ptr_class_family_index[ spell -> class_family() ] );
-
-  for (auto s : *l)
+  for ( auto s : index[ spell -> class_family() ] )
   {
-    
-
     // Skip itself
     if ( s -> id() == spell -> id() )
       continue;
@@ -512,7 +558,7 @@ std::vector< const spelleffect_data_t* > dbc_t::effects_affecting_spell( const s
 
 // translate_spec_str =======================================================
 
-specialization_e dbc::translate_spec_str( player_e ptype, const std::string& spec_str )
+specialization_e dbc::translate_spec_str( player_e ptype, util::string_view spec_str )
 {
   using namespace util;
   switch ( ptype )
@@ -983,17 +1029,17 @@ double dbc::item_level_squish( unsigned source_ilevel, bool ptr )
 #if SC_USE_PTR == 1
   if ( ptr )
   {
-    assert( sizeof_array( _ptr__item_level_squish ) >= source_ilevel );
+    assert( range::size( _ptr__item_level_squish ) >= source_ilevel );
     return _ptr__item_level_squish[ source_ilevel - 1 ];
   }
   else
   {
-    assert( sizeof_array( __item_level_squish ) >= source_ilevel );
+    assert( range::size( __item_level_squish ) >= source_ilevel );
     return __item_level_squish[ source_ilevel - 1 ];
   }
 #else
   ( void ) ptr;
-  assert( sizeof_array( __item_level_squish ) >= source_ilevel );
+  assert( range::size( __item_level_squish ) >= source_ilevel );
   return __item_level_squish[ source_ilevel - 1 ];
 #endif
 }
@@ -1204,12 +1250,12 @@ double dbc_t::melee_crit_scaling( player_e t, unsigned level ) const
   */
   return 0;
 }
- 
+
 double dbc_t::melee_crit_scaling( pet_e t, unsigned level ) const
 {
   return melee_crit_scaling( util::pet_class_type( t ), level );
 }
- 
+
 double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
@@ -1226,7 +1272,7 @@ double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
   */
   return 0;
 }
- 
+
 double dbc_t::spell_crit_scaling( pet_e t, unsigned level ) const
 {
   return spell_crit_scaling( util::pet_class_type( t ), level );
@@ -1236,7 +1282,7 @@ int dbc_t::resolve_item_scaling( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_gt_item_scaling[level - 1] 
+  return ptr ? __ptr_gt_item_scaling[level - 1]
              : __gt_item_scaling[level - 1];
 #else
   return __gt_item_scaling[ level - 1 ];
@@ -1337,30 +1383,6 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 #endif
 }
 
-unsigned dbc_t::class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const
-{
-  assert( class_id < dbc_t::class_max_size() && tree_id < class_ability_tree_size() && n < class_ability_size() );
-
-#if SC_USE_PTR
-  return ptr ? __ptr_class_ability_data[ class_id ][ tree_id ][ n ]
-             : __class_ability_data[ class_id ][ tree_id ][ n ];
-#else
-  return __class_ability_data[ class_id ][ tree_id ][ n ];
-#endif
-}
-
-unsigned dbc_t::pet_ability( unsigned class_id, unsigned n ) const
-{
-  assert( class_id < dbc_t::class_max_size() && n < class_ability_size() );
-
-#if SC_USE_PTR
-  return ptr ? __ptr_class_ability_data[ class_id ][ class_ability_tree_size() - 1 ][ n ]
-             : __class_ability_data[ class_id ][ class_ability_tree_size() - 1 ][ n ];
-#else
-  return __class_ability_data[ class_id ][ class_ability_tree_size() - 1 ][ n ];
-#endif
-}
-
 unsigned dbc_t::race_ability( unsigned race_id, unsigned class_id, unsigned n ) const
 {
   assert( race_id < race_ability_tree_size() && class_id < dbc_t::class_max_size() && n < race_ability_size() );
@@ -1414,7 +1436,7 @@ const azerite_power_entry_t& dbc_t::azerite_power( unsigned power_id ) const
   return azerite_power_entry_t::find( power_id, ptr );
 }
 
-const azerite_power_entry_t& dbc_t::azerite_power( const std::string& name, bool tokenized ) const
+const azerite_power_entry_t& dbc_t::azerite_power( util::string_view name, bool tokenized ) const
 {
   for ( const auto& power : azerite_powers() )
   {
@@ -1445,24 +1467,6 @@ util::span<const azerite_power_entry_t> dbc_t::azerite_powers() const
 unsigned dbc_t::class_max_size() const
 {
   return MAX_CLASS;
-}
-
-unsigned dbc_t::class_ability_tree_size() const
-{
-#if SC_USE_PTR
-  return ptr ? PTR_CLASS_ABILITY_TREE_SIZE : CLASS_ABILITY_TREE_SIZE;
-#else
-  return CLASS_ABILITY_TREE_SIZE;
-#endif
-}
-
-unsigned dbc_t::class_ability_size() const
-{
-#if SC_USE_PTR
-  return ptr ? PTR_CLASS_ABILITY_SIZE : CLASS_ABILITY_SIZE;
-#else
-  return CLASS_ABILITY_SIZE;
-#endif
 }
 
 unsigned dbc_t::specialization_max_per_class() const
@@ -1819,20 +1823,20 @@ spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
   return s;
 }
 
-spell_data_t* spell_data_t::find( unsigned spell_id, const char* confirmation, bool ptr )
+spell_data_t* spell_data_t::find( unsigned spell_id, util::string_view confirmation, bool ptr )
 {
   ( void )confirmation;
 
   spell_data_t* p = find( spell_id, ptr );
-  assert( p && ! strcmp( confirmation, p -> name_cstr() ) );
+  assert( p && confirmation == p -> name_cstr() );
   return p;
 }
 
-spell_data_t* spell_data_t::find( const char* name, bool ptr )
+spell_data_t* spell_data_t::find( util::string_view name, bool ptr )
 {
   for ( spell_data_t* p = spell_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
-    if ( ! strcmp ( name, p -> name_cstr() ) )
+    if ( name == p -> name_cstr() )
     {
       return p;
     }
@@ -1897,20 +1901,20 @@ talent_data_t* talent_data_t::find( unsigned id, bool ptr )
   return t;
 }
 
-talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool ptr )
+talent_data_t* talent_data_t::find( unsigned id, util::string_view confirmation, bool ptr )
 {
 
   talent_data_t* p = find( id, ptr );
-  assert( !confirmation || (strcmp( confirmation, p -> name_cstr() ) == 0) );
+  assert( confirmation == p -> name_cstr() );
   ( void )confirmation;
   return p;
 }
 
-talent_data_t* talent_data_t::find( const char* name_cstr, specialization_e spec, bool ptr )
+talent_data_t* talent_data_t::find( util::string_view name, specialization_e spec, bool ptr )
 {
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
-    if ( ! strcmp( name_cstr, p -> name_cstr() ) && p -> specialization() == spec )
+    if ( name == p -> name_cstr() && p -> specialization() == spec )
     {
       return p;
     }
@@ -1919,7 +1923,7 @@ talent_data_t* talent_data_t::find( const char* name_cstr, specialization_e spec
   return nullptr;
 }
 
-talent_data_t* talent_data_t::find_tokenized( const char* name, specialization_e spec, bool ptr )
+talent_data_t* talent_data_t::find_tokenized( util::string_view name, specialization_e spec, bool ptr )
 {
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
@@ -2190,11 +2194,9 @@ double dbc_t::effect_max( const spelleffect_data_t* e, unsigned level ) const
   return result;
 }
 
-unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, const char* spell_name, bool name_tokenized ) const
+unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, util::string_view spell_name, bool name_tokenized ) const
 {
   uint32_t cid = util::class_id( c );
-
-  assert( spell_name && spell_name[ 0 ] );
 
   if ( ! cid )
     return 0;
@@ -2221,130 +2223,87 @@ unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, const char
   return 0;
 }
 
-unsigned dbc_t::class_ability_id( player_e c, specialization_e spec_id, const char* spell_name ) const
+unsigned dbc_t::class_ability_id( player_e          c,
+                                  specialization_e  spec_id,
+                                  util::string_view spell_name,
+                                  bool              name_tokenized ) const
 {
-  uint32_t cid = util::class_id( c );
-  unsigned spell_id;
-
-  assert( spell_name && spell_name[ 0 ] );
-
-  if ( ! cid )
-    return 0;
-
+  const active_class_spell_t* active_spell = nullptr;
   if ( spec_id != SPEC_NONE )
   {
-    unsigned class_idx = -1;
-    unsigned spec_index = -1;
+    active_spell = &active_class_spell_t::find( spell_name, spec_id, ptr, name_tokenized );
 
-    if ( ! spec_idx( spec_id, class_idx, spec_index ) )
-      return 0;
-
-    if ( class_idx == 0 ) // pet
+    // Try to find in class-specific general spells
+    if ( active_spell->spell_id == 0u )
     {
-      spec_index = class_ability_size() - 1;
-    }
-    else if ( class_idx != cid )
-    {
-      return 0;
-    }
-    else
-    {
-      spec_index++;
-    }
+      unsigned class_idx = 0;
+      unsigned spec_index = 0;
 
-    // Now test spec based class abilities.
-    for ( unsigned n = 0; n < class_ability_size(); n++ )
-    {
-      if ( ! ( spell_id = class_ability( cid, spec_index, n ) ) )
-        break;
-
-      if ( ! spell( spell_id ) -> id() )
-        continue;
-
-      if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+      if ( !spec_idx( spec_id, class_idx, spec_index ) )
       {
-        // Spell has been replaced by another, so don't return id
-        if ( ! replaced_id( spell_id ) )
-        {
-          return spell_id;
-        }
-        else
-        {
-          return 0;
-        }
+        return 0u;
       }
+
+      active_spell = &active_class_spell_t::find( spell_name,
+          util::translate_class_id( class_idx ), ptr, name_tokenized );
     }
   }
-
-  // Test general spells
-  for ( unsigned n = 0; n < class_ability_size(); n++ )
+  else if ( c != PLAYER_NONE )
   {
-    if ( ! ( spell_id = class_ability( cid, 0, n ) ) )
-      break;
-
-    if ( ! spell( spell_id ) -> id() )
-      continue;
-
-    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
-    {
-      // Spell has been replaced by another, so don't return id
-      if ( ! replaced_id( spell_id ) )
-      {
-        return spell_id;
-      }
-      else
-      {
-        return 0;
-      }
-    }
+    active_spell = &active_class_spell_t::find( spell_name, c, ptr, name_tokenized );
+  }
+  else
+  {
+    active_spell = &active_class_spell_t::find( spell_name, ptr, name_tokenized );
   }
 
-  return 0;
+  if ( active_spell->spell_id == 0u )
+  {
+    return 0u;
+  }
+
+  if ( !replaced_id( active_spell->spell_id ) )
+  {
+    return active_spell->spell_id;
+  }
+  else
+  {
+    return 0u;
+  }
 }
 
-
-unsigned dbc_t::pet_ability_id( player_e c, const char* spell_name ) const
+unsigned dbc_t::pet_ability_id( player_e c, util::string_view name, bool tokenized ) const
 {
-  uint32_t cid = util::class_id( c );
-
-  assert( spell_name && spell_name[ 0 ] );
-
-  if ( ! cid )
-    return 0;
-
-  for ( unsigned n = 0; n < class_ability_size(); n++ )
+  const active_pet_spell_t* active_spell = nullptr;
+  if ( c != PLAYER_NONE )
   {
-    unsigned spell_id;
-    if ( ! ( spell_id = pet_ability( cid, n ) ) )
-      break;
-
-    if ( ! spell( spell_id ) -> id() )
-      continue;
-
-    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
-    {
-      // Spell has been replaced by another, so don't return id
-      if ( ! replaced_id( spell_id ) )
-      {
-        return spell_id;
-      }
-      else
-      {
-        return 0;
-      }
-    }
+    active_spell = &active_pet_spell_t::find( name, c, ptr, tokenized );
+  }
+  else
+  {
+    active_spell = &active_pet_spell_t::find( name, ptr, tokenized );
   }
 
-  return 0;
+  if ( active_spell->spell_id == 0u )
+  {
+    return 0u;
+  }
+
+  if ( !replaced_id( active_spell->spell_id ) )
+  {
+    return active_spell->spell_id;
+  }
+  else
+  {
+    return 0u;
+  }
 }
 
-unsigned dbc_t::race_ability_id( player_e c, race_e r, const char* spell_name ) const
+unsigned dbc_t::race_ability_id( player_e c, race_e r, util::string_view spell_name ) const
 {
   unsigned rid = util::race_id( r );
   unsigned cid = util::class_id( c );
   unsigned spell_id;
-
-  assert( spell_name && spell_name[ 0 ] );
 
   if ( !rid || !cid )
     return 0;
@@ -2392,12 +2351,10 @@ unsigned dbc_t::race_ability_id( player_e c, race_e r, const char* spell_name ) 
   return 0;
 }
 
-unsigned dbc_t::specialization_ability_id( specialization_e spec_id, const char* spell_name ) const
+unsigned dbc_t::specialization_ability_id( specialization_e spec_id, util::string_view spell_name ) const
 {
   unsigned class_idx = -1;
   unsigned spec_index = -1;
-
-  assert( spell_name && spell_name[ 0 ] );
 
   if ( ! spec_idx( spec_id, class_idx, spec_index ) )
     return 0;
@@ -2445,12 +2402,10 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
   return !spec_list.empty();
 }
 
-unsigned dbc_t::mastery_ability_id( specialization_e spec, const char* spell_name ) const
+unsigned dbc_t::mastery_ability_id( specialization_e spec, util::string_view spell_name ) const
 {
   unsigned class_idx = -1;
   unsigned spec_index = -1;
-
-  assert( spell_name && spell_name[ 0 ] );
 
   if ( ! spec_idx( spec, class_idx, spec_index ) )
     return 0;
@@ -2756,12 +2711,12 @@ bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
 bool spell_data_t::affected_by( const spelleffect_data_t& effect ) const
 { return affected_by( &effect ); }
 
-std::vector<const spell_data_t*> dbc_t::spells_by_label( size_t label ) const
+util::span<const spell_data_t* const> dbc_t::spells_by_label( size_t label ) const
 {
   return spell_label_index.affects_spells( as<unsigned>( label ), ptr );
 }
 
-std::vector<const spell_data_t*> dbc_t::spells_by_category( unsigned category ) const
+util::span<const spell_data_t* const> dbc_t::spells_by_category( unsigned category ) const
 {
   return spell_categories_index.affects_spells( category, ptr );
 }

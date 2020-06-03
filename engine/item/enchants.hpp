@@ -9,6 +9,7 @@
 #include "sc_enums.hpp"
 #include "item.hpp"
 #include "dbc/gem_data.hpp"
+#include "util/string_view.hpp"
 
 #include <string>
 
@@ -23,12 +24,12 @@ namespace enchant
     unsigned    enchant_id;
   };
 
-  unsigned find_enchant_id( const std::string& name );
+  unsigned find_enchant_id( util::string_view name );
   std::string find_enchant_name( unsigned enchant_id );
   std::string encoded_enchant_name( const dbc_t&, const item_enchantment_data_t& );
 
-  const item_enchantment_data_t& find_item_enchant( const item_t& item, const std::string& name );
-  const item_enchantment_data_t& find_meta_gem( const dbc_t& dbc, const std::string& encoding );
+  const item_enchantment_data_t& find_item_enchant( const item_t& item, util::string_view name );
+  const item_enchantment_data_t& find_meta_gem( const dbc_t& dbc, util::string_view encoding );
   meta_gem_e meta_gem_type( const dbc_t& dbc, const item_enchantment_data_t& );
   bool passive_enchant( item_t& item, unsigned spell_id );
 

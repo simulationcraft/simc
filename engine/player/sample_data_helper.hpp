@@ -15,7 +15,7 @@
  */
 struct sample_data_helper_t : public extended_sample_data_t, private noncopyable
 {
-  sample_data_helper_t(std::string n, bool simple) :
+  sample_data_helper_t(util::string_view n, bool simple) :
     extended_sample_data_t(n, simple),
     buffer_value(0.0)
   {

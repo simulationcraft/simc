@@ -14,14 +14,14 @@
 #include "sim/sc_sim.hpp"
 #include "util/rng.hpp"
 
-heal_t::heal_t(const std::string& token,
+heal_t::heal_t(util::string_view token,
   player_t* p) :
   heal_t(token, p, spell_data_t::nil())
 {
 
 }
 
-heal_t::heal_t(const std::string& token,
+heal_t::heal_t(util::string_view token,
   player_t* p,
   const spell_data_t* s) :
   spell_base_t(ACTION_HEAL, token, p, s),

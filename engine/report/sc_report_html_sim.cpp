@@ -1059,7 +1059,7 @@ void print_html_beta_warning( report::sc_html_stream& os )
      << "<h2>Beta Release</h2>\n"
      << "<ul>\n";
 
-  auto beta_warnings = report::beta_warnings();
+  auto beta_warnings = report_helper::beta_warnings();
   for ( const auto& line : beta_warnings )
     os << "<li>" << line << "</li>\n";
 

@@ -17,6 +17,8 @@
 #include "action/spell.hpp"
 #include "action/heal.hpp"
 #include "action/attack.hpp"
+#include "util/string_view.hpp"
+
 #include <vector>
 #include <functional>
 #include <cassert>
@@ -88,11 +90,11 @@ namespace unique_gear
     // behavior is required and the method is not overridden, must be provided.
     const std::string buff_name;
 
-    class_buff_cb_t( specialization_e spec, const std::string& name = std::string() ) :
+    class_buff_cb_t( specialization_e spec, util::string_view name = {} ) :
       class_scoped_callback_t( spec ), __dummy( nullptr ), buff_name( name )
     { }
 
-    class_buff_cb_t( player_e class_, const std::string& name = std::string() ) :
+    class_buff_cb_t( player_e class_, util::string_view name = {} ) :
       class_scoped_callback_t( class_ ), __dummy( nullptr ), buff_name( name )
     { }
 
@@ -188,11 +190,11 @@ namespace unique_gear
     const std::string name;
     const int spell_id;
 
-    scoped_action_callback_t( player_e c, const std::string& n ) :
+    scoped_action_callback_t( player_e c, util::string_view n ) :
       class_scoped_callback_t( c ), name( n ), spell_id( -1 )
     { }
 
-    scoped_action_callback_t( specialization_e s, const std::string& n ) :
+    scoped_action_callback_t( specialization_e s, util::string_view n ) :
       class_scoped_callback_t( s ), name( n ), spell_id( -1 )
     { }
 
@@ -240,11 +242,11 @@ namespace unique_gear
     const std::string name;
     const int spell_id;
 
-    scoped_buff_callback_t( player_e c, const std::string& n ) :
+    scoped_buff_callback_t( player_e c, util::string_view n ) :
       class_scoped_callback_t( c ), name( n ), spell_id( -1 )
     { }
 
-    scoped_buff_callback_t( specialization_e s, const std::string& n ) :
+    scoped_buff_callback_t( specialization_e s, util::string_view n ) :
       class_scoped_callback_t( s ), name( n ), spell_id( -1 )
     { }
 
@@ -346,7 +348,7 @@ void initialize_special_effect_2( special_effect_t* effect );
 // Initialize special effects related to various race spells
 void initialize_racial_effects( player_t* );
 
-const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
+const item_data_t* find_consumable( const dbc_t& dbc, util::string_view name, item_subclass_consumable type );
 
 std::unique_ptr<expr_t> create_expression( player_t& player, const std::string& name_str );
 
@@ -420,7 +422,7 @@ struct proc_action_t : public T_ACTION
     }
   }
 
-  proc_action_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
+  proc_action_t( util::string_view token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
     super( token, p, s ),
     effect(nullptr)
   {
@@ -509,7 +511,7 @@ struct proc_spell_t : public proc_action_t<spell_t>
     super( e )
   { }
 
-  proc_spell_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
+  proc_spell_t( util::string_view token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
     super( token, p, s, i )
   { }
 };
@@ -518,7 +520,7 @@ struct proc_heal_t : public proc_action_t<heal_t>
 {
   using super = proc_action_t<heal_t>;
 
-  proc_heal_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
+  proc_heal_t( util::string_view token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
     super( token, p, s, i )
   { }
 
@@ -536,7 +538,7 @@ struct proc_attack_t : public proc_action_t<attack_t>
   {
   }
 
-  proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
+  proc_attack_t( util::string_view token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
     super( token, p, s, i )
   { }
 
@@ -560,7 +562,7 @@ struct proc_resource_t : public proc_action_t<spell_t>
     __initialize();
   }
 
-  proc_resource_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* item_ = nullptr ) :
+  proc_resource_t( util::string_view token, player_t* p, const spell_data_t* s, const item_t* item_ = nullptr ) :
     super( token, p, s, item_ ), gain_da( 0 ), gain_ta( 0 ), gain_resource( RESOURCE_NONE )
   {
     __initialize();
@@ -592,7 +594,7 @@ struct proc_resource_t : public proc_action_t<spell_t>
 };
 
 template <typename CLASS, typename ...ARGS>
-action_t* create_proc_action( const std::string& name, const special_effect_t& effect, ARGS&&... args )
+action_t* create_proc_action( util::string_view name, const special_effect_t& effect, ARGS&&... args )
 {
   auto player = effect.player;
   auto a = player -> find_action( name );
@@ -611,7 +613,7 @@ action_t* create_proc_action( const std::string& name, const special_effect_t& e
 }
 
 template <typename BUFF, typename ...ARGS>
-BUFF* create_buff( player_t* p, const std::string& name, ARGS&&... args )
+BUFF* create_buff( player_t* p, util::string_view name, ARGS&&... args )
 {
   auto b = buff_t::find( p, name );
   if ( b != nullptr )
@@ -621,4 +623,7 @@ BUFF* create_buff( player_t* p, const std::string& name, ARGS&&... args )
 
   return make_buff<BUFF>( p, name, args... );
 }
+
+
+
 } // namespace unique_gear ends

@@ -15,7 +15,7 @@ struct item_name_description_t
   const char* description;
 
   static const item_name_description_t& find( unsigned id, bool ptr )
-  { return dbc::find<item_name_description_t>( id, ptr ); }
+  { return dbc::find<item_name_description_t>( id, ptr, &item_name_description_t::id ); }
 
   static const item_name_description_t& nil()
   { return dbc::nil<item_name_description_t>(); }

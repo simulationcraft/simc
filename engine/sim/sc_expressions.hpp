@@ -12,6 +12,7 @@
 #include <memory>
 
 #include "sc_timespan.hpp"
+#include "util/string_view.hpp"
 
 struct action_t;
 struct sim_t;
@@ -81,7 +82,7 @@ std::unique_ptr<expr_t> build_player_expression_tree(
 struct expr_t
 {
 protected:
-  expr_t( const std::string& name, expression::token_e op = expression::TOK_UNKNOWN )
+  expr_t( util::string_view name, expression::token_e op = expression::TOK_UNKNOWN )
     : op_( op )
 #if !defined( NDEBUG )
       ,
@@ -146,7 +147,7 @@ public:
   static std::unique_ptr<expr_t> parse( action_t*, const std::string& expr_str,
                         bool optimize = false );
   template<class T>
-  static std::unique_ptr<expr_t> create_constant( const std::string& name, T value );
+  static std::unique_ptr<expr_t> create_constant( util::string_view name, T value );
 
   static void optimize_expression(std::unique_ptr<expr_t>& expression, int spacing = 0)
   {
@@ -190,7 +191,7 @@ class const_expr_t : public expr_t
   double value;
 
 public:
-  const_expr_t( const std::string& name, double value_ )
+  const_expr_t( util::string_view name, double value_ )
     : expr_t( name, expression::TOK_NUM ), value( value_ )
   {
   }
@@ -214,7 +215,7 @@ template <typename T>
 struct ref_expr_t : public expr_t
 {
 public:
-  ref_expr_t( const std::string& name, const T& t_ ) : expr_t( name ), t( t_ )
+  ref_expr_t( util::string_view name, const T& t_ ) : expr_t( name ), t( t_ )
   {
   }
 
@@ -228,7 +229,7 @@ private:
 
 // Template to return a reference expression
 template <typename T>
-inline std::unique_ptr<expr_t> make_ref_expr( const std::string& name, T& t )
+inline std::unique_ptr<expr_t> make_ref_expr( util::string_view name, T& t )
 {
   return std::make_unique<ref_expr_t<T>>( name, const_cast<const T&>( t ) );
 }
@@ -240,7 +241,7 @@ template <typename F>
 struct fn_expr_t : public expr_t
 {
 public:
-  fn_expr_t( const std::string& name, F&& f_ ) : expr_t( name ), f( f_ )
+  fn_expr_t( util::string_view name, F&& f_ ) : expr_t( name ), f( f_ )
   {
   }
 
@@ -260,15 +261,15 @@ struct target_wrapper_expr_t : public expr_t
   std::string suffix_expr_str;
 
   // Inlined
-  target_wrapper_expr_t( action_t& a, const std::string& name_str,
-                         const std::string& expr_str );
+  target_wrapper_expr_t( action_t& a, util::string_view name_str,
+                         util::string_view expr_str );
   virtual player_t* target() const;
   double evaluate() override;
 };
 
 // Template to return a function expression
 template <typename F>
-inline std::unique_ptr<expr_t> make_fn_expr( const std::string& name, F&& f )
+inline std::unique_ptr<expr_t> make_fn_expr( util::string_view name, F&& f )
 {
   return std::make_unique<fn_expr_t<F>>( name, std::forward<F>( f ) );
 }
@@ -277,13 +278,13 @@ inline std::unique_ptr<expr_t> make_fn_expr( const std::string& name, F&& f )
 // Template to return function expression that calls a member ( mem ) function (
 // fn ) f on reference t.
 template <typename F, typename T>
-inline std::unique_ptr<expr_t> make_mem_fn_expr( const std::string& name, T& t, F f )
+inline std::unique_ptr<expr_t> make_mem_fn_expr( util::string_view name, T& t, F f )
 {
   return make_fn_expr( name, std::bind( std::mem_fn( f ), &t ) );
 }
 
 template<class T>
-inline std::unique_ptr<expr_t> expr_t::create_constant( const std::string& name, T value )
+inline std::unique_ptr<expr_t> expr_t::create_constant( util::string_view name, T value )
 {
   return std::make_unique<const_expr_t>( name, coerce(value) );
 }

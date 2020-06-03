@@ -25,6 +25,8 @@ class DBCParserBase:
                 sys.exit(1)
         else:
             self.file = fname
+            if self.file:
+                self.file.seek(0)
 
         # Data format storage
         self.fmt = dbc.fmt.DBFormat(options)
@@ -94,7 +96,6 @@ class DBCParserBase:
             return True
 
         self.data = self.file.read()
-        self.file.close()
 
         if not self.parse_header():
             return False

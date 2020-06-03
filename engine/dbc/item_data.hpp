@@ -46,7 +46,7 @@ struct item_data_t {
   int      gem_properties;
   int      id_socket_bonus;
   int      id_set;
-  int      id_scaling_distribution;
+  int      id_curve;
   unsigned id_artifact;
 
   bool is_armor()
@@ -63,7 +63,7 @@ struct item_data_t {
   { return ( type_flags & RAID_TYPE_MYTHIC ) == RAID_TYPE_MYTHIC; }
 
   static const item_data_t& find( unsigned id, bool ptr )
-  { return dbc::find<item_data_t>( id, ptr ); }
+  { return dbc::find<item_data_t>( id, ptr, &item_data_t::id ); }
 
   static const item_data_t& nil()
   { return dbc::nil<item_data_t>(); }

@@ -10,7 +10,9 @@
 #include <numeric>
 #include <sstream>
 #include <vector>
+
 #include "util/generic.hpp"
+#include "util/string_view.hpp"
 
 /* Collection of statistical formulas for sequences
  * Note: Returns 0 for empty sequences
@@ -20,37 +22,37 @@ namespace statistics
 /* Arithmetic Sum
  */
 template <typename Range>
-typename Range::value_type calculate_sum( Range r )
+range::value_type_t<Range> calculate_sum( const Range& r )
 {
-  using value_t = typename Range::value_type;
-  return std::accumulate( std::begin( r ), std::end( r ), value_t{} );
+  using value_t = range::value_type_t<Range>;
+  return std::accumulate( range::begin( r ), range::end( r ), value_t{} );
 }
 
 /* Arithmetic Mean
  */
 template <typename Range>
-typename Range::value_type calculate_mean( Range r )
+range::value_type_t<Range> calculate_mean( const Range& r )
 {
-  auto length = std::distance( std::begin( r ), std::end( r ) );
+  auto length = range::size( r );
   auto tmp    = calculate_sum( r );
-  tmp /= length;
+  if ( length > 1 )
+    tmp /= length;
   return tmp;
 }
 
 /* Expected Value of the squared deviation from a given mean
  */
 template <typename Range>
-typename Range::value_type calculate_variance( Range r,
-                                               typename Range::value_type mean )
+range::value_type_t<Range> calculate_variance( const Range& r,
+                                               range::value_type_t<Range> mean )
 {
-  using value_t = typename Range::value_type;
-  auto tmp      = value_t{};
+  range::value_type_t<Range> tmp{};
 
   for ( auto value : r )
   {
     tmp += ( value - mean ) * ( value - mean );
   }
-  auto length = std::distance( std::begin( r ), std::end( r ) );
+  auto length = range::size( r );
   if ( length > 1 )
     tmp /= length;
   return tmp;
@@ -59,7 +61,7 @@ typename Range::value_type calculate_variance( Range r,
 /* Expected Value of the squared deviation
  */
 template <typename Range>
-typename Range::value_type calculate_variance( Range r )
+range::value_type_t<Range> calculate_variance( const Range& r )
 {
   return calculate_variance( r, calculate_mean( r ) );
 }
@@ -67,8 +69,8 @@ typename Range::value_type calculate_variance( Range r )
 /* Standard Deviation from a given mean
  */
 template <typename Range>
-typename Range::value_type calculate_stddev( Range r,
-                                             typename Range::value_type mean )
+range::value_type_t<Range> calculate_stddev( const Range& r,
+                                             range::value_type_t<Range> mean )
 {
   return std::sqrt( calculate_variance( r, mean ) );
 }
@@ -76,7 +78,7 @@ typename Range::value_type calculate_stddev( Range r,
 /* Standard Deviation
  */
 template <typename Range>
-typename Range::value_type calculate_stddev( Range r )
+range::value_type_t<Range> calculate_stddev( const Range& r )
 {
   return std::sqrt( calculate_variance( r, calculate_mean( r ) ) );
 }
@@ -85,11 +87,11 @@ typename Range::value_type calculate_stddev( Range r )
  * Limit Theorem
  */
 template <typename Range>
-typename Range::value_type calculate_mean_stddev(
-    Range r, typename Range::value_type mean )
+range::value_type_t<Range> calculate_mean_stddev(
+    const Range& r, range::value_type_t<Range> mean )
 {
   auto tmp    = calculate_variance( r, mean );
-  auto length = std::distance( std::begin( r ), std::begin( r ) );
+  auto length = range::size( r );
   if ( length > 1 )
     tmp /= length;
   return std::sqrt( tmp );
@@ -99,18 +101,18 @@ typename Range::value_type calculate_mean_stddev(
  * Limit Theorem
  */
 template <typename Range>
-typename Range::value_type calculate_mean_stddev( Range r )
+range::value_type_t<Range> calculate_mean_stddev( const Range& r )
 {
   return calculate_mean_stddev( r, calculate_mean( r ) );
 }
 
 template <typename Range>
-std::vector<size_t> create_histogram( Range r, size_t num_buckets,
-                                      typename Range::value_type min,
-                                      typename Range::value_type max )
+std::vector<size_t> create_histogram( const Range& r, size_t num_buckets,
+                                      range::value_type_t<Range> min,
+                                      range::value_type_t<Range> max )
 {
   std::vector<size_t> result;
-  if ( std::begin( r ) == std::end( r ) )
+  if ( range::size( r ) == 0 )
     return result;
 
   if ( std::isnan(min) || std::isnan(max) )
@@ -140,12 +142,12 @@ std::vector<size_t> create_histogram( Range r, size_t num_buckets,
 }
 
 template <typename Range>
-std::vector<size_t> create_histogram( Range r, size_t num_buckets )
+std::vector<size_t> create_histogram( const Range& r, size_t num_buckets )
 {
-  if ( std::begin( r ) == std::end( r ) )
+  if ( range::size( r ) == 0 )
     return std::vector<size_t>();
 
-  auto mm  = std::minmax_element( std::begin( r ), std::end( r ) );
+  auto mm  = std::minmax_element( range::begin( r ), range::end( r ) );
   auto min = *mm.first;
   auto max = *mm.second;
 
@@ -167,6 +169,7 @@ inline std::vector<double> normalize_histogram( const std::vector<size_t>& in,
           std::accumulate( in.begin(), in.end(), size_t() ) );
   double adjust = 1.0 / total_num_entries;
 
+  result.reserve( in.size() );
   for ( auto& elem : in )
     result.push_back( elem * adjust );
 
@@ -177,31 +180,12 @@ inline std::vector<double> normalize_histogram( const std::vector<size_t>& in,
  */
 inline std::vector<double> normalize_histogram( const std::vector<size_t>& in )
 {
-  std::vector<double> result;
-
   if ( in.empty() )
-    return result;
+    return std::vector<double>();
 
   size_t count = std::accumulate( in.begin(), in.end(), size_t() );
 
   return normalize_histogram( in, count );
-}
-
-template <typename iterator>
-std::vector<double> create_normalized_histogram(
-    iterator begin, iterator end, size_t num_buckets,
-    typename std::iterator_traits<iterator>::value_type min,
-    typename std::iterator_traits<iterator>::value_type max )
-{
-  return normalize_histogram(
-      create_histogram( begin, end, num_buckets, min, max ) );
-}
-
-template <typename iterator>
-std::vector<double> create_normalized_histogram( iterator begin, iterator end,
-                                                 size_t num_buckets )
-{
-  return normalize_histogram( create_histogram( begin, end, num_buckets ) );
 }
 
 }  // end sd namespace
@@ -357,7 +341,7 @@ private:
   bool is_sorted;
 
 public:
-  extended_sample_data_t( const std::string& n, bool s = true )
+  explicit extended_sample_data_t( util::string_view n, bool s = true )
     : base_t(),
       name_str( n ),
       _mean(),

@@ -295,6 +295,26 @@ struct smite_t final : public priest_spell_t
 };
 
 // ==========================================================================
+// Power Infusion
+// ==========================================================================
+
+struct power_infusion_t final : public priest_spell_t
+{
+  power_infusion_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "power_infusion", p, p.find_class_spell( "Power Infusion" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+    priest().buffs.power_infusion->trigger();
+  }
+};
+
+// ==========================================================================
 // Summon Pet
 // ==========================================================================
 /// Priest Pet Summon Base Spell
@@ -433,6 +453,14 @@ struct power_word_shield_t final : public priest_absorb_t
 
 namespace buffs
 {
+  struct power_infusion_t final : public priest_buff_t<buff_t>
+  {
+    power_infusion_t( priest_t& p ) : base_t( p, "power_infusion", p.find_class_spell( "Power Infusion" ) )
+    {
+      add_invalidate( CACHE_SPELL_HASTE );
+      add_invalidate( CACHE_HASTE );
+    }
+  };
 }  // namespace buffs
 
 namespace items
@@ -632,6 +660,7 @@ void priest_t::create_cooldowns()
   cooldowns.mind_bomb          = get_cooldown( "mind_bomb" );
   cooldowns.psychic_horror     = get_cooldown( "psychic_horror" );
   cooldowns.dark_ascension     = get_cooldown( "dark_ascension" );
+  cooldowns.power_infusion     = get_cooldown( "power_infusion" );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {
@@ -768,6 +797,10 @@ double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
+  // TODO: Wait for spell data to see where this effect is
+  if ( buffs.power_infusion->check() )
+    h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
+
   if ( buffs.lingering_insanity->check() )
   {
     h /= 1.0 + ( buffs.lingering_insanity->check() ) * buffs.lingering_insanity->data().effectN( 1 ).percent();
@@ -784,6 +817,10 @@ double priest_t::composite_spell_haste() const
 double priest_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
+
+  // TODO: Wait for spell data to see where this effect is
+  if ( buffs.power_infusion->check() )
+    h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
 
   if ( buffs.lingering_insanity->check() )
   {
@@ -947,6 +984,9 @@ action_t* priest_t::create_action( const std::string& name, const std::string& o
   {
     return new shadow_mend_t( *this, options_str );
   }
+  if ( name == "power_infusion" ) {
+    return new power_infusion_t( *this, options_str );
+  }
 
   return base_t::create_action( name, options_str );
 }
@@ -1098,6 +1138,10 @@ void priest_t::create_buffs()
                             ->set_trigger_spell( talents.twist_of_fate )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
+  // Shared buffs
+  buffs.power_infusion = make_buff<buffs::power_infusion_t>( *this );
+
   create_buffs_shadow();
   create_buffs_discipline();
   create_buffs_holy();
@@ -1394,11 +1438,6 @@ void priest_t::target_mitigation( school_e school, result_amount_type dt, action
   {
     s->result_amount *= 1.0 + ( buffs.dispersion->data().effectN( 1 ).percent() );
   }
-}
-
-action_t* priest_t::create_proc_action( const std::string& /*name*/, const special_effect_t& /*effect*/ )
-{
-  return nullptr;
 }
 
 void priest_t::create_options()

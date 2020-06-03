@@ -1362,7 +1362,7 @@ struct tiger_dash_buff_t : public druid_buff_t<buff_t>
   {
     set_default_value(p.talent.tiger_dash->effectN(1).percent());
     set_cooldown(timespan_t::zero());
-    set_tick_callback([] (buff_t* b, int, const timespan_t&)
+    set_tick_callback([] (buff_t* b, int, timespan_t)
     {
       b->current_value -= b->data().effectN(2).percent();
     } );
@@ -8019,7 +8019,7 @@ void druid_t::create_buffs()
   buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance )
     ->set_tick_zero( true )
     ->set_quiet( true )
-    ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) {
+    ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
       resource_gain( RESOURCE_ASTRAL_POWER, talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
                       gain.natures_balance );
     } );
@@ -8051,7 +8051,7 @@ void druid_t::create_buffs()
     } );
 
   buff.fury_of_elune = make_buff( this, "fury_of_elune", talent.fury_of_elune )
-    ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) {
+    ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
       resource_gain( RESOURCE_ASTRAL_POWER, talent.fury_of_elune->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER ),
                       gain.fury_of_elune );
     } );
@@ -8125,7 +8125,7 @@ void druid_t::create_buffs()
     ->set_default_value( find_specialization_spell( "Barkskin" ) -> effectN( 2 ).percent() )
     ->set_duration( find_specialization_spell( "Barkskin" ) -> duration() )
     ->set_tick_behavior( talent.brambles -> ok() ? buff_tick_behavior::REFRESH : buff_tick_behavior::NONE )
-    ->set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) {
+    ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t ) {
                                  if ( talent.brambles -> ok() )
                                    active.brambles_pulse -> execute();
                                } );
@@ -8138,7 +8138,7 @@ void druid_t::create_buffs()
 
   buff.earthwarden_driver    = make_buff( this, "earthwarden_driver", talent.earthwarden )
     ->set_quiet( true )
-    ->set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { buff.earthwarden -> trigger(); } )
+    ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t ) { buff.earthwarden -> trigger(); } )
     ->set_tick_zero( true );
 
   buff.guardians_wrath       = make_buff( this, "guardians_wrath", find_spell( 279541 ) )
@@ -8186,7 +8186,7 @@ void druid_t::create_buffs()
   {
     buff.yseras_gift         = make_buff( this, "yseras_gift_driver", spec.yseras_gift )
     ->set_quiet( true )
-    ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                  active.yseras_gift -> schedule_execute(); } )
                                  ->set_tick_zero( true );
   }
@@ -8783,9 +8783,9 @@ void druid_t::apl_balance()
                                     "&floor(target.time_to_die%(2*spell_haste))>=5"
                                     "&(!variable.az_ss|!buff.ca_inc.up|!prev.stellar_flare)");
   // Generators
-  default_list->add_action( this, "New Moon", "if=ap_check", "Generators" );
-  default_list->add_action( this, "Half Moon", "if=ap_check" );
-  default_list->add_action( this, "Full Moon", "if=ap_check" );
+  default_list->add_talent( this, "New Moon", "if=ap_check", "Generators" );
+  default_list->add_action( this, spec.half_moon, "half_moon", "if=ap_check" );
+  default_list->add_action( this, spec.full_moon, "full_moon", "if=ap_check" );
   default_list->add_action( this, "Lunar Strike", "if=buff.solar_empowerment.stack<3"
                                     "&(ap_check|buff.lunar_empowerment.stack=3)"
                                     "&((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=2&!buff.solar_empowerment.up)"
@@ -11227,7 +11227,7 @@ struct oakhearts_puny_quods_buff_t : public class_buff_cb_t<druid_t>
     return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() )
       ->set_default_value( e.driver() -> effectN( 1 ).trigger()
         -> effectN( 2 ).resource( RESOURCE_RAGE ) )
-      ->set_tick_callback( []( buff_t* b, int, const timespan_t& ) {
+      ->set_tick_callback( []( buff_t* b, int, timespan_t ) {
       assert(b -> player);
       b -> player -> resource_gain( RESOURCE_RAGE,
         b -> default_value,

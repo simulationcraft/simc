@@ -23,12 +23,14 @@ using namespace js;
 namespace
 {
 
+template <typename...> using void_t = void;
+
 /**
  * Template helper to add only non "default value" containers (sample data essentially) to the JSON
  * root.
  */
 template <typename T>
-void add_non_default( JsonOutput root, const char* name, const T& container )
+auto add_non_default( JsonOutput root, util::string_view name, const T& container ) -> void_t<decltype(container.mean())>
 {
   if ( container.mean() != 0 )
   {
@@ -37,7 +39,7 @@ void add_non_default( JsonOutput root, const char* name, const T& container )
 }
 
 template <typename T>
-void add_non_default( JsonOutput root, const char* name, const T& v, const T& default_value )
+void add_non_default( JsonOutput root, util::string_view name, const T& v, const T& default_value )
 {
   if ( v != default_value )
   {
@@ -47,25 +49,25 @@ void add_non_default( JsonOutput root, const char* name, const T& v, const T& de
 
 /* Template helper to add only non-zero "containers" (sample data essentially) to the JSON root. */
 template <typename T>
-void add_non_zero( JsonOutput root, const char* name, const T& container )
+auto add_non_zero( JsonOutput root, util::string_view name, const T& container ) -> void_t<decltype(container.mean())>
 { add_non_default( root, name, container ); }
 
-void add_non_zero( JsonOutput root, const char* name, timespan_t v )
+void add_non_zero( JsonOutput root, util::string_view name, timespan_t v )
 { add_non_default( root, name, v, timespan_t::zero() ); }
 
-void add_non_zero( JsonOutput root, const char* name, double v )
+void add_non_zero( JsonOutput root, util::string_view name, double v )
 { add_non_default( root, name, v, 0.0 ); }
 
-void add_non_zero( JsonOutput root, const char* name, int v )
+void add_non_zero( JsonOutput root, util::string_view name, int v )
 { add_non_default( root, name, v, 0 ); }
 
-void add_non_zero( JsonOutput root, const char* name, unsigned v )
+void add_non_zero( JsonOutput root, util::string_view name, unsigned v )
 { add_non_default( root, name, v, 0u ); }
 
-void add_non_zero( JsonOutput root, const char* name, bool v )
+void add_non_zero( JsonOutput root, util::string_view name, bool v )
 { add_non_default( root, name, v, false ); }
 
-void add_non_zero( JsonOutput root, const char* name, const std::string& v )
+void add_non_zero( JsonOutput root, util::string_view name, util::string_view v )
 {
   if ( !v.empty() )
   {
@@ -366,7 +368,7 @@ void gear_to_json( JsonOutput root, const player_t& p )
     slotnode[ "encoded_item" ] = item.encoded_item();
     slotnode[ "ilevel" ] = item.item_level();
 
-    for ( size_t i = 0; i < sizeof_array( item.parsed.data.stat_type_e ); i++ )
+    for ( size_t i = 0; i < range::size( item.parsed.data.stat_type_e ); i++ )
     {
       auto val = item.stat_value( i );
       if ( val <= 0)
@@ -757,11 +759,6 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
 
   talents_to_json( root[ "talents" ], p );
 
-  if ( p.artifact && p.artifact -> purchased_points() > 0 )
-  {
-    p.artifact -> generate_report( root[ "artifact" ] );
-  }
-
   root[ "party" ] = p.party;
   root[ "ready_type" ] = p.ready_type;
   root[ "bugs" ] = p.bugs;
@@ -817,7 +814,7 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
     std::string name = "base_";
     name += util::resource_type_string( r );
     name += "_regen_per_second";
-    add_non_zero( root, name.c_str(), p.resources.base_regen_per_second[ r ] );
+    add_non_zero( root, name, p.resources.base_regen_per_second[ r ] );
   }
 
   /* TODO: Not implemented reporting begins here

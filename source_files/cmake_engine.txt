@@ -20,6 +20,7 @@ class_modules/priest/sc_priest.hpp
 class_modules/warlock/sc_warlock.hpp
 class_modules/warlock/sc_warlock_pets.hpp
 config.hpp
+dbc/active_spells.hpp
 dbc/azerite.hpp
 dbc/client_data.hpp
 dbc/data_definitions.hh
@@ -68,7 +69,6 @@ player/action_priority_list.hpp
 player/action_variable.hpp
 player/actor.hpp
 player/actor_target_data.hpp
-player/artifact_data.hpp
 player/assessor.hpp
 player/azerite_data.hpp
 player/consumable.hpp
@@ -99,6 +99,7 @@ player/spawner_base.hpp
 player/stats.hpp
 player/target_specific.hpp
 player/unique_gear.hpp
+player/unique_gear_shadowlands.hpp
 player/weapon.hpp
 report/charts.hpp
 report/color.hpp
@@ -110,7 +111,6 @@ report/reports.hpp
 report/sc_highchart.hpp
 sc_enums.hpp
 sc_timespan.hpp
-sim/artifact_power.hpp
 sim/benefit.hpp
 sim/event.hpp
 sim/event_manager.hpp
@@ -132,7 +132,6 @@ sim/shuffled_rng.hpp
 sim/sim_control.hpp
 sim/sim_ostream.hpp
 sim/uptime.hpp
-sim/x6_pantheon.hpp
 simulationcraft.hpp
 util/cache.hpp
 util/chrono.hpp
@@ -147,6 +146,7 @@ util/sc_resourcepaths.hpp
 util/scoped_callback.hpp
 util/span.hpp
 util/stopwatch.hpp
+util/string_view.hpp
 util/timeline.hpp
 util/util.hpp
 util/vector_with_callback.hpp
@@ -189,6 +189,7 @@ class_modules/warlock/sc_warlock_affliction.cpp
 class_modules/warlock/sc_warlock_demonology.cpp
 class_modules/warlock/sc_warlock_destruction.cpp
 class_modules/warlock/sc_warlock_pets.cpp
+dbc/active_spells.cpp
 dbc/azerite.cpp
 dbc/client_data.cpp
 dbc/gem_data.cpp
@@ -228,7 +229,6 @@ player/action_priority_list.cpp
 player/action_variable.cpp
 player/actor.cpp
 player/actor_target_data.cpp
-player/artifact_data.cpp
 player/azerite_data.cpp
 player/darkmoon_deck.cpp
 player/ground_aoe.cpp
@@ -246,6 +246,7 @@ player/spawner_base.cpp
 player/target_specific.cpp
 player/unique_gear_bfa.cpp
 player/unique_gear_legion.cpp
+player/unique_gear_shadowlands.cpp
 report/charts.cpp
 report/color.cpp
 report/decorators.cpp
@@ -258,7 +259,6 @@ report/sc_highchart.cpp
 report/sc_report_html_player.cpp
 report/sc_report_html_sim.cpp
 report/sc_report_text.cpp
-sim/artifact_power.cpp
 sim/event_manager.cpp
 sim/proc.cpp
 sim/real_ppm.cpp
@@ -276,13 +276,13 @@ sim/sc_sim.cpp
 sim/scale_factor_control.cpp
 sim/shuffled_rng.cpp
 sim/uptime_benefit.cpp
-sim/x6_pantheon.cpp
 util/chrono.cpp
 util/concurrency.cpp
 util/git_info.cpp
 util/io.cpp
 util/rng.cpp
 util/sample_data.cpp
+util/string_view.cpp
 util/timeline.cpp
 util/timespan.cpp
 util/util.cpp

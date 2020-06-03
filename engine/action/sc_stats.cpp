@@ -12,7 +12,7 @@
 
 // stats_t::stats_t =========================================================
 
-stats_t::stats_t( const std::string& n, player_t* p ) :
+stats_t::stats_t( util::string_view n, player_t* p ) :
   sim( *( p -> sim ) ),
   name_str( n ),
   player( p ),

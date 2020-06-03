@@ -138,3 +138,6 @@ Release/
 # ignore common python virtual environments
 env/
 .env/
+
+# Visual Studio CMake settings
+CMakeSettings.json

@@ -21,18 +21,6 @@ enum combat_rating_multiplier_type
   CR_MULTIPLIER_MAX
 };
 
-enum artifact_trait_type
-{
-  ARTIFACT_TRAIT_MINOR      = 0, // Single-rank minor traits
-  ARTIFACT_TRAIT_MAJOR      = 1, // Gold traits
-  ARTIFACT_TRAIT_DAMAGEBUFF2= 2, // Initial trait of the additional trait set
-  ARTIFACT_TRAIT_DAMAGEBUFF = 5, // The trait you get after 35
-  ARTIFACT_TRAIT_PASSIVE    = 8, // Artificial Damage / Stamina:
-  ARTIFACT_TRAIT_INITIAL    = 18,
-  ARTIFACT_TRAIT_MINOR2     = 32,
-  ARTIFACT_TRAIT_RELIC      = 64 // Netherlight traits
-};
-
 enum spell_mechanic {
   MECHANIC_CHARM = 130,
   MECHANIC_DISARM = 142,
@@ -103,8 +91,8 @@ enum proc_types
   // Relevant blizzard flags end here
 
   // We need to separate heal ticks and damage ticks for our
-  // system, so define a separate cooldown for them. Registering 
-  // cooldowns will automatically infer the correct type from 
+  // system, so define a separate cooldown for them. Registering
+  // cooldowns will automatically infer the correct type from
   // given proc flags.
   PROC1_PERIODIC_HEAL,
   PROC1_PERIODIC_HEAL_TAKEN,
@@ -132,7 +120,7 @@ enum proc_types2
   PROC2_CAST_HEAL,              // Healing proc_types1 cast finished
   PROC2_TYPE_MAX,
 
-  // Pseudo types 
+  // Pseudo types
   PROC2_PERIODIC_HEAL,          // Tick healing, when only PROC1_PERIODIC is defined
   PROC2_PERIODIC_DAMAGE,        // Tick damage, when only PROC1_PERIODIC is defined
 

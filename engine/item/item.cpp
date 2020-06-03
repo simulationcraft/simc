@@ -10,7 +10,6 @@
 #include "player/sc_player.hpp"
 #include "player/weapon.hpp"
 #include "sim/sc_sim.hpp"
-#include "player/artifact_data.hpp"
 #include "dbc/item_database.hpp"
 #include "sc_enums.hpp"
 #include "interfaces/wowhead.hpp"
@@ -73,9 +72,9 @@ item_t::item_t( player_t* p, const std::string& o ) :
 
 bool item_t::has_stats() const
 {
-  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
+  for ( int stat_type : parsed.data.stat_type_e )
   {
-    if ( parsed.data.stat_type_e[ i ] > 0 )
+    if ( stat_type > 0 )
       return true;
   }
 
@@ -103,7 +102,7 @@ bool item_t::has_scaling_stat_bonus_id() const
 
 bool item_t::socket_color_match() const
 {
-  for ( size_t i = 0, end = sizeof_array( parsed.data.socket_color ); i < end; i++ )
+  for ( size_t i = 0, end = range::size( parsed.data.socket_color ); i < end; i++ )
   {
     if ( parsed.data.socket_color[ i ] == SOCKET_COLOR_NONE )
       continue;
@@ -148,7 +147,7 @@ const special_effect_t* item_t::special_effect( special_effect_source_e source, 
 
 // item_t::special_effect_with_name =========================================
 
-const special_effect_t* item_t::special_effect_with_name( const std::string& name, special_effect_source_e source, special_effect_e type ) const
+const special_effect_t* item_t::special_effect_with_name( util::string_view name, special_effect_source_e source, special_effect_e type ) const
 {
   for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
   {
@@ -210,7 +209,7 @@ std::string item_t::item_stats_str() const
   else if ( item_database::armor_value( *this ) )
     s << item_database::armor_value( *this ) << " Armor, ";
 
-  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
+  for ( size_t i = 0; i < range::size( parsed.data.stat_type_e ); i++ )
   {
     if ( parsed.data.stat_type_e[ i ] <= 0 )
       continue;
@@ -439,7 +438,7 @@ std::ostream& operator<<(std::ostream& s, const item_t& item )
   if ( has_spells )
   {
     s << " proc_spells={ ";
-    for ( size_t i = 0; i < sizeof_array( item.parsed.data.id_spell ); i++ )
+    for ( size_t i = 0; i < range::size( item.parsed.data.id_spell ); i++ )
     {
       if ( item.parsed.data.id_spell[ i ] <= 0 )
         continue;
@@ -479,9 +478,9 @@ std::string item_t::to_string() const
 
 bool item_t::has_item_stat( stat_e stat ) const
 {
-  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
+  for ( int stat_type : parsed.data.stat_type_e )
   {
-    if ( util::translate_item_mod( parsed.data.stat_type_e[ i ] ) == stat )
+    if ( util::translate_item_mod( stat_type ) == stat )
       return true;
   }
 
@@ -499,22 +498,11 @@ unsigned item_t::item_level() const
   if ( sim -> scale_to_itemlevel > 0 && ! sim -> scale_itemlevel_down_only )
     return sim -> scale_to_itemlevel;
 
-  unsigned ilvl;
+  unsigned ilvl = parsed.data.level;
 
   // Overridden Option-based item level
   if ( parsed.item_level > 0 )
-  {
     ilvl = parsed.item_level;
-  }
-  // Otherwise, normal ilevel processing (base ilevel + artifact ilevel increase)
-  else
-  {
-    ilvl = parsed.data.level;
-    if ( slot == player -> artifact -> slot() )
-    {
-      ilvl += player -> artifact -> ilevel_increase();
-    }
-  }
 
   if ( sim -> scale_to_itemlevel > 0 && sim -> scale_itemlevel_down_only )
     return std::min( (unsigned) sim -> scale_to_itemlevel, ilvl );
@@ -543,7 +531,7 @@ unsigned item_t::base_item_level() const
 
 stat_e item_t::stat( size_t idx ) const
 {
-  if ( idx >= sizeof_array( parsed.data.stat_type_e ) )
+  if ( idx >= range::size( parsed.data.stat_type_e ) )
     return STAT_NONE;
 
   return util::translate_item_mod( parsed.data.stat_type_e[ idx ] );
@@ -551,7 +539,7 @@ stat_e item_t::stat( size_t idx ) const
 
 int item_t::stat_value( size_t idx ) const
 {
-  if ( idx >= sizeof_array( parsed.data.stat_type_e ) - 1 )
+  if ( idx >= range::size( parsed.data.stat_type_e ) - 1 )
     return -1;
 
   return item_database::scaled_stat( *this, *player -> dbc, idx, item_level() );
@@ -742,7 +730,7 @@ void item_t::parse_options()
   if ( ! option_gem_id_str.empty() )
   {
     std::vector<std::string> spl = util::string_split( option_gem_id_str, ":/" );
-    for ( size_t i = 0, end = std::min( sizeof_array( parsed.gem_id ), spl.size() ); i < end; i++ )
+    for ( size_t i = 0, end = std::min( range::size( parsed.gem_id ), spl.size() ); i < end; i++ )
     {
       int gem_id = std::stoi( spl[ i ] );
 
@@ -1185,7 +1173,7 @@ std::string item_t::encoded_stats() const
 
   std::vector<std::string> stats;
 
-  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
+  for ( size_t i = 0; i < range::size( parsed.data.stat_type_e ); i++ )
   {
     if ( parsed.data.stat_type_e[ i ] < 0 )
       continue;
@@ -1449,7 +1437,7 @@ void item_t::decode_stats()
     auto tokens = item_database::parse_tokens( option_stats_str );
     size_t stat = 0;
 
-    for ( size_t i = 0; i < tokens.size() && stat < sizeof_array( parsed.stat_val ); i++ )
+    for ( size_t i = 0; i < tokens.size() && stat < range::size( parsed.stat_val ); i++ )
     {
       stat_e s = util::parse_stat_type( tokens[ i ].name );
       if ( s == STAT_NONE )
@@ -1474,10 +1462,10 @@ void item_t::decode_stats()
   // wrong.
   if ( ! has_scaling_stat_bonus_id() )
   {
-    item_database::apply_item_scaling( *this, parsed.data.id_scaling_distribution, player -> level() );
+    item_database::apply_item_scaling( *this, parsed.data.id_curve, player -> level() );
   }
 
-  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
+  for ( size_t i = 0; i < range::size( parsed.data.stat_type_e ); i++ )
   {
     stat_e s = stat( i );
     if ( s == STAT_NONE )
@@ -1518,7 +1506,7 @@ void item_t::decode_gems()
     unsigned gem_index = 0;
     for ( const auto& gem_str : split )
     {
-      auto item = dbc::find_gem( gem_str, player->dbc->ptr );
+      const auto& item = dbc::find_gem( gem_str, player->dbc->ptr );
       if ( item.id > 0 )
       {
         parsed.gem_id[ gem_index++ ] = item.id;
@@ -1950,7 +1938,7 @@ void item_t::init_special_effects()
         SPECIAL_EFFECT_SOURCE_ADDON, addon_data );
 
   // On-use effects
-  for ( size_t i = 0, end = sizeof_array( parsed.data.id_spell ); i < end; ++i )
+  for ( size_t i = 0, end = range::size( parsed.data.id_spell ); i < end; ++i )
   {
     if ( parsed.data.id_spell[ i ] == 0 ||
          parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_USE )
@@ -1972,7 +1960,7 @@ void item_t::init_special_effects()
   }
 
   // On-equip effects
-  for ( size_t i = 0, end = sizeof_array( parsed.data.id_spell ); i < end; ++i )
+  for ( size_t i = 0, end = range::size( parsed.data.id_spell ); i < end; ++i )
   {
     if ( parsed.data.id_spell[ i ] == 0 ||
          parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_EQUIP )
