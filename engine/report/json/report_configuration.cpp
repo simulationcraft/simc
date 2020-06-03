@@ -20,7 +20,7 @@ struct report_version_settings_t
 
 std::vector<report_version_settings_t> get_report_settings()
 {
-  return std::vector<report_version_settings_t>{ { "3.0.0", false }, { "2.0.0", false } };
+  return std::vector<report_version_settings_t>{ { "3.0.0-alpha1", false }, { "2.0.0", false } };
 }
 }  // namespace
 

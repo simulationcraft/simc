@@ -61,6 +61,11 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\item\item.hpp" />
 		<ClInclude Include="..\engine\item\item_targetdata_initializer.hpp" />
 		<ClInclude Include="..\engine\item\special_effect.hpp" />
+		<ClInclude Include="..\engine\lib\cpp-semver\base\type.hpp" />
+		<ClInclude Include="..\engine\lib\cpp-semver\base\util.hpp" />
+		<ClInclude Include="..\engine\lib\cpp-semver\cpp-semver.hpp" />
+		<ClInclude Include="..\engine\lib\cpp-semver\parser\parser.hpp" />
+		<ClInclude Include="..\engine\lib\cpp-semver\parser\peg.hpp" />
 		<ClInclude Include="..\engine\lib\gsl-lite\gsl-lite.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml_print.hpp" />
@@ -449,6 +454,9 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\report\json\report_configuration.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
+		<ClCompile Include="..\engine\report\json\report_json.cpp">
+			
+		</ClCompile>
 		<ClCompile Include="..\engine\report\report_helper.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
@@ -465,9 +473,6 @@ To change the list of source files run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\report\sc_report_html_sim.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\report\sc_report_json.cpp">
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\report\sc_report_text.cpp">

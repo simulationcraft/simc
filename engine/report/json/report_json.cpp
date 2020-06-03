@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "reports.hpp"
+#include "report/reports.hpp"
 #include "interfaces/sc_js.hpp"
 #include "report/json/report_configuration.hpp"
 #include "sim/scale_factor_control.hpp"

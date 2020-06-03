@@ -101,13 +101,13 @@ SRC += \
     report$(PATHSEP)color.cpp \
     report$(PATHSEP)decorators.cpp \
     report$(PATHSEP)json$(PATHSEP)report_configuration.cpp \
+    report$(PATHSEP)json$(PATHSEP)report_json.cpp \
     report$(PATHSEP)report_helper.cpp \
     report$(PATHSEP)reports.cpp \
     report$(PATHSEP)sc_gear_weights.cpp \
     report$(PATHSEP)sc_highchart.cpp \
     report$(PATHSEP)sc_report_html_player.cpp \
     report$(PATHSEP)sc_report_html_sim.cpp \
-    report$(PATHSEP)sc_report_json.cpp \
     report$(PATHSEP)sc_report_text.cpp \
     sim$(PATHSEP)artifact_power.cpp \
     sim$(PATHSEP)event_manager.cpp \

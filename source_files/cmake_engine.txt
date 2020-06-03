@@ -55,6 +55,11 @@ item/enchants.hpp
 item/item.hpp
 item/item_targetdata_initializer.hpp
 item/special_effect.hpp
+lib/cpp-semver/base/type.hpp
+lib/cpp-semver/base/util.hpp
+lib/cpp-semver/cpp-semver.hpp
+lib/cpp-semver/parser/parser.hpp
+lib/cpp-semver/parser/peg.hpp
 lib/gsl-lite/gsl-lite.hpp
 lib/rapidxml/rapidxml.hpp
 lib/rapidxml/rapidxml_print.hpp
@@ -245,13 +250,13 @@ report/charts.cpp
 report/color.cpp
 report/decorators.cpp
 report/json/report_configuration.cpp
+report/json/report_json.cpp
 report/report_helper.cpp
 report/reports.cpp
 report/sc_gear_weights.cpp
 report/sc_highchart.cpp
 report/sc_report_html_player.cpp
 report/sc_report_html_sim.cpp
-report/sc_report_json.cpp
 report/sc_report_text.cpp
 sim/artifact_power.cpp
 sim/event_manager.cpp
