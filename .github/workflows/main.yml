@@ -2,16 +2,23 @@ name: CI
 
 on:
   pull_request:
-    branches: [ bfa-dev, shadowlands ]
+    branches: [ shadowlands ]
   push:
-    branches: [ bfa-dev, shadowlands ]
+    branches: [ shadowlands ]
     paths-ignore:
       - 'SpellDataDump/**'
       - 'dbc_extract3/**'
       - 'casc_extract/**'
 
 env:
-  SIMC_PROFILE: profiles/T25_Raid.simc
+  #SIMC_PROFILE: profiles/T25_Raid.simc
+  SIMC_PROFILE: |
+    profiles/Tier25/T25_Hunter_Marksmanship.simc
+    profiles/Tier25/T25_Hunter_Survival.simc
+    profiles/Tier25/T25_Hunter_Beast_Mastery.simc
+    profiles/Tier25/T25_Mage_Arcane.simc
+    profiles/Tier25/T25_Mage_Frost.simc
+    profiles/Tier25/T25_Priest_Shadow.simc
   CCACHE_COMPRESS: true # always enable ccache compression
   ccache-generation: 0 # bump if you need to "clean" ccache
 
