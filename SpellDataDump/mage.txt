@@ -1864,6 +1864,7 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
+Max Targets      : 10
 Duration         : 10 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
@@ -2426,6 +2427,7 @@ Spell Type       : Magic
 Resource         : 1.5% Base Mana (0) (id=5675)
 Spell Level      : 1
 Range            : 40 yards
+Max Targets      : 1
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
@@ -9292,6 +9294,7 @@ School           : Arcane
 Spell Type       : None
 Resource         : 2% Base Mana (0) (id=192604)
 Range            : 40 yards
+Max Targets      : 1
 Duration         : 1800 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
@@ -9316,6 +9319,7 @@ Class            : Mage
 School           : Arcane
 Spell Type       : None
 Range            : 40 yards
+Max Targets      : 1
 Duration         : 10 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
@@ -9420,6 +9424,7 @@ Spell Type       : None
 Resource         : 5% Base Mana (0) (id=192607)
 Spell Level      : 37
 Range            : 40 yards
+Max Targets      : 1
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds

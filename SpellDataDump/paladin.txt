@@ -396,6 +396,7 @@ Spell Type       : Magic
 Resource         : 6% Base Mana (0) (id=816)
 Spell Level      : 1
 Range            : 30 yards
+Max Targets      : 1
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 60 seconds
@@ -1674,6 +1675,7 @@ Spell Type       : Melee
 Resource         : 3 Holy Power (9) (id=3982)
 Spell Level      : 10
 Range            : 5 yards
+Max Targets      : Unlimited(-1)
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Labels           : 16: Agonizing Backlash (320035 effect#3)
@@ -4396,6 +4398,7 @@ School           : Holy
 Spell Type       : Melee
 Resource         : 5 Holy Power (9) (id=11251)
 Range            : 5 yards
+Max Targets      : Unlimited(-1)
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
@@ -4657,6 +4660,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Melee
 Range            : 100 yards
+Max Targets      : Unlimited(-1)
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Righteous Verdict (267611 effect#1), Execution Sentence (267799 effect#1), Avenging Wrath (294027 effect#1)

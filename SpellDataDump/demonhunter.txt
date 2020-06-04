@@ -3533,6 +3533,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 34
 Range            : 20 yards
+Max Targets      : 1
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 45 seconds

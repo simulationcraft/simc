@@ -483,6 +483,7 @@ School           : Shadow
 Spell Type       : Magic
 Resource         : 1.2% Base Mana (0) (id=328)
 Spell Level      : 7
+Max Targets      : 5
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
@@ -1780,6 +1781,7 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
+Max Targets      : 60
 Duration         : 8 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
@@ -1918,6 +1920,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 27
+Max Targets      : 10
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Mass Dispel (32375)
 Attributes       : .......x x....... x....... ........   ........ ........ ........ ........ 
@@ -2146,6 +2149,7 @@ Name             : Sin and Punishment (id=87204) [Spell Family (5)]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
+Max Targets      : 5
 Duration         : 3 seconds
 Proc Chance      : 100%
 Mechanic         : Horrify

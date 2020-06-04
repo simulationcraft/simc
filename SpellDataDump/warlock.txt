@@ -3159,6 +3159,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 12
 Range            : 30 yards
+Max Targets      : 1
 Duration         : 20 seconds
 Category         : 1266
 Labels           : 16: Agonizing Backlash (320035 effect#3)
@@ -4249,6 +4250,7 @@ Class            : Warlock
 School           : Fire
 Spell Type       : Magic
 Range            : 40 yards
+Max Targets      : 1
 Velocity         : 16 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
@@ -4548,6 +4550,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
+Max Targets      : 1
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 600 seconds
@@ -4655,6 +4658,7 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
+Max Targets      : 1
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9395,6 +9399,7 @@ Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=192752)
 Spell Level      : 13
 Range            : 40 yards
+Max Targets      : 1
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 16 seconds

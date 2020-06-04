@@ -7338,6 +7338,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Resource         : 30 Runic Power (6) (id=11019)
+Max Targets      : 20
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Sudden Doom (81340 effect#1)
@@ -7686,6 +7687,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Max Targets      : 7
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 78, 121
@@ -12792,6 +12794,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 20 yards
+Max Targets      : 1
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Abomination Limb (315443)

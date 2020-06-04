@@ -316,6 +316,7 @@ Spell Type       : Ranged
 Resource         : 40 Focus (2) (id=11195)
 Spell Level      : 29
 Range            : 40 yards
+Max Targets      : 5
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
@@ -2380,6 +2381,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
+Max Targets      : 5
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 111
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -2450,6 +2452,7 @@ School           : Physical
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50 yards
+Max Targets      : 8
 Requires weapon  : Bow, Gun, Crossbow
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
@@ -4033,6 +4036,7 @@ Spell Type       : Melee
 Resource         : 35 Focus (2) (id=10219)
 Spell Level      : 29
 Range            : 8 yards
+Max Targets      : 5
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 6 seconds
@@ -4970,6 +4974,7 @@ Spell Type       : Melee
 Resource         : 30 Focus (2) (id=191496)
 Spell Level      : 1
 Range            : 8 yards
+Max Targets      : 5
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Charges          : 3 (9 seconds cooldown)
@@ -5002,6 +5007,7 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
+Max Targets      : 6
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 73, 106
@@ -5519,6 +5525,7 @@ Spell Type       : Ranged
 Resource         : 15 Focus (2) (id=12491)
 Spell Level      : 29
 Range            : 40 yards
+Max Targets      : 5
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Requires weapon  : Bow, Gun, Crossbow

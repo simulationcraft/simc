@@ -2926,6 +2926,7 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Magic
 Range            : 40 yards
+Max Targets      : 8
 Velocity         : 1 yards/sec
 Cooldown         : 60 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
@@ -4518,6 +4519,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 10 yards
+Max Targets      : 1
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Triggered by     : Lightning Shield (192106)
@@ -5968,6 +5970,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 13
 Range            : 100 yards
+Max Targets      : 3
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Charges          : 3 (12 seconds cooldown)
@@ -8306,6 +8309,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
+Max Targets      : 6
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Eye of the Storm (157375)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11070,6 +11074,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
+Max Targets      : 6
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -11264,6 +11269,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
+Max Targets      : 8
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11283,6 +11289,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
+Max Targets      : 8
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
