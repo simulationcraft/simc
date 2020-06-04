@@ -8727,6 +8727,7 @@ void druid_t::apl_balance()
                               "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "use_item,name=shiver_venom_relic,if=!buff.ca_inc.up&!buff.bloodlust.up,"
                               "target_if=dot.shiver_venom.stack>=5" );
+  default_list->add_action( "use_item,name=manifesto_of_madness,if=buff.ca_inc.remains>10|buff.ca_inc.remains>4&buff.arcanic_pulsar.stack>6|fight_remains<21" );
   default_list->add_action( "blood_of_the_enemy,if=cooldown.ca_inc.remains>30" );
   default_list->add_action( "memory_of_lucid_dreams,if=!buff.ca_inc.up&(astral_power<25|cooldown.ca_inc.remains>30),"
                               "target_if=dot.sunfire.remains>10&dot.moonfire.remains>10&(!talent.stellar_flare.enabled|dot.stellar_flare.remains>10)" );
@@ -8742,8 +8743,8 @@ void druid_t::apl_balance()
                               "target_if=dot.moonfire.ticking&dot.sunfire.ticking&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking)" );
   default_list->add_action( "thorns" );
   // NOTE: This will ALWAYS line up ALL trinkets where the effect_name == ANY stat buff_name. Make sure to handle any special cases above.
-  default_list->add_action( "use_items,slots=trinket1,if=!trinket.1.has_proc.any|buff.ca_inc.up|target.1.time_to_die<20" );
-  default_list->add_action( "use_items,slots=trinket2,if=!trinket.2.has_proc.any|buff.ca_inc.up|target.1.time_to_die<20" );
+  default_list->add_action( "use_items,slots=trinket1,if=!trinket.1.has_proc.any|buff.ca_inc.up|fight_remains<20" );
+  default_list->add_action( "use_items,slots=trinket2,if=!trinket.2.has_proc.any|buff.ca_inc.up|fight_remains<20" );
   default_list->add_action( "use_items" );
   default_list->add_talent( this, "Warrior of Elune" );
   default_list->add_action( this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)" );
@@ -8760,14 +8761,14 @@ void druid_t::apl_balance()
   // Spenders
   default_list->add_action("cancel_buff,name=starlord,if=buff.starlord.remains<3&!solar_wrath.ap_check", "Spenders");
   default_list->add_action( this, "Starfall",
-                            "if=(!solar_wrath.ap_check|(buff.starlord.stack<3|buff.starlord.remains>=8)&(target.1.time_"
-                            "to_die+1)*spell_targets>cost%2.5)&spell_targets>=variable.sf_targets" );
+                            "if=(!solar_wrath.ap_check|(buff.starlord.stack<3|buff.starlord.remains>=8)&(fight_remains+"
+                            "1)*spell_targets>cost%2.5)&spell_targets>=variable.sf_targets" );
   default_list->add_action(
       this, "Starsurge",
       "if=((talent.starlord.enabled&(buff.starlord.stack<3|buff.starlord.remains>=5&buff.arcanic_pulsar.stack<8)|!"
       "talent.starlord.enabled&(buff.arcanic_pulsar.stack<8|buff.ca_inc.up))&buff.solar_empowerment.stack<3&buff.lunar_"
       "empowerment.stack<3&buff.reckless_force_counter.stack<19|buff.reckless_force.up)&spell_targets.starfall<"
-      "variable.sf_targets&(!variable.az_ss|!buff.ca_inc.up|!prev.starsurge)|target.1.time_to_die<=execute_time*astral_"
+      "variable.sf_targets&(!variable.az_ss|!buff.ca_inc.up|!prev.starsurge)|fight_remains<=execute_time*astral_"
       "power%40|!solar_wrath.ap_check" );
   // DoTs - for ttd calculations see https://docs.google.com/spreadsheets/d/16NyCGvWcXXwERuiSNlVhdD347jA5iWh-ELs33GtW1XQ/ (needs slight update)
   default_list->add_action(this, "Sunfire", "if=buff.ca_inc.up&buff.ca_inc.remains<gcd.max&variable.az_ss&dot.moonfire.remains>remains" );
