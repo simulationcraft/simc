@@ -6,6 +6,8 @@
 #include "enchants.hpp"
 #include "special_effect.hpp"
 #include "dbc/dbc.hpp"
+#include "item/item.hpp"
+#include "dbc/gem_data.hpp"
 #include "player/sc_player.hpp"
 #include "dbc/item_database.hpp"
 #include "sim/sc_sim.hpp"

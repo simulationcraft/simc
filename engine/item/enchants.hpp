@@ -7,14 +7,16 @@
 
 #include "config.hpp"
 #include "sc_enums.hpp"
-#include "item.hpp"
-#include "dbc/gem_data.hpp"
 #include "util/string_view.hpp"
+#include "dbc/data_enums.hh"
 
 #include <string>
 
 class dbc_t;
+struct gem_property_data_t;
+struct item_t;
 struct item_enchantment_data_t;
+struct stat_pair_t;
 
 namespace enchant
 {
