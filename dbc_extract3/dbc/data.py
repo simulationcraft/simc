@@ -86,6 +86,14 @@ class RawDBCRecord:
         db = dbc.db.datastore().get(child_db)
         return db.records_for_parent(self._id)
 
+    def child(self, child_db):
+        if not dbc.db.datastore():
+            raise ValueError
+
+        db = dbc.db.datastore().get(child_db)
+        records = db.records_for_parent(self._id)
+        return len(records) and records[0] or db.default()
+
     def child_refs(self, child_db):
         if not dbc.db.datastore():
             return []
