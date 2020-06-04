@@ -1,4 +1,4 @@
-// ==========================================================================
+﻿// ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -1079,42 +1079,33 @@ struct tank_dummy_enemy_t : public enemy_t
       // Values are a combination of the base K values for the intended level, multiplied by the ArmorConstantMod field
       // 8.3 values here
 
-      /* Base/open world Zandalar/Kul Tiras: 6300 (Level 120 Armor mitigation constants (K-values))
-        Open World Mechagon/Nazjatar: 10344.6 (ID: 147; ArmorMod: 1.642)
-        Open World Invasion quests (8.3): 12782.7 (ID: 150; ArmorMod: 2.029)
-        M0/M+ (8.2): 10275.3 (ID: 147; ArmorMod: 1.642)
-        M0/M+ (8.3): 14282.1 (ID: 151; ArmorMod: 2.267)
-        Operation: Mechagon: 14282.1 (ID: 151; ArmorMod: 2.267)
-        Uldir LFR: 7100.1 (ID: 7; ArmorMod: 1.127)
-        Uldir Normal: 7736.4 (ID: 8; ArmorMod: 1.228)
-        Uldir Heroic: 8467.2 (ID: 9; ArmorMod: 1.344)
-        Uldir Mythic: 9311.4 (ID: 10; ArmorMod: 1.478)
-        BfD/Crucible LFR: 8467.2 (ID: 9; ArmorMod: 1.344)
-        BfD/Crucible Normal: 9355.5 (ID: 135; ArmorMod: 1.485)
-        BfD/Crucible Heroic: 10344.6 (ID: 147; ArmorMod: 1.642)
-        BfD/Crucible Mythic: 11478.6 (ID: 149; ArmorMod: 1.822)
-        TEP LFR: 10344.6 (ID: 147; ArmorMod: 1.642)
-        TEP Normal: 11478.6 (ID: 149; ArmorMod: 1.822)
-        TEP Heroic: 12782.7 (ID: 150; ArmorMod: 2.029)
-        TEP Mythic: 14282.1 (ID: 151; ArmorMod: 2.267)
-        Ny'alotha LFR: 12782.7 (ID: 150; ArmorMod: 2.029)
-        Ny'alotha Normal: 14282.1 (ID: 151; ArmorMod: 2.267)
-        Ny'alotha Heroic: 16002.0 (ID: 152; ArmorMod: 2.54)
-        Ny'alotha Mythic: 17986.5 (ID: 158; ArmorMod: 2.855) */
+      /* Level 50 Base/open world: 741.000 (Level 50 Armor mitigation constants (K-values))
+        Level 50 M0/M+: 879.567 (ID: 171; ArmorMod: 1.187)
+        Ny'alotha LFR: 848.445 (ID: 143; ArmorMod: 1.145)
+        Ny'alotha Normal: 879.567 (ID: 151; ArmorMod: 1.187)
+        Ny'alotha Heroic: 953.667 (ID: 152; ArmorMod: 1.287)
+        Ny'alotha Mythic: 1038.882‬ (ID: 158; ArmorMod: 1.402) 
+        Level 60 Base/open world: 2500.000 (Level 60 Armor mitigation constants (K-values))
+        Level 60 M0/M+: 2442.5 (ID: 176; ArmorMod: 0.977) *Needs to be updated closer to release
+        Castle Nathria LFR: 2442.5 (ID: 176; ArmorMod: 0.977)
+        Castle Nathria Normal: 2622.5 (ID: 177; ArmorMod: 1.049)
+        Castle Nathria Heroic: 2830.0 (ID: 178; ArmorMod: 1.132)
+        Castle Nathria Mythic: 3067.5‬ (ID: 179; ArmorMod: 1.227) 
+        */
 
       switch ( tank_dummy_enum )
       {
       case tank_dummy_e::DUNGEON:
-        base.armor_coeff = 14282.1; // 8.3 M0/M+
+        base.armor_coeff = 879.567; // 8.3 M0/M+
         break;
       case tank_dummy_e::RAID:
-        base.armor_coeff = 14282.1; // Normal Ny'alotha
+        base.armor_coeff = 879.567;  // Normal Ny'alotha
         break;
       case tank_dummy_e::HEROIC:
-        base.armor_coeff = 16002.0; // Heroic Ny'alotha
+        base.armor_coeff = 953.667;  // Heroic Ny'alotha
         break;
       case tank_dummy_e::MYTHIC:
-        base.armor_coeff = 17986.5; // Mythic Ny'alotha
+        base.armor_coeff = 1038.882; // Mythic Ny'alotha
         break;
       default:
         break; // Use the default value set in enemy_t::init_base_stats()
