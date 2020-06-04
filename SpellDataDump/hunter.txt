@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34490 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34615 shadowlands-BETA (git build shadowlands 8180f105ad)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -10759,12 +10759,6 @@ Effects          :
 #2 (id=787677)   : Apply Aura (6) | Unknown(339)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=790544)   : Apply Aura (6) | Unknown(424)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#4 (id=797653)   : Apply Aura (6) | Modify Attacker Crit Chance (197)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#5 (id=797668)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
-#6 (id=797676)   : Apply Aura (6) | Periodic Dummy (226): every 0.25 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc308491
 Tooltip          : Chance to suffer a critical strike from the Hunter increased by $s1%.

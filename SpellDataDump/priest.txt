@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34490 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34615 shadowlands-BETA (git build shadowlands 8180f105ad)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -1260,6 +1260,7 @@ Class            : Discipline Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 41
+Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
@@ -9188,7 +9189,7 @@ Attributes       : ........ ........ ..x....x x..x.x..   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=815191)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc324724
 
 Name             : Unholy Transfusion (rank=Necrolord) (id=325203) [Spell Family (6)] 
@@ -9246,9 +9247,14 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=815724)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#4 (id=829061)   : Energize Power (30)
+                   Base Value: 1200 | Scaled Value: 1200 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : Blasts the enemy with pure Anima, causing $s1 Arcane damage and healing a nearby ally for $s2% of the damage done.
 
-Grants $s3 $lstack:stacks; of Boon of the Ascended.
+Grants $s3 $lstack:stacks; of Boon of the Ascended.
+
+$?c3[|cFFFFFFFFGenerates $/100;s4 Insanity.|r]
+][]
 
 Name             : Ascended Eruption (id=325326) [Spell Family (6)] 
 Class            : Priest

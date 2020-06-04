@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34490 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34615 shadowlands-BETA (git build shadowlands 8180f105ad)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -803,7 +803,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000002
-Affecting spells : Bear Form (5487 effect#2), Guardian Druid (137010 effect#7), Balance Druid (137013 effect#4), Lunar Inspiration (155627 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Astral Power (197911 effect#3), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Galactic Guardian (213708 effect#1), Solar Solstice (252767 effect#1), Long Night (269379 effect#2), Twin Moons (279620 effect#2), Moonfire (328023 effect#1)
+Affecting spells : Bear Form (5487 effect#2), Guardian Druid (137010 effect#6), Balance Druid (137013 effect#4), Lunar Inspiration (155627 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Astral Power (197911 effect#3), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Galactic Guardian (213708 effect#1), Solar Solstice (252767 effect#1), Long Night (269379 effect#2), Twin Moons (279620 effect#2), Moonfire (328023 effect#1)
 Family Flags     : 1, 21, 103
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -835,7 +835,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effect#1), Clearcasting (16870 effect#1), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Predatory Swiftness (69369 effect#1), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Nature's Swiftness (132158 effect#1), Guardian Druid (137010 effect#4), Feral Druid (137011 effect#4), Restoration Druid (137012 effect#1), Balance Druid (137013 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Abundance (207640 effect#1), Essence of G'Hanir (208253 effect#1), Power of Elune, the Moon Goddess (208284 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Rampant Growth (278515 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effect#1), Clearcasting (16870 effect#1), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Predatory Swiftness (69369 effect#1), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Nature's Swiftness (132158 effect#1), Guardian Druid (137010 effect#3), Feral Druid (137011 effect#4), Restoration Druid (137012 effect#1), Balance Druid (137013 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Abundance (207640 effect#1), Essence of G'Hanir (208253 effect#1), Power of Elune, the Moon Goddess (208284 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Rampant Growth (278515 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2)
 Family Flags     : 6, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   .......x ........ ........ ........ 
@@ -1239,7 +1239,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Guardian Druid (137010 effect#3), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Survival of the Fittest (203965 effect#1), Barkskin (327993 effect#1)
+Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Survival of the Fittest (203965 effect#1), Barkskin (327993 effect#1)
 Family Flags     : 50
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1973,7 +1973,7 @@ Spell Type       : None
 Spell Level      : 31
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Charges          : 1 (240 seconds cooldown)
+Charges          : 1 (180 seconds cooldown)
 Category         : 1469
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
@@ -3968,37 +3968,33 @@ Effects          :
                    Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771)
                    Family Flags: 77
-#3 (id=191159)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Barkskin (22812)
-                   Family Flags: 50
-#4 (id=191160)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#3 (id=191159)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 83 | Scaled Value: 83 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-#5 (id=191161)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+#4 (id=191160)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 83 | Scaled Value: 83 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-#6 (id=260757)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#5 (id=191161)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 56 | Scaled Value: 56 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-#7 (id=260758)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#6 (id=260757)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -37 | Scaled Value: -37 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
                    Family Flags: 103
-#8 (id=260759)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
+#7 (id=260758)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Astral Influence (197524)
                    Family Flags: 76
-#9 (id=260760)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
+#8 (id=260759)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 96 | Scaled Value: 96 | PvP Coefficient: 1.00000 | Target: Self (1)
-#10 (id=260761)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#9 (id=260760)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Thrash (77758)
                    Family Flags: 91
-#11 (id=739717)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+#10 (id=260761)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Thrash (77758)
                    Family Flags: 91
@@ -4859,7 +4855,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000013
-Affecting spells : Bear Form (5487 effect#2), Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Guardian Druid (137010 effect#7), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Lunar Inspiration (155627 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effect#1), Long Night (269379 effect#2), Power of the Moon (273367 effect#2), Twin Moons (279620 effect#2), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Moonfire (326646 effect#1), Moonfire (328023 effect#1)
+Affecting spells : Bear Form (5487 effect#2), Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Guardian Druid (137010 effect#6), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Lunar Inspiration (155627 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effect#1), Long Night (269379 effect#2), Power of the Moon (273367 effect#2), Twin Moons (279620 effect#2), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Moonfire (326646 effect#1), Moonfire (328023 effect#1)
 Family Flags     : 1, 18, 92, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
@@ -5577,7 +5573,7 @@ School           : Astral
 Spell Type       : None
 Spell Level      : 27
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Guardian Druid (137010 effect#8), Feral Druid (137011 effect#8), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
+Affecting spells : Guardian Druid (137010 effect#7), Feral Druid (137011 effect#8), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 76, 109
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11349,7 +11345,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
