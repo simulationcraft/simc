@@ -72,6 +72,7 @@ BinPackParameters: true
 # Control of individual brace wrapping cases.
 # If BreakBeforeBraces is set to custom, use this to specify how each individual brace case should be handled. Otherwise, this is ignored.
 BraceWrapping:
+  AfterCaseLabel:  true
   AfterClass:      true
   # Wrap control statements (if/for/while/switch/..).
   AfterControlStatement: true
