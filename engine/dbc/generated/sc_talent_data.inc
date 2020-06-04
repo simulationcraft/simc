@@ -1,6 +1,6 @@
 #define TALENT_SIZE (636)
 
-// 636 talents, wow build 9.0.1.34490
+// 636 talents, wow build 9.0.1.34615
 static struct talent_data_t __talent_data[] = {
   { "Second Wind"                       , 15757, 0x00, 0x0001,  71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -449,7 +449,7 @@ static struct talent_data_t __talent_data[] = {
   { "Alexstrasza's Fury"                , 22465, 0x00, 0x0080,  63,   1,   3,  235870,       0,  0 },
   { "Chain Reaction"                    , 22466, 0x00, 0x0080,  64,   1,   3,  278309,       0,  0 },
   { "Charged Up"                        , 22467, 0x00, 0x0080,  62,   1,   3,  205032,       0,  0 },
-  { "Phoenix Flames"                    , 22468, 0x00, 0x0080,  63,   2,   3,  257541,       0,  0 },
+  { "Coming Soon"                       , 22468, 0x00, 0x0080,  63,   2,   3,  275459,       0,  0 },
   { "Ebonbolt"                          , 22469, 0x00, 0x0080,  64,   2,   3,  257537,       0,  0 },
   { "Supernova"                         , 22470, 0x00, 0x0080,  62,   2,   3,  157980,       0,  0 },
   { "Ring of Frost"                     , 22471, 0x00, 0x0080,   0,   2,   4,  113724,       0,  0 },

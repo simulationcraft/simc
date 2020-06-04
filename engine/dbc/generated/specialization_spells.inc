@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.0.1.34490
-static const std::array<specialization_spell_entry_t, 876> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.0.1.34615
+static const std::array<specialization_spell_entry_t, 877> __specialization_spell_data { {
   {  0,  535, 264663,      0, "Predator's Thirst"                  },
   {  0,  535, 264667,      0, "Primal Rage"                        },
   {  0,  535, 264656,      0, "Pathfinding"                        },
@@ -557,6 +557,7 @@ static const std::array<specialization_spell_entry_t, 876> __specialization_spel
   {  8,   63, 321709,      0, "Flamestrike"                        },
   {  8,   63, 321710,      0, "Combustion"                         },
   {  8,   63, 321711,      0, "Pyroblast"                          },
+  {  8,   63, 257541,      0, "Phoenix Flames"                     },
   {  8,   64,  31687,      0, "Summon Water Elemental"             },
   {  8,   64,  12472,      0, "Icy Veins"                          },
   {  8,   64,  84714,      0, "Frozen Orb"                         },

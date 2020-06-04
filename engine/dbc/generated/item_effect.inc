@@ -1,5 +1,5 @@
-// Item effects, wow build 9.0.1.34490
-static const std::array<item_effect_t, 233> __item_effect_data { {
+// Item effects, wow build 9.0.1.34615
+static const std::array<item_effect_t, 239> __item_effect_data { {
   {    420,  13518,   0,   2,     -1,    0,     -1 }, // Poison
   {  30489, 207438,   0,   1,     -1,    0,     -1 }, // Aggramar's Stride
   { 116155, 315277,   2,   1,     -1,    0,     -1 }, // Strikethrough
@@ -227,11 +227,17 @@ static const std::array<item_effect_t, 233> __item_effect_data { {
   { 125659, 332301,   2,   0,     -1,    0,     -1 }, // Mistcaller Ocarina
   { 125660, 330067,   2,   0,     -1,    0,     -1 }, // Mistcaller Ocarina
   { 125672, 332618,   0,   1,     -1,    0,     -1 }, // Reinforced Girdle
-  { 125673, 332684,   0,   1,     -1,    0,     -1 }, // Craftman's Pouch
-  { 125679, 332769,   0,   1,     -1,    0,     -1 }, // Arcane Infinity
+  { 125673, 332684,   0,   1,     -1,    0,     -1 }, // Craftsman's Pouch
+  { 125679, 332769,   0,   1,     -1,    0,     -1 }, // Arcane Harmony
   { 125682, 332892,   0,   1,     -1,    0,     -1 }, // Arcane Bombardment
   { 125683, 332928,   0,   1,     -1,    0,     -1 }, // Siphon Storm
   { 125684, 332950,   0,   1,     -1,    0,     -1 }, // Fire Proc (DNT)
   { 125685, 332979,   0,   1,     -1,    0,     -1 }, // Necrostatic Micro Capacitor
+  { 125686, 333030,   0,   1,     -1,    0,     -1 }, // Fevered Incantation
+  { 125690, 333097,   0,   1,     -1,    0,     -1 }, // Firestorm
+  { 125696, 333167,   0,   1,     -1,    0,     -1 }, // Molten Skyfall
+  { 125702, 333313,   0,   1,     -1,    0,     -1 }, // Sun King's Blessing
+  { 125705, 333373,   0,   1,     -1,    0,     -1 }, // Triune Ward
+  { 125707, 333393,   0,   1,     -1,    0,     -1 }, // Grisly Icicle
 } };
 

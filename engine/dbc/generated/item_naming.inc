@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.1.34490
-static const std::array<item_name_description_t, 339> __item_name_description_data { {
+// Item name descriptions, wow build 9.0.1.34615
+static const std::array<item_name_description_t, 340> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -339,5 +339,6 @@ static const std::array<item_name_description_t, 339> __item_name_description_da
   { 13578, "16 Corruption"                               },
   { 13579, "8 Corruption"                                },
   { 13580, "60 Corruption"                               },
+  { 13581, "Ascended Crafting"                           },
 } };
 

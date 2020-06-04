@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 9.0.1.34490
-static const std::array<item_enchantment_data_t, 4161> __spell_item_ench_data { {
+// Item enchantment data, wow build 9.0.1.34615
+static const std::array<item_enchantment_data_t, 4162> __spell_item_ench_data { {
   {   13,      0, -1,   5,   1,   0,   0, {   2,   0,   0 }, {    3,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
   {   14,      0, -1,  15,   7,   0,   0, {   2,   0,   0 }, {    4,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
   {   15,      0, -1,   1,  25,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0300,  0.0000,  0.0000 },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4160,6 +4160,7 @@ static const std::array<item_enchantment_data_t, 4161> __spell_item_ench_data { 
   { 6244,      0,  0,   1,   0, 960,   1, {   3,   0,   0 }, {    0,    0,    0 }, { 326982,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 326977, "Rune of Unending Thirst"           },
   { 6245,      0,  0,   1,   0, 960,   1, {   3,   0,   0 }, {    0,    0,    0 }, { 327087,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 327082, "Rune of the Apocalypse"            },
   { 6246,      0,  0,  30,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 330504, "Kali Test Enchant - Various"       },
-  { 6247,      0,  0,  30,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 331680, "Test Enchant - All Weapons - Maw"  },
+  { 6247,      0,  0,  30,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Test Enchant - All Weapons - Maw"  },
+  { 6248,      0,  0,  30,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 331680, "Giggy Test Enchant - Various"      },
 } };
 
