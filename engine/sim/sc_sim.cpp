@@ -116,6 +116,109 @@ bool parse_debug_seed( sim_t* sim, const std::string&, const std::string& value 
   return true;
 }
 
+/**
+ * Parse json= option.
+ * 
+ * General structure is: json=destination[,<option>=<value>]
+ * 
+ * destination: path to which the report is written.
+ * 
+ * Valid options:
+ * - version [string]: Requested report version, which follow semver. This option can be a specific report version, or a semver interval like ">=2.0.0".
+ * - full_states [bool]: Collects and reports full action and other states, greatly increasing the report size.
+ * - pretty_print [bool]: Pretty-print (whitespaces and indentation) the report.
+ * - decimal_places [int]: limit floating point decimal places. Valid if > 0
+ */
+bool parse_json_reports( sim_t* sim, const std::string& /* option_name */, const std::string& value )
+{
+  auto splits = util::string_split( value, ",", false );
+
+  std::string destination;
+  if (splits.size() > 0)
+  {
+    destination = splits[0];
+  }
+  if (destination.empty())
+  {
+    throw std::runtime_error("Cannot generate JSON report with no destination. Please specify a value after json=");
+  }
+  std::string report_version;
+  bool fullStates = false;
+  bool pretty_print = false;
+  int decimal_places = 0;
+  if ( splits.size() > 1 )
+  {
+    for ( std::size_t i = 1; i < splits.size(); ++i )
+    {
+      const auto& split = splits[ i ];
+
+      auto splitOptions = util::string_split( split, "=" );
+      if ( splitOptions.size() != 2 )
+      {
+        continue;
+      }
+      if ( splitOptions[ 0 ] == "version" )
+      {
+        report_version = splitOptions[ 1 ];
+      }
+      if ( splitOptions[ 0 ] == "full_states" )
+      {
+        try
+        {
+          fullStates = std::stoi( splitOptions[ 1 ] );
+          if ( fullStates )
+          {
+            // We need to set the global json full states so extra data gets produced if one report requests it.
+            sim->json_full_states = true;
+          }
+        }
+        catch ( const std::exception& )
+        {
+          std::throw_with_nested( std::runtime_error( "Canot parse JSON report option 'full_states'" ) );
+        }
+      }
+      if ( splitOptions[ 0 ] == "pretty_print" )
+      {
+        try
+        {
+          pretty_print = std::stoi( splitOptions[ 1 ] );
+        }
+        catch ( const std::exception& )
+        {
+          std::throw_with_nested( std::runtime_error( "Canot parse JSON report option 'pretty_print'" ) );
+        }
+      }
+      if ( splitOptions[ 0 ] == "decimal_places" )
+      {
+        // limit floating point decimal places. Valid if > 0
+        try
+        {
+          decimal_places = std::stoi( splitOptions[ 1 ] );
+        }
+        catch ( const std::exception& )
+        {
+          std::throw_with_nested( std::runtime_error( "Canot parse JSON report option 'decimal places'" ) );
+        }
+      }
+    }
+  }
+
+  auto entry = report::json::create_report_entry( *sim, report_version, destination );
+  entry.full_states = fullStates;
+  entry.decimal_places = decimal_places;
+  entry.pretty_print = pretty_print;
+
+  sim->json_reports.push_back( std::move( entry ) );
+
+  return true;
+}
+
+bool replace_json2( sim_t* sim, const std::string& /*option_name*/, const std::string& value )
+{
+  // Redirect existing json2=value option to json=value,version=2
+  return parse_json_reports(sim, "json", fmt::format("{},version=2", value));
+}
+
 // parse_ptr ================================================================
 
 bool parse_ptr( sim_t*             sim,
@@ -3409,9 +3512,9 @@ void sim_t::create_options()
   add_option( opt_bool( "strict_parsing", strict_parsing ) );
   add_option( opt_bool( "debug_each", debug_each ) );
   add_option( opt_func( "debug_seed", parse_debug_seed ) );
+  add_option( opt_func( "json", parse_json_reports ) );
+  add_option( opt_func( "json2", replace_json2 ) );
   add_option( opt_string( "html", html_file_str ) );
-  add_option( opt_string( "json", json_file_str ) );
-  add_option( opt_string( "json2", json_file_str ) );
   add_option( opt_bool( "hosted_html", hosted_html ) );
   add_option( opt_int( "healing", healing ) );
   add_option( opt_bool( "log", log ) );
@@ -3420,7 +3523,7 @@ void sim_t::create_options()
   add_option( opt_bool( "save_gear_comments", save_gear_comments ) );
   add_option( opt_bool( "buff_uptime_timeline", buff_uptime_timeline ) );
   add_option( opt_bool( "buff_stack_uptime_timeline", buff_stack_uptime_timeline ) );
-  add_option( opt_bool( "json_full_states", json_full_states ) );
+  add_option( opt_deprecated( "json_full_states", "json=,full_states=" ) );
   // Bloodlust
   add_option( opt_int( "bloodlust_percent", bloodlust_percent ) );
   add_option( opt_timespan( "bloodlust_time", bloodlust_time ) );

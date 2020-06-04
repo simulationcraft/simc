@@ -60,6 +60,7 @@ typedef std::function<parse_status(parse_status, const std::string&, const std::
 typedef std::unordered_map<std::string, std::string> map_t;
 typedef std::unordered_map<std::string, std::vector<std::string>> map_list_t;
 typedef std::function<bool(sim_t*,const std::string&, const std::string&)> function_t;
+typedef std::function<opts::parse_status(sim_t*,const std::string&, const std::string&)> function_unfilterd_t;
 typedef std::vector<std::string> list_t;
 
 parse_status parse( sim_t*, const std::vector<std::unique_ptr<option_t>>&, const std::string& name, const std::string& value, const parse_status_fn_t& fn = nullptr );

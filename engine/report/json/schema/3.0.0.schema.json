@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://www.simulationcraft.org/reports/3.0.0.schema.json",
+  "title": "Simulationcraft JSON report",
+  "description": "Simulationcraft JSON report",
+  "type": "object"
+}

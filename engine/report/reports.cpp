@@ -14,8 +14,11 @@
 #include "util/xml.hpp"
 
 // report::print_profiles ===================================================
+namespace report
+{
 
-void report::print_profiles(sim_t* sim)
+
+void print_profiles(sim_t* sim)
 {
   int k = 0;
   for (unsigned int i = 0; i < sim->actor_list.size(); i++)
@@ -154,7 +157,7 @@ void report::print_profiles(sim_t* sim)
 
 // report::print_spell_query ================================================
 
-void report::print_spell_query(std::ostream& out, const sim_t& sim, const spell_data_expr_t& sq, unsigned level)
+void print_spell_query(std::ostream& out, const sim_t& sim, const spell_data_expr_t& sq, unsigned level)
 {
   expr_data_e data_type = sq.data_type;
   for (auto i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i)
@@ -184,7 +187,7 @@ void report::print_spell_query(std::ostream& out, const sim_t& sim, const spell_
   }
 }
 
-void report::print_spell_query(xml_node_t* root, FILE* file, const sim_t& sim, const spell_data_expr_t& sq,
+void print_spell_query(xml_node_t* root, FILE* file, const sim_t& sim, const spell_data_expr_t& sq,
   unsigned level)
 {
   expr_data_e data_type = sq.data_type;
@@ -218,7 +221,7 @@ void report::print_spell_query(xml_node_t* root, FILE* file, const sim_t& sim, c
 }
 // report::print_suite ======================================================
 
-void report::print_suite(sim_t* sim)
+void print_suite( sim_t* sim )
 {
   if (!sim->profileset_enabled)
   {
@@ -226,8 +229,8 @@ void report::print_suite(sim_t* sim)
   }
 
   report::print_text(sim, sim->report_details != 0);
-
-  report::print_html(*sim);
   report::print_json(*sim);
+  report::print_html(*sim);
   report::print_profiles(sim);
 }
+}  // namespace report

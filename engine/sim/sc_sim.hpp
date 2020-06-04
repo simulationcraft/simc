@@ -17,7 +17,7 @@
 #include "event_manager.hpp"
 #include "util/util.hpp"
 #include "util/rng.hpp"
-
+#include "report/json/report_configuration.hpp"
 #include <map>
 #include <mutex>
 #include <memory>
@@ -391,6 +391,7 @@ struct sim_t : private sc_thread_t
   std::vector<player_t*> targets_by_name;
   std::vector<std::string> id_dictionary;
   std::map<double, std::vector<double> > divisor_timeline_cache;
+  std::vector<report::json::report_configuration_t> json_reports;
   std::string output_file_str, html_file_str, json_file_str;
   std::string reforge_plot_output_file_str;
   std::vector<std::string> error_list;
@@ -408,7 +409,7 @@ struct sim_t : private sc_thread_t
   int report_raid_summary;
   int buff_uptime_timeline;
   int buff_stack_uptime_timeline;
-  int json_full_states;
+  bool json_full_states;
   int decorated_tooltips;
 
   int allow_potions;

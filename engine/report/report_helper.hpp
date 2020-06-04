@@ -93,5 +93,8 @@ inline std::string pretty_spell_text( const spell_data_t& default_spell, const c
 }
 
 bool check_gear(player_t& p, sim_t& sim);
+
 }  // namespace report
+
+
 #endif  // SC_REPORT_HPP

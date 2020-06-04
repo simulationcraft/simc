@@ -3,8 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "reports.hpp"
+#include "report/reports.hpp"
 #include "interfaces/sc_js.hpp"
+#include "report/json/report_configuration.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "simulationcraft.hpp"
 #include "util/git_info.hpp"
@@ -13,6 +14,7 @@
 #include "rapidjson/filewritestream.h"
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
+#include "rapidjson/writer.h"
 #include "rapidjson/prettywriter.h"
 
 using namespace rapidjson;
@@ -160,7 +162,7 @@ void to_json( JsonOutput root, const buff_t* b )
 void buffs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
-  range::for_each( p.report_information.dynamic_buffs, [ &root]( const buff_t* b ) {
+  range::for_each( p.report_information.dynamic_buffs, [ &]( const buff_t* b ) {
     if ( b -> avg_start.sum() == 0 )
     {
       return;
@@ -172,7 +174,7 @@ void constant_buffs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
   // constant buffs
-  range::for_each( p.report_information.constant_buffs, [ &root]( const buff_t* b ) {
+  range::for_each( p.report_information.constant_buffs, [ &]( const buff_t* b ) {
     if ( b -> avg_start.sum() == 0 )
     {
       return;
@@ -454,13 +456,14 @@ void to_json( JsonOutput root, const player_t& p,
 }
 
 void to_json( JsonOutput root,
+              const ::report::json::report_configuration_t& report_configuration,
               const std::vector<player_collected_data_t::action_sequence_data_t>& asd,
               const std::vector<resource_e>& relevant_resources,
               const sim_t& sim )
 {
   root.make_array();
 
-  range::for_each( asd, [ &root, &relevant_resources, &sim ]( const player_collected_data_t::action_sequence_data_t& entry ) {
+  range::for_each( asd, [ &root, &relevant_resources, &sim, &report_configuration ]( const player_collected_data_t::action_sequence_data_t& entry ) {
     auto json = root.add();
 
     json[ "time" ] = entry.time;
@@ -484,13 +487,13 @@ void to_json( JsonOutput root,
     {
       auto buffs = json[ "buffs" ];
       buffs.make_array();
-      range::for_each( entry.buff_list, [ &buffs, &sim ]( const std::pair< buff_t*, std::vector<double> > data ) {
+      range::for_each( entry.buff_list, [ &buffs, &sim, &report_configuration ]( const std::pair< buff_t*, std::vector<double> > data ) {
         auto entry = buffs.add();
 
         entry[ "id" ] = data.first -> data_reporting().id();
         entry[ "name" ] = data.first -> name();
         entry[ "stacks" ] = data.second[0];
-        if ( sim.json_full_states )
+        if ( report_configuration.full_states )
         {
           entry[ "remains" ] = data.second[1];
         }
@@ -498,7 +501,7 @@ void to_json( JsonOutput root,
     }
 
     // Writing cooldown and debuffs data if asking for json full states
-    if ( sim.json_full_states && !entry.cooldown_list.empty() )
+    if ( report_configuration.full_states && !entry.cooldown_list.empty() )
     {
       auto cooldowns = json[ "cooldowns" ];
       cooldowns.make_array();
@@ -511,7 +514,7 @@ void to_json( JsonOutput root,
       } );
     }
 
-    if ( sim.json_full_states && !entry.target_list.empty() )
+    if ( report_configuration.full_states && !entry.target_list.empty() )
     {
       auto targets = json[ "targets" ];
       targets.make_array();
@@ -540,7 +543,7 @@ void to_json( JsonOutput root,
   } );
 }
 
-void collected_data_to_json( JsonOutput root, const player_t& p )
+void collected_data_to_json( JsonOutput root, const ::report::json::report_configuration_t& report_configuration, const player_t& p )
 {
   const auto& sim = *p.sim;
   const auto& cd = p.collected_data;
@@ -650,12 +653,12 @@ void collected_data_to_json( JsonOutput root, const player_t& p )
 
     if ( ! cd.action_sequence_precombat.empty() )
     {
-      to_json( root[ "action_sequence_precombat" ], cd.action_sequence_precombat, relevant_resources, sim );
+      to_json( root[ "action_sequence_precombat" ], report_configuration, cd.action_sequence_precombat, relevant_resources, sim );
     }
 
     if ( ! cd.action_sequence.empty() )
     {
-      to_json( root[ "action_sequence" ], cd.action_sequence, relevant_resources, sim );
+      to_json( root[ "action_sequence" ], report_configuration, cd.action_sequence, relevant_resources, sim );
     }
   }
 }
@@ -743,7 +746,7 @@ void talents_to_json( JsonOutput root, const player_t& p )
   }
 }
 
-void to_json( JsonOutput& arr, const player_t& p )
+void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& report_configuration, const player_t& p )
 {
   auto root = arr.add(); // Add a fresh object to the players array and use it as root
 
@@ -840,7 +843,7 @@ void to_json( JsonOutput& arr, const player_t& p )
     scale_factors_all_to_json( root[ "scale_factors_all" ], p );
   }
 
-  collected_data_to_json( root[ "collected_data" ], p );
+  collected_data_to_json( root[ "collected_data" ], report_configuration, p );
 
   if ( p.sim -> report_details != 0 )
   {
@@ -912,7 +915,133 @@ void iteration_data_to_json( JsonOutput root, const std::vector<iteration_data_e
   } );
 }
 
-void to_json( JsonOutput root, const sim_t& sim )
+void profileset_json2( const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
+{
+root[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric.front() );
+
+  auto results = root[ "results" ].make_array();
+
+  range::for_each( profileset.profilesets(), [ &results, &sim ]( const profileset::profilesets_t::profileset_entry_t& profileset ) {
+    const auto& result = profileset -> result();
+
+    if ( result.mean() == 0 )
+    {
+      return;
+    }
+
+    auto&& obj = results.add();
+
+    obj[ "name" ] = profileset -> name();
+    obj[ "mean" ] = result.mean();
+    obj[ "min" ] = result.min();
+    obj[ "max" ] = result.max();
+    obj[ "stddev" ] = result.stddev();
+    obj["mean_stddev"] = result.mean_stddev();
+    obj["mean_error"] = result.mean_stddev() * sim.confidence_estimator;
+
+    if ( result.median() != 0 )
+    {
+      obj[ "median" ] = result.median();
+      obj[ "first_quartile" ] = result.first_quartile();
+      obj[ "third_quartile" ] = result.third_quartile();
+    }
+
+    obj[ "iterations" ] = as<uint64_t>( result.iterations() );
+
+    if ( profileset -> results() > 1 )
+    {
+      auto results2 = obj[ "additional_metrics" ].make_array();
+      for ( size_t midx = 1; midx < sim.profileset_metric.size(); ++midx )
+      {
+        auto obj2 = results2.add();
+        const auto& result = profileset -> result( sim.profileset_metric[ midx ] );
+
+        obj2[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
+        obj2[ "mean" ] = result.mean();
+        obj2[ "min" ] = result.min();
+        obj2[ "max" ] = result.max();
+        obj2[ "stddev" ] = result.stddev();
+        obj2[ "mean_stddev" ] = result.mean_stddev();
+        obj2[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
+
+        if ( result.median() != 0 )
+        {
+          obj2[ "median" ] = result.median();
+          obj2[ "first_quartile" ] = result.first_quartile();
+          obj2[ "third_quartile" ] = result.third_quartile();
+        }
+      }
+    }
+
+    // Optional override ouput data
+    if ( ! sim.profileset_output_data.empty() ) {
+      const auto& output_data = profileset -> output_data();
+      // TODO: Create the overrides object only if there is at least one override registered
+      auto ovr = obj[ "overrides" ];
+      profileset::fetch_output_data( output_data, ovr);
+    }
+  } );
+}
+
+void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t& sim, js::JsonOutput& root )
+{
+  auto results = root[ "results" ].make_array();
+
+  range::for_each( profilesets.profilesets(), [ &results, &sim ]( const profileset::profilesets_t::profileset_entry_t& profileset ) {
+    
+    auto&& obj = results.add();
+    obj[ "name" ] = profileset -> name();
+    auto results_obj = obj[ "metrics" ].make_array();
+    
+    for ( size_t midx = 0; midx < sim.profileset_metric.size(); ++midx )
+    {
+      const auto& result = profileset -> result( sim.profileset_metric[ midx ] );
+
+      
+      auto&& obj = results_obj.add();
+
+      obj[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
+      obj[ "mean" ] = result.mean();
+      obj[ "min" ] = result.min();
+      obj[ "max" ] = result.max();
+      obj[ "stddev" ] = result.stddev();
+      obj["mean_stddev"] = result.mean_stddev();
+      obj["mean_error"] = result.mean_stddev() * sim.confidence_estimator;
+
+      if ( result.median() != 0 )
+      {
+        obj[ "median" ] = result.median();
+        obj[ "first_quartile" ] = result.first_quartile();
+        obj[ "third_quartile" ] = result.third_quartile();
+      }
+
+      obj[ "iterations" ] = as<uint64_t>( result.iterations() );
+    }
+    
+    // Optional override ouput data
+    if ( ! sim.profileset_output_data.empty() ) {
+      const auto& output_data = profileset -> output_data();
+      // TODO: Create the overrides object only if there is at least one override registered
+      auto ovr = obj[ "overrides" ];
+      profileset::fetch_output_data( output_data, ovr);
+    }
+  } );
+}
+
+void profileset_json( const ::report::json::report_configuration_t& report_configuration, const profileset::profilesets_t& profileset, const sim_t& sim, js::JsonOutput& root )
+{
+  if (report_configuration.version_intersects(">=3.0.0"))
+  {
+    profileset_json3(profileset, sim, root);
+  }
+  else
+  {
+    profileset_json2(profileset, sim, root);
+  }
+  
+}
+
+void to_json( const ::report::json::report_configuration_t& report_configuration, JsonOutput root, const sim_t& sim )
 {
   // Sim-scope options
   auto options_root = root[ "options" ];
@@ -1005,14 +1134,14 @@ void to_json( JsonOutput root, const sim_t& sim )
   // Players
   JsonOutput players_arr = root[ "players" ].make_array();
 
-  range::for_each( sim.player_no_pet_list.data(), [ &players_arr ]( const player_t* p ) {
-    to_json( players_arr, *p );
+  range::for_each( sim.player_no_pet_list.data(), [ & ]( const player_t* p ) {
+    to_json( players_arr, report_configuration, *p );
   } );
 
   if ( sim.profilesets.n_profilesets() > 0 )
   {
     auto profileset_root = root[ "profilesets" ];
-    sim.profilesets.output_json( sim, profileset_root );
+    profileset_json( report_configuration, sim.profilesets, sim, profileset_root );
   }
 
   auto stats_root = root[ "statistics" ];
@@ -1035,8 +1164,8 @@ void to_json( JsonOutput root, const sim_t& sim )
     // Targets
     JsonOutput targets_arr = root[ "targets" ].make_array();
 
-    range::for_each( sim.target_list.data(), [ &targets_arr ]( const player_t* p ) {
-      to_json( targets_arr, *p );
+    range::for_each( sim.target_list.data(), [ & ]( const player_t* p ) {
+      to_json( targets_arr, report_configuration, *p );
     } );
 
     // Raid events
@@ -1044,7 +1173,7 @@ void to_json( JsonOutput root, const sim_t& sim )
     {
       auto arr = root[ "raid_events" ].make_array();
 
-      range::for_each( sim.raid_events, [ &arr ]( const std::unique_ptr<raid_event_t>& event ) {
+      range::for_each( sim.raid_events, [ & ]( const std::unique_ptr<raid_event_t>& event ) {
         to_json( arr, *event );
       } );
     }
@@ -1052,7 +1181,7 @@ void to_json( JsonOutput root, const sim_t& sim )
     if ( sim.buff_list.size() > 0 )
     {
       JsonOutput buffs_arr = root[ "sim_auras" ].make_array();
-      range::for_each( sim.buff_list, [ &buffs_arr ]( const buff_t* b ) {
+      range::for_each( sim.buff_list, [ & ]( const buff_t* b ) {
         if ( b -> avg_start.mean() == 0 )
         {
           return;
@@ -1073,7 +1202,35 @@ void to_json( JsonOutput root, const sim_t& sim )
   }
 }
 
-void print_json_pretty( FILE* o, const sim_t& sim )
+void normal_print(FileWriteStream& stream, Document& doc, const ::report::json::report_configuration_t& report_configuration  )
+{
+  Writer<FileWriteStream> writer( stream );
+  if (report_configuration.decimal_places > 0)
+  {
+    writer.SetMaxDecimalPlaces(report_configuration.decimal_places);
+  }
+  auto accepted = doc.Accept( writer );
+  if ( !accepted )
+  {
+    throw std::runtime_error("JSON Writer did not accept document.");
+  }
+}
+
+void pretty_print(FileWriteStream& stream, Document& doc, const ::report::json::report_configuration_t& report_configuration  )
+{
+  PrettyWriter<FileWriteStream> writer( stream );
+  if (report_configuration.decimal_places > 0)
+  {
+    writer.SetMaxDecimalPlaces(report_configuration.decimal_places);
+  }
+  auto accepted = doc.Accept( writer );
+  if ( !accepted )
+  {
+    throw std::runtime_error("JSON Writer did not accept document.");
+  }
+}
+
+void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_configuration_t& report_configuration )
 {
   Document doc;
   Value& v = doc;
@@ -1081,7 +1238,12 @@ void print_json_pretty( FILE* o, const sim_t& sim )
 
   JsonOutput root( doc, v );
 
+  if (report_configuration.version_intersects(">=3.0.0"))
+  {
+    root["$id"] = fmt::format("https://www.simulationcraft.org/reports/{}.schema.json", report_configuration.version());
+  }
   root[ "version" ] = SC_VERSION;
+  root[ "report_version" ] = report_configuration.version();
   root[ "ptr_enabled" ] = SC_USE_PTR;
   root[ "beta_enabled" ] = SC_BETA;
   root[ "build_date" ] = __DATE__;
@@ -1097,7 +1259,7 @@ void print_json_pretty( FILE* o, const sim_t& sim )
     root[ "git_branch" ] = git_info::branch();
   }
 
-  to_json( root[ "sim" ], sim );
+  to_json( report_configuration, root[ "sim" ], sim );
 
   if ( sim.error_list.size() > 0 )
   {
@@ -1106,44 +1268,43 @@ void print_json_pretty( FILE* o, const sim_t& sim )
 
   std::array<char, 16384> buffer;
   FileWriteStream b( o, buffer.data(), buffer.size() );
-  PrettyWriter<FileWriteStream> writer( b );
-  auto accepted = doc.Accept( writer );
-  if ( !accepted )
+  if (report_configuration.pretty_print)
   {
-    throw std::runtime_error("JSON Writer did not accept document.");
+    pretty_print(b, doc, report_configuration);
   }
+  else
+  {
+    normal_print(b, doc, report_configuration);
+  }
+  
 }
 
-}  // unnamed namespace
-
-namespace report
+void print_json_report( sim_t& sim, const ::report::json::report_configuration_t& report_configuration)
 {
-void print_json( sim_t& sim )
-{
-  if ( ! sim.json_file_str.empty() )
+  if ( ! report_configuration.destination().empty() )
   {
     // Setup file stream and open file
-    io::cfile s( sim.json_file_str, "w" );
+    io::cfile s( report_configuration.destination(), "w" );
     if ( !s )
     {
       sim.errorf( "Failed to open JSON output file '%s'.",
-                  sim.json_file_str.c_str() );
+                  report_configuration.destination().c_str() );
       return;
     }
 
     // Print JSON report
     try
     {
-      if( sim.json_full_states )
+      if( report_configuration.full_states )
       {
         std::cout << "\nReport will be generated with full state for each action.\n";
       }
-      Timer t( "JSON report", std::cout );
+      Timer t( fmt::format("JSON report version {}", report_configuration.version()), std::cout );
       if ( ! sim.profileset_enabled )
       {
         t.start();
       }
-      print_json_pretty( s, sim );
+      print_json_pretty( s, sim, report_configuration );
     }
     catch ( const std::exception& e )
     {
@@ -1151,5 +1312,16 @@ void print_json( sim_t& sim )
     }
   }
 }
+}  // unnamed namespace
+
+namespace report
+{
+  void print_json( sim_t& sim )
+  {
+    for(const auto& report_configuration : sim.json_reports)
+    {
+      print_json_report(sim, report_configuration);
+    }
+  }
 
 }  // report
