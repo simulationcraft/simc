@@ -1,4 +1,4 @@
-import struct, sys, math, types
+import struct, sys, math, types, logging
 
 import dbc.fmt
 import dbc.db
@@ -85,6 +85,17 @@ class RawDBCRecord:
 
         db = dbc.db.datastore().get(child_db)
         return db.records_for_parent(self._id)
+
+    def child(self, child_db):
+        if not dbc.db.datastore():
+            raise ValueError
+
+        db = dbc.db.datastore().get(child_db)
+        records = db.records_for_parent(self._id)
+        if len(records) > 1:
+            logging.warning('Record "%s"(%d) associated with more than one child in "%s"',
+                            self.dbc_name(), self._id, child_db)
+        return len(records) and records[0] or db.default()
 
     def child_refs(self, child_db):
         if not dbc.db.datastore():
