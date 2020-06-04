@@ -5,12 +5,13 @@
 
 #pragma once
 
-#include <string>
-
 #include "config.hpp"
+
 #include "dbc/data_enums.hh"
 #include "sc_enums.hpp"
 #include "util/string_view.hpp"
+
+#include <string>
 
 class dbc_t;
 struct gem_property_data_t;
