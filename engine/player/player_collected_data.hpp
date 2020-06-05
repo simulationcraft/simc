@@ -120,18 +120,32 @@ struct player_collected_data_t
 
   struct action_sequence_data_t : noncopyable
   {
+    template <typename T>
+    struct record_t {
+      T* object;
+      int value;
+      timespan_t time_value;
+
+      record_t( T* o, int v, timespan_t tv )
+        : object( o ), value( v ), time_value( tv ) {}
+    };
+
     const action_t* action;
     const player_t* target;
     const timespan_t time;
     timespan_t wait_time;
-    std::vector< std::pair< buff_t*, std::vector<double> > > buff_list;
-    std::vector< std::pair< cooldown_t*, std::vector<double> > > cooldown_list;
-    std::vector< std::pair<player_t*, std::vector< std::pair< buff_t*, std::vector<double> > > > > target_list;
+    std::vector< record_t<buff_t> > buff_list;
+    std::vector< record_t<cooldown_t> > cooldown_list;
+    std::vector< std::pair<player_t*, std::vector< record_t<buff_t> > > > target_list;
     std::array<double, RESOURCE_MAX> resource_snapshot;
     std::array<double, RESOURCE_MAX> resource_max_snapshot;
 
-    action_sequence_data_t( timespan_t ts, timespan_t wait, const player_t* p );
-    action_sequence_data_t( const action_t* a, const player_t* t, timespan_t ts, const player_t* p );
+    action_sequence_data_t( const action_t* a, const player_t* t, timespan_t ts, timespan_t wait, const player_t* p );
+
+    action_sequence_data_t( timespan_t ts, timespan_t wait, const player_t* p )
+      : action_sequence_data_t( nullptr, nullptr, ts, wait, p ) {}
+    action_sequence_data_t( const action_t* a, const player_t* t, timespan_t ts, const player_t* p )
+      : action_sequence_data_t( a, t, ts, timespan_t::zero(), p ) {}
   };
   std::vector<action_sequence_data_t> action_sequence;
   std::vector<action_sequence_data_t> action_sequence_precombat;

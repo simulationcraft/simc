@@ -486,15 +486,15 @@ void to_json( JsonOutput root,
     {
       auto buffs = json[ "buffs" ];
       buffs.make_array();
-      range::for_each( entry.buff_list, [ &buffs, &report_configuration ]( const std::pair< buff_t*, std::vector<double> > data ) {
+      range::for_each( entry.buff_list, [ &buffs, &report_configuration ]( const auto& data ) {
         auto entry = buffs.add();
 
-        entry[ "id" ] = data.first -> data_reporting().id();
-        entry[ "name" ] = data.first -> name();
-        entry[ "stacks" ] = data.second[0];
+        entry[ "id" ] = data.object -> data_reporting().id();
+        entry[ "name" ] = data.object -> name();
+        entry[ "stacks" ] = data.value;
         if ( report_configuration.full_states )
         {
-          entry[ "remains" ] = data.second[1];
+          entry[ "remains" ] = data.time_value;
         }
       } );
     }
@@ -504,12 +504,12 @@ void to_json( JsonOutput root,
     {
       auto cooldowns = json[ "cooldowns" ];
       cooldowns.make_array();
-      range::for_each( entry.cooldown_list, [ &cooldowns ]( const std::pair< cooldown_t*, std::vector<double> > data ) {
+      range::for_each( entry.cooldown_list, [ &cooldowns ]( const auto& data ) {
         auto entry = cooldowns.add();
 
-        entry[ "name" ] = data.first -> name();
-        entry[ "stacks" ] = data.second[ 0 ];
-        entry[ "remains" ] = data.second[ 1 ];
+        entry[ "name" ] = data.object -> name();
+        entry[ "stacks" ] = data.value;
+        entry[ "remains" ] = data.time_value;
       } );
     }
 
@@ -517,17 +517,16 @@ void to_json( JsonOutput root,
     {
       auto targets = json[ "targets" ];
       targets.make_array();
-      range::for_each( entry.target_list, [ &targets ]
-          ( const std::pair< player_t*, std::vector< std::pair< buff_t*, std::vector<double> > > > target_data ) {
+      range::for_each( entry.target_list, [ &targets ] ( const auto& target_data ) {
         auto target_entry = targets.add();
         target_entry[ "name" ] = target_data.first -> name();
         auto debuffs = target_entry[ "debuffs" ];
         debuffs.make_array();
-        range::for_each( target_data.second, [ &debuffs ]( const std::pair< buff_t*, std::vector<double> > data ) {
+        range::for_each( target_data.second, [ &debuffs ]( const auto& data ) {
           auto entry = debuffs.add();
-          entry[ "name" ] = data.first -> name();
-          entry[ "stack" ] = data.second[ 0 ];
-          entry[ "remains" ] = data.second[ 1 ];
+          entry[ "name" ] = data.object -> name();
+          entry[ "stack" ] = data.value;
+          entry[ "remains" ] = data.time_value;
         } );
       } );
     }

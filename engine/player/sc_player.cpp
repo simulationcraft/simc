@@ -11336,123 +11336,42 @@ void player_t::do_update_movement( double yards )
 
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t,
-                                                                         timespan_t ts, const player_t* p ) :
+                                                                         timespan_t ts, timespan_t wait,
+                                                                         const player_t* p ) :
   action( a ),
   target( t ),
   time( ts ),
-  wait_time( timespan_t::zero() )
-{
-  for ( size_t i = 0; i < p->buff_list.size(); ++i )
-  {
-    buff_t* b = p->buff_list[ i ];
-    if ( b->check() && !b->quiet && !b->constant )
-    {
-      std::vector<double> buff_args;
-      buff_args.push_back( b->check() );
-      if ( p->sim->json_full_states )
-      {
-        buff_args.push_back( b->remains().total_seconds() );
-      }
-      buff_list.emplace_back( b, buff_args );
-    }
-  }
-
-  // Adding cooldown and debuffs snapshots if asking for json full states
-  if ( p->sim->json_full_states )
-  {
-    for ( size_t i = 0; i < p->cooldown_list.size(); ++i )
-    {
-      cooldown_t* c = p->cooldown_list[ i ];
-      if ( c->down() )
-      {
-        std::vector<double> cooldown_args;
-        cooldown_args.push_back( c->charges );
-        cooldown_args.push_back( c->remains().total_seconds() );
-        cooldown_list.emplace_back( c, cooldown_args );
-      }
-    }
-    for ( player_t* current_target : p->sim->target_list )
-    {
-      std::vector<std::pair<buff_t*, std::vector<double> > > debuff_list;
-      for ( size_t i = 0; i < current_target->buff_list.size(); ++i )
-      {
-        buff_t* d = current_target->buff_list[ i ];
-        if ( d->check() && !d->quiet && !d->constant )
-        {
-          std::vector<double> debuff_args;
-          debuff_args.push_back( d->check() );
-          debuff_args.push_back( d->remains().total_seconds() );
-          debuff_list.emplace_back( d, debuff_args );
-        }
-      }
-      target_list.emplace_back( current_target, debuff_list );
-    }
-  }
-
-  range::fill( resource_snapshot, -1 );
-  range::fill( resource_max_snapshot, -1 );
-
-  for ( resource_e i = RESOURCE_HEALTH; i < RESOURCE_MAX; ++i )
-  {
-    if ( p->resources.max[ i ] > 0.0 )
-    {
-      resource_snapshot[ i ]     = p->resources.current[ i ];
-      resource_max_snapshot[ i ] = p->resources.max[ i ];
-    }
-  }
-}
-
-player_collected_data_t::action_sequence_data_t::action_sequence_data_t( timespan_t ts, timespan_t wait,
-                                                                         const player_t* p ) :
-  action( nullptr ),
-  target( nullptr ),
-  time( ts ),
   wait_time( wait )
 {
-  for ( size_t i = 0; i < p->buff_list.size(); ++i )
+  for ( buff_t* b : p->buff_list )
   {
-    buff_t* b = p->buff_list[ i ];
     if ( b->check() && !b->quiet && !b->constant )
     {
-      std::vector<double> buff_args;
-      buff_args.push_back( b->check() );
-      if ( p->sim->json_full_states )
-      {
-        buff_args.push_back( b->remains().total_seconds() );
-      }
-      buff_list.emplace_back( b, buff_args );
+      buff_list.emplace_back( b, b->check(), b->remains() );
     }
   }
 
   // Adding cooldown and debuffs snapshots if asking for json full states
   if ( p->sim->json_full_states )
   {
-    for ( size_t i = 0; i < p->cooldown_list.size(); ++i )
+    for ( cooldown_t* c : p->cooldown_list )
     {
-      cooldown_t* c = p->cooldown_list[ i ];
       if ( c->down() )
       {
-        std::vector<double> cooldown_args;
-        cooldown_args.push_back( c->charges );
-        cooldown_args.push_back( c->remains().total_seconds() );
-        cooldown_list.emplace_back( c, cooldown_args );
+        cooldown_list.emplace_back( c, c->charges, c->remains() );
       }
     }
     for ( player_t* current_target : p->sim->target_list )
     {
-      std::vector<std::pair<buff_t*, std::vector<double> > > debuff_list;
-      for ( size_t i = 0; i < current_target->buff_list.size(); ++i )
+      decltype(target_list)::value_type::second_type debuff_list;
+      for ( buff_t* d : current_target->buff_list )
       {
-        buff_t* d = current_target->buff_list[ i ];
         if ( d->check() && !d->quiet && !d->constant )
         {
-          std::vector<double> debuff_args;
-          debuff_args.push_back( d->check() );
-          debuff_args.push_back( d->remains().total_seconds() );
-          debuff_list.emplace_back( d, debuff_args );
+          debuff_list.emplace_back( d, d->check(), d->remains() );
         }
       }
-      target_list.emplace_back( current_target, debuff_list );
+      target_list.emplace_back( current_target, std::move( debuff_list ) );
     }
   }
 

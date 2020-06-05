@@ -2187,10 +2187,10 @@ void print_html_sample_sequence_string_entry( report::sc_html_stream& os,
     }
   }
 
-  for ( size_t b = 0; b < data.buff_list.size(); ++b )
+  for ( const auto& b_data : data.buff_list )
   {
-    buff_t* buff = data.buff_list[ b ].first;
-    int stacks   = gsl::narrow_cast<int>( data.buff_list[ b ].second[ 0 ] );
+    buff_t* buff = b_data.object;
+    int stacks   = b_data.value;
 
     if ( !buff->constant )
     {
@@ -2281,10 +2281,10 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
   os << "</td>\n"
      << "<td class=\"left\">";
   first = true;
-  for ( size_t b = 0; b < data.buff_list.size(); ++b )
+  for ( const auto& b_data : data.buff_list )
   {
-    buff_t* buff = data.buff_list[ b ].first;
-    int stacks   = gsl::narrow_cast<int>( data.buff_list[ b ].second[ 0 ] );
+    buff_t* buff = b_data.object;
+    int stacks   = b_data.value;
 
     if ( !buff->constant )
     {
