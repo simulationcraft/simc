@@ -13,7 +13,7 @@
 struct item_armor_quality_data_t
 {
   unsigned ilevel;
-  double   multiplier[7];
+  float    multiplier[7];
 
   static const item_armor_quality_data_t& find( unsigned ilevel, bool ptr )
   { return dbc::find<item_armor_quality_data_t>( ilevel, ptr, &item_armor_quality_data_t::ilevel ); }
@@ -23,18 +23,18 @@ struct item_armor_quality_data_t
 
   static util::span<const item_armor_quality_data_t> data( bool ptr );
 
-  double value( int quality ) const
+  float value( int quality ) const
   {
     return as<unsigned>( quality ) < range::size( multiplier )
       ? multiplier[ as<unsigned>( quality ) ]
-      : 0.0;
+      : 0;
   }
 };
 
 struct item_armor_shield_data_t
 {
   unsigned ilevel;
-  double   values[7];
+  float    values[7];
 
   static const item_armor_shield_data_t& find( unsigned ilevel, bool ptr )
   { return dbc::find<item_armor_shield_data_t>( ilevel, ptr, &item_armor_shield_data_t::ilevel ); }
@@ -44,18 +44,18 @@ struct item_armor_shield_data_t
 
   static util::span<const item_armor_shield_data_t> data( bool ptr );
 
-  double value( int quality ) const
+  float value( int quality ) const
   {
     return as<unsigned>( quality ) < range::size( values )
       ? values[ as<unsigned>( quality ) ]
-      : 0.0;
+      : 0;
   }
 };
 
 struct item_armor_total_data_t
 {
   unsigned ilevel;
-  double   values[7];
+  float    values[7];
 
   static const item_armor_total_data_t& find( unsigned ilevel, bool ptr )
   { return dbc::find<item_armor_total_data_t>( ilevel, ptr, &item_armor_total_data_t::ilevel ); }
@@ -65,18 +65,18 @@ struct item_armor_total_data_t
 
   static util::span<const item_armor_total_data_t> data( bool ptr );
 
-  double value( int subclass ) const
+  float value( int subclass ) const
   {
     return as<unsigned>( subclass ) < range::size( values )
       ? values[ as<unsigned>( subclass ) ]
-      : 0.0;
+      : 0;
   }
 };
 
 struct item_armor_location_data_t
 {
   unsigned inv_type;
-  double   multiplier[4];
+  float    multiplier[4];
 
   static const item_armor_location_data_t& find( unsigned inv_type, bool ptr )
   { return dbc::find<item_armor_location_data_t>( inv_type, ptr, &item_armor_location_data_t::inv_type ); }
@@ -86,11 +86,11 @@ struct item_armor_location_data_t
 
   static util::span<const item_armor_location_data_t> data( bool ptr );
 
-  double value( int subclass ) const
+  float value( int subclass ) const
   {
     return as<unsigned>( subclass ) < range::size( multiplier )
       ? multiplier[ as<unsigned>( subclass ) ]
-      : 0.0;
+      : 0;
   }
 };
 

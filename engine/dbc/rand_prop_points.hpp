@@ -14,9 +14,9 @@ struct random_prop_data_t
   unsigned ilevel;
   unsigned damage_replace_stat;
   unsigned damage_secondary;
-  double   p_epic[5];
-  double   p_rare[5];
-  double   p_uncommon[5];
+  float    p_epic[5];
+  float    p_rare[5];
+  float    p_uncommon[5];
 
   static const random_prop_data_t& find( unsigned ilevel, bool ptr )
   { return dbc::find<random_prop_data_t>( ilevel, ptr, &random_prop_data_t::ilevel ); }

@@ -13,10 +13,10 @@ struct curve_point_t
 {
   unsigned curve_id;
   unsigned index;
-  double   primary1;
-  double   primary2;
-  double   secondary1;
-  double   secondary2;
+  float    primary1;
+  float    primary2;
+  float    secondary1;
+  float    secondary2;
 
   static util::span<const curve_point_t> find( unsigned id, bool ptr );
 
