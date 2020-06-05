@@ -458,12 +458,11 @@ void to_json( JsonOutput root, const player_t& p,
 void to_json( JsonOutput root,
               const ::report::json::report_configuration_t& report_configuration,
               const std::vector<player_collected_data_t::action_sequence_data_t>& asd,
-              const std::vector<resource_e>& relevant_resources,
-              const sim_t& sim )
+              const std::vector<resource_e>& relevant_resources )
 {
   root.make_array();
 
-  range::for_each( asd, [ &root, &relevant_resources, &sim, &report_configuration ]( const player_collected_data_t::action_sequence_data_t& entry ) {
+  range::for_each( asd, [ &root, &relevant_resources, &report_configuration ]( const player_collected_data_t::action_sequence_data_t& entry ) {
     auto json = root.add();
 
     json[ "time" ] = entry.time;
@@ -487,7 +486,7 @@ void to_json( JsonOutput root,
     {
       auto buffs = json[ "buffs" ];
       buffs.make_array();
-      range::for_each( entry.buff_list, [ &buffs, &sim, &report_configuration ]( const std::pair< buff_t*, std::vector<double> > data ) {
+      range::for_each( entry.buff_list, [ &buffs, &report_configuration ]( const std::pair< buff_t*, std::vector<double> > data ) {
         auto entry = buffs.add();
 
         entry[ "id" ] = data.first -> data_reporting().id();
@@ -653,12 +652,12 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
 
     if ( ! cd.action_sequence_precombat.empty() )
     {
-      to_json( root[ "action_sequence_precombat" ], report_configuration, cd.action_sequence_precombat, relevant_resources, sim );
+      to_json( root[ "action_sequence_precombat" ], report_configuration, cd.action_sequence_precombat, relevant_resources );
     }
 
     if ( ! cd.action_sequence.empty() )
     {
-      to_json( root[ "action_sequence" ], report_configuration, cd.action_sequence, relevant_resources, sim );
+      to_json( root[ "action_sequence" ], report_configuration, cd.action_sequence, relevant_resources );
     }
   }
 }
