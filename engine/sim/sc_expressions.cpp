@@ -690,8 +690,8 @@ public:
         }
       };
       return std::make_unique<left_reduced_t>(
-          std::string( name() ) + "_left_reduced('" + left->name() + "')", op_,
-          left_value, std::move(right) );
+          fmt::format( "{}_left_reduced('{}')", name(), left->name() ),
+          op_, left_value, std::move(right) );
     }
     if ( right_constant )
     {
@@ -712,7 +712,7 @@ public:
         }
       };
       return std::make_unique<right_reduced_t>(
-          std::string( name() ) + "_right_reduced('" + right->name() + "')",
+          fmt::format( "{}_right_reduced('{}')", name(), left->name() ),
           op_, std::move(left), right_value );
     }
     return select_binary( name(), op_, std::move(left), std::move(right) );
