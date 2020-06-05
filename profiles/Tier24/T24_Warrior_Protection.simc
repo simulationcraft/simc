@@ -35,7 +35,6 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/intercept,if=time=0
-actions+=/use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -47,18 +46,19 @@ actions+=/potion,if=buff.avatar.up|target.time_to_die<25
 # use Ignore Pain to avoid rage capping
 actions+=/ignore_pain,if=rage.deficit<25+20*talent.booming_voice.enabled*cooldown.demoralizing_shout.ready
 actions+=/worldvein_resonance,if=cooldown.avatar.remains<=2
-actions+=/ripple_in_space
-actions+=/memory_of_lucid_dreams
+actions+=/memory_of_lucid_dreams,if=cooldown.avatar.remains<=gcd
 actions+=/concentrated_flame,if=buff.avatar.down&!dot.concentrated_flame_burn.remains>0|essence.the_crucible_of_flame.rank<3
-actions+=/last_stand,if=cooldown.anima_of_death.remains<=2
+actions+=/last_stand,if=essence.anima_of_life_and_death.major
+actions+=/heart_essence,if=!(essence.the_crucible_of_flame.major|essence.worldvein_resonance.major|essence.anima_of_life_and_death.major|essence.memory_of_lucid_dreams.major)
+actions+=/use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up
 actions+=/avatar
 actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3
 actions+=/call_action_list,name=st
 
 actions.aoe=thunder_clap
-actions.aoe+=/memory_of_lucid_dreams,if=buff.avatar.down
 actions.aoe+=/demoralizing_shout,if=talent.booming_voice.enabled
-actions.aoe+=/anima_of_death,if=buff.last_stand.up
+actions.aoe+=/shield_block,if=cooldown.shield_slam.ready&buff.shield_block.down&buff.memory_of_lucid_dreams.up
+actions.aoe+=/shield_slam,if=buff.memory_of_lucid_dreams.up
 actions.aoe+=/dragon_roar
 actions.aoe+=/revenge
 actions.aoe+=/use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.thunder_clap.remains>=4
@@ -68,11 +68,9 @@ actions.aoe+=/shield_slam
 
 actions.st=thunder_clap,if=spell_targets.thunder_clap=2&talent.unstoppable_force.enabled&buff.avatar.up
 actions.st+=/shield_block,if=cooldown.shield_slam.ready&buff.shield_block.down
-actions.st+=/shield_slam,if=buff.shield_block.up
+actions.st+=/shield_slam
 actions.st+=/thunder_clap,if=(talent.unstoppable_force.enabled&buff.avatar.up)
 actions.st+=/demoralizing_shout,if=talent.booming_voice.enabled
-actions.st+=/anima_of_death,if=buff.last_stand.up
-actions.st+=/shield_slam
 actions.st+=/use_item,name=ashvanes_razor_coral,target_if=debuff.razor_coral_debuff.stack=0
 actions.st+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.stack>7&(cooldown.avatar.remains<5|buff.avatar.up)
 actions.st+=/dragon_roar

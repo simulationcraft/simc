@@ -80,6 +80,7 @@ actions.cd_sef+=/worldvein_resonance,if=cooldown.touch_of_death.remains>58|coold
 # Use Arcane Torrent if you are missing at least 1 Chi and won't cap energy within 0.5 seconds
 actions.cd_sef+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
 actions.cd_sef+=/use_item,name=lustrous_golden_plumage,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<25
+actions.cd_sef+=/use_item,name=gladiators_medallion,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<20
 actions.cd_sef+=/touch_of_death,if=!variable.hold_tod&(!equipped.cyclotronic_blast|cooldown.cyclotronic_blast.remains<=1)&(chi>1|energy<40)
 actions.cd_sef+=/storm_earth_and_fire,,if=cooldown.storm_earth_and_fire.charges=2|dot.touch_of_death.remains|target.time_to_die<20|(buff.worldvein_resonance.remains>10|cooldown.worldvein_resonance.remains>cooldown.storm_earth_and_fire.full_recharge_time|!essence.worldvein_resonance.major)&(cooldown.touch_of_death.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_tod&!equipped.dribbling_inkpod)&cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=13
 actions.cd_sef+=/blood_of_the_enemy,if=cooldown.touch_of_death.remains>45|variable.hold_tod&cooldown.fists_of_fury.remains<2|target.time_to_die<12|target.time_to_die>100&target.time_to_die<110&(cooldown.fists_of_fury.remains<3|cooldown.whirling_dragon_punch.remains<5|cooldown.rising_sun_kick.remains<5)
@@ -91,7 +92,13 @@ actions.cd_sef+=/lights_judgment
 actions.cd_sef+=/fireblood,if=cooldown.touch_of_death.remains>30|variable.hold_tod|target.time_to_die<10
 actions.cd_sef+=/ancestral_call,if=cooldown.touch_of_death.remains>30|variable.hold_tod|target.time_to_die<20
 actions.cd_sef+=/bag_of_tricks
-actions.cd_sef+=/use_item,name=lustrous_golden_plumage
+actions.cd_sef+=/use_item,name=pocketsized_computation_device,,if=cooldown.touch_of_death.remains>30|!variable.hold_tod
+actions.cd_sef+=/use_item,name=remote_guidance_device,if=cooldown.touch_of_death.remains>30|!variable.hold_tod
+actions.cd_sef+=/use_item,name=gladiators_badge,if=cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<20
+actions.cd_sef+=/use_item,name=galecallers_boon,if=cooldown.touch_of_death.remains>55|variable.hold_tod|target.time_to_die<12
+actions.cd_sef+=/use_item,name=writhing_segment_of_drestagath,if=cooldown.touch_of_death.remains>20|!variable.hold_tod
+actions.cd_sef+=/use_item,name=ashvanes_razor_coral,if=variable.tod_on_use_trinket&(cooldown.touch_of_death.remains>21|variable.hold_tod)&(debuff.razor_coral_debuff.down|buff.storm_earth_and_fire.remains>13|target.time_to_die-cooldown.touch_of_death.remains<40&cooldown.touch_of_death.remains<25|target.time_to_die<25)
+actions.cd_sef+=/use_item,name=ashvanes_razor_coral,if=!variable.tod_on_use_trinket&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(dot.touch_of_death.remains|cooldown.touch_of_death.remains+9>target.time_to_die)&buff.storm_earth_and_fire.up|target.time_to_die<25)
 actions.cd_sef+=/the_unbound_force
 actions.cd_sef+=/purifying_blast
 actions.cd_sef+=/reaping_flames
@@ -102,6 +109,7 @@ actions.cd_sef+=/bag_of_tricks
 
 # Cooldowns
 actions.cd_serenity=invoke_xuen_the_white_tiger,if=buff.serenity.down|target.time_to_die<25
+actions.cd_serenity+=/use_item,name=azsharas_font_of_power,if=buff.serenity.down&(cooldown.serenity.remains<20|target.time_to_die<40)
 actions.cd_serenity+=/guardian_of_azeroth,if=buff.serenity.down&(target.time_to_die>185|cooldown.serenity.remains<=7)|target.time_to_die<35
 actions.cd_serenity+=/blood_fury,if=cooldown.serenity.remains>20|target.time_to_die<20
 actions.cd_serenity+=/berserking,if=cooldown.serenity.remains>20|target.time_to_die<15
@@ -112,9 +120,15 @@ actions.cd_serenity+=/fireblood,if=cooldown.serenity.remains>20|target.time_to_d
 actions.cd_serenity+=/ancestral_call,if=cooldown.serenity.remains>20|target.time_to_die<20
 actions.cd_serenity+=/bag_of_tricks
 actions.cd_serenity+=/use_item,name=lustrous_golden_plumage,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<25
+actions.cd_serenity+=/use_item,name=gladiators_medallion,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<20
 actions.cd_serenity+=/touch_of_death,if=!variable.hold_tod
+actions.cd_serenity+=/use_item,name=pocketsized_computation_device,if=buff.serenity.down&(cooldown.touch_of_death.remains>10|!variable.hold_tod)|target.time_to_die<5
 actions.cd_serenity+=/blood_of_the_enemy,if=buff.serenity.down&(cooldown.serenity.remains>20|cooldown.serenity.remains<2)|target.time_to_die<15
-actions.cd_serenity+=/use_item,name=lustrous_golden_plumage
+actions.cd_serenity+=/use_item,name=remote_guidance_device,if=cooldown.touch_of_death.remains>10|!variable.hold_tod
+actions.cd_serenity+=/use_item,name=gladiators_badge,if=cooldown.serenity.remains>20|target.time_to_die<20
+actions.cd_serenity+=/use_item,name=galecallers_boon,if=cooldown.serenity.remains>20|target.time_to_die<20
+actions.cd_serenity+=/use_item,name=writhing_segment_of_drestagath,if=cooldown.touch_of_death.remains>10|!variable.hold_tod
+actions.cd_serenity+=/use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.serenity.remains>9|target.time_to_die<25
 actions.cd_serenity+=/worldvein_resonance,if=buff.serenity.down&(cooldown.serenity.remains>15|cooldown.serenity.remains<2)|target.time_to_die<20
 actions.cd_serenity+=/concentrated_flame,if=buff.serenity.down&(cooldown.serenity.remains|cooldown.concentrated_flame.charges=2)&!dot.concentrated_flame_burn.remains&(cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains|target.time_to_die<8)
 actions.cd_serenity+=/serenity
