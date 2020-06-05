@@ -98,7 +98,7 @@ public:
   {
   }
 
-  virtual const char* name() const
+  const char* name() const
   {
 #if !defined( NDEBUG )
     return name_.c_str();
