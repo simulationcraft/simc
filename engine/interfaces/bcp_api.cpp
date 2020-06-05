@@ -188,8 +188,7 @@ void authorize( sim_t*, const std::string& )
 
 // Check for errors and return the (HTTP) return code from the status message, if applicable. Return
 // value of 0 indicates error.
-int check_for_error( sim_t*                     sim,
-                     const rapidjson::Document& d,
+int check_for_error( const rapidjson::Document& d,
                      std::vector<int>           allowed_codes = {} )
 {
   auto ret_code = 200;
@@ -330,7 +329,7 @@ void download_item( sim_t* sim,
 
   download( sim, d, region, url, caching );
 
-  check_for_error( sim, d );
+  check_for_error( d );
 }
 
 
@@ -672,7 +671,7 @@ player_t* parse_player( sim_t*            sim,
     }
   }
 
-  if ( !allow_failures && !check_for_error( sim, profile ) )
+  if ( !allow_failures && !check_for_error( profile ) )
   {
     throw std::runtime_error(fmt::format("Unable to download JSON from '{}'.",
         player.url ));
@@ -680,7 +679,7 @@ player_t* parse_player( sim_t*            sim,
   // 200, 403, 404 results are OK, anything else not OK
   else if ( allow_failures )
   {
-    auto ret_code = check_for_error( sim, profile, {403, 404} );
+    auto ret_code = check_for_error( profile, {403, 404} );
     if ( !ret_code )
     {
       throw std::runtime_error(fmt::format("Unable to download JSON from '{}'.",
@@ -1222,7 +1221,7 @@ bool bcp_api::download_guild( sim_t* sim,
 
   download_roster( js, sim, region, normalized_server, normalized_name, caching );
 
-  if ( !check_for_error( sim, js ) )
+  if ( !check_for_error( js ) )
   {
     return false;
   }
