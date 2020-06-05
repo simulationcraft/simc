@@ -13,7 +13,7 @@
 struct item_damage_one_hand_data_t
 {
   unsigned ilevel;
-  double   dps[7];
+  float    dps[7];
 
   static const item_damage_one_hand_data_t& find( unsigned ilevel, bool ptr )
   { return dbc::find<item_damage_one_hand_data_t>( ilevel, ptr, &item_damage_one_hand_data_t::ilevel ); }
@@ -23,18 +23,18 @@ struct item_damage_one_hand_data_t
 
   static util::span<const item_damage_one_hand_data_t> data( bool ptr );
 
-  double value( int quality ) const
+  float value( int quality ) const
   {
     return as<unsigned>( quality ) < range::size( dps )
       ? dps[ as<unsigned>( quality ) ]
-      : 0.0;
+      : 0;
   }
 };
 
 struct item_damage_one_hand_caster_data_t
 {
   unsigned ilevel;
-  double   dps[7];
+  float    dps[7];
 
   static const item_damage_one_hand_caster_data_t& find( unsigned ilevel, bool ptr )
   { return dbc::find<item_damage_one_hand_caster_data_t>( ilevel, ptr, &item_damage_one_hand_caster_data_t::ilevel ); }
@@ -44,18 +44,18 @@ struct item_damage_one_hand_caster_data_t
 
   static util::span<const item_damage_one_hand_caster_data_t> data( bool ptr );
 
-  double value( int quality ) const
+  float value( int quality ) const
   {
     return as<unsigned>( quality ) < range::size( dps )
       ? dps[ as<unsigned>( quality ) ]
-      : 0.0;
+      : 0;
   }
 };
 
 struct item_damage_two_hand_data_t
 {
   unsigned ilevel;
-  double   dps[7];
+  float    dps[7];
 
   static const item_damage_two_hand_data_t& find( unsigned ilevel, bool ptr )
   { return dbc::find<item_damage_two_hand_data_t>( ilevel, ptr, &item_damage_two_hand_data_t::ilevel ); }
@@ -65,18 +65,18 @@ struct item_damage_two_hand_data_t
 
   static util::span<const item_damage_two_hand_data_t> data( bool ptr );
 
-  double value( int quality ) const
+  float value( int quality ) const
   {
     return as<unsigned>( quality ) < range::size( dps )
       ? dps[ as<unsigned>( quality ) ]
-      : 0.0;
+      : 0;
   }
 };
 
 struct item_damage_two_hand_caster_data_t
 {
   unsigned ilevel;
-  double   dps[7];
+  float    dps[7];
 
   static const item_damage_two_hand_caster_data_t& find( unsigned ilevel, bool ptr )
   { return dbc::find<item_damage_two_hand_caster_data_t>( ilevel, ptr, &item_damage_two_hand_caster_data_t::ilevel ); }
@@ -86,11 +86,11 @@ struct item_damage_two_hand_caster_data_t
 
   static util::span<const item_damage_two_hand_caster_data_t> data( bool ptr );
 
-  double value( int quality ) const
+  float value( int quality ) const
   {
     return as<unsigned>( quality ) < range::size( dps )
       ? dps[ as<unsigned>( quality ) ]
-      : 0.0;
+      : 0;
   }
 };
 
