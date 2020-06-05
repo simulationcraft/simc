@@ -5081,7 +5081,7 @@ void warrior_t::default_apl_dps_precombat()
   if ( specialization() == WARRIOR_FURY )
   {
     precombat->add_action( this, "Recklessness" );
-    
+   
     precombat->add_action( this, "potion" );
     
     precombat->add_action( this, "memory_of_lucid_dreams" );
@@ -5089,7 +5089,7 @@ void warrior_t::default_apl_dps_precombat()
     precombat->add_action( this, "guardian_of_azeroth" );
   }
   
-  if ( specialization() == WARRIOR_FURY )
+  if ( specialization() == WARRIOR_ARMS )
   {
     precombat->add_action( this, "memory_of_lucid_dreams", "if=talent.fervor_of_battle.enabled|!talent.fervor_of_battle.enabled&target.time_to_die>150" );
     
@@ -5292,11 +5292,10 @@ void warrior_t::apl_arms()
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
                                 ",if=!debuff.razor_coral_debuff.up|((target.health.pct<20.1|talent.massacre.enabled&target.health.pct<35.1)&"
-                                "(buff.memory_of_lucid_dreams.up&(cooldown.memory_of_lucid_dreams.remains<106|cooldown.memory_of_lucid_dreams.remains<117&"
-                                "target.time_to_die<20&!talent.massacre.enabled)|buff.guardian_of_azeroth.up&debuff.colossus_smash.up))|"
-                                "essence.condensed_lifeforce.major&target.health.pct<20|(target.health.pct<30.1&debuff.conductive_ink_debuff.up&"
-                                "!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major)|(!debuff.conductive_ink_debuff.up&"
-                                "!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major&debuff.colossus_smash.up)
+                                "(buff.memory_of_lucid_dreams.up&(cooldown.memory_of_lucid_dreams.remains<106|cooldown.memory_of_lucid_dreams.remains<117&target.time_to_die<20&!talent.massacre.enabled)|"
+                                "buff.guardian_of_azeroth.up&debuff.colossus_smash.up))|essence.condensed_lifeforce.major&target.health.pct<20|"
+                                "(target.health.pct<30.1&debuff.conductive_ink_debuff.up&!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major)|"
+                                "(!debuff.conductive_ink_debuff.up&!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major&debuff.colossus_smash.up)"
     }
     else if ( items[ i ].name_str == "azsharas_font_of_power" )
     {
