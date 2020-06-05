@@ -5091,16 +5091,16 @@ void warrior_t::default_apl_dps_precombat()
   
   if ( specialization() == WARRIOR_FURY )
   {
-    precombat->add_action( this, "memory_of_lucid_dreams,if=talent.fervor_of_battle.enabled|!talent.fervor_of_battle.enabled&target.time_to_die>150" );
+    precombat->add_action( this, "memory_of_lucid_dreams", "if=talent.fervor_of_battle.enabled|!talent.fervor_of_battle.enabled&target.time_to_die>150" );
     
-    precombat->add_action( this, "guardian_of_azeroth,if=talent.fervor_of_battle.enabled|talent.massacre.enabled&target.time_to_die>210|"
+    precombat->add_action( this, "guardian_of_azeroth", "if=talent.fervor_of_battle.enabled|talent.massacre.enabled&target.time_to_die>210|"
                                  "talent.rend.enabled&(target.time_to_die>210|target.time_to_die<145" );
     
-    precombat->add_action( this, "potion,name=potion_of_unbridled_fury,if=essence.condensed_lifeforce.major" );
+    precombat->add_action( this, "potion,name=potion_of_unbridled_fury", "if=essence.condensed_lifeforce.major" );
     
-    precombat->add_action( this, "potion,name=potion_of_focused_resolve,if=essence.memory_of_lucid_dreams.major" );
+    precombat->add_action( this, "potion,name=potion_of_focused_resolve", "if=essence.memory_of_lucid_dreams.major" );
     
-    precombat->add_action( this, "potion,if=!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major" );
+    precombat->add_action( this, "potion", "if=!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major" );
   }
 
 }
