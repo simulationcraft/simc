@@ -651,39 +651,40 @@ void item_t::parse_options()
     option_name_str = options_str.substr( 0, cut_pt );
   }
 
-  std::vector<std::unique_ptr<option_t>> options;
-  options.push_back(opt_uint("id", parsed.data.id));
-  options.push_back(opt_obsoleted("upgrade"));
-  options.push_back(opt_string("stats", option_stats_str));
-  options.push_back(opt_string("gems", option_gems_str));
-  options.push_back(opt_string("enchant", option_enchant_str));
-  options.push_back(opt_string("addon", option_addon_str));
-  options.push_back(opt_string("equip", option_equip_str));
-  options.push_back(opt_string("use", option_use_str));
-  options.push_back(opt_string("weapon", option_weapon_str));
-  options.push_back(opt_string("warforged", option_warforged_str));
-  options.push_back(opt_string("lfr", option_lfr_str));
-  options.push_back(opt_string("heroic", option_heroic_str));
-  options.push_back(opt_string("mythic", option_mythic_str));
-  options.push_back(opt_string("type", option_armor_type_str));
-  options.push_back(opt_string("reforge", DUMMY_REFORGE));
-  options.push_back(opt_deprecated("suffix", "bonus_id"));
-  options.push_back(opt_string("ilevel", option_ilevel_str));
-  options.push_back(opt_string("quality", option_quality_str));
-  options.push_back(opt_string("source", option_data_source_str));
-  options.push_back(opt_string("gem_id", option_gem_id_str));
-  options.push_back(opt_string("gem_bonus_id", option_gem_bonus_id_str));
-  options.push_back(opt_string("gem_ilevel", option_gem_ilevel_str));
-  options.push_back(opt_string("enchant_id", option_enchant_id_str));
-  options.push_back(opt_string("addon_id", option_addon_id_str));
-  options.push_back(opt_string("bonus_id", option_bonus_id_str));
-  options.push_back(opt_string("initial_cd", option_initial_cd_str));
-  options.push_back(opt_string("drop_level", option_drop_level_str));
-  options.push_back(opt_string("relic_id", option_gem_bonus_id_str));
-  options.push_back(opt_string("relic_ilevel", option_gem_ilevel_str));
-  options.push_back(opt_string("azerite_powers", option_azerite_powers_str));
-  options.push_back(opt_string("azerite_level", option_azerite_level_str));
-  options.push_back(opt_string("context", DUMMY_CONTEXT));
+  std::array<std::unique_ptr<option_t>, 32> options { {
+    opt_uint("id", parsed.data.id),
+    opt_obsoleted("upgrade"),
+    opt_string("stats", option_stats_str),
+    opt_string("gems", option_gems_str),
+    opt_string("enchant", option_enchant_str),
+    opt_string("addon", option_addon_str),
+    opt_string("equip", option_equip_str),
+    opt_string("use", option_use_str),
+    opt_string("weapon", option_weapon_str),
+    opt_string("warforged", option_warforged_str),
+    opt_string("lfr", option_lfr_str),
+    opt_string("heroic", option_heroic_str),
+    opt_string("mythic", option_mythic_str),
+    opt_string("type", option_armor_type_str),
+    opt_string("reforge", DUMMY_REFORGE),
+    opt_deprecated("suffix", "bonus_id"),
+    opt_string("ilevel", option_ilevel_str),
+    opt_string("quality", option_quality_str),
+    opt_string("source", option_data_source_str),
+    opt_string("gem_id", option_gem_id_str),
+    opt_string("gem_bonus_id", option_gem_bonus_id_str),
+    opt_string("gem_ilevel", option_gem_ilevel_str),
+    opt_string("enchant_id", option_enchant_id_str),
+    opt_string("addon_id", option_addon_id_str),
+    opt_string("bonus_id", option_bonus_id_str),
+    opt_string("initial_cd", option_initial_cd_str),
+    opt_string("drop_level", option_drop_level_str),
+    opt_string("relic_id", option_gem_bonus_id_str),
+    opt_string("relic_ilevel", option_gem_ilevel_str),
+    opt_string("azerite_powers", option_azerite_powers_str),
+    opt_string("azerite_level", option_azerite_level_str),
+    opt_string("context", DUMMY_CONTEXT),
+  } };
 
   try
   {
