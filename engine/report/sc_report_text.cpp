@@ -772,7 +772,7 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
       sim->simulation_length.sum(), sim->elapsed_cpu,
       sim->elapsed_time,
       sim->init_time,
-      sim->merge_time,
+      chrono::to_fp_seconds(sim->merge_time),
       sim->analyze_time,
       sim->iterations * sim->simulation_length.mean() / sim->elapsed_cpu,
       fmt::localtime(cur_time), cur_time );

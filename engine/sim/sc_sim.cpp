@@ -1540,7 +1540,7 @@ sim_t::sim_t() :
   iteration_dmg( 0 ), priority_iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), total_absorb(), raid_aps(),
   simulation_length( "Simulation Length", false ),
-  merge_time( 0 ), init_time( 0 ), analyze_time( 0 ),
+  merge_time(), init_time( 0 ), analyze_time( 0 ),
   report_iteration_data( 0.025 ), min_report_iteration_data( -1 ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 0.5 ) ),
@@ -3049,7 +3049,7 @@ void sim_t::merge( sim_t& other_sim )
   spawner::merge( *this, other_sim );
 
   range::append( iteration_data, other_sim.iteration_data );
-  merge_time += chrono::elapsed_fp_seconds( start_time );
+  merge_time += chrono::wall_clock::now() - start_time;
   init_time += other_sim.init_time;
 }
 
