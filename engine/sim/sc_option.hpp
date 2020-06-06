@@ -16,6 +16,7 @@
 
 #include "sc_timespan.hpp"
 #include "util/string_view.hpp"
+#include "util/span.hpp"
 
 struct sim_t;
 
@@ -60,12 +61,11 @@ typedef std::function<parse_status(parse_status, const std::string&, const std::
 typedef std::unordered_map<std::string, std::string> map_t;
 typedef std::unordered_map<std::string, std::vector<std::string>> map_list_t;
 typedef std::function<bool(sim_t*,const std::string&, const std::string&)> function_t;
-typedef std::function<opts::parse_status(sim_t*,const std::string&, const std::string&)> function_unfilterd_t;
 typedef std::vector<std::string> list_t;
 
-parse_status parse( sim_t*, const std::vector<std::unique_ptr<option_t>>&, const std::string& name, const std::string& value, const parse_status_fn_t& fn = nullptr );
-void parse( sim_t*, const std::string& context, const std::vector<std::unique_ptr<option_t>>&, util::string_view options_str, const parse_status_fn_t& fn = nullptr );
-void parse( sim_t*, const std::string& context, const std::vector<std::unique_ptr<option_t>>&, const std::vector<std::string>& strings, const parse_status_fn_t& fn = nullptr );
+parse_status parse( sim_t*, util::span<const std::unique_ptr<option_t>>, const std::string& name, const std::string& value, const parse_status_fn_t& fn = nullptr );
+void parse( sim_t*, const std::string& context, util::span<const std::unique_ptr<option_t>>, util::string_view options_str, const parse_status_fn_t& fn = nullptr );
+void parse( sim_t*, const std::string& context, util::span<const std::unique_ptr<option_t>>, util::span<const std::string> strings, const parse_status_fn_t& fn = nullptr );
 }
 inline std::ostream& operator<<( std::ostream& stream, const std::unique_ptr<option_t>& opt )
 { return opt -> print( stream ); }
@@ -110,5 +110,5 @@ struct option_db_t : public std::vector<option_tuple_t>
   void parse_token( const std::string& token );
   void parse_line( const std::string& line );
   void parse_text( const std::string& text );
-  void parse_args( const std::vector<std::string>& args );
+  void parse_args( util::span<const std::string> args );
 };

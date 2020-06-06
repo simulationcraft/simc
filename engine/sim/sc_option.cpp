@@ -26,7 +26,7 @@ bool is_white_space( char c )
   return ( c == ' ' || c == '\t' || c == '\n' || c == '\r' );
 }
 
-void open_file( io::ifstream& f, const std::vector<std::string>& splits, const std::string& name, std::string& actual_name )
+void open_file( io::ifstream& f, util::span<const std::string> splits, const std::string& name, std::string& actual_name )
 {
   for ( auto& split : splits )
   {
@@ -577,11 +577,11 @@ opts::parse_status option_t::parse( sim_t* sim , const std::string& n, const std
 
 // option_t::parse ==========================================================
 
-opts::parse_status opts::parse( sim_t*                                        sim,
-                                const std::vector<std::unique_ptr<option_t>>& options,
-                                const std::string&                            name,
-                                const std::string&                            value,
-                                const parse_status_fn_t&                      status_fn )
+opts::parse_status opts::parse( sim_t*                                      sim,
+                                util::span<const std::unique_ptr<option_t>> options,
+                                const std::string&                          name,
+                                const std::string&                          value,
+                                const parse_status_fn_t&                    status_fn )
 {
   for ( auto& option : options )
   {
@@ -607,11 +607,11 @@ opts::parse_status opts::parse( sim_t*                                        si
 
 // option_t::parse ==========================================================
 
-void opts::parse( sim_t*                                        sim,
-                  const std::string&                            /* context */,
-                  const std::vector<std::unique_ptr<option_t>>& options,
-                  const std::vector<std::string>&               splits,
-                  const parse_status_fn_t&                      status_fn )
+void opts::parse( sim_t*                                      sim,
+                  const std::string&                          /* context */,
+                  util::span<const std::unique_ptr<option_t>> options,
+                  util::span<const std::string>               splits,
+                  const parse_status_fn_t&                    status_fn )
 {
   for ( auto& s : splits )
   {
@@ -636,11 +636,11 @@ void opts::parse( sim_t*                                        sim,
 
 // option_t::parse ==========================================================
 
-void opts::parse( sim_t*                                        sim,
-                  const std::string&                            context,
-                  const std::vector<std::unique_ptr<option_t>>& options,
-                  util::string_view                            options_str,
-                  const parse_status_fn_t&                      status_fn )
+void opts::parse( sim_t*                                      sim,
+                  const std::string&                          context,
+                  util::span<const std::unique_ptr<option_t>> options,
+                  util::string_view                           options_str,
+                  const parse_status_fn_t&                    status_fn )
 {
   opts::parse( sim, context, options, util::string_split( options_str, "," ), status_fn );
 }
@@ -826,7 +826,7 @@ void option_db_t::parse_token( const std::string& token )
 
 // option_db_t::parse_args ==================================================
 
-void option_db_t::parse_args( const std::vector<std::string>& args )
+void option_db_t::parse_args( util::span<const std::string> args )
 {
   for ( auto& arg : args )
   {
