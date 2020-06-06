@@ -5080,28 +5080,27 @@ void warrior_t::default_apl_dps_precombat()
 
   if ( specialization() == WARRIOR_FURY )
   {
-    precombat->add_action( this, "Recklessness" );
-   
-    precombat->add_action( this, "potion" );
-    
-    precombat->add_action( this, "memory_of_lucid_dreams" );
-    
-    precombat->add_action( this, "guardian_of_azeroth" );
+        precombat->add_action( "memory_of_lucid_dreams" );
+        precombat->add_action( "guardian_of_azeroth" );
+        precombat->add_action( this, "Recklessness" );
   }
-  
+
+
   if ( specialization() == WARRIOR_ARMS )
   {
-    precombat->add_action( this, "memory_of_lucid_dreams", "if=talent.fervor_of_battle.enabled|!talent.fervor_of_battle.enabled&target.time_to_die>150" );
-    
-    precombat->add_action( this, "guardian_of_azeroth", "if=talent.fervor_of_battle.enabled|talent.massacre.enabled&target.time_to_die>210|"
-                                 "talent.rend.enabled&(target.time_to_die>210|target.time_to_die<145)" );
-    
-    precombat->add_action( this, "potion,name=potion_of_unbridled_fury", "if=essence.condensed_lifeforce.major" );
-    
-    precombat->add_action( this, "potion,name=potion_of_focused_resolve", "if=essence.memory_of_lucid_dreams.major" );
-    
-    precombat->add_action( this, "potion", "if=!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major" );
+        precombat->add_action( "memory_of_lucid_dreams,if=talent.fervor_of_battle.enabled|!talent.fervor_of_battle.enabled&target.time_to_die>150" );
+        precombat->add_action( "guardian_of_azeroth,if=talent.fervor_of_battle.enabled|talent.massacre.enabled&target.time_to_die>210|talent.rend.enabled&(target.time_to_die>210|target.time_to_die<145)" );
+        precombat->add_action( "potion,name=potion_of_unbridled_fury,if=essence.condensed_lifeforce.major" );
+        precombat->add_action( "potion,name=potion_of_focused_resolve,if=essence.memory_of_lucid_dreams.major" );
   }
+
+
+  if ( specialization() == WARRIOR_PROTECTION )
+  {
+        precombat->add_action( "memory_of_lucid_dreams" );
+  }
+
+  precombat->add_action( "potion" );
 
 }
 
@@ -5465,7 +5464,7 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Intercept", "if=time=0" );
-  
+
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] );
