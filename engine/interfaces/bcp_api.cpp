@@ -1123,10 +1123,11 @@ player_t* bcp_api::from_local_json( sim_t*             sim,
 
   player_spec.origin = value;
 
-  std::vector<std::unique_ptr<option_t>> options;
-  options.push_back( opt_string( "spec", player_spec.local_json_spec ) );
-  options.push_back( opt_string( "equipment", player_spec.local_json_equipment ) );
-  options.push_back( opt_string( "media", player_spec.local_json_media ) );
+  std::array<std::unique_ptr<option_t>, 3> options { {
+    opt_string( "spec", player_spec.local_json_spec ),
+    opt_string( "equipment", player_spec.local_json_equipment ),
+    opt_string( "media", player_spec.local_json_media ),
+  } };
 
   std::string options_str;
   auto first_comma = value.find( ',' );
