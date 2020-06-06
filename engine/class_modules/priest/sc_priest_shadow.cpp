@@ -88,6 +88,14 @@ public:
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
 
     spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
+
+    auto rank2_shadow = player.find_spell( 319899 );
+    if ( rank2_shadow->ok() )
+    {
+      cooldown->duration = data().cooldown() + rank2_shadow->effectN( 1 ).time_value();
+    }
+
+    // Rank 2 Discipline not implemented
   }
 
   void init() override

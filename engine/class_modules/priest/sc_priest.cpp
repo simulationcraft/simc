@@ -256,28 +256,20 @@ struct smite_t final : public priest_spell_t
       double hf_proc_chance = holy_fire_rank2->effectN( 1 ).percent();
       if ( rng().roll( hf_proc_chance ) )
       {
-        if ( sim->debug )
-        {
-          sim->out_debug.printf( "%s reset holy fire %s cooldown, using smite. ", priest().name(), name() );
-        }
+        sim->print_debug( "{} reset holy fire cooldown, using smite. ", priest() );
         priest().cooldowns.holy_fire->reset( true );
       }
     }
-    if ( sim->debug )
-    {
-      sim->out_debug.printf( "%s checking for Apotheosis buff and Light of the Naaru talent. ", priest().name(),
-                             name() );
-    }
+
+    sim->print_debug( "{} checking for Apotheosis buff and Light of the Naaru talent. ", priest() );
     if ( s->result_amount > 0 && priest().buffs.apotheosis->up() )
     {
       priest().cooldowns.holy_word_chastise->adjust( ( -10 * priest().talents.apotheosis->effectN( 1 ).base_value() *
                                                        holy_word_chastise->effectN( 2 ).time_value() ) );
       double cd1 =
           -10 * priest().talents.apotheosis->effectN( 1 ).base_value() * holy_word_chastise->effectN( 2 ).base_value();
-      if ( sim->debug )
-      {
-        sim->out_debug.printf( "%s adjusted cooldown of Chastise, by %f mS, with Apotheosis.", priest().name(), cd1 );
-      }
+
+      sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with Apotheosis.", priest(), cd1 );
     }
     else if ( s->result_amount > 0 && priest().talents.light_of_the_naaru->ok() )
     {
