@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ ! -f engine/simulationcraft.hpp ]; then
+if [ ! -f engine/config.hpp ]; then
   exit 1
 fi
 
@@ -18,8 +18,8 @@ if [ -z ${APIKEY} ]; then
   fi
 fi
 
-MAJOR_VERSION=$(grep -E -e "^#define SC_MAJOR_VERSION" engine/simulationcraft.hpp|sed -E -e "s/#define SC_MAJOR_VERSION \"([0-9]+)\"/\1/g")
-MINOR_VERSION=$(grep -E -e "^#define SC_MINOR_VERSION" engine/simulationcraft.hpp|sed -E -e "s/#define SC_MINOR_VERSION \"([0-9]+)\"/\1/g")
+MAJOR_VERSION=$(grep -E -e "^#define SC_MAJOR_VERSION" engine/config.hpp|sed -E -e "s/#define SC_MAJOR_VERSION \"([0-9]+)\"/\1/g")
+MINOR_VERSION=$(grep -E -e "^#define SC_MINOR_VERSION" engine/config.hpp|sed -E -e "s/#define SC_MINOR_VERSION \"([0-9]+)\"/\1/g")
 REVISION=$(git log --no-merges -1 --pretty="%h")
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 QT_DIR=${QTDIR:-${HOME}/Qt5.6/5.6}
