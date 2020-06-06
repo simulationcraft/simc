@@ -355,7 +355,13 @@ bool parse_player( sim_t*             sim,
   else
   {
     sim -> active_player = nullptr;
-    const module_t* module = module_t::get( name );
+    
+    auto player_type = util::parse_player_type( name );
+    if (player_type == PLAYER_NONE)
+    {
+      throw std::runtime_error(fmt::format("No class module could be found for '{}'.", name ));
+    }
+    const module_t* module = module_t::get( player_type );
 
     if ( ! module || ! module -> valid() )
     {

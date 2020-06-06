@@ -9,6 +9,7 @@
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/error/en.h"
+#include "sc_enums.hpp"
 #include "utf8-h/utf8.h"
 #include "dbc/dbc.hpp"
 #include "sim/sc_sim.hpp"
@@ -716,7 +717,13 @@ player_t* parse_player( sim_t*            sim,
 
   std::string class_name = util::player_type_string( util::translate_class_id( profile[ "character_class" ][ "id" ].GetUint() ) );
   race_e race = util::translate_race_id( profile[ "race" ][ "id" ].GetUint() );
-  const module_t* module = module_t::get( class_name );
+  
+  auto player_type = util::parse_player_type( class_name );
+  if (player_type == PLAYER_NONE)
+  {
+    throw std::runtime_error(fmt::format("No class module could be found for '{}'.", class_name ));
+  }
+  const module_t* module = module_t::get( player_type );
 
   if ( ! module || ! module -> valid() )
   {
