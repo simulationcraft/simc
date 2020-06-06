@@ -141,7 +141,7 @@ IncludeCategories:
     Priority:        5
 
   - Regex:           'simulationcraft\.hpp'
-    Priority:        6
+    Priority:        -1
 
   - Regex:           '^<.*\.h>'
     Priority:        20
