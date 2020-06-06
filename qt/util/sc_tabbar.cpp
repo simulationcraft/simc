@@ -215,6 +215,8 @@ void SC_TabBar::mousePressEvent(QMouseEvent *e)
 			setCurrentIndex(tabUnderMouse);
 		}
 		break;
+    default:
+    break;
 	}
 }
 

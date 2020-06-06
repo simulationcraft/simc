@@ -1320,7 +1320,6 @@ void SC_MainWindow::resultsTabCloseRequest( int index )
   bool close_permanently = msgBox.clickedButton() == close_all_button;
   if ( confirm == QMessageBox::Yes || close_permanently )
   {
-    auto tab = static_cast <SC_SingleResultTab*>(resultsTab -> widget( index ));
     resultsTab -> removeTab( index, close_permanently );
     if ( resultsTab -> count() == 1 )
     {
@@ -1359,7 +1358,7 @@ void SC_MainWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col */ )
   simulateTab -> current_Text() -> setFocus();
 }
 
-void SC_MainWindow::armoryRegionChanged( const QString& region )
+void SC_MainWindow::armoryRegionChanged( const QString& /*region*/ )
 {
 }
 
@@ -1591,16 +1590,6 @@ void SC_SingleResultTab::save_result()
       case TAB_TEXT:	break;
       case TAB_JSON:	break;
       case TAB_PLOTDATA:break;
-      case TAB_CSV:
-      {
-        QFile file(f.selectedFiles().at(0));
-        if (file.open(QIODevice::WriteOnly | QIODevice::Text))
-        {
-          file.write(static_cast<SC_TextEdit*>(currentWidget())->toPlainText().toUtf8());
-          file.close();
-        }
-        break;
-      }
     }
     QMessageBox::information( this, tr( "Save Result" ), tr( "Result saved to %1" ).arg( f.selectedFiles().at( 0 )), QMessageBox::Ok, QMessageBox::Ok );
     mainWindow -> logText -> appendPlainText( QString( tr("Results saved to: %1\n") ).arg( f.selectedFiles().at( 0 )) );

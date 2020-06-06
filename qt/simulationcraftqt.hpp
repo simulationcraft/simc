@@ -464,8 +464,7 @@ enum result_tabs_e
   TAB_HTML = 0,
   TAB_TEXT,
   TAB_JSON,
-  TAB_PLOTDATA,
-  TAB_CSV
+  TAB_PLOTDATA
 };
 
 class SC_ResultTab : public SC_RecentlyClosedTab
