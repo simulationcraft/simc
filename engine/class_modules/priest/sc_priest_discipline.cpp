@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+
 #include "sc_priest.hpp"
 
 namespace priestspace
@@ -178,7 +179,7 @@ struct shadow_word_pain_disc_t final : public priest_spell_t
 struct power_word_solace_t final : public priest_spell_t
 {
   power_word_solace_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "power_word_solace", player, player.talents.power_word_solace)
+    : priest_spell_t( "power_word_solace", player, player.talents.power_word_solace )
   {
     parse_options( options_str );
 
@@ -355,8 +356,8 @@ void priest_t::init_spells_discipline()
   talents.divine_star      = find_talent_spell( "Divine Star" );
   talents.halo             = find_talent_spell( "Halo" );
   // T100
-  talents.grace          = find_talent_spell( "Grace" );
-  talents.evangelism     = find_talent_spell( "Evangelism" );
+  talents.grace      = find_talent_spell( "Grace" );
+  talents.evangelism = find_talent_spell( "Evangelism" );
 
   // General Spells
   specs.priest                 = dbc::get_class_passive( *this, SPEC_NONE );
@@ -457,7 +458,6 @@ std::unique_ptr<expr_t> priest_t::create_expression_discipline( action_t*, const
 
 void priest_t::generate_apl_discipline_h()
 {
-
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   // DEFAULT

@@ -3,8 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "sc_priest.hpp"
+
+#include "simulationcraft.hpp"
 
 namespace priestspace
 {
@@ -208,21 +209,21 @@ struct levitate_t final : public priest_spell_t
 struct power_word_fortitude_t final : public priest_spell_t
 {
   power_word_fortitude_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "power_word_fortitude", p, p.find_class_spell("Power Word: Fortitude") )
+    : priest_spell_t( "power_word_fortitude", p, p.find_class_spell( "Power Word: Fortitude" ) )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful               = false;
     ignore_false_positive = true;
 
-    background = sim -> overrides.power_word_fortitude != 0;
+    background = sim->overrides.power_word_fortitude != 0;
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    if ( ! sim -> overrides.power_word_fortitude )
-      sim -> auras.power_word_fortitude -> trigger();
+    if ( !sim->overrides.power_word_fortitude )
+      sim->auras.power_word_fortitude->trigger();
   }
 };
 
@@ -231,67 +232,76 @@ struct power_word_fortitude_t final : public priest_spell_t
 // ==========================================================================
 struct smite_t final : public priest_spell_t
 {
-    const spell_data_t* holy_fire_rank2;
-    const spell_data_t* holy_word_chastise;
-    const spell_data_t* smite_rank2;
-    smite_t(priest_t& p, const std::string& options_str)
-      : priest_spell_t("smite", p, p.find_class_spell("Smite")),
-      holy_fire_rank2(priest().find_specialization_spell(231687)),
-      holy_word_chastise(priest().find_specialization_spell(88625)),
-      smite_rank2(priest().find_specialization_spell(262861))
+  const spell_data_t* holy_fire_rank2;
+  const spell_data_t* holy_word_chastise;
+  const spell_data_t* smite_rank2;
+  smite_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
+      holy_fire_rank2( priest().find_specialization_spell( 231687 ) ),
+      holy_word_chastise( priest().find_specialization_spell( 88625 ) ),
+      smite_rank2( priest().find_specialization_spell( 262861 ) )
+  {
+    parse_options( options_str );
+    if ( smite_rank2->ok() )
     {
-       parse_options(options_str);
-       if( smite_rank2 -> ok() )
-       {
-       base_multiplier *= 1.0 + smite_rank2->effectN(1).percent();
-       }
+      base_multiplier *= 1.0 + smite_rank2->effectN( 1 ).percent();
     }
+  }
 
-    void impact(action_state_t* s) override
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+    if ( holy_fire_rank2->ok() && s->result_amount > 0 )
     {
-         priest_spell_t::impact(s);
-        if (holy_fire_rank2->ok() && s->result_amount > 0)
+      double hf_proc_chance = holy_fire_rank2->effectN( 1 ).percent();
+      if ( rng().roll( hf_proc_chance ) )
+      {
+        if ( sim->debug )
         {
-            double hf_proc_chance = holy_fire_rank2->effectN(1).percent();
-            if (rng().roll(hf_proc_chance))
-            {
-                if (sim->debug)
-                {
-                    sim->out_debug.printf("%s reset holy fire %s cooldown, using smite. ", priest().name(), name());
-                }
-                priest().cooldowns.holy_fire->reset(true);
-            }
+          sim->out_debug.printf( "%s reset holy fire %s cooldown, using smite. ", priest().name(), name() );
         }
-        if (sim->debug)
-        {
-             sim->out_debug.printf("%s checking for Apotheosis buff and Light of the Naaru talent. ", priest().name(), name());
-        }
-        if (s->result_amount > 0 && priest().buffs.apotheosis->up())
-        {
-            priest().cooldowns.holy_word_chastise->adjust((-10 * priest().talents.apotheosis->effectN(1).base_value() * holy_word_chastise->effectN(2).time_value()));
-            double cd1 = -10 * priest().talents.apotheosis->effectN(1).base_value() * holy_word_chastise->effectN(2).base_value();
-            if (sim->debug)
-            {
-                sim->out_debug.printf("%s adjusted cooldown of Chastise, by %f mS, with Apotheosis.", priest().name(), cd1);
-            }
-		}
-		else if (s->result_amount > 0 && priest().talents.light_of_the_naaru->ok())
-		{
-			priest().cooldowns.holy_word_chastise->adjust((-10 * (priest().talents.light_of_the_naaru->effectN(1).base_value() + 100) * holy_word_chastise->effectN(2).time_value()));
-			double cd2 = -10 * (priest().talents.light_of_the_naaru->effectN(1).base_value() + 100) * holy_word_chastise->effectN(2).base_value();
-			if (sim->debug)
-			{
-				sim->out_debug.printf("%s adjusted cooldown of Chastise, by %f mS, with Light of the Naaru.", priest().name(), cd2);
-			}
-		}
-		else if (s->result_amount > 0) {
-        priest().cooldowns.holy_word_chastise->adjust((-1000 * holy_word_chastise->effectN(2).time_value()));
-        double cd3 = -1000 * holy_word_chastise->effectN(2).base_value();
-        if (sim->debug){
-           sim->out_debug.printf("%s adjusted cooldown of Chastise, by %f mS, without Apotheosis", priest().name(), cd3);
-			           }
-			 }
+        priest().cooldowns.holy_fire->reset( true );
+      }
     }
+    if ( sim->debug )
+    {
+      sim->out_debug.printf( "%s checking for Apotheosis buff and Light of the Naaru talent. ", priest().name(),
+                             name() );
+    }
+    if ( s->result_amount > 0 && priest().buffs.apotheosis->up() )
+    {
+      priest().cooldowns.holy_word_chastise->adjust( ( -10 * priest().talents.apotheosis->effectN( 1 ).base_value() *
+                                                       holy_word_chastise->effectN( 2 ).time_value() ) );
+      double cd1 =
+          -10 * priest().talents.apotheosis->effectN( 1 ).base_value() * holy_word_chastise->effectN( 2 ).base_value();
+      if ( sim->debug )
+      {
+        sim->out_debug.printf( "%s adjusted cooldown of Chastise, by %f mS, with Apotheosis.", priest().name(), cd1 );
+      }
+    }
+    else if ( s->result_amount > 0 && priest().talents.light_of_the_naaru->ok() )
+    {
+      priest().cooldowns.holy_word_chastise->adjust(
+          ( -10 * ( priest().talents.light_of_the_naaru->effectN( 1 ).base_value() + 100 ) *
+            holy_word_chastise->effectN( 2 ).time_value() ) );
+      double cd2 = -10 * ( priest().talents.light_of_the_naaru->effectN( 1 ).base_value() + 100 ) *
+                   holy_word_chastise->effectN( 2 ).base_value();
+      if ( sim->debug )
+      {
+        sim->out_debug.printf( "%s adjusted cooldown of Chastise, by %f mS, with Light of the Naaru.", priest().name(),
+                               cd2 );
+      }
+    }
+    else if ( s->result_amount > 0 )
+    {
+      priest().cooldowns.holy_word_chastise->adjust( ( -1000 * holy_word_chastise->effectN( 2 ).time_value() ) );
+      double cd3 = -1000 * holy_word_chastise->effectN( 2 ).base_value();
+      if ( sim->debug )
+      {
+        sim->out_debug.printf( "%s adjusted cooldown of Chastise, by %f mS, without Apotheosis", priest().name(), cd3 );
+      }
+    }
+  }
 };
 
 // ==========================================================================
@@ -408,7 +418,7 @@ struct shadow_mend_t final : public priest_heal_t
     : priest_heal_t( "shadow_mend", p, p.find_class_spell( "Shadow Mend" ) )
   {
     parse_options( options_str );
-    harmful            = false;
+    harmful = false;
 
     // TODO: add harmful ticking effect 187464
   }
@@ -453,14 +463,14 @@ struct power_word_shield_t final : public priest_absorb_t
 
 namespace buffs
 {
-  struct power_infusion_t final : public priest_buff_t<buff_t>
+struct power_infusion_t final : public priest_buff_t<buff_t>
+{
+  power_infusion_t( priest_t& p ) : base_t( p, "power_infusion", p.find_class_spell( "Power Infusion" ) )
   {
-    power_infusion_t( priest_t& p ) : base_t( p, "power_infusion", p.find_class_spell( "Power Infusion" ) )
-    {
-      add_invalidate( CACHE_SPELL_HASTE );
-      add_invalidate( CACHE_HASTE );
-    }
-  };
+    add_invalidate( CACHE_SPELL_HASTE );
+    add_invalidate( CACHE_HASTE );
+  }
+};
 }  // namespace buffs
 
 namespace items
@@ -523,7 +533,7 @@ void init()
   // Purify Disease
   expansion::bfa::register_leyshocks_trigger( 213634, STAT_MASTERY_RATING );
   // Divine Star
-  expansion::bfa::register_leyshocks_trigger( 110744, STAT_MASTERY_RATING);
+  expansion::bfa::register_leyshocks_trigger( 110744, STAT_MASTERY_RATING );
   // Holy Fire
   expansion::bfa::register_leyshocks_trigger( 14914, STAT_MASTERY_RATING );
   // Halo
@@ -590,7 +600,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
 
   buffs.schism = make_buff( *this, "schism", p.talents.schism );
 
-  target->callbacks_on_demise.emplace_back([this]( player_t* ) { target_demise(); } );
+  target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
 }
 
 void priest_td_t::reset()
@@ -632,7 +642,7 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     options(),
     azerite(),
     azerite_essence(),
-    insanity(*this)
+    insanity( *this )
 {
   create_cooldowns();
   create_gains();
@@ -648,7 +658,7 @@ void priest_t::create_cooldowns()
   cooldowns.chakra             = get_cooldown( "chakra" );
   cooldowns.mindbender         = get_cooldown( "mindbender" );
   cooldowns.penance            = get_cooldown( "penance" );
-  cooldowns.apotheosis         = get_cooldown("apotheosis ");
+  cooldowns.apotheosis         = get_cooldown( "apotheosis " );
   cooldowns.holy_fire          = get_cooldown( "holy_fire" );
   cooldowns.holy_word_chastise = get_cooldown( "holy_word_chastise" );
   cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
@@ -985,7 +995,8 @@ action_t* priest_t::create_action( const std::string& name, const std::string& o
   {
     return new shadow_mend_t( *this, options_str );
   }
-  if ( name == "power_infusion" ) {
+  if ( name == "power_infusion" )
+  {
     return new power_infusion_t( *this, options_str );
   }
 
@@ -1025,7 +1036,7 @@ void priest_t::create_pets()
   }
 }
 
-  void priest_t::trigger_lucid_dreams( double cost )
+void priest_t::trigger_lucid_dreams( double cost )
 {
   if ( !azerite_essence.lucid_dreams )
     return;
@@ -1104,9 +1115,9 @@ void priest_t::init_spells()
   init_spells_holy();
 
   // Mastery Spells
-  mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );
-  mastery_spells.echo_of_light  = find_mastery_spell( PRIEST_HOLY );
-  mastery_spells.madness        = find_mastery_spell( PRIEST_SHADOW );
+  mastery_spells.grace         = find_mastery_spell( PRIEST_DISCIPLINE );
+  mastery_spells.echo_of_light = find_mastery_spell( PRIEST_HOLY );
+  mastery_spells.madness       = find_mastery_spell( PRIEST_SHADOW );
 
   auto memory_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
 
@@ -1122,12 +1133,10 @@ void priest_t::init_spells()
   // Rank 1: Major - CD at 25% duration, Minor - CDR
   // Rank 2: Major - CD at 35% duration, Minor - CDR
   // Rank 3: Major - CD at 35% duration + Haste on Proc, Minor - Vers on Proc
-  azerite_essence.vision_of_perfection     = find_azerite_essence( "Vision of Perfection" );
-  azerite_essence.vision_of_perfection_r1  = azerite_essence.vision_of_perfection.spell( 1u, essence_type::MAJOR );
-  azerite_essence.vision_of_perfection_r2  =
+  azerite_essence.vision_of_perfection    = find_azerite_essence( "Vision of Perfection" );
+  azerite_essence.vision_of_perfection_r1 = azerite_essence.vision_of_perfection.spell( 1u, essence_type::MAJOR );
+  azerite_essence.vision_of_perfection_r2 =
       azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
-
-
 }
 
 void priest_t::create_buffs()
@@ -1164,8 +1173,8 @@ void priest_t::vision_of_perfection_proc()
     return;
   }
 
-  double vision_multiplier = azerite_essence.vision_of_perfection_r1 -> effectN( 1 ).percent() +
-                             azerite_essence.vision_of_perfection_r2 -> effectN( 1 ).percent();
+  double vision_multiplier = azerite_essence.vision_of_perfection_r1->effectN( 1 ).percent() +
+                             azerite_essence.vision_of_perfection_r2->effectN( 1 ).percent();
 
   if ( vision_multiplier <= 0 )
     return;
@@ -1174,7 +1183,8 @@ void priest_t::vision_of_perfection_proc()
 
   if ( specialization() == PRIEST_SHADOW )
   {
-    base_duration = talents.mindbender->ok() ?  find_talent_spell( "Mindbender" )->duration() :  find_class_spell( "Shadowfiend" )->duration();
+    base_duration = talents.mindbender->ok() ? find_talent_spell( "Mindbender" )->duration()
+                                             : find_class_spell( "Shadowfiend" )->duration();
   }
 
   if ( base_duration == timespan_t::zero() )
@@ -1186,7 +1196,7 @@ void priest_t::vision_of_perfection_proc()
 
   if ( specialization() == PRIEST_SHADOW )
   {
-    auto current_pet = talents.mindbender->ok() ?  pets.mindbender :  pets.shadowfiend;
+    auto current_pet = talents.mindbender->ok() ? pets.mindbender : pets.shadowfiend;
     // check if the pet is active or not
     if ( current_pet->is_sleeping() )
     {
@@ -1230,16 +1240,21 @@ void priest_t::create_apl_precombat()
     case PRIEST_SHADOW:
     default:
       // Calculate these variables once to reduce sim time
-      precombat->add_action( "variable,name=mind_blast_targets,op=set,value="
-                             "floor((4.5+azerite.whispers_of_the_damned.rank)%(1+0.27*azerite.searing_dialogue.rank))" );
-      precombat->add_action( "variable,name=swp_trait_ranks_check,op=set,value="
-                             "(1-0.07*azerite.death_throes.rank+0.2*azerite.thought_harvester.rank)"
-                             "*(1-0.09*azerite.thought_harvester.rank*azerite.searing_dialogue.rank)" );
-      precombat->add_action( "variable,name=vt_trait_ranks_check,op=set,value="
-                             "(1-0.04*azerite.thought_harvester.rank-0.05*azerite.spiteful_apparitions.rank)" );
-      precombat->add_action( "variable,name=vt_mis_trait_ranks_check,op=set,value="
-                             "(1-0.07*azerite.death_throes.rank-0.03*azerite.thought_harvester.rank-0.055*azerite.spiteful_apparitions.rank)"
-                             "*(1-0.027*azerite.thought_harvester.rank*azerite.searing_dialogue.rank)" );
+      precombat->add_action(
+          "variable,name=mind_blast_targets,op=set,value="
+          "floor((4.5+azerite.whispers_of_the_damned.rank)%(1+0.27*azerite.searing_dialogue.rank))" );
+      precombat->add_action(
+          "variable,name=swp_trait_ranks_check,op=set,value="
+          "(1-0.07*azerite.death_throes.rank+0.2*azerite.thought_harvester.rank)"
+          "*(1-0.09*azerite.thought_harvester.rank*azerite.searing_dialogue.rank)" );
+      precombat->add_action(
+          "variable,name=vt_trait_ranks_check,op=set,value="
+          "(1-0.04*azerite.thought_harvester.rank-0.05*azerite.spiteful_apparitions.rank)" );
+      precombat->add_action(
+          "variable,name=vt_mis_trait_ranks_check,op=set,value="
+          "(1-0.07*azerite.death_throes.rank-0.03*azerite.thought_harvester.rank-0.055*azerite.spiteful_apparitions."
+          "rank)"
+          "*(1-0.027*azerite.thought_harvester.rank*azerite.searing_dialogue.rank)" );
       precombat->add_action( "variable,name=vt_mis_sd_check,op=set,value=1-0.014*azerite.searing_dialogue.rank" );
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
       precombat->add_action( "use_item,name=azsharas_font_of_power" );
@@ -1251,44 +1266,44 @@ void priest_t::create_apl_precombat()
 
 std::string priest_t::default_potion() const
 {
-  std::string lvl120_potion =
-    ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" :
-                                            "battle_potion_of_intellect";
+  std::string lvl120_potion = ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
 
-  return ( true_level >  110 ) ? lvl120_potion :
-         ( true_level >= 100 ) ? "prolonged_power" :
-         ( true_level >=  90 ) ? "draenic_intellect" :
-         ( true_level >=  85 ) ? "jade_serpent" :
-         ( true_level >=  80 ) ? "volcanic" :
-                                 "disabled";
+  return ( true_level > 110 )
+             ? lvl120_potion
+             : ( true_level >= 100 )
+                   ? "prolonged_power"
+                   : ( true_level >= 90 )
+                         ? "draenic_intellect"
+                         : ( true_level >= 85 ) ? "jade_serpent" : ( true_level >= 80 ) ? "volcanic" : "disabled";
 }
 
 std::string priest_t::default_flask() const
 {
-  return ( true_level >  110 ) ? "greater_flask_of_endless_fathoms" :
-         ( true_level >= 100 ) ? "whispered_pact" :
-         ( true_level >=  90 ) ? "greater_draenic_intellect_flask" :
-         ( true_level >=  85 ) ? "warm_sun" :
-         ( true_level >=  80 ) ? "draconic_mind" :
-                                 "disabled";
+  return ( true_level > 110 )
+             ? "greater_flask_of_endless_fathoms"
+             : ( true_level >= 100 )
+                   ? "whispered_pact"
+                   : ( true_level >= 90 )
+                         ? "greater_draenic_intellect_flask"
+                         : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "disabled";
 }
 
 std::string priest_t::default_food() const
 {
-  return ( true_level > 110 ) ? "baked_port_tato" :
-         ( true_level > 100 ) ? "azshari_salad" :
-         ( true_level >  90 ) ? "buttered_sturgeon" :
-         ( true_level >= 90 ) ? "mogu_fish_stew" :
-         ( true_level >= 80 ) ? "seafood_magnifique_feast" :
-                                "disabled";
+  return ( true_level > 110 )
+             ? "baked_port_tato"
+             : ( true_level > 100 )
+                   ? "azshari_salad"
+                   : ( true_level > 90 )
+                         ? "buttered_sturgeon"
+                         : ( true_level >= 90 ) ? "mogu_fish_stew"
+                                                : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 }
 
 std::string priest_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred" :
-         ( true_level >= 110 ) ? "defiled" :
-         ( true_level >= 100 ) ? "focus" :
-                                 "disabled";
+  return ( true_level >= 120 ) ? "battle_scarred"
+                               : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
 }
 
 /** NO Spec Combat Action Priority List */

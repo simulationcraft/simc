@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+
 #include "sc_priest.hpp"
 
 namespace priestspace
@@ -89,8 +90,7 @@ struct holy_word_serenity_t final : public priest_heal_t
     : priest_heal_t( "holy_word_serenity", p, p.find_class_spell( "Holy Word: Serenity" ) )
   {
     parse_options( options_str );
-    harmful            = false;
-
+    harmful = false;
   }
 };
 
@@ -132,11 +132,10 @@ struct flash_heal_t final : public priest_heal_t
     : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) )
   {
     parse_options( options_str );
-    harmful            = false;
-
+    harmful = false;
   }
 
-  void impact(action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
 
@@ -146,26 +145,22 @@ struct flash_heal_t final : public priest_heal_t
 
 struct renew_t final : public priest_heal_t
 {
-  renew_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "renew", p, p.find_class_spell( "Renew" ) )
+  renew_t( priest_t& p, const std::string& options_str ) : priest_heal_t( "renew", p, p.find_class_spell( "Renew" ) )
   {
     parse_options( options_str );
-    harmful            = false;
-
+    harmful = false;
   }
 };
 
 struct holy_heal_t final : public priest_heal_t
 {
-  holy_heal_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "heal", p, p.find_class_spell( "Heal" ) )
+  holy_heal_t( priest_t& p, const std::string& options_str ) : priest_heal_t( "heal", p, p.find_class_spell( "Heal" ) )
   {
     parse_options( options_str );
-    harmful            = false;
-
+    harmful = false;
   }
 
-  void impact(action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
 
@@ -220,11 +215,11 @@ void priest_t::init_spells_holy()
   talents.holy_word_salvation = find_talent_spell( "Holy Word: Salvation" );
 
   // General Spells
-  specs.serendipity       = find_specialization_spell( "Serendipity" );
-  specs.rapid_renewal     = find_specialization_spell( "Rapid Renewal" );
-  specs.divine_providence = find_specialization_spell( "Divine Providence" );
-  specs.focused_will      = find_specialization_spell( "Focused Will" );
-  specs.holy_words = find_specialization_spell( "Holy Words" );
+  specs.serendipity        = find_specialization_spell( "Serendipity" );
+  specs.rapid_renewal      = find_specialization_spell( "Rapid Renewal" );
+  specs.divine_providence  = find_specialization_spell( "Divine Providence" );
+  specs.focused_will       = find_specialization_spell( "Focused Will" );
+  specs.holy_words         = find_specialization_spell( "Holy Words" );
   specs.holy_word_serenity = find_specialization_spell( "Holy Word: Serenity" );
 
   // Azerite
@@ -309,13 +304,13 @@ expr_t* priest_t::create_expression_holy( action_t*, const std::string& /*name_s
  */
 void priest_t::adjust_holy_word_serenity_cooldown()
 {
-  if (!specs.holy_words->ok())
+  if ( !specs.holy_words->ok() )
   {
     return;
   }
 
-  auto adjustment = -timespan_t::from_seconds(specs.holy_word_serenity->effectN( 2 ).base_value());
-  cooldowns.holy_word_serenity->adjust(adjustment);
+  auto adjustment = -timespan_t::from_seconds( specs.holy_word_serenity->effectN( 2 ).base_value() );
+  cooldowns.holy_word_serenity->adjust( adjustment );
 }
 
 /** Holy Damage Combat Action Priority List */

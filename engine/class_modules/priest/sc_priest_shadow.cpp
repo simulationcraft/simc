@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+
 #include "sc_priest.hpp"
 
 namespace priestspace
@@ -73,9 +74,12 @@ public:
       harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) ),
       whispers_bonus_insanity( priest()
                                    .azerite.whispers_of_the_damned.spell()
-                                   ->effectN( 1 ).trigger()
-                                   ->effectN( 1 ).trigger()
-                                   ->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+                                   ->effectN( 1 )
+                                   .trigger()
+                                   ->effectN( 1 )
+                                   .trigger()
+                                   ->effectN( 1 )
+                                   .resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -172,8 +176,7 @@ public:
       cd_duration            = timespan_t::zero();
       cooldown->last_charged = sim->current_time();
 
-      sim->print_debug( "{} shadowy insight proc occured during {} cast. Deferring cooldown reset.",
-          priest(), *this );
+      sim->print_debug( "{} shadowy insight proc occured during {} cast. Deferring cooldown reset.", priest(), *this );
     }
 
     priest_spell_t::update_ready( cd_duration );
@@ -191,18 +194,21 @@ struct mind_sear_tick_t final : public priest_spell_t
       insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() ),
       harvested_thoughts_multiplier( priest()
                                          .azerite.thought_harvester.spell()
-                                         ->effectN( 1 ).trigger()
-                                         ->effectN( 1 ).trigger()
-                                         ->effectN( 1 ).percent() )
+                                         ->effectN( 1 )
+                                         .trigger()
+                                         ->effectN( 1 )
+                                         .trigger()
+                                         ->effectN( 1 )
+                                         .percent() )
   {
-    background    = true;
-    dual          = true;
-    aoe           = -1;
-    callbacks     = false;
-    direct_tick   = false;
-    use_off_gcd   = true;
+    background          = true;
+    dual                = true;
+    aoe                 = -1;
+    callbacks           = false;
+    direct_tick         = false;
+    use_off_gcd         = true;
     dynamic_tick_action = true;
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+    energize_type       = ENERGIZE_NONE;  // disable resource generation from spell data
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -266,7 +272,7 @@ struct mind_sear_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    auto mind_sear_tick_action = debug_cast<mind_sear_tick_t*>(tick_action);
+    auto mind_sear_tick_action = debug_cast<mind_sear_tick_t*>( tick_action );
 
     if ( priest().buffs.harvested_thoughts->check() )
     {
@@ -311,7 +317,7 @@ struct mind_flay_t final : public priest_spell_t
 struct shadow_word_death_t final : public priest_spell_t
 {
   shadow_word_death_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "shadow_word_death", p, p.find_class_spell("Shadow Word: Death") )
+    : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) )
   {
     parse_options( options_str );
 
@@ -331,7 +337,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-        total_insanity_gain = data().effectN( 3 ).base_value();
+      total_insanity_gain = data().effectN( 3 ).base_value();
 
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
 
@@ -1206,9 +1212,8 @@ struct mental_fortitude_t final : public priest_absorb_t
     {
       buff->trigger( 1, stacked_amount );
 
-      sim->print_log( "{} {} applies absorb on {} for {} ({}) ({})", *player, *this,
-                             *s->target, s->result_amount, stacked_amount,
-                             util::result_type_string( s->result ) );
+      sim->print_log( "{} {} applies absorb on {} for {} ({}) ({})", *player, *this, *s->target, s->result_amount,
+                      stacked_amount, util::result_type_string( s->result ) );
     }
 
     stats->add_result( 0.0, s->result_total, result_amount_type::ABSORB, s->result, s->block_result, s->target );
@@ -1221,7 +1226,6 @@ struct mental_fortitude_t final : public priest_absorb_t
 
 namespace buffs
 {
-
 /**
  * Custom insanity_drain_stacks buff
  */
@@ -1320,8 +1324,10 @@ struct voidform_t final : public priest_buff_t<buff_t>
     add_invalidate( CACHE_HASTE );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
-    set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
-    { if ( old == 0 || cur == 0 ) priest().cooldowns.mind_blast->adjust_base_duration(); } );
+    set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+      if ( old == 0 || cur == 0 )
+        priest().cooldowns.mind_blast->adjust_base_duration();
+    } );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -1394,8 +1400,7 @@ struct lingering_insanity_t final : public priest_buff_t<buff_t>
 
 struct chorus_of_insanity_t final : public priest_buff_t<stat_buff_t>
 {
-  chorus_of_insanity_t(priest_t& p) :
-      base_t(p, "chorus_of_insanity", p.find_spell( 279572 ) )
+  chorus_of_insanity_t( priest_t& p ) : base_t( p, "chorus_of_insanity", p.find_spell( 279572 ) )
   {
     add_stat( STAT_CRIT_RATING, p.azerite.chorus_of_insanity.value( 1 ) );
     set_reverse( true );
@@ -1405,45 +1410,42 @@ struct chorus_of_insanity_t final : public priest_buff_t<stat_buff_t>
 
 struct harvested_thoughts_t final : public priest_buff_t<buff_t>
 {
-  harvested_thoughts_t(priest_t& p) :
-      base_t(p, "harvested_thoughts", p.azerite.thought_harvester.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger())
+  harvested_thoughts_t( priest_t& p )
+    : base_t( p, "harvested_thoughts",
+              p.azerite.thought_harvester.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
   {
-    set_trigger_spell(p.azerite.thought_harvester.spell()->effectN( 1 ).trigger());
+    set_trigger_spell( p.azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
   }
 };
 
 struct surrender_to_madness_t final : public priest_buff_t<buff_t>
 {
-  surrender_to_madness_t(priest_t& p) :
-      base_t(p, "surrender_to_madness", p.talents.surrender_to_madness)
+  surrender_to_madness_t( priest_t& p ) : base_t( p, "surrender_to_madness", p.talents.surrender_to_madness )
   {
-    set_stack_change_callback([this]( buff_t*, int, int after ) {
+    set_stack_change_callback( [ this ]( buff_t*, int, int after ) {
       if ( after == 0 )
         priest().buffs.surrendered_to_madness->trigger();
-    });
+    } );
   }
 };
 
 struct surrendered_to_madness_t final : public priest_buff_t<buff_t>
 {
-  surrendered_to_madness_t(priest_t& p) :
-      base_t(p, "surrendered_to_madness", p.find_spell( 263406 ))
+  surrendered_to_madness_t( priest_t& p ) : base_t( p, "surrendered_to_madness", p.find_spell( 263406 ) )
   {
   }
 };
 
 struct dispersion_t final : public priest_buff_t<buff_t>
 {
-  dispersion_t(priest_t& p) :
-      base_t(p, "dispersion", p.find_class_spell( "Dispersion" ) )
+  dispersion_t( priest_t& p ) : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) )
   {
   }
 };
 
 struct shadowform_t final : public priest_buff_t<buff_t>
 {
-  shadowform_t(priest_t& p) :
-      base_t(p, "shadowform", p.find_class_spell( "Shadowform" ) )
+  shadowform_t( priest_t& p ) : base_t( p, "shadowform", p.find_class_spell( "Shadowform" ) )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
@@ -1455,8 +1457,7 @@ struct shadowform_t final : public priest_buff_t<buff_t>
  */
 struct shadowform_state_t final : public priest_buff_t<buff_t>
 {
-  shadowform_state_t(priest_t& p) :
-      base_t(p, "shadowform_state" )
+  shadowform_state_t( priest_t& p ) : base_t( p, "shadowform_state" )
   {
     set_chance( 1.0 );
     set_quiet( true );
@@ -1465,8 +1466,7 @@ struct shadowform_state_t final : public priest_buff_t<buff_t>
 
 struct shadowy_insight_t final : public priest_buff_t<buff_t>
 {
-  shadowy_insight_t(priest_t& p) :
-      base_t(p, "shadowy_insight", p.talents.shadowy_insight->effectN( 1 ).trigger() )
+  shadowy_insight_t( priest_t& p ) : base_t( p, "shadowy_insight", p.talents.shadowy_insight->effectN( 1 ).trigger() )
   {
     set_trigger_spell( p.talents.shadowy_insight );
   }
@@ -1474,26 +1474,24 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
 
 struct vampiric_embrace_t final : public priest_buff_t<buff_t>
 {
-  vampiric_embrace_t(priest_t& p) :
-      base_t(p, "vampiric_embrace", p.find_class_spell( "Vampiric Embrace" ) )
+  vampiric_embrace_t( priest_t& p ) : base_t( p, "vampiric_embrace", p.find_class_spell( "Vampiric Embrace" ) )
   {
   }
 };
 
 struct void_torrent_t final : public priest_buff_t<buff_t>
 {
-  void_torrent_t(priest_t& p) :
-      base_t(p, "void_torrent", p.talents.void_torrent )
+  void_torrent_t( priest_t& p ) : base_t( p, "void_torrent", p.talents.void_torrent )
   {
   }
 };
 
 struct whispers_of_the_damned_t final : public priest_buff_t<buff_t>
 {
-  whispers_of_the_damned_t(priest_t& p) :
-      base_t(p, "whispers_of_the_damned", p.azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger() )
+  whispers_of_the_damned_t( priest_t& p )
+    : base_t( p, "whispers_of_the_damned", p.azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger() )
   {
-    set_trigger_spell(p.azerite.whispers_of_the_damned.spell());
+    set_trigger_spell( p.azerite.whispers_of_the_damned.spell() );
   }
 };
 }  // namespace buffs
@@ -1517,19 +1515,16 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
     {
       double total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() );
 
-
       amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN( 1 ).percent();
 
       if ( player_t::buffs.memory_of_lucid_dreams->check() )
       {
         // If both are up, give the benefit to Memory of Lucid Dreams because it is shorter
-        amount_from_memory_of_lucid_dreams +=
-            ( amount + amount_from_surrender_to_madness )
-          * ( azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
+        amount_from_memory_of_lucid_dreams += ( amount + amount_from_surrender_to_madness ) *
+                                              ( azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
 
-        total_amount = amount
-                       * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() )
-                       * ( 1.0 + azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
+        total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() ) *
+                       ( 1.0 + azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
       }
 
       // Make sure the maths line up.
@@ -1539,8 +1534,8 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
     {
       double total_amount;
 
-      amount_from_memory_of_lucid_dreams +=   ( amount )
-                                            * ( azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
+      amount_from_memory_of_lucid_dreams +=
+          ( amount ) * ( azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
 
       total_amount = amount * ( 1.0 + azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
 
@@ -1570,8 +1565,7 @@ struct priest_t::insanity_end_event_t : public event_t
 {
   priest_t& actor;
 
-  insanity_end_event_t( priest_t& actor_, timespan_t duration_ )
-    : event_t( *actor_.sim, duration_ ), actor( actor_ )
+  insanity_end_event_t( priest_t& actor_, timespan_t duration_ ) : event_t( *actor_.sim, duration_ ), actor( actor_ )
   {
   }
 
@@ -1664,8 +1658,8 @@ void priest_t::insanity_state_t::gain( double value, gain_t* gain_obj, action_t*
     auto current = actor.resources.current[ RESOURCE_INSANITY ];
     auto max     = actor.resources.max[ RESOURCE_INSANITY ];
 
-    actor.sim->print_debug( "{} insanity-track gain, value={}, current={}/{}, new={}/{}",
-        actor, value, current, max, clamp( current + value, 0.0, max ), max );
+    actor.sim->print_debug( "{} insanity-track gain, value={}, current={}/{}, new={}/{}", actor, value, current, max,
+                            clamp( current + value, 0.0, max ), max );
   }
 
   actor.resource_gain( RESOURCE_INSANITY, value, gain_obj, source_action );
@@ -1683,8 +1677,8 @@ void priest_t::insanity_state_t::gain( double value, gain_t* gain_obj, action_t*
  */
 void priest_t::insanity_state_t::drain()
 {
-  double drain_per_second = insanity_drain_per_second();
-  timespan_t drain_interval   = ( actor.sim->current_time() - last_drained );
+  double drain_per_second   = insanity_drain_per_second();
+  timespan_t drain_interval = ( actor.sim->current_time() - last_drained );
 
   // Don't drain if draining is disabled, or if we have already drained on this timestamp
   if ( drain_per_second == 0 || drain_interval == timespan_t::zero() )
@@ -1699,8 +1693,8 @@ void priest_t::insanity_state_t::drain()
   if ( actor.resources.current[ RESOURCE_INSANITY ] < drained )
   {
     actor.sim->error( "{} warning, insanity-track overdrain, current={} drained={} total={}", actor,
-                       actor.resources.current[ RESOURCE_INSANITY ], drained,
-                       actor.resources.current[ RESOURCE_INSANITY ] - drained );
+                      actor.resources.current[ RESOURCE_INSANITY ], drained,
+                      actor.resources.current[ RESOURCE_INSANITY ] - drained );
     drained = actor.resources.current[ RESOURCE_INSANITY ];
   }
 #else
@@ -1716,8 +1710,7 @@ void priest_t::insanity_state_t::drain()
         "{} insanity-track drain, "
         "drain_per_second={}, last_drained={}, drain_interval={}, "
         "current={}/{}, new={}/{}",
-        actor, drain_per_second, last_drained, drain_interval, current, max,
-        ( current - drained ), max );
+        actor, drain_per_second, last_drained, drain_interval, current, max, ( current - drained ), max );
   }
 
   // Update last drained, we're about to reduce the amount of insanity the actor has
@@ -1769,8 +1762,7 @@ void priest_t::insanity_state_t::adjust_end_event()
         "{} insanity-track adjust-end-event, "
         "drain_per_second={}, insanity={}/{}, seconds_left={}, "
         "old_left={}",
-        actor, drain_per_second, current, max, seconds_left,
-        end ? end->remains().total_seconds() : -1.0 );
+        actor, drain_per_second, current, max, seconds_left, end ? end->remains().total_seconds() : -1.0 );
   }
 
   // If we have no draining occurring, cancel the event.
@@ -1805,27 +1797,25 @@ void priest_t::create_buffs_shadow()
 {
   // Baseline
 
-  buffs.shadowform = make_buff<buffs::shadowform_t>( *this );
-  buffs.shadowform_state = make_buff<buffs::shadowform_state_t>( *this );
-  buffs.shadowy_insight  = make_buff<buffs::shadowy_insight_t>( *this );
+  buffs.shadowform            = make_buff<buffs::shadowform_t>( *this );
+  buffs.shadowform_state      = make_buff<buffs::shadowform_state_t>( *this );
+  buffs.shadowy_insight       = make_buff<buffs::shadowy_insight_t>( *this );
   buffs.voidform              = make_buff<buffs::voidform_t>( *this );
   buffs.insanity_drain_stacks = make_buff<buffs::insanity_drain_stacks_t>( *this );
   buffs.vampiric_embrace      = make_buff<buffs::vampiric_embrace_t>( *this );
   buffs.dispersion            = make_buff<buffs::dispersion_t>( *this );
 
   // Talents
-  buffs.void_torrent         = make_buff<buffs::void_torrent_t>( *this );
-  buffs.surrender_to_madness = make_buff<buffs::surrender_to_madness_t>( *this );
+  buffs.void_torrent           = make_buff<buffs::void_torrent_t>( *this );
+  buffs.surrender_to_madness   = make_buff<buffs::surrender_to_madness_t>( *this );
   buffs.surrendered_to_madness = make_buff<buffs::surrendered_to_madness_t>( *this );
   buffs.lingering_insanity     = make_buff<buffs::lingering_insanity_t>( *this );
 
   // Azerite Powers
   buffs.chorus_of_insanity = make_buff<buffs::chorus_of_insanity_t>( *this );
 
-
-  buffs.harvested_thoughts = make_buff<buffs::harvested_thoughts_t>( *this );
+  buffs.harvested_thoughts     = make_buff<buffs::harvested_thoughts_t>( *this );
   buffs.whispers_of_the_damned = make_buff<buffs::whispers_of_the_damned_t>( *this );
-
 }
 
 void priest_t::init_rng_shadow()
@@ -1853,7 +1843,7 @@ void priest_t::init_spells_shadow()
   talents.psychic_horror = find_talent_spell( "Psychic Horror" );
   // T75
   talents.auspicious_spirits = find_talent_spell( "Auspicious Spirits" );
-  talents.death_and_madness  = find_talent_spell("Death and Madness");
+  talents.death_and_madness  = find_talent_spell( "Death and Madness" );
   talents.shadow_crash       = find_talent_spell( "Shadow Crash" );
   // T90
   talents.lingering_insanity = find_talent_spell( "Lingering Insanity" );
@@ -1973,7 +1963,7 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( const std::string& n
 {
   if ( name_str == "shadowy_apparitions_in_flight" )
   {
-    return make_fn_expr( name_str, [this]() {
+    return make_fn_expr( name_str, [ this ]() {
       if ( !active_spells.shadowy_apparitions )
       {
         return 0.0;
@@ -1987,7 +1977,7 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( const std::string& n
   {
     // Current Insanity Drain for the next 1.0 sec.
     // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.
-    return make_fn_expr( name_str, [this]() { return ( insanity.insanity_drain_per_second() ); } );
+    return make_fn_expr( name_str, [ this ]() { return ( insanity.insanity_drain_per_second() ); } );
   }
 
   return nullptr;
@@ -2036,25 +2026,30 @@ void priest_t::generate_apl_shadow()
   default_list->add_action( "run_action_list,name=single,if=active_enemies=1" );
 
   // CDs
-  cds->add_action( "memory_of_lucid_dreams,if=(buff.voidform.stack>20&insanity<=50)|"
-                   "(current_insanity_drain*((gcd.max*2)+action.mind_blast.cast_time))>insanity",
-                   "Use Memory of Lucid Dreams right before you are about to fall out of Voidform" );
+  cds->add_action(
+      "memory_of_lucid_dreams,if=(buff.voidform.stack>20&insanity<=50)|"
+      "(current_insanity_drain*((gcd.max*2)+action.mind_blast.cast_time))>insanity",
+      "Use Memory of Lucid Dreams right before you are about to fall out of Voidform" );
   cds->add_action( "blood_of_the_enemy" );
   cds->add_action( "guardian_of_azeroth,if=buff.voidform.stack>15" );
   cds->add_action( "use_item,name=manifesto_of_madness,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
   cds->add_action( "focused_azerite_beam,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
   cds->add_action( "purifying_blast,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
-  cds->add_action( "concentrated_flame,line_cd=6,"
-                   "if=time<=10|"
-                   "(buff.chorus_of_insanity.stack>=15&buff.voidform.up)|full_recharge_time<gcd|target.time_to_die<5",
-                   "Wait at least 6s between casting CF. Use the first cast ASAP to get it on CD,"
-                   " then every subsequent cast should be used when Chorus of Insanity is active or it will recharge in the next gcd, or the target is about to die." );
+  cds->add_action(
+      "concentrated_flame,line_cd=6,"
+      "if=time<=10|"
+      "(buff.chorus_of_insanity.stack>=15&buff.voidform.up)|full_recharge_time<gcd|target.time_to_die<5",
+      "Wait at least 6s between casting CF. Use the first cast ASAP to get it on CD,"
+      " then every subsequent cast should be used when Chorus of Insanity is active or it will recharge in the next "
+      "gcd, or the target is about to die." );
   cds->add_action( "ripple_in_space" );
   cds->add_action( "reaping_flames" );
   cds->add_action( "worldvein_resonance" );
-  cds->add_action( "call_action_list,name=crit_cds,if=(buff.voidform.up&"
-                   "buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0",
-                   "Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity active" );
+  cds->add_action(
+      "call_action_list,name=crit_cds,if=(buff.voidform.up&"
+      "buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0",
+      "Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity "
+      "active" );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   // Crit CDs
@@ -2067,10 +2062,11 @@ void priest_t::generate_apl_shadow()
   single->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
   single->add_action( "call_action_list,name=cds" );
-  single->add_action( this, "Mind Sear",
-                      "if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&"
-                      "azerite.searing_dialogue.rank>=1",
-                      "Use Mind Sear on ST only if you get a Thought Harvester Proc with at least 1 Searing Dialogue Trait." );
+  single->add_action(
+      this, "Mind Sear",
+      "if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&"
+      "azerite.searing_dialogue.rank>=1",
+      "Use Mind Sear on ST only if you get a Thought Harvester Proc with at least 1 Searing Dialogue Trait." );
   single->add_talent( this, "Shadow Word: Death",
                       "if=target.time_to_die<3|"
                       "cooldown.shadow_word_death.charges=2|"
@@ -2078,7 +2074,8 @@ void priest_t::generate_apl_shadow()
                       "cooldown.shadow_word_death.remains<gcd.max)",
                       "Use SWD before capping charges, or the target is about to die." );
   single->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
-  single->add_talent( this, "Dark Void", "if=raid_event.adds.in>10", "Use Dark Void on CD unless adds are incoming in 10s or less." );
+  single->add_talent( this, "Dark Void", "if=raid_event.adds.in>10",
+                      "Use Dark Void on CD unless adds are incoming in 10s or less." );
   single->add_talent( this, "Mindbender", "if=talent.mindbender.enabled|(buff.voidform.stack>18|target.time_to_die<15)",
                       "Use Mindbender at 19 or more stacks, or if the target will die in less than 15s." );
   single->add_talent( this, "Shadow Word: Death",
@@ -2123,8 +2120,7 @@ void priest_t::generate_apl_shadow()
                       "&(dot.shadow_word_pain.refreshable|target.time_to_die>30)",
                       "Use Dark Void on CD unless adds are incoming in 10s or less." );
   cleave->add_talent( this, "Mindbender" );
-  cleave->add_action( this, "Mind Blast",
-                      "target_if=spell_targets.mind_sear<variable.mind_blast_targets" );
+  cleave->add_action( this, "Mind Blast", "target_if=spell_targets.mind_sear<variable.mind_blast_targets" );
   cleave->add_talent( this, "Shadow Crash",
                       "if=(raid_event.adds.in>5&raid_event.adds.duration<2)|"
                       "raid_event.adds.duration>2" );
