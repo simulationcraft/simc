@@ -479,7 +479,7 @@ private:
   void init_spells_shadow();
   void generate_apl_shadow();
   std::unique_ptr<expr_t> create_expression_shadow( util::string_view name_str );
-  action_t* create_action_shadow( util::string_view name, const std::string& options_str );
+  action_t* create_action_shadow( util::string_view name, util::string_view options_str );
 
   void create_buffs_discipline();
   void init_spells_discipline();
@@ -487,7 +487,7 @@ private:
   void generate_apl_discipline_d();
   void generate_apl_discipline_h();
   std::unique_ptr<expr_t> create_expression_discipline( action_t* a, const util::string_view name_str );
-  action_t* create_action_discipline( util::string_view name, const std::string& options_str );
+  action_t* create_action_discipline( util::string_view name, util::string_view options_str );
 
   void create_buffs_holy();
   void init_spells_holy();
@@ -495,7 +495,7 @@ private:
   void generate_apl_holy_d();
   void generate_apl_holy_h();
   expr_t* create_expression_holy( action_t* a, util::string_view name_str );
-  action_t* create_action_holy( util::string_view name, const std::string& options_str );
+  action_t* create_action_holy( util::string_view name, util::string_view options_str );
 
   target_specific_t<priest_td_t> _target_data;
 

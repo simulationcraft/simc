@@ -18,7 +18,7 @@ namespace spells
 // ==========================================================================
 struct angelic_feather_t final : public priest_spell_t
 {
-  angelic_feather_t( priest_t& p, const std::string& options_str )
+  angelic_feather_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "angelic_feather", p, p.find_class_spell( "Angelic Feather" ) )
   {
     parse_options( options_str );
@@ -61,7 +61,7 @@ public:
 
   propagate_const<divine_star_base_t*> return_spell;
 
-  divine_star_base_t( const std::string& n, priest_t& p, const spell_data_t* spell_data, bool is_return_spell = false )
+  divine_star_base_t( util::string_view n, priest_t& p, const spell_data_t* spell_data, bool is_return_spell = false )
     : ab( n, p, spell_data ),
       return_spell( ( is_return_spell ? nullptr : new divine_star_base_t( n, p, spell_data, true ) ) )
   {
@@ -95,7 +95,7 @@ public:
 
 struct divine_star_t final : public priest_spell_t
 {
-  divine_star_t( priest_t& p, const std::string& options_str )
+  divine_star_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "divine_star", p, p.talents.divine_star ),
       _heal_spell( new divine_star_base_t<priest_heal_t>( "divine_star_heal", p, p.find_spell( 110745 ) ) ),
       _dmg_spell( new divine_star_base_t<priest_spell_t>( "divine_star_damage", p, p.find_spell( 122128 ) ) )
@@ -129,7 +129,7 @@ template <class Base>
 struct halo_base_t : public Base
 {
 public:
-  halo_base_t( const std::string& n, priest_t& p, const spell_data_t* s ) : Base( n, p, s )
+  halo_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : Base( n, p, s )
   {
     Base::aoe        = -1;
     Base::background = true;
@@ -166,7 +166,7 @@ public:
 
 struct halo_t final : public priest_spell_t
 {
-  halo_t( priest_t& p, const std::string& options_str )
+  halo_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "halo", p, p.talents.halo ),
       _heal_spell( new halo_base_t<priest_heal_t>( "halo_heal", p, p.find_spell( 120692 ) ) ),
       _dmg_spell( new halo_base_t<priest_spell_t>( "halo_damage", p, p.find_spell( 120696 ) ) )
@@ -195,7 +195,7 @@ private:
 // ==========================================================================
 struct levitate_t final : public priest_spell_t
 {
-  levitate_t( priest_t& p, const std::string& options_str )
+  levitate_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "levitate", p, p.find_class_spell( "Levitate" ) )
   {
     parse_options( options_str );
@@ -208,7 +208,7 @@ struct levitate_t final : public priest_spell_t
 // ==========================================================================
 struct power_word_fortitude_t final : public priest_spell_t
 {
-  power_word_fortitude_t( priest_t& p, const std::string& options_str )
+  power_word_fortitude_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "power_word_fortitude", p, p.find_class_spell( "Power Word: Fortitude" ) )
   {
     parse_options( options_str );
@@ -235,7 +235,7 @@ struct smite_t final : public priest_spell_t
   const spell_data_t* holy_fire_rank2;
   const spell_data_t* holy_word_chastise;
   const spell_data_t* smite_rank2;
-  smite_t( priest_t& p, const std::string& options_str )
+  smite_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
       holy_fire_rank2( priest().find_specialization_spell( 231687 ) ),
       holy_word_chastise( priest().find_specialization_spell( 88625 ) ),
@@ -302,7 +302,7 @@ struct smite_t final : public priest_spell_t
 
 struct power_infusion_t final : public priest_spell_t
 {
-  power_infusion_t( priest_t& p, const std::string& options_str )
+  power_infusion_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "power_infusion", p, p.find_class_spell( "Power Infusion" ) )
   {
     parse_options( options_str );
@@ -327,7 +327,7 @@ struct summon_pet_t : public priest_spell_t
   propagate_const<pet_t*> pet;
 
 public:
-  summon_pet_t( const std::string& n, priest_t& p, const spell_data_t* sd = spell_data_t::nil() )
+  summon_pet_t( util::string_view n, priest_t& p, const spell_data_t* sd = spell_data_t::nil() )
     : priest_spell_t( n, p, sd ), summoning_duration( timespan_t::zero() ), pet_name( n ), pet( nullptr )
   {
     harmful = false;
@@ -372,7 +372,7 @@ public:
 // ==========================================================================
 struct summon_shadowfiend_t final : public summon_pet_t
 {
-  summon_shadowfiend_t( priest_t& p, const std::string& options_str )
+  summon_shadowfiend_t( priest_t& p, util::string_view options_str )
     : summon_pet_t( "shadowfiend", p, p.find_class_spell( "Shadowfiend" ) )
   {
     parse_options( options_str );
@@ -389,7 +389,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
 // ==========================================================================
 struct summon_mindbender_t final : public summon_pet_t
 {
-  summon_mindbender_t( priest_t& p, const std::string& options_str )
+  summon_mindbender_t( priest_t& p, util::string_view options_str )
     : summon_pet_t( "mindbender", p, p.find_talent_spell( "Mindbender" ) )
   {
     parse_options( options_str );
@@ -406,7 +406,7 @@ struct summon_mindbender_t final : public summon_pet_t
  */
 struct shadow_mend_t final : public priest_heal_t
 {
-  shadow_mend_t( priest_t& p, const std::string& options_str )
+  shadow_mend_t( priest_t& p, util::string_view options_str )
     : priest_heal_t( "shadow_mend", p, p.find_class_spell( "Shadow Mend" ) )
   {
     parse_options( options_str );
@@ -427,7 +427,7 @@ struct power_word_shield_t final : public priest_absorb_t
 {
   bool ignore_debuff;
 
-  power_word_shield_t( priest_t& p, const std::string& options_str )
+  power_word_shield_t( priest_t& p, util::string_view options_str )
     : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ), ignore_debuff( false )
   {
     add_option( opt_bool( "ignore_debuff", ignore_debuff ) );

@@ -15,7 +15,7 @@ namespace spells
 {
 struct pain_suppression_t final : public priest_spell_t
 {
-  pain_suppression_t( priest_t& p, const std::string& options_str )
+  pain_suppression_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "pain_suppression", p, p.find_class_spell( "Pain Suppression" ) )
   {
     parse_options( options_str );
@@ -58,7 +58,7 @@ struct penance_t final : public priest_spell_t
     }
   };
 
-  penance_t( priest_t& p, const std::string& options_str )
+  penance_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "penance", p, p.find_class_spell( "Penance" ) )
   {
     parse_options( options_str );
@@ -126,7 +126,7 @@ struct penance_t final : public priest_spell_t
 
 struct power_word_solace_t final : public priest_spell_t
 {
-  power_word_solace_t( priest_t& player, const std::string& options_str )
+  power_word_solace_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "power_word_solace", player, player.talents.power_word_solace )
   {
     parse_options( options_str );
@@ -179,7 +179,7 @@ struct purge_the_wicked_t final : public priest_spell_t
     }
   };
 
-  purge_the_wicked_t( priest_t& p, const std::string& options_str )
+  purge_the_wicked_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "purge_the_wicked", p, p.talents.purge_the_wicked )
   {
     parse_options( options_str );
@@ -192,7 +192,7 @@ struct purge_the_wicked_t final : public priest_spell_t
 
 struct schism_t final : public priest_spell_t
 {
-  schism_t( priest_t& player, const std::string& options_str )
+  schism_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "schism", player, player.talents.schism )
   {
     parse_options( options_str );
@@ -363,7 +363,7 @@ void priest_t::fixup_atonement_stats( util::string_view trigger_spell_name, util
   }
 }
 
-action_t* priest_t::create_action_discipline( util::string_view name, const std::string& options_str )
+action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )
 {
   using namespace actions::spells;
   using namespace actions::heals;
@@ -429,13 +429,13 @@ void priest_t::generate_apl_discipline_d()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   // On-Use Items
-  for ( const std::string& item_action : get_item_actions() )
+  for ( const auto& item_action : get_item_actions() )
   {
     def->add_action( item_action );
   }
 
   // Professions
-  for ( const std::string& profession_action : get_profession_actions() )
+  for ( const auto& profession_action : get_profession_actions() )
   {
     def->add_action( profession_action );
   }
@@ -459,7 +459,7 @@ void priest_t::generate_apl_discipline_d()
 
   if ( race != RACE_BLOOD_ELF )
   {
-    for ( const std::string& racial_action : get_racial_actions() )
+    for ( const auto& racial_action : get_racial_actions() )
     {
       def->add_action( racial_action );
     }

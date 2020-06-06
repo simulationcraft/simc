@@ -15,7 +15,7 @@ namespace spells
 {
 struct dispersion_t final : public priest_spell_t
 {
-  dispersion_t( priest_t& player, const std::string& options_str )
+  dispersion_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "dispersion", player, player.find_class_spell( "Dispersion" ) )
   {
     parse_options( options_str );
@@ -66,7 +66,7 @@ private:
   double whispers_bonus_insanity;
 
 public:
-  mind_blast_t( priest_t& player, const std::string& options_str )
+  mind_blast_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "mind_blast", player,
                       player.talents.shadow_word_void->ok() ? player.find_talent_spell( "Shadow Word: Void" )
                                                             : player.find_class_spell( "Mind Blast" ) ),
@@ -263,7 +263,7 @@ struct mind_sear_tick_t final : public priest_spell_t
 
 struct mind_sear_t final : public priest_spell_t
 {
-  mind_sear_t( priest_t& p, const std::string& options_str )
+  mind_sear_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_sear", p, p.find_specialization_spell( ( "Mind Sear" ) ) )
   {
     parse_options( options_str );
@@ -298,7 +298,7 @@ struct mind_flay_t final : public priest_spell_t
 {
   double insanity_gain;
 
-  mind_flay_t( priest_t& p, const std::string& options_str )
+  mind_flay_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_flay", p, p.find_specialization_spell( "Mind Flay" ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) *
                      ( 1.0 + p.talents.fortress_of_the_mind->effectN( 1 ).percent() ) )
@@ -324,7 +324,7 @@ struct mind_flay_t final : public priest_spell_t
 
 struct shadow_word_death_t final : public priest_spell_t
 {
-  shadow_word_death_t( priest_t& p, const std::string& options_str )
+  shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) )
   {
     parse_options( options_str );
@@ -390,7 +390,7 @@ struct shadow_crash_t final : public priest_spell_t
 {
   double insanity_gain;
 
-  shadow_crash_t( priest_t& p, const std::string& options_str )
+  shadow_crash_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_crash", p, p.talents.shadow_crash ),
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
@@ -423,7 +423,7 @@ struct shadow_crash_t final : public priest_spell_t
 
 struct shadowform_t final : public priest_spell_t
 {
-  shadowform_t( priest_t& p, const std::string& options_str )
+  shadowform_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadowform", p, p.find_class_spell( "Shadowform" ) )
   {
     parse_options( options_str );
@@ -442,7 +442,7 @@ struct shadowform_t final : public priest_spell_t
 
 struct silence_t final : public priest_spell_t
 {
-  silence_t( priest_t& player, const std::string& options_str )
+  silence_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "silence", player, player.find_class_spell( "Silence" ) )
   {
     parse_options( options_str );
@@ -486,7 +486,7 @@ struct silence_t final : public priest_spell_t
 
 struct mind_bomb_t final : public priest_spell_t
 {
-  mind_bomb_t( priest_t& player, const std::string& options_str )
+  mind_bomb_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "mind_bomb", player, player.talents.mind_bomb )
   {
     parse_options( options_str );
@@ -502,7 +502,7 @@ struct mind_bomb_t final : public priest_spell_t
 
 struct psychic_horror_t final : public priest_spell_t
 {
-  psychic_horror_t( priest_t& player, const std::string& options_str )
+  psychic_horror_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "psychic_horror", player, player.talents.psychic_horror )
   {
     parse_options( options_str );
@@ -515,7 +515,7 @@ struct psychic_horror_t final : public priest_spell_t
 
 struct surrender_to_madness_t final : public priest_spell_t
 {
-  surrender_to_madness_t( priest_t& p, const std::string& options_str )
+  surrender_to_madness_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "surrender_to_madness", p, p.talents.surrender_to_madness )
   {
     parse_options( options_str );
@@ -532,7 +532,7 @@ struct surrender_to_madness_t final : public priest_spell_t
 
 struct vampiric_embrace_t final : public priest_spell_t
 {
-  vampiric_embrace_t( priest_t& p, const std::string& options_str )
+  vampiric_embrace_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "vampiric_embrace", p, p.find_class_spell( "Vampiric Embrace" ) )
   {
     parse_options( options_str );
@@ -666,13 +666,12 @@ struct shadow_word_pain_t final : public priest_spell_t
   bool casted;
   timespan_t increased_time;
 
-  shadow_word_pain_t( priest_t& p, const std::string& options_str, bool _casted = true )
+  shadow_word_pain_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
       increased_time(
           timespan_t::from_millis( priest().azerite.torment_of_torments.spell()->effectN( 1 ).base_value() ) )
   {
-    parse_options( options_str );
     casted    = _casted;
     may_crit  = true;
     tick_zero = false;
@@ -695,6 +694,11 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       dot_duration += rank2->effectN( 1 ).time_value();
     }
+  }
+
+  shadow_word_pain_t( priest_t& p, util::string_view options_str ) : shadow_word_pain_t( p, true )
+  {
+    parse_options( options_str );
   }
 
   double spell_direct_power_coefficient( const action_state_t* s ) const override
@@ -793,7 +797,7 @@ struct vampiric_touch_t final : public priest_spell_t
   propagate_const<shadow_word_pain_t*> child_swp;
   bool ignore_healing;
 
-  vampiric_touch_t( priest_t& p, const std::string& options_str )
+  vampiric_touch_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
       harvested_thoughts_value( priest().azerite.thought_harvester.value( 2 ) ),
@@ -805,7 +809,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( priest().talents.misery->ok() )
     {
-      child_swp             = new shadow_word_pain_t( priest(), std::string( "" ), false );
+      child_swp             = new shadow_word_pain_t( priest(), false );
       child_swp->background = true;
     }
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
@@ -911,7 +915,7 @@ struct void_bolt_t final : public priest_spell_t
   double insanity_gain;
   void_bolt_extension_t* void_bolt_extension;
 
-  void_bolt_t( priest_t& player, const std::string& options_str )
+  void_bolt_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
       void_bolt_extension( nullptr )
@@ -962,9 +966,9 @@ struct dark_void_t final : public priest_spell_t
   propagate_const<shadow_word_pain_t*> child_swp;
   double insanity_gain;
 
-  dark_void_t( priest_t& p, const std::string& options_str )
+  dark_void_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "dark_void", p, p.find_talent_spell( "Dark Void" ) ),
-      child_swp( new shadow_word_pain_t( priest(), std::string( "" ), false ) ),
+      child_swp( new shadow_word_pain_t( priest(), false ) ),
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
 
   {
@@ -1022,7 +1026,7 @@ struct void_eruption_t final : public priest_spell_t
 {
   double insanity_required;
 
-  void_eruption_t( priest_t& p, const std::string& options_str )
+  void_eruption_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "void_eruption", p, p.find_spell( 228260 ) )
   {
     parse_options( options_str );
@@ -1091,7 +1095,7 @@ struct dark_ascension_damage_t final : public priest_spell_t
 
 struct dark_ascension_t final : public priest_spell_t
 {
-  dark_ascension_t( priest_t& p, const std::string& options_str )
+  dark_ascension_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "dark_ascension", p, p.find_talent_spell( "Dark Ascension" ) )
   {
     parse_options( options_str );
@@ -1122,7 +1126,7 @@ struct void_torrent_t final : public priest_spell_t
 {
   double insanity_gain;
 
-  void_torrent_t( priest_t& p, const std::string& options_str )
+  void_torrent_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "void_torrent", p, p.find_talent_spell( "Void Torrent" ) ),
       insanity_gain( p.talents.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
@@ -1880,7 +1884,7 @@ void priest_t::init_spells_shadow()
   base.distance = 27.0;
 }
 
-action_t* priest_t::create_action_shadow( util::string_view name, const std::string& options_str )
+action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
 {
   using namespace actions::spells;
   using namespace actions::heals;
@@ -2014,7 +2018,7 @@ void priest_t::generate_apl_shadow()
   action_priority_list_t* crit_cds     = get_action_priority_list( "crit_cds" );
 
   // Professions
-  for ( const std::string& profession_action : get_profession_actions() )
+  for ( const auto& profession_action : get_profession_actions() )
   {
     default_list->add_action( profession_action );
   }

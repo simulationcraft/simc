@@ -16,14 +16,14 @@ namespace spells
 /// Holy Fire Base Spell, used for both Holy Fire and its overriding spell Purge the Wicked
 struct holy_fire_base_t : public priest_spell_t
 {
-  holy_fire_base_t( const std::string& name, priest_t& p, const spell_data_t* sd ) : priest_spell_t( name, p, sd )
+  holy_fire_base_t( util::string_view name, priest_t& p, const spell_data_t* sd ) : priest_spell_t( name, p, sd )
   {
   }
 };
 
 struct apotheosis_t final : public priest_spell_t
 {
-  apotheosis_t( priest_t& p, const std::string& options_str ) : priest_spell_t( "apotheosis", p, p.talents.apotheosis )
+  apotheosis_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "apotheosis", p, p.talents.apotheosis )
   {
     parse_options( options_str );
 
@@ -46,7 +46,7 @@ struct holy_fire_t final : public holy_fire_base_t
 {
   double sacred_flame_value;
 
-  holy_fire_t( priest_t& player, const std::string& options_str )
+  holy_fire_t( priest_t& player, util::string_view options_str )
     : holy_fire_base_t( "holy_fire", player, player.find_class_spell( "Holy Fire" ) ),
       sacred_flame_value( priest().azerite.sacred_flame.value( 1 ) )
   {
@@ -71,7 +71,7 @@ struct holy_fire_t final : public holy_fire_base_t
 
 struct holy_word_chastise_t final : public priest_spell_t
 {
-  holy_word_chastise_t( priest_t& player, const std::string& options_str )
+  holy_word_chastise_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "holy_word_chastise", player, player.find_class_spell( "Holy Word: Chastise" ) )
   {
     parse_options( options_str );
@@ -86,7 +86,7 @@ struct holy_word_chastise_t final : public priest_spell_t
 
 struct holy_word_serenity_t final : public priest_heal_t
 {
-  holy_word_serenity_t( priest_t& p, const std::string& options_str )
+  holy_word_serenity_t( priest_t& p, util::string_view options_str )
     : priest_heal_t( "holy_word_serenity", p, p.find_class_spell( "Holy Word: Serenity" ) )
   {
     parse_options( options_str );
@@ -99,7 +99,7 @@ struct holy_nova_t final : public priest_spell_t
 {
   const spell_data_t* holy_fire_rank2;
 
-  holy_nova_t( priest_t& player, const std::string& options_str )
+  holy_nova_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "holy_nova", player, player.find_class_spell( "Holy Nova" ) ),
       holy_fire_rank2( player.find_specialization_spell( 231687 ) )
   {
@@ -128,7 +128,7 @@ struct holy_nova_t final : public priest_spell_t
 
 struct flash_heal_t final : public priest_heal_t
 {
-  flash_heal_t( priest_t& p, const std::string& options_str )
+  flash_heal_t( priest_t& p, util::string_view options_str )
     : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) )
   {
     parse_options( options_str );
@@ -145,7 +145,7 @@ struct flash_heal_t final : public priest_heal_t
 
 struct renew_t final : public priest_heal_t
 {
-  renew_t( priest_t& p, const std::string& options_str ) : priest_heal_t( "renew", p, p.find_class_spell( "Renew" ) )
+  renew_t( priest_t& p, util::string_view options_str ) : priest_heal_t( "renew", p, p.find_class_spell( "Renew" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -154,7 +154,7 @@ struct renew_t final : public priest_heal_t
 
 struct holy_heal_t final : public priest_heal_t
 {
-  holy_heal_t( priest_t& p, const std::string& options_str ) : priest_heal_t( "heal", p, p.find_class_spell( "Heal" ) )
+  holy_heal_t( priest_t& p, util::string_view options_str ) : priest_heal_t( "heal", p, p.find_class_spell( "Heal" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -246,7 +246,7 @@ void priest_t::init_spells_holy()
   }
 }
 
-action_t* priest_t::create_action_holy( util::string_view name, const std::string& options_str )
+action_t* priest_t::create_action_holy( util::string_view name, util::string_view options_str )
 {
   using namespace actions::spells;
   using namespace actions::heals;
@@ -327,7 +327,7 @@ void priest_t::generate_apl_holy_d()
   default_list->add_action( "use_items" );
 
   // Professions
-  for ( const std::string& profession_action : get_profession_actions() )
+  for ( const auto& profession_action : get_profession_actions() )
   {
     default_list->add_action( profession_action );
   }
