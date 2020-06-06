@@ -124,58 +124,6 @@ struct penance_t final : public priest_spell_t
   }
 };
 
-// ==========================================================================
-// Shadow Word: Pain
-// ==========================================================================
-struct shadow_word_pain_disc_t final : public priest_spell_t
-{
-  double insanity_gain;
-  bool casted;
-
-  shadow_word_pain_disc_t( priest_t& p, const std::string& options_str, bool _casted = true )
-    : priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) ),
-      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
-  {
-    parse_options( options_str );
-    casted    = _casted;
-    may_crit  = true;
-    tick_zero = false;
-    if ( !casted )
-    {
-      base_dd_max = 0.0;
-      base_dd_min = 0.0;
-    }
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* s ) const override
-  {
-    return casted ? priest_spell_t::spell_direct_power_coefficient( s ) : 0.0;
-  }
-
-  double bonus_ta( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::bonus_ta( state );
-
-    d += get_death_throes_bonus();
-
-    return d;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    priest_spell_t::tick( d );
-
-    if ( d->state->result_amount > 0 )
-    {
-      if ( priest().rppm.power_of_the_dark_side->trigger() )
-      {
-        trigger_power_of_the_dark_side();
-      }
-    }
-  }
-};
-
 struct power_word_solace_t final : public priest_spell_t
 {
   power_word_solace_t( priest_t& player, const std::string& options_str )
@@ -436,16 +384,9 @@ action_t* priest_t::create_action_discipline( const std::string& name, const std
   {
     return new schism_t( *this, options_str );
   }
-  if ( ( name == "shadow_word_pain" ) || ( name == "purge_the_wicked" ) )
+  if ( name == "purge_the_wicked" )
   {
-    if ( talents.purge_the_wicked->ok() )
-    {
-      return new purge_the_wicked_t( *this, options_str );
-    }
-    else
-    {
-      return new shadow_word_pain_disc_t( *this, options_str );
-    }
+    return new purge_the_wicked_t( *this, options_str );
   }
 
   return nullptr;

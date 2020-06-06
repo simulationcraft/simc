@@ -758,6 +758,10 @@ struct shadow_word_pain_t final : public priest_spell_t
       {
         expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, player );
       }
+      if ( priest().rppm.power_of_the_dark_side->trigger() )
+      {
+        trigger_power_of_the_dark_side();
+      }
     }
   }
 
