@@ -407,7 +407,7 @@ public:
   double lucid_dreams_accumulator;
   double lucid_dreams_minor_refund_coeff;
 
-  paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN );
+  paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
   virtual void      init_base_stats() override;
   virtual void      init_gains() override;

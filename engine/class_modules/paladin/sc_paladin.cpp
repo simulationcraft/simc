@@ -13,7 +13,7 @@
 // ==========================================================================
 namespace paladin {
 
-paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
+paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
   player_t( sim, PALADIN, name, r ),
   active( active_spells_t() ),
   buffs( buffs_t() ),
@@ -2170,7 +2170,7 @@ struct paladin_module_t : public module_t
 {
   paladin_module_t() : module_t( PALADIN ) {}
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
     auto  p = new paladin_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new paladin_report_t( *p ) );

@@ -470,7 +470,7 @@ public:
   std::string default_food() const override;
   std::string default_rune() const override;
 
-  warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF )
+  warrior_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF )
     : player_t( sim, WARRIOR, name, r ),
       heroic_charge( nullptr ),
       rampage_driver( nullptr ),
@@ -7259,7 +7259,7 @@ struct warrior_module_t : public module_t
   {
   }
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
     auto p              = new warrior_t( sim, name, r );
     p->report_extension = std::unique_ptr<player_report_extension_t>( new warrior_report_t( *p ) );

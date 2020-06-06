@@ -665,7 +665,7 @@ public:
   } uptime;
 
 public:
-  mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
+  mage_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE );
 
   // Character Definition
   void init_spells() override;
@@ -4802,7 +4802,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                 ->set_default_value( mage->azerite.packed_ice.value() );
 }
 
-mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
+mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   player_t( sim, MAGE, name, r ),
   icicle_event(),
   icicle(),
@@ -7134,7 +7134,7 @@ public:
     module_t( MAGE )
   { }
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
     auto p = new mage_t( sim, name, r );
     p->report_extension = std::make_unique<mage_report_t>( *p );

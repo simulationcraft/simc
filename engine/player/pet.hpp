@@ -37,8 +37,8 @@ struct pet_t : public player_t
   } owner_coeff;
 
 public:
-  pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian = false, bool dynamic = false );
-  pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian = false, bool dynamic = false );
+  pet_t( sim_t* sim, player_t* owner, util::string_view name, bool guardian = false, bool dynamic = false );
+  pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pt, bool guardian = false, bool dynamic = false );
 
   void create_options() override;
   void create_buffs() override;

@@ -696,7 +696,7 @@ private:
   target_specific_t<monk_td_t> target_data;
 
 public:
-  monk_t( sim_t* sim, const std::string& name, race_e r )
+  monk_t( sim_t* sim, util::string_view name, race_e r )
     : player_t( sim, MONK, name, r ),
       active_actions(),
       spiritual_focus_count( 0 ),
@@ -10806,7 +10806,7 @@ struct monk_module_t : public module_t
   {
   }
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
     auto p              = new monk_t( sim, name, r );
     p->report_extension = std::unique_ptr<player_report_extension_t>( new monk_report_t( *p ) );

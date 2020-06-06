@@ -617,7 +617,7 @@ void priest_td_t::target_demise()
 // Priest Definitions
 // ==========================================================================
 
-priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
+priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, PRIEST, name, r ),
     buffs(),
     talents(),

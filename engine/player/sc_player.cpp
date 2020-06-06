@@ -1052,7 +1052,7 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
   make_event<delay_event_t>( *residual_action->sim, t, residual_action, amount );
 }
 
-player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r )
+player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
   : actor_t( s, n ),
     type( t ),
     parent( nullptr ),

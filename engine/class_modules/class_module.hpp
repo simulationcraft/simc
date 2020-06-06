@@ -22,7 +22,7 @@ struct module_t
     type( t ) {}
 
   virtual ~module_t() {}
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const = 0;
+  virtual player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const = 0;
   virtual bool valid() const = 0;
   virtual void init( player_t* ) const = 0;
   virtual void static_init() const { }

@@ -757,7 +757,7 @@ public:
     double fury_of_nature = 0;
   } legendary;
 
-  druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
+  druid_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
     starshards( 0.0 ),
@@ -11262,7 +11262,7 @@ struct druid_module_t : public module_t
 {
   druid_module_t() : module_t( DRUID ) {}
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
     auto  p = new druid_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new druid_report_t( *p ) );

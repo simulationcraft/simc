@@ -826,7 +826,7 @@ public:
   // Runes
   runes_t _runes;
 
-  death_knight_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
+  death_knight_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
     runic_power_decay_rate(),
     active_dnd( nullptr ),
@@ -8843,7 +8843,7 @@ struct razorice_attack_cb_t : public scoped_actor_callback_t<death_knight_t>
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
     auto  p = new death_knight_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new death_knight_report_t( *p ) );

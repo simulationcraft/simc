@@ -39,7 +39,7 @@ struct expiration_t : public event_t
 
 pet_t::pet_t( sim_t*             sim,
               player_t*          owner,
-              const std::string& name,
+              util::string_view name,
               bool               guardian,
               bool               dynamic ) :
   pet_t( sim, owner, name, PET_NONE, guardian, dynamic )
@@ -48,7 +48,7 @@ pet_t::pet_t( sim_t*             sim,
 
 pet_t::pet_t( sim_t*             sim,
               player_t*          owner,
-              const std::string& name,
+              util::string_view name,
               pet_e              type,
               bool               guardian,
               bool               dynamic ) :

@@ -625,7 +625,7 @@ public:
   shaman_spell_t* lightning_conduit;
   shaman_spell_t* strength_of_earth;
 
-  shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN )
+  shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN )
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
       stormlash_targets( 17 ),  // Default to 2 tanks + 15 dps
@@ -9687,7 +9687,7 @@ struct shaman_module_t : public module_t
   {
   }
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
     auto p              = new shaman_t( sim, name, r );
     p->report_extension = std::unique_ptr<player_report_extension_t>( new shaman_report_t( *p ) );

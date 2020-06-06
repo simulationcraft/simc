@@ -525,7 +525,7 @@ public:
     double memory_of_lucid_dreams_proc_chance = 0.15;
   } options;
 
-  hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
+  hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
     player_t( sim, HUNTER, name, r ),
     pets( this ),
     buffs(),
@@ -6043,7 +6043,7 @@ struct hunter_module_t: public module_t
 {
   hunter_module_t(): module_t( HUNTER ) {}
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
     auto  p = new hunter_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new hunter_report_t( *p ) );

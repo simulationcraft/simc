@@ -527,7 +527,7 @@ struct rogue_t : public player_t
     double memory_of_lucid_dreams_proc_chance = -1.0;
   } options;
   
-  rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
+  rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     shadow_techniques( 0 ),
     poisoned_enemies( 0 ),
@@ -7738,7 +7738,7 @@ struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
     auto p = new rogue_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new rogue_report_t( *p ) );

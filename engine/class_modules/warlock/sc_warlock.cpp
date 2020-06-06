@@ -251,7 +251,7 @@ namespace warlock
     }
   }
 
-warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
+warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     havoc_spells(),
@@ -1212,7 +1212,7 @@ struct warlock_module_t : public module_t
 {
   warlock_module_t() : module_t( WARLOCK ) { }
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
     auto  p = new warlock_t( sim, name, r );
     p->report_extension = std::unique_ptr<player_report_extension_t>( new warlock_report_t( *p ) );

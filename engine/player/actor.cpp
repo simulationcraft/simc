@@ -5,7 +5,7 @@
 
 #include "actor.hpp"
 
-actor_t::actor_t( sim_t* s, const std::string& name ) :
+actor_t::actor_t( sim_t* s, util::string_view name ) :
   sim( s ), spawner( nullptr ), name_str( name ),
 #ifdef ACTOR_EVENT_BOOKKEEPING
   event_counter( 0 ),

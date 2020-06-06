@@ -32,7 +32,7 @@ struct enemy_t : public player_t
 
   std::vector<buff_t*> buffs_health_decades;
 
-  enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID, player_e type = ENEMY ) :
+  enemy_t( sim_t* s, util::string_view n, race_e r = RACE_HUMANOID, player_e type = ENEMY ) :
     player_t( s, type, n, r ),
     enemy_id( s -> target_list.size() ),
     fixed_health( 0 ), initial_health( 0 ),
@@ -963,7 +963,7 @@ struct add_t : public pet_t
 
 struct heal_enemy_t : public enemy_t
 {
-  heal_enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID ) :
+  heal_enemy_t( sim_t* s, util::string_view n, race_e r = RACE_HUMANOID ) :
     enemy_t( s, n, r, HEALING_ENEMY )
   {
     target = this;
@@ -1003,7 +1003,7 @@ struct tank_dummy_enemy_t : public enemy_t
   std::string tank_dummy_str;
   tank_dummy_e tank_dummy_enum;
 
-  tank_dummy_enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID ) :
+  tank_dummy_enemy_t( sim_t* s, util::string_view n, race_e r = RACE_HUMANOID ) :
     enemy_t( s, n, r, TANK_DUMMY ),
     tank_dummy_str( "none" ),
     tank_dummy_enum( tank_dummy_e::NONE )
@@ -1700,7 +1700,7 @@ struct enemy_module_t : public module_t
 {
   enemy_module_t() : module_t( ENEMY ) {}
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
     auto  p = new enemy_t( sim, name );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new enemy_report_t( *p ) );
@@ -1718,7 +1718,7 @@ struct heal_enemy_module_t : public module_t
 {
   heal_enemy_module_t() : module_t( HEALING_ENEMY ) {}
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
     auto  p = new heal_enemy_t( sim, name );
     return p;
@@ -1735,7 +1735,7 @@ struct tank_dummy_enemy_module_t : public module_t
 {
   tank_dummy_enemy_module_t() : module_t( TANK_DUMMY ) {}
 
-  player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const override
+  player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
     auto  p = new tank_dummy_enemy_t( sim, name );
     return p;

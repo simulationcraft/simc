@@ -626,7 +626,7 @@ public:
 
 
 
-  player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e );
+  player_t( sim_t* sim, player_e type, util::string_view name, race_e race_e );
   ~player_t() override;
 
   // Static methods

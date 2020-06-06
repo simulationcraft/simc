@@ -515,7 +515,7 @@ public:
     double memory_of_lucid_dreams_proc_chance = 0.15;
   } options;
 
-  demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
+  demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
 
   // overridden player_t init functions
   stat_e convert_hybrid_stat( stat_e s ) const override;
@@ -4139,7 +4139,7 @@ void demon_hunter_td_t::target_demise()
 // Demon Hunter Definitions
 // ==========================================================================
 
-demon_hunter_t::demon_hunter_t(sim_t* sim, const std::string& name, race_e r)
+demon_hunter_t::demon_hunter_t(sim_t* sim, util::string_view name, race_e r)
   : player_t(sim, DEMON_HUNTER, name, r),
   melee_main_hand(nullptr),
   melee_off_hand(nullptr),
@@ -6226,7 +6226,7 @@ public:
   {
   }
 
-  player_t* create_player( sim_t* sim, const std::string& name,
+  player_t* create_player( sim_t* sim, util::string_view name,
                            race_e r = RACE_NONE ) const override
   {
     auto p = new demon_hunter_t( sim, name, r );
