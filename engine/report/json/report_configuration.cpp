@@ -7,6 +7,16 @@
 
 #include <stdexcept>  // included because cpp-semver seems to lack this internal dependency
 
+// GNU C library defines macros major & minor in <sys/types.h>
+// While it does not seem to mess with the use of these names in cpp-semver both gcc and
+// clang complain with a warning. This seems to shut up them both.
+#ifdef minor
+#  undef minor
+#endif
+#ifdef major
+#  undef major
+#endif
+
 #include "lib/cpp-semver/cpp-semver.hpp"
 #include "sim/sc_sim.hpp"
 
