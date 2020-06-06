@@ -349,7 +349,7 @@ void priest_t::init_spells_discipline()
  * Copy stats from the trigger spell to the atonement spell
  * to get proper HPR and HPET reports.
  */
-void priest_t::fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name )
+void priest_t::fixup_atonement_stats( util::string_view trigger_spell_name, util::string_view atonement_spell_name )
 {
   if ( stats_t* trigger = find_stats( trigger_spell_name ) )
   {
@@ -363,7 +363,7 @@ void priest_t::fixup_atonement_stats( const std::string& trigger_spell_name, con
   }
 }
 
-action_t* priest_t::create_action_discipline( const std::string& name, const std::string& options_str )
+action_t* priest_t::create_action_discipline( util::string_view name, const std::string& options_str )
 {
   using namespace actions::spells;
   using namespace actions::heals;
@@ -392,7 +392,7 @@ action_t* priest_t::create_action_discipline( const std::string& name, const std
   return nullptr;
 }
 
-std::unique_ptr<expr_t> priest_t::create_expression_discipline( action_t*, const std::string& /*name_str*/ )
+std::unique_ptr<expr_t> priest_t::create_expression_discipline( action_t*, util::string_view /*name_str*/ )
 {
   return {};
 }

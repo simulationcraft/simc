@@ -1880,7 +1880,7 @@ void priest_t::init_spells_shadow()
   base.distance = 27.0;
 }
 
-action_t* priest_t::create_action_shadow( const std::string& name, const std::string& options_str )
+action_t* priest_t::create_action_shadow( util::string_view name, const std::string& options_str )
 {
   using namespace actions::spells;
   using namespace actions::heals;
@@ -1981,7 +1981,7 @@ bool priest_t::insanity_drain_frozen() const
   return false;
 }
 
-std::unique_ptr<expr_t> priest_t::create_expression_shadow( const std::string& name_str )
+std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view name_str )
 {
   if ( name_str == "shadowy_apparitions_in_flight" )
   {

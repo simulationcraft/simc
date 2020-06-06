@@ -246,7 +246,7 @@ void priest_t::init_spells_holy()
   }
 }
 
-action_t* priest_t::create_action_holy( const std::string& name, const std::string& options_str )
+action_t* priest_t::create_action_holy( util::string_view name, const std::string& options_str )
 {
   using namespace actions::spells;
   using namespace actions::heals;
@@ -294,7 +294,7 @@ action_t* priest_t::create_action_holy( const std::string& name, const std::stri
   return nullptr;
 }
 
-expr_t* priest_t::create_expression_holy( action_t*, const std::string& /*name_str*/ )
+expr_t* priest_t::create_expression_holy( action_t*, util::string_view /*name_str*/ )
 {
   return nullptr;
 }

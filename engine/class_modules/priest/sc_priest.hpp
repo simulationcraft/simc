@@ -472,30 +472,30 @@ private:
   void create_benefits();
   void create_apl_precombat();
   void create_apl_default();
-  void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
+  void fixup_atonement_stats( util::string_view trigger_spell_name, util::string_view atonement_spell_name );
 
   void create_buffs_shadow();
   void init_rng_shadow();
   void init_spells_shadow();
   void generate_apl_shadow();
-  std::unique_ptr<expr_t> create_expression_shadow( const std::string& name_str );
-  action_t* create_action_shadow( const std::string& name, const std::string& options_str );
+  std::unique_ptr<expr_t> create_expression_shadow( util::string_view name_str );
+  action_t* create_action_shadow( util::string_view name, const std::string& options_str );
 
   void create_buffs_discipline();
   void init_spells_discipline();
   void init_rng_discipline();
   void generate_apl_discipline_d();
   void generate_apl_discipline_h();
-  std::unique_ptr<expr_t> create_expression_discipline( action_t* a, const std::string& name_str );
-  action_t* create_action_discipline( const std::string& name, const std::string& options_str );
+  std::unique_ptr<expr_t> create_expression_discipline( action_t* a, const util::string_view name_str );
+  action_t* create_action_discipline( util::string_view name, const std::string& options_str );
 
   void create_buffs_holy();
   void init_spells_holy();
   void init_rng_holy();
   void generate_apl_holy_d();
   void generate_apl_holy_h();
-  expr_t* create_expression_holy( action_t* a, const std::string& name_str );
-  action_t* create_action_holy( const std::string& name, const std::string& options_str );
+  expr_t* create_expression_holy( action_t* a, util::string_view name_str );
+  action_t* create_action_holy( util::string_view name, const std::string& options_str );
 
   target_specific_t<priest_td_t> _target_data;
 
@@ -628,7 +628,7 @@ struct priest_pet_melee_t : public melee_attack_t
 {
   bool first_swing;
 
-  priest_pet_melee_t( priest_pet_t& p, const char* name )
+  priest_pet_melee_t( priest_pet_t& p, util::string_view name )
     : melee_attack_t( name, &p, spell_data_t::nil() ), first_swing( true )
   {
     school            = SCHOOL_SHADOW;
@@ -665,12 +665,12 @@ struct priest_pet_melee_t : public melee_attack_t
 
 struct priest_pet_spell_t : public spell_t
 {
-  priest_pet_spell_t( priest_pet_t& p, const std::string& n ) : spell_t( n, &p, p.find_pet_spell( n ) )
+  priest_pet_spell_t( priest_pet_t& p, util::string_view n ) : spell_t( n, &p, p.find_pet_spell( n ) )
   {
     may_crit = true;
   }
 
-  priest_pet_spell_t( const std::string& token, priest_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
+  priest_pet_spell_t( util::string_view token, priest_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
     : spell_t( token, p, s )
   {
     may_crit = true;
@@ -923,8 +923,8 @@ struct priest_action_t : public Base
   } affected_by;
 
 public:
-  priest_action_t( const std::string& n, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, &p, s ), affected_by()
+  priest_action_t( util::string_view name, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
+    : ab( name, &p, s ), affected_by()
   {
     init_affected_by();
     ab::may_crit          = true;
@@ -1168,8 +1168,8 @@ private:
 struct priest_absorb_t : public priest_action_t<absorb_t>
 {
 public:
-  priest_absorb_t( const std::string& n, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( n, player, s )
+  priest_absorb_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
+    : base_t( name, player, s )
   {
     may_crit      = true;
     tick_may_crit = false;
@@ -1179,8 +1179,8 @@ public:
 
 struct priest_heal_t : public priest_action_t<heal_t>
 {
-  priest_heal_t( const std::string& n, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( n, player, s )
+  priest_heal_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
+    : base_t( name, player, s )
   {
   }
 
@@ -1221,8 +1221,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
 struct priest_spell_t : public priest_action_t<spell_t>
 {
-  priest_spell_t( const std::string& n, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( n, player, s )
+  priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
+    : base_t( name, player, s )
   {
     weapon_multiplier = 0.0;
   }
@@ -1327,13 +1327,13 @@ struct priest_buff_t : public Base
 public:
   using base_t = priest_buff_t;  // typedef for priest_buff_t<buff_base_t>
 
-  priest_buff_t( priest_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  priest_buff_t( priest_td_t& td, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                  const item_t* item = nullptr )
     : Base( td, name, s, item )
   {
   }
 
-  priest_buff_t( priest_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+  priest_buff_t( priest_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                  const item_t* item = nullptr )
     : Base( &p, name, s, item )
   {
