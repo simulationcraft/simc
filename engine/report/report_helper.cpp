@@ -6,14 +6,15 @@
 #include "report_helper.hpp"
 
 #include "buff/sc_buff.hpp"
+#include "dbc/dbc.hpp"
 #include "dbc/sc_spell_info.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "item/item.hpp"
-#include "player/sc_player.hpp"
 #include "player/pet.hpp"
+#include "player/sc_player.hpp"
 #include "report/gear_weights.hpp"
-#include "sim/scale_factor_control.hpp"
 #include "sim/sc_sim.hpp"
+#include "sim/scale_factor_control.hpp"
 #include "util/xml.hpp"
 
 // ==========================================================================
@@ -341,7 +342,8 @@ std::string tooltip_parser_t::parse()
 
 }  // namespace
 
-std::string report_helper::pretty_spell_text( const spell_data_t& default_spell, const std::string& text, const player_t& p )
+std::string report_helper::pretty_spell_text( const spell_data_t& default_spell, const std::string& text,
+                                              const player_t& p )
 {
   return tooltip_parser_t( p, default_spell, text ).parse();
 }
@@ -367,7 +369,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     tier_name                  = "PR";
     third_ring_traits          = 1;
   }
-  else if (p.report_information.save_str.find( "DS" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "DS" ) != std::string::npos )
   {
     max_ilevel_allowed         = 485;
     max_azerite_ilevel_allowed = max_ilevel_allowed + 5;
@@ -385,7 +387,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     tier_name                  = "T22";
     third_ring_traits          = 1;
   }
-  else if (p.report_information.save_str.find( "T23" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "T23" ) != std::string::npos )
   {
     max_ilevel_allowed         = 415;
     max_azerite_ilevel_allowed = max_ilevel_allowed + 5;
@@ -393,7 +395,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     hoa_level                  = 48;
     tier_name                  = "T23";
   }
-  else if (p.report_information.save_str.find( "T24" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "T24" ) != std::string::npos )
   {
     max_ilevel_allowed         = 445;
     max_azerite_ilevel_allowed = max_ilevel_allowed + 5;
@@ -401,7 +403,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     hoa_level                  = 65;
     tier_name                  = "T24";
   }
-  else if (p.report_information.save_str.find( "T25" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "T25" ) != std::string::npos )
   {
     max_ilevel_allowed         = 485;
     max_azerite_ilevel_allowed = max_ilevel_allowed + 5;
@@ -445,12 +447,12 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     {
       // Check azerite_level
       if ( item.parsed.azerite_level != hoa_level )
-        sim.error( "Player {} has HoA of level {}, level for {} should be {}.\n", p.name(),
-                   item.parsed.azerite_level, tier_name, hoa_level );
+        sim.error( "Player {} has HoA of level {}, level for {} should be {}.\n", p.name(), item.parsed.azerite_level,
+                   tier_name, hoa_level );
       // Check final item level (since it's not only computed from azerite_level)
       if ( item.parsed.data.level != hoa_ilevel )
-        sim.error( "Player {} has HoA of ilevel {}, ilevel for {} should be {}.\n", p.name(),
-                   item.parsed.data.level, tier_name, hoa_ilevel );
+        sim.error( "Player {} has HoA of ilevel {}, ilevel for {} should be {}.\n", p.name(), item.parsed.data.level,
+                   tier_name, hoa_ilevel );
     }
     // Azerite gear
     else if ( slot == SLOT_HEAD || slot == SLOT_SHOULDERS || slot == SLOT_CHEST )
@@ -466,7 +468,8 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
           sim.error( "Player {} has {} with azerite power id {} which does not exists.", p.name(),
                      util::slot_type_string( slot ), azerite_id );
       }
-      // Check if there is more than one azerite power per tier (two for tier 3) and less than one for all tiers but tier 1
+      // Check if there is more than one azerite power per tier (two for tier 3) and less than one for all tiers but
+      // tier 1
       for ( unsigned i = 0; i < azerite_tiers; i++ )
       {
         int powers = 0;
@@ -478,7 +481,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
         }
         if ( i != 3 && powers > 1 )
           sim.error( "Player {} has {} with {} azerite powers of tier {}, should have 1.", p.name(),
-                      util::slot_type_string( slot ), powers, i );
+                     util::slot_type_string( slot ), powers, i );
         if ( i == 3 && powers > third_ring_traits )
           sim.error( "Player {} has {} with {} azerite powers of tier {}, should have {}.", p.name(),
                      util::slot_type_string( slot ), powers, i, third_ring_traits );
@@ -496,8 +499,8 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     {
       // Check item level
       if ( item.parsed.data.level != max_cloak_ilevel )
-        sim.error( "Player {} has cloak of ilevel {}, ilevel for {} should be {}.\n", p.name(),
-                   item.parsed.data.level, tier_name, max_cloak_ilevel );
+        sim.error( "Player {} has cloak of ilevel {}, ilevel for {} should be {}.\n", p.name(), item.parsed.data.level,
+                   tier_name, max_cloak_ilevel );
     }
     // Normal gear
     else
@@ -563,13 +566,11 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
 
     // Check if the item is using ilevel=
     if ( !item.option_ilevel_str.empty() )
-      sim.errorf( "Player %s has %s with ilevel=, use bonus_id= instead.\n", p.name(),
-                  util::slot_type_string( slot ) );
+      sim.errorf( "Player %s has %s with ilevel=, use bonus_id= instead.\n", p.name(), util::slot_type_string( slot ) );
 
     // Check if the item is using stats=
     if ( !item.option_stats_str.empty() )
-      sim.errorf( "Player %s has %s with stats=, it is not allowed.\n", p.name(),
-                  util::slot_type_string( slot ) );
+      sim.errorf( "Player %s has %s with stats=, it is not allowed.\n", p.name(), util::slot_type_string( slot ) );
 
     // Check if the item is using enchant_id=
     if ( !item.option_enchant_id_str.empty() )
@@ -578,8 +579,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
 
     // Check if the item is using gems=
     if ( !item.option_gems_str.empty() )
-      sim.errorf( "Player %s has %s with gems=, use gem_id= instead.\n", p.name(),
-                  util::slot_type_string( slot ) );
+      sim.errorf( "Player %s has %s with gems=, use gem_id= instead.\n", p.name(), util::slot_type_string( slot ) );
   }
 
   return true;
@@ -636,7 +636,6 @@ void report_helper::generate_player_charts( player_t& p, player_processed_report
   ri.generated = true;
 }
 
-
 bool report_helper::output_scale_factors( const player_t* p )
 {
   if ( !p->sim->scaling->has_scale_factors() || p->quiet || p->is_pet() || p->is_enemy() || p->type == HEALING_ENEMY )
@@ -649,116 +648,120 @@ bool report_helper::output_scale_factors( const player_t* p )
 
 std::vector<std::string> report_helper::beta_warnings()
 {
-  std::vector<std::string> s = {"Beta! Beta! Beta! Beta! Beta! Beta!",
-                                "Not All classes are yet supported.",
-                                "Some class models still need tweaking.",
-                                "Some class action lists need tweaking.",
-                                "Some class BiS gear setups need tweaking.",
-                                "Some trinkets not yet implemented.",
-                                "Constructive feedback regarding our output will shorten the Beta phase "
-                                "dramatically.",
-                                "Beta! Beta! Beta! Beta! Beta! Beta!"};
+  std::vector<std::string> s = { "Beta! Beta! Beta! Beta! Beta! Beta!",
+                                 "Not All classes are yet supported.",
+                                 "Some class models still need tweaking.",
+                                 "Some class action lists need tweaking.",
+                                 "Some class BiS gear setups need tweaking.",
+                                 "Some trinkets not yet implemented.",
+                                 "Constructive feedback regarding our output will shorten the Beta phase "
+                                 "dramatically.",
+                                 "Beta! Beta! Beta! Beta! Beta! Beta!" };
   return s;
 }
 
-void report_helper::print_html_sample_data(report::sc_html_stream& os, const player_t& p, const extended_sample_data_t& data,
-  const std::string& name, int columns)
+void report_helper::print_html_sample_data( report::sc_html_stream& os, const player_t& p,
+                                            const extended_sample_data_t& data, const std::string& name, int columns )
 {
   // Print Statistics of a Sample Data Container
   os << "<tbody>\n"
-    << "<tr>\n"
-    << "<td class=\"left small\" colspan=\"" << columns << "\">";
+     << "<tr>\n"
+     << "<td class=\"left small\" colspan=\"" << columns << "\">";
 
   std::string tokenized_name = data.name_str;
-  util::tokenize(tokenized_name);
-  tokenized_name = util::remove_special_chars(tokenized_name);
-  os.printf("<a id=\"actor%d_%s_stats_toggle\" class=\"toggle-details\">%s</a></td>\n</tr>\n",
-    p.index, tokenized_name.c_str(), name.c_str());
+  util::tokenize( tokenized_name );
+  tokenized_name = util::remove_special_chars( tokenized_name );
+  os.printf( "<a id=\"actor%d_%s_stats_toggle\" class=\"toggle-details\">%s</a></td>\n</tr>\n", p.index,
+             tokenized_name.c_str(), name.c_str() );
 
   os << "<tr class=\"details hide\">\n"
-    << "<td class=\"filler\" colspan=\"" << columns << "\">\n"
-    << "<table class=\"details\">\n"
-    << "<tr>\n"
-    << "<th class=\"left\" colspan=\"2\">" << util::encode_html(data.name_str) << "</th>\n"
-    << "</tr>\n";
+     << "<td class=\"filler\" colspan=\"" << columns << "\">\n"
+     << "<table class=\"details\">\n"
+     << "<tr>\n"
+     << "<th class=\"left\" colspan=\"2\">" << util::encode_html( data.name_str ) << "</th>\n"
+     << "</tr>\n";
 
-  os.printf("<tr>\n<td class=\"left\">Count</td>\n<td class=\"right\">%d</td>\n</tr>\n", (int)data.size());
-  os.printf("<tr>\n<td class=\"left\">Mean</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.mean());
-  os.printf("<tr>\n<td class=\"left\">Minimum</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.min());
-  os.printf("<tr>\n<td class=\"left\">Maximum</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.max());
-  os.printf("<tr>\n<td class=\"left\">Spread ( max - min )</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
-    data.max() - data.min());
-  os.printf("<tr>\n<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
-    "<td class=\"right\">%.2f%%</td>\n</tr>\n",
-    data.mean() ? ((data.max() - data.min()) / 2) * 100 / data.mean() : 0);
-  if (!data.simple)
+  os.printf( "<tr>\n<td class=\"left\">Count</td>\n<td class=\"right\">%d</td>\n</tr>\n", (int)data.size() );
+  os.printf( "<tr>\n<td class=\"left\">Mean</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.mean() );
+  os.printf( "<tr>\n<td class=\"left\">Minimum</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.min() );
+  os.printf( "<tr>\n<td class=\"left\">Maximum</td>\n<td class=\"right\">%.2f</td>\n</tr>\n", data.max() );
+  os.printf( "<tr>\n<td class=\"left\">Spread ( max - min )</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
+             data.max() - data.min() );
+  os.printf(
+      "<tr>\n<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
+      "<td class=\"right\">%.2f%%</td>\n</tr>\n",
+      data.mean() ? ( ( data.max() - data.min() ) / 2 ) * 100 / data.mean() : 0 );
+  if ( !data.simple )
   {
-    os.printf("<tr>\n<td class=\"left\">Standard Deviation</td>\n<td class=\"right\">%.4f</td>\n</tr>\n",
-      data.std_dev);
-    os.printf("<tr>\n<td class=\"left\">5th Percentile</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
-      data.percentile(0.05));
-    os.printf("<tr>\n<td class=\"left\">95th Percentile</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
-      data.percentile(0.95));
-    os.printf("<tr>\n<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
-      "<td class=\"right\">%.2f</td>\n</tr>\n",
-      data.percentile(0.95) - data.percentile(0.05));
+    os.printf( "<tr>\n<td class=\"left\">Standard Deviation</td>\n<td class=\"right\">%.4f</td>\n</tr>\n",
+               data.std_dev );
+    os.printf( "<tr>\n<td class=\"left\">5th Percentile</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
+               data.percentile( 0.05 ) );
+    os.printf( "<tr>\n<td class=\"left\">95th Percentile</td>\n<td class=\"right\">%.2f</td>\n</tr>\n",
+               data.percentile( 0.95 ) );
+    os.printf(
+        "<tr>\n<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
+        "<td class=\"right\">%.2f</td>\n</tr>\n",
+        data.percentile( 0.95 ) - data.percentile( 0.05 ) );
 
     os << "<tr>\n"
-      << "<th class=\"left\" colspan=\"2\">Mean Distribution</th>\n"
-      << "</tr>\n";
+       << "<th class=\"left\" colspan=\"2\">Mean Distribution</th>\n"
+       << "</tr>\n";
 
-    os.printf("<tr>\n<td class=\"left\">Standard Deviation</td>\n<td class=\"right\">%.4f</td>\n</tr>\n",
-      data.mean_std_dev);
+    os.printf( "<tr>\n<td class=\"left\">Standard Deviation</td>\n<td class=\"right\">%.4f</td>\n</tr>\n",
+               data.mean_std_dev );
 
     double mean_error = data.mean_std_dev * p.sim->confidence_estimator;
-    os.printf("<tr>\n<td class=\"left\">%.2f%% Confidence Interval</td>\n"
-      "<td class=\"right\">( %.2f - %.2f )</td>\n</tr>\n",
-      p.sim->confidence * 100.0,
-      data.mean() - mean_error,
-      data.mean() + mean_error);
-    os.printf("<tr>\n<td class=\"left\">Normalized %.2f%% Confidence Interval</td>\n"
-      "<td class=\"right\">( %.2f%% - %.2f%% )</td>\n</tr>\n",
-      p.sim->confidence * 100.0,
-      data.mean() ? 100 - mean_error * 100 / data.mean() : 0,
-      data.mean() ? 100 + mean_error * 100 / data.mean() : 0);
+    os.printf(
+        "<tr>\n<td class=\"left\">%.2f%% Confidence Interval</td>\n"
+        "<td class=\"right\">( %.2f - %.2f )</td>\n</tr>\n",
+        p.sim->confidence * 100.0, data.mean() - mean_error, data.mean() + mean_error );
+    os.printf(
+        "<tr>\n<td class=\"left\">Normalized %.2f%% Confidence Interval</td>\n"
+        "<td class=\"right\">( %.2f%% - %.2f%% )</td>\n</tr>\n",
+        p.sim->confidence * 100.0, data.mean() ? 100 - mean_error * 100 / data.mean() : 0,
+        data.mean() ? 100 + mean_error * 100 / data.mean() : 0 );
 
     os << "<tr>\n"
-      << "<th class=\"left\" colspan=\"2\">Approx. Iterations needed for ( always use n>=50 )</th>\n"
-      << "</tr>\n";
+       << "<th class=\"left\" colspan=\"2\">Approx. Iterations needed for ( always use n>=50 )</th>\n"
+       << "</tr>\n";
 
-    os.printf("<tr>\n<td class=\"left\">1%% Error</td>\n<td class=\"right\">%.0f</td>\n</tr>\n",
-      std::ceil(data.mean()
-        ? (mean_error * mean_error * data.size() / (0.01 * data.mean() * 0.01 * data.mean()))
-        : 0));
-    os.printf("<tr>\n<td class=\"left\">0.1%% Error</td>\n<td class=\"right\">%.0f</td>\n</tr>\n",
-      std::ceil(data.mean()
-        ? (mean_error * mean_error * data.size() / (0.001 * data.mean() * 0.001 * data.mean()))
-        : 0));
-    os.printf("<tr>\n<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
-      "<td class=\"right\">%.0f</td>\n</tr>\n",
-      std::ceil(2.0 * mean_error * mean_error * data.size() / (30.0 * 30.0)));
-    os.printf("<tr>\n<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
-      "<td class=\"right\">%.0f</td>\n</tr>\n",
-      std::ceil(2.0 * mean_error * mean_error * data.size() / (15 * 15)));
-    os.printf("<tr>\n<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
-      "<td class=\"right\">%.0f</td>\n</tr>\n",
-      std::ceil(2.0 * mean_error * mean_error * data.size() / (3 * 3)));
+    os.printf(
+        "<tr>\n<td class=\"left\">1%% Error</td>\n<td class=\"right\">%.0f</td>\n</tr>\n",
+        std::ceil( data.mean() ? ( mean_error * mean_error * data.size() / ( 0.01 * data.mean() * 0.01 * data.mean() ) )
+                               : 0 ) );
+    os.printf( "<tr>\n<td class=\"left\">0.1%% Error</td>\n<td class=\"right\">%.0f</td>\n</tr>\n",
+               std::ceil( data.mean() ? ( mean_error * mean_error * data.size() /
+                                          ( 0.001 * data.mean() * 0.001 * data.mean() ) )
+                                      : 0 ) );
+    os.printf(
+        "<tr>\n<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
+        "<td class=\"right\">%.0f</td>\n</tr>\n",
+        std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 30.0 * 30.0 ) ) );
+    os.printf(
+        "<tr>\n<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
+        "<td class=\"right\">%.0f</td>\n</tr>\n",
+        std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 15 * 15 ) ) );
+    os.printf(
+        "<tr>\n<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
+        "<td class=\"right\">%.0f</td>\n</tr>\n",
+        std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 3 * 3 ) ) );
   }
 
   os << "</table>\n";
 
-  if (!data.simple)
+  if ( !data.simple )
   {
-    highchart::histogram_chart_t chart(tokenized_name + "_dist", *p.sim);
-    chart.set_toggle_id("actor" + util::to_string(p.index) + "_" + tokenized_name + "_stats_toggle");
-    if (chart::generate_distribution(chart, nullptr, data.distribution, name, data.mean(), data.min(), data.max()))
+    highchart::histogram_chart_t chart( tokenized_name + "_dist", *p.sim );
+    chart.set_toggle_id( "actor" + util::to_string( p.index ) + "_" + tokenized_name + "_stats_toggle" );
+    if ( chart::generate_distribution( chart, nullptr, data.distribution, name, data.mean(), data.min(), data.max() ) )
     {
       os << chart.to_target_div();
-      p.sim->add_chart_data(chart);
+      p.sim->add_chart_data( chart );
     }
   }
 
   os << "</td>\n"
-    << "</tr>\n"
-    << "</tbody>\n";
+     << "</tr>\n"
+     << "</tbody>\n";
 }
