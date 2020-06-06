@@ -262,36 +262,26 @@ struct smite_t final : public priest_spell_t
     }
 
     sim->print_debug( "{} checking for Apotheosis buff and Light of the Naaru talent. ", priest() );
+    auto cooldown_base_reduction = -timespan_t::from_seconds( holy_word_chastise->effectN( 2 ).base_value() );
     if ( s->result_amount > 0 && priest().buffs.apotheosis->up() )
     {
-      priest().cooldowns.holy_word_chastise->adjust( ( -10 * priest().talents.apotheosis->effectN( 1 ).base_value() *
-                                                       holy_word_chastise->effectN( 2 ).time_value() ) );
-      double cd1 =
-          -10 * priest().talents.apotheosis->effectN( 1 ).base_value() * holy_word_chastise->effectN( 2 ).base_value();
+      auto cd1 = cooldown_base_reduction * ( 100 + priest().talents.apotheosis->effectN( 1 ).base_value() ) / 100.0;
+      priest().cooldowns.holy_word_chastise->adjust( cd1 );
 
       sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with Apotheosis.", priest(), cd1 );
     }
     else if ( s->result_amount > 0 && priest().talents.light_of_the_naaru->ok() )
     {
-      priest().cooldowns.holy_word_chastise->adjust(
-          ( -10 * ( priest().talents.light_of_the_naaru->effectN( 1 ).base_value() + 100 ) *
-            holy_word_chastise->effectN( 2 ).time_value() ) );
-      double cd2 = -10 * ( priest().talents.light_of_the_naaru->effectN( 1 ).base_value() + 100 ) *
-                   holy_word_chastise->effectN( 2 ).base_value();
-      if ( sim->debug )
-      {
-        sim->out_debug.printf( "%s adjusted cooldown of Chastise, by %f mS, with Light of the Naaru.", priest().name(),
-                               cd2 );
-      }
+      auto cd2 =
+          cooldown_base_reduction * ( 100 + priest().talents.light_of_the_naaru->effectN( 1 ).base_value() ) / 100.0;
+      priest().cooldowns.holy_word_chastise->adjust( cd2 );
+      sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with Light of the Naaru.", priest(), cd2 );
     }
     else if ( s->result_amount > 0 )
     {
-      priest().cooldowns.holy_word_chastise->adjust( ( -1000 * holy_word_chastise->effectN( 2 ).time_value() ) );
-      double cd3 = -1000 * holy_word_chastise->effectN( 2 ).base_value();
-      if ( sim->debug )
-      {
-        sim->out_debug.printf( "%s adjusted cooldown of Chastise, by %f mS, without Apotheosis", priest().name(), cd3 );
-      }
+      priest().cooldowns.holy_word_chastise->adjust( cooldown_base_reduction );
+      sim->print_debug( "{} adjusted cooldown of Chastise, by {}, without Apotheosis", priest(),
+                        cooldown_base_reduction );
     }
   }
 };
@@ -1008,7 +998,7 @@ pet_t* priest_t::create_pet( const std::string& pet_name, const std::string& /* 
     return new pets::fiend::mindbender_pet_t( sim, *this );
   }
 
-  sim->errorf( "Tried to create priest pet %s.", pet_name.c_str() );
+  sim->error( "{} Tried to create unknown priest pet {}.", *this, pet_name );
 
   return nullptr;
 }
@@ -1356,7 +1346,10 @@ void priest_t::init_action_list()
   if ( !sim->allow_experimental_specializations && specialization() == PRIEST_DISCIPLINE )
   {
     if ( !quiet )
-      sim->errorf( "Priest Discipline for player %s is not currently supported.", name() );
+      sim->error(
+          "Priest Discipline module for {} is not currently supported. It can be enabled by setting the option "
+          "allow_experimental_specializations=1",
+          *this );
 
     quiet = true;
     return;

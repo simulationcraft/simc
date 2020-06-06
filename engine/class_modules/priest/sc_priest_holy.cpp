@@ -35,10 +35,7 @@ struct apotheosis_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.apotheosis->trigger();
-    if ( sim->debug )
-    {
-      sim->out_debug.printf( "%s starting Apotheosis. ", priest().name() );
-    }
+    sim->print_debug( "{} starting Apotheosis. ", priest() );
   }
 };
 
@@ -116,10 +113,7 @@ struct holy_nova_t final : public priest_spell_t
 
       if ( rng().roll( hf_proc_chance ) )
       {
-        if ( sim->debug )
-        {
-          sim->out_debug.printf( "%s reset holy fire cooldown, using holy nova. ", priest().name() );
-        }
+        sim->print_debug( "{} reset holy fire cooldown, using holy nova. ", priest() );
         priest().cooldowns.holy_fire->reset( true );
       }
     }
