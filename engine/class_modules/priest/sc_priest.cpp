@@ -699,6 +699,7 @@ void priest_t::create_gains()
   gains.insanity_dark_void                     = get_gain( "Insanity Gained from Dark Void" );
   gains.insanity_lucid_dreams                  = get_gain( "Insanity Gained from Lucid Dreams" );
   gains.insanity_memory_of_lucid_dreams        = get_gain( "Insanity Gained from Memory of Lucid Dreams" );
+  gains.shadow_word_death_self_damage          = get_gain( "Shadow Word: Death self inflicted damage" );
 }
 
 /** Construct priest procs */

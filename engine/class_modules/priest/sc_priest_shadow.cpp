@@ -331,19 +331,24 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+        total_insanity_gain = data().effectN( 3 ).base_value();
+
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
 
-      if ( ( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
+      if ( !( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
-        total_insanity_gain = data().effectN( 4 ).base_value();
-      }
-      else
-      {
-        total_insanity_gain = data().effectN( 3 ).base_value();
+        // target is not killed
+        inflict_self_damage( s->result_amount );
       }
 
       priest().generate_insanity( total_insanity_gain, priest().gains.insanity_shadow_word_death, s->action );
     }
+  }
+
+  void inflict_self_damage( double damage_inflicted_to_target )
+  {
+    priest().resource_loss( RESOURCE_HEALTH, damage_inflicted_to_target, priest().gains.shadow_word_death_self_damage,
+                            this );
   }
 
   bool ready() override

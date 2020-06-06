@@ -333,6 +333,7 @@ public:
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> insanity_lucid_dreams;
     propagate_const<gain_t*> insanity_memory_of_lucid_dreams;
+    propagate_const<gain_t*> shadow_word_death_self_damage;
   } gains;
 
   // Benefits
