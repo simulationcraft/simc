@@ -135,7 +135,7 @@ jobs:
       - name: Install deps
         run: |
           sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
-          sudo apt-get install -y libclang-common-10-dev
+          sudo apt-get install -y libclang-common-10-dev llvm-10
 
       - name: Run
         env:
