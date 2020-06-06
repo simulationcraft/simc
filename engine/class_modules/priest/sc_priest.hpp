@@ -39,8 +39,9 @@ struct insanity_drain_stacks_t;
 }  // namespace heals
 }  // namespace actions
 
-namespace pets
+namespace buffs
 {
+struct dispersion_t;
 }
 
 /**
@@ -108,7 +109,7 @@ public:
     propagate_const<buff_t*> apotheosis;
 
     // Shadow
-    propagate_const<buff_t*> dispersion;
+    propagate_const<buffs::dispersion_t*> dispersion;
     propagate_const<buff_t*> insanity_drain_stacks;
     propagate_const<buff_t*> lingering_insanity;
     propagate_const<buff_t*> shadowform;
@@ -461,17 +462,8 @@ public:
   priest_td_t* get_target_data( player_t* target ) const override;
   std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
   void arise() override;
-
-  void do_dynamic_regen() override
-  {
-    player_t::do_dynamic_regen();
-
-    // Drain insanity, and adjust the time when all insanity is depleted from the actor
-    insanity.drain();
-    insanity.adjust_end_event();
-  }
-
-  void adjust_holy_word_serenity_cooldown();
+  void vision_of_perfection_proc() override;
+  void do_dynamic_regen() override;
 
 private:
   void create_cooldowns();
@@ -510,7 +502,8 @@ private:
 public:
   void generate_insanity( double num_amount, gain_t* g, action_t* action );
   void trigger_lucid_dreams( double cost );
-  void vision_of_perfection_proc() override;
+  bool insanity_drain_frozen() const;
+  void adjust_holy_word_serenity_cooldown();
 
   /**
    * Insanity tracking
@@ -1355,6 +1348,13 @@ protected:
   {
     return *debug_cast<priest_t*>( Base::source );
   }
+};
+
+struct dispersion_t final : public priest_buff_t<buff_t>
+{
+  bool no_insanty_drain;
+
+  dispersion_t( priest_t& p );
 };
 
 }  // namespace buffs

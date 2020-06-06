@@ -1144,6 +1144,8 @@ void priest_t::create_buffs()
   // Shared buffs
   buffs.power_infusion = make_buff<buffs::power_infusion_t>( *this );
 
+  buffs.dispersion = make_buff<buffs::dispersion_t>( *this );
+
   create_buffs_shadow();
   create_buffs_discipline();
   create_buffs_holy();
@@ -1202,6 +1204,15 @@ void priest_t::vision_of_perfection_proc()
       current_pet->expiration->reschedule( new_duration );
     }
   }
+}
+
+void priest_t::do_dynamic_regen()
+{
+  player_t::do_dynamic_regen();
+
+  // Drain insanity, and adjust the time when all insanity is depleted from the actor
+  insanity.drain();
+  insanity.adjust_end_event();
 }
 
 /// ALL Spec Pre-Combat Action Priority List
@@ -1496,6 +1507,16 @@ void priest_t::arise()
   base_t::arise();
 
   buffs.whispers_of_the_damned->trigger();
+}
+
+buffs::dispersion_t::dispersion_t( priest_t& p )
+  : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ), no_insanty_drain()
+{
+  auto rank2 = p.find_specialization_spell( 322108, PRIEST_SHADOW );
+  if ( rank2->ok() )
+  {
+    no_insanty_drain = true;
+  }
 }
 
 }  // namespace priestspace

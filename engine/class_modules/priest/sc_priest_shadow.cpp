@@ -1270,7 +1270,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
       priest->insanity.drain();
 
       // If we are currently channeling Void Torrent or Dispersion, we don't gain stacks.
-      if ( !( priest->buffs.void_torrent->check() || priest->buffs.dispersion->check() ) )
+      if ( !priest->insanity_drain_frozen() )
       {
         priest->buffs.insanity_drain_stacks->increment();
       }
@@ -1362,10 +1362,13 @@ struct voidform_t final : public priest_buff_t<buff_t>
   bool freeze_stacks() override
   {
     // Hotfixed 2016-09-24: Voidform stacks no longer increase while Dispersion is active.
-    if ( priest().buffs.dispersion->check() )
+    // TODO: Check assumption that Rank1 Dispersion does not freeze stacks
+    if ( priest().buffs.dispersion->no_insanty_drain && priest().buffs.dispersion->check() )
     {
       return true;
     }
+
+    // Void Torrent still increases stacks, even though it stops insanity from draining.
 
     return base_t::freeze_stacks();
   }
@@ -1450,13 +1453,6 @@ struct surrender_to_madness_t final : public priest_buff_t<buff_t>
 struct surrendered_to_madness_t final : public priest_buff_t<buff_t>
 {
   surrendered_to_madness_t( priest_t& p ) : base_t( p, "surrendered_to_madness", p.find_spell( 263406 ) )
-  {
-  }
-};
-
-struct dispersion_t final : public priest_buff_t<buff_t>
-{
-  dispersion_t( priest_t& p ) : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) )
   {
   }
 };
@@ -1649,14 +1645,7 @@ double priest_t::insanity_state_t::insanity_drain_per_second() const
     return 0;
   }
 
-  // Insanity does not drain during Dispersion
-  if ( actor.buffs.dispersion->check() )
-  {
-    return 0;
-  }
-
-  // Insanity does not drain during Void Torrent
-  if ( actor.buffs.void_torrent->check() )
+  if ( actor.insanity_drain_frozen() )
   {
     return 0;
   }
@@ -1821,7 +1810,6 @@ void priest_t::create_buffs_shadow()
   buffs.voidform              = make_buff<buffs::voidform_t>( *this );
   buffs.insanity_drain_stacks = make_buff<buffs::insanity_drain_stacks_t>( *this );
   buffs.vampiric_embrace      = make_buff<buffs::vampiric_embrace_t>( *this );
-  buffs.dispersion            = make_buff<buffs::dispersion_t>( *this );
 
   // Talents
   buffs.void_torrent           = make_buff<buffs::void_torrent_t>( *this );
@@ -1975,6 +1963,22 @@ action_t* priest_t::create_action_shadow( const std::string& name, const std::st
   }
 
   return nullptr;
+}
+
+/// Indicates whether insanity drain is reduced by 100%.
+bool priest_t::insanity_drain_frozen() const
+{
+  if ( buffs.void_torrent->check() )
+  {
+    return true;
+  }
+
+  if ( buffs.dispersion->no_insanty_drain && buffs.dispersion->check() )
+  {
+    return true;
+  }
+
+  return false;
 }
 
 std::unique_ptr<expr_t> priest_t::create_expression_shadow( const std::string& name_str )
