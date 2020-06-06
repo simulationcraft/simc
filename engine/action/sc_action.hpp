@@ -845,7 +845,7 @@ public:
 
   virtual void parse_effect_data( const spelleffect_data_t& );
 
-  virtual void parse_options( const std::string& options_str );
+  virtual void parse_options( util::string_view options_str );
 
   virtual void consume_resource();
 

@@ -761,7 +761,7 @@ void action_t::parse_target_str()
 
 // action_t::parse_options ==================================================
 
-void action_t::parse_options( const std::string& options_str )
+void action_t::parse_options( util::string_view options_str )
 {
   try
   {
@@ -787,7 +787,7 @@ void action_t::parse_options( const std::string& options_str )
   }
   catch ( const std::exception& e )
   {
-    sim->errorf( "%s %s: Unable to parse options str '%s': %s", player->name(), name(), options_str.c_str(), e.what() );
+    sim->error( "{} {}: Unable to parse options str '{}': {}", player->name(), name(), options_str, e.what() );
     sim->cancel();
   }
 }

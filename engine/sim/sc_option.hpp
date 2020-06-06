@@ -64,7 +64,7 @@ typedef std::function<opts::parse_status(sim_t*,const std::string&, const std::s
 typedef std::vector<std::string> list_t;
 
 parse_status parse( sim_t*, const std::vector<std::unique_ptr<option_t>>&, const std::string& name, const std::string& value, const parse_status_fn_t& fn = nullptr );
-void parse( sim_t*, const std::string& context, const std::vector<std::unique_ptr<option_t>>&, const std::string& options_str, const parse_status_fn_t& fn = nullptr );
+void parse( sim_t*, const std::string& context, const std::vector<std::unique_ptr<option_t>>&, util::string_view options_str, const parse_status_fn_t& fn = nullptr );
 void parse( sim_t*, const std::string& context, const std::vector<std::unique_ptr<option_t>>&, const std::vector<std::string>& strings, const parse_status_fn_t& fn = nullptr );
 }
 inline std::ostream& operator<<( std::ostream& stream, const std::unique_ptr<option_t>& opt )
