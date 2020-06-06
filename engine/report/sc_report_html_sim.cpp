@@ -438,19 +438,19 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
              "<th>CPU Seconds:</th>\n"
              "<td>%.4f</td>\n"
              "</tr>\n",
-             sim.elapsed_cpu );
+             chrono::to_fp_seconds(sim.elapsed_cpu) );
 
   os.printf( "<tr class=\"left\">\n"
              "<th>Physical Seconds:</th>\n"
              "<td>%.4f</td>\n"
              "</tr>\n",
-             sim.elapsed_time );
+             chrono::to_fp_seconds(sim.elapsed_time) );
 
   os.printf( "<tr class=\"left\">\n"
              "<th>Speed Up:</th>\n"
              "<td>%.0f</td>\n"
              "</tr>\n",
-             sim.iterations * sim.simulation_length.mean() / sim.elapsed_cpu );
+             sim.iterations * sim.simulation_length.mean() / chrono::to_fp_seconds(sim.elapsed_cpu) );
 
   os << "<tr class=\"left\">\n"
      << "<td colspan=\"2\"><h3>Settings:</h3></td>\n"

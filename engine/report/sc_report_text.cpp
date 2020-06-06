@@ -747,13 +747,13 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
       "  AvgTravDepth  = {}\n"
 #endif
       "  TargetHealth  = {:.0f}\n"
-      "  SimSeconds    = {}\n"
+      "  SimSeconds    = {:.3f}\n"
       "  CpuSeconds    = {}\n"
       "  WallSeconds   = {}\n"
       "  InitSeconds   = {}\n"
       "  MergeSeconds  = {}\n"
       "  AnalyzeSeconds= {}\n"
-      "  SpeedUp       = {}\n"
+      "  SpeedUp       = {:.0f}\n"
       "  EndTime       = {:%Y-%m-%d %H:%M:%S%z} ({})\n\n",
       sim->rng().name(), sim->deterministic ? " (deterministic)" : "",
       sim->iterations,
@@ -769,12 +769,12 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
           sim->event_mgr.events_added,
 #endif
       sim->target->resources.base[ RESOURCE_HEALTH ],
-      sim->simulation_length.sum(), sim->elapsed_cpu,
-      sim->elapsed_time,
-      sim->init_time,
+      sim->simulation_length.sum(), chrono::to_fp_seconds(sim->elapsed_cpu),
+      chrono::to_fp_seconds(sim->elapsed_time),
+      chrono::to_fp_seconds(sim->init_time),
       chrono::to_fp_seconds(sim->merge_time),
-      sim->analyze_time,
-      sim->iterations * sim->simulation_length.mean() / sim->elapsed_cpu,
+      chrono::to_fp_seconds(sim->analyze_time),
+      sim->iterations * sim->simulation_length.mean() / chrono::to_fp_seconds(sim->elapsed_cpu),
       fmt::localtime(cur_time), cur_time );
 #ifdef EVENT_QUEUE_DEBUG
   double total_p = 0;

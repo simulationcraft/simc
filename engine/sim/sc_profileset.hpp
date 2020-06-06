@@ -496,7 +496,7 @@ private:
 
   // Parallel profileset stats collection
   chrono::wall_clock::time_point         m_start_time;
-  double                                 m_total_elapsed;
+  chrono::wall_clock::duration           m_total_elapsed;
 #endif
 
   bool validate( sim_t* sim );

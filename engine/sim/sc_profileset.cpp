@@ -391,7 +391,7 @@ profilesets_t::profilesets_t() : m_state( STARTED ), m_mode( SEQUENTIAL ),
     m_control_lock( m_mutex, std::defer_lock ),
     m_max_workers( 0 ), 
     m_work_lock( m_work_mutex, std::defer_lock ),
-    m_total_elapsed( 0 )
+    m_total_elapsed()
 #endif
 { 
 
@@ -879,7 +879,7 @@ bool profilesets_t::iterate( sim_t* parent )
   output_progressbar( parent );
 
   // Update parent elapsed_time
-  parent -> elapsed_time += chrono::elapsed_fp_seconds( m_start_time );
+  parent -> elapsed_time += chrono::elapsed( m_start_time );
 
   parent -> control = original_opts;
 
@@ -940,7 +940,7 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
 
   s << status;
 
-  auto average_per_sim = m_total_elapsed / as<double>( done );
+  auto average_per_sim = chrono::to_fp_seconds(m_total_elapsed) / as<double>( done );
   auto elapsed = chrono::elapsed_fp_seconds( m_start_time );
   auto work_left = m_profilesets.size() - done;
   auto time_left = ( work_left / m_max_workers ) * average_per_sim;

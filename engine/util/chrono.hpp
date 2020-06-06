@@ -45,6 +45,13 @@ double elapsed_fp_seconds( std::chrono::time_point<Clock, Duration> time_point )
   return to_fp_seconds( Clock::now() - time_point );
 }
 
+// Returns duration elapsed between the given time_point and clock::now(), using the clock of the time_point
+template <typename Clock, typename Duration>
+Duration elapsed( std::chrono::time_point<Clock, Duration> time_point )
+{
+  return Clock::now() - time_point;
+}
+
 } // namespace chrono
 
 #endif // SC_UTIL_CHRONO_HPP_INCLUDED

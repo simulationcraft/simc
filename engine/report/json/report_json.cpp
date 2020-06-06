@@ -1143,11 +1143,11 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   }
 
   auto stats_root = root[ "statistics" ];
-  stats_root[ "elapsed_cpu_seconds" ] = sim.elapsed_cpu;
-  stats_root[ "elapsed_time_seconds" ] = sim.elapsed_time;
-  stats_root[ "init_time_seconds" ] = sim.init_time;
+  stats_root[ "elapsed_cpu_seconds" ] = chrono::to_fp_seconds(sim.elapsed_cpu);
+  stats_root[ "elapsed_time_seconds" ] = chrono::to_fp_seconds(sim.elapsed_time);
+  stats_root[ "init_time_seconds" ] = chrono::to_fp_seconds(sim.init_time);
   stats_root[ "merge_time_seconds" ] = chrono::to_fp_seconds(sim.merge_time);
-  stats_root[ "analyze_time_seconds" ] = sim.analyze_time;
+  stats_root[ "analyze_time_seconds" ] = chrono::to_fp_seconds(sim.analyze_time);
   stats_root[ "simulation_length" ] = sim.simulation_length;
   stats_root[ "total_events_processed" ] = sim.event_mgr.total_events_processed;
   add_non_zero( stats_root, "raid_dps", sim.raid_dps );
