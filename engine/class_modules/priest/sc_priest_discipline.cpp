@@ -531,6 +531,7 @@ void priest_t::generate_apl_discipline_d()
   def->add_action( this, "Penance" );
   def->add_talent( this, "Purge the Wicked", "if=remains<(duration*0.3)" );
   def->add_action( this, "Shadow Word: Pain", "if=remains<(duration*0.3)&!talent.purge_the_wicked.enabled" );
+  def->add_talent( this, "Power Word: Solace" );
   def->add_talent( this, "Divine Star", "if=mana.pct>80" );
   def->add_action( this, "Smite" );
   def->add_action( this, "Shadow Word: Pain" );
