@@ -1232,7 +1232,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       // windwalker does not use autoattacks (how likely is that?)
       if ( !source_action && sim->debug )
       {
-        sim->errorf( "%s has no auto_attack in APL, Storm, Earth, and Fire pets cannot auto-attack.", o()->name() );
+        sim->error( "{} has no auto_attack in APL, Storm, Earth, and Fire pets cannot auto-attack.", *o() );
       }
     }
 
@@ -1285,12 +1285,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       if ( time_to_execute > timespan_t::zero() && ( player->channeling || player->executing ) )
       {
-        if ( sim->debug )
-        {
-          sim->out_debug.printf( "%s Executing '%s' during melee (%s).", player->name(),
-                                 player->executing ? player->executing->name() : player->channeling->name(),
+        sim->print_debug( "{} Executing {} during melee ({}).", *player,
+                                 player->executing ? *player->executing : *player->channeling,
                                  util::slot_type_string( weapon->slot ) );
-        }
 
         schedule_execute();
       }
@@ -1913,8 +1910,7 @@ private:
     {
       if ( time_to_execute > timespan_t::zero() && player->executing )
       {
-        if ( sim->debug )
-          sim->out_debug.printf( "Executing '%s' during melee (%s).", player->executing->name(),
+        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
                                  util::slot_type_string( weapon->slot ) );
         schedule_execute();
       }
@@ -2053,8 +2049,7 @@ private:
     {
       if ( time_to_execute > timespan_t::zero() && player->executing )
       {
-        if ( sim->debug )
-          sim->out_debug.printf( "Executing '%s' during melee (%s).", player->executing->name(),
+        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
                                  util::slot_type_string( weapon->slot ) );
         schedule_execute();
       }
@@ -2194,8 +2189,7 @@ private:
     {
       if ( time_to_execute > timespan_t::zero() && player->executing )
       {
-        if ( sim->debug )
-          sim->out_debug.printf( "Executing '%s' during melee (%s).", player->executing->name(),
+        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
                                  util::slot_type_string( weapon->slot ) );
         schedule_execute();
       }
@@ -3080,22 +3074,16 @@ struct storm_earth_and_fire_t : public monk_spell_t
   // Monk used SEF while pets are up to sticky target them into an enemy
   void sticky_targeting()
   {
-    if ( sim->debug )
-    {
-      sim->out_debug.printf( "%s storm_earth_and_fire sticky target %s to %s (old=%s)", player->name(),
+    sim->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *player,
                              p()->pet.sef[ SEF_EARTH ]->name(), target->name(),
                              p()->pet.sef[ SEF_EARTH ]->target->name() );
-    }
 
     p()->pet.sef[ SEF_EARTH ]->target        = target;
     p()->pet.sef[ SEF_EARTH ]->sticky_target = true;
 
-    if ( sim->debug )
-    {
-      sim->out_debug.printf( "%s storm_earth_and_fire sticky target %s to %s (old=%s)", player->name(),
+    sim ->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *player,
                              p()->pet.sef[ SEF_FIRE ]->name(), target->name(),
                              p()->pet.sef[ SEF_FIRE ]->target->name() );
-    }
 
     p()->pet.sef[ SEF_FIRE ]->target        = target;
     p()->pet.sef[ SEF_FIRE ]->sticky_target = true;
@@ -4587,8 +4575,7 @@ struct melee_t : public monk_melee_attack_t
 
     if ( time_to_execute > timespan_t::zero() && player->executing )
     {
-      if ( sim->debug )
-        sim->out_debug.printf( "Executing '%s' during melee (%s).", player->executing->name(),
+      sim->print_debug( "Executing {} during melee ({}).", *player->executing,
                                util::slot_type_string( weapon->slot ) );
       schedule_execute();
     }
@@ -4805,12 +4792,9 @@ struct touch_of_death_t : public monk_spell_t
       touch_of_death_amplifier->base_dd_min = tod_dmg * touch_of_death_multiplier;
       touch_of_death_amplifier->base_dd_max = tod_dmg * touch_of_death_multiplier;
 
-      if ( sim->debug )
-      {
-        sim->out_debug.printf( "%s executed '%s'. Amount sent before modifiers is %.2f.", player->name(),
-                               touch_of_death_amplifier->name(),
+      sim->print_debug( "{} executed {}. Amount sent before modifiers is {}.", *player,
+                               *touch_of_death_amplifier,
                                td( p()->target )->debuff.touch_of_death_amplifier->current_value );
-      }
 
       touch_of_death_amplifier->target = dot->target;
       touch_of_death_amplifier->execute();
@@ -4910,7 +4894,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
 
     if ( interval < cooldown->duration.total_seconds() )
     {
-      sim->errorf( "%s minimum interval for Touch of Karma is 90 seconds.", player->name() );
+      sim->error( "{} minimum interval for Touch of Karma is 90 seconds.", *player );
       interval = cooldown->duration.total_seconds();
     }
 
@@ -8564,9 +8548,9 @@ std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
 
   if ( sim->debug )
   {
-    sim->out_debug.printf( "%s storm_earth_and_fire target list, n_targets=%u", name(), l.size() );
+    sim->out_debug.print( "{} storm_earth_and_fire target list, n_targets={}", *this, l.size() );
     range::for_each( l, [this]( player_t* t ) {
-      sim->out_debug.printf( "%s cs=%.3f", t->name(),
+      sim->out_debug.print( "{} cs={}", *t,
                              get_target_data( t )->debuff.mark_of_the_crane->remains().total_seconds() );
     } );
   }
@@ -8597,12 +8581,9 @@ void monk_t::accumulate_gale_burst_damage( action_state_t* s )
 
   get_target_data( s->target )->debuff.touch_of_death_amplifier->current_value += touch_of_death_amplifier;
 
-  if ( sim->debug )
-  {
-    sim->out_debug.printf( "%s's %s added %.2f towards Gale Burst. Current Gale Burst amount that is saved up is %.2f.",
-                           name(), s->action->name_str, touch_of_death_amplifier,
+  sim->print_debug( "{} {} added {} towards Gale Burst. Current Gale Burst amount that is saved up is {}.",
+                           *this, *s->action, touch_of_death_amplifier,
                            get_target_data( s->target )->debuff.touch_of_death_amplifier->current_value );
-  }
 }
 
 // monk_t::retarget_storm_earth_and_fire ====================================
@@ -10170,7 +10151,7 @@ void monk_t::init_action_list()
   if ( !sim->allow_experimental_specializations && specialization() == MONK_MISTWEAVER && role != ROLE_ATTACK )
   {
     if ( !quiet )
-      sim->errorf( "Monk mistweaver healing for player %s is not currently supported.", name() );
+      sim->error( "Monk mistweaver healing for {} is not currently supported.", *this );
 
     quiet = true;
     return;
@@ -10178,26 +10159,26 @@ void monk_t::init_action_list()
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
     if ( !quiet )
-      sim->errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+      sim->error( "{} has no weapon equipped at the Main-Hand slot.", *this );
     quiet = true;
     return;
   }
   if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.group() == WEAPON_1H )
   {
     if ( !quiet )
-      sim->errorf(
-          "Player %s has a 1-Hand weapon equipped in the Off-Hand while a 2-Hand weapon is equipped in the Main-Hand.",
-          name() );
+      sim->error(
+          "{} has a 1-Hand weapon equipped in the Off-Hand while a 2-Hand weapon is equipped in the Main-Hand.",
+          *this );
     quiet = true;
     return;
   }
   if ( specialization() == MONK_BREWMASTER && off_hand_weapon.group() == WEAPON_1H )
   {
     if ( !quiet )
-      sim->errorf(
-          "Player %s is a Brewmaster and has a 1-Hand weapon equipped in the Off-Hand when they are unable "
+      sim->error(
+          "{} is a Brewmaster and has a 1-Hand weapon equipped in the Off-Hand when they are unable "
           "to dual weld.",
-          name() );
+          *this );
     quiet = true;
     return;
   }

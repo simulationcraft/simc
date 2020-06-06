@@ -4330,7 +4330,7 @@ double action_t::last_tick_factor(const dot_t* /* d */, timespan_t time_to_tick,
 
 std::ostream& operator<<(std::ostream &os, const action_t& p)
 {
-  fmt::print(os, "action {}", p.name() );
+  fmt::print(os, "action '{}'", p.name() );
   return os;
 }
 
