@@ -681,6 +681,12 @@ struct shadow_word_pain_t final : public priest_spell_t
       // If SW:P is the only action having SA, then we can add it as a child stat.
       add_child( priest().active_spells.shadowy_apparitions );
     }
+
+    auto rank2 = p.find_spell( 327820 );
+    if ( rank2->ok() )
+    {
+      dot_duration += rank2->effectN( 1 ).time_value();
+    }
   }
 
   double spell_direct_power_coefficient( const action_state_t* s ) const override
