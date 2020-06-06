@@ -89,7 +89,7 @@ public:
 
     spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
 
-    auto rank2_shadow = player.find_spell( 319899 );
+    auto rank2_shadow = player.find_specialization_spell( 319899, PRIEST_SHADOW );
     if ( rank2_shadow->ok() )
     {
       cooldown->duration = data().cooldown() + rank2_shadow->effectN( 1 ).time_value();
