@@ -924,19 +924,19 @@ action_t* priest_t::create_action( const std::string& name, const std::string& o
   using namespace actions::heals;
 
   action_t* shadow_action = create_action_shadow( name, options_str );
-  if ( shadow_action && specialization() == PRIEST_SHADOW )
+  if ( shadow_action )
   {
     return shadow_action;
   }
 
   action_t* discipline_action = create_action_discipline( name, options_str );
-  if ( discipline_action && specialization() == PRIEST_DISCIPLINE )
+  if ( discipline_action )
   {
     return discipline_action;
   }
 
   action_t* holy_action = create_action_holy( name, options_str );
-  if ( holy_action && specialization() == PRIEST_HOLY )
+  if ( holy_action )
   {
     return holy_action;
   }

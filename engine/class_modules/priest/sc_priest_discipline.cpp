@@ -524,10 +524,12 @@ void priest_t::generate_apl_discipline_d()
     }
   }
 
+  def->add_action( this, "Power Infusion" );
   def->add_talent( this, "Purge the Wicked", "if=!ticking" );
   def->add_action( this, "Shadow Word: Pain", "if=!ticking&!talent.purge_the_wicked.enabled" );
 
   def->add_talent( this, "Schism" );
+  def->add_action( this, "Mind Blast" );
   def->add_action( this, "Penance" );
   def->add_talent( this, "Purge the Wicked", "if=remains<(duration*0.3)" );
   def->add_action( this, "Shadow Word: Pain", "if=remains<(duration*0.3)&!talent.purge_the_wicked.enabled" );
