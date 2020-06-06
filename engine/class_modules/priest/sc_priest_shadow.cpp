@@ -311,9 +311,15 @@ struct mind_flay_t final : public priest_spell_t
 struct shadow_word_death_t final : public priest_spell_t
 {
   shadow_word_death_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death )
+    : priest_spell_t( "shadow_word_death", p, p.find_class_spell("Shadow Word: Death") )
   {
     parse_options( options_str );
+
+    auto rank2 = p.find_spell( 322107 );
+    if ( rank2->ok() )
+    {
+      cooldown->duration = data().cooldown() + rank2->effectN( 1 ).time_value();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -338,16 +344,6 @@ struct shadow_word_death_t final : public priest_spell_t
 
       priest().generate_insanity( total_insanity_gain, priest().gains.insanity_shadow_word_death, s->action );
     }
-  }
-
-  bool target_ready( player_t* candidate_target ) override
-  {
-    if ( candidate_target->health_percentage() < as<double>( data().effectN( 2 ).base_value() ) )
-    {
-      return priest_spell_t::target_ready( candidate_target );
-    }
-
-    return false;
   }
 
   bool ready() override
@@ -1852,7 +1848,7 @@ void priest_t::init_spells_shadow()
   talents.psychic_horror = find_talent_spell( "Psychic Horror" );
   // T75
   talents.auspicious_spirits = find_talent_spell( "Auspicious Spirits" );
-  talents.shadow_word_death  = find_talent_spell( "Shadow Word: Death" );
+  talents.death_and_madness  = find_talent_spell("Death and Madness");
   talents.shadow_crash       = find_talent_spell( "Shadow Crash" );
   // T90
   talents.lingering_insanity = find_talent_spell( "Lingering Insanity" );

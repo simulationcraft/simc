@@ -211,7 +211,7 @@ public:
     const spell_data_t* psychic_horror;  // NYI
     // T75
     const spell_data_t* auspicious_spirits;
-    const spell_data_t* shadow_word_death;
+    const spell_data_t* death_and_madness; // NYI
     const spell_data_t* shadow_crash;
     // T90
     const spell_data_t* lingering_insanity;
