@@ -57,7 +57,7 @@ macx {
   Resources.path = Contents/Resources
   Profiles.files =  ../profiles/PreRaids ../profiles/Tier22 ../profiles/Tier23 ../profiles/Tier24 ../profiles/Tier25 ../profiles/DungeonSlice
   Profiles.path = Contents/Resources/profiles
-  Localization.files = ../locale/sc_de.qm ../locale/sc_it.qm ../locale/sc_zh.qm
+  Localization.files = ../locale/sc_de.qm ../locale/sc_it.qm ../locale/sc_cn.qm
   Localization.path = Contents/Resources/locale
 
   QMAKE_BUNDLE_DATA += Profiles Resources Localization
