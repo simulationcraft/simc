@@ -1874,6 +1874,11 @@ struct eye_beam_t : public demon_hunter_spell_t
     channeled = true;
 
     dot_duration *= 1.0 + p->talent.blind_fury->effectN( 1 ).percent();
+    
+    // 6/6/2020 - Override the lag handling for Eye Beam so that it doesn't use channeled ready behavior
+    //            In-game tests have shown it is possible to cast after faster than the 250ms channel_lag using a nochannel macro
+    ability_lag         = p->world_lag;
+    ability_lag_stddev  = p->world_lag_stddev;
 
     tick_action = new eye_beam_tick_t( p );
   }
@@ -1909,11 +1914,6 @@ struct eye_beam_t : public demon_hunter_spell_t
     // 8/30/2018 - Demonic Meta always gets the increased channel time
     if (true) 
     {
-      // 8/31/2018 - The channel time extend during meta is erroneously double-reduced by meta haste
-      if ( p()->bugs && !extend_meta )
-      {
-        duration /= 1.0 + p()->buff.metamorphosis->default_value;
-      }
       p()->buff.metamorphosis->extend_duration(p(), duration);
     }
 
