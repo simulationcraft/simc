@@ -573,7 +573,7 @@ namespace pets
  */
 struct priest_pet_t : public pet_t
 {
-  priest_pet_t( sim_t* sim, priest_t& owner, const std::string& pet_name, pet_e pt, bool guardian = false )
+  priest_pet_t( sim_t* sim, priest_t& owner, util::string_view pet_name, pet_e pt, bool guardian = false )
     : pet_t( sim, &owner, pet_name, pt, guardian )
   {
   }
@@ -700,7 +700,7 @@ struct base_fiend_pet_t : public priest_pet_t
 
   double direct_power_mod;
 
-  base_fiend_pet_t( sim_t* sim, priest_t& owner, pet_e pt, const std::string& name )
+  base_fiend_pet_t( sim_t* sim, priest_t& owner, pet_e pt, util::string_view name )
     : priest_pet_t( sim, owner, name, pt ), gains(), direct_power_mod( 0.0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -751,7 +751,7 @@ struct base_fiend_pet_t : public priest_pet_t
 
 struct shadowfiend_pet_t final : public base_fiend_pet_t
 {
-  shadowfiend_pet_t( sim_t* sim, priest_t& owner, const std::string& name = "shadowfiend" )
+  shadowfiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "shadowfiend" )
     : base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
   {
     direct_power_mod = 0.6;  // According to Sephuz 2018-02-07 -- N1gh7h4wk hardcoded
@@ -776,7 +776,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
 {
   const spell_data_t* mindbender_spell;
 
-  mindbender_pet_t( sim_t* sim, priest_t& owner, const std::string& name = "mindbender" )
+  mindbender_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "mindbender" )
     : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ), mindbender_spell( owner.find_spell( 123051 ) )
   {
     direct_power_mod = 0.65;  // According to Sephuz 2018-02-07 -- N1gh7h4wk hardcoded
