@@ -5418,7 +5418,7 @@ void warrior_t::apl_arms()
   execute->add_action( this, "Bladestorm", "if=!buff.memory_of_lucid_dreams.up&buff.test_of_might.up&rage<30&!buff.deadly_calm.up" );
   execute->add_talent( this, "Cleave", "if=spell_targets.whirlwind>2" );
   execute->add_action( this, "Slam", "if=buff.crushing_assault.up&buff.memory_of_lucid_dreams.down" );
-  execute->add_action( this, "Rend", "if=remains<=duration*0.3&target.time_to_die>7" );
+  execute->add_talent( this, "Rend", "if=remains<=duration*0.3&target.time_to_die>7" );
   execute->add_action( this, "Mortal Strike","if=buff.overpower.stack=2&talent.dreadnaught."
                              "enabled|buff.executioners_precision.stack=2" );
   execute->add_action( this, "Execute" , "if=buff.memory_of_lucid_dreams.up|buff.deadly_calm.up|"
@@ -5440,7 +5440,7 @@ void warrior_t::apl_arms()
   single_target->add_action( this, "Overpower", "if=(!talent.rend.enabled&dot.deep_wounds.remains&rage<70&buff.memory_of_lucid_dreams.down&debuff.colossus_smash.down)|"
                                    "(talent.rend.enabled&dot.deep_wounds.remains&dot.rend.remains>gcd&rage<70&buff.memory_of_lucid_dreams.down&debuff.colossus_smash.down)" );
   single_target->add_action( this, "Mortal Strike" );
-  single_target->add_action( this, "Rend", "if=remains<=duration*0.3" );
+  single_target->add_talent( this, "Rend", "if=remains<=duration*0.3" );
   single_target->add_action( this, "Whirlwind", "if=(((buff.memory_of_lucid_dreams.up)|(debuff.colossus_smash.up)|(buff.deadly_calm.up))&talent.fervor_of_battle.enabled)|"
                                    "((buff.memory_of_lucid_dreams.up|rage>89)&debuff.colossus_smash.up&buff.test_of_might.down&!talent.fervor_of_battle.enabled)" );
   single_target->add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled&(buff.memory_of_lucid_dreams.up|debuff.colossus_smash.up)" );
