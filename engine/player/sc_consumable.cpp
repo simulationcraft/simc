@@ -16,6 +16,8 @@
 #include "player/unique_gear.hpp"
 #include "util/rng.hpp"
 
+#include <string>
+
 namespace { // UNNAMED NAMESPACE
 
 enum class elixir
@@ -45,7 +47,7 @@ struct elixir_t : public action_t
   const elixir_data_t* data;
   stat_buff_t* buff;
 
-  elixir_t( player_t* p, const std::string& options_str ) :
+  elixir_t( player_t* p, util::string_view options_str ) :
     action_t( ACTION_USE, "elixir", p ),
     gain( p -> get_gain( "elixir" ) ),
     data( nullptr ),
@@ -141,7 +143,7 @@ struct mana_potion_t : public action_t
   int min;
   int max;
 
-  mana_potion_t( player_t* p, const std::string& options_str ) :
+  mana_potion_t( player_t* p, util::string_view options_str ) :
     action_t( ACTION_USE, "mana_potion", p ), trigger( 0 ), min( 0 ), max( 0 )
   {
     add_option( opt_int( "min", min ) );
@@ -211,7 +213,7 @@ struct health_stone_t : public heal_t
 {
   int charges;
 
-  health_stone_t( player_t* p, const std::string& options_str ) :
+  health_stone_t( player_t* p, util::string_view options_str ) :
     heal_t( "health_stone", p ), charges( 3 )
   {
     add_option( opt_float( "pct_heal", base_pct_heal ) );
@@ -267,7 +269,7 @@ struct dbc_consumable_base_t : public action_t
   buff_t*                  consumable_buff;
   bool                     opt_disabled; // Disabled through a consumable-specific "disabled" keyword
 
-  dbc_consumable_base_t( player_t* p, const std::string& name_str ) :
+  dbc_consumable_base_t( player_t* p, util::string_view name_str ) :
     action_t( ACTION_USE, name_str, p ), item_data( nullptr ), type( ITEM_SUBCLASS_CONSUMABLE ),
     consumable_action( nullptr ), consumable_buff( nullptr ), opt_disabled( false )
   {
@@ -450,7 +452,7 @@ struct dbc_consumable_base_t : public action_t
 
 struct flask_base_t : public dbc_consumable_base_t
 {
-  flask_base_t( player_t* p, const std::string& name, const std::string& options_str ) :
+  flask_base_t( player_t* p, util::string_view name, util::string_view options_str ) :
     dbc_consumable_base_t( p, name )
   {
     // Backwards compatibility reasons
@@ -519,14 +521,14 @@ struct flask_base_t : public dbc_consumable_base_t
 
 struct flask_t : public flask_base_t
 {
-  flask_t( player_t* p, const std::string& options_str ) :
+  flask_t( player_t* p, util::string_view options_str ) :
     flask_base_t( p, "flask", options_str )
   { }
 };
 
 struct oralius_whispering_crystal_t : public flask_base_t
 {
-  oralius_whispering_crystal_t( player_t* p, const std::string& options_str ) :
+  oralius_whispering_crystal_t( player_t* p, util::string_view options_str ) :
     flask_base_t( p, "oralius_whispering_crystal", options_str )
   { }
 
@@ -536,7 +538,7 @@ struct oralius_whispering_crystal_t : public flask_base_t
 
 struct crystal_of_insanity_t : public flask_base_t
 {
-  crystal_of_insanity_t( player_t* p, const std::string& options_str ) :
+  crystal_of_insanity_t( player_t* p, util::string_view options_str ) :
     flask_base_t( p, "crystal_of_insanity", options_str )
   { }
 
@@ -553,7 +555,7 @@ struct potion_t : public dbc_consumable_base_t
   timespan_t pre_pot_time;
   bool dynamic_prepot;
 
-  potion_t( player_t* p, const std::string& options_str ) :
+  potion_t( player_t* p, util::string_view options_str ) :
     dbc_consumable_base_t( p, "potion" ), pre_pot_time( 2_s ), dynamic_prepot( false )
   {
     add_option( opt_timespan( "pre_pot_time", pre_pot_time ) );
@@ -682,7 +684,7 @@ struct potion_t : public dbc_consumable_base_t
 
 struct augmentation_t : public dbc_consumable_base_t
 {
-  augmentation_t( player_t* p, const std::string& options_str ) :
+  augmentation_t( player_t* p, util::string_view options_str ) :
     dbc_consumable_base_t( p, "augmentation" )
   {
     parse_options( options_str );
@@ -752,7 +754,7 @@ struct food_t : public dbc_consumable_base_t
   // map to bind consumable names to driver spells. Initialized below.
   static const std::map<std::string, unsigned> __map;
 
-  food_t( player_t* p, const std::string& options_str ) :
+  food_t( player_t* p, util::string_view options_str ) :
     dbc_consumable_base_t( p, "food" )
   {
     parse_options( options_str );
@@ -892,8 +894,8 @@ const std::map<std::string, unsigned> food_t::__map = {
 // ==========================================================================
 
 action_t* consumable::create_action( player_t*          p,
-                                     const std::string& name,
-                                     const std::string& options_str )
+                                     util::string_view name,
+                                     util::string_view options_str )
 {
   if ( name == "potion"               ) return new       potion_t( p, options_str );
   if ( name == "flask"                ) return new        flask_t( p, options_str );

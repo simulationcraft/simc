@@ -5,13 +5,12 @@
 
 #pragma once
 
-#include "config.hpp"
-#include <string>
+#include "util/string_view.hpp"
 
 struct action_t;
 struct player_t;
 
 namespace consumable
 {
-  action_t* create_action(player_t*, const std::string& name, const std::string& options);
+  action_t* create_action(player_t*, util::string_view name, util::string_view options);
 }
