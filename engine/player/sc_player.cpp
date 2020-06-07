@@ -12743,6 +12743,11 @@ void player_t::register_combat_begin( double amount, resource_e resource, gain_t
   });
 }
 
+void player_t::register_arise( buff_t* b )
+{
+  callbacks_on_arise.emplace_back( [ b ]() { b->trigger(); } );
+}
+
 std::ostream& operator<<(std::ostream &os, const player_t& p)
 {
   fmt::print(os, "player '{}'", p.name() );

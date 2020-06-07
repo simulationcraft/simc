@@ -1127,6 +1127,9 @@ public:
   /// Register a resource gain that triggers at the beginning of combat
   void register_combat_begin( double amount, resource_e resource, gain_t* g = nullptr );
 
+  /// Register a buff that triggers on arise
+  void register_arise( buff_t* b );
+
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();
 
