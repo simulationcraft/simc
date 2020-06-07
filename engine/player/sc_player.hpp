@@ -280,7 +280,8 @@ struct player_t : public actor_t
   effect_callbacks_t<action_callback_t> callbacks;
   auto_dispose< std::vector<special_effect_t*> > special_effects;
   std::vector<std::function<void(player_t*)> > callbacks_on_demise;
-  std::vector<std::function<void(void)>> callbacks_on_arise;
+  using arise_fn_t = std::function<void(void)>;
+  std::vector<arise_fn_t> callbacks_on_arise;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -1129,6 +1130,8 @@ public:
 
   /// Register a buff that triggers on arise
   void register_arise( buff_t* b );
+  /// Register a custom function that triggers at the beginning of combat
+  void register_arise( const arise_fn_t& fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

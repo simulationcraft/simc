@@ -12748,6 +12748,11 @@ void player_t::register_arise( buff_t* b )
   callbacks_on_arise.emplace_back( [ b ]() { b->trigger(); } );
 }
 
+void player_t::register_arise( const arise_fn_t& fn )
+{
+  callbacks_on_arise.push_back( fn );
+}
+
 std::ostream& operator<<(std::ostream &os, const player_t& p)
 {
   fmt::print(os, "player '{}'", p.name() );
