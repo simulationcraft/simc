@@ -5413,6 +5413,7 @@ void hunter_t::apl_bm()
   
   cds -> add_action( "ancestral_call,if=cooldown.bestial_wrath.remains>30" );
   cds -> add_action( "fireblood,if=cooldown.bestial_wrath.remains>30" );
+  cds -> add_action( "blood_of_the_enemy,if=focus<focus.max&(raid_event.adds.remains>90|!raid_event.adds.exists|active_enemies>1)" );
   cds -> add_action( "berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<13" );
   cds -> add_action( "blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16" );
   cds -> add_action( "lights_judgment,if=pet.turtle.buff.frenzy.up&pet.turtle.buff.frenzy.remains>gcd.max|!pet.turtle.buff.frenzy.up" );
@@ -5432,7 +5433,6 @@ void hunter_t::apl_bm()
   st -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10|target.time_to_die<5" );
   st -> add_action( this, "Bestial Wrath", "if=talent.one_with_the_pack.enabled&buff.bestial_wrath.remains<gcd|buff.bestial_wrath.down&cooldown.aspect_of_the_wild.remains>15|target.time_to_die<15+gcd" );
   st -> add_action( this, "Barbed Shot", "if=azerite.dance_of_death.rank>1&buff.dance_of_death.remains<gcd" );
-  st -> add_action( "blood_of_the_enemy,if=buff.aspect_of_the_wild.remains>10+gcd|target.time_to_die<10+gcd" );
   st -> add_action( this, "Kill Command" );
   st -> add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st -> add_talent( this, "Chimaera Shot" );
@@ -5459,7 +5459,6 @@ void hunter_t::apl_bm()
   cleave -> add_action( "focused_azerite_beam" );
   cleave -> add_action( "purifying_blast" );
   cleave -> add_action( "concentrated_flame" );
-  cleave -> add_action( "blood_of_the_enemy" );
   cleave -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   cleave -> add_action( this, "Multi-Shot", "if=azerite.rapid_reload.enabled&active_enemies>2");
   cleave -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload.enabled)" );
