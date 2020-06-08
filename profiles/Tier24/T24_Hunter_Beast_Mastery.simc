@@ -52,6 +52,7 @@ actions+=/call_action_list,name=cleave,if=active_enemies>1
 
 actions.cds=ancestral_call,if=cooldown.bestial_wrath.remains>30
 actions.cds+=/fireblood,if=cooldown.bestial_wrath.remains>30
+actions.cds+=/blood_of_the_enemy,if=focus<focus.max&(raid_event.adds.remains>90|!raid_event.adds.exists|active_enemies>1)
 actions.cds+=/berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<13
 actions.cds+=/blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16
 actions.cds+=/lights_judgment,if=pet.turtle.buff.frenzy.up&pet.turtle.buff.frenzy.remains>gcd.max|!pet.turtle.buff.frenzy.up
@@ -77,7 +78,6 @@ actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.turtle
 actions.cleave+=/focused_azerite_beam
 actions.cleave+=/purifying_blast
 actions.cleave+=/concentrated_flame
-actions.cleave+=/blood_of_the_enemy
 actions.cleave+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10
 actions.cleave+=/multishot,if=azerite.rapid_reload.enabled&active_enemies>2
 actions.cleave+=/cobra_shot,if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload.enabled)
@@ -92,7 +92,6 @@ actions.st+=/focused_azerite_beam,if=buff.bestial_wrath.down|target.time_to_die<
 actions.st+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10|target.time_to_die<5
 actions.st+=/bestial_wrath,if=talent.one_with_the_pack.enabled&buff.bestial_wrath.remains<gcd|buff.bestial_wrath.down&cooldown.aspect_of_the_wild.remains>15|target.time_to_die<15+gcd
 actions.st+=/barbed_shot,if=azerite.dance_of_death.rank>1&buff.dance_of_death.remains<gcd
-actions.st+=/blood_of_the_enemy,if=buff.aspect_of_the_wild.remains>10+gcd|target.time_to_die<10+gcd
 actions.st+=/kill_command
 actions.st+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/chimaera_shot
