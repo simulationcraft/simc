@@ -5550,8 +5550,9 @@ void register_essence_corruption_resistance( special_effect_t& effect )
   if ( ! buff )
   {
     buff = make_buff<resolute_courage_t>( effect.player );
-    // this needs to happen on arise which is before snapshot stats
-    effect.player->callbacks_on_arise.emplace_back( [ buff ] {
+    // This needs to happen on arise which is before snapshot stats
+    // Add to the start of the callbacks list so we ensure Corruption is adjusted before anything that might utilize it
+    effect.player->callbacks_on_arise.emplace( effect.player->callbacks_on_arise.begin(), [ buff ] {
       buff -> trigger();
     });
   }
