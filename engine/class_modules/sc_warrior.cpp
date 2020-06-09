@@ -5239,9 +5239,9 @@ void warrior_t::apl_arms()
   if ( sim->allow_potions && true_level >= 80 )
   {
     default_list->add_action( "potion,if=(target.health.pct<21|talent.massacre.enabled&target.health.pct<36)"
-                              "&(buff.memory_of_lucid_dreams.up|buff.guardian_of_azeroth.up)|essence.condensed_lifeforce.major&target.time_to_die<25|"
+                              "&(buff.memory_of_lucid_dreams.up|buff.guardian_of_azeroth.up)|"
                               "!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major&(target.health.pct<21|"
-                              "talent.massacre.enabled&target.health.pct<36)&debuff.colossus_smash.up" );
+                              "talent.massacre.enabled&target.health.pct<36)&debuff.colossus_smash.up|target.time_to_die<25" );
   }
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -5430,8 +5430,8 @@ void warrior_t::apl_arms()
                              "if=rage<56&buff.deadly_calm.down&buff.memory_of_lucid_dreams.down" );
   single_target->add_talent( this, "Ravager", "if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent."
                              "warbreaker.enabled&cooldown.warbreaker.remains<2))");
-  single_target->add_action( this, "Colossus Smash" );
-  single_target->add_talent( this, "Warbreaker" );
+  single_target->add_action( this, "Colossus Smash", "if=!essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|target.time_to_die>50)|essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|target.time_to_die>80)|talent.massacre.enabled&(target.time_to_pct_35>10|target.time_to_die>50)" );
+  single_target->add_talent( this, "Warbreaker", "if=!essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|target.time_to_die>50)|essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|target.time_to_die>80)|talent.massacre.enabled&(target.time_to_pct_35>10|target.time_to_die>50)" );
   single_target->add_talent( this, "Deadly Calm" );
   single_target->add_action( this, "Execute", "if=buff.sudden_death.react" );
   single_target->add_action( this, "Bladestorm", "if=cooldown.mortal_strike.remains&debuff.colossus_smash.down&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&"
