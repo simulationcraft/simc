@@ -6,15 +6,17 @@
 #pragma once
 
 #include "config.hpp"
+
+#include "sc_enums.hpp"
+#include "sc_timespan.hpp"
 #include "util/generic.hpp"
 #include "util/string_view.hpp"
-#include "sc_timespan.hpp"
-#include "sc_enums.hpp"
+
 #include <cstdint>
-#include <string>
-#include <vector>
-#include <unordered_map>
 #include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 struct event_t;
 struct expr_t;
@@ -41,14 +43,14 @@ public:
   timespan_t duration_max;
 
   // Player filter options
-  double     distance_min; // Minimal player distance
-  double     distance_max; // Maximal player distance
-  bool players_only; // Don't affect pets
-  bool force_stop; // Stop immediately at last/last_pct
-  double player_chance; // Chance for individual player to be affected by raid event
+  double distance_min;   // Minimal player distance
+  double distance_max;   // Maximal player distance
+  bool players_only;     // Don't affect pets
+  bool force_stop;       // Stop immediately at last/last_pct
+  double player_chance;  // Chance for individual player to be affected by raid event
 
   std::string affected_role_str;
-  role_e     affected_role;
+  role_e affected_role;
   std::string player_if_expr_str;
 
   timespan_t saved_duration;
@@ -63,16 +65,27 @@ public:
   virtual bool filter_player( const player_t* );
 
   void add_option( std::unique_ptr<option_t> new_option )
-  { options.insert( options.begin(), std::move(new_option) ); }
+  {
+    options.insert( options.begin(), std::move( new_option ) );
+  }
   timespan_t cooldown_time();
   timespan_t duration_time();
   timespan_t next_time() const;
   timespan_t until_next() const;
   timespan_t remains() const;
   bool up() const;
-  double distance() { return distance_max; }
-  double min_distance() { return distance_min; }
-  double max_distance() { return distance_max; }
+  double distance()
+  {
+    return distance_max;
+  }
+  double min_distance()
+  {
+    return distance_min;
+  }
+  double max_distance()
+  {
+    return distance_max;
+  }
   void schedule();
   virtual void reset();
   void parse_options( util::string_view options_str );
@@ -80,11 +93,14 @@ public:
   static void init( sim_t* );
   static void reset( sim_t* );
   static void combat_begin( sim_t* );
-  static void combat_end( sim_t* ) {}
-  static double evaluate_raid_event_expression(sim_t* s, util::string_view type, util::string_view filter,
-      bool test_filter = false);
+  static void combat_end( sim_t* )
+  {
+  }
+  static double evaluate_raid_event_expression( sim_t* s, util::string_view type, util::string_view filter,
+                                                bool test_filter = false );
+
 private:
-  virtual void _start() = 0;
+  virtual void _start()  = 0;
   virtual void _finish() = 0;
   void activate();
   void deactivate();
@@ -105,4 +121,4 @@ private:
   event_t* start_event;
   event_t* end_event;
 };
-std::ostream& operator<<(std::ostream&, const raid_event_t&);
+std::ostream& operator<<( std::ostream&, const raid_event_t& );

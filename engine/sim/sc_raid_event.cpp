@@ -3,18 +3,17 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "raid_event.hpp"
-
+#include "action/heal.hpp"
 #include "action/sc_action.hpp"
 #include "action/spell.hpp"
-#include "action/heal.hpp"
 #include "buff/sc_buff.hpp"
 #include "dbc/dbc.hpp"
-#include "player/sc_player.hpp"
 #include "player/pet.hpp"
-#include "sim/sc_sim.hpp"
+#include "player/sc_player.hpp"
+#include "raid_event.hpp"
 #include "sim/event.hpp"
 #include "sim/sc_expressions.hpp"
+#include "sim/sc_sim.hpp"
 #include "util/rng.hpp"
 
 // ==========================================================================
@@ -155,8 +154,7 @@ struct adds_event_t final : public raid_event_t
 
       if ( !( enemy_type == ENEMY_ADD || enemy_type == ENEMY_ADD_BOSS ) )
       {
-        throw std::invalid_argument(
-          fmt::format( "{} could not parse enemy type from '{}'.", *this, enemy_type_str ) );
+        throw std::invalid_argument( fmt::format( "{} could not parse enemy type from '{}'.", *this, enemy_type_str ) );
       }
     }
 
@@ -324,7 +322,7 @@ struct adds_event_t final : public raid_event_t
   {
     if ( adds.size() < adds_to_remove )
     {
-      adds_to_remove = adds.size( );
+      adds_to_remove = adds.size();
     }
     for ( size_t i = 0; i < adds_to_remove; i++ )
     {
@@ -481,7 +479,7 @@ struct invulnerable_event_t final : public raid_event_t
 
   bool parse_target( sim_t* /* sim */, const std::string& /* name */, const std::string& value )
   {
-    auto it = range::find_if( sim->target_list, [&value]( const player_t* target ) {
+    auto it = range::find_if( sim->target_list, [ &value ]( const player_t* target ) {
       return util::str_compare_ci( value, target->name() );
     } );
 
@@ -511,7 +509,7 @@ struct invulnerable_event_t final : public raid_event_t
     if ( retarget )
     {
       range::for_each( sim->player_non_sleeping_list,
-                       [this]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_INVULNERABLE, target ); } );
+                       [ this ]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_INVULNERABLE, target ); } );
     }
   }
 
@@ -522,7 +520,7 @@ struct invulnerable_event_t final : public raid_event_t
     if ( retarget )
     {
       range::for_each( sim->player_non_sleeping_list,
-                       [this]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_VULNERABLE, target ); } );
+                       [ this ]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_VULNERABLE, target ); } );
     }
   }
 };
@@ -693,9 +691,9 @@ struct movement_event_t final : public raid_event_t
     movement_direction_type m = direction;
     if ( direction == movement_direction_type::RANDOM )
     {
-      auto min = static_cast<int>(movement_direction_type::OMNI);
-      auto max_exclusive = static_cast<int>(movement_direction_type::RANDOM);
-      m = static_cast<movement_direction_type>( int( sim->rng().range(min, max_exclusive) ) );
+      auto min           = static_cast<int>( movement_direction_type::OMNI );
+      auto max_exclusive = static_cast<int>( movement_direction_type::RANDOM );
+      m                  = static_cast<movement_direction_type>( int( sim->rng().range( min, max_exclusive ) ) );
     }
 
     if ( distance_range > 0 )
@@ -895,8 +893,8 @@ struct heal_event_t final : public raid_event_t
         }
       };
 
-      raid_heal = new raid_heal_t( name.empty() ? type.c_str() : name.c_str(), sim -> target );
-      raid_heal -> init();
+      raid_heal = new raid_heal_t( name.empty() ? type.c_str() : name.c_str(), sim->target );
+      raid_heal->init();
     }
 
     for ( auto p : affected_players )
@@ -925,11 +923,12 @@ struct heal_event_t final : public raid_event_t
       // heal if there's any healing to be done
       if ( amount_to_heal > 0.0 )
       {
-        raid_heal -> base_dd_min = raid_heal -> base_dd_max = amount_to_heal;
-        raid_heal -> target = p;
-        raid_heal -> execute();
+        raid_heal->base_dd_min = raid_heal->base_dd_max = amount_to_heal;
+        raid_heal->target                               = p;
+        raid_heal->execute();
 
-        sim -> print_log( "Event {} healed {} for '{}' (before player modifiers).", name.c_str(), p -> name(), amount_to_heal );
+        sim->print_log( "Event {} healed {} for '{}' (before player modifiers).", name.c_str(), p->name(),
+                        amount_to_heal );
       }
     }
   }
@@ -1079,7 +1078,7 @@ std::unique_ptr<expr_t> parse_player_if_expr( player_t& player, const std::strin
   if ( auto e = expression::build_player_expression_tree( player, tokens, player.sim->optimize_expressions ) )
     return e;
 
-  throw std::invalid_argument("No player expression found");
+  throw std::invalid_argument( "No player expression found" );
 }
 
 raid_event_t* get_next_raid_event( const std::vector<raid_event_t*>& matching_events )
@@ -1515,23 +1514,22 @@ void raid_event_t::parse_options( util::string_view options_str )
     return;
 
   opts::parse( sim, type, options, options_str,
-    [ this ]( opts::parse_status status, const std::string& name, const std::string& value ) {
-      // Fail parsing if strict parsing is used and the option is not found
-      if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
-      {
-        return opts::parse_status::FAILURE;
-      }
+               [ this ]( opts::parse_status status, const std::string& name, const std::string& value ) {
+                 // Fail parsing if strict parsing is used and the option is not found
+                 if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
+                 {
+                   return opts::parse_status::FAILURE;
+                 }
 
-      // .. otherwise, just warn that there's an unknown option
-      if ( status == opts::parse_status::NOT_FOUND )
-      {
-        sim->error( "Warning: Unknown raid event '{}' option '{}' with value '{}', ignoring",
-          name, name, value );
-      }
+                 // .. otherwise, just warn that there's an unknown option
+                 if ( status == opts::parse_status::NOT_FOUND )
+                 {
+                   sim->error( "Warning: Unknown raid event '{}' option '{}' with value '{}', ignoring", name, name,
+                               value );
+                 }
 
-      return status;
-    } );
-  
+                 return status;
+               } );
 
   if ( !affected_role_str.empty() )
   {
@@ -1554,20 +1552,21 @@ void raid_event_t::parse_options( util::string_view options_str )
   if ( last_pct != -1 && !sim->fixed_time )
   {
     assert( sim->target );
-    sim->target->register_resource_callback( RESOURCE_HEALTH, last_pct, [this]() { deactivate(); }, true );
+    sim->target->register_resource_callback(
+        RESOURCE_HEALTH, last_pct, [ this ]() { deactivate(); }, true );
   }
 
   if ( first_pct != -1 && !sim->fixed_time )
   {
     assert( sim->target );
-    sim->target->register_resource_callback( RESOURCE_HEALTH, first_pct, [this]() { activate(); }, true );
+    sim->target->register_resource_callback(
+        RESOURCE_HEALTH, first_pct, [ this ]() { activate(); }, true );
   }
 }
 
 // raid_event_t::create =====================================================
 
-std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, util::string_view name,
-                                                    util::string_view options_str )
+std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, util::string_view name, util::string_view options_str )
 {
   if ( name == "adds" )
     return std::unique_ptr<raid_event_t>( new adds_event_t( sim, options_str ) );
@@ -1645,7 +1644,7 @@ void raid_event_t::init( sim_t* sim )
     }
     catch ( const std::exception& )
     {
-      std::throw_with_nested(std::invalid_argument(fmt::format("Error creating raid event from '{}'", split)));
+      std::throw_with_nested( std::invalid_argument( fmt::format( "Error creating raid event from '{}'", split ) ) );
     }
   }
 }
