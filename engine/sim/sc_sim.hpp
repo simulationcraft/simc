@@ -626,7 +626,7 @@ struct sim_t : private sc_thread_t
   void combat_begin();
   void combat_end();
   void add_chart_data( const highchart::chart_t& chart );
-  bool      has_raid_event( const std::string& name ) const;
+  bool has_raid_event( util::string_view type ) const;
 
   // Activates the necessary actor/actors before iteration begins.
   void activate_actors();

@@ -24,7 +24,7 @@
 namespace
 {  // UNNAMED NAMESPACE
 
-struct adds_event_t : public raid_event_t
+struct adds_event_t final : public raid_event_t
 {
   double count;
   double health;
@@ -47,7 +47,7 @@ struct adds_event_t : public raid_event_t
   std::string enemy_type_str;
   player_e enemy_type;
 
-  adds_event_t( sim_t* s, const std::string& options_str )
+  adds_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "adds" ),
       count( 1 ),
       health( 100000 ),
@@ -333,7 +333,7 @@ struct adds_event_t : public raid_event_t
   }
 };
 
-struct move_enemy_t : public raid_event_t
+struct move_enemy_t final : public raid_event_t
 {
   double x_coord;
   double y_coord;
@@ -342,7 +342,7 @@ struct move_enemy_t : public raid_event_t
   double original_x;
   double original_y;
 
-  move_enemy_t( sim_t* s, const std::string& options_str )
+  move_enemy_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "move_enemy" ),
       x_coord( 0.0 ),
       y_coord( 0.0 ),
@@ -412,9 +412,9 @@ struct move_enemy_t : public raid_event_t
 
 // Casting ==================================================================
 
-struct casting_event_t : public raid_event_t
+struct casting_event_t final : public raid_event_t
 {
-  casting_event_t( sim_t* s, const std::string& options_str ) : raid_event_t( s, "casting" )
+  casting_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "casting" )
   {
     parse_options( options_str );
   }
@@ -432,11 +432,11 @@ struct casting_event_t : public raid_event_t
 
 // Distraction ==============================================================
 
-struct distraction_event_t : public raid_event_t
+struct distraction_event_t final : public raid_event_t
 {
   double skill;
 
-  distraction_event_t( sim_t* s, const std::string& options_str ) : raid_event_t( s, "distraction" ), skill( 0.2 )
+  distraction_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "distraction" ), skill( 0.2 )
   {
     players_only = true;  // Pets shouldn't have less "skill"
 
@@ -464,12 +464,12 @@ struct distraction_event_t : public raid_event_t
 // Invulnerable =============================================================
 
 // TODO: Support more than sim -> target
-struct invulnerable_event_t : public raid_event_t
+struct invulnerable_event_t final : public raid_event_t
 {
   bool retarget;
   player_t* target;
 
-  invulnerable_event_t( sim_t* s, const std::string& options_str )
+  invulnerable_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "invulnerable" ), retarget( false ), target( s->target )
   {
     add_option( opt_bool( "retarget", retarget ) );
@@ -529,9 +529,9 @@ struct invulnerable_event_t : public raid_event_t
 
 // Flying ===================================================================
 
-struct flying_event_t : public raid_event_t
+struct flying_event_t final : public raid_event_t
 {
-  flying_event_t( sim_t* s, const std::string& options_str ) : raid_event_t( s, "flying" )
+  flying_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "flying" )
   {
     parse_options( options_str );
   }
@@ -615,7 +615,7 @@ struct movement_ticker_t : public event_t
   }
 };
 
-struct movement_event_t : public raid_event_t
+struct movement_event_t final : public raid_event_t
 {
   double move_distance;
   movement_direction_type direction;
@@ -626,7 +626,7 @@ struct movement_event_t : public raid_event_t
   double distance_max;
   double avg_player_movement_speed;
 
-  movement_event_t( sim_t* s, const std::string& options_str )
+  movement_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "movement" ),
       move_distance( 0 ),
       direction( movement_direction_type::TOWARDS ),
@@ -738,9 +738,9 @@ struct movement_event_t : public raid_event_t
 
 // Stun =====================================================================
 
-struct stun_event_t : public raid_event_t
+struct stun_event_t final : public raid_event_t
 {
-  stun_event_t( sim_t* s, const std::string& options_str ) : raid_event_t( s, "stun" )
+  stun_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "stun" )
   {
     parse_options( options_str );
   }
@@ -775,9 +775,9 @@ struct stun_event_t : public raid_event_t
 
 // Interrupt ================================================================
 
-struct interrupt_event_t : public raid_event_t
+struct interrupt_event_t final : public raid_event_t
 {
-  interrupt_event_t( sim_t* s, const std::string& options_str ) : raid_event_t( s, "interrupt" )
+  interrupt_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "interrupt" )
   {
     parse_options( options_str );
   }
@@ -797,14 +797,14 @@ struct interrupt_event_t : public raid_event_t
 
 // Damage ===================================================================
 
-struct damage_event_t : public raid_event_t
+struct damage_event_t final : public raid_event_t
 {
   double amount;
   double amount_range;
   spell_t* raid_damage;
   school_e damage_type;
 
-  damage_event_t( sim_t* s, const std::string& options_str )
+  damage_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "damage" ), amount( 1 ), amount_range( 0 ), raid_damage( nullptr )
   {
     std::string type_str = "holy";
@@ -857,7 +857,7 @@ struct damage_event_t : public raid_event_t
 
 // Heal =====================================================================
 
-struct heal_event_t : public raid_event_t
+struct heal_event_t final : public raid_event_t
 {
   double amount;
   double amount_range;
@@ -865,7 +865,7 @@ struct heal_event_t : public raid_event_t
 
   heal_t* raid_heal;
 
-  heal_event_t( sim_t* s, const std::string& options_str )
+  heal_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "heal" ), amount( 1 ), amount_range( 0 ), to_pct( 0 ), to_pct_range( 0 ), raid_heal( nullptr )
   {
     add_option( opt_float( "amount", amount ) );
@@ -941,11 +941,11 @@ struct heal_event_t : public raid_event_t
 
 // Damage Taken Debuff=========================================================
 
-struct damage_taken_debuff_event_t : public raid_event_t
+struct damage_taken_debuff_event_t final : public raid_event_t
 {
   int amount;
 
-  damage_taken_debuff_event_t( sim_t* s, const std::string& options_str )
+  damage_taken_debuff_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "damage_taken" ), amount( 1 )
   {
     add_option( opt_int( "amount", amount ) );
@@ -975,11 +975,11 @@ struct damage_taken_debuff_event_t : public raid_event_t
 
 // Damage Done Buff =======================================================
 
-struct damage_done_buff_event_t : public raid_event_t
+struct damage_done_buff_event_t final : public raid_event_t
 {
   double multiplier;
 
-  damage_done_buff_event_t( sim_t* s, const std::string& options_str )
+  damage_done_buff_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "damage_done" ), multiplier( 1.0 )
   {
     add_option( opt_float( "multiplier", multiplier ) );
@@ -1007,11 +1007,11 @@ struct damage_done_buff_event_t : public raid_event_t
 
 // Vulnerable ===============================================================
 
-struct vulnerable_event_t : public raid_event_t
+struct vulnerable_event_t final : public raid_event_t
 {
   double multiplier;
 
-  vulnerable_event_t( sim_t* s, const std::string& options_str ) : raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
+  vulnerable_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
   {
     add_option( opt_float( "multiplier", multiplier ) );
     parse_options( options_str );
@@ -1032,7 +1032,7 @@ struct vulnerable_event_t : public raid_event_t
 
 struct position_event_t : public raid_event_t
 {
-  position_event_t( sim_t* s, const std::string& options_str ) : raid_event_t( s, "position_switch" )
+  position_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "position_switch" )
   {
     parse_options( options_str );
   }
@@ -1130,7 +1130,7 @@ std::vector<raid_event_t*> get_longest_active_raid_events( const std::vector<rai
 
 }  // UNNAMED NAMESPACE
 
-raid_event_t::raid_event_t( sim_t* s, const std::string& type )
+raid_event_t::raid_event_t( sim_t* s, util::string_view type )
   : sim( s ),
     name(),
     type( type ),
@@ -1509,7 +1509,7 @@ void raid_event_t::reset()
 
 // raid_event_t::parse_options ==============================================
 
-void raid_event_t::parse_options( const std::string& options_str )
+void raid_event_t::parse_options( util::string_view options_str )
 {
   if ( options_str.empty() )
     return;
@@ -1566,8 +1566,8 @@ void raid_event_t::parse_options( const std::string& options_str )
 
 // raid_event_t::create =====================================================
 
-std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, const std::string& name,
-                                                    const std::string& options_str )
+std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, util::string_view name,
+                                                    util::string_view options_str )
 {
   if ( name == "adds" )
     return std::unique_ptr<raid_event_t>( new adds_event_t( sim, options_str ) );
@@ -1689,7 +1689,7 @@ bool raid_event_t::filter_player( const player_t* p )
   return false;
 }
 
-double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type_or_name, std::string& filter,
+double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view type_or_name, util::string_view filter,
                                                      bool test_filter )
 {
   // correct for "damage" type event
@@ -1826,13 +1826,4 @@ std::ostream& operator<<( std::ostream& os, const raid_event_t& r )
 {
   fmt::print( os, "Raid event (type={} name={})", r.type, r.name );
   return os;
-}
-
-bool raid_event_t::has_raid_event( sim_t* sim, const std::string& type )
-{
-  auto it = range::find_if( sim->raid_events, [&type]( const std::unique_ptr<raid_event_t>& re ) {
-    return re->type == type;
-  } );
-
-  return it != sim->raid_events.end();
 }

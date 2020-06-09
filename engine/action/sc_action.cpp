@@ -3264,7 +3264,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
     }
     else
     {
-      if ( sim->target_list.size() == 1u && !raid_event_t::has_raid_event( sim, "adds" ) )
+      if ( sim->target_list.size() == 1u && !sim->has_raid_event( "adds" ) )
       {
         return expr_t::create_constant( "spell_targets", 1.0 );
       }

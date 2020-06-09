@@ -7,6 +7,7 @@
 
 #include "config.hpp"
 #include "util/generic.hpp"
+#include "util/string_view.hpp"
 #include "sc_timespan.hpp"
 #include "sc_enums.hpp"
 #include <cstdint>
@@ -55,9 +56,9 @@ public:
   std::unordered_map<size_t, std::unique_ptr<expr_t>> player_expressions;
   std::vector<std::unique_ptr<option_t>> options;
 
-  raid_event_t( sim_t*, const std::string& );
+  raid_event_t( sim_t*, util::string_view type );
 
-  virtual ~raid_event_t() {}
+  virtual ~raid_event_t() = default;
 
   virtual bool filter_player( const player_t* );
 
@@ -74,16 +75,14 @@ public:
   double max_distance() { return distance_max; }
   void schedule();
   virtual void reset();
-  void parse_options( const std::string& options_str );
-  static std::unique_ptr<raid_event_t> create( sim_t* sim, const std::string& name, const std::string& options_str );
+  void parse_options( util::string_view options_str );
+  static std::unique_ptr<raid_event_t> create( sim_t* sim, util::string_view name, util::string_view options_str );
   static void init( sim_t* );
   static void reset( sim_t* );
   static void combat_begin( sim_t* );
   static void combat_end( sim_t* ) {}
-  static double evaluate_raid_event_expression(sim_t* s, std::string& type, std::string& filter,
+  static double evaluate_raid_event_expression(sim_t* s, util::string_view type, util::string_view filter,
       bool test_filter = false);
-
-  static bool has_raid_event( sim_t*, const std::string& type );
 private:
   virtual void _start() = 0;
   virtual void _finish() = 0;

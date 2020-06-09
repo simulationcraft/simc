@@ -3298,7 +3298,7 @@ std::unique_ptr<expr_t> sim_t::create_expression( const std::string& name_str )
 
   if ( util::str_compare_ci( name_str, "active_enemies" ) )
   {
-    if ( target_list.size() == 1u && !raid_event_t::has_raid_event( this, "adds" ) )
+    if ( target_list.size() == 1u && !has_raid_event( "adds" ) )
     {
       return expr_t::create_constant( name_str, 1.0 );
     }
@@ -3384,8 +3384,8 @@ std::unique_ptr<expr_t> sim_t::create_expression( const std::string& name_str )
 
   if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "raid_event" ) )
   {
-    std::string type_or_name = splits[ 1 ];
-    std::string filter = splits[ 2 ];
+    const std::string& type_or_name = splits[ 1 ];
+    const std::string& filter = splits[ 2 ];
 
     // Call once to see if we have a valid raid expression.
     raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, true );
@@ -4325,7 +4325,7 @@ void sim_t::activate_actors()
   analyze_number = 0;
 }
 
-bool sim_t::has_raid_event( const std::string& type ) const
+bool sim_t::has_raid_event( util::string_view type ) const
 {
   auto it = range::find_if( raid_events, [ &type ]( const std::unique_ptr<raid_event_t>& event ) {
       return util::str_compare_ci( type, event -> type );
