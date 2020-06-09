@@ -17,7 +17,7 @@
 
 namespace {
 
-  const color::rgb& item_quality_color(const item_t& item)
+  color::rgb item_quality_color(const item_t& item)
   {
     switch (item.parsed.data.quality)
     {

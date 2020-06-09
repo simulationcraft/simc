@@ -847,17 +847,10 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
   {
     for ( const stats_t* stats : filtered_waiting_stats )
     {
-      std::string color = color::school_color( stats->school );
-      if ( color.empty() )
-      {
-        p.sim->errorf(
-          "chart::generate_stats_sources assertion error! School color unknown, stats %s from %s. School %s\n",
-          stats->name_str.c_str(), p.name(), util::school_type_string( stats->school ) );
-        assert( 0 );
-      }
+      color::rgb color = color::school_color( stats->school );
 
       sc_js_t e;
-      e.set( "color", color );
+      e.set( "color", color.str() );
       e.set( "y", util::round( stats->total_time.total_seconds(), p.sim->report_precision ) );
       e.set( "name", report_decorators::decorate_html_string( util::encode_html( stats->name_str ), color ) );
       e.set( "id", "#actor" + util::to_string( stats->player->index ) + "_"
@@ -911,7 +904,7 @@ bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& 
 
   for ( const stats_t* stats : stats_list )
   {
-    const color::rgb& c = color::school_color( stats->school );
+    const color::rgb c = color::school_color( stats->school );
 
     sc_js_t e;
     e.set( "color", c.str() );
@@ -1055,7 +1048,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
     // Iterate over the players and output data
     for ( const auto p : player_list )
     {
-      const color::rgb& c = color::class_color( p->type );
+      const color::rgb c = color::class_color( p->type );
       double value = get_data_value( p->collected_data, chart_metric, vm );
 
       // Keep track of largest value in all of the outputted charts so we can
@@ -1337,7 +1330,7 @@ bool chart::generate_apet( highchart::bar_chart_t& bc, const std::vector<stats_t
 
   for ( const stats_t* stats : stats_list )
   {
-    const color::rgb& c = color::school_color( stats->school );
+    const color::rgb c = color::school_color( stats->school );
 
     sc_js_t e;
     e.set( "color", c.str() );

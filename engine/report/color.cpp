@@ -5,57 +5,29 @@
 
 #include "color.hpp"
 
-#include <iomanip>
-#include <sstream>
+#include "fmt/format.h"
 
 namespace color
 {
-rgb::rgb() : r_( 0 ), g_( 0 ), b_( 0 ), a_( 255 )
-{
-}
-
-rgb::rgb( unsigned char r, unsigned char g, unsigned char b )
-  : r_( r ), g_( g ), b_( b ), a_( 255 )
-{
-}
-
-rgb::rgb( double r, double g, double b )
-  : r_( static_cast<unsigned char>( r * 255 ) ),
-    g_( static_cast<unsigned char>( g * 255 ) ),
-    b_( static_cast<unsigned char>( b * 255 ) ),
-    a_( 1 )
-{
-}
-
-rgb::rgb( const std::string& color ) : r_( 0 ), g_( 0 ), b_( 0 ), a_( 255 )
-{
-  parse_color( color );
-}
-
-rgb::rgb( const char* color ) : r_( 0 ), g_( 0 ), b_( 0 ), a_( 255 )
-{
-  parse_color( color );
-}
 
 std::string rgb::rgb_str() const
 {
-  std::stringstream s;
-
-  s << "rgba(" << static_cast<unsigned>( r_ ) << ", "
-    << static_cast<unsigned>( g_ ) << ", " << static_cast<unsigned>( b_ )
-    << ", " << a_ << ")";
-
-  return s.str();
+  return fmt::format("rgba({}, {}, {}, {})", r_, g_, b_, a_ );
 }
 
 std::string rgb::str() const
 {
-  return *this;
+  return fmt::to_string( *this );
 }
 
 std::string rgb::hex_str() const
 {
-  return str().substr( 1 );
+  return fmt::format( "{:02X}{:02X}{:02X}", r_, g_, b_ );
+}
+
+rgb::operator std::string() const
+{
+  return str();
 }
 
 rgb& rgb::adjust( double v )
@@ -65,9 +37,9 @@ rgb& rgb::adjust( double v )
     return *this;
   }
 
-  r_ = static_cast<unsigned char>(r_ * v);
-  g_ = static_cast<unsigned char>(g_ * v);
-  b_ = static_cast<unsigned char>(b_ * v);
+  r_ = static_cast<uint8_t>(r_ * v);
+  g_ = static_cast<uint8_t>(g_ * v);
+  b_ = static_cast<uint8_t>(b_ * v);
   return *this;
 }
 
@@ -94,81 +66,30 @@ rgb rgb::opacity( double pct ) const
   return r;
 }
 
-rgb& rgb::operator=( const std::string& color_str )
+rgb& rgb::operator=( util::string_view color_str )
 {
   parse_color( color_str );
   return *this;
 }
 
-rgb& rgb::operator+=( const rgb& other )
+rgb& rgb::operator+=( rgb other )
 {
-  if ( this == &( other ) )
-  {
-    return *this;
-  }
-
   unsigned mix_r = ( r_ + other.r_ ) / 2;
   unsigned mix_g = ( g_ + other.g_ ) / 2;
   unsigned mix_b = ( b_ + other.b_ ) / 2;
 
-  r_ = static_cast<unsigned char>( mix_r );
-  g_ = static_cast<unsigned char>( mix_g );
-  b_ = static_cast<unsigned char>( mix_b );
+  r_ = static_cast<uint8_t>( mix_r );
+  g_ = static_cast<uint8_t>( mix_g );
+  b_ = static_cast<uint8_t>( mix_b );
 
   return *this;
 }
 
-rgb rgb::operator+( const rgb& other ) const
+rgb rgb::operator+( rgb other ) const
 {
   rgb new_color( *this );
   new_color += other;
   return new_color;
-}
-
-rgb::operator std::string() const
-{
-  std::stringstream s;
-  operator<<( s, *this );
-  return s.str();
-}
-
-bool rgb::parse_color( const std::string& color_str )
-{
-  std::stringstream i( color_str );
-
-  if ( color_str.size() < 6 || color_str.size() > 7 )
-  {
-    return false;
-  }
-
-  if ( i.peek() == '#' )
-  {
-    i.get();
-  }
-
-  unsigned v = 0;
-  i >> std::hex >> v;
-  if ( i.fail() )
-  {
-    return false;
-  }
-
-  r_ = static_cast<unsigned char>( v / 0x10000 );
-  g_ = static_cast<unsigned char>( ( v / 0x100 ) % 0x100 );
-  b_ = static_cast<unsigned char>( v % 0x100 );
-
-  return true;
-}
-
-std::ostream& operator<<( std::ostream& s, const rgb& r )
-{
-  s << '#';
-  s << std::setfill( '0' ) << std::internal << std::uppercase << std::hex;
-  s << std::setw( 2 ) << static_cast<unsigned>( r.r_ ) << std::setw( 2 )
-    << static_cast<unsigned>( r.g_ ) << std::setw( 2 )
-    << static_cast<unsigned>( r.b_ );
-  s << std::dec;
-  return s;
 }
 
 rgb class_color( player_e type )

@@ -171,7 +171,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
 
 void insert_data( highchart::bar_chart_t& chart,
                   const std::string& name,
-                  const color::rgb& c,
+                  const color::rgb c,
                   const profileset::statistical_data_t& data,
                   bool baseline,
                   double baseline_value,
@@ -227,7 +227,7 @@ void populate_chart_data( highchart::bar_chart_t& profileset,
                           std::vector<const profileset::profile_set_t*> results,
                           player_t* const baseline,
                           scale_metric_e metric,
-                          const color::rgb& c,
+                          const color::rgb c,
                           bool mean = false )
 {
     // Baseline data, insert into the correct position in the for loop below
