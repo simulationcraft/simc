@@ -5078,16 +5078,30 @@ void warrior_t::default_apl_dps_precombat()
 
   precombat->add_action( "worldvein_resonance" );
 
-  precombat->add_action( "memory_of_lucid_dreams" );
-
-  precombat->add_action( "guardian_of_azeroth" );
-
   if ( specialization() == WARRIOR_FURY )
   {
-    precombat->add_action( this, "Recklessness" );
+        precombat->add_action( "memory_of_lucid_dreams" );
+        precombat->add_action( "guardian_of_azeroth" );
+        precombat->add_action( this, "Recklessness" );
+  }
+
+
+  if ( specialization() == WARRIOR_ARMS )
+  {
+        precombat->add_action( "memory_of_lucid_dreams,if=talent.fervor_of_battle.enabled|!talent.fervor_of_battle.enabled&target.time_to_die>150" );
+        precombat->add_action( "guardian_of_azeroth,if=talent.fervor_of_battle.enabled|talent.massacre.enabled&target.time_to_die>210|talent.rend.enabled&(target.time_to_die>210|target.time_to_die<145)" );
+        precombat->add_action( "potion,name=potion_of_unbridled_fury,if=essence.condensed_lifeforce.major" );
+        precombat->add_action( "potion,name=potion_of_focused_resolve,if=essence.memory_of_lucid_dreams.major" );
+  }
+
+
+  if ( specialization() == WARRIOR_PROTECTION )
+  {
+        precombat->add_action( "memory_of_lucid_dreams" );
   }
 
   precombat->add_action( "potion" );
+
 }
 
 // Fury Warrior Action Priority List ========================================
@@ -5224,7 +5238,10 @@ void warrior_t::apl_arms()
 
   if ( sim->allow_potions && true_level >= 80 )
   {
-    default_list->add_action( "potion,if=target.health.pct<21&buff.memory_of_lucid_dreams.up|!essence.memory_of_lucid_dreams.major" );
+    default_list->add_action( "potion,if=(target.health.pct<21|talent.massacre.enabled&target.health.pct<36)"
+                              "&(buff.memory_of_lucid_dreams.up|buff.guardian_of_azeroth.up)|"
+                              "!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major&(target.health.pct<21|"
+                              "talent.massacre.enabled&target.health.pct<36)&debuff.colossus_smash.up|target.time_to_die<25" );
   }
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -5232,7 +5249,7 @@ void warrior_t::apl_arms()
     if ( racial_actions[ i ] == "arcane_torrent" )
     {
       default_list->add_action( racial_actions[ i ] +
-                                ",if=cooldown.mortal_strike.remains>1.5&buff.memory_of_lucid_dreams.down&rage<50" );
+                                ",if=buff.memory_of_lucid_dreams.down&rage<50&(cooldown.mortal_strike.remains>gcd|(target.health.pct<20|talent.massacre.enabled&target.health.pct<35))" );
     }
     else if ( racial_actions[ i ] == "lights_judgment" )
     {
@@ -5244,7 +5261,23 @@ void warrior_t::apl_arms()
     }
     else if ( racial_actions[ i ] == "berserking" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=buff.memory_of_lucid_dreams.up|(!essence.memory_of_lucid_dreams.major&debuff.colossus_smash.up)" );
+      default_list->add_action( racial_actions[ i ] + ",if=buff.memory_of_lucid_dreams.up&buff.test_of_might.up|buff.guardian_of_azeroth.up&debuff.colossus_smash.up|buff.seething_rage.up|"
+                                                      "(!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major&!essence.blood_of_the_enemy.major&debuff.colossus_smash.up)" );
+    }
+    else if ( racial_actions[ i ] == "blood_fury" )
+    {
+      default_list->add_action( racial_actions[ i ] + ",if=buff.memory_of_lucid_dreams.up&buff.test_of_might.up|buff.guardian_of_azeroth.up&debuff.colossus_smash.up|buff.seething_rage.up|"
+                                                      "(!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major&!essence.blood_of_the_enemy.major&debuff.colossus_smash.up)" );
+    }
+    else if ( racial_actions[ i ] == "fireblood" )
+    {
+      default_list->add_action( racial_actions[ i ] + ",if=buff.memory_of_lucid_dreams.up&buff.test_of_might.up|buff.guardian_of_azeroth.up&debuff.colossus_smash.up|buff.seething_rage.up|"
+                                                      "(!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major&!essence.blood_of_the_enemy.major&debuff.colossus_smash.up)" );
+    }
+    else if ( racial_actions[ i ] == "ancestral_call" )
+    {
+      default_list->add_action( racial_actions[ i ] + ",if=buff.memory_of_lucid_dreams.up&buff.test_of_might.up|buff.guardian_of_azeroth.up&debuff.colossus_smash.up|buff.seething_rage.up|"
+                                                      "(!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major&!essence.blood_of_the_enemy.major&debuff.colossus_smash.up)" );
     }
     else
     {
@@ -5257,10 +5290,11 @@ void warrior_t::apl_arms()
     if ( items[ i ].name_str == "ashvanes_razor_coral" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
-                                ",if=!debuff.razor_coral_debuff.up|(target.health.pct<20.1&buff.memory_of_lucid_dreams.up&"
-                                "cooldown.memory_of_lucid_dreams.remains<117)|(target.health.pct<30.1&debuff.conductive_ink_debuff.up&"
-                                "!essence.memory_of_lucid_dreams.major)|(!debuff.conductive_ink_debuff.up&!essence.memory_of_lucid_dreams.major&"
-                                "debuff.colossus_smash.up)|target.time_to_die<30" );
+                                ",if=!debuff.razor_coral_debuff.up|((target.health.pct<20.1|talent.massacre.enabled&target.health.pct<35.1)&"
+                                "(buff.memory_of_lucid_dreams.up&(cooldown.memory_of_lucid_dreams.remains<106|cooldown.memory_of_lucid_dreams.remains<117&target.time_to_die<20&!talent.massacre.enabled)|"
+                                "buff.guardian_of_azeroth.up&debuff.colossus_smash.up))|essence.condensed_lifeforce.major&target.health.pct<20|"
+                                "(target.health.pct<30.1&debuff.conductive_ink_debuff.up&!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major)|"
+                                "(!debuff.conductive_ink_debuff.up&!essence.memory_of_lucid_dreams.major&!essence.condensed_lifeforce.major&debuff.colossus_smash.up)" );
     }
     else if ( items[ i ].name_str == "azsharas_font_of_power" )
     {
@@ -5291,7 +5325,8 @@ void warrior_t::apl_arms()
   default_list->add_action( this, "Sweeping Strikes", "if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>10"
                             "|cooldown.colossus_smash.remains>8|azerite.test_of_might.enabled)" );
 
-  default_list->add_action( "blood_of_the_enemy,if=buff.test_of_might.up|(debuff.colossus_smash.up&!azerite.test_of_might.enabled)" );
+  default_list->add_action( "blood_of_the_enemy,if=(buff.test_of_might.up|(debuff.colossus_smash.up&!azerite.test_of_might.enabled))&(target.time_to_die>90|"
+                            "(target.health.pct<20|talent.massacre.enabled&target.health.pct<35))" );
   default_list->add_action( "purifying_blast,if=!debuff.colossus_smash.up&!buff.test_of_might.up" );
   default_list->add_action( "ripple_in_space,if=!debuff.colossus_smash.up&!buff.test_of_might.up" );
   default_list->add_action( "worldvein_resonance,if=!debuff.colossus_smash.up&!buff.test_of_might.up" );
@@ -5299,11 +5334,14 @@ void warrior_t::apl_arms()
   default_list->add_action( "reaping_flames,if=!debuff.colossus_smash.up&!buff.test_of_might.up" );
   default_list->add_action( "concentrated_flame,if=!debuff.colossus_smash.up&!buff.test_of_might.up&dot.concentrated_flame_burn.remains=0" );
   default_list->add_action( "the_unbound_force,if=buff.reckless_force.up" );
-  default_list->add_action( "guardian_of_azeroth,if=cooldown.colossus_smash.remains<10" );
-  default_list->add_action( "memory_of_lucid_dreams,if=!talent.warbreaker.enabled&cooldown.colossus_smash.remains<gcd&"
-                            "(target.time_to_die>150|target.health.pct<20)" );
-  default_list->add_action( "memory_of_lucid_dreams,if=talent.warbreaker.enabled&cooldown.warbreaker.remains<gcd&"
-                            "(target.time_to_die>150|target.health.pct<20)" );
+  default_list->add_action( "guardian_of_azeroth,if=!talent.warbreaker.enabled&cooldown.colossus_smash.remains<5&(target.time_to_die>210|"
+                            "(target.health.pct<20|talent.massacre.enabled&target.health.pct<35)|target.time_to_die<31)" );
+  default_list->add_action( "guardian_of_azeroth,if=talent.warbreaker.enabled&cooldown.warbreaker.remains<5&(target.time_to_die>210|"
+                            "(target.health.pct<20|talent.massacre.enabled&target.health.pct<35)|target.time_to_die<31)" );
+  default_list->add_action( "memory_of_lucid_dreams,if=!talent.warbreaker.enabled&cooldown.colossus_smash.remains<1&"
+                            "(target.time_to_die>150|(target.health.pct<20|talent.massacre.enabled&target.health.pct<35))" );
+  default_list->add_action( "memory_of_lucid_dreams,if=talent.warbreaker.enabled&cooldown.warbreaker.remains<1&"
+                            "(target.time_to_die>150|(target.health.pct<20|talent.massacre.enabled&target.health.pct<35))" );
 
   default_list->add_action( "run_action_list,name=hac,if=raid_event.adds.exists" );
   default_list->add_action( "run_action_list,name=five_target,if=spell_targets.whirlwind>4" );
@@ -5367,9 +5405,8 @@ void warrior_t::apl_arms()
   five_target->add_action( this, "Overpower" );
   five_target->add_action( this, "Whirlwind" );
 
-//execute->add_talent( this, "Rend", "if=remains<=duration*0.3&debuff.colossus_smash.down" ); Not worth casting at the moment
   execute->add_talent( this, "Skullsplitter",
-                       "if=rage<60&buff.deadly_calm.down&buff.memory_of_lucid_dreams.down" );
+                       "if=rage<52&buff.deadly_calm.down&buff.memory_of_lucid_dreams.down" );
   execute->add_talent( this, "Ravager",
                        "if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown."
                        "warbreaker.remains<2))" );
@@ -5381,29 +5418,32 @@ void warrior_t::apl_arms()
   execute->add_action( this, "Bladestorm", "if=!buff.memory_of_lucid_dreams.up&buff.test_of_might.up&rage<30&!buff.deadly_calm.up" );
   execute->add_talent( this, "Cleave", "if=spell_targets.whirlwind>2" );
   execute->add_action( this, "Slam", "if=buff.crushing_assault.up&buff.memory_of_lucid_dreams.down" );
+  execute->add_talent( this, "Rend", "if=remains<=duration*0.3&target.time_to_die>7" );
   execute->add_action( this, "Mortal Strike","if=buff.overpower.stack=2&talent.dreadnaught."
                              "enabled|buff.executioners_precision.stack=2" );
   execute->add_action( this, "Execute" , "if=buff.memory_of_lucid_dreams.up|buff.deadly_calm.up|"
-                             "(buff.test_of_might.up&cooldown.memory_of_lucid_dreams.remains>94)");
+                             "debuff.colossus_smash.up|buff.test_of_might.up" );
   execute->add_action( this, "Overpower" );
   execute->add_action( this, "Execute" );
 
-  single_target->add_talent( this, "Rend", "if=remains<=duration*0.3&debuff.colossus_smash.down" );
   single_target->add_talent( this, "Skullsplitter",
-                             "if=rage<60&buff.deadly_calm.down&buff.memory_of_lucid_dreams.down" );
+                             "if=rage<56&buff.deadly_calm.down&buff.memory_of_lucid_dreams.down" );
   single_target->add_talent( this, "Ravager", "if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent."
                              "warbreaker.enabled&cooldown.warbreaker.remains<2))");
-  single_target->add_action( this, "Colossus Smash" );
-  single_target->add_talent( this, "Warbreaker" );
+  single_target->add_action( this, "Colossus Smash", "if=!essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|target.time_to_die>50)|essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|target.time_to_die>80)|talent.massacre.enabled&(target.time_to_pct_35>10|target.time_to_die>50)" );
+  single_target->add_talent( this, "Warbreaker", "if=!essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|target.time_to_die>50)|essence.condensed_lifeforce.enabled&!talent.massacre.enabled&(target.time_to_pct_20>10|target.time_to_die>80)|talent.massacre.enabled&(target.time_to_pct_35>10|target.time_to_die>50)" );
   single_target->add_talent( this, "Deadly Calm" );
   single_target->add_action( this, "Execute", "if=buff.sudden_death.react" );
-  single_target->add_action( this, "Bladestorm", "if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&"
-                                   "((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)&"
-                                   "buff.memory_of_lucid_dreams.down&rage<40" );
+  single_target->add_action( this, "Bladestorm", "if=cooldown.mortal_strike.remains&debuff.colossus_smash.down&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&"
+                                   "((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)&buff.memory_of_lucid_dreams.down&rage<40" );
   single_target->add_talent( this, "Cleave", "if=spell_targets.whirlwind>2" );
-  single_target->add_action( this, "Overpower", "if=(rage<30&buff.memory_of_lucid_dreams.up&debuff.colossus_smash.up)|(rage<70&buff.memory_of_lucid_dreams.down)" );
+  single_target->add_action( this, "Overpower", "if=(!talent.rend.enabled&dot.deep_wounds.remains&rage<70&buff.memory_of_lucid_dreams.down&debuff.colossus_smash.down)|"
+                                   "(talent.rend.enabled&dot.deep_wounds.remains&dot.rend.remains>gcd&rage<70&buff.memory_of_lucid_dreams.down&debuff.colossus_smash.down)" );
   single_target->add_action( this, "Mortal Strike" );
-  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(buff.memory_of_lucid_dreams.up|debuff.colossus_smash.up|buff.deadly_calm.up)" );
+  single_target->add_talent( this, "Rend", "if=remains<=duration*0.3" );
+  single_target->add_action( this, "Whirlwind", "if=(((buff.memory_of_lucid_dreams.up)|(debuff.colossus_smash.up)|(buff.deadly_calm.up))&talent.fervor_of_battle.enabled)|"
+                                   "((buff.memory_of_lucid_dreams.up|rage>89)&debuff.colossus_smash.up&buff.test_of_might.down&!talent.fervor_of_battle.enabled)" );
+  single_target->add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled&(buff.memory_of_lucid_dreams.up|debuff.colossus_smash.up)" );
   single_target->add_action( this, "Overpower" );
   single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&"
                                    "(buff.test_of_might.up|debuff.colossus_smash.down&buff.test_of_might.down&rage>60)" );
@@ -5424,7 +5464,7 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Intercept", "if=time=0" );
-  
+
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] );
