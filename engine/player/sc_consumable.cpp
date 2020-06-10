@@ -13,12 +13,37 @@
 #include "buff/sc_buff.hpp"
 #include "sim/sc_cooldown.hpp"
 #include "sim/sc_expressions.hpp"
+#include "item/special_effect.hpp"
 #include "player/unique_gear.hpp"
 #include "util/rng.hpp"
 
 #include <string>
 
 namespace { // UNNAMED NAMESPACE
+
+// Find a consumable of a given subtype, see data_enum.hh for type values.
+// Returns 0 if not found.
+const item_data_t* find_consumable( const dbc_t& dbc,
+                                                 util::string_view name,
+                                                 item_subclass_consumable type )
+{
+  if ( name.empty() )
+  {
+    return nullptr;
+  }
+
+  // Poor man's longest matching prefix!
+  const auto& item = dbc::find_consumable( type, dbc.ptr, [name]( const item_data_t* i ) {
+    std::string n = i -> name ? i -> name : "unknown";
+    util::tokenize( n );
+    return util::str_in_str_ci( n, name );
+  } );
+
+  if ( item.id != 0 )
+    return &item;
+
+  return nullptr;
+}
 
 enum class elixir
 {
@@ -343,7 +368,7 @@ struct dbc_consumable_base_t : public action_t
 
     if ( ! disabled_consumable() )
     {
-      item_data = unique_gear::find_consumable( *player -> dbc, consumable_name, type );
+      item_data = find_consumable( *player -> dbc, consumable_name, type );
 
       try
       {
