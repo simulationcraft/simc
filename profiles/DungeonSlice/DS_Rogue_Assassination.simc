@@ -164,11 +164,11 @@ actions.stealthed+=/garrote,target_if=min:remains,if=talent.subterfuge.enabled&a
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&active_enemies=1&buff.subterfuge.remains<1.3
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=1647/4819/4775,azerite_powers=407/408/22/13
+head=gibbering_maw,id=174134,bonus_id=4824/1517/4775,azerite_powers=408/582/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
 shoulders=gorak_tuls_mantle,id=159339,bonus_id=1647/4819/4775,azerite_powers=408/193/30/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=408/582/30/13
+chest=tortured_fleshbeast_cuirass,id=174136,bonus_id=4824/1517/4775,azerite_powers=408/582/21/13
 wrists=wristwraps_of_volatile_power,id=174145,bonus_id=4824/1517/6573
 hands=gloves_of_abyssal_authority,id=174146,bonus_id=4824/1517/6573
 waist=cord_of_anguished_cries,id=174140,bonus_id=4824/1517/6573
