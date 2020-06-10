@@ -5688,7 +5688,7 @@ void items::manifesto_of_madness( special_effect_t& effect )
                       ->add_stat( STAT_VERSATILITY_RATING,
 
                                   effect.player->find_spell( 314040 )->effectN( 3 ).average( effect.item ) *
-                                      effect.player->sim->bfa_opts.manifesto_allies_end );
+                                      ( effect.player->sim->bfa_opts.manifesto_allies_end + 1 ) );
   }
   if ( !first_buff )
   {
