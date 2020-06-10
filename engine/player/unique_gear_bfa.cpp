@@ -5688,7 +5688,7 @@ void items::manifesto_of_madness( special_effect_t& effect )
                       ->add_stat( STAT_VERSATILITY_RATING,
 
                                   effect.player->find_spell( 314040 )->effectN( 3 ).average( effect.item ) *
-                                      ( effect.player->sim->bfa_opts.manifesto_allies_end + 1 ) );
+                                      effect.player->sim->bfa_opts.manifesto_allies_end );
   }
   if ( !first_buff )
   {
@@ -6043,7 +6043,7 @@ void corruption::masterful( special_effect_t& effect )
                    b->player->passive_rating_multiplier.get_mutable( RATING_MASTERY ) /= ( 1 + b->default_value );
                  }
                } );
-    effect.player->register_combat_begin( buff );
+    effect.player->register_arise( buff );
   }
   else
     buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
@@ -6074,7 +6074,7 @@ void corruption::expedient( special_effect_t& effect )
                    b->player->passive_rating_multiplier.get_mutable( RATING_RANGED_HASTE ) /= 1.0 + b->default_value;
                  }
                } );
-    effect.player->register_combat_begin( buff );
+    effect.player->register_arise( buff );
   }
   else
     buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
@@ -6108,7 +6108,7 @@ void corruption::versatile( special_effect_t& effect )
                     1.0 + b->default_value;
               }
             } );
-    effect.player->register_combat_begin( buff );
+    effect.player->register_arise( buff );
   }
   else
     buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
@@ -6139,7 +6139,7 @@ void corruption::severe( special_effect_t& effect )
                    b->player->passive_rating_multiplier.get_mutable( RATING_RANGED_CRIT ) /= 1.0 + b->default_value;
                  }
                } );
-    effect.player->register_combat_begin( buff );
+    effect.player->register_arise( buff );
   }
   else
     buff->set_default_value( buff->default_value + effect.driver()->effectN( 1 ).percent() );
@@ -6351,7 +6351,7 @@ void corruption::strikethrough( special_effect_t& effect )
                ->set_quiet( true );
 
     effect.player->buffs.strikethrough = buff;
-    effect.player->register_combat_begin( buff );
+    effect.player->register_arise( buff );
     effect.type = SPECIAL_EFFECT_NONE;
   }
   else
