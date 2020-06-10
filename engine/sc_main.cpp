@@ -9,6 +9,7 @@
 #include "class_modules/class_module.hpp"
 #include "interfaces/sc_http.hpp"
 #include "interfaces/bcp_api.hpp"
+#include "player/sc_player.hpp"
 #include "player/unique_gear.hpp"
 #include "report/reports.hpp"
 #include "sim/sc_profileset.hpp"

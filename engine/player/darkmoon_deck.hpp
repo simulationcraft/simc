@@ -8,7 +8,7 @@
 #include "config.hpp"
 #include "sc_timespan.hpp"
 #include "sim/event.hpp"
-#include "player/unique_gear.hpp"
+#include "player/unique_gear_helper.hpp"
 #include "util/rng.hpp"
 #include "dbc/dbc.hpp"
 #include "action/dbc_proc_callback.hpp"
