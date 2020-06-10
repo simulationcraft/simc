@@ -36,7 +36,7 @@ struct spell_data_expr_t
   std::vector<uint32_t> result_spell_list;
   std::string result_str;
 
-  spell_data_expr_t( dbc_t& dbc, const std::string& n,
+  spell_data_expr_t( dbc_t& dbc, util::string_view n,
                      expr_data_e dt = DATA_SPELL, bool eq = false,
                      expression::token_e t = expression::TOK_UNKNOWN )
     : name_str( n ),
@@ -49,7 +49,7 @@ struct spell_data_expr_t
       result_str( "" )
   {
   }
-  spell_data_expr_t(dbc_t& dbc, const std::string& n, double constant_value )
+  spell_data_expr_t(dbc_t& dbc, util::string_view n, double constant_value )
     : name_str( n ),
       dbc(dbc),
       data_type( DATA_SPELL ),
@@ -60,8 +60,8 @@ struct spell_data_expr_t
       result_str( "" )
   {
   }
-  spell_data_expr_t(dbc_t& dbc, const std::string& n,
-                     const std::string& constant_value )
+  spell_data_expr_t(dbc_t& dbc, util::string_view n,
+                     util::string_view constant_value )
     : name_str( n ),
       dbc(dbc),
       data_type( DATA_SPELL ),
@@ -72,7 +72,7 @@ struct spell_data_expr_t
       result_str( constant_value )
   {
   }
-  spell_data_expr_t(dbc_t& dbc, const std::string& n,
+  spell_data_expr_t(dbc_t& dbc, util::string_view n,
                      const std::vector<uint32_t>& constant_value )
     : name_str( n ),
       dbc(dbc),
@@ -111,5 +111,5 @@ struct spell_data_expr_t
   virtual std::vector<uint32_t> not_in( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
 
   static spell_data_expr_t* parse( sim_t* sim, const std::string& expr_str );
-  static spell_data_expr_t* create_spell_expression( dbc_t& dbc, const std::string& name_str );
+  static spell_data_expr_t* create_spell_expression( dbc_t& dbc, util::string_view name_str );
 };

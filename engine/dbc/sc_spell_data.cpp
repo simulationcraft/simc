@@ -25,7 +25,7 @@ enum sdata_field_type_t
 struct sdata_field_t
 {
   sdata_field_type_t type;
-  std::string        name;
+  util::string_view  name;
   size_t             offset;
 };
 
@@ -118,8 +118,7 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, "dmg_class",         O_SD( _dmg_class )              }
 };
 
-const std::string _class_strings[] =
-{
+static constexpr std::array<util::string_view, 13> _class_strings { {
   "",
   "warrior",
   "paladin",
@@ -133,10 +132,9 @@ const std::string _class_strings[] =
   "monk",
   "druid",
   "demonhunter"
-};
+} };
 
-const std::string _race_strings[] =
-{
+static constexpr std::array<util::string_view, 33> _race_strings { {
   "",
   "human",
   "orc",
@@ -170,24 +168,15 @@ const std::string _race_strings[] =
   "lightforged_draenei",
   "zandalari_troll",
   "kul_tiran"
-};
-
-const std::string _pet_class_strings[] =
-{
-  "",
-  "cunning",
-  "ferocity",
-  "tenacity",
-};
+} };
 
 struct expr_data_map_t
 {
-  std::string name;
+  util::string_view name;
   expr_data_e type;
 };
 
-const expr_data_map_t expr_map[] =
-{
+static constexpr std::array<expr_data_map_t, 9> expr_map { {
   { "spell", DATA_SPELL },
   { "talent", DATA_TALENT },
   { "effect", DATA_EFFECT },
@@ -197,9 +186,9 @@ const expr_data_map_t expr_map[] =
   { "mastery", DATA_MASTERY_SPELL },
   { "spec_spell", DATA_SPECIALIZATION_SPELL },
   { "azerite", DATA_AZERITE_SPELL },
-};
+} };
 
-expr_data_e parse_data_type( const std::string& name )
+expr_data_e parse_data_type( util::string_view name )
 {
   for ( auto& entry : expr_map )
   {
@@ -210,7 +199,7 @@ expr_data_e parse_data_type( const std::string& name )
   return static_cast<expr_data_e>( -1 );
 }
 
-unsigned class_str_to_mask( const std::string& str )
+unsigned class_str_to_mask( util::string_view str )
 {
   int cls_id = -1;
 
@@ -229,7 +218,7 @@ unsigned class_str_to_mask( const std::string& str )
   return 1 << ( ( cls_id < 1 ) ? 0 : cls_id - 1 );
 }
 
-uint64_t race_str_to_mask( const std::string& str )
+uint64_t race_str_to_mask( util::string_view str )
 {
   int race_id = -1;
 
@@ -248,7 +237,7 @@ uint64_t race_str_to_mask( const std::string& str )
   return ( uint64_t(1) << ( ( race_id < 1 ) ? 0 : race_id - 1 ) );
 }
 
-unsigned school_str_to_mask( const std::string& str )
+unsigned school_str_to_mask( util::string_view str )
 {
   unsigned mask = 0;
 
@@ -293,7 +282,7 @@ util::span<const sdata_field_t> data_fields_by_type( expr_data_e type, bool effe
 // For these expression types, you can only use two spell lists as parameters
 struct spell_list_expr_t : public spell_data_expr_t
 {
-  spell_list_expr_t( dbc_t& dbc, const std::string& name, expr_data_e type = DATA_SPELL, bool eq = false ) :
+  spell_list_expr_t( dbc_t& dbc, util::string_view name, expr_data_e type = DATA_SPELL, bool eq = false ) :
     spell_data_expr_t( dbc, name, type, eq, expression::TOK_SPELL_LIST ) { }
 
   int evaluate() override
@@ -464,7 +453,7 @@ struct sd_expr_binary_t : public spell_list_expr_t
   spell_data_expr_t* left;
   spell_data_expr_t* right;
 
-  sd_expr_binary_t( dbc_t& dbc, const std::string& n, int o, spell_data_expr_t* l, spell_data_expr_t* r ) :
+  sd_expr_binary_t( dbc_t& dbc, util::string_view n, int o, spell_data_expr_t* l, spell_data_expr_t* r ) :
     spell_list_expr_t( dbc, n ), operation( o ), left( l ), right( r ) { }
 
   int evaluate() override
@@ -515,7 +504,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   int                offset;
   sdata_field_type_t field_type;
 
-  spell_data_filter_expr_t(dbc_t& dbc, expr_data_e type, const std::string& f_name, bool eq = false ) :
+  spell_data_filter_expr_t(dbc_t& dbc, expr_data_e type, util::string_view f_name, bool eq = false ) :
     spell_list_expr_t( dbc, f_name, type, eq ), offset( 0 ), field_type( SD_TYPE_INT )
   {
     for ( const auto& field : data_fields_by_type( type, effect_query ) )
@@ -601,7 +590,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
         const char* c_str = *reinterpret_cast<const char * const*>( data + offset );
         std::string string_v = c_str ? c_str : "";
         util::tokenize( string_v );
-        const std::string& ostring_v = other.result_str;
+        util::string_view ostring_v = other.result_str;
 
         switch ( t )
         {
@@ -1109,7 +1098,7 @@ spell_data_expr_t* build_expression_tree( dbc_t& dbc,
 
 } // anonymous namespace ====================================================
 
-spell_data_expr_t* spell_data_expr_t::create_spell_expression( dbc_t& dbc, const std::string& name_str )
+spell_data_expr_t* spell_data_expr_t::create_spell_expression( dbc_t& dbc, util::string_view name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
