@@ -294,11 +294,6 @@ void priest_t::create_buffs_discipline()
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
 
-  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 59889 ) )
-                            ->set_chance( specs.borrowed_time->ok() )
-                            ->set_default_value( find_spell( 59889 )->effectN( 1 ).percent() )
-                            ->add_invalidate( CACHE_HASTE );
-
   buffs.holy_evangelism = make_buff( this, "holy_evangelism", find_spell( 81661 ) )
                               ->set_chance( specs.evangelism->ok() )
                               ->set_activated( false );
@@ -355,7 +350,6 @@ void priest_t::init_spells_discipline()
   specs.shadow                 = dbc::get_class_passive( *this, PRIEST_SHADOW );
   specs.atonement              = find_specialization_spell( "Atonement" );
   specs.archangel              = find_specialization_spell( "Archangel" );
-  specs.borrowed_time          = find_specialization_spell( "Borrowed Time" );
   specs.divine_aegis           = find_specialization_spell( "Divine Aegis" );
   specs.evangelism             = find_specialization_spell( "Evangelism" );
   specs.grace                  = find_specialization_spell( "Grace" );

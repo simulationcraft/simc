@@ -418,8 +418,6 @@ struct power_word_shield_t final : public priest_absorb_t
   {
     priest_absorb_t::impact( s );
 
-    priest().buffs.borrowed_time->trigger();
-
     if ( priest().talents.body_and_soul->ok() && s->target->buffs.body_and_soul )
     {
       s->target->buffs.body_and_soul->trigger();
@@ -792,30 +790,6 @@ double priest_t::composite_melee_haste() const
   if ( buffs.voidform->check() )
   {
     h /= 1.0 + ( buffs.voidform->check() * find_spell( 228264 )->effectN( 2 ).percent() / 10.0 );
-  }
-
-  return h;
-}
-
-double priest_t::composite_spell_speed() const
-{
-  double h = player_t::composite_spell_speed();
-
-  if ( buffs.borrowed_time->check() )
-  {
-    h /= 1.0 + buffs.borrowed_time->data().effectN( 1 ).percent();
-  }
-
-  return h;
-}
-
-double priest_t::composite_melee_speed() const
-{
-  double h = player_t::composite_melee_speed();
-
-  if ( buffs.borrowed_time->check() )
-  {
-    h /= 1.0 + buffs.borrowed_time->data().effectN( 1 ).percent();
   }
 
   return h;
