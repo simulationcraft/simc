@@ -241,9 +241,9 @@ template <typename F>
 struct fn_expr_t : public expr_t
 {
 public:
-  fn_expr_t( util::string_view name, F&& f_ ) : expr_t( name ), f( f_ )
-  {
-  }
+  template <typename U = F>
+  fn_expr_t( util::string_view name, U&& f_ ) : expr_t( name ), f( std::forward<U>( f_ ) )
+  { }
 
 private:
   F f;
@@ -271,7 +271,7 @@ struct target_wrapper_expr_t : public expr_t
 template <typename F>
 inline std::unique_ptr<expr_t> make_fn_expr( util::string_view name, F&& f )
 {
-  return std::make_unique<fn_expr_t<F>>( name, std::forward<F>( f ) );
+  return std::make_unique<fn_expr_t<std::decay_t<F>>>( name, std::forward<F>( f ) );
 }
 
 // Make member function expression - make_mem_fn_expr
