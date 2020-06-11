@@ -841,22 +841,12 @@ public:
     if ( util::str_compare_ci( name, "cast_regen" ) )
     {
       // Return the focus that will be regenerated during the cast time or GCD of the target action.
-      struct cast_regen_expr_t : public expr_t
-      {
-        hunter_action_t& action;
-        std::unique_ptr<action_state_t> state;
-        cast_regen_expr_t( hunter_action_t& a ):
-          expr_t( "cast_regen" ), action( a ), state( a.get_state() )
-        {}
-
-        double evaluate() override
-        {
-          action.snapshot_state( state.get(), result_amount_type::NONE );
-          state -> target = action.target;
-          return action.cast_regen( state.get() );
-        }
-      };
-      return std::make_unique<cast_regen_expr_t>( *this );
+      return make_fn_expr( "cast_regen",
+        [ this, state = std::unique_ptr<action_state_t>( this -> get_state() ) ] {
+          this -> snapshot_state( state.get(), result_amount_type::NONE );
+          state -> target = this -> target;
+          return this -> cast_regen( state.get() );
+        } );
     }
 
     // fudge wildfire bomb dot name
@@ -4572,15 +4562,14 @@ std::unique_ptr<expr_t> hunter_t::create_action_expression ( action_t& action, c
   //Careful Aim expression
   if ( splits.size() == 1 && splits[ 0 ] == "ca_execute" )
   {
-      return make_fn_expr( expression_str, [ this, &action ]
+    return make_fn_expr( expression_str, [ this, &action ]
       {
         if ( !talents.careful_aim->ok() )
           return false;
 
-        if (action.target->health_percentage() > talents.careful_aim->effectN( 1 ).base_value() || action.target->health_percentage() < talents.careful_aim->effectN( 2 ).base_value())
-          return true;
-        else
-         return false;
+        const double target_health_pct = action.target->health_percentage();
+        return target_health_pct > talents.careful_aim->effectN( 1 ).base_value() ||
+                target_health_pct < talents.careful_aim->effectN( 2 ).base_value();
       } );
   }
 
@@ -4595,57 +4584,39 @@ std::unique_ptr<expr_t> hunter_t::create_expression( const std::string& expressi
   {
     if ( splits[ 2 ] == "remains_guess" )
     {
-      struct cooldown_remains_guess_t : public expr_t
-      {
-        hunter_t* hunter;
-        cooldown_t* cooldown;
-
-        cooldown_remains_guess_t( hunter_t* h, util::string_view str, cooldown_t* cd ) :
-          expr_t( str ), hunter( h ), cooldown( cd )
-        { }
-
-        double evaluate() override
-        {
-
-          if ( cooldown -> remains() == cooldown -> duration )
-            return cooldown -> duration.total_seconds();
-
-          if ( cooldown -> up() )
-            return 0;
-
-          double reduction = ( hunter -> sim -> current_time() - cooldown -> last_start ) / ( cooldown -> duration - cooldown -> remains() );
-          return cooldown -> remains().total_seconds() * reduction;
-        }
-      };
       if ( cooldown_t* cooldown = get_cooldown( splits[ 1 ] ) )
-        return std::make_unique<cooldown_remains_guess_t>( this, expression_str, cooldown );
+      {
+        return make_fn_expr( expression_str,
+          [ cooldown ] {
+            if ( cooldown -> remains() == cooldown -> duration )
+              return cooldown -> duration;
+
+            if ( cooldown -> up() )
+              return 0_ms;
+
+            double reduction = ( cooldown -> sim.current_time() - cooldown -> last_start ) /
+                               ( cooldown -> duration - cooldown -> remains() );
+            return cooldown -> remains() * reduction;
+          } );
+      }
     }
     else if ( splits[ 2 ] == "duration_guess" )
     {
-      struct cooldown_duration_guess_t : public expr_t
-      {
-        hunter_t* hunter;
-        cooldown_t* cooldown;
-
-        cooldown_duration_guess_t( hunter_t* h, util::string_view str, cooldown_t* cd ) :
-          expr_t( str ), hunter( h ), cooldown( cd )
-        { }
-
-        double evaluate() override
-        {
-          if ( cooldown -> last_charged == 0_ms || cooldown -> remains() == cooldown -> duration )
-            return cooldown -> duration.total_seconds();
-
-          if ( cooldown -> up() )
-            return ( cooldown -> last_charged - cooldown -> last_start ).total_seconds();
-
-          double reduction = ( hunter -> sim -> current_time() - cooldown -> last_start ) / ( cooldown -> duration - cooldown -> remains() );
-          return cooldown -> duration.total_seconds() * reduction;
-        }
-      };
-
       if ( cooldown_t* cooldown = get_cooldown( splits[ 1 ] ) )
-        return std::make_unique<cooldown_duration_guess_t>( this, expression_str, cooldown );
+      {
+        return make_fn_expr( expression_str,
+          [ cooldown ] {
+            if ( cooldown -> last_charged == 0_ms || cooldown -> remains() == cooldown -> duration )
+              return cooldown -> duration;
+
+            if ( cooldown -> up() )
+              return ( cooldown -> last_charged - cooldown -> last_start );
+
+            double reduction = ( cooldown -> sim.current_time() - cooldown -> last_start ) /
+                               ( cooldown -> duration - cooldown -> remains() );
+            return cooldown -> duration * reduction;
+          } );
+      }
     }
   }
   else if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
