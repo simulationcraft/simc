@@ -86,7 +86,7 @@ struct penance_t final : public priest_spell_t
 
     if ( priest().buffs.power_of_the_dark_side->check() )
     {
-      d *= 1.0 + priest().specs.power_of_the_dark_side->effectN( 1 ).percent();
+      d *= 1.0 + priest().buffs.power_of_the_dark_side->data().effectN( 1 ).percent();
     }
 
     return d;
@@ -167,10 +167,7 @@ struct shadow_word_pain_disc_t final : public priest_spell_t
 
     if ( d->state->result_amount > 0 )
     {
-      if ( priest().rppm.power_of_the_dark_side->trigger() )
-      {
-        trigger_power_of_the_dark_side();
-      }
+      trigger_power_of_the_dark_side();
     }
   }
 };
@@ -222,10 +219,7 @@ struct purge_the_wicked_t final : public priest_spell_t
 
       if ( d->state->result_amount > 0 )
       {
-        if ( priest().rppm.power_of_the_dark_side->trigger() )
-        {
-          trigger_power_of_the_dark_side();
-        }
+        trigger_power_of_the_dark_side();
       }
     }
   };
@@ -310,11 +304,8 @@ void priest_t::create_buffs_discipline()
                               ->set_activated( false );
 
   buffs.power_of_the_dark_side =
-      make_buff( this, "power_of_the_dark_side", find_specialization_spell( "Power of the Dark Side" ) )
-          ->set_duration( find_spell( 198069 )->duration() )
-          ->set_default_value( find_spell( 198069 )
-                                   ->effectN( 1 )
-                                   .percent() );  // Power of the Dark Side has 2 spell IDs, this one is for the damage.
+      make_buff( this, "power_of_the_dark_side", specs.power_of_the_dark_side->effectN( 1 ).trigger() )
+          ->set_trigger_spell( specs.power_of_the_dark_side );
 
   buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", talents.sins_of_the_many->effectN( 1 ).trigger() )
                                ->set_default_value( talents.sins_of_the_many->effectN( 1 ).percent() )
@@ -323,7 +314,6 @@ void priest_t::create_buffs_discipline()
 
 void priest_t::init_rng_discipline()
 {
-  rppm.power_of_the_dark_side = get_rppm( "Power of the Dark Side", find_spell( 198068 ) );
 }
 
 void priest_t::init_spells_discipline()
@@ -373,7 +363,7 @@ void priest_t::init_spells_discipline()
   specs.spirit_shell           = find_specialization_spell( "Spirit Shell" );
   specs.enlightenment          = find_specialization_spell( "Enlightenment" );
   specs.discipline_priest      = find_specialization_spell( "Discipline Priest" );
-  specs.power_of_the_dark_side = find_spell( 198069 );  // Damage ID of Power of the Dark Side
+  specs.power_of_the_dark_side = find_specialization_spell( "Power of the Dark Side" );
 
   // Azerite
   azerite.death_throes = find_azerite_spell( "Death Throes" );

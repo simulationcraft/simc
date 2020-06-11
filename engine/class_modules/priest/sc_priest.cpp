@@ -597,7 +597,6 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     gains(),
     benefits(),
     procs(),
-    rppm(),
     active_spells(),
     active_items(),
     pets(),
