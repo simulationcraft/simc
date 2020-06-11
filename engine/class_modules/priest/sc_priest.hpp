@@ -358,11 +358,6 @@ public:
     propagate_const<proc_t*> power_of_the_dark_side_overflow;
   } procs;
 
-  struct realppm_t
-  {
-    propagate_const<real_ppm_t*> power_of_the_dark_side;
-  } rppm;
-
   // Special
   struct
   {
