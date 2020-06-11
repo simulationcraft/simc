@@ -111,16 +111,6 @@ struct penance_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.power_of_the_dark_side->up();  // benefit tracking
-
-    // re-checked 2014/07/07: offensive penance grants evangelism stacks, even though not mentioned in the tooltip.
-    priest().buffs.holy_evangelism->trigger();
-
-    // Set bonus says "...and generates 2 stacks of Evangelism." Need to check if this happens up front or after a
-    // particular tick. -Twintop 2014-07-11
-    if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T17, B2 ) )
-    {
-      priest().buffs.holy_evangelism->trigger();
-    }
   }
 };
 
@@ -215,46 +205,10 @@ struct schism_t final : public priest_spell_t
 
 namespace buffs
 {
-/**
- * Custom archangel buff
- * snapshots evangelism stacks and expires it
- */
-struct archangel_t final : public priest_buff_t<buff_t>
-{
-  archangel_t( priest_t& p ) : base_t( p, "archangel", p.specs.archangel )
-  {
-    set_max_stack( 5 );
-    default_value = data().effectN( 1 ).percent();
-  }
-
-  bool trigger( int stacks, double /* value */, double chance, timespan_t duration ) override
-  {
-    stacks                 = priest().buffs.holy_evangelism->stack();
-    double archangel_value = default_value * stacks;
-    bool success           = base_t::trigger( stacks, archangel_value, chance, duration );
-
-    priest().buffs.holy_evangelism->expire();
-
-    return success;
-  }
-};
-
 }  // namespace buffs
 
 void priest_t::create_buffs_discipline()
 {
-  // Discipline
-  buffs.archangel = new buffs::archangel_t( *this );
-
-  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 59889 ) )
-                            ->set_chance( specs.borrowed_time->ok() )
-                            ->set_default_value( find_spell( 59889 )->effectN( 1 ).percent() )
-                            ->add_invalidate( CACHE_HASTE );
-
-  buffs.holy_evangelism = make_buff( this, "holy_evangelism", find_spell( 81661 ) )
-                              ->set_chance( specs.evangelism->ok() )
-                              ->set_activated( false );
-
   buffs.power_of_the_dark_side =
       make_buff( this, "power_of_the_dark_side", specs.power_of_the_dark_side->effectN( 1 ).trigger() )
           ->set_trigger_spell( specs.power_of_the_dark_side );
@@ -306,14 +260,6 @@ void priest_t::init_spells_discipline()
   specs.discipline             = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
   specs.shadow                 = dbc::get_class_passive( *this, PRIEST_SHADOW );
   specs.atonement              = find_specialization_spell( "Atonement" );
-  specs.archangel              = find_specialization_spell( "Archangel" );
-  specs.borrowed_time          = find_specialization_spell( "Borrowed Time" );
-  specs.divine_aegis           = find_specialization_spell( "Divine Aegis" );
-  specs.evangelism             = find_specialization_spell( "Evangelism" );
-  specs.grace                  = find_specialization_spell( "Grace" );
-  specs.mysticism              = find_specialization_spell( "Mysticism" );
-  specs.spirit_shell           = find_specialization_spell( "Spirit Shell" );
-  specs.enlightenment          = find_specialization_spell( "Enlightenment" );
   specs.discipline_priest      = find_specialization_spell( "Discipline Priest" );
   specs.power_of_the_dark_side = find_specialization_spell( "Power of the Dark Side" );
 

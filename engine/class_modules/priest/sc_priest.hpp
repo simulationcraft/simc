@@ -98,9 +98,6 @@ public:
     propagate_const<buff_t*> power_infusion;
 
     // Discipline
-    propagate_const<buff_t*> archangel;
-    propagate_const<buff_t*> borrowed_time;
-    propagate_const<buff_t*> holy_evangelism;
     propagate_const<buff_t*> inner_focus;
     propagate_const<buff_t*> power_of_the_dark_side;
     propagate_const<buff_t*> sins_of_the_many;
@@ -230,15 +227,7 @@ public:
 
     // Discipline
     const spell_data_t* discipline;  /// General discipline data
-    const spell_data_t* archangel;
     const spell_data_t* atonement;
-    const spell_data_t* borrowed_time;
-    const spell_data_t* divine_aegis;
-    const spell_data_t* evangelism;
-    const spell_data_t* grace;
-    const spell_data_t* mysticism;
-    const spell_data_t* spirit_shell;
-    const spell_data_t* enlightenment;
     const spell_data_t* discipline_priest;
     const spell_data_t* power_of_the_dark_side;  /// For buffing the damage of penance
 
@@ -269,7 +258,7 @@ public:
   // Mastery Spells
   struct
   {
-    const spell_data_t* grace;  // NYI
+    const spell_data_t* grace;
     const spell_data_t* echo_of_light;
     const spell_data_t* madness;
   } mastery_spells;
@@ -441,9 +430,7 @@ public:
   stat_e convert_hybrid_stat( stat_e s ) const override;
   void assess_damage( school_e school, result_amount_type dtype, action_state_t* s ) override;
   double composite_melee_haste() const override;
-  double composite_melee_speed() const override;
   double composite_spell_haste() const override;
-  double composite_spell_speed() const override;
   double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   double composite_player_absorb_multiplier( const action_state_t* s ) const override;
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
@@ -1075,14 +1062,6 @@ public:
     return c;
   }
 
-  void consume_resource() override
-  {
-    ab::consume_resource();
-
-    if ( ab::base_execute_time > timespan_t::zero() && !this->channeled )
-      priest().buffs.borrowed_time->expire();
-  }
-
   double action_da_multiplier() const override
   {
     double m               = ab::action_da_multiplier();
@@ -1179,19 +1158,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
   }
 
-  double action_multiplier() const override
-  {
-    double am = base_t::action_multiplier();
-
-    am *= 1.0 + priest().buffs.archangel->current_value;
-
-    return am;
-  }
-
   void execute() override
   {
-    priest().buffs.archangel->up();  // benefit tracking
-
     base_t::execute();
 
     may_crit = true;

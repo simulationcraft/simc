@@ -430,8 +430,6 @@ struct power_word_shield_t final : public priest_absorb_t
   {
     priest_absorb_t::impact( s );
 
-    priest().buffs.borrowed_time->trigger();
-
     if ( priest().talents.body_and_soul->ok() && s->target->buffs.body_and_soul )
     {
       s->target->buffs.body_and_soul->trigger();
@@ -827,30 +825,6 @@ double priest_t::composite_melee_haste() const
   return h;
 }
 
-double priest_t::composite_spell_speed() const
-{
-  double h = player_t::composite_spell_speed();
-
-  if ( buffs.borrowed_time->check() )
-  {
-    h /= 1.0 + buffs.borrowed_time->data().effectN( 1 ).percent();
-  }
-
-  return h;
-}
-
-double priest_t::composite_melee_speed() const
-{
-  double h = player_t::composite_melee_speed();
-
-  if ( buffs.borrowed_time->check() )
-  {
-    h /= 1.0 + buffs.borrowed_time->data().effectN( 1 ).percent();
-  }
-
-  return h;
-}
-
 double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( s );
@@ -867,9 +841,9 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
     m *= 1.0 + buffs.twist_of_fate->current_value;
   }
 
-  if ( specs.grace->ok() )
+  if ( mastery_spells.grace->ok() )
   {
-    m *= 1.0 + specs.grace->effectN( 1 ).percent();
+    m *= 1 + cache.mastery_value();
   }
 
   return m;
@@ -879,9 +853,9 @@ double priest_t::composite_player_absorb_multiplier( const action_state_t* s ) c
 {
   double m = player_t::composite_player_absorb_multiplier( s );
 
-  if ( specs.grace->ok() )
+  if ( mastery_spells.grace->ok() )
   {
-    m *= 1.0 + specs.grace->effectN( 2 ).percent();
+    m *= 1 + cache.mastery_value();
   }
 
   return m;
