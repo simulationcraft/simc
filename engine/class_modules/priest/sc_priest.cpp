@@ -1069,6 +1069,12 @@ void priest_t::init_spells()
   init_spells_discipline();
   init_spells_holy();
 
+  // Class passives
+  specs.priest     = dbc::get_class_passive( *this, SPEC_NONE );
+  specs.holy       = dbc::get_class_passive( *this, PRIEST_HOLY );
+  specs.discipline = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
+  specs.shadow     = dbc::get_class_passive( *this, PRIEST_SHADOW );
+
   // Mastery Spells
   mastery_spells.grace         = find_mastery_spell( PRIEST_DISCIPLINE );
   mastery_spells.echo_of_light = find_mastery_spell( PRIEST_HOLY );
