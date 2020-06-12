@@ -227,7 +227,6 @@ public:
 
     // Discipline
     const spell_data_t* discipline;  /// General discipline data
-    const spell_data_t* atonement;
     const spell_data_t* discipline_priest;
     const spell_data_t* power_of_the_dark_side;  /// For buffing the damage of penance
 
@@ -437,7 +436,6 @@ public:
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
-  void pre_analyze_hook() override;
   void init_action_list() override;
   void combat_begin() override;
   void init_rng() override;
@@ -454,7 +452,6 @@ private:
   void create_benefits();
   void create_apl_precombat();
   void create_apl_default();
-  void fixup_atonement_stats( util::string_view trigger_spell_name, util::string_view atonement_spell_name );
 
   void create_buffs_shadow();
   void init_rng_shadow();

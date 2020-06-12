@@ -255,7 +255,6 @@ void priest_t::init_spells_discipline()
   talents.evangelism = find_talent_spell( "Evangelism" );
 
   // Passive spell data
-  specs.atonement              = find_specialization_spell( "Atonement" );
   specs.discipline_priest      = find_specialization_spell( "Discipline Priest" );
   specs.power_of_the_dark_side = find_specialization_spell( "Power of the Dark Side" );
 
@@ -276,24 +275,6 @@ void priest_t::init_spells_discipline()
     else
     {
       base.distance = 27.0;
-    }
-  }
-}
-
-/**
- * Copy stats from the trigger spell to the atonement spell
- * to get proper HPR and HPET reports.
- */
-void priest_t::fixup_atonement_stats( util::string_view trigger_spell_name, util::string_view atonement_spell_name )
-{
-  if ( stats_t* trigger = find_stats( trigger_spell_name ) )
-  {
-    if ( stats_t* atonement = get_stats( atonement_spell_name ) )
-    {
-      atonement->resource_gain.merge( trigger->resource_gain );
-      atonement->total_execute_time = trigger->total_execute_time;
-      atonement->total_tick_time    = trigger->total_tick_time;
-      atonement->num_ticks          = trigger->num_ticks;
     }
   }
 }

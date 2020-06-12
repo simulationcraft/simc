@@ -1048,12 +1048,6 @@ void priest_t::init_scaling()
 {
   base_t::init_scaling();
 
-  // Atonement heals are capped at a percentage of the Priest's health, so there may be scaling with stamina.
-  if ( specialization() == PRIEST_DISCIPLINE && specs.atonement->ok() && primary_role() == ROLE_HEAL )
-  {
-    scaling->enable( STAT_STAMINA );
-  }
-
   if ( specialization() == PRIEST_SHADOW )
   {
     // Just hook insanity init in here when actor set bonuses are ready
@@ -1399,26 +1393,6 @@ void priest_t::reset()
   }
 
   insanity.reset();
-}
-
-/**
- * Fixup Atonement Stats HPE, HPET and HPR
- */
-void priest_t::pre_analyze_hook()
-{
-  base_t::pre_analyze_hook();
-
-  if ( specs.atonement->ok() )
-  {
-    fixup_atonement_stats( "smite", "atonement_smite" );
-    fixup_atonement_stats( "holy_fire", "atonement_holy_fire" );
-    fixup_atonement_stats( "penance", "atonement_penance" );
-  }
-
-  if ( specialization() == PRIEST_DISCIPLINE || specialization() == PRIEST_HOLY )
-  {
-    fixup_atonement_stats( "power_word_solace", "atonement_power_word_solace" );
-  }
 }
 
 void priest_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
