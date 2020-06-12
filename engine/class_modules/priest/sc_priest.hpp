@@ -55,14 +55,11 @@ public:
   {
     propagate_const<dot_t*> shadow_word_pain;
     propagate_const<dot_t*> vampiric_touch;
-    propagate_const<dot_t*> holy_fire;
-    propagate_const<dot_t*> power_word_solace;
   } dots;
 
   struct buffs_t
   {
     propagate_const<buff_t*> schism;
-    propagate_const<buff_t*> apotheosis;
   } buffs;
 
   priest_t& priest()

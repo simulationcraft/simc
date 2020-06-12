@@ -573,10 +573,8 @@ action_t* base_fiend_pet_t::create_action( const std::string& name, const std::s
 
 priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t( target, &p ), dots(), buffs()
 {
-  dots.holy_fire         = target->get_dot( "holy_fire", &p );
-  dots.power_word_solace = target->get_dot( "power_word_solace", &p );
-  dots.shadow_word_pain  = target->get_dot( "shadow_word_pain", &p );
-  dots.vampiric_touch    = target->get_dot( "vampiric_touch", &p );
+  dots.shadow_word_pain = target->get_dot( "shadow_word_pain", &p );
+  dots.vampiric_touch   = target->get_dot( "vampiric_touch", &p );
 
   buffs.schism = make_buff( *this, "schism", p.talents.schism );
 
