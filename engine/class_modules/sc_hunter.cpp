@@ -409,68 +409,69 @@ public:
     spell_data_ptr_t animal_companion;
     spell_data_ptr_t dire_beast;
 
-    spell_data_ptr_t master_marksman;
+    spell_data_ptr_t master_marksman_; // NYI
     spell_data_ptr_t serpent_sting;
 
     spell_data_ptr_t vipers_venom;
     spell_data_ptr_t terms_of_engagement;
     spell_data_ptr_t alpha_predator;
 
-    // tier 30
-    spell_data_ptr_t scent_of_blood;
+    // tier 25
+    spell_data_ptr_t scent_of_blood_; // NYI
     spell_data_ptr_t one_with_the_pack;
     spell_data_ptr_t chimaera_shot;
 
     spell_data_ptr_t careful_aim;
-    spell_data_ptr_t volley;
+    spell_data_ptr_t barrage;
     spell_data_ptr_t explosive_shot;
 
     spell_data_ptr_t guerrilla_tactics;
     spell_data_ptr_t hydras_bite;
     spell_data_ptr_t butchery;
 
-    // tier 45
+    // tier 30
     spell_data_ptr_t trailblazer;
     spell_data_ptr_t natural_mending;
     spell_data_ptr_t camouflage;
 
-    // tier 60
-    spell_data_ptr_t venomous_bite;
+    // tier 35
+    spell_data_ptr_t spitting_cobra_; // NYI
     spell_data_ptr_t thrill_of_the_hunt;
     spell_data_ptr_t a_murder_of_crows;
 
     spell_data_ptr_t steady_focus;
     spell_data_ptr_t streamline;
-    spell_data_ptr_t hunters_mark;
 
     spell_data_ptr_t bloodseeker;
     spell_data_ptr_t steel_trap;
 
-    // tier 75
+    // tier 40
     spell_data_ptr_t born_to_be_wild;
     spell_data_ptr_t posthaste;
     spell_data_ptr_t binding_shot;
 
-    // tier 90
+    spell_data_ptr_t binding_shackles;
+
+    // tier 45
     spell_data_ptr_t stomp;
-    spell_data_ptr_t barrage;
     spell_data_ptr_t stampede;
 
     spell_data_ptr_t lethal_shots;
+    spell_data_ptr_t dead_eye_; // NYI
     spell_data_ptr_t double_tap;
 
     spell_data_ptr_t tip_of_the_spear;
     spell_data_ptr_t mongoose_bite;
     spell_data_ptr_t flanking_strike;
 
-    // tier 100
-    spell_data_ptr_t killer_cobra;
+    // tier 50
     spell_data_ptr_t aspect_of_the_beast;
-    spell_data_ptr_t spitting_cobra;
+    spell_data_ptr_t killer_cobra;
+    spell_data_ptr_t bloodshed_; // NYI
 
     spell_data_ptr_t calling_the_shots;
     spell_data_ptr_t lock_and_load;
-    spell_data_ptr_t piercing_shot;
+    spell_data_ptr_t volley_; // NYI
 
     spell_data_ptr_t birds_of_prey;
     spell_data_ptr_t wildfire_infusion;
@@ -2321,12 +2322,10 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 struct cobra_shot_t: public hunter_ranged_attack_t
 {
   const timespan_t kill_command_reduction;
-  const timespan_t venomous_bite_reduction;
 
   cobra_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "cobra_shot", p, p -> find_class_spell( "Cobra Shot" ) ),
-    kill_command_reduction( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) ),
-    venomous_bite_reduction( timespan_t::from_millis( p -> talents.venomous_bite -> effectN( 1 ).base_value() * 100 ) )
+    kill_command_reduction( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
 
@@ -2338,9 +2337,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p() -> cooldowns.kill_command -> adjust( -kill_command_reduction );
-
-    if ( p() -> talents.venomous_bite -> ok() )
-      p() -> cooldowns.bestial_wrath -> adjust( -venomous_bite_reduction );
 
     if ( p() -> talents.killer_cobra -> ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> cooldowns.kill_command -> reset( true );
@@ -4662,7 +4658,7 @@ void hunter_t::create_pets()
   if ( talents.dire_beast -> ok() )
     pets.dire_beast = new pets::dire_critter_t( this );
 
-  if ( talents.spitting_cobra -> ok() )
+  if ( talents.spitting_cobra_ -> ok() )
     pets.spitting_cobra = new pets::spitting_cobra_t( this );
 
   if ( azerite.dire_consequences.ok() )
@@ -4683,67 +4679,67 @@ void hunter_t::init_spells()
   talents.animal_companion                  = find_talent_spell( "Animal Companion" );
   talents.dire_beast                        = find_talent_spell( "Dire Beast" );
 
-  talents.master_marksman                   = find_talent_spell( "Master Marksman" );
+  talents.master_marksman_                  = find_talent_spell( "Master Marksman" );
   talents.serpent_sting                     = find_talent_spell( "Serpent Sting" );
 
   talents.vipers_venom                      = find_talent_spell( "Viper's Venom" );
   talents.terms_of_engagement               = find_talent_spell( "Terms of Engagement" );
   talents.alpha_predator                    = find_talent_spell( "Alpha Predator" );
 
-  // tier 30
-  talents.scent_of_blood                    = find_talent_spell( "Scent of Blood" );
+  // tier 25
+  talents.scent_of_blood_                   = find_talent_spell( "Scent of Blood" );
   talents.one_with_the_pack                 = find_talent_spell( "One with the Pack" );
   talents.chimaera_shot                     = find_talent_spell( "Chimaera Shot" );
 
   talents.careful_aim                       = find_talent_spell( "Careful Aim" );
-  talents.volley                            = find_talent_spell( "Volley" );
+  talents.barrage                           = find_talent_spell( "Barrage" );
   talents.explosive_shot                    = find_talent_spell( "Explosive Shot" );
 
   talents.guerrilla_tactics                 = find_talent_spell( "Guerrilla Tactics" );
   talents.hydras_bite                       = find_talent_spell( "Hydra's Bite" );
   talents.butchery                          = find_talent_spell( "Butchery" );
 
-  // tier 45
+  // tier 30
   talents.trailblazer                       = find_talent_spell( "Trailblazer" );
   talents.natural_mending                   = find_talent_spell( "Natural Mending" );
   talents.camouflage                        = find_talent_spell( "Camouflage" );
 
-  // tier 60
-  talents.venomous_bite                     = find_talent_spell( "Venomous Bite" );
+  // tier 35
+  talents.spitting_cobra_                   = find_talent_spell( "Spitting Cobra" );
   talents.thrill_of_the_hunt                = find_talent_spell( "Thrill of the Hunt" );
   talents.a_murder_of_crows                 = find_talent_spell( "A Murder of Crows" );
 
   talents.steady_focus                      = find_talent_spell( "Steady Focus" );
   talents.streamline                        = find_talent_spell( "Streamline" );
-  talents.hunters_mark                      = find_talent_spell( "Hunter's Mark" );
 
   talents.bloodseeker                       = find_talent_spell( "Bloodseeker" );
   talents.steel_trap                        = find_talent_spell( "Steel Trap" );
 
-  // tier 75
+  // tier 40
   talents.born_to_be_wild                   = find_talent_spell( "Born To Be Wild" );
   talents.posthaste                         = find_talent_spell( "Posthaste" );
   talents.binding_shot                      = find_talent_spell( "Binding Shot" );
 
-  // tier 90
+  // tier 45
   talents.stomp                             = find_talent_spell( "Stomp" );
-  talents.barrage                           = find_talent_spell( "Barrage" );
   talents.stampede                          = find_talent_spell( "Stampede" );
 
   talents.lethal_shots                      = find_talent_spell( "Lethal Shots" );
+  talents.dead_eye_                         = find_talent_spell( "Dead Eye" );
   talents.double_tap                        = find_talent_spell( "Double Tap" );
 
   talents.tip_of_the_spear                  = find_talent_spell( "Tip of the Spear" );
   talents.mongoose_bite                     = find_talent_spell( "Mongoose Bite" );
   talents.flanking_strike                   = find_talent_spell( "Flanking Strike" );
 
-  // tier 100
-  talents.killer_cobra                      = find_talent_spell( "Killer Cobra" );
+  // tier 50
   talents.aspect_of_the_beast               = find_talent_spell( "Aspect of the Beast" );
-  talents.spitting_cobra                    = find_talent_spell( "Spitting Cobra" );
+  talents.killer_cobra                      = find_talent_spell( "Killer Cobra" );
+  talents.bloodshed_                        = find_talent_spell( "Bloodshed" );
 
   talents.calling_the_shots                 = find_talent_spell( "Calling the Shots" );
   talents.lock_and_load                     = find_talent_spell( "Lock and Load" );
+  talents.volley_                           = find_talent_spell( "Volley" );
 
   talents.birds_of_prey                     = find_talent_spell( "Birds of Prey" );
   talents.wildfire_infusion                 = find_talent_spell( "Wildfire Infusion" );
@@ -4884,8 +4880,7 @@ void hunter_t::create_buffs()
   {
     buffs.barbed_shot[ i ] =
       make_buff( this, fmt::format( "barbed_shot_{}", i + 1 ), barbed_shot )
-        -> set_default_value( barbed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
-                              talents.scent_of_blood -> effectN( 1 ).base_value() )
+        -> set_default_value( barbed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ) )
         -> set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                           resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot );
                         } );
