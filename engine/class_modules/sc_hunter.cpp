@@ -343,7 +343,6 @@ public:
     // Marksmanship
     buff_t* double_tap;
     buff_t* lock_and_load;
-    buff_t* master_marksman;
     buff_t* precise_shots;
     buff_t* steady_focus;
     buff_t* trick_shots;
@@ -2210,16 +2209,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
     }
   }
 
-  double cost() const override
-  {
-    double cost = hunter_ranged_attack_t::cost();
-
-    if ( p() -> buffs.master_marksman -> check() )
-      cost *= 1 + p() -> buffs.master_marksman -> check_value();
-
-    return cost;
-  }
-
   double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
@@ -2232,9 +2221,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
   void execute() override
   {
     hunter_ranged_attack_t::execute();
-
-    p() -> buffs.master_marksman -> up(); // benefit tracking
-    p() -> buffs.master_marksman -> decrement();
 
     p() -> buffs.precise_shots -> decrement();
 
@@ -2587,7 +2573,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     lock_and_loaded = false;
 
     p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
-    p() -> buffs.master_marksman -> trigger();
 
     if ( rng().roll( surging_shots.chance ) )
     {
@@ -2638,24 +2623,11 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
   }
 
-  double cost() const override
-  {
-    double cost = hunter_ranged_attack_t::cost();
-
-    if ( p() -> buffs.master_marksman -> check() )
-      cost *= 1 + p() -> buffs.master_marksman -> check_value();
-
-    return cost;
-  }
-
   void execute() override
   {
     hunter_ranged_attack_t::execute();
 
     p() -> buffs.precise_shots -> decrement();
-
-    p() -> buffs.master_marksman -> up(); // benefit tracking
-    p() -> buffs.master_marksman -> decrement();
 
     if ( p() -> talents.calling_the_shots -> ok() )
       p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
@@ -5024,11 +4996,6 @@ void hunter_t::create_buffs()
     make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
       -> set_trigger_spell( talents.lock_and_load );
 
-  buffs.master_marksman =
-    make_buff( this, "master_marksman", talents.master_marksman -> effectN( 1 ).trigger() )
-      -> set_default_value( talents.master_marksman -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-      -> set_trigger_spell( talents.master_marksman );
-
   buffs.steady_focus =
     make_buff( this, "steady_focus", find_spell( 193534 ) )
       -> set_default_value( find_spell( 193534 ) -> effectN( 2 ).percent() )
@@ -5486,14 +5453,14 @@ void hunter_t::apl_mm()
   st -> add_action( this, "Rapid Fire", "if=buff.trueshot.down|focus<35|focus<60&!talent.lethal_shots.enabled|buff.in_the_rhythm.remains<execute_time");
   st -> add_action( "blood_of_the_enemy,if=buff.trueshot.up&(buff.unerring_vision.stack>4|!azerite.unerring_vision.enabled)|target.time_to_die<11" );
   st -> add_action( "focused_azerite_beam,if=!buff.trueshot.up|target.time_to_die<5" );
-  st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.master_marksman.up&!buff.memory_of_lucid_dreams.up");
+  st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&!buff.memory_of_lucid_dreams.up");
   st -> add_action( this, "Aimed Shot", "if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time&cooldown.trueshot.remains" );
-  st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.master_marksman.up&buff.memory_of_lucid_dreams.up" );
+  st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.memory_of_lucid_dreams.up" );
   st -> add_talent( this, "Piercing Shot" );
   st -> add_action( "purifying_blast,if=!buff.trueshot.up|target.time_to_die<8" );
   st -> add_action( "concentrated_flame,if=focus+focus.regen*gcd<focus.max&buff.trueshot.down&(!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight)|full_recharge_time<gcd|target.time_to_die<5" );
   st -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10|target.time_to_die<5" );
-  st -> add_action( this, "Arcane Shot", "if=buff.trueshot.down&(buff.precise_shots.up&(focus>55|buff.master_marksman.up)|focus>75|target.time_to_die<5)" );
+  st -> add_action( this, "Arcane Shot", "if=buff.trueshot.down&(buff.precise_shots.up&(focus>55)|focus>75|target.time_to_die<5)" );
   st -> add_action( this, "Steady Shot" );
 
   trickshots -> add_talent( this, "Barrage" );
