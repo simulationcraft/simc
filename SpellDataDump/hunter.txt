@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34615 shadowlands-BETA (git build shadowlands 8180f105ad)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34714 shadowlands-BETA (git build shadowlands 5583a69c36)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter

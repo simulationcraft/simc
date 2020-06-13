@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34615 shadowlands-BETA (git build shadowlands 8180f105ad)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34714 shadowlands-BETA (git build shadowlands 5583a69c36)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -6158,7 +6158,7 @@ Description      : $@spelldesc261947
 
 Name             : Rising Sun Kick (rank=Rank 2) (id=262840) [Spell Family (53), Passive] 
 Class            : Mistweaver Windwalker Monk
-School           : Frost
+School           : Physical
 Spell Type       : None
 Spell Level      : 18
 Labels           : 16: Agonizing Backlash (320035 effect#3)

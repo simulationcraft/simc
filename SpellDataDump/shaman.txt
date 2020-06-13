@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34615 shadowlands-BETA (git build shadowlands 8180f105ad)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34714 shadowlands-BETA (git build shadowlands 5583a69c36)
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -108,7 +108,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Harmony of the Elements (167703 effect#1), Maelstrom Weapon (187881 effect#1), Jonat's Focus (210607 effect#1), Chain Heal (231780 effect#1), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1), High Tide (288675 effect#1), 
+Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Enhancement Shaman (137041 effect#5), Harmony of the Elements (167703 effect#1), Maelstrom Weapon (187881 effect#1), Jonat's Focus (210607 effect#1), Chain Heal (231780 effect#1), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1), High Tide (288675 effect#1), 
 Family Flags     : 8, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -210,28 +210,6 @@ Description      : Increases Haste by $s1% for all party and raid members for $d
 Allies receiving this effect will become Sated and unable to benefit from Bloodlust or Time Warp again for $57724d.
 Tooltip          : Haste increased by $s1%.
 
-Name             : Searing Totem (rank=Fire Totem) (id=3599) [Spell Family (11)] 
-Class            : Shaman
-School           : Fire
-Spell Type       : None
-Spell Level      : 9
-GCD              : 1 seconds
-Duration         : 15 seconds
-Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Family Flags     : 29
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=1246)     : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 2523 | Misc Value 2: 0xc8b | Target: Unknown(44)
-Description      : Summons a Fire Totem with $?s63298[${$m1+$63298m1*$MHP/100}][$s1] health at the feet of the caster for $d that repeatedly attacks an enemy within $3606r yds for $3606s1 Fire damage.
-
 Name             : Earthbind (id=3600) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
@@ -253,30 +231,6 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 Description      : Reduces the movement speed of all nearby enemies by $s1%.
 Tooltip          : Movement speed reduced by $s1%.
-
-Name             : Searing Bolt (id=3606) [Spell Family (11)] 
-Class            : Shaman
-School           : Fire
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 40 yards
-Cast Time        : 2 seconds
-Velocity         : 32 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 887: Searing Assault (192087 effect#2)
-Affecting spells : Elemental Fury (60188 effect#1)
-Family Flags     : 30
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=1252)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Deals Fire damage to the target.
 
 Name             : Healing Stream Totem (id=5394) [Spell Family (11)] 
 Class            : Shaman
@@ -373,7 +327,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#2), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#4), Maelstrom Weapon (187881 effect#1), Nobundo's Redemption (208764 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#2), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#4), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effect#1), Nobundo's Redemption (208764 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1)
 Family Flags     : 7, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -458,31 +412,6 @@ Effects          :
 #4 (id=200942)   : Unknown(108)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Radius: 30 yards | Target: Raid Members (56)
 
-Name             : Fire Nova (id=8349) [Spell Family (11)] 
-Class            : Shaman
-School           : Fire
-Spell Type       : Magic
-Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Elemental Fury (60188 effect#1)
-Family Flags     : 50
-Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
-                 : ..x..... ........ ........ ......x.   ........ .x...... ........ ......x. 
-                 : ........ .......x ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Not a proc (105), Requires line of sight (186)
-Effects          :
-#1 (id=3464)     : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=105012)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12017 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-#3 (id=110055)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Causes the Shaman's Flame Shocked targets to emit a wave of flames, inflicting $s2 Fire damage to enemies within $A2 yards of each.
-
 Name             : Windfury Totem (id=8512) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Physical
@@ -503,7 +432,7 @@ Effects          :
 #1 (id=3548)     : Summon (28)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 6112 | Misc Value 2: 0x53 | Target: Unknown(43)
 #2 (id=819687)   : Dummy (3)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : Summons a Windfury Totem with $s1 health at the feet of the caster for $d.  Party members within $s2 yds have a $327942h% chance when they auto-attack to swing an extra time.
 
 Name             : Flametongue Attack (id=10444) [Spell Family (11)] 
@@ -604,10 +533,10 @@ Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
-Cooldown         : 9 seconds
+Cooldown         : 7.5 seconds
 Category         : 1254
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Category Cooldown: 9 seconds
+Category Cooldown: 7.5 seconds
 Proc Chance      : 101%
 Affecting spells : Ascendance (114051 effect#3), Shaman (137038 effect#2), Stormbringer (201846 effect#2), Electropotence (264121 effect#1), Roiling Storm (279515 effect#3)
 Triggered by     : Stormbringer (201846)
@@ -809,7 +738,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1), Thunderaan's Fury (287768 effect#2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Thunderaan's Fury (287768 effect#2)
 Triggered by     : Stormstrike (17364)
 Family Flags     : 39, 76
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -835,7 +764,7 @@ Spell Level      : 19
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1), Thunderaan's Fury (287768 effect#2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Thunderaan's Fury (287768 effect#2)
 Triggered by     : Stormstrike (17364)
 Family Flags     : 39, 76
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -934,7 +863,7 @@ Spell Level      : 10
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Staff, Fist Weapon, Dagger
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Mastery: Enhanced Elements (77223 effect#4), Doom Winds (204945 effect#1), Tailwind Totem (262400 effect#1), Thunderaan's Fury (287802 effect#2)
+Affecting spells : Mastery: Enhanced Elements (77223 effect#4), Doom Winds (204945 effect#1), Thunderaan's Fury (287802 effect#2)
 Family Flags     : 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -944,8 +873,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
-#1 (id=23634)    : Unknown(54)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5401 | Target: Self (1)
+#1 (id=23634)    : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Imbue your weapon with the element of Wind. Each hit has a $319773h% chance to trigger two extra attacks, dealing $25504sw1 Physical damage each.
 
 Name             : Angered Earth (id=36213) [Spell Family (11)] 
@@ -1135,7 +1064,9 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=43877)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Summons two Spirit $?s147783[Raptors][Wolves] that aid you in battle for $228562d. They are immune to movement-impairing effects.
+Description      : Summons two Spirit $?s147783[Raptors][Wolves] that aid you in battle for $228562d. They are immune to movement-impairing effects.
+
+Feral Spirit generates one stack of Maelstrom Weapon immediately, and one stack every $333957t1 sec for $333957d.
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
 Name             : Tidal Waves (id=51564) [Spell Family (11), Passive] 
@@ -1548,14 +1479,14 @@ Name             : Lava Lash (id=60103) [Spell Family (11)]
 Class            : Enhancement Shaman
 School           : Fire
 Spell Type       : Melee
-Spell Level      : 22
+Spell Level      : 11
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
-Cooldown         : 10.5 seconds
+Cooldown         : 18 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 737: Molten Weapon (224125 effect#1), Molten Weapon (224125 effect#3)
-Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Hot Hand (215785 effect#1), Lightning Crash (242284 effect#1), Ember Totem (262399 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Hot Hand (215785 effect#1), Lightning Crash (242284 effect#1), Lava Lash (334033 effect#1)
 Family Flags     : 39, 56, 66
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -1592,7 +1523,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=53887)    : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Searing Bolt (3606), Earth Shock (8042), Fire Nova (8349), Flametongue Attack (10444), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Frost Shock (196840), Lightning Rod (197568), Icefury (210714), Lightning Bolt Overload (214816), Icefury Overload (219271), Lava Burst (285452), Lava Burst Overload (285466), Lightning Lasso (305483), Lightning Lasso (305485), Flametongue Weapon (318038), Flametongue Weapon (319778)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Frost Shock (196840), Lightning Rod (197568), Icefury (210714), Lightning Bolt Overload (214816), Icefury Overload (219271), Lava Burst (285452), Lava Burst Overload (285466), Lightning Lasso (305483), Lightning Lasso (305485), Flametongue Weapon (318038), Flametongue Weapon (319778)
                    Family Flags: 0, 1, 2, 3, 10, 20, 21, 24, 28, 30, 31, 34, 44, 45, 50, 79, 83, 98, 119, 121, 123
 Description      : Your damaging critical strikes deal ${$m1+200}% damage instead of the usual 200%.
 
@@ -1655,8 +1586,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3691 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Causes the earth within $a1 yards of the target location to tremble and break, dealing $<damage> Physical damage over $d and sometimes knocking down enemies.
 
-Each time Chain Lightning hits more than $s1 target, the cast time of your next Earthquake is reduced by ${$319343m1/-1}%, stacking up to $319343u times.
-Variables        : $damage=${$SPN*0.2875*$d/$t2*(1+$@versadmg)*($137040s1+100)/100}
+Each time Chain Lightning hits more than $s1 target, the cast time of your next Earthquake is reduced by ${$319343m1/-1}%, and the damage of your next earthquake is increased by $313943m2%, stacking up to $319343u times.
+Variables        : $damage=${$SPN*0.115*$d/$t2*(1+$@versadmg)*($137040s1+100)/100}
 
 Name             : Earthgrab (id=64695) [Spell Family (11)] 
 Class            : Shaman
@@ -1931,7 +1862,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68076)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Flametongue Attack (10444), Lava Lash (60103), Crash Lightning (187874), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Sundering (197214), Crashing Storm (210801), Stormlash (213307), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394)
+                   Affected Spells: Flametongue Attack (10444), Lava Lash (60103), Crash Lightning (187874), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Sundering (197214), Crashing Storm (210801), Stormlash (213307), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Stormfury (334175), Hailstorm (334195), Hailstorm (334196)
                    Family Flags: 56
 #2 (id=92143)    : Apply Aura (6) | Dummy (4)
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1945,7 +1876,7 @@ Effects          :
                    Family Flags: 72
 #5 (id=479847)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Flametongue Attack (10444), Lava Lash (60103), Crash Lightning (187874), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Sundering (197214), Crashing Storm (210801), Stormlash (213307), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394)
+                   Affected Spells: Flametongue Attack (10444), Lava Lash (60103), Crash Lightning (187874), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Sundering (197214), Crashing Storm (210801), Stormlash (213307), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Stormfury (334175), Hailstorm (334195), Hailstorm (334196)
                    Family Flags: 56
 Description      : Increases your chance to trigger Stormbringer and Windfury by ${$m3}.2%, and increases all Fire, Frost, and Nature damage you deal by ${$77223m1}.1%.
 
@@ -2122,8 +2053,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=68406)    : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Ghost Wolf (2645), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Earthquake (61882), Unleash Life (73685), Healing Rain (73920), Healing Rain (73921), Lava Burst Overload (77451), Healing Wave (77472), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Wellspring (197995), Wellspring (197997), Downpour (207778), Icefury (210714), Crashing Storm (210801), Ancestral Vision (212048), Stormlash (213307), Lightning Bolt Overload (214816), Feral Lunge (215802), Icefury Overload (219271), Rainfall (252154), Icy Edge (271920), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Restorative Mists (294020), Echoing Shock (320125), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522)
-                   Family Flags: 0, 1, 4, 7, 8, 11, 34, 39, 41, 44, 47, 51, 62, 80, 83, 84, 92, 98
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Ghost Wolf (2645), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Earthquake (61882), Unleash Life (73685), Healing Rain (73920), Healing Rain (73921), Lava Burst Overload (77451), Healing Wave (77472), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Stormkeeper (191634), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Wellspring (197995), Wellspring (197997), Downpour (207778), Icefury (210714), Crashing Storm (210801), Ancestral Vision (212048), Stormlash (213307), Lightning Bolt Overload (214816), Feral Lunge (215802), Icefury Overload (219271), Rainfall (252154), Icy Edge (271920), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Restorative Mists (294020), Echoing Shock (320125), Stormkeeper (320137), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Stormfury (334175), Hailstorm (334195), Hailstorm (334196)
+                   Family Flags: 0, 1, 4, 7, 8, 11, 34, 39, 41, 44, 47, 51, 62, 80, 83, 84, 92, 98, 111
 #2 (id=289427)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=772568)   : Apply Aura (6) | Unknown(307)
@@ -2132,27 +2063,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 888 | Target: Self (1)
 Description      : Calls upon the guidance of the spirits for $d, permitting movement while casting Shaman spells. Castable while casting.$?a192088[ Increases movement speed by $192088s2%.][]
 Tooltip          : Able to move while casting all Shaman spells.
-
-Name             : Hand of Gul'dan (id=86040) [Spell Family (5)] 
-Class            : Shaman, Warlock
-School           : Shadowflame
-Spell Type       : Magic
-Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Dirty Hands (211105 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
-Family Flags     : 49, 86
-Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
-                 : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
-                 : ........ ........ ........ .x......   ........ ..x..... ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Requires line of sight (186)
-Effects          :
-#1 (id=87492)    : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : $@spelldesc105174
 
 Name             : Mail Specialization (rank=Passive) (id=86099) [Passive, Hidden] 
 Class            : Enhancement Shaman
@@ -2360,52 +2270,6 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=104845)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Raid Members (56)
-
-Name             : Wild Imp (id=104317) [Spell Family (5)] 
-Class            : Shaman, Warlock
-School           : Shadow
-Spell Type       : None
-Range            : 100 yards
-Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Family Flags     : 14
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=113739)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 55659 | Misc Value 2: 0xc8a | Target: Unknown(32)
-Description      : $@spelldesc105174
-
-Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
-Class            : Demonology Shaman, Warlock
-School           : Shadowflame
-Spell Type       : Magic
-Resource         : 1 - 3 Soul Shard (7) (id=4987)
-Range            : 40 yards
-Cast Time        : 1.5 seconds
-GCD              : 1.5 seconds
-Velocity         : 0.7 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Family Flags     : 21
-Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
-                 : ........ ...x.... ........ ........   ........ ..x..... ........ ...x.... 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Always hits (114)
-Effects          :
-#1 (id=114885)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Enemy (6)
-Description      : Calls down a demonic meteor full of Wild Imps which burst forth to attack the target.
-
-Deals up to ${$m1*$86040m1} Shadowflame damage on impact to all enemies within $86040A1 yds of the target$?s196283[, applies Doom to each target,][] and summons up to ${$m1*$104317m2} Wild Imps, based on Soul Shards consumed.
 
 Name             : Astral Shift (id=108271) [Spell Family (11)] 
 Class            : Shaman
@@ -2792,7 +2656,7 @@ Velocity         : 30 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1), Thunderaan's Fury (287768 effect#2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Thunderaan's Fury (287768 effect#2)
 Triggered by     : Windstrike (115356)
 Family Flags     : 39, 76
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -2819,7 +2683,7 @@ Range            : 100 yards
 Velocity         : 30 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1), Thunderaan's Fury (287768 effect#2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Thunderaan's Fury (287768 effect#2)
 Triggered by     : Windstrike (115356)
 Family Flags     : 39, 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -2916,7 +2780,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=132332)   : School Damage (2): elemental
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.63000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Harnesses the raw power of the elements, dealing $s1 Elemental damage and increasing your Critical Strike, Haste, or Mastery by $118522s1 for $118522d.$?a190493[
 
 Elemental Blast will consume all stacks of Fulmination to deal extra Nature damage to your target.][]
@@ -3113,15 +2977,15 @@ Effects          :
                    Base Value: 220 | Scaled Value: 220 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=190240)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Stormstrike (17364), Lava Lash (60103), Windstrike (115356), Crash Lightning (187874), Lightning Bolt (188196), Flametongue (193796), Crash Lightning (195592), Lightning Bolt Overload (214816)
-                   Family Flags: 0, 36, 66, 85, 90, 112
+                   Affected Spells: Stormstrike (17364), Lava Lash (60103), Windstrike (115356), Crash Lightning (187874), Lightning Bolt (188196), Flametongue (193796), Crash Lightning (195592), Lightning Bolt Overload (214816), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Stormfury (334175), Hailstorm (334195), Hailstorm (334196)
+                   Family Flags: 0, 27, 36, 66, 85, 90, 112
 #3 (id=190241)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Stormstrike (17364), Feral Spirit (51533), Lava Lash (60103), Windstrike (115356), Crash Lightning (187874), Crash Lightning (195592), Feral Lunge (196884), Sundering (197214), Feral Spirit (228562)
-                   Family Flags: 16, 36, 48, 66, 85, 112
+                   Affected Spells: Stormstrike (17364), Feral Spirit (51533), Lava Lash (60103), Windstrike (115356), Crash Lightning (187874), Crash Lightning (195592), Feral Lunge (196884), Sundering (197214), Feral Spirit (228562), Feral Spirit (333957), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Stormfury (334175), Hailstorm (334195), Hailstorm (334196)
+                   Family Flags: 16, 27, 36, 48, 66, 85, 112
 #4 (id=191050)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1634 | Target: Self (1)
-                   Affected Spells (Category): Rockbiter (193786)
+                   Affected Spells (Category): 
 #5 (id=191051)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 #6 (id=777110)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
@@ -3151,11 +3015,11 @@ Effects          :
                    Family Flags: 41
 #3 (id=191047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Stormfury (334175), Hailstorm (334195), Hailstorm (334196)
                    Family Flags: 39
 #4 (id=191048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Stormfury (334175), Hailstorm (334195), Hailstorm (334196)
                    Family Flags: 39
 #5 (id=191049)   : Apply Aura (6) | Modify Max Mana% (178)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3191,11 +3055,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179724)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Stormfury (334175), Hailstorm (334195), Hailstorm (334196)
                    Family Flags: 39
 #2 (id=191042)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Stormfury (334175), Hailstorm (334195), Hailstorm (334196)
                    Family Flags: 39
 #3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3229,18 +3093,20 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Stormfury (334175), Hailstorm (334195), Hailstorm (334196)
                    Family Flags: 39
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Stormfury (334175), Hailstorm (334195), Hailstorm (334196)
                    Family Flags: 39
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191040)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 101 | Scaled Value: 101 | PvP Coefficient: 1.00000 | Target: Self (1)
-#5 (id=191041)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+#5 (id=191041)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
+                   Family Flags: 0, 1, 7, 8, 98
 #6 (id=261007)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 #7 (id=261008)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3251,6 +3117,14 @@ Effects          :
                    Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
                    Family Flags: 31
+#9 (id=830100)   : Apply Aura (6) | Hasted Cooldown Duration (416)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Flame Shock (188389), Frost Shock (196840)
+                   Family Flags: 28, 31
+#10 (id=830101)   : Apply Aura (6) | Hasted Global Cooldown (417)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Flame Shock (188389), Frost Shock (196840)
+                   Family Flags: 28, 31
 
 Name             : Lightning Blast (id=145002) 
 Class            : Shaman
@@ -3917,7 +3791,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 9 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Crashing Lightning (242286 effect#1), Storm's Eye (263795 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Crashing Lightning (242286 effect#1), Storm's Eye (263795 effect#1), Crash Lightning (333964 effect#1)
 Family Flags     : 39, 56, 85
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3982,7 +3856,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=274047)   : Apply Aura (6) | Proc Trigger Spell (42): Maelstrom Weapon
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 187881 | Target: Self (1)
-Description      : When you deal damage with a melee weapon, you have a chance to gain Maelstrom Weapon. Each stack of Maelstrom Weapon reduces the cast time of your next damage or healing spell by $187881s1%.
+#2 (id=829582)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : When you deal damage with a melee weapon, you have a chance to gain Maelstrom Weapon, stacking up to $187881u times. Each stack of Maelstrom Weapon reduces the cast time of your next damage or healing spell by $187881s1% and increase the damage or healing of your next spell by $187881s3%. A maximum of $2s stacks of Maelstrom Weapon can be consumed at a time.
 
 Name             : Maelstrom Weapon (id=187881) [Spell Family (11)] 
 Class            : Shaman
@@ -3990,11 +3866,11 @@ School           : Physical
 Spell Type       : Magic
 Duration         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Stacks           : 5 maximum
+Stacks           : 10 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Triggered by     : Maelstrom Weapon (187880), Overcharge (210727)
+Triggered by     : Maelstrom Weapon (187880)
 Family Flags     : 100
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4002,7 +3878,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ....x... ........ ........ 
 Effects          :
 #1 (id=274048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
@@ -4011,8 +3887,12 @@ Effects          :
 #2 (id=811721)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Misc Value 2: 888 (Label) | Target: Self (1)
                    Affected Spells (Label): Chain Harvest (320674)
+#3 (id=829580)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Stormkeeper (191634), Lightning Bolt Overload (214816), Stormkeeper (320137)
+                   Family Flags: 0, 1, 7, 8, 98, 111
 Description      : $@spelldesc51530
-Tooltip          : Your next damage or healing spell has its cast time reduced by $s1%.
+Tooltip          : Your next damage or healing spell has its cast time reduced by $s1% and damage or healing increased by $s3%.
 
 Name             : Earthen Spike (id=188089) [Spell Family (11)] 
 Class            : Shaman
@@ -4075,7 +3955,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Cooldown         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Elemental Bellows (184919 effect#1), Searing Assault (192087 effect#3), Ember Totem (210658 effect#1), Lightning Crash (242284 effect#1), Focused Elements (246594 effect#1), 
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Elemental Bellows (184919 effect#1), Fire Elemental (188592 effect#2), Lightning Crash (242284 effect#1), Focused Elements (246594 effect#1), Lashing Flames (334168 effect#1)
 Family Flags     : 28, 39
 Attributes       : ........ ........ x.x..... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4087,7 +3967,7 @@ Attributes       : ........ ........ x.x..... ..x.....   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=274966)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=274967)   : Apply Aura (6) | Periodic Damage (3): fire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=322658)   : Dummy (3)
@@ -4120,7 +4000,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=325428)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
-Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
+Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.$?s187874[
+
+Each target hit by your Chain Lightning increases the damage of your next Crash Lightning by $333964s1%.][]
 
 Name             : Fire Elemental (id=188592) [Spell Family (11)] 
 Class            : Shaman
@@ -4143,12 +4025,16 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=275512)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 95061 | Misc Value 2: 0xc8d | Radius: 5 yards | Target: Unknown(50)
-#2 (id=739139)   : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
-                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
-                   Affected Spells: Fulmination (190493)
-                   Family Flags: 120
+#2 (id=739139)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Affected Spells: Flame Shock (188389)
+                   Family Flags: 28
+#3 (id=829522)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Flame Shock (188389)
+                   Family Flags: 28
 Description      : $@spelldesc198067
-Tooltip          : Maelstrom generation increased by $193774s1%
+Tooltip          : Flame Shock deals damage $s2% faster. Newly applied Flame Shocks have $s3% increased duration.
 
 Name             : Earth Elemental (id=188616) [Spell Family (11)] 
 Class            : Shaman
@@ -4239,10 +4125,9 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 22
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Proc Chance      : 50%
+Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
-Affecting spells : Fire Elemental (188592 effect#2)
 Family Flags     : 120
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4255,7 +4140,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=279203)   : Apply Aura (6) | Proc Trigger Spell (42): Fulmination
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Trigger Spell: 260111 | Target: Self (1)
-Description      : Lightning Bolt and Chain Lightning, and their overloads, have a $h% chance to generate a stack of Fulmination, up to $260111u stacks. Earth Shock $?s117014[and Elemental Blast ][]will discharge all stacks of Fulmination on the target, causing an extra $260113s1 Nature damage per stack of Fulmination.
+Description      : Lightning Bolt and Lightning Bolt Overload have a $h% chance to generate a stack of Fulmination, up to $260111u stacks. Earth Shock $?s117014[and Elemental Blast ][]will discharge all stacks of Fulmination on the target, causing an extra $260113s1 Nature damage per stack of Fulmination.
 
 Name             : Stormkeeper (id=191634) [Spell Family (11)] 
 Class            : Shaman
@@ -4270,7 +4155,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
-Affecting spells : Maelstrom Weapon (187881 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Maelstrom Weapon (187881 effect#1), 
 Family Flags     : 111
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4420,40 +4305,6 @@ Effects          :
 Description      : $@spelldesc192077
 Tooltip          : Movement speed increased by $s1%.
 
-Name             : Searing Assault (id=192087) [Spell Family (11)] 
-Class            : Shaman
-School           : Fire
-Spell Type       : Melee
-Range            : 5 yards
-GCD              : 1.5 seconds
-Duration         : 10 seconds
-Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
-Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ x....... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Requires off-hand weapon (120)
-Effects          :
-#1 (id=281777)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=807196)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 10 | Misc Value 2: 887 (Label) | Target: Self (1)
-                   Affected Spells (Label): Searing Bolt (3606)
-#3 (id=807197)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
-                   Base Value: -66 | Scaled Value: -66 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Flame Shock (188389)
-                   Family Flags: 28
-#4 (id=811718)   : Dummy (3)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000
-Description      : Strike your target with your off-hand weapon for $s1 Fire damage. For the next $d, your Searing Totem attacks ${$s2*-2}% faster and your Flame Shock period is reduced by ${$m4/3}%.
-Tooltip          : Searing Totem attack speed increased by ${$s2*-2}%.
-Flame Shock period reduced by ${$m4/3}%.
-
 Name             : Graceful Spirit (id=192088) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
@@ -4505,9 +4356,13 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 192109 | Target: Self (1)
 #2 (id=722312)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=830114)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=830115)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Surround yourself with a shield of lightning for $d.
 
-Melee attackers have a $h% chance to suffer $192109s1 Nature damage.
+Melee attackers have a $h% chance to suffer $192109s1 Nature damage$?a137041[ and have a $s3% chance to generate a stack of Maelstrom Weapon]?a137040[and have a $s4% chance to generate a stack of Fulmination][].
 
 Only one Elemental Shield can be active on the Shaman at a time.
 Tooltip          : Chance to deal $192109s1 Nature damage when you take melee damage.
@@ -4666,31 +4521,6 @@ Description      : Calls forth a Greater Storm Elemental to hurl gusts of wind t
 
 While the Storm Elemental is active, each time you cast Lightning Bolt or Chain Lightning, the cast time of Lightning Bolt and Chain Lightning is reduced by $263806s1%, stacking up to $263806u times.
 
-Name             : Rockbiter (id=193786) [Spell Family (11)] 
-Class            : Enhancement Shaman
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 11
-Range            : 20 yards
-GCD              : 1.5 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Charges          : 2 (7.5 seconds cooldown)
-Category         : 1634: Shaman (137038 effect#4)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Boulderfist (246035 effect#2), Force of the Mountain (254308 effect#1)
-Family Flags     : 39, 56, 82
-Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=284355)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Assaults your target with earthen power, dealing $s1 Nature damage.
-
 Name             : Flametongue (id=193796) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
@@ -4832,7 +4662,7 @@ Spell Level      : 1
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Crashing Lightning (242286 effect#1), Storm's Eye (263795 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Crashing Lightning (242286 effect#1), Storm's Eye (263795 effect#1), Crash Lightning (333964 effect#1)
 Triggered by     : Crash Lightning (187878)
 Family Flags     : 39, 56, 85
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4847,24 +4677,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 Description      : $@spelldesc187874
 
-Name             : Hand of Doom (id=196283) [Spell Family (5), Passive] 
-Class            : Shaman, Warlock
-School           : Physical
-Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=288091)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Hand of Gul'dan now also applies Doom to all enemies it hits.
-
 Name             : Frost Shock (id=196840) [Spell Family (11)] 
 Class            : Shaman
 School           : Frost
@@ -4874,7 +4686,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Icefury (210714 effect#2), Lightning Crash (242284 effect#1), Earthen Strength (252141 effect#2)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Icefury (210714 effect#2), Lightning Crash (242284 effect#1), Earthen Strength (252141 effect#2), Hailstorm (334196 effect#1)
 Family Flags     : 31, 39
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4885,7 +4697,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=288995)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=288996)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=313061)   : Dummy (3)
@@ -4983,7 +4795,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=289629)   : School Damage (2): flamestrike
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.87200 | PvP Coefficient: 1.00000 | Radius: 11 yards | Target: Unknown(129)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Radius: 11 yards | Target: Unknown(129)
 #2 (id=290614)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 11 yards | Target: Unknown(129)
 #3 (id=290630)   : Dummy (3)
@@ -5013,27 +4825,6 @@ Effects          :
 #1 (id=290283)   : School Damage (2): nature
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc210689
-
-Name             : Landslide (id=197992) [Spell Family (11), Passive, Hidden] 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Proc Chance      : 40%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Magic Hostile Spell
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=290979)   : Apply Aura (6) | Proc Trigger Spell (42): Landslide
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 202004 | Target: Self (1)
-Description      : $?s201897[Boulderfist][Rockbiter] has a $h% chance to increase the damage of your next Stormstrike by $202004s1%.
 
 Name             : Wellspring (id=197995) [Spell Family (11)] 
 Class            : Shaman
@@ -5105,9 +4896,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=811561)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
-Description      : Calls forth a Greater Fire Elemental to rain destruction on your enemies for $188592d.
+Description      : Calls forth a Greater Fire Elemental to rain destruction on your enemies for $188592d. 
 
-While the Greater Fire Elemental is active, Lightning Bolt and Chain Lightning have a $s2% chance to generate a stack of Fulmiantion.
+While the Fire Elemental is active, Flame Shock deals damage $188592s2% faster, and newly applied Flame Shocks last $188592s3% longer.
 
 Name             : Earth Elemental (id=198103) [Spell Family (11)] 
 Class            : Shaman
@@ -5565,7 +5356,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=297456)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your special attacks have a $h.1% chance to reset the remaining cooldown on Stormstrike and trigger no cooldown.
+Description      : Your special attacks have a $h.1% chance to reset the remaining cooldown on Stormstrike.
 
 Name             : Stormbringer (id=201846) [Spell Family (11)] 
 Class            : Shaman
@@ -5590,7 +5381,7 @@ Effects          :
 #1 (id=297457)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 17364 | Target: Self (1)
 #2 (id=297909)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Stormstrike (17364), Windstrike (115356)
                    Family Flags: 36, 112
 #3 (id=297910)   : Apply Aura (6) | Dummy (4)
@@ -5606,7 +5397,7 @@ Effects          :
 #6 (id=363023)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 115356 | Target: Self (1)
 Description      : $@spelldesc201845
-Tooltip          : Stormstrike has no cooldown$?$w4>0[ and will deal $w4% increased damage][].
+Tooltip          : Stormstrike cooldown has been reset$?$w4>0[ and will deal $w4% increased damage][].
 
 Name             : Hot Hand (id=201900) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -5628,33 +5419,6 @@ Effects          :
 #1 (id=297542)   : Apply Aura (6) | Proc Trigger Spell (42): Hot Hand
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 215785 | Target: Self (1)
 Description      : Melee auto-attacks with Flametongue Weapon active have a $h% chance to reduce the cooldown of Lava Lash by ${$215785m2/4}% and increase the damage of Lava Lash by $215785m1% for $215785d.
-
-Name             : Landslide (id=202004) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 1
-Duration         : 10 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Proc Chance      : 101%
-Proc Flags       : ....x... ....x... x....... ........ 
-                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
-Triggered by     : Landslide (197992)
-Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x......x ........ ........ ........ 
-Effects          :
-#1 (id=297679)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
-                   Family Flags: 76
-Description      : $@spelldesc197992
-Tooltip          : Your next Stormstrike will deal $s1% increased damage.
 
 Name             : Stomp (id=202044) [Spell Family (11)] 
 Class            : Shaman
@@ -5708,52 +5472,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10156 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Swipe at the target, causing $s1 Physical damage, and an additional $o2 Bleed damage over $d.
 Tooltip          : Bleeding for $o2 damage.
-
-Name             : Resonance Totem (id=202188) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Type       : None
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 120 seconds
-Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Triggered by     : Totem Mastery (210643)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=297993)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 102392 | Misc Value 2: 0xeab | Target: Unknown(41)
-#2 (id=297994)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Summons a Resonance Totem near the caster for $d that generates $202192s1 stack of Fulmination every $202192t1 sec.
-
-Name             : Resonance Totem (id=202192) [Spell Family (11), Passive] 
-Class            : Shaman
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 30 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=297999)   : Apply Owner Area Aura (143) | Periodic Trigger Spell (23): Fulmination every 5 seconds
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 260111 | Radius: 40 yards | Target: Self (1)
-Description      : $@spelldesc202188
-Tooltip          : Generates a stack of Fulmination every $t1 sec.
 
 Name             : Doom Winds (rank=Artifact) (id=204945) [Spell Family (11)] 
 Class            : Shaman
@@ -6069,187 +5787,6 @@ Effects          :
 Description      : $@spelldesc207994
 Tooltip          : All damage done increased by ${$s1/10}.1%.
 
-Name             : Totem Mastery (id=210643) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Type       : None
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=312039)   : Trigger Spell (64): Resonance Totem
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 202188 | Target: Unknown(41)
-#2 (id=312093)   : Trigger Spell (64): Storm Totem
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 210651 | Target: Unknown(41)
-#3 (id=312094)   : Trigger Spell (64): Ember Totem
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 210657 | Target: Unknown(41)
-#4 (id=312095)   : Trigger Spell (64): Tailwind Totem
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 210660 | Target: Unknown(41)
-#5 (id=340438)   : Trigger Spell (64): Totem Mastery
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 226772 | Target: Unknown(41)
-Description      : Summons four totems that increase your combat capabilities for $202188d.
-
-|cFFFFFFFFResonance Totem|r
-Generates $202192s1 stack of Fulmination every $202192t1 sec.
-
-|cFFFFFFFFStorm Totem|r
-Increases the chance for Lightning Bolt and Chain Lightning to trigger Elemental Overload by $210651s1%.
-
-|cFFFFFFFFEmber Totem|r
-Increases Flame Shock damage over time by $210658s1%.
-
-|cFFFFFFFFTailwind Totem|r
-Increases your Haste by $210659s1%.
-
-Name             : Storm Totem (id=210651) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Type       : None
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 120 seconds
-Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Triggered by     : Totem Mastery (210643)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=312050)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 106317 | Misc Value 2: 0xeab | Target: Unknown(44)
-Description      : Summons a Storm Totem near the caster for $d that increases the chance for Lightning Bolt and Chain Lightning to trigger Elemental Overload by $210652s1%.
-
-Name             : Storm Totem (id=210652) [Spell Family (11), Passive] 
-Class            : Shaman
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 30 yards
-Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=312052)   : Apply Owner Area Aura (143) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 11 | Radius: 40 yards | Target: Self (1)
-Description      : $@spelldesc210651
-Tooltip          : Increases the chance for Lightning Bolt and Chain Lightning to trigger Elemental Overload by $s1%.
-
-Name             : Ember Totem (id=210657) [Spell Family (11)] 
-Class            : Shaman
-School           : Fire
-Spell Type       : None
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 120 seconds
-Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Triggered by     : Totem Mastery (210643)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=312058)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 106319 | Misc Value 2: 0xeab | Target: Water Totem (42)
-#2 (id=312059)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Summons an Ember Totem near the caster for $d that increases damage over time from your Flame Shock by $s2%.
-
-Name             : Ember Totem (id=210658) [Spell Family (11), Passive] 
-Class            : Shaman
-School           : Fire
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 30 yards
-Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=312060)   : Apply Owner Area Aura (143) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Radius: 40 yards | Target: Self (1)
-                   Affected Spells: Flame Shock (188389)
-                   Family Flags: 28
-Description      : $@spelldesc210657
-Tooltip          : Increases Flame Shock damage over time by $s1%.
-
-Name             : Tailwind Totem (id=210659) [Spell Family (11), Passive] 
-Class            : Shaman
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 30 yards
-Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=312062)   : Apply Owner Area Aura (143) | Modify All Haste% (193)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Self (1)
-Description      : $@spelldesc210660
-Tooltip          : Increases haste by $s1%.
-
-Name             : Tailwind Totem (id=210660) [Spell Family (11)] 
-Class            : Shaman
-School           : Fire
-Spell Type       : None
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 120 seconds
-Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Triggered by     : Totem Mastery (210643)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=312063)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 106321 | Misc Value 2: 0xeab | Target: Unknown(43)
-#2 (id=312064)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Summons a Tailwind Totem near the caster for $d that increases the Shaman's haste by $210659s1%.
-
 Name             : Lightning Rod (id=210689) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
@@ -6309,29 +5846,6 @@ Effects          :
 Description      : Hurls frigid ice at the target, dealing $s1 Frost damage and causing your next $n Frost Shocks to deal $s2% increased damage.
 Tooltip          : Frost Shock damage increased by $s2%.
 
-Name             : Overcharge (id=210727) [Spell Family (11)] 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-GCD              : 1.5 seconds
-Duration         : 10 seconds
-Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=312152)   : Apply Aura (6) | Periodic Trigger Spell (23): Maelstrom Weapon every 1 seconds
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 187881 | Target: Self (1)
-#2 (id=807049)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
-Description      : Attune your weapons with the Elements and generate $s1 Maelstrom Weapon stacks instantly, and $s2 stack of Maelstrom Weapon every $t1 sec for $d.
-Tooltip          : Generating $s2 stack of Maelstrom Weapon every $t1 sec.
-
 Name             : Crashing Storm (id=210797) [Spell Family (3)] 
 Class            : Shaman
 School           : Nature
@@ -6375,7 +5889,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.02688 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16) -> AOE enemy (instant) (16)
 Description      : $@spelldesc192246
 
-Name             : Hailstorm (id=210853) [Spell Family (11), Passive] 
+Name             : Cycle of the Elements (id=210853) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -6487,7 +6001,7 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Maelstrom Weapon (187881 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Wind Gust (263806 effect#1), Lightning Bolt (318044 effect#1), Stormkeeper (320137 effect#1), 
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Wind Gust (263806 effect#1), Lightning Bolt (318044 effect#1), Stormkeeper (320137 effect#1), 
 Family Flags     : 0
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6677,29 +6191,6 @@ Effects          :
 Description      : $@spelldesc262624
 Tooltip          : The damage of Stormstrike and Windfury is increased by $s1%.
 
-Name             : Totem Mastery (id=226772) [Spell Family (5)] 
-Class            : Shaman
-School           : Nature
-Spell Type       : Magic
-Range            : 50000 yards
-Duration         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Dirty Hands (211105 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1)
-Triggered by     : Totem Mastery (210643), Totem Mastery (262395)
-Family Flags     : 86
-Attributes       : ........ x....... .......x ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Requires line of sight (186)
-Effects          :
-#1 (id=340437)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 113845 | Misc Value 2: 0xf5e | Target: Custom (18)
-Description      : $@spelldesc105174
-
 Name             : Feral Spirit (id=228562) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
@@ -6828,28 +6319,6 @@ Effects          :
                    Affected Spells: Tidal Waves (53390)
                    Family Flags: 105
 Description      : Both effects of Tidal Waves are increased by $s1%.
-
-Name             : Boulderfist (id=246035) [Spell Family (11), Passive] 
-Class            : Shaman
-School           : Nature
-Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=374522)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 1634 | Target: Self (1)
-#2 (id=376272)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rockbiter (193786)
-                   Family Flags: 82
-Description      : Rockbiter's recharge time is reduced by $s1% and it deals $s2% increased damage.
 
 Name             : Netherlight Fortification (id=250879) [Passive] 
 Class            : Hunter, Shaman
@@ -7082,7 +6551,7 @@ Stacks           : 8 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
-Triggered by     : Fulmination (190493), Resonance Totem (202192)
+Triggered by     : Fulmination (190493)
 Family Flags     : 103
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7274,239 +6743,6 @@ Description      : Consuming at least $s4 stacks of Fulmination also enhances yo
 |cFFFFFFFFFrost Shock|r: Freezes the target in place for $285515d.
 
 
-Name             : Totem Mastery (id=262395) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Type       : None
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=623561)   : Trigger Spell (64): Resonance Totem
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 262419 | Target: Unknown(41)
-#2 (id=623562)   : Trigger Spell (64): Storm Totem
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 262396 | Target: Unknown(41)
-#3 (id=623563)   : Trigger Spell (64): Ember Totem
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 262398 | Target: Unknown(41)
-#4 (id=623564)   : Trigger Spell (64): Tailwind Totem
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 262401 | Target: Unknown(41)
-#5 (id=623565)   : Trigger Spell (64): Totem Mastery
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 226772 | Target: Unknown(41)
-Description      : Summons four totems that increase your combat capabilities for $202188d.
-
-|cFFFFFFFFResonance Totem|r
-Increase your Haste by $262417s1%.
-
-|cFFFFFFFFStorm Totem|r
-Increases the damage of Stormstrike by $262397s1%.
-
-|cFFFFFFFFEmber Totem|r
-Increases Lava Lash damage by $262399s1%.
-
-|cFFFFFFFFTailwind Totem|r
-Increases your chance to trigger Windfury by $262400s1%.
-
-Name             : Storm Totem (id=262396) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Type       : None
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 120 seconds
-Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Triggered by     : Totem Mastery (262395)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=623566)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 133514 | Misc Value 2: 0xeab | Target: Unknown(44)
-Description      : Summons a Storm Totem near the caster for $d that increases the damage of Stormstrike by $262397s1%.
-
-Name             : Storm Totem (id=262397) [Spell Family (11), Passive] 
-Class            : Shaman
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 30 yards
-Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=623567)   : Apply Owner Area Aura (143) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Self (1)
-                   Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
-                   Family Flags: 76
-Description      : $@spelldesc262396
-Tooltip          : Stormstrike damage increased by $s1%.
-
-Name             : Ember Totem (id=262398) [Spell Family (11)] 
-Class            : Shaman
-School           : Fire
-Spell Type       : None
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 120 seconds
-Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Triggered by     : Totem Mastery (262395)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=623568)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 133515 | Misc Value 2: 0xeab | Target: Water Totem (42)
-#2 (id=623569)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Summons an Ember Totem near the caster for $d that increases the damage of Lava Lash by $262399s1%.
-
-Name             : Ember Totem (id=262399) [Spell Family (11), Passive] 
-Class            : Shaman
-School           : Fire
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 30 yards
-Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=623570)   : Apply Owner Area Aura (143) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Self (1)
-                   Affected Spells: Lava Lash (60103)
-                   Family Flags: 66
-Description      : $@spelldesc262398
-Tooltip          : Increases the damage of Lava Lash by $s1%.
-
-Name             : Tailwind Totem (id=262400) [Spell Family (11), Passive] 
-Class            : Shaman
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 30 yards
-Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=623571)   : Apply Owner Area Aura (143) | Add Flat Modifier (107): Spell Proc Chance (18)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 18 | Radius: 40 yards | Target: Self (1)
-                   Affected Spells: Windfury Weapon (33757), Windfury Weapon (319773)
-                   Family Flags: 72
-Description      : $@spelldesc262401
-Tooltip          : Increases the chance for Windfury Weapon to activate by $s1%.
-
-Name             : Tailwind Totem (id=262401) [Spell Family (11)] 
-Class            : Shaman
-School           : Fire
-Spell Type       : None
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 120 seconds
-Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Triggered by     : Totem Mastery (262395)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=623572)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 133516 | Misc Value 2: 0xeab | Target: Unknown(43)
-#2 (id=623573)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Summons a Tailwind Totem near the caster for $d that increases the chance for Windfury Weapon to activate by $262400s1%.
-
-Name             : Resonance Totem (id=262417) [Spell Family (11), Passive] 
-Class            : Shaman
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 30 yards
-Cast Time        : 1 seconds
-Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=623609)   : Apply Owner Area Aura (143) | Modify All Haste% (193)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Self (1)
-Description      : $@spelldesc262419
-Tooltip          : Haste increased by $s1%.
-
-Name             : Resonance Totem (id=262419) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Type       : None
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 120 seconds
-Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Triggered by     : Totem Mastery (262395)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=623611)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 133525 | Misc Value 2: 0xeab | Target: Unknown(41)
-#2 (id=623612)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Summons a Resonance Totem near the caster for $d that increases your haste by $262417s1%.
-
 Name             : Elemental Spirits (id=262624) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
@@ -7524,7 +6760,7 @@ Attributes       : ......xx ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=623976)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Feral Spirit (51533), Feral Spirit (228562)
+                   Affected Spells: Feral Spirit (51533), Feral Spirit (228562), Feral Spirit (333957)
                    Family Flags: 48
 Description      : Reduces the cooldown of Feral Spirit by ${$m1/-1000} sec and causes your Feral Spirits to be imbued with Fire, Frost, or Lightning, enhancing your abilities.
 
@@ -10644,6 +9880,66 @@ Description      : Your damaging spells and abilities have a chance to crash a w
 
 When your health drops below $s2%, gain a shield absorbing $s3 damage within $303390d. When this occurs, Undulating Tides cannot trigger again for $s4 sec.
 
+Name             : Necrotic Staff (id=313943) 
+Class            : Shaman
+School           : Shadow
+Spell Type       : Magic
+Range            : 8 - 40 yards
+Cast Time        : 1.5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ......x.   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=796652)   : School Damage (2): shadow
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+#2 (id=796653)   : Unknown(203)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 313944 | Target: Self (1)
+#3 (id=798060)   : Unknown(134)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 161587 | Target: Self (1)
+
+Name             : Necrotic Staff (id=313944) 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Range            : 10 yards
+Duration         : 300 seconds
+Triggered by     : Necrotic Staff (313943)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=796654)   : Apply Aura (6) | Unknown(293)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1582 | Target: Self (1)
+#2 (id=798056)   : Unknown(140)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 314776 | Target: Self (1)
+Description      : Pick up the Necrotic Staff.
+Tooltip          : Carrying a Necrotic Staff, capable of casting one powerful spell.
+
+Name             : Kill Credit: Small Interact (id=314776) [Hidden] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Triggered by     : Necrotic Staff (313944)
+Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=798062)   : Unknown(90)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 161589 | Target: Self (1)
+
 Name             : Heart of Darkness (id=317137) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Shadow
@@ -10669,7 +9965,6 @@ Spell Type       : None
 Spell Level      : 7
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Staff, Fist Weapon, Dagger
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Proc Chance      : 100%
 Affecting spells : Elemental Fury (60188 effect#1)
 Family Flags     : 21
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10680,8 +9975,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=803601)   : Unknown(54)
-                   Base Value: 326 | Scaled Value: 326 | PvP Coefficient: 1.00000 | Misc Value: 5400 | Target: Self (1)
+#1 (id=803601)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Imbue your weapon with the element of Fire for $319778d, causing each of your attacks to deal ${$max(($<coeff>*$AP),1)} additional Fire damage.
 Tooltip          : Each of your weapon attacks causes up to ${$max(($<coeff>*$AP),1)} additional Fire damage.
 Variables        : $coeff=${0.0264}
@@ -10732,8 +10027,13 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Earthquake (61882), Earthquake (77478)
                    Family Flags: 83
+#2 (id=829510)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=829511)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
 Description      : $@spelldesc61882
-Tooltip          : Cast time of your next Earthquake reduced by $w1%.
+Tooltip          : Cast time of your next Earthquake reduced by $w1%.
+Damage of your next earthquake increased by $w2%.
 
 Name             : Improved Reincarnation (id=319352) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -10764,7 +10064,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 25%
 Proc Flags       : ..x.x... ........ ......xx ........ 
                  : White Melee, Yellow Melee, Melee Main-Hand, Melee Off-Hand
-Affecting spells : Mastery: Enhanced Elements (77223 effect#4), Doom Winds (204945 effect#1), Tailwind Totem (262400 effect#1), Thunderaan's Fury (287802 effect#2)
+Affecting spells : Mastery: Enhanced Elements (77223 effect#4), Doom Winds (204945 effect#1), Thunderaan's Fury (287802 effect#2)
 Family Flags     : 72
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10784,7 +10084,7 @@ Class            : Shaman
 School           : Fire
 Spell Type       : None
 Spell Level      : 7
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
@@ -10870,7 +10170,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
-Affecting spells : Maelstrom Weapon (187881 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Maelstrom Weapon (187881 effect#1), 
 Family Flags     : 111
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11220,7 +10520,7 @@ Proc Flags       : ..x..... ........ ........ ........
                  : White Melee
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11321,5 +10621,304 @@ Effects          :
                    Base Value: 328930 | Scaled Value: 328930 | PvP Coefficient: 1.00000 | Misc Value: 328923 | Target: Self (1)
 Description      : $@spelldesc328923
 Tooltip          : Fae Transfusion will heal up to $328930I nearby allies for $w1.
+
+Name             : Echo of the Elements (id=333919) [Spell Family (11), Passive] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Family Flags     : 52
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=829538)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1536 | Target: Self (1)
+Description      : $?c1[Lava Burst now has ${$s2+1}][Riptide, Healing Stream Totem, and Lava Burst now have ${$s2+1}] charges. Effects that reset $?c1[its][their] remaining cooldown will instead grant 1 charge.
+
+Name             : Totem Mastery (id=333925) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Spell Level      : 1
+Range            : 40 yards
+GCD              : 1 seconds
+Cooldown         : 60 seconds
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+Effects          :
+#1 (id=829550)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Drop a Searing Totem, Healing Stream Totem, and Earthbind Totem at your current location.
+
+Name             : Feral Spirit (id=333957) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : Melee
+Range            : 30 yards
+Duration         : 15 seconds
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
+Family Flags     : 48
+Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Disable target procs (113), Tick on application (169)
+Effects          :
+#1 (id=829602)   : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc51533
+Tooltip          : Generating $s1 stack of Maelstrom Weapon every $t1 sec.
+
+Name             : Crash Lightning (id=333964) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Spell Level      : 38
+Range            : 5 yards
+Duration         : 15 seconds
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ x....... ........ 
+                 : Yellow Melee, Magic Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=829611)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Crash Lightning (187874), Crash Lightning (195592)
+                   Family Flags: 85
+#2 (id=829612)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc187874
+Tooltip          : Damage of your next Crash Lightning increased by $s1%.
+
+Name             : Fire Nova (id=333974) [Spell Family (11)] 
+Class            : Shaman
+School           : Fire
+Spell Type       : Melee
+Range            : 5 yards
+GCD              : 1.5 seconds
+Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
+Cooldown         : 15 seconds
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Family Flags     : 27, 39, 56
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+Effects          :
+#1 (id=829628)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Erupt a burst of fiery damage from all targets affected by your Flame Shock, dealing $333977s1 Fire damage to up to $333977I targets within $333977A1 yds of your Flame Shock targets.
+
+Name             : Fire Nova (id=333977) [Spell Family (11)] 
+Class            : Shaman
+School           : Fire
+Spell Type       : Magic
+Range            : 100 yards
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Family Flags     : 27, 39, 56
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Requires line of sight (186)
+Effects          :
+#1 (id=829633)   : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : $@speldesc333974
+
+Name             : Lava Lash (rank=Rank 2) (id=334033) [Spell Family (11), Passive] 
+Class            : Enhancement Shaman
+School           : Nature
+Spell Type       : None
+Spell Level      : 22
+Range            : 40 yards
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x.x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=829716)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -6000 | Scaled Value: -6000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Lava Lash (60103)
+                   Family Flags: 66
+Description      : Lava Lash cooldown reduced by ${$m1/-1000}.1 sec.
+
+Name             : Lashing Flames (id=334046) [Spell Family (11), Passive] 
+Class            : Shaman
+School           : Fire
+Spell Type       : None
+Range            : 100 yards
+Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Family Flags     : 27, 39, 56
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=829736)   : Apply Aura (6) | Proc Trigger Spell (42): Lashing Flames
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 334168 | Target: Self (1)
+Description      : Lava Lash now increases the damage of Flame Shock on its target by $334168s1% for $334168d.
+
+Name             : Lashing Flames (id=334168) [Spell Family (11)] 
+Class            : Shaman
+School           : Fire
+Spell Type       : None
+Range            : 100 yards
+Duration         : 12 seconds
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Triggered by     : Lashing Flames (334046)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+Effects          :
+#1 (id=829938)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Flame Shock (188389)
+                   Family Flags: 28
+Description      : $@spelldesc334046
+Tooltip          : Damage taken from the Shaman's Flame Shock increased by $s1%.
+
+Name             : Stormfury (id=334175) [Spell Family (11), Passive] 
+Class            : Shaman
+School           : Fire
+Spell Type       : None
+Range            : 100 yards
+Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Family Flags     : 27, 39, 56
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=829947)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each time Windfury Weapon activates, the cooldown of Stormstrike is reduced by ${$m1/1000}.1 sec.
+
+Name             : Hailstorm (id=334195) [Spell Family (11), Passive] 
+Class            : Shaman
+School           : Fire
+Spell Type       : None
+Range            : 100 yards
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Family Flags     : 27, 39, 56
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=829980)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each stack of Maelstrom Weapon consumed increases the damage of your next Frost Shock by $334196s1%, and causes your next Frost Shock to hit $334196m2 additional target per Maelstrom Weapon stack consumed.
+
+Name             : Hailstorm (id=334196) [Spell Family (11)] 
+Class            : Shaman
+School           : Frost
+Spell Type       : None
+Range            : 100 yards
+Duration         : 20 seconds
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Magic Hostile Spell
+Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Family Flags     : 27, 39, 56
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+Effects          :
+#1 (id=829981)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Frost Shock (196840)
+                   Family Flags: 31
+#2 (id=829982)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc334195
+Tooltip          : Your next Frost Shock will deal $s1% additional damage, and hit $m2 additional $Ltarget:targets;.
+
+Name             : Chain Lightning (rank=Rank 2) (id=334308) [Spell Family (11), Passive] 
+Class            : Enhancement Shaman
+School           : Fire
+Spell Type       : None
+Spell Level      : 52
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=830173)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+Description      : Each target hit by Chain Lightning reduces the cooldown of Crash Lightning by ${$m1/1000}.1 sec.
 
 
