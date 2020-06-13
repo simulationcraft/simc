@@ -2645,25 +2645,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   }
 };
 
-// Piercing Shot  =========================================================================
-
-struct piercing_shot_t: public hunter_ranged_attack_t
-{
-  piercing_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "piercing_shot", p, p -> talents.piercing_shot )
-  {
-    parse_options( options_str );
-
-    aoe = -1;
-    base_aoe_multiplier = 1.0 / ( data().effectN( 1 ).base_value() / 10 ) ;
-  }
-
-  double target_armor( player_t* ) const override
-  {
-    return 0;
-  }
-};
-
 // Steady Shot ========================================================================
 
 struct steady_shot_t: public hunter_ranged_attack_t
@@ -4652,7 +4633,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "muzzle"                ) return new                 muzzle_t( this, options_str );
-  if ( name == "piercing_shot"         ) return new          piercing_shot_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "raptor_strike_eagle"   ) return new    raptor_strike_eagle_t( this, options_str );
@@ -4795,7 +4775,6 @@ void hunter_t::init_spells()
 
   talents.calling_the_shots                 = find_talent_spell( "Calling the Shots" );
   talents.lock_and_load                     = find_talent_spell( "Lock and Load" );
-  talents.piercing_shot                     = find_talent_spell( "Piercing Shot" );
 
   talents.birds_of_prey                     = find_talent_spell( "Birds of Prey" );
   talents.wildfire_infusion                 = find_talent_spell( "Wildfire Infusion" );
@@ -5456,7 +5435,6 @@ void hunter_t::apl_mm()
   st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&!buff.memory_of_lucid_dreams.up");
   st -> add_action( this, "Aimed Shot", "if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time&cooldown.trueshot.remains" );
   st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.memory_of_lucid_dreams.up" );
-  st -> add_talent( this, "Piercing Shot" );
   st -> add_action( "purifying_blast,if=!buff.trueshot.up|target.time_to_die<8" );
   st -> add_action( "concentrated_flame,if=focus+focus.regen*gcd<focus.max&buff.trueshot.down&(!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight)|full_recharge_time<gcd|target.time_to_die<5" );
   st -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10|target.time_to_die<5" );
@@ -5475,7 +5453,6 @@ void hunter_t::apl_mm()
   trickshots -> add_action( "concentrated_flame" );
   trickshots -> add_action( "blood_of_the_enemy" );
   trickshots -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
-  trickshots -> add_talent( this, "Piercing Shot" );
   trickshots -> add_talent( this, "A Murder of Crows" );
   trickshots -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
   trickshots -> add_action( this, "Steady Shot" );
