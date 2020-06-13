@@ -336,7 +336,6 @@ public:
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
     buff_t* bestial_wrath;
     buff_t* dire_beast;
-    buff_t* spitting_cobra;
     buff_t* thrill_of_the_hunt;
     buff_t* thrill_of_the_hunt_2;
 
@@ -393,7 +392,6 @@ public:
     gain_t* hunters_mark;
     gain_t* memory_of_lucid_dreams_major;
     gain_t* memory_of_lucid_dreams_minor;
-    gain_t* spitting_cobra;
     gain_t* terms_of_engagement;
   } gains;
 
@@ -3948,36 +3946,6 @@ struct stampede_t: public hunter_spell_t
   }
 };
 
-// Spitting Cobra ====================================================================
-
-struct spitting_cobra_t: public hunter_spell_t
-{
-  spitting_cobra_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "spitting_cobra", p, p -> talents.spitting_cobra )
-  {
-    parse_options( options_str );
-
-    harmful = may_hit = false;
-    dot_duration = 0_ms;
-  }
-
-  void init_finished() override
-  {
-    add_pet_stats( p() -> pets.spitting_cobra, { "cobra_spit" } );
-
-    hunter_spell_t::init_finished();
-  }
-
-  void execute() override
-  {
-    hunter_spell_t::execute();
-
-    p() -> pets.spitting_cobra -> summon( data().duration() );
-
-    p() -> buffs.spitting_cobra -> trigger();
-  }
-};
-
 //==============================
 // Marksmanship spells
 //==============================
@@ -4636,7 +4604,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "raptor_strike_eagle"   ) return new    raptor_strike_eagle_t( this, options_str );
-  if ( name == "spitting_cobra"        ) return new         spitting_cobra_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "steel_trap"            ) return new             steel_trap_t( this, options_str );
@@ -4938,14 +4905,6 @@ void hunter_t::create_buffs()
     -> set_trigger_spell( talents.thrill_of_the_hunt )
     -> set_quiet( true );
 
-  buffs.spitting_cobra =
-    make_buff( this, "spitting_cobra", talents.spitting_cobra );
-      // TODO: XXX: Beta!
-      // -> set_default_value( find_spell( 194407 ) -> effectN( 2 ).resource( RESOURCE_FOCUS ) )
-      // -> set_tick_callback( [ this ]( buff_t *buff, int, timespan_t ){
-      //                   resource_gain( RESOURCE_FOCUS, buff -> default_value, gains.spitting_cobra );
-      //                 } );
-
   // Marksmanship
 
   buffs.precise_shots =
@@ -5106,7 +5065,6 @@ void hunter_t::init_gains()
   gains.hunters_mark           = get_gain( "hunters_mark" );
   gains.memory_of_lucid_dreams_major = get_gain( "Lucid Dreams (Major)" );
   gains.memory_of_lucid_dreams_minor = get_gain( "Lucid Dreams (Minor)" );
-  gains.spitting_cobra         = get_gain( "spitting_cobra" );
   gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
 }
 
@@ -5349,7 +5307,6 @@ void hunter_t::apl_bm()
   st -> add_action( "purifying_blast,if=buff.bestial_wrath.down|target.time_to_die<8" );
   st -> add_talent( this, "Barrage" );
   st -> add_action( this, "Cobra Shot", "if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains_guess>focus.time_to_max|buff.memory_of_lucid_dreams.up)&cooldown.kill_command.remains>1|target.time_to_die<3" );
-  st -> add_talent( this, "Spitting Cobra" );
   st -> add_action( this, "Barbed Shot", "if=pet.main.buff.frenzy.duration-gcd>full_recharge_time" );
 
   cleave -> add_action( this, "Barbed Shot", "target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd.max" );
@@ -5371,7 +5328,6 @@ void hunter_t::apl_bm()
   cleave -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10" );
   cleave -> add_action( this, "Multi-Shot", "if=azerite.rapid_reload.enabled&active_enemies>2");
   cleave -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload.enabled)" );
-  cleave -> add_talent( this, "Spitting Cobra" );
 }
 
 // Marksman Action List ======================================================================
