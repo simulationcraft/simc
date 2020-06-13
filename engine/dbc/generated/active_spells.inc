@@ -1,5 +1,5 @@
-// Active class spells, wow build 9.0.1.34615
-static const std::array<active_class_spell_t, 612> __active_spells_data { {
+// Active class spells, wow build 9.0.1.34714
+static const std::array<active_class_spell_t, 609> __active_spells_data { {
   {  1,   0,  88163,      0, "Attack"                             },
   {  1,   0,    100,      0, "Charge"                             },
   {  1,   0,   6544,      0, "Heroic Leap"                        },
@@ -226,7 +226,7 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  5,   0,   8092,      0, "Mind Blast"                         },
   {  5,   0,  32379,      0, "Shadow Word: Death"                 },
   {  5,   0,    453,      0, "Mind Soothe"                        },
-  {  5,   0, 265314,      0, "Power Infusion"                     },
+  {  5,   0,  10060,      0, "Power Infusion"                     },
   {  5,   0,     17,      0, "Power Word: Shield"                 },
   {  5,   0,   2061,      0, "Flash Heal"                         },
   {  5,   0,    589,      0, "Shadow Word: Pain"                  },
@@ -338,7 +338,6 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  7,   0, 188443,      0, "Chain Lightning"                    },
   {  7,   0,   5394,      0, "Healing Stream Totem"               },
   {  7,   0,   1064,      0, "Chain Heal"                         },
-  {  7,   0,   3599,      0, "Searing Totem"                      },
   {  7,   0, 192106,      0, "Lightning Shield"                   },
   {  7,   0,   8004,      0, "Healing Surge"                      },
   {  7,   0, 188196,      0, "Lightning Bolt"                     },
@@ -354,7 +353,6 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  7,  263,  51533,      0, "Feral Spirit"                       },
   {  7,  263,  58875,      0, "Spirit Walk"                        },
   {  7,  263,  17364,  73899, "Stormstrike"                        },
-  {  7,  263, 193786,      0, "Rockbiter"                          },
   {  7,  263,  60103,      0, "Lava Lash"                          },
   {  7,  263, 187874,      0, "Crash Lightning"                    },
   {  7,  263,  33757,      0, "Windfury Weapon"                    },
@@ -386,8 +384,6 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  8,   0, 319836,      0, "Fire Blast"                         },
   {  8,   0,   1449,      0, "Arcane Explosion"                   },
   {  8,   0, 108978,      0, "Alter Time"                         },
-  {  8,   0, 320802,      0, "Frost Ward"                         },
-  {  8,   0, 320813,      0, "Fire Ward"                          },
   {  8,   0,  55342,      0, "Mirror Image"                       },
   {  8,   0,     66,      0, "Invisibility"                       },
   {  8,   62,  44425,      0, "Arcane Barrage"                     },
@@ -446,8 +442,9 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  9,   0,    686,      0, "Shadow Bolt"                        },
   {  9,   0,    172,      0, "Corruption"                         },
   {  9,   0, 234153,      0, "Drain Life"                         },
-  {  9,   0, 265412,      0, "Curse of Doom"                      },
+  {  9,   0, 334275,      0, "Curse of Exhaustion"                },
   {  9,   0,  93375,      0, "Summon Voidwalker"                  },
+  {  9,   0, 333889,      0, "Fel Domination"                     },
   {  9,  265,  27243,      0, "Seed of Corruption"                 },
   {  9,  265,    980,      0, "Agony"                              },
   {  9,  265,  30283,      0, "Shadowfury"                         },
@@ -614,7 +611,7 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   { 12,  581, 212084,      0, "Fel Devastation"                    },
 } };
 
-// Pet active spells, wow build 9.0.1.34615
+// Pet active spells, wow build 9.0.1.34714
 static const std::array<active_pet_spell_t, 125> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

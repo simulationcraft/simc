@@ -1,5 +1,5 @@
-// Item effects, wow build 9.0.1.34615
-static const std::array<item_effect_t, 239> __item_effect_data { {
+// Item effects, wow build 9.0.1.34714
+static const std::array<item_effect_t, 241> __item_effect_data { {
   {    420,  13518,   0,   2,     -1,    0,     -1 }, // Poison
   {  30489, 207438,   0,   1,     -1,    0,     -1 }, // Aggramar's Stride
   { 116155, 315277,   2,   1,     -1,    0,     -1 }, // Strikethrough
@@ -239,5 +239,7 @@ static const std::array<item_effect_t, 239> __item_effect_data { {
   { 125702, 333313,   0,   1,     -1,    0,     -1 }, // Sun King's Blessing
   { 125705, 333373,   0,   1,     -1,    0,     -1 }, // Triune Ward
   { 125707, 333393,   0,   1,     -1,    0,     -1 }, // Grisly Icicle
+  { 125901, 334501,   0,   1,     -1,    0,     -1 }, // Bryndaor's Might
+  { 125903, 334525,   0,   1,     -1,    0,     -1 }, // Crimson Rune Weapon
 } };
 

@@ -1,4 +1,4 @@
-// Item armor values data from ItemArmorQuality.db2, ilevels 1-1300, wow build 9.0.1.34615
+// Item armor values data from ItemArmorQuality.db2, ilevels 1-1300, wow build 9.0.1.34714
 static const std::array<item_armor_quality_data_t, 1300> __item_armor_quality_data { {
   {    1, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
   {    2, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
@@ -1302,7 +1302,7 @@ static const std::array<item_armor_quality_data_t, 1300> __item_armor_quality_da
   { 1300, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
 } };
 
-// Item armor values data from ItemArmorShield.db2, ilevels 1-1300, wow build 9.0.1.34615
+// Item armor values data from ItemArmorShield.db2, ilevels 1-1300, wow build 9.0.1.34714
 static const std::array<item_armor_shield_data_t, 1300> __item_armor_shield_data { {
   {    1, {      13.52246,      14.27370,      15.02495,      15.02495,      15.02495,      15.02495,      15.02495 } },
   {    2, {      14.75177,      15.57131,      16.39086,      16.39086,      16.39086,      16.39086,      16.39086 } },
@@ -2606,7 +2606,7 @@ static const std::array<item_armor_shield_data_t, 1300> __item_armor_shield_data
   { 1300, { 6893386.50000, 7276352.50000, 7659318.50000, 7659318.50000, 7659318.50000, 7659318.50000, 7659318.50000 } },
 } };
 
-// Item armor values data from ItemArmorTotal.db2, ilevels 1-1300, wow build 9.0.1.34615
+// Item armor values data from ItemArmorTotal.db2, ilevels 1-1300, wow build 9.0.1.34714
 static const std::array<item_armor_total_data_t, 1300> __item_armor_total_data { {
   {    1, {        8.41397,       14.44838,       21.30566,       32.04873 } },
   {    2, {        9.17888,       15.76187,       23.24254,       34.96225 } },
@@ -3910,7 +3910,7 @@ static const std::array<item_armor_total_data_t, 1300> __item_armor_total_data {
   { 1300, {  4289218.50000,  7365397.00000, 10861054.00000, 16337584.00000 } },
 } };
 
-// Armor location based multipliers, wow build 9.0.1.34615
+// Armor location based multipliers, wow build 9.0.1.34714
 static const std::array<item_armor_location_data_t, 23> __armor_location_data { {
   {  1, {     0.120,     0.120,     0.120,     0.120 } },
   {  2, {     0.000,     0.000,     0.000,     0.000 } },
