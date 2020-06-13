@@ -6190,18 +6190,6 @@ struct lunar_strike_t : public druid_spell_t
     return am;
   }
 
-  timespan_t gcd() const override
-  {
-    timespan_t g = druid_spell_t::gcd();
-
-    if ( p()->buff.lunar_empowerment->check() )
-      g *= 1 + p()->buff.lunar_empowerment->data().effectN( 3 ).percent();
-
-    g = std::max( min_gcd, g );
-
-    return g;
-  }
-
   timespan_t execute_time() const override
   {
     timespan_t et = druid_spell_t::execute_time();
