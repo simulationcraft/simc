@@ -1393,7 +1393,7 @@ std::pair<timespan_t, int> dire_beast_duration( hunter_t* p )
   // isn't important and combat log testing shows some variation in
   // attack speeds.  This is not quite perfect but more accurate
   // than plateaus.
-  const timespan_t base_duration = p -> find_spell( 120679 ) -> duration();
+  const timespan_t base_duration = p -> talents.dire_beast -> duration();
   const timespan_t swing_time = 2_s * p -> cache.attack_speed();
   double partial_attacks_per_summon = base_duration / swing_time;
   int base_attacks_per_summon = static_cast<int>(partial_attacks_per_summon);
