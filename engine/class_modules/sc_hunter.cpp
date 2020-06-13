@@ -389,7 +389,6 @@ public:
   {
     gain_t* aspect_of_the_wild;
     gain_t* barbed_shot;
-    gain_t* hunters_mark;
     gain_t* memory_of_lucid_dreams_major;
     gain_t* memory_of_lucid_dreams_minor;
     gain_t* terms_of_engagement;
@@ -487,6 +486,7 @@ public:
     spell_data_ptr_t marksmanship_hunter;
     spell_data_ptr_t survival_hunter;
 
+    spell_data_ptr_t hunters_mark;
     spell_data_ptr_t kill_command;
     spell_data_ptr_t kill_shot;
 
@@ -3986,7 +3986,7 @@ struct trueshot_t: public hunter_spell_t
 struct hunters_mark_t: public hunter_spell_t
 {
   hunters_mark_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "hunters_mark", p, p -> talents.hunters_mark )
+    hunter_spell_t( "hunters_mark", p, p -> specs.hunters_mark )
   {
     parse_options( options_str );
 
@@ -4352,8 +4352,8 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   dots()
 {
   debuffs.hunters_mark =
-    make_buff( *this, "hunters_mark", p -> talents.hunters_mark )
-      -> set_default_value( p -> talents.hunters_mark -> effectN( 1 ).percent() );
+    make_buff( *this, "hunters_mark", p -> specs.hunters_mark )
+      -> set_default_value( p -> specs.hunters_mark -> effectN( 1 ).percent() );
 
   debuffs.latent_poison =
     make_buff( *this, "latent_poison", p -> find_spell( 273286 ) )
@@ -4389,7 +4389,6 @@ void hunter_td_t::target_demise()
 
   if ( debuffs.hunters_mark -> check() )
   {
-    p -> resource_gain( RESOURCE_FOCUS, p -> find_spell( 259558 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p -> gains.hunters_mark );
     p -> current_hunters_mark_target = nullptr;
   }
 
@@ -4759,6 +4758,7 @@ void hunter_t::init_spells()
   specs.marksmanship_hunter  = find_specialization_spell( "Marksmanship Hunter" );
   specs.survival_hunter      = find_specialization_spell( "Survival Hunter" );
 
+  specs.hunters_mark         = find_class_spell( "Hunter's Mark" );
   specs.kill_command         = find_specialization_spell( "Kill Command" );
   specs.kill_shot            = find_specialization_spell( "Kill Shot" );
 
@@ -5062,7 +5062,6 @@ void hunter_t::init_gains()
 
   gains.aspect_of_the_wild     = get_gain( "aspect_of_the_wild" );
   gains.barbed_shot            = get_gain( "barbed_shot" );
-  gains.hunters_mark           = get_gain( "hunters_mark" );
   gains.memory_of_lucid_dreams_major = get_gain( "Lucid Dreams (Major)" );
   gains.memory_of_lucid_dreams_minor = get_gain( "Lucid Dreams (Minor)" );
   gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
@@ -5364,7 +5363,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_list -> add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
 
-  cds -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down&!buff.trueshot.up" );
+  cds -> add_action( this, "Hunter's Mark", "if=debuff.hunters_mark.down&!buff.trueshot.up" );
   cds -> add_talent( this, "Double Tap", "if=cooldown.rapid_fire.remains<gcd|cooldown.rapid_fire.remains<cooldown.aimed_shot.remains|target.time_to_die<20" );
   cds -> add_action( "berserking,if=prev_gcd.1.trueshot&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13" );
   cds -> add_action( "blood_fury,if=prev_gcd.1.trueshot&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16" );
