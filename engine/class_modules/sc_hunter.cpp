@@ -221,11 +221,6 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
 // Hunter
 // ==========================================================================
 
-/* BfA TODO
- *  Survival
- *   - movement support for proper Harpoon & Terms of Engagement use
- */
-
 // somewhat arbitrary number of the maximum count of barbed shot buffs possible simultaneously
 constexpr unsigned BARBED_SHOT_BUFFS_MAX = 10;
 
@@ -240,7 +235,7 @@ struct hunter_t;
 
 namespace pets
 {
-struct hunter_main_pet_base_t;
+struct animal_companion_t;
 struct hunter_main_pet_t;
 struct dire_critter_t;
 }
@@ -276,7 +271,7 @@ public:
   struct pets_t
   {
     pets::hunter_main_pet_t* main = nullptr;
-    pets::hunter_main_pet_base_t* animal_companion = nullptr;
+    pets::animal_companion_t* animal_companion = nullptr;
     pets::dire_critter_t* dire_beast = nullptr;
     pet_t* spitting_cobra = nullptr;
     spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> dc_dire_beast;
@@ -1066,10 +1061,6 @@ public:
   }
 };
 
-// ==========================================================================
-// Hunter Main Pet
-// ==========================================================================
-
 // Base class for main pet & Animal Companion
 struct hunter_main_pet_base_t : public hunter_pet_t
 {
@@ -1155,6 +1146,34 @@ struct hunter_main_pet_base_t : public hunter_pet_t
   { return; }
 };
 
+// ==========================================================================
+// Animal Companion
+// ==========================================================================
+
+struct animal_companion_t : public hunter_main_pet_base_t
+{
+  animal_companion_t( hunter_t* owner ):
+    hunter_main_pet_base_t( owner, "animal_companion", PET_HUNTER )
+  {
+    resource_regeneration = regen_type::DISABLED;
+  }
+
+  void init_action_list() override
+  {
+    if ( action_list_str.empty() )
+    {
+      action_list_str += "/auto_attack";
+      use_default_action_list = true;
+    }
+
+    hunter_main_pet_base_t::init_action_list();
+  }
+};
+
+// ==========================================================================
+// Hunter Main Pet
+// ==========================================================================
+
 struct hunter_main_pet_td_t: public actor_target_data_t
 {
 public:
@@ -1173,7 +1192,6 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     gain_t* aspect_of_the_wild = nullptr;
   } gains;
 
-  const spell_data_t* endurance_training = find_spell( 264662 );
   double owner_hp_mult = 1;
 
   hunter_main_pet_t( hunter_t* owner, const std::string& pet_name, pet_e pt ):
@@ -1184,7 +1202,10 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     _spec = default_spec();
 
     if ( _spec == PET_TENACITY )
+    {
+      spell_data_ptr_t endurance_training = find_spell( 264662 );
       owner_hp_mult = 1 + endurance_training->effectN( 2 ).percent() * ( 1 + o() -> talents.aspect_of_the_beast->effectN( 4 ).percent() );
+    }
   }
 
   specialization_e default_spec()
@@ -1315,30 +1336,6 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
   action_t* create_action( const std::string& name, const std::string& options_str ) override;
 
   void init_spells() override;
-};
-
-// ==========================================================================
-// Animal Companion
-// ==========================================================================
-
-struct animal_companion_t : public hunter_main_pet_base_t
-{
-  animal_companion_t( hunter_t* owner ):
-    hunter_main_pet_base_t( owner, "animal_companion", PET_HUNTER )
-  {
-    resource_regeneration = regen_type::DISABLED;
-  }
-
-  void init_action_list() override
-  {
-    if ( action_list_str.empty() )
-    {
-      action_list_str += "/auto_attack";
-      use_default_action_list = true;
-    }
-
-    hunter_main_pet_base_t::init_action_list();
-  }
 };
 
 // ==========================================================================
