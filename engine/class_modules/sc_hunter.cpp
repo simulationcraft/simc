@@ -409,7 +409,7 @@ public:
     spell_data_ptr_t animal_companion;
     spell_data_ptr_t dire_beast;
 
-    spell_data_ptr_t master_marksman_; // NYI
+    spell_data_ptr_t master_marksman;
     spell_data_ptr_t serpent_sting;
 
     spell_data_ptr_t vipers_venom;
@@ -709,6 +709,7 @@ public:
     parse_affecting_aura( this, p -> talents.born_to_be_wild );
     parse_affecting_aura( this, p -> talents.guerrilla_tactics );
     parse_affecting_aura( this, p -> talents.hydras_bite );
+    parse_affecting_aura( this, p -> talents.master_marksman );
 
     // "simple" passive rank 2 spells
     parse_affecting_aura( this, p -> find_specialization_spell( 231550 ) ); // Harpoon (Rank 2)
@@ -4698,7 +4699,7 @@ void hunter_t::init_spells()
   talents.animal_companion                  = find_talent_spell( "Animal Companion" );
   talents.dire_beast                        = find_talent_spell( "Dire Beast" );
 
-  talents.master_marksman_                  = find_talent_spell( "Master Marksman" );
+  talents.master_marksman                   = find_talent_spell( "Master Marksman" );
   talents.serpent_sting                     = find_talent_spell( "Serpent Sting" );
 
   talents.vipers_venom                      = find_talent_spell( "Viper's Venom" );
