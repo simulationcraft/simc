@@ -2084,18 +2084,6 @@ public:
 // Hunter Attacks
 // ==========================================================================
 
-// Volley ============================================================================
-
-struct volley_t: hunter_ranged_attack_t
-{
-  volley_t( util::string_view n, hunter_t* p ):
-    hunter_ranged_attack_t( n, p, p -> talents.volley -> effectN( 1 ).trigger() )
-  {
-    background = true;
-    aoe = -1;
-  }
-};
-
 // Auto Shot ================================================================
 
 struct auto_shot_state_t : public action_state_t
@@ -2114,18 +2102,11 @@ struct auto_shot_state_t : public action_state_t
 
 struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 {
-  volley_t* volley = nullptr;
   double wild_call_chance = 0;
 
   auto_shot_t( hunter_t* p ) :
     auto_attack_base_t( "auto_shot", p, p -> find_spell( 75 ) )
   {
-    if ( p -> talents.volley -> ok() )
-    {
-      volley = p -> get_background_action<volley_t>( "volley" );
-      add_child( volley );
-    }
-
     wild_call_chance = p -> specs.wild_call -> proc_chance() +
                        p -> talents.one_with_the_pack -> effectN( 1 ).percent();
   }
@@ -2146,12 +2127,6 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
     {
       p() -> cooldowns.barbed_shot -> reset( true );
       p() -> procs.wild_call -> occur();
-    }
-
-    if ( volley && rng().roll( p() -> talents.volley -> proc_chance() ) )
-    {
-      volley -> set_target( s -> target );
-      volley -> execute();
     }
   }
 };
