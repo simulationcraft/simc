@@ -490,12 +490,14 @@ public:
     spell_data_ptr_t marksmanship_hunter;
     spell_data_ptr_t survival_hunter;
 
+    spell_data_ptr_t kill_command;
+    spell_data_ptr_t kill_shot;
+
     // Beast Mastery
     spell_data_ptr_t aspect_of_the_wild;
     spell_data_ptr_t barbed_shot;
     spell_data_ptr_t beast_cleave;
     spell_data_ptr_t bestial_wrath;
-    spell_data_ptr_t kill_command;
     spell_data_ptr_t kindred_spirits;
     spell_data_ptr_t wild_call;
 
@@ -2281,6 +2283,26 @@ struct multi_shot_t: public hunter_ranged_attack_t
       p() -> cooldowns.aspect_of_the_wild -> adjust( - ( rapid_reload.reduction * num_targets_hit ) );
       rapid_reload.action -> execute();
     }
+  }
+};
+
+// Kill Shot ! =======================================================================
+
+struct kill_shot_t : hunter_ranged_attack_t
+{
+  double health_threshold_pct;
+
+  kill_shot_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "kill_shot", p, p -> specs.kill_shot ),
+    health_threshold_pct( p -> specs.kill_shot -> effectN( 2 ).base_value() )
+  {
+    parse_options( options_str );
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    return candidate_target -> health_percentage() <= health_threshold_pct &&
+           hunter_ranged_attack_t::target_ready( candidate_target );
   }
 };
 
@@ -4657,46 +4679,47 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "a_murder_of_crows"     ) return new                    moc_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
+  if ( name == "aspect_of_the_eagle"   ) return new    aspect_of_the_eagle_t( this, options_str );
   if ( name == "aspect_of_the_wild"    ) return new     aspect_of_the_wild_t( this, options_str );
   if ( name == "auto_attack"           ) return new   actions::auto_attack_t( this, options_str );
   if ( name == "auto_shot"             ) return new   actions::auto_attack_t( this, options_str );
+  if ( name == "barbed_shot"           ) return new            barbed_shot_t( this, options_str );
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "bursting_shot"         ) return new          bursting_shot_t( this, options_str );
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
+  if ( name == "carve"                 ) return new                  carve_t( this, options_str );
+  if ( name == "chakrams"              ) return new               chakrams_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
+  if ( name == "coordinated_assault"   ) return new    coordinated_assault_t( this, options_str );
   if ( name == "counter_shot"          ) return new           counter_shot_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
-  if ( name == "barbed_shot"           ) return new            barbed_shot_t( this, options_str );
+  if ( name == "double_tap"            ) return new             double_tap_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
-  if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "flanking_strike"       ) return new        flanking_strike_t( this, options_str );
+  if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "harpoon"               ) return new                harpoon_t( this, options_str );
+  if ( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
-  if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
+  if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
   if ( name == "mongoose_bite_eagle"   ) return new    mongoose_bite_eagle_t( this, options_str );
-  if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
+  if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
+  if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "muzzle"                ) return new                 muzzle_t( this, options_str );
   if ( name == "piercing_shot"         ) return new          piercing_shot_t( this, options_str );
-  if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
+  if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
   if ( name == "raptor_strike_eagle"   ) return new    raptor_strike_eagle_t( this, options_str );
+  if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "spitting_cobra"        ) return new         spitting_cobra_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
+  if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "steel_trap"            ) return new             steel_trap_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "tar_trap"              ) return new               tar_trap_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
-  if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
-  if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
-  if ( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
-  if ( name == "double_tap"            ) return new             double_tap_t( this, options_str );
   if ( name == "wildfire_bomb"         ) return new          wildfire_bomb_t( this, options_str );
-  if ( name == "coordinated_assault"   ) return new    coordinated_assault_t( this, options_str );
-  if ( name == "chakrams"              ) return new               chakrams_t( this, options_str );
-  if ( name == "carve"                 ) return new                  carve_t( this, options_str );
-  if ( name == "aspect_of_the_eagle"   ) return new    aspect_of_the_eagle_t( this, options_str );
 
   if ( name == "serpent_sting" )
   {
@@ -4847,6 +4870,7 @@ void hunter_t::init_spells()
   specs.survival_hunter      = find_specialization_spell( "Survival Hunter" );
 
   specs.kill_command         = find_specialization_spell( "Kill Command" );
+  specs.kill_shot            = find_specialization_spell( "Kill Shot" );
 
   // Beast Mastery
   specs.aspect_of_the_wild   = find_specialization_spell( "Aspect of the Wild" );
@@ -5482,6 +5506,7 @@ void hunter_t::apl_mm()
   cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|prev_gcd.1.trueshot&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
   cds -> add_action( this, "Trueshot", "if=buff.trueshot.down&cooldown.rapid_fire.remains|target.time_to_die<15" );
 
+  st -> add_action( this, "Kill Shot" );
   st -> add_talent( this, "Explosive Shot" );
   st -> add_talent( this, "Barrage", "if=active_enemies>1" );
   st -> add_talent( this, "A Murder of Crows" );
