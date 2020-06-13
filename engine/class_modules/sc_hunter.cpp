@@ -4558,14 +4558,16 @@ std::unique_ptr<expr_t> hunter_t::create_action_expression ( action_t& action, c
   //Careful Aim expression
   if ( splits.size() == 1 && splits[ 0 ] == "ca_execute" )
   {
-    return make_fn_expr( expression_str, [ this, &action ]
-      {
-        if ( !talents.careful_aim->ok() )
-          return false;
+    if ( !talents.careful_aim -> ok() )
+      return expr_t::create_constant( "ca_execute", false );
 
+    return make_fn_expr( "ca_execute",
+      [ &action,
+        high_pct = talents.careful_aim->effectN( 1 ).base_value(),
+        low_pct  = talents.careful_aim->effectN( 2 ).base_value() ]
+      {
         const double target_health_pct = action.target->health_percentage();
-        return target_health_pct > talents.careful_aim->effectN( 1 ).base_value() ||
-                target_health_pct < talents.careful_aim->effectN( 2 ).base_value();
+        return target_health_pct > high_pct || target_health_pct < low_pct;
       } );
   }
 
