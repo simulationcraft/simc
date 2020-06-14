@@ -5668,6 +5668,8 @@ struct flame_shock_t : public shaman_spell_t
     {
       p()->buff.lava_shock->trigger();
     }
+
+    p()->trigger_natural_harmony( d->state );
   }
 
   void impact( action_state_t* state ) override
@@ -7942,26 +7944,25 @@ void shaman_t::create_buffs()
   buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
                           ->set_activated( false )
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
-  buff.fury_of_air = make_buff( this, "fury_of_air", talent.fury_of_air )
-                         ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-                           action.fury_of_air->set_target( target );
-                           action.fury_of_air->execute();
+  buff.fury_of_air =
+      make_buff( this, "fury_of_air", talent.fury_of_air )->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        action.fury_of_air->set_target( target );
+        action.fury_of_air->execute();
 
-                           double actual_amount =
-                               resource_loss( RESOURCE_MAELSTROM, talent.fury_of_air->powerN( 1 ).cost() );
-                           gain.fury_of_air->add( RESOURCE_MAELSTROM, actual_amount );
+        double actual_amount = resource_loss( RESOURCE_MAELSTROM, talent.fury_of_air->powerN( 1 ).cost() );
+        gain.fury_of_air->add( RESOURCE_MAELSTROM, actual_amount );
 
-                           // If the actor reaches 0 maelstrom after the tick cost, cancel the buff. Otherwise, keep
-                           // going. This allows "one extra tick" with less than 3 maelstrom, which seems to mirror in
-                           // game behavior. In game, the buff only fades after the next tick (i.e., it has a one
-                           // second delay), but modeling that seems pointless. Gaining maelstrom during that delay
-                           // will not change the outcome of the fading.
-                           if ( resources.current[ RESOURCE_MAELSTROM ] == 0 )
-                           {
-                             // Separate the expiration event to happen immediately after tick processing
-                             make_event( *sim, timespan_t::zero(), [ b ]() { b->expire(); } );
-                           }
-                         } );
+        // If the actor reaches 0 maelstrom after the tick cost, cancel the buff. Otherwise, keep
+        // going. This allows "one extra tick" with less than 3 maelstrom, which seems to mirror in
+        // game behavior. In game, the buff only fades after the next tick (i.e., it has a one
+        // second delay), but modeling that seems pointless. Gaining maelstrom during that delay
+        // will not change the outcome of the fading.
+        if ( resources.current[ RESOURCE_MAELSTROM ] == 0 )
+        {
+          // Separate the expiration event to happen immediately after tick processing
+          make_event( *sim, timespan_t::zero(), [ b ]() { b->expire(); } );
+        }
+      } );
 
   //
   // Restoration
@@ -8873,7 +8874,8 @@ void shaman_t::init_action_list()
   }
 
   // Restoration isn't supported atm
-  if ( !sim->allow_experimental_specializations && specialization() == SHAMAN_RESTORATION && primary_role() == ROLE_HEAL )
+  if ( !sim->allow_experimental_specializations && specialization() == SHAMAN_RESTORATION &&
+       primary_role() == ROLE_HEAL )
   {
     if ( !quiet )
       sim->errorf( "Restoration Shaman healing for player %s is not currently supported.", name() );
@@ -9629,7 +9631,7 @@ public:
       std::string name_str = entry->first;
       if ( a )
       {
-        name_str = report_decorators::decorated_action(*a);
+        name_str = report_decorators::decorated_action( *a );
       }
       else
       {
