@@ -94,7 +94,6 @@ public:
   }
 };
 
-dbc_index_t<spell_data_t> spell_data_index;
 dbc_index_t<talent_data_t> talent_data_index;
 
 // Wrapper class to map other data to specific spells, and also to map effects that manipulate that
@@ -219,10 +218,8 @@ const char* dbc::wow_ptr_status( bool ptr )
 
 static void generate_indices( bool ptr )
 {
-  for ( const spell_data_t* spell_ = spell_data_t::list( ptr ); spell_ -> id() != 0; spell_++ )
+  for ( const spell_data_t& spell : spell_data_t::data( ptr ) )
   {
-    const spell_data_t& spell = *spell_;
-
     // Make a class family index to speed up some spell query parsing
     if ( spell.class_family() != 0 )
     {
@@ -267,7 +264,6 @@ static void generate_indices( bool ptr )
 void dbc::init()
 {
   // Create id-indexes
-  spell_data_index.init();
   talent_data_index.init();
   init_item_data();
 
@@ -1499,15 +1495,9 @@ double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned i
   return modifier;
 }
 
-spell_data_t* spell_data_t::list( bool ptr )
+util::span<spell_data_t> spell_data_t::data( bool ptr )
 {
-  ( void )ptr;
-
-#if SC_USE_PTR
-  return ptr ? __ptr_spell_data : __spell_data;
-#else
-  return __spell_data;
-#endif
+  return SC_DBC_GET_DATA( __spell_data, __ptr_spell_data, ptr );
 }
 
 util::span<spelleffect_data_t> spelleffect_data_t::data( bool ptr )
@@ -1746,10 +1736,11 @@ talent_data_t* talent_data_t::list( bool ptr )
 
 spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
 {
-  spell_data_t* s = spell_data_index.get( ptr, spell_id );
-  if ( !s )
-    s = spell_data_t::nil();
-  return s;
+  const auto __data = data( ptr );
+  auto it = range::lower_bound( __data, spell_id, {}, &spell_data_t::id );
+  if ( it != __data.end() && it->id() == spell_id )
+    return &*it;
+  return spell_data_t::nil();
 }
 
 spell_data_t* spell_data_t::find( unsigned spell_id, util::string_view confirmation, bool ptr )
@@ -1763,13 +1754,10 @@ spell_data_t* spell_data_t::find( unsigned spell_id, util::string_view confirmat
 
 spell_data_t* spell_data_t::find( util::string_view name, bool ptr )
 {
-  for ( spell_data_t* p = spell_data_t::list( ptr ); p -> name_cstr(); ++p )
-  {
-    if ( name == p -> name_cstr() )
-    {
-      return p;
-    }
-  }
+  const auto __data = data( ptr );
+  auto it = range::find( __data, name, &spell_data_t::name_cstr );
+  if ( it != __data.end() )
+    return &*it;
   return nullptr;
 }
 
@@ -1871,11 +1859,8 @@ talent_data_t* talent_data_t::find_tokenized( util::string_view name, specializa
 
 void spell_data_t::link( bool ptr )
 {
-  spell_data_t* spell_data = spell_data_t::list( ptr );
-
-  for ( int i = 0; spell_data[ i ].id(); i++ )
+  for ( spell_data_t& sd : data( ptr ) )
   {
-    spell_data_t& sd = spell_data[ i ];
     sd._effects = new std::vector<const spelleffect_data_t*>;
   }
 
@@ -1918,12 +1903,8 @@ void spelleffect_data_t::link( bool ptr )
 
 void spell_data_t::de_link( bool ptr )
 {
-  spell_data_t* spell_data = spell_data_t::list( ptr );
-
-  for ( int i = 0; spell_data[ i ].id(); i++ )
+  for ( spell_data_t& sd : data( ptr ) )
   {
-    spell_data_t& sd = spell_data[ i ];
-
     delete sd._effects;
     delete sd._power;
     delete sd._driver;

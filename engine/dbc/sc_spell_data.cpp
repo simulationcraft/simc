@@ -295,8 +295,8 @@ struct spell_list_expr_t : public spell_data_expr_t
     {
       case DATA_SPELL:
       {
-        for ( const spell_data_t* spell = spell_data_t::list( dbc.ptr ); spell -> id(); spell++ )
-          result_spell_list.push_back( spell -> id() );
+        for ( const spell_data_t& spell : spell_data_t::data( dbc.ptr ) )
+          result_spell_list.push_back( spell.id() );
         break;
       }
       case DATA_TALENT:

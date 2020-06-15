@@ -2592,19 +2592,12 @@ class SpellDataGenerator(DataGenerator):
         effect_hotfix_data = {}
         power_hotfix_data = {}
 
-        self._out.write('#define %sSPELL%s_SIZE (%d)\n\n' % (
-            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
-            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
-            len(ids)
-        ))
         self._out.write('// %d spells, wow build level %s\n' % ( len(ids), self._options.build ))
-        self._out.write('static struct spell_data_t __%sspell%s_data[] = {\n' % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or ''
-        ))
+        self._out.write('static std::array<spell_data_t, %d> __%s_data { {\n' % (
+            len(ids), self.format_str( 'spell' ) ))
 
         index = 0
-        for id in id_keys + [0]:
+        for id in id_keys:
             spell = self._spellname_db[id]
             hotfix_flags = 0
             hotfix_data = []
@@ -2877,7 +2870,7 @@ class SpellDataGenerator(DataGenerator):
 
             index += 1
 
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
         self._out.write('// %d effects, wow build level %s\n' % ( len(effects), self._options.build ))
         self._out.write('static std::array<spelleffect_data_t, %d> __%s_data { {\n' % (
