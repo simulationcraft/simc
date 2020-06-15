@@ -1228,7 +1228,7 @@ public:
   static spell_data_t* find( util::string_view name, bool ptr = false );
   static spell_data_t* find( unsigned id, bool ptr = false );
   static spell_data_t* find( unsigned id, util::string_view confirmation, bool ptr = false );
-  static spell_data_t* list( bool ptr = false );
+  static util::span<spell_data_t> data( bool ptr = false );
   static void de_link( bool ptr = false );
 };
 
