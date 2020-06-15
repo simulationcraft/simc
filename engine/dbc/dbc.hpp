@@ -751,7 +751,7 @@ public:
 
   static spelleffect_data_t* nil();
   static spelleffect_data_t* find( unsigned, bool ptr = false );
-  static spelleffect_data_t* list( bool ptr = false );
+  static util::span<spelleffect_data_t> data( bool ptr = false );
   static void                link( bool ptr = false );
 private:
   double scaled_average( double budget, unsigned level ) const;

@@ -95,7 +95,6 @@ public:
 };
 
 dbc_index_t<spell_data_t> spell_data_index;
-dbc_index_t<spelleffect_data_t> spelleffect_data_index;
 dbc_index_t<talent_data_t> talent_data_index;
 
 // Wrapper class to map other data to specific spells, and also to map effects that manipulate that
@@ -269,7 +268,6 @@ void dbc::init()
 {
   // Create id-indexes
   spell_data_index.init();
-  spelleffect_data_index.init();
   talent_data_index.init();
   init_item_data();
 
@@ -1512,15 +1510,9 @@ spell_data_t* spell_data_t::list( bool ptr )
 #endif
 }
 
-spelleffect_data_t* spelleffect_data_t::list( bool ptr )
+util::span<spelleffect_data_t> spelleffect_data_t::data( bool ptr )
 {
-  ( void )ptr;
-
-#if SC_USE_PTR
-  return ptr ? __ptr_spelleffect_data : __spelleffect_data;
-#else
-  return __spelleffect_data;
-#endif
+  return SC_DBC_GET_DATA( __spelleffect_data, __ptr_spelleffect_data, ptr );
 }
 
 util::span<spellpower_data_t> spellpower_data_t::data( bool ptr )
@@ -1784,10 +1776,11 @@ spell_data_t* spell_data_t::find( util::string_view name, bool ptr )
 // Always returns non-NULL
 spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
 {
-  spelleffect_data_t* effect = spelleffect_data_index.get( ptr, id );
-  if ( ! effect )
-    effect = spelleffect_data_t::nil();
-  return effect;
+  const auto __data = data( ptr );
+  auto it = range::lower_bound( __data, id, {}, &spelleffect_data_t::id );
+  if ( it != __data.end() && it->id() == id )
+    return &*it;
+  return spelleffect_data_t::nil();
 }
 
 // Always returns non-NULL
@@ -1900,12 +1893,8 @@ void spell_data_t::link( bool ptr )
 
 void spelleffect_data_t::link( bool ptr )
 {
-  spelleffect_data_t* spelleffect_data = spelleffect_data_t::list( ptr );
-
-  for ( int i = 0; spelleffect_data[ i ].id(); i++ )
+  for ( spelleffect_data_t& ed : data( ptr ) )
   {
-    spelleffect_data_t& ed = spelleffect_data[ i ];
-
     ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
     ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
     if ( ed._trigger_spell -> id() > 0 )
