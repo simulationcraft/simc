@@ -32,6 +32,7 @@
 #include "dbc/item_scaling.hpp"
 #include "dbc/item_weapon.hpp"
 #include "dbc/real_ppm_data.hpp"
+#include "dbc/talent_data.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -1299,94 +1300,6 @@ inline spell_data_t* spelleffect_data_t::trigger() const
 {
   return _trigger_spell ? _trigger_spell : spell_data_t::not_found();
 }
-
-// ==========================================================================
-// Talent Data
-// ==========================================================================
-
-struct talent_data_t
-{
-public:
-  const char * _name;        // Talent name
-  unsigned     _id;          // Talent id
-  unsigned     _flags;       // Unused for now, 0x00 for all
-  unsigned     _m_class;     // Class mask
-  unsigned     _spec;        // Specialization
-  unsigned     _col;         // Talent column
-  unsigned     _row;         // Talent row
-  unsigned     _spell_id;    // Talent spell
-  unsigned     _replace_id;  // Talent replaces the following spell id
-
-  // Pointers for runtime linking
-  const spell_data_t* spell1;
-
-  // Direct member access functions
-  unsigned id() const
-  { return _id; }
-
-  const char* name_cstr() const
-  { return _name; }
-
-  unsigned col() const
-  { return _col; }
-
-  unsigned row() const
-  { return _row; }
-
-  unsigned spell_id() const
-  { return _spell_id; }
-
-  unsigned replace_id() const
-  { return _replace_id; }
-
-  unsigned mask_class() const
-  { return _m_class; }
-
-  unsigned spec() const
-  { return _spec; }
-
-  specialization_e specialization() const
-  { return static_cast<specialization_e>( _spec ); }
-
-  // composite access functions
-
-  const spell_data_t* spell() const
-  { return spell1 ? spell1 : spell_data_t::nil(); }
-
-  bool is_class( player_e c ) const
-  {
-    unsigned mask = util::class_id_mask( c );
-
-    if ( mask == 0 )
-      return false;
-
-    return ( ( _m_class & mask ) == mask );
-  }
-
-  // static functions
-  static talent_data_t* nil();
-  static talent_data_t* find( unsigned, bool ptr = false );
-  static talent_data_t* find( unsigned, util::string_view confirmation, bool ptr = false );
-  static talent_data_t* find( util::string_view name, specialization_e spec, bool ptr = false );
-  static talent_data_t* find_tokenized( util::string_view name, specialization_e spec, bool ptr = false );
-  static talent_data_t* find( player_e c, unsigned int row, unsigned int col, specialization_e spec, bool ptr = false );
-  static talent_data_t* list( bool ptr = false );
-  static void           link( bool ptr = false );
-};
-
-class talent_data_nil_t : public talent_data_t
-{
-public:
-  talent_data_nil_t() :
-    talent_data_t()
-  { spell1 = spell_data_t::nil(); }
-
-  static talent_data_nil_t singleton;
-};
-
-inline talent_data_t* talent_data_t::nil()
-{ return &talent_data_nil_t::singleton; }
-
 
 // If we don't have any ptr data, don't bother to check if ptr is true
 #if SC_USE_PTR

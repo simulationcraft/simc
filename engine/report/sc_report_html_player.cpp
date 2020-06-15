@@ -1831,7 +1831,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
 
       for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
       {
-        talent_data_t* t = talent_data_t::find( p.type, row, col, p.specialization(), p.dbc->ptr );
+        const talent_data_t* t = talent_data_t::find( p.type, row, col, p.specialization(), p.dbc->ptr );
         std::string name = "none";
         if ( t )
         {
@@ -3785,7 +3785,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
       {
         for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
         {
-          talent_data_t* t = talent_data_t::find( p.type, row, col, p.specialization(), p.dbc->ptr );
+          const talent_data_t* t = talent_data_t::find( p.type, row, col, p.specialization(), p.dbc->ptr );
           std::string name = "none";
           if ( t )
           {

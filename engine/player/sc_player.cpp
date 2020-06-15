@@ -2364,7 +2364,7 @@ void player_t::override_talent( std::string& override_str )
   {
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      talent_data_t* t = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
+      const talent_data_t* t = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
       if ( t && ( t->spell_id() == spell_id ) )
       {
         if ( true_level < std::min( ( j + 1 ) * 15, 100 ) )
@@ -9202,7 +9202,7 @@ void player_t::replace_spells()
     {
       if ( talent_points.has_row_col( j, i ) && true_level < std::min( ( j + 1 ) * 15, 100 ) )
       {
-        talent_data_t* td = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
+        const talent_data_t* td = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
         if ( td && td->replace_id() )
         {
           dbc->replace_id( td->replace_id(), td->spell_id() );

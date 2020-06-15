@@ -13,14 +13,12 @@
 
 #include "generated/sc_spec_list.inc"
 #include "generated/sc_scale_data.inc"
-#include "generated/sc_talent_data.inc"
 #include "generated/sc_spell_data.inc"
 #include "generated/sc_spell_lists.inc"
 #include "sc_extra_data.inc"
 
 #if SC_USE_PTR
 #include "generated/sc_scale_data_ptr.inc"
-#include "generated/sc_talent_data_ptr.inc"
 #include "generated/sc_spell_data_ptr.inc"
 #include "generated/sc_spell_lists_ptr.inc"
 #include "sc_extra_data_ptr.inc"
@@ -30,71 +28,6 @@
 #include "item/item.hpp"
 
 namespace { // ANONYMOUS namespace ==========================================
-
-// Indices to provide log time, constant space access to spells, effects, and talents by id.
-// XXX: Temprorary untill we switch to spans
-template <typename T>
-class dbc_index_t
-{
-private:
-  typedef std::pair<T*, T*> index_t; // first = lowest data; second = highest data
-// array of size 1 or 2, depending on whether we have PTR data
-#if SC_USE_PTR == 0
-  index_t idx[ 1 ];
-#else
-  index_t idx[ 2 ];
-#endif
-
-  /* populate idx with pointer to lowest and highest data from a given list
-   */
-  void populate( index_t& idx, T* list )
-  {
-    assert( list );
-    idx.first = list;
-    for ( unsigned last_id = 0; list->id(); last_id = list->id(), ++list )
-    {
-      // Validate the input range is in fact sorted by id.
-      assert( list->id() > last_id ); ( void )last_id;
-    }
-    idx.second = list;
-  }
-
-public:
-  // Initialize index from given list
-  void init( T* list, bool ptr )
-  {
-    assert( ! initialized( ptr ) );
-    populate( idx[ ptr ], list );
-  }
-
-  // Initialize index under the assumption that 'T::list( bool ptr )' returns a list of data
-  void init()
-  {
-    init( T::list( false ), false );
-#if SC_USE_PTR == 1
-    init( T::list( true ), true );
-#endif
-  }
-
-  bool initialized( bool ptr = false ) const
-  { return idx[ ptr ].first != 0; }
-
-  // Return the item with the given id, or NULL
-  T* get( bool ptr, unsigned id ) const
-  {
-    assert( initialized( ptr ) );
-    const index_t& index = idx[ ptr ];
-    T* p = std::lower_bound( index.first, index.second, id,
-                             [](const T& lhs, unsigned rhs) {
-                               return lhs.id() < rhs;
-                             } );
-    if ( p != index.second && p->id() == id )
-      return p;
-    return nullptr;
-  }
-};
-
-dbc_index_t<talent_data_t> talent_data_index;
 
 // Wrapper class to map other data to specific spells, and also to map effects that manipulate that
 // data
@@ -264,7 +197,6 @@ static void generate_indices( bool ptr )
 void dbc::init()
 {
   // Create id-indexes
-  talent_data_index.init();
   init_item_data();
 
   // runtime linking, eg. from spell_data to all its effects
@@ -1723,17 +1655,6 @@ double spelleffect_data_t::max( const item_t* item ) const
   return scaled_max( average( item ), delta( item ) );
 }
 
-talent_data_t* talent_data_t::list( bool ptr )
-{
-  ( void )ptr;
-
-#if SC_USE_PTR
-  return ptr ? __ptr_talent_data : __talent_data;
-#else
-  return __talent_data;
-#endif
-}
-
 spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
 {
   const auto __data = data( ptr );
@@ -1779,82 +1700,6 @@ spellpower_data_t* spellpower_data_t::find( unsigned id, bool ptr )
   if ( it != __data.end() && it->id() == id )
     return &*it;
   return spellpower_data_t::nil();
-}
-
-talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int col, specialization_e spec, bool ptr )
-{
-  talent_data_t* talent_data = talent_data_t::list( ptr );
-
-  for ( unsigned k = 0; talent_data[ k ].name_cstr(); k++ )
-  {
-    talent_data_t& td = talent_data[ k ];
-    if ( td.is_class( c ) && ( row == td.row() ) && ( col == td.col() ) && spec == td.specialization() )
-    {
-      return &td;
-    }
-  }
-
-  // Second round to check all talents, either with a none spec, or no spec check at all,
-  // depending on what the caller gave in "spec" parameter
-  for ( unsigned k = 0; talent_data[ k ].name_cstr(); k++ )
-  {
-    talent_data_t& td = talent_data[ k ];
-    if ( spec != SPEC_NONE )
-    {
-      if ( td.is_class( c ) && ( row == td.row() ) && ( col == td.col() ) && td.specialization() == SPEC_NONE )
-        return &td;
-    }
-    else
-    {
-      if ( td.is_class( c ) && ( row == td.row() ) && ( col == td.col() ) )
-        return &td;
-    }
-  }
-
-  return nullptr;
-}
-
-talent_data_t* talent_data_t::find( unsigned id, bool ptr )
-{
-  talent_data_t* t = talent_data_index.get( ptr, id );
-  if ( ! t )
-    t = talent_data_t::nil();
-  return t;
-}
-
-talent_data_t* talent_data_t::find( unsigned id, util::string_view confirmation, bool ptr )
-{
-
-  talent_data_t* p = find( id, ptr );
-  assert( confirmation == p -> name_cstr() );
-  ( void )confirmation;
-  return p;
-}
-
-talent_data_t* talent_data_t::find( util::string_view name, specialization_e spec, bool ptr )
-{
-  for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
-  {
-    if ( name == p -> name_cstr() && p -> specialization() == spec )
-    {
-      return p;
-    }
-  }
-
-  return nullptr;
-}
-
-talent_data_t* talent_data_t::find_tokenized( util::string_view name, specialization_e spec, bool ptr )
-{
-  for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
-  {
-    std::string tokenized_name = p -> name_cstr();
-    util::tokenize( tokenized_name );
-    if ( util::str_compare_ci( name, tokenized_name ) && p -> specialization() == spec )
-      return p;
-  }
-
-  return nullptr;
 }
 
 void spell_data_t::link( bool ptr )
@@ -1922,17 +1767,6 @@ void spellpower_data_t::link( bool ptr )
       sd -> _power = new std::vector<const spellpower_data_t*>;
 
     sd -> _power -> push_back( &pd );
-  }
-}
-
-void talent_data_t::link( bool ptr )
-{
-  talent_data_t* talent_data = talent_data_t::list( ptr );
-
-  for ( int i = 0; talent_data[ i ].name_cstr(); i++ )
-  {
-    talent_data_t& td = talent_data[ i ];
-    td.spell1 = spell_data_t::find( td.spell_id(), ptr );
   }
 }
 
@@ -2097,7 +1931,7 @@ unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, util::stri
   if ( ! cid )
     return 0;
 
-  talent_data_t* t;
+  const talent_data_t* t;
   if ( name_tokenized )
   {
     t = talent_data_t::find_tokenized( spell_name, spec, ptr );

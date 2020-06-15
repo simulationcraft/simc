@@ -1233,7 +1233,7 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
     }
   } else if ( option == "talents" ) {
     if ( parent_player -> talents_str != player -> talents_str ) {
-      std::vector<talent_data_t*> saved_talents;
+      std::vector<const talent_data_t*> saved_talents;
       for ( auto talent_row = 0; talent_row < MAX_TALENT_ROWS; talent_row++ )
       {
         const auto& talent_col = player -> talent_points.choice( talent_row );

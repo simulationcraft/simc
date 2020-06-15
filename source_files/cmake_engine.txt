@@ -46,6 +46,7 @@ dbc/specialization.hpp
 dbc/specialization_spell.hpp
 dbc/spell_item_enchantment.hpp
 dbc/spell_query/spell_data_expr.hpp
+dbc/talent_data.hpp
 interfaces/bcp_api.hpp
 interfaces/sc_http.hpp
 interfaces/sc_http_curl.hpp
@@ -96,6 +97,7 @@ player/sc_player.hpp
 player/scaling_metric_data.hpp
 player/set_bonus.hpp
 player/spawner_base.hpp
+player/special_effect_db_item.hpp
 player/stats.hpp
 player/target_specific.hpp
 player/unique_gear.hpp
@@ -216,6 +218,7 @@ dbc/sc_spell_data.cpp
 dbc/sc_spell_info.cpp
 dbc/specialization_spell.cpp
 dbc/spell_item_enchantment.cpp
+dbc/talent_data.cpp
 interfaces/bcp_api.cpp
 interfaces/sc_http.cpp
 interfaces/sc_http_curl.cpp
