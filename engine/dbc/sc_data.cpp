@@ -279,8 +279,6 @@ double spellpower_data_t::get_field( util::string_view field ) const
 // Talent Data
 // ==========================================================================
 
-talent_data_nil_t talent_data_nil_t::singleton;
-
 namespace hotfix
 {
 static auto_dispose< std::vector< hotfix_entry_t* > > hotfixes_;

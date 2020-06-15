@@ -52,6 +52,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\specialization_spell.hpp" />
 		<ClInclude Include="..\engine\dbc\spell_item_enchantment.hpp" />
 		<ClInclude Include="..\engine\dbc\spell_query\spell_data_expr.hpp" />
+		<ClInclude Include="..\engine\dbc\talent_data.hpp" />
 		<ClInclude Include="..\engine\interfaces\bcp_api.hpp" />
 		<ClInclude Include="..\engine\interfaces\sc_http.hpp" />
 		<ClInclude Include="..\engine\interfaces\sc_http_curl.hpp" />
@@ -102,6 +103,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\scaling_metric_data.hpp" />
 		<ClInclude Include="..\engine\player\set_bonus.hpp" />
 		<ClInclude Include="..\engine\player\spawner_base.hpp" />
+		<ClInclude Include="..\engine\player\special_effect_db_item.hpp" />
 		<ClInclude Include="..\engine\player\stats.hpp" />
 		<ClInclude Include="..\engine\player\target_specific.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear.hpp" />
@@ -344,6 +346,9 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\spell_item_enchantment.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\dbc\talent_data.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\interfaces\bcp_api.cpp">

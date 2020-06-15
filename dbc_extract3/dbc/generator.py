@@ -622,17 +622,12 @@ class TalentDataGenerator(DataGenerator):
         # Sort keys
         ids.sort()
 
-        self._out.write('#define %sTALENT%s_SIZE (%d)\n\n' % (
-            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
-            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
-            len(ids)))
         self._out.write('// %d talents, wow build %s\n' % ( len(ids), self._options.build ))
-        self._out.write('static struct talent_data_t __%stalent%s_data[] = {\n' % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '' ))
+        self._out.write('static std::array<talent_data_t, %d> __%s_data { {\n' % (
+            len(ids), self.format_str( 'talent' ) ))
 
         index = 0
-        for id in ids + [ 0 ]:
+        for id in ids:
             talent = self._talent_db[id]
             spell  = self._spellname_db[talent.id_spell]
 
@@ -660,7 +655,7 @@ class TalentDataGenerator(DataGenerator):
 
             index += 1
 
-        self._out.write('};')
+        self._out.write('} };')
 
 class ItemDataGenerator(DataGenerator):
     _item_blacklist = [

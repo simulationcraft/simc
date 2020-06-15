@@ -301,8 +301,8 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_TALENT:
       {
-        for ( const talent_data_t* talent = talent_data_t::list( dbc.ptr ); talent -> id(); talent++ )
-          result_spell_list.push_back( talent -> id() );
+        for ( const talent_data_t& talent : talent_data_t::data( dbc.ptr ) )
+          result_spell_list.push_back( talent.id() );
         break;
       }
       case DATA_EFFECT:
@@ -313,11 +313,11 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_TALENT_SPELL:
       {
-        for ( const talent_data_t* talent = talent_data_t::list( dbc.ptr ); talent -> id(); talent++ )
+        for ( const talent_data_t& talent : talent_data_t::data( dbc.ptr ) )
         {
-          if ( ! talent -> spell_id() )
+          if ( ! talent.spell_id() )
             continue;
-          result_spell_list.push_back( talent -> spell_id() );
+          result_spell_list.push_back( talent.spell_id() );
         }
         break;
       }
