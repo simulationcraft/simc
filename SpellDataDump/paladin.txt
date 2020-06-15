@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands 7ef1cf0eb0)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands cc47edb7ce)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -942,7 +942,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (6 seconds cooldown)
-Category         : 1627: Retribution Paladin (137027 effect#5), Paladin (137026 effect#4)
+Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Avenging Wrath (31884 effect#1), Improved Crusader Strike (44300 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Judgment (214222 effect#1), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
 Family Flags     : 47, 65

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands 7ef1cf0eb0)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands cc47edb7ce)
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -6107,12 +6107,12 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=335388)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value 2: 737 (Label) | Target: Friend (21)
-                   Affected Spells (Label): Sundering (197214), Lava Lash (60103), Flametongue Attack (10444), Flametongue (193796)
+                   Affected Spells (Label): Flametongue Attack (10444), Lava Lash (60103), Flametongue (193796), Sundering (197214)
 #2 (id=722416)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Friend (21)
 #3 (id=777459)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 737 (Label) | Target: Friend (21)
-                   Affected Spells (Label): Sundering (197214), Lava Lash (60103), Flametongue Attack (10444), Flametongue (193796)
+                   Affected Spells (Label): Flametongue Attack (10444), Lava Lash (60103), Flametongue (193796), Sundering (197214)
 Description      : $@spelldesc262624
 Tooltip          : Increases fire damage dealt from your abilities by $s1%, and Lava Lash now causes the target to burn for an additional $s2% of the direct damage done over $271924d.
 

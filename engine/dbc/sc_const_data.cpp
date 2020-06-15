@@ -101,7 +101,7 @@ dbc_index_t<spellpower_data_t> power_data_index;
 
 // Wrapper class to map other data to specific spells, and also to map effects that manipulate that
 // data
-template <typename T, typename V>
+template <typename V>
 class spell_mapping_reference_t
 {
   // Map struct T (based on id) to a set of spells
@@ -109,65 +109,15 @@ class spell_mapping_reference_t
   // Map struct T (based on id) to a set of effects affecting the group T
   std::unordered_map<V, std::vector<const spelleffect_data_t*>> m_effects_db[2];
 
-  // Return the pertinent value being mapped from struct T
-  using value_fn_t = std::function<V(const T*)>;
-  // Return the spell the struct T is mapped to
-  using spell_fn_t = std::function<unsigned(const T*)>;
-  // Analyze effect data to determine whether it affects labels.
-  using effect_fn_t = std::function<V(const spelleffect_data_t*)>;
-
-  spell_fn_t spell_fn;
-  value_fn_t value_fn;
-  effect_fn_t effect_fn;
-
 public:
-  spell_mapping_reference_t( value_fn_t vfn, spell_fn_t sfn, effect_fn_t efn ) :
-    spell_fn( sfn ), value_fn( vfn ), effect_fn( efn )
-  { }
-
-  // Initialize database based on an external data entity, value function will give the key for the
-  // spell, spell function will give the identifier of the spell
-  void init_db( bool ptr = false )
-  {
-    const T* data = T::list( ptr );
-    while ( data -> id() != 0 )
-    {
-      V value = value_fn( data );
-      const auto spell = spell_data_t::find( spell_fn( data ), ptr );
-      if ( spell -> id() != spell_fn( data ) )
-      {
-        ++data;
-        continue;
-      }
-
-      add_spell( value, spell, ptr );
-
-      ++data;
-    }
-  }
-
-  // Init database based on spell data itself, value function will give the key for the spell
-  void init_db( const spell_data_t* data, bool ptr = false )
-  {
-    V value = value_fn( data );
-    if ( value != 0 )
-    {
-      add_spell( value, data, ptr );
-    }
-  }
-
   void add_spell( V value, const spell_data_t* data, bool ptr = false )
   {
     m_db[ ptr ][ value ].push_back( data );
   }
 
-  void init_effect_db( const spelleffect_data_t* effect, bool ptr = false )
+  void add_effect( V value, const spelleffect_data_t* data, bool ptr = false )
   {
-    auto value = effect_fn( effect );
-    if ( value != 0 )
-    {
-      m_effects_db[ ptr ][ value ].push_back( effect );
-    }
+    m_effects_db[ ptr ][ value ].push_back( data );
   }
 
   util::span<const spell_data_t* const> affects_spells( V value, bool ptr ) const
@@ -195,36 +145,13 @@ public:
   }
 };
 
-std::vector< std::vector< const spell_data_t* > > class_family_index;
-std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
+std::vector< std::vector< const spell_data_t* > > class_family_index[2];
 
 // Label -> spell mappings
-spell_mapping_reference_t<spelllabel_data_t, short> spell_label_index(
-  []( const spelllabel_data_t* data ) { return data -> label(); },
-  []( const spelllabel_data_t* data ) { return data -> id_spell(); },
-  []( const spelleffect_data_t* data ) {
-    if ( data -> subtype() == A_ADD_PCT_LABEL_MODIFIER )
-    {
-      return as<short>( data -> misc_value2() );
-    }
-
-    return as<short>( 0 );
-  }
-);
+spell_mapping_reference_t<short> spell_label_index;
 
 // Categories -> spell mappings
-spell_mapping_reference_t<spell_data_t, unsigned> spell_categories_index(
-  []( const spell_data_t* spell ) { return spell -> category(); },
-  []( const spell_data_t* spell ) { return spell -> id(); },
-  []( const spelleffect_data_t* data ) {
-    if ( data -> subtype() == A_HASTED_CATEGORY )
-    {
-      return as<unsigned>( data -> misc_value1() );
-    }
-
-    return 0U;
-  }
-);
+spell_mapping_reference_t<unsigned> spell_categories_index;
 
 struct class_passives_entry_t
   {
@@ -292,28 +219,48 @@ const char* dbc::wow_ptr_status( bool ptr )
 { return ( maybe_ptr( ptr ) ? "PTR" : "Live" ); }
 #endif
 
-static void generate_class_flags_index( bool ptr = false )
+static void generate_indices( bool ptr )
 {
-  std::vector< std::vector< const spell_data_t* > >* l = &( class_family_index );
-  if ( ptr )
-    l = &( ptr_class_family_index );
-
-  // Make a class family index to speed up some spell query parsing
-  const spell_data_t* spell = spell_data_t::list( ptr );
-  while ( spell -> id() != 0 )
+  for ( const spell_data_t* spell_ = spell_data_t::list( ptr ); spell_ -> id() != 0; spell_++ )
   {
-    if ( spell -> class_family() == 0 )
+    const spell_data_t& spell = *spell_;
+
+    // Make a class family index to speed up some spell query parsing
+    if ( spell.class_family() != 0 )
     {
-      spell++;
-      continue;
+      auto& index = class_family_index[ ptr ];
+      if ( index.size() <= spell.class_family() )
+        index.resize( spell.class_family() + 1 );
+
+      index[ spell.class_family() ].push_back( &spell );
     }
 
-    if ( l -> size() <= spell -> class_family() )
-      l -> resize( spell -> class_family() + 1 );
+    if ( spell.category() != 0 )
+    {
+      spell_categories_index.add_spell( spell.category(), &spell, ptr );
+    }
 
-    l -> at( spell -> class_family() ).push_back( spell );
+    for ( const spelllabel_data_t* label : spell.labels() )
+    {
+      spell_label_index.add_spell( label -> label(), &spell, ptr );
+    }
 
-    spell++;
+    for ( const spelleffect_data_t* effect : spell.effects() )
+    {
+      if ( effect -> subtype() == A_HASTED_CATEGORY )
+      {
+        const unsigned value = as<unsigned>( effect -> misc_value1() );
+        if ( value != 0 )
+          spell_categories_index.add_effect( value, effect, ptr );
+      }
+
+      if ( effect -> subtype() == A_ADD_PCT_LABEL_MODIFIER )
+      {
+        const short value = as<short>( effect -> misc_value2() );
+        if ( value != 0 )
+          spell_label_index.add_effect( value, effect, ptr );
+      }
+    }
   }
 }
 
@@ -349,12 +296,11 @@ void dbc::init()
   hotfix::link_hotfix_data( true );
 #endif
 
-  generate_class_flags_index();
-  spell_label_index.init_db();
+  // Generate indices
+  generate_indices( false );
   if ( SC_USE_PTR )
   {
-    generate_class_flags_index( true );
-    spell_label_index.init_db( true );
+    generate_indices( true );
   }
 }
 
@@ -431,7 +377,7 @@ std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family
   if ( family == 0 )
     return affected_spells;
 
-  auto index = ptr ? util::make_span( ptr_class_family_index ) : util::make_span( class_family_index );
+  const auto& index = class_family_index[ ptr ];
   if ( family >= index.size() )
     return affected_spells;
 
@@ -525,7 +471,7 @@ std::vector< const spelleffect_data_t* > dbc_t::effects_affecting_spell( const s
   if ( spell -> class_family() == 0 )
     return affecting_effects;
 
-  auto index = ptr ? util::make_span( ptr_class_family_index ) : util::make_span( class_family_index );
+  const auto& index = class_family_index[ ptr ];
   if ( spell -> class_family() >= index.size() )
     return affecting_effects;
 
@@ -1943,8 +1889,6 @@ void spell_data_t::link( bool ptr )
   {
     spell_data_t& sd = spell_data[ i ];
     sd._effects = new std::vector<const spelleffect_data_t*>;
-
-    spell_categories_index.init_db( &( sd ), ptr );
   }
 
   auto label = spelllabel_data_t::list( ptr );
@@ -1988,12 +1932,6 @@ void spelleffect_data_t::link( bool ptr )
       ed._spell -> _effects -> resize( ed.index() + 1, spelleffect_data_t::nil() );
 
     ed._spell -> _effects -> at( ed.index() ) = &ed;
-
-    // Some effects are going to be affecting labels, so map spells here
-    spell_label_index.init_effect_db( &( ed ), ptr );
-
-    // Some effects are going to be affecting categories, so map spells here
-    spell_categories_index.init_effect_db( &( ed ), ptr );
   }
 }
 
