@@ -435,7 +435,7 @@ struct spelllabel_data_t
   short label() const
   { return _label; }
 
-  static const spelllabel_data_t* list( bool ptr );
+  static util::span<const spelllabel_data_t> data( bool ptr );
 };
 
 // ==========================================================================

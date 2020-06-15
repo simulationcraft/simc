@@ -1891,18 +1891,15 @@ void spell_data_t::link( bool ptr )
     sd._effects = new std::vector<const spelleffect_data_t*>;
   }
 
-  auto label = spelllabel_data_t::list( ptr );
-  while ( label -> id() )
+  for ( const spelllabel_data_t& label : spelllabel_data_t::data( ptr ) )
   {
-    auto spell = spell_data_t::find( label -> id_spell(), ptr );
+    auto spell = spell_data_t::find( label.id_spell(), ptr );
     if ( spell -> _labels == nullptr )
     {
       spell -> _labels = new std::vector<const spelllabel_data_t*>();
     }
 
-    spell -> _labels -> push_back( label );
-
-    ++label;
+    spell -> _labels -> push_back( &label );
   }
 }
 
@@ -2764,14 +2761,8 @@ void hotfix::link_hotfix_data( bool ptr )
   link_hotfix_entry_ptr<spellpower_data_t>( ptr, power_hotfix_entry );
 }
 
-const spelllabel_data_t* spelllabel_data_t::list( bool ptr )
+util::span<const spelllabel_data_t> spelllabel_data_t::data( bool ptr )
 {
-#if SC_USE_PTR
-  return ptr ? __ptr_spelllabel_data
-             : __spelllabel_data;
-#else
-  (void ) ptr;
-  return __spelllabel_data;
-#endif
+  return SC_DBC_GET_DATA( __spelllabel_data, __ptr_spelllabel_data, ptr );
 }
 
