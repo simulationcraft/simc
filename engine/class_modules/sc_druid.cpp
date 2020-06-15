@@ -8902,6 +8902,9 @@ void druid_t::apl_restoration()
   default_list->add_action( "use_items" );
   default_list->add_action( "potion" );
   default_list->add_action(
+      "worldvein_resonance,if=!buff.shadowmeld.up&!buff.prowl.up&dot.sunfire.remains>6&(buff.cat_form.up|!talent.feral_"
+      "affinity.enabled)" );
+  default_list->add_action(
       "memory_of_lucid_dreams,if=buff.cat_form.up&energy<50&dot.sunfire.remains>5&dot.moonfire.remains>5" );
   default_list->add_action(
       "concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight&!buff."
