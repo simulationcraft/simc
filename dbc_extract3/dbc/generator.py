@@ -3014,11 +3014,11 @@ class SpellDataGenerator(DataGenerator):
         powers = list(powers)
         powers.sort(key = lambda k: k.id)
 
-        self._out.write('#define __%s_SIZE (%d)\n\n' % ( self.format_str( "spellpower" ).upper(), len(powers) ))
         self._out.write('// %d effects, wow build level %s\n' % ( len(powers), self._options.build ))
-        self._out.write('static struct spellpower_data_t __%s_data[] = {\n' % ( self.format_str( "spellpower" ) ))
+        self._out.write('static std::array<spellpower_data_t, %d> __%s_data { {\n' % (
+            len(powers), self.format_str( "spellpower" ) ))
 
-        for power in powers + [ self._spellpower_db[0] ]:
+        for power in powers:
             hotfix_flags = 0
             hotfix_data = []
             # 1 2 3
@@ -3053,7 +3053,7 @@ class SpellDataGenerator(DataGenerator):
                 sys.stderr.write('%s\n' % fields)
                 sys.exit(1)
 
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
         labels = []
         for label_id, label_data in self._spelllabel_db.items():

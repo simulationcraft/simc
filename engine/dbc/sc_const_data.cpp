@@ -97,7 +97,6 @@ public:
 dbc_index_t<spell_data_t> spell_data_index;
 dbc_index_t<spelleffect_data_t> spelleffect_data_index;
 dbc_index_t<talent_data_t> talent_data_index;
-dbc_index_t<spellpower_data_t> power_data_index;
 
 // Wrapper class to map other data to specific spells, and also to map effects that manipulate that
 // data
@@ -272,7 +271,6 @@ void dbc::init()
   spell_data_index.init();
   spelleffect_data_index.init();
   talent_data_index.init();
-  power_data_index.init();
   init_item_data();
 
   // runtime linking, eg. from spell_data to all its effects
@@ -1525,15 +1523,9 @@ spelleffect_data_t* spelleffect_data_t::list( bool ptr )
 #endif
 }
 
-spellpower_data_t* spellpower_data_t::list( bool ptr )
+util::span<spellpower_data_t> spellpower_data_t::data( bool ptr )
 {
-  ( void )ptr;
-
-#if SC_USE_PTR
-  return ptr ? __ptr_spellpower_data : __spellpower_data;
-#else
-  return __spellpower_data;
-#endif
+  return SC_DBC_GET_DATA( __spellpower_data, __ptr_spellpower_data, ptr );
 }
 
 double spelleffect_data_t::scaled_average( double budget, unsigned level ) const
@@ -1801,8 +1793,11 @@ spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
 // Always returns non-NULL
 spellpower_data_t* spellpower_data_t::find( unsigned id, bool ptr )
 {
-  spellpower_data_t* power = power_data_index.get( ptr, id );
-  return power ? power : spellpower_data_t::nil();
+  const auto __data = data( ptr );
+  auto it = range::lower_bound( __data, id, {}, &spellpower_data_t::id );
+  if ( it != __data.end() && it->id() == id )
+    return &*it;
+  return spellpower_data_t::nil();
 }
 
 talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int col, specialization_e spec, bool ptr )
@@ -1949,12 +1944,9 @@ void spell_data_t::de_link( bool ptr )
 
 void spellpower_data_t::link( bool ptr )
 {
-  spellpower_data_t* spellpower_data = spellpower_data_t::list( ptr );
-
-  for ( int i = 0; spellpower_data[ i ]._id; i++ )
+  for ( spellpower_data_t& pd : spellpower_data_t::data( ptr ) )
   {
-    spellpower_data_t& pd = spellpower_data[ i ];
-    spell_data_t*      sd = spell_data_t::find( pd._spell_id, ptr );
+    spell_data_t* sd = spell_data_t::find( pd._spell_id, ptr );
 
     if ( sd -> _power == nullptr )
       sd -> _power = new std::vector<const spellpower_data_t*>;

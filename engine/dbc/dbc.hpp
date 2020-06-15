@@ -520,7 +520,7 @@ public:
 
   static spellpower_data_t* nil();
   static spellpower_data_t* find( unsigned, bool ptr = false );
-  static spellpower_data_t* list( bool ptr = false );
+  static util::span<spellpower_data_t> data( bool ptr = false );
   static void               link( bool ptr = false );
 
   bool override_field( util::string_view field, double value );
