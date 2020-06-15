@@ -3068,14 +3068,14 @@ class SpellDataGenerator(DataGenerator):
 
         labels.sort(key = lambda k: k.id)
 
-        self._out.write('#define __%s_SIZE (%d)\n\n' % ( self.format_str( "spelllabel" ).upper(), len(labels) ))
         self._out.write('// %d labels, wow build level %s\n' % ( len(labels), self._options.build ))
-        self._out.write('static struct spelllabel_data_t __%s_data[] = {\n' % ( self.format_str( "spelllabel" ) ))
+        self._out.write('static const std::array<spelllabel_data_t, %d> __%s_data { {\n' % (
+            len(labels), self.format_str( 'spelllabel' ) ))
 
-        for label in labels + [ self._spelllabel_db[0] ]:
+        for label in labels:
             self._out.write('  { %s },\n' % (', '.join(label.field('id', self._options.build < 25600 and 'id_spell' or 'id_parent', 'label'))))
 
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
         # Then, write out hotfix data
         output_data = [('spell', spell_hotfix_data), ('effect', effect_hotfix_data), ('power', power_hotfix_data)]
