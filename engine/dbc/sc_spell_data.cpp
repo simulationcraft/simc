@@ -307,8 +307,8 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_EFFECT:
       {
-        for ( const spelleffect_data_t* effect = spelleffect_data_t::list( dbc.ptr ); effect -> id(); effect++ )
-          result_spell_list.push_back( effect -> id() );
+        for ( const spelleffect_data_t& effect : spelleffect_data_t::data( dbc.ptr ) )
+          result_spell_list.push_back( effect.id() );
         break;
       }
       case DATA_TALENT_SPELL:

@@ -2879,17 +2879,12 @@ class SpellDataGenerator(DataGenerator):
 
         self._out.write('};\n\n')
 
-        self._out.write('#define __%sSPELLEFFECT%s_SIZE (%d)\n\n' % (
-            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
-            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
-            len(effects)))
         self._out.write('// %d effects, wow build level %s\n' % ( len(effects), self._options.build ))
-        self._out.write('static struct spelleffect_data_t __%sspelleffect%s_data[] = {\n' % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or ''))
+        self._out.write('static std::array<spelleffect_data_t, %d> __%s_data { {\n' % (
+            len(effects), self.format_str( 'spelleffect' ) ))
 
         index = 0
-        for effect_data in sorted(effects) + [ ( 0, 0 ) ]:
+        for effect_data in sorted(effects):
             effect = self._spelleffect_db[effect_data[0]]
             if not effect.id and effect_data[ 0 ] > 0:
                 sys.stderr.write('Spell Effect id %d not found\n') % effect_data[0]
@@ -3000,7 +2995,7 @@ class SpellDataGenerator(DataGenerator):
 
             index += 1
 
-        self._out.write('};\n\n')
+        self._out.write('} };\n\n')
 
         index = 0
         def sortf( a, b ):
