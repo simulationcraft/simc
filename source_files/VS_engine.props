@@ -29,6 +29,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\active_spells.hpp" />
 		<ClInclude Include="..\engine\dbc\azerite.hpp" />
 		<ClInclude Include="..\engine\dbc\client_data.hpp" />
+		<ClInclude Include="..\engine\dbc\client_hotfix_entry.hpp" />
 		<ClInclude Include="..\engine\dbc\data_definitions.hh" />
 		<ClInclude Include="..\engine\dbc\data_enums.hh" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />
@@ -50,6 +51,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\sc_spell_info.hpp" />
 		<ClInclude Include="..\engine\dbc\specialization.hpp" />
 		<ClInclude Include="..\engine\dbc\specialization_spell.hpp" />
+		<ClInclude Include="..\engine\dbc\spell_data.hpp" />
 		<ClInclude Include="..\engine\dbc\spell_item_enchantment.hpp" />
 		<ClInclude Include="..\engine\dbc\spell_query\spell_data_expr.hpp" />
 		<ClInclude Include="..\engine\dbc\talent_data.hpp" />
@@ -343,6 +345,9 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\specialization_spell.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\dbc\spell_data.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\spell_item_enchantment.cpp">

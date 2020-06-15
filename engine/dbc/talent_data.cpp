@@ -9,7 +9,7 @@
 #endif
 
 #include "dbc/client_data.hpp"
-#include "dbc/dbc.hpp"
+#include "dbc/spell_data.hpp"
 #include "util/util.hpp"
 
 bool talent_data_t::is_class( player_e c ) const

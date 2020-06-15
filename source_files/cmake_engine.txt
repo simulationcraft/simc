@@ -23,6 +23,7 @@ config.hpp
 dbc/active_spells.hpp
 dbc/azerite.hpp
 dbc/client_data.hpp
+dbc/client_hotfix_entry.hpp
 dbc/data_definitions.hh
 dbc/data_enums.hh
 dbc/dbc.hpp
@@ -44,6 +45,7 @@ dbc/real_ppm_data.hpp
 dbc/sc_spell_info.hpp
 dbc/specialization.hpp
 dbc/specialization_spell.hpp
+dbc/spell_data.hpp
 dbc/spell_item_enchantment.hpp
 dbc/spell_query/spell_data_expr.hpp
 dbc/talent_data.hpp
@@ -217,6 +219,7 @@ dbc/sc_item_data.cpp
 dbc/sc_spell_data.cpp
 dbc/sc_spell_info.cpp
 dbc/specialization_spell.cpp
+dbc/spell_data.cpp
 dbc/spell_item_enchantment.cpp
 dbc/talent_data.cpp
 interfaces/bcp_api.cpp

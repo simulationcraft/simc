@@ -68,12 +68,6 @@ double get_field( const T* data, const Fields& fields, util::string_view name ) 
 // Spell Data
 // ==========================================================================
 
-spell_data_nil_t spell_data_nil_t::singleton;
-
-spell_data_not_found_t spell_data_not_found_t::singleton;
-
-// spell_data_t::override ===================================================
-
 static constexpr auto spell_data_fields = std::make_tuple(
   data_field( "prj_speed",         &spell_data_t::_prj_speed ),
   data_field( "school",            &spell_data_t::_school ),
@@ -113,8 +107,6 @@ double spell_data_t::get_field( util::string_view field ) const
 // ==========================================================================
 // Spell Effect Data
 // ==========================================================================
-
-spelleffect_data_nil_t spelleffect_data_nil_t::singleton;
 
 static constexpr auto spelleffect_data_fields = std::make_tuple(
   data_field( "coefficient",             &spelleffect_data_t::_m_coeff ),
@@ -168,10 +160,6 @@ double spellpower_data_t::get_field( util::string_view field ) const
   return ::get_field( this, spellpower_data_fields, field );
 }
 
-
-// ==========================================================================
-// Talent Data
-// ==========================================================================
 
 namespace hotfix
 {
