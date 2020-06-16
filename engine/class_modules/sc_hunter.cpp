@@ -35,15 +35,14 @@ struct spell_data_ptr_t
 
 void parse_affecting_aura( action_t *const action, const spell_data_t *const spell )
 {
-  for ( size_t i = 1; i <= spell -> effect_count(); i++ )
+  for ( const spelleffect_data_t* effect : spell -> effects() )
   {
-    const spelleffect_data_t& effect = spell -> effectN( i );
-    if ( ! effect.ok() || effect.type() != E_APPLY_AURA )
+    if ( ! effect -> ok() || effect -> type() != E_APPLY_AURA )
       continue;
 
     if ( action -> data().affected_by( effect ) )
     {
-      switch ( effect.subtype() )
+      switch ( effect -> subtype() )
       {
       case A_HASTED_GCD:
         action -> gcd_type = gcd_haste_type::ATTACK_HASTE;
@@ -54,10 +53,10 @@ void parse_affecting_aura( action_t *const action, const spell_data_t *const spe
         break;
 
       case A_ADD_FLAT_MODIFIER:
-        switch( effect.misc_value1() )
+        switch( effect -> misc_value1() )
         {
         case P_RESOURCE_COST:
-          action -> base_costs[ RESOURCE_FOCUS ] += effect.base_value();
+          action -> base_costs[ RESOURCE_FOCUS ] += effect -> base_value();
           break;
 
         default: break;
@@ -65,14 +64,14 @@ void parse_affecting_aura( action_t *const action, const spell_data_t *const spe
         break;
 
       case A_ADD_PCT_MODIFIER:
-        switch ( effect.misc_value1() )
+        switch ( effect -> misc_value1() )
         {
         case P_GENERIC:
-          action -> base_dd_multiplier *= 1 + effect.percent();
+          action -> base_dd_multiplier *= 1 + effect -> percent();
           break;
 
         case P_TICK_DAMAGE:
-          action -> base_td_multiplier *= 1 + effect.percent();
+          action -> base_td_multiplier *= 1 + effect -> percent();
           break;
 
         default: break;
@@ -82,9 +81,9 @@ void parse_affecting_aura( action_t *const action, const spell_data_t *const spe
       default: break;
       }
     }
-    else if ( action -> data().category() == as<unsigned>(effect.misc_value1()) )
+    else if ( action -> data().category() == as<unsigned>( effect -> misc_value1() ) )
     {
-      switch ( effect.subtype() )
+      switch ( effect -> subtype() )
       {
       case A_HASTED_CATEGORY:
         action -> cooldown -> hasted = true;
@@ -4915,11 +4914,10 @@ void hunter_t::init_base_stats()
   resources.base_regen_per_second[ RESOURCE_FOCUS ] = 10;
   for ( auto spell : { specs.marksmanship_hunter, specs.survival_hunter } )
   {
-    for ( size_t i = 1; i <= spell -> effect_count(); i++ )
+    for ( const spelleffect_data_t* effect : spell -> effects() )
     {
-      const spelleffect_data_t& effect = spell -> effectN( i );
-      if ( effect.ok() && effect.type() == E_APPLY_AURA && effect.subtype() == A_MOD_POWER_REGEN_PERCENT )
-        resources.base_regen_per_second[ RESOURCE_FOCUS ] *= 1 + effect.percent();
+      if ( effect -> ok() && effect -> type() == E_APPLY_AURA && effect -> subtype() == A_MOD_POWER_REGEN_PERCENT )
+        resources.base_regen_per_second[ RESOURCE_FOCUS ] *= 1 + effect -> percent();
     }
   }
 

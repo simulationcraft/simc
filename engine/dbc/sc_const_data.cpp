@@ -452,11 +452,10 @@ std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family
 
 std::vector<const spelleffect_data_t*> dbc_t::effect_labels_affecting_spell( const spell_data_t* spell ) const
 {
-  auto labels = spell -> labels();
   std::vector<const spelleffect_data_t*> effects;
 
-  range::for_each( labels, [ &effects, this ]( short label ) {
-    auto label_effects = spell_label_index.affected_by( label, ptr );
+  range::for_each( spell -> labels(), [ &effects, this ]( const spelllabel_data_t* label ) {
+    auto label_effects = spell_label_index.affected_by( label -> label(), ptr );
 
     // Add all effects affecting a specific label to the vector containing all the effects, if the
     // effect is not yet in the vector.

@@ -1054,19 +1054,31 @@ public:
     return *spellpower_data_t::nil();
   }
 
-  std::vector<short> labels() const
+  util::span<const spelleffect_data_t* const> effects() const
   {
-    std::vector<short> l;
-    if ( ! _labels )
-    {
-      return l;
-    }
+    assert( _effects );
+    return *_effects;
+  }
 
-    range::for_each( *_labels, [ &l ]( const spelllabel_data_t* data ) {
-      l.push_back( data -> label() );
-    } );
+  util::span<const spellpower_data_t* const> powers() const
+  {
+    if ( _power )
+      return *_power;
+    return {};
+  }
 
-    return l;
+  util::span<const spelllabel_data_t* const> labels() const
+  {
+    if ( _labels )
+      return *_labels;
+    return {};
+  }
+
+  util::span<const spell_data_t* const> drivers() const
+  {
+    if ( _driver )
+      return *_driver;
+    return {};
   }
 
   bool is_class( player_e c ) const

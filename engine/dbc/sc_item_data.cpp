@@ -792,14 +792,14 @@ bool item_database::parse_item_spell_enchant( item_t& item,
       // Handle All stats enchants
       if ( es )
       {
-        for ( size_t j = 0; j < es -> _effects -> size(); j++ )
+        for ( const spelleffect_data_t* ed : es -> effects() )
         {
           // All stats is indicated by a misc value of -1
-          if ( es -> effectN( j + 1 ).type() == E_APPLY_AURA &&
-               es -> effectN( j + 1 ).subtype() == A_MOD_STAT &&
-               es -> effectN( j + 1 ).misc_value1() == -1 )
+          if ( ed -> type() == E_APPLY_AURA &&
+               ed -> subtype() == A_MOD_STAT &&
+               ed -> misc_value1() == -1 )
           {
-            stats.emplace_back( STAT_ALL, static_cast<int>(es -> effectN( j + 1 ).average( item.player ) ) );
+            stats.emplace_back( STAT_ALL, static_cast<int>( ed -> average( item.player ) ) );
             break;
           }
         }

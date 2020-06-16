@@ -2188,16 +2188,14 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
   node -> add_child( "attributes" ) -> add_parm ( ".", attribs );
 
   xml_node_t* effect_node = node -> add_child( "effects" );
-  effect_node -> add_parm( "count", spell -> _effects -> size() );
+  effect_node -> add_parm( "count", spell -> effect_count() );
 
-  for ( size_t i = 0; i < spell -> _effects -> size(); i++ )
+  for ( const spelleffect_data_t* e : spell -> effects() )
   {
-    uint32_t effect_id;
-    const spelleffect_data_t* e;
-    if ( ! ( effect_id = spell -> _effects -> at( i ) -> id() ) )
+    if ( e -> id() == 0 )
       continue;
-    else
-      e = dbc.effect( effect_id );
+
+    e = dbc.effect( e -> id() ); // XXX: Why?
 
     spell_info::effect_to_xml( dbc, spell, e, effect_node, level );
   }

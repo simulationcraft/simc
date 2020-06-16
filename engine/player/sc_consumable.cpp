@@ -852,19 +852,14 @@ struct food_t : public dbc_consumable_base_t
 
     // Figure out base food buff (the spell you cast from the food item)
     const spell_data_t* driver = dbc_consumable_base_t::driver();
-    if ( driver -> id() == 0 || ! driver -> _effects )
+    if ( driver -> id() == 0 )
     {
       return driver;
     }
 
     // Find the "Well Fed" buff from the base food
-    for ( const auto& effect : *driver -> _effects )
+    for ( const spelleffect_data_t* effect : driver -> effects() )
     {
-      if ( ! effect )
-      {
-        continue;
-      }
-
       // Return the "Well Fed" effect of the food (might not always be named well fed)
       if ( effect -> type() == E_APPLY_AURA &&
            effect -> subtype() == A_PERIODIC_TRIGGER_SPELL &&

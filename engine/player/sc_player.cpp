@@ -1518,11 +1518,7 @@ void player_t::init_base_stats()
     // Automatically parse mana regen and max mana modifiers from class passives.
     for ( auto spell : dbc::class_passives( this ) )
     {
-      if ( !spell->_effects)
-      {
-        continue;
-      }
-      for ( auto effect : *spell->_effects )
+      for ( auto effect : spell->effects() )
       {
         if ( effect->subtype() == A_MOD_MANA_REGEN_PCT )
         {
