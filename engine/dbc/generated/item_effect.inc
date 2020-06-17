@@ -1,5 +1,5 @@
-// Item effects, wow build 9.0.1.34714
-static const std::array<item_effect_t, 241> __item_effect_data { {
+// Item effects, wow build 9.0.1.34821
+static const std::array<item_effect_t, 260> __item_effect_data { {
   {    420,  13518,   0,   2,     -1,    0,     -1 }, // Poison
   {  30489, 207438,   0,   1,     -1,    0,     -1 }, // Aggramar's Stride
   { 116155, 315277,   2,   1,     -1,    0,     -1 }, // Strikethrough
@@ -241,5 +241,24 @@ static const std::array<item_effect_t, 241> __item_effect_data { {
   { 125707, 333393,   0,   1,     -1,    0,     -1 }, // Grisly Icicle
   { 125901, 334501,   0,   1,     -1,    0,     -1 }, // Bryndaor's Might
   { 125903, 334525,   0,   1,     -1,    0,     -1 }, // Crimson Rune Weapon
+  { 125912, 334547,   0,   1,     -1,    0,     -1 }, // Vampiric Aura
+  { 125913, 334580,   0,   1,     -1,    0,     -1 }, // Gorefiend's Domination
+  { 125914, 334583,   0,   1,     -1,    0,     -1 }, // Koltira's Favor
+  { 125915, 334678,   0,   1,     -1,    0,     -1 }, // Biting Cold
+  { 125916, 334692,   0,   1,     -1,    0,     -1 }, // Absolute Zero
+  { 125919, 334728,   0,   1,     -1,    0,     -1 }, // Death's Embrace
+  { 125929, 334724,   0,   1,     -1,    0,     -1 }, // Grip of the Everlasting
+  { 125933, 334836,   0,   1,     -1,    0,     -1 }, // Reanimated Shambler
+  { 125936, 334888,   0,   1,     -1,    0,     -1 }, // Frenzied Monstrosity
+  { 125937, 334898,   0,   1,     -1,    0,     -1 }, // Death's Certainty
+  { 125939, 334949,   0,   1,     -1,    0,     -1 }, // Deadliest Coil
+  { 125950, 334974,   0,   1,     -1,    0,     -1 }, // Superstrain
+  { 125984, 335177,   0,   1,     -1,    0,     -1 }, // Phearomones
+  { 125986, 335214,   0,   1,     -1,    0,     -1 }, // Leaper
+  { 125989, 335229,   0,   1,     -1,    0,     -1 }, // Thunderlord
+  { 125992, 335239,   0,   1,     -1,    0,     -1 }, // The Wall
+  { 125994, 335253,   0,   1,     -1,    0,     -1 }, // Misshapen Mirror
+  { 125998, 335266,   0,   1,     -1,    0,     -1 }, // Signet of Tormented Kings
+  { 126000, 335274,   0,   1,     -1,    0,     -1 }, // Battlelord
 } };
 
