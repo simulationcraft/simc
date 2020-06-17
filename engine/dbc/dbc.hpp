@@ -1074,7 +1074,7 @@ public:
     return {};
   }
 
-  util::span<const spell_data_t* const> drivers() const
+  util::span<spell_data_t* const> drivers() const
   {
     if ( _driver )
       return *_driver;
