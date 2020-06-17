@@ -20,7 +20,7 @@ namespace dbc
 template <typename T>
 const T& nil()
 {
-  static T __default {};
+  static constexpr T __default {};
   return __default;
 }
 
