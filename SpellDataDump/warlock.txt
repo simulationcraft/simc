@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34714 shadowlands-BETA (git build shadowlands 5583a69c36)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands 7ef1cf0eb0)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -68,7 +68,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Conflagrate (265931 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
 Family Flags     : 2, 49, 118
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -261,7 +261,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ......x. ........ 
 Effects          :
 #1 (id=279)      : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Enemy (6)
@@ -429,7 +429,7 @@ Category         : 731
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
-Affecting spells : Crashing Chaos (277705 effect#2)
+Affecting spells : Conflagrate (265931 effect#1), Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1)
 Family Flags     : 50
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -467,7 +467,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ......x. ........ 
 Effects          :
 #1 (id=521)      : Apply Aura (6) | Modify Casting Speed (216)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -730,7 +730,7 @@ Duration         : 10 seconds
 Cooldown         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 7, 8, 9, 18
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -760,13 +760,13 @@ School           : Fire
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=191498)
 Range            : 40 yards
-Cast Time        : 1.5 seconds
+Cast Time        : 4 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
-Cooldown         : 20 seconds
+Cooldown         : 60 seconds
 Category         : 631
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Conflagrate (265931 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
 Family Flags     : 49, 65
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -777,14 +777,16 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=2210)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=740054)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000
+#3 (id=831295)   : Dummy (3)
+                   Base Value: 20000 | Scaled Value: 20000 | PvP Coefficient: 1.00000
 Description      : Burns the enemy's soul, dealing $s1 Fire damage.
 
-Cooldown is reduced by $<cdr> sec for every Soul Shard you spend.
+Causes your next Incinerate to become instant.
 
-|cFFFFFFFFGenerates $281490s1 Soul Shard Fragments.|r
+|cFFFFFFFFGenerates ${$281490s1/10} Soul Shard.|r
 Variables        : $cdr=${$s2/1000}
 
 Name             : Seduction (rank=Command Demon Ability) (id=6358) [Spell Family (57)] 
@@ -1010,12 +1012,12 @@ Name             : Shadowburn (id=17877) [Spell Family (5)]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
-Resource         : 1% Base Mana (0) (id=741)
+Resource         : 1 Soul Shard (7) (id=741)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Charges          : 2 (12 seconds cooldown)
+Charges          : 1 (12 seconds cooldown)
 Category         : 651
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
@@ -1029,15 +1031,15 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=9474)     : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Blasts a target for $s1 Shadowflame damage. 
+#3 (id=831656)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+Description      : Blasts a target for $s1 Shadowflame damage, gaining $s3% critical strike chance on low health targets.
 
-If the target dies within $d and yields experience or honor, Shadowburn's cooldown is reset.
-
-|cFFFFFFFFGenerates $245731s1 Soul Shard Fragments.|r
-Tooltip          : If the target dies and yields experience or honor, Shadowburn's cooldown is reset.
+|cFFFFFFFFRestores ${$245731s1/10} Soul Shard if the target dies within $d.|r
+Tooltip          : If the target dies and yields experience or honor, Shadowburn restores ${$245731s1/10} Soul Shard.
 
 Name             : Agony (id=17941) [Spell Family (5)] 
 Class            : Warlock
@@ -1068,7 +1070,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (12.96 seconds cooldown)
 Category         : 672: Warlock (137042 effect#2)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Flashover (267115 effect#3), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Conflagrate (265931 effect#1), Flashover (267115 effect#3), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
 Family Flags     : 49, 55, 118
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1280,7 +1282,9 @@ Spell Level      : 22
 Range            : 50000 yards
 Duration         : 2 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Conflagrate (265931 effect#1), Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1)
 Triggered by     : Summon Infernal (1122)
+Family Flags     : 50
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -1411,7 +1415,7 @@ Velocity         : 25 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Chaotic Inferno (279673 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1)
+Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Conflagrate (265931 effect#1), Chaotic Inferno (279673 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1)
 Family Flags     : 38, 49, 118
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -1731,7 +1735,7 @@ Spell Type       : Magic
 Spell Level      : 14
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Inferno (270545 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Conflagrate (265931 effect#1), Inferno (270545 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Rain of Fire (335189 effect#1)
 Family Flags     : 49, 92
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
@@ -2105,9 +2109,8 @@ Duration         : 10 seconds
 Cooldown         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ........ ........ .x...... ........ 
-                 : Magic Hostile Spell Taken
+Proc Chance      : 101%
+Affecting spells : Havoc (335174 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ..x..... ........ 
@@ -2479,7 +2482,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demonic Calling (205146 effect#1), Item - Warlock T19 Demonology 4P Bonus (212007 effect#1)
+Affecting spells : Demonic Calling (205146 effect#1), Item - Warlock T19 Demonology 4P Bonus (212007 effect#1), Call Dreadstalkers (334727 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -2524,7 +2527,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 30 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demonic Power (265273 effect#4)
+Affecting spells : Demonic Power (265273 effect#4), Fel Firebolt (334591 effect#1)
 Family Flags     : 12
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2888,7 +2891,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=124273)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 47319 | Misc Value 2: 0x759 | Target: Unknown(87)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 47319 | Misc Value 2: 0x137f | Target: Unknown(87)
 #2 (id=126943)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 Description      : Creates a demonic gateway between two locations. Activating the gateway transports the user to the other gateway. Each player can use a Demonic Gateway only once per $113942d.
@@ -3031,7 +3034,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=124456)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 17252 | Misc Value 2: 0xcf1 | Target: Unknown(32)
-Description      : Summons a Felguard who attacks the target for $d sec that deals $216187s1% increased damage.
+Description      : Summons a Felguard who attacks the target for $d that deals $216187s1% increased damage.
 
 This Felguard will stun their target when summoned.
 
@@ -3145,7 +3148,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Flamelicked (185229 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Embrace Chaos (212019 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Grimoire of Supremacy (266091 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Flamelicked (185229 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Embrace Chaos (212019 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
 Family Flags     : 45, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3540,7 +3543,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=210584)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : Calls forth a cataclysm at the target location, dealing $s1 Shadowflame damage to all enemies within $A1 yards and afflicting them with $?s980[Agony and Unstable Affliction][]$?s104315[Corruption][]$?s348[Immolate][]$?!s980&!s104315&!s348[Agony, Unstable Affliction, Corruption, or Immolate][].
 
 Name             : Immolate (id=157736) [Spell Family (5)] 
@@ -3550,7 +3553,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 18 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Conflagrate (265931 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
 Family Flags     : 4, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3712,6 +3715,7 @@ Range            : 50000 yards
 Duration         : 2 seconds
 Cooldown         : 60 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Conflagrate (265931 effect#1)
 Family Flags     : 17
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3915,7 +3919,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demonic Calling (205146 effect#1), Item - Warlock T19 Demonology 4P Bonus (212007 effect#1)
+Affecting spells : Demonic Calling (205146 effect#1), Item - Warlock T19 Demonology 4P Bonus (212007 effect#1), Call Dreadstalkers (334727 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
@@ -4291,7 +4295,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Conflagrate (265931 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
 Family Flags     : 15, 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -4303,7 +4307,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=288343)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19360 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=739648)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.07700 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc196447
@@ -4549,10 +4553,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302851)   : Apply Aura (6) | Proc Trigger Spell (42): Demonic Calling
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 205146 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 205146 | Target: Self (1)
 #2 (id=343479)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 205146 | Target: Self (1)
-Description      : Shadow Bolt$?s264178[ and Demonbolt have][ has] a $h% chance to make your next Call Dreadstalkers cost $s1 less Soul Shard and have no cast time.
+Description      : Shadow Bolt$?s264178[ and Demonbolt have][ has] a $h% chance to make your next Call Dreadstalkers cost $s1 less Soul $LShard:Shards; and have no cast time.
 
 Name             : Demonic Calling (id=205146) [Spell Family (5)] 
 Class            : Warlock
@@ -4574,7 +4578,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=302852)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Call Dreadstalkers (104316), Call Dreadstalkers (193332)
                    Family Flags: 25
 #2 (id=719420)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
@@ -4582,7 +4586,7 @@ Effects          :
                    Affected Spells: Call Dreadstalkers (104316), Call Dreadstalkers (193332)
                    Family Flags: 25
 Description      : $@spelldesc205145
-Tooltip          : Your next Call Dreadstalkers costs $205145s1 less Soul Shard and has no cast time.
+Tooltip          : Your next Call Dreadstalkers costs $205145s1 less Soul $LShard:Shards; and has no cast time.
 
 Name             : Reverse Entropy (id=205148) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -4708,12 +4712,12 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : Passive (6)
 Effects          :
 #1 (id=302915)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Conflagrate burns the target for an additional $265931o1 Fire damage over $265931d.
+Description      : Conflagrate increases your Fire damage to the target by $265931s1% for $265931d.
 
 Name             : Dreadbite (id=205196) 
 Class            : Warlock
@@ -5447,7 +5451,7 @@ Spell Type       : None
 Spell Level      : 12
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Backdraft (117828 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Chaotic Inferno (279673 effect#1), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1)
+Affecting spells : Backdraft (117828 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Conflagrate (265931 effect#1), Chaotic Inferno (279673 effect#1), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1)
 Family Flags     : 38, 118
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -5494,7 +5498,7 @@ Attributes       : ........ x....... x....... ...x....   ...x...x ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=373996)   : Energize Power (30)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
 Description      : $@spelldesc17877
 
 Name             : Soul Shards (id=246985) [Passive] 
@@ -5958,7 +5962,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707327)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Unknown(120)
-Description      : Instantly sacrifice up to $s1 Wild Imps to generate $s1 charges of Demonic Core.
+Description      : Instantly sacrifice up to $s1 Wild Imps, generating $s1 charges of Demonic Core that cause Demonbolt to deal $334581s1% additional damage.
 
 Name             : Demonic Core (id=264173) [Spell Family (5)] 
 Class            : Warlock
@@ -5986,7 +5990,7 @@ Effects          :
                    Affected Spells: Demonbolt (264178)
                    Family Flags: 70
 Description      : $@spelldesc267102
-Tooltip          : The cast time of Demonbolt is reduced by $s1%.
+Tooltip          : The cast time of Demonbolt is reduced by $s1%. $?a334581[Demonbolt damage is increased by $334581s1%.][]
 
 Name             : Demonbolt (id=264178) [Spell Family (5)] 
 Class            : Demonology Warlock
@@ -5999,7 +6003,7 @@ Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Demonic Core (264173 effect#1), From the Shadows (270569 effect#1), Shadow's Bite (272945 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Demonic Core (264173 effect#1), From the Shadows (270569 effect#1), Shadow's Bite (272945 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Power Siphon (334581 effect#1)
 Family Flags     : 49, 70
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6160,7 +6164,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=709184)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 135002 | Misc Value 2: 0x109f | Radius: 5 yards | Target: Unknown(44)
-Description      : Summon a Demonic Tyrant to increase the duration of all of your current lesser demons by ${$265273m3/1000} sec, and increase the damage of all of your other demons by $265273s2%, while damaging your target.
+#2 (id=830602)   : Energize Power (30)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+Description      : Summon a Demonic Tyrant to increase the duration of all of your current lesser demons by ${$265273m3/1000} sec, and increase the damage of all of your other demons by $265273s2%, while damaging your target.$?s334585[
+
+|cFFFFFFFFGenerates ${$s2/10} Soul Shards.|r][]
 
 Name             : Demonic Power (id=265273) [Spell Family (5)] 
 Class            : Warlock
@@ -6178,8 +6186,8 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
-#1 (id=709317)   : Apply Party Aura (35) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Unknown(120)
+#1 (id=709317)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
 #2 (id=709325)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=713532)   : Apply Aura (6) | Dummy (4)
@@ -6229,13 +6237,15 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : x....x.. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
+                 : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
-#1 (id=710538)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#1 (id=710538)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Affected Spells: Immolate (348), Summon Infernal (1122), Soul Fire (6353), Conflagrate (17962), Infernal Awakening (22703), Incinerate (29722), Rain of Fire (42223), Immolate (157736), Meteor Strike (171017), Channel Demonfire (196448), Incinerate (244670)
+                   Family Flags: 2, 4, 15, 17, 22, 38, 50, 55, 65, 71, 92
 Description      : $@spelldesc205184
-Tooltip          : Suffering $s1 Fire damage every $t1 sec.
+Tooltip          : Fire damage taken increased by $s1%.
 Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 
 Name             : Reverse Entropy (id=266030) [Spell Family (5)] 
@@ -6258,7 +6268,7 @@ Effects          :
 Description      : $@spelldesc205148
 Tooltip          : Haste increased by $s1%.
 
-Name             : Grimoire of Supremacy (id=266086) [Spell Family (5), Passive] 
+Name             : Rain of Chaos (id=266086) [Spell Family (5), Passive] 
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -6273,37 +6283,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=710845)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While you have an Infernal active, every Soul Shard you spend increases the damage of your Chaos Bolt by $266091s1%.
-
-Name             : Grimoire of Supremacy (id=266091) [Spell Family (5)] 
-Class            : Warlock
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Stacks           : 20 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=710854)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858)
-                   Family Flags: 45
-Description      : $@spelldesc266086
-Tooltip          : Damage done by Chaos Bolt increased by $s1%.
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : While your initial Infernal is active, every Soul Shard you spend has a $s1% chance to summon an additional Infernal that lasts $335236d.
 
 Name             : Internal Combustion (id=266134) [Spell Family (5), Passive] 
 Class            : Warlock
 School           : Fire
 Spell Type       : None
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Family Flags     : 32
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6314,7 +6302,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=710940)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : Chaos Bolt consumes up to $s1 sec of Immolate's damage over time effect on your target, instantly dealing that much damage.
 
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
@@ -6563,7 +6551,7 @@ Attributes       : ......xx ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=713717)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your Demonic Tyrant now destroys and absorbs the remaining power of all of your Wild Imps to empower himself.
+Description      : Your Demon Commander now drains $267971s2% of the life from your demon servants to empower himself.
 
 Name             : Inner Demons (id=267216) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -6855,16 +6843,17 @@ Spell Level      : 1
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ....xx..   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Cannot crit (93), Disable player multipliers (221)
 Effects          :
-#1 (id=714981)   : Dummy (3)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE enemy (instant) (7)
-Description      : Your Demon Commander now destroys and absorbs the remaining power of all of your Wild Imps to empower himself.
+#1 (id=714981)   : Unknown(165)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
+Description      : Your Demon Commander now drains $s2% of the life from your demon servants to empower himself.
 
 Name             : Demonic Consumption (id=267972) [Spell Family (5)] 
 Class            : Warlock
@@ -6882,11 +6871,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
-#1 (id=714982)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
+#1 (id=714982)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 36 | Target: Unknown(120)
 Description      : $@spelldesc267215
-Tooltip          : Damage dealt increased by $w1%.
+Tooltip          : Damage dealt increased by $w1.
 
 Name             : Summon Prince Malchezaar (id=267986) [Spell Family (5)] 
 Class            : Warlock
@@ -8921,7 +8909,7 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=740053)   : Energize Power (30)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: soul_shard | Target: Self (1)
 Description      : $@spelldesc6353
 
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
@@ -9436,7 +9424,7 @@ Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warl
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9446,12 +9434,14 @@ Effects          :
 #1 (id=800325)   : Dummy (3)
                    Base Value: 900 | Scaled Value: 900 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=800326)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=800327)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Afflicts the target with $o2 Shadow damage over $d. 
 
 If dispelled, deals ${$s2*$s1/100} damage to the dispeller and silences them for $196364d.
+
+|cFFFFFFFFLimit 1.|r
 
 |cFFFFFFFFGenerates $231791m1 Soul $LShard:Shards; if the target dies while afflicted.|r
 Tooltip          : Suffering $w2 Shadow damage every $t2 sec.  If dispelled, will cause ${$233490s1*$s1/100} damage to the dispeller and silence them for $196364d.
@@ -9586,7 +9576,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ......x. ........ 
 Effects          :
 #1 (id=810068)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Enemy (6)
@@ -9668,7 +9658,7 @@ Attributes       : ........ ........ x....... .....x..   ...x...x ..x..... .....
 Effects          :
 #1 (id=814173)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Description      : Your damaging periodic effects erupt, causing $<damage> Shadow damage per effect.
+Description      : Your damaging periodic effects erupt on all targets within line of sight, causing $<damage> Shadow damage per effect.
 Variables        : $damage=${$bc1*($SP)*(1+$@versadmg)}
 
 Name             : Decimating Bolt (rank=Necrolord) (id=325289) [Spell Family (5)] 
@@ -9692,15 +9682,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=815472)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=815483)   : Trigger Spell (64): Decimating Bolt
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 100 | Trigger Spell: 327070 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 100 | Trigger Spell: 327070 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=819800)   : Trigger Spell (64): Decimating Bolt
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 200 | Trigger Spell: 327072 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 200 | Trigger Spell: 327072 | Chain Targets: 1 | Target: Enemy (6)
 #4 (id=819801)   : Trigger Spell (64): Decimating Bolt
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 300 | Trigger Spell: 327070 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 300 | Trigger Spell: 327070 | Chain Targets: 1 | Target: Enemy (6)
 #5 (id=819802)   : Trigger Spell (64): Decimating Bolt
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 400 | Trigger Spell: 327072 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 400 | Trigger Spell: 327072 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Hurl bolts of decimating magic at your target, dealing $<damage> Shadow damage and increasing the damage of your next $325299u $?s137046[Incinerates]?s198590[Drain Souls][Shadow Bolts] by $325299s1%.
 
 Decimating Bolt's damage, and the bonus to $?s137046[Incinerate]?s198590[Drain Soul][Shadow Bolt] both increase as your target's health decreases.
@@ -9901,7 +9891,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
 Effects          :
 #1 (id=830121)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -9995,5 +9985,179 @@ Effects          :
 #1 (id=830220)   : Apply Aura (6) | Dummy (4)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 25 | Target: Self (1)
 Description      : Corruption now instantly deals $172s3 damage.
+
+Name             : Power Siphon (id=334581) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Duration         : 15 seconds
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Stacks           : 2 initial, 2 maximum
+Proc Chance      : 100%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
+                 : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
+Effects          :
+#1 (id=830595)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Demonbolt (264178)
+                   Family Flags: 70
+Description      : $@spelldesc264130
+
+Name             : Summon Demonic Tyrant (rank=Rank 2) (id=334585) [Spell Family (5), Passive] 
+Class            : Demonology Warlock
+School           : Shadow
+Spell Type       : None
+Spell Level      : 52
+Range            : 40 yards
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x.x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=830600)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+Description      : Summoning your Demonic Tyrant instantly generates $s1 Soul Shards.
+
+Name             : Fel Firebolt (rank=Rank 2) (id=334591) [Spell Family (5), Passive] 
+Class            : Demonology Warlock
+School           : Shadow
+Spell Type       : None
+Spell Level      : 56
+Range            : 40 yards
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x.x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=830607)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Unknown(120)
+                   Affected Spells: Fel Firebolt (104318)
+                   Family Flags: 12
+Description      : Teaches your Wild Imps how to spend $s1% less energy when casting Fel Firebolt.
+
+Name             : Call Dreadstalkers (rank=Rank 2) (id=334727) [Spell Family (5), Passive] 
+Class            : Demonology Warlock
+School           : Shadow
+Spell Type       : None
+Spell Level      : 54
+Range            : 40 yards
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x.x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=830834)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
+                   Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Call Dreadstalkers (104316), Call Dreadstalkers (193332)
+                   Family Flags: 25
+#2 (id=830837)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 60 yards | Target: Unknown(120)
+Description      : Reduces the cast time of Call Dreadstalkers by 0.5 sec, and teaches your Dreadstalkers how to pursue targets faster.
+
+Name             : Havoc (rank=Rank 2) (id=335174) [Spell Family (5), Passive] 
+Class            : Destruction Warlock
+School           : Shadow
+Spell Type       : None
+Spell Level      : 54
+Range            : 40 yards
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x.x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=831617)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Havoc (80240)
+                   Family Flags: 20
+Description      : Havoc lasts ${$s1/1000} seconds longer.
+
+Name             : Summon Infernal (rank=Rank 2) (id=335175) [Spell Family (5), Passive] 
+Class            : Destruction Warlock
+School           : Shadow
+Spell Type       : None
+Spell Level      : 52
+Range            : 40 yards
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x.x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=831620)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Summon Infernal (1122), Infernal Awakening (22703)
+                   Family Flags: 50
+Description      : Your Infernal Awakening deals $s1% additional damage on impact.
+
+Name             : Rain of Fire (rank=Rank 2) (id=335189) [Spell Family (5), Passive] 
+Class            : Destruction Warlock
+School           : Shadow
+Spell Type       : None
+Spell Level      : 56
+Range            : 40 yards
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x.x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=831641)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Rain of Fire (42223)
+                   Family Flags: 92
+Description      : Rain of Fire deals $s1% additional damage.
+
+Name             : Summon Infernal (rank=Guardian) (id=335236) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 10 seconds
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ........ ........ x....... ........   ........ ........ .x...... ....x... 
+                 : ..x..... ........ ...x.... ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+Effects          :
+#1 (id=831709)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 121 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 89 | Misc Value 2: 0x2c7 | Target: Unknown(87)
+Description      : $@spelldesc1122
 
 

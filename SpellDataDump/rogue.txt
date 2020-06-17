@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34714 shadowlands-BETA (git build shadowlands 5583a69c36)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands 7ef1cf0eb0)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)

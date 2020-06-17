@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34714 shadowlands-BETA (git build shadowlands 5583a69c36)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands 7ef1cf0eb0)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -528,7 +528,8 @@ Spell Level      : 43
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Cooldown         : 7.5 seconds
+Charges          : 1 (7.5 seconds cooldown)
+Category         : 1895: Paladin (137026 effect#6)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#7), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1)
 Family Flags     : 27, 39, 65
@@ -941,7 +942,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (6 seconds cooldown)
-Category         : 1627: Retribution Paladin (137027 effect#5), Paladin (137026 effect#5)
+Category         : 1627: Retribution Paladin (137027 effect#5), Paladin (137026 effect#4)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Avenging Wrath (31884 effect#1), Improved Crusader Strike (44300 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Judgment (214222 effect#1), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
 Family Flags     : 47, 65
@@ -2502,25 +2503,19 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1570 | Target: Self (1)
                    Affected Spells (Category): Hammer of the Righteous (53595)
 #4 (id=191098)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1583 | Target: Self (1)
-                   Affected Spells (Category): 
-#5 (id=191099)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395)
-#6 (id=260670)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
+#5 (id=191099)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1659 | Target: Self (1)
                    Affected Spells (Category): Blessed Hammer (204019)
-#7 (id=260671)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1667 | Target: Self (1)
-                   Affected Spells (Category): 
-#8 (id=260672)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1668 | Target: Self (1)
-                   Affected Spells (Category): 
-#9 (id=260673)   : Apply Aura (6) | Modify Block% (51)
+#6 (id=260670)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1895 | Target: Self (1)
+                   Affected Spells (Category): Hammer of Wrath (24275)
+#7 (id=260671)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-#10 (id=777111)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
+#8 (id=260672)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
-#11 (id=797779)   : Apply Aura (6) | Hasted Global Cooldown (417)
+#9 (id=260673)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Divine Toll (304971)
                    Family Flags: 92
@@ -3919,7 +3914,7 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 3 (6 seconds cooldown)
-Category         : 1659: Paladin (137026 effect#6)
+Category         : 1659: Paladin (137026 effect#5)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 33
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ....x... 
@@ -8140,7 +8135,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Paladin (137026 effect#11), Fires of Justice (209785 effect#3), Rule of Law (214202 effect#1), Divine Purpose (223819 effect#4)
+Affecting spells : Paladin (137026 effect#9), Fires of Justice (209785 effect#3), Rule of Law (214202 effect#1), Divine Purpose (223819 effect#4)
 Family Flags     : 92
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

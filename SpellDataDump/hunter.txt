@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34714 shadowlands-BETA (git build shadowlands 5583a69c36)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands 7ef1cf0eb0)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -29,7 +29,6 @@ Name             : Mend Pet (id=136) [Spell Family (9)]
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
-Spell Level      : 9
 Range            : 45 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -290,7 +289,6 @@ Name             : Dismiss Pet (id=2641)
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 10
 Range            : 50000 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
@@ -1073,7 +1071,7 @@ Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x...x... ........ ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell
 Family Flags     : 33
-Attributes       : ....x... ........ x....... ........   ........ ..x..... ...x.... ..x..... 
+Attributes       : ....x... ........ x....... .x......   ........ ..x..... ...x.... ..x..... 
                  : ...x.... x....... ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -1552,7 +1550,7 @@ GCD              : 1.5 seconds
 Velocity         : 75 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Steady Focus (193534 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Steady Focus (321018 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Steady Focus (193534 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Steady Shot (321018 effect#1)
 Family Flags     : 1, 32, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -2798,7 +2796,7 @@ Effects          :
                    Family Flags: 2
 #3 (id=191143)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Steady Shot (56641), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), Hi-Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Volley (260243), Raptor Strike (265189), Mongoose Bite (265888), Coordinated Assault (266779), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328231), Wild Spirits (328523), Wild Spirits (328837)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Steady Shot (56641), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), Hi-Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Volley (260243), Raptor Strike (265189), Mongoose Bite (265888), Coordinated Assault (266779), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328231), Wild Mark (328275), Wild Spirits (328523), Wild Spirits (328837)
                    Family Flags: 1
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1628 | Target: Self (1)
@@ -3764,7 +3762,7 @@ Triggered by     : Harpoon (190925)
 Attributes       : ....x... ........ x.x..x.. .....x..   ........ ........ ..x..... ..xx.... 
                  : x....... ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ x......x ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ....x... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
@@ -4199,11 +4197,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283823)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Auto Shot (75), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Tranquilizing Shot (19801), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Barrage (120360), Barrage (120361), A Murder of Crows (131894), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Explosive Shot (212431), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Volley (260243), Serpent Sting (271788), Resonating Arrow (308491), Kill Shot (320976)
+                   Affected Spells: Auto Shot (75), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Tranquilizing Shot (19801), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Barrage (120360), Barrage (120361), A Murder of Crows (131894), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Explosive Shot (212431), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Volley (260243), Serpent Sting (271788), Resonating Arrow (308491), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325028)
                    Family Flags: 121
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Explosive Shot (212680), Bursting Shot (224729), Rapid Fire (257045), Multi-Shot (257620), Volley (260247), Serpent Sting (271788), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325037)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Explosive Shot (212680), Bursting Shot (224729), Rapid Fire (257045), Multi-Shot (257620), Volley (260247), Serpent Sting (271788), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037)
                    Family Flags: 3, 5, 11, 12, 17, 32, 34, 70, 73, 74, 76, 79, 93, 99, 105, 119
 #3 (id=316221)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
@@ -4211,7 +4209,7 @@ Effects          :
                    Family Flags: 103, 119
 #4 (id=345392)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Bursting Shot (224729), Rapid Fire (257044), Volley (260247), Serpent Sting (271788), Flayed Shot (324149), Death Chakram (325037)
+                   Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Bursting Shot (224729), Rapid Fire (257044), Volley (260247), Serpent Sting (271788), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037)
                    Family Flags: 5, 17, 34, 70, 74, 76, 99, 118, 119
 Description      : Range of all your ranged abilities is increased by ${$s1}.1% and damage of all abilities increased by ${$s2}.1%.
 Tooltip          : Range increased by $w1%.
@@ -4247,7 +4245,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #3 (id=375957)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Steady Shot (56641), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), Hi-Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Volley (260243), Raptor Strike (265189), Mongoose Bite (265888), Coordinated Assault (266779), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328231), Wild Spirits (328523), Wild Spirits (328837)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Steady Shot (56641), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), Hi-Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Volley (260243), Raptor Strike (265189), Mongoose Bite (265888), Coordinated Assault (266779), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328231), Wild Mark (328275), Wild Spirits (328523), Wild Spirits (328837)
                    Family Flags: 1
 #4 (id=739549)   : Apply Aura (6) | Modify Crit% (52)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Active Pet (5)
@@ -5162,7 +5160,7 @@ Name             : Bestial Wrath (rank=Rank 2) (id=231548) [Spell Family (9), Pa
 Class            : Beast Mastery Hunter
 School           : Nature
 Spell Type       : None
-Spell Level      : 23
+Spell Level      : 47
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6437,11 +6435,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=651809)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65000 | PvP Coefficient: 1.00000 | Target: Unknown(120)
-                   Affected Spells: Claw (16827), Bite (17253), Smack (49966), A Murder of Crows (131900), Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Serpent Sting (259491), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666)
+                   Affected Spells: Claw (16827), Bite (17253), Smack (49966), A Murder of Crows (131900), Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Serpent Sting (259491), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Flayed Shot (324149)
                    Family Flags: 19, 55
 #2 (id=651810)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Unknown(120)
-                   Affected Spells: Claw (16827), Bite (17253), Smack (49966), A Murder of Crows (131900), Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Serpent Sting (259491), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666)
+                   Affected Spells: Claw (16827), Bite (17253), Smack (49966), A Murder of Crows (131900), Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Serpent Sting (259491), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Flayed Shot (324149)
                    Family Flags: 19, 55
 #3 (id=651811)   : Apply Aura (6) | Periodic Trigger Spell (23): Spirit Bond every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 263140 | Target: Self (1)
@@ -10464,7 +10462,7 @@ Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3
 Family Flags     : 1, 53
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
@@ -10745,7 +10743,7 @@ Range            : 100 yards
 Duration         : 10 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 31, 39
-Attributes       : ........ ........ x.x....x x..x.x..   .....x.. ..x..... ........ ........ 
+Attributes       : ........ ........ x.x....x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
@@ -10852,7 +10850,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 Description      : Passive Focus generation increased by $s1%.
 
-Name             : Steady Focus (rank=Rank 2) (id=321018) [Spell Family (9), Passive] 
+Name             : Steady Shot (rank=Rank 2) (id=321018) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Nature
 Spell Type       : None
@@ -10861,7 +10859,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10922,7 +10920,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10932,7 +10930,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
 Description      : Each shot of Rapid Fire now generates $263585s1 Focus.
 
-Name             : True Aim (rank=Rank 2) (id=321287) [Spell Family (9), Passive] 
+Name             : True Aim (id=321287) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Nature
 Spell Type       : None
@@ -11173,8 +11171,8 @@ Requires weapon  : Bow, Gun, Polearm, Crossbow
 Cooldown         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
-Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#3)
-Family Flags     : 1, 74
+Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Mastery: Spirit Bond (263135 effect#1), 
+Family Flags     : 1, 55, 74, 121
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11191,7 +11189,7 @@ Effects          :
 Description      : Fire a shot at your enemy, causing them to bleed for $o1 Shadow damage over $d. Each time Flayed Shot deals damage, you have a $s2% chance to gain Flayer's Mark, causing your next Kill Shot to be usable on any target, regardless of their current health.
 Tooltip          : Bleeding for $s1 Shadow damage every $t1 sec.
 
-Name             : Death Chakram (id=325028) [Spell Family (9)] 
+Name             : Death Chakram (rank=Necrolord) (id=325028) [Spell Family (9)] 
 Class            : Hunter
 School           : Shadow
 Spell Type       : Ranged
@@ -11200,8 +11198,8 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 45 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
-Family Flags     : 1
+Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
+Family Flags     : 1, 74, 121
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ......x. ........ 
@@ -11231,7 +11229,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 74
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11265,9 +11263,37 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=820283)   : Trigger Missiles (32)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Trigger Spell: 328837 | Radius: 12 yards | Target: AOE enemy (instant) (16)
-Description      : Summon a Wild Spirit at the target location that applies Wild Mark to all enemy targets below it for $328837d.
+Description      : Evoke the energy of Wild Spirits at the target location, applying Wild Mark to all enemy targets within the area for $328837d, increasing damage you deal to them by $328275s2%.
 
-While the Wild Spirit is active, each damaging ability you use against a target affected by the Wild Mark calls forth a spirit beast to strike your target for $328523s1 Nature damage.
+While the Wild Spirits are active, each damaging ability you use against a target affected by the Wild Mark strikes the target for $328523s1 Nature damage.
+
+Name             : Wild Mark (rank=Night Fae) (id=328275) [Spell Family (9)] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Range            : 100 yards
+Duration         : 15 seconds
+Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
+Family Flags     : 1
+Attributes       : ........ ........ ........ x.xx...x   .....x.. ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ...x.... ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : x....... ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+                 : Cannot cancel aura (31), Does not break stealth (37)
+Effects          :
+#1 (id=820426)   : Apply Aura (6) | Stalked (68)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#2 (id=821086)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#3 (id=821087)   : Apply Aura (6) | Unknown(380)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#4 (id=821088)   : Apply Aura (6) | Unknown(381)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc328231
+Tooltip          : Damage taken from the hunter increased by $s2%.
 
 Name             : Wild Spirits (rank=Night Fae) (id=328523) [Spell Family (9)] 
 Class            : Hunter
