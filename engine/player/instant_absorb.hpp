@@ -5,11 +5,10 @@
 
 #pragma once
 
-#include "config.hpp"
+#include "util/string_view.hpp"
 
 #include <functional>
 #include <string>
-
 
 struct action_state_t;
 struct gain_t;
@@ -30,7 +29,7 @@ private:
 public:
   std::string name;
 
-  instant_absorb_t( player_t* p, const spell_data_t* s, const std::string n,
+  instant_absorb_t( player_t* p, const spell_data_t* s, util::string_view name,
                     std::function<double( const action_state_t* )> handler );
 
   double consume( const action_state_t* s );
