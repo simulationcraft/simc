@@ -4,17 +4,22 @@
 // ==========================================================================
 
 #include "action_variable.hpp"
+
 #include "action/sc_action.hpp"
 #include "action/variable.hpp"
 #include "player/sc_player.hpp"
+
 #include <limits>
 
-action_variable_t::action_variable_t(const std::string& name, double def) :
-  name_(name), current_value_(def), default_(def),
-  constant_value_(std::numeric_limits<double>::lowest())
-{ }
+action_variable_t::action_variable_t( const std::string& name, double default_value )
+  : current_value_( default_value ),
+    default_value_( default_value ),
+    name_( name ),
+    constant_value_( std::numeric_limits<double>::lowest() )
+{
+}
 
-bool action_variable_t::is_constant(double* constant_value) const
+bool action_variable_t::is_constant( double* constant_value ) const
 {
   *constant_value = constant_value_;
   return constant_value_ != std::numeric_limits<double>::lowest();
@@ -23,25 +28,25 @@ bool action_variable_t::is_constant(double* constant_value) const
 void action_variable_t::optimize()
 {
   player_t* player = variable_actions.front()->player;
-  if (!player->sim->optimize_expressions)
+  if ( !player->sim->optimize_expressions )
   {
     return;
   }
 
-  if (player->nth_iteration() != 1)
+  if ( player->nth_iteration() != 1 )
   {
     return;
   }
 
   bool is_constant = true;
-  for (auto action : variable_actions)
+  for ( auto action : variable_actions )
   {
-    variable_t* var_action = debug_cast<variable_t*>(action);
+    variable_t* var_action = debug_cast<variable_t*>( action );
 
     var_action->optimize_expressions();
 
     is_constant = var_action->is_constant();
-    if (!is_constant)
+    if ( !is_constant )
     {
       break;
     }
@@ -49,12 +54,11 @@ void action_variable_t::optimize()
 
   // This variable only has constant variable actions associated with it. The constant value will be
   // whatever the value is in current_value_
-  if (is_constant)
+  if ( is_constant )
   {
-    player->sim->print_debug("{} variable {} is constant, value={}",
-      player->name(), name_, current_value_);
+    player->sim->print_debug( "{} variable {} is constant, value={}", player->name(), name_, current_value_ );
     constant_value_ = current_value_;
     // Make default value also the constant value, so that debug output is sensible
-    default_ = current_value_;
+    default_value_ = current_value_;
   }
 }

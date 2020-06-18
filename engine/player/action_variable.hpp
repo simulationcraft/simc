@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "config.hpp"
 #include <string>
 #include <vector>
 
@@ -13,11 +12,11 @@ struct action_t;
 
 struct action_variable_t
 {
+  double current_value_, default_value_, constant_value_;
   std::string name_;
-  double current_value_, default_, constant_value_;
   std::vector<action_t*> variable_actions;
 
-  action_variable_t(const std::string& name, double def = 0);
+  action_variable_t( const std::string& name, double default_value );
 
   double value() const
   {
@@ -26,11 +25,10 @@ struct action_variable_t
 
   void reset()
   {
-    current_value_ = default_;
+    current_value_ = default_value_;
   }
 
-  bool is_constant(double* constant_value) const;
+  bool is_constant( double* constant_value ) const;
 
-  // Implemented in sc_player.cpp
   void optimize();
 };

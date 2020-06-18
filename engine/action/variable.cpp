@@ -281,10 +281,10 @@ void variable_t::optimize_expressions()
 
 void variable_t::execute()
 {
-  if (sim->debug && operation != OPERATION_PRINT)
+  if (operation != OPERATION_PRINT)
   {
-    sim->out_debug.printf("%s variable name=%s op=%d value=%f default=%f sig=%s", player->name(), var->name_.c_str(),
-      operation, var->current_value_, var->default_, signature_str.c_str());
+    sim->print_debug("{} variable name={} op={} value={} default={} sig={}", *player, var->name_,
+      operation, var->current_value_, var->default_value_, signature_str);
   }
 
   switch (operation)
