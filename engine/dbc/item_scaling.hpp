@@ -21,7 +21,7 @@ struct curve_point_t
   static util::span<const curve_point_t> find( unsigned id, bool ptr );
 
   static const curve_point_t& nil()
-  { return dbc::nil<curve_point_t>(); }
+  { return dbc::nil<curve_point_t>; }
 
   static util::span<const curve_point_t> data( bool ptr );
 };

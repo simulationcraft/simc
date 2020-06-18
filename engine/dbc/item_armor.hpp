@@ -19,7 +19,7 @@ struct item_armor_quality_data_t
   { return dbc::find<item_armor_quality_data_t>( ilevel, ptr, &item_armor_quality_data_t::ilevel ); }
 
   static const item_armor_quality_data_t& nil()
-  { return dbc::nil<item_armor_quality_data_t>(); }
+  { return dbc::nil<item_armor_quality_data_t>; }
 
   static util::span<const item_armor_quality_data_t> data( bool ptr );
 
@@ -40,7 +40,7 @@ struct item_armor_shield_data_t
   { return dbc::find<item_armor_shield_data_t>( ilevel, ptr, &item_armor_shield_data_t::ilevel ); }
 
   static const item_armor_shield_data_t& nil()
-  { return dbc::nil<item_armor_shield_data_t>(); }
+  { return dbc::nil<item_armor_shield_data_t>; }
 
   static util::span<const item_armor_shield_data_t> data( bool ptr );
 
@@ -61,7 +61,7 @@ struct item_armor_total_data_t
   { return dbc::find<item_armor_total_data_t>( ilevel, ptr, &item_armor_total_data_t::ilevel ); }
 
   static const item_armor_total_data_t& nil()
-  { return dbc::nil<item_armor_total_data_t>(); }
+  { return dbc::nil<item_armor_total_data_t>; }
 
   static util::span<const item_armor_total_data_t> data( bool ptr );
 
@@ -82,7 +82,7 @@ struct item_armor_location_data_t
   { return dbc::find<item_armor_location_data_t>( inv_type, ptr, &item_armor_location_data_t::inv_type ); }
 
   static const item_armor_location_data_t& nil()
-  { return dbc::nil<item_armor_location_data_t>(); }
+  { return dbc::nil<item_armor_location_data_t>; }
 
   static util::span<const item_armor_location_data_t> data( bool ptr );
 

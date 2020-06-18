@@ -19,7 +19,7 @@ struct item_child_equipment_t
   { return dbc::find<item_child_equipment_t>( id, ptr, &item_child_equipment_t::id ); }
 
   static const item_child_equipment_t& nil()
-  { return dbc::nil<item_child_equipment_t>(); }
+  { return dbc::nil<item_child_equipment_t>; }
 
   static util::span<const item_child_equipment_t> data( bool ptr );
 };

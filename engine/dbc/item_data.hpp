@@ -66,7 +66,7 @@ struct item_data_t {
   { return dbc::find<item_data_t>( id, ptr, &item_data_t::id ); }
 
   static const item_data_t& nil()
-  { return dbc::nil<item_data_t>(); }
+  { return dbc::nil<item_data_t>; }
 
   static util::span<const item_data_t> data( bool ptr );
 };

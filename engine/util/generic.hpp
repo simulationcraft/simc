@@ -115,6 +115,20 @@ struct delete_disposer_t
   }
 };
 
+namespace meta {
+
+// Poor-mans substitute for C++17 inline constexpr variables
+// To fully simulate it should be used like:
+//   constexpr const T& name = meta::static_const_t<T>::value;
+// TODO C++17: replace all usages with direct inline constexpr
+template <typename T>
+struct static_const_t {
+  static constexpr T value {};
+};
+template <typename T> constexpr T static_const_t<T>::value;
+
+} // namespace meta
+
 // Generic algorithms =======================================================
 
 template <typename I, typename D>

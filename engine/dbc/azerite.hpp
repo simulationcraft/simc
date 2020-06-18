@@ -20,7 +20,7 @@ struct azerite_power_entry_t
   { return dbc::find<azerite_power_entry_t>( id, ptr, &azerite_power_entry_t::id ); }
 
   static const azerite_power_entry_t& nil()
-  { return dbc::nil<azerite_power_entry_t>(); }
+  { return dbc::nil<azerite_power_entry_t>; }
 
   static util::span<const azerite_power_entry_t> data( bool ptr );
 };
@@ -35,7 +35,7 @@ struct azerite_essence_entry_t
   { return dbc::find<azerite_essence_entry_t>( id, ptr, &azerite_essence_entry_t::id ); }
 
   static const azerite_essence_entry_t& nil()
-  { return dbc::nil<azerite_essence_entry_t>(); }
+  { return dbc::nil<azerite_essence_entry_t>; }
 
   static const azerite_essence_entry_t& find( util::string_view name, bool tokenized, bool ptr );
 
@@ -54,7 +54,7 @@ struct azerite_essence_power_entry_t
   { return dbc::find<azerite_essence_power_entry_t>( id, ptr, &azerite_essence_power_entry_t::id ); }
 
   static const azerite_essence_power_entry_t& nil()
-  { return dbc::nil<azerite_essence_power_entry_t>(); }
+  { return dbc::nil<azerite_essence_power_entry_t>; }
 
   static const azerite_essence_power_entry_t& find_by_spell_id( unsigned spell_id, bool ptr );
   static util::span<const azerite_essence_power_entry_t> data( bool ptr );

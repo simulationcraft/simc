@@ -19,7 +19,7 @@ struct gem_property_data_t
   { return dbc::find<gem_property_data_t>( id, ptr, &gem_property_data_t::id ); }
 
   static const gem_property_data_t& nil()
-  { return dbc::nil<gem_property_data_t>(); }
+  { return dbc::nil<gem_property_data_t>; }
 
   static util::span<const gem_property_data_t> data( bool ptr );
 };
