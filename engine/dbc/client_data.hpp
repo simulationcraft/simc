@@ -17,12 +17,9 @@
 namespace dbc
 {
 
+// TODO C++17: replace with inline constexpr
 template <typename T>
-const T& nil()
-{
-  static constexpr T __default {};
-  return __default;
-}
+constexpr const T& nil = meta::static_const_t<T>::value;
 
 template <typename T, typename Proj>
 const T& find( unsigned key, bool ptr, Proj proj )
@@ -35,7 +32,7 @@ const T& find( unsigned key, bool ptr, Proj proj )
     return *it;
   }
 
-  return nil<T>();
+  return nil<T>;
 }
 
 template <typename T, typename Compare = std::less<>, typename Proj = range::identity>

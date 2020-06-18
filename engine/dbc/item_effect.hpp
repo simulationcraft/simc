@@ -23,7 +23,7 @@ struct item_effect_t
   { return dbc::find<item_effect_t>( id, ptr, &item_effect_t::id ); }
 
   static const item_effect_t& nil()
-  { return dbc::nil<item_effect_t>(); }
+  { return dbc::nil<item_effect_t>; }
 
   static util::span<const item_effect_t> data( bool ptr );
 };

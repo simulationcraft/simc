@@ -20,7 +20,7 @@ struct rppm_modifier_t
   { return dbc::find_many<rppm_modifier_t>( spell_id, ptr, {}, &rppm_modifier_t::spell_id ); }
 
   static const rppm_modifier_t& nil()
-  { return dbc::nil<rppm_modifier_t>(); }
+  { return dbc::nil<rppm_modifier_t>; }
 
   static util::span<const rppm_modifier_t> data( bool ptr );
 };

@@ -19,7 +19,7 @@ struct item_damage_one_hand_data_t
   { return dbc::find<item_damage_one_hand_data_t>( ilevel, ptr, &item_damage_one_hand_data_t::ilevel ); }
 
   static const item_damage_one_hand_data_t& nil()
-  { return dbc::nil<item_damage_one_hand_data_t>(); }
+  { return dbc::nil<item_damage_one_hand_data_t>; }
 
   static util::span<const item_damage_one_hand_data_t> data( bool ptr );
 
@@ -40,7 +40,7 @@ struct item_damage_one_hand_caster_data_t
   { return dbc::find<item_damage_one_hand_caster_data_t>( ilevel, ptr, &item_damage_one_hand_caster_data_t::ilevel ); }
 
   static const item_damage_one_hand_caster_data_t& nil()
-  { return dbc::nil<item_damage_one_hand_caster_data_t>(); }
+  { return dbc::nil<item_damage_one_hand_caster_data_t>; }
 
   static util::span<const item_damage_one_hand_caster_data_t> data( bool ptr );
 
@@ -61,7 +61,7 @@ struct item_damage_two_hand_data_t
   { return dbc::find<item_damage_two_hand_data_t>( ilevel, ptr, &item_damage_two_hand_data_t::ilevel ); }
 
   static const item_damage_two_hand_data_t& nil()
-  { return dbc::nil<item_damage_two_hand_data_t>(); }
+  { return dbc::nil<item_damage_two_hand_data_t>; }
 
   static util::span<const item_damage_two_hand_data_t> data( bool ptr );
 
@@ -82,7 +82,7 @@ struct item_damage_two_hand_caster_data_t
   { return dbc::find<item_damage_two_hand_caster_data_t>( ilevel, ptr, &item_damage_two_hand_caster_data_t::ilevel ); }
 
   static const item_damage_two_hand_caster_data_t& nil()
-  { return dbc::nil<item_damage_two_hand_caster_data_t>(); }
+  { return dbc::nil<item_damage_two_hand_caster_data_t>; }
 
   static util::span<const item_damage_two_hand_caster_data_t> data( bool ptr );
 

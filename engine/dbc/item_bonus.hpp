@@ -23,7 +23,7 @@ struct item_bonus_entry_t
   static util::span<const item_bonus_entry_t> find( unsigned id, bool ptr );
 
   static const item_bonus_entry_t& nil()
-  { return dbc::nil<item_bonus_entry_t>(); }
+  { return dbc::nil<item_bonus_entry_t>; }
 
   static util::span<const item_bonus_entry_t> data( bool ptr );
 };

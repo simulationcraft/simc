@@ -22,7 +22,7 @@ struct specialization_spell_entry_t
   static const specialization_spell_entry_t& find( util::string_view name, bool ptr, specialization_e spec = SPEC_NONE, bool tokenized = false );
 
   static const specialization_spell_entry_t& nil()
-  { return dbc::nil<specialization_spell_entry_t>(); }
+  { return dbc::nil<specialization_spell_entry_t>; }
 
   static util::span<const specialization_spell_entry_t> data( bool ptr );
 };

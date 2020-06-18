@@ -22,7 +22,7 @@ struct random_prop_data_t
   { return dbc::find<random_prop_data_t>( ilevel, ptr, &random_prop_data_t::ilevel ); }
 
   static const random_prop_data_t& nil()
-  { return dbc::nil<random_prop_data_t>(); }
+  { return dbc::nil<random_prop_data_t>; }
 
   static util::span<const random_prop_data_t> data( bool ptr );
 };
