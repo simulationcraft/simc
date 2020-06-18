@@ -8,8 +8,61 @@
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+#include <tuple>
 
 using namespace hotfix;
+
+// template machinery for "easy" handling of override & get field methods
+namespace {
+namespace detail {
+
+template <size_t I>
+using size_c = std::integral_constant<size_t, I>;
+
+template <typename T, typename U>
+struct data_field_t {
+  util::string_view name;
+  T U::* pm;
+};
+
+template <typename T, typename Fields, typename Handler, typename U>
+U handle_field( T*, const Fields&, util::string_view, Handler&&, U deflt, size_c<0> ) {
+  return deflt;
+}
+
+template <typename T, typename Fields, typename Handler, typename U, size_t I>
+U handle_field( T* data, const Fields& fields, util::string_view name, Handler&& handle, U deflt, size_c<I> ) {
+  const auto& field = std::get<I - 1>( fields );
+  if ( util::str_compare_ci( name, field.name ) )
+    return handle( data->*field.pm );
+  return handle_field( data, fields, name, std::forward<Handler>( handle ), deflt, size_c<I - 1>{} );
+}
+
+} // namespace detail
+
+template <typename T, typename U>
+constexpr auto data_field( util::string_view n, T U::* pm ) {
+  return detail::data_field_t<T, U>{ n, pm };
+}
+
+template <typename T, typename Fields>
+bool override_field( T* data, const Fields& fields, util::string_view name, double value ) {
+  return detail::handle_field( data, fields, name,
+    [ value ] ( auto& field ) {
+        field = static_cast<std::remove_reference_t<decltype(field)>>( value );
+        return true;
+    }, false, detail::size_c<std::tuple_size<Fields>::value>{} );
+}
+
+template <typename T, typename Fields>
+double get_field( const T* data, const Fields& fields, util::string_view name ) {
+  return detail::handle_field( data, fields, name,
+    [] ( const auto& field ) {
+      return static_cast<double>( field );
+    }, -std::numeric_limits<double>::max(), detail::size_c<std::tuple_size<Fields>::value>{} );
+}
+
+} // anon namespace
 
 // ==========================================================================
 // Spell Data
@@ -21,105 +74,40 @@ spell_data_not_found_t spell_data_not_found_t::singleton;
 
 // spell_data_t::override ===================================================
 
+static constexpr auto spell_data_fields = std::make_tuple(
+  data_field( "prj_speed",         &spell_data_t::_prj_speed ),
+  data_field( "school",            &spell_data_t::_school ),
+  data_field( "scaling_class",     &spell_data_t::_scaling_type ),
+  data_field( "spell_level",       &spell_data_t::_spell_level ),
+  data_field( "max_level",         &spell_data_t::_max_level ),
+  data_field( "req_max_level",     &spell_data_t::_req_max_level ),
+  data_field( "min_range",         &spell_data_t::_min_range ),
+  data_field( "max_range",         &spell_data_t::_max_range ),
+  data_field( "cooldown",          &spell_data_t::_cooldown ),
+  data_field( "category_cooldown", &spell_data_t::_category_cooldown ),
+  data_field( "internal_cooldown", &spell_data_t::_internal_cooldown ),
+  data_field( "gcd",               &spell_data_t::_gcd ),
+  data_field( "charges",           &spell_data_t::_charges ),
+  data_field( "charge_cooldown",   &spell_data_t::_charge_cooldown ),
+  data_field( "duration",          &spell_data_t::_duration ),
+  data_field( "max_stack",         &spell_data_t::_max_stack ),
+  data_field( "proc_chance",       &spell_data_t::_proc_chance ),
+  data_field( "proc_charges",      &spell_data_t::_proc_charges ),
+  data_field( "proc_flags",        &spell_data_t::_proc_flags ),
+  data_field( "cast_min",          &spell_data_t::_cast_min ),
+  data_field( "cast_max",          &spell_data_t::_cast_max ),
+  data_field( "rppm",              &spell_data_t::_rppm ),
+  data_field( "dmg_class",         &spell_data_t::_dmg_class )
+);
+
 bool spell_data_t::override_field( util::string_view field, double value )
 {
-  if ( util::str_compare_ci( field, "prj_speed" ) )
-    _prj_speed = value;
-  else if ( util::str_compare_ci( field, "school" ) )
-    _school = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "scaling_class" ) )
-    _scaling_type = ( int ) value;
-  else if ( util::str_compare_ci( field, "spell_level" ) )
-    _spell_level = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "max_level" ) )
-    _max_level = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "req_max_level" ) )
-    _req_max_level = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "min_range" ) )
-    _min_range = value;
-  else if ( util::str_compare_ci( field, "max_range" ) )
-    _max_range = value;
-  else if ( util::str_compare_ci( field, "cooldown" ) )
-    _cooldown = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "category_cooldown" ) )
-    _category_cooldown = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "internal_cooldown" ) )
-    _internal_cooldown = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "gcd" ) )
-    _gcd = ( unsigned ) value;
-  else if ( util::str_compare_ci(field, "charges") )
-    _charges = ( unsigned ) value;
-  else if ( util::str_compare_ci(field, "charge_cooldown") )
-    _charge_cooldown = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "duration" ) )
-    _duration = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "max_stack" ) )
-    _max_stack = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "proc_chance" ) )
-    _proc_chance = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "proc_charges" ) )
-    _proc_charges = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "proc_flags") )
-    _proc_flags = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "cast_min" ) )
-    _cast_min = ( int ) value;
-  else if ( util::str_compare_ci( field, "cast_max" ) )
-    _cast_max = ( int ) value;
-  else if ( util::str_compare_ci( field, "rppm" ) )
-    _rppm = value;
-  else if ( util::str_compare_ci( field, "dmg_class" ) )
-    _dmg_class = static_cast<unsigned>( value );
-  else
-    return false;
-  return true;
+  return ::override_field( this, spell_data_fields, field, value );
 }
 
 double spell_data_t::get_field( util::string_view field ) const
 {
-  if ( util::str_compare_ci( field, "prj_speed" ) )
-    return _prj_speed;
-  else if ( util::str_compare_ci( field, "school" ) )
-    return static_cast<double>( _school );
-  else if ( util::str_compare_ci( field, "scaling_class" ) )
-    return static_cast<double>( _scaling_type );
-  else if ( util::str_compare_ci( field, "spell_level" ) )
-    return static_cast<double>( _spell_level );
-  else if ( util::str_compare_ci( field, "max_level" ) )
-    return static_cast<double>( _max_level );
-  else if ( util::str_compare_ci( field, "req_max_level" ) )
-    return static_cast<double>( _req_max_level );
-  else if ( util::str_compare_ci( field, "min_range" ) )
-    return _min_range;
-  else if ( util::str_compare_ci( field, "max_range" ) )
-    return _max_range;
-  else if ( util::str_compare_ci( field, "cooldown" ) )
-    return static_cast<double>( _cooldown );
-  else if ( util::str_compare_ci( field, "category_cooldown" ) )
-    return static_cast<double>( _category_cooldown );
-  else if ( util::str_compare_ci( field, "internal_cooldown" ) )
-    return static_cast<double>( _internal_cooldown );
-  else if ( util::str_compare_ci( field, "gcd" ) )
-    return static_cast<double>( _gcd );
-  else if ( util::str_compare_ci( field, "charges" ) )
-    return static_cast<double>( _charges );
-  else if ( util::str_compare_ci( field, "charge_cooldown" ) )
-    return static_cast<double>( _charge_cooldown );
-  else if ( util::str_compare_ci( field, "duration" ) )
-    return static_cast<double>( _duration );
-  else if ( util::str_compare_ci( field, "max_stack" ) )
-    return static_cast<double>( _max_stack );
-  else if ( util::str_compare_ci( field, "proc_chance" ) )
-    return static_cast<double>( _proc_chance );
-  else if ( util::str_compare_ci( field, "proc_charges" ) )
-    return static_cast<double>( _proc_charges );
-  else if ( util::str_compare_ci( field, "cast_min" ) )
-    return static_cast<double>( _cast_min );
-  else if ( util::str_compare_ci( field, "cast_max" ) )
-    return static_cast<double>( _cast_max );
-  else if ( util::str_compare_ci( field, "rppm" ) )
-    return _rppm;
-
-  return -std::numeric_limits<double>::max();
+  return ::get_field( this, spell_data_fields, field );
 }
 
 // ==========================================================================
@@ -128,77 +116,32 @@ double spell_data_t::get_field( util::string_view field ) const
 
 spelleffect_data_nil_t spelleffect_data_nil_t::singleton;
 
+static constexpr auto spelleffect_data_fields = std::make_tuple(
+  data_field( "coefficient",             &spelleffect_data_t::_m_coeff ),
+  data_field( "delta",                   &spelleffect_data_t::_m_delta ),
+  data_field( "bonus",                   &spelleffect_data_t::_m_unk ),
+  data_field( "sp_coefficient",          &spelleffect_data_t::_sp_coeff ),
+  data_field( "ap_coefficient",          &spelleffect_data_t::_ap_coeff ),
+  data_field( "period",                  &spelleffect_data_t::_amplitude ),
+  data_field( "base_value",              &spelleffect_data_t::_base_value ),
+  data_field( "misc_value1",             &spelleffect_data_t::_misc_value ),
+  data_field( "misc_value2",             &spelleffect_data_t::_misc_value_2 ),
+  data_field( "chain_multiplier",        &spelleffect_data_t::_m_chain ),
+  data_field( "points_per_combo_points", &spelleffect_data_t::_pp_combo_points ),
+  data_field( "points_per_level",        &spelleffect_data_t::_real_ppl ),
+  data_field( "radius",                  &spelleffect_data_t::_radius ),
+  data_field( "max_radius",              &spelleffect_data_t::_radius_max ),
+  data_field( "chain_target",            &spelleffect_data_t::_chain_target )
+);
+
 bool spelleffect_data_t::override_field( util::string_view field, double value )
 {
-  if ( util::str_compare_ci( field, "coefficient" ) )
-    _m_coeff = value;
-  else if ( util::str_compare_ci( field, "delta" ) )
-    _m_delta = value;
-  else if ( util::str_compare_ci( field, "bonus" ) )
-    _m_unk = value;
-  else if ( util::str_compare_ci( field, "sp_coefficient" ) )
-    _sp_coeff = value;
-  else if ( util::str_compare_ci( field, "ap_coefficient" ) )
-    _ap_coeff = value;
-  else if ( util::str_compare_ci( field, "period" ) )
-    _amplitude = value;
-  else if ( util::str_compare_ci( field, "base_value" ) )
-    _base_value = ( int ) value;
-  else if ( util::str_compare_ci( field, "misc_value1" ) )
-    _misc_value = ( int ) value;
-  else if ( util::str_compare_ci( field, "misc_value2" ) )
-    _misc_value_2 = ( int ) value;
-  else if ( util::str_compare_ci( field, "chain_multiplier" ) )
-    _m_chain = value;
-  else if ( util::str_compare_ci( field, "points_per_combo_points" ) )
-    _pp_combo_points = value;
-  else if ( util::str_compare_ci( field, "points_per_level" ) )
-    _real_ppl = value;
-  else if ( util::str_compare_ci( field, "radius" ) )
-    _radius = value;
-  else if ( util::str_compare_ci( field, "max_radius" ) )
-    _radius_max = value;
-  else if ( util::str_compare_ci( field, "chain_target" ) )
-    _chain_target = ( unsigned ) value;
-  else
-    return false;
-  return true;
+  return ::override_field( this, spelleffect_data_fields, field, value );
 }
 
 double spelleffect_data_t::get_field( util::string_view field ) const
 {
-  if ( util::str_compare_ci( field, "coefficient" ) )
-    return _m_coeff;
-  else if ( util::str_compare_ci( field, "delta" ) )
-    return _m_delta;
-  else if ( util::str_compare_ci( field, "bonus" ) )
-    return _m_unk;
-  else if ( util::str_compare_ci( field, "sp_coefficient" ) )
-    return _sp_coeff;
-  else if ( util::str_compare_ci( field, "ap_coefficient" ) )
-    return _ap_coeff;
-  else if ( util::str_compare_ci( field, "period" ) )
-    return _amplitude;
-  else if ( util::str_compare_ci( field, "base_value" ) )
-    return static_cast<double>( _base_value );
-  else if ( util::str_compare_ci( field, "misc_value1" ) )
-    return static_cast<double>( _misc_value );
-  else if ( util::str_compare_ci( field, "misc_value2" ) )
-    return static_cast<double>( _misc_value_2 );
-  else if ( util::str_compare_ci( field, "chain_multiplier" ) )
-    return _m_chain;
-  else if ( util::str_compare_ci( field, "points_per_combo_points" ) )
-    return _pp_combo_points;
-  else if ( util::str_compare_ci( field, "points_per_level" ) )
-    return _real_ppl;
-  else if ( util::str_compare_ci( field, "radius" ) )
-    return _radius;
-  else if ( util::str_compare_ci( field, "max_radius" ) )
-    return _radius_max;
-  else if ( util::str_compare_ci( field, "chain_target" ) )
-    return static_cast<double>( _chain_target );
-
-  return -std::numeric_limits<double>::max();
+  return ::get_field( this, spelleffect_data_fields, field );
 }
 
 
@@ -206,70 +149,23 @@ double spelleffect_data_t::get_field( util::string_view field ) const
 // Spell Power Data
 // ==========================================================================
 
+static constexpr auto spellpower_data_fields = std::make_tuple(
+  data_field( "cost",              &spellpower_data_t::_cost ),
+  data_field( "max_cost",          &spellpower_data_t::_cost_max ),
+  data_field( "cost_per_tick",     &spellpower_data_t::_cost_per_tick ),
+  data_field( "pct_cost",          &spellpower_data_t::_pct_cost ),
+  data_field( "pct_cost_max",      &spellpower_data_t::_pct_cost_max ),
+  data_field( "pct_cost_per_tick", &spellpower_data_t::_pct_cost_per_tick )
+);
+
 bool spellpower_data_t::override_field( util::string_view field, double value )
 {
-  if ( util::str_compare_ci( field, "cost" ) )
-  {
-    _cost = static_cast<int>( value );
-    return true;
-  }
-  else if ( util::str_compare_ci( field, "max_cost" ) )
-  {
-    _cost_max = static_cast<int>( value );
-    return true;
-  }
-  else if ( util::str_compare_ci( field, "cost_per_tick" ) )
-  {
-    _cost_per_tick = static_cast<int>( value );
-    return true;
-  }
-  else if ( util::str_compare_ci( field, "pct_cost" ) )
-  {
-    _pct_cost = value;
-    return true;
-  }
-  else if ( util::str_compare_ci( field, "pct_cost_max" ) )
-  {
-    _pct_cost_max = value;
-    return true;
-  }
-  else if ( util::str_compare_ci( field, "pct_cost_per_tick" ) )
-  {
-    _pct_cost_per_tick = value;
-    return true;
-  }
-
-  return false;
+  return ::override_field( this, spellpower_data_fields, field, value );
 }
 
 double spellpower_data_t::get_field( util::string_view field ) const
 {
-  if ( util::str_compare_ci( field, "cost" ) )
-  {
-    return static_cast<double>( _cost );
-  }
-  else if ( util::str_compare_ci( field, "max_cost" ) )
-  {
-    return static_cast<double>( _cost_max );
-  }
-  else if ( util::str_compare_ci( field, "cost_per_tick" ) )
-  {
-    return static_cast<double>( _cost_per_tick );
-  }
-  else if ( util::str_compare_ci( field, "pct_cost" ) )
-  {
-    return _pct_cost;
-  }
-  else if ( util::str_compare_ci( field, "pct_cost_max" ) )
-  {
-    return _pct_cost_max;
-  }
-  else if ( util::str_compare_ci( field, "pct_cost_per_tick" ) )
-  {
-    return _pct_cost_per_tick;
-  }
-
-  return -std::numeric_limits<double>::max();
+  return ::get_field( this, spellpower_data_fields, field );
 }
 
 
