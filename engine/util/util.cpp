@@ -103,9 +103,14 @@ inline T parse_enum_with_default( util::string_view name )
 
 // pred_ci ==================================================================
 
-bool pred_ci ( char a, char b )
+constexpr char lowercase( char c )
 {
-  return std::tolower( a ) == std::tolower( b );
+  return ( c >= 'A' && c <= 'Z' ) ? ( (char)(int(c) | 0x20) ) : c;
+}
+
+constexpr bool pred_ci ( char a, char b )
+{
+  return lowercase( a ) == lowercase( b );
 }
 
 void stat_search( std::string&              encoding_str,
@@ -2958,7 +2963,7 @@ double util::round( double X, unsigned int decplaces )
 void util::tolower( std::string& str )
 {
   // Transform all chars to lower case
-  range::transform_self( str, ( int( * )( int ) ) std::tolower );
+  range::transform_self( str, []( char c ){ return lowercase( c ); });
 }
 
 /*
