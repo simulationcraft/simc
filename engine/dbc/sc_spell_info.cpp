@@ -137,13 +137,14 @@ std::string map_string( const util::static_map<T, util::string_view, N>& map, T 
 }
 
 template <typename MAP_TYPE, typename DATA_TYPE, size_t N>
-std::string hotfix_map_str( const DATA_TYPE* data, const std::array<util::string_view, N>& map )
+std::string hotfix_map_str( const dbc_t& dbc, const DATA_TYPE* data, const std::array<util::string_view, N>& map )
 {
   if ( data -> _hotfix == 0 )
   {
     return {};
   }
 
+  const auto hotfixes = dbc.hotfixes( data );
   fmt::memory_buffer buf;
   for ( size_t i = 0; i < map.size(); ++i )
   {
@@ -164,8 +165,8 @@ std::string hotfix_map_str( const DATA_TYPE* data, const std::array<util::string
     else
     {
       fmt::format_to( buf, "{}", map[ i ] );
-      auto hotfix_entry = hotfix::hotfix_entry( data, static_cast<unsigned int>( i ) );
-      if ( hotfix_entry != nullptr )
+      auto hotfix_entry = range::find( hotfixes, i, &hotfix::client_hotfix_entry_t::field_id );
+      if ( hotfix_entry != hotfixes.end() )
       {
         switch ( hotfix_entry -> field_type )
         {
@@ -214,31 +215,31 @@ std::string concatenate( Range&& data,
   return s.str();
 }
 
-std::string spell_hotfix_map_str( const spell_data_t* spell )
+std::string spell_hotfix_map_str( const dbc_t& dbc, const spell_data_t* spell )
 {
   if ( spell -> _hotfix == dbc::HOTFIX_SPELL_NEW )
   {
     return "NEW SPELL";
   }
-  return hotfix_map_str<uint64_t>( spell, _hotfix_spell_map );
+  return hotfix_map_str<uint64_t>( dbc, spell, _hotfix_spell_map );
 }
 
-std::string effect_hotfix_map_str( const spelleffect_data_t* effect )
+std::string effect_hotfix_map_str( const dbc_t& dbc, const spelleffect_data_t* effect )
 {
   if ( effect -> _hotfix == dbc::HOTFIX_EFFECT_NEW )
   {
     return "NEW EFFECT";
   }
-  return hotfix_map_str<unsigned>( effect, _hotfix_effect_map );
+  return hotfix_map_str<unsigned>( dbc, effect, _hotfix_effect_map );
 }
 
-std::string power_hotfix_map_str( const spellpower_data_t* power )
+std::string power_hotfix_map_str( const dbc_t& dbc, const spellpower_data_t* power )
 {
   if ( power -> _hotfix == dbc::HOTFIX_POWER_NEW )
   {
     return "NEW POWER";
   }
-  return hotfix_map_str<unsigned>( power, _hotfix_power_map );
+  return hotfix_map_str<unsigned>( dbc, power, _hotfix_power_map );
 }
 
 struct proc_map_entry_t {
@@ -1191,7 +1192,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   if ( e -> _hotfix != 0 )
   {
     s << "                   Hotfixed: ";
-    s << effect_hotfix_map_str( e );
+    s << effect_hotfix_map_str( dbc, e );
     s << std::endl;
   }
 
@@ -1220,7 +1221,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell -> _hotfix != 0 )
   {
-    auto hotfix_str = spell_hotfix_map_str( spell );
+    auto hotfix_str = spell_hotfix_map_str( dbc, spell );
     if ( ! hotfix_str.empty() )
     {
       s << "Hotfixed         : " << hotfix_str << std::endl;
@@ -1352,7 +1353,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     if ( pd -> _hotfix != 0 )
     {
-      auto hotfix_str = power_hotfix_map_str( pd );
+      auto hotfix_str = power_hotfix_map_str( dbc, pd );
       if ( ! hotfix_str.empty() )
       {
         s << " [Hotfixed: " << hotfix_str << "]";

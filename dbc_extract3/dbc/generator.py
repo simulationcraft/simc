@@ -25,30 +25,16 @@ def escape_string(tmpstr):
     return tmpstr
 
 def output_hotfixes(generator, data_str, hotfix_data):
-    generator._out.write('#define %s%s_HOTFIX%s_SIZE (%d)\n\n' % (
-        (generator._options.prefix and ('%s_' % generator._options.prefix) or '').upper(),
-        data_str.upper(),
-        (generator._options.suffix and ('_%s' % generator._options.suffix) or '').upper(),
-        len(hotfix_data.keys())
-    ))
-
     generator._out.write('// %d %s hotfix entries, wow build level %s\n' % (
         len(hotfix_data.keys()), data_str, generator._options.build ))
-    generator._out.write('static hotfix::client_hotfix_entry_t __%s%s_hotfix%s_data[] = {\n' % (
+    generator._out.write('static constexpr std::array<hotfix::client_hotfix_entry_t, %d> __%s%s_hotfix%s_data { {\n' % (
+        sum( len(entries) for entries in hotfix_data.values() ),
         generator._options.prefix and ('%s_' % generator._options.prefix) or '',
         data_str,
         generator._options.suffix and ('_%s' % generator._options.suffix) or ''
     ))
 
-    for id in sorted(hotfix_data.keys()) + [0]:
-        entry = None
-        if id > 0:
-            entry = hotfix_data[id]
-        # Add a zero entry at the end so we can conveniently loop to
-        # the end of the array on the C++ side
-        else:
-            entry = [(0, 'i', 0, 0)]
-
+    for id, entry in sorted(hotfix_data.items()):
         for field_id, field_format, orig_field_value, new_field_value in entry:
             orig_data_str = ''
             cur_data_str = ''
@@ -74,7 +60,7 @@ def output_hotfixes(generator, data_str, hotfix_data):
                 id, field_id, orig_data_str, cur_data_str
             ))
 
-    generator._out.write('};\n\n')
+    generator._out.write('} };\n\n')
 
 class CSVDataGenerator(object):
     def __init__(self, options, csvs, base_type = None):
@@ -2846,7 +2832,7 @@ class SpellDataGenerator(DataGenerator):
 
             # Pad struct with empty pointers for direct access to spell effect data
             # 47, 48, 49, 50, 51
-            fields += [ u'0', u'0', u'0', u'0', u'0', ]
+            fields += [ u'0', u'0', u'0', u'0' ]
 
             # Finally, update hotfix flags, they are located in the array of fields at position 2
             if spell._flags == -1:
@@ -2963,7 +2949,7 @@ class SpellDataGenerator(DataGenerator):
             hotfix_data += hfd
 
             # Pad struct with empty pointers for direct spell data access
-            fields += [ u'0', u'0', u'0' ]
+            fields += [ u'0', u'0' ]
 
             # Update hotfix flags, they are located at position 1. If the
             # effect's hotfix_flags is -1, it's a new entry
@@ -3017,9 +3003,6 @@ class SpellDataGenerator(DataGenerator):
                 ('cost_per_second', 7), ('pct_cost', 8), ('pct_cost_max', 9), ('pct_cost_per_second', 10))
             hotfix_flags |= f
             hotfix_data += hfd
-
-            # Append a field to include hotfix entry pointer
-            fields += [ u'0' ]
 
             # And update hotfix flags at position 3
             if power._flags == -1:

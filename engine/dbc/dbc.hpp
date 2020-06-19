@@ -132,78 +132,45 @@ namespace hotfix
     dbc_ftype field_type;        // Internal field type
 
     // The original value (hotfix value is in the actual data). Union type based on field_type.
-    union
+    union value_t
     {
       uint32_t    u;
       int32_t     i;
       double      f;
       const char* s;
+
+      constexpr value_t( uint32_t v )    : u( v ) {}
+      constexpr value_t( int32_t v )     : i( v ) {}
+      constexpr value_t( double v )      : f( v ) {}
+      constexpr value_t( const char* v ) : s( v ) {}
     } orig_value, hotfixed_value;
 
-    client_hotfix_entry_t( unsigned id, unsigned field, const char* s, const char* hotfix_s ) :
-      id( id ), field_id( field ), field_type( STRING )
-    {
-      orig_value.s = s;
-      hotfixed_value.s = hotfix_s;
-    }
+    // Required for msvc to create 0-size std::arrays
+    constexpr client_hotfix_entry_t() :
+      id( 0 ), field_id( -1 ), field_type( INT ), orig_value( 0 ), hotfixed_value( 0 )
+    { }
 
-    client_hotfix_entry_t( unsigned id, unsigned field, int32_t i, int32_t hotfix_i ) :
-      id( id ), field_id( field ), field_type( INT )
-    {
-      orig_value.i = i;
-      hotfixed_value.i = hotfix_i;
-    }
+    constexpr client_hotfix_entry_t( unsigned id, unsigned field, const char* s, const char* hotfix_s ) :
+      id( id ), field_id( field ), field_type( STRING ), orig_value( s ), hotfixed_value( hotfix_s )
+    { }
 
-    client_hotfix_entry_t( unsigned id, unsigned field, uint32_t u, uint32_t hotfix_u ) :
-      id( id ), field_id( field ), field_type( UINT )
-    {
-      orig_value.u = u;
-      hotfixed_value.u = hotfix_u;
-    }
+    constexpr client_hotfix_entry_t( unsigned id, unsigned field, int32_t i, int32_t hotfix_i ) :
+      id( id ), field_id( field ), field_type( INT ), orig_value( i ), hotfixed_value( hotfix_i )
+    { }
 
-    client_hotfix_entry_t( unsigned id, unsigned field, double f, double hotfix_f ) :
-      id( id ), field_id( field ), field_type( FLOAT )
-    {
-      orig_value.f = f;
-      hotfixed_value.f = hotfix_f;
-    }
+    constexpr client_hotfix_entry_t( unsigned id, unsigned field, uint32_t u, uint32_t hotfix_u ) :
+      id( id ), field_id( field ), field_type( UINT ), orig_value( u ), hotfixed_value( hotfix_u )
+    { }
+
+    constexpr client_hotfix_entry_t( unsigned id, unsigned field, double f, double hotfix_f ) :
+      id( id ), field_id( field ), field_type( FLOAT ), orig_value( f ), hotfixed_value( hotfix_f )
+    { }
   };
 
-  // Links Client-side hotfix data to correct spell_data_t, spelleffect_data_t, and
-  // spellpower_data_t entries inside simc
-  void link_hotfix_data( bool ptr );
-
-  // Returns the number of entries per hotfix data type
-  size_t n_spell_hotfix_entry( bool ptr );
-  size_t n_effect_hotfix_entry( bool ptr );
-  size_t n_power_hotfix_entry( bool ptr );
-
-  // Returns an entry pointer to the hotfix data table of a specified type
-  const client_hotfix_entry_t* spell_hotfix_entry( bool ptr );
-  const client_hotfix_entry_t* effect_hotfix_entry( bool ptr );
-  const client_hotfix_entry_t* power_hotfix_entry( bool ptr );
-
-  // Helper method to extract correct hotfix entry from a data struct
-  template <typename T>
-  const client_hotfix_entry_t* hotfix_entry( const T* data, unsigned for_field )
-  {
-    if ( ! data -> _hotfix_entry )
-    {
-      return nullptr;
-    }
-
-    auto ptr = data -> _hotfix_entry;
-    while ( ptr -> id == data -> _id )
-    {
-      if ( ptr -> field_id == for_field )
-      {
-        return ptr;
-      }
-      ++ptr;
-    }
-
-    return nullptr;
-  }
+  // Returns hotfix entries for an object of a specified type
+  util::span<const client_hotfix_entry_t> spell_hotfixes( unsigned id, bool ptr );
+  util::span<const client_hotfix_entry_t> effect_hotfixes( unsigned id, bool ptr );
+  util::span<const client_hotfix_entry_t> power_hotfixes( unsigned id, bool ptr );
 
   // Manual hotfixing system for simc starts here
 
@@ -458,8 +425,6 @@ public:
   double   _pct_cost_max;
   double   _pct_cost_per_tick;
 
-  const hotfix::client_hotfix_entry_t* _hotfix_entry;
-
   resource_e resource() const
   { return util::translate_power_type( type() ); }
 
@@ -585,7 +550,6 @@ public:
   // Pointers for runtime linking
   spell_data_t* _spell;
   spell_data_t* _trigger_spell;
-  const hotfix::client_hotfix_entry_t* _hotfix_entry;
 
   bool ok() const
   { return _id != 0; }
@@ -850,7 +814,6 @@ public:
   std::vector<const spellpower_data_t*>*  _power;
   std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s)
   std::vector<const spelllabel_data_t*>* _labels; // Applied (known) labels to the spell
-  const hotfix::client_hotfix_entry_t* _hotfix_entry; // First hotfix entry in the hotfix table, if available
 
   unsigned equipped_class() const
   { return _equipped_class; }
@@ -1453,6 +1416,15 @@ public:
 
   util::span<const item_bonus_entry_t> item_bonus( unsigned bonus_id ) const
   { return item_bonus_entry_t::find( bonus_id, ptr ); }
+
+  util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spell_data_t* p ) const
+  { assert( p ); return hotfix::spell_hotfixes( p -> id(), ptr ); }
+
+  util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spelleffect_data_t* p ) const
+  { assert( p ); return hotfix::effect_hotfixes( p -> id(), ptr ); }
+
+  util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spellpower_data_t* p ) const
+  { assert( p ); return hotfix::power_hotfixes( p -> id(), ptr ); }
 
   // Derived data access
   unsigned class_max_size() const;
