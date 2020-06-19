@@ -213,13 +213,6 @@ void dbc::init()
     talent_data_t::link( true );
   }
 
-  // Link client side hotfix data to spells, effects, and power entries after everything else is
-  // done
-  hotfix::link_hotfix_data( false );
-#if SC_USE_PTR
-  hotfix::link_hotfix_data( true );
-#endif
-
   // Generate indices
   generate_indices( false );
   if ( SC_USE_PTR )
@@ -2453,108 +2446,31 @@ util::span<const spell_data_t* const> dbc_t::spells_by_category( unsigned catego
 
 // Hotfix data handling
 
-
-size_t hotfix::n_spell_hotfix_entry( bool ptr )
+static util::span<const hotfix::client_hotfix_entry_t> find_hotfixes(
+  util::span<const hotfix::client_hotfix_entry_t> data, unsigned id )
 {
-#if SC_USE_PTR
-  return ptr ? PTR_SPELL_HOTFIX_SIZE : SPELL_HOTFIX_SIZE;
-#else
-  ( void ) ptr;
-  return SPELL_HOTFIX_SIZE;
-#endif
+  auto r = range::equal_range( data, id, {}, &hotfix::client_hotfix_entry_t::id );
+  if ( r.first == data.end() )
+    return {};
+  return { r.first, r.second };
 }
 
-size_t hotfix::n_effect_hotfix_entry( bool ptr )
+util::span<const hotfix::client_hotfix_entry_t> hotfix::spell_hotfixes( unsigned id, bool ptr )
 {
-#if SC_USE_PTR
-  return ptr ? PTR_EFFECT_HOTFIX_SIZE : EFFECT_HOTFIX_SIZE;
-#else
-  ( void ) ptr;
-  return EFFECT_HOTFIX_SIZE;
-#endif
+  auto data = SC_DBC_GET_DATA( __spell_hotfix_data, __ptr_spell_hotfix_data, ptr );
+  return find_hotfixes( data, id );
 }
 
-size_t hotfix::n_power_hotfix_entry( bool ptr )
+util::span<const hotfix::client_hotfix_entry_t> hotfix::effect_hotfixes( unsigned id, bool ptr )
 {
-#if SC_USE_PTR
-  return ptr ? PTR_POWER_HOTFIX_SIZE : POWER_HOTFIX_SIZE;
-#else
-  ( void ) ptr;
-  return POWER_HOTFIX_SIZE;
-#endif
+  auto data = SC_DBC_GET_DATA( __effect_hotfix_data, __ptr_effect_hotfix_data, ptr );
+  return find_hotfixes( data, id );
 }
 
-const hotfix::client_hotfix_entry_t* hotfix::spell_hotfix_entry( bool ptr )
+util::span<const hotfix::client_hotfix_entry_t> hotfix::power_hotfixes( unsigned id, bool ptr )
 {
-#if SC_USE_PTR
-  return ptr ? __ptr_spell_hotfix_data : __spell_hotfix_data;
-#else
-  (void ) ptr;
-  return __spell_hotfix_data;
-#endif
-}
-
-const hotfix::client_hotfix_entry_t* hotfix::effect_hotfix_entry( bool ptr )
-{
-#if SC_USE_PTR
-  return ptr ? __ptr_effect_hotfix_data : __effect_hotfix_data;
-#else
-  (void ) ptr;
-  return __effect_hotfix_data;
-#endif
-}
-
-const hotfix::client_hotfix_entry_t* hotfix::power_hotfix_entry( bool ptr )
-{
-#if SC_USE_PTR
-  return ptr ? __ptr_power_hotfix_data : __power_hotfix_data;
-#else
-  (void ) ptr;
-  return __power_hotfix_data;
-#endif
-}
-
-// Link up the hotfix entry pointer to each relevant spell, effect, or power data.
-template <typename DATA>
-static void link_hotfix_entry_ptr( bool ptr, const std::function<const hotfix::client_hotfix_entry_t*(bool)>& entry_fn )
-{
-  auto entry = entry_fn( ptr );
-  unsigned last_id = entry -> id;
-  if ( last_id == 0 )
-  {
-    return;
-  }
-
-  DATA* data = DATA::find( entry -> id, ptr );
-  while ( entry -> id != 0 )
-  {
-    if ( entry -> id != last_id )
-    {
-      data = DATA::find( entry -> id, ptr );
-      last_id = entry -> id;
-    }
-
-    if ( ! data || data -> _hotfix_entry )
-    {
-      ++entry;
-      continue;
-    }
-
-    data -> _hotfix_entry = entry;
-    ++entry;
-  }
-}
-
-void hotfix::link_hotfix_data( bool ptr )
-{
-  // First up, link spell hotfix data
-  link_hotfix_entry_ptr<spell_data_t>( ptr, spell_hotfix_entry );
-
-  // Next, link effect hotfix data
-  link_hotfix_entry_ptr<spelleffect_data_t>( ptr, effect_hotfix_entry );
-
-  // Finally, link power hotfix data
-  link_hotfix_entry_ptr<spellpower_data_t>( ptr, power_hotfix_entry );
+  auto data = SC_DBC_GET_DATA( __power_hotfix_data, __ptr_power_hotfix_data, ptr );
+  return find_hotfixes( data, id );
 }
 
 util::span<const spelllabel_data_t> spelllabel_data_t::data( bool ptr )
