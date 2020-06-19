@@ -629,6 +629,7 @@ struct rogue_t : public player_t
   bool poisoned_enemy( player_t* target, bool deadly_fade = false ) const;
 
   void trigger_auto_attack( const action_state_t* );
+  void cancel_auto_attack();
   void trigger_seal_fate( const action_state_t* );
   void trigger_main_gauche( const action_state_t* );
   void trigger_combat_potency( const action_state_t* );
@@ -4083,13 +4084,7 @@ struct cancel_autoattack_t : public action_t
   void execute() override
   {
     action_t::execute();
-
-    // Cancel the scheduled AA
-    if ( rogue -> main_hand_attack && rogue -> main_hand_attack -> execute_event )
-      event_t::cancel( rogue -> main_hand_attack -> execute_event );
-
-    if ( rogue -> off_hand_attack && rogue -> off_hand_attack -> execute_event )
-      event_t::cancel( rogue -> off_hand_attack -> execute_event );
+    rogue->cancel_auto_attack();
   }
 
   bool ready() override
@@ -5051,6 +5046,16 @@ void rogue_t::trigger_auto_attack( const action_state_t* state )
     melee_off_hand -> first = true;
 
   auto_attack -> execute();
+}
+
+void rogue_t::cancel_auto_attack()
+{
+  // Stop autoattacks
+  if ( main_hand_attack && main_hand_attack->execute_event )
+    event_t::cancel( main_hand_attack->execute_event );
+
+  if ( off_hand_attack && off_hand_attack->execute_event )
+    event_t::cancel( off_hand_attack->execute_event );
 }
 
 void rogue_t::trigger_seal_fate( const action_state_t* state )
@@ -7392,7 +7397,10 @@ struct restealth_callback_t
     // (which excludes invulnerable ones if ignore_invulnerable_targets is set like in the DungeonSlice fightstyle).
     // This allows us to better approximate restealthing in dungeons.
     if ( r->sim->target_non_sleeping_list.empty() )
+    {
       r->restealth_allowed = true;
+      r->cancel_auto_attack();
+    }
   }
 };
 
