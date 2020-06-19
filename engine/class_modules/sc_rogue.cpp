@@ -3849,14 +3849,8 @@ struct vanish_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    p() -> buffs.vanish -> trigger();
-
-    // Vanish stops autoattacks
-    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
-      event_t::cancel( p() -> main_hand_attack -> execute_event );
-
-    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
-      event_t::cancel( p() -> off_hand_attack -> execute_event );
+    p()->buffs.vanish->trigger();
+    p()->cancel_auto_attack();
   }
 
   bool ready() override
@@ -3954,14 +3948,8 @@ struct stealth_t : public rogue_attack_t
     if ( sim -> log )
       sim -> out_log.printf( "%s performs %s", p() -> name(), name() );
 
-    p() -> buffs.stealth -> trigger();
-
-    // Stop autoattacks
-    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
-      event_t::cancel( p() -> main_hand_attack -> execute_event );
-
-    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
-      event_t::cancel( p() -> off_hand_attack -> execute_event );
+    p()->buffs.stealth->trigger();
+    p()->cancel_auto_attack();
   }
 
   bool ready() override
