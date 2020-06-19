@@ -1430,7 +1430,7 @@ util::span<spelleffect_data_t> spelleffect_data_t::data( bool ptr )
   return SC_DBC_GET_DATA( __spelleffect_data, __ptr_spelleffect_data, ptr );
 }
 
-util::span<spellpower_data_t> spellpower_data_t::data( bool ptr )
+util::span<const spellpower_data_t> spellpower_data_t::data( bool ptr )
 {
   return SC_DBC_GET_DATA( __spellpower_data, __ptr_spellpower_data, ptr );
 }
@@ -1685,16 +1685,6 @@ spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
   return spelleffect_data_t::nil();
 }
 
-// Always returns non-NULL
-spellpower_data_t* spellpower_data_t::find( unsigned id, bool ptr )
-{
-  const auto __data = data( ptr );
-  auto it = range::lower_bound( __data, id, {}, &spellpower_data_t::id );
-  if ( it != __data.end() && it->id() == id )
-    return &*it;
-  return spellpower_data_t::nil();
-}
-
 void spell_data_t::link( bool ptr )
 {
   for ( spell_data_t& sd : data( ptr ) )
@@ -1752,7 +1742,7 @@ void spell_data_t::de_link( bool ptr )
 
 void spellpower_data_t::link( bool ptr )
 {
-  for ( spellpower_data_t& pd : spellpower_data_t::data( ptr ) )
+  for ( const spellpower_data_t& pd : spellpower_data_t::data( ptr ) )
   {
     spell_data_t* sd = spell_data_t::find( pd._spell_id, ptr );
 
