@@ -518,73 +518,40 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     }
   }
 
+  template <typename T>
+  bool do_compare( const char* data, const spell_data_expr_t& other, expression::token_e t ) const
+  {
+    const T value  = *reinterpret_cast< const T* >( data + offset );
+    const T ovalue = static_cast<T>( other.result_num );
+    switch ( t )
+    {
+      case expression::TOK_EQ:     return value == ovalue;
+      case expression::TOK_NOTEQ:  return value != ovalue;
+      case expression::TOK_LT:     return value <  ovalue;
+      case expression::TOK_LTEQ:   return value <= ovalue;
+      case expression::TOK_GT:     return value >  ovalue;
+      case expression::TOK_GTEQ:   return value >= ovalue;
+      default: break;
+    }
+    return false;
+  }
+
   virtual bool compare( const char* data, const spell_data_expr_t& other, expression::token_e t ) const
   {
     switch ( field_type )
     {
       case SD_TYPE_INT:
-      {
-        int int_v  = *reinterpret_cast< const int* >( data + offset );
-        int oint_v = static_cast<int>( other.result_num );
-        switch ( t )
-        {
-          case expression::TOK_LT:     return int_v <  oint_v;
-          case expression::TOK_LTEQ:   return int_v <= oint_v;
-          case expression::TOK_GT:     return int_v >  oint_v;
-          case expression::TOK_GTEQ:   return int_v >= oint_v;
-          case expression::TOK_EQ:     return int_v == oint_v;
-          case expression::TOK_NOTEQ:  return int_v != oint_v;
-          default:         return false;
-        }
-        break;
-      }
+        return do_compare<int>( data, other, t );
+
       case SD_TYPE_UNSIGNED:
-      {
-        unsigned unsigned_v  = *reinterpret_cast< const unsigned* >( data + offset );
-        unsigned ounsigned_v = static_cast<unsigned>( other.result_num );
-        switch ( t )
-        {
-          case expression::TOK_LT:     return unsigned_v <  ounsigned_v;
-          case expression::TOK_LTEQ:   return unsigned_v <= ounsigned_v;
-          case expression::TOK_GT:     return unsigned_v >  ounsigned_v;
-          case expression::TOK_GTEQ:   return unsigned_v >= ounsigned_v;
-          case expression::TOK_EQ:     return unsigned_v == ounsigned_v;
-          case expression::TOK_NOTEQ:  return unsigned_v != ounsigned_v;
-          default:         return false;
-        }
-        break;
-      }
+        return do_compare<unsigned>( data, other, t );
+
       case SD_TYPE_UINT64:
-      {
-        uint64_t unsigned_v  = *reinterpret_cast< const uint64_t* >( data + offset );
-        uint64_t ounsigned_v = static_cast<uint64_t>( other.result_num );
-        switch ( t )
-        {
-          case expression::TOK_LT:     return unsigned_v <  ounsigned_v;
-          case expression::TOK_LTEQ:   return unsigned_v <= ounsigned_v;
-          case expression::TOK_GT:     return unsigned_v >  ounsigned_v;
-          case expression::TOK_GTEQ:   return unsigned_v >= ounsigned_v;
-          case expression::TOK_EQ:     return unsigned_v == ounsigned_v;
-          case expression::TOK_NOTEQ:  return unsigned_v != ounsigned_v;
-          default:         return false;
-        }
-        break;
-      }
+        return do_compare<uint64_t>( data, other, t );
+
       case SD_TYPE_DOUBLE:
-      {
-        double double_v = *reinterpret_cast<const double*>( data + offset );
-        switch ( t )
-        {
-          case expression::TOK_LT:     return double_v <  other.result_num;
-          case expression::TOK_LTEQ:   return double_v <= other.result_num;
-          case expression::TOK_GT:     return double_v >  other.result_num;
-          case expression::TOK_GTEQ:   return double_v >= other.result_num;
-          case expression::TOK_EQ:     return double_v == other.result_num;
-          case expression::TOK_NOTEQ:  return double_v != other.result_num;
-          default:         return false;
-        }
-        break;
-      }
+        return do_compare<double>( data, other, t );
+
       case SD_TYPE_STR:
       {
         const char* c_str = *reinterpret_cast<const char * const*>( data + offset );
