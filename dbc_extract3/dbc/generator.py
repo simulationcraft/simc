@@ -2984,7 +2984,7 @@ class SpellDataGenerator(DataGenerator):
         powers.sort(key = lambda k: k.id)
 
         self._out.write('// %d effects, wow build level %s\n' % ( len(powers), self._options.build ))
-        self._out.write('static std::array<spellpower_data_t, %d> __%s_data { {\n' % (
+        self._out.write('static const std::array<spellpower_data_t, %d> __%s_data { {\n' % (
             len(powers), self.format_str( "spellpower" ) ))
 
         for power in powers:

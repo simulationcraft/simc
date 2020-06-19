@@ -206,8 +206,6 @@ double spelleffect_data_t::get_field( util::string_view field ) const
 // Spell Power Data
 // ==========================================================================
 
-spellpower_data_nil_t spellpower_data_nil_t::singleton;
-
 bool spellpower_data_t::override_field( util::string_view field, double value )
 {
   if ( util::str_compare_ci( field, "cost" ) )
@@ -603,10 +601,10 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
 
 void power_hotfix_entry_t::apply_hotfix( bool ptr )
 {
-  const spellpower_data_t* source_power = spellpower_data_t::find( id_, ptr );
+  const spellpower_data_t& source_power = spellpower_data_t::find( id_, ptr );
 
   // Cloning the spell chain will guarantee that the effect is also always cloned
-  const spell_data_t* s = hotfix_db_.clone_spell( source_power -> spell_id(), ptr );
+  const spell_data_t* s = hotfix_db_.clone_spell( source_power.spell_id(), ptr );
   assert( s && "Could not clone spell to apply hotfix" );
 
   spellpower_data_t* p = hotfix_db_.get_mutable_power( id_, ptr );
@@ -841,7 +839,7 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
     auto p_clone = get_mutable_power( p_source -> id(), ptr );
     if ( p_clone == nullptr )
     {
-      p_clone = new spellpower_data_t( *spellpower_data_t::find( p_source -> id(), ptr ) );
+      p_clone = new spellpower_data_t( spellpower_data_t::find( p_source -> id(), ptr ) );
       add_power( p_clone, ptr );
     }
 
@@ -955,8 +953,8 @@ void dbc_override::register_power( dbc_t& dbc, unsigned power_id, util::string_v
   auto power = override_db_.get_mutable_power( power_id, dbc.ptr );
   if ( power == nullptr )
   {
-    auto dbc_power = dbc.power( power_id );
-    override_db_.clone_spell( dbc_power -> spell_id(), dbc.ptr );
+    const auto& dbc_power = dbc.power( power_id );
+    override_db_.clone_spell( dbc_power.spell_id(), dbc.ptr );
     power = override_db_.get_mutable_power( power_id, dbc.ptr );
   }
   if (!power)

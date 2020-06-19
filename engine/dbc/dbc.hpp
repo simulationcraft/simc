@@ -484,26 +484,18 @@ public:
     return cost / cost_divisor( ! ( _cost_per_tick != 0 ) );
   }
 
-  static spellpower_data_t* nil();
-  static spellpower_data_t* find( unsigned, bool ptr = false );
-  static util::span<spellpower_data_t> data( bool ptr = false );
+  static const spellpower_data_t& nil()
+  { return dbc::nil<spellpower_data_t>; }
+
+  static const spellpower_data_t& find( unsigned id, bool ptr = false )
+  { return dbc::find<spellpower_data_t>( id, ptr, &spellpower_data_t::_id ); }
+
+  static util::span<const spellpower_data_t> data( bool ptr = false );
   static void               link( bool ptr = false );
 
   bool override_field( util::string_view field, double value );
   double get_field( util::string_view field ) const;
 };
-
-class spellpower_data_nil_t : public spellpower_data_t
-{
-public:
-  spellpower_data_nil_t() :
-    spellpower_data_t()
-  {}
-  static spellpower_data_nil_t singleton;
-};
-
-inline spellpower_data_t* spellpower_data_t::nil()
-{ return &spellpower_data_nil_t::singleton; }
 
 // ==========================================================================
 // Spell Effect Data - SpellEffect.dbc
@@ -990,7 +982,7 @@ public:
       return *_power -> at( idx - 1 );
     }
 
-    return *spellpower_data_t::nil();
+    return spellpower_data_t::nil();
   }
 
   short labelN( size_t idx ) const
@@ -1015,7 +1007,7 @@ public:
       }
     }
 
-    return *spellpower_data_t::nil();
+    return spellpower_data_t::nil();
   }
 
   util::span<const spelleffect_data_t* const> effects() const
@@ -1365,8 +1357,8 @@ public:
   const spelleffect_data_t*      effect( unsigned effect_id ) const
   { return find_by_id<spelleffect_data_t>( effect_id ); }
 
-  const spellpower_data_t*       power( unsigned power_id ) const
-  { return find_by_id<spellpower_data_t>( power_id ); }
+  const spellpower_data_t& power( unsigned power_id ) const
+  { return spellpower_data_t::find( power_id, ptr ); }
 
   // Always returns non-NULL.
   const talent_data_t*           talent( unsigned talent_id ) const
