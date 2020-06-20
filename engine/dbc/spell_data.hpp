@@ -664,8 +664,8 @@ struct spell_data_t
 
   util::span<const spell_data_t* const> drivers() const
   {
-    if ( _driver )
-      return *_driver;
+    if ( _driver ) // explicit for gcc & msvc because of extra cv
+      return { _driver -> data(), _driver -> size() };
     return {};
   }
 
