@@ -39,7 +39,6 @@
 
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
-#include "dbc/spell_query/spell_data_expr.hpp"
 #include "dbc/data_enums.hh"
 #include "dbc/data_definitions.hh"
 

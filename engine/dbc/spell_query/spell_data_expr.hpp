@@ -8,6 +8,8 @@
 #include "config.hpp"
 #include "sim/sc_expressions.hpp"
 
+#include <memory>
+
 class dbc_t;
 
 // Spell query expression types
@@ -84,9 +86,8 @@ struct spell_data_expr_t
       result_str( "" )
   {
   }
-  virtual ~spell_data_expr_t()
-  {
-  }
+  virtual ~spell_data_expr_t() = default;
+
   virtual int evaluate()
   {
     return result_tok;
@@ -110,6 +111,6 @@ struct spell_data_expr_t
   virtual std::vector<uint32_t> in( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
   virtual std::vector<uint32_t> not_in( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
 
-  static spell_data_expr_t* parse( sim_t* sim, const std::string& expr_str );
-  static spell_data_expr_t* create_spell_expression( dbc_t& dbc, util::string_view name_str );
+  static std::unique_ptr<spell_data_expr_t> parse( sim_t* sim, const std::string& expr_str );
+  static std::unique_ptr<spell_data_expr_t> create_spell_expression( dbc_t& dbc, util::string_view name_str );
 };
