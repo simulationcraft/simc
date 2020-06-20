@@ -41,6 +41,7 @@ actions+=/bag_of_tricks
 actions+=/use_item,effect_name=cyclotronic_blast,if=!buff.prowl.up&!buff.shadowmeld.up
 actions+=/use_items
 actions+=/potion
+actions+=/worldvein_resonance,if=!buff.shadowmeld.up&!buff.prowl.up&dot.sunfire.remains>6&(buff.cat_form.up|!talent.feral_affinity.enabled)
 actions+=/memory_of_lucid_dreams,if=buff.cat_form.up&energy<50&dot.sunfire.remains>5&dot.moonfire.remains>5
 actions+=/concentrated_flame,if=!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight&!buff.shadowmeld.up&!buff.prowl.up
 actions+=/run_action_list,name=feral,if=talent.feral_affinity.enabled
