@@ -1309,10 +1309,8 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   }
   s << "Spell Type       : " << spell_type_str << std::endl;
 
-  for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
+  for ( const spellpower_data_t* pd : spell -> powers() )
   {
-    const spellpower_data_t* pd = spell -> _power -> at( i );
-
     s << "Resource         : ";
 
     if ( pd -> type() == POWER_MANA )
@@ -1679,18 +1677,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
   }
 
-  if ( spell -> _driver )
+  if ( spell -> driver_count() > 0 )
   {
     s << "Triggered by     : ";
-    for ( size_t driver_idx = 0; driver_idx < spell -> _driver -> size(); ++driver_idx )
-    {
-      const spell_data_t* driver = spell -> _driver -> at( driver_idx );
-      s << driver -> name_cstr() << " (" << driver -> id() << ")";
-      if ( driver_idx < spell -> _driver -> size() - 1 )
-      {
-        s << ", ";
-      }
-    }
+    s << concatenate( spell -> drivers(),
+        []( std::stringstream& s, const spell_data_t* spell ) {
+          s << spell -> name_cstr() << " (" << spell -> id() << ")";
+        } );
     s << std::endl;
   }
 
@@ -2079,10 +2072,8 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
     }
   }
 
-  for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
+  for ( const spellpower_data_t* pd : spell -> powers() )
   {
-    const spellpower_data_t* pd = spell -> _power -> at( i );
-
     if ( pd -> cost() == 0 )
       continue;
 

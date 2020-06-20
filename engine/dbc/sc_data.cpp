@@ -631,18 +631,15 @@ static void collect_base_spells( const spell_data_t* spell, std::vector<const sp
 
   roots.push_back( spell );
 
-  if ( spell -> _driver )
+  for ( auto driver_spell : spell -> drivers() )
   {
-    for ( auto driver_spell : *spell -> _driver )
+    // Safeguard infinite recursions
+    if ( range::find( roots, driver_spell ) != roots.end() )
     {
-      // Safeguard infinite recursions
-      if ( range::find( roots, driver_spell ) != roots.end() )
-      {
-        continue;
-      }
-
-      collect_base_spells( driver_spell, roots );
+      continue;
     }
+
+    collect_base_spells( driver_spell, roots );
   }
 }
 
@@ -665,14 +662,15 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
   }
 
   // Clone effects
-  for ( size_t i = 0; i < source -> _effects -> size(); ++i )
+  const auto source_effects = source -> effects();
+  for ( size_t i = 0; i < source_effects.size(); ++i )
   {
-    if ( source -> _effects -> at( i ) -> id() == 0 )
+    const spelleffect_data_t* e_source = source_effects[ i ];
+    if ( e_source -> id() == 0 )
     {
       continue;
     }
 
-    const spelleffect_data_t* e_source = source -> _effects -> at( i );
     spelleffect_data_t* e_clone = get_mutable_effect( e_source -> id(), ptr );
 
     if ( ! e_clone )
@@ -695,14 +693,16 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
     // data. This is necessary because Blizzard re-uses trigger spells in multiple drivers.
     e_clone -> _trigger_spell = create_clone( e_source -> trigger(), ptr );
     assert( e_source -> trigger() -> _driver );
+
+    const auto e_source_trigger_drivers = e_source -> trigger() -> drivers();
     if ( ! e_clone -> _trigger_spell -> _driver )
     {
-      e_clone -> _trigger_spell -> _driver = new std::vector<spell_data_t*>( e_source -> trigger() -> n_drivers(), spell_data_t::nil() );
+      e_clone -> _trigger_spell -> _driver = new std::vector<spell_data_t*>( e_source_trigger_drivers.size(), spell_data_t::nil() );
     }
 
-    for ( size_t driver_idx = 0; driver_idx < e_source -> trigger() -> n_drivers(); ++driver_idx )
+    for ( size_t driver_idx = 0; driver_idx < e_source_trigger_drivers.size(); ++driver_idx )
     {
-      const spell_data_t* driver = e_source -> trigger() -> driver( driver_idx );
+      const spell_data_t* driver = e_source_trigger_drivers[ driver_idx ];
       if ( driver -> id() == clone -> id() )
       {
         e_clone -> _trigger_spell -> _driver -> at( driver_idx ) = clone;
@@ -712,14 +712,15 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
   }
 
   // Clone powers
-  for ( size_t i = 0; source -> _power && i < source -> _power -> size(); ++i )
+  const auto source_powers = source -> powers();
+  for ( size_t i = 0; i < source_powers.size(); ++i )
   {
-    if ( source -> _power -> at( i ) -> id() == 0 )
+    auto p_source = source_powers[ i ];
+    if ( p_source -> id() == 0 )
     {
       continue;
     }
 
-    auto p_source = source -> _power -> at( i );
     auto p_clone = get_mutable_power( p_source -> id(), ptr );
     if ( p_clone == nullptr )
     {

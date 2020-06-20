@@ -346,13 +346,8 @@ bool spell_data_t::affected_by_label( const spelleffect_data_t& effect ) const
 
 bool spell_data_t::affected_by_label( int label ) const
 {
-  if (_labels == nullptr || _labels->size() == 0)
-  {
-    return false;
-  }
-
-  auto it = range::find(*_labels, label, &spelllabel_data_t::label);
-  return it != _labels->end();
+  const auto labels = this -> labels();
+  return range::find(labels, label, &spelllabel_data_t::label) != labels.end();
 }
 
 bool spell_data_t::affected_by( const spell_data_t* spell ) const
