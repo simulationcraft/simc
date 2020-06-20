@@ -9,6 +9,8 @@
 #include "player/player_scaling.hpp"
 #include "sim/sc_sim.hpp"
 
+#include <sstream>
+
 namespace
 {
 const int wowhead_min_item_level = 250;

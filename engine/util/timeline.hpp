@@ -6,11 +6,12 @@
 #ifndef TIMELINE_HPP
 #define TIMELINE_HPP
 
-#include <vector>
-#include <cstring>
 #include <algorithm>
 #include <cassert>
+#include <cstring>
+#include <iosfwd>
 #include <numeric>
+#include <vector>
 
 #include "util/generic.hpp"
 #include "sample_data.hpp"
@@ -166,17 +167,7 @@ public:
   void clear()
   { _data.clear(); }
 
-  std::ostream& data_str( std::ostream& s ) const
-  {
-    s << "Timeline: length: " << data().size();
-    //s << " mean: " << mean() << " variance: " << variance << " mean_std_dev: " << mean_std_dev << "\n";
-    if ( ! data().empty() )
-      s << "data: ";
-    for ( size_t i = 0, size = data().size(); i < size; ++i )
-    { if ( i > 0 ) s << ", "; s << data()[ i ]; }
-    s << "\n";
-    return s;
-  }
+  std::ostream& data_str( std::ostream& s ) const;
   /*
     // Functions which could be implemented:
     data_type variance() const;

@@ -1,5 +1,28 @@
-#ifdef UNIT_TEST
+
 #include "sample_data.hpp"
+
+#include <ostream>
+
+std::ostream& extended_sample_data_t::data_str( std::ostream& s ) const
+  {
+    s << "Sample_Data \"" << name_str << "\": count: " << count();
+    s << " mean: " << mean() << " variance: " << variance
+      << " mean variance: " << mean_variance
+      << " mean_std_dev: " << mean_std_dev << "\n";
+
+    if ( !data().empty() )
+      s << "data: ";
+    for ( size_t i = 0, size = data().size(); i < size; ++i )
+    {
+      if ( i > 0 )
+        s << ", ";
+      s << data()[ i ];
+    }
+    s << "\n";
+    return s;
+  }
+
+#ifdef UNIT_TEST
 #include <iostream>
 
 int main( int /*argc*/, char** /*argv*/ )

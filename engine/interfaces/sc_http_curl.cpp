@@ -8,6 +8,8 @@
 #include "util/util.hpp"
 #include "fmt/format.h"
 
+#include <iostream>
+
 namespace
 {
 const std::string UA_STR = "Simulationcraft+CURL/" + std::string( SC_VERSION );

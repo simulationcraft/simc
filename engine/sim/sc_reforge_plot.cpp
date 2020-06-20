@@ -4,10 +4,14 @@
 // ==========================================================================
 
 #include "reforge_plot.hpp"
+
+#include "player/player_scaling.hpp"
+#include "player/sc_player.hpp"
 #include "scale_factor_control.hpp"
 #include "sim/sc_sim.hpp"
-#include "player/sc_player.hpp"
-#include "player/player_scaling.hpp"
+#include "util/io.hpp"
+
+#include <sstream>
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================

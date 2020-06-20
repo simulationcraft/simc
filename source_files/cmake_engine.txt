@@ -288,6 +288,7 @@ sim/scale_factor_control.cpp
 sim/shuffled_rng.cpp
 sim/sim_ostream.cpp
 sim/uptime_benefit.cpp
+util/cache.cpp
 util/chrono.cpp
 util/concurrency.cpp
 util/git_info.cpp

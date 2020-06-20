@@ -13,11 +13,10 @@
 #include "util/xml.hpp"
 
 #include <array>
-#include <vector>
-#include <iostream>
-#include <iomanip>
 #include <cctype>
-
+#include <iomanip>
+#include <sstream>
+#include <vector>
 
 namespace {
 

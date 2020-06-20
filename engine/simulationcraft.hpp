@@ -118,4 +118,6 @@
 #include "util/scoped_callback.hpp"
 #include "util/xml.hpp"
 
+#include <sstream>
+
 #endif // SIMULATIONCRAFT_H

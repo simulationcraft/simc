@@ -19,6 +19,8 @@
 #include "player/expansion_effects.hpp"
 #include "player/stats.hpp"
 
+#include <sstream>
+
 namespace
 {  // UNNAMED NAMESPACE
 

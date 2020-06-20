@@ -8,7 +8,9 @@
 #include "report/report_timer.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "fmt/chrono.h"
+
 #include <iomanip>
+#include <iostream>
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================

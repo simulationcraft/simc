@@ -20,7 +20,6 @@
 #include "player_stat_cache.hpp"
 #include "scaling_metric_data.hpp"
 #include "util/cache.hpp"
-#include "util/io.hpp"
 #include "assessor.hpp"
 #include <map>
 #include <set>
@@ -66,6 +65,9 @@ namespace azerite {
 }
 namespace rng {
     struct rng_t;
+}
+namespace io {
+  class ofstream;
 }
 namespace report {
   using sc_html_stream = io::ofstream;

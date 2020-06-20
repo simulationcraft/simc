@@ -18,7 +18,6 @@
 #include "sc_option.hpp"
 #include "util/chrono.hpp"
 #include "util/generic.hpp"
-#include "util/io.hpp"
 #include "sc_enums.hpp"
 
 struct sim_t;

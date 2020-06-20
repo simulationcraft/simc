@@ -6,18 +6,19 @@
 #pragma once
 
 #include "config.hpp"
-#include "util/concurrency.hpp"
-#include "sim_ostream.hpp"
-#include "util/vector_with_callback.hpp"
+#include "event_manager.hpp"
 #include "player/gear_stats.hpp"
 #include "progress_bar.hpp"
-#include "util/sample_data.hpp"
+#include "report/json/report_configuration.hpp"
 #include "sc_option.hpp"
 #include "sc_profileset.hpp"
-#include "event_manager.hpp"
-#include "util/util.hpp"
+#include "sim_ostream.hpp"
+#include "util/concurrency.hpp"
 #include "util/rng.hpp"
-#include "report/json/report_configuration.hpp"
+#include "util/sample_data.hpp"
+#include "util/util.hpp"
+#include "util/vector_with_callback.hpp"
+
 #include <map>
 #include <mutex>
 #include <memory>

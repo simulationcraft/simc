@@ -18,7 +18,9 @@
 #ifndef SC_NO_THREADING
 
 #include <future>
+#include <iostream>
 #include <memory>
+#include <sstream>
 
 namespace
 {

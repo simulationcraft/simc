@@ -7,6 +7,8 @@
 #include "util/concurrency.hpp"
 #include "util/io.hpp"
 #include "util/util.hpp"
+
+#include <iostream>
 #include <cstring>
 
 // Cross-Platform Support for HTTP-Download =================================
@@ -414,8 +416,6 @@ std::tuple<std::string, std::string> http::normalize_header( const std::string& 
 #endif /* NO_SC_NETWORKING */
 
 #ifdef UNIT_TEST
-
-#include <iostream>
 
 uint32_t dbc::get_school_mask( school_e ) { return 0; }
 void sim_t::errorf( const char*, ... ) { }

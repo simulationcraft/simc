@@ -347,9 +347,11 @@ void variable_t::execute()
   case OPERATION_PRINT:
     // Only spit out prints in main thread
     if (sim->parent == nullptr)
-      std::cout << "actor=" << player->name_str << " time=" << sim->current_time().total_seconds()
-      << " iteration=" << sim->current_iteration << " variable=" << var->name_.c_str()
-      << " value=" << var->current_value_ << std::endl;
+    {
+      sim -> out_log.print( "actor={} time={} iterations={} variable={} value={}\n",
+                            player->name_str, sim->current_time(), sim->current_iteration,
+                            var->name_, var->current_value_ );
+    }
     break;
   case OPERATION_RESET:
     var->reset();

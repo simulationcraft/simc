@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "residual_action.hpp"
-#include <iostream>
 #include <sstream>
 
 residual_action::residual_periodic_state_t::residual_periodic_state_t(action_t* a, player_t* t) :

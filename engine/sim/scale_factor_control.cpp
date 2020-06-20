@@ -11,6 +11,8 @@
 #include "player/stats.hpp"
 #include "report/reports.hpp"
 #include "util/util.hpp"
+
+#include <iostream>
 #include <memory>
 
 namespace { // UNNAMED NAMESPACE ==========================================

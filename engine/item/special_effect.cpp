@@ -947,9 +947,7 @@ std::ostream& operator<<(std::ostream &os, const special_effect_t& se)
 
 std::string special_effect_t::to_string() const
 {
-  std::stringstream s;
-  s << *this;
-  return s.str();
+  return fmt::to_string( *this );
 }
 
 void special_effect::parse_special_effect_encoding( special_effect_t& effect,

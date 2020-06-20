@@ -16,6 +16,8 @@
 #include "interfaces/bcp_api.hpp"
 #include "player/unique_gear.hpp"
 
+#include <sstream>
+
 namespace { // UNNAMED NAMESPACE ==========================================
 
 struct token_t

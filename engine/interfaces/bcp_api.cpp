@@ -5,25 +5,29 @@
 
 #include "interfaces/bcp_api.hpp"
 
-#include "rapidjson/document.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/error/en.h"
-#include "sc_enums.hpp"
-#include "utf8-h/utf8.h"
+#include "class_modules/class_module.hpp"
 #include "dbc/dbc.hpp"
-#include "sim/sc_sim.hpp"
-#include "interfaces/sc_http.hpp"
+#include "dbc/item_database.hpp"
 #include "interfaces/sc_http_curl.hpp"
 #include "interfaces/sc_http_wininet.hpp"
+#include "interfaces/sc_http.hpp"
 #include "item/item.hpp"
-#include "player/sc_player.hpp"
 #include "player/azerite_data.hpp"
-#include "class_modules/class_module.hpp"
-#include "dbc/item_database.hpp"
+#include "player/sc_player.hpp"
+#include "sc_enums.hpp"
+#include "sim/sc_sim.hpp"
 #include "util/concurrency.hpp"
+#include "util/io.hpp"
 #include "util/static_map.hpp"
 #include "util/string_view.hpp"
+
+#include "rapidjson/document.h"
+#include "rapidjson/error/en.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
+#include "utf8-h/utf8.h"
+
+#include <iostream>
 
 // ==========================================================================
 // Blizzard Community Platform API

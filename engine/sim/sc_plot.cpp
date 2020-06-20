@@ -3,14 +3,16 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include <memory>
-
 #include "plot.hpp"
-#include "scale_factor_control.hpp"
-#include "sc_sim.hpp"
-#include "player/sc_player.hpp"
+
 #include "player/player_scaling.hpp"
+#include "player/sc_player.hpp"
 #include "report/reports.hpp"
+#include "sc_sim.hpp"
+#include "scale_factor_control.hpp"
+#include "util/io.hpp"
+
+#include <memory>
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================

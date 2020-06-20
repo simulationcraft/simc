@@ -9,11 +9,11 @@
 #include "config.hpp"
 
 #include <memory>
-
 #include <string>
 #include <vector>
-#include <sstream>
 #include <stack>
+
+#include "fmt/format.h"
 
 #include "cache.hpp"
 #include "io.hpp"
@@ -126,9 +126,7 @@ struct xml_node_t
   template <typename T>
   void add_parm( const std::string& name, const T& value )
   {
-    std::ostringstream s;
-    s << value;
-    parameters.push_back( xml_parm_t( name, s.str() ) );
+    parameters.push_back( xml_parm_t( name, fmt::to_string( value ) ) );
   }
 };
 
