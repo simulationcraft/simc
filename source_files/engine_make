@@ -131,6 +131,7 @@ SRC += \
     sim$(PATHSEP)shuffled_rng.cpp \
     sim$(PATHSEP)sim_ostream.cpp \
     sim$(PATHSEP)uptime_benefit.cpp \
+    util$(PATHSEP)cache.cpp \
     util$(PATHSEP)chrono.cpp \
     util$(PATHSEP)concurrency.cpp \
     util$(PATHSEP)git_info.cpp \

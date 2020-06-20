@@ -8,6 +8,7 @@
 #include "config.hpp"
 
 #include "sc_enums.hpp"
+#include "util/generic.hpp"
 #include "util/string_view.hpp"
 
 #include <vector>

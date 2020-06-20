@@ -7,7 +7,8 @@
 
 #include "config.hpp"
 #include "util/generic.hpp"
-#include <iostream>
+
+#include <iosfwd>
 
 // Cache Control ============================================================
 
@@ -19,21 +20,7 @@ enum class cache_era {
 // used to mark persistent caches at load.
 };
 
-inline std::ostream& operator<<(std::ostream &os, const cache_era& x)
-{
-  switch ( x )
-  {
-  case cache_era::INVALID:
-    os << "invalid era";
-    break;
-  case cache_era::IN_THE_BEGINNING:
-    os << "in the beginning";
-    break;
-  default:
-    break;
-  }
-  return os;
-}
+std::ostream& operator<<(std::ostream &os, const cache_era& x);
 
 enum behavior_e
 {

@@ -4,7 +4,7 @@
 // ==========================================================================
 
 #include "sc_timespan.hpp"
-#include <iostream>
+
 #include "fmt/format.h"
 #include "fmt/ostream.h"
 

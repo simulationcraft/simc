@@ -8,7 +8,7 @@
 
 #include <limits>
 #include <numeric>
-#include <sstream>
+#include <iosfwd>
 #include <vector>
 
 #include "util/generic.hpp"
@@ -556,24 +556,7 @@ public:
       _data.insert( _data.end(), other._data.begin(), other._data.end() );
   }
 
-  std::ostream& data_str( std::ostream& s ) const
-  {
-    s << "Sample_Data \"" << name_str << "\": count: " << count();
-    s << " mean: " << mean() << " variance: " << variance
-      << " mean variance: " << mean_variance
-      << " mean_std_dev: " << mean_std_dev << "\n";
-
-    if ( !data().empty() )
-      s << "data: ";
-    for ( size_t i = 0, size = data().size(); i < size; ++i )
-    {
-      if ( i > 0 )
-        s << ", ";
-      s << data()[ i ];
-    }
-    s << "\n";
-    return s;
-  }
+  std::ostream& data_str( std::ostream& s ) const;
 
 };  // sample_data_t
 

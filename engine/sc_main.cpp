@@ -3,23 +3,25 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "util/git_info.hpp"
+#include "class_modules/class_module.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
-#include "class_modules/class_module.hpp"
-#include "interfaces/sc_http.hpp"
 #include "interfaces/bcp_api.hpp"
+#include "interfaces/sc_http.hpp"
 #include "player/sc_player.hpp"
 #include "player/unique_gear.hpp"
 #include "report/reports.hpp"
+#include "sim/plot.hpp"
+#include "sim/reforge_plot.hpp"
 #include "sim/sc_profileset.hpp"
-#include "sim/sim_control.hpp"
 #include "sim/sc_sim.hpp"
 #include "sim/scale_factor_control.hpp"
-#include "sim/reforge_plot.hpp"
-#include "sim/plot.hpp"
-#include <locale>
+#include "sim/sim_control.hpp"
+#include "util/git_info.hpp"
+#include "util/io.hpp"
 
+#include <iostream>
+#include <locale>
 
 #ifdef SC_SIGACTION
 #include <csignal>

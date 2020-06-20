@@ -13,6 +13,8 @@
 #include "sim/reforge_plot.hpp"
 #include "scale_factor_control.hpp"
 #include "gsl-lite/gsl-lite.hpp"
+
+#include <iostream>
 #include <sstream>
 
 std::string progress_bar_t::format_time( double t )

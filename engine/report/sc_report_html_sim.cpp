@@ -13,6 +13,8 @@
 #include "sim/scale_factor_control.hpp"
 #include "fmt/chrono.h"
 
+#include <iostream>
+
 namespace
 {  // UNNAMED NAMESPACE ==========================================
 

@@ -31,7 +31,10 @@
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "util/xml.hpp"
 #include "util/string_view.hpp"
+
+#include <iostream>
 #include <random>
+#include <sstream>
 #ifdef SC_WINDOWS
 #include <direct.h>
 #endif

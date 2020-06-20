@@ -10,7 +10,8 @@
 #include "player/sc_player.hpp"
 #include "util/util.hpp"
 #include "dbc/data_enums.hh"
-#include <sstream>
+
+#include <string>
 
 // Player Callbacks
 template <typename T_CB>
@@ -65,9 +66,9 @@ void effect_callbacks_t<T_CB>::add_proc_callback(proc_types type,
   unsigned flags,
   T_CB* cb)
 {
-  std::stringstream s;
+  std::string s;
   if (sim->debug)
-    s << "Registering procs: ";
+    s += "Registering procs: ";
 
   // Setup the proc-on-X types for the proc
   for (proc_types2 pt = PROC2_TYPE_MIN; pt < PROC2_TYPE_MAX; pt++)
@@ -85,23 +86,23 @@ void effect_callbacks_t<T_CB>::add_proc_callback(proc_types type,
     {
       add_callback(procs[type][PROC2_HIT], cb);
       if (cb->listener->sim->debug)
-        s << util::proc_type_string(type) << util::proc_type2_string(PROC2_HIT) << " ";
+        s.append(util::proc_type_string(type)).append(util::proc_type2_string(PROC2_HIT)).append(" ");
 
       add_callback(procs[type][PROC2_CRIT], cb);
       if (cb->listener->sim->debug)
-        s << util::proc_type_string(type) << util::proc_type2_string(PROC2_CRIT) << " ";
+        s.append(util::proc_type_string(type)).append(util::proc_type2_string(PROC2_CRIT)).append(" ");
     }
     // Do normal registration based on the existence of the flag
     else
     {
       add_callback(procs[type][pt], cb);
       if (cb->listener->sim->debug)
-        s << util::proc_type_string(type) << util::proc_type2_string(pt) << " ";
+        s.append(util::proc_type_string(type)).append(util::proc_type2_string(pt)).append(" ");
     }
   }
 
   if (sim->debug)
-    sim->out_debug.printf("%s", s.str().c_str());
+    sim->out_debug.print("{}", s);
 }
 
 template <typename T_CB>

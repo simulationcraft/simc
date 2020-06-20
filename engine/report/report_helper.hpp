@@ -12,13 +12,10 @@
 #include "sc_enums.hpp"
 #include "sc_highchart.hpp"
 #include "util/chrono.hpp"
-#include "util/io.hpp"
 #include "util/util.hpp"
 
 #include <array>
-#include <fstream>
 #include <iosfwd>
-#include <sstream>
 
 struct player_t;
 struct action_t;

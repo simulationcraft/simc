@@ -8,9 +8,11 @@
 #include "config.hpp"
 #include "sc_enums.hpp"
 #include "dbc/data_definitions.hh"
-#include <ostream>
-#include <vector>
+
+#include <iosfwd>
 #include <memory>
+#include <string>
+#include <vector>
 
 struct expr_t;
 struct item_set_bonus_t;

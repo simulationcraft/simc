@@ -236,9 +236,7 @@ void set_bonus_t::initialize()
 
 std::string set_bonus_t::to_string() const
 {
-  std::stringstream s;
-  s << *this;
-  return s.str();
+  return fmt::to_string( *this );
 }
 
 
@@ -375,8 +373,7 @@ std::string set_bonus_t::generate_set_bonus_options() const
 
   for ( const auto& bonus : set_bonuses )
   {
-    std::string opt = bonus.set_opt_name;
-    opt += "_" + util::to_string( bonus.bonus ) + "pc";
+    std::string opt = fmt::format( "{}_{}pc", bonus.set_opt_name, bonus.bonus );
 
     if ( std::find( opts.begin(), opts.end(), opt ) == opts.end() )
     {
@@ -384,15 +381,6 @@ std::string set_bonus_t::generate_set_bonus_options() const
     }
   }
 
-  std::stringstream ss;
-  for ( size_t i = 0; i < opts.size(); i++ )
-  {
-    ss << opts[ i ];
-    if ( i < opts.size() - 1 )
-    {
-      ss << ", ";
-    }
-  }
-  return ss.str();
+  return util::string_join( opts, ", " );
 }
 

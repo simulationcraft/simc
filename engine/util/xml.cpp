@@ -9,7 +9,9 @@
 #include "util/concurrency.hpp"
 #include "util/util.hpp"
 #include "interfaces/sc_http.hpp"
+
 #include <memory>
+#include <sstream>
 #include <unordered_map>
 
 using namespace rapidxml;

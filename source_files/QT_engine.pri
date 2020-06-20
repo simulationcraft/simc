@@ -291,6 +291,7 @@ SOURCES += engine/sim/scale_factor_control.cpp
 SOURCES += engine/sim/shuffled_rng.cpp
 SOURCES += engine/sim/sim_ostream.cpp
 SOURCES += engine/sim/uptime_benefit.cpp
+SOURCES += engine/util/cache.cpp
 SOURCES += engine/util/chrono.cpp
 SOURCES += engine/util/concurrency.cpp
 SOURCES += engine/util/git_info.cpp

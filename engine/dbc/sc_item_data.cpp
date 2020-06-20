@@ -1236,7 +1236,7 @@ static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_s
 std::string dbc::bonus_ids_str( const dbc_t& dbc )
 {
   std::vector<unsigned> bonus_ids;
-  std::stringstream s;
+  fmt::memory_buffer s;
 
   for ( const auto& e : item_bonus_entry_t::data( dbc.ptr ) )
   {
@@ -1349,19 +1349,10 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
       fields.emplace_back( fmt::format( "effects={{ {} }}", item_effects ) );
     }
 
-    for ( size_t j = 0; j < fields.size(); ++j )
-    {
-      s << fields[ j ];
-      if ( j < fields.size() - 1 )
-      {
-        s << ", ";
-      }
-    }
-
-    s << std::endl;
+    fmt::format_to( s, "{}\n", fmt::join( fields, ", " ) );
   }
 
-  return s.str();
+  return to_string( s );
 }
 
 unsigned dbc_t::child_item( unsigned id ) const

@@ -13,6 +13,9 @@
 #include "sim/sc_sim.hpp"
 #include "util/xml.hpp"
 
+#include <iostream>
+#include <sstream>
+
 // report::print_profiles ===================================================
 namespace report
 {
