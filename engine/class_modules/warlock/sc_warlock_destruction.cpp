@@ -992,7 +992,8 @@ namespace warlock {
     buffs.dark_soul_instability = make_buff( this, "dark_soul_instability", talents.dark_soul_instability )
       ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
       ->add_invalidate( CACHE_CRIT_CHANCE )
-      ->set_default_value( talents.dark_soul_instability->effectN( 1 ).percent() );
+      ->set_default_value( talents.dark_soul_instability->effectN( 1 ).percent() )
+      ->set_cooldown( 0_ms );
 
     // Azerite
     buffs.bursting_flare = make_buff<stat_buff_t>( this, "bursting_flare", find_spell( 279913 ) )
