@@ -822,7 +822,7 @@ bool parse_spell_query( sim_t*             sim,
     sq_str = sq_str.substr( 0, lvl_offset );
   }
 
-  sim -> spell_query = std::unique_ptr<spell_data_expr_t>( spell_data_expr_t::parse( sim, sq_str ) );
+  sim -> spell_query = spell_data_expr_t::parse( sim, sq_str );
 
   if (sim -> spell_query == nullptr)
   {

@@ -450,11 +450,12 @@ struct spell_list_expr_t : public spell_data_expr_t
 struct sd_expr_binary_t : public spell_list_expr_t
 {
   int                operation;
-  spell_data_expr_t* left;
-  spell_data_expr_t* right;
+  std::unique_ptr<spell_data_expr_t> left;
+  std::unique_ptr<spell_data_expr_t> right;
 
-  sd_expr_binary_t( dbc_t& dbc, util::string_view n, int o, spell_data_expr_t* l, spell_data_expr_t* r ) :
-    spell_list_expr_t( dbc, n ), operation( o ), left( l ), right( r ) { }
+  sd_expr_binary_t( dbc_t& dbc, util::string_view n, int o,
+                    std::unique_ptr<spell_data_expr_t> l, std::unique_ptr<spell_data_expr_t> r ) :
+    spell_list_expr_t( dbc, n ), operation( o ), left( std::move( l ) ), right( std::move( r ) ) { }
 
   int evaluate() override
   {
@@ -1024,48 +1025,48 @@ struct spell_school_expr_t : public spell_list_expr_t
   }
 };
 
-spell_data_expr_t* build_expression_tree( dbc_t& dbc,
-                                          const std::vector<expression::expr_token_t>& tokens )
+std::unique_ptr<spell_data_expr_t> build_expression_tree(
+  dbc_t& dbc, const std::vector<expression::expr_token_t>& tokens )
 {
-  auto_dispose< std::vector<spell_data_expr_t*> > stack;
+  std::vector<std::unique_ptr<spell_data_expr_t>> stack;
 
   for ( auto& t : tokens )
   {
     if ( t.type == expression::TOK_NUM )
-      stack.push_back( new spell_data_expr_t( dbc, t.label, std::stod( t.label ) ) );
+    {
+      stack.push_back( std::make_unique<spell_data_expr_t>( dbc, t.label, std::stod( t.label ) ) );
+    }
     else if ( t.type == expression::TOK_STR )
     {
-      spell_data_expr_t* e = spell_data_expr_t::create_spell_expression( dbc, t.label );
+      auto e = spell_data_expr_t::create_spell_expression( dbc, t.label );
 
       if ( ! e )
       {
         throw std::invalid_argument(fmt::format("Unable to decode expression function '{}'.", t.label));
       }
-      stack.push_back( e );
+      stack.push_back( std::move( e ) );
     }
     else if ( expression::is_binary( t.type ) )
     {
       if ( stack.size() < 2 )
         return nullptr;
-      spell_data_expr_t* right = stack.back(); stack.pop_back();
-      spell_data_expr_t* left  = stack.back(); stack.pop_back();
+      auto right = std::move( stack.back() ); stack.pop_back();
+      auto left  = std::move( stack.back() ); stack.pop_back();
       if ( ! left || ! right )
         return nullptr;
-      stack.push_back( new sd_expr_binary_t( dbc, t.label, t.type, left, right ) );
+      stack.push_back( std::make_unique<sd_expr_binary_t>( dbc, t.label, t.type, std::move(left), std::move(right) ) );
     }
   }
 
   if ( stack.size() != 1 )
     return nullptr;
 
-  spell_data_expr_t* res = stack.back();
-  stack.pop_back();
-  return res;
+  return std::move( stack.back() );
 }
 
 } // anonymous namespace ====================================================
 
-spell_data_expr_t* spell_data_expr_t::create_spell_expression( dbc_t& dbc, util::string_view name_str )
+std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( dbc_t& dbc, util::string_view name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
@@ -1078,9 +1079,9 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( dbc_t& dbc, util:
   {
     // No split, access raw list or create a normal expression
     if ( data_type == static_cast<expr_data_e>( -1 ) )
-      return new spell_data_expr_t( dbc, name_str, name_str );
+      return std::make_unique<spell_data_expr_t>( dbc, name_str, name_str );
     else
-      return new spell_list_expr_t( dbc, splits[ 0 ], data_type );
+      return std::make_unique<spell_list_expr_t>( dbc, splits[ 0 ], data_type );
   }
 
   if ( data_type == static_cast<expr_data_e>( -1 ) )
@@ -1099,28 +1100,28 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( dbc_t& dbc, util:
     splits.erase( splits.begin() + 1 );
   }
   else if ( util::str_compare_ci( splits[ 1 ], "class" ) )
-    return new spell_class_expr_t( dbc, data_type );
+    return std::make_unique<spell_class_expr_t>( dbc, data_type );
   else if ( util::str_compare_ci( splits[ 1 ], "race" ) )
-    return new spell_race_expr_t( dbc, data_type );
+    return std::make_unique<spell_race_expr_t>( dbc, data_type );
   else if ( util::str_compare_ci( splits[ 1 ], "attribute" ) )
-    return new spell_attribute_expr_t( dbc, data_type );
+    return std::make_unique<spell_attribute_expr_t>( dbc, data_type );
   else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "flag" ) )
-    return new spell_flag_expr_t( dbc, data_type );
+    return std::make_unique<spell_flag_expr_t>( dbc, data_type );
   else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "school" ) )
-    return new spell_school_expr_t( dbc, data_type );
+    return std::make_unique<spell_school_expr_t>( dbc, data_type );
 
   for ( const auto& field : data_fields_by_type( data_type, effect_query ) )
   {
     if ( ! field.name.empty() && util::str_compare_ci( splits[ 1 ], field.name ) )
     {
-      return new spell_data_filter_expr_t( dbc, data_type, field.name, effect_query );
+      return std::make_unique<spell_data_filter_expr_t>( dbc, data_type, field.name, effect_query );
     }
   }
 
   return nullptr;
 }
 
-spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr_str )
+std::unique_ptr<spell_data_expr_t> spell_data_expr_t::parse( sim_t* sim, const std::string& expr_str )
 {
   if ( expr_str.empty() ) return nullptr;
 
@@ -1141,7 +1142,7 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
 
   try
   {
-    spell_data_expr_t* e = build_expression_tree(*sim->dbc, tokens);
+    auto e = build_expression_tree(*sim->dbc, tokens);
     if (!e)
     {
       throw std::invalid_argument(fmt::format("Unable to build expression tree from '{}'.", expr_str));
