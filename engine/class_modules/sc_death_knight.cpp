@@ -2942,7 +2942,7 @@ struct melee_t : public death_knight_melee_attack_t
     {
       p() -> buffs.sudden_doom -> trigger();
 
-      if ( s -> result == RESULT_CRIT )
+      if ( p() -> spec.killing_machine -> ok() && s -> result == RESULT_CRIT )
       {
         p() -> trigger_killing_machine( 0, p() -> procs.km_from_crit_aa,
                                            p() -> procs.km_from_crit_aa_wasted );
