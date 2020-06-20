@@ -543,28 +543,23 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
     cooldown->duration = spell_data.cooldown();
   }
 
-  if ( spell_data._power )
+  const auto spell_powers = spell_data.powers();
+  if ( spell_powers.size() == 1 && spell_powers.front()->aura_id() == 0 )
   {
-    if ( spell_data._power->size() == 1 && spell_data._power->at( 0 )->aura_id() == 0 )
+    resource_current = spell_powers.front()->resource();
+  }
+  else
+  {
+    // Find the first power entry without a aura id
+    auto it = range::find_if( spell_powers, power_entry_without_aura() );
+    if ( it != spell_powers.end() )
     {
-      resource_current = spell_data._power->at( 0 )->resource();
-    }
-    else
-    {
-      // Find the first power entry without a aura id
-      std::vector<const spellpower_data_t*>::iterator it =
-          std::find_if( spell_data._power->begin(), spell_data._power->end(), power_entry_without_aura() );
-      if ( it != spell_data._power->end() )
-      {
-        resource_current = ( *it )->resource();
-      }
+      resource_current = ( *it )->resource();
     }
   }
 
-  for ( size_t i = 0; spell_data._power && i < spell_data._power->size(); i++ )
+  for ( const spellpower_data_t* pd : spell_powers )
   {
-    const spellpower_data_t* pd = ( *spell_data._power )[ i ];
-
     if ( pd->_cost != 0 )
       base_costs[ pd->resource() ] = pd->cost();
     else
@@ -578,9 +573,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
       base_costs_per_tick[ pd->resource() ] = floor( pd->cost_per_tick() * player->resources.base[ pd->resource() ] );
   }
 
-  for ( size_t i = 1; i <= spell_data.effect_count(); i++ )
+  for ( const spelleffect_data_t* ed : spell_data.effects() )
   {
-    parse_effect_data( spell_data.effectN( i ) );
+    parse_effect_data( *ed );
   }
 }
 

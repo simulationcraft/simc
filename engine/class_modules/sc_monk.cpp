@@ -2374,9 +2374,8 @@ public:
 
     /* Iterate through power entries, and find if there are resources linked to one of our stances
      */
-    for ( size_t i = 0; ab::data()._power && i < ab::data()._power->size(); i++ )
+    for ( const spellpower_data_t* pd : ab::data().powers() )
     {
-      const spellpower_data_t* pd = ( *ab::data()._power )[ i ];
       switch ( pd->aura_id() )
       {
         case 137023:

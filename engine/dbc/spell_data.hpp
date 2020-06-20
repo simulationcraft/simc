@@ -572,6 +572,9 @@ struct spell_data_t
   size_t power_count() const
   { return _power ? _power -> size() : 0; }
 
+  size_t driver_count() const
+  { return _driver ? _driver -> size() : 0; }
+
   size_t label_count() const
   { return _labels ? _labels -> size() : 0; }
 
@@ -594,24 +597,24 @@ struct spell_data_t
   // Composite functions
   const spelleffect_data_t& effectN( size_t idx ) const
   {
-    assert( _effects );
     assert( idx > 0 && "effect index must not be zero or less" );
 
     if ( this == spell_data_t::nil() || this == spell_data_t::not_found() )
       return *spelleffect_data_t::nil();
 
-    assert( idx <= _effects -> size() && "effect index out of bound!" );
+    assert( idx <= effect_count() && "effect index out of bound!" );
 
-    return *( ( *_effects )[ idx - 1 ] );
+    return *( effects()[ idx - 1 ] );
   }
 
   const spellpower_data_t& powerN( size_t idx ) const
   {
-    if ( _power )
+    const auto powers = this -> powers();
+    if ( powers.size() )
     {
-      assert( idx > 0 && _power && idx <= _power -> size() );
+      assert( idx > 0 && idx <= powers.size() );
 
-      return *_power -> at( idx - 1 );
+      return *( powers[ idx - 1 ] );
     }
 
     return spellpower_data_t::nil();
@@ -619,24 +622,19 @@ struct spell_data_t
 
   short labelN( size_t idx ) const
   {
-    if ( _labels && idx > 0 && idx <= _labels -> size() )
-    {
-      return _labels -> at( idx - 1 ) -> label();
-    }
-
+    const auto labels = this -> labels();
+    if ( idx > 0 && idx <= labels.size() )
+      return labels[ idx - 1 ] -> label();
     return 0;
   }
 
   const spellpower_data_t& powerN( power_e pt ) const
   {
     assert( pt >= POWER_HEALTH && pt < POWER_MAX );
-    if ( _power )
+    for ( const spellpower_data_t* pd : powers() )
     {
-      for ( size_t i = 0; i < _power -> size(); i++ )
-      {
-        if ( _power -> at( i ) -> _power_type == pt )
-          return *_power -> at( i );
-      }
+      if ( pd -> _power_type == pt )
+        return *pd;
     }
 
     return spellpower_data_t::nil();
@@ -717,13 +715,10 @@ struct spell_data_t
 
   double cost( power_e pt ) const
   {
-    if ( _power )
+    for ( const spellpower_data_t* pd : powers() )
     {
-      for ( size_t i = 0; i < _power -> size(); i++ )
-      {
-        if ( ( *_power )[ i ] -> _power_type == pt )
-          return ( *_power )[ i ] -> cost();
-      }
+      if ( pd -> _power_type == pt )
+        return pd -> cost();
     }
 
     return 0.0;
@@ -731,9 +726,8 @@ struct spell_data_t
 
   uint32_t effect_id( uint32_t effect_num ) const
   {
-    assert( _effects );
-    assert( effect_num >= 1 && effect_num <= _effects -> size() );
-    return ( *_effects )[ effect_num - 1 ] -> id();
+    assert( effect_num >= 1 && effect_num <= effect_count() );
+    return effects()[ effect_num - 1 ] -> id();
   }
 
   bool flags( spell_attribute attr ) const
@@ -796,12 +790,6 @@ struct spell_data_t
   bool affected_by( const spell_data_t* ) const;
   bool affected_by( const spelleffect_data_t* ) const;
   bool affected_by( const spelleffect_data_t& ) const;
-
-  spell_data_t* driver( size_t idx = 0 ) const
-  { return _driver ? _driver -> at( idx ) : spell_data_t::nil(); }
-
-  size_t n_drivers() const
-  { return _driver ? _driver -> size() : 0; }
 
   // static functions
   static spell_data_t* nil();
