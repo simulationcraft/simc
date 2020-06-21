@@ -256,11 +256,6 @@ void spelleffect_data_t::link( bool ptr )
   {
     ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
     ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
-
-    if ( ed._spell -> _effects -> size() < ( ed.index() + 1 ) )
-      ed._spell -> _effects -> resize( ed.index() + 1, &spelleffect_data_t::nil() );
-
-    ed._spell -> _effects -> at( ed.index() ) = &ed;
   }
 }
 
@@ -268,8 +263,6 @@ util::span<spelleffect_data_t> spelleffect_data_t::_data( bool ptr )
 {
   return SC_DBC_GET_DATA( __spelleffect_data, __ptr_spelleffect_data, ptr );
 }
-
-/* static */ const spelleffect_data_nil_t spelleffect_data_nil_t::singleton;
 
 // ==========================================================================
 // Spell Data
@@ -377,7 +370,7 @@ bool spell_data_t::affected_by( const spelleffect_data_t& effect ) const
   return affected_by( &effect );
 }
 
-spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
+const spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
 {
   const auto __data = data( ptr );
   auto it = range::lower_bound( __data, spell_id, {}, &spell_data_t::id );
@@ -386,16 +379,16 @@ spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
   return spell_data_t::nil();
 }
 
-spell_data_t* spell_data_t::find( unsigned spell_id, util::string_view confirmation, bool ptr )
+const spell_data_t* spell_data_t::find( unsigned spell_id, util::string_view confirmation, bool ptr )
 {
   ( void )confirmation;
 
-  spell_data_t* p = find( spell_id, ptr );
+  const spell_data_t* p = find( spell_id, ptr );
   assert( p && confirmation == p -> name_cstr() );
   return p;
 }
 
-spell_data_t* spell_data_t::find( util::string_view name, bool ptr )
+const spell_data_t* spell_data_t::find( util::string_view name, bool ptr )
 {
   const auto __data = data( ptr );
   auto it = range::find( __data, name, &spell_data_t::name_cstr );
@@ -404,9 +397,9 @@ spell_data_t* spell_data_t::find( util::string_view name, bool ptr )
   return nullptr;
 }
 
-util::span<spell_data_t> spell_data_t::data( bool ptr )
+util::span<const spell_data_t> spell_data_t::data( bool ptr )
 {
-  return SC_DBC_GET_DATA( __spell_data, __ptr_spell_data, ptr );
+  return _data( ptr );
 }
 
 template <typename T, size_t N>
@@ -422,31 +415,24 @@ static auto spell_data_linker(util::span<T, N> data) {
 
 void spell_data_t::link( bool ptr )
 {
+  auto link_effects = spell_data_linker( SC_DBC_GET_DATA( __spelleffect_index_data, __ptr_spelleffect_index_data, ptr ) );
   auto link_power = spell_data_linker( SC_DBC_GET_DATA( __spellpower_index_data, __ptr_spellpower_index_data, ptr ) );
   auto link_driver = spell_data_linker( SC_DBC_GET_DATA( __spelldriver_index_data, __ptr_spelldriver_index_data, ptr ) );
   auto link_labels = spell_data_linker( SC_DBC_GET_DATA( __spelllabel_index_data, __ptr_spelllabel_index_data, ptr ) );
 
-  for ( spell_data_t& sd : data( ptr ) )
+  for ( spell_data_t& sd : _data( ptr ) )
   {
-    sd._effects = new std::vector<const spelleffect_data_t*>;
-
+    link_effects( sd._effects, sd._effects_count );
     link_power( sd._power, sd._power_count );
     link_driver( sd._driver, sd._driver_count );
     link_labels( sd._labels, sd._labels_count );
   }
 }
 
-void spell_data_t::de_link( bool ptr )
+util::span<spell_data_t> spell_data_t::_data( bool ptr )
 {
-  for ( spell_data_t& sd : data( ptr ) )
-  {
-    delete sd._effects;
-  }
+  return SC_DBC_GET_DATA( __spell_data, __ptr_spell_data, ptr );
 }
-
-/* static */ spell_data_nil_t spell_data_nil_t::singleton;
-
-/* static */ spell_data_not_found_t spell_data_not_found_t::singleton;
 
 // Hotfix data handling
 

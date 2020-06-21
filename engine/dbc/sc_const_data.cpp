@@ -217,18 +217,6 @@ void dbc::init()
   }
 }
 
-/* De-Initialize database
- */
-void dbc::de_init()
-{
-  spell_data_t::de_link( false );
-
-  if ( SC_USE_PTR )
-  {
-    spell_data_t::de_link( true );
-  }
-}
-
 /* Validate gem color */
 bool dbc::valid_gem_color( unsigned color )
 {

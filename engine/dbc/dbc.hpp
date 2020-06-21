@@ -75,7 +75,6 @@ enum : uint64_t
 // Initialization
 void init();
 void init_item_data();
-void de_init();
 
 // Utility functions
 uint32_t get_school_mask( school_e s );
@@ -137,8 +136,6 @@ namespace hotfix
 
     util::bump_ptr_allocator_t<> allocator_;
     std::unordered_map<unsigned, util::span<const spell_data_t*>> spell_driver_map_[ 2 ];
-
-    ~custom_dbc_data_t();
 
     bool add_spell( spell_data_t* spell, bool ptr = false );
     spell_data_t* get_mutable_spell( unsigned spell_id, bool ptr = false );

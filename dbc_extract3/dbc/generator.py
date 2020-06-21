@@ -2625,6 +2625,8 @@ class SpellDataGenerator(DataGenerator):
         included_labels = set()
 
         spelldata_array_position = {} # spell id -> array position
+        spelleffect_array_position = {} # spelleffect id -> array position
+        spelleffect_index = []
         spellpower_index = defaultdict(list)
         spelllabel_index = defaultdict(list)
         spelldriver_index = defaultdict(set)
@@ -2814,15 +2816,20 @@ class SpellDataGenerator(DataGenerator):
             else:
                 fields += [ '%6u' % 0 ]
 
-            s_effect = []
-            effect_ids = []
+            effect_ids = {} # effect index -> effect id
             # Check if effects have hotfixed data, later on we use a special
             # bitflag (0x8000 0000 0000 0000) to mark effect hotfix presence for spells.
             for effect in spell._effects:
                 if effect and ids.get(id, { 'effect_list': [ False ] })['effect_list'][effect.index]:
-                    effect_ids.append( '%u' % effect.id )
+                    effect_ids[effect.index] = effect.id
                     if effect.is_hotfixed():
                         hotfix_flags |= SPELL_EFFECT_HOTFIX_PRESENT
+
+            # Effect lists can have "holes", this effectively plugs them with an "invalid" effect id
+            # and produces a list of effect ids
+            if len(effect_ids):
+                effect_ids = [ effect_ids.get(i, 0) for i in range(max(effect_ids.keys()) + 1) ]
+                spelleffect_index.append( effect_ids )
 
             # Add spell flags
             # 35
@@ -2923,7 +2930,8 @@ class SpellDataGenerator(DataGenerator):
             # 48, 49, 50, 51
             fields += [ u'0', u'0', u'0', u'0' ]
 
-            # 52, 53, 54
+            # 52, 53, 54, 55
+            fields += [ str(len(effect_ids)) ]
             fields += [ str(power_count) ]
             fields += [ str(len(spelldriver_index.get(id, ()))) ]
             fields += [ str(len(spelllabel_index.get(id, ()))) ]
@@ -2938,7 +2946,7 @@ class SpellDataGenerator(DataGenerator):
                 spell_hotfix_data[spell.id] = hotfix_data
 
             try:
-                self._out.write('  { %s }, /* %s */\n' % (', '.join(fields), ', '.join(effect_ids)))
+                self._out.write('  { %s }, /* %s */\n' % (', '.join(fields), ', '.join('%u' % id for id in effect_ids)))
             except Exception as e:
                 sys.stderr.write('Error: %s\n%s\n' % (e, fields))
                 sys.exit(1)
@@ -2947,9 +2955,9 @@ class SpellDataGenerator(DataGenerator):
 
         self._out.write('};\n\n')
 
-        self._out.write('// %d effects, wow build level %s\n' % ( len(effects), self._options.build ))
-        self._out.write('static std::array<spelleffect_data_t, %d> __%s_data { {\n' % (
-            len(effects), self.format_str( 'spelleffect' ) ))
+        self._out.write('// {} effects, wow build level {}\n'.format( len(effects), self._options.build ))
+        self._out.write('static spelleffect_data_t __{}_data[{}] = {{\n'.format(
+            self.format_str('spelleffect'), len(effects) ))
 
         index = 0
         for effect_id in sorted(effects):
@@ -2958,6 +2966,7 @@ class SpellDataGenerator(DataGenerator):
                 sys.stderr.write('Spell Effect id %d not found\n') % effect_id
                 continue
 
+            spelleffect_array_position[effect.id] = index
             #if index % 20 == 0:
             #    self._out.write('//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Coefficient,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die,Mech,ChTrg,0, 0 },\n')
 
@@ -3063,7 +3072,7 @@ class SpellDataGenerator(DataGenerator):
 
             index += 1
 
-        self._out.write('} };\n\n')
+        self._out.write('};\n\n')
 
         powers = list(powers)
         powers.sort(key = lambda k: k.id)
@@ -3124,6 +3133,17 @@ class SpellDataGenerator(DataGenerator):
             output_hotfixes(self, type_str, hotfix_data)
 
         # Then, write out pseudo-runtime linking data
+        def spelleffect_ref_name(id):
+            name = self.format_str('spelleffect')
+            pos = spelleffect_array_position.get(id)
+            return pos is None and '&spelleffect_data_nil_v' or '&__{}_data[{}]'.format(name, pos)
+
+        self._out.write('static constexpr std::array<const spelleffect_data_t*, {}> __{}_index_data {{ {{\n'.format(
+            sum(len(ids) for ids in spelleffect_index), self.format_str('spelleffect') ))
+        for ids in spelleffect_index:
+            self._out.write('  {},\n'.format( ', '.join(spelleffect_ref_name(id) for id in ids) ))
+        self._out.write('} };\n')
+
         def output_index_data(index_data, type_name, name, ref_name=None):
             name = self.format_str(name)
             ref_name = ref_name and self.format_str(ref_name) or name

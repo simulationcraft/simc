@@ -653,7 +653,12 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
 
   clone = new spell_data_t( *source );
 
-  clone -> _effects = new std::vector<const spelleffect_data_t*>( clone -> effect_count(), &spelleffect_data_t::nil() );
+  const spelleffect_data_t** clone_effects = nullptr;
+  if ( source -> effect_count() > 0 )
+  {
+    clone_effects = allocator_.create_n<const spelleffect_data_t*>( source -> effect_count(), &spelleffect_data_t::nil() );
+    clone -> _effects = clone_effects;
+  }
 
   const spellpower_data_t** clone_power = nullptr;
   if ( source -> power_count() > 0 )
@@ -686,7 +691,7 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
     }
 
     // Link cloned effect to cloned spell, and cloned spell to cloned effect
-    clone -> _effects -> at( i ) = e_clone;
+    clone_effects[ i ] = e_clone;
     e_clone -> _spell = clone;
 
     // No trigger set up in the source effect, so processing for this effect can end here.
@@ -697,7 +702,8 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
 
     // Clone the trigger, and re-link drivers in the trigger spell so they also point to cloned
     // data. This is necessary because Blizzard re-uses trigger spells in multiple drivers.
-    e_clone -> _trigger_spell = create_clone( e_source -> trigger(), ptr );
+    auto e_clone_trigger = create_clone( e_source -> trigger(), ptr );
+    e_clone -> _trigger_spell = e_clone_trigger;
     assert( e_source -> trigger() -> _driver );
 
     const auto e_source_trigger_drivers = e_source -> trigger() -> drivers();
@@ -707,8 +713,8 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
     {
       auto driver_data = allocator_.create_n<const spell_data_t*>( e_source_trigger_drivers.size(), spell_data_t::nil() );
       e_clone_trigger_drivers = { driver_data, e_source_trigger_drivers.size() };
-      e_clone -> _trigger_spell -> _driver = e_clone_trigger_drivers.data();
-      e_clone -> _trigger_spell -> _driver_count = as<uint8_t>( e_clone_trigger_drivers.size() );
+      e_clone_trigger -> _driver = e_clone_trigger_drivers.data();
+      e_clone_trigger -> _driver_count = as<uint8_t>( e_clone_trigger_drivers.size() );
     }
 
     auto it = range::find( e_source_trigger_drivers, clone -> id(), &spell_data_t::id );
@@ -741,43 +747,21 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
 
 spell_data_t* custom_dbc_data_t::clone_spell( unsigned clone_spell_id, bool ptr )
 {
-  spell_data_t* c = get_mutable_spell( clone_spell_id, ptr );
   // If a spell is found, we can be sure that the whole spell chain has already been cloned, so just
   // return the base spell
-  if ( c )
-  {
+  if ( spell_data_t* c = get_mutable_spell( clone_spell_id, ptr ) )
     return c;
-  }
-  else
-  {
-    c = spell_data_t::find( clone_spell_id, ptr );
-  }
 
   // Get to the root of the potential chain
   std::vector<const spell_data_t*> base_spells;
-  collect_base_spells( c, base_spells );
+  collect_base_spells( spell_data_t::find( clone_spell_id, ptr ), base_spells );
   for ( auto base_spell : base_spells )
   {
     // Create clones of the base spell chains, we don't really care about individual spells for now
     create_clone( base_spell, ptr );
   }
 
-  c = get_mutable_spell( clone_spell_id, ptr );
-  // Return the cloned spell
-  return c;
-}
-
-custom_dbc_data_t::~custom_dbc_data_t()
-{
-  for ( size_t i = 0; i < spells_[ 0 ].size(); ++i )
-  {
-    delete spells_[ 0 ][ i ] -> _effects;
-  }
-
-  for ( size_t i = 0; i < spells_[ 1 ].size(); ++i )
-  {
-    delete spells_[ 1 ][ i ] -> _effects;
-  }
+  return get_mutable_spell( clone_spell_id, ptr );
 }
 
 namespace dbc_override

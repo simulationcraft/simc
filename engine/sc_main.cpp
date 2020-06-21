@@ -202,14 +202,6 @@ std::string get_cache_directory()
   return s;
 }
 
-// RAII-wrapper for dbc init / de-init
-struct dbc_initializer_t {
-  dbc_initializer_t()
-  { dbc::init(); }
-  ~dbc_initializer_t()
-  { dbc::de_init(); }
-};
-
 // RAII-wrapper for http cache load / save
 struct cache_initializer_t {
   cache_initializer_t( const std::string& fn ) :
@@ -262,7 +254,7 @@ int sim_t::main( const std::vector<std::string>& args )
 #if !defined( SC_NO_NETWORKING )
     apitoken_initializer_t apitoken_init;
 #endif
-    dbc_initializer_t dbc_init;
+    dbc::init();
     module_t::init();
     unique_gear::register_hotfixes();
 

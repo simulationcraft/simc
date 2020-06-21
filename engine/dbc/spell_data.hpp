@@ -180,8 +180,8 @@ struct spelleffect_data_t
   double           _pvp_coeff;       // 28 PvP Coefficient
 
   // Pointers for runtime linking
-  spell_data_t* _spell;
-  spell_data_t* _trigger_spell;
+  const spell_data_t* _spell;
+  const spell_data_t* _trigger_spell;
 
   bool ok() const
   { return _id != 0; }
@@ -440,11 +440,12 @@ struct spell_data_t
   unsigned    _dmg_class;          // 47 SpellCategories.db2 classification for the spell
 
   // Pointers for runtime linking
-  std::vector<const spelleffect_data_t*>* _effects;
+  const spelleffect_data_t* const* _effects;
   const spellpower_data_t* const* _power;
   const spell_data_t* const* _driver; // The triggered spell's driver(s)
   const spelllabel_data_t* const* _labels; // Applied (known) labels to the spell
 
+  uint8_t _effects_count;
   uint8_t _power_count;
   uint8_t _driver_count;
   uint8_t _labels_count;
@@ -572,7 +573,7 @@ struct spell_data_t
 
   // Helper functions
   size_t effect_count() const
-  { assert( _effects ); return _effects -> size(); }
+  { return _effects_count; }
 
   size_t power_count() const
   { return _power_count; }
@@ -647,8 +648,8 @@ struct spell_data_t
 
   util::span<const spelleffect_data_t* const> effects() const
   {
-    assert( _effects );
-    return *_effects;
+    assert( _effects != nullptr || _effects_count == 0 );
+    return { _effects, _effects_count };
   }
 
   util::span<const spellpower_data_t* const> powers() const
@@ -794,70 +795,41 @@ struct spell_data_t
   bool affected_by( const spelleffect_data_t& ) const;
 
   // static functions
-  static spell_data_t* nil();
-  static spell_data_t* not_found();
-  static spell_data_t* find( util::string_view name, bool ptr = false );
-  static spell_data_t* find( unsigned id, bool ptr = false );
-  static spell_data_t* find( unsigned id, util::string_view confirmation, bool ptr = false );
-  static util::span<spell_data_t> data( bool ptr = false );
+  static const spell_data_t* nil();
+  static const spell_data_t* not_found();
+  static const spell_data_t* find( util::string_view name, bool ptr = false );
+  static const spell_data_t* find( unsigned id, bool ptr = false );
+  static const spell_data_t* find( unsigned id, util::string_view confirmation, bool ptr = false );
+  static util::span<const spell_data_t> data( bool ptr = false );
 
   static void link( bool ptr );
-  static void de_link( bool ptr );
+private:
+  static util::span<spell_data_t> _data( bool ptr );
 };
-
-// ==========================================================================
-// Spell Effect Data Nil
-// ==========================================================================
-
-struct spelleffect_data_nil_t : public spelleffect_data_t
-{
-  spelleffect_data_nil_t() : spelleffect_data_t()
-  { _spell = _trigger_spell = spell_data_t::not_found(); }
-
-  static const spelleffect_data_nil_t singleton;
-};
-
-inline const spelleffect_data_t& spelleffect_data_t::nil()
-{ return spelleffect_data_nil_t::singleton; }
 
 // ==========================================================================
 // Spell Data Nil / Not found
 // ==========================================================================
 
-/* Empty spell_data container
- */
-struct spell_data_nil_t : public spell_data_t
-{
-  spell_data_nil_t() : spell_data_t()
-  {
-    _effects = new std::vector< const spelleffect_data_t* >();
+// Empty spell_data container
+static constexpr const spell_data_t& spell_data_nil_v = dbc::nil<spell_data_t>;
+inline const spell_data_t* spell_data_t::nil() { return &spell_data_nil_v; }
+
+// Empty spell data container, which is used to return a "not found" state
+struct spell_data_not_found_t : public spell_data_t {};
+static constexpr const spell_data_t& spell_data_not_found_v = meta::static_const_t<spell_data_not_found_t>::value;
+inline const spell_data_t* spell_data_t::not_found() { return &spell_data_not_found_v; }
+
+// ==========================================================================
+// Spell Effect Data Nil
+// ==========================================================================
+
+struct spelleffect_data_nil_t : public spelleffect_data_t {
+  constexpr spelleffect_data_nil_t() : spelleffect_data_t() {
+    _spell = _trigger_spell = &spell_data_not_found_v;
   }
-
-  ~spell_data_nil_t()
-  { delete _effects; }
-
-  static spell_data_nil_t singleton;
 };
-
-inline spell_data_t* spell_data_t::nil()
-{ return &spell_data_nil_t::singleton; }
-
-/* Empty spell data container, which is used to return a "not found" state
- */
-struct spell_data_not_found_t : public spell_data_t
-{
-  spell_data_not_found_t() : spell_data_t()
-  {
-    _effects = new std::vector< const spelleffect_data_t* >();
-  }
-
-  ~spell_data_not_found_t()
-  { delete _effects; }
-
-  static spell_data_not_found_t singleton;
-};
-
-inline spell_data_t* spell_data_t::not_found()
-{ return &spell_data_not_found_t::singleton; }
+static constexpr const spelleffect_data_t& spelleffect_data_nil_v = meta::static_const_t<spelleffect_data_nil_t>::value;
+inline const spelleffect_data_t& spelleffect_data_t::nil() { return spelleffect_data_nil_v; }
 
 #endif // SC_DBC_SPELL_DATA_HPP
