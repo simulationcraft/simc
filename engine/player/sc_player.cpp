@@ -7279,7 +7279,7 @@ struct racial_spell_t : public spell_t
   {
     spell_t::init();
 
-    if ( &data() == &spell_data_not_found_t::singleton )
+    if ( &data() == spell_data_t::not_found() )
       background = true;
   }
 };

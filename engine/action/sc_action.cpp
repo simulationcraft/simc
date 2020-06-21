@@ -1458,7 +1458,7 @@ void action_t::execute()
   }
 #endif
 
-  if ( &data() == &spell_data_not_found_t::singleton )
+  if ( &data() == spell_data_t::not_found() )
   {
     sim->errorf( "Player %s could not find spell data for action %s\n", player->name(), name() );
     sim->cancel();
