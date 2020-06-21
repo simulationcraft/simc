@@ -249,23 +249,23 @@ double spelleffect_data_t::scaled_max( double avg, double delta ) const
   return result;
 }
 
-spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
+const spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
 {
   const auto __data = data( ptr );
   auto it = range::lower_bound( __data, id, {}, &spelleffect_data_t::id );
   if ( it != __data.end() && it->id() == id )
     return &*it;
-  return spelleffect_data_t::nil();
+  return &spelleffect_data_t::nil();
 }
 
-util::span<spelleffect_data_t> spelleffect_data_t::data( bool ptr )
+util::span<const spelleffect_data_t> spelleffect_data_t::data( bool ptr )
 {
-  return SC_DBC_GET_DATA( __spelleffect_data, __ptr_spelleffect_data, ptr );
+  return _data( ptr );
 }
 
 void spelleffect_data_t::link( bool ptr )
 {
-  for ( spelleffect_data_t& ed : data( ptr ) )
+  for ( spelleffect_data_t& ed : _data( ptr ) )
   {
     ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
     ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
@@ -282,13 +282,18 @@ void spelleffect_data_t::link( bool ptr )
     }
 
     if ( ed._spell -> _effects -> size() < ( ed.index() + 1 ) )
-      ed._spell -> _effects -> resize( ed.index() + 1, spelleffect_data_t::nil() );
+      ed._spell -> _effects -> resize( ed.index() + 1, &spelleffect_data_t::nil() );
 
     ed._spell -> _effects -> at( ed.index() ) = &ed;
   }
 }
 
-/* static */ spelleffect_data_nil_t spelleffect_data_nil_t::singleton;
+util::span<spelleffect_data_t> spelleffect_data_t::_data( bool ptr )
+{
+  return SC_DBC_GET_DATA( __spelleffect_data, __ptr_spelleffect_data, ptr );
+}
+
+/* static */ const spelleffect_data_nil_t spelleffect_data_nil_t::singleton;
 
 // ==========================================================================
 // Spell Data

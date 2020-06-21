@@ -1214,7 +1214,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     racials(),
     passive_values(),
     active_during_iteration( false ),
-    _mastery( spelleffect_data_t::nil() ),
+    _mastery( &spelleffect_data_t::nil() ),
     cache( this ),
     resource_regeneration( regen_type::STATIC ),
     last_regen( timespan_t::zero() ),

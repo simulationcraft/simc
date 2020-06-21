@@ -10408,7 +10408,7 @@ const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_s
     const spelleffect_data_t& effect = aura_spell->effectN( i );
 
     if ( affected_spell != spell_data_t::nil() && !affected_spell->affected_by( effect ) )
-      return spelleffect_data_t::nil();
+      return &spelleffect_data_t::nil();
 
     if ( effect.type() == type && effect.subtype() == subtype )
     {
@@ -10424,7 +10424,7 @@ const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_s
     }
   }
 
-  return spelleffect_data_t::nil();
+  return &spelleffect_data_t::nil();
 }
 
 void druid_t::vision_of_perfection_proc()

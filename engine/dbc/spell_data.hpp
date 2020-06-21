@@ -341,18 +341,20 @@ struct spelleffect_data_t
   bool override_field( util::string_view field, double value );
   double get_field( util::string_view field ) const;
 
-  spell_data_t* spell() const
+  const spell_data_t* spell() const
   { assert( _spell ); return _spell; }
 
-  spell_data_t* trigger() const
+  const spell_data_t* trigger() const
   { assert( _trigger_spell ); return _trigger_spell; }
 
-  static spelleffect_data_t* nil();
-  static spelleffect_data_t* find( unsigned, bool ptr = false );
-  static util::span<spelleffect_data_t> data( bool ptr = false );
+  static const spelleffect_data_t& nil();
+  static const spelleffect_data_t* find( unsigned, bool ptr = false );
+  static util::span<const spelleffect_data_t> data( bool ptr = false );
 
-  static void                link( bool ptr = false );
+  static void link( bool ptr = false );
 private:
+  static util::span<spelleffect_data_t> _data( bool ptr );
+
   double scaled_average( double budget, unsigned level ) const;
   double scaled_delta( double budget ) const;
   double scaled_min( double avg, double delta ) const;
@@ -600,7 +602,7 @@ struct spell_data_t
     assert( idx > 0 && "effect index must not be zero or less" );
 
     if ( this == spell_data_t::nil() || this == spell_data_t::not_found() )
-      return *spelleffect_data_t::nil();
+      return spelleffect_data_t::nil();
 
     assert( idx <= effect_count() && "effect index out of bound!" );
 
@@ -812,11 +814,11 @@ struct spelleffect_data_nil_t : public spelleffect_data_t
   spelleffect_data_nil_t() : spelleffect_data_t()
   { _spell = _trigger_spell = spell_data_t::not_found(); }
 
-  static spelleffect_data_nil_t singleton;
+  static const spelleffect_data_nil_t singleton;
 };
 
-inline spelleffect_data_t* spelleffect_data_t::nil()
-{ return &spelleffect_data_nil_t::singleton; }
+inline const spelleffect_data_t& spelleffect_data_t::nil()
+{ return spelleffect_data_nil_t::singleton; }
 
 // ==========================================================================
 // Spell Data Nil / Not found
