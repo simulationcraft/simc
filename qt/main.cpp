@@ -134,8 +134,6 @@ int main( int argc, char *argv[] )
 
   auto ret = a.exec();
 
-  dbc::de_init();
-
   #ifndef SC_NO_NETWORKING
   bcp_api::token_save();
   #endif
