@@ -9882,23 +9882,23 @@ void monk_t::apl_combat_windwalker()
   }
 
   // Serenity On-use w/ Lustrous Golden Plumage & Gladiator's Medallion
-  cd_serenity->add_action( "use_item,name=lustrous_golden_plumage,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|fight_remains<25" );
-  cd_serenity->add_action( "use_item,effect_name=gladiators_medallion,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|fight_remains<20" );
+  cd_serenity->add_action( "use_item,name=lustrous_golden_plumage,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|variable.hold_tod|fight_remains<=20" );
+  cd_serenity->add_action( "use_item,effect_name=gladiators_medallion,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|variable.hold_tod|fight_remains<=20" );
   cd_serenity->add_action( "use_item,effect_name=gladiators_emblem,if=fight_remains>159|cooldown.touch_of_death.remains<1|variable.hold_tod" );
 	
   cd_serenity->add_action( this, "Touch of Death", "if=!variable.hold_tod" );
   cd_serenity->add_action( this, "Touch of Karma", "if=fight_remains>159|dot.touch_of_death.remains|variable.hold_tod" );
 
   // Serenity On-use w/ Pocketsized Computation Device
-  cd_serenity->add_action( "use_item,name=pocketsized_computation_device,if=buff.serenity.down&(cooldown.touch_of_death.remains>10|!variable.hold_tod)|fight_remains<5" );
+  cd_serenity->add_action( "use_item,name=pocketsized_computation_device,if=buff.serenity.down&(cooldown.touch_of_death.remains>10|variable.hold_tod)|fight_remains<5" );
 
   cd_serenity->add_action( "blood_of_the_enemy,if=buff.serenity.down&(cooldown.serenity.remains>20|cooldown.serenity.remains<2)|fight_remains<15" );
 
    // Serenity On-use items
-  cd_serenity->add_action( "use_item,name=remote_guidance_device,if=cooldown.touch_of_death.remains>10|!variable.hold_tod" );
+  cd_serenity->add_action( "use_item,name=remote_guidance_device,if=cooldown.touch_of_death.remains>10|variable.hold_tod" );
   cd_serenity->add_action( "use_item,effect_name=gladiators_badge,if=cooldown.serenity.remains>20|fight_remains<20" );
   cd_serenity->add_action( "use_item,name=galecallers_boon,if=cooldown.serenity.remains>20|fight_remains<20" );
-  cd_serenity->add_action( "use_item,name=writhing_segment_of_drestagath,if=cooldown.touch_of_death.remains>10|!variable.hold_tod" );
+  cd_serenity->add_action( "use_item,name=writhing_segment_of_drestagath,if=cooldown.touch_of_death.remains>10|variable.hold_tod" );
   cd_serenity->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.serenity.remains>9|fight_remains<25" );
 
   for ( size_t i = 0; i < items.size(); i++ )
@@ -9948,7 +9948,7 @@ void monk_t::apl_combat_windwalker()
   }
 
   cd_sef->add_action(
-      "guardian_of_azeroth,if=fight_remains>185|!variable.hold_tod&cooldown.touch_of_death.remains<=14|fight_remains<35" );
+      "guardian_of_azeroth,if=fight_remains>185|!variable.hold_tod&cooldown.touch_of_death.remains<=14|fight_remains<36" );
   cd_sef->add_action(
       "worldvein_resonance,if=cooldown.touch_of_death.remains>58|cooldown.touch_of_death.remains<2|variable.hold_tod|fight_remains<20" );
 
@@ -9961,10 +9961,8 @@ void monk_t::apl_combat_windwalker()
   }
 
   // Storm, Earth, and Fire w/ Lustrous Golden Plumage & Gladiator's Medallion
-  cd_sef->add_action( "use_item,name=lustrous_golden_plumage,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable."
-                      "hold_tod|fight_remains<25" );
-  cd_sef->add_action( "use_item,effect_name=gladiators_medallion,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable."
-                      "hold_tod|fight_remains<20" );
+  cd_sef->add_action( "use_item,name=lustrous_golden_plumage,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|variable.hold_tod|fight_remains<=20" );
+  cd_sef->add_action( "use_item,effect_name=gladiators_medallion,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|variable.hold_tod|fight_remains<=20" );
   cd_sef->add_action( "use_item,effect_name=gladiators_emblem,if=fight_remains>159|cooldown.touch_of_death.remains<1|variable.hold_tod" );
 
   cd_sef->add_action( this, "Touch of Death", "if=!variable.hold_tod&(!equipped.cyclotronic_blast|cooldown.cyclotronic_blast.remains<=1)&(chi>1|energy<40)" );
@@ -9992,11 +9990,11 @@ void monk_t::apl_combat_windwalker()
   }
 
   // Storm, Earth and Fire On-use items
-  cd_sef->add_action( "use_item,name=pocketsized_computation_device,,if=cooldown.touch_of_death.remains>30|!variable.hold_tod" );
-  cd_sef->add_action( "use_item,name=remote_guidance_device,if=cooldown.touch_of_death.remains>30|!variable.hold_tod" );
-  cd_sef->add_action( "use_item,effect_name=gladiators_badge,if=cooldown.touch_of_death.remains>20|!variable.hold_tod|fight_remains<20" );
+  cd_sef->add_action( "use_item,name=pocketsized_computation_device,,if=cooldown.touch_of_death.remains>30|variable.hold_tod" );
+  cd_sef->add_action( "use_item,name=remote_guidance_device,if=cooldown.touch_of_death.remains>30|variable.hold_tod" );
+  cd_sef->add_action( "use_item,effect_name=gladiators_badge,if=cooldown.touch_of_death.remains>20|variable.hold_tod|fight_remains<20" );
   cd_sef->add_action( "use_item,name=galecallers_boon,if=cooldown.touch_of_death.remains>55|variable.hold_tod|fight_remains<12" );
-  cd_sef->add_action( "use_item,name=writhing_segment_of_drestagath,if=cooldown.touch_of_death.remains>20|!variable.hold_tod" );
+  cd_sef->add_action( "use_item,name=writhing_segment_of_drestagath,if=cooldown.touch_of_death.remains>20|variable.hold_tod" );
   cd_sef->add_action( "use_item,name=ashvanes_razor_coral,if=variable.tod_on_use_trinket&(cooldown.touch_of_death.remains>21|variable.hold_tod)&(debuff.razor_coral_debuff.down|buff.storm_earth_and_fire.remains>13|fight_remains-cooldown.touch_of_death.remains<40&cooldown.touch_of_death.remains<25|fight_remains<25)" );
   cd_sef->add_action( "use_item,name=ashvanes_razor_coral,if=!variable.tod_on_use_trinket&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(dot.touch_of_death.remains|cooldown.touch_of_death.remains+9>fight_remains)&buff.storm_earth_and_fire.up|fight_remains<25)" );
 
