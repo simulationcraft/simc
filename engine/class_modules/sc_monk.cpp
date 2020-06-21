@@ -9804,21 +9804,21 @@ void monk_t::apl_combat_windwalker()
   def->add_action(
       "variable,name=hold_tod,op=set,value=cooldown.touch_of_death.remains+9>target.time_to_die|!talent.serenity."
       "enabled&!variable.tod_on_use_trinket&equipped.dribbling_inkpod&target.time_to_pct_30.remains<130&target.time_to_"
-      "pct_30.remains>8|target.time_to_die<130&target.time_to_die>cooldown.serenity.remains&cooldown.serenity.remains>"
-      "2|buff.serenity.up&target.time_to_die>11",
+      "pct_30.remains>8|fight_remains<130&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>"
+      "2|buff.serenity.up&fight_remains>11",
       "Variable that will tell you if you will need to wait to cast ToD/do not want to cast it at all anymore" );
 	
   if ( sim->allow_potions )
   {
     if ( true_level >= 100 )
       def->add_action(
-          "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up&dot.touch_of_death.remains|target.time_to_die<=60",
+          "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up&dot.touch_of_death.remains|fight_remains<=60",
           "Use potion if Serenity is up, or both SEF and ToD are up, or the target will die within 60 seconds" );
     else
       def->add_action(
           "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility."
           "react)"
-          "|buff.bloodlust.react|target.time_to_die<=60" );
+          "|buff.bloodlust.react|fight_remains<=60" );
   }
 
   def->add_action(
@@ -9853,15 +9853,14 @@ void monk_t::apl_combat_windwalker()
                    "Call the AoE action list if there are 3 or more enemies" );
 
   // Serenity Cooldowns
-  cd_serenity->add_talent( this, "Invoke Xuen, the White Tiger", "if=buff.serenity.down|target.time_to_die<25",
+  cd_serenity->add_talent( this, "Invoke Xuen, the White Tiger", "if=buff.serenity.down|fight_remains<25",
                            "Cooldowns" );
 
   // Serenity On-use w/ Azshara's Font of Power
-  cd_serenity->add_action( "use_item,name=azsharas_font_of_power,if=buff.serenity.down&(cooldown.serenity.remains<20|target.time_to_die<40)" );
+  cd_serenity->add_action( "use_item,name=azsharas_font_of_power,if=buff.serenity.down&(cooldown.serenity.remains<20|fight_remains<40)" );
 
   cd_serenity->add_action(
-      "guardian_of_azeroth,if=buff.serenity.down&(target.time_to_die>185|cooldown.serenity.remains<=7)|target.time_to_"
-      "die<35" );
+      "guardian_of_azeroth,if=buff.serenity.down&(fight_remains>185|cooldown.serenity.remains<=7)|fight_remains<35" );
 
   // Serenity Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -9871,36 +9870,36 @@ void monk_t::apl_combat_windwalker()
                                "Use Arcane Torrent if Serenity is not up, and you are missing at least 1 Chi, and "
                                "won't cap energy within 0.5 seconds" );
     else if ( racial_actions[ i ] == "ancestral_call" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=cooldown.serenity.remains>20|target.time_to_die<20" );
+      cd_serenity->add_action( racial_actions[ i ] + ",if=cooldown.serenity.remains>20|fight_remains<20" );
     else if ( racial_actions[ i ] == "blood_fury" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=cooldown.serenity.remains>20|target.time_to_die<20" );
+      cd_serenity->add_action( racial_actions[ i ] + ",if=cooldown.serenity.remains>20|fight_remains<20" );
     else if ( racial_actions[ i ] == "fireblood" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=cooldown.serenity.remains>20|target.time_to_die<10" );
+      cd_serenity->add_action( racial_actions[ i ] + ",if=cooldown.serenity.remains>20|fight_remains<10" );
     else if ( racial_actions[ i ] == "berserking" )
-      cd_serenity->add_action( racial_actions[ i ] + ",if=cooldown.serenity.remains>20|target.time_to_die<15" );
+      cd_serenity->add_action( racial_actions[ i ] + ",if=cooldown.serenity.remains>20|fight_remains<15" );
     else
       cd_serenity->add_action( racial_actions[ i ] );
   }
 
   // Serenity On-use w/ Lustrous Golden Plumage & Gladiator's Medallion
-  cd_serenity->add_action( "use_item,name=lustrous_golden_plumage,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<25" );
-  cd_serenity->add_action( "use_item,effect_name=gladiators_medallion,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<20" );
+  cd_serenity->add_action( "use_item,name=lustrous_golden_plumage,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|fight_remains<25" );
+  cd_serenity->add_action( "use_item,effect_name=gladiators_medallion,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable.hold_tod|fight_remains<20" );
   cd_serenity->add_action( "use_item,effect_name=gladiators_emblem,if=fight_remains>159|cooldown.touch_of_death.remains<1|variable.hold_tod" );
 	
   cd_serenity->add_action( this, "Touch of Death", "if=!variable.hold_tod" );
   cd_serenity->add_action( this, "Touch of Karma", "if=fight_remains>159|dot.touch_of_death.remains|variable.hold_tod" );
 
   // Serenity On-use w/ Pocketsized Computation Device
-  cd_serenity->add_action( "use_item,name=pocketsized_computation_device,if=buff.serenity.down&(cooldown.touch_of_death.remains>10|!variable.hold_tod)|target.time_to_die<5" );
+  cd_serenity->add_action( "use_item,name=pocketsized_computation_device,if=buff.serenity.down&(cooldown.touch_of_death.remains>10|!variable.hold_tod)|fight_remains<5" );
 
-  cd_serenity->add_action( "blood_of_the_enemy,if=buff.serenity.down&(cooldown.serenity.remains>20|cooldown.serenity.remains<2)|target.time_to_die<15" );
+  cd_serenity->add_action( "blood_of_the_enemy,if=buff.serenity.down&(cooldown.serenity.remains>20|cooldown.serenity.remains<2)|fight_remains<15" );
 
    // Serenity On-use items
   cd_serenity->add_action( "use_item,name=remote_guidance_device,if=cooldown.touch_of_death.remains>10|!variable.hold_tod" );
-  cd_serenity->add_action( "use_item,effect_name=gladiators_badge,if=cooldown.serenity.remains>20|target.time_to_die<20" );
-  cd_serenity->add_action( "use_item,name=galecallers_boon,if=cooldown.serenity.remains>20|target.time_to_die<20" );
+  cd_serenity->add_action( "use_item,effect_name=gladiators_badge,if=cooldown.serenity.remains>20|fight_remains<20" );
+  cd_serenity->add_action( "use_item,name=galecallers_boon,if=cooldown.serenity.remains>20|fight_remains<20" );
   cd_serenity->add_action( "use_item,name=writhing_segment_of_drestagath,if=cooldown.touch_of_death.remains>10|!variable.hold_tod" );
-  cd_serenity->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.serenity.remains>9|target.time_to_die<25" );
+  cd_serenity->add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|buff.serenity.remains>9|fight_remains<25" );
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
@@ -9920,9 +9919,9 @@ void monk_t::apl_combat_windwalker()
   }
 
   // Serenity Essences
-  cd_serenity->add_action( "worldvein_resonance,if=buff.serenity.down&(cooldown.serenity.remains>15|cooldown.serenity.remains<2)|target.time_to_die<20" );
+  cd_serenity->add_action( "worldvein_resonance,if=buff.serenity.down&(cooldown.serenity.remains>15|cooldown.serenity.remains<2)|fight_remains<20" );
   cd_serenity->add_action(
-      "concentrated_flame,if=buff.serenity.down&(cooldown.serenity.remains|cooldown.concentrated_flame.charges=2)&!dot.concentrated_flame_burn.remains&(cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains|target.time_to_die<8)" );
+      "concentrated_flame,if=buff.serenity.down&(cooldown.serenity.remains|cooldown.concentrated_flame.charges=2)&!dot.concentrated_flame_burn.remains&(cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains|fight_remains<8)" );
 
   cd_serenity->add_talent( this, "Serenity" );
 
@@ -9935,7 +9934,7 @@ void monk_t::apl_combat_windwalker()
   cd_serenity->add_action( "bag_of_tricks,if=buff.serenity.down" );
 
   // Storm, Earth and Fire Cooldowns
-  cd_sef->add_talent( this, "Invoke Xuen, the White Tiger", "if=buff.serenity.down|target.time_to_die<25",
+  cd_sef->add_talent( this, "Invoke Xuen, the White Tiger", "if=buff.serenity.down|fight_remains<25",
                            "Cooldowns" );
 
   // Storm, Earth, and Fire w/ Azshara's Font of Power
@@ -9944,14 +9943,14 @@ void monk_t::apl_combat_windwalker()
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       if ( items[ i ].name_str == "azsharas_font_of_power" )
-        cd_sef->add_action( "use_item,name=" + items[ i ].name_str + ",if=buff.storm_earth_and_fire.down&!dot.touch_of_death.remains&(cooldown.touch_of_death.remains<15|cooldown.touch_of_death.remains<21&(variable.tod_on_use_trinket|equipped.ashvanes_razor_coral)|variable.hold_tod|target.time_to_die<40)" );
+        cd_sef->add_action( "use_item,name=" + items[ i ].name_str + ",if=buff.storm_earth_and_fire.down&!dot.touch_of_death.remains&(cooldown.touch_of_death.remains<15|cooldown.touch_of_death.remains<21&(variable.tod_on_use_trinket|equipped.ashvanes_razor_coral)|variable.hold_tod|fight_remains<40)" );
     }
   }
 
   cd_sef->add_action(
-      "guardian_of_azeroth,if=target.time_to_die>185|!variable.hold_tod&cooldown.touch_of_death.remains<=14|target.time_to_die<35" );
+      "guardian_of_azeroth,if=fight_remains>185|!variable.hold_tod&cooldown.touch_of_death.remains<=14|fight_remains<35" );
   cd_sef->add_action(
-      "worldvein_resonance,if=cooldown.touch_of_death.remains>58|cooldown.touch_of_death.remains<2|variable.hold_tod|target.time_to_die<20" );
+      "worldvein_resonance,if=cooldown.touch_of_death.remains>58|cooldown.touch_of_death.remains<2|variable.hold_tod|fight_remains<20" );
 
   // Storm, Earth, and Fire w/ Arcane Torrent
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -9963,16 +9962,16 @@ void monk_t::apl_combat_windwalker()
 
   // Storm, Earth, and Fire w/ Lustrous Golden Plumage & Gladiator's Medallion
   cd_sef->add_action( "use_item,name=lustrous_golden_plumage,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable."
-                      "hold_tod|target.time_to_die<25" );
+                      "hold_tod|fight_remains<25" );
   cd_sef->add_action( "use_item,effect_name=gladiators_medallion,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|!variable."
-                      "hold_tod|target.time_to_die<20" );
+                      "hold_tod|fight_remains<20" );
   cd_sef->add_action( "use_item,effect_name=gladiators_emblem,if=fight_remains>159|cooldown.touch_of_death.remains<1|variable.hold_tod" );
 
   cd_sef->add_action( this, "Touch of Death", "if=!variable.hold_tod&(!equipped.cyclotronic_blast|cooldown.cyclotronic_blast.remains<=1)&(chi>1|energy<40)" );
-  cd_sef->add_action( this, "Storm, Earth, and Fire", ",if=cooldown.storm_earth_and_fire.charges=2|dot.touch_of_death.remains|target.time_to_die<20|(buff.worldvein_resonance.remains>10|cooldown.worldvein_resonance.remains>cooldown.storm_earth_and_fire.full_recharge_time|!essence.worldvein_resonance.major)&(cooldown.touch_of_death.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_tod&!equipped.dribbling_inkpod)&cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=13" );
+  cd_sef->add_action( this, "Storm, Earth, and Fire", ",if=cooldown.storm_earth_and_fire.charges=2|dot.touch_of_death.remains|fight_remains<20|(buff.worldvein_resonance.remains>10|cooldown.worldvein_resonance.remains>cooldown.storm_earth_and_fire.full_recharge_time|!essence.worldvein_resonance.major)&(cooldown.touch_of_death.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_tod&!equipped.dribbling_inkpod)&cooldown.fists_of_fury.remains<=9&chi>=3&cooldown.whirling_dragon_punch.remains<=13" );
   cd_sef->add_action( this, "Touch of Karma", "if=fight_remains>159|dot.touch_of_death.remains|variable.hold_tod" );
-  cd_sef->add_action( "blood_of_the_enemy,if=cooldown.touch_of_death.remains>45|variable.hold_tod&cooldown.fists_of_fury.remains<2|target.time_to_die<12|target.time_to_die>100&target.time_to_die<110&(cooldown.fists_of_fury.remains<3|cooldown.whirling_dragon_punch.remains<5|cooldown.rising_sun_kick.remains<5)" );
-  cd_sef->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&((cooldown.concentrated_flame.remains<=cooldown.touch_of_death.remains+1|variable.hold_tod)&(!talent.whirling_dragon_punch.enabled|cooldown.whirling_dragon_punch.remains)&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&buff.storm_earth_and_fire.down|dot.touch_of_death.remains)|target.time_to_die<8" );
+  cd_sef->add_action( "blood_of_the_enemy,if=cooldown.touch_of_death.remains>45|variable.hold_tod&cooldown.fists_of_fury.remains<2|fight_remains<12|fight_remains>100&fight_remains<110&(cooldown.fists_of_fury.remains<3|cooldown.whirling_dragon_punch.remains<5|cooldown.rising_sun_kick.remains<5)" );
+  cd_sef->add_action( "concentrated_flame,if=!dot.concentrated_flame_burn.remains&((cooldown.concentrated_flame.remains<=cooldown.touch_of_death.remains+1|variable.hold_tod)&(!talent.whirling_dragon_punch.enabled|cooldown.whirling_dragon_punch.remains)&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&buff.storm_earth_and_fire.down|dot.touch_of_death.remains)|fight_remains<8" );
 
   // Storm, Earth and Fire Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -9980,13 +9979,13 @@ void monk_t::apl_combat_windwalker()
     if ( racial_actions[ i ] != "arcane_torrent" )
     {
       if ( racial_actions[ i ] == "ancestral_call" )
-        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.touch_of_death.remains>30|variable.hold_tod|target.time_to_die<20" );
+        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.touch_of_death.remains>30|variable.hold_tod|fight_remains<20" );
       else if ( racial_actions[ i ] == "blood_fury" )
-        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.touch_of_death.remains>30|variable.hold_tod|target.time_to_die<20", "Use Blood Fury if Touch of Death's cooldown is greater than 30 (this includes while ToD is currently active), or off cooldown when you are holding onto ToD, or when the target is about to die" );
+        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.touch_of_death.remains>30|variable.hold_tod|fight_remains<20", "Use Blood Fury if Touch of Death's cooldown is greater than 30 (this includes while ToD is currently active), or off cooldown when you are holding onto ToD, or when the target is about to die" );
       else if ( racial_actions[ i ] == "fireblood" )
-        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.touch_of_death.remains>30|variable.hold_tod|target.time_to_die<10" );
+        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.touch_of_death.remains>30|variable.hold_tod|fight_remains<10" );
       else if ( racial_actions[ i ] == "berserking" )
-        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.touch_of_death.remains>30|variable.hold_tod|target.time_to_die<15" );
+        cd_sef->add_action( racial_actions[ i ] + ",if=cooldown.touch_of_death.remains>30|variable.hold_tod|fight_remains<15" );
       else
 	    cd_sef->add_action( racial_actions[ i ] );
     }
@@ -9995,11 +9994,11 @@ void monk_t::apl_combat_windwalker()
   // Storm, Earth and Fire On-use items
   cd_sef->add_action( "use_item,name=pocketsized_computation_device,,if=cooldown.touch_of_death.remains>30|!variable.hold_tod" );
   cd_sef->add_action( "use_item,name=remote_guidance_device,if=cooldown.touch_of_death.remains>30|!variable.hold_tod" );
-  cd_sef->add_action( "use_item,effect_name=gladiators_badge,if=cooldown.touch_of_death.remains>20|!variable.hold_tod|target.time_to_die<20" );
-  cd_sef->add_action( "use_item,name=galecallers_boon,if=cooldown.touch_of_death.remains>55|variable.hold_tod|target.time_to_die<12" );
+  cd_sef->add_action( "use_item,effect_name=gladiators_badge,if=cooldown.touch_of_death.remains>20|!variable.hold_tod|fight_remains<20" );
+  cd_sef->add_action( "use_item,name=galecallers_boon,if=cooldown.touch_of_death.remains>55|variable.hold_tod|fight_remains<12" );
   cd_sef->add_action( "use_item,name=writhing_segment_of_drestagath,if=cooldown.touch_of_death.remains>20|!variable.hold_tod" );
-  cd_sef->add_action( "use_item,name=ashvanes_razor_coral,if=variable.tod_on_use_trinket&(cooldown.touch_of_death.remains>21|variable.hold_tod)&(debuff.razor_coral_debuff.down|buff.storm_earth_and_fire.remains>13|target.time_to_die-cooldown.touch_of_death.remains<40&cooldown.touch_of_death.remains<25|target.time_to_die<25)" );
-  cd_sef->add_action( "use_item,name=ashvanes_razor_coral,if=!variable.tod_on_use_trinket&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(dot.touch_of_death.remains|cooldown.touch_of_death.remains+9>target.time_to_die)&buff.storm_earth_and_fire.up|target.time_to_die<25)" );
+  cd_sef->add_action( "use_item,name=ashvanes_razor_coral,if=variable.tod_on_use_trinket&(cooldown.touch_of_death.remains>21|variable.hold_tod)&(debuff.razor_coral_debuff.down|buff.storm_earth_and_fire.remains>13|fight_remains-cooldown.touch_of_death.remains<40&cooldown.touch_of_death.remains<25|fight_remains<25)" );
+  cd_sef->add_action( "use_item,name=ashvanes_razor_coral,if=!variable.tod_on_use_trinket&(debuff.razor_coral_debuff.down|(!equipped.dribbling_inkpod|target.time_to_pct_30.remains<8)&(dot.touch_of_death.remains|cooldown.touch_of_death.remains+9>fight_remains)&buff.storm_earth_and_fire.up|fight_remains<25)" );
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
