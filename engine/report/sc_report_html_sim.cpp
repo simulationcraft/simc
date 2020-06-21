@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 #include "reports.hpp"
 #include "report/report_helper.hpp"
+#include "report/report_timer.hpp"
 #include "data/report_data.inc"
 #include "interfaces/sc_js.hpp"
 #include "util/git_info.hpp"
@@ -1471,7 +1472,7 @@ void print_html( sim_t& sim )
   if ( sim.html_file_str.empty() )
     return;
 
-  Timer t( "html report", std::cout );
+  report_timer_t t( "html report", std::cout );
   if ( ! sim.profileset_enabled )
   {
     t.start();

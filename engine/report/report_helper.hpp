@@ -31,38 +31,6 @@ class extended_sample_data_t;
 struct player_processed_report_information_t;
 struct sim_report_information_t;
 
-/**
- * Automatic Timer reporting the time between construction and desctruction of
- * the object.
- */
-struct Timer
-{
-private:
-  std::string title;
-  std::ostream& out;
-  chrono::wall_clock::time_point start_time;
-  bool started;
-
-public:
-  Timer( std::string title, std::ostream& out ) : title( std::move( title ) ), out( out ), started( false )
-  {
-  }
-
-  void start()
-  {
-    start_time = chrono::wall_clock::now();
-    started    = true;
-  }
-
-  ~Timer()
-  {
-    if ( started )
-    {
-      fmt::print( out, "{} took {}seconds.", title, chrono::elapsed_fp_seconds( start_time ) );
-      out << std::endl;
-    }
-  }
-};
 
 #include "charts.hpp"
 

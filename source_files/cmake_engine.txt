@@ -113,6 +113,7 @@ report/decorators.hpp
 report/gear_weights.hpp
 report/json/report_configuration.hpp
 report/report_helper.hpp
+report/report_timer.hpp
 report/reports.hpp
 report/sc_highchart.hpp
 sc_enums.hpp

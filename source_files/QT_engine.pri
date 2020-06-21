@@ -115,6 +115,7 @@ HEADERS += engine/report/decorators.hpp
 HEADERS += engine/report/gear_weights.hpp
 HEADERS += engine/report/json/report_configuration.hpp
 HEADERS += engine/report/report_helper.hpp
+HEADERS += engine/report/report_timer.hpp
 HEADERS += engine/report/reports.hpp
 HEADERS += engine/report/sc_highchart.hpp
 HEADERS += engine/sc_enums.hpp
