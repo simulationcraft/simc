@@ -719,26 +719,38 @@ namespace warlock
         affliction_spell_t( "phantom_singularity_tick", p, p -> find_spell( 205246 ) )
       {
         background = true;
-        may_miss = false;
-        dual = true;
         aoe = -1;
+      }
+
+      size_t available_targets( std::vector<player_t*>& tl ) const override
+      {
+        affliction_spell_t::available_targets( tl );
+
+        tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+        return tl.size();
       }
     };
 
     struct phantom_singularity_t : public affliction_spell_t
     {
+      action_t* aoe_tick_action;
 
       phantom_singularity_t( warlock_t* p, const std::string& options_str ) :
-        affliction_spell_t( "phantom_singularity", p, p -> talents.phantom_singularity )
+        affliction_spell_t( "phantom_singularity", p, p -> talents.phantom_singularity ),
+        aoe_tick_action( new phantom_singularity_tick_t( p ) )
       {
         parse_options( options_str );
-        callbacks = false;
         hasted_ticks = true;
-        tick_action = new phantom_singularity_tick_t( p );
-
-        spell_power_mod.tick = 0;
 
         db_max_contribution = data().duration();
+        add_child( aoe_tick_action );
+      }
+
+      double composite_crit_chance() const override
+      {
+        // Seems to use base crit chance only.
+        return 0.05;
       }
 
       void init() override
@@ -748,40 +760,16 @@ namespace warlock
         update_flags &= ~STATE_HASTE;
       }
 
+      void tick( dot_t* d ) override
+      {
+        affliction_spell_t::tick( d );
+
+        aoe_tick_action->set_target( d->target );
+        aoe_tick_action->execute();
+      }
+
       timespan_t composite_dot_duration( const action_state_t* s ) const override
       { return s->action->tick_time( s ) * 8.0; }
-
-      // Phantom singularity damage for the Deathbolt is a composite of two things
-      // 1) The number of ticks left on this spell (phantom_singularity_t)
-      // 2) The direct damage the tick action does (phantom_singularity_tick_t)
-      std::tuple<double, double> get_db_dot_state( dot_t* dot ) override
-      {
-        // Get base state so we get the correct number of ticks_left
-        auto base_state = affliction_spell_t::get_db_dot_state( dot );
-
-        // Then calculate damage based on the tick action
-        action_state_t* damage_action_state = tick_action->get_state();
-        damage_action_state->target = dot->target;
-        tick_action->snapshot_state( damage_action_state, result_amount_type::DMG_DIRECT );
-        tick_action->calculate_direct_amount( damage_action_state );
-
-        // Recreate the db state object with the calculated tick action damage, and the base db
-        // state ticks left
-        auto state = std::make_tuple( damage_action_state->result_raw,
-            std::get<DB_DOT_TICKS_LEFT>( base_state ) );
-
-        if ( sim->debug )
-        {
-          sim->out_debug.printf( "%s %s amount=%.3f total=%.3f",
-            name(), dot->name(),
-            std::get<DB_DOT_DAMAGE>( state ),
-            std::get<DB_DOT_DAMAGE>( state ) * std::get<DB_DOT_TICKS_LEFT>( state ) );
-        }
-
-        action_state_t::release( damage_action_state );
-
-        return state;
-      }
     };
 
     struct vile_taint_t : public affliction_spell_t
