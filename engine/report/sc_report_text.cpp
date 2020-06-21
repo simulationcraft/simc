@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "reports.hpp"
+#include "report/report_timer.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "fmt/chrono.h"
 #include <iomanip>
@@ -1289,7 +1290,7 @@ void print_text( sim_t* sim, bool detail )
 
   try
   {
-    Timer t( "text report", std::cout );
+    report_timer_t t( "text report", std::cout );
     if ( ! sim -> profileset_enabled )
     {
       t.start();

@@ -6,6 +6,7 @@
 #include "report/reports.hpp"
 #include "interfaces/sc_js.hpp"
 #include "report/json/report_configuration.hpp"
+#include "report/report_timer.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "simulationcraft.hpp"
 #include "util/git_info.hpp"
@@ -1297,7 +1298,7 @@ void print_json_report( sim_t& sim, const ::report::json::report_configuration_t
       {
         std::cout << "\nReport will be generated with full state for each action.\n";
       }
-      Timer t( fmt::format("JSON report version {}", report_configuration.version()), std::cout );
+      report_timer_t t( fmt::format("JSON report version {}", report_configuration.version()), std::cout );
       if ( ! sim.profileset_enabled )
       {
         t.start();
