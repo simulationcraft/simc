@@ -10004,11 +10004,14 @@ void monk_t::apl_combat_windwalker()
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       name_str = items[ i ].name_str;
+      const special_effect_t* gladiators_badge =
+          items[ i ].special_effect_with_name( "gladiators_badge", SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE );
       if ( name_str != "azsharas_font_of_power" && name_str != "lustrous_golden_plumage" &&
            name_str != "gladiators_medallion" &&  name_str != "gladiators_emblem" &&
            name_str != "pocketsized_computation_device" &&  name_str != "remote_guidance_device" && 
            name_str != "gladiators_badge" && name_str != "galecallers_boon" &&
-           name_str != "writhing_segment_of_drestagath" && name_str != "ashvanes_razor_coral" )
+           name_str != "writhing_segment_of_drestagath" && name_str != "ashvanes_razor_coral" && gladiators_badge != nullptr
+          )
       {
         cd_sef->add_action( "use_item,name=" + name_str );
       }
@@ -10018,7 +10021,7 @@ void monk_t::apl_combat_windwalker()
   // Storm, Earth and Fire Essences
   cd_sef->add_action( "the_unbound_force" );
   cd_sef->add_action( "purifying_blast" );
-  cd_sef->add_action( "reaping_flames", "if=target.time_to_pct_20>30|target.health.pct<=20" );
+  cd_sef->add_action( "reaping_flames,if=target.time_to_pct_20>30|target.health.pct<=20" );
   cd_sef->add_action( "focused_azerite_beam" );
   cd_sef->add_action( "memory_of_lucid_dreams,if=energy<40" );
   cd_sef->add_action( "ripple_in_space" );
