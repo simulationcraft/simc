@@ -10010,7 +10010,7 @@ void monk_t::apl_combat_windwalker()
            name_str != "gladiators_medallion" &&  name_str != "gladiators_emblem" &&
            name_str != "pocketsized_computation_device" &&  name_str != "remote_guidance_device" && 
            name_str != "gladiators_badge" && name_str != "galecallers_boon" &&
-           name_str != "writhing_segment_of_drestagath" && name_str != "ashvanes_razor_coral" && gladiators_badge != nullptr
+           name_str != "writhing_segment_of_drestagath" && name_str != "ashvanes_razor_coral" && gladiators_badge == nullptr
           )
       {
         cd_sef->add_action( "use_item,name=" + name_str );
