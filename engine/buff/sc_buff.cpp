@@ -1946,7 +1946,7 @@ struct potion_spell_filter
   {
   }
 
-  bool operator()( const item_data_t* item ) const
+  bool operator()( const dbc_item_data_t* item ) const
   {
     // Augment runes and other things look like potions. Only match things
     // that trigger the potion shared cooldown.

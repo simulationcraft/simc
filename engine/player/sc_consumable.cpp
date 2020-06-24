@@ -25,7 +25,7 @@ namespace { // UNNAMED NAMESPACE
 
 // Find a consumable of a given subtype, see data_enum.hh for type values.
 // Returns 0 if not found.
-const item_data_t* find_consumable( const dbc_t& dbc,
+const dbc_item_data_t* find_consumable( const dbc_t& dbc,
                                                  util::string_view name,
                                                  item_subclass_consumable type )
 {
@@ -35,7 +35,7 @@ const item_data_t* find_consumable( const dbc_t& dbc,
   }
 
   // Poor man's longest matching prefix!
-  const auto& item = dbc::find_consumable( type, dbc.ptr, [name]( const item_data_t* i ) {
+  const auto& item = dbc::find_consumable( type, dbc.ptr, [name]( const dbc_item_data_t* i ) {
     std::string n = i -> name ? i -> name : "unknown";
     util::tokenize( n );
     return util::str_in_str_ci( n, name );
@@ -288,7 +288,7 @@ struct health_stone_t : public heal_t
 struct dbc_consumable_base_t : public action_t
 {
   std::string              consumable_name;
-  const item_data_t*       item_data;
+  const dbc_item_data_t*   item_data;
   item_subclass_consumable type;
 
   action_t*                consumable_action;

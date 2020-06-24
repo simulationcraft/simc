@@ -37,7 +37,6 @@ HEADERS += engine/dbc/item_data.hpp
 HEADERS += engine/dbc/item_database.hpp
 HEADERS += engine/dbc/item_effect.hpp
 HEADERS += engine/dbc/item_import.hpp
-HEADERS += engine/dbc/item_import_ptr.hpp
 HEADERS += engine/dbc/item_naming.hpp
 HEADERS += engine/dbc/item_scaling.hpp
 HEADERS += engine/dbc/item_set_bonus.hpp
