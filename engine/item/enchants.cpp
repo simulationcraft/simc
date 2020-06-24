@@ -561,7 +561,7 @@ item_socket_color enchant::initialize_relic( item_t& item, size_t relic_idx, con
   item_t relic( item.player, "" );
 
   // Apply base stats to relic
-  relic.parsed.data = relic_data;
+  relic.parsed.data.init( relic_data );
   relic.name_str    = relic_data.name;
   util::tokenize( relic.name_str );
 

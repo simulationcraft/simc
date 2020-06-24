@@ -16,7 +16,6 @@
 
 struct action_t;
 struct expr_t;
-struct item_data_t;
 struct player_t;
 struct special_effect_t;
 struct scoped_callback_t;

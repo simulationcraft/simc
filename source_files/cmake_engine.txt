@@ -35,7 +35,6 @@ dbc/item_data.hpp
 dbc/item_database.hpp
 dbc/item_effect.hpp
 dbc/item_import.hpp
-dbc/item_import_ptr.hpp
 dbc/item_naming.hpp
 dbc/item_scaling.hpp
 dbc/item_set_bonus.hpp

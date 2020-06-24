@@ -35,6 +35,28 @@ struct stat_pair_t
   { }
 };
 
+struct parsed_item_data_t : dbc_item_data_t {
+  std::array<int, MAX_ITEM_STAT> stat_type_e;
+  std::array<int, MAX_ITEM_STAT> stat_alloc;
+
+  parsed_item_data_t()
+    : dbc_item_data_t{}
+  {
+    range::fill( stat_type_e, -1 );
+    range::fill( stat_alloc, 0 );
+  }
+
+  void init( const dbc_item_data_t& raw )
+  {
+    *static_cast<dbc_item_data_t*>( this ) = raw;
+    for ( size_t i = 0; i < stat_type_e.size(); i++ )
+    {
+      stat_type_e[ i ] = i < _dbc_stats_count ? _dbc_stats[ i ].type_e : -1;
+      stat_alloc[ i ] = i < _dbc_stats_count ? _dbc_stats[ i ].alloc : 0;
+    }
+  }
+};
+
 struct item_t
 {
   sim_t* sim;
@@ -63,7 +85,7 @@ struct item_t
     std::vector<stat_pair_t>                         enchant_stats;
     std::string                                      encoded_addon;
     std::vector<stat_pair_t>                         addon_stats;
-    item_data_t                                      data;
+    parsed_item_data_t                               data;
     auto_dispose< std::vector<special_effect_t*> >   special_effects;
     std::vector<std::string>                         source_list;
     timespan_t                                       initial_cd;

@@ -20,21 +20,21 @@ namespace {
   template <item_subclass_consumable CLASS>
   struct consumable_filter_t
   {
-    bool operator()(const item_data_t& obj) const
+    bool operator()(const dbc_item_data_t& obj) const
     { return obj.item_class == ITEM_CLASS_CONSUMABLE && obj.item_subclass == CLASS; }
   };
 
   struct gem_filter_t
   {
     // No "other" gems, nor relicn
-    bool operator()( const item_data_t& obj ) const
+    bool operator()( const dbc_item_data_t& obj ) const
     { return obj.item_class == ITEM_CLASS_GEM && obj.item_subclass != 9 && obj.item_subclass != 11; }
   };
 
   // Potions need their own filter unfortunately, because some potions are of sub class 8 (other)
   struct potion_filter_t
   {
-    bool operator()( const item_data_t& obj ) const
+    bool operator()( const dbc_item_data_t& obj ) const
     {
       return obj.item_class == ITEM_CLASS_CONSUMABLE &&
              ( obj.item_subclass == ITEM_SUBCLASS_POTION ||
@@ -42,10 +42,10 @@ namespace {
     }
   };
 
-  dbc::filtered_dbc_index_t<item_data_t, potion_filter_t> potion_data_index;
-  dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FLASK>> flask_data_index;
-  dbc::filtered_dbc_index_t<item_data_t, consumable_filter_t<ITEM_SUBCLASS_FOOD>> food_data_index;
-  dbc::filtered_dbc_index_t<item_data_t, gem_filter_t> gem_index;
+  dbc::filtered_dbc_index_t<dbc_item_data_t, potion_filter_t> potion_data_index;
+  dbc::filtered_dbc_index_t<dbc_item_data_t, consumable_filter_t<ITEM_SUBCLASS_FLASK>> flask_data_index;
+  dbc::filtered_dbc_index_t<dbc_item_data_t, consumable_filter_t<ITEM_SUBCLASS_FOOD>> food_data_index;
+  dbc::filtered_dbc_index_t<dbc_item_data_t, gem_filter_t> gem_index;
 }
 
 /* Initialize item database
@@ -53,15 +53,15 @@ namespace {
 void dbc::init_item_data()
 {
   // Create id-indexes
-  potion_data_index.init( item_data_t::data( false ), false );
-  flask_data_index.init( item_data_t::data( false ), false );
-  food_data_index.init( item_data_t::data( false ), false );
-  gem_index.init( item_data_t::data( false ), false );
+  potion_data_index.init( dbc_item_data_t::data( false ), false );
+  flask_data_index.init( dbc_item_data_t::data( false ), false );
+  food_data_index.init( dbc_item_data_t::data( false ), false );
+  gem_index.init( dbc_item_data_t::data( false ), false );
 #if SC_USE_PTR
-  potion_data_index.init( item_data_t::data( true ), true );
-  flask_data_index.init( item_data_t::data( true ), true );
-  food_data_index.init( item_data_t::data( true ), true );
-  gem_index.init( item_data_t::data( true ), true );
+  potion_data_index.init( dbc_item_data_t::data( true ), true );
+  flask_data_index.init( dbc_item_data_t::data( true ), true );
+  food_data_index.init( dbc_item_data_t::data( true ), true );
+  gem_index.init( dbc_item_data_t::data( true ), true );
 #endif
 }
 
@@ -506,7 +506,12 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
     // Socket penalty is supposedly gone in Warlords of Draenor, but it really does not seem so in
     // the latest alpha.  NOTENOTENOTENOTE: Item socket cost penalty multiplier _seems_ to be based
     // on _BASE_ itemlevel, not the upgraded one
-    double v_socket_penalty = item.parsed.data.stat_socket_mul[ idx ] *
+    auto socket_mul = []( const dbc_item_data_t& item, size_t idx ) {
+      if ( idx < item._dbc_stats_count )
+        return item._dbc_stats[ idx ].socket_mul;
+      return 0.0f;
+    };
+    double v_socket_penalty = socket_mul( item.parsed.data, idx ) *
                               dbc.item_socket_cost( item.base_item_level() );
 
     int v_raw = static_cast<int>(item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty + 0.5);
@@ -566,7 +571,7 @@ bool item_database::initialize_item_sources( item_t& item, std::vector<std::stri
 
 // item_database_t::random_suffix_type ======================================
 
-int item_database::random_suffix_type( const item_data_t& item )
+int item_database::random_suffix_type( const dbc_item_data_t& item )
 {
   switch ( item.item_class )
   {
@@ -679,7 +684,7 @@ int item_database::random_suffix_type( item_t& item )
   }
 }
 
-uint32_t item_database::armor_value( const item_data_t& item, const dbc_t& dbc, unsigned item_level )
+uint32_t item_database::armor_value( const dbc_item_data_t& item, const dbc_t& dbc, unsigned item_level )
 {
   if ( item.id == 0 || item.quality > 5 )
     return 0;
@@ -737,13 +742,13 @@ uint32_t item_database::weapon_dmg_min( item_t& item )
                              item.parsed.data.delay / 1000.0 * ( 1 - item.parsed.data.dmg_range / 2 ) );
 }
 
-uint32_t item_database::weapon_dmg_min( const item_data_t& item, const dbc_t& dbc, unsigned item_level )
+uint32_t item_database::weapon_dmg_min( const dbc_item_data_t& item, const dbc_t& dbc, unsigned item_level )
 {
   return ( uint32_t ) floor( dbc.weapon_dps( item, item_level ) * item.delay / 1000.0 *
                              ( 1 - item.dmg_range / 2 ) );
 }
 
-uint32_t item_database::weapon_dmg_max( const item_data_t& item, const dbc_t& dbc, unsigned item_level )
+uint32_t item_database::weapon_dmg_max( const dbc_item_data_t& item, const dbc_t& dbc, unsigned item_level )
 {
   return ( uint32_t ) ceil( dbc.weapon_dps( item, item_level ) * item.delay / 1000.0 *
                             ( 1 + item.dmg_range / 2 ) + 0.5 );
@@ -859,7 +864,7 @@ bool item_database::load_item_from_data( item_t& item )
   const auto& data = item.player->dbc->item( item.parsed.data.id );
   if ( data.id == 0 ) return false;
 
-  item.parsed.data = data;
+  item.parsed.data.init( data );
   item.name_str = data.name;
   item.parsed.data.name = item.name_str.c_str();
 
@@ -986,9 +991,9 @@ std::vector<item_database::token_t> item_database::parse_tokens( const std::stri
   return tokens;
 }
 
-const item_data_t& dbc::find_gem( util::string_view gem, bool ptr, bool tokenized )
+const dbc_item_data_t& dbc::find_gem( util::string_view gem, bool ptr, bool tokenized )
 {
-  return gem_index.get( ptr, [&gem, tokenized]( const item_data_t* obj ) {
+  return gem_index.get( ptr, [&gem, tokenized]( const dbc_item_data_t* obj ) {
       if ( tokenized )
       {
         std::string n = obj->name;
@@ -1002,7 +1007,7 @@ const item_data_t& dbc::find_gem( util::string_view gem, bool ptr, bool tokenize
   } );
 }
 
-const item_data_t& dbc::find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& f )
+const dbc_item_data_t& dbc::find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const dbc_item_data_t*)>& f )
 {
   switch ( type )
   {
@@ -1013,7 +1018,7 @@ const item_data_t& dbc::find_consumable( item_subclass_consumable type, bool ptr
     case ITEM_SUBCLASS_FOOD:
       return food_data_index.get( ptr, f );
     default:
-      return item_data_t::nil();
+      return dbc_item_data_t::nil();
   }
 }
 
@@ -1456,7 +1461,7 @@ double item_database::apply_stamina_multiplier( const item_t& item, double amoun
   return apply_stamina_multiplier( item.player, type, item.item_level(), amount );
 }
 
-combat_rating_multiplier_type item_database::item_combat_rating_type( const item_data_t& data )
+combat_rating_multiplier_type item_database::item_combat_rating_type( const dbc_item_data_t& data )
 {
   switch ( data.inventory_type )
   {

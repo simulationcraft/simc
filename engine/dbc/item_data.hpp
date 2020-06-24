@@ -14,9 +14,15 @@
 #define MAX_ITEM_STAT 10
 #define MAX_ITEM_SOCKET_SLOT 3
 
-struct item_data_t {
-  unsigned id;
+struct dbc_item_data_t {
+  struct stats_t {
+    int16_t type_e; // item_mod_type
+    int16_t alloc;
+    float   socket_mul;
+  };
+
   const char* name;
+  unsigned id;
   unsigned flags_1;
   unsigned flags_2;
   unsigned type_flags;
@@ -32,11 +38,10 @@ struct item_data_t {
   float    delay;
   float    dmg_range;
   float    item_modifier;
-  uint64_t race_mask;
+  const stats_t* _dbc_stats;
+  uint8_t  _dbc_stats_count;
   unsigned class_mask;
-  int      stat_type_e[MAX_ITEM_STAT];       // item_mod_type
-  int      stat_alloc[MAX_ITEM_STAT];
-  float    stat_socket_mul[MAX_ITEM_STAT];
+  uint64_t race_mask;
   int      trigger_spell[MAX_ITEM_EFFECT];      // item_spell_trigger_type
   int      id_spell[MAX_ITEM_EFFECT];
   int      cooldown_duration[MAX_ITEM_EFFECT];
@@ -62,16 +67,13 @@ struct item_data_t {
   bool mythic() const
   { return ( type_flags & RAID_TYPE_MYTHIC ) == RAID_TYPE_MYTHIC; }
 
-  static const item_data_t& find( unsigned id, bool ptr )
-  { return dbc::find<item_data_t>( id, ptr, &item_data_t::id ); }
+  static const dbc_item_data_t& find( unsigned id, bool ptr )
+  { return dbc::find<dbc_item_data_t>( id, ptr, &dbc_item_data_t::id ); }
 
-  static const item_data_t& nil()
-  { return dbc::nil<item_data_t>; }
+  static const dbc_item_data_t& nil()
+  { return dbc::nil<dbc_item_data_t>; }
 
-  static util::span<const item_data_t> data( bool ptr );
+  static util::span<const dbc_item_data_t> data( bool ptr );
 };
 
 #endif /* ITEM_HPP */
-
-
-

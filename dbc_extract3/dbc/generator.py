@@ -871,9 +871,61 @@ class ItemDataGenerator(DataGenerator):
     def generate_cpp(self, ids = None):
         ids.sort()
 
+        # filter out missing items XXX: is this possible?
+        def check_item(id):
+            item = self._itemsparse_db[id]
+            if not item.id and id > 0:
+                sys.stderr.write('Item id {} not found\n'.format(id))
+                return False
+            return True
+        ids[:] = [ id for id in ids if check_item(id) ]
+
+        items_stats_list = []
+        items_stats_index = {}
+
+        # compression acceleration
+        items_stats_list_dict = defaultdict(dict)
+        def find_stats_list_pos(stats):
+            sub = items_stats_list_dict.get(stats[0])
+            if sub is not None:
+                return sub.get(tuple(stats[1:]))
+            return None
+        def insert_stats_list_pos(stats, pos):
+            sub = items_stats_list_dict[stats[0]]
+            sub[tuple(stats[1:])] = pos
+
+        for id in ids:
+            item = self._itemsparse_db[id]
+            stats = []
+            for i in range(1, 11):
+                if getattr(item, 'stat_type_{}'.format(i)) > 0:
+                    stats.append(( item.field('stat_type_{}'.format(i))[0],
+                                   item.field('stat_alloc_{}'.format(i))[0],
+                                   item.field('stat_socket_mul_{}'.format(i))[0] ))
+            if len(stats) == 0:
+                continue
+            pos = find_stats_list_pos(stats)
+            if pos is None:
+                pos = len(items_stats_list)
+                insert_stats_list_pos(stats, pos)
+                items_stats_list.extend( stats )
+            items_stats_index[id] = ( pos, len(stats) )
+
+        self._out.write('static const dbc_item_data_t::stats_t __{}_data[{}] = {{\n'.format(
+            self.format_str('item_stats'), len(items_stats_list)))
+        for stats in items_stats_list:
+            self._out.write('  {{ {:>2}, {:>5}, {} }},\n'.format(*stats))
+        self._out.write('};\n')
+
+        def item_stats_fields(id):
+            stats = items_stats_index.get(id)
+            if stats is None:
+                return [ '0', '0' ]
+            return [ '&__{}_data[{}]'.format(self.format_str('item_stats'), stats[0]), str(stats[1]) ]
+
         self._out.write('// Items, ilevel %d-%d, wow build level %s\n' % (
             self._options.min_ilevel, self._options.max_ilevel, self._options.build))
-        self._out.write('static const std::array<item_data_t, %d> __%s_data { {\n' % (
+        self._out.write('static const std::array<dbc_item_data_t, %d> __%s_data { {\n' % (
             len(ids), self.format_str('item')))
 
         index = 0
@@ -881,15 +933,7 @@ class ItemDataGenerator(DataGenerator):
             item = self._itemsparse_db[id]
             item2 = self._item_db[id]
 
-            if not item.id and id > 0:
-                sys.stderr.write('Item id %d not found\n' % id)
-                continue
-
-            #if(index % 20 == 0):
-            #    self._out.write('//{    Id, Name                                                   ,     Flags1,     Flags2, Type,Level,ReqL,ReqSk, RSkL,Qua,Inv,Cla,SCl,Bnd, Delay, DmgRange, Modifier,  RaceMask, ClassMask, { ST1, ST2, ST3, ST4, ST5, ST6, ST7, ST8, ST9, ST10}, {  SId1,  SId2,  SId3,  SId4,  SId5 }, {Soc1,Soc2,Soc3 }, GemP,IdSBon,IdSet,IdSuf },\n')
-
-            fields = item.field('id', 'name')
-            fields += item.field('flags_1', 'flags_2')
+            fields = item.field('name', 'id', 'flags_1', 'flags_2')
 
             flag_types = 0x00
 
@@ -905,10 +949,9 @@ class ItemDataGenerator(DataGenerator):
             fields += [ '%#.2x' % flag_types ]
             fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
             fields += item2.field('classs', 'subclass')
-            fields += item.field( 'bonding', 'delay', 'dmg_range', 'item_damage_modifier', 'race_mask', 'class_mask')
-            fields += [ '{ %s }' % ', '.join(item.field('stat_type_1', 'stat_type_2', 'stat_type_3', 'stat_type_4', 'stat_type_5', 'stat_type_6', 'stat_type_7', 'stat_type_8', 'stat_type_9', 'stat_type_10')) ]
-            fields += [ '{ %s }' % ', '.join(item.field('stat_alloc_1', 'stat_alloc_2', 'stat_alloc_3', 'stat_alloc_4', 'stat_alloc_5', 'stat_alloc_6', 'stat_alloc_7', 'stat_alloc_8', 'stat_alloc_9', 'stat_alloc_10')) ]
-            fields += [ '{ %s }' % ', '.join(item.field('stat_socket_mul_1', 'stat_socket_mul_2', 'stat_socket_mul_3', 'stat_socket_mul_4', 'stat_socket_mul_5', 'stat_socket_mul_6', 'stat_socket_mul_7', 'stat_socket_mul_8', 'stat_socket_mul_9', 'stat_socket_mul_10')) ]
+            fields += item.field('bonding', 'delay', 'dmg_range', 'item_damage_modifier')
+            fields += item_stats_fields(id)
+            fields += item.field('class_mask', 'race_mask')
 
             spells = self._itemeffect_db[0].field('id_spell') * 5
             trigger_types = self._itemeffect_db[0].field('trigger_type') * 5
@@ -933,7 +976,6 @@ class ItemDataGenerator(DataGenerator):
 
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-            index += 1
         self._out.write('} };\n\n')
 
     def generate_json(self, ids = None):

@@ -1924,7 +1924,7 @@ specialization_e dbc_t::spec_by_spell( uint32_t spell_id ) const
   return SPEC_NONE;
 }
 
-double dbc_t::weapon_dps( const item_data_t& item_data, unsigned ilevel ) const
+double dbc_t::weapon_dps( const dbc_item_data_t& item_data, unsigned ilevel ) const
 {
   assert( item_data.id > 0 );
 

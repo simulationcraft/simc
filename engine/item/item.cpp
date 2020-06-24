@@ -41,8 +41,6 @@ item_t::parsed_input_t::parsed_input_t()
     initial_cd( timespan_t::zero() ),
     drop_level( 0 )
 {
-  range::fill( data.stat_type_e, -1 );
-  range::fill( data.stat_alloc, 0 );
   range::fill( stat_val, 0 );
   range::fill( gem_id, 0 );
   range::fill( bonus_id, 0 );
