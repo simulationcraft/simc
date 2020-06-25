@@ -1,5 +1,5 @@
 // Item effects, wow build 9.0.1.34902
-static const std::array<item_effect_t, 271> __item_effect_data { {
+static const std::array<item_effect_t, 144> __item_effect_data { {
   {    420,  13518,   0,   2,     -1,    0,     -1 }, // Poison
   {  30489, 207438,   0,   1,     -1,    0,     -1 }, // Aggramar's Stride
   { 116155, 315277,   2,   1,     -1,    0,     -1 }, // Strikethrough
@@ -39,94 +39,7 @@ static const std::array<item_effect_t, 271> __item_effect_data { {
   { 116671, 317417,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
   { 116672, 317418,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
   { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116673, 317419,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
   { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116723, 318378,   0,   0,     -1,    0,     -1 }, // Steadfast Resolve
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
-  { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
   { 116780, 317860,   0,   1,     -1,    0,     -1 }, // Draconic Empowerment
   { 116782, 318276,   2,   1,     -1,    0,     -1 }, // Twilight Devastation
   { 116783, 318477,   2,   1,     -1,    0,     -1 }, // Twilight Devastation
@@ -140,7 +53,6 @@ static const std::array<item_effect_t, 271> __item_effect_data { {
   { 116791, 318239,   2,   1,     -1,    0,     -1 }, // Glimpse of Clarity
   { 116792, 318303,   2,   1,     -1,    0,     -1 }, // Ineffable Truth
   { 116793, 318484,   2,   1,     -1,    0,     -1 }, // Ineffable Truth
-  { 116794, 318280,   2,   1,     -1,    0,     -1 }, // Echoing Void
   { 116794, 318280,   2,   1,     -1,    0,     -1 }, // Echoing Void
   { 116795, 318485,   2,   1,     -1,    0,     -1 }, // Echoing Void
   { 116796, 318486,   2,   1,     -1,    0,     -1 }, // Echoing Void
@@ -166,45 +78,6 @@ static const std::array<item_effect_t, 271> __item_effect_data { {
   { 116816, 318293,   2,   1,     -1,    0,     -1 }, // Searing Flames
   { 116817, 316651,   2,   1,     -1,    0,     -1 }, // Obsidian Skin
   { 116818, 318272,   2,   1,     -1,    0,     -1 }, // Gushing Wound
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
-  { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
   { 116854, 300470,   0,   1,     -1,    0,     -1 }, // Shroud of Resolve
   { 117368, 324375,   0,   1,     -1,    0,     -1 }, // Alchemical Longevity
   { 117369, 324376,   0,   1,     -1,    0,     -1 }, // Culinary Longevity
