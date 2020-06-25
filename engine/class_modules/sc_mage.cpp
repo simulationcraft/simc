@@ -7143,6 +7143,7 @@ public:
 
   void register_hotfixes() const override
   {
+    /*
     hotfix::register_spell( "Mage", "2018-05-02", "Incorrect spell level for Icicle buff.", 205473 )
       .field( "spell_level" )
       .operation( hotfix::HOTFIX_SET )
@@ -7160,6 +7161,7 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 78 )
       .verification_value( 99 );
+    */
 
     hotfix::register_spell( "Mage", "2017-03-20", "Manually set Frozen Orb's travel speed.", 84714 )
       .field( "prj_speed" )
