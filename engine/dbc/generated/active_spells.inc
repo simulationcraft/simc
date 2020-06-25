@@ -1,5 +1,5 @@
-// Active class spells, wow build 9.0.1.34821
-static const std::array<active_class_spell_t, 609> __active_spells_data { {
+// Active class spells, wow build 9.0.1.34902
+static const std::array<active_class_spell_t, 608> __active_spells_data { {
   {  1,   0,  88163,      0, "Attack"                             },
   {  1,   0,    100,      0, "Charge"                             },
   {  1,   0,   6544,      0, "Heroic Leap"                        },
@@ -443,7 +443,6 @@ static const std::array<active_class_spell_t, 609> __active_spells_data { {
   {  9,   0,    172,      0, "Corruption"                         },
   {  9,   0, 234153,      0, "Drain Life"                         },
   {  9,   0, 334275,      0, "Curse of Exhaustion"                },
-  {  9,   0,  93375,      0, "Summon Voidwalker"                  },
   {  9,   0, 333889,      0, "Fel Domination"                     },
   {  9,  265,  27243,      0, "Seed of Corruption"                 },
   {  9,  265,    980,      0, "Agony"                              },
@@ -611,7 +610,7 @@ static const std::array<active_class_spell_t, 609> __active_spells_data { {
   { 12,  581, 212084,      0, "Fel Devastation"                    },
 } };
 
-// Pet active spells, wow build 9.0.1.34821
+// Pet active spells, wow build 9.0.1.34902
 static const std::array<active_pet_spell_t, 125> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

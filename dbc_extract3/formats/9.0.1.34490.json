@@ -632,6 +632,7 @@
     ]
   },
   "JournalItemXDifficulty": {
+    "parent": "JournalEncounterItem",
     "fields": [
       { "data_type": "B", "field": "id_difficulty", "ref": "Difficulty" }
     ]

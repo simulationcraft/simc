@@ -1,4 +1,4 @@
-// Talent tree specialization abilities, wow build 9.0.1.34821
+// Talent tree specialization abilities, wow build 9.0.1.34902
 static const std::array<specialization_spell_entry_t, 886> __specialization_spell_data { {
   {  0,  535, 264663,      0, "Predator's Thirst"                  },
   {  0,  535, 264667,      0, "Primal Rage"                        },
@@ -594,7 +594,7 @@ static const std::array<specialization_spell_entry_t, 886> __specialization_spel
   {  9,  265, 317031,      0, "Corruption"                         },
   {  9,  265, 316099,      0, "Unstable Affliction"                },
   {  9,  265, 324536,      0, "Malefic Rapture"                    },
-  {  9,  265,  32388,      0, "Shadow Bolt"                        },
+  {  9,  265,  32388,      0, "Shadow Embrace"                     },
   {  9,  265, 334315,      0, "Unstable Affliction"                },
   {  9,  265, 334342,      0, "Corruption"                         },
   {  9,  266,  30146,      0, "Summon Felguard"                    },

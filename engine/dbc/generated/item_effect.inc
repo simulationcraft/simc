@@ -1,5 +1,5 @@
-// Item effects, wow build 9.0.1.34821
-static const std::array<item_effect_t, 260> __item_effect_data { {
+// Item effects, wow build 9.0.1.34902
+static const std::array<item_effect_t, 271> __item_effect_data { {
   {    420,  13518,   0,   2,     -1,    0,     -1 }, // Poison
   {  30489, 207438,   0,   1,     -1,    0,     -1 }, // Aggramar's Stride
   { 116155, 315277,   2,   1,     -1,    0,     -1 }, // Strikethrough
@@ -141,6 +141,7 @@ static const std::array<item_effect_t, 260> __item_effect_data { {
   { 116792, 318303,   2,   1,     -1,    0,     -1 }, // Ineffable Truth
   { 116793, 318484,   2,   1,     -1,    0,     -1 }, // Ineffable Truth
   { 116794, 318280,   2,   1,     -1,    0,     -1 }, // Echoing Void
+  { 116794, 318280,   2,   1,     -1,    0,     -1 }, // Echoing Void
   { 116795, 318485,   2,   1,     -1,    0,     -1 }, // Echoing Void
   { 116796, 318486,   2,   1,     -1,    0,     -1 }, // Echoing Void
   { 116797, 318274,   2,   1,     -1,    0,     -1 }, // Infinite Stars
@@ -260,5 +261,15 @@ static const std::array<item_effect_t, 260> __item_effect_data { {
   { 125994, 335253,   0,   1,     -1,    0,     -1 }, // Misshapen Mirror
   { 125998, 335266,   0,   1,     -1,    0,     -1 }, // Signet of Tormented Kings
   { 126000, 335274,   0,   1,     -1,    0,     -1 }, // Battlelord
+  { 126004, 335451,   0,   1,     -1,    0,     -1 }, // Exploiter
+  { 126005, 335458,   0,   1,     -1,    0,     -1 }, // Enduring Blow
+  { 126009, 335555,   0,   1,     -1,    0,     -1 }, // Cadence of Fujieda
+  { 126010, 335567,   0,   1,     -1,    0,     -1 }, // Deathmaker
+  { 126011, 335582,   0,   1,     -1,    0,     -1 }, // Reckless Defense
+  { 126014, 335594,   0,   1,     -1,    0,     -1 }, // Will of the Berserker
+  { 126021, 335629,   0,   1,     -1,    0,     -1 }, // Unbreakable Will
+  { 126030, 335718,   0,   1,     -1,    0,     -1 }, // Reprisal
+  { 126031, 335282,   0,   1,     -1,    0,     -1 }, // Unhinged
+  { 126038, 335758,   0,   1,     -1,    0,     -1 }, // Seismic Reverberation
 } };
 
