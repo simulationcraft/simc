@@ -841,6 +841,23 @@ class ItemDataGenerator(DataGenerator):
 
             ids.append(item_id)
 
+        # All timewalking items through JournalEncounter
+        journal_item_ids = [
+            v for v in self.db('JournalItemXDifficulty').values() if v.id_difficulty in [24, 33]
+        ]
+
+        for entry in journal_item_ids:
+            item = entry.parent_record().ref('id_item')
+            if not item.id:
+                continue
+
+            item_ = self.db('Item')[item.id]
+            if item_.id == 0:
+                continue
+
+            if item_.classs in [2, 4] and item.id not in ids:
+                ids.append(item.id)
+
         return ids
 
     def generate(self, ids = None):
