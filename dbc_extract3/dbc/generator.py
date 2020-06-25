@@ -3985,7 +3985,7 @@ class ItemEffectGenerator(DataGenerator):
 
             ids.append(effect)
 
-        return ids
+        return list(set(ids))
 
     def generate(self, data = None):
         self.output_header(
