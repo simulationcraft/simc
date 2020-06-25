@@ -1,4 +1,4 @@
-// Item enchantment data, wow build 8.3.0.34220
+// Item enchantment data, wow build 8.3.0.34769
 static const std::array<item_enchantment_data_t, 4095> __spell_item_ench_data { {
   {   13,      0, -1,   5,   1,   0,   0, {   2,   0,   0 }, {    3,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
   {   14,      0, -1,  15,  15,   0,   0, {   2,   0,   0 }, {    4,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },

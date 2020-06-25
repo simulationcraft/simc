@@ -1,4 +1,4 @@
-// Random property points for item levels 1-1300, wow build 8.3.0.34220
+// Random property points for item levels 1-1300, wow build 8.3.0.34769
 static const std::array<random_prop_data_t, 1300> __rand_prop_points_data { {
   {    1,        0,        0, {        0,        0,        0,        0,        0 }, {        0,        0,        0,        0,        0 }, {        0,        0,        0,        0,        0 } },
   {    2,        0,        0, {        0,        0,        0,        0,        0 }, {        0,        0,        0,        0,        0 }, {        0,        0,        0,        0,        0 } },

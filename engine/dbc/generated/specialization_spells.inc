@@ -1,4 +1,4 @@
-// Talent tree specialization abilities, wow build 8.3.0.34220
+// Talent tree specialization abilities, wow build 8.3.0.34769
 static const std::array<specialization_spell_entry_t, 880> __specialization_spell_data { {
   {  0, 535, 264663,      0, "Predator's Thirst"                  },
   {  0, 535, 264667,      0, "Primal Rage"                        },

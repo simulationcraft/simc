@@ -1,4 +1,4 @@
-// RPPM Modifiers, wow build level 8.3.0.34220
+// RPPM Modifiers, wow build level 8.3.0.34769
 static const std::array<rppm_modifier_t, 1011> __rppm_modifier_data { {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
