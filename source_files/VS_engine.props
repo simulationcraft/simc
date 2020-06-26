@@ -546,6 +546,9 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\sim\shuffled_rng.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
+		<ClCompile Include="..\engine\sim\sim_ostream.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="..\engine\sim\uptime_benefit.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>

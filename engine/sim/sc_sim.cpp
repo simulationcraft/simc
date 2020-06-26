@@ -4359,8 +4359,3 @@ bool sim_t::requires_cleanup() const
   // .. or finally, clean up child threads based on the "cleanup_threads" option value
   return cleanup_threads;
 }
-
-void sim_ostream_t::print_simulation_time()
-{
-  fmt::fprintf(*_raw.get_stream(), "%.3f ", sim.current_time().total_seconds());
-}

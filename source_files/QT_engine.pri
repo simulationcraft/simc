@@ -289,6 +289,7 @@ SOURCES += engine/sim/sc_reforge_plot.cpp
 SOURCES += engine/sim/sc_sim.cpp
 SOURCES += engine/sim/scale_factor_control.cpp
 SOURCES += engine/sim/shuffled_rng.cpp
+SOURCES += engine/sim/sim_ostream.cpp
 SOURCES += engine/sim/uptime_benefit.cpp
 SOURCES += engine/util/chrono.cpp
 SOURCES += engine/util/concurrency.cpp
