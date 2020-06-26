@@ -286,6 +286,7 @@ sim/sc_reforge_plot.cpp
 sim/sc_sim.cpp
 sim/scale_factor_control.cpp
 sim/shuffled_rng.cpp
+sim/sim_ostream.cpp
 sim/uptime_benefit.cpp
 util/chrono.cpp
 util/concurrency.cpp

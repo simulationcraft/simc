@@ -129,6 +129,7 @@ SRC += \
     sim$(PATHSEP)sc_sim.cpp \
     sim$(PATHSEP)scale_factor_control.cpp \
     sim$(PATHSEP)shuffled_rng.cpp \
+    sim$(PATHSEP)sim_ostream.cpp \
     sim$(PATHSEP)uptime_benefit.cpp \
     util$(PATHSEP)chrono.cpp \
     util$(PATHSEP)concurrency.cpp \

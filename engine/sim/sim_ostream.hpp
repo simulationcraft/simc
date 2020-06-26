@@ -10,21 +10,27 @@
 
 #include "fmt/core.h"
 #include "fmt/printf.h"
-#include "fmt/ostream.h"
+
+#include <iosfwd>
 
 struct sim_t;
 
 /* Unformatted SimC output class.
  */
 struct sc_raw_ostream_t {
-  template <class T>
-  sc_raw_ostream_t & operator<< (T const& rhs)
-  { (*_stream) << rhs; return *this; }
+  template <typename T>
+  sc_raw_ostream_t& operator<< (T const& rhs)
+  {
+    print( "{}", rhs );
+    return *this;
+  }
+
+  sc_raw_ostream_t& operator<< (const char* rhs);
 
   template <typename... Args>
   sc_raw_ostream_t& print( util::string_view format, Args&& ... args )
   {
-    fmt::print( *get_stream(), format, std::forward<Args>(args)... );
+    vprint( format, fmt::make_format_args( std::forward<Args>(args)... ) );
     return *this;
   }
 
@@ -34,6 +40,9 @@ struct sc_raw_ostream_t {
   { _stream = os; return *this; }
   std::ostream* get_stream()
   { return _stream.get(); }
+
+  void vprint( util::string_view format, fmt::format_args args );
+
 private:
   std::shared_ptr<std::ostream> _stream;
 };
@@ -59,23 +68,19 @@ struct sim_ostream_t
   sc_raw_ostream_t& raw()
   { return _raw; }
 
-  std::ostream* get_stream()
-  { return _raw.get_stream(); }
-  template <class T>
-  sim_ostream_t & operator<< (T const& rhs)
+  template <typename T>
+  sim_ostream_t& operator<< (T const& rhs)
   {
-    print_simulation_time();
-    _raw << rhs << "\n";
-
+    print( "{}", rhs );
     return *this;
   }
+
+  sim_ostream_t& operator<< (const char* rhs);
 
   template <typename... Args>
   sim_ostream_t& printf( util::string_view format, Args&& ... args )
   {
-    print_simulation_time();
-    fmt::fprintf(*_raw.get_stream(), format, std::forward<Args>(args)... );
-    _raw << "\n";
+    vprintf( format, fmt::make_printf_args( std::forward<Args>(args)... ) );
     return *this;
   }
 
@@ -85,14 +90,15 @@ struct sim_ostream_t
   template <typename... Args>
   sim_ostream_t& print( util::string_view format, Args&& ... args)
   {
-    print_simulation_time();
-    fmt::print( *_raw.get_stream(), format, std::forward<Args>(args)... );
-    _raw << '\n';
+    vprint( format, fmt::make_format_args( std::forward<Args>(args)... ) );
     return *this;
   }
 private:
   static void dont_close( std::ostream* ) {}
   void print_simulation_time();
+  void vprintf( util::string_view format, fmt::printf_args args );
+  void vprint( util::string_view format, fmt::format_args args );
+
   sim_t& sim;
   sc_raw_ostream_t _raw;
 };
