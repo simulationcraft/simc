@@ -350,7 +350,7 @@ int http::get( std::string&       result,
     if ( caching == cache::ONLY )
       return 404;
 
-    util::printf( "@" ); fflush( stdout );
+    fmt::print( "@" ); fflush( stdout );
 
     response_code = download( entry, result, encoded_url, headers );
 
@@ -363,8 +363,8 @@ int http::get( std::string&       result,
 
     if ( confirmation.size() && ( entry.result.find( confirmation ) == std::string::npos ) )
     {
-      //util::printf( "\nsimulationcraft: HTTP failed on '%s'\n", url.c_str() );
-      //util::printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
+      //fmt::print( "\nsimulationcraft: HTTP failed on '{}'\n", url );
+      //fmt::print( "{}\n", ( result.empty() ? "empty" : result.c_str() ) );
       //fflush( stdout );
       return 409; // "Conflict"
     }
