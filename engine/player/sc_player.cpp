@@ -9660,7 +9660,7 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
     return q;
 
   // time_to_pct expressions
-  if ( util::str_begins_with_ci( expression_str, "time_to_" ) )
+  if ( util::str_prefix_ci( expression_str, "time_to_" ) )
   {
     std::vector<std::string> parts = util::string_split( expression_str, "_" );
     double percent = -1.0;
@@ -10189,7 +10189,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string&
       return make_fn_expr( name_str, [ this, r ] { return resource_regen_per_second( r ); } );
     }
 
-    else if ( util::str_begins_with_ci( splits[ 1 ], "time_to_" ) )
+    else if ( util::str_prefix_ci( splits[ 1 ], "time_to_" ) )
     {
       std::vector<std::string> parts = util::string_split( splits[ 1 ], "_" );
 

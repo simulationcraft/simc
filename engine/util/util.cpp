@@ -332,22 +332,6 @@ bool util::str_in_str_ci( util::string_view l,
   return std::search( l.begin(), l.end(), r.begin(), r.end(), pred_ci ) != l.end();
 }
 
-bool util::str_begins_with( const std::string& str, const std::string& beginsWith )
-{
-  if ( str.size() < beginsWith.size() )
-    return false;
-
-  return std::equal( beginsWith.begin(), beginsWith.end(), str.begin() );
-}
-
-bool util::str_begins_with_ci( const std::string& str, const std::string& beginsWith )
-{
-  if ( str.size() < beginsWith.size() )
-    return false;
-
-  return std::equal( beginsWith.begin(), beginsWith.end(), str.begin(), pred_ci );
-}
-
 // dot_behavior_type_string =================================================
 
 const char* util::dot_behavior_type_string( dot_behavior_e t )
