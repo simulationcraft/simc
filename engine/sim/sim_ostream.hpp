@@ -22,13 +22,6 @@ struct sc_raw_ostream_t {
   { (*_stream) << rhs; return *this; }
 
   template <typename... Args>
-  sc_raw_ostream_t& printf( util::string_view format, Args&& ... args )
-  {
-    fmt::fprintf(*get_stream(), format, std::forward<Args>(args)... );
-    return *this;
-  }
-
-  template <typename... Args>
   sc_raw_ostream_t& print( util::string_view format, Args&& ... args )
   {
     fmt::print( *get_stream(), format, std::forward<Args>(args)... );
@@ -103,3 +96,4 @@ private:
   sim_t& sim;
   sc_raw_ostream_t _raw;
 };
+

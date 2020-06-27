@@ -149,8 +149,8 @@ void reforge_plot_t::analyze_stats()
     sim->out_debug.raw() << "Reforge Plot Stats:";
     for ( size_t i = 0; i < reforge_plot_stat_indices.size(); i++ )
     {
-      sim->out_log.raw().printf(
-          "%s%s", i ? ", " : " ",
+      sim->out_log.raw().print(
+          "{}{}", i ? ", " : " ",
           util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
     }
     sim->out_log.raw() << "\n";
@@ -159,8 +159,8 @@ void reforge_plot_t::analyze_stats()
     for ( size_t i = 0; i < stat_mods.size(); i++ )
     {
       for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
-        sim->out_log.raw().printf(
-            "%s: %d ", util::stat_type_string( reforge_plot_stat_indices[ j ] ),
+        sim->out_log.raw().print(
+            "{}: {} ", util::stat_type_string( reforge_plot_stat_indices[ j ] ),
             stat_mods[ i ][ j ] );
       sim->out_log.raw() << "\n";
     }
