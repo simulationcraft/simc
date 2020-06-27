@@ -6,6 +6,8 @@
 #pragma once
 
 #include "config.hpp"
+#include "util/string_view.hpp"
+
 #include "fmt/core.h"
 #include "fmt/printf.h"
 #include "fmt/ostream.h"
@@ -19,15 +21,15 @@ struct sc_raw_ostream_t {
   sc_raw_ostream_t & operator<< (T const& rhs)
   { (*_stream) << rhs; return *this; }
 
-  template<typename Format, typename... Args>
-  sc_raw_ostream_t& printf(Format&& format, Args&& ... args)
+  template <typename... Args>
+  sc_raw_ostream_t& printf( util::string_view format, Args&& ... args )
   {
-    fmt::fprintf(*get_stream(), std::forward<Format>(format), std::forward<Args>(args)... );
+    fmt::fprintf(*get_stream(), format, std::forward<Args>(args)... );
     return *this;
   }
 
-  template <typename Format, typename... Args>
-  sc_raw_ostream_t& print(const Format& format, Args&& ... args)
+  template <typename... Args>
+  sc_raw_ostream_t& print( util::string_view format, Args&& ... args )
   {
     fmt::print( *get_stream(), format, std::forward<Args>(args)... );
     return *this;
@@ -75,11 +77,11 @@ struct sim_ostream_t
     return *this;
   }
 
-  template<typename Format, typename... Args>
-  sim_ostream_t& printf(Format&& format, Args&& ... args)
+  template <typename... Args>
+  sim_ostream_t& printf( util::string_view format, Args&& ... args )
   {
     print_simulation_time();
-    fmt::fprintf(*_raw.get_stream(), std::forward<Format>(format), std::forward<Args>(args)... );
+    fmt::fprintf(*_raw.get_stream(), format, std::forward<Args>(args)... );
     _raw << "\n";
     return *this;
   }
@@ -87,8 +89,8 @@ struct sim_ostream_t
   /**
    * Print using fmt libraries python-like formatting syntax.
    */
-  template <typename Format, typename... Args>
-  sim_ostream_t& print(const Format& format, Args&& ... args)
+  template <typename... Args>
+  sim_ostream_t& print( util::string_view format, Args&& ... args)
   {
     print_simulation_time();
     fmt::print( *_raw.get_stream(), format, std::forward<Args>(args)... );
