@@ -170,9 +170,6 @@ bool str_compare_ci( util::string_view l, util::string_view r );
 bool str_in_str_ci ( util::string_view l, util::string_view r );
 bool str_prefix_ci ( util::string_view str, util::string_view prefix );
 
-bool str_begins_with( const std::string& str, const std::string& beginsWith );
-bool str_begins_with_ci( const std::string& str, const std::string& beginsWith );
-
 double floor( double X, unsigned int decplaces = 0 );
 double ceil( double X, unsigned int decplaces = 0 );
 double round( double X, unsigned int decplaces = 0 );
