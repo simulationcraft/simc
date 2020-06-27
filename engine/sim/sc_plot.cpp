@@ -183,8 +183,8 @@ void plot_t::analyze_stats()
         delta_sim->execute();
         if ( dps_plot_debug )
         {
-          sim->out_debug.raw().printf( "Stat=%s Point=%d\n",
-                                       util::stat_type_string( i ), j );
+          sim->out_debug.raw().print( "Stat={} Point={}\n",
+                                      util::stat_type_string( i ), j );
           report::print_text( delta_sim.get(), true );
         }
       }
