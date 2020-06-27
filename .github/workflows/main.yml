@@ -30,7 +30,9 @@ jobs:
           restore-keys: ${{ env.ccache-prefix }}-
 
       - name: Install deps
-        run: sudo apt-get install libcurl4-openssl-dev ninja-build lld ccache
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build lld ccache
 
       - name: Configure
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
