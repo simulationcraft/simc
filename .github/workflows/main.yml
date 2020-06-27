@@ -7,7 +7,8 @@ on:
     branches: [ bfa-dev ]
     paths-ignore:
       - 'SpellDataDump/**'
-      - 'dbc_extract/**'
+      - 'dbc_extract3/**'
+      - 'casc_extract/**'
 
 env:
   SIMC_PROFILE: profiles/T25_Raid.simc
@@ -29,13 +30,15 @@ jobs:
           restore-keys: ${{ env.ccache-prefix }}-
 
       - name: Install deps
-        run: sudo apt-get install libcurl4-openssl-dev ninja-build lld ccache
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build lld ccache
 
       - name: Configure
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
               -DCMAKE_CXX_COMPILER=g++-9 -DCMAKE_C_COMPILER=gcc-9
-              -DCMAKE_CXX_FLAGS="-ffile-prefix-map=${{ runner.workspace }}/simc/=/"
+              -DCMAKE_CXX_FLAGS="-ffile-prefix-map=${{ runner.workspace }}/=/"
               -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
@@ -57,22 +60,9 @@ jobs:
         run: ${{ runner.workspace }}/b/ninja/simc spell_query=spell.name=auto_shot
 
 
-  ubuntu-clang-10:
-    name: ubuntu-clang-10-${{ matrix.type }}
+  ubuntu-clang-10-build:
+    name: ubuntu-clang-10-build
     runs-on: ubuntu-18.04
-
-    strategy:
-      matrix:
-        type: [spell_query, log_debug, patchwerk, dungeon_slice]
-        include:
-          - type: spell_query
-            simc_flags: spell_query=spell > /dev/null
-          - type: log_debug
-            simc_flags: $SIMC_PROFILE log=1 debug=1 2>&1 | grep -v -E 'Player\s*[a-zA-Z0-9_]+\s*attempting'
-          - type: patchwerk
-            simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
-          - type: dungeon_slice
-            simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
 
     steps:
       - uses: actions/checkout@v2
@@ -95,10 +85,10 @@ jobs:
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
               -DCMAKE_CXX_COMPILER=clang++-10 -DCMAKE_C_COMPILER=clang-10
-              -DCMAKE_CXX_FLAGS="-ffile-prefix-map=${{ runner.workspace }}/simc/=/
+              -DCMAKE_CXX_FLAGS="-ffile-prefix-map=${{ runner.workspace }}/=/
                 -fno-omit-frame-pointer -fsanitize=address,undefined
                 -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
-              -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"
+              -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -fsanitize=address,undefined"
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
       - name: Build
@@ -111,7 +101,45 @@ jobs:
           ninja -C '${{ runner.workspace }}/b/ninja'
           ccache -s
 
-      - name: Smoke Test
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+          key: ubuntu-clang-10-for_run-${{ github.sha }}
+
+
+  ubuntu-clang-10-run:
+    name: ubuntu-clang-10-${{ matrix.type }}
+    runs-on: ubuntu-18.04
+    needs: [ubuntu-clang-10-build]
+
+    strategy:
+      matrix:
+        include:
+          - type: spell_query
+            simc_flags: spell_query=spell > /dev/null
+          - type: log_debug
+            simc_flags: $SIMC_PROFILE log=1 debug=1
+          - type: patchwerk
+            simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
+          - type: dungeon_slice
+            simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
+
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+          key: ubuntu-clang-10-for_run-${{ github.sha }}
+
+      - name: Install deps
+        run: |
+          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
+          sudo apt-get install -y libclang-common-10-dev llvm-10
+
+      - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null ${{ matrix.simc_flags }}
