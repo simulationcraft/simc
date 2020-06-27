@@ -7,8 +7,11 @@
 #define SC_IO_HPP
 
 #include "config.hpp"
+#include "util/string_view.hpp"
+
 #include "fmt/printf.h"
 #include "fmt/ostream.h"
+
 #include <string>
 #include <vector>
 #include <fstream>
@@ -64,18 +67,18 @@ public:
   /**
    * Output using printf formatting syntax.
    */
-  template <typename Format, typename... Args>
-  ofstream& printf(const Format& format, Args&& ... args)
+  template <typename... Args>
+  ofstream& printf( util::string_view format, Args&& ... args )
   {
-    fmt::fprintf( *this, format, std::forward<Args>(args)... );;
+    fmt::fprintf( *this, format, std::forward<Args>(args)... );
 
     return *this;
   }
   /**
    * Output using fmt::format formatting syntax.
    */
-  template <typename Format, typename... Args>
-  ofstream& format(const Format& format, Args&& ... args)
+  template <typename... Args>
+  ofstream& format( util::string_view format, Args&& ... args)
   {
     fmt::print( *this, format, std::forward<Args>(args)... );
 

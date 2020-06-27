@@ -598,27 +598,25 @@ struct sim_t : private sc_thread_t
   /**
    * Create error with printf formatting.
    */
-  template<typename Format, typename... Args>
-  void errorf(Format&& format, Args&& ... args)
+  template <typename... Args>
+  void errorf( util::string_view format, Args&&... args )
   {
     if ( thread_index != 0 )
       return;
 
-    auto s = fmt::sprintf(std::forward<Format>(format), std::forward<Args>(args)... );
-    set_error(std::move(s));
+    set_error( fmt::sprintf( format, std::forward<Args>(args)... ) );
   }
 
   /**
    * Create error using fmt libraries python-like formatting syntax.
    */
-  template<typename Format, typename... Args>
-  void error(Format&& format, Args&& ... args)
+  template <typename... Args>
+  void error( util::string_view format, Args&&... args )
   {
     if ( thread_index != 0 )
       return;
 
-    auto s = fmt::format(std::forward<Format>(format), std::forward<Args>(args)... );
-    set_error(std::move(s));
+    set_error( fmt::format( format, std::forward<Args>(args)... ) );
   }
   
   void abort();
@@ -662,13 +660,13 @@ struct sim_t : private sc_thread_t
    * Checks if sim debug is enabled.
    * Print using fmt libraries python-like formatting syntax.
    */
-  template<typename Format, typename... Args>
-  void print_debug(Format&& format, Args&& ... args)
+  template <typename... Args>
+  void print_debug( util::string_view format, Args&& ... args )
   {
     if ( ! debug )
       return;
 
-    out_debug.print(std::forward<Format>(format), std::forward<Args>(args)... );
+    out_debug.print( format, std::forward<Args>(args)... );
   }
 
   /**
@@ -677,13 +675,13 @@ struct sim_t : private sc_thread_t
    * Checks if sim logging is enabled.
    * Print using fmt libraries python-like formatting syntax.
    */
-  template<typename Format, typename... Args>
-  void print_log(Format&& format, Args&& ... args)
+  template <typename... Args>
+  void print_log( util::string_view format, Args&& ... args )
   {
     if ( ! log )
       return;
 
-    out_log.print(std::forward<Format>(format), std::forward<Args>(args)... );
+    out_log.print( format, std::forward<Args>(args)... );
   }
 
 private:
