@@ -336,8 +336,8 @@ int sim_t::main( const std::vector<std::string>& args )
     }
     else
     {
-      util::printf( "\nSimulating... ( iterations=%d, threads=%d, target_error=%.3f, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n\n",
-        iterations, threads, target_error, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
+      fmt::print( "\nSimulating... ( iterations={}, threads={}, target_error={:.3f}, max_time={:.0f}, vary_combat_length={:0.2f}, optimal_raid={}, fight_style={} )\n\n",
+        iterations, threads, target_error, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style );
 
       progress_bar.set_base( "Baseline" );
       if ( execute() )
@@ -357,7 +357,7 @@ int sim_t::main( const std::vector<std::string>& args )
       }
       else
       {
-        util::printf("Simulation was canceled.\n");
+        fmt::print("Simulation was canceled.\n");
         canceled = true;
       }
     }

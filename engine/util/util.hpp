@@ -16,7 +16,6 @@
 
 #include "fmt/format.h"
 #include "fmt/ostream.h"
-#include "fmt/printf.h"
 
 #include <exception>
 #include <iosfwd>
@@ -158,17 +157,6 @@ unsigned to_unsigned( const char* str );
 int to_int( const std::string& str );
 
 int64_t parse_date( util::string_view month_day_year );
-
-template <typename... Args>
-int printf( util::string_view format, Args&& ... args )
-{
-  return fmt::printf( format, std::forward<Args>(args)... );
-}
-template <typename... Args>
-int fprintf( std::FILE* stream, util::string_view format, Args&& ... args )
-{
-  return fmt::fprintf( stream, format, std::forward<Args>(args)... );
-}
 
 std::string encode_html( util::string_view );
 std::string decode_html( const std::string& );

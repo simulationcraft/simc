@@ -219,7 +219,7 @@ void print_spell_query(xml_node_t* root, FILE* file, const sim_t& sim, const spe
     }
   }
 
-  util::fprintf(file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+  fmt::print(file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
   root->print_xml(file);
 }
 // report::print_suite ======================================================

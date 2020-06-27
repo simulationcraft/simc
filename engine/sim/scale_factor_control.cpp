@@ -395,7 +395,7 @@ void scale_factor_control_t::analyze_lag()
 
   if ( sim -> report_progress )
   {
-    util::fprintf( stdout, "\nGenerating scale factors for lag...\n" );
+    fmt::print( "\nGenerating scale factors for lag...\n" );
     fflush( stdout );
   }
 

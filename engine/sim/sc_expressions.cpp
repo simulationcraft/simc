@@ -360,7 +360,7 @@ public:
   {
     if ( EXPRESSION_DEBUG )
     {
-      util::printf( "%*d and %lu %lu %lu %lu ( %s %s )\n", spacing, id(),
+      fmt::print( "{:>{}} and {} {} {} {} ( {} {} )\n", id(), spacing,
                     left_true, left_false, right_true, right_false,
                     left->name(), right->name() );
     }
@@ -467,7 +467,7 @@ public:
   {
     if ( EXPRESSION_DEBUG )
     {
-      util::printf( "%*d or %lu %lu %lu %lu ( %s %s )\n", spacing, id(),
+      fmt::print( "{:>{}} and {} {} {} {} ( {} {} )\n", id(), spacing,
                     left_true, left_false, right_true, right_false,
                     left->name(), right->name() );
     }

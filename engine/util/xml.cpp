@@ -535,14 +535,14 @@ void xml_node_t::print( FILE*       file,
 {
   assert( file );
 
-  util::fprintf( file, "%*s%s", spacing, "", name() );
+  fmt::print( file, "{:<{}}{}", "", spacing, name() );
 
   for ( size_t i = 0; i < parameters.size(); i++ )
   {
     xml_parm_t& parm = parameters[ i ];
-    util::fprintf( file, " %s=\"%s\"", parm.name(), parm.value_str.c_str() );
+    fmt::print( file, " {}=\"{}\"", parm.name(), parm.value_str );
   }
-  util::fprintf( file, "\n" );
+  fmt::print( file, "\n" );
 
   for ( size_t i = 0; i < children.size(); ++i )
   {
@@ -560,7 +560,7 @@ void xml_node_t::print_xml( FILE*       file,
 {
   assert( file );
 
-  util::fprintf( file, "%*s<%s", spacing, "", name() );
+  fmt::print( file, "{:<{}}<{}", "", spacing, name() );
 
   std::string content;
   for ( size_t i = 0; i < parameters.size(); ++i )
@@ -574,19 +574,19 @@ void xml_node_t::print_xml( FILE*       file,
     if ( parm.name_str == "." )
       content = parm_value;
     else
-      util::fprintf( file, " %s=\"%s\"", parm.name(), parm_value.c_str() );
+      fmt::print( file, " {}=\"{}\"", parm.name(), parm_value );
   }
 
   if ( children.empty() )
   {
     if ( content.empty() )
-      util::fprintf( file, " />\n" );
+      fmt::print( file, " />\n" );
     else
-      util::fprintf( file, ">%s</%s>\n", content.c_str(), name() );
+      fmt::print( file, ">{}</{}>\n", content, name() );
   }
   else
   {
-    util::fprintf( file, ">%s\n", content.c_str() );
+    fmt::print( file, ">{}\n", content );
     for ( size_t i = 0; i < children.size(); ++i )
     {
       if ( children[ i ] )
@@ -594,7 +594,7 @@ void xml_node_t::print_xml( FILE*       file,
         children[ i ] -> print_xml( file, spacing + 2 );
       }
     }
-    util::fprintf( file, "%*s</%s>\n", spacing, "", name() );
+    fmt::print( file, "{:<{}}</{}>\n", "", spacing, name() );
   }
 }
 
@@ -789,11 +789,7 @@ void sc_xml_t::print_xml( FILE* f, int )
   assert( f );
   assert( root );
 
-  std::stringstream s;
-
-  s << *root;
-
-  util::fprintf( f, "%s", s.str().c_str() );
+  fmt::print( f, "{}", *root );
 }
 
 void sc_xml_t::print( FILE* file, int spacing )
@@ -801,18 +797,18 @@ void sc_xml_t::print( FILE* file, int spacing )
   assert( file );
   assert( root );
 
-  util::fprintf( file, "%*s%s", spacing, "", name().c_str() );
+  fmt::print( file, "{:<{}}{}", "", spacing, name() );
 
   for ( xml_attribute<>* attr = root -> first_attribute(); attr; attr = attr -> next_attribute() )
   {
-    util::fprintf( file, " %s=\"%s\"", attr -> name(), attr -> value() );
+    fmt::print( file, " {}=\"{}\"", attr -> name(), attr -> value() );
   }
 
   if ( root -> type() == node_element && root -> value_size() > 0 )
   {
-    util::fprintf( file, " .=\"%s\"", root -> value() );
+    fmt::print( file, " .=\"{}\"", root -> value() );
   }
-  util::fprintf( file, "\n" );
+  fmt::print( file, "\n" );
 
   for ( xml_node<>* n = root -> first_node(); n; n = n -> next_sibling() )
   {

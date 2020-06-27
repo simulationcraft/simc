@@ -214,10 +214,10 @@ bool event_manager_t::execute()
       e->actor->event_counter--;
       if ( e->actor->event_counter < 0 )
       {
-        util::fprintf( stderr,
-                       "sim_t::combat assertion error! canceling event %s "
-                       "leaves negative event count for user %s.\n",
-                       e->name(), e->actor->name() );
+        fmt::print( stderr,
+                    "sim_t::combat assertion error! canceling event {} "
+                    "leaves negative event count for user {}.\n",
+                    e->name(), e->actor->name() );
         assert( false );
       }
     }
