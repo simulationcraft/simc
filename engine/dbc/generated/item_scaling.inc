@@ -651,7 +651,7 @@ static const std::array<scaling_stat_distribution_t, 648> __scaling_stat_distrib
 } };
 
 // Curve points data, wow build 8.3.0.34769
-static const std::array<curve_point_t, 36044> __curve_point_data { {
+static const std::array<curve_point_t, 36050> __curve_point_data { {
   {    8,  0,    0.00000,    1.00000 },
   {    9,  0,    0.00000,    1.00000 },
   {   11,  0,    0.00000,    1.00000 },
@@ -36696,5 +36696,11 @@ static const std::array<curve_point_t, 36044> __curve_point_data { {
   { 17400,  0,    2.00000,   30.00000 },
   { 17400,  1,   30.00000,  450.00000 },
   { 17501,  0,    0.00000,    1.00000 },
+  { 19077,  0,    0.00000,    0.00000 },
+  { 19077,  1,    1.00000,    0.20000 },
+  { 19078,  0,    0.00000,    0.00000 },
+  { 19078,  1,    1.00000,    0.30000 },
+  { 19079,  0,    0.00000,    0.00000 },
+  { 19079,  1,    1.00000,    0.20000 },
 } };
 
