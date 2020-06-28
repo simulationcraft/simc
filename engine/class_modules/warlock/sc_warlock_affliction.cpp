@@ -396,11 +396,27 @@ namespace warlock
 
           affliction_spell_t::last_tick( d );
 
-          if (p()->azerite_essence.conflict_and_strife.enabled() &&
-            p()->azerite_essence.conflict_and_strife.is_major() && p()->buffs.active_uas->stack() < 1)
+          if ( p()->azerite_essence.conflict_and_strife.enabled() &&
+            p()->azerite_essence.conflict_and_strife.is_major() )
           {
             warlock_td_t* target_data = td( d->target );
-            target_data->debuffs_endless_affliction->trigger();
+
+            bool any_ticking = false;
+            for (int i = 0; i < MAX_UAS; i++)
+            {
+              
+              if ( target_data->dots_unstable_affliction[ i ] == d )
+                continue;
+
+              if ( target_data->dots_unstable_affliction[ i ]->is_ticking() )
+              {
+                any_ticking = true;
+                break;
+              }
+            }
+            
+            if ( !any_ticking )
+              target_data->debuffs_endless_affliction->trigger();
           }
         }
 
