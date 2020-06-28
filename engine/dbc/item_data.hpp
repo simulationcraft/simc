@@ -21,6 +21,14 @@ struct dbc_item_data_t {
     float   socket_mul;
   };
 
+  struct effect_t {
+    unsigned spell_id;
+    int16_t  type; // item_spell_trigger_type
+    int16_t  cooldown_group;
+    int      cooldown_duration;
+    int      cooldown_group_duration;
+  };
+
   const char* name;
   unsigned id;
   unsigned flags_1;
@@ -39,14 +47,11 @@ struct dbc_item_data_t {
   float    dmg_range;
   float    item_modifier;
   const stats_t* _dbc_stats;
+  const effect_t* _effects;
   uint8_t  _dbc_stats_count;
+  uint8_t  _effects_count;
   unsigned class_mask;
   uint64_t race_mask;
-  int      trigger_spell[MAX_ITEM_EFFECT];      // item_spell_trigger_type
-  int      id_spell[MAX_ITEM_EFFECT];
-  int      cooldown_duration[MAX_ITEM_EFFECT];
-  int      cooldown_group[MAX_ITEM_EFFECT];
-  int      cooldown_group_duration[MAX_ITEM_EFFECT];
   int      socket_color[MAX_ITEM_SOCKET_SLOT];       // item_socket_color
   int      gem_properties;
   int      id_socket_bonus;
@@ -67,6 +72,12 @@ struct dbc_item_data_t {
   bool mythic() const
   { return ( type_flags & RAID_TYPE_MYTHIC ) == RAID_TYPE_MYTHIC; }
 
+  util::span<const effect_t> effects() const
+  {
+    assert( _effects || _effects_count == 0 );
+    return { _effects, _effects_count };
+  }
+
   static const dbc_item_data_t& find( unsigned id, bool ptr )
   { return dbc::find<dbc_item_data_t>( id, ptr, &dbc_item_data_t::id ); }
 
@@ -74,6 +85,13 @@ struct dbc_item_data_t {
   { return dbc::nil<dbc_item_data_t>; }
 
   static util::span<const dbc_item_data_t> data( bool ptr );
+
+protected:
+  dbc_item_data_t( const dbc_item_data_t& ) = default;
+  dbc_item_data_t& operator=( const dbc_item_data_t& ) = default;
+
+  void copy_from( const dbc_item_data_t& other )
+  { *this = other; }
 };
 
 #endif /* ITEM_HPP */

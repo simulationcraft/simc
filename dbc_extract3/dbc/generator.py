@@ -906,7 +906,7 @@ class ItemDataGenerator(DataGenerator):
 
             def items(self):
                 return self._list
-            
+
             def _find_pos(self, data):
                 for pos in self._dict[data[0]]:
                     if self._list[pos:pos + len(data)] == data:
@@ -914,9 +914,11 @@ class ItemDataGenerator(DataGenerator):
                 return None
 
         items_stats_index = Index()
+        items_effects_index = Index()
 
         for id in ids:
             item = self._itemsparse_db[id]
+
             stats = []
             for i in range(1, 11):
                 stat_type = getattr(item, 'stat_type_{}'.format(i))
@@ -927,17 +929,37 @@ class ItemDataGenerator(DataGenerator):
             if len(stats):
                 items_stats_index.add(id, sorted(stats, key=lambda s: s[:2]))
 
+            spells = item.get_links('spells')
+            if len(spells):
+                count = max(spells, key=lambda s: s.index).index + 1
+                effects = [ tuple(self._itemeffect_db[0].field('id_spell', 'trigger_type',
+                    'cooldown_group', 'cooldown_duration', 'cooldown_group_duration')) ] * count
+                for spell in spells:
+                    effects[ spell.index ] = tuple(spell.field('id_spell', 'trigger_type',
+                        'cooldown_group', 'cooldown_duration', 'cooldown_group_duration'))
+                items_effects_index.add(id, effects)
+
         self._out.write('static const dbc_item_data_t::stats_t __{}_data[{}] = {{\n'.format(
             self.format_str('item_stats'), len(items_stats_index)))
         for stats in items_stats_index.items():
             self._out.write('  {{ {:>2}, {:>5}, {} }},\n'.format(*stats))
         self._out.write('};\n')
 
-        def item_stats_fields(id):
+        self._out.write('static const dbc_item_data_t::effect_t __{}_data[{}] = {{\n'.format(
+            self.format_str('item_effects'), len(items_effects_index)))
+        for effect in items_effects_index.items():
+            self._out.write('  {{ {:>6}, {}, {}, {:>8}, {:>8} }},\n'.format(*effect))
+        self._out.write('};\n')
+
+        def item_stats_effects_fields(id):
             stats = items_stats_index.get(id)
-            if stats is None:
-                return [ '0', '0' ]
-            return [ '&__{}_data[{}]'.format(self.format_str('item_stats'), stats[0]), str(stats[1]) ]
+            effects = items_effects_index.get(id)
+            return [
+                stats is None and '0' or '&__{}_data[{}]'.format(self.format_str('item_stats'), stats[0]),
+                effects is None and '0' or '&__{}_data[{}]'.format(self.format_str('item_effects'), effects[0]),
+                stats is None and '0' or str(stats[1]),
+                effects is None and '0' or str(effects[1])
+            ]
 
         self._out.write('// Items, ilevel %d-%d, wow build level %s\n' % (
             self._options.min_ilevel, self._options.max_ilevel, self._options.build))
@@ -966,27 +988,8 @@ class ItemDataGenerator(DataGenerator):
             fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
             fields += item2.field('classs', 'subclass')
             fields += item.field('bonding', 'delay', 'dmg_range', 'item_damage_modifier')
-            fields += item_stats_fields(id)
+            fields += item_stats_effects_fields(id)
             fields += item.field('class_mask', 'race_mask')
-
-            spells = self._itemeffect_db[0].field('id_spell') * 5
-            trigger_types = self._itemeffect_db[0].field('trigger_type') * 5
-            cooldown_duration = self._itemeffect_db[0].field('cooldown_duration') * 5
-            cooldown_group = self._itemeffect_db[0].field('cooldown_group') * 5
-            cooldown_group_duration = self._itemeffect_db[0].field('cooldown_group_duration') * 5
-            for spell in item.get_links('spells'):
-                spells[ spell.index ] = spell.field('id_spell')[ 0 ]
-                trigger_types[ spell.index ] = spell.field('trigger_type')[ 0 ]
-                cooldown_duration[ spell.index ] = spell.field('cooldown_duration')[ 0 ]
-                cooldown_group[ spell.index ] = spell.field('cooldown_group')[ 0 ]
-                cooldown_group_duration[ spell.index ] = spell.field('cooldown_group_duration')[ 0 ]
-
-            fields += [ '{ %s }' % ', '.join(trigger_types) ]
-            fields += [ '{ %s }' % ', '.join(spells) ]
-            fields += [ '{ %s }' % ', '.join(cooldown_duration) ]
-            fields += [ '{ %s }' % ', '.join(cooldown_group) ]
-            fields += [ '{ %s }' % ', '.join(cooldown_group_duration) ]
-
             fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
             fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
 

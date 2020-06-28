@@ -13,4 +13,3 @@ util::span<const dbc_item_data_t> dbc_item_data_t::data( bool ptr )
 {
   return SC_DBC_GET_DATA( dbc::items(), dbc::items_ptr(), ptr );
 }
-

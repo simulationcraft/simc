@@ -738,10 +738,10 @@ timespan_t special_effect_t::cooldown() const
   // spell cooldown may be
   if ( source == SPECIAL_EFFECT_SOURCE_ITEM && item )
   {
-    for ( size_t i = 0; i < MAX_ITEM_EFFECT; i++ )
+    for ( const auto& effect : item -> parsed.data.effects() )
     {
-      if ( item -> parsed.data.id_spell[ i ] == as<int>(spell_id) && item -> parsed.data.cooldown_duration[ i ] > 0 )
-        return timespan_t::from_millis( item -> parsed.data.cooldown_duration[ i ] );
+      if ( effect.spell_id == spell_id && effect.cooldown_duration > 0 )
+        return timespan_t::from_millis( effect.cooldown_duration );
     }
   }
 
@@ -1235,11 +1235,11 @@ int special_effect_t::cooldown_group() const
   }
 
   // For everything else, look at the item effects for a cooldown group
-  for (size_t i = 0; i < MAX_ITEM_EFFECT; ++i)
+  for ( const auto& effect : item -> parsed.data.effects() )
   {
-    if (item->parsed.data.cooldown_group[i] > 0)
+    if ( effect.cooldown_group > 0 )
     {
-      return item->parsed.data.cooldown_group[i];
+      return effect.cooldown_group;
     }
   }
 
@@ -1261,11 +1261,11 @@ timespan_t special_effect_t::cooldown_group_duration() const
   }
 
   // For everything else, look at the item effects with a cooldown group
-  for (size_t i = 0; i < MAX_ITEM_EFFECT; ++i)
+  for ( const auto& effect : item -> parsed.data.effects() )
   {
-    if (item->parsed.data.cooldown_group[i] > 0)
+    if ( effect.cooldown_group > 0 )
     {
-      return timespan_t::from_millis(item->parsed.data.cooldown_group_duration[i]);
+      return timespan_t::from_millis( effect.cooldown_group_duration );
     }
   }
 

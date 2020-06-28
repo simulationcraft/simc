@@ -258,8 +258,6 @@ bool wowhead::download_item_data( item_t&            item,
       xml->get_value(htmltooltip, "htmlTooltip/cdata");
 
       // Parse out Equip: and On use: strings
-      int spell_idx = 0;
-
       std::shared_ptr<xml_node_t> htmltooltip_xml = xml_node_t::create(htmltooltip);
       //htmltooltip_xml -> print( item.sim -> output_file, 2 );
       std::vector<xml_node_t*> spell_links = htmltooltip_xml->get_nodes("span");
@@ -293,9 +291,7 @@ bool wowhead::download_item_data( item_t&            item,
         }
         if (parsed_spell_id > 0 && trigger_type != -1)
         {
-          item.parsed.data.id_spell[spell_idx] = parsed_spell_id;
-          item.parsed.data.trigger_spell[spell_idx] = trigger_type;
-          spell_idx++;
+          item.parsed.data.add_effect( as<unsigned>( parsed_spell_id ), trigger_type );
         }
       }
     }

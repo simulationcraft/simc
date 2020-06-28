@@ -1295,18 +1295,17 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
 
     {
       std::stringstream s;
-      for ( int i = 0; i < MAX_ITEM_EFFECT; i++ )
+      for ( const auto& effect : item.parsed.data.effects() )
       {
-        int id = item.parsed.data.id_spell[ i ];
-        if ( id )
-        {
-          if ( !s.str().empty() )
-            s << ", ";
+        if ( effect.spell_id == 0 )
+          continue;
 
-          s << util::item_spell_trigger_string( static_cast<item_spell_trigger_type>( item.parsed.data.trigger_spell[ i ] ) ) << ": ";
-          auto spell = item.player->find_spell( id );
-          s << report_decorators::decorated_spell_data_item(*item.sim, spell, item);
-        }
+        if ( !s.str().empty() )
+          s << ", ";
+
+        s << util::item_spell_trigger_string( static_cast<item_spell_trigger_type>( effect.type ) ) << ": ";
+        auto spell = item.player->find_spell( effect.spell_id );
+        s << report_decorators::decorated_spell_data_item(*item.sim, spell, item);
       }
 
       if ( !s.str().empty() )

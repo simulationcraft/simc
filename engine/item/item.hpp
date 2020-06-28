@@ -22,6 +22,7 @@ struct sim_t;
 struct special_effect_t;
 struct weapon_t;
 struct xml_node_t;
+struct item_effect_t;
 
 struct stat_pair_t
 {
@@ -38,23 +39,39 @@ struct stat_pair_t
 struct parsed_item_data_t : dbc_item_data_t {
   std::array<int, MAX_ITEM_STAT> stat_type_e;
   std::array<int, MAX_ITEM_STAT> stat_alloc;
+  std::array<dbc_item_data_t::effect_t, MAX_ITEM_EFFECT> _effects_data;
 
   parsed_item_data_t()
-    : dbc_item_data_t{}
+    : dbc_item_data_t{}, stat_alloc{}, _effects_data{}
   {
     range::fill( stat_type_e, -1 );
-    range::fill( stat_alloc, 0 );
+    _effects = _effects_data.data();
   }
 
-  void init( const dbc_item_data_t& raw )
+  parsed_item_data_t( const parsed_item_data_t& other )
+    : dbc_item_data_t( other )
+    , stat_type_e( other.stat_type_e ), stat_alloc( other.stat_alloc )
+    , _effects_data( other._effects_data )
   {
-    *static_cast<dbc_item_data_t*>( this ) = raw;
-    for ( size_t i = 0; i < stat_type_e.size(); i++ )
-    {
-      stat_type_e[ i ] = i < _dbc_stats_count ? _dbc_stats[ i ].type_e : -1;
-      stat_alloc[ i ] = i < _dbc_stats_count ? _dbc_stats[ i ].alloc : 0;
-    }
+    _effects = _effects_data.data();
   }
+
+  parsed_item_data_t& operator=( const parsed_item_data_t& other )
+  {
+    this -> copy_from( other );
+    stat_type_e = other.stat_type_e;
+    stat_alloc = other.stat_alloc;
+    _effects_data = other._effects_data;
+    _effects = _effects_data.data();
+    return *this;
+  }
+
+  void init( const dbc_item_data_t& raw );
+
+  size_t add_effect( unsigned spell_id, int type );
+  size_t add_effect( const item_effect_t& effect );
+private:
+  size_t find_free_effect_slot() const;
 };
 
 struct item_t
