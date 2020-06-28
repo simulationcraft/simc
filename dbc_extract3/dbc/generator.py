@@ -898,12 +898,14 @@ class ItemDataGenerator(DataGenerator):
             item = self._itemsparse_db[id]
             stats = []
             for i in range(1, 11):
-                if getattr(item, 'stat_type_{}'.format(i)) > 0:
-                    stats.append(( item.field('stat_type_{}'.format(i))[0],
-                                   item.field('stat_alloc_{}'.format(i))[0],
+                stat_type = getattr(item, 'stat_type_{}'.format(i))
+                if stat_type > 0:
+                    stats.append(( stat_type,
+                                   getattr(item, 'stat_alloc_{}'.format(i)),
                                    item.field('stat_socket_mul_{}'.format(i))[0] ))
             if len(stats) == 0:
                 continue
+            stats.sort(key=lambda s: s[:2]) # sort the stats, improves dedup ratio
             pos = find_stats_list_pos(stats)
             if pos is None:
                 pos = len(items_stats_list)
