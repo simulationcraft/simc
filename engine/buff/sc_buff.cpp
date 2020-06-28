@@ -1950,7 +1950,7 @@ struct potion_spell_filter
   {
     // Augment runes and other things look like potions. Only match things
     // that trigger the potion shared cooldown.
-    return item->cooldown_group[0] == ITEM_COOLDOWN_GROUP_POTION && range::contains_value(item->id_spell, spell_id);
+    return item->cooldown_group[0] == ITEM_COOLDOWN_GROUP_POTION && range::contains(item->id_spell, spell_id);
   }
 };
 }  // namespace

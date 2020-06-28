@@ -507,7 +507,7 @@ struct invulnerable_debuff_t : public buff_t
   void start( int stacks, double value, timespan_t duration ) override
   {
     buff_t::start( stacks, value, duration );
-    if ( sim->ignore_invulnerable_targets && range::contains_value( sim->target_non_sleeping_list, player ) )
+    if ( sim->ignore_invulnerable_targets && range::contains( sim->target_non_sleeping_list, player ) )
     {
       sim->target_non_sleeping_list.find_and_erase_unordered( player );
       sim->active_enemies--;
@@ -517,7 +517,7 @@ struct invulnerable_debuff_t : public buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
-    if ( sim->ignore_invulnerable_targets && !range::contains_value( sim->target_non_sleeping_list, player ) )
+    if ( sim->ignore_invulnerable_targets && !range::contains( sim->target_non_sleeping_list, player ) )
     {
       sim->target_non_sleeping_list.push_back( player );
       sim->active_enemies++;

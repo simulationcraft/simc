@@ -328,10 +328,10 @@ inline bool any_of( Range&& r, UnaryPredicate p )
  *
  * Equal to std::any_of with equality predicate, or std::find with checking for end of range.
  */
-template <typename Range, typename Value>
-inline bool contains_value( Range&& r, Value v )
+template <typename Range, typename Value, typename Proj = identity>
+inline bool contains( Range&& r, const Value& v, Proj proj = Proj{} )
 {
-  return std::find( range::begin( r ), range::end( r ), v ) != range::end( r );
+  return range::find( r, v, proj ) != range::end( r );
 }
 
 template <typename Range, typename F>
