@@ -880,19 +880,40 @@ class ItemDataGenerator(DataGenerator):
             return True
         ids[:] = [ id for id in ids if check_item(id) ]
 
-        items_stats_list = []
-        items_stats_index = {}
+        class Index(object):
+            def __init__(self):
+                self._list = []
+                self._index = {}
+                self._dict = defaultdict(list)
 
-        # compression acceleration
-        items_stats_list_dict = defaultdict(dict)
-        def find_stats_list_pos(stats):
-            sub = items_stats_list_dict.get(stats[0])
-            if sub is not None:
-                return sub.get(tuple(stats[1:]))
-            return None
-        def insert_stats_list_pos(stats, pos):
-            sub = items_stats_list_dict[stats[0]]
-            sub[tuple(stats[1:])] = pos
+            def __len__(self):
+                return len(self._list)
+
+            def add(self, id, data):
+                assert isinstance(data, list)
+                assert len(data)
+
+                pos = self._find_pos(data)
+                if pos is None:
+                    pos = len(self._list)
+                    for i in range(len(data)):
+                        self._dict[data[i]].append(pos + i)
+                    self._list.extend(data)
+                self._index[id] = (pos, len(data))
+
+            def get(self, id):
+                return self._index.get(id)
+
+            def items(self):
+                return self._list
+            
+            def _find_pos(self, data):
+                for pos in self._dict[data[0]]:
+                    if self._list[pos:pos + len(data)] == data:
+                        return pos
+                return None
+
+        items_stats_index = Index()
 
         for id in ids:
             item = self._itemsparse_db[id]
@@ -903,19 +924,12 @@ class ItemDataGenerator(DataGenerator):
                     stats.append(( stat_type,
                                    getattr(item, 'stat_alloc_{}'.format(i)),
                                    item.field('stat_socket_mul_{}'.format(i))[0] ))
-            if len(stats) == 0:
-                continue
-            stats.sort(key=lambda s: s[:2]) # sort the stats, improves dedup ratio
-            pos = find_stats_list_pos(stats)
-            if pos is None:
-                pos = len(items_stats_list)
-                insert_stats_list_pos(stats, pos)
-                items_stats_list.extend( stats )
-            items_stats_index[id] = ( pos, len(stats) )
+            if len(stats):
+                items_stats_index.add(id, sorted(stats, key=lambda s: s[:2]))
 
         self._out.write('static const dbc_item_data_t::stats_t __{}_data[{}] = {{\n'.format(
-            self.format_str('item_stats'), len(items_stats_list)))
-        for stats in items_stats_list:
+            self.format_str('item_stats'), len(items_stats_index)))
+        for stats in items_stats_index.items():
             self._out.write('  {{ {:>2}, {:>5}, {} }},\n'.format(*stats))
         self._out.write('};\n')
 
