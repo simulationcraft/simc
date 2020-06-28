@@ -1426,7 +1426,8 @@ struct deadly_poison_t : public rogue_poison_t
     deadly_poison_dd_t( rogue_t* p ) :
       rogue_poison_t( "deadly_poison_instant", p, p -> find_spell( 113780 ) )
     {
-      harmful = true;
+      proc = false;
+      callbacks = harmful = true;
     }
   };
 
@@ -1435,7 +1436,6 @@ struct deadly_poison_t : public rogue_poison_t
     deadly_poison_dot_t( rogue_t* p ) :
       rogue_poison_t( "deadly_poison_dot", p, p -> find_specialization_spell( "Deadly Poison" ) -> effectN( 1 ).trigger() )
     {
-      may_crit       = false;
       proc           = false;
       harmful        = true;
       hasted_ticks   = true;
