@@ -5639,6 +5639,7 @@ void mage_t::apl_precombat()
         "With Kindling, Combustion's cooldown will be reduced by a random amount, but the number of crits starts very high after activating Combustion and slows down towards the end of Combustion's cooldown. When making decisions in the APL, Combustion's remaining cooldown is reduced by this fraction to account for Kindling." );
       break;
     case MAGE_FROST:
+      precombat->add_action( "variable,name=incanters_flow_gaming,default=1,op=reset" );
       precombat->add_action( this, "Summon Water Elemental" );
       break;
     default:
@@ -6042,7 +6043,7 @@ void mage_t::apl_frost()
       single->add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&!talent.splitting_ice.enabled" );
       single->add_talent( this, "Comet Storm" );
       single->add_talent( this, "Ebonbolt", "if=buff.icicles.stack=5&!buff.brain_freeze.react" );
-      single->add_action( this, "Ice Lance", "if=buff.brain_freeze.react&(buff.fingers_of_frost.react|prev_gcd.1.flurry)&"
+      single->add_action( this, "Ice Lance", "if=variable.incanters_flow_gaming&buff.brain_freeze.react&(buff.fingers_of_frost.react|prev_gcd.1.flurry)&"
         "(buff.icicles.max_stack-buff.icicles.stack)*action.frostbolt.execute_time+action.glacial_spike.cast_time+"
         "action.glacial_spike.travel_time<incanters_flow_time_to.5.any&buff.memory_of_lucid_dreams.down" );
       single->add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt"
