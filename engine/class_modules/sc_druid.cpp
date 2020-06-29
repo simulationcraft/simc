@@ -6343,6 +6343,12 @@ struct sunfire_t : public druid_spell_t
     {
       double ta = druid_spell_t::bonus_ta(s);
 
+      // This appears to be nerfed by only 8% for resto druids even though patch notes said 34% 29-Jun-2020
+      if ( p()->specialization() == DRUID_RESTORATION )
+        ta += p()->azerite.high_noon.value( 2 ) * 0.92;
+      else
+        ta += p()->azerite.high_noon.value( 2 );
+
       ta += p()->azerite.high_noon.value(2);
 
       return ta;
