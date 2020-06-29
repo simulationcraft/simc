@@ -119,6 +119,8 @@ namespace warlock
       ->set_refresh_behavior( buff_refresh_behavior::DURATION )
       ->set_max_stack( 3 );
 
+    debuffs_endless_affliction = make_buff( *this, "unending_affliction", source->find_spell( 305388 ) );
+
     //Destro
     dots_immolate = target->get_dot("immolate", &p);
     dots_roaring_blaze = target->get_dot("roaring_blaze", &p);
@@ -331,6 +333,10 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
   {
     m *= 1.0 + td->debuffs_from_the_shadows->data().effectN(1).percent();
   }
+
+  //Conflict and Strife major uses the value from Unstable Affliction spell data
+  if ( td->debuffs_endless_affliction->check() )
+    m *= 1.0 + spec.unstable_affliction->effectN( 3 ).percent();
 
   return m;
 }

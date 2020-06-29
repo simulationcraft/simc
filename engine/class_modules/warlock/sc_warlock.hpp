@@ -26,7 +26,9 @@ namespace warlock
 
       propagate_const<buff_t*> debuffs_haunt;
       propagate_const<buff_t*> debuffs_shadow_embrace;
-
+      
+      propagate_const<buff_t*> debuffs_endless_affliction;
+      
       //Destro
       propagate_const<dot_t*> dots_immolate;
       propagate_const<dot_t*> dots_channel_demonfire;
@@ -37,6 +39,7 @@ namespace warlock
       propagate_const<buff_t*> debuffs_roaring_blaze;
       propagate_const<buff_t*> debuffs_havoc;
       propagate_const<buff_t*> debuffs_chaotic_flames;
+
 
       //Demo
       propagate_const<dot_t*> dots_doom;
@@ -234,6 +237,7 @@ namespace warlock
       struct {
         azerite_essence_t memory_of_lucid_dreams;  // Memory of Lucid Dreams minor
         azerite_essence_t vision_of_perfection;
+        azerite_essence_t conflict_and_strife; //for Aff - Endless Affliction
       } azerite_essence;
 
       // Mastery Spells
@@ -696,6 +700,7 @@ namespace warlock
         double composite_target_multiplier( player_t* t ) const override
         {
           double m = spell_t::composite_target_multiplier(t);
+
           return m;
         }
 

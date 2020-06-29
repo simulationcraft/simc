@@ -395,6 +395,29 @@ namespace warlock
           p()->buffs.active_uas->decrement( 1 );
 
           affliction_spell_t::last_tick( d );
+
+          if ( p()->azerite_essence.conflict_and_strife.enabled() &&
+            p()->azerite_essence.conflict_and_strife.is_major() )
+          {
+            warlock_td_t* target_data = td( d->target );
+
+            bool any_ticking = false;
+            for (int i = 0; i < MAX_UAS; i++)
+            {
+              
+              if ( target_data->dots_unstable_affliction[ i ] == d )
+                continue;
+
+              if ( target_data->dots_unstable_affliction[ i ]->is_ticking() )
+              {
+                any_ticking = true;
+                break;
+              }
+            }
+            
+            if ( !any_ticking )
+              target_data->debuffs_endless_affliction->trigger();
+          }
         }
 
         double bonus_ta( const action_state_t* s ) const override
@@ -467,6 +490,12 @@ namespace warlock
 
           real_ua->set_target( s->target );
           real_ua->schedule_execute();
+
+          //Handle Endless Affliction
+          if (target_data && p()->azerite_essence.conflict_and_strife.enabled() && p()->azerite_essence.conflict_and_strife.is_major())
+          {
+            target_data->debuffs_endless_affliction->decrement();          
+          }
         }
       }
 
@@ -1002,6 +1031,8 @@ namespace warlock
     azerite.sudden_onset                = find_azerite_spell("Sudden Onset");
     azerite.wracking_brilliance         = find_azerite_spell("Wracking Brilliance");
     azerite.pandemic_invocation         = find_azerite_spell( "Pandemic Invocation" );
+    // Azerite Essences
+    azerite_essence.conflict_and_strife = find_azerite_essence( "Conflict and Strife" );
     // Actives
     active.pandemic_invocation          = new pandemic_invocation_t( this );
   }
