@@ -7591,7 +7591,7 @@ std::string death_knight_t::default_food() const
                             "disabled";
 
   std::string blood_food =  ( true_level > 110 ) ? "mechdowels_big_mech" :
-	                       ( true_level > 100 ) ? "lavish_suramar_feast" :
+	                      ( true_level > 100 ) ? "lavish_suramar_feast" :
                             ( true_level >  90 ) ? "pickled_eel" :
                             ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                             ( true_level >= 80 ) ? "seafood_magnifique_feast" :
