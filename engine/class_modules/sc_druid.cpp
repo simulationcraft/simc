@@ -5887,6 +5887,18 @@ struct swipe_proxy_t : public druid_spell_t
     return 0;
   }
 
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p()->buff.cat_form->check() )
+      return swipe_cat->gcd();
+
+    else if ( p()->buff.bear_form->check() )
+      return swipe_bear->gcd();
+
+    return g;
+  }
 
 };
 
