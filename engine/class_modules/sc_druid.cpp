@@ -6125,6 +6125,16 @@ struct swipe_proxy_t : public druid_spell_t
     swipe_bear = new bear_attacks::swipe_bear_t( p, options_str );
   }
 
+  timespan_t gcd() const override
+  {
+    if ( p()->buff.cat_form->check() )
+      return swipe_cat->gcd();
+    else if ( p()->buff.bear_form->check() )
+      return swipe_bear->gcd();
+
+    return druid_spell_t::gcd();
+  }
+
   void execute() override
   {
     if ( p()->buff.cat_form->check() )
