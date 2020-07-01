@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands cc47edb7ce)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34972 shadowlands-BETA (git build shadowlands 2fa6bde648)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -875,9 +875,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 0 | Scaled Value: 142.777 (coefficient=1.286279) | Points Per Level: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 142.777 (coefficient=1.286279) | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
-                   Base Value: 0 | Scaled Value: 142.777 (coefficient=1.286279) | Points Per Level: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 142.777 (coefficient=1.286279) | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
 
@@ -11209,7 +11209,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=815011)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 7 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1.15 | Chain Targets: 7 | Target: Enemy (6)
 #2 (id=815029)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
 #3 (id=815069)   : Dummy (3)

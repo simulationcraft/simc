@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands cc47edb7ce)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34972 shadowlands-BETA (git build shadowlands 2fa6bde648)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -200,6 +200,7 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 1 Soul Shard (7) (id=81)
+Spell Level      : 10
 Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -378,7 +379,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$ceil($o1+2)*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -777,7 +778,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=2210)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=740054)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000
 #3 (id=831295)   : Dummy (3)
@@ -1198,7 +1199,7 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=11232)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 49 | Points Per Level: 0.5 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=242870)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Deals Fire damage to all nearby enemies.
@@ -1643,7 +1644,7 @@ Effects          :
 Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
 
-Name             : Shadow Bolt (rank=Rank 2) (id=32388) [Spell Family (5), Passive] 
+Name             : Shadow Embrace (id=32388) [Spell Family (5), Passive] 
 Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : None
@@ -1655,15 +1656,15 @@ Proc Flags       : ........ ........ x.x..... ........
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x.x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6)
 Effects          :
 #1 (id=22179)    : Apply Aura (6) | Proc Trigger Spell (42): Shadow Embrace
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 32390 | Target: Self (1)
-Description      : $?s198590[Drain Soul][Shadow Bolt] applies Shadow Embrace, increasing your damage dealt to the target by $32390s1% for $32390d. Stacks up to $32390u times.
+Description      : $?s198590[Drain Soul][Shadow Bolt] and Haunt apply Shadow Embrace, increasing your damage dealt to the target by $32390s1% for $32390d. Stacks up to $32390u times.
 
 Name             : Shadow Embrace (id=32390) [Spell Family (5)] 
 Class            : Warlock
@@ -1674,7 +1675,7 @@ Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Triggered by     : Shadow Bolt (32388)
+Triggered by     : Shadow Embrace (32388)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ xx...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2375,7 +2376,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Unknown(27)
 Description      : Escapes to the Master. Flee removes all stun and roots.
 
-Name             : Summon Voidwalker (id=93375) 
+Name             : Control Demon (id=93375) [Hidden] 
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -2383,13 +2384,14 @@ Spell Level      : 10
 Duration         : Aura (infinite)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Hidden (7)
 Effects          :
 #1 (id=97872)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4556,7 +4558,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 205146 | Target: Self (1)
 #2 (id=343479)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 205146 | Target: Self (1)
-Description      : Shadow Bolt$?s264178[ and Demonbolt have][ has] a $h% chance to make your next Call Dreadstalkers cost $s1 less Soul $LShard:Shards; and have no cast time.
+Description      : Shadow Bolt$?s264178[ and Demonbolt have][ has] a $h% chance to make your next Call Dreadstalkers cost $s1 fewer Soul $LShard:Shards; and have no cast time.
 
 Name             : Demonic Calling (id=205146) [Spell Family (5)] 
 Class            : Warlock
@@ -9424,12 +9426,12 @@ Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warl
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   .....x.. .....x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
-                 : Periodic effect can crit (265)
+                 : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=800325)   : Dummy (3)
                    Base Value: 900 | Scaled Value: 900 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -9565,7 +9567,7 @@ School           : Shadow
 Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=192620)
 Spell Level      : 41
-Range            : 30 yards
+Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 120 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
@@ -9640,7 +9642,7 @@ Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 1 Soul Shard (7) (id=192685)
-Spell Level      : 13
+Spell Level      : 10
 Range            : 100 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -9895,7 +9897,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=830121)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Reduces the target's movement speed by $s1% for $d.
+Description      : Reduces the target's movement speed by $s1% for $d.
+
+|cFF8282FFCurses: A warlock can only have one Curse active per target.|r
 Tooltip          : Movement speed slowed by $w1%.
 
 Name             : Unstable Affliction (rank=Rank 3) (id=334315) [Spell Family (5), Passive] 
@@ -9938,7 +9942,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7), Scales with item level (354)
 Effects          :
 #1 (id=830188)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damaging an enemy with Agony increases the damage of your next Drain Life by $s1%. This effect stacks up to $334320u times.
 
 Name             : Inevitable Demise (id=334320) [Spell Family (5)] 
@@ -9959,7 +9963,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=830189)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
 #2 (id=830190)   : Apply Aura (6) | Add Percent Modifier (108): Spell Damage Taken (27)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 27 | Target: Self (1)
                    Affected Spells: Drain Life (234153)

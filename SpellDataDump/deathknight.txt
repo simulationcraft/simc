@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands cc47edb7ce)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34972 shadowlands-BETA (git build shadowlands 2fa6bde648)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -92,9 +92,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 0 | Scaled Value: 142.777 (coefficient=1.286279) | Points Per Level: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 142.777 (coefficient=1.286279) | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
-                   Base Value: 0 | Scaled Value: 142.777 (coefficient=1.286279) | Points Per Level: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 142.777 (coefficient=1.286279) | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
 
@@ -2917,7 +2917,7 @@ Effects          :
 #1 (id=111355)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -40 | Scaled Value: -40 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274837), Feral Frenzy (274838), Primal Wrath (285381)
-                   Family Flags: 12, 15, 16, 25, 39, 60, 64, 74, 82, 85, 86, 87, 93, 94, 99, 108, 120
+                   Family Flags: 12, 15, 25, 39, 60, 64, 74, 82, 85, 86, 87, 93, 94, 99, 108, 120
 #2 (id=310506)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #3 (id=471804)   : Trigger Spell (64): Jungle Stalker
@@ -3185,7 +3185,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980 effect#2), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
+Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980 effect#2), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Shadowflame Prism (336143 effect#1)
 Family Flags     : 19, 121
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
@@ -3624,15 +3624,12 @@ Effects          :
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 #7 (id=260768)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
-                   Family Flags: 107
-#8 (id=260769)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Astral Influence (197524)
                    Family Flags: 76
-#9 (id=260770)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
+#8 (id=260769)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 96 | Scaled Value: 96 | PvP Coefficient: 1.00000 | Target: Self (1)
-#10 (id=260771)   : Apply Aura (6) | Modify Power Regen (110)
+#9 (id=260770)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
@@ -4421,11 +4418,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179715)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Circle of Healing (204883), Premonition (209780), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265), Premonition (305498), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Circle of Healing (204883), Premonition (209780), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265), Premonition (305498), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Crystallized Reflection (336509)
                    Family Flags: 126
 #2 (id=191076)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Circle of Healing (204883), Premonition (209780), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265), Premonition (305498), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Circle of Healing (204883), Premonition (209780), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265), Premonition (305498), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Crystallized Reflection (336509)
                    Family Flags: 126
 #3 (id=191077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4455,11 +4452,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179716)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Circle of Healing (204883), Premonition (209780), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265), Premonition (305498), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Circle of Healing (204883), Premonition (209780), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265), Premonition (305498), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Crystallized Reflection (336509)
                    Family Flags: 126
 #2 (id=191072)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Circle of Healing (204883), Premonition (209780), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265), Premonition (305498), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Circle of Healing (204883), Premonition (209780), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Twist Magic (280198), Holy Nova (281265), Premonition (305498), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Crystallized Reflection (336509)
                    Family Flags: 126
 #3 (id=191073)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4721,7 +4718,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=260998)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
+                   Affected Spells: Lava Burst (51505), Lava Burst (285452)
                    Family Flags: 44
 #8 (id=260999)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
@@ -6525,7 +6522,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980 effect#2), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
+Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980 effect#2), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Shadowflame Prism (336143 effect#1)
 Family Flags     : 19, 121
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
@@ -7698,7 +7695,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, Generic Hostile Spell
-Affecting spells : Sanctified Wrath (53376 effect#1), Sanctified Wrath (171648 effect#1)
+Affecting spells : Sanctified Wrath (53376 effect#1)
 Family Flags     : 102
 Attributes       : ........ ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7708,36 +7705,32 @@ Attributes       : ........ ........ x.x..... ...x....   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
-#1 (id=321878)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Self (1)
-#2 (id=321879)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=321880)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=321878)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Crusader Strike (35395), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779)
                    Family Flags: 23, 47
-#4 (id=321881)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
+#2 (id=321879)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 189 | Target: Self (1)
-#5 (id=321882)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Holy Shock (20473), Holy Shock (25912)
-                   Family Flags: 21
-#6 (id=321944)   : Apply Aura (6) | Unknown(173)
+#3 (id=321880)   : Apply Aura (6) | Unknown(173)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 180 | Target: Self (1)
+#4 (id=321881)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=321882)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Self (1)
+#6 (id=321944)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=321945)   : Apply Aura (6) | Unknown(262)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
-#8 (id=828132)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You become the ultimate crusader of light, increasing your Crusader Strike, Judgment, and auto-attack damage by $s3%.
+Description      : You become the ultimate crusader of light, increasing your Crusader Strike, Judgment, and auto-attack damage by $s1%.
 
-Crusader Strike and Judgment cool down $m4% faster and heal up to $m2 injured allies for $m1% of the damage they deal. Lasts $d.
-Tooltip          : Crusader Strike, Judgment and auto-attack damage increased by $w3%.
+Crusader Strike and Judgment cool down $s2% faster and heal up to $s6 injured allies for $s5% of the damage they deal. Lasts $d.
+Tooltip          : Crusader Strike, Judgment and auto-attack damage increased by $w1%.
 
-Crusader Strike and Judgment cool down $w4% faster.
+Crusader Strike and Judgment cool down $w2% faster.
 
-$w2 nearby allies will be healed for $w1% of the damage done.
+$w6 nearby allies will be healed for $w5% of the damage done.
 
 Name             : Ossuary (id=219786) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -11909,9 +11902,9 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Tick on application (169)
 Effects          :
-#1 (id=799203)   : Apply Aura (6) | Periodic Trigger Spell (23): Abomination Limb every 2 seconds
+#1 (id=799203)   : Apply Aura (6) | Periodic Trigger Spell (23): Abomination Limb every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 323710 | Target: Self (1)
-#2 (id=812970)   : Apply Aura (6) | Periodic Trigger Spell (23): Abomination Limb every 2 seconds
+#2 (id=812970)   : Apply Aura (6) | Periodic Trigger Spell (23): Abomination Limb every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 323798 | Target: Self (1)
 Description      : Sprout an additional limb for $d. Every $t1 sec, it deals $323798s1 Shadow damage to all nearby enemies and pulls an enemy to your location if they are further than $323710s3 yds from you.
 Tooltip          : Pulling enemies to your location and dealing $323798s1 Shadow damage to nearby enemies every $t1 sec.
@@ -12749,7 +12742,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=812969)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (instant) (16)
 Description      : $@spelldesc311648
 
 Name             : Obliterate (id=325461) [Spell Family (15)] 

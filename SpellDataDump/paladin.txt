@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands cc47edb7ce)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34972 shadowlands-BETA (git build shadowlands 2fa6bde648)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -435,7 +435,7 @@ Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#7), Holy Paladin (137029 effect#6)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Judgment (327977 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Judgment (327977 effect#1)
 Family Flags     : 23, 27, 65
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -464,7 +464,7 @@ Cooldown         : 9 seconds
 Category         : 892
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 9 seconds
-Affecting spells : Avenging Wrath (31884 effect#6), Protection Paladin (137028 effect#5), Holy Paladin (137029 effect#4), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Avenging Crusader (216331 effect#5), Holy Shock (272906 effect#1), Avenging Wrath (294027 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#6), Protection Paladin (137028 effect#5), Holy Paladin (137029 effect#4), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Holy Shock (272906 effect#1), Avenging Wrath (294027 effect#1)
 Family Flags     : 21
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xxx..... ........ 
@@ -604,7 +604,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Avenging Crusader (216331 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Holy Shock (272906 effect#1), Avenging Wrath (294027 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Holy Shock (272906 effect#1), Avenging Wrath (294027 effect#1)
 Family Flags     : 21, 65
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -803,7 +803,7 @@ Cooldown         : 180 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Sanctified Wrath (53376 effect#1), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath (327979 effect#1), 
-Family Flags     : 40, 45
+Family Flags     : 40
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -944,7 +944,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Charges          : 1 (6 seconds cooldown)
 Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Avenging Wrath (31884 effect#1), Improved Crusader Strike (44300 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Judgment (214222 effect#1), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
+Affecting spells : Avenging Wrath (31884 effect#1), Improved Crusader Strike (44300 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Judgment (214222 effect#1), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
 Family Flags     : 47, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -1703,7 +1703,7 @@ Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Avenging Wrath (31884 effect#1), Sanctuary (105805 effect#5), Holy Paladin (137029 effect#1), Bastion of Power (144569 effect#1), Sacred Shield Overridde (Holy) (148040 effect#2), Beacon of Faith (156910 effect#3), Shining Light (182104 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), Sacred Judgment (253806 effect#1), Avenging Wrath (294027 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Sanctuary (105805 effect#5), Holy Paladin (137029 effect#1), Bastion of Power (144569 effect#1), Sacred Shield Overridde (Holy) (148040 effect#2), Beacon of Faith (156910 effect#3), Shining Light (182104 effect#1), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effect#1), Sacred Judgment (253806 effect#1), Avenging Wrath (294027 effect#1)
 Family Flags     : 46, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3144,8 +3144,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=243710)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Avenging Wrath (31884), Avenging Crusader (216331)
-                   Family Flags: 40, 102
+                   Affected Spells: Avenging Wrath (31884)
+                   Family Flags: 40
 #2 (id=243711)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 Description      : Avenging Wrath lasts $s1% longer and causes Judgment to generate $s2 additional Holy Power.
@@ -3537,7 +3537,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.. .x...x.. .x.x.... ........ 
                  : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Judgment (327977 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Judgment (327977 effect#1)
 Family Flags     : 23, 27, 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
@@ -4344,8 +4344,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=318059)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Lay on Hands (633), Cleanse (4987), Flash of Light (19750), Holy Shock (20473), Holy Shock (25912), Holy Shock (25914), Beacon of Light (53563), Beacon of Light (53652), Holy Light (82326), Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Beacon of Faith (156910), Light of the Martyr (183998), Beacon of Virtue (200025), Cleanse Toxins (213644), Bestow Faith (223306), Divine Toll (304971)
-                   Family Flags: 12, 15, 21, 30, 48, 56, 67, 74, 90, 92, 97, 100, 103, 124
+                   Affected Spells: Lay on Hands (633), Cleanse (4987), Flash of Light (19750), Holy Shock (20473), Holy Shock (25912), Holy Shock (25914), Beacon of Light (53563), Beacon of Light (53652), Holy Light (82326), Word of Glory (85673), Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Beacon of Faith (156910), Light of the Martyr (183998), Beacon of Virtue (200025), Cleanse Toxins (213644), Bestow Faith (223306), Divine Toll (304971)
+                   Family Flags: 12, 15, 21, 30, 48, 56, 67, 74, 78, 90, 92, 97, 100, 103, 124
 #2 (id=318060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Light of Dawn (85222), Light of Dawn (225311), Divine Toll (304971)
@@ -4368,7 +4368,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.. ........ .x...... ........ 
                  : Yellow Melee Taken, Magic Hostile Spell Taken
-Affecting spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#3), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Judgment (327977 effect#1)
+Affecting spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Judgment (327977 effect#1)
 Family Flags     : 23
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4426,7 +4426,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, Generic Hostile Spell
-Affecting spells : Sanctified Wrath (53376 effect#1), Sanctified Wrath (171648 effect#1)
+Affecting spells : Sanctified Wrath (53376 effect#1)
 Family Flags     : 102
 Attributes       : ........ ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4436,36 +4436,32 @@ Attributes       : ........ ........ x.x..... ...x....   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
-#1 (id=321878)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Self (1)
-#2 (id=321879)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=321880)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=321878)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Crusader Strike (35395), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779)
                    Family Flags: 23, 47
-#4 (id=321881)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
+#2 (id=321879)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 189 | Target: Self (1)
-#5 (id=321882)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Holy Shock (20473), Holy Shock (25912)
-                   Family Flags: 21
-#6 (id=321944)   : Apply Aura (6) | Unknown(173)
+#3 (id=321880)   : Apply Aura (6) | Unknown(173)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 180 | Target: Self (1)
+#4 (id=321881)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=321882)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Self (1)
+#6 (id=321944)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=321945)   : Apply Aura (6) | Unknown(262)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
-#8 (id=828132)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You become the ultimate crusader of light, increasing your Crusader Strike, Judgment, and auto-attack damage by $s3%.
+Description      : You become the ultimate crusader of light, increasing your Crusader Strike, Judgment, and auto-attack damage by $s1%.
 
-Crusader Strike and Judgment cool down $m4% faster and heal up to $m2 injured allies for $m1% of the damage they deal. Lasts $d.
-Tooltip          : Crusader Strike, Judgment and auto-attack damage increased by $w3%.
+Crusader Strike and Judgment cool down $s2% faster and heal up to $s6 injured allies for $s5% of the damage they deal. Lasts $d.
+Tooltip          : Crusader Strike, Judgment and auto-attack damage increased by $w1%.
 
-Crusader Strike and Judgment cool down $w4% faster.
+Crusader Strike and Judgment cool down $w2% faster.
 
-$w2 nearby allies will be healed for $w1% of the damage done.
+$w6 nearby allies will be healed for $w5% of the damage done.
 
 Name             : Wake of Ashes (id=218001) [Spell Family (10)] 
 Class            : Paladin
@@ -6592,7 +6588,7 @@ Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#7), Holy Paladin (137029 effect#6)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Judgment (327977 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Judgment (327977 effect#1)
 Family Flags     : 23, 27, 65
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6620,7 +6616,7 @@ Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#7), Holy Paladin (137029 effect#6)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Judgment (327977 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Judgment (327977 effect#1)
 Family Flags     : 3, 23, 27, 65
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7642,7 +7638,7 @@ Effects          :
 #2 (id=748553)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Avenging Wrath (31884), Crusade (231895)
-                   Family Flags: 45
+                   Family Flags: 40, 45
 Description      : $@spelldesc286229
 
 Name             : Light's Decree (id=286232) [Scaling Spell (-1), Spell Family (10)] 
@@ -8786,7 +8782,7 @@ Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1)
 Triggered by     : Blessing of Summer (328620)
-Family Flags     : 27, 65
+Family Flags     : 27, 65, 85
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -8815,7 +8811,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
-Family Flags     : 65
+Family Flags     : 65, 123
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8866,6 +8862,7 @@ Proc Chance      : 100%
 Real PPM         : 12 (Haste multiplier)
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Family Flags     : 114
 Attributes       : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8878,6 +8875,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 328123 | Radius: 40 yards | Target: Unknown(20)
 #2 (id=823058)   : Trigger Spell (64): Blessing of the Seasons
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 328278 | Target: Self (1)
+#3 (id=834162)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1792 | Radius: 40 yards | Target: Unknown(20)
 Description      : Bless your nearby party members for $d, causing their attacks to have a high chance to deal $328123s1 Holy damage.
 
 |cFFFFFFFFBlessing of the Seasons:|r Turns to Autumn after use.

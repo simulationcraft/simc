@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34821 shadowlands-BETA (git build shadowlands cc47edb7ce)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34972 shadowlands-BETA (git build shadowlands 2fa6bde648)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -185,7 +185,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 (coefficient=0, delta coefficient=0.4) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Quickly attack for $s2 Physical damage.
 
-|cFFFFFFFFGenerates $m3 to $?a258876[${$M3+$258876s1}][$M3] Fury.|r
+|cFFFFFFFFGenerates  $?a258876[${$m3+$258876s3} to ${$M3+$258876s4}][$m3 to $M3] Fury.|r
 
 Name             : Metamorphosis (id=162264) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -799,7 +799,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 50000 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Fel Mastery (192939 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Family Flags     : 16, 18, 43
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
@@ -813,32 +813,6 @@ Effects          :
 #1 (id=282602)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Radius: 0 - 23 yards | Target: Unknown(87) -> Unknown(134)
 Description      : $@spelldesc195072
-
-Name             : Fel Mastery (id=192939) [Spell Family (107), Passive] 
-Class            : Demon Hunter
-School           : Physical
-Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-Internal Cooldown: 1 seconds
-Proc Chance      : 100%
-Proc Flags       : ....x... ....x... x....... ........ 
-                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
-Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#2)
-Family Flags     : 39
-Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=283035)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Fel Rush (192611)
-                   Family Flags: 18
-Description      : Increases Fel Rush damage by $s1%.
 
 Name             : Blade Dance (id=193311) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -1346,6 +1320,7 @@ GCD              : 1.5 seconds
 Velocity         : 3 yards/sec
 Duration         : 3 seconds
 Cooldown         : 60 seconds
+Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...... ........ ....x... 
@@ -1357,7 +1332,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=296820)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5758 | Target: Custom (18)
-Description      : Throws the |cFFFFCC99Twinblades of the Deceiver|r in a whirlwind of energy, causing ${7*($201628sw1+$201789sw1)} Chaos damage over $d to all nearby enemies.
+Description      : Throws two demonic glaives in a whirlwind of energy, causing ${7*($201628sw1+$201789sw1)} Chaos damage over $d to all nearby enemies.
 
 Name             : Rage of the Illidari (id=201472) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -1404,6 +1379,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 100 yards
+Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1424,6 +1400,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 100 yards
+Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : x......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1999,7 +1976,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=301062)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.33169 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Brand an enemy with a demonic symbol, instantly dealing $sw2 Fire damage$?s320962[, $207771s3 Fire damage every $207771t3 sec][] and reducing the damage they deal to you by $s1% for $207744d.
+Description      : Brand an enemy with a demonic symbol, instantly dealing $sw2 Fire damage$?s320962[ and ${$207771s3*$207744d} Fire damage over $207744d][]. The enemy's damage done to you is reduced by $s1% for $207744d.
 Tooltip          : Dealing $s1% less damage to the branding Demon Hunter.
 
 Name             : Throw Glaive (id=204157) [Spell Family (107)] 
@@ -2374,7 +2351,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=305363)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Chaos Strike has a chance to spawn a Lesser Soul Fragment. Consuming any Soul Fragment grants $210041s1 Fury and reduces the remaining cooldown of Eye Beam by ${$210041s2/1000} sec, up to a maximum of ${$210041s3/1000}  sec. 
+Description      : Chaos Strike has a chance to spawn a Lesser Soul Fragment. Consuming any Soul Fragment grants $210041s1 Fury.
 
 Name             : Nemesis (id=206491) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -2469,11 +2446,11 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922)
                    Family Flags: 11
-#2 (id=306962)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+#2 (id=306962)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922)
                    Family Flags: 11
-Description      : Immolation Aura increases your movement speed by $s2%, and deals $s1% increased damage.
+Description      : Immolation Aura increases your movement speed by $s1%, and its duration is increased by $s2%.
 
 Name             : Abyssal Strike (id=207550) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -2597,7 +2574,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Tick on application (169)
 Effects          :
 #1 (id=307173)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22500 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc207697
 Tooltip          : Healing $w1 health every $t1 sec.
 
@@ -2915,12 +2892,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=310970)   : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
-#2 (id=808921)   : Dummy (3)
-                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000
-#3 (id=808927)   : Dummy (3)
-                   Base Value: 15000 | Scaled Value: 15000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases your Fury by $s1.
-Reduces the remaining cooldown of Eye Beam by ${$s2/1000}.
+Description      : Increases your Fury by $s1.
 
 Name             : Consume Soul (id=210042) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -3496,6 +3468,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
+Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3514,6 +3487,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 100 yards
+Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3889,7 +3863,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=344032)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.58500 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.70200 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 #2 (id=819792)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc228477
@@ -4326,7 +4300,11 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243)
                    Family Flags: 0
-Description      : Demon's Bite deals $s2% more damage and generates up to $s1 additional Fury.
+#3 (id=833728)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+#4 (id=833729)   : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
+Description      : Demon's Bite deals $s2% more damage and generates $s3 to $s4 additional Fury.
 
 Name             : Trail of Ruin (id=258881) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -4388,8 +4366,8 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=483114)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When Chaos Strike refunds Fury, it also reduces the cooldown of Metamorphosis by $s1 sec.
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When Chaos Strike refunds Fury, it also reduces the cooldown of Eye Beam by $s1 sec.
 
 Name             : Immolation Aura (id=258920) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -4424,9 +4402,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Strike (197125), Chaos Strike (199547), Chaos Strike (222031), Soul Cleave (228477), Soul Cleave (228478)
                    Family Flags: 6, 14, 31, 34, 52
-Description      : Engulf yourself in flames, $?a320364 [instantly causing $258921s1 Fire damage to enemies within $258921A1 yards and ][]radiating $258922s1 Fire damage every sec. Lasts $d.$?s320374[
+Description      : Engulf yourself in flames, $?a320364 [instantly causing $258921s1 Fire damage to enemies within $258921A1 yards and ][]radiating ${$258922s1*$d} Fire damage over $d.$?s320374[
 
-|cFFFFFFFFGenerates $<havocFury> Fury over $d.|r][]$?s212613[
+|cFFFFFFFFGenerates $<havocTalentFury> Fury over $d.|r][]$?(s212612 & !s320374)[
+
+|cFFFFFFFFGenerates $<havocFury> Fury.|r][]$?s212613[
 
 |cFFFFFFFFGenerates $<vengeFury> Fury over $d.|r][]
 Tooltip          : Burning nearby enemies for $258922s1 Fire damage every $t1 sec.$?a207548[
@@ -4434,8 +4414,9 @@ Tooltip          : Burning nearby enemies for $258922s1 Fire damage every $t1 se
 Movement speed increased by $w4%.][]$?a320331[
 
 Armor increased by $w5%. Attackers suffer Fire damage.][]
-Variables        : $havocFury=${$s2+($258922s2*$d)}
-$vengeFury=${$s3+($258922s3*$d)}
+Variables        : $havocFury=${$s2}
+$vengeFury=${$s3+($258922s3*$d)}
+$havocTalentFury=${$s2+($258922s2*$d)}
 
 Name             : Immolation Aura (id=258921) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -5480,25 +5461,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 541.983 (coefficient=19.23927) | PvP Coefficient: 0.20000 | Trigger Spell: 274345 | Target: Self (1)
 Description      : Consuming a Soul Fragment shields you, granting $s1 Absorb for $274346d
 
-Name             : Unbound Chaos (id=275144) [Scaling Spell (-8), Spell Family (107), Passive] 
+Name             : Unbound Chaos (id=275144) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Unbound Chaos (275148)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
 Effects          :
 #1 (id=727995)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 349.2817 (coefficient=12.39877) | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your inner demon slams into nearby enemies at the end of your Fel Rush, dealing $s1 Chaos damage.
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : While Immolation Aura is active, your inner demon slams into nearby enemies at the end of your Fel Rush, dealing $275148s1 Chaos damage.
 
-Name             : Unbound Chaos (id=275148) [Scaling Spell (-1), Spell Family (107)] 
+Name             : Unbound Chaos (id=275148) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
@@ -5514,7 +5496,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=728000)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=728001)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 275144
 Description      : $@spelldesc275144
@@ -7097,7 +7079,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=807412)   : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Immolation Aura generates ${$258920s2+($258922s2*$258920d)} Fury over $258920d.
+Description      : Immolation Aura generates an additional ${$258922s2*$258920d} Fury over $258920d.
 
 Name             : Immolation Aura (rank=Rank 3) (id=320377) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
@@ -8059,5 +8041,23 @@ Effects          :
 #1 (id=829462)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Tooltip          : The Hunt will reset upon death.
+
+Name             : Charred Flesh (id=336639) [Spell Family (107), Passive] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=834156)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+Description      : Immolation Aura damage increases the duration of your Fiery Brand by ${$s1/1000}.2 sec.
 
 
