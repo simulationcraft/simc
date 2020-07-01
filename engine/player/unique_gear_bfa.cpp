@@ -19,12 +19,12 @@ namespace bfa
 template <typename BASE = proc_spell_t>
 struct base_bfa_proc_t : public BASE
 {
-  base_bfa_proc_t( const special_effect_t& effect, util::string_view name, unsigned spell_id )
+  base_bfa_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id )
     : BASE( name, effect.player, effect.player->find_spell( spell_id ), effect.item )
   {
   }
 
-  base_bfa_proc_t( const special_effect_t& effect, util::string_view name, const spell_data_t* s )
+  base_bfa_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s )
     : BASE( name, effect.player, s, effect.item )
   {
   }
@@ -35,7 +35,7 @@ struct base_bfa_aoe_proc_t : public base_bfa_proc_t<BASE>
 {
   bool aoe_damage_increase;
 
-  base_bfa_aoe_proc_t( const special_effect_t& effect, util::string_view name, unsigned spell_id,
+  base_bfa_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id,
                        bool aoe_damage_increase_ = false )
     : base_bfa_proc_t<BASE>( effect, name, spell_id ), aoe_damage_increase( aoe_damage_increase_ )
   {
@@ -43,7 +43,7 @@ struct base_bfa_aoe_proc_t : public base_bfa_proc_t<BASE>
     this->split_aoe_damage = true;
   }
 
-  base_bfa_aoe_proc_t( const special_effect_t& effect, util::string_view name, const spell_data_t* s,
+  base_bfa_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s,
                        bool aoe_damage_increase_ = false )
     : base_bfa_proc_t<BASE>( effect, name, s ), aoe_damage_increase( aoe_damage_increase_ )
   {

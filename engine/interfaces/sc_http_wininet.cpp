@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <wincrypt.h>
 #include <WinBase.h>
+#include <iostream>
 
 #include "fmt/format.h"
 #include "util/util.hpp"
