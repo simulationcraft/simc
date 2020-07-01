@@ -906,7 +906,7 @@ class ItemDataGenerator(DataGenerator):
 
             def items(self):
                 return self._list
-            
+
             def _find_pos(self, data):
                 for pos in self._dict[data[0]]:
                     if self._list[pos:pos + len(data)] == data:
@@ -968,25 +968,6 @@ class ItemDataGenerator(DataGenerator):
             fields += item.field('bonding', 'delay', 'dmg_range', 'item_damage_modifier')
             fields += item_stats_fields(id)
             fields += item.field('class_mask', 'race_mask')
-
-            spells = self._itemeffect_db[0].field('id_spell') * 5
-            trigger_types = self._itemeffect_db[0].field('trigger_type') * 5
-            cooldown_duration = self._itemeffect_db[0].field('cooldown_duration') * 5
-            cooldown_group = self._itemeffect_db[0].field('cooldown_group') * 5
-            cooldown_group_duration = self._itemeffect_db[0].field('cooldown_group_duration') * 5
-            for spell in item.get_links('spells'):
-                spells[ spell.index ] = spell.field('id_spell')[ 0 ]
-                trigger_types[ spell.index ] = spell.field('trigger_type')[ 0 ]
-                cooldown_duration[ spell.index ] = spell.field('cooldown_duration')[ 0 ]
-                cooldown_group[ spell.index ] = spell.field('cooldown_group')[ 0 ]
-                cooldown_group_duration[ spell.index ] = spell.field('cooldown_group_duration')[ 0 ]
-
-            fields += [ '{ %s }' % ', '.join(trigger_types) ]
-            fields += [ '{ %s }' % ', '.join(spells) ]
-            fields += [ '{ %s }' % ', '.join(cooldown_duration) ]
-            fields += [ '{ %s }' % ', '.join(cooldown_group) ]
-            fields += [ '{ %s }' % ', '.join(cooldown_group_duration) ]
-
             fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
             fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
 
@@ -4025,11 +4006,14 @@ class TactKeyGenerator(DataGenerator):
 
         self._out.write('[\n{}\n]'.format(',\n'.join(out)))
 
-class ItemEffectGenerator(DataGenerator):
-    # For now export only the 8.3 required item effects for Corrupted gear
+class ItemEffectGenerator(ItemDataGenerator):
+    def __init__(self, options, data_store):
+        super().__init__(options, data_store)
+
     def filter(self):
         ids = []
 
+        # 8.3 required item effects for Corrupted gear
         for id, bonus in self.db('ItemBonus').items():
             if bonus.type != 23:
                 continue
@@ -4043,22 +4027,37 @@ class ItemEffectGenerator(DataGenerator):
 
             ids.append(effect)
 
+        # exported items effects
+        for id in super().filter():
+            ids.extend(self.db('ItemSparse')[id].children('ItemEffect'))
+
         return list(set(ids))
 
     def generate(self, data = None):
+        item_effect_id_index = []
+
         self.output_header(
                 header = 'Item effects',
                 type = 'item_effect_t',
                 array = 'item_effect',
                 length = len(data))
 
-        for entry in sorted(data, key = lambda e: e.id):
-            fields = entry.field( 'id', 'id_spell', 'index', 'trigger_type',
-                    'cooldown_duration', 'cooldown_group', 'cooldown_group_duration' )
+        for index, entry in enumerate(sorted(data, key = lambda e: (e.id_parent, e.index, e.id))):
+            item_effect_id_index.append((entry.id, index))
+
+            fields = entry.field( 'id', 'id_spell', 'id_parent', 'index', 'trigger_type',
+                    'cooldown_group', 'cooldown_duration', 'cooldown_group_duration' )
 
             self.output_record(fields, comment = entry.ref('id_spell').name)
 
         self.output_footer()
+
+        item_effect_id_index = [ e[1] for e in sorted(item_effect_id_index, key = lambda e: e[0]) ]
+        self._out.write('static constexpr std::array<uint16_t, {}> __{}_id_index {{ {{\n'.format(
+            len(item_effect_id_index), self.format_str('item_effect')))
+        for index in range(0, len(item_effect_id_index), 8):
+            self._out.write('  {},\n'.format(', '.join('{:>5}'.format(idx) for idx in item_effect_id_index[index: index + 8])))
+        self._out.write('} };\n')
 
 class ClientDataVersionGenerator(DataGenerator):
     # Note, just returns the moddified time of the hotfix file. Hotfix file

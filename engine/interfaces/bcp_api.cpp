@@ -954,14 +954,13 @@ void download_item_data( item_t& item, cache::behavior_e caching )
     if ( js.HasMember( "itemSpells" ) )
     {
       const rapidjson::Value& spells = js[ "itemSpells" ];
-      size_t spell_idx = 0;
-      for ( rapidjson::SizeType i = 0, n = spells.Size(); i < n && spell_idx < range::size( item.parsed.data.id_spell ); ++i )
+      for ( rapidjson::SizeType i = 0, n = spells.Size(); i < n; ++i )
       {
         const rapidjson::Value& spell = spells[ i ];
         if ( ! spell.HasMember( "spellId" ) || ! spell.HasMember( "trigger" ) )
           continue;
 
-        int spell_id = spell[ "spellId" ].GetInt();
+        unsigned spell_id = spell[ "spellId" ].GetUint();
         int trigger_type = -1;
 
         if ( util::str_compare_ci( spell[ "trigger" ].GetString(), "ON_EQUIP" ) )
@@ -973,9 +972,7 @@ void download_item_data( item_t& item, cache::behavior_e caching )
 
         if ( trigger_type != -1 && spell_id > 0 )
         {
-          item.parsed.data.id_spell[ spell_idx ] = spell_id;
-          item.parsed.data.trigger_spell[ spell_idx ] = trigger_type;
-          spell_idx++;
+          item.parsed.data.add_effect( spell_id, trigger_type );
         }
       }
     }

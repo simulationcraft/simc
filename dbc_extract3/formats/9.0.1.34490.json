@@ -445,8 +445,8 @@
       { "data_type": "b", "field": "index", "formats": { "cpp": "%3d" } },
       { "data_type": "b", "field": "trigger_type", "formats": { "cpp": "%3d" } },
       { "data_type": "h", "field": "cooldown_charges" },
-      { "data_type": "i", "field": "cooldown_duration", "formats": { "cpp": "%6d" }  },
-      { "data_type": "i", "field": "cooldown_group_duration", "formats": { "cpp": "%6d" }  },
+      { "data_type": "i", "field": "cooldown_duration", "formats": { "cpp": "%7d" }  },
+      { "data_type": "i", "field": "cooldown_group_duration", "formats": { "cpp": "%7d" }  },
       { "data_type": "h", "field": "cooldown_group", "formats": { "cpp": "%4d" } },
       { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6d" }, "ref": "SpellName" },
       { "data_type": "h", "field": "id_specialization", "ref": "ChrSpecialization" }

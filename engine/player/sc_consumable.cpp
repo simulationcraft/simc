@@ -394,12 +394,12 @@ struct dbc_consumable_base_t : public action_t
       return spell_data_t::not_found();
     }
 
-    for ( const auto& spell_id : item_data -> id_spell )
+    for ( const item_effect_t& effect : player->dbc->item_effects( item_data->id ) )
     {
       // Note, bypasses level check from the spell itself, since it seems some consumable spells are
       // flagged higher level than the actual food they are in.
-      auto ptr = dbc::find_spell( player, spell_id );
-      if ( ptr && ptr -> id() == as<unsigned>( spell_id ) )
+      auto ptr = dbc::find_spell( player, effect.spell_id );
+      if ( ptr && ptr -> id() == effect.spell_id )
       {
         return ptr;
       }
@@ -617,11 +617,11 @@ struct potion_t : public dbc_consumable_base_t
     dbc_consumable_base_t::initialize_consumable();
 
     // Setup a cooldown duration for the potion
-    for ( size_t i = 0; i < range::size( item_data -> cooldown_group ); i++ )
+    for ( const item_effect_t& effect : player->dbc->item_effects( item_data->id ) )
     {
-      if ( item_data -> cooldown_group[ i ] > 0 && item_data -> cooldown_group_duration[ i ] > 0 )
+      if ( effect.cooldown_group > 0 && effect.cooldown_group_duration > 0 )
       {
-        cooldown -> duration = timespan_t::from_millis( item_data -> cooldown_group_duration[ i ] );
+        cooldown -> duration = timespan_t::from_millis( effect.cooldown_group_duration );
         break;
       }
     }
