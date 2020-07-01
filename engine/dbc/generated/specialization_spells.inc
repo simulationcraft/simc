@@ -1,4 +1,4 @@
-// Talent tree specialization abilities, wow build 9.0.1.34902
+// Talent tree specialization abilities, wow build 9.0.1.34972
 static const std::array<specialization_spell_entry_t, 886> __specialization_spell_data { {
   {  0,  535, 264663,      0, "Predator's Thirst"                  },
   {  0,  535, 264667,      0, "Primal Rage"                        },
@@ -367,11 +367,11 @@ static const std::array<specialization_spell_entry_t, 886> __specialization_spel
   {  5,  258, 280752,      0, "Hallucinations"                     },
   {  5,  258, 319899,      0, "Mind Blast"                         },
   {  5,  258, 319908,      0, "Void Eruption"                      },
-  {  5,  258, 319914,      0, "Void Bolt"                          },
   {  5,  258, 322108,      0, "Dispersion"                         },
   {  5,  258, 322110,      0, "Vampiric Embrace"                   },
   {  5,  258, 322116,      0, "Vampiric Touch"                     },
   {  5,  258, 186263,   2061, "Shadow Mend"                        },
+  {  5,  258, 335467,      0, "Devouring Plague"                   },
   {  6,  250,  49028,      0, "Dancing Rune Weapon"                },
   {  6,  250,  86537,      0, "Plate Specialization"               },
   {  6,  250,  55233,      0, "Vampiric Blood"                     },

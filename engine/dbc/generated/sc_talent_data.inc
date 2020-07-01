@@ -1,4 +1,4 @@
-// 636 talents, wow build 9.0.1.34902
+// 636 talents, wow build 9.0.1.34972
 static std::array<talent_data_t, 636> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,  71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -336,7 +336,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Ancestral Protection Totem"        , 22323, 0x00, 0x0040, 264,   2,   3,  207399,       0,  0 },
   { "Infernal Armor"                    , 22324, 0x00, 0x0800, 581,   0,   2,  320331,       0,  0 },
   { "Angel's Mercy"                     , 22325, 0x00, 0x0010, 257,   0,   1,  238100,       0,  0 },
-  { "Perseverance"                      , 22326, 0x00, 0x0010, 257,   1,   1,  235189,       0,  0 },
+  { "Body and Soul"                     , 22326, 0x00, 0x0010, 257,   1,   1,   64129,       0,  0 },
   { "Binding Heal"                      , 22327, 0x00, 0x0010, 257,   1,   4,   32546,       0,  0 },
   { "Fortress of the Mind"              , 22328, 0x00, 0x0010, 258,   0,   0,  193195,       0,  0 },
   { "Schism"                            , 22329, 0x00, 0x0010, 256,   2,   0,  214621,       0,  0 },
@@ -464,7 +464,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Fervor of Battle"                  , 22489, 0x00, 0x0001,  71,   1,   2,  202316,       0,  0 },
   { "Fresh Meat"                        , 22491, 0x00, 0x0001,  72,   2,   0,  215568,       0,  0 },
   { "Demonic Appetite"                  , 22493, 0x00, 0x0800, 577,   1,   0,  206478,       0,  0 },
-  { "Fel Mastery"                       , 22494, 0x00, 0x0800, 577,   1,   2,  192939,       0,  0 },
+  { "Unbound Chaos"                     , 22494, 0x00, 0x0800, 577,   1,   2,  275144,       0,  0 },
   { "Careful Aim"                       , 22495, 0x00, 0x0004, 254,   0,   1,  260228,       0,  0 },
   { "Barrage"                           , 22497, 0x00, 0x0004, 254,   1,   1,  120360,       0,  0 },
   { "Explosive Shot"                    , 22498, 0x00, 0x0004, 254,   2,   1,  212431,       0,  0 },
@@ -507,7 +507,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Breath of Sindragosa"              , 22537, 0x00, 0x0020, 251,   2,   6,  152279,       0,  0 },
   { "Unholy Frenzy"                     , 22538, 0x00, 0x0020, 252,   2,   6,  207289,       0,  0 },
   { "Spirit Bomb"                       , 22540, 0x00, 0x0800, 581,   2,   2,  247454,       0,  0 },
-  { "Charred Flesh"                     , 22541, 0x00, 0x0800, 581,   1,   2,  264002,       0,  0 },
+  { "Charred Flesh"                     , 22541, 0x00, 0x0800, 581,   1,   2,  336639,       0,  0 },
   { "Last Resort"                       , 22543, 0x00, 0x0800, 581,   0,   6,  209258,       0,  0 },
   { "Booming Voice"                     , 22544, 0x00, 0x0001,  73,   1,   5,  202743,       0,  0 },
   { "Concentrated Sigils"               , 22546, 0x00, 0x0800, 581,   0,   4,  207666,       0,  0 },

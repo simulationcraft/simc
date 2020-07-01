@@ -1,5 +1,5 @@
-// Active class spells, wow build 9.0.1.34902
-static const std::array<active_class_spell_t, 608> __active_spells_data { {
+// Active class spells, wow build 9.0.1.34972
+static const std::array<active_class_spell_t, 609> __active_spells_data { {
   {  1,   0,  88163,      0, "Attack"                             },
   {  1,   0,    100,      0, "Charge"                             },
   {  1,   0,   6544,      0, "Heroic Leap"                        },
@@ -273,6 +273,7 @@ static const std::array<active_class_spell_t, 608> __active_spells_data { {
   {  5,  258, 228260,      0, "Void Eruption"                      },
   {  5,  258, 232698,      0, "Shadowform"                         },
   {  5,  258, 186263,   2061, "Shadow Mend"                        },
+  {  5,  258, 335467,      0, "Devouring Plague"                   },
   {  6,   0,  48707,      0, "Anti-Magic Shell"                   },
   {  6,   0,  49576,      0, "Death Grip"                         },
   {  6,   0,  47528,      0, "Mind Freeze"                        },
@@ -610,7 +611,7 @@ static const std::array<active_class_spell_t, 608> __active_spells_data { {
   { 12,  581, 212084,      0, "Fel Devastation"                    },
 } };
 
-// Pet active spells, wow build 9.0.1.34902
+// Pet active spells, wow build 9.0.1.34972
 static const std::array<active_pet_spell_t, 125> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

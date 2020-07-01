@@ -1,5 +1,5 @@
-// Item effects, wow build 9.0.1.34902
-static const std::array<item_effect_t, 144> __item_effect_data { {
+// Item effects, wow build 9.0.1.34972
+static const std::array<item_effect_t, 173> __item_effect_data { {
   {    420,  13518,   0,   2,     -1,    0,     -1 }, // Poison
   {  30489, 207438,   0,   1,     -1,    0,     -1 }, // Aggramar's Stride
   { 116155, 315277,   2,   1,     -1,    0,     -1 }, // Strikethrough
@@ -144,5 +144,34 @@ static const std::array<item_effect_t, 144> __item_effect_data { {
   { 126030, 335718,   0,   1,     -1,    0,     -1 }, // Reprisal
   { 126031, 335282,   0,   1,     -1,    0,     -1 }, // Unhinged
   { 126038, 335758,   0,   1,     -1,    0,     -1 }, // Seismic Reverberation
+  { 126134, 336470,   0,   1,     -1,    0,     -1 }, // Restored Faith
+  { 126160, 336400,   0,   1,     -1,    0,     -1 }, // Divine Image
+  { 126162, 336266,   0,   1,     -1,    0,     -1 }, // Flash Concentration
+  { 126163, 336370,   0,   1,     -1,    0,     -1 }, // Cauterizing Shadows
+  { 126164, 336011,   0,   1,     -1,    0,     -1 }, // The Penitent One
+  { 126165, 336314,   0,   1,     -1,    0,     -1 }, // Harmonious Apparatus
+  { 126166, 336507,   0,   1,     -1,    0,     -1 }, // Crystalline Reflection
+  { 126167, 336133,   0,   1,     -1,    0,     -1 }, // Kiss of Death
+  { 126168, 336067,   0,   1,     -1,    0,     -1 }, // Clarity of Mind
+  { 126169, 336165,   0,   1,     -1,    0,     -1 }, // Painbreaker Psalm
+  { 126170, 336143,   0,   1,     -1,    0,     -1 }, // Shadowflame Prism
+  { 126172, 336214,   0,   1,     -1,    0,     -1 }, // Call to the Void
+  { 126174, 335928,   0,   1,     -1,    0,     -1 }, // The Alabaster Lady
+  { 126176, 336741,   0,   1,     -1,    0,     -1 }, // Ancestral Reminder
+  { 126177, 336739,   0,   1,     -1,    0,     -1 }, // Deeptremor Stone
+  { 126178, 336738,   0,   1,     -1,    0,     -1 }, // Deeply Rooted Elements
+  { 126179, 336735,   0,   1,     -1,    0,     -1 }, // Chains of Devastation
+  { 126180, 336734,   0,   1,     -1,    0,     -1 }, // Skybreaker's Fiery Demise
+  { 126181, 336730,   0,   1,     -1,    0,     -1 }, // Elemental Equilibrium
+  { 126182, 336215,   0,   1,     -1,    0,     -1 }, // Echoes of Great Sundering
+  { 126183, 336063,   0,   1,     -1,    0,     -1 }, // Windspeaker's Lava Resurgence
+  { 126184, 335902,   0,   1,     -1,    0,     -1 }, // Doom Winds
+  { 126185, 335899,   0,   1,     -1,    0,     -1 }, // Legacy of the Frost Witch
+  { 126186, 335897,   0,   1,     -1,    0,     -1 }, // Witch Doctor's Wolf Bones
+  { 126187, 335895,   0,   1,     -1,    0,     -1 }, // Primal Lava Actuators
+  { 126188, 335893,   0,   1,     -1,    0,     -1 }, // Jonat's Natural Focus
+  { 126189, 335891,   0,   1,     -1,    0,     -1 }, // Spiritwalker's Tidal Totem
+  { 126190, 335889,   0,   1,     -1,    0,     -1 }, // Primal Tide Core
+  { 126191, 335886,   0,   1,     -1,    0,     -1 }, // Earthen Harmony
 } };
 
