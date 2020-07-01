@@ -317,21 +317,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
         return true;
       }
 
-      size_t index = 0;
-      for ( index = 0; index < range::size( item.parsed.data.trigger_spell ); ++index )
-      {
-        if ( item.parsed.data.id_spell[ index ] <= 0 )
-        {
-          break;
-        }
-      }
-
-      item.parsed.data.trigger_spell[ index ] = effect.type;
-      item.parsed.data.id_spell[ index ] = effect.spell_id;
-      item.parsed.data.cooldown_duration[ index ] = effect.cooldown_duration;
-      item.parsed.data.cooldown_group[ index ] = effect.cooldown_group;
-      item.parsed.data.cooldown_group_duration[ index ] = effect.cooldown_group_duration;
-
+      const size_t index = item.parsed.data.add_effect( effect );
       item.player->sim->print_debug( "Player {} item '{}' adding effect {} (type={}, index={})",
           item.player->name(), item.name(), effect.spell_id,
           util::item_spell_trigger_string( static_cast<item_spell_trigger_type>( effect.type ) ),
@@ -864,7 +850,7 @@ bool item_database::load_item_from_data( item_t& item )
   const auto& data = item.player->dbc->item( item.parsed.data.id );
   if ( data.id == 0 ) return false;
 
-  item.parsed.data.init( data );
+  item.parsed.data.init( data, *item.player->dbc );
   item.name_str = data.name;
   item.parsed.data.name = item.name_str.c_str();
 

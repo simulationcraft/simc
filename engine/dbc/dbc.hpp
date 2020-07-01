@@ -30,6 +30,7 @@
 #include "dbc/item_naming.hpp"
 #include "dbc/item_scaling.hpp"
 #include "dbc/item_weapon.hpp"
+#include "dbc/item_effect.hpp"
 #include "dbc/real_ppm_data.hpp"
 #include "dbc/talent_data.hpp"
 #include "dbc/spell_data.hpp"
@@ -468,6 +469,9 @@ public:
 
   util::span<const item_bonus_entry_t> item_bonus( unsigned bonus_id ) const
   { return item_bonus_entry_t::find( bonus_id, ptr ); }
+
+  util::span<const item_effect_t> item_effects( unsigned item_id ) const
+  { return item_effect_t::find_for_item( item_id, ptr ); }
 
   util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spell_data_t* p ) const
   { assert( p ); return hotfix::spell_hotfixes( p -> id(), ptr ); }

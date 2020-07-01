@@ -4795,7 +4795,7 @@ item_t init_punchcard( const special_effect_t& effect )
   }
 
   item_t punchcard( effect.player, "" );
-  punchcard.parsed.data.init( item_data );
+  punchcard.parsed.data.init( item_data, *effect.player->dbc );
   punchcard.name_str    = item_data.name;
   ::util::tokenize( punchcard.name_str );
 

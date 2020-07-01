@@ -30,6 +30,44 @@ struct token_t
 
 } // end unnamed namespace
 
+void parsed_item_data_t::init( const dbc_item_data_t& raw, const dbc_t& dbc )
+{
+  *static_cast<dbc_item_data_t*>( this ) = raw;
+  for ( size_t i = 0; i < stat_type_e.size(); i++ )
+  {
+    stat_type_e[ i ] = i < _dbc_stats_count ? _dbc_stats[ i ].type_e : -1;
+    stat_alloc[ i ] = i < _dbc_stats_count ? _dbc_stats[ i ].alloc : 0;
+  }
+
+  for ( const item_effect_t& effect : dbc.item_effects( id ) )
+  {
+    assert( effect.index <= static_cast<int>( effects.size() ) );
+    effects[ effect.index ] = effect;
+  }
+}
+
+size_t parsed_item_data_t::add_effect( unsigned spell_id, int type )
+{
+  item_effect_t effect {};
+  effect.spell_id = spell_id;
+  effect.type = type;
+  effect.index = -1;
+
+  return add_effect( effect );
+}
+
+size_t parsed_item_data_t::add_effect( const item_effect_t& effect )
+{
+  const auto it = range::find( effects, 0u, &item_effect_t::spell_id );
+  const size_t index = static_cast<size_t>( std::distance( effects.begin(), it ) );
+
+  assert( index < effects.size() );
+  if ( index >= effects.size() )
+    return index;
+
+  effects[ index ] = effect;
+  return index;
+}
 
 item_t::parsed_input_t::parsed_input_t()
   : item_level( 0 ),
@@ -425,26 +463,16 @@ std::ostream& operator<<(std::ostream& s, const item_t& item )
   if ( ! item.source_str.empty() )
     s << " source=" << item.source_str;
 
-  bool has_spells = false;
-  for ( auto& spell_id : item.parsed.data.id_spell )
-  {
-    if ( spell_id > 0 )
-    {
-      has_spells = true;
-      break;
-    }
-  }
-
-  if ( has_spells )
+  if ( range::any_of( item.parsed.data.effects, []( const auto& e ) { return e.spell_id != 0; } ) )
   {
     s << " proc_spells={ ";
-    for ( size_t i = 0; i < range::size( item.parsed.data.id_spell ); i++ )
+    for ( const item_effect_t& effect : item.parsed.data.effects )
     {
-      if ( item.parsed.data.id_spell[ i ] <= 0 )
+      if ( effect.spell_id == 0 )
         continue;
 
       s << "proc=";
-      switch ( item.parsed.data.trigger_spell[ i ] )
+      switch ( effect.type )
       {
         case ITEM_SPELLTRIGGER_ON_USE:
           s << "OnUse";
@@ -456,7 +484,7 @@ std::ostream& operator<<(std::ostream& s, const item_t& item )
           s << "Unknown";
           break;
       }
-      s << "/" << item.parsed.data.id_spell[ i ] << ", ";
+      s << "/" << effect.spell_id << ", ";
     }
 
     std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
@@ -1939,10 +1967,9 @@ void item_t::init_special_effects()
         SPECIAL_EFFECT_SOURCE_ADDON, addon_data );
 
   // On-use effects
-  for ( size_t i = 0, end = range::size( parsed.data.id_spell ); i < end; ++i )
+  for ( const item_effect_t& effect : parsed.data.effects )
   {
-    if ( parsed.data.id_spell[ i ] == 0 ||
-         parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_USE )
+    if ( effect.spell_id == 0 || effect.type != ITEM_SPELLTRIGGER_ON_USE )
     {
       continue;
     }
@@ -1951,7 +1978,7 @@ void item_t::init_special_effects()
     proxy_effect.reset();
     proxy_effect.type = SPECIAL_EFFECT_USE;
     proxy_effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-    unique_gear::initialize_special_effect( proxy_effect, parsed.data.id_spell[ i ] );
+    unique_gear::initialize_special_effect( proxy_effect, effect.spell_id );
 
     // First-phase special effect initialize decided it's a usable special effect, so add it
     if ( proxy_effect.type != SPECIAL_EFFECT_NONE )
@@ -1961,10 +1988,9 @@ void item_t::init_special_effects()
   }
 
   // On-equip effects
-  for ( size_t i = 0, end = range::size( parsed.data.id_spell ); i < end; ++i )
+  for ( const item_effect_t& effect : parsed.data.effects )
   {
-    if ( parsed.data.id_spell[ i ] == 0 ||
-         parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_EQUIP )
+    if ( effect.spell_id == 0 || effect.type != ITEM_SPELLTRIGGER_ON_EQUIP )
     {
       continue;
     }
@@ -1973,7 +1999,7 @@ void item_t::init_special_effects()
     proxy_effect.reset();
     proxy_effect.type = SPECIAL_EFFECT_EQUIP;
     proxy_effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-    unique_gear::initialize_special_effect( proxy_effect, parsed.data.id_spell[ i ] );
+    unique_gear::initialize_special_effect( proxy_effect, effect.spell_id );
 
     // First-phase special effect initialize decided it's a usable special effect, so add it
     if ( proxy_effect.type != SPECIAL_EFFECT_NONE )

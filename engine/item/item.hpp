@@ -7,6 +7,7 @@
 
 #include "config.hpp"
 #include "dbc/item_data.hpp"
+#include "dbc/item_effect.hpp"
 #include "player/gear_stats.hpp"
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
@@ -17,6 +18,7 @@
 #include <vector>
 #include <memory>
 
+class dbc_t;
 struct player_t;
 struct sim_t;
 struct special_effect_t;
@@ -38,23 +40,20 @@ struct stat_pair_t
 struct parsed_item_data_t : dbc_item_data_t {
   std::array<int, MAX_ITEM_STAT> stat_type_e;
   std::array<int, MAX_ITEM_STAT> stat_alloc;
+  std::array<item_effect_t, MAX_ITEM_EFFECT> effects;
 
   parsed_item_data_t()
     : dbc_item_data_t{}
   {
     range::fill( stat_type_e, -1 );
     range::fill( stat_alloc, 0 );
+    range::fill( effects, item_effect_t::nil() );
   }
 
-  void init( const dbc_item_data_t& raw )
-  {
-    *static_cast<dbc_item_data_t*>( this ) = raw;
-    for ( size_t i = 0; i < stat_type_e.size(); i++ )
-    {
-      stat_type_e[ i ] = i < _dbc_stats_count ? _dbc_stats[ i ].type_e : -1;
-      stat_alloc[ i ] = i < _dbc_stats_count ? _dbc_stats[ i ].alloc : 0;
-    }
-  }
+  void init( const dbc_item_data_t& raw, const dbc_t& dbc );
+
+  size_t add_effect( unsigned spell_id, int type );
+  size_t add_effect( const item_effect_t& effect );
 };
 
 struct item_t

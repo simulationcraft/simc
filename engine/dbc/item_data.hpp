@@ -42,11 +42,6 @@ struct dbc_item_data_t {
   uint8_t  _dbc_stats_count;
   unsigned class_mask;
   uint64_t race_mask;
-  int      trigger_spell[MAX_ITEM_EFFECT];      // item_spell_trigger_type
-  int      id_spell[MAX_ITEM_EFFECT];
-  int      cooldown_duration[MAX_ITEM_EFFECT];
-  int      cooldown_group[MAX_ITEM_EFFECT];
-  int      cooldown_group_duration[MAX_ITEM_EFFECT];
   int      socket_color[MAX_ITEM_SOCKET_SLOT];       // item_socket_color
   int      gem_properties;
   int      id_socket_bonus;
