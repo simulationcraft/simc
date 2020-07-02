@@ -21,7 +21,7 @@ struct item_enchantment_data_t
   unsigned    ench_type[3];        // item_enchantment
   int         ench_amount[3];
   unsigned    ench_prop[3];        // item_mod_type
-  double      ench_coeff[3];       // item enchant scaling multiplier for data table
+  float       ench_coeff[3];       // item enchant scaling multiplier for data table
   unsigned    id_spell;            // reverse mapped spell id for this enchant
   const char* name;
 
