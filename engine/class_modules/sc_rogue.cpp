@@ -1246,7 +1246,6 @@ struct main_gauche_t : public rogue_attack_t
     rogue_attack_t( "main_gauche", p, p -> find_spell( 86392 ) )
   {
     special = background = may_crit = true;
-    proc = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
   }
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
@@ -1259,6 +1258,9 @@ struct main_gauche_t : public rogue_attack_t
 
     return ap;
   }
+
+  bool procs_main_gauche() const override
+  { return false; }
 
   bool procs_combat_potency() const override
   { return true; }
