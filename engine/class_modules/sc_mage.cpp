@@ -5948,7 +5948,7 @@ void mage_t::apl_fire()
   items_high_priority->add_action( "call_action_list,name=items_combustion,if=!variable.disable_combustion&variable.time_to_combustion<=0" );
   items_high_priority->add_action( "use_items" );
   items_high_priority->add_action( "use_item,name=manifesto_of_madness,if=!equipped.azsharas_font_of_power&variable.time_to_combustion<8" );
-  items_high_priority->add_action( "use_item,name=azsharas_font_of_power,if=variable.time_to_combustion<=5+15*variable.font_double_on_use&!variable.disable_combustion" );
+  items_high_priority->add_action( "use_item,name=azsharas_font_of_power,if=variable.time_to_combustion<=5+15*variable.font_double_on_use&variable.time_to_combustion>0&!variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=rotcrusted_voodoo_doll,if=variable.time_to_combustion>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=aquipotent_nautilus,if=variable.time_to_combustion>variable.on_use_cutoff|variable.disable_combustion" );
   items_high_priority->add_action( "use_item,name=shiver_venom_relic,if=variable.time_to_combustion>variable.on_use_cutoff|variable.disable_combustion" );
