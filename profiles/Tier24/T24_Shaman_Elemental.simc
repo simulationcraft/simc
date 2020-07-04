@@ -36,10 +36,8 @@ actions.precombat+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.precombat+=/lava_burst,if=!talent.elemental_blast.enabled
 
 # Executed every time the actor is available.
-# Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present.
-actions=bloodlust,if=azerite.ancestral_resonance.enabled
 # In-combat potion is preferentially linked to the Guardian of Azeroth, unless combat will end shortly.
-actions+=/potion,if=expected_combat_length-time<60|cooldown.guardian_of_azeroth.remains<30
+actions=potion,if=expected_combat_length-time<60|cooldown.guardian_of_azeroth.remains<30
 # Interrupt of casts.
 actions+=/wind_shear
 actions+=/flame_shock,if=!ticking&spell_targets.chainlightning<4&(cooldown.storm_elemental.remains<cooldown.storm_elemental.duration-30|buff.wind_gust.stack<14)
