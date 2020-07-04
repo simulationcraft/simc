@@ -5739,14 +5739,14 @@ void spark_of_inspiration( special_effect_t& effect )
     {
       buff->trigger();
 
-      if ( !major || !major->essence.enabled() )
+      if ( !major || !major->essence.enabled() || !major->essence.is_major() )
       {
         major = nullptr;
 
         for ( action_t* a : listener->action_list )
         {
           azerite_essence_major_t* candidate = dynamic_cast<azerite_essence_major_t*>( a );
-          if ( candidate && candidate->essence.enabled() )
+          if ( candidate && candidate->essence.enabled() && candidate->essence.is_major() )
           {
             major = candidate;
             break;
