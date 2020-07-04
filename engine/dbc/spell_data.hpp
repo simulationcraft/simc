@@ -129,8 +129,7 @@ struct spellpower_data_t
   static const spellpower_data_t& nil()
   { return dbc::nil<spellpower_data_t>; }
 
-  static const spellpower_data_t& find( unsigned id, bool ptr = false )
-  { return dbc::find<spellpower_data_t>( id, ptr, &spellpower_data_t::_id ); }
+  static const spellpower_data_t& find( unsigned id, bool ptr = false );
 
   static util::span<const spellpower_data_t> data( bool ptr = false );
 
@@ -441,7 +440,7 @@ struct spell_data_t
 
   // Pointers for runtime linking
   const spelleffect_data_t* const* _effects;
-  const spellpower_data_t* const* _power;
+  const spellpower_data_t* _power;
   const spell_data_t* const* _driver; // The triggered spell's driver(s)
   const spelllabel_data_t* _labels; // Applied (known) labels to the spell
 
@@ -620,7 +619,7 @@ struct spell_data_t
     {
       assert( idx > 0 && idx <= powers.size() );
 
-      return *( powers[ idx - 1 ] );
+      return powers[ idx - 1 ];
     }
 
     return spellpower_data_t::nil();
@@ -637,10 +636,10 @@ struct spell_data_t
   const spellpower_data_t& powerN( power_e pt ) const
   {
     assert( pt >= POWER_HEALTH && pt < POWER_MAX );
-    for ( const spellpower_data_t* pd : powers() )
+    for ( const spellpower_data_t& pd : powers() )
     {
-      if ( pd -> _power_type == pt )
-        return *pd;
+      if ( pd._power_type == pt )
+        return pd;
     }
 
     return spellpower_data_t::nil();
@@ -652,7 +651,7 @@ struct spell_data_t
     return { _effects, _effects_count };
   }
 
-  util::span<const spellpower_data_t* const> powers() const
+  util::span<const spellpower_data_t> powers() const
   {
     assert( _power != nullptr || _power_count == 0 );
     return { _power, _power_count };
@@ -718,10 +717,10 @@ struct spell_data_t
 
   double cost( power_e pt ) const
   {
-    for ( const spellpower_data_t* pd : powers() )
+    for ( const spellpower_data_t& pd : powers() )
     {
-      if ( pd -> _power_type == pt )
-        return pd -> cost();
+      if ( pd._power_type == pt )
+        return pd.cost();
     }
 
     return 0.0;

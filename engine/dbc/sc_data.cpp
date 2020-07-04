@@ -660,10 +660,10 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
     clone -> _effects = clone_effects;
   }
 
-  const spellpower_data_t** clone_power = nullptr;
+  spellpower_data_t* clone_power = nullptr;
   if ( source -> power_count() > 0 )
   {
-    clone_power = allocator_.create_n<const spellpower_data_t*>( source -> power_count(), &spellpower_data_t::nil() );
+    clone_power = allocator_.create_n<spellpower_data_t>( source -> power_count(), spellpower_data_t::nil() );
     clone -> _power = clone_power;
   }
 
@@ -726,20 +726,14 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
   const auto source_powers = source -> powers();
   for ( size_t i = 0; i < source_powers.size(); ++i )
   {
-    auto p_source = source_powers[ i ];
-    if ( p_source -> id() == 0 )
+    const auto& p_source = source_powers[ i ];
+    if ( p_source.id() == 0 )
     {
       continue;
     }
 
-    auto p_clone = get_mutable_power( p_source -> id(), ptr );
-    if ( p_clone == nullptr )
-    {
-      p_clone = new spellpower_data_t( spellpower_data_t::find( p_source -> id(), ptr ) );
-      add_power( p_clone, ptr );
-    }
-
-    clone_power[ i ] = p_clone;
+    clone_power[ i ] = spellpower_data_t::find( p_source.id(), ptr );
+    add_power( &clone_power[ i ], ptr );
   }
 
   return clone;
