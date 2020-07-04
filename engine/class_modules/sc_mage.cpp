@@ -5639,7 +5639,7 @@ void mage_t::apl_precombat()
         "With Kindling, Combustion's cooldown will be reduced by a random amount, but the number of crits starts very high after activating Combustion and slows down towards the end of Combustion's cooldown. When making decisions in the APL, Combustion's remaining cooldown is reduced by this fraction to account for Kindling." );
       break;
     case MAGE_FROST:
-      precombat->add_action( "variable,name=il_if_gaming,default=1,op=reset" );
+      precombat->add_action( "variable,name=il_if_gaming,default=0,op=reset" );
       precombat->add_action( this, "Summon Water Elemental" );
       break;
     default:
