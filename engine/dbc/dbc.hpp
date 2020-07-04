@@ -131,7 +131,7 @@ namespace hotfix
   struct custom_dbc_data_t
   {
     auto_dispose< std::vector<spell_data_t*> > spells_[ 2 ];
-    auto_dispose< std::vector<spelleffect_data_t*> > effects_[ 2 ];
+    std::vector<spelleffect_data_t*> effects_[ 2 ];
     std::vector<spellpower_data_t*> powers_[ 2 ];
 
     util::bump_ptr_allocator_t<> allocator_;

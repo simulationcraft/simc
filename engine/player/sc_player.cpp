@@ -1521,15 +1521,15 @@ void player_t::init_base_stats()
     // Automatically parse mana regen and max mana modifiers from class passives.
     for ( auto spell : dbc::class_passives( this ) )
     {
-      for ( auto effect : spell->effects() )
+      for ( const spelleffect_data_t& effect : spell->effects() )
       {
-        if ( effect->subtype() == A_MOD_MANA_REGEN_PCT )
+        if ( effect.subtype() == A_MOD_MANA_REGEN_PCT )
         {
-          resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + effect->percent();
+          resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + effect.percent();
         }
-        if ( effect->subtype() == A_MOD_MAX_MANA_PCT || effect->subtype() == A_MOD_MANA_POOL_PCT )
+        if ( effect.subtype() == A_MOD_MAX_MANA_PCT || effect.subtype() == A_MOD_MANA_POOL_PCT )
         {
-          resources.base[ RESOURCE_MANA ] *= 1.0 + effect->percent();
+          resources.base[ RESOURCE_MANA ] *= 1.0 + effect.percent();
         }
       }
     }

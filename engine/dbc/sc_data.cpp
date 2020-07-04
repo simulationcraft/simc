@@ -653,10 +653,10 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
 
   clone = new spell_data_t( *source );
 
-  const spelleffect_data_t** clone_effects = nullptr;
+  spelleffect_data_t* clone_effects = nullptr;
   if ( source -> effect_count() > 0 )
   {
-    clone_effects = allocator_.create_n<const spelleffect_data_t*>( source -> effect_count(), &spelleffect_data_t::nil() );
+    clone_effects = allocator_.create_n<spelleffect_data_t>( source -> effect_count(), spelleffect_data_t::nil() );
     clone -> _effects = clone_effects;
   }
 
@@ -676,39 +676,34 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
   const auto source_effects = source -> effects();
   for ( size_t i = 0; i < source_effects.size(); ++i )
   {
-    const spelleffect_data_t* e_source = source_effects[ i ];
-    if ( e_source -> id() == 0 )
+    const spelleffect_data_t& e_source = source_effects[ i ];
+    if ( e_source.id() == 0 )
     {
       continue;
     }
 
-    spelleffect_data_t* e_clone = get_mutable_effect( e_source -> id(), ptr );
+    spelleffect_data_t& e_clone = clone_effects[ i ];
 
-    if ( ! e_clone )
-    {
-      e_clone = new spelleffect_data_t( *spelleffect_data_t::find( e_source -> id(), ptr ) );
-      add_effect( e_clone, ptr );
-    }
+    e_clone = *spelleffect_data_t::find( e_source.id(), ptr );
+    add_effect( &e_clone, ptr );
 
-    // Link cloned effect to cloned spell, and cloned spell to cloned effect
-    clone_effects[ i ] = e_clone;
-    e_clone -> _spell = clone;
+    // Link cloned spell to cloned effect
+    e_clone._spell = clone;
 
     // No trigger set up in the source effect, so processing for this effect can end here.
-    if ( e_source -> trigger() -> id() == 0 || e_source -> trigger() -> drivers().empty() )
+    if ( e_source.trigger() -> id() == 0 || e_source.trigger() -> drivers().empty() )
     {
       continue;
     }
 
     // Clone the trigger, and re-link drivers in the trigger spell so they also point to cloned
     // data. This is necessary because Blizzard re-uses trigger spells in multiple drivers.
-    auto e_clone_trigger = create_clone( e_source -> trigger(), ptr );
-    e_clone -> _trigger_spell = e_clone_trigger;
-    assert( e_source -> trigger() -> _driver );
+    auto e_clone_trigger = create_clone( e_source.trigger(), ptr );
+    e_clone._trigger_spell = e_clone_trigger;
+    assert( e_source.trigger() -> _driver );
 
-    const auto e_source_trigger_drivers = e_source -> trigger() -> drivers();
-
-    auto& e_clone_trigger_drivers = spell_driver_map_[ ptr ][ e_source -> trigger() -> id() ];
+    const auto e_source_trigger_drivers = e_source.trigger() -> drivers();
+    auto& e_clone_trigger_drivers = spell_driver_map_[ ptr ][ e_source.trigger() -> id() ];
     if ( e_clone_trigger_drivers.empty() )
     {
       auto driver_data = allocator_.create_n<const spell_data_t*>( e_source_trigger_drivers.size(), spell_data_t::nil() );

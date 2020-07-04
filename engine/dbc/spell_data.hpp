@@ -439,7 +439,7 @@ struct spell_data_t
   unsigned    _dmg_class;          // 47 SpellCategories.db2 classification for the spell
 
   // Pointers for runtime linking
-  const spelleffect_data_t* const* _effects;
+  const spelleffect_data_t* _effects;
   const spellpower_data_t* _power;
   const spell_data_t* const* _driver; // The triggered spell's driver(s)
   const spelllabel_data_t* _labels; // Applied (known) labels to the spell
@@ -609,7 +609,7 @@ struct spell_data_t
 
     assert( idx <= effect_count() && "effect index out of bound!" );
 
-    return *( effects()[ idx - 1 ] );
+    return effects()[ idx - 1 ];
   }
 
   const spellpower_data_t& powerN( size_t idx ) const
@@ -645,7 +645,7 @@ struct spell_data_t
     return spellpower_data_t::nil();
   }
 
-  util::span<const spelleffect_data_t* const> effects() const
+  util::span<const spelleffect_data_t> effects() const
   {
     assert( _effects != nullptr || _effects_count == 0 );
     return { _effects, _effects_count };
@@ -729,7 +729,7 @@ struct spell_data_t
   uint32_t effect_id( uint32_t effect_num ) const
   {
     assert( effect_num >= 1 && effect_num <= effect_count() );
-    return effects()[ effect_num - 1 ] -> id();
+    return effects()[ effect_num - 1 ].id();
   }
 
   bool flags( spell_attribute attr ) const

@@ -858,14 +858,14 @@ struct food_t : public dbc_consumable_base_t
     }
 
     // Find the "Well Fed" buff from the base food
-    for ( const spelleffect_data_t* effect : driver -> effects() )
+    for ( const spelleffect_data_t& effect : driver -> effects() )
     {
       // Return the "Well Fed" effect of the food (might not always be named well fed)
-      if ( effect -> type() == E_APPLY_AURA &&
-           effect -> subtype() == A_PERIODIC_TRIGGER_SPELL &&
-           effect -> period() == timespan_t::from_millis( 10000 ) )
+      if ( effect.type() == E_APPLY_AURA &&
+           effect.subtype() == A_PERIODIC_TRIGGER_SPELL &&
+           effect.period() == timespan_t::from_millis( 10000 ) )
       {
-        return effect -> trigger();
+        return effect.trigger();
       }
     }
 

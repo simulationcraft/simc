@@ -1751,16 +1751,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   s << "Effects          :" << std::endl;
 
-  for ( size_t i = 0; i < spell -> effect_count(); i++ )
+  for ( const spelleffect_data_t& e : spell -> effects() )
   {
-    const spelleffect_data_t* e;
-    uint32_t effect_id;
-    if ( ! ( effect_id = spell -> effectN( i + 1 ).id() ) )
+    if ( e.id() == 0 )
       continue;
-    else
-      e = &( spell -> effectN( i + 1 ) );
 
-    spell_info::effect_to_str( dbc, spell, e, s, level );
+    spell_info::effect_to_str( dbc, spell, &e, s, level );
   }
 
   if ( spell -> desc() )
@@ -2181,14 +2177,12 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
   xml_node_t* effect_node = node -> add_child( "effects" );
   effect_node -> add_parm( "count", spell -> effect_count() );
 
-  for ( const spelleffect_data_t* e : spell -> effects() )
+  for ( const spelleffect_data_t& e : spell -> effects() )
   {
-    if ( e -> id() == 0 )
+    if ( e.id() == 0 )
       continue;
 
-    e = dbc.effect( e -> id() ); // XXX: Why?
-
-    spell_info::effect_to_xml( dbc, spell, e, effect_node, level );
+    spell_info::effect_to_xml( dbc, spell, &e, effect_node, level );
   }
 
   if ( spell -> desc() )
