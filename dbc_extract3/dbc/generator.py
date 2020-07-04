@@ -292,6 +292,30 @@ class DataGenerator(object):
     def output_footer(self):
         self._out.write('} };\n\n')
 
+    def output_id_index(self, *args, **kwargs):
+        index = kwargs.get('index', None)
+        arrayname = kwargs.get('array', None)
+
+        if not index and not isinstance(index, list):
+            logging.error('Index for {} must be a list, not {}'.format(
+                self.__class__.__name__, index))
+            return
+
+        if not arrayname:
+            logging.error('Name of the index for {} must be given'.format(
+                self.__class__.__name__))
+            return
+
+        typename = 'uint16_t'
+        if len(index) >= 1 << 16:
+            typename = 'uint32_t'
+
+        self._out.write('static const std::array<{}, {}> __{}_id_index {{ {{\n'.format(
+            typename, len(index), self.format_str(arrayname)))
+        for i in range(0, len(index), 8):
+            self._out.write('  {},\n'.format(', '.join('{:>5}'.format(idx) for idx in index[i: i + 8])))
+        self._out.write('} };\n\n')
+
     def format_str(self, string):
         return '%s%s%s' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -2620,14 +2644,13 @@ class SpellDataGenerator(DataGenerator):
         # Sort keys
         id_keys = sorted(ids.keys())
         effects = set()
-        powers = set()
+        powers = []
         # Whitelist labels separately, based on effect types, otherwise we get far too many
         included_labels = set()
 
         spelldata_array_position = {} # spell id -> array position
         spelleffect_array_position = {} # spelleffect id -> array position
         spelleffect_index = []
-        spellpower_index = defaultdict(list)
         spelllabel_index = defaultdict(int)
         spelldriver_index = defaultdict(set)
 
@@ -2680,9 +2703,9 @@ class SpellDataGenerator(DataGenerator):
 
             spelldata_array_position[spell.id] = index
 
-            for power in spell.get_links('power'):
+            for power in spell.children('SpellPower'):
                 power_count += 1
-                powers.add( power )
+                powers.append( power )
                 if power.is_hotfixed():
                     hotfix_flags |= SPELL_POWER_HOTFIX_PRESENT
 
@@ -3071,18 +3094,20 @@ class SpellDataGenerator(DataGenerator):
 
         self._out.write('};\n\n')
 
-        powers = list(powers)
-        powers.sort(key = lambda k: k.id)
+        # Write out spell powers
+        spellpower_id_index = []
 
-        self._out.write('// %d effects, wow build level %s\n' % ( len(powers), self._options.build ))
-        self._out.write('static const std::array<spellpower_data_t, %d> __%s_data { {\n' % (
-            len(powers), self.format_str( "spellpower" ) ))
+        self.output_header(
+                header = 'Spell powers',
+                type = 'spellpower_data_t',
+                array = 'spellpower',
+                length = len(powers))
 
-        for index, power in enumerate(powers):
+        for index, power in enumerate(sorted(powers, key=lambda p: (p.id_parent, p.id))):
             hotfix_flags = 0
             hotfix_data = []
 
-            spellpower_index[power.id_parent].append(index)
+            spellpower_id_index.append((power.id, index))
 
             # 1 2 3
             fields = power.field('id', self._options.build < 25600 and 'id_spell' or 'id_parent', 'aura_id')
@@ -3107,13 +3132,13 @@ class SpellDataGenerator(DataGenerator):
                 logging.debug('Hotfixed power %d, original values: %s', power.id, hotfix_data)
                 power_hotfix_data[power.id] = hotfix_data
 
-            try:
-                self._out.write('  { %s },\n' % (', '.join(fields)))
-            except:
-                sys.stderr.write('%s\n' % fields)
-                sys.exit(1)
+            self.output_record(fields)
 
-        self._out.write('} };\n\n')
+        self.output_footer()
+
+        self.output_id_index(
+                index = [ e[1] for e in sorted(spellpower_id_index, key = lambda e: e[0]) ],
+                array = 'spellpower')
 
         # Write out labels
         self.output_header(
@@ -3144,21 +3169,14 @@ class SpellDataGenerator(DataGenerator):
             self._out.write('  {},\n'.format( ', '.join(spelleffect_ref_name(id) for id in ids) ))
         self._out.write('} };\n')
 
-        def output_index_data(index_data, type_name, name, ref_name=None):
-            name = self.format_str(name)
-            ref_name = ref_name and self.format_str(ref_name) or name
-
-            self._out.write('static constexpr std::array<const {}*, {}> __{}_index_data {{ {{\n'.format(
-                type_name, sum(len(ids) for ids in index_data.values()), name ))
-            for _, ids in sorted(index_data.items()):
-                self._out.write('  {},\n'.format( ', '.join('&__{}_data[{}]'.format(ref_name, id) for id in ids) ))
-            self._out.write('} };\n')
-
-        output_index_data( spellpower_index, 'spellpower_data_t', 'spellpower' )
-
         for spell_id, ids in spelldriver_index.items():
             spelldriver_index[spell_id] = [ spelldata_array_position[id] for id in sorted(ids) ]
-        output_index_data( spelldriver_index, 'spell_data_t', 'spelldriver', 'spell' )
+
+        self._out.write('static constexpr std::array<const spell_data_t*, {}> __{}_index_data {{ {{\n'.format(
+            sum(len(ids) for ids in spelldriver_index.values()), self.format_str('spelldriver') ))
+        for _, ids in sorted(spelldriver_index.items()):
+            self._out.write('  {},\n'.format(', '.join('&__{}_data[{}]'.format(self.format_str('spell'), id) for id in ids)))
+        self._out.write('} };\n')
 
         return ''
 
@@ -4108,12 +4126,9 @@ class ItemEffectGenerator(ItemDataGenerator):
 
         self.output_footer()
 
-        item_effect_id_index = [ e[1] for e in sorted(item_effect_id_index, key = lambda e: e[0]) ]
-        self._out.write('static constexpr std::array<uint16_t, {}> __{}_id_index {{ {{\n'.format(
-            len(item_effect_id_index), self.format_str('item_effect')))
-        for index in range(0, len(item_effect_id_index), 8):
-            self._out.write('  {},\n'.format(', '.join('{:>5}'.format(idx) for idx in item_effect_id_index[index: index + 8])))
-        self._out.write('} };\n')
+        self.output_id_index(
+                index = [ e[1] for e in sorted(item_effect_id_index, key = lambda e: e[0]) ],
+                array = 'item_effect')
 
 class ClientDataVersionGenerator(DataGenerator):
     # Note, just returns the moddified time of the hotfix file. Hotfix file

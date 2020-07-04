@@ -37,6 +37,12 @@ resource_e spellpower_data_t::resource() const
   return util::translate_power_type( type() );
 }
 
+const spellpower_data_t& spellpower_data_t::find( unsigned id, bool ptr )
+{
+  const auto index = SC_DBC_GET_DATA( __spellpower_id_index, __ptr_spellpower_id_index, ptr );
+  return dbc::find_indexed( id, data( ptr ), index, &spellpower_data_t::_id );
+}
+
 util::span<const spellpower_data_t> spellpower_data_t::data( bool ptr )
 {
   return SC_DBC_GET_DATA( __spellpower_data, __ptr_spellpower_data, ptr );
@@ -415,7 +421,7 @@ static auto spell_data_linker(util::span<T, N> data) {
 void spell_data_t::link( bool ptr )
 {
   auto link_effects = spell_data_linker( SC_DBC_GET_DATA( __spelleffect_index_data, __ptr_spelleffect_index_data, ptr ) );
-  auto link_power = spell_data_linker( SC_DBC_GET_DATA( __spellpower_index_data, __ptr_spellpower_index_data, ptr ) );
+  auto link_power = spell_data_linker( spellpower_data_t::data() );
   auto link_driver = spell_data_linker( SC_DBC_GET_DATA( __spelldriver_index_data, __ptr_spelldriver_index_data, ptr ) );
   auto link_labels = spell_data_linker( spelllabel_data_t::data( ptr ) );
 

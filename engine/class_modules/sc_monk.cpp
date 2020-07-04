@@ -2374,24 +2374,24 @@ public:
 
     /* Iterate through power entries, and find if there are resources linked to one of our stances
      */
-    for ( const spellpower_data_t* pd : ab::data().powers() )
+    for ( const spellpower_data_t& pd : ab::data().powers() )
     {
-      switch ( pd->aura_id() )
+      switch ( pd.aura_id() )
       {
         case 137023:
           assert( _resource_by_stance[ specdata::spec_idx( MONK_BREWMASTER ) ] == RESOURCE_MAX &&
                   "Two power entries per aura id." );
-          _resource_by_stance[ specdata::spec_idx( MONK_BREWMASTER ) ] = pd->resource();
+          _resource_by_stance[ specdata::spec_idx( MONK_BREWMASTER ) ] = pd.resource();
           break;
         case 137024:
           assert( _resource_by_stance[ specdata::spec_idx( MONK_MISTWEAVER ) ] == RESOURCE_MAX &&
                   "Two power entries per aura id." );
-          _resource_by_stance[ specdata::spec_idx( MONK_MISTWEAVER ) ] = pd->resource();
+          _resource_by_stance[ specdata::spec_idx( MONK_MISTWEAVER ) ] = pd.resource();
           break;
         case 137025:
           assert( _resource_by_stance[ specdata::spec_idx( MONK_WINDWALKER ) ] == RESOURCE_MAX &&
                   "Two power entries per aura id." );
-          _resource_by_stance[ specdata::spec_idx( MONK_WINDWALKER ) ] = pd->resource();
+          _resource_by_stance[ specdata::spec_idx( MONK_WINDWALKER ) ] = pd.resource();
           break;
         default:
           break;

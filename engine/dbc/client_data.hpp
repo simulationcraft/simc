@@ -49,6 +49,17 @@ util::span<const T> find_many( unsigned key, bool ptr, Compare comp = Compare{},
   return util::span<const T>( r.first, r.second );
 }
 
+template <typename T, size_t N, typename U, size_t M, typename Proj>
+const T& find_indexed( unsigned key, util::span<const T, N> data, util::span<const U, M> index, Proj proj )
+{
+  auto it = range::lower_bound( index, key, {}, [ data, &proj ]( auto index ) {
+      return range::invoke( proj, data[ index ] );
+    } );
+  if ( it != index.end() && range::invoke( proj, data[ *it ] ) == key )
+    return data[ *it ];
+  return T::nil();
+}
+
 // "Index" to provide access to a filtered list of dbc data.
 template <typename T, typename Filter>
 class filtered_dbc_index_t

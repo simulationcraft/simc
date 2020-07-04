@@ -17,11 +17,6 @@ util::span<const item_effect_t> item_effect_t::data( bool ptr )
 
 /* static */ const item_effect_t& item_effect_t::find( unsigned id, bool ptr )
 {
-  const auto data = item_effect_t::data( ptr );
-  const auto id_index = SC_DBC_GET_DATA( __item_effect_id_index, __ptr_item_effect_id_index, ptr );
-
-  auto it = range::lower_bound( id_index, id, {}, [ data ]( auto index ) { return data[ index ].id; } );
-  if ( it != id_index.end() && data[ *it ].id == id )
-    return data[ *it ];
-  return nil();
+  const auto index = SC_DBC_GET_DATA( __item_effect_id_index, __ptr_item_effect_id_index, ptr );
+  return dbc::find_indexed( id, data( ptr ), index, &item_effect_t::id );
 }

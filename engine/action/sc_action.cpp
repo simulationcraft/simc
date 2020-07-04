@@ -234,14 +234,6 @@ struct action_execute_event_t : public player_event_t
   }
 };
 
-struct power_entry_without_aura
-{
-  bool operator()( const spellpower_data_t* p )
-  {
-    return p->aura_id() == 0;
-  }
-};
-
 }  // unnamed namespace
 
 action_t::options_t::options_t()
@@ -544,33 +536,33 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   }
 
   const auto spell_powers = spell_data.powers();
-  if ( spell_powers.size() == 1 && spell_powers.front()->aura_id() == 0 )
+  if ( spell_powers.size() == 1 && spell_powers.front().aura_id() == 0 )
   {
-    resource_current = spell_powers.front()->resource();
+    resource_current = spell_powers.front().resource();
   }
   else
   {
     // Find the first power entry without a aura id
-    auto it = range::find_if( spell_powers, power_entry_without_aura() );
+    auto it = range::find( spell_powers, 0u, &spellpower_data_t::aura_id );
     if ( it != spell_powers.end() )
     {
-      resource_current = ( *it )->resource();
+      resource_current = it->resource();
     }
   }
 
-  for ( const spellpower_data_t* pd : spell_powers )
+  for ( const spellpower_data_t& pd : spell_powers )
   {
-    if ( pd->_cost != 0 )
-      base_costs[ pd->resource() ] = pd->cost();
+    if ( pd._cost != 0 )
+      base_costs[ pd.resource() ] = pd.cost();
     else
-      base_costs[ pd->resource() ] = floor( pd->cost() * player->resources.base[ pd->resource() ] );
+      base_costs[ pd.resource() ] = floor( pd.cost() * player->resources.base[ pd.resource() ] );
 
-    secondary_costs[ pd->resource() ] = pd->max_cost();
+    secondary_costs[ pd.resource() ] = pd.max_cost();
 
-    if ( pd->_cost_per_tick != 0 )
-      base_costs_per_tick[ pd->resource() ] = pd->cost_per_tick();
+    if ( pd._cost_per_tick != 0 )
+      base_costs_per_tick[ pd.resource() ] = pd.cost_per_tick();
     else
-      base_costs_per_tick[ pd->resource() ] = floor( pd->cost_per_tick() * player->resources.base[ pd->resource() ] );
+      base_costs_per_tick[ pd.resource() ] = floor( pd.cost_per_tick() * player->resources.base[ pd.resource() ] );
   }
 
   for ( const spelleffect_data_t* ed : spell_data.effects() )

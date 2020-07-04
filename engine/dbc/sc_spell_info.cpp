@@ -1308,49 +1308,49 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   }
   s << "Spell Type       : " << spell_type_str << std::endl;
 
-  for ( const spellpower_data_t* pd : spell -> powers() )
+  for ( const spellpower_data_t& pd : spell -> powers() )
   {
     s << "Resource         : ";
 
-    if ( pd -> type() == POWER_MANA )
-      s << pd -> cost() * 100.0 << "%";
+    if ( pd.type() == POWER_MANA )
+      s << pd.cost() * 100.0 << "%";
     else
-      s << pd -> cost();
+      s << pd.cost();
 
     s << " ";
 
-    if ( pd -> max_cost() != 0 )
+    if ( pd.max_cost() != 0 )
     {
       s << "- ";
-      if ( pd -> type() == POWER_MANA )
-        s << ( pd -> cost() + pd -> max_cost() ) * 100.0 << "%";
+      if ( pd.type() == POWER_MANA )
+        s << ( pd.cost() + pd.max_cost() ) * 100.0 << "%";
       else
-        s << ( pd -> cost() + pd -> max_cost() );
+        s << ( pd.cost() + pd.max_cost() );
       s << " ";
     }
 
-    s << map_string( _resource_strings, pd -> raw_type() );
+    s << map_string( _resource_strings, pd.raw_type() );
 
-    if ( pd -> cost_per_tick() != 0 )
+    if ( pd.cost_per_tick() != 0 )
     {
       s << " and ";
 
-      if ( pd -> type() == POWER_MANA )
-        s << pd -> cost_per_tick() * 100.0 << "%";
+      if ( pd.type() == POWER_MANA )
+        s << pd.cost_per_tick() * 100.0 << "%";
       else
-        s << pd -> cost_per_tick();
+        s << pd.cost_per_tick();
 
-      s << " " << map_string( _resource_strings, pd -> raw_type() ) << " per tick";
+      s << " " << map_string( _resource_strings, pd.raw_type() ) << " per tick";
     }
 
-    s << " (id=" << pd -> id() << ")";
+    s << " (id=" << pd.id() << ")";
 
-    if ( pd -> aura_id() > 0 && dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
-      s << " w/ " << dbc.spell( pd -> aura_id() ) -> name_cstr() << " (id=" << pd -> aura_id() << ")";
+    if ( pd.aura_id() > 0 && dbc.spell( pd.aura_id() ) -> id() == pd.aura_id() )
+      s << " w/ " << dbc.spell( pd.aura_id() ) -> name_cstr() << " (id=" << pd.aura_id() << ")";
 
-    if ( pd -> _hotfix != 0 )
+    if ( pd._hotfix != 0 )
     {
-      auto hotfix_str = power_hotfix_map_str( dbc, pd );
+      auto hotfix_str = power_hotfix_map_str( dbc, &pd );
       if ( ! hotfix_str.empty() )
       {
         s << " [Hotfixed: " << hotfix_str << "]";
@@ -2071,34 +2071,34 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
     }
   }
 
-  for ( const spellpower_data_t* pd : spell -> powers() )
+  for ( const spellpower_data_t& pd : spell -> powers() )
   {
-    if ( pd -> cost() == 0 )
+    if ( pd.cost() == 0 )
       continue;
 
     xml_node_t* resource_node = node -> add_child( "resource" );
-    resource_node -> add_parm( "type", ( signed ) pd -> type() );
+    resource_node -> add_parm( "type", ( signed ) pd.type() );
 
-    if ( pd -> type() == POWER_MANA )
-      resource_node -> add_parm( "cost", spell -> cost( pd -> type() ) * 100.0 );
+    if ( pd.type() == POWER_MANA )
+      resource_node -> add_parm( "cost", spell -> cost( pd.type() ) * 100.0 );
     else
-      resource_node -> add_parm( "cost", spell -> cost( pd -> type() ) );
+      resource_node -> add_parm( "cost", spell -> cost( pd.type() ) );
 
-    if ( _resource_strings.contains( pd -> raw_type() ) )
+    if ( _resource_strings.contains( pd.raw_type() ) )
     {
-      resource_node -> add_parm( "type_name", map_string( _resource_strings, pd -> raw_type() ) );
+      resource_node -> add_parm( "type_name", map_string( _resource_strings, pd.raw_type() ) );
     }
 
-    if ( pd -> type() == POWER_MANA )
+    if ( pd.type() == POWER_MANA )
     {
-      resource_node -> add_parm( "cost_mana_flat", floor( dbc.resource_base( pt, level ) * pd -> cost() ) );
+      resource_node -> add_parm( "cost_mana_flat", floor( dbc.resource_base( pt, level ) * pd.cost() ) );
       resource_node -> add_parm( "cost_mana_flat_level", level );
     }
 
-    if ( pd -> aura_id() > 0 && dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
+    if ( pd.aura_id() > 0 && dbc.spell( pd.aura_id() ) -> id() == pd.aura_id() )
     {
-      resource_node -> add_parm( "cost_aura_id", pd -> aura_id() );
-      resource_node -> add_parm( "cost_aura_name", dbc.spell( pd -> aura_id() ) -> name_cstr() );
+      resource_node -> add_parm( "cost_aura_id", pd.aura_id() );
+      resource_node -> add_parm( "cost_aura_name", dbc.spell( pd.aura_id() ) -> name_cstr() );
     }
   }
 

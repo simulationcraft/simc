@@ -6615,7 +6615,7 @@ static const std::array<item_effect_t, 6613> __item_effect_data { {
   { 126155, 336586, 181459,   0,   1,    0,      -1,      -1 }, // Drust Trinket
 } };
 
-static constexpr std::array<uint16_t, 6613> __item_effect_id_index { {
+static const std::array<uint16_t, 6613> __item_effect_id_index { {
     169,   170,   171,   172,   173,   174,   177,   178,
     179,   180,   181,   182,   183,   184,   187,   188,
     189,   190,   191,   192,   193,   194,   195,   196,
@@ -7444,3 +7444,4 @@ static constexpr std::array<uint16_t, 6613> __item_effect_id_index { {
      89,    90,    91,    92,    93,    94,    95,    96,
      97,    98,    99,   100,   101,
 } };
+

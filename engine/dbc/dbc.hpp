@@ -132,7 +132,7 @@ namespace hotfix
   {
     auto_dispose< std::vector<spell_data_t*> > spells_[ 2 ];
     auto_dispose< std::vector<spelleffect_data_t*> > effects_[ 2 ];
-    auto_dispose< std::vector<spellpower_data_t*> > powers_[ 2 ];
+    std::vector<spellpower_data_t*> powers_[ 2 ];
 
     util::bump_ptr_allocator_t<> allocator_;
     std::unordered_map<unsigned, util::span<const spell_data_t*>> spell_driver_map_[ 2 ];
