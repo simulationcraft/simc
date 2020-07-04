@@ -565,9 +565,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
       base_costs_per_tick[ pd.resource() ] = floor( pd.cost_per_tick() * player->resources.base[ pd.resource() ] );
   }
 
-  for ( const spelleffect_data_t* ed : spell_data.effects() )
+  for ( const spelleffect_data_t& ed : spell_data.effects() )
   {
-    parse_effect_data( *ed );
+    parse_effect_data( ed );
   }
 }
 

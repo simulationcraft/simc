@@ -171,20 +171,20 @@ static void generate_indices( bool ptr )
       spell_label_index.add_spell( label.label(), &spell, ptr );
     }
 
-    for ( const spelleffect_data_t* effect : spell.effects() )
+    for ( const spelleffect_data_t& effect : spell.effects() )
     {
-      if ( effect -> subtype() == A_HASTED_CATEGORY )
+      if ( effect.subtype() == A_HASTED_CATEGORY )
       {
-        const unsigned value = as<unsigned>( effect -> misc_value1() );
+        const unsigned value = as<unsigned>( effect.misc_value1() );
         if ( value != 0 )
-          spell_categories_index.add_effect( value, effect, ptr );
+          spell_categories_index.add_effect( value, &effect, ptr );
       }
 
-      if ( effect -> subtype() == A_ADD_PCT_LABEL_MODIFIER )
+      if ( effect.subtype() == A_ADD_PCT_LABEL_MODIFIER )
       {
-        const short value = as<short>( effect -> misc_value2() );
+        const short value = as<short>( effect.misc_value2() );
         if ( value != 0 )
-          spell_label_index.add_effect( value, effect, ptr );
+          spell_label_index.add_effect( value, &effect, ptr );
       }
     }
   }

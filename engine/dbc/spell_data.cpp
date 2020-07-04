@@ -244,11 +244,8 @@ double spelleffect_data_t::scaled_max( double avg, double delta ) const
 
 const spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
 {
-  const auto __data = data( ptr );
-  auto it = range::lower_bound( __data, id, {}, &spelleffect_data_t::id );
-  if ( it != __data.end() && it->id() == id )
-    return &*it;
-  return &spelleffect_data_t::nil();
+  const auto index = SC_DBC_GET_DATA( __spelleffect_id_index, __ptr_spelleffect_id_index, ptr );
+  return &dbc::find_indexed( id, data( ptr ), index, &spelleffect_data_t::id );
 }
 
 util::span<const spelleffect_data_t> spelleffect_data_t::data( bool ptr )
@@ -420,7 +417,7 @@ static auto spell_data_linker(util::span<T, N> data) {
 
 void spell_data_t::link( bool ptr )
 {
-  auto link_effects = spell_data_linker( SC_DBC_GET_DATA( __spelleffect_index_data, __ptr_spelleffect_index_data, ptr ) );
+  auto link_effects = spell_data_linker( spelleffect_data_t::data( ptr ) );
   auto link_power = spell_data_linker( spellpower_data_t::data() );
   auto link_driver = spell_data_linker( SC_DBC_GET_DATA( __spelldriver_index_data, __ptr_spelldriver_index_data, ptr ) );
   auto link_labels = spell_data_linker( spelllabel_data_t::data( ptr ) );
