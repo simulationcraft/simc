@@ -166,9 +166,9 @@ static void generate_indices( bool ptr )
       spell_categories_index.add_spell( spell.category(), &spell, ptr );
     }
 
-    for ( const spelllabel_data_t* label : spell.labels() )
+    for ( const spelllabel_data_t& label : spell.labels() )
     {
-      spell_label_index.add_spell( label -> label(), &spell, ptr );
+      spell_label_index.add_spell( label.label(), &spell, ptr );
     }
 
     for ( const spelleffect_data_t* effect : spell.effects() )
@@ -301,8 +301,8 @@ std::vector<const spelleffect_data_t*> dbc_t::effect_labels_affecting_spell( con
 {
   std::vector<const spelleffect_data_t*> effects;
 
-  range::for_each( spell -> labels(), [ &effects, this ]( const spelllabel_data_t* label ) {
-    auto label_effects = spell_label_index.affected_by( label -> label(), ptr );
+  range::for_each( spell -> labels(), [ &effects, this ]( const spelllabel_data_t& label ) {
+    auto label_effects = spell_label_index.affected_by( label.label(), ptr );
 
     // Add all effects affecting a specific label to the vector containing all the effects, if the
     // effect is not yet in the vector.

@@ -2628,7 +2628,7 @@ class SpellDataGenerator(DataGenerator):
         spelleffect_array_position = {} # spelleffect id -> array position
         spelleffect_index = []
         spellpower_index = defaultdict(list)
-        spelllabel_index = defaultdict(list)
+        spelllabel_index = defaultdict(int)
         spelldriver_index = defaultdict(set)
 
         # Hotfix data for spells, effects, powers
@@ -2655,10 +2655,7 @@ class SpellDataGenerator(DataGenerator):
             if label_data.id_parent not in id_keys:
                 continue
             labels.append(label_data)
-
-        labels.sort(key = lambda k: k.id)
-        for index, label in enumerate(labels):
-            spelllabel_index[label.id_parent].append(index)
+            spelllabel_index[label_data.id_parent] += 1
 
         for effect_id in effects:
             effect = self.db('SpellEffect')[effect_id]
@@ -2934,7 +2931,7 @@ class SpellDataGenerator(DataGenerator):
             fields += [ str(len(effect_ids)) ]
             fields += [ str(power_count) ]
             fields += [ str(len(spelldriver_index.get(id, ()))) ]
-            fields += [ str(len(spelllabel_index.get(id, ()))) ]
+            fields += [ str(spelllabel_index.get(id, 0)) ]
 
             # Finally, update hotfix flags, they are located in the array of fields at position 2
             if spell._flags == -1:
@@ -3118,14 +3115,17 @@ class SpellDataGenerator(DataGenerator):
 
         self._out.write('} };\n\n')
 
-        self._out.write('// %d labels, wow build level %s\n' % ( len(labels), self._options.build ))
-        self._out.write('static const std::array<spelllabel_data_t, %d> __%s_data { {\n' % (
-            len(labels), self.format_str( 'spelllabel' ) ))
+        # Write out labels
+        self.output_header(
+                header = 'Applied spell labels',
+                type = 'spelllabel_data_t',
+                array = 'spelllabel',
+                length = len(labels))
 
-        for label in labels:
-            self._out.write('  { %s },\n' % (', '.join(label.field('id', self._options.build < 25600 and 'id_spell' or 'id_parent', 'label'))))
+        for label in sorted(labels, key=lambda l: (l.id_parent, l.id)):
+            self.output_record(label.field('id', 'id_parent', 'label'))
 
-        self._out.write('} };\n\n')
+        self.output_footer()
 
         # Then, write out hotfix data
         output_data = [('spell', spell_hotfix_data), ('effect', effect_hotfix_data), ('power', power_hotfix_data)]
@@ -3155,7 +3155,6 @@ class SpellDataGenerator(DataGenerator):
             self._out.write('} };\n')
 
         output_index_data( spellpower_index, 'spellpower_data_t', 'spellpower' )
-        output_index_data( spelllabel_index, 'spelllabel_data_t', 'spelllabel' )
 
         for spell_id, ids in spelldriver_index.items():
             spelldriver_index[spell_id] = [ spelldata_array_position[id] for id in sorted(ids) ]
