@@ -443,7 +443,7 @@ struct spell_data_t
   const spelleffect_data_t* const* _effects;
   const spellpower_data_t* const* _power;
   const spell_data_t* const* _driver; // The triggered spell's driver(s)
-  const spelllabel_data_t* const* _labels; // Applied (known) labels to the spell
+  const spelllabel_data_t* _labels; // Applied (known) labels to the spell
 
   uint8_t _effects_count;
   uint8_t _power_count;
@@ -630,7 +630,7 @@ struct spell_data_t
   {
     const auto labels = this -> labels();
     if ( idx > 0 && idx <= labels.size() )
-      return labels[ idx - 1 ] -> label();
+      return labels[ idx - 1 ].label();
     return 0;
   }
 
@@ -658,7 +658,7 @@ struct spell_data_t
     return { _power, _power_count };
   }
 
-  util::span<const spelllabel_data_t* const> labels() const
+  util::span<const spelllabel_data_t> labels() const
   {
     assert( _labels != nullptr || _labels_count == 0 );
     return { _labels, _labels_count };

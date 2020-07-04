@@ -320,8 +320,7 @@ bool spell_data_t::affected_by_label( const spelleffect_data_t& effect ) const
 
 bool spell_data_t::affected_by_label( int label ) const
 {
-  const auto labels = this -> labels();
-  return range::find(labels, label, &spelllabel_data_t::label) != labels.end();
+  return range::contains(labels(), label, &spelllabel_data_t::label);
 }
 
 bool spell_data_t::affected_by( const spell_data_t* spell ) const
@@ -418,7 +417,7 @@ void spell_data_t::link( bool ptr )
   auto link_effects = spell_data_linker( SC_DBC_GET_DATA( __spelleffect_index_data, __ptr_spelleffect_index_data, ptr ) );
   auto link_power = spell_data_linker( SC_DBC_GET_DATA( __spellpower_index_data, __ptr_spellpower_index_data, ptr ) );
   auto link_driver = spell_data_linker( SC_DBC_GET_DATA( __spelldriver_index_data, __ptr_spelldriver_index_data, ptr ) );
-  auto link_labels = spell_data_linker( SC_DBC_GET_DATA( __spelllabel_index_data, __ptr_spelllabel_index_data, ptr ) );
+  auto link_labels = spell_data_linker( spelllabel_data_t::data( ptr ) );
 
   for ( spell_data_t& sd : _data( ptr ) )
   {
