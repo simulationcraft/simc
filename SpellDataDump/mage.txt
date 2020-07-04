@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34972 shadowlands-BETA (git build shadowlands 2fa6bde648)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34972 shadowlands-BETA (git build dbc_spells 1877d36fa6)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -6388,7 +6388,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 21
-Triggered by     : Elemental Whirl (268953), Elemental Whirl (268956), Elemental Whirl (268955), Elemental Whirl (268954)
+Triggered by     : Elemental Whirl (268953), Elemental Whirl (268954), Elemental Whirl (268955), Elemental Whirl (268956)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6601,7 +6601,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 31
-Triggered by     : Gutripper (270668), Gutripper (269031)
+Triggered by     : Gutripper (269031), Gutripper (270668)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7125,7 +7125,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 98
-Triggered by     : Crystalline Carapace (271539), Crystalline Carapace (271538)
+Triggered by     : Crystalline Carapace (271538), Crystalline Carapace (271539)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

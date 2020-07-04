@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.34972 shadowlands-BETA (git build shadowlands 2fa6bde648)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.34972 shadowlands-BETA (git build dbc_spells 1877d36fa6)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -964,7 +964,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x00000001
-Triggered by     : Primal Fury (159286), The Wildshaper's Clutch (208319), Heart of the Wild (108292)
+Triggered by     : Heart of the Wild (108292), Primal Fury (159286), The Wildshaper's Clutch (208319)
 Attributes       : ....x... ........ ........ x.......   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ xx...... ........ 
                  : x......x ........ ...x.... ........   ...x.... ........ ........ ........ 
@@ -7493,7 +7493,7 @@ Name             : Essence of G'Hanir (id=218889) [Spell Family (7), Hidden]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
-Triggered by     : Essence of G'Hanir (208253), Flourish (197721)
+Triggered by     : Flourish (197721), Essence of G'Hanir (208253)
 Attributes       : .......x ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8244,7 +8244,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 21
-Triggered by     : Elemental Whirl (268953), Elemental Whirl (268956), Elemental Whirl (268955), Elemental Whirl (268954)
+Triggered by     : Elemental Whirl (268953), Elemental Whirl (268954), Elemental Whirl (268955), Elemental Whirl (268956)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8348,7 +8348,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 31
-Triggered by     : Gutripper (270668), Gutripper (269031)
+Triggered by     : Gutripper (269031), Gutripper (270668)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8787,7 +8787,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 98
-Triggered by     : Crystalline Carapace (271539), Crystalline Carapace (271538)
+Triggered by     : Crystalline Carapace (271538), Crystalline Carapace (271539)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
