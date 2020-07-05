@@ -16,14 +16,25 @@ env:
   ccache-generation: 0 # bump if you need to "clean" ccache
 
 jobs:
-  ubuntu-gcc-9:
-    name: ubuntu-gcc-9
+  ubuntu-gcc:
+    name: ubuntu-${{ matrix.cc }}
     runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        cc: [gcc-9, gcc-6]
+        include:
+          - cc: gcc-6
+            cxx: g++-6
+            packages: gcc-6 g++-6
+          - cc: gcc-9
+            cxx: g++-9
+            packages: gcc-9 g++-9
+    
     steps:
       - uses: actions/checkout@v2
 
       - uses: actions/cache@v2
-        env: { ccache-prefix: 'ubuntu-gcc-9-ccache-${{ env.ccache-generation }}' }
+        env: { ccache-prefix: 'ubuntu-${{ matrix.cc }}-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
           key: ${{ env.ccache-prefix }}-${{ github.sha }}
@@ -32,13 +43,12 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev ninja-build lld ccache
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build lld ccache ${{ matrix.packages }}
 
       - name: Configure
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
-              -DCMAKE_CXX_COMPILER=g++-9 -DCMAKE_C_COMPILER=gcc-9
-              -DCMAKE_CXX_FLAGS="-ffile-prefix-map=${{ runner.workspace }}/=/"
+              -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }}
               -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
