@@ -34,38 +34,41 @@ constexpr array<T, N> to_array(const U (&init)[N]) {
   return to_array_impl<T>(init, std::make_index_sequence<N>{});
 }
 
-// *very* minimal std::pair clone, std::pair operator= is constexpr only in c++20
-template <typename T, typename U>
-struct pair {
-  T first;
-  U second;
-};
-
 struct less {
   template <typename T, typename U>
   constexpr bool operator()(const T& lhs, const U& rhs) const {
     return lhs < rhs;
   }
   template <typename T, typename U>
-  constexpr bool operator()(const pair<T, U>& lhs, const pair<T, U>& rhs) const {
+  constexpr bool operator()(const std::pair<T, U>& lhs, const std::pair<T, U>& rhs) const {
     return lhs.first < rhs.first;
   }
   template <typename T, typename T2, typename U2>
-  constexpr bool operator()(const T& lhs, const pair<T2, U2>& rhs) const {
+  constexpr bool operator()(const T& lhs, const std::pair<T2, U2>& rhs) const {
     return lhs < rhs.first;
   }
 };
 
+template <typename T>
+constexpr void swap_(T& lhs, T& rhs) {
+  T tmp = lhs;
+  lhs = rhs;
+  rhs = tmp;
+}
+
+template <typename T, typename U>
+constexpr void swap_(std::pair<T, U>& lhs, std::pair<T, U>& rhs) {
+  swap_(lhs.first, rhs.first);
+  swap_(lhs.second, rhs.second);
+}
+
 template <typename T, size_t N, typename Compare = less>
 constexpr array<T, N> sorted(const array<T, N>& items, Compare cmp = {}) {
+  array<T, N> res { items };
   // simple insertion sort
-  array<T, N> res = items;
   for (size_t i = 1; i < N; i++) {
-    T temp = res[i];
-    ptrdiff_t j = i - 1;
-    for (; j >= 0 && cmp(temp, res[j]); j--)
-      res[j + 1] = res[j];
-    res[j + 1] = temp;
+    for (ptrdiff_t j = i; j > 0 && cmp(res[j], res[j - 1]); j--)
+      swap_(res[j], res[j - 1]);
   }
   return res;
 }
@@ -163,8 +166,8 @@ public:
 } // namespace detail
 
 template <typename Key, typename T, size_t N>
-class static_map : public detail::static_set_base<detail::pair<Key, T>, N> {
-  using base = detail::static_set_base<detail::pair<Key, T>, N>;
+class static_map : public detail::static_set_base<std::pair<Key, T>, N> {
+  using base = detail::static_set_base<std::pair<Key, T>, N>;
 public:
   using key_type    = Key;
   using mapped_type = T;
@@ -182,7 +185,7 @@ public:
 };
 
 template <typename Key, typename T>
-class static_map<Key, T, 0> : public detail::static_set_base<detail::pair<Key, T>, 0> {
+class static_map<Key, T, 0> : public detail::static_set_base<std::pair<Key, T>, 0> {
 public:
   using key_type    = Key;
   using mapped_type = T;
@@ -194,8 +197,8 @@ constexpr auto make_static_map(detail::dummy = {}) -> static_map<T, U, 0> {
 }
 
 template <typename T, typename U, size_t N>
-constexpr auto make_static_map(const detail::pair<T, U> (&items)[N]) -> static_map<T, U, N> {
-  return { detail::to_array<detail::pair<T, U>>(items) };
+constexpr auto make_static_map(const std::pair<T, U> (&items)[N]) -> static_map<T, U, N> {
+  return { detail::to_array<std::pair<T, U>>(items) };
 }
 
 template <typename T, size_t N>
