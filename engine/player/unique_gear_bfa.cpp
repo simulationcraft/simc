@@ -1179,18 +1179,12 @@ void items::merekthas_fang( special_effect_t& effect )
     noxious_venom_dot_t( const special_effect_t& effect ) : proc_t( effect, "noxious_venom", 267410 )
     {
       tick_may_crit = hasted_ticks = true;
-      dot_max_stack                = data().max_stacks();
+      dot_max_stack = data().max_stacks();
     }
 
     timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
     {
-      // No pandemic, refreshes to base duration on every channel tick
-      return triggered_duration * dot->state->haste;
-    }
-
-    double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
-    {
-      return 1.0;
+      return dot->time_to_next_tick() + triggered_duration;
     }
   };
 
