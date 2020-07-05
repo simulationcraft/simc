@@ -2983,12 +2983,10 @@ class SpellDataGenerator(DataGenerator):
             self.format_str('spelleffect'), len(effects) ))
 
         for index, effect_id in enumerate(effects):
-            if effect_id == 0:
-                self._out.write('  spelleffect_data_nil_v,\n')
-                continue
-
             effect = self.db('SpellEffect')[effect_id]
-            spelleffect_id_index.append((effect.id, index))
+
+            if effect_id != 0:
+                spelleffect_id_index.append((effect.id, index))
 
             #if index % 20 == 0:
             #    self._out.write('//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Coefficient,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die,Mech,ChTrg,0, 0 },\n')
