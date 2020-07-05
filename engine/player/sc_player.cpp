@@ -9265,7 +9265,7 @@ const spell_data_t* player_t::find_talent_spell( util::string_view n, specializa
 
   if ( !spell_id )
   {
-    sim->print_debug( "Player {}: Can't find talent with name '{}'.\n", name(), n );
+    sim->print_debug( "Player {}: Can't find talent with name '{}'.", name(), n );
     return spell_data_t::nil();
   }
 
