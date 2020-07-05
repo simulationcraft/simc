@@ -4233,8 +4233,6 @@ void items::shiver_venom_lance( special_effect_t& effect )
  * id=303572 damage spell
  * id=303573 crit buff value in effect#1
  * id=304877 damage spell value in effect #1
- *
- * TODO: Determine refresh / stack behavior of the crit buff
  */
 struct razor_coral_constructor_t : public item_targetdata_initializer_t
 {
@@ -4252,12 +4250,21 @@ struct razor_coral_constructor_t : public item_targetdata_initializer_t
     }
     assert( !td->debuff.razor_coral );
 
-    td->debuff.razor_coral =
-        make_buff( *td, "razor_coral_debuff", td->source->find_spell( 303568 ) )->set_activated( false );
-    td->debuff.razor_coral->set_stack_change_callback( [td]( buff_t*, int old_, int new_ ) {
-      if ( !new_ )  // buff on expiration, including demise
-        td->source->buffs.razor_coral->trigger( old_ );
-    } );
+    td->debuff.razor_coral = make_buff( *td, "razor_coral_debuff", td->source->find_spell( 303568 ) )
+      ->set_activated( false )
+      ->set_stack_change_callback( [ td ]( buff_t*, int old_, int new_ ) {
+        // buff on expiration, including demise
+        if ( !new_ )
+        {
+          // Increment the stack tracker buff then multiply the debuff stacks by the player buff stacks
+          // This overwrites any previous crit value, so ensure we expire the existing buff first
+          buff_t* stack_tracker_buff = buff_t::find( td->source, "razor_coral_stack_tracker" );
+          stack_tracker_buff->trigger();
+          td->source->buffs.razor_coral->expire();
+          td->source->buffs.razor_coral->trigger( old_ * stack_tracker_buff->check() );
+        }
+      } );
+    
     td->debuff.razor_coral->reset();
   }
 };
@@ -4358,11 +4365,22 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
     effect.player->buffs.razor_coral =
         make_buff<stat_buff_t>( effect.player, "razor_coral", effect.player->find_spell( 303570 ) )
             ->add_stat( STAT_CRIT_RATING, effect.player->find_spell( 303573 )->effectN( 1 ).average( effect.item ) )
-            ->set_refresh_behavior( buff_refresh_behavior::DURATION )  // TODO: determine this behavior
+            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
             ->set_stack_change_callback( [action]( buff_t*, int, int new_ ) {
               if ( new_ )
                 action->reset_debuff();  // buff also gets applied on demise, so reset the pointer in case this happens
             } );
+  }
+
+  // Special secondary tracking buff to track the somewhat odd in-game stacking behavior 
+  // Currently the in-game system uses the buff "stack" on refreshes, while the Crit value is encoded in the dynamic buff value
+  // As SimC uses the stack for tracking the base crit * stack multiplier instead of a dyanmic value, we use this instead
+  // Reuse the existing buff spell data, but don't create as stat_buff_t since we don't want it to do anything
+  buff_t* stack_tracker_buff = buff_t::find( effect.player, "razor_coral_stack_tracker" );
+  if ( !stack_tracker_buff )
+  {
+    stack_tracker_buff = make_buff<stat_buff_t>( effect.player, "razor_coral_stack_tracker", effect.player->find_spell( 303570 ) )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
 }
 
