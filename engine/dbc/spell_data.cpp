@@ -257,8 +257,15 @@ void spelleffect_data_t::link( bool ptr )
 {
   for ( spelleffect_data_t& ed : _data( ptr ) )
   {
-    ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
-    ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
+    if ( ed.id() == 0 )
+    {
+      ed._spell = ed._trigger_spell = spell_data_t::not_found();
+    }
+    else
+    {
+      ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
+      ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
+    }
   }
 }
 
