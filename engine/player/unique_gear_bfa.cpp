@@ -4914,11 +4914,6 @@ void items::subroutine_recalibration( special_effect_t& effect )
 
     void trigger( action_t* a, void* call_data ) override
     {
-      if ( a->background )
-      {
-        return;
-      }
-
       // The cast counter does not increase if either of the associated buffs is active
       if ( buff->check() || debuff->check() )
       {
