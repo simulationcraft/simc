@@ -4258,10 +4258,15 @@ struct razor_coral_constructor_t : public item_targetdata_initializer_t
         {
           // Increment the stack tracker buff then multiply the debuff stacks by the player buff stacks
           // This overwrites any previous crit value, so ensure we expire the existing buff first
+          int buff_stacks = 1;
           buff_t* stack_tracker_buff = buff_t::find( td->source, "razor_coral_stack_tracker" );
-          stack_tracker_buff->trigger();
+          if ( stack_tracker_buff )
+          {
+            stack_tracker_buff->trigger();
+            buff_stacks = stack_tracker_buff->check();
+          }
           td->source->buffs.razor_coral->expire();
-          td->source->buffs.razor_coral->trigger( old_ * stack_tracker_buff->check() );
+          td->source->buffs.razor_coral->trigger( old_ * buff_stacks );
         }
       } );
     
