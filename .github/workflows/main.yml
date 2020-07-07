@@ -161,9 +161,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install deps
-        run: sudo apt-get install docker
-
       - name: Build
         run: docker build --no-cache --build-arg THREADS=2 --build-arg NONETWORKING=1 -t simulationcraft .
 
