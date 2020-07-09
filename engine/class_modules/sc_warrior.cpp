@@ -700,9 +700,8 @@ public:
     if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 2 ) ) )
       ab::base_td_multiplier *= 1.0 + p()->spec.prot_warrior->effectN( 2 ).percent();
 
-    ab::cooldown->hasted = ab::data().affected_by( p()->spell.headlong_rush->effectN( 1 ) );
-    if ( ab::cooldown->hasted == false )  // Shield block is on a different effect for some reason.
-      ab::cooldown->hasted = ab::data().affected_by( p()->spell.headlong_rush->effectN( 3 ) );
+    if ( ab::data().affected_by( p()->spell.headlong_rush->effectN( 1 ) ) )
+      ab::cooldown->hasted = true;
     if ( ab::data().affected_by( p()->spell.headlong_rush->effectN( 2 ) ) )
       ab::gcd_type = gcd_haste_type::ATTACK_HASTE;
 
