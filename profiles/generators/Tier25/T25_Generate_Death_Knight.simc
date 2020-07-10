@@ -31,27 +31,27 @@ save=T25_Death_Knight_Unholy.simc
 deathknight="T25_Death_Knight_Frost"
 spec=frost
 level=120
-race=blood_elf
+race=human
 role=attack
 position=back
-talents=3102013
+talents=3222211
 
-azerite_essences=4:4:1/27:4:0/32:4:0/35:4:0
+azerite_essences=4:4:1/35:4:0/27:4:0/5:4:0
 
 head=second_sight_helm,id=174163,bonus_id=4824/1517,azerite_powers=108/582/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
-shoulder=writhing_spaulders_of_madness,id=174165,bonus_id=1517/4824,azerite_powers=108/582/459/13
+shoulders=writhing_spaulders_of_madness,id=174165,bonus_id=4824/1517,azerite_powers=108/582/30/13
 back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
-chest=breastplate_of_twilight_decimation,id=174164,bonus_id=1517/4824,azerite_powers=108/582/459/13
-wrists=bracers_of_phantom_pains,id=174177,bonus_id=4824/1517/6554
-hands=gauntlets_of_foul_inquisition,id=174169,bonus_id=4824/1517/6552
-waist=belt_of_muttering_truths,id=174174,bonus_id=4824/1517
-legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517
-feet=boots_of_hallucinatory_reality,id=174173,bonus_id=4824/1517
-finger1=overclocking_bit_band,id=169159,bonus_id=4824/1522,enchant=accord_of_mastery
-finger2=logic_loop_of_division,id=169157,bonus_id=4824/1522,enchant=accord_of_mastery
-trinket1=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
-trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
+chest=breastplate_of_twilight_decimation,id=174164,bonus_id=4824/1517,azerite_powers=108/582/459/13
+wrists=embalmers_steadying_bracers,id=159409,bonus_id=4824/1637
+hands=mirageweavers_gauntlets,id=174178,bonus_id=4824/1517/6482/6465
+waist=welloiled_plate_girdle,id=169057,bonus_id=4824/1522/6482/6465
+legs=living_obsidian_legguards,id=174172,bonus_id=4824/1517/6482/6465
+feet=ballast_sinkers,id=159428,bonus_id=4824/1637/6476/6465
+finger1=logic_loop_of_division,id=169157,bonus_id=1522/4824/6475/6460
+finger2=overclocking_bit_band,id=169159,bonus_id=1522/4824
+trinket1=vitacharged_titanshard,id=174500,bonus_id=4824/1517
+trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_razorice
 off_hand=lurkers_piercing_gaze,id=174109,bonus_id=4824/1517,enchant=rune_of_the_fallen_crusader
 
