@@ -124,7 +124,7 @@ actions.items_combustion+=/use_item,use_off_gcd=1,name=malformed_heralds_legwrap
 actions.items_high_priority=call_action_list,name=items_combustion,if=!variable.disable_combustion&variable.time_to_combustion<=0
 actions.items_high_priority+=/use_items
 actions.items_high_priority+=/use_item,name=manifesto_of_madness,if=!equipped.azsharas_font_of_power&variable.time_to_combustion<8
-actions.items_high_priority+=/use_item,name=azsharas_font_of_power,if=variable.time_to_combustion<=5+15*variable.font_double_on_use&!variable.disable_combustion
+actions.items_high_priority+=/use_item,name=azsharas_font_of_power,if=variable.time_to_combustion<=5+15*variable.font_double_on_use&variable.time_to_combustion>0&!variable.disable_combustion
 actions.items_high_priority+=/use_item,name=rotcrusted_voodoo_doll,if=variable.time_to_combustion>variable.on_use_cutoff|variable.disable_combustion
 actions.items_high_priority+=/use_item,name=aquipotent_nautilus,if=variable.time_to_combustion>variable.on_use_cutoff|variable.disable_combustion
 actions.items_high_priority+=/use_item,name=shiver_venom_relic,if=variable.time_to_combustion>variable.on_use_cutoff|variable.disable_combustion
