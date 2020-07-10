@@ -1077,20 +1077,27 @@ struct tank_dummy_enemy_t : public enemy_t
       // New values are added when new seasonal content (new raid, new M+ season) is released
       // ArmorConstantMod is pulled from the ExpectedStatMod table
       // Values are a combination of the base K values for the intended level, multiplied by the ArmorConstantMod field
-      // 8.3 values here
+      
+      // In order to get the ArmorConstMod ID you first get the ID from the map you are looking for
+      // You then take the Map ID and search the ID within the MapDifficulty table. For raids, you will come back with four
+      // records, one for each difficulty. Each of these will have a ContentTuningID.
+      // You then take the ContentTuningID and search the ID in the ContentTuningXExpected table.
+      // Often you will come back with multiple results but the one that is correct will generally be the one that has
+      // the ArmorConstMod value being greater than 1.000
+      // 9.0 values here
 
       /* Level 50 Base/open world: 741.000 (Level 50 Armor mitigation constants (K-values))
-        Level 50 M0/M+: 879.567 (ID: 171; ArmorMod: 1.187)
-        Ny'alotha LFR: 848.445 (ID: 143; ArmorMod: 1.145)
-        Ny'alotha Normal: 879.567 (ID: 151; ArmorMod: 1.187)
-        Ny'alotha Heroic: 953.667 (ID: 152; ArmorMod: 1.287)
-        Ny'alotha Mythic: 1038.882‬ (ID: 158; ArmorMod: 1.402) 
+        Level 50 M0/M+: 879.567 (ExpectedStatModID: 171; ArmorConstMod: 1.187)
+        Ny'alotha LFR: 848.445 (ExpectedStatModID: 143; ArmorConstMod: 1.145)
+        Ny'alotha Normal: 879.567 (ExpectedStatModID: 151; ArmorConstMod: 1.187)
+        Ny'alotha Heroic: 953.667 (ExpectedStatModID: 152; ArmorConstMod: 1.287)
+        Ny'alotha Mythic: 1038.882‬ (ExpectedStatModID: 158; ArmorConstMod: 1.402) 
         Level 60 Base/open world: 2500.000 (Level 60 Armor mitigation constants (K-values))
-        Level 60 M0/M+: 2455.0 (ID: 176; ArmorMod: 0.982) *Needs to be updated closer to release
-        Castle Nathria LFR: 2500.0 (ID: 181; ArmorMod: 1.000)
-        Castle Nathria Normal: 2662.5 (ID: 177; ArmorMod: 1.065)
-        Castle Nathria Heroic: 2845.0 (ID: 178; ArmorMod: 1.138)
-        Castle Nathria Mythic: 3050.0‬ (ID: 179; ArmorMod: 1.220) 
+        Level 60 M0/M+: 2455.0 (ExpectedStatModID: 176; ArmorConstMod: 0.982) *Needs to be updated closer to release
+        Castle Nathria LFR: 2500.0 (ExpectedStatModID: 181; ArmorConstMod: 1.000)
+        Castle Nathria Normal: 2662.5 (ExpectedStatModID: 177; ArmorConstMod: 1.065)
+        Castle Nathria Heroic: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
+        Castle Nathria Mythic: 3050.0‬ (ExpectedStatModID: 179; ArmorConstMod: 1.220) 
         */
 
       switch ( tank_dummy_enum )
