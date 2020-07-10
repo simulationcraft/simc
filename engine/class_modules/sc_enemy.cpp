@@ -1086,7 +1086,7 @@ struct tank_dummy_enemy_t : public enemy_t
         Ny'alotha Heroic: 953.667 (ID: 152; ArmorMod: 1.287)
         Ny'alotha Mythic: 1038.882‬ (ID: 158; ArmorMod: 1.402) 
         Level 60 Base/open world: 2500.000 (Level 60 Armor mitigation constants (K-values))
-        Level 60 M0/M+: 2442.5 (ID: 176; ArmorMod: 0.982) *Needs to be updated closer to release
+        Level 60 M0/M+: 2455.0 (ID: 176; ArmorMod: 0.982) *Needs to be updated closer to release
         Castle Nathria LFR: 2500.0 (ID: 181; ArmorMod: 1.000)
         Castle Nathria Normal: 2662.5 (ID: 177; ArmorMod: 1.065)
         Castle Nathria Heroic: 2845.0 (ID: 178; ArmorMod: 1.138)
