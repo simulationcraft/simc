@@ -10110,7 +10110,7 @@ void monk_t::apl_combat_mistweaver()
 
   st->add_action( this, "Rising Sun Kick" );
   st->add_action( this, "Blackout Kick",
-                  "if=buff.teachings_of_the_monastery.stack=1&cooldown.rising_sun_kick.remains<12" );
+                  "if=buff.teachings_of_the_monastery.stack>=2&cooldown.rising_sun_kick.remains>6" );
   st->add_talent( this, "Chi Wave" );
   st->add_talent( this, "Chi Burst" );
   st->add_action( this, "Tiger Palm",
