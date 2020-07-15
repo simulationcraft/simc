@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands b14cb75745)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands f1343672d2)
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -78,6 +78,7 @@ Stacks           : 9 initial, 9 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.x .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken
+Affecting spells : Embrace of Earth (338329 effect#1)
 Family Flags     : 42
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x..... 
@@ -136,6 +137,7 @@ GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Totemic Surge (338042 effect#1)
 Family Flags     : 15, 29, 69
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -328,7 +330,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#2), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#4), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effect#1), Nobundo's Redemption (208764 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#2), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#4), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effect#1), Nobundo's Redemption (208764 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1)
 Family Flags     : 7, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -376,6 +378,7 @@ GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 60 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Totemic Surge (338042 effect#1)
 Family Flags     : 15, 57
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -587,7 +590,7 @@ Cooldown         : 1800 seconds
 Category         : 1161
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1800 seconds
-Affecting spells : Ancient Ankh Talisman (287777 effect#1), Improved Reincarnation (319352 effect#1)
+Affecting spells : Ancient Ankh Talisman (287777 effect#1), Improved Reincarnation (319352 effect#1), Astral Protection (337964 effect#1), 
 Family Flags     : 9
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -1809,7 +1812,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Overflowing Shores (278077 effect#2)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Overflowing Shores (278077 effect#2), Heavy Rainfall (338344 effect#1)
 Family Flags     : 41, 87
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
@@ -1942,7 +1945,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1), Spiritwalker's Tidal Totem (335892 effect#1), 
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1), Spiritwalker's Tidal Totem (335892 effect#1), Swirling Currents (338340 effect#1)
 Family Flags     : 41, 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3353,6 +3356,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
+Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 15, 124
 Attributes       : ........ ........ ........ ........   x....... ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3876,6 +3880,7 @@ Stacks           : 10 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Affecting spells : Focused Lightning (338322 effect#1)
 Family Flags     : 100
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4015,6 +4020,7 @@ Range            : 30 yards
 GCD              : 1 seconds
 Duration         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 55
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -4207,6 +4213,7 @@ GCD              : 1 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Totemic Surge (338042 effect#1)
 Family Flags     : 15, 29, 99
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4487,6 +4494,7 @@ Charges          : 1 (150 seconds cooldown)
 Category         : 1572
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 124
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4863,6 +4871,7 @@ Charges          : 1 (150 seconds cooldown)
 Category         : 1572
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 55
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -6513,7 +6522,7 @@ Stacks           : 8 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
-Triggered by     : Fulmination (190493)
+Triggered by     : Fulmination (190493), High Voltage (338131)
 Family Flags     : 103
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

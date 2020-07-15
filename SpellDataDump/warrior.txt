@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands b14cb75745)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands f1343672d2)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -38,7 +38,7 @@ Charges          : 1 (20 seconds cooldown)
 Category         : 1386
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1 seconds
-Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Raging Fury (222266 effect#1), Charge (319157 effect#1)
+Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Raging Fury (222266 effect#1), Charge (319157 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 0, 8
 Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -214,7 +214,7 @@ Duration         : 8 seconds
 Cooldown         : 45 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
-Affecting spells : Recklessness (1719 effect#9), Bladestorm (46924 effect#3), Warrior (137047 effect#2), Morale Killer (199023 effect#2), Booming Voice (202743 effect#1), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Demoralizing Shout (316464 effect#1)
+Affecting spells : Recklessness (1719 effect#9), Bladestorm (46924 effect#3), Warrior (137047 effect#2), Morale Killer (199023 effect#2), Booming Voice (202743 effect#1), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Demoralizing Shout (316464 effect#1), Unnerving Focus (337155 effect#6)
 Family Flags     : 8, 17, 70
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -364,7 +364,7 @@ Duration         : 10 seconds
 Cooldown         : 90 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
-Affecting spells : Warrior (137047 effect#2), Reckless Abandon (202751 effect#1), Recklessness (316828 effect#1)
+Affecting spells : Warrior (137047 effect#2), Reckless Abandon (202751 effect#1), Recklessness (316828 effect#1), Depths of Insanity (337162 effect#1)
 Family Flags     : 4, 8
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -579,7 +579,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effect#1), Death Sentence (144442 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Execute (316402 effect#1), Execute (316403 effect#1), Execute (316405 effect#1)
+Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effect#1), Death Sentence (144442 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Execute (316402 effect#1), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
 Family Flags     : 8, 18, 29, 59
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -610,7 +610,7 @@ Duration         : 10 seconds
 Cooldown         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#5)
 Family Flags     : 7, 8, 9, 18
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -988,7 +988,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 4.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165640 effect#1), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Bloodthirst (316537 effect#1), Seethe (335091 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165640 effect#1), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Bloodthirst (316537 effect#1), Seethe (335091 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 18, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -1049,7 +1049,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#2), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165642 effect#1), Heavy Repercussions (203177 effect#2), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), The Walls Fell (215057 effect#2), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Punish (275334 effect#1), Brace for Impact (278124 effect#2), Siegebreaker (280773 effect#1), Shield Slam (316523 effect#1), Shield Slam (316790 effect#1), The Wall (335239 effect#2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#2), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165642 effect#1), Heavy Repercussions (203177 effect#2), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), The Walls Fell (215057 effect#2), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Punish (275334 effect#1), Brace for Impact (278124 effect#2), Siegebreaker (280773 effect#1), Shield Slam (316523 effect#1), Shield Slam (316790 effect#1), The Wall (335239 effect#2), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 18, 41, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -1297,7 +1297,7 @@ Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 60 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effect#6)
+Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effect#6), Unnerving Focus (337155 effect#5)
 Family Flags     : 8, 46
 Attributes       : ....x... ........ x.x..... .....x..   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1364,7 +1364,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#5)
 Triggered by     : Bladestorm (46924), Bladestorm (227847)
 Family Flags     : 9, 46
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
@@ -1798,7 +1798,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Charges          : 1 (8 seconds cooldown)
 Category         : 1672: Fury Warrior (137050 effect#5)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2)
+Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
@@ -2004,7 +2004,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#5)
 Triggered by     : Bladestorm (50622)
 Family Flags     : 9, 46
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
@@ -2053,7 +2053,7 @@ Spell Level      : 41
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Bladestorm (46924 effect#3), Warrior (137047 effect#2), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2), Rallying Cry (316825 effect#1)
+Affecting spells : Bladestorm (46924 effect#3), Warrior (137047 effect#2), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2), Rallying Cry (316825 effect#1), Inspiring Presence (335034 effect#1), 
 Family Flags     : 8, 67, 68
 Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2074,7 +2074,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2), Inspiring Presence (335034 effect#1)
 Family Flags     : 68, 70
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2192,7 +2192,7 @@ Cooldown         : 90 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
                  : 771: Strive for Perfection (296320 effect#9)
-Affecting spells : Recklessness (1719 effect#9), Warrior (137047 effect#2), Unstoppable Force (275336 effect#1), Avatar (316438 effect#1)
+Affecting spells : Recklessness (1719 effect#9), Warrior (137047 effect#2), Unstoppable Force (275336 effect#1), Avatar (316438 effect#1), Unnerving Focus (337155 effect#6)
 Family Flags     : 8, 32
 Attributes       : ....x... ........ ..x..... ...x....   ........ ..x....x x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2489,7 +2489,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Bladestorm (46924 effect#3), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Neltharion's Fury (203524 effect#4), Colossus Smash (208086 effect#1), Bladestorm (222634 effect#3), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Bladestorm (46924 effect#3), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Neltharion's Fury (203524 effect#4), Colossus Smash (208086 effect#1), Bladestorm (222634 effect#3), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 49
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2731,6 +2731,7 @@ Internal Cooldown: 0.75 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
+Affecting spells : Unnerving Focus (337155 effect#4)
 Family Flags     : 31
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3234,7 +3235,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effect#1), Death Sentence (144442 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Execute (316402 effect#1), Execute (316403 effect#1), Execute (316405 effect#1)
+Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effect#1), Death Sentence (144442 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Execute (316402 effect#1), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
 Family Flags     : 8, 18, 29, 59
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3263,7 +3264,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Ashen Juggernaut (335234 effect#1)
 Triggered by     : Execute (5308)
 Family Flags     : 9, 29, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -3527,7 +3528,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Category         : 891
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Recklessness (1719 effect#5), Warrior (137047 effect#2), Crushing Assault (278826 effect#3), Whirlwind (316435 effect#1)
+Affecting spells : Recklessness (1719 effect#5), Warrior (137047 effect#2), Crushing Assault (278826 effect#3), Whirlwind (316435 effect#1), Unnerving Focus (337155 effect#2), 
 Family Flags     : 8, 54, 55
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4980,7 +4981,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Cooldown         : 90 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
-Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effect#6)
+Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effect#6), Unnerving Focus (337155 effect#5)
 Family Flags     : 8, 46
 Attributes       : ....x... ........ x.x..... .....x..   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5283,7 +5284,7 @@ Class            : Warrior, Death Knight
 School           : Physical
 Spell Type       : None
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Recklessness (1719 effect#5)
+Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2)
 Family Flags     : 76
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -5514,7 +5515,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 21 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 18, 26, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5571,7 +5572,7 @@ Spell Level      : 1
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Ashen Juggernaut (335234 effect#1)
 Triggered by     : Execute (163201)
 Family Flags     : 9, 29, 52, 116
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -5814,7 +5815,7 @@ School           : Physical
 Spell Type       : Melee
 Duration         : 8 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Recklessness (1719 effect#5)
+Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2)
 Triggered by     : War Machine (262231), War Machine (316733)
 Family Flags     : 39
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -7856,7 +7857,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 53
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ x....... 
@@ -7910,7 +7911,7 @@ Spell Level      : 8
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Ashen Juggernaut (335234 effect#1)
 Triggered by     : Execute (5308)
 Family Flags     : 8, 9, 29, 116
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -8457,7 +8458,7 @@ School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 4 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#4)
 Triggered by     : Spear of Bastion (307865)
 Family Flags     : 9, 57
 Attributes       : ....x... ........ .......x x.xx....   .....x.. ........ ........ ........ 
@@ -8526,7 +8527,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 18, 20
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ x....... 
@@ -9570,7 +9571,7 @@ Spell Type       : None
 Range            : 100 yards
 Velocity         : 20 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Recklessness (1719 effect#5)
+Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2)
 Family Flags     : 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9707,7 +9708,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Recklessness (1719 effect#5)
+Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2)
 Family Flags     : 76
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -9818,7 +9819,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 3 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165640 effect#1), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Bloodthirst (316537 effect#1), Seethe (335091 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165640 effect#1), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Bloodthirst (316537 effect#1), Seethe (335091 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 18, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -9848,7 +9849,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Charges          : 1 (8 seconds cooldown)
 Category         : 1672: Fury Warrior (137050 effect#5)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2)
+Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
@@ -9927,6 +9928,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Depths of Insanity (337162 effect#1)
 Triggered by     : Reckless Abandon (202751)
 Family Flags     : 50
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands b14cb75745)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands f1343672d2)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -75,7 +75,7 @@ Category         : 1509
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 8 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
+Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Clear Mind (337707 effect#1)
 Family Flags     : 32
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -101,7 +101,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x08000000
-Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
+Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Clear Mind (337707 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -892,7 +892,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Shadow Priest (137033 effect#7), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
+Affecting spells : Shadow Priest (137033 effect#7), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Clear Mind (337707 effect#1)
 Family Flags     : 39
 Attributes       : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -990,7 +990,7 @@ Spell Level      : 27
 Range            : 30 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x08000000
-Affecting spells : Shadow Priest (137033 effect#7), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
+Affecting spells : Shadow Priest (137033 effect#7), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Clear Mind (337707 effect#1)
 Triggered by     : Mass Dispel (32375)
 Family Flags     : 39
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1295,7 +1295,7 @@ Duration         : 10 seconds
 Cooldown         : 90 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
-Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
+Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Exaltation (337790 effect#2)
 Family Flags     : 119
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1493,7 +1493,7 @@ Duration         : 10 seconds
 Cooldown         : 180 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x88000000
-Affecting spells : Item - Priest WoD PvP Holy4P Bonus (171142 effect#1), Surrender to Madness (193223 effect#2), Phyrix's Embrace (234689 effect#1), Surrender to Madness (319952 effect#7)
+Affecting spells : Item - Priest WoD PvP Holy4P Bonus (171142 effect#1), Surrender to Madness (193223 effect#2), Phyrix's Embrace (234689 effect#1), Surrender to Madness (319952 effect#7), Lasting Spirit (337811 effect#1), 
 Family Flags     : 75
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ...x.... x....... ...x.... ........   ........ ........ ........ ........ 
@@ -3868,7 +3868,7 @@ Charges          : 1 (20 seconds cooldown)
 Category         : 1690
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
+Affecting spells : Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7), Shining Radiance (337778 effect#1)
 Family Flags     : 22, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4966,7 +4966,7 @@ Category         : 1509
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 8 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
+Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Clear Mind (337707 effect#1)
 Family Flags     : 32
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -8939,7 +8939,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Shattered Perceptions (338315 effect#1), 
 Family Flags     : 72, 84
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

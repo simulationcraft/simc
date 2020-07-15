@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands b14cb75745)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands f1343672d2)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1121,7 +1121,7 @@ Cooldown         : 1 seconds
 Charges          : 2 (15 seconds cooldown)
 Category         : 1562: Brewmaster Monk (137023 effect#5)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), 
+Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), Evasive Stride (337250 effect#1)
 Family Flags     : 53, 111
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1777,7 +1777,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effect#1), Inner Fury (336452 effect#1)
 Triggered by     : Fists of Fury (113656)
 Family Flags     : 20, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2590,6 +2590,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Xuen's Bond (336616 effect#1)
 Triggered by     : Crackling Tiger Lightning Driver (123999)
 Family Flags     : 68
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4759,7 +4760,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Jade Bond (336773 effect#1)
 Family Flags     : 48, 115
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5133,7 +5134,7 @@ Spell Level      : 16
 Duration         : 5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 824: Will to Survive (312922 effect#1)
-Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), 
+Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), Evasive Stride (337250 effect#1)
 Family Flags     : 111
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9021,7 +9022,7 @@ Range            : 100 yards
 GCD              : 1 seconds
 Cooldown         : 15 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14), Extend Life (185158 effect#2), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14), Extend Life (185158 effect#2), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2), Harm Denial (336379 effect#1)
 Family Flags     : 17, 95
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ......x. 

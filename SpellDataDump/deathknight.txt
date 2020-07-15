@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands b14cb75745)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands f1343672d2)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -557,7 +557,7 @@ Charges          : 1 (120 seconds cooldown)
 Category         : 1614
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
-Affecting spells : Death Knight (137005 effect#2)
+Affecting spells : Death Knight (137005 effect#2), Accelerated Cold (337822 effect#1)
 Family Flags     : 14, 127
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -660,7 +660,7 @@ Spell Level      : 42
 Duration         : 8 seconds
 Cooldown         : 45 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : March of the Damned (280143 effect#2)
+Affecting spells : March of the Damned (280143 effect#2), Fleeting Wind (338093 effect#1)
 Family Flags     : 123
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -752,7 +752,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Cold Hearted (288425 effect#2)
+Affecting spells : Cold Hearted (288425 effect#2), Chilled Resilience (337704 effect#1)
 Family Flags     : 20
 Attributes       : ....x... ........ ..x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -909,7 +909,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, One-handed Sword, Two-handed Sword, Fist Weapon, Dagger
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Death Knight (137005 effect#2), Biting Cold (166057 effect#1), Frost Strike (316803 effect#1)
+Affecting spells : Death Knight (137005 effect#2), Biting Cold (166057 effect#1), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
 Family Flags     : 34, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1056,7 +1056,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 823: Will to Survive (312922 effect#2)
-Affecting spells : Dark Succor (101568 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Item - Death Knight T18 Blood 4P Bonus (187873 effect#1), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Gravewarden (242010 effect#2), Master of Ghouls (246995 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effect#2), Death Strike (278223 effect#1), Death's Certainty (334898 effect#2)
+Affecting spells : Dark Succor (101568 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Item - Death Knight T18 Blood 4P Bonus (187873 effect#1), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Gravewarden (242010 effect#2), Master of Ghouls (246995 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effect#2), Death Strike (278223 effect#1), Death's Certainty (334898 effect#2), Insatiable Appetite (338330 effect#1)
 Family Flags     : 4, 43, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1186,6 +1186,7 @@ Cooldown         : 120 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 45 seconds
 Proc Chance      : 101%
+Affecting spells : Reinforced Shell (337764 effect#1), 
 Family Flags     : 51
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1529,7 +1530,7 @@ Spell Level      : 23
 Range            : 50000 yards
 Duration         : 24 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Rapid Decomposition (194662 effect#1), Master of Ghouls (246995 effect#1), Soulflayer's Corruption (248066 effect#1)
+Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Rapid Decomposition (194662 effect#1), Master of Ghouls (246995 effect#1), Soulflayer's Corruption (248066 effect#1), Withering Plague (337884 effect#1)
 Triggered by     : Death's Caress (195292)
 Family Flags     : 43, 57, 65
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -2034,7 +2035,7 @@ Velocity         : 40 yards/sec
 Duration         : 15 seconds
 Cooldown         : 60 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Item - Death Knight T17 Unholy 2P Bonus (165575 effect#1), Dark Transformation (325554 effect#1)
+Affecting spells : Item - Death Knight T17 Unholy 2P Bonus (165575 effect#1), Dark Transformation (325554 effect#1), Eternal Hunger (337381 effect#1)
 Family Flags     : 69
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -2062,7 +2063,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Dark Succor (101568 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Item - Death Knight T18 Blood 4P Bonus (187873 effect#1), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Gravewarden (242010 effect#2), Master of Ghouls (246995 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effect#2), Death Strike (278223 effect#1), Death's Certainty (334898 effect#2)
+Affecting spells : Dark Succor (101568 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Item - Death Knight T18 Blood 4P Bonus (187873 effect#1), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Gravewarden (242010 effect#2), Master of Ghouls (246995 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effect#2), Death Strike (278223 effect#1), Death's Certainty (334898 effect#2), Insatiable Appetite (338330 effect#1)
 Family Flags     : 4, 43
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
@@ -2084,7 +2085,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), Frost Strike (316803 effect#1)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
 Triggered by     : Frost Strike (49143)
 Family Flags     : 34, 43, 110, 120
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -2410,6 +2411,7 @@ Spell Type       : Magic
 Spell Level      : 23
 Duration         : 8 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Meat Shield (338435 effect#2)
 Family Flags     : 74
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2453,7 +2455,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ..x.x.x. x....... .....x.. 
                  : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Affecting spells : Harbinger of Doom (276023 effect#1)
+Affecting spells : Harbinger of Doom (276023 effect#1), Embrace Death (337980 effect#1)
 Triggered by     : Sudden Doom (49530)
 Family Flags     : 81
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5115,6 +5117,7 @@ Range            : 50000 yards
 Duration         : 10 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
+Affecting spells : Reinforced Shell (337764 effect#1), 
 Family Flags     : 51
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
@@ -5463,6 +5466,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
+Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 15, 124
 Attributes       : ........ ........ ........ ........   x....... ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5734,6 +5738,7 @@ Charges          : 1 (150 seconds cooldown)
 Category         : 1572
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 124
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6366,7 +6371,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Gathering Storm (211805 effect#1), Master of Ghouls (246995 effect#1), Frozen Tempest (278487 effect#2), Remorseless Winter (316794 effect#1), Biting Cold (334678 effect#2), 
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Gathering Storm (211805 effect#1), Master of Ghouls (246995 effect#1), Frozen Tempest (278487 effect#2), Remorseless Winter (316794 effect#1), Biting Cold (334678 effect#2), Biting Cold (337989 effect#1)
 Triggered by     : Remorseless Winter (196770)
 Family Flags     : 43, 120, 121, 126
 Attributes       : ........ ........ ........ ..xx....   ........ ........ ........ ........ 
@@ -7393,7 +7398,7 @@ Duration         : 3 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Gathering Storm (211805 effect#1), Frozen Tempest (278487 effect#2), Remorseless Winter (316794 effect#1), Biting Cold (334678 effect#2), 
+Affecting spells : Gathering Storm (211805 effect#1), Frozen Tempest (278487 effect#2), Remorseless Winter (316794 effect#1), Biting Cold (334678 effect#2), Biting Cold (337989 effect#1)
 Family Flags     : 126
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x.x.   .......x .x...... ........ ........ 
@@ -7976,7 +7981,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), Frost Strike (316803 effect#1)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
 Triggered by     : Frost Strike (49143)
 Family Flags     : 34, 43, 120
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -8119,7 +8124,7 @@ Class            : Warrior, Death Knight
 School           : Physical
 Spell Type       : None
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Recklessness (1719 effect#5)
+Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2)
 Family Flags     : 76
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -12785,7 +12790,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), Frost Strike (316803 effect#1)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
 Triggered by     : Frost Strike (49143)
 Family Flags     : 34, 43, 120
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
