@@ -1101,6 +1101,26 @@
 
       { "data_type": "B", "field": "unk", "elements": 2                      }
     ]
+  },
+  "SoulbindConduit": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "type", "formats": { "cpp": "%1u" } }
+    ]
+  },
+  "SoulbindConduitRank": {
+    "parent": "SoulbindConduit",
+    "fields": [
+      { "data_type": "i", "field": "rank",     "formats": { "cpp": "%2u" } },
+      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%7u" }, "ref": "SpellName" },
+      { "data_type": "f", "field": "spell_mod" }
+    ]
+  },
+  "SoulbindConduitItem": {
+    "fields": [
+      { "data_type": "i", "field": "id_item",     "formats": { "cpp": "%6u" }, "ref": "ItemSparse" },
+      { "data_type": "i", "field": "id_soulbind", "formats": { "cpp": "%4u" }, "ref": "SoulbindConduit" }
+    ]
   }
 }
 

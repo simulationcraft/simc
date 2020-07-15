@@ -2595,6 +2595,12 @@ class SpellDataGenerator(DataGenerator):
 
                 self.process_spell(effect.id_spell, ids, 0, 0, False)
 
+        # SouldbindConduits
+        for _, entry in self.db('SoulbindConduit').items():
+            for spell_id in set(rank.id_spell for rank in entry.children('SoulbindConduitRank')):
+                if self.db('SpellName')[spell_id].id == spell_id:
+                    self.process_spell(spell_id, ids, 0, 0)
+
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the
         # generic spells from SpellDataGenerator._spell_id_list[0]
         for generic_spell_id in SpellDataGenerator._spell_id_list[0]:
