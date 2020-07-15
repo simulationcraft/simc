@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.1.34972
-static const std::array<item_name_description_t, 343> __item_name_description_data { {
+// Item name descriptions, wow build 9.0.1.35167
+static const std::array<item_name_description_t, 344> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -343,5 +343,6 @@ static const std::array<item_name_description_t, 343> __item_name_description_da
   { 13583, "Maw Lore"                                    },
   { 13584, "Ember Court"                                 },
   { 13585, "Anima"                                       },
+  { 13586, "The Coldest of Fronts [DNT]"                 },
 } };
 

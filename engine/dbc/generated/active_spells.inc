@@ -1,5 +1,5 @@
-// Active class spells, wow build 9.0.1.34972
-static const std::array<active_class_spell_t, 609> __active_spells_data { {
+// Active class spells, wow build 9.0.1.35167
+static const std::array<active_class_spell_t, 611> __active_spells_data { {
   {  1,   0,  88163,      0, "Attack"                             },
   {  1,   0,    100,      0, "Charge"                             },
   {  1,   0,   6544,      0, "Heroic Leap"                        },
@@ -440,17 +440,18 @@ static const std::array<active_class_spell_t, 609> __active_spells_data { {
   {  9,   0,   1714,      0, "Curse of Tongues"                   },
   {  9,   0, 321997,      0, "Curse of Recklessness"              },
   {  9,   0,    702,      0, "Curse of Weakness"                  },
-  {  9,   0,    686,      0, "Shadow Bolt"                        },
   {  9,   0,    172,      0, "Corruption"                         },
   {  9,   0, 234153,      0, "Drain Life"                         },
   {  9,   0, 334275,      0, "Curse of Exhaustion"                },
   {  9,   0, 333889,      0, "Fel Domination"                     },
+  {  9,   0,    686,      0, "Shadow Bolt"                        },
   {  9,  265,  27243,      0, "Seed of Corruption"                 },
   {  9,  265,    980,      0, "Agony"                              },
   {  9,  265,  30283,      0, "Shadowfury"                         },
   {  9,  265, 205180,      0, "Summon Darkglare"                   },
   {  9,  265, 316099,      0, "Unstable Affliction"                },
   {  9,  265, 324536,      0, "Malefic Rapture"                    },
+  {  9,  265,    686,      0, "Shadow Bolt"                        },
   {  9,  266,  30146,      0, "Summon Felguard"                    },
   {  9,  266, 105174,      0, "Hand of Gul'dan"                    },
   {  9,  266, 104316,      0, "Call Dreadstalkers"                 },
@@ -458,6 +459,7 @@ static const std::array<active_class_spell_t, 609> __active_spells_data { {
   {  9,  266, 264178,      0, "Demonbolt"                          },
   {  9,  266, 265187,      0, "Summon Demonic Tyrant"              },
   {  9,  266, 196277,      0, "Implosion"                          },
+  {  9,  266,    686,      0, "Shadow Bolt"                        },
   {  9,  267,    348,      0, "Immolate"                           },
   {  9,  267,  29722,    686, "Incinerate"                         },
   {  9,  267,  80240,      0, "Havoc"                              },
@@ -611,7 +613,7 @@ static const std::array<active_class_spell_t, 609> __active_spells_data { {
   { 12,  581, 212084,      0, "Fel Devastation"                    },
 } };
 
-// Pet active spells, wow build 9.0.1.34972
+// Pet active spells, wow build 9.0.1.35167
 static const std::array<active_pet_spell_t, 125> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

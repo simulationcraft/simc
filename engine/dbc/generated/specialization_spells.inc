@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.0.1.34972
-static const std::array<specialization_spell_entry_t, 886> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.0.1.35167
+static const std::array<specialization_spell_entry_t, 889> __specialization_spell_data { {
   {  0,  535, 264663,      0, "Predator's Thirst"                  },
   {  0,  535, 264667,      0, "Primal Rage"                        },
   {  0,  535, 264656,      0, "Pathfinding"                        },
@@ -138,13 +138,14 @@ static const std::array<specialization_spell_entry_t, 886> __specialization_spel
   {  2,   66, 231665,      0, "Avenger's Shield"                   },
   {  2,   66, 229976,      0, "Blessed Hammer"                     },
   {  2,   66, 275779,  20271, "Judgment"                           },
-  {  2,   66, 315867,      0, "Judgment"                           },
   {  2,   66, 231663,      0, "Judgment"                           },
   {  2,   66, 315921,      0, "Word of Glory"                      },
   {  2,   66, 317854,      0, "Hammer of the Righteous"            },
   {  2,   66, 317907,      0, "Mastery: Divine Bulwark"            },
   {  2,   66, 321136,      0, "Shining Light"                      },
   {  2,   66, 327980,      0, "Consecration"                       },
+  {  2,   66, 337261,      0, "Avenger's Shield"                   },
+  {  2,   66, 337287,      0, "Hammer of the Righteous"            },
   {  2,   70,  85256,      0, "Templar's Verdict"                  },
   {  2,   70,  53385,      0, "Divine Storm"                       },
   {  2,   70,  86539,      0, "Plate Specialization"               },
@@ -597,6 +598,7 @@ static const std::array<specialization_spell_entry_t, 886> __specialization_spel
   {  9,  265,  32388,      0, "Shadow Embrace"                     },
   {  9,  265, 334315,      0, "Unstable Affliction"                },
   {  9,  265, 334342,      0, "Corruption"                         },
+  {  9,  265,    686,      0, "Shadow Bolt"                        },
   {  9,  266,  30146,      0, "Summon Felguard"                    },
   {  9,  266, 105174,      0, "Hand of Gul'dan"                    },
   {  9,  266,  77219,      0, "Mastery: Master Demonologist"       },
@@ -613,6 +615,7 @@ static const std::array<specialization_spell_entry_t, 886> __specialization_spel
   {  9,  266, 334585,      0, "Summon Demonic Tyrant"              },
   {  9,  266, 334591,      0, "Fel Firebolt"                       },
   {  9,  266, 334727,      0, "Call Dreadstalkers"                 },
+  {  9,  266,    686,      0, "Shadow Bolt"                        },
   {  9,  267,    348,      0, "Immolate"                           },
   {  9,  267,  29722,    686, "Incinerate"                         },
   {  9,  267,  80240,      0, "Havoc"                              },
