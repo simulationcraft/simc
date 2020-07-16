@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands f1343672d2)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands ec3f32f90e)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
