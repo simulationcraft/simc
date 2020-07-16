@@ -152,6 +152,14 @@
       { "data_type": "i", "field": "unk_8" }
     ]
   },
+  "Covenant": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "desc" },
+      { "data_type": "i", "field": "id"   },
+      { "data_type": "i", "field": "id_bounty_set" }
+    ]
+  },
   "CurrencyCategory": {
     "fields": [
       { "data_type": "S", "field": "name" },
@@ -244,6 +252,57 @@
       { "data_type": "f", "field": "mod_player_secondary_stat" },
       { "data_type": "f", "field": "mod_armor_constant" },
       { "data_type": "f", "field": "mod_creature_spell_damage" }
+    ]
+  },
+  "GarrTalent": {
+    "fields": [
+      { "data_type": "S", "field": "name"  },
+      { "data_type": "S", "field": "desc"  },
+      { "data_type": "i", "field": "id"    },
+      { "data_type": "i", "field": "id_garr_talent_tree", "ref": "GarrTalentTree" },
+      { "data_type": "b", "field": "tier"  },
+      { "data_type": "b", "field": "unk_0" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "I", "field": "unk_2" },
+      { "data_type": "I", "field": "id_garr_ability" },
+      { "data_type": "b", "field": "unk_3" },
+      { "data_type": "i", "field": "unk_4" },
+      { "data_type": "i", "field": "unk_5" },
+      { "data_type": "i", "field": "unk_6" },
+      { "data_type": "i", "field": "unk_7" },
+      { "data_type": "i", "field": "unk_8" }
+    ]
+  },
+  "GarrTalentTree": {
+    "fields": [
+      { "data_type": "S", "field": "title" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "id_garr_type" },
+      { "data_type": "i", "field": "id_class" },
+      { "data_type": "b", "field": "max_tiers" },
+      { "data_type": "b", "field": "unk_0" },
+      { "data_type": "b", "field": "flags" },
+      { "data_type": "H", "field": "unk_1" },
+      { "data_type": "i", "field": "garr_talent_tree_type" },
+      { "data_type": "i", "field": "unk_2" },
+      { "data_type": "i", "field": "unk_3" },
+      { "data_type": "i", "field": "unk_4" }
+    ]
+  },
+  "GarrTalentRank": {
+    "parent": "GarrTalent",
+    "fields": [
+      { "data_type": "i", "field": "rank"    },
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "i", "field": "unk_0" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "unk_2" },
+      { "data_type": "i", "field": "unk_3" },
+      { "data_type": "i", "field": "unk_4" },
+      { "data_type": "i", "field": "unk_5" },
+      { "data_type": "i", "field": "unk_6" },
+      { "data_type": "i", "field": "unk_7" },
+      { "data_type": "i", "field": "unk_8" }
     ]
   },
   "GemProperties": {
@@ -765,6 +824,36 @@
       { "data_type": "H", "field": "unk_15" }
     ]
   },
+  "Soulbind": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "i", "field": "id"   },
+      { "data_type": "i", "field": "id_covenant", "ref": "Covenant" },
+      { "data_type": "i", "field": "id_garr_talent_tree", "ref": "GarrTalentTree" },
+      { "data_type": "i", "field": "id_creature" },
+      { "data_type": "i", "field": "id_garr_follower" }
+    ]
+  },
+  "SoulbindConduit": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "type", "formats": { "cpp": "%1u" } }
+    ]
+  },
+  "SoulbindConduitItem": {
+    "fields": [
+      { "data_type": "i", "field": "id_item",     "formats": { "cpp": "%6u" }, "ref": "ItemSparse" },
+      { "data_type": "i", "field": "id_soulbind", "formats": { "cpp": "%4u" }, "ref": "SoulbindConduit" }
+    ]
+  },
+  "SoulbindConduitRank": {
+    "parent": "SoulbindConduit",
+    "fields": [
+      { "data_type": "i", "field": "rank",     "formats": { "cpp": "%2u" } },
+      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%7u" }, "ref": "SpellName" },
+      { "data_type": "f", "field": "spell_mod" }
+    ]
+  },
   "SpecializationSpells": {
     "parent": "ChrSpecialization",
     "fields": [
@@ -1100,26 +1189,6 @@
       { "data_type": "i", "field": "id_replace", "formats": { "cpp": "%7u" }, "ref": "SpellName" },
 
       { "data_type": "B", "field": "unk", "elements": 2                      }
-    ]
-  },
-  "SoulbindConduit": {
-    "fields": [
-      { "data_type": "i", "field": "id" },
-      { "data_type": "i", "field": "type", "formats": { "cpp": "%1u" } }
-    ]
-  },
-  "SoulbindConduitRank": {
-    "parent": "SoulbindConduit",
-    "fields": [
-      { "data_type": "i", "field": "rank",     "formats": { "cpp": "%2u" } },
-      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%7u" }, "ref": "SpellName" },
-      { "data_type": "f", "field": "spell_mod" }
-    ]
-  },
-  "SoulbindConduitItem": {
-    "fields": [
-      { "data_type": "i", "field": "id_item",     "formats": { "cpp": "%6u" }, "ref": "ItemSparse" },
-      { "data_type": "i", "field": "id_soulbind", "formats": { "cpp": "%4u" }, "ref": "SoulbindConduit" }
     ]
   }
 }

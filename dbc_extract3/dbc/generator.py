@@ -2595,7 +2595,14 @@ class SpellDataGenerator(DataGenerator):
 
                 self.process_spell(effect.id_spell, ids, 0, 0, False)
 
-        # SouldbindConduits
+        # Soulbind trees abilities
+        for _, entry in self.db('Soulbind').items():
+            for talent in entry.ref('id_garr_talent_tree').child_refs('GarrTalent'):
+                for rank in talent.children('GarrTalentRank'):
+                    if rank.ref('id_spell').id == rank.id_spell:
+                        self.process_spell(rank.id_spell, ids, 0, 0)
+
+        # Souldbind conduits
         for _, entry in self.db('SoulbindConduit').items():
             for spell_id in set(rank.id_spell for rank in entry.children('SoulbindConduitRank')):
                 if self.db('SpellName')[spell_id].id == spell_id:

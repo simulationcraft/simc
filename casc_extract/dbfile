@@ -730,14 +730,15 @@
 2966426, DBFilesClient\PvpSeason.db2
 3055899, DBFilesClient\SpellScript.db2
 3055901, DBFilesClient\SpellScriptText.db2
+3069763, DBFilesClient\GarrTalentRank.db2
 3384973, DBFilesClient\Covenant.db2
 3488583, DBFilesClient\Soulbind.db2
-3594380, DBFilesClient\SoulbindConduit.db2
-3604984, DBFilesClient\SoulbindConduitItem.db2
-3620681, DBFilesClient\SoulbindConduitRank.db2
 3490472, DBFilesClient\SoulbindUiDisplayInfo.db2
 3500241, DBFilesClient\RuneforgeLegendaryAbility.db2
 3502042, DBFilesClient\UiCovenantAbility.db2
 3507821, DBFilesClient\ChrRaceRacialAbility.db2
 3509132, DBFilesClient\UiCovenantDisplayInfo.db2
+3594380, DBFilesClient\SoulbindConduit.db2
+3604984, DBFilesClient\SoulbindConduitItem.db2
+3620681, DBFilesClient\SoulbindConduitRank.db2
 
