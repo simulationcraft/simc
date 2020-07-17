@@ -2323,15 +2323,14 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   const timespan_t kill_command_reduction;
   const timespan_t venomous_bite_reduction;
 
-  cobra_shot_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) ),
+  cobra_shot_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "cobra_shot", p, p -> find_class_spell( "Cobra Shot" ) ),
     kill_command_reduction( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) ),
-    venomous_bite_reduction( timespan_t::from_millis( player -> talents.venomous_bite -> effectN( 1 ).base_value() * 100 ) )
+    venomous_bite_reduction( timespan_t::from_millis( p -> talents.venomous_bite -> effectN( 1 ).base_value() * 100 ) )
   {
     parse_options( options_str );
 
-    base_multiplier *= 1 + p() -> find_spell( 262838 ) -> effectN( 1 ).percent(); // Cobra Shot (Rank 3)
-    base_costs[ RESOURCE_FOCUS ] += player -> find_spell( 262837 ) -> effectN( 1 ).base_value(); // Cobra Shot (Rank 2)
+    parse_affecting_aura( this, p -> find_specialization_spell( 262838 ) ); // Cobra Shot (Rank 2)
   }
 
   void execute() override
