@@ -2616,7 +2616,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 struct arcane_shot_t: public hunter_ranged_attack_t
 {
   arcane_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "arcane_shot", p, p -> find_specialization_spell( "Arcane Shot" ) )
+    hunter_ranged_attack_t( "arcane_shot", p, p -> find_class_spell( "Arcane Shot" ) )
   {
     parse_options( options_str );
   }
@@ -2648,13 +2648,17 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 struct steady_shot_t: public hunter_ranged_attack_t
 {
   steady_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "steady_shot", p, p -> find_specialization_spell( "Steady Shot" ) )
+    hunter_ranged_attack_t( "steady_shot", p, p -> find_class_spell( "Steady Shot" ) )
   {
     parse_options( options_str );
 
-    energize_type = ENERGIZE_ON_CAST;
-    energize_resource = RESOURCE_FOCUS;
-    energize_amount = data().effectN( 2 ).base_value();
+    spell_data_ptr_t rank2 = p -> find_specialization_spell( 321018 ); // Steady Shot (Rank 2)
+    if ( rank2 -> ok() )
+    {
+      energize_type = ENERGIZE_ON_CAST;
+      energize_resource = RESOURCE_FOCUS;
+      energize_amount = rank2 -> effectN( 1 ).base_value();
+    }
   }
 
   timespan_t execute_time() const override
