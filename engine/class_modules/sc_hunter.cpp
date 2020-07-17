@@ -333,31 +333,31 @@ public:
   {
     // Beast Mastery
     buff_t* aspect_of_the_wild;
-    buff_t* bestial_wrath;
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
+    buff_t* bestial_wrath;
     buff_t* dire_beast;
+    buff_t* spitting_cobra;
     buff_t* thrill_of_the_hunt;
     buff_t* thrill_of_the_hunt_2;
-    buff_t* spitting_cobra;
 
     // Marksmanship
-    buff_t* steady_focus;
+    buff_t* double_tap;
     buff_t* lock_and_load;
+    buff_t* master_marksman;
     buff_t* precise_shots;
+    buff_t* steady_focus;
     buff_t* trick_shots;
     buff_t* trueshot;
-    buff_t* master_marksman;
-    buff_t* double_tap;
 
     // Survival
+    buff_t* aspect_of_the_eagle;
     buff_t* coordinated_assault;
     buff_t* coordinated_assault_vision;
-    buff_t* vipers_venom;
-    buff_t* tip_of_the_spear;
     buff_t* mongoose_fury;
     buff_t* predator;
     buff_t* terms_of_engagement;
-    buff_t* aspect_of_the_eagle;
+    buff_t* tip_of_the_spear;
+    buff_t* vipers_venom;
 
     // azerite
     buff_t* blur_of_talons;
@@ -367,42 +367,42 @@ public:
     buff_t* in_the_rhythm;
     buff_t* primal_instincts;
     buff_t* primeval_intuition;
-    buff_t* unerring_vision_driver;
     buff_t* unerring_vision;
+    buff_t* unerring_vision_driver;
   } buffs;
 
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* bestial_wrath;
-    cooldown_t* trueshot;
-    cooldown_t* barbed_shot;
-    cooldown_t* kill_command;
-    cooldown_t* aspect_of_the_wild;
     cooldown_t* a_murder_of_crows;
     cooldown_t* aimed_shot;
-    cooldown_t* rapid_fire;
+    cooldown_t* aspect_of_the_wild;
+    cooldown_t* barbed_shot;
+    cooldown_t* bestial_wrath;
     cooldown_t* harpoon;
+    cooldown_t* kill_command;
+    cooldown_t* rapid_fire;
+    cooldown_t* trueshot;
     cooldown_t* wildfire_bomb;
   } cooldowns;
 
   // Gains
   struct gains_t
   {
-    gain_t* barbed_shot;
     gain_t* aspect_of_the_wild;
-    gain_t* spitting_cobra;
+    gain_t* barbed_shot;
     gain_t* hunters_mark;
-    gain_t* terms_of_engagement;
     gain_t* memory_of_lucid_dreams_major;
     gain_t* memory_of_lucid_dreams_minor;
+    gain_t* spitting_cobra;
+    gain_t* terms_of_engagement;
   } gains;
 
   // Procs
   struct procs_t
   {
-    proc_t* wild_call;
     proc_t* lethal_shots;
+    proc_t* wild_call;
   } procs;
 
   // Talents
@@ -510,12 +510,12 @@ public:
     spell_data_ptr_t trueshot;
 
     // Survival
+    spell_data_ptr_t aspect_of_the_eagle;
+    spell_data_ptr_t carve;
     spell_data_ptr_t coordinated_assault;
     spell_data_ptr_t harpoon;
     spell_data_ptr_t raptor_strike;
     spell_data_ptr_t wildfire_bomb;
-    spell_data_ptr_t carve;
-    spell_data_ptr_t aspect_of_the_eagle;
   } specs;
 
   struct mastery_spells_t
@@ -544,21 +544,18 @@ public:
     cooldowns(),
     gains(),
     procs(),
-    talents(),
-    specs(),
-    mastery(),
     current_hunters_mark_target( nullptr )
   {
     // Cooldowns
-    cooldowns.bestial_wrath       = get_cooldown( "bestial_wrath" );
-    cooldowns.trueshot            = get_cooldown( "trueshot" );
-    cooldowns.barbed_shot         = get_cooldown( "barbed_shot" );
-    cooldowns.kill_command        = get_cooldown( "kill_command" );
-    cooldowns.harpoon             = get_cooldown( "harpoon" );
-    cooldowns.aspect_of_the_wild  = get_cooldown( "aspect_of_the_wild" );
     cooldowns.a_murder_of_crows   = get_cooldown( "a_murder_of_crows" );
     cooldowns.aimed_shot          = get_cooldown( "aimed_shot" );
+    cooldowns.aspect_of_the_wild  = get_cooldown( "aspect_of_the_wild" );
+    cooldowns.barbed_shot         = get_cooldown( "barbed_shot" );
+    cooldowns.bestial_wrath       = get_cooldown( "bestial_wrath" );
+    cooldowns.harpoon             = get_cooldown( "harpoon" );
+    cooldowns.kill_command        = get_cooldown( "kill_command" );
     cooldowns.rapid_fire          = get_cooldown( "rapid_fire" );
+    cooldowns.trueshot            = get_cooldown( "trueshot" );
     cooldowns.wildfire_bomb       = get_cooldown( "wildfire_bomb" );
 
     base_gcd = 1.5_s;
@@ -4703,15 +4700,15 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
-  if ( name == "mongoose_bite_eagle"   ) return new    mongoose_bite_eagle_t( this, options_str );
   if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
+  if ( name == "mongoose_bite_eagle"   ) return new    mongoose_bite_eagle_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "muzzle"                ) return new                 muzzle_t( this, options_str );
   if ( name == "piercing_shot"         ) return new          piercing_shot_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
-  if ( name == "raptor_strike_eagle"   ) return new    raptor_strike_eagle_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
+  if ( name == "raptor_strike_eagle"   ) return new    raptor_strike_eagle_t( this, options_str );
   if ( name == "spitting_cobra"        ) return new         spitting_cobra_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
@@ -4889,12 +4886,12 @@ void hunter_t::init_spells()
   specs.trueshot             = find_specialization_spell( "Trueshot" );
 
   // Survival
+  specs.aspect_of_the_eagle  = find_specialization_spell( "Aspect of the Eagle" );
+  specs.carve                = find_specialization_spell( "Carve" );
   specs.coordinated_assault  = find_specialization_spell( "Coordinated Assault" );
   specs.harpoon              = find_specialization_spell( "Harpoon" );
   specs.raptor_strike        = find_specialization_spell( "Raptor Strike" );
   specs.wildfire_bomb        = find_specialization_spell( "Wildfire Bomb" );
-  specs.carve                = find_specialization_spell( "Carve" );
-  specs.aspect_of_the_eagle  = find_specialization_spell( "Aspect of the Eagle" );
 
   // Azerite
 
@@ -5183,13 +5180,13 @@ void hunter_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.barbed_shot            = get_gain( "barbed_shot" );
   gains.aspect_of_the_wild     = get_gain( "aspect_of_the_wild" );
-  gains.spitting_cobra         = get_gain( "spitting_cobra" );
+  gains.barbed_shot            = get_gain( "barbed_shot" );
   gains.hunters_mark           = get_gain( "hunters_mark" );
-  gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
   gains.memory_of_lucid_dreams_major = get_gain( "Lucid Dreams (Major)" );
   gains.memory_of_lucid_dreams_minor = get_gain( "Lucid Dreams (Minor)" );
+  gains.spitting_cobra         = get_gain( "spitting_cobra" );
+  gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
 }
 
 // hunter_t::init_position ==================================================
