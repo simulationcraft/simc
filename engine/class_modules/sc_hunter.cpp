@@ -340,6 +340,7 @@ public:
     buff_t* thrill_of_the_hunt_2;
 
     // Marksmanship
+    buff_t* dead_eye;
     buff_t* double_tap;
     buff_t* lock_and_load;
     buff_t* precise_shots;
@@ -457,7 +458,7 @@ public:
     spell_data_ptr_t stampede;
 
     spell_data_ptr_t lethal_shots;
-    spell_data_ptr_t dead_eye_; // NYI
+    spell_data_ptr_t dead_eye;
     spell_data_ptr_t double_tap;
 
     spell_data_ptr_t tip_of_the_spear;
@@ -707,6 +708,7 @@ public:
     // passive talents
     parse_affecting_aura( this, p -> talents.alpha_predator );
     parse_affecting_aura( this, p -> talents.born_to_be_wild );
+    parse_affecting_aura( this, p -> talents.dead_eye );
     parse_affecting_aura( this, p -> talents.guerrilla_tactics );
     parse_affecting_aura( this, p -> talents.hydras_bite );
     parse_affecting_aura( this, p -> talents.master_marksman );
@@ -2263,6 +2265,13 @@ struct kill_shot_t : hunter_ranged_attack_t
     parse_options( options_str );
   }
 
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    p() -> buffs.dead_eye -> trigger();
+  }
+
   bool target_ready( player_t* candidate_target ) override
   {
     return candidate_target -> health_percentage() <= health_threshold_pct &&
@@ -2609,6 +2618,11 @@ struct aimed_shot_t : public aimed_shot_base_t
     // m /= 1 + 2.25; // The bugged (in spelldata) value for Aimed Shot.
     if ( p() -> buffs.trueshot -> check() )
       m /= 1 + p() -> specs.trueshot -> effectN( 3 ).percent();
+
+    // XXX: [9.0 Beta]: it has the same effect as Trueshot above, implement as such
+    // TODO: test & confirm
+    if ( p() -> buffs.dead_eye -> up() )
+      m /= 1 + p() -> buffs.dead_eye -> check_value();
 
     return m;
   }
@@ -4748,7 +4762,7 @@ void hunter_t::init_spells()
   talents.stampede                          = find_talent_spell( "Stampede" );
 
   talents.lethal_shots                      = find_talent_spell( "Lethal Shots" );
-  talents.dead_eye_                         = find_talent_spell( "Dead Eye" );
+  talents.dead_eye                          = find_talent_spell( "Dead Eye" );
   talents.double_tap                        = find_talent_spell( "Double Tap" );
 
   talents.tip_of_the_spear                  = find_talent_spell( "Tip of the Spear" );
@@ -4928,9 +4942,31 @@ void hunter_t::create_buffs()
 
   // Marksmanship
 
+  buffs.dead_eye =
+    make_buff( this, "dead_eye", talents.dead_eye -> effectN( 2 ).trigger() )
+      -> set_default_value( talents.dead_eye -> effectN( 2 ).trigger() -> effectN( 1 ).base_value() )
+      -> set_stack_change_callback( [this]( buff_t*, int, int ) {
+          cooldowns.aimed_shot -> adjust_recharge_multiplier();
+        } );
+
+  buffs.double_tap =
+    make_buff( this, "double_tap", talents.double_tap )
+      -> set_cooldown( 0_ms )
+      -> set_activated( true )
+      -> set_default_value( talents.double_tap -> effectN( 1 ).percent() );
+
+  buffs.lock_and_load =
+    make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
+      -> set_trigger_spell( talents.lock_and_load );
+
   buffs.precise_shots =
     make_buff( this, "precise_shots", find_spell( 260242 ) )
       -> set_default_value( find_spell( 260242 ) -> effectN( 1 ).percent() );
+
+  buffs.steady_focus =
+    make_buff( this, "steady_focus", find_spell( 193534 ) )
+      -> set_default_value( find_spell( 193534 ) -> effectN( 2 ).percent() )
+      -> set_trigger_spell( talents.steady_focus );
 
   buffs.trick_shots =
     make_buff( this, "trick_shots", find_spell( 257622 ) )
@@ -4951,20 +4987,6 @@ void hunter_t::create_buffs()
     }
   } );
 
-  buffs.lock_and_load =
-    make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
-      -> set_trigger_spell( talents.lock_and_load );
-
-  buffs.steady_focus =
-    make_buff( this, "steady_focus", find_spell( 193534 ) )
-      -> set_default_value( find_spell( 193534 ) -> effectN( 2 ).percent() )
-      -> set_trigger_spell( talents.steady_focus );
-
-  buffs.double_tap =
-    make_buff( this, "double_tap", talents.double_tap )
-      -> set_cooldown( 0_ms )
-      -> set_activated( true )
-      -> set_default_value( talents.double_tap -> effectN( 1 ).percent() );
 
   // Survival
 
