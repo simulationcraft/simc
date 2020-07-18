@@ -417,7 +417,7 @@ public:
     spell_data_ptr_t alpha_predator;
 
     // tier 25
-    spell_data_ptr_t scent_of_blood_; // NYI
+    spell_data_ptr_t scent_of_blood;
     spell_data_ptr_t one_with_the_pack;
     spell_data_ptr_t chimaera_shot;
 
@@ -3874,6 +3874,9 @@ struct bestial_wrath_t: public hunter_spell_t
       trigger_buff( pet -> buffs.bestial_wrath, precast_time );
 
     adjust_precast_cooldown( precast_time );
+
+    if ( p() -> talents.scent_of_blood -> ok() )
+      p() -> cooldowns.barbed_shot -> reset( true, as<int>( p() -> talents.scent_of_blood -> effectN( 1 ).base_value() ) );
   }
 
   bool ready() override
@@ -4707,7 +4710,7 @@ void hunter_t::init_spells()
   talents.alpha_predator                    = find_talent_spell( "Alpha Predator" );
 
   // tier 25
-  talents.scent_of_blood_                   = find_talent_spell( "Scent of Blood" );
+  talents.scent_of_blood                    = find_talent_spell( "Scent of Blood" );
   talents.one_with_the_pack                 = find_talent_spell( "One with the Pack" );
   talents.chimaera_shot                     = find_talent_spell( "Chimaera Shot" );
 
