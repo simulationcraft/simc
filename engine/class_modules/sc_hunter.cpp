@@ -969,7 +969,7 @@ namespace pets
 
 struct hunter_pet_t: public pet_t
 {
-  hunter_pet_t( hunter_t* owner, const std::string& pet_name, pet_e pt = PET_HUNTER, bool guardian = false, bool dynamic = false ) :
+  hunter_pet_t( hunter_t* owner, util::string_view pet_name, pet_e pt = PET_HUNTER, bool guardian = false, bool dynamic = false ) :
     pet_t( owner -> sim, owner, pet_name, pt, guardian, dynamic )
   {
     owner_coeff.ap_from_ap = 0.15;
@@ -1102,7 +1102,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buff_t* predator = nullptr;
   } buffs;
 
-  hunter_main_pet_base_t( hunter_t* owner, const std::string& pet_name, pet_e pt ):
+  hunter_main_pet_base_t( hunter_t* owner, util::string_view pet_name, pet_e pt ):
     hunter_pet_t( owner, pet_name, pt )
   {
     stamina_per_owner = 0.7;
@@ -1215,7 +1215,7 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
 
   double owner_hp_mult = 1;
 
-  hunter_main_pet_t( hunter_t* owner, const std::string& pet_name, pet_e pt ):
+  hunter_main_pet_t( hunter_t* owner, util::string_view pet_name, pet_e pt ):
     hunter_main_pet_base_t( owner, pet_name, pt )
   {
     // FIXME work around assert in pet specs
@@ -1377,7 +1377,7 @@ struct dire_critter_t: public hunter_pet_t
     action_t* stomp;
   } active;
 
-  dire_critter_t( hunter_t* owner, const std::string& n = "dire_beast" ):
+  dire_critter_t( hunter_t* owner, util::string_view n = "dire_beast" ):
     hunter_pet_t( owner, n, PET_HUNTER, true /*GUARDIAN*/ )
   {
     owner_coeff.ap_from_ap = 0.15;
