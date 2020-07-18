@@ -9674,7 +9674,7 @@ void monk_t::apl_pre_windwalker()
       "variable,name=font_of_power_precombat_channel,op=set,value=19,if=!talent.serenity.enabled&(variable.tod_on_use_"
       "trinket|equipped.ashvanes_razor_coral)" );
   pre->add_action( "use_item,name=azsharas_font_of_power" );
-#  pre->add_talent( this, "Chi Burst", "if=!talent.serenity.enabled|!talent.fist_of_the_white_tiger.enabled", "currently pre-casted Chi Bursts are not giving Chi in simc and it is a dps loss to pre-cast it" );
+//  pre->add_talent( this, "Chi Burst", "if=!talent.serenity.enabled|!talent.fist_of_the_white_tiger.enabled", "currently pre-casted Chi Bursts are not giving Chi in simc and it is a dps loss to pre-cast it" );
   pre->add_talent( this, "Chi Wave", "if=talent.fist_of_the_white_tiger.enabled|essence.conflict_and_strife.major" );
   pre->add_talent( this, "Invoke Xuen, the White Tiger" );
   pre->add_action( "guardian_of_azeroth" );
