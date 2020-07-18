@@ -709,6 +709,12 @@ public:
     parse_affecting_aura( this, p -> talents.born_to_be_wild );
     parse_affecting_aura( this, p -> talents.guerrilla_tactics );
     parse_affecting_aura( this, p -> talents.hydras_bite );
+
+    // "simple" passive rank 2 spells
+    parse_affecting_aura( this, p -> find_specialization_spell( 231550 ) ); // Harpoon (Rank 2)
+    parse_affecting_aura( this, p -> find_specialization_spell( 262838 ) ); // Cobra Shot (Rank 2)
+    parse_affecting_aura( this, p -> find_specialization_spell( 321290 ) ); // Wildfire Bombs (Rank 2)
+    parse_affecting_aura( this, p -> find_specialization_spell( 321293 ) ); // Arcane Shot (Rank 2)
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
@@ -2277,7 +2283,10 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t( n, p, s )
     {
       dual = true;
-      parse_effect_data( p -> find_spell( 204304 ) -> effectN( 1 ) );
+
+      // Beast Mastery focus gain
+      if ( p -> specs.beast_mastery_hunter -> ok() )
+        parse_effect_data( p -> find_spell( 204304 ) -> effectN( 1 ) );
     }
   };
 
@@ -2328,8 +2337,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     kill_command_reduction( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
-
-    parse_affecting_aura( this, p -> find_specialization_spell( 262838 ) ); // Cobra Shot (Rank 2)
   }
 
   void execute() override
@@ -2347,6 +2354,8 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
 struct barbed_shot_t: public hunter_ranged_attack_t
 {
+  timespan_t bestial_wrath_r2_reduction;
+
   barbed_shot_t( hunter_t* p, const std::string& options_str ) :
     hunter_ranged_attack_t( "barbed_shot", p, p -> specs.barbed_shot )
   {
@@ -2356,6 +2365,10 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     tick_zero = true;
 
     base_ta_adder += p -> azerite.feeding_frenzy.value( 2 );
+
+    // Bestial Wrath (Rank 2)
+    if ( p -> find_specialization_spell( 231548 ) -> ok() )
+      bestial_wrath_r2_reduction = timespan_t::from_seconds( p -> specs.bestial_wrath -> effectN( 3 ).base_value() );
   }
 
   void init_finished() override
@@ -2378,9 +2391,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     p() -> buffs.thrill_of_the_hunt -> trigger();
     p() -> buffs.thrill_of_the_hunt_2 -> trigger();
 
-    // Adjust BW cd
-    timespan_t t = timespan_t::from_seconds( p() -> specs.bestial_wrath -> effectN( 3 ).base_value() );
-    p() -> cooldowns.bestial_wrath -> adjust( -t );
+    // Bestial Wrath (Rank 2) cooldown reduction
+    p() -> cooldowns.bestial_wrath -> adjust( -bestial_wrath_r2_reduction );
 
     if ( p() -> azerite.dance_of_death.ok() && rng().roll( p() -> cache.attack_crit_chance() + p() -> buffs.thrill_of_the_hunt_2 -> check_stack_value() ) )
       p() -> buffs.dance_of_death -> trigger();
@@ -2647,7 +2659,8 @@ struct steady_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    spell_data_ptr_t rank2 = p -> find_specialization_spell( 321018 ); // Steady Shot (Rank 2)
+     // Steady Shot (Rank 2)
+    spell_data_ptr_t rank2 = p -> find_specialization_spell( 321018 );
     if ( rank2 -> ok() )
     {
       energize_type = ENERGIZE_ON_CAST;
@@ -2742,7 +2755,9 @@ struct rapid_fire_t: public hunter_spell_t
       radius = 8;
       base_aoe_multiplier = p -> specs.trick_shots -> effectN( 5 ).percent();
 
-      parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
+      // Rapid Fire (Rank 2)
+      if ( p -> find_specialization_spell( 321281 ) )
+        parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
 
       base_dd_adder += p -> azerite.focused_fire.value( 2 );
       if ( p -> azerite.focused_fire.ok() )
@@ -3217,25 +3232,25 @@ struct flanking_strike_t: hunter_melee_attack_t
 
 struct carve_base_t: public hunter_melee_attack_t
 {
-  const timespan_t wfb_reduction;
-  const int wfb_reduction_target_cap;
+  timespan_t wildfire_bomb_reduction;
   internal_bleeding_t internal_bleeding;
 
   carve_base_t( util::string_view n, hunter_t* p, const spell_data_t* s,
-                timespan_t wfb_reduction, int wfb_reduction_target_cap ):
-    hunter_melee_attack_t( n, p, s ),
-    wfb_reduction( wfb_reduction ),
-    wfb_reduction_target_cap( wfb_reduction_target_cap ),
-    internal_bleeding( p )
+                timespan_t wfb_reduction ):
+    hunter_melee_attack_t( n, p, s ), internal_bleeding( p )
   {
-    aoe = -1;
+    aoe = 5;
+
+    // Carve (Rank 2) - also affects Butchery
+    if ( p -> find_specialization_spell( 294029 ) )
+      wildfire_bomb_reduction = wfb_reduction;
   }
 
   void execute() override
   {
     hunter_melee_attack_t::execute();
 
-    auto reduction = wfb_reduction * std::min( num_targets_hit, wfb_reduction_target_cap );
+    const auto reduction = wildfire_bomb_reduction * num_targets_hit;
     p() -> cooldowns.wildfire_bomb -> adjust( -reduction, true );
   }
 
@@ -3254,8 +3269,7 @@ struct carve_t: public carve_base_t
 {
   carve_t( hunter_t* p, const std::string& options_str ):
     carve_base_t( "carve", p, p -> specs.carve ,
-                  p -> specs.carve -> effectN( 2 ).time_value(),
-                  as<int>(p -> specs.carve -> effectN( 3 ).base_value() ))
+                  p -> specs.carve -> effectN( 2 ).time_value() )
   {
     parse_options( options_str );
 
@@ -3270,8 +3284,7 @@ struct butchery_t: public carve_base_t
 {
   butchery_t( hunter_t* p, const std::string& options_str ):
     carve_base_t( "butchery", p, p -> talents.butchery,
-                  p -> talents.butchery -> effectN( 2 ).time_value() ,
-                  as<int>(p -> talents.butchery -> effectN( 3 ).base_value() ))
+                  p -> talents.butchery -> effectN( 2 ).time_value() )
   {
     parse_options( options_str );
   }
@@ -3285,7 +3298,6 @@ struct raptor_strike_base_t: public melee_focus_spender_t
     melee_focus_spender_t( n, p, s )
   {
     base_dd_adder += p -> azerite.wilderness_survival.value( 3 );
-    base_multiplier *= 1 + p -> find_spell( 262839 ) -> effectN( 1 ).percent(); // Raptor Strike (Rank 2)
 
     background = p -> talents.mongoose_bite -> ok();
   }
@@ -3356,8 +3368,6 @@ struct harpoon_t: public hunter_melee_attack_t
     base_teleport_distance  = data().max_range();
     movement_directionality = movement_direction_type::OMNI;
     may_parry = may_dodge = may_block = false;
-
-    parse_affecting_aura( this, p -> find_spell( 231550 ) ); // Harpoon (Rank 2)
 
     if ( p -> talents.terms_of_engagement -> ok() )
     {
@@ -3690,17 +3700,26 @@ struct counter_shot_t: public interrupt_base_t
 
 struct kill_command_t: public hunter_spell_t
 {
-  proc_t* flankers_advantage;
+  struct {
+    double chance = 0;
+    proc_t* proc = nullptr;
+  } flankers_advantage;
   struct {
     real_ppm_t* rppm = nullptr;
     proc_t* proc;
   } dire_consequences;
 
   kill_command_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "kill_command", p, p -> specs.kill_command ),
-    flankers_advantage( p -> get_proc( "flankers_advantage" ) )
+    hunter_spell_t( "kill_command", p, p -> specs.kill_command )
   {
     parse_options( options_str );
+
+    // Survival - Kill Command (Rank 2)
+    if ( p -> find_specialization_spell( 263186 ) -> ok() )
+    {
+      flankers_advantage.chance = data().effectN( 2 ).percent();
+      flankers_advantage.proc = p -> get_proc( "flankers_advantage" );
+    }
 
     if ( p -> azerite.dire_consequences.ok() )
     {
@@ -3731,16 +3750,16 @@ struct kill_command_t: public hunter_spell_t
 
     p() -> buffs.tip_of_the_spear -> trigger();
 
-    if ( p() -> specialization() == HUNTER_SURVIVAL )
+    if ( flankers_advantage.chance != 0 )
     {
-      double chance = data().effectN( 2 ).percent();
+      double chance = flankers_advantage.chance;
       if ( p() -> buffs.coordinated_assault -> check() )
         chance += p() -> specs.coordinated_assault -> effectN( 4 ).percent();
       if ( td( target ) -> dots.pheromone_bomb -> is_ticking() )
         chance += p() -> find_spell( 270323 ) -> effectN( 2 ).percent();
       if ( rng().roll( chance ) )
       {
-        flankers_advantage -> occur();
+        flankers_advantage.proc -> occur();
         cooldown -> reset( true );
       }
     }
