@@ -5331,6 +5331,7 @@ void hunter_t::apl_bm()
   cds -> add_action( "memory_of_lucid_dreams" );
   cds -> add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
 
+  st -> add_action( this, "Kill Shot" );
   st -> add_action( this, "Barbed Shot", "if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<gcd|cooldown.bestial_wrath.remains&(full_recharge_time<gcd|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd)" );
   st -> add_action( "concentrated_flame,if=focus+focus.regen*gcd<focus.max&buff.bestial_wrath.down&(!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight)|full_recharge_time<gcd|target.time_to_die<5" );
   st -> add_action( this, "Aspect of the Wild", "if=buff.aspect_of_the_wild.down&(cooldown.barbed_shot.charges<1|!azerite.primal_instincts.enabled)" );
@@ -5521,6 +5522,7 @@ void hunter_t::apl_surv()
   cds->add_action( this, "Wildfire Bomb", "if=essence.memory_of_lucid_dreams.major&full_recharge_time<1.5*gcd&focus<action.mongoose_bite.cost&!cooldown.memory_of_lucid_dreams.remains" );
   cds->add_action( "memory_of_lucid_dreams,if=focus<action.mongoose_bite.cost&buff.coordinated_assault.up" );
 
+  st -> add_action( this, "Kill Shot" );
   st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
   st -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
   st -> add_action( this, "Raptor Strike", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)" );
@@ -5539,6 +5541,7 @@ void hunter_t::apl_surv()
   st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up" );
 
   // Alpha Predator
+  apst -> add_action( this, "Kill Shot" );
   apst -> add_talent( this, "Mongoose Bite", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)" );
   apst -> add_action( this, "Raptor Strike", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)" );
   apst -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
@@ -5555,6 +5558,7 @@ void hunter_t::apl_surv()
   apst -> add_action( this, "Wildfire Bomb", "if=!ticking" );
 
   // Wildfire Infusion
+  wfi -> add_action( this, "Kill Shot" );
   wfi -> add_action( this, "Harpoon", "if=focus+cast_regen<focus.max&talent.terms_of_engagement.enabled" );
   wfi -> add_talent( this, "Mongoose Bite", "if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd" );
   wfi -> add_action( this, "Raptor Strike", "if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd" );
@@ -5576,6 +5580,7 @@ void hunter_t::apl_surv()
   wfi -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel" );
 
   // Alpha Predator + Wildfire Infusion
+  apwfi -> add_action( this, "Kill Shot" );
   apwfi -> add_talent( this, "Mongoose Bite", "if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd" );
   apwfi -> add_action( this, "Raptor Strike", "if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd" );
   apwfi -> add_action( this, "Serpent Sting", "if=!dot.serpent_sting.ticking" );
