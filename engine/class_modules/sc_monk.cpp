@@ -9674,7 +9674,7 @@ void monk_t::apl_pre_windwalker()
       "variable,name=font_of_power_precombat_channel,op=set,value=19,if=!talent.serenity.enabled&(variable.tod_on_use_"
       "trinket|equipped.ashvanes_razor_coral)" );
   pre->add_action( "use_item,name=azsharas_font_of_power" );
-  pre->add_talent( this, "Chi Burst", "if=!talent.serenity.enabled|!talent.fist_of_the_white_tiger.enabled" );
+//  pre->add_talent( this, "Chi Burst", "if=!talent.serenity.enabled|!talent.fist_of_the_white_tiger.enabled", "currently pre-casted Chi Bursts are not giving Chi in simc and it is a dps loss to pre-cast it" );
   pre->add_talent( this, "Chi Wave", "if=talent.fist_of_the_white_tiger.enabled|essence.conflict_and_strife.major" );
   pre->add_talent( this, "Invoke Xuen, the White Tiger" );
   pre->add_action( "guardian_of_azeroth" );
@@ -9842,7 +9842,9 @@ void monk_t::apl_combat_windwalker()
                    "Use TP if it wont break mastery, AND are missing at least 2 chi, AND big cooldowns are not up, AND "
                    "you either are about to cap energy, or serenity is about to come up, or ToD is coming up, or FoF "
                    "is coming up and you will cap energy soon" );
-  def->add_talent( this, "Chi Wave", "if=!talent.fist_of_the_white_tiger.enabled&prev_gcd.1.tiger_palm&time<=3" );
+  def->add_talent( this, "Chi Wave", "if=chi=2&prev_gcd.1.tiger_palm&time<=3" );
+  def->add_talent( this, "Chi Burst", "if=chi=2&prev_gcd.1.tiger_palm&time<=3" );
+  def->add_talent( this, "Flying Serpent Kick", "if=chi=2&prev_gcd.1.tiger_palm&time<=3" );
   def->add_action( "call_action_list,name=cd_serenity,if=talent.serenity.enabled" );
   def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity.enabled" );
   def->add_action( "call_action_list,name=serenity,if=buff.serenity.up",
@@ -10047,7 +10049,7 @@ void monk_t::apl_combat_windwalker()
   aoe->add_action( this, "Spinning Crane Kick",
                    "if=combo_strike&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3|buff.dance_of_chiji.react)" );
   aoe->add_action( this, "Reverse Harm", "if=chi.max-chi>=2" );
-  aoe->add_talent( this, "Chi Burst", "if=chi.max-chi>=3" );
+  aoe->add_talent( this, "Chi Burst", "if=chi.max-chi>=1", "Currently Chi Burst is always giving 1 chi in simc even if it hits more than 1 target so I set this to 1" );
   aoe->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
   aoe->add_action( this, "Tiger Palm",
 				   "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|!combo_break)" );
