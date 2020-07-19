@@ -2385,8 +2385,6 @@ class SpellDataGenerator(DataGenerator):
                 mask_class = DataGenerator._class_masks[3]
 
             self.process_spell(spell_id, ids, mask_class, 0, False)
-            if spell_id in ids:
-                ids[spell_id]['replace_spell_id'] = spec_spell_data.replace_spell_id
 
         for spec_id, spec_data in self._chrspecialization_db.items():
             s = self._spellname_db[spec_data.id_mastery_1]
@@ -2829,12 +2827,6 @@ class SpellDataGenerator(DataGenerator):
 
             fields += misc.ref('id_cast_time').field('cast_time')
             hotfix.add(misc.ref('id_cast_time'), ('cast_time', 30))
-
-            # NOTE: replace spell ID as it stands is not marked as a hotfixed field in spell query
-            if id in ids and 'replace_spell_id' in ids[id]:
-                fields += [ '%6u' % ids[id]['replace_spell_id'] ]
-            else:
-                fields += [ '%6u' % 0 ]
 
             # Add spell flags
             fields += [ '{ %s }' % ', '.join(misc.field('flags_1', 'flags_2', 'flags_3', 'flags_4',
