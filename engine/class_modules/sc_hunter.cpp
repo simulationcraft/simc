@@ -347,6 +347,7 @@ public:
     buff_t* steady_focus;
     buff_t* trick_shots;
     buff_t* trueshot;
+    buff_t* volley;
 
     // Survival
     buff_t* aspect_of_the_eagle;
@@ -472,7 +473,7 @@ public:
 
     spell_data_ptr_t calling_the_shots;
     spell_data_ptr_t lock_and_load;
-    spell_data_ptr_t volley_; // NYI
+    spell_data_ptr_t volley;
 
     spell_data_ptr_t birds_of_prey;
     spell_data_ptr_t wildfire_infusion;
@@ -2581,7 +2582,8 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
-    p() -> buffs.trick_shots -> decrement();
+    if ( !p() -> buffs.volley -> up() )
+      p() -> buffs.trick_shots -> decrement();
 
     if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
@@ -2872,7 +2874,8 @@ struct rapid_fire_t: public hunter_spell_t
   {
     hunter_spell_t::last_tick( d );
 
-    p() -> buffs.trick_shots -> decrement();
+    if ( !p() -> buffs.volley -> up() )
+      p() -> buffs.trick_shots -> decrement();
 
     if ( p() -> buffs.double_tap -> check() )
       procs.double_tap -> occur();
@@ -4069,6 +4072,52 @@ struct double_tap_t: public hunter_spell_t
   }
 };
 
+// Volley ===========================================================================
+
+struct volley_t : hunter_spell_t
+{
+  struct damage_t : hunter_ranged_attack_t
+  {
+    damage_t( util::string_view n, hunter_t* p )
+      : hunter_ranged_attack_t( n, p, p -> find_spell( 260247 ) )
+    {
+      aoe = -1;
+      background = dual = ground_aoe = true;
+      hasted_ticks = false;
+    }
+  };
+
+  damage_t* damage;
+
+  volley_t( hunter_t* p, util::string_view options_str ):
+    hunter_spell_t( "volley", p, p -> talents.volley ),
+    damage( p -> get_background_action<damage_t>( "volley_damage" ) )
+  {
+    parse_options( options_str );
+
+    // disable automatic generation of the dot from spell data
+    dot_duration = 0_ms;
+
+    may_miss = may_crit = false;
+    damage -> stats = stats;
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    p() -> buffs.volley -> trigger();
+    p() -> buffs.trick_shots -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, data().duration() );
+
+    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+        .target( execute_state -> target )
+        .duration( data().duration() )
+        .pulse_time( data().effectN( 2 ).period() )
+        .action( damage )
+      );
+  }
+};
+
 //==============================
 // Survival spells
 //==============================
@@ -4645,6 +4694,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "tar_trap"              ) return new               tar_trap_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
+  if ( name == "volley"                ) return new                 volley_t( this, options_str );
   if ( name == "wildfire_bomb"         ) return new          wildfire_bomb_t( this, options_str );
 
   if ( name == "serpent_sting" )
@@ -4776,7 +4826,7 @@ void hunter_t::init_spells()
 
   talents.calling_the_shots                 = find_talent_spell( "Calling the Shots" );
   talents.lock_and_load                     = find_talent_spell( "Lock and Load" );
-  talents.volley_                           = find_talent_spell( "Volley" );
+  talents.volley                            = find_talent_spell( "Volley" );
 
   talents.birds_of_prey                     = find_talent_spell( "Birds of Prey" );
   talents.wildfire_infusion                 = find_talent_spell( "Wildfire Infusion" );
@@ -4987,6 +5037,10 @@ void hunter_t::create_buffs()
     }
   } );
 
+  buffs.volley =
+    make_buff( this, "volley", talents.volley )
+      -> set_period( 0_ms ) // disable ticks as an optimization
+      -> set_activated( true );
 
   // Survival
 
@@ -5427,6 +5481,7 @@ void hunter_t::apl_mm()
   st -> add_talent( this, "Explosive Shot" );
   st -> add_talent( this, "Barrage", "if=active_enemies>1" );
   st -> add_talent( this, "A Murder of Crows" );
+  st -> add_talent( this, "Volley" );
   st -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
   st -> add_action( this, "Rapid Fire", "if=buff.trueshot.down|focus<35|focus<60&!talent.lethal_shots.enabled|buff.in_the_rhythm.remains<execute_time");
   st -> add_action( "blood_of_the_enemy,if=buff.trueshot.up&(buff.unerring_vision.stack>4|!azerite.unerring_vision.enabled)|target.time_to_die<11" );
