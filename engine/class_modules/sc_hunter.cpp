@@ -2526,11 +2526,11 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
   };
 
-  aimed_shot_secondary_t* double_tap = nullptr;
   bool lock_and_loaded = false;
   struct {
-    proc_t* double_tap;
-  } procs;
+    aimed_shot_secondary_t* action;
+    proc_t* proc;
+  } double_tap;
   struct {
     double chance = 0;
     proc_t* proc;
@@ -2543,11 +2543,10 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     if ( p -> talents.double_tap -> ok() )
     {
-      double_tap = p -> get_background_action<aimed_shot_secondary_t>( "aimed_shot_double_tap" );
-      add_child( double_tap );
+      double_tap.action = p -> get_background_action<aimed_shot_secondary_t>( "aimed_shot_double_tap" );
+      add_child( double_tap.action );
+      double_tap.proc = p -> get_proc( "double_tap_aimed" );
     }
-
-    procs.double_tap = p -> get_proc( "double_tap_aimed" );
 
     if ( p -> azerite.surging_shots.ok() )
     {
@@ -2575,12 +2574,12 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     aimed_shot_base_t::execute();
 
-    if ( double_tap && p() -> buffs.double_tap -> check() )
+    if ( double_tap.action && p() -> buffs.double_tap -> check() )
     {
-      double_tap -> set_target( target );
-      double_tap -> execute();
+      double_tap.action -> set_target( target );
+      double_tap.action -> execute();
       p() -> buffs.double_tap -> decrement();
-      procs.double_tap -> occur();
+      double_tap.proc -> occur();
     }
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
@@ -4953,10 +4952,10 @@ void hunter_t::create_buffs()
       -> set_activated( true )
       -> set_default_value( specs.aspect_of_the_wild -> effectN( 1 ).percent() )
       -> set_tick_callback( [ this ]( buff_t *b, int, timespan_t ){
-                        resource_gain( RESOURCE_FOCUS, b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild );
-                        if ( auto pet = pets.main )
-                          pet -> resource_gain( RESOURCE_FOCUS, b -> data().effectN( 5 ).resource( RESOURCE_FOCUS ), pet -> gains.aspect_of_the_wild );
-                      } );
+          resource_gain( RESOURCE_FOCUS, b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild );
+          if ( auto pet = pets.main )
+            pet -> resource_gain( RESOURCE_FOCUS, b -> data().effectN( 5 ).resource( RESOURCE_FOCUS ), pet -> gains.aspect_of_the_wild );
+        } );
 
   buffs.bestial_wrath =
     make_buff( this, "bestial_wrath", specs.bestial_wrath )
@@ -4971,8 +4970,8 @@ void hunter_t::create_buffs()
       make_buff( this, fmt::format( "barbed_shot_{}", i + 1 ), barbed_shot )
         -> set_default_value( barbed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ) )
         -> set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-                          resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot );
-                        } );
+            resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot );
+          } );
   }
 
   buffs.dire_beast =
@@ -5027,17 +5026,17 @@ void hunter_t::create_buffs()
   buffs.trueshot =
     make_buff( this, "trueshot", specs.trueshot )
       -> set_cooldown( 0_ms )
-      -> set_activated( true );
-  buffs.trueshot -> set_default_value( specs.trueshot -> effectN( 4 ).percent() );
-  buffs.trueshot -> set_stack_change_callback( [this]( buff_t*, int, int cur ) {
-    cooldowns.aimed_shot -> adjust_recharge_multiplier();
-    cooldowns.rapid_fire -> adjust_recharge_multiplier();
-    if ( cur == 0 )
-    {
-      buffs.unerring_vision_driver->expire();
-      buffs.unerring_vision->expire();
-    }
-  } );
+      -> set_activated( true )
+      -> set_default_value( specs.trueshot -> effectN( 4 ).percent() )
+      -> set_stack_change_callback( [this]( buff_t*, int, int cur ) {
+          cooldowns.aimed_shot -> adjust_recharge_multiplier();
+          cooldowns.rapid_fire -> adjust_recharge_multiplier();
+          if ( cur == 0 )
+          {
+            buffs.unerring_vision_driver -> expire();
+            buffs.unerring_vision -> expire();
+          }
+        } );
 
   buffs.volley =
     make_buff( this, "volley", talents.volley )
@@ -5130,14 +5129,11 @@ void hunter_t::create_buffs()
       -> set_quiet( true )
       -> set_tick_zero( true )
       -> set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { buffs.unerring_vision -> trigger(); } )
-      -> set_trigger_spell( azerite.unerring_vision );
-  buffs.unerring_vision_driver->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
-    if ( cur == 0 )
-    {
-      if ( buffs.unerring_vision->check() <= buffs.unerring_vision->max_stack() )
-        buffs.unerring_vision->trigger();
-    }
-  } );
+      -> set_trigger_spell( azerite.unerring_vision )
+      -> set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
+          if ( cur == 0 && buffs.unerring_vision->check() <= buffs.unerring_vision->max_stack() )
+            buffs.unerring_vision->trigger();
+        } );
 
   buffs.unerring_vision =
     make_buff<stat_buff_t>( this, "unerring_vision", find_spell( 274447 ) )
