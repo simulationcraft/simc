@@ -508,6 +508,7 @@ public:
   bool     is_specialization_ability( specialization_e spec_id, unsigned spell_id ) const;
 
   specialization_e spec_by_spell( uint32_t spell_id ) const;
+  unsigned replace_spell_id( unsigned spell_id ) const;
 
   bool spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& spec_index ) const;
   specialization_e spec_by_idx( const player_e c, unsigned idx ) const;

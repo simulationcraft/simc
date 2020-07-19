@@ -399,8 +399,6 @@ struct spell_data_t
   unsigned    _equipped_subclass_mask;
   // SpellScaling.dbc
   int         _cast_time;          // Casting time in milliseconds
-  // SpecializationSpells.dbc
-  unsigned    _replace_spell_id;   // Replaces spell with specialization specific spell
   // Spell.dbc flags
   unsigned    _attributes[NUM_SPELL_FLAGS]; // SpellMisc.dbc "flags"
   unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // SpellClassOptions.dbc flags
@@ -527,9 +525,6 @@ struct spell_data_t
 
   const char* rank_str() const
   { return ok() ? _rank_str : ""; }
-
-  unsigned replace_spell_id() const
-  { return _replace_spell_id; }
 
   uint32_t school_mask() const
   { return _school; }

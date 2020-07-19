@@ -1180,10 +1180,11 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       fmt::print( s, "Hotfixed         : {}\n", hotfix_map_str( hotfixes, _hotfix_spell_map ) );
   }
 
-  if ( spell -> replace_spell_id() > 0 )
+  const unsigned replace_spell_id = dbc.replace_spell_id( spell -> id() );
+  if ( replace_spell_id > 0 )
   {
-    s << "Replaces         : " <<  dbc.spell( spell -> replace_spell_id() ) -> name_cstr();
-    s << " (id=" << spell -> replace_spell_id() << ")" << std::endl;
+    fmt::print( s, "Replaces         : {} (id={})\n",
+                dbc.spell( replace_spell_id ) -> name_cstr(), replace_spell_id );
   }
 
   if ( spell -> class_mask() )
@@ -1946,10 +1947,11 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
   node -> add_parm( "name", spell -> name_cstr() );
   spell_flags_xml( spell, node );
 
-  if ( spell -> replace_spell_id() > 0 )
+  unsigned replace_spell_id = dbc.replace_spell_id( spell -> id() );
+  if ( replace_spell_id > 0 )
   {
-    node -> add_parm( "replaces_name", dbc.spell( spell -> replace_spell_id() ) -> name_cstr() );
-    node -> add_parm( "replaces_id", spell -> replace_spell_id() );
+    node -> add_parm( "replaces_name", dbc.spell( replace_spell_id ) -> name_cstr() );
+    node -> add_parm( "replaces_id", replace_spell_id );
   }
 
   if ( spell -> class_mask() )

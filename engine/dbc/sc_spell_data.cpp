@@ -92,6 +92,18 @@ constexpr sdata_field_t::field_data_getter_t data_field( Field ) {
 
 } // namespace detail
 
+template <typename Impl, typename DataType>
+struct func_field_t {
+  static sdata_field_t::field_data_t get( const dbc_t& dbc, const void* data ) {
+    return sdata_field_t::field_data_t( Impl{}( dbc, *static_cast<const DataType*>( data ) ) );
+  }
+
+  constexpr operator sdata_field_t::field_data_getter_t() const {
+    using result_type = decltype( Impl{}( std::declval<const dbc_t&>(), std::declval<const DataType&>() ) );
+    return { detail::field_type<result_type>(), get };
+  }
+};
+
 // this and most of the supporting detail machinery could be greatly simplified with C++17 auto nttps
 #define MEM_FN_T(...) \
   detail::mem_fn_t<detail::mem_fn_traits_t<decltype(__VA_ARGS__)>::base_type, \
@@ -137,6 +149,12 @@ static constexpr std::array<sdata_field_t, 26> _effect_data_fields { {
   { "pvp_coefficient", FIELD( &spelleffect_data_t::_pvp_coeff ) },
 } };
 
+struct spell_replace_spell_id_t : func_field_t<spell_replace_spell_id_t, spell_data_t> {
+  unsigned operator()( const dbc_t& dbc, const spell_data_t& data ) const {
+    return dbc.replace_spell_id( data.id() );
+  }
+};
+
 static constexpr std::array<sdata_field_t, 37> _spell_data_fields { {
   { "name",              FIELD( &spell_data_t::_name ) },
   { "id",                FIELD( &spell_data_t::_id ) },
@@ -163,7 +181,7 @@ static constexpr std::array<sdata_field_t, 37> _spell_data_fields { {
   { "equip_imask",       FIELD( &spell_data_t::_equipped_invtype_mask ) },
   { "equip_scmask",      FIELD( &spell_data_t::_equipped_subclass_mask ) },
   { "cast_time",         FIELD( &spell_data_t::_cast_time ) },
-  { "replace_spellid",   FIELD( &spell_data_t::_replace_spell_id ) },
+  { "replace_spellid",   spell_replace_spell_id_t{} },
   { "family",            FIELD( &spell_data_t::_class_flags_family ) },
   { "stance_mask",       FIELD( &spell_data_t::_stance_mask ) },
   { "mechanic",          FIELD( &spell_data_t::_mechanic ) },
