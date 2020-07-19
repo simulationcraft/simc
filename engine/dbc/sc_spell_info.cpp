@@ -714,6 +714,10 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 485, "Resist Forced Movement%"                      },
 } );
 
+static constexpr auto _category_effect_subtypes = util::make_static_set<unsigned> ( {
+  411, 453, 454, 457
+} );
+
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
   { 126, "Charm"          },
   { 130, "Disorient"      },
@@ -1149,15 +1153,18 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << std::endl;
   }
 
-  if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_HASTED_CATEGORY )
+  if ( e -> type() == E_APPLY_AURA && _category_effect_subtypes.contains( e -> subtype() ) )
   {
     auto affected_spells = dbc.spells_by_category( e -> misc_value1() );
-    s << "                   Affected Spells (Category): ";
-    s << concatenate( affected_spells,
-        []( std::stringstream& s, const spell_data_t* spell ) {
-          s << spell -> name_cstr() << " (" << spell -> id() << ")";
-        } );
-    s << std::endl;
+    if ( affected_spells.size() > 0 )
+    {
+      s << "                   Affected Spells (Category): ";
+      s << concatenate( affected_spells,
+          []( std::stringstream& s, const spell_data_t* spell ) {
+            s << spell -> name_cstr() << " (" << spell -> id() << ")";
+          } );
+      s << std::endl;
+    }
   }
 
   if ( spell->class_family() > 0 )
