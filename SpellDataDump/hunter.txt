@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands ec3f32f90e)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -2801,19 +2801,15 @@ Effects          :
                    Family Flags: 1
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1628 | Target: Self (1)
-                   Affected Spells (Category): 
 #5 (id=191145)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1616 | Target: Self (1)
                    Affected Spells (Category): Butchery (212436)
 #6 (id=214883)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1575 | Target: Self (1)
-                   Affected Spells (Category): 
 #7 (id=260638)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1557 | Target: Self (1)
-                   Affected Spells (Category): 
 #8 (id=260639)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1674 | Target: Self (1)
-                   Affected Spells (Category): 
 #9 (id=260640)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1675 | Target: Self (1)
                    Affected Spells (Category): Barbed Shot (217200)
@@ -5193,6 +5189,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349263)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -10000 | Scaled Value: -10000 | PvP Coefficient: 1.00000 | Misc Value: 1635 | Target: Self (1)
+                   Affected Spells (Category): Harpoon (190925)
 Description      : The cooldown of Harpoon is reduced by ${$m1/-1000} sec.
 
 Name             : Hybrid Kinship (id=242155) [Hidden] 
@@ -7224,6 +7221,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707688)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1716 | Target: Self (1)
+                   Affected Spells (Category): Wildfire Bomb (259495), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045)
 #2 (id=718214)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
                    Affected Spells: Wildfire Bomb (265157), Pheromone Bomb (270329), Shrapnel Bomb (270338), Volatile Bomb (271048)
@@ -8165,6 +8163,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=718193)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1171 | Target: Self (1)
+                   Affected Spells (Category): Kill Command (259489)
 #2 (id=718196)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Kill Command (259489)
@@ -11037,6 +11036,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=809194)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1873 | Target: Self (1)
+                   Affected Spells (Category): Kill Shot (53351)
 #2 (id=809195)   : Apply Aura (6) | Proc Trigger Spell (42): Dead Eye
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 321461 | Target: Self (1)
 Description      : Kill Shot has ${$m1+1} charges, and causes Aimed Shot to recharge ${$321461m1/4}% faster for $321461d.

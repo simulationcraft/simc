@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands ec3f32f90e)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -1798,6 +1798,7 @@ Effects          :
                    Family Flags: 78
 #3 (id=805984)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -75 | Scaled Value: -75 | PvP Coefficient: 1.00000 | Misc Value: 1568 | Target: Self (1)
+                   Affected Spells (Category): Frenzied Regeneration (22842)
 Description      : Go berserk for $d, reducing the cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration by $s1% and the cost of Ironfur by $s2%.
 Tooltip          : Cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration are reduced by $w1%. Ironfur cost reduced by $w2%.
 
@@ -2986,6 +2987,7 @@ Effects          :
                    Family Flags: 78
 #3 (id=111385)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -75 | Scaled Value: -75 | PvP Coefficient: 1.00000 | Misc Value: 1568 | Target: Self (1)
+                   Affected Spells (Category): Frenzied Regeneration (22842)
 #4 (id=300948)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Mangle (33917)
@@ -3394,6 +3396,7 @@ Effects          :
                    Family Flags: 78
 #3 (id=810228)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1568 | Target: Self (1)
+                   Affected Spells (Category): Frenzied Regeneration (22842)
 Description      : $@spelldesc319454
 Tooltip          : Bear Form gives an additional $s1% Stamina, multiple uses of Ironfur may overlap, and Frenzied Regeneration gains an extra charge.
 
@@ -6587,6 +6590,7 @@ Effects          :
                    Family Flags: 50
 #2 (id=301037)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 1.00000 | Misc Value: 1469 | Target: Self (1)
+                   Affected Spells (Category): Survival Instincts (61336)
 Description      : Reduces the cooldowns of Barkskin and Survival Instincts by $s1%.
 
 Name             : Earthwarden (id=203974) [Spell Family (7), Passive] 
@@ -8943,6 +8947,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724350)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1568 | Target: Self (1)
+                   Affected Spells (Category): Frenzied Regeneration (22842)
 Description      : Frenzied Regeneration now has ${$s1+1} charges.
 
 
@@ -11872,6 +11877,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=821504)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1469 | Target: Self (1)
+                   Affected Spells (Category): Survival Instincts (61336)
 Description      : Survival Instincts now has ${$s1+1} charges.
 
 

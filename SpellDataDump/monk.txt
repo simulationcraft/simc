@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands ec3f32f90e)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -972,8 +972,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=128868)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 1365 | Target: Self (1)
+                   Affected Spells (Category): Roll (109132), Chi Torpedo (115008)
 #2 (id=135980)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1365 | Target: Self (1)
+                   Affected Spells (Category): Roll (109132), Chi Torpedo (115008)
 Description      : Reduces the cooldown of Roll by ${$m1/-1000} sec and increases its maximum number of charges by $m2.
 
 Name             : Soothing Mist (id=115175) [Spell Family (53)] 
@@ -5525,6 +5527,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349451)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1592 | Target: Self (1)
+                   Affected Spells (Category): Storm, Earth, and Fire (137639)
 Description      : Storm, Earth, and Fire has ${$s1+1} charges.
 
 Name             : Essence Font (rank=Rank 2) (id=231633) [Spell Family (53), Passive] 
@@ -8238,6 +8241,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=739500)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1517 | Target: Self (1)
+                   Affected Spells (Category): Renewing Mist (115151)
 Description      : Renewing Mist now has ${$s1+1} charges.
 
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
@@ -9426,6 +9430,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=815148)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 1562 | Target: Self (1)
+                   Affected Spells (Category): Ironskin Brew (115308), Purifying Brew (119582)
 #2 (id=815149)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Celestial Brew (322507)
@@ -9807,6 +9812,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=821357)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1365 | Target: Self (1)
+                   Affected Spells (Category): Roll (109132), Chi Torpedo (115008)
 Description      : Now has 2 charges.
 
 Name             : Provoke (rank=Rank 2) (id=328670) [Spell Family (53), Passive] 

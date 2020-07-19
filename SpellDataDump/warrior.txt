@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands ec3f32f90e)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -2108,8 +2108,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=166913)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1386 | Target: Self (1)
+                   Affected Spells (Category): Charge (100), Intercept (198304)
 #2 (id=320495)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 1386 | Target: Self (1)
+                   Affected Spells (Category): Charge (100), Intercept (198304)
 Description      : Increases the maximum number of charges on Charge by 1, and reduces its cooldown by ${$s2/-1000} sec.
 
 Name             : Warbringer (id=103828) [Spell Family (4), Passive] 
@@ -2757,7 +2759,6 @@ Effects          :
                    Affected Spells (Category): Shield Block (2565)
 #5 (id=191022)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1598 | Target: Self (1)
-                   Affected Spells (Category): 
 #6 (id=260729)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Dragon Roar (118000)
@@ -4003,6 +4004,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=297945)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 1211 | Target: Self (1)
+                   Affected Spells (Category): Heroic Leap (6544)
 Description      : Reduces the cooldown on Heroic Leap by ${$m1/-1000} sec, and Heroic Leap now also increases your run speed by $202164s1% for $202164d.
 
 Name             : Bounding Stride (id=202164) 
@@ -4820,6 +4822,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=320540)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 1.00000 | Misc Value: 1672 | Target: Self (1)
+                   Affected Spells (Category): Raging Blow (85288), Crushing Blow (335097)
 #2 (id=738411)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Raging Blow (85384), Raging Blow (96103), Crushing Blow (335098), Crushing Blow (335100)
@@ -5135,6 +5138,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349779)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1385 | Target: Self (1)
+                   Affected Spells (Category): Shield Block (2565)
 Description      : Shield Block has ${$s1+1} charges.
 
 Name             : Devastator (id=236279) [Passive] 
@@ -5727,6 +5731,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=623181)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1680 | Target: Self (1)
+                   Affected Spells (Category): Overpower (7384)
 Description      : Overpower has ${1+$s1} charges and causes a seismic wave, dealing $315961s1 damage to up to $315961s2 enemies in a $315961A1 yd line.
 
 Name             : Warbreaker (id=262161) [Spell Family (4)] 
@@ -8941,6 +8946,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=800971)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1672 | Target: Self (1)
+                   Affected Spells (Category): Raging Blow (85288), Crushing Blow (335097)
 Description      : Raging Blow has ${$s1+1} charges.
 
 Name             : Demoralizing Shout (rank=Rank 2) (id=316464) [Spell Family (4), Passive] 

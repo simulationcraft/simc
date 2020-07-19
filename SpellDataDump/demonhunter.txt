@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands ec3f32f90e)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1676,6 +1676,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 213405 | Target: Self (1)
 #2 (id=734046)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1612 | Target: Self (1)
+                   Affected Spells (Category): Throw Glaive (185123)
 Description      : Throw Glaive has ${$s2+1} charges, and snares all enemies hit by $213405s1% for $213405d.
 
 Name             : Felblade (id=203557) [Spell Family (107), Passive, Hidden] 
@@ -2467,6 +2468,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=306954)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -8000 | Scaled Value: -8000 | PvP Coefficient: 1.00000 | Misc Value: 1553 | Target: Self (1)
+                   Affected Spells (Category): Infernal Strike (189110)
 Description      : Infernal Strike creates a Sigil of Flame when you land and it's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Concentrated Sigils (id=207666) [Spell Family (107), Passive, Hidden] 
@@ -7413,6 +7415,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=807464)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1545 | Target: Self (1)
+                   Affected Spells (Category): Fel Rush (195072)
 Description      : Fel Rush gains an additional charge.
 
 Name             : Sigil of Silence (rank=Rank 2) (id=320417) [Spell Family (107), Passive] 
@@ -7632,6 +7635,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=808113)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1553 | Target: Self (1)
+                   Affected Spells (Category): Infernal Strike (189110)
 Description      : Infernal Strike gains an additional charge.
 
 Name             : Sigil of Flame (rank=Rank 2) (id=320794) [Spell Family (107), Passive] 

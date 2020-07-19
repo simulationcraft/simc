@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands ec3f32f90e)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -2999,6 +2999,7 @@ Effects          :
                    Family Flags: 122
 #5 (id=191063)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
+                   Affected Spells (Category): Shadowstep (36554)
 #6 (id=260977)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Marked for Death (137619)
@@ -5091,6 +5092,7 @@ Effects          :
                    Family Flags: 88
 #2 (id=373849)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1615 | Target: Self (1)
+                   Affected Spells (Category): Shadow Dance (185313)
 #3 (id=485516)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Deepening Shadows reduces the remaining cooldown of Shadow Dance by an additional $@switch<$s3>[${$s1/10}][${$s1/10}.1] sec per combo point spent.

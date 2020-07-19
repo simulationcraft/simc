@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands ec3f32f90e)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -2495,7 +2495,6 @@ Effects          :
                    Base Value: 220 | Scaled Value: 220 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=191096)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1543 | Target: Self (1)
-                   Affected Spells (Category): 
 #3 (id=191097)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1570 | Target: Self (1)
                    Affected Spells (Category): Hammer of the Righteous (53595)
@@ -2553,7 +2552,6 @@ Effects          :
                    Affected Spells (Category): Crusader Strike (35395)
 #6 (id=260907)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1610 | Target: Self (1)
-                   Affected Spells (Category): 
 #7 (id=260908)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1663 | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
@@ -2610,6 +2608,7 @@ Effects          :
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #4 (id=191090)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 1663 | Target: Self (1)
+                   Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
 #5 (id=191091)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of Dawn (85222), Blade of Justice (184575), Divine Hammer (198034), Light of Dawn (225311), Execution Sentence (267798), Execution Sentence (267799)
@@ -3847,6 +3846,7 @@ Effects          :
                    Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
 #3 (id=341689)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
+                   Affected Spells (Category): Crusader Strike (35395)
 Description      : Reduces the cooldown of Crusader Strike by $s3% and grants it a $h% chance to make your next ability consume $209785s1 less Holy Power.
 Variables        : $reduction=${$m2/-1000}
 
@@ -3950,6 +3950,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=301061)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1663 | Target: Self (1)
+                   Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
 Description      : Judgment now has ${1+$s1} charges, and Grand Crusader now also grants a charge of Judgment.
 
 Name             : Consecrated Ground (id=204054) [Spell Family (10), Passive] 
@@ -4721,6 +4722,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=347617)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1662 | Target: Self (1)
+                   Affected Spells (Category): Divine Steed (190784)
 Description      : Divine Steed now has ${1+$m1} charges.
 
 Name             : Beacon of Light (rank=Rank 2) (id=231642) [Spell Family (10), Passive] 
@@ -4816,6 +4818,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349507)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
+                   Affected Spells (Category): Crusader Strike (35395)
 Description      : Crusader Strike now has ${$s1+1} charges.
 
 Name             : Blade of Wrath (id=231832) [Spell Family (10), Passive] 
@@ -8303,6 +8306,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=803291)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1570 | Target: Self (1)
+                   Affected Spells (Category): Hammer of the Righteous (53595)
 Description      : Hammer of the Righteous now has ${$s1+1} charges.
 
 Name             : Sanctified Wrath (id=317866) [Spell Family (10), Passive] 
@@ -8405,6 +8409,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=803383)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 1662 | Target: Self (1)
+                   Affected Spells (Category): Divine Steed (190784)
 Description      : Cooldown reduced by ${-$s1/1000} sec.
 
 Name             : Art of War (rank=Rank 2) (id=317912) [Spell Family (10), Passive] 
@@ -8948,6 +8953,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=835230)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -1500 | Scaled Value: -1500 | PvP Coefficient: 1.00000 | Misc Value: 1570 | Target: Self (1)
+                   Affected Spells (Category): Hammer of the Righteous (53595)
 Description      : Recharge time reduced by ${$s1/-1000}.1 sec.
 
 

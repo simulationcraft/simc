@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands ec3f32f90e)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -4280,8 +4280,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302656)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1500 | Target: Self (1)
+                   Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
 #2 (id=354871)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1500 | Target: Self (1)
+                   Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
 #3 (id=354874)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Reduces the cooldown of Fire Blast by $s3 seconds and increases the maximum number of charges by $s1.
@@ -4350,6 +4352,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302663)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1588 | Target: Self (1)
+                   Affected Spells (Category): Frost Nova (122)
 Description      : Frost Nova now has ${1+$m1} charges.
 
 Name             : Flame Patch (id=205037) [Spell Family (3), Passive] 
@@ -5217,6 +5220,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349283)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 1671 | Target: Self (1)
+                   Affected Spells (Category): Evocation (12051)
 Description      : Evocation's cooldown is reduced by $s1%.
 
 Name             : Fire Blast (rank=Rank 4) (id=231567) [Spell Family (3), Passive] 
@@ -5236,6 +5240,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349285)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1500 | Target: Self (1)
+                   Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
 #2 (id=354886)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Fire Blast (108853), Fire Blast (319836)

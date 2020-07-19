@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands ec3f32f90e)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -3781,6 +3781,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=286264)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -1500 | Scaled Value: -1500 | PvP Coefficient: 1.00000 | Misc Value: 1602 | Target: Self (1)
+                   Affected Spells (Category): Mind Blast (8092)
 #8 (id=290891)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
 #9 (id=294246)   : Apply Aura (6) | Modify Absorb% Done (421)
@@ -3801,6 +3802,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #15 (id=706295)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -1500 | Scaled Value: -1500 | PvP Coefficient: 1.00000 | Misc Value: 1590 | Target: Self (1)
+                   Affected Spells (Category): Shadow Word: Void (205351)
 #16 (id=752803)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc228264
@@ -8545,6 +8547,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=806669)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -7000 | Scaled Value: -7000 | PvP Coefficient: 1.00000 | Misc Value: 1602 | Target: Self (1)
+                   Affected Spells (Category): Mind Blast (8092)
 Description      : Mind Blast's cooldown reduced by ${($m1/-1000)} sec.
 
 Name             : Void Eruption (rank=Rank 2) (id=319908) [Spell Family (6), Passive] 
@@ -8908,6 +8911,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=810257)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1690 | Target: Self (1)
+                   Affected Spells (Category): Power Word: Radiance (194509)
 Description      : Power Word: Radiance has an additional cooldown charge.
 
 Name             : Vampiric Touch (rank=Rank 2) (id=322116) [Spell Family (6), Passive] 
