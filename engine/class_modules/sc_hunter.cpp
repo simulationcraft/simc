@@ -3857,8 +3857,10 @@ struct kill_command_t: public hunter_spell_t
     if ( splits.size() == 2 && splits[ 0 ] == "bloodseeker" && splits[ 1 ] == "remains" )
     {
       return make_fn_expr( expression_str, [ this ] () {
-          if ( auto pet = p() -> pets.main )
-            return pet -> get_target_data( target ) -> dots.bloodseeker -> remains();
+          if ( auto pet = p() -> pets.main ) {
+            if ( auto td = pet -> find_target_data( target ) )
+              return td -> dots.bloodseeker -> remains();
+          }
           return 0_ms;
         } );
     }
