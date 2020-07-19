@@ -253,7 +253,7 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
 
   // Simple estimate of average iteraitons per thread
   auto wall_seconds = chrono::elapsed_fp_seconds( start_time );
-  fmt::format_to(new_status, " {:.3f}", progress.current_iterations / wall_seconds / sim.threads, 1 );
+  fmt::format_to(new_status, " {:.3f}", progress.current_iterations / wall_seconds / sim.threads );
 
   if ( sim.target_error > 0 )
   {
