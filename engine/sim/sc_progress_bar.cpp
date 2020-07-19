@@ -164,9 +164,13 @@ bool progress_bar_t::update_simple( const sim_progress_t& progress, bool finishe
 
   double remaining_time = total_time - current_time;
 
+  auto wall_seconds = chrono::elapsed_fp_seconds( start_time );
+
   status = util::to_string( finished ? progress.total_iterations : progress.current_iterations );
   status += '\t';
   status += util::to_string( progress.total_iterations );
+  status += '\t';
+  status += util::to_string( progress.current_iterations / wall_seconds / sim.threads );
   if ( sim.target_error > 0 )
   {
     status += '\t';
@@ -247,6 +251,10 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
 
   fmt::format_to(new_status, " {:d}/{:d}", finished ? progress.total_iterations : progress.current_iterations, progress.total_iterations );
 
+  // Simple estimate of average iteraitons per thread
+  auto wall_seconds = chrono::elapsed_fp_seconds( start_time );
+  fmt::format_to(new_status, " {:.3f}", progress.current_iterations / wall_seconds / sim.threads, 1 );
+
   if ( sim.target_error > 0 )
   {
     fmt::format_to(new_status, " Mean={:.0f} Error={:.3f}%", sim.current_mean, sim.current_error );
@@ -292,7 +300,7 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
   {
     auto average_spent = average_simulation_time();
     auto phases_left = total_work() - current_progress();
-    auto time_left = std::max( 0.0, average_spent - chrono::elapsed_fp_seconds( start_time ) );
+    auto time_left = std::max( 0.0, average_spent - wall_seconds );
     auto total_left = phases_left * average_spent + time_left;
 
     if ( total_left > 0 )
