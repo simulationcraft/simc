@@ -237,8 +237,8 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
 // Hunter
 // ==========================================================================
 
-// somewhat arbitrary number of the maximum count of barbed shot buffs possible simultaneously
-constexpr unsigned BARBED_SHOT_BUFFS_MAX = 10;
+// in-game the buffs are actually 8 distinct spells, so the player can't get more than 8 simultaneously
+constexpr unsigned BARBED_SHOT_BUFFS_MAX = 8;
 
 // different types of Wildfire Infusion bombs
 enum wildfire_infusion_e {
@@ -2397,7 +2397,9 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     // trigger regen buff
     auto it = range::find_if( p() -> buffs.barbed_shot, []( buff_t* b ) { return !b -> check(); } );
     if ( it != p() -> buffs.barbed_shot.end() )
-      (*it) -> trigger(); // TODO: error when don't have enough buffs?
+      ( *it ) -> trigger();
+    else if ( sim -> debug )
+      sim -> out_debug.print( "{} {} unable to trigger excess Barbed Shot buff", player -> name(), name() );
 
     p() -> buffs.thrill_of_the_hunt -> trigger();
     p() -> buffs.thrill_of_the_hunt_2 -> trigger();
