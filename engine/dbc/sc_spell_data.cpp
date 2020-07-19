@@ -17,102 +17,168 @@ namespace { // anonymous namespace ==========================================
 
 enum sdata_field_type_t
 {
-  SD_TYPE_INT = 0,
-  SD_TYPE_UNSIGNED,
-  SD_TYPE_UINT64,
-  SD_TYPE_DOUBLE,
+  SD_TYPE_NUM,
   SD_TYPE_STR
 };
 
 struct sdata_field_t
 {
-  sdata_field_type_t type;
-  util::string_view  name;
-  size_t             offset;
+  union field_data_t
+  {
+    double num;
+    const char* str;
+
+    constexpr explicit field_data_t( const char* s ) : str( s ) {}
+
+    template <typename T, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
+    constexpr explicit field_data_t( T v ) : num( static_cast<double>( v ) ) {}
+  };
+
+  struct field_data_getter_t
+  {
+    using func_t = field_data_t(*)( const dbc_t&, const void* );
+    sdata_field_type_t type;
+    func_t             get;
+  };
+
+  util::string_view   name;
+  field_data_getter_t data;
 };
 
-#define O_TD(f) offsetof( talent_data_t, f )
-const sdata_field_t _talent_data_fields[] =
-{
-  { SD_TYPE_STR,      "name",  O_TD( _name )       },
-  { SD_TYPE_UNSIGNED, "id",    O_TD( _id )         },
-  { SD_TYPE_UNSIGNED, "flags", O_TD( _flags )      },
-  { SD_TYPE_UNSIGNED, "col",   O_TD( _col )        },
-  { SD_TYPE_UNSIGNED, "row",   O_TD( _row )        },
+namespace detail {
+
+template <typename T>
+struct mem_fn_traits_impl;
+
+template <typename T, typename U>
+struct mem_fn_traits_impl<T U::*> {
+  using base_type = T;
+  using object_type = U;
 };
 
-#define O_SED(f) offsetof( spelleffect_data_t, f )
-const sdata_field_t _effect_data_fields[] =
-{
-  { SD_TYPE_UNSIGNED, "id",             O_SED( _id )              },
-  { SD_TYPE_UNSIGNED, "spell_id",       O_SED( _spell_id )        },
-  { SD_TYPE_UNSIGNED, "index",          O_SED( _index )           },
-  { SD_TYPE_INT,      "type",           O_SED( _type )            },
-  { SD_TYPE_INT,      "sub_type" ,      O_SED( _subtype )         },
-  { SD_TYPE_DOUBLE,   "m_coefficient",  O_SED( _m_coeff )         },
-  { SD_TYPE_DOUBLE,   "m_delta",        O_SED( _m_delta )         },
-  { SD_TYPE_DOUBLE,   "m_bonus" ,       O_SED( _m_unk )           },
-  { SD_TYPE_DOUBLE,   "coefficient",    O_SED( _sp_coeff )        },
-  { SD_TYPE_DOUBLE,   "ap_coefficient", O_SED( _ap_coeff )        },
-  { SD_TYPE_DOUBLE,   "amplitude",      O_SED( _amplitude )       },
-  { SD_TYPE_DOUBLE,   "radius",         O_SED( _radius )          },
-  { SD_TYPE_DOUBLE,   "max_radius",     O_SED( _radius_max )      },
-  { SD_TYPE_INT,      "base_value",     O_SED( _base_value )      },
-  { SD_TYPE_INT,      "misc_value",     O_SED( _misc_value )      },
-  { SD_TYPE_INT,      "misc_value2",    O_SED( _misc_value_2 )    },
-  { SD_TYPE_INT,      "trigger_spell",  O_SED( _trigger_spell )   },
-  { SD_TYPE_DOUBLE,   "m_chain",        O_SED( _m_chain )         },
-  { SD_TYPE_DOUBLE,   "p_combo_points", O_SED( _pp_combo_points ) },
-  { SD_TYPE_DOUBLE,   "p_level",        O_SED( _real_ppl )        },
-  { SD_TYPE_UNSIGNED, "mechanic",       O_SED( _mechanic )        },
-  { SD_TYPE_UNSIGNED, "chain_target",   O_SED( _chain_target )    },
-  { SD_TYPE_UNSIGNED, "target_1",       O_SED( _targeting_1 )     },
-  { SD_TYPE_UNSIGNED, "target_2",       O_SED( _targeting_2 )     },
-  { SD_TYPE_DOUBLE,   "m_value",        O_SED( _m_value )         },
-  { SD_TYPE_DOUBLE,   "pvp_coefficient",O_SED( _pvp_coeff )       }
+template <typename T>
+using mem_fn_traits_t = mem_fn_traits_impl<std::remove_cv_t<T>>;
+
+template <typename T, typename U, T U::*Pm>
+struct mem_fn_t {
+  using object_type = U;
+
+  template <typename... Args>
+  decltype(auto) operator()( Args&&... args ) const {
+    return range::invoke( Pm, std::forward<Args>(args)... );
+  }
 };
 
-#define O_SD(f) offsetof( spell_data_t, f )
-const sdata_field_t _spell_data_fields[] =
-{
-  { SD_TYPE_STR,      "name",              O_SD( _name )                   },
-  { SD_TYPE_UNSIGNED, "id",                O_SD( _id )                     },
-  { SD_TYPE_DOUBLE,   "speed",             O_SD( _prj_speed )              },
-  { SD_TYPE_INT,      "scaling",           O_SD( _scaling_type )           },
-  { SD_TYPE_UNSIGNED, "max_scaling_level", O_SD( _max_scaling_level )      },
-  { SD_TYPE_UNSIGNED, "level",             O_SD( _spell_level )            },
-  { SD_TYPE_UNSIGNED, "max_level",         O_SD( _max_level )              },
-  { SD_TYPE_DOUBLE,   "min_range",         O_SD( _min_range )              },
-  { SD_TYPE_DOUBLE,   "max_range",         O_SD( _max_range )              },
-  { SD_TYPE_UNSIGNED, "cooldown",          O_SD( _cooldown )               },
-  { SD_TYPE_UNSIGNED, "gcd",               O_SD( _gcd )                    },
-  { SD_TYPE_UNSIGNED, "category_cooldown", O_SD( _category_cooldown )      },
-  { SD_TYPE_UNSIGNED, "charges",           O_SD( _charges )                },
-  { SD_TYPE_UNSIGNED, "charge_cooldown",   O_SD( _charge_cooldown )        },
-  { SD_TYPE_UNSIGNED, "category",          O_SD( _category )               },
-  { SD_TYPE_DOUBLE,   "duration",          O_SD( _duration )               },
-  { SD_TYPE_UNSIGNED, "max_stack",         O_SD( _max_stack )              },
-  { SD_TYPE_UNSIGNED, "proc_chance",       O_SD( _proc_chance )            },
-  { SD_TYPE_INT,      "initial_stack",     O_SD( _proc_charges )           },
-  { SD_TYPE_UNSIGNED, "icd",               O_SD( _internal_cooldown )      },
-  { SD_TYPE_DOUBLE,   "rppm",              O_SD( _rppm )                   },
-  { SD_TYPE_UNSIGNED, "equip_class",       O_SD( _equipped_class )         },
-  { SD_TYPE_UNSIGNED, "equip_imask",       O_SD( _equipped_invtype_mask )  },
-  { SD_TYPE_UNSIGNED, "equip_scmask",      O_SD( _equipped_subclass_mask ) },
-  { SD_TYPE_INT,      "cast_time",         O_SD( _cast_time )              },
-  { SD_TYPE_UNSIGNED, "replace_spellid",   O_SD( _replace_spell_id )       },
-  { SD_TYPE_UNSIGNED, "family",            O_SD( _class_flags_family )     }, // Family
-  { SD_TYPE_UNSIGNED, "stance_mask",       O_SD( _stance_mask )            },
-  { SD_TYPE_UNSIGNED, "mechanic",          O_SD( _mechanic )               },
-  { SD_TYPE_UNSIGNED, "power_id",          O_SD( _power_id )               }, // Azereite power id
-  { SD_TYPE_UNSIGNED, "essence_id",        O_SD( _essence_id )             }, // Azereite essence id
-  { SD_TYPE_STR,      "desc",              O_SD( _desc )                   },
-  { SD_TYPE_STR,      "tooltip",           O_SD( _tooltip )                },
-  { SD_TYPE_STR,      "desc_vars",         O_SD( _desc_vars )              },
-  { SD_TYPE_STR,      "rank",              O_SD( _rank_str )               },
-  { SD_TYPE_UNSIGNED, "req_max_level",     O_SD( _req_max_level )          },
-  { SD_TYPE_UNSIGNED, "dmg_class",         O_SD( _dmg_class )              }
-};
+template <typename T>
+constexpr sdata_field_type_t field_type() {
+  using U = std::decay_t<T>;
+  if ( std::is_arithmetic<U>::value )
+    return SD_TYPE_NUM;
+  assert( ( std::is_same<U, const char*>::value ) );
+  return SD_TYPE_STR;
+}
+
+template <typename DataType, typename Fn>
+sdata_field_t::field_data_t get_data_field( const dbc_t&, const void* data ) {
+  return sdata_field_t::field_data_t( Fn{}( *static_cast<const DataType*>( data ) ) );
+}
+
+template <typename Field>
+constexpr sdata_field_t::field_data_getter_t data_field( Field ) {
+  using data_type = typename Field::object_type;
+  using result_type = decltype( Field{}( std::declval<const data_type&>() ) );
+  return { field_type<result_type>(), get_data_field<data_type, Field> };
+}
+
+} // namespace detail
+
+// this and most of the supporting detail machinery could be greatly simplified with C++17 auto nttps
+#define MEM_FN_T(...) \
+  detail::mem_fn_t<detail::mem_fn_traits_t<decltype(__VA_ARGS__)>::base_type, \
+                   detail::mem_fn_traits_t<decltype(__VA_ARGS__)>::object_type, \
+                   __VA_ARGS__>
+
+#define FIELD(...) detail::data_field( MEM_FN_T(__VA_ARGS__){} )
+
+static constexpr std::array<sdata_field_t, 5> _talent_data_fields { {
+  { "name",  FIELD( &talent_data_t::_name ) },
+  { "id",    FIELD( &talent_data_t::_id ) },
+  { "flags", FIELD( &talent_data_t::_flags ) },
+  { "col",   FIELD( &talent_data_t::_col ) },
+  { "row",   FIELD( &talent_data_t::_row ) },
+} };
+
+static constexpr std::array<sdata_field_t, 26> _effect_data_fields { {
+  { "id",              FIELD( &spelleffect_data_t::_id ) },
+  { "spell_id",        FIELD( &spelleffect_data_t::_spell_id ) },
+  { "index",           FIELD( &spelleffect_data_t::_index ) },
+  { "type",            FIELD( &spelleffect_data_t::_type ) },
+  { "sub_type" ,       FIELD( &spelleffect_data_t::_subtype ) },
+  { "m_coefficient",   FIELD( &spelleffect_data_t::_m_coeff ) },
+  { "m_delta",         FIELD( &spelleffect_data_t::_m_delta ) },
+  { "m_bonus" ,        FIELD( &spelleffect_data_t::_m_unk ) },
+  { "coefficient",     FIELD( &spelleffect_data_t::_sp_coeff ) },
+  { "ap_coefficient",  FIELD( &spelleffect_data_t::_ap_coeff ) },
+  { "amplitude",       FIELD( &spelleffect_data_t::_amplitude ) },
+  { "radius",          FIELD( &spelleffect_data_t::_radius ) },
+  { "max_radius",      FIELD( &spelleffect_data_t::_radius_max ) },
+  { "base_value",      FIELD( &spelleffect_data_t::_base_value ) },
+  { "misc_value",      FIELD( &spelleffect_data_t::_misc_value ) },
+  { "misc_value2",     FIELD( &spelleffect_data_t::_misc_value_2 ) },
+  { "trigger_spell",   FIELD( &spelleffect_data_t::_trigger_spell_id ) },
+  { "m_chain",         FIELD( &spelleffect_data_t::_m_chain ) },
+  { "p_combo_points",  FIELD( &spelleffect_data_t::_pp_combo_points ) },
+  { "p_level",         FIELD( &spelleffect_data_t::_real_ppl ) },
+  { "mechanic",        FIELD( &spelleffect_data_t::_mechanic ) },
+  { "chain_target",    FIELD( &spelleffect_data_t::_chain_target ) },
+  { "target_1",        FIELD( &spelleffect_data_t::_targeting_1 ) },
+  { "target_2",        FIELD( &spelleffect_data_t::_targeting_2 ) },
+  { "m_value",         FIELD( &spelleffect_data_t::_m_value ) },
+  { "pvp_coefficient", FIELD( &spelleffect_data_t::_pvp_coeff ) },
+} };
+
+static constexpr std::array<sdata_field_t, 37> _spell_data_fields { {
+  { "name",              FIELD( &spell_data_t::_name ) },
+  { "id",                FIELD( &spell_data_t::_id ) },
+  { "speed",             FIELD( &spell_data_t::_prj_speed ) },
+  { "scaling",           FIELD( &spell_data_t::_scaling_type ) },
+  { "max_scaling_level", FIELD( &spell_data_t::_max_scaling_level ) },
+  { "level",             FIELD( &spell_data_t::_spell_level ) },
+  { "max_level",         FIELD( &spell_data_t::_max_level ) },
+  { "min_range",         FIELD( &spell_data_t::_min_range ) },
+  { "max_range",         FIELD( &spell_data_t::_max_range ) },
+  { "cooldown",          FIELD( &spell_data_t::_cooldown ) },
+  { "gcd",               FIELD( &spell_data_t::_gcd ) },
+  { "category_cooldown", FIELD( &spell_data_t::_category_cooldown ) },
+  { "charges",           FIELD( &spell_data_t::_charges ) },
+  { "charge_cooldown",   FIELD( &spell_data_t::_charge_cooldown ) },
+  { "category",          FIELD( &spell_data_t::_category ) },
+  { "duration",          FIELD( &spell_data_t::_duration ) },
+  { "max_stack",         FIELD( &spell_data_t::_max_stack ) },
+  { "proc_chance",       FIELD( &spell_data_t::_proc_chance ) },
+  { "initial_stack",     FIELD( &spell_data_t::_proc_charges ) },
+  { "icd",               FIELD( &spell_data_t::_internal_cooldown ) },
+  { "rppm",              FIELD( &spell_data_t::_rppm ) },
+  { "equip_class",       FIELD( &spell_data_t::_equipped_class ) },
+  { "equip_imask",       FIELD( &spell_data_t::_equipped_invtype_mask ) },
+  { "equip_scmask",      FIELD( &spell_data_t::_equipped_subclass_mask ) },
+  { "cast_time",         FIELD( &spell_data_t::_cast_time ) },
+  { "replace_spellid",   FIELD( &spell_data_t::_replace_spell_id ) },
+  { "family",            FIELD( &spell_data_t::_class_flags_family ) },
+  { "stance_mask",       FIELD( &spell_data_t::_stance_mask ) },
+  { "mechanic",          FIELD( &spell_data_t::_mechanic ) },
+  { "power_id",          FIELD( &spell_data_t::_power_id ) }, // Azereite power id
+  { "essence_id",        FIELD( &spell_data_t::_essence_id ) }, // Azereite essence id
+  { "desc",              FIELD( &spell_data_t::_desc ) },
+  { "tooltip",           FIELD( &spell_data_t::_tooltip ) },
+  { "rank",              FIELD( &spell_data_t::_rank_str ) },
+  { "desc_vars",         FIELD( &spell_data_t::_desc_vars ) },
+  { "req_max_level",     FIELD( &spell_data_t::_req_max_level ) },
+  { "dmg_class",         FIELD( &spell_data_t::_dmg_class ) },
+} };
+
+#undef FIELD
+#undef MEM_FN_T
 
 static constexpr std::array<util::string_view, 13> _class_strings { {
   "",
@@ -478,71 +544,54 @@ struct sd_expr_binary_t : public spell_list_expr_t
 
 struct spell_data_filter_expr_t : public spell_list_expr_t
 {
-  int                offset;
-  sdata_field_type_t field_type;
+  sdata_field_t field;
 
   spell_data_filter_expr_t(dbc_t& dbc, expr_data_e type, util::string_view f_name, bool eq = false ) :
-    spell_list_expr_t( dbc, f_name, type, eq ), offset( 0 ), field_type( SD_TYPE_INT )
+    spell_list_expr_t( dbc, f_name, type, eq ), field{}
   {
-    for ( const auto& field : data_fields_by_type( type, effect_query ) )
+    for ( const auto& field_ : data_fields_by_type( type, effect_query ) )
     {
-      if ( util::str_compare_ci( f_name, field.name ) )
+      if ( util::str_compare_ci( f_name, field_.name ) )
       {
-        offset = static_cast<int>( field.offset );
-        field_type = field.type;
+        field = field_;
         break;
       }
     }
   }
 
-  template <typename T>
-  bool do_compare( const char* data, const spell_data_expr_t& other, expression::token_e t ) const
+  bool compare( const void* data, const spell_data_expr_t& other, expression::token_e t ) const
   {
-    const T value  = *reinterpret_cast< const T* >( data + offset );
-    const T ovalue = static_cast<T>( other.result_num );
-    switch ( t )
+    assert( field.data.get );
+    const auto field_data = field.data.get( dbc, data );
+    switch ( field.data.type )
     {
-      case expression::TOK_EQ:     return value == ovalue;
-      case expression::TOK_NOTEQ:  return value != ovalue;
-      case expression::TOK_LT:     return value <  ovalue;
-      case expression::TOK_LTEQ:   return value <= ovalue;
-      case expression::TOK_GT:     return value >  ovalue;
-      case expression::TOK_GTEQ:   return value >= ovalue;
-      default: break;
-    }
-    return false;
-  }
-
-  virtual bool compare( const char* data, const spell_data_expr_t& other, expression::token_e t ) const
-  {
-    switch ( field_type )
-    {
-      case SD_TYPE_INT:
-        return do_compare<int>( data, other, t );
-
-      case SD_TYPE_UNSIGNED:
-        return do_compare<unsigned>( data, other, t );
-
-      case SD_TYPE_UINT64:
-        return do_compare<uint64_t>( data, other, t );
-
-      case SD_TYPE_DOUBLE:
-        return do_compare<double>( data, other, t );
-
+      case SD_TYPE_NUM:
+      {
+        const double value = field_data.num;
+        const double ovalue = other.result_num;
+        switch ( t )
+        {
+          case expression::TOK_EQ:    return value == ovalue;
+          case expression::TOK_NOTEQ: return value != ovalue;
+          case expression::TOK_LT:    return value <  ovalue;
+          case expression::TOK_LTEQ:  return value <= ovalue;
+          case expression::TOK_GT:    return value >  ovalue;
+          case expression::TOK_GTEQ:  return value >= ovalue;
+          default: break;
+        }
+        break;
+      }
       case SD_TYPE_STR:
       {
-        const char* c_str = *reinterpret_cast<const char * const*>( data + offset );
-        std::string string_v = c_str ? c_str : "";
-        util::tokenize( string_v );
+        std::string string_v = util::tokenize_fn( field_data.str ? field_data.str : "" );
         util::string_view ostring_v = other.result_str;
-
         switch ( t )
         {
           case expression::TOK_EQ:    return util::str_compare_ci( string_v, ostring_v );
           case expression::TOK_NOTEQ: return ! util::str_compare_ci( string_v, ostring_v );
           case expression::TOK_IN:    return util::str_in_str_ci( string_v, ostring_v );
           case expression::TOK_NOTIN: return ! util::str_in_str_ci( string_v, ostring_v );
-          default:        return false;
+          default: break;
         }
         break;
       }
@@ -552,8 +601,10 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return false;
   }
 
-  void build_list( std::vector<uint32_t>& res, const spell_data_expr_t& other, expression::token_e t ) const
+  std::vector<uint32_t> build_list( const spell_data_expr_t& other, expression::token_e t ) const
   {
+    std::vector<uint32_t> res;
+
     for ( const auto& result_spell : result_spell_list )
     {
       // Don't bother comparing if this spell id is already in the result set.
@@ -565,12 +616,10 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
         const spell_data_t& spell = *dbc.spell( result_spell );
 
         // Compare against every spell effect
-        for ( size_t j = 0; j < spell.effect_count(); j++ )
+        for ( const spelleffect_data_t& effect : spell.effects() )
         {
-          const spelleffect_data_t& effect = spell.effectN( j + 1 );
-
           if ( effect.id() > 0 && dbc.effect( effect.id() ) &&
-               compare( reinterpret_cast<const char*>( &effect ), other, t ) )
+               compare( &effect, other, t ) )
           {
             res.push_back( result_spell );
             break;
@@ -579,165 +628,89 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
       }
       else
       {
-        const char* p_data;
+        const void* p_data;
         if ( data_type == DATA_TALENT )
-          p_data = reinterpret_cast<const char*>( dbc.talent( result_spell ) );
+          p_data = dbc.talent( result_spell );
         else if ( data_type == DATA_EFFECT )
-          p_data = reinterpret_cast<const char*>( dbc.effect( result_spell ) );
+          p_data = dbc.effect( result_spell );
         else
-          p_data = reinterpret_cast<const char*>( dbc.spell( result_spell ) );
+          p_data = dbc.spell( result_spell );
         if ( p_data && compare( p_data, other, t ) )
           res.push_back( result_spell );
       }
     }
+
+    return res;
   }
 
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
-
     if ( other.result_tok != expression::TOK_NUM && other.result_tok != expression::TOK_STR )
-    {
-      throw std::invalid_argument(fmt::format("Unsupported expression operator == for left='{}' ({}), right='{}' ({})",
-        name_str,
-        result_tok,
-        other.name_str,
-        other.result_tok));
-    }
-    else
-      build_list( res, other, expression::TOK_EQ );
+      throw_invalid_op_arg( "==", other );
 
-    return res;
+    return build_list( other, expression::TOK_EQ );
   }
 
   std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
-
     if ( other.result_tok != expression::TOK_NUM && other.result_tok != expression::TOK_STR )
-    {
-      throw std::invalid_argument(fmt::format("Unsupported expression operator != for left='{}' ({}), right='{}' ({})",
-        name_str,
-        result_tok,
-        other.name_str,
-        other.result_tok));
-    }
-    else
-      build_list( res, other, expression::TOK_NOTEQ );
+      throw_invalid_op_arg( "!=", other );
 
-    return res;
+    return build_list( other, expression::TOK_NOTEQ );
   }
 
   std::vector<uint32_t> operator<( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
+    if ( other.result_tok != expression::TOK_NUM || field.data.type != SD_TYPE_NUM )
+      throw_invalid_op_arg( "<", other );
 
-    if ( other.result_tok != expression::TOK_NUM ||
-         ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
-    {
-      throw std::invalid_argument(fmt::format("Unsupported expression operator < for left='{}' ({}), right='{}' ({})",
-        name_str,
-        result_tok,
-        other.name_str,
-        other.result_tok));
-    }
-    else
-      build_list( res, other, expression::TOK_LT );
-
-    return res;
+    return build_list( other, expression::TOK_LT );
   }
 
   std::vector<uint32_t> operator<=( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
+    if ( other.result_tok != expression::TOK_NUM || field.data.type != SD_TYPE_NUM )
+      throw_invalid_op_arg( "<=", other );
 
-    if ( other.result_tok != expression::TOK_NUM ||
-         ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
-    {
-      throw std::invalid_argument(fmt::format("Unsupported expression operator <= for left='{}' ({}), right='{}' ({})",
-        name_str,
-        result_tok,
-        other.name_str,
-        other.result_tok));
-    }
-    else
-      build_list( res, other, expression::TOK_LTEQ );
-
-    return res;
+    return build_list( other, expression::TOK_LTEQ );
   }
 
   std::vector<uint32_t> operator>( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
+    if ( other.result_tok != expression::TOK_NUM || field.data.type != SD_TYPE_NUM )
+      throw_invalid_op_arg( ">", other );
 
-    if ( other.result_tok != expression::TOK_NUM ||
-         ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
-    {
-      throw std::invalid_argument(fmt::format("Unsupported expression operator > for left='{}' ({}), right='{}' ({})",
-        name_str,
-        result_tok,
-        other.name_str,
-        other.result_tok));
-    }
-    else
-      build_list( res, other, expression::TOK_GT );
-
-    return res;
+    return build_list( other, expression::TOK_GT );
   }
 
   std::vector<uint32_t> operator>=( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
+    if ( other.result_tok != expression::TOK_NUM || field.data.type != SD_TYPE_NUM )
+      throw_invalid_op_arg( ">=", other );
 
-    if ( other.result_tok != expression::TOK_NUM ||
-         ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
-    {
-      throw std::invalid_argument(fmt::format("Unsupported expression operator >= for left='{}' ({}), right='{}' ({})",
-        name_str,
-        result_tok,
-        other.name_str,
-        other.result_tok));
-    }
-    else
-      build_list( res, other, expression::TOK_GTEQ );
-
-    return res;
+    return build_list( other, expression::TOK_GTEQ );
   }
 
   std::vector<uint32_t> in( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
+    if ( other.result_tok != expression::TOK_STR || field.data.type != SD_TYPE_STR )
+      throw_invalid_op_arg( "~", other );
 
-    if ( other.result_tok != expression::TOK_STR || field_type != SD_TYPE_STR )
-    {
-      throw std::invalid_argument(fmt::format("Unsupported expression operator ~ for left='{}' ({}), right='{}' ({})",
-        name_str,
-        result_tok,
-        other.name_str,
-        other.result_tok));
-    }
-    else
-      build_list( res, other, expression::TOK_IN );
-
-    return res;
+    return build_list( other, expression::TOK_IN );
   }
 
   std::vector<uint32_t> not_in( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
+    if ( other.result_tok != expression::TOK_STR || field.data.type != SD_TYPE_STR )
+      throw_invalid_op_arg( "!~", other );
 
-    if ( other.result_tok != expression::TOK_STR || field_type != SD_TYPE_STR )
-    {
-      throw std::invalid_argument(fmt::format("Unsupported expression operator !~ for left='{}' ({}), right='{}' ({})",
-        name_str,
-        result_tok,
-        other.name_str,
-        other.result_tok));
-    }
-    else
-      build_list( res, other, expression::TOK_NOTIN );
+    return build_list( other, expression::TOK_NOTIN );
+  }
 
-    return res;
+  /* [[noreturn]] */ void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) {
+    throw std::invalid_argument(
+            fmt::format("Unsupported expression operator {} for left='{}' ({}), right='{}' ({})",
+              op, name_str, result_tok, other.name_str, other.result_tok));
   }
 };
 
@@ -1088,7 +1061,7 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( d
 
   for ( const auto& field : data_fields_by_type( data_type, effect_query ) )
   {
-    if ( ! field.name.empty() && util::str_compare_ci( splits[ 1 ], field.name ) )
+    if ( util::str_compare_ci( splits[ 1 ], field.name ) )
     {
       return std::make_unique<spell_data_filter_expr_t>( dbc, data_type, field.name, effect_query );
     }
