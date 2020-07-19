@@ -469,7 +469,7 @@ public:
     // tier 50
     spell_data_ptr_t aspect_of_the_beast;
     spell_data_ptr_t killer_cobra;
-    spell_data_ptr_t bloodshed_; // NYI
+    spell_data_ptr_t bloodshed;
 
     spell_data_ptr_t calling_the_shots;
     spell_data_ptr_t lock_and_load;
@@ -1100,6 +1100,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     attack_t* beast_cleave = nullptr;
     action_t* stomp = nullptr;
     action_t* flanking_strike = nullptr;
+    action_t* bloodshed = nullptr;
   } active;
 
   struct buffs_t
@@ -1209,6 +1210,7 @@ public:
   struct dots_t
   {
     dot_t* bloodseeker = nullptr;
+    dot_t* bloodshed = nullptr;
   } dots;
 
   hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p );
@@ -1220,6 +1222,10 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
   {
     gain_t* aspect_of_the_wild = nullptr;
   } gains;
+
+  struct {
+    spell_data_ptr_t bloodshed;
+  } spells;
 
   double owner_hp_mult = 1;
 
@@ -1297,6 +1303,17 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     return ac;
   }
 
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override
+  {
+    double m = hunter_pet_t::composite_player_target_multiplier( target, school );
+
+    const hunter_main_pet_td_t* td = find_target_data( target );
+    if ( td && td -> dots.bloodshed -> is_ticking() )
+      m *= 1 + spells.bloodshed -> effectN( 2 ).percent();
+
+    return m;
+  }
+
   double resource_regen_per_second( resource_e r ) const override
   {
     if ( r == RESOURCE_FOCUS )
@@ -1340,6 +1357,11 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     if ( !td )
       td = new hunter_main_pet_td_t( target, const_cast<hunter_main_pet_t*>( this ) );
     return td;
+  }
+
+  const hunter_main_pet_td_t* find_target_data( const player_t* target ) const
+  {
+    return target_data[ target ];
   }
 
   resource_e primary_resource() const override
@@ -1886,12 +1908,24 @@ struct stomp_t : public hunter_pet_action_t<hunter_pet_t, attack_t>
   }
 };
 
+// Bloodshed ===============================================================
+
+struct bloodshed_t : hunter_main_pet_attack_t
+{
+  bloodshed_t( hunter_main_pet_t* p ):
+    hunter_main_pet_attack_t( "bloodshed", p, p -> spells.bloodshed )
+  {
+    background = true;
+  }
+};
+
 } // end namespace pets::actions
 
 hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p ):
   actor_target_data_t( target, p )
 {
   dots.bloodseeker = target -> get_dot( "kill_command", p );
+  dots.bloodshed   = target -> get_dot( "bloodshed", p );
 }
 
 // hunter_pet_t::create_action ==============================================
@@ -1938,8 +1972,13 @@ void hunter_main_pet_t::init_spells()
 {
   hunter_main_pet_base_t::init_spells();
 
+  spells.bloodshed = find_spell( 321538 );
+
   if ( o() -> talents.flanking_strike -> ok() )
     active.flanking_strike = new actions::flanking_strike_t( this );
+
+  if ( o() -> talents.bloodshed -> ok() )
+    active.bloodshed = new actions::bloodshed_t( this );
 }
 
 void dire_critter_t::init_spells()
@@ -3986,6 +4025,50 @@ struct stampede_t: public hunter_spell_t
   }
 };
 
+// Bloodshed ================================================================
+
+struct bloodshed_t : hunter_spell_t
+{
+  bloodshed_t( hunter_t* p, util::string_view options_str ):
+    hunter_spell_t( "bloodshed", p, p -> talents.bloodshed )
+  {
+    parse_options( options_str );
+  }
+
+  void init_finished() override
+  {
+    for ( auto pet : p() -> pet_list )
+      add_pet_stats( pet, { "bloodshed" } );
+
+    hunter_spell_t::init_finished();
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( auto pet = p() -> pets.main )
+    {
+      pet -> active.bloodshed -> set_target( target );
+      pet -> active.bloodshed -> execute();
+    }
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    return p() -> pets.main &&
+           p() -> pets.main -> active.bloodshed -> target_ready( candidate_target ) &&
+           hunter_spell_t::target_ready( candidate_target );
+  }
+
+  bool ready() override
+  {
+    return p() -> pets.main &&
+           p() -> pets.main -> active.bloodshed -> ready() &&
+           hunter_spell_t::ready();
+  }
+};
+
 //==============================
 // Marksmanship spells
 //==============================
@@ -4664,6 +4747,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "barbed_shot"           ) return new            barbed_shot_t( this, options_str );
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
+  if ( name == "bloodshed"             ) return new              bloodshed_t( this, options_str );
   if ( name == "bursting_shot"         ) return new          bursting_shot_t( this, options_str );
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
   if ( name == "carve"                 ) return new                  carve_t( this, options_str );
@@ -4823,7 +4907,7 @@ void hunter_t::init_spells()
   // tier 50
   talents.aspect_of_the_beast               = find_talent_spell( "Aspect of the Beast" );
   talents.killer_cobra                      = find_talent_spell( "Killer Cobra" );
-  talents.bloodshed_                        = find_talent_spell( "Bloodshed" );
+  talents.bloodshed                         = find_talent_spell( "Bloodshed" );
 
   talents.calling_the_shots                 = find_talent_spell( "Calling the Shots" );
   talents.lock_and_load                     = find_talent_spell( "Lock and Load" );
@@ -5384,6 +5468,7 @@ void hunter_t::apl_bm()
   cds -> add_action( "reaping_flames,if=target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30" );
 
   st -> add_action( this, "Kill Shot" );
+  st -> add_talent( this, "Bloodshed" );
   st -> add_action( this, "Barbed Shot", "if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<gcd|cooldown.bestial_wrath.remains&(full_recharge_time<gcd|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd)" );
   st -> add_action( "concentrated_flame,if=focus+focus.regen*gcd<focus.max&buff.bestial_wrath.down&(!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight)|full_recharge_time<gcd|target.time_to_die<5" );
   st -> add_action( this, "Aspect of the Wild", "if=buff.aspect_of_the_wild.down&(cooldown.barbed_shot.charges<1|!azerite.primal_instincts.enabled)" );
