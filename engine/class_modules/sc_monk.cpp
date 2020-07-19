@@ -9844,7 +9844,7 @@ void monk_t::apl_combat_windwalker()
                    "is coming up and you will cap energy soon" );
   def->add_talent( this, "Chi Wave", "if=chi=2&prev_gcd.1.tiger_palm&time<=3" );
   def->add_talent( this, "Chi Burst", "if=chi=2&prev_gcd.1.tiger_palm&time<=3" );
-  def->add_talent( this, "Flying Serpent Kick", "if=chi=2&prev_gcd.1.tiger_palm&time<=3" );
+  def->add_action( this, "Flying Serpent Kick", "if=chi=2&prev_gcd.1.tiger_palm&time<=3" );
   def->add_action( "call_action_list,name=cd_serenity,if=talent.serenity.enabled" );
   def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity.enabled" );
   def->add_action( "call_action_list,name=serenity,if=buff.serenity.up",
