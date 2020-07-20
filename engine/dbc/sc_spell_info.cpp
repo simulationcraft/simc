@@ -124,50 +124,38 @@ std::string map_string( const util::static_map<T, util::string_view, N>& map, T 
   return fmt::format( "Unknown({})", key );
 }
 
-std::string hotfix_map_str( uint64_t hotfix,
-                            util::span<const hotfix::client_hotfix_entry_t> hotfixes,
+std::string hotfix_map_str( util::span<const hotfix::client_hotfix_entry_t> hotfixes,
                             util::static_map_view<unsigned, util::string_view> map )
 {
-  if ( hotfix == 0 )
-    return {};
-
   fmt::memory_buffer buf;
-  for ( unsigned i = 0; i < sizeof( hotfix ) * 8; ++i )
+  for ( const auto& hotfix : hotfixes )
   {
-    uint64_t shift = uint64_t( 1 ) << i;
-    if ( ( hotfix & shift ) == 0 )
-      continue;
-
     if ( buf.size() > 0 )
       fmt::format_to( buf, ", " );
 
-    auto entry = map.find( i );
+    auto entry = map.find( hotfix.field_id );
     if ( entry == map.end() )
-    {
-      fmt::format_to( buf, "Unknown({})", i );
-    }
+      fmt::format_to( buf, "Unknown({})", hotfix.field_id );
     else
-    {
       fmt::format_to( buf, "{}", entry -> second );
-      auto hotfix_entry = range::find( hotfixes, i, &hotfix::client_hotfix_entry_t::field_id );
-      if ( hotfix_entry != hotfixes.end() )
-      {
-        switch ( hotfix_entry -> field_type )
-        {
-          case hotfix::UINT:
-            fmt::format_to( buf, " ({} -> {})", hotfix_entry -> orig_value.u, hotfix_entry -> hotfixed_value.u );
-            break;
-          case hotfix::INT:
-            fmt::format_to( buf, " ({} -> {})", hotfix_entry -> orig_value.i, hotfix_entry -> hotfixed_value.i );
-            break;
-          case hotfix::FLOAT:
-            fmt::format_to( buf, " ({} -> {})", hotfix_entry -> orig_value.f, hotfix_entry -> hotfixed_value.f );
-            break;
-          // Don't print out the changed string for now, seems pointless
-          case hotfix::STRING:
-            break;
-        }
-      }
+
+    switch ( hotfix.field_type )
+    {
+      case hotfix::UINT:
+        fmt::format_to( buf, " ({} -> {})", hotfix.orig_value.u, hotfix.hotfixed_value.u );
+        break;
+      case hotfix::INT:
+        fmt::format_to( buf, " ({} -> {})", hotfix.orig_value.i, hotfix.hotfixed_value.i );
+        break;
+      case hotfix::FLOAT:
+        fmt::format_to( buf, " ({} -> {})", hotfix.orig_value.f, hotfix.hotfixed_value.f );
+        break;
+      // Don't print out the changed string for now, seems pointless
+      case hotfix::STRING:
+        break;
+      // Don't print out changed flags either (as there is no data for them)
+      case hotfix::FLAGS:
+        break;
     }
   }
 
@@ -197,33 +185,6 @@ std::string concatenate( Range&& data,
   }
 
   return s.str();
-}
-
-std::string spell_hotfix_map_str( const dbc_t& dbc, const spell_data_t* spell )
-{
-  if ( spell -> _hotfix == dbc::HOTFIX_SPELL_NEW )
-  {
-    return "NEW SPELL";
-  }
-  return hotfix_map_str( spell -> _hotfix, dbc.hotfixes( spell ), _hotfix_spell_map );
-}
-
-std::string effect_hotfix_map_str( const dbc_t& dbc, const spelleffect_data_t* effect )
-{
-  if ( effect -> _hotfix == dbc::HOTFIX_EFFECT_NEW )
-  {
-    return "NEW EFFECT";
-  }
-  return hotfix_map_str( effect -> _hotfix, dbc.hotfixes( effect ), _hotfix_effect_map );
-}
-
-std::string power_hotfix_map_str( const dbc_t& dbc, const spellpower_data_t* power )
-{
-  if ( power -> _hotfix == dbc::HOTFIX_POWER_NEW )
-  {
-    return "NEW POWER";
-  }
-  return hotfix_map_str( power -> _hotfix, dbc.hotfixes( power ), _hotfix_power_map );
 }
 
 struct proc_map_entry_t {
@@ -1180,13 +1141,14 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     }
   }
 
-  if ( e -> _hotfix != 0 )
+  const auto hotfixes = dbc.hotfixes( e );
+  if ( hotfixes.size() > 0 )
   {
-    s << "                   Hotfixed: ";
-    s << effect_hotfix_map_str( dbc, e );
-    s << std::endl;
+    if ( hotfixes.front().field_id == hotfix::NEW_ENTRY )
+      fmt::print( s, "Hotfixed         : NEW EFFECT\n" );
+    else
+      fmt::print( s, "Hotfixed         : {}\n", hotfix_map_str( hotfixes, _hotfix_effect_map ) );
   }
-
 
   s.precision( ssize );
 
@@ -1210,13 +1172,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     name_str += " (rank=" + std::string( spell -> rank_str() ) + ")";
   s <<   "Name             : " << name_str << " (id=" << spell -> id() << ") " << spell_flags( spell ) << std::endl;
 
-  if ( spell -> _hotfix != 0 )
+  const auto hotfixes = dbc.hotfixes( spell );
+  if ( hotfixes.size() > 0 )
   {
-    auto hotfix_str = spell_hotfix_map_str( dbc, spell );
-    if ( ! hotfix_str.empty() )
-    {
-      s << "Hotfixed         : " << hotfix_str << std::endl;
-    }
+    if ( hotfixes.front().field_id == hotfix::NEW_ENTRY )
+      fmt::print( s, "Hotfixed         : NEW SPELL\n" );
+    else
+      fmt::print( s, "Hotfixed         : {}\n", hotfix_map_str( hotfixes, _hotfix_spell_map ) );
   }
 
   if ( spell -> replace_spell_id() > 0 )
@@ -1340,13 +1302,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( pd.aura_id() > 0 && dbc.spell( pd.aura_id() ) -> id() == pd.aura_id() )
       s << " w/ " << dbc.spell( pd.aura_id() ) -> name_cstr() << " (id=" << pd.aura_id() << ")";
 
-    if ( pd._hotfix != 0 )
+    const auto hotfixes = dbc.hotfixes( &pd );
+    if ( hotfixes.size() > 0 )
     {
-      auto hotfix_str = power_hotfix_map_str( dbc, &pd );
-      if ( ! hotfix_str.empty() )
-      {
-        s << " [Hotfixed: " << hotfix_str << "]";
-      }
+      if ( hotfixes.front().field_id == hotfix::NEW_ENTRY )
+        fmt::print( s, "[Hotfixed: NEW POWER]" );
+      else
+        fmt::print( s, "[Hotfixed: {}]", hotfix_map_str( hotfixes, _hotfix_power_map ) );
     }
 
     s << std::endl;

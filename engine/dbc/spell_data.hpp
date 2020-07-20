@@ -59,7 +59,6 @@ struct spellpower_data_t
   unsigned _id;
   unsigned _spell_id;
   unsigned _aura_id; // Spell id for the aura during which this power type is active
-  unsigned _hotfix;
   int      _power_type;
   int      _cost;
   int      _cost_max;
@@ -144,9 +143,6 @@ struct spellpower_data_t
 struct spelleffect_data_t
 {
   unsigned         _id;              // 1 Effect id
-  unsigned         _hotfix;          // 2 Hotfix bitmap
-                                     //   Each bit points to a field in this struct, starting from
-                                     //   the first field
   unsigned         _spell_id;        // 3 Spell this effect belongs to
   unsigned         _index;           // 4 Effect index for the spell
   unsigned         _type;            // 5 Effect type
@@ -369,11 +365,6 @@ struct spell_data_t
 {
   const char* _name;               // 1 Spell name from Spell.dbc stringblock (enGB)
   unsigned    _id;                 // 2 Spell ID in dbc
-  uint64_t    _hotfix;             // 3 Hotfix bitmap
-                                   //   Each field points to a field in this struct, starting from
-                                   //   the first field. The most significant bit
-                                   //   (0x8000 0000 0000 0000) indicates the presence of hotfixed
-                                   //   effect data for this spell.
   double      _prj_speed;          // 4 Projectile Speed
   unsigned    _school;             // 5 Spell school mask
   unsigned    _class_mask;         // 6 Class mask for spell
