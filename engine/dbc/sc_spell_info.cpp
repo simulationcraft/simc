@@ -34,97 +34,86 @@ static constexpr std::array<util::string_view, 7> _school_map { {
   "Arcane",
 } };
 
-static constexpr std::array<util::string_view, 28> _hotfix_effect_map { {
-  "Id",
-  "", // Hotfix field
-  "Spell Id",
-  "Index",
-  "Type",
-  "Sub Type",
-  "Coefficient",
-  "Delta",
-  "Bonus",
-  "SP Coefficient",
-  "AP Coefficient",
-  "Period",
-  "Min Radius",
-  "Max Radius",
-  "Base Value",
-  "Misc Value",
-  "Misc Value 2",
-  "Affects Spells",
-  "Trigger Spell",
-  "Chain Multiplier",
-  "Points per Combo Points",
-  "Points per Level",
-  "Mechanic",
-  "Chain Targets",
-  "Target 1",
-  "Target 2",
-  "Value Multiplier",
-  "PvP Coefficient"
-} };
+static constexpr auto _hotfix_effect_map = util::make_static_map<unsigned, util::string_view>( {
+  {  3, "Index" },
+  {  4, "Type" },
+  {  5, "Sub Type" },
+  {  6, "Coefficient" },
+  {  7, "Delta" },
+  {  8, "Bonus" },
+  {  9, "SP Coefficient" },
+  { 10, "AP Coefficient" },
+  { 11, "Period" },
+  { 12, "Min Radius" },
+  { 13, "Max Radius" },
+  { 14, "Base Value" },
+  { 15, "Misc Value" },
+  { 16, "Misc Value 2" },
+  { 17, "Affects Spells" },
+  { 18, "Trigger Spell" },
+  { 19, "Chain Multiplier" },
+  { 20, "Points per Combo Points" },
+  { 21, "Points per Level" },
+  { 22, "Mechanic" },
+  { 23, "Chain Targets" },
+  { 24, "Target 1" },
+  { 25, "Target 2" },
+  { 26, "Value Multiplier" },
+  { 27, "PvP Coefficient" }
+} );
 
-static constexpr std::array<util::string_view, 48> _hotfix_spell_map { {
-  "Name",
-  "Id",
-  "", // Hotfix field
-  "Velocity",
-  "School",
-  "Class",
-  "Race",
-  "Scaling Spell",
-  "Max Scaling Level",
-  "Spell Level",
-  "Max Spell Level",
-  "Min Range",
-  "Max Range",
-  "Cooldown",
-  "GCD",
-  "Category Cooldown",
-  "Charges",
-  "Charge Cooldown",
-  "Category",
-  "Duration",
-  "Max stacks",
-  "Proc Chance",
-  "Proc Stacks",
-  "Proc Flags",
-  "Internal Cooldown",
-  "RPPM",
-  "", "", "", // Equipped items stuff, don't think we use these anywhere
-  "Min Cast Time",
-  "Max Cast Time",
-  "", "", "", // Old cast-time related fields, now zero (cast_div, cast_scaling, cast_scaling_type)
-  "", // Replace spell id, we're not flagging these as it's derived information
-  "Attributes",
-  "Affecting Spells",
-  "Spell Family",
-  "Stance Mask",
-  "Mechanic",
-  "Azerite Power Id",
-  "Azerite Essence Id",
-  "Description",
-  "Tooltip",
-  "Variables",
-  "Rank",
-  "Required Max Level",
-  "Spell Type"
-} };
+static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::string_view>( {
+  {  0, "Name" },
+  {  3, "Velocity" },
+  {  4, "School" },
+  {  5, "Class" },
+  {  6, "Race" },
+  {  7, "Scaling Spell" },
+  {  8, "Max Scaling Level" },
+  {  9, "Spell Level" },
+  { 10, "Max Spell Level" },
+  { 11, "Min Range" },
+  { 12, "Max Range" },
+  { 13, "Cooldown" },
+  { 14, "GCD" },
+  { 15, "Category Cooldown" },
+  { 16, "Charges" },
+  { 17, "Charge Cooldown" },
+  { 18, "Category" },
+  { 19, "Duration" },
+  { 20, "Max stacks" },
+  { 21, "Proc Chance" },
+  { 22, "Proc Stacks" },
+  { 23, "Proc Flags" },
+  { 24, "Internal Cooldown" },
+  { 25, "RPPM" },
+  { 29, "Min Cast Time" },
+  { 30, "Max Cast Time" },
+  { 35, "Attributes" },
+  { 36, "Affecting Spells" },
+  { 37, "Spell Family" },
+  { 38, "Stance Mask" },
+  { 39, "Mechanic" },
+  { 40, "Azerite Power Id" },
+  { 41, "Azerite Essence Id" },
+  { 42, "Description" },
+  { 43, "Tooltip" },
+  { 44, "Variables" },
+  { 45, "Rank" },
+  { 46, "Required Max Level" },
+  { 47, "Spell Type" },
+} );
 
-static constexpr std::array<util::string_view, 11> _hotfix_power_map { {
-  "Id",
-  "Spell Id",
-  "Aura Id",
-  "", // Hotfix flags
-  "Power Type",
-  "Cost",
-  "Max Cost",
-  "Cost per Tick",
-  "Percent Cost",
-  "Max Percent Cost",
-  "Percent Cost per Tick"
-} };
+static constexpr auto _hotfix_power_map = util::make_static_map<unsigned, util::string_view>( {
+  {  2, "Aura Id" },
+  {  4, "Power Type" },
+  {  5, "Cost" },
+  {  6, "Max Cost" },
+  {  7, "Cost per Tick" },
+  {  8, "Percent Cost" },
+  {  9, "Max Percent Cost" },
+  { 10, "Percent Cost per Tick" }
+} );
 
 template <typename T, size_t N>
 std::string map_string( const util::static_map<T, util::string_view, N>& map, T key )
@@ -135,35 +124,31 @@ std::string map_string( const util::static_map<T, util::string_view, N>& map, T 
   return fmt::format( "Unknown({})", key );
 }
 
-template <typename MAP_TYPE, typename DATA_TYPE, size_t N>
-std::string hotfix_map_str( const dbc_t& dbc, const DATA_TYPE* data, const std::array<util::string_view, N>& map )
+std::string hotfix_map_str( uint64_t hotfix,
+                            util::span<const hotfix::client_hotfix_entry_t> hotfixes,
+                            util::static_map_view<unsigned, util::string_view> map )
 {
-  if ( data -> _hotfix == 0 )
-  {
+  if ( hotfix == 0 )
     return {};
-  }
 
-  const auto hotfixes = dbc.hotfixes( data );
   fmt::memory_buffer buf;
-  for ( size_t i = 0; i < map.size(); ++i )
+  for ( unsigned i = 0; i < sizeof( hotfix ) * 8; ++i )
   {
-    MAP_TYPE shift = (static_cast<MAP_TYPE>( 1 ) << i);
-
-    if ( ! ( data -> _hotfix & shift ) )
-    {
+    uint64_t shift = uint64_t( 1 ) << i;
+    if ( ( hotfix & shift ) == 0 )
       continue;
-    }
 
     if ( buf.size() > 0 )
       fmt::format_to( buf, ", " );
 
-    if ( map[ i ].empty() )
+    auto entry = map.find( i );
+    if ( entry == map.end() )
     {
       fmt::format_to( buf, "Unknown({})", i );
     }
     else
     {
-      fmt::format_to( buf, "{}", map[ i ] );
+      fmt::format_to( buf, "{}", entry -> second );
       auto hotfix_entry = range::find( hotfixes, i, &hotfix::client_hotfix_entry_t::field_id );
       if ( hotfix_entry != hotfixes.end() )
       {
@@ -220,7 +205,7 @@ std::string spell_hotfix_map_str( const dbc_t& dbc, const spell_data_t* spell )
   {
     return "NEW SPELL";
   }
-  return hotfix_map_str<uint64_t>( dbc, spell, _hotfix_spell_map );
+  return hotfix_map_str( spell -> _hotfix, dbc.hotfixes( spell ), _hotfix_spell_map );
 }
 
 std::string effect_hotfix_map_str( const dbc_t& dbc, const spelleffect_data_t* effect )
@@ -229,7 +214,7 @@ std::string effect_hotfix_map_str( const dbc_t& dbc, const spelleffect_data_t* e
   {
     return "NEW EFFECT";
   }
-  return hotfix_map_str<unsigned>( dbc, effect, _hotfix_effect_map );
+  return hotfix_map_str( effect -> _hotfix, dbc.hotfixes( effect ), _hotfix_effect_map );
 }
 
 std::string power_hotfix_map_str( const dbc_t& dbc, const spellpower_data_t* power )
@@ -238,7 +223,7 @@ std::string power_hotfix_map_str( const dbc_t& dbc, const spellpower_data_t* pow
   {
     return "NEW POWER";
   }
-  return hotfix_map_str<unsigned>( dbc, power, _hotfix_power_map );
+  return hotfix_map_str( power -> _hotfix, dbc.hotfixes( power ), _hotfix_power_map );
 }
 
 struct proc_map_entry_t {

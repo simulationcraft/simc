@@ -9,6 +9,8 @@
 #include <cstddef>
 #include <utility>
 
+#include "util/span.hpp"
+
 namespace util {
 namespace detail {
 
@@ -74,9 +76,12 @@ constexpr array<T, N> sorted(const array<T, N>& items, Compare cmp = {}) {
 }
 
 template <typename T, size_t N, typename U, typename Compare = less>
-constexpr const T* lower_bound(const array<T, N>& items, const U& value, Compare cmp = {}) {
+constexpr const T* lower_bound(util::span<const T, N> items, const U& value, Compare cmp = {}) {
+  if (items.empty())
+    return items.end();
+
   size_t l = 0;
-  size_t r = N - 1;
+  size_t r = items.size() - 1;
   while (l != r) {
     const size_t mid = (l + r + 1) / 2;
     if (cmp(value, items[mid]))
@@ -156,18 +161,44 @@ public:
 
   constexpr size_t size() const { return 0; }
   constexpr bool empty() const { return true; }
+};
 
-  template <typename U>
-  constexpr iterator find(const U&) const { return end(); }
-  template <typename U>
-  constexpr bool contains(const U&) const { return false; }
+template <typename T>
+class static_set_view_base {
+public:
+  using value_type      = T;
+  using size_type       = size_t;
+  using difference_type = ptrdiff_t;
+  using reference       = const value_type&;
+  using const_reference = reference;
+  using pointer         = const value_type*;
+  using const_pointer   = pointer;
+  using iterator        = pointer;
+  using const_iterator  = pointer;
+
+  template <size_t N>
+  constexpr explicit static_set_view_base(const static_set_base<value_type, N>& set)
+    : data_(set.begin(), N)
+  {}
+
+  constexpr iterator begin() const { return cbegin(); }
+  constexpr iterator cbegin() const { return data_.begin(); }
+
+  constexpr iterator end() const { return cend(); }
+  constexpr iterator cend() const { return data_.end(); }
+
+  constexpr size_t size() const { return data_.size(); }
+  constexpr bool empty() const { return data_.empty(); }
+
+protected:
+  util::span<const value_type> data_;
 };
 
 } // namespace detail
 
-template <typename Key, typename T, size_t N>
-class static_map : public detail::static_set_base<std::pair<Key, T>, N> {
-  using base = detail::static_set_base<std::pair<Key, T>, N>;
+template <typename Key, typename T>
+class static_map_view : public detail::static_set_view_base<std::pair<Key, T>> {
+  using base = detail::static_set_view_base<std::pair<Key, T>>;
 public:
   using key_type    = Key;
   using mapped_type = T;
@@ -184,11 +215,27 @@ public:
   }
 };
 
-template <typename Key, typename T>
-class static_map<Key, T, 0> : public detail::static_set_base<std::pair<Key, T>, 0> {
+template <typename Key, typename T, size_t N>
+class static_map : public detail::static_set_base<std::pair<Key, T>, N> {
+  using base = detail::static_set_base<std::pair<Key, T>, N>;
+  using view_type = static_map_view<Key, T>;
 public:
   using key_type    = Key;
   using mapped_type = T;
+
+  using base::base;
+
+  constexpr typename base::iterator find(const Key& key) const {
+    return view_type(*this).find(key);
+  }
+
+  constexpr bool contains(const Key& key) const {
+    return view_type(*this).contains(key);
+  }
+
+  constexpr operator view_type() const {
+    return view_type(*this);
+  }
 };
 
 template <typename T, typename U>
@@ -201,9 +248,9 @@ constexpr auto make_static_map(const std::pair<T, U> (&items)[N]) -> static_map<
   return { detail::to_array<std::pair<T, U>>(items) };
 }
 
-template <typename T, size_t N>
-class static_set : public detail::static_set_base<T, N> {
-  using base = detail::static_set_base<T, N>;
+template <typename T>
+class static_set_view : public detail::static_set_view_base<T> {
+  using base = detail::static_set_view_base<T>;
 public:
   using base::base;
 
@@ -217,8 +264,25 @@ public:
   }
 };
 
-template <typename T>
-class static_set<T, 0> : public detail::static_set_base<T, 0> {};
+template <typename T, size_t N>
+class static_set : public detail::static_set_base<T, N> {
+  using base = detail::static_set_base<T, N>;
+  using view_type = static_set_view<T>;
+public:
+  using base::base;
+
+  constexpr typename base::iterator find(const T& value) const {
+    return view_type(*this).find(value);
+  }
+
+  constexpr bool contains(const T& value) const {
+    return view_type(*this).contains(value);
+  }
+
+  constexpr operator view_type() const {
+    return view_type(*this);
+  }
+};
 
 template <typename T>
 constexpr auto make_static_set(detail::dummy = {}) -> static_set<T, 0> {
