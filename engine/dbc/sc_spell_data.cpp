@@ -44,7 +44,6 @@ const sdata_field_t _talent_data_fields[] =
 const sdata_field_t _effect_data_fields[] =
 {
   { SD_TYPE_UNSIGNED, "id",             O_SED( _id )              },
-  { SD_TYPE_UNSIGNED, "hotfix",         O_SED( _hotfix )          },
   { SD_TYPE_UNSIGNED, "spell_id",       O_SED( _spell_id )        },
   { SD_TYPE_UNSIGNED, "index",          O_SED( _index )           },
   { SD_TYPE_INT,      "type",           O_SED( _type )            },
@@ -77,7 +76,6 @@ const sdata_field_t _spell_data_fields[] =
 {
   { SD_TYPE_STR,      "name",              O_SD( _name )                   },
   { SD_TYPE_UNSIGNED, "id",                O_SD( _id )                     },
-  { SD_TYPE_UINT64,   "hotfix",            O_SD( _hotfix )                 },
   { SD_TYPE_DOUBLE,   "speed",             O_SD( _prj_speed )              },
   { SD_TYPE_INT,      "scaling",           O_SD( _scaling_type )           },
   { SD_TYPE_UNSIGNED, "max_scaling_level", O_SD( _max_scaling_level )      },

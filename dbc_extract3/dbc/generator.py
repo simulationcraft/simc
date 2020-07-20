@@ -7,14 +7,8 @@ import dbc.db, dbc.data, dbc.parser, dbc.file
 from dbc import constants, util
 from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet
 
-# Special hotfix flags for spells to mark that the spell has hotfixed effects or powers
-SPELL_EFFECT_HOTFIX_PRESENT = 0x8000000000000000
-SPELL_POWER_HOTFIX_PRESENT  = 0x4000000000000000
-
-# Special hotfix map values to indicate an entry is new (added completely through the hotfix entry)
-SPELL_HOTFIX_MAP_NEW  = 0xFFFFFFFFFFFFFFFF
-EFFECT_HOTFIX_MAP_NEW = 0xFFFFFFFF
-POWER_HOTFIX_MAP_NEW  = 0xFFFFFFFF
+# Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
+HOTFIX_MAP_NEW_ENTRY  = 0xFFFFFFFF
 
 def escape_string(tmpstr):
     tmpstr = tmpstr.replace("\\", "\\\\")
@@ -24,43 +18,92 @@ def escape_string(tmpstr):
 
     return tmpstr
 
-def output_hotfixes(generator, data_str, hotfix_data):
-    generator._out.write('// %d %s hotfix entries, wow build level %s\n' % (
-        len(hotfix_data.keys()), data_str, generator._options.build ))
-    generator._out.write('static constexpr std::array<hotfix::client_hotfix_entry_t, %d> __%s%s_hotfix%s_data { {\n' % (
-        sum( len(entries) for entries in hotfix_data.values() ),
-        generator._options.prefix and ('%s_' % generator._options.prefix) or '',
-        data_str,
-        generator._options.suffix and ('_%s' % generator._options.suffix) or ''
-    ))
+class HotfixDataRecord(object):
+    def __init__(self):
+        self._new_entry = False
+        self._data = []
+        self._map_indices = set()
 
-    for id, entry in sorted(hotfix_data.items()):
-        for field_id, field_format, orig_field_value, new_field_value in entry:
-            orig_data_str = ''
-            cur_data_str = ''
-            if field_format in ['I', 'H', 'B']:
-                orig_data_str = '%uU' % orig_field_value
-                cur_data_str = '%uU' % new_field_value
-            elif field_format in ['i', 'h', 'b']:
-                orig_data_str = '%d' % orig_field_value
-                cur_data_str = '%d' % new_field_value
-            elif field_format in ['f']:
-                orig_data_str = '%f' % orig_field_value
-                cur_data_str = '%f' % new_field_value
+    def add(self, record, *args):
+        if self._new_entry:
+            return
+
+        for field_name, map_index in args:
+            if map_index in self._map_indices:
+                raise ValueError('Duplicate hotfix data map_index: {}'.format(map_index))
+            self._map_indices.add(map_index)
+
+            if isinstance(field_name, tuple):
+                fields = ((n, map_index) for n in field_name)
+                flags = record.get_hotfix_info(*fields)[0]
+                if flags != 0:
+                    self._data.append((map_index, 'X', 0, 0))
             else:
-                if orig_field_value == 0:
-                    orig_data_str = 'nullptr'
-                else:
-                    orig_data_str = '"%s"' % escape_string(orig_field_value)
-                if new_field_value == 0:
-                    cur_data_str = 'nullptr'
-                else:
-                    cur_data_str = '"%s"' % escape_string(new_field_value)
-            generator._out.write('  { %6u, %2u, %s, %s },\n' % (
-                id, field_id, orig_data_str, cur_data_str
-            ))
+                self._data += record.get_hotfix_info((field_name, map_index))[1]
 
-    generator._out.write('} };\n\n')
+    @property
+    def new_entry(self):
+        return self._new_entry
+
+    @new_entry.setter
+    def new_entry(self, value):
+        if value == True and self._new_entry != value:
+            self._new_entry = value
+            self._data = [(HOTFIX_MAP_NEW_ENTRY, 'i', 0, 0)]
+
+    @property
+    def data(self):
+        return self._data
+
+class HotfixDataGenerator(object):
+    def __init__(self, name):
+        assert isinstance(name, str)
+        self._name = name
+        self._data = {}
+
+    def add(self, id, record):
+        if len(record.data) > 0:
+            logging.debug('Hotfixed {} {}, original values: {}'.format(self._name, id, record.data))
+            self._data[id] = record.data
+
+    def output(self, generator):
+        generator._out.write('// {} hotfix entries, wow build {}\n'.format(
+            self._name, generator._options.build ))
+        generator._out.write('static constexpr std::array<hotfix::client_hotfix_entry_t, {}> __{}_data {{ {{\n'.format(
+            sum( len(entries) for entries in self._data.values() ),
+            generator.format_str(self._name + '_hotfix') ))
+
+        for id, entry in sorted(self._data.items()):
+            for field_id, field_format, orig_field_value, new_field_value in sorted(entry, key=lambda e: e[0]):
+                orig_data_str = ''
+                cur_data_str = ''
+                if field_format in ['I', 'H', 'B']:
+                    orig_data_str = '%uU' % orig_field_value
+                    cur_data_str = '%uU' % new_field_value
+                elif field_format in ['i', 'h', 'b']:
+                    orig_data_str = '%d' % orig_field_value
+                    cur_data_str = '%d' % new_field_value
+                elif field_format in ['f']:
+                    orig_data_str = '%f' % orig_field_value
+                    cur_data_str = '%f' % new_field_value
+                elif field_format in ['X']:
+                    orig_data_str = 'hotfix::client_hotfix_entry_t::flags_value_t{}'
+                    cur_data_str = orig_data_str
+                else:
+                    if orig_field_value == 0:
+                        orig_data_str = 'nullptr'
+                    else:
+                        orig_data_str = '"%s"' % escape_string(orig_field_value)
+                    if new_field_value == 0:
+                        cur_data_str = 'nullptr'
+                    else:
+                        cur_data_str = '"%s"' % escape_string(new_field_value)
+                generator._out.write('  { %7u, %2u, %s, %s },\n' % (
+                    id, field_id, orig_data_str, cur_data_str
+                ))
+
+        generator._out.write('} };\n\n')
+
 
 class CSVDataGenerator(object):
     def __init__(self, options, csvs, base_type = None):
@@ -2663,9 +2706,9 @@ class SpellDataGenerator(DataGenerator):
         spelldriver_index = defaultdict(set)
 
         # Hotfix data for spells, effects, powers
-        spell_hotfix_data = {}
-        effect_hotfix_data = {}
-        power_hotfix_data = {}
+        spell_hotfix_data = HotfixDataGenerator('spell')
+        effect_hotfix_data = HotfixDataGenerator('effect')
+        power_hotfix_data = HotfixDataGenerator('power')
 
         for id in id_keys:
             spell = self.db('SpellName')[id]
@@ -2707,8 +2750,7 @@ class SpellDataGenerator(DataGenerator):
         index = 0
         for id in id_keys:
             spell = self._spellname_db[id]
-            hotfix_flags = 0
-            hotfix_data = []
+            hotfix = HotfixDataRecord()
             power_count = 0
 
             if not spell.id and id > 0:
@@ -2720,8 +2762,6 @@ class SpellDataGenerator(DataGenerator):
             for power in spell.children('SpellPower'):
                 power_count += 1
                 powers.append( power )
-                if power.is_hotfixed():
-                    hotfix_flags |= SPELL_POWER_HOTFIX_PRESENT
 
             if self._options.build < 25600:
                 misc = self._spellmisc_db[spell.id_misc]
@@ -2734,113 +2774,75 @@ class SpellDataGenerator(DataGenerator):
             # 1, 2
             sname = self._spellname_db[id]
             fields = sname.field('name', 'id')
-            f, hfd = sname.get_hotfix_info(('name', 0))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            hotfix.add(sname, ('name', 0))
 
-            assert len(fields) == 2
-            # 3
-            fields += [ u'%#.16x' % 0 ]
-            assert len(fields) == 3
             # 4, 5
             fields += misc.field('proj_speed', 'school')
-            f, hfd = misc.get_hotfix_info(('proj_speed', 3), ('school', 4))
-            hotfix_flags |= f
-            hotfix_data += hfd
-            assert len(fields) == 5
+            hotfix.add(misc, ('proj_speed', 3), ('school', 4))
 
             # Hack in the combined class from the id_tuples dict
             # 6, 7
             fields += [ u'%#.8x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_class'] ]
             fields += [ u'%#.16x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_race'] ]
-            assert len(fields) == 7
 
             # Set the scaling index for the spell
             # 8, 9
             fields += spell.get_link('scaling').field('id_class', 'max_scaling_level')
-            f, hfd = spell.get_link('scaling').get_hotfix_info(('id_class', 7), ('max_scaling_level', 8))
-            hotfix_flags |= f
-            hotfix_data += hfd
-            assert len(fields) == 9
-
-            #fields += spell.field('extra_coeff')
+            hotfix.add(spell.get_link('scaling'), ('id_class', 7), ('max_scaling_level', 8))
 
             # 10, 11
             fields += spell.get_link('level').field('base_level', 'max_level')
-            f, hfd = spell.get_link('level').get_hotfix_info(('base_level', 9), ('max_level', 10))
-            hotfix_flags |= f
-            hotfix_data += hfd
-            assert len(fields) == 11
+            hotfix.add(spell.get_link('level'), ('base_level', 9), ('max_level', 10))
+
             # 12, 13
             range_entry = self._spellrange_db[misc.id_range]
             fields += range_entry.field('min_range_1', 'max_range_1')
-            f, hfd = range_entry.get_hotfix_info(('min_range_1', 11), ('max_range_1', 12))
-            hotfix_flags |= f
-            hotfix_data += hfd
-            assert len(fields) == 13
+            hotfix.add(range_entry, ('min_range_1', 11), ('max_range_1', 12))
+
             # 14, 15, 16
             fields += spell.get_link('cooldown').field('cooldown_duration', 'gcd_cooldown', 'category_cooldown')
-            f, hfd = spell.get_link('cooldown').get_hotfix_info(('cooldown_duration', 13), ('gcd_cooldown', 14), ('category_cooldown', 15))
-            hotfix_flags |= f
-            hotfix_data += hfd
-            assert len(fields) == 16
+            hotfix.add(spell.get_link('cooldown'), ('cooldown_duration', 13), ('gcd_cooldown', 14), ('category_cooldown', 15))
+
             # 17, 18
             category = spell.get_link('categories')
             category_data = self._spellcategory_db[category.charge_category]
 
             fields += category_data.field('charges', 'charge_cooldown')
-            f, hfd = category_data.get_hotfix_info(('charges', 16), ('charge_cooldown', 17))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            hotfix.add(category_data, ('charges', 16), ('charge_cooldown', 17))
             # 19
             if category.charge_category > 0: # Note, some spells have both cooldown and charge categories
                 fields += category.field('charge_category')
-                f, hfd = category.get_hotfix_info(('charge_category', 18))
-                hotfix_flags |= f
-                hotfix_data += hfd
+                hotfix.add(category, ('charge_category', 18))
             else:
                 fields += category.field('cooldown_category')
-                f, hfd = category.get_hotfix_info(('cooldown_category', 18))
-                hotfix_flags |= f
-                hotfix_data += hfd
-            assert len(fields) == 19
+                hotfix.add(category, ('cooldown_category', 18))
 
             # 20
             duration_entry = self._spellduration_db[misc.id_duration]
             fields += duration_entry.field('duration_1')
-            f, hfd = duration_entry.get_hotfix_info(('duration_1', 19))
-            hotfix_flags |= f
-            hotfix_data += hfd
-            assert len(fields) == 20
+            hotfix.add(duration_entry, ('duration_1', 19))
+
             # 21, 22, 23, 24, 25
             fields += spell.get_link('aura_option').field('stack_amount', 'proc_chance', 'proc_charges', 'proc_flags_1', 'internal_cooldown')
-            f, hfd = spell.get_link('aura_option').get_hotfix_info(
+            hotfix.add(spell.get_link('aura_option'),
                     ('stack_amount', 20), ('proc_chance', 21), ('proc_charges', 22),
                     ('proc_flags_1', 23), ('internal_cooldown', 24))
-            hotfix_flags |= f
-            hotfix_data += hfd
-            assert len(fields) == 25
+
             # 26
             ppm_entry = self._spellprocsperminute_db[spell.get_link('aura_option').id_ppm]
             fields += ppm_entry.field('ppm')
-            f, hfd = ppm_entry.get_hotfix_info(('ppm', 25))
-            hotfix_flags |= f
-            hotfix_data += hfd
-            assert len(fields) == 26
+            hotfix.add(ppm_entry, ('ppm', 25))
+
 
             # 27, 28, 29
             fields += spell.get_link('equipped_item').field('item_class', 'mask_inv_type', 'mask_sub_class')
-            f, hfd = spell.get_link('equipped_item').get_hotfix_info(
+            hotfix.add(spell.get_link('equipped_item'),
                 ('item_class', 26), ('mask_inv_type', 27), ('mask_sub_class', 28))
-            hotfix_flags |= f
-            hotfix_data += hfd
 
             cast_times = self._spellcasttimes_db[misc.id_cast_time]
             # 30, 31
             fields += cast_times.field('min_cast_time', 'cast_time')
-            f, hfd = cast_times.get_hotfix_info(('min_cast_time', 29), ('cast_time', 30))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            hotfix.add(cast_times, ('min_cast_time', 29), ('cast_time', 30))
             # 32, 33, 34
             fields += [u'0', u'0', u'0'] # cast_div, c_scaling, c_scaling_threshold
 
@@ -2850,46 +2852,27 @@ class SpellDataGenerator(DataGenerator):
             else:
                 fields += [ '%6u' % 0 ]
 
-            # Check if effects have hotfixed data, later on we use a special
-            # bitflag (0x8000 0000 0000 0000) to mark effect hotfix presence for spells.
-            effect_ids = spelleffect_index.get(id, ())
-            for effect_id in effect_ids:
-                effect = self.db('SpellEffect')[effect_id]
-                if effect and effect.is_hotfixed():
-                    hotfix_flags |= SPELL_EFFECT_HOTFIX_PRESENT
-
             # Add spell flags
             # 35
             fields += [ '{ %s }' % ', '.join(misc.field('flags_1', 'flags_2', 'flags_3', 'flags_4',
                 'flags_5', 'flags_6', 'flags_7', 'flags_8', 'flags_9', 'flags_10', 'flags_11',
                 'flags_12', 'flags_13', 'flags_14')) ]
             # Note, bunch up the flags checking into one field,
-            f, hfd = misc.get_hotfix_info(('flags_1', 35), ('flags_2', 35), ('flags_3', 35),
-                ('flags_4', 35), ('flags_5', 35), ('flags_6', 35), ('flags_7', 35), ('flags_8', 35),
-                ('flags_9', 35), ('flags_10', 35), ('flags_11', 35), ('flags_12', 35),
-                ('flags_13', 35), ('flags_14', 35))
-            hotfix_flags |= f
-            #hotfix_data += hfd
+            hotfix.add(misc,
+                (('flags_1', 'flags_2', 'flags_3',  'flags_4',  'flags_5',  'flags_6',  'flags_7',
+                  'flags_8', 'flags_9', 'flags_10', 'flags_11', 'flags_12', 'flags_13', 'flags_14'), 35))
             # 36, 37
             fields += [ '{ %s }' % ', '.join(spell.get_link('class_option').field('flags_1', 'flags_2', 'flags_3', 'flags_4')) ]
             fields += spell.get_link('class_option').field('family')
-            f, hfd = spell.get_link('class_option').get_hotfix_info(('flags_1', 36), ('flags_2', 36),
-                ('flags_3', 36), ('flags_4', 36))
-            hotfix_flags |= f
-            f, hfd = spell.get_link('class_option').get_hotfix_info(('family', 37))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            hotfix.add(spell.get_link('class_option'),
+                (('flags_1', 'flags_2', 'flags_3', 'flags_4'), 36), ('family', 37))
             # 38
             fields += spell.get_link('shapeshift').field('flags_1')
-            f, hfd= spell.get_link('shapeshift').get_hotfix_info(('flags_1', 38))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            hotfix.add(spell.get_link('shapeshift'), ('flags_1', 38))
             # 39
             mechanic = self._spellmechanic_db[spell.get_link('categories').mechanic]
             fields += mechanic.field('mechanic')
-            f, hfd = mechanic.get_hotfix_info(('mechanic', 39))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            hotfix.add(mechanic, ('mechanic', 39))
 
             # 40
             power = spell.get_link('azerite_power')
@@ -2915,9 +2898,7 @@ class SpellDataGenerator(DataGenerator):
             # 42, 43
             spell_text = spell.get_link('text')
             fields += spell_text.field('desc', 'tt')
-            f, hfd = spell_text.get_hotfix_info(('desc', 42), ('tt', 43))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            hotfix.add(spell_text, ('desc', 42), ('tt', 43))
             # 44
             if self._options.build < 25600:
                 desc_var = self._spelldescriptionvariables_db[spell.id_desc_var]
@@ -2927,35 +2908,31 @@ class SpellDataGenerator(DataGenerator):
 
             if desc_var.id:
                 fields += desc_var.field('desc')
-                f, hfd = desc_var.get_hotfix_info(('desc', 44))
-                hotfix_flags |= f
-                hotfix_data += hfd
+                hotfix.add(desc_var, ('desc', 44))
             else:
                 if self._options.build < 25600:
-                    f, hfd = spell.get_hotfix_info(('id_desc_var', 44))
+                    hotfix.add(spell, ('id_desc_var', 44))
                 else:
                     link = spell.get_link('desc_var_link')
-                    f, hfd = link.get_hotfix_info(('id_desc_var', 44))
-                hotfix_flags |= f
-                hotfix_data += hfd
+                    hotfix.add(link, ('id_desc_var', 44))
                 fields += [ u'0' ]
             # 45
             fields += spell_text.field('rank')
-            f, hfd = spell_text.get_hotfix_info(('rank', 45))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            hotfix.add(spell_text, ('rank', 45))
 
             # 46
             fields += spell.get_link('level').field('req_max_level')
-            f, hfd = spell.get_link('level').get_hotfix_info(('req_max_level', 46))
+            # hotfix.add(spell.get_link('level'), ('req_max_level', 46))
 
             # 47
             fields += category.field('dmg_class')
-            f, hfd = category.get_hotfix_info(('dmg_class', 47))
+            # hotfix.add(category, ('dmg_class', 47))
 
             # Pad struct with empty pointers for direct access to spell effect data
             # 48, 49, 50, 51
             fields += [ u'0', u'0', u'0', u'0' ]
+
+            effect_ids = spelleffect_index.get(id, ())
 
             # 52, 53, 54, 55
             fields += [ str(len(effect_ids)) ]
@@ -2963,14 +2940,10 @@ class SpellDataGenerator(DataGenerator):
             fields += [ str(len(spelldriver_index.get(id, ()))) ]
             fields += [ str(spelllabel_index.get(id, 0)) ]
 
-            # Finally, update hotfix flags, they are located in the array of fields at position 2
+            # Finally, collect spell hotfix data if it exists
             if spell._flags == -1:
-                hotfix_flags = SPELL_HOTFIX_MAP_NEW
-            fields[2] = '%#.16x' % hotfix_flags
-            # And finally, collect spell hotfix data if it exists
-            if len(hotfix_data) > 0:
-                logging.debug('Hotfixed spell %s, original values: %s', sname.name, hotfix_data)
-                spell_hotfix_data[spell.id] = hotfix_data
+                hotfix.new_entry = True
+            spell_hotfix_data.add(spell.id, hotfix)
 
             try:
                 self._out.write('  { %s }, /* %s */\n' % (', '.join(fields), ', '.join('%u' % id for id in effect_ids)))
@@ -3001,99 +2974,53 @@ class SpellDataGenerator(DataGenerator):
             #if index % 20 == 0:
             #    self._out.write('//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Coefficient,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die,Mech,ChTrg,0, 0 },\n')
 
-            hotfix_flags = 0
-            hotfix_data = []
+            hotfix = HotfixDataRecord()
 
-            # 1
-            fields = effect.field('id')
-            # 2
-            fields += [ '%#.8x' % 0 ]
-            # 3, 4
-            fields += effect.field(self._options.build < 25600 and 'id_spell' or 'id_parent', 'index')
-            f, hfd = effect.get_hotfix_info(('index', 3))
-            hotfix_flags |= f
-            hotfix_data += hfd
-
-            # 5, 6
-            fields += effect.field('type', 'sub_type')
-            f, hfd = effect.get_hotfix_info(('type', 4), ('sub_type', 5))
-            hotfix_flags |= f
-            hotfix_data += hfd
-
-            # 7, 8, 9
-            if self._options.build < 25600:
-                fields += effect.get_link('scaling').field('coefficient', 'delta', 'bonus')
-                f, hfd = effect.get_link('scaling').get_hotfix_info(('coefficient', 6), ('delta', 7), ('bonus', 8))
-            else:
-                fields += effect.field('coefficient', 'delta', 'bonus')
-                f, hfd = effect.get_hotfix_info(('coefficient', 6), ('delta', 7), ('bonus', 8))
-            hotfix_flags |= f
-            hotfix_data += hfd
-            # 10, 11, 12
-            fields += effect.field('sp_coefficient', 'ap_coefficient', 'amplitude')
-            f, hfd = effect.get_hotfix_info(('sp_coefficient', 9), ('ap_coefficient', 10), ('amplitude', 11))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            fields = effect.field('id', 'id_parent', 'index', 'type', 'sub_type', 'coefficient', 'delta',
+                                  'bonus', 'sp_coefficient', 'ap_coefficient', 'amplitude')
+            hotfix.add(effect, ('index', 3), ('type', 4), ('sub_type', 5), ('coefficient', 6), ('delta', 7),
+                               ('bonus', 8), ('sp_coefficient', 9), ('ap_coefficient', 10), ('amplitude', 11))
 
             # 13
             radius_entry = self._spellradius_db[effect.id_radius_1]
             fields += radius_entry.field('radius_1')
-            f, hfd = radius_entry.get_hotfix_info(('radius_1', 12))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            hotfix.add(radius_entry, ('radius_1', 12))
 
             # 14
             radius_max_entry = self._spellradius_db[effect.id_radius_2]
             fields += radius_max_entry.field('radius_1')
-            f, hfd = radius_max_entry.get_hotfix_info(('radius_1', 13))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            hotfix.add(radius_max_entry, ('radius_1', 13))
 
             # 15, 16, 17
             fields += effect.field('base_value', 'misc_value_1', 'misc_value_2')
-            f, hfd = effect.get_hotfix_info(('base_value', 14), ('misc_value_1', 15), ('misc_value_2', 16))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            hotfix.add(effect, ('base_value', 14), ('misc_value_1', 15), ('misc_value_2', 16))
 
             # 18, note hotfix flags bunched together into one bit field
             fields += [ '{ %s }' % ', '.join( effect.field('class_mask_1', 'class_mask_2', 'class_mask_3', 'class_mask_4' ) ) ]
-            f, hfd = effect.get_hotfix_info(('class_mask_1', 17), ('class_mask_2', 17), ('class_mask_3', 17), ('class_mask_4', 17))
-            hotfix_flags |= f
-            #hotfix_data += hfd
+            hotfix.add(effect, (('class_mask_1', 'class_mask_2', 'class_mask_3', 'class_mask_4'), 17))
 
             # 19, 20, 21, 22, 23
             fields += effect.field('trigger_spell', 'dmg_multiplier', 'points_per_combo_points', 'real_ppl')
-            f, hfd = effect.get_hotfix_info(('trigger_spell', 18), ('dmg_multiplier', 19),
+            hotfix.add(effect, ('trigger_spell', 18), ('dmg_multiplier', 19),
                 ('points_per_combo_points', 20), ('real_ppl', 21))
-            hotfix_flags |= f
-            hotfix_data += hfd
 
             # 24
             mechanic = self._spellmechanic_db[effect.id_mechanic]
             fields += mechanic.field('mechanic')
-            f, hfd = mechanic.get_hotfix_info(('mechanic', 22))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            hotfix.add(mechanic, ('mechanic', 22))
 
             # 25, 26, 27, 28
             fields += effect.field('chain_target', 'implicit_target_1', 'implicit_target_2', 'val_mul', 'pvp_coefficient')
-            f, hfd = effect.get_hotfix_info(('chain_target', 23), ('implicit_target_1', 24),
+            hotfix.add(effect, ('chain_target', 23), ('implicit_target_1', 24),
                 ('implicit_target_2', 25), ('val_mul', 26), ('pvp_coefficient', 27))
-            hotfix_flags |= f
-            hotfix_data += hfd
 
             # Pad struct with empty pointers for direct spell data access
             fields += [ u'0', u'0' ]
 
-            # Update hotfix flags, they are located at position 1. If the
-            # effect's hotfix_flags is -1, it's a new entry
+            # Finally, collect effect hotfix data if it exists
             if effect._flags == -1:
-                hotfix_flags = EFFECT_HOTFIX_MAP_NEW
-            fields[1] = '%#.8x' % hotfix_flags
-            # And finally, collect effect hotfix data if it exists
-            if len(hotfix_data) > 0:
-                effect_hotfix_data[effect.id] = hotfix_data
-                logging.debug('Hotfixed effect %d, original values: %s', effect.id, hotfix_data)
+                hotfix.new_entry = True
+            effect_hotfix_data.add(effect.id, hotfix)
 
             try:
                 self._out.write('  { %s },\n' % (', '.join(fields)))
@@ -3117,33 +3044,21 @@ class SpellDataGenerator(DataGenerator):
                 length = len(powers))
 
         for index, power in enumerate(sorted(powers, key=lambda p: (p.id_parent, p.id))):
-            hotfix_flags = 0
-            hotfix_data = []
+            hotfix = HotfixDataRecord()
 
             spellpower_id_index.append((power.id, index))
 
-            # 1 2 3
-            fields = power.field('id', self._options.build < 25600 and 'id_spell' or 'id_parent', 'aura_id')
-            f, hfd = power.get_hotfix_info(('aura_id', 2))
-            hotfix_flags |= f
-            hotfix_data += hfd
-            # 4
-            fields += [ '%#.8x' % power._flags ]
-            # 5 6 7 8 9 10 11
-            fields += power.field('type_power', 'cost', 'cost_max', 'cost_per_second', 'pct_cost', 'pct_cost_max', 'pct_cost_per_second' )
-            f, hfd = power.get_hotfix_info(('type_power', 4), ('cost', 5), ('cost_max', 6),
-                ('cost_per_second', 7), ('pct_cost', 8), ('pct_cost_max', 9), ('pct_cost_per_second', 10))
-            hotfix_flags |= f
-            hotfix_data += hfd
+            fields = power.field('id', 'id_parent', 'aura_id', 'type_power',
+                                 'cost', 'cost_max', 'cost_per_second',
+                                 'pct_cost', 'pct_cost_max', 'pct_cost_per_second')
+            hotfix.add(power, ('aura_id', 2), ('type_power', 4),
+                              ('cost', 5), ('cost_max', 6), ('cost_per_second', 7),
+                              ('pct_cost', 8), ('pct_cost_max', 9), ('pct_cost_per_second', 10))
 
-            # And update hotfix flags at position 3
+            # Finally, collect powet hotfix data if it exists
             if power._flags == -1:
-                hotfix_flags = POWER_HOTFIX_MAP_NEW
-            fields[3] = '%#.8x' % hotfix_flags
-            # And finally, collect powet hotfix data if it exists
-            if len(hotfix_data) > 0:
-                logging.debug('Hotfixed power %d, original values: %s', power.id, hotfix_data)
-                power_hotfix_data[power.id] = hotfix_data
+                hotfix.new_entry = True
+            power_hotfix_data.add(power.id, hotfix)
 
             self.output_record(fields)
 
@@ -3166,9 +3081,9 @@ class SpellDataGenerator(DataGenerator):
         self.output_footer()
 
         # Then, write out hotfix data
-        output_data = [('spell', spell_hotfix_data), ('effect', effect_hotfix_data), ('power', power_hotfix_data)]
-        for type_str, hotfix_data in output_data:
-            output_hotfixes(self, type_str, hotfix_data)
+        spell_hotfix_data.output(self)
+        effect_hotfix_data.output(self)
+        power_hotfix_data.output(self)
 
         # Then, write out pseudo-runtime linking data for spell drivers
         self._out.write('static constexpr std::array<const spell_data_t*, {}> __{}_index_data {{ {{\n'.format(
