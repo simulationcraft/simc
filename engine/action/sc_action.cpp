@@ -503,7 +503,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   }
 
   id                = spell_data.id();
-  base_execute_time = spell_data.cast_time( player->level() );
+  base_execute_time = spell_data.cast_time();
   range             = spell_data.max_range();
   travel_speed      = spell_data.missile_speed();
   trigger_gcd       = spell_data.gcd();

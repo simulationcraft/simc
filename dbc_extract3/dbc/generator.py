@@ -2831,8 +2831,6 @@ class SpellDataGenerator(DataGenerator):
             fields += cast_times.field('min_cast_time', 'cast_time')
             hotfix.add(cast_times, ('min_cast_time', 29), ('cast_time', 30))
 
-            fields += [u'0', u'0', u'0'] # cast_div, c_scaling, c_scaling_threshold
-
             # NOTE: replace spell ID as it stands is not marked as a hotfixed field in spell query
             if id in ids and 'replace_spell_id' in ids[id]:
                 fields += [ '%6u' % ids[id]['replace_spell_id'] ]

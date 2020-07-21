@@ -1348,9 +1348,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   {
     s << "Cast Time        : ";
 
-    if ( spell -> _cast_div )
-      s << spell -> cast_time( level ).total_seconds();
-    else if ( spell -> _cast_min != spell -> _cast_max )
+    if ( spell -> _cast_min != spell -> _cast_max )
       s << spell -> _cast_min / 1000.0 << " - " << spell -> _cast_max / 1000.0;
     else
       s << spell -> _cast_max / 1000.0;
@@ -2068,9 +2066,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
 
   if ( spell -> _cast_min > 0 || spell -> _cast_max > 0 )
   {
-    if ( spell -> _cast_div )
-      node -> add_parm( "cast_time", spell -> cast_time( level ).total_seconds() );
-    else if ( spell -> _cast_min != spell -> _cast_max )
+    if ( spell -> _cast_min != spell -> _cast_max )
     {
       node -> add_parm( "cast_time_min", spell -> _cast_min / 1000.0 );
       node -> add_parm( "cast_time_max", spell -> _cast_max / 1000.0 );
