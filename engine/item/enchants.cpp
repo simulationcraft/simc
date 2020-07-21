@@ -165,17 +165,15 @@ std::string _encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data
  * both have ranks, and there also is a "lower rank" item enchant of the same
  * name, we need to somehow cover that case. Highly unlikely in practice.
  */
-std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data_t& enchant )
+const std::string& enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data_t& enchant )
 {
   auto key = enchant_map_key( dbc, enchant );
   auto it  = cached_enchant_names.find( key );
-  if ( it != cached_enchant_names.end() )
+  if ( it == cached_enchant_names.end() )
   {
-    return ( *it ).second;
+    it = cached_enchant_names.emplace( key, _encoded_enchant_name( dbc, enchant ) ).first;
   }
-  auto name                   = _encoded_enchant_name( dbc, enchant );
-  cached_enchant_names[ key ] = name;
-  return name;
+  return ( *it ).second;
 }
 
 /**

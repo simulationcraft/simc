@@ -29,7 +29,7 @@ struct enchant_db_item_t
 
 unsigned find_enchant_id( util::string_view name );
 std::string find_enchant_name( unsigned enchant_id );
-std::string encoded_enchant_name( const dbc_t&, const item_enchantment_data_t& );
+const std::string& encoded_enchant_name( const dbc_t&, const item_enchantment_data_t& );
 
 const item_enchantment_data_t& find_item_enchant( const item_t& item, util::string_view name );
 const item_enchantment_data_t& find_meta_gem( const dbc_t& dbc, util::string_view encoding );
