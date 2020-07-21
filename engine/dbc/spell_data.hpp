@@ -398,8 +398,7 @@ struct spell_data_t
   unsigned    _equipped_invtype_mask;
   unsigned    _equipped_subclass_mask;
   // SpellScaling.dbc
-  int         _cast_min;           // Minimum casting time in milliseconds
-  int         _cast_max;           // Maximum casting time in milliseconds
+  int         _cast_time;          // Casting time in milliseconds
   // SpecializationSpells.dbc
   unsigned    _replace_spell_id;   // Replaces spell with specialization specific spell
   // Spell.dbc flags
@@ -685,7 +684,7 @@ struct spell_data_t
   { return _max_scaling_level; }
 
   timespan_t cast_time() const
-  { return timespan_t::from_millis( _cast_max ); }
+  { return timespan_t::from_millis( _cast_time ); }
 
   double cost( power_e pt ) const
   {

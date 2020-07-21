@@ -99,8 +99,7 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, "equip_class",       O_SD( _equipped_class )         },
   { SD_TYPE_UNSIGNED, "equip_imask",       O_SD( _equipped_invtype_mask )  },
   { SD_TYPE_UNSIGNED, "equip_scmask",      O_SD( _equipped_subclass_mask ) },
-  { SD_TYPE_INT,      "cast_min",          O_SD( _cast_min )               },
-  { SD_TYPE_INT,      "cast_max",          O_SD( _cast_max )               },
+  { SD_TYPE_INT,      "cast_time",         O_SD( _cast_time )              },
   { SD_TYPE_UNSIGNED, "replace_spellid",   O_SD( _replace_spell_id )       },
   { SD_TYPE_UNSIGNED, "family",            O_SD( _class_flags_family )     }, // Family
   { SD_TYPE_UNSIGNED, "stance_mask",       O_SD( _stance_mask )            },

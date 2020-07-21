@@ -87,8 +87,7 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 23, "Proc Flags" },
   { 24, "Internal Cooldown" },
   { 25, "RPPM" },
-  { 29, "Min Cast Time" },
-  { 30, "Max Cast Time" },
+  { 30, "Cast Time" },
   { 35, "Attributes" },
   { 36, "Affecting Spells" },
   { 37, "Spell Family" },
@@ -1344,18 +1343,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << ( int ) spell -> max_range() << " yards" << std::endl;
   }
 
-  if ( spell -> _cast_min > 0 || spell -> _cast_max > 0 )
-  {
-    s << "Cast Time        : ";
-
-    if ( spell -> _cast_min != spell -> _cast_max )
-      s << spell -> _cast_min / 1000.0 << " - " << spell -> _cast_max / 1000.0;
-    else
-      s << spell -> _cast_max / 1000.0;
-
-    s << " seconds" << std::endl;
-  }
-  else if ( spell -> _cast_min < 0 || spell -> _cast_max < 0 )
+  if ( spell -> cast_time() > 0_ms )
+    s << "Cast Time        : " << spell -> cast_time().total_seconds() << " seconds" << std::endl;
+  else if ( spell -> cast_time() < 0_ms )
     s << "Cast Time        : Ranged Shot" << std::endl;
 
   if ( spell -> gcd() != timespan_t::zero() )
@@ -2064,17 +2054,9 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
     node -> add_parm( "range", spell -> max_range() );
   }
 
-  if ( spell -> _cast_min > 0 || spell -> _cast_max > 0 )
-  {
-    if ( spell -> _cast_min != spell -> _cast_max )
-    {
-      node -> add_parm( "cast_time_min", spell -> _cast_min / 1000.0 );
-      node -> add_parm( "cast_time_max", spell -> _cast_max / 1000.0 );
-    }
-    else
-      node -> add_parm( "cast_time_else", spell -> _cast_max / 1000.0 );
-  }
-  else if ( spell -> _cast_min < 0 || spell -> _cast_max < 0 )
+  if ( spell -> cast_time() > 0_ms )
+    node -> add_parm( "cast_time_else", spell -> cast_time().total_seconds() );
+  else if ( spell -> cast_time() < 0_ms )
     node -> add_parm( "cast_time_range", "ranged_shot" );
 
   if ( spell -> gcd() != timespan_t::zero() )

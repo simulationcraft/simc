@@ -2827,9 +2827,8 @@ class SpellDataGenerator(DataGenerator):
             hotfix.add(spell.get_link('equipped_item'),
                 ('item_class', 26), ('mask_inv_type', 27), ('mask_sub_class', 28))
 
-            cast_times = self._spellcasttimes_db[misc.id_cast_time]
-            fields += cast_times.field('min_cast_time', 'cast_time')
-            hotfix.add(cast_times, ('min_cast_time', 29), ('cast_time', 30))
+            fields += misc.ref('id_cast_time').field('cast_time')
+            hotfix.add(misc.ref('id_cast_time'), ('cast_time', 30))
 
             # NOTE: replace spell ID as it stands is not marked as a hotfixed field in spell query
             if id in ids and 'replace_spell_id' in ids[id]:
