@@ -400,9 +400,6 @@ struct spell_data_t
   // SpellScaling.dbc
   int         _cast_min;           // Minimum casting time in milliseconds
   int         _cast_max;           // Maximum casting time in milliseconds
-  int         _cast_div;           // A divisor used in the formula for casting time scaling (20 always?)
-  double      _c_scaling;          // A scaling multiplier for level based scaling
-  unsigned    _c_scaling_level;    // A scaling divisor for level based scaling
   // SpecializationSpells.dbc
   unsigned    _replace_spell_id;   // Replaces spell with specialization specific spell
   // Spell.dbc flags
@@ -534,12 +531,6 @@ struct spell_data_t
 
   unsigned replace_spell_id() const
   { return _replace_spell_id; }
-
-  double scaling_multiplier() const
-  { return _c_scaling; }
-
-  unsigned scaling_threshold() const
-  { return _c_scaling_level; }
 
   uint32_t school_mask() const
   { return _school; }
@@ -693,16 +684,8 @@ struct spell_data_t
   unsigned max_scaling_level() const
   { return _max_scaling_level; }
 
-  timespan_t cast_time( uint32_t level ) const
-  {
-    if ( _cast_div < 0 )
-      return timespan_t::from_millis( std::max( 0, _cast_min ) );
-
-    if ( level >= as<uint32_t>( _cast_div ) )
-      return timespan_t::from_millis( _cast_max );
-
-    return timespan_t::from_millis( _cast_min + ( _cast_max - _cast_min ) * ( level - 1 ) / ( double )( _cast_div - 1 ) );
-  }
+  timespan_t cast_time() const
+  { return timespan_t::from_millis( _cast_max ); }
 
   double cost( power_e pt ) const
   {
