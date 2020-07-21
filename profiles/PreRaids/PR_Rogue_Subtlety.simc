@@ -110,6 +110,7 @@ actions.essences+=/ripple_in_space
 actions.essences+=/worldvein_resonance,if=cooldown.symbols_of_death.remains<5|fight_remains<18
 actions.essences+=/memory_of_lucid_dreams,if=energy<40&buff.symbols_of_death.up
 # Hold Reaping Flames for execute range or kill buffs, if possible. Always try to get the lowest cooldown based on available enemies.
+actions.essences+=/variable,name=reaping_delay,value=target.time_to_die
 actions.essences+=/cycling_variable,name=reaping_delay,op=min,if=essence.breath_of_the_dying.major,value=target.time_to_die
 actions.essences+=/reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&(active_enemies=1|variable.reaping_delay>29))|(target.time_to_pct_20>30&(active_enemies=1|variable.reaping_delay>44))
 

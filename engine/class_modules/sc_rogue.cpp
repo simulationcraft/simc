@@ -5833,6 +5833,7 @@ void rogue_t::init_action_list()
 
   // Reaping Flames Generic Lines
   const std::string reaping_flames_comment = "Hold Reaping Flames for execute range or kill buffs, if possible. Always try to get the lowest cooldown based on available enemies.";
+  const std::string reaping_flames_init = "variable,name=reaping_delay,value=target.time_to_die";
   const std::string reaping_flames_condition = "cycling_variable,name=reaping_delay,op=min,if=essence.breath_of_the_dying.major,value=target.time_to_die";
   const std::string reaping_flames_action = "reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&(active_enemies=1|variable.reaping_delay>29))|(target.time_to_pct_20>30&(active_enemies=1|variable.reaping_delay>44))";
 
@@ -5906,7 +5907,8 @@ void rogue_t::init_action_list()
     essences->add_action( "ripple_in_space" );
     essences->add_action( "worldvein_resonance" );
     essences->add_action( "memory_of_lucid_dreams,if=energy<50&!cooldown.vendetta.up" );
-    essences->add_action( reaping_flames_condition, reaping_flames_comment );
+    essences->add_action( reaping_flames_init, reaping_flames_comment );
+    essences->add_action( reaping_flames_condition );
     essences->add_action( reaping_flames_action );
 
     // Stealth
@@ -6017,7 +6019,8 @@ void rogue_t::init_action_list()
     essences->add_action( "ripple_in_space" );
     essences->add_action( "worldvein_resonance" );
     essences->add_action( "memory_of_lucid_dreams,if=energy<45" );
-    essences->add_action( reaping_flames_condition, reaping_flames_comment );
+    essences->add_action( reaping_flames_init, reaping_flames_comment );
+    essences->add_action( reaping_flames_condition );
     essences->add_action( reaping_flames_action );
 
     // Stealth
@@ -6102,7 +6105,8 @@ void rogue_t::init_action_list()
     essences->add_action( "ripple_in_space" );
     essences->add_action( "worldvein_resonance,if=cooldown.symbols_of_death.remains<5|fight_remains<18" );
     essences->add_action( "memory_of_lucid_dreams,if=energy<40&buff.symbols_of_death.up" );
-    essences->add_action( reaping_flames_condition, reaping_flames_comment );
+    essences->add_action( reaping_flames_init, reaping_flames_comment );
+    essences->add_action( reaping_flames_condition );
     essences->add_action( reaping_flames_action );
 
     // Stealth Cooldowns
