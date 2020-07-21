@@ -6714,7 +6714,7 @@ void shaman_t::create_pets()
 {
   if ( talent.primal_elementalist->ok() )
   {
-    if ( find_action( "fire_elemental" ) && !talent.storm_elemental->ok() )
+    if ( !talent.storm_elemental->ok() )
     {
       pet.pet_fire_elemental = create_pet( "primal_fire_elemental" );
     }
@@ -6724,14 +6724,14 @@ void shaman_t::create_pets()
       pet.pet_earth_elemental = create_pet( "primal_earth_elemental" );
     }
 
-    if ( talent.storm_elemental->ok() && find_action( "storm_elemental" ) )
+    if ( talent.storm_elemental->ok() )
     {
       pet.pet_storm_elemental = create_pet( "primal_storm_elemental" );
     }
   }
   else
   {
-    if ( find_action( "fire_elemental" ) && !talent.storm_elemental->ok() )
+    if ( !talent.storm_elemental->ok() )
     {
       pet.guardian_fire_elemental = new pet::fire_elemental_t( this, true );
     }
@@ -6741,7 +6741,7 @@ void shaman_t::create_pets()
       pet.guardian_earth_elemental = create_pet( "greater_earth_elemental" );
     }
 
-    if ( talent.storm_elemental->ok() && find_action( "storm_elemental" ) )
+    if ( talent.storm_elemental->ok() )
     {
       pet.guardian_storm_elemental = new pet::storm_elemental_t( this, true );
     }
@@ -8667,6 +8667,7 @@ void shaman_t::init_action_list_elemental()
         "guardian_of_azeroth,if=talent.storm_elemental.enabled&(cooldown.storm_elemental.duration-30<cooldown.storm_"
         "elemental.remains|expected_combat_length-time>190|expected_combat_length-time<35|!(cooldown.storm_elemental."
         "remains+30<expected_combat_length-time)|cooldown.storm_elemental.remains<2)" );
+    def->add_action( this, "Fire Elemental" );
     def->add_action( "focused_azerite_beam" );
     def->add_action( "purifying_blast" );
     def->add_action( "the_unbound_force" );
