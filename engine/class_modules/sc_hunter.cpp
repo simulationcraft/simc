@@ -500,6 +500,7 @@ public:
     spell_data_ptr_t bestial_wrath;
     spell_data_ptr_t kindred_spirits;
     spell_data_ptr_t wild_call;
+    spell_data_ptr_t pack_tactics;
 
     // Marksmanship
     spell_data_ptr_t aimed_shot;
@@ -4942,6 +4943,7 @@ void hunter_t::init_spells()
   specs.bestial_wrath        = find_class_spell( "Bestial Wrath" );
   specs.kindred_spirits      = find_specialization_spell( "Kindred Spirits" );
   specs.wild_call            = find_specialization_spell( "Wild Call" );
+  specs.pack_tactics         = find_specialization_spell( "Pack Tactics" );
 
   // Marksmanship
   specs.aimed_shot           = find_class_spell( "Aimed Shot" );
@@ -5009,8 +5011,8 @@ void hunter_t::init_base_stats()
   base.attack_power_per_strength = 0;
   base.attack_power_per_agility  = 1;
 
-  resources.base_regen_per_second[ RESOURCE_FOCUS ] = 10;
-  for ( auto spell : { specs.marksmanship_hunter, specs.survival_hunter } )
+  resources.base_regen_per_second[ RESOURCE_FOCUS ] = 5;
+  for ( auto spell : { specs.marksmanship_hunter, specs.survival_hunter, specs.pack_tactics } )
   {
     for ( const spelleffect_data_t& effect : spell -> effects() )
     {
