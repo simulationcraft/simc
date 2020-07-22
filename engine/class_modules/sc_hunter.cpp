@@ -254,6 +254,7 @@ namespace pets
 struct animal_companion_t;
 struct hunter_main_pet_t;
 struct dire_critter_t;
+struct spitting_cobra_t;
 }
 
 struct hunter_td_t: public actor_target_data_t
@@ -289,7 +290,7 @@ public:
     pets::hunter_main_pet_t* main = nullptr;
     pets::animal_companion_t* animal_companion = nullptr;
     pets::dire_critter_t* dire_beast = nullptr;
-    pet_t* spitting_cobra = nullptr;
+    pets::spitting_cobra_t* spitting_cobra = nullptr;
     spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> dc_dire_beast;
 
     pets_t( hunter_t* p ) : dc_dire_beast( "dire_beast_(dc)", p ) {}
@@ -437,7 +438,7 @@ public:
     spell_data_ptr_t camouflage;
 
     // tier 35
-    spell_data_ptr_t spitting_cobra_; // NYI
+    spell_data_ptr_t spitting_cobra;
     spell_data_ptr_t thrill_of_the_hunt;
     spell_data_ptr_t a_murder_of_crows;
 
@@ -499,8 +500,8 @@ public:
     spell_data_ptr_t beast_cleave;
     spell_data_ptr_t bestial_wrath;
     spell_data_ptr_t kindred_spirits;
-    spell_data_ptr_t wild_call;
     spell_data_ptr_t pack_tactics;
+    spell_data_ptr_t wild_call;
 
     // Marksmanship
     spell_data_ptr_t aimed_shot;
@@ -1482,6 +1483,9 @@ struct spitting_cobra_t: public hunter_pet_t
     }
   };
 
+  unsigned cobra_shot_count = 0;
+  double active_damage_multiplier = 0;
+
   spitting_cobra_t( hunter_t* o ):
     hunter_pet_t( o, "spitting_cobra", PET_HUNTER, true )
   {
@@ -1504,9 +1508,24 @@ struct spitting_cobra_t: public hunter_pet_t
   double composite_player_multiplier( school_e school ) const override
   {
     double m = owner -> composite_player_multiplier( school );
+
     m *= 1 + owner -> cache.mastery_value();
+    m *= 1 + active_damage_multiplier;
 
     return m;
+  }
+
+  void summon( timespan_t duration = 0_ms ) override
+  {
+    active_damage_multiplier =
+      o() -> talents.spitting_cobra -> effectN( 1 ).percent() * cobra_shot_count;
+    cobra_shot_count = 0;
+
+    // XXX: add some kind of stats/reporting to html report?
+    if ( sim -> debug )
+      sim -> print_debug( "{} summoning Spitting Cobra: dmg_mult={:.1f}", o() -> name(), active_damage_multiplier );
+
+    hunter_pet_t::summon( duration );
   }
 
   void schedule_ready( timespan_t delta_time, bool waiting ) override
@@ -2398,6 +2417,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> talents.killer_cobra -> ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> cooldowns.kill_command -> reset( true );
+
+    if ( p() -> talents.spitting_cobra -> ok() && p() -> buffs.bestial_wrath -> check() )
+      p() -> pets.spitting_cobra -> cobra_shot_count++;
   }
 };
 
@@ -4833,7 +4855,7 @@ void hunter_t::create_pets()
   if ( talents.dire_beast -> ok() )
     pets.dire_beast = new pets::dire_critter_t( this );
 
-  if ( talents.spitting_cobra_ -> ok() )
+  if ( talents.spitting_cobra -> ok() )
     pets.spitting_cobra = new pets::spitting_cobra_t( this );
 
   if ( azerite.dire_consequences.ok() )
@@ -4880,7 +4902,7 @@ void hunter_t::init_spells()
   talents.camouflage                        = find_talent_spell( "Camouflage" );
 
   // tier 35
-  talents.spitting_cobra_                   = find_talent_spell( "Spitting Cobra" );
+  talents.spitting_cobra                    = find_talent_spell( "Spitting Cobra" );
   talents.thrill_of_the_hunt                = find_talent_spell( "Thrill of the Hunt" );
   talents.a_murder_of_crows                 = find_talent_spell( "A Murder of Crows" );
 
@@ -4942,8 +4964,8 @@ void hunter_t::init_spells()
   specs.beast_cleave         = find_specialization_spell( "Beast Cleave" );
   specs.bestial_wrath        = find_class_spell( "Bestial Wrath" );
   specs.kindred_spirits      = find_specialization_spell( "Kindred Spirits" );
-  specs.wild_call            = find_specialization_spell( "Wild Call" );
   specs.pack_tactics         = find_specialization_spell( "Pack Tactics" );
+  specs.wild_call            = find_specialization_spell( "Wild Call" );
 
   // Marksmanship
   specs.aimed_shot           = find_class_spell( "Aimed Shot" );
@@ -5050,6 +5072,16 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms )
       -> set_activated( true )
       -> set_default_value( specs.bestial_wrath -> effectN( 1 ).percent() );
+  if ( talents.spitting_cobra -> ok() )
+  {
+    timespan_t duration = find_spell( 194407 ) -> duration();
+    buffs.bestial_wrath -> set_stack_change_callback(
+      [this, duration]( buff_t*, int, int cur ) {
+        if ( cur == 0 )
+          pets.spitting_cobra -> summon( duration );
+      } );
+  }
+
 
   const spell_data_t* barbed_shot = find_spell( 246152 );
   for ( size_t i = 0; i < buffs.barbed_shot.size(); i++ )
