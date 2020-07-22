@@ -642,7 +642,7 @@ struct potion_t : public dbc_consumable_base_t
 
   void adjust_dynamic_prepot_time()
   {
-    auto apl = player->precombat_action_list;
+    const auto& apl = player->precombat_action_list;
 
     auto it = range::find( apl, this );
     if ( it == apl.end() )
