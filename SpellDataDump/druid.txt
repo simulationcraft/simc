@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -150,7 +150,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Germination (155675 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Restoration Affinity (197492 effect#3), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Germination (155675 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Restoration Affinity (197492 effect#3), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2)
 Family Flags     : 4, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -216,7 +216,7 @@ Duration         : 4 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), Gushing Lacerations (278509 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2)
+Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), Gushing Lacerations (278509 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 85, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -285,7 +285,7 @@ GCD              : 1 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2)
+Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 12, 98
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -297,7 +297,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Periodic effect can crit (265)
 Effects          :
 #1 (id=559)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18225 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.18225 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=560)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #3 (id=561)      : Trigger Spell (64): Rake
@@ -458,7 +458,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#1), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 0, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -469,7 +469,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.57750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.57750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Hurl a ball of energy at the target, dealing $s1 Nature damage.
 
 Name             : Mighty Bash (id=5211) [Spell Family (7)] 
@@ -579,7 +579,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 15, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -590,7 +590,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=1859)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.46000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.46000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1860)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #3 (id=1861)     : Dummy (3)
@@ -777,7 +777,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
-Affecting spells : Druid (137009 effect#3), Guardian Druid (137010 effect#1), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Berserk (50334 effect#2), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 11, 77
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -790,7 +790,7 @@ Effects          :
 #1 (id=2456)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=2457)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85527 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.85527 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Maul the target for $s2 Physical damage.
 
 Name             : Moonfire (id=8921) [Spell Family (7)] 
@@ -835,7 +835,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effect#1), Clearcasting (16870 effect#1), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Predatory Swiftness (69369 effect#1), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Nature's Swiftness (132158 effect#1), Guardian Druid (137010 effect#3), Feral Druid (137011 effect#4), Restoration Druid (137012 effect#1), Balance Druid (137013 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Abundance (207640 effect#1), Essence of G'Hanir (208253 effect#1), Power of Elune, the Moon Goddess (208284 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Rampant Growth (278515 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effect#1), Clearcasting (16870 effect#1), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Predatory Swiftness (69369 effect#1), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Nature's Swiftness (132158 effect#1), Guardian Druid (137010 effect#3), Feral Druid (137011 effect#4), Restoration Druid (137012 effect#1), Balance Druid (137013 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Abundance (207640 effect#1), Essence of G'Hanir (208253 effect#1), Power of Elune, the Moon Goddess (208284 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Rampant Growth (278515 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2)
 Family Flags     : 6, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   .......x ........ ........ ........ 
@@ -847,7 +847,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=3728)     : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.15000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.20000 | PvP Coefficient: 1.15000 | Target: Friend (21)
 #2 (id=3729)     : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Heals a friendly target for $s1 and another ${$o2*$<mult>} over $d.$?s231032[ Initial heal has a $231032s1% increased chance for a critical effect if the target is already affected by Regrowth.][]$?s24858|s197625[ Usable while in Moonkin Form.][]$?s33891[
@@ -919,7 +919,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 27
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
+Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Druid Runecarve 1 (338608 effect#1)
 Family Flags     : 109
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1037,7 +1037,7 @@ Charges          : 1 (15 seconds cooldown)
 Category         : 1576
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Restoration Affinity (197492 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Restoration Affinity (197492 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#2)
 Family Flags     : 33, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1048,7 +1048,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=10065)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.40000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.40000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Consumes a Regrowth, Wild Growth, or Rejuvenation effect to instantly heal an ally for $s1.
 
 Name             : Rebirth (id=20484) [Spell Family (7)] 
@@ -1167,7 +1167,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodtalons (145152 effect#2), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Apex Predator (252752 effect#1), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodtalons (145152 effect#2), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Apex Predator (252752 effect#1), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1), Apex Predator's Craving (339140 effect#1), 
 Family Flags     : 98, 108
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1178,7 +1178,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=12790)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.98280 | PvP Coefficient: 0.80000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.98280 | PvP Coefficient: 0.80000 | Target: Enemy (6)
 #2 (id=12791)    : Power Burn (62)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 Description      : Finishing move that causes Physical damage per combo point and consumes up to $?a106951[${25*$106951s1/-100}.1]?a102543[${25*$102543s1/-100}.1][25] additional Energy to increase damage by up to 100%.
@@ -1203,7 +1203,7 @@ GCD              : 1 seconds
 Cooldown         : 20 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Maim Damage (61252 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Maim Damage (61252 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 39, 98
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1217,7 +1217,7 @@ Effects          :
 #1 (id=12792)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=784041)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09200 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09200 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Finishing move that causes Physical damage and stuns the target. Damage and duration increased per combo point:
 
    1 point  : ${$s2*1} damage, 1 sec
@@ -1239,7 +1239,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Survival of the Fittest (203965 effect#1), Barkskin (327993 effect#1)
+Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Survival of the Fittest (203965 effect#1), Barkskin (327993 effect#1), Druid Guardian Runecarve 2 (339063 effect#1)
 Family Flags     : 50
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1390,7 +1390,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x00000002
 Proc Flags       : ........ ........ ........ .......x 
                  
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Item - Druid WoD PvP Restoration 4P Bonus (165707 effect#1), Item - Druid T18 Restoration 4P Bonus (185397 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Item - Druid WoD PvP Restoration 4P Bonus (165707 effect#1), Item - Druid T18 Restoration 4P Bonus (185397 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2), The Dark Titan's Lesson (338831 effect#1), 
 Family Flags     : 36, 44, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ..x..... 
@@ -1403,7 +1403,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=23639)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09000 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Description      : Heals the target for $o1 over $d. When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1. Limit 1.
+Description      : Heals the target for $o1 over $d. When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1.
+
+May be active on $?s338831[two targets][one target] at a time.
 Tooltip          : Healing $w1 every $t1 sec.
 Blooms for additional healing when effect expires or is dispelled.
 
@@ -1414,7 +1416,7 @@ Spell Type       : Magic
 Spell Level      : 26
 Range            : 40 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2), The Dark Titan's Lesson (338831 effect#1)
 Family Flags     : 36, 118
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....x...   ........ ........ x....... ........ 
@@ -1426,7 +1428,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... .....
                  : Does not break stealth (37), Disable player procs (112)
 Effects          :
 #1 (id=23653)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.15) | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc33763
 
 Name             : Cyclone (id=33786) [Spell Family (7)] 
@@ -1507,7 +1509,7 @@ GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
-Affecting spells : Berserk (50334 effect#1), Gore (93622 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Soul of the Forest (158477 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Berserk (50334 effect#1), Gore (93622 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Soul of the Forest (158477 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 38, 77
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1520,7 +1522,7 @@ Effects          :
 #1 (id=23847)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=216150)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=281797)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=290296)   : Energize Power (30)
@@ -1628,7 +1630,7 @@ Cooldown         : 10 seconds
 Category         : 1237
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 10 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Nature's Wisdom (167715 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Restoration Affinity (197492 effect#5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Wild Growth (328025 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Nature's Wisdom (167715 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Restoration Affinity (197492 effect#5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Wild Growth (328025 effect#1), Druid Runecarve 3 (338657 effect#2)
 Family Flags     : 58, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   .......x ........ ........ ........ 
@@ -1777,8 +1779,8 @@ Cooldown         : 180 seconds
 Category         : 1208
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 180 seconds
-Affecting spells : Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
-Family Flags     : 70
+Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Legacy of the Sleeper (339062 effect#1), 
+Family Flags     : 84
 Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1792,15 +1794,29 @@ Effects          :
                    Base Value: -75 | Scaled Value: -75 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Growl (6795), Frenzied Regeneration (22842), Mangle (33917), Thrash (77758)
                    Family Flags: 35, 38, 62, 91
-#2 (id=98174)    : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#2 (id=98174)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Primal Wrath (285381), Thorns (305497), Adaptive Swarm (325733)
+                   Family Flags: 18, 77, 98
+#3 (id=805984)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Primal Wrath (285381), Thorns (305497), Adaptive Swarm (325733)
+                   Family Flags: 18, 77, 98
+#4 (id=838048)   : Apply Aura (6) | Modify Leech% (443)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=838049)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#6 (id=838050)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Ironfur (192081)
                    Family Flags: 78
-#3 (id=805984)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+#7 (id=838051)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -75 | Scaled Value: -75 | PvP Coefficient: 1.00000 | Misc Value: 1568 | Target: Self (1)
                    Affected Spells (Category): Frenzied Regeneration (22842)
-Description      : Go berserk for $d, reducing the cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration by $s1% and the cost of Ironfur by $s2%.
-Tooltip          : Cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration are reduced by $w1%. Ironfur cost reduced by $w2%.
+#8 (id=838052)   : Apply Aura (6) | Unknown(147)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2071 | Target: Self (1)
+Description      : Go berserk for $d, reducing the cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration by $s1% and the cost of Ironfur by $s6%.
+Tooltip          : Cooldowns of Mangle, Thrash, Growl, and Frenzied Regeneration are reduced by $w1%. Ironfur cost reduced by $w6%.
 
 Name             : Nourish (id=50464) [Spell Family (7)] 
 Class            : Druid
@@ -1811,7 +1827,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#2)
 Family Flags     : 81, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1822,7 +1838,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=42665)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.35000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.35000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Heals a friendly target for $s1.  Receives triple bonus from $@spellname77495.
 
 Name             : Savage Roar (id=52610) [Spell Family (7)] 
@@ -2207,7 +2223,7 @@ Cooldown         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
 Mechanic         : Bleed
-Affecting spells : Bear Form (5487 effect#7), Berserk (50334 effect#1), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Berserk (106951 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Bear Form (5487 effect#7), Berserk (50334 effect#1), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Berserk (106951 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Guardian Runecarve 1 (339060 effect#1), 
 Family Flags     : 77, 86, 91
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2219,7 +2235,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Requires line of sight (186), Periodic effect can crit (265)
 Effects          :
 #1 (id=68168)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=312099)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Strikes all nearby enemies, dealing $s1 Bleed damage and an additional $192090o1 Bleed damage over $192090d. When applied from Bear Form, this effect can stack up to $192090u times.
@@ -2237,7 +2253,7 @@ GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2), Ravenous Frenzy (323546 effect#1), Starsurge (328022 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2), Ravenous Frenzy (323546 effect#1), Starsurge (328022 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18, 89
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2248,7 +2264,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.30000 | PvP Coefficient: 0.90000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.30000 | PvP Coefficient: 0.90000 | Target: Enemy (6)
 #2 (id=816907)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Launch a surge of stellar energies at the target, dealing $s1 Astral damage, and extending any active Eclipse by $s2 sec.
@@ -2327,7 +2343,7 @@ Duration         : 10 seconds
 Cooldown         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
-Affecting spells : Druid (137009 effect#4), Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Berserk (50334 effect#2), Druid (137009 effect#4), Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 77, 123
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2338,7 +2354,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=68522)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.96931 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96931 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=68523)    : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
 #3 (id=327035)   : Dummy (3)
@@ -2433,7 +2449,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Blossoming Efflorescence (242315 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Blossoming Efflorescence (242315 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2)
 Family Flags     : 65, 118
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2445,7 +2461,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=68693)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16200 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.16200 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : Restores $s1 health to three injured allies within $A1 yards of the initial target every $81262t1 sec for $81262d.
 
 Name             : Leather Specialization (id=86093) [Spell Family (7), Passive] 
@@ -2803,7 +2819,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Bear Form (5487 effect#8), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Druid (137009 effect#4), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Bear Form (5487 effect#8), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Druid (137009 effect#4), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2)
 Triggered by     : Cenarion Ward (102351)
 Family Flags     : 106, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3095,7 +3111,7 @@ Range            : 8 yards
 GCD              : 1 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Feral Affinity (197490 effect#3), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#3), Feral Affinity (202157 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Scent of Blood (285646 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Feral Affinity (197490 effect#3), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#3), Feral Affinity (202157 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Scent of Blood (285646 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 74, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3110,7 +3126,7 @@ Effects          :
 #2 (id=222211)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #3 (id=222212)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #4 (id=819579)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards
 Description      : Swipe up to $s4 nearby enemies, inflicting $s3 Physical damage.$?a231283[ Deals $s2% increased damage against bleeding targets.][]
@@ -3128,7 +3144,7 @@ Duration         : 15 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T19 Feral 2P Bonus (211140 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2)
+Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T19 Feral 2P Bonus (211140 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Druid Runecarve 3 (338657 effect#1), Druid Guardian Runecarve 1 (339060 effect#1), 
 Family Flags     : 86, 98, 126
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3140,7 +3156,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Periodic effect affected by haste (173), Requires line of sight (186), Periodic effect can crit (265)
 Effects          :
 #1 (id=117262)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.05500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $o2 Bleed damage over $d.
@@ -3156,7 +3172,7 @@ Spell Level      : 11
 Range            : 5 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000011
-Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#3), 
+Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#3), Druid Guardian Runecarve 1 (339060 effect#1), 
 Family Flags     : 26
 Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3512,15 +3528,12 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
-#1 (id=127235)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Family Flags: 5
-#2 (id=228019)   : Apply Aura (6) | Dummy (4)
+#1 (id=127235)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=253734)   : Apply Aura (6) | Dummy (4)
+#2 (id=228019)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc158478
-Tooltip          : Increases the healing done by your next Regrowth or Rejuvenation spell by $s2%, or increases the healing done by your next Wild Growth by $s3%.
+Tooltip          : Healing of your next Regrowth or Rejuvenation increased by $s1%, or your next Wild Growth by $s2%.
 
 Name             : Treant Form (rank=Shapeshift) (id=114282) [Spell Family (7)] 
 Class            : Druid
@@ -3777,7 +3790,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 27
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
+Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Druid Runecarve 1 (338608 effect#1)
 Family Flags     : 109
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4204,7 +4217,7 @@ Spell Type       : None
 Spell Level      : 27
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 1 (338608 effect#1)
 Family Flags     : 82, 109
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4395,7 +4408,7 @@ GCD              : 1 seconds
 Duration         : 16 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Power of the Moon (273367 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Power of the Moon (273367 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 98, 120
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4409,7 +4422,7 @@ Effects          :
 #1 (id=216287)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=216288)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=216290)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : A quick beam of lunar light burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d.
@@ -4443,7 +4456,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#2)
 Family Flags     : 118
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4470,7 +4483,7 @@ Duration         : 15 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2)
+Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Druid Runecarve 3 (338657 effect#1)
 Triggered by     : Rake (1822)
 Family Flags     : 12, 98
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
@@ -4587,7 +4600,7 @@ Duration         : 8 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#3), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#3), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2)
 Triggered by     : Tranquility (740)
 Family Flags     : 7, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4600,7 +4613,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Periodic effect can crit (265)
 Effects          :
 #1 (id=220365)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.41000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.41000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 #2 (id=709927)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01200 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc740
@@ -4672,7 +4685,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=221440)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When you cast Swiftmend, you gain Soul of the Forest, increasing the healing of your next Regrowth or Rejuvenation by $114108s2%, or increasing the healing of your next Wild Growth by $114108s3%.
+Description      : Swiftmend increases the healing of your next Regrowth or Rejuvenation by $114108s1%, or your next Wild Growth by $114108s2%.
 
 Name             : Mastery: Nature's Guardian (id=159195) [Spell Family (7), Passive, Hidden] 
 Class            : Guardian Druid
@@ -4857,7 +4870,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000013
-Affecting spells : Bear Form (5487 effect#2), Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Guardian Druid (137010 effect#6), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Lunar Inspiration (155627 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effect#1), Long Night (269379 effect#2), Power of the Moon (273367 effect#2), Twin Moons (279620 effect#2), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Moonfire (326646 effect#1), Moonfire (328023 effect#1)
+Affecting spells : Bear Form (5487 effect#2), Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Guardian Druid (137010 effect#6), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Lunar Inspiration (155627 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effect#1), Long Night (269379 effect#2), Power of the Moon (273367 effect#2), Twin Moons (279620 effect#2), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Moonfire (326646 effect#1), Moonfire (328023 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 1, 18, 92, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
@@ -4869,7 +4882,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Always hits (114), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=232409)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.14500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=232410)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=363033)   : Apply Aura (6) | Modify Damage Done% (79)
@@ -4887,7 +4900,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000002
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Moonfire (328023 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Moonfire (328023 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 1, 18, 102
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
@@ -4899,7 +4912,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=232416)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=232417)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc93402
@@ -5128,7 +5141,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#1), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 0, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5139,7 +5152,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=280098)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 Description      : Hurl a ball of energy at the target, dealing $s1 Nature damage.$?a197911[
@@ -5185,7 +5198,7 @@ Spell Level      : 29
 Range            : 200 yards
 Velocity         : 0.8 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202354 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2)
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202354 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18, 55
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   x....... .x...... ....x... .x....x. 
@@ -5197,7 +5210,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Treat as periodic (121), Requires line of sight (186)
 Effects          :
 #1 (id=280158)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -5213,7 +5226,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x00000010
-Affecting spells : Berserk (50334 effect#2), Incarnation: Guardian of Ursoc (102558 effect#2), Heart of the Wild (108293 effect#2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Natural Defenses (211160 effect#1), Guardian of Elune (213680 effect#1), Ironfur (231070 effect#1), Guardian's Wrath (279541 effect#1)
+Affecting spells : Berserk (50334 effect#6), Incarnation: Guardian of Ursoc (102558 effect#2), Heart of the Wild (108293 effect#2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Natural Defenses (211160 effect#1), Guardian of Elune (213680 effect#1), Ironfur (231070 effect#1), Guardian's Wrath (279541 effect#1)
 Family Flags     : 78
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5238,7 +5251,7 @@ Duration         : 15 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Rend and Tear (204053 effect#1), Elize's Everlasting Encasement (208342 effect#1), Luffa Wrappings (208681 effect#3), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2)
+Affecting spells : Berserk (50334 effect#2), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Rend and Tear (204053 effect#1), Elize's Everlasting Encasement (208342 effect#1), Luffa Wrappings (208681 effect#3), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Druid Runecarve 3 (338657 effect#1), Druid Guardian Runecarve 1 (339060 effect#1), 
 Family Flags     : 40, 77
 Attributes       : ....x... ........ .....x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ......x. 
@@ -5307,7 +5320,7 @@ Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000002
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Owlkin Frenzy (157228 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#1), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Owlkin Frenzy (157228 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 2, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5318,7 +5331,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=284976)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.76500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.76500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=284977)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 #3 (id=295015)   : Dummy (3)
@@ -5575,7 +5588,7 @@ School           : Astral
 Spell Type       : None
 Spell Level      : 27
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Guardian Druid (137010 effect#7), Feral Druid (137011 effect#7), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
+Affecting spells : Guardian Druid (137010 effect#7), Feral Druid (137011 effect#7), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Druid Runecarve 1 (338608 effect#1)
 Family Flags     : 76, 109
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5653,7 +5666,7 @@ GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Cooldown         : 10 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2), Ravenous Frenzy (323546 effect#1), Starsurge (328022 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2), Ravenous Frenzy (323546 effect#1), Starsurge (328022 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18, 89
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5664,7 +5677,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=290376)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Launch a surge of stellar energies at the target, dealing $s1 Astral damage, and extending any active Eclipse by $78674s2 sec.
 
 Name             : Starfire (id=197628) [Spell Family (7)] 
@@ -5677,7 +5690,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Owlkin Frenzy (157228 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#1), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Owlkin Frenzy (157228 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 2, 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5688,7 +5701,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=290380)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87500 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.87500 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=353245)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Call down a burst of energy, causing $s1 Arcane damage to the target, and ${$m1*$m2/100} Arcane damage to all other enemies within $A1 yards.
@@ -5702,7 +5715,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Moonfire (328023 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Moonfire (328023 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 1, 18, 102
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5837,7 +5850,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2)
 Family Flags     : 20, 118
 Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -5957,7 +5970,7 @@ Charges          : 3 (8 seconds cooldown)
 Category         : 1581: Druid (137009 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Scent of Blood (285646 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Scent of Blood (285646 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 98, 99
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5970,7 +5983,7 @@ Effects          :
 #1 (id=297726)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #2 (id=297727)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.69000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.69000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=819590)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Strikes up to $s3 nearby enemies with a massive slash, inflicting $s2 Physical damage.
@@ -6158,7 +6171,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2)
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18, 105
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -6170,7 +6183,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=298295)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=298296)   : Apply Aura (6) | Periodic Damage (3): astral every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=739525)   : Energize Power (30)
@@ -6290,7 +6303,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18
 Attributes       : ........ ........ ........ ...x....   .......x ..x..... ........ ........ 
                  : ..x..... ........ ......x. ........   x....... .x...... ......x. .x....x. 
@@ -6302,7 +6315,7 @@ Attributes       : ........ ........ ........ ...x....   .......x ..x..... .....
                  : Not a proc (105), Treat as periodic (121), Requires line of sight (186)
 Effects          :
 #1 (id=298525)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.36000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=298537)   : Energize Power (30)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: astral_power | Target: Self (1)
 Description      : $@spelldesc202342
@@ -6496,7 +6509,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Berserk (50334 effect#2), Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ......x. 
@@ -6692,7 +6705,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2)
+Affecting spells : Berserk (50334 effect#2), Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 54, 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
@@ -6704,9 +6717,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=301153)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=301154)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10647 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10647 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc204066
 
 Name             : Force of Nature (rank=Talent) (id=205636) [Spell Family (7)] 
@@ -6789,7 +6802,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2)
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2)
 Family Flags     : 118, 121
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -7237,7 +7250,7 @@ School           : Astral
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2)
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18, 23
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
@@ -7249,7 +7262,7 @@ Attributes       : ........ ........ x....... x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=313366)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc202770
 
 Name             : Fury of Elune (id=211547) [Spell Family (7)] 
@@ -7379,7 +7392,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2)
+Affecting spells : Berserk (50334 effect#2), Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 54, 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
@@ -7391,7 +7404,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Disable player procs (112)
 Effects          :
 #1 (id=317117)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.02621 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.02621 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc203953
 
 Name             : Swipe (id=213764) [Spell Family (7)] 
@@ -7427,7 +7440,7 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
-Affecting spells : Bear Form (5487 effect#7), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Bear Form (5487 effect#7), Berserk (50334 effect#2), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 52, 77
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7442,7 +7455,7 @@ Effects          :
 #2 (id=317224)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=317225)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.36000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.36000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Swipe up to $106785s4 nearby enemies, inflicting $s3 Physical damage.
 
 Name             : Protection of Ashamane (id=214274) [Spell Family (7), Hidden] 
@@ -8913,7 +8926,7 @@ Class            : Druid
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9155,7 +9168,7 @@ Velocity         : 20 yards/sec
 Charges          : 3 (25 seconds cooldown)
 Category         : 1727
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18, 63
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9166,7 +9179,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=726522)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=726523)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=726524)   : Energize Power (30)
@@ -9186,7 +9199,7 @@ Velocity         : 20 yards/sec
 Charges          : 3 (25 seconds cooldown)
 Category         : 1727
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18, 63
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9197,7 +9210,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=726525)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=726526)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=726527)   : Energize Power (30)
@@ -9217,7 +9230,7 @@ Velocity         : 0.9 yards/sec
 Charges          : 3 (25 seconds cooldown)
 Category         : 1727
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18, 63
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9228,7 +9241,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=726528)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=726529)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 #3 (id=726530)   : Dummy (3)
@@ -9336,7 +9349,7 @@ Spell Type       : Melee
 Range            : 8 yards
 Duration         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2)
+Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 94, 98
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9348,7 +9361,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=727435)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.07500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=727436)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 #3 (id=727440)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
@@ -9780,7 +9793,7 @@ Class            : Druid
 School           : Astral
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10602,7 +10615,7 @@ Range            : 8 yards
 GCD              : 1 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2)
+Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 54, 93, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10614,7 +10627,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=747140)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Finishing move that deals instant damage and applies Rip to all enemies within $A1 yards. Lasts longer per combo point.
 
    1 point  : ${$s1*2} plus Rip for 4 sec
@@ -11161,7 +11174,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=782753)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc305497
 Tooltip          : Deals Nature damage to attackers when hit by melee attacks and reduces their movement speed.
 
@@ -11180,7 +11193,7 @@ Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18, 100
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -11414,7 +11427,7 @@ Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Moonkin Form (24858 effect#9), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#1)
 Family Flags     : 18, 22
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   .......x .x...... ........ ......x. 
@@ -11445,7 +11458,7 @@ Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Tree of Life (5420 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), 
+Affecting spells : Incarnation: Tree of Life (5420 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#2)
 Family Flags     : 22, 118
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   .......x .x...... ........ ..x.x... 
@@ -11569,12 +11582,12 @@ Range            : 100 yards
 Duration         : 10 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
-Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 107
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ...x.... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ...x.... ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -11584,11 +11597,11 @@ Effects          :
 #1 (id=818328)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Trigger Spell: 338411 | Target: Friend (21)
 #2 (id=837056)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Description      : Energize your bonded partner, granting them $327139s1% of your damage as additional damage or absorption.
-Tooltip          : Energized by $@auracaster, granting up to 30% damage on your spells and abilities. Can also absorb damage.
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Description      : Energize your bonded partner, granting them $327139s1% of your damage as additional damage, healing, or absorption.
+Tooltip          : Energized by $@auracaster, increasing damage, healing, and mitigation by $s2% until Kindred Empowerment runs out.
 
-Damage or absorption remaining: $w1
+Empowerment remaining: ${$w1-1}
 
 Name             : Kindred Protection (rank=Kyrian) (id=327037) [Spell Family (7)] 
 Class            : Druid
@@ -11685,7 +11698,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=818495)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: -2 | Target: Friend (21)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: -2 | Target: Friend (21)
 Description      : $@spelldesc327022
 Tooltip          : Energizing $@auracaster, granting them $s1% of all damage you deal.
 
@@ -11900,5 +11913,29 @@ Effects          :
 #1 (id=837005)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc327022
+
+Name             : The Dark Titan's Lesson (id=338831) [Spell Family (7), Passive] 
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=837695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Affected Spells: Lifebloom (33763), Lifebloom (33778)
+                   Family Flags: 36
+#2 (id=837700)   : Apply Aura (6) | Unknown(332)
+                   Base Value: 188550 | Scaled Value: 188550 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Lifebloom (33763)
+                   Family Flags: 44
+Description      : You may Lifebloom two targets at once, and Lifebloom's final healing is increased by $s1%.
 
 

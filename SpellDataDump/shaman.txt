@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -59,7 +59,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=150)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36500 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.36500 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc974
 
 Name             : Earth Shield (id=974) [Spell Family (11)] 
@@ -120,7 +120,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ x....... 
 Effects          :
 #1 (id=387)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.55500 | PvP Coefficient: 1.20000 | Chain Multiplier: 0.7 | Chain Targets: 3 | Target: Chain Friendly (45)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.55500 | PvP Coefficient: 1.20000 | Chain Multiplier: 0.7 | Chain Targets: 3 | Target: Chain Friendly (45)
 #2 (id=219186)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Chain Friendly (45)
 Description      : Heals the friendly target for $s1, then jumps to heal the $<jumps> most injured nearby allies. Healing is reduced by $s2% with each jump.
@@ -341,7 +341,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=3235)     : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.48000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.48000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : A quick surge of healing energy that restores $s1 of a friendly target's health.
 
 Name             : Earth Shock (id=8042) [Spell Family (11)] 
@@ -363,7 +363,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=3248)     : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.42000 | PvP Coefficient: 0.90000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.42000 | PvP Coefficient: 0.90000 | Target: Enemy (6)
 Description      : Instantly shocks the target with concussive force, causing $s1 Nature damage.$?a190493[
 
 Earth Shock will consume all stacks of Fulmination to deal extra Nature damage to your target.][]
@@ -643,7 +643,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=15497)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc33757
 
 Name             : Strength (id=27973) [Passive, Hidden] 
@@ -756,7 +756,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=21915)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.07400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.07400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=172084)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -782,7 +782,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=21916)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.07400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.07400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=172085)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -857,7 +857,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=23633)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc8232
 
 Name             : Windfury Weapon (rank=Weapon Imbue) (id=33757) [Spell Family (11)] 
@@ -938,7 +938,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=37246)    : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.70400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
 Name             : Chain Lightning Overload (id=45297) [Spell Family (11)] 
@@ -959,7 +959,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ x....... 
 Effects          :
 #1 (id=37247)    : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.34500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Earthgrab Totem (id=51485) [Spell Family (11)] 
@@ -1009,7 +1009,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=43815)    : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.133) | SP Coefficient: 0.10448 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10448 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=43816)    : Knock Back (98)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 300 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=43817)    : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -1139,7 +1139,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... ...x.
                  : Treat as periodic (121)
 Effects          :
 #1 (id=44468)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Water Shield (id=52127) [Scaling Spell (-1), Spell Family (11)] 
@@ -1310,7 +1310,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=51290)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.67500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 0.67500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Inflicts Fire damage to an enemy.
 
 Name             : Wind Shear (id=57994) [Spell Family (11)] 
@@ -1503,7 +1503,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=53784)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.54000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.54000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=53785)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Charges your off-hand weapon with lava and burns your target, dealing $s1 Fire damage.
@@ -1559,7 +1559,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=55127)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.97000 | PvP Coefficient: 0.85000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.97000 | PvP Coefficient: 0.85000 | Target: Friend (21)
 #2 (id=55128)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22000 | PvP Coefficient: 0.85000 | Target: Friend (21)
 Description      : Restorative waters wash over a friendly target, healing them for $s1 and an additional $o2 over $d.
@@ -1735,7 +1735,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=66866)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=66867)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472)
@@ -1824,7 +1824,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=67015)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.29500 | PvP Coefficient: 1.00000 | Radius: 0 - 11 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.29500 | PvP Coefficient: 1.00000 | Radius: 0 - 11 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : $@spelldesc73920
 
 Name             : Purify Spirit (id=77130) [Spell Family (11)] 
@@ -1956,7 +1956,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.29000 | PvP Coefficient: 1.10000 | Target: Chain Friendly (45)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.29000 | PvP Coefficient: 1.10000 | Target: Chain Friendly (45)
 Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
@@ -2501,7 +2501,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ x....... 
 Effects          :
 #1 (id=127188)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.15) | SP Coefficient: 0.43000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1.1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.43000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1.1 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=188522)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 #3 (id=325441)   : Dummy (3)
@@ -2588,7 +2588,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=128188)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.15) | SP Coefficient: 0.43000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1.1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.43000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1.1 | Chain Targets: 3 | Target: Enemy (6)
 Description      : Unleash a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Affects up to $x1 total targets.
 
 Name             : Ancestral Guidance (id=114911) 
@@ -2625,7 +2625,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ ...x.
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=128512)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Heals injured allies.
 
 Name             : Windstrike (id=115356) [Spell Family (11)] 
@@ -2681,7 +2681,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=129139)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.07400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.07400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=197633)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -2708,7 +2708,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=129143)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.07400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.07400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=197634)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -2792,7 +2792,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=132332)   : School Damage (2): elemental
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Harnesses the raw power of the elements, dealing $s1 Elemental damage and increasing your Critical Strike, Haste, or Mastery by $118522s1 for $118522d.$?a190493[
 
 Elemental Blast will consume all stacks of Fulmination to deal extra Nature damage to your target.][]
@@ -2815,7 +2815,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .x...
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=133506)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.1) | Value Multiplier: 1 | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Call down a molten meteor on your target, dealing $s1 damage to up to $I enemies within $A1 yards of your target.
 
 Name             : Immolate (id=118297) 
@@ -2840,7 +2840,7 @@ Effects          :
 #1 (id=134677)   : Apply Aura (6) | Periodic Damage (3): fire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.07500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=134678)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Burns an enemy, then inflicts additional Fire damage every $t1 sec. for $d.
 Tooltip          : Fire damage inflicted every $t1 sec.
 
@@ -2949,7 +2949,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=140233)   : School Damage (2): elemental
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.63000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.63000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc117014
 
 Name             : Block (id=123831) [Passive, Hidden] 
@@ -3396,7 +3396,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=219326)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Conjures a gust of wind that deals $s1 Nature damage to an enemy.
 
 Name             : Call Lightning (id=157348) [Spell Family (11)] 
@@ -3419,7 +3419,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=219409)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=219410)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -3691,7 +3691,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=241705)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc170374
 
 Name             : Windfury Attack (id=170512) [Spell Family (11)] 
@@ -3708,7 +3708,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=241955)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11466 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11466 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc165610
 
 Name             : Feral Spirit Windfury Driver (id=170523) [Spell Family (11), Hidden] 
@@ -3815,7 +3815,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=274038)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19200 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.19200 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 #2 (id=739957)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Electrocutes all enemies in front of you, dealing ${$s1*$<CAP>/$AP} Nature damage. Hitting 2 or more targets enhances your weapons for $187878d, causing Stormstrike and Lava Lash to also deal ${$195592s1*$<CAP>/$AP} Nature damage to all targets in front of you.  
@@ -3925,7 +3925,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=274380)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.08000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.08000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=274448)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Enemy (6)
 Description      : Summons an Earthen Spike under an enemy, dealing $s1 Physical damage and increasing Physical and Nature damage you deal to the target by $s2% for $d.
@@ -3951,7 +3951,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=274643)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.70400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Hurls a bolt of lightning at the target, dealing $s1 Nature damage.
 
 Name             : Flame Shock (id=188389) [Spell Family (11)] 
@@ -3977,7 +3977,7 @@ Attributes       : ........ ........ x.x..... ..x.....   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=274966)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.19500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=274967)   : Apply Aura (6) | Periodic Damage (3): fire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=322658)   : Dummy (3)
@@ -4007,7 +4007,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ x....... 
 Effects          :
 #1 (id=275203)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.34500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=325428)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.$?s187874[
@@ -4378,7 +4378,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=281806)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.03600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc192106
 
 Name             : Liquid Magma Totem (id=192222) [Spell Family (11)] 
@@ -4465,7 +4465,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=282015)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc192222
 
 Name             : Crashing Storm (id=192246) [Spell Family (11), Passive] 
@@ -4536,7 +4536,7 @@ Effects          :
 #1 (id=284372)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=284412)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14742 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.14742 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=360417)   : Trigger Spell (64): Flametongue
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 194084 | Target: Self (1)
 Description      : Scorches your target, dealing $s2 Fire damage, and enhances your weapons with fire for $194084d, causing each weapon attack to deal up to ${$<coeff>*$AP} Fire damage.
@@ -4666,7 +4666,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=287112)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 Description      : $@spelldesc187874
 
 Name             : Frost Shock (id=196840) [Spell Family (11)] 
@@ -4689,7 +4689,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=288995)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=288996)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=313061)   : Dummy (3)
@@ -4787,7 +4787,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=289629)   : School Damage (2): flamestrike
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Radius: 11 yards | Target: Unknown(129)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Radius: 11 yards | Target: Unknown(129)
 #2 (id=290614)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 11 yards | Target: Unknown(129)
 #3 (id=290630)   : Dummy (3)
@@ -4860,7 +4860,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=290989)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc197995
 
 Name             : Fire Elemental (id=198067) [Spell Family (11)] 
@@ -5666,7 +5666,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=307375)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Unknown(87) -> AOE friendly (31)
 #2 (id=329508)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Unknown(87)
 Description      : A burst of water at the target location heals up to six injured allies within $A1 yards for $s1.
@@ -5831,7 +5831,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=312134)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.55000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=312135)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
@@ -5879,7 +5879,7 @@ Attributes       : ........ ........ ........ x..x....   ...x...x ........ .....
                  : Treat as periodic (121), Requires line of sight (186)
 Effects          :
 #1 (id=312258)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.02688 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.02688 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16) -> AOE enemy (instant) (16)
 Description      : $@spelldesc192246
 
 Name             : Cycle of the Elements (id=210853) [Spell Family (11), Passive] 
@@ -5946,7 +5946,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=316413)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19656 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.19656 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc195255
 
 Name             : The Deceiver's Blood Pact (id=214131) [Spell Family (11), Passive] 
@@ -6053,7 +6053,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ......x. ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=320915)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc196884
 
 Name             : Lava Beam Overload (id=218559) [Spell Family (11)] 
@@ -6094,7 +6094,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=326661)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.55000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=326662)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: maelstrom | Target: Self (1)
 Description      : Hurls frigid ice at the target, dealing $s1 Frost damage.
@@ -6557,7 +6557,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=485111)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc190493
 
 Name             : Master of the Elements (id=260734) [Spell Family (11)] 
@@ -7527,7 +7527,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=716785)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc157375
 
 Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive] 
@@ -7629,7 +7629,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=722410)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.21000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=722411)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc262624
@@ -9315,7 +9315,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=747255)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.72000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.72000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc51505
 
 Name             : Lava Burst Overload (id=285466) [Spell Family (11)] 
@@ -9336,7 +9336,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=747277)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.72000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.72000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc51505
 
 Name             : Surge of Power (id=285514) [Spell Family (11)] 
@@ -9731,7 +9731,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=762229)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.76000 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 8.76000 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc114052
 
 Name             : Person-Computer Interface (id=300168) [Scaling Spell (-1), Passive, Hidden] 
@@ -10127,7 +10127,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=807029)   : School Damage (2): elemental
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=807041)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Shock the target for $s1 Elemental damage and create an ancestral echo, causing your next damage or healing spell to be cast a second time ${$m2/1000}.1 sec later for free.
@@ -10234,7 +10234,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=808011)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(132) -> AOE friendly (31)
 Description      : $@spelldesc320746
 
 Name             : Chain Harvest (rank=Venthyr) (id=320751) [Spell Family (11)] 
@@ -10254,7 +10254,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=808016)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Friend (21)
 Description      : $@spelldesc320674
 
 Name             : Chain Harvest (rank=Venthyr) (id=320752) [Spell Family (11)] 
@@ -10274,7 +10274,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=808017)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc320674
 
 Name             : Mana Tide Totem (id=320763) 
@@ -10355,7 +10355,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=814143)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.50000 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc324386
 
 Name             : Vesper Totem (rank=Kyrian) (id=324522) [Spell Family (11)] 
@@ -10377,7 +10377,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=814146)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : $@spelldesc324386
 
 Name             : Primordial Wave (rank=Necrolord) (id=326059) [Spell Family (11)] 
@@ -10446,7 +10446,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=818537)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.65000 | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65000 | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc326059
 
 Name             : Primordial Wave (rank=Necrolord) (id=327163) [Spell Family (11)] 
@@ -10465,7 +10465,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=818538)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.65000 | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65000 | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc326059
 
 Name             : Windfury Totem (id=327941) 
@@ -10519,6 +10519,8 @@ Duration         : 3 seconds
 Cooldown         : 120 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 981: Elemental Fury (60188 effect#2)
+Affecting spells : Essential Extraction (339183 effect#1), 
+Family Flags     : 125
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ...x.... 
@@ -10544,7 +10546,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Essential Extraction (339183 effect#1), 
 Family Flags     : 39, 56, 125
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10556,7 +10558,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=821760)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.50000 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc328923
 
 Name             : Fae Transfusion (rank=Night Fae) (id=328930) [Spell Family (11)] 
@@ -10740,7 +10742,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=829633)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@speldesc333974
 
 Name             : Lava Lash (rank=Rank 2) (id=334033) [Spell Family (11), Passive] 

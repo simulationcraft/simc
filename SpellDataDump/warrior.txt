@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -148,7 +148,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...
                  : Requires main-hand weapon (106), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=310)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.32100 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32100 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=357783)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26600 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
 Description      : Wounds the target, causing $s1 Physical damage instantly and an additional $o2 Bleed damage over $d.
@@ -176,7 +176,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=357)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 #2 (id=722907)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Strikes up to $s2 enemies in front of you for $s1 Physical damage, inflicting Deep Wounds. Cleave will consume your Overpower effect to deal increased damage.
@@ -293,7 +293,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=462)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Slams an opponent, causing $s1 Physical damage.
 
 Name             : Whirlwind (id=1680) [Spell Family (4)] 
@@ -350,7 +350,7 @@ Effects          :
 #1 (id=523)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=236708)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Maims the enemy for $s2 Physical damage, reducing movement speed by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
@@ -622,7 +622,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=2203)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=357188)   : Dummy (3)
@@ -710,7 +710,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=2316)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.63000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.63000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 Description      : Swing in a wide arc, dealing $s1 Physical damage to all enemies in front of you. Deals reduced damage to secondary targets.
 
 Your successful dodges and parries have a chance to make your next Revenge cost no Rage.
@@ -769,7 +769,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
 #1 (id=2780)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.91500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.91500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=126946)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cleave (845), Mortal Strike (12294)
@@ -804,7 +804,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=5274)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : A vicious strike that deals $s1 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
@@ -931,7 +931,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=102316)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=11313)    : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : A direct strike, dealing $s1 Physical damage.
@@ -1000,7 +1000,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=14120)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=134421)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
@@ -1060,7 +1060,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=14132)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85100 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.85100 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=155551)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Slams the target with your shield, causing $s1 Physical damage.$?s231834[
@@ -1223,7 +1223,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=24417)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Strikes the target, causing $s1 damage and healing you for $118779s1% of your maximum health.
 
 Only usable within $32216d after you kill an enemy that yields experience or honor.
@@ -1265,7 +1265,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=36871)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07100 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.07100 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc190411
 
 Name             : Titan's Grip (id=46917) [Spell Family (4), Passive] 
@@ -1350,7 +1350,7 @@ Effects          :
 #1 (id=39125)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone Front (104)
 #2 (id=39126)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08200 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.08200 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone Front (104)
 #3 (id=39127)    : Dummy (3)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000
 #4 (id=179869)   : Server Side Script (77)
@@ -1377,7 +1377,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=42845)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=42846)    : Trigger Spell (64): Bladestorm Off-Hand
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 95738 | Target: At Caster (22)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your main hand weapon for $s1 Physical damage.
@@ -1400,7 +1400,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Not a proc (105), Always hits (114), Requires line of sight (186)
 Effects          :
 #1 (id=44600)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10221 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10221 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc6544
 
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
@@ -1445,7 +1445,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
 #1 (id=51036)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Throws your weapon at the enemy, causing $s1 Physical damage. Generates high threat.
 
 Name             : Glyph of Gushing Wound (rank=Protection) (id=58099) [Spell Family (4), Passive, Hidden] 
@@ -1569,7 +1569,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Cannot crit (93), Requires main-hand weapon (106)
 Effects          :
 #1 (id=58626)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=801036)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 64380 | Target: Enemy (6)
 Description      : Hurl your weapon at the enemy, causing $<damage> Physical damage, ignoring armor, and removing any magical immunities. Deals up to 500% increased damage to absorb shields.
@@ -1845,7 +1845,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=86555)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc85288
 Variables        : $damage=${$96103s1+$85384s1}
 
@@ -2017,7 +2017,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Requires off-hand weapon (120)
 Effects          :
 #1 (id=101423)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your off-hand weapon for $s1 Physical damage.
 
 Name             : Raging Blow (id=96103) [Spell Family (4)] 
@@ -2041,7 +2041,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=101983)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc85288
 Variables        : $damage=${$96103s1+$85384s1}
 
@@ -2177,7 +2177,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
 #1 (id=118383)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16380 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.16380 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=125715)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Hurls your weapon at an enemy, causing $s1 Physical damage and stunning for $132169d.
@@ -2502,7 +2502,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
 Effects          :
 #1 (id=134153)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=297932)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Roar explosively, dealing $s1 Physical damage to all enemies within $A1 yds. Dragon Roar critically strikes for 3 times normal damage.
@@ -2640,7 +2640,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : Always hits (114)
 Effects          :
 #1 (id=160971)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11466 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11466 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc100
 
 Name             : Shockwave (id=132168) [Spell Family (4)] 
@@ -3159,7 +3159,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=217505)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=818180)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Unknown(87)
 Description      : $@spelldesc152277
@@ -3278,7 +3278,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Always hits (114), Requires off-hand weapon (120)
 Effects          :
 #1 (id=230085)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.27000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.27000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
@@ -3303,7 +3303,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=236210)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.81500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.81500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Smashes the enemy's armor, dealing $s1 Physical damage, and increasing damage you deal to them by $208086s1% for $208086d.
 
 Name             : Enrage (id=184361) [Spell Family (4), Passive] 
@@ -3451,7 +3451,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires off-hand weapon (120)
 Effects          :
 #1 (id=267757)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.56400 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.56400 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=184709) [Spell Family (4)] 
@@ -3476,7 +3476,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=267761)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.32900 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32900 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
@@ -3760,7 +3760,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=293808)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.18200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc1680
 
 Name             : Whirlwind (id=199667) [Spell Family (4)] 
@@ -3782,7 +3782,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=293819)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.06600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc190411
 
 Name             : Whirlwind (id=199850) [Spell Family (4)] 
@@ -3804,7 +3804,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=294125)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.18200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc1680
 
 Name             : Whirlwind Off-Hand (id=199851) [Spell Family (4)] 
@@ -3827,7 +3827,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Requires off-hand weapon (120)
 Effects          :
 #1 (id=294127)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07100 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.07100 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc190411
 
 Name             : Whirlwind (id=199852) [Spell Family (4)] 
@@ -3850,7 +3850,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=294129)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.06600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc190411
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -3898,7 +3898,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=296642)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42300 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42300 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=201364) [Spell Family (4)] 
@@ -3923,7 +3923,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires off-hand weapon (120)
 Effects          :
 #1 (id=296644)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75200 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.75200 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Indomitable (id=202095) [Spell Family (4), Passive] 
@@ -4066,7 +4066,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=297955)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Instantly attack the target, causing $s1 damage and healing you for $202166s1% of your maximum health.
 
 Killing an enemy that yields experience or honor resets the cooldown of Impending Victory.
@@ -5185,7 +5185,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=357208)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=357209)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : $@spelldesc236279
@@ -5531,7 +5531,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=485944)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.01600 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.01600 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=485945)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Bash an enemy's skull, dealing $s1 Physical damage.
@@ -5589,7 +5589,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=486196)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.34400 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.34400 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc163201
 Variables        : $damage=${2.0*$260798s1}
 
@@ -5753,7 +5753,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=623203)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.81500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.81500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Smash the ground and shatter the armor of all enemies within $A1 yds, dealing $s1 Physical damage and increasing damage you deal to them by $208086s1% for $208086d.
 
 Name             : Deadly Calm (id=262228) [Spell Family (4)] 
@@ -7874,7 +7874,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106), Requires off-hand weapon (120)
 Effects          :
 #1 (id=738533)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=738538)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Break the enemy's defenses, dealing $s1 Physical damage, and increasing your damage done to the target by $280773s1% for $280773d.
@@ -7929,7 +7929,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=738696)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.12800 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.12800 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc5308
 
 Name             : Massacre (id=281001) [Spell Family (4), Passive, Hidden] 
@@ -8463,7 +8463,7 @@ School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 4 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#4)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#4), Piercing Verdict (339259 effect#1), 
 Triggered by     : Spear of Bastion (307865)
 Family Flags     : 9, 57
 Attributes       : ....x... ........ .......x x.xx....   .....x.. ........ ........ ........ 
@@ -8476,7 +8476,7 @@ Attributes       : ....x... ........ .......x x.xx....   .....x.. ........ .....
                  : Does not break stealth (37), Periodic effect can crit (265)
 Effects          :
 #1 (id=786712)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Radius: 5 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Radius: 5 yards | Target: AOE enemy (instant) (16)
 #2 (id=786803)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 5 yards | Target: AOE enemy (instant) (16)
 #3 (id=788156)   : Energize Power (30)
@@ -8544,7 +8544,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106), Requires off-hand weapon (120)
 Effects          :
 #1 (id=799630)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.31600 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.31600 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=799631)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Brutally attack an enemy for $s1 Physical damage. Requires Enrage.
@@ -8590,7 +8590,7 @@ Attributes       : ........ ........ .....x.. ........   ........ ........ .x...
                  : Cannot dodge/parry/block (21), Requires line of sight (186)
 Effects          :
 #1 (id=800084)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.46000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> Unknown(134)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.46000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> Unknown(134)
 #2 (id=818173)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(87)
 Description      : $@spelldesc262150
@@ -9539,7 +9539,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
 #1 (id=816653)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.20000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.20000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=822981)   : Apply Aura (6) | Stun (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Stun | Target: Cone Front (104)
 Description      : Slam the ground with your weapon, releasing a shockwave dealing $s1 Nature damage and stunning up to $s2 enemies for $d.
@@ -9837,7 +9837,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=831435)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=831436)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
@@ -9901,7 +9901,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=831441)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.94000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.94000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc335097
 
 Name             : Crushing Blow (id=335100) [Spell Family (4)] 
@@ -9925,7 +9925,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=831443)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.94000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.94000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc335097
 
 Name             : Reckless Abandon (id=335101) [Spell Family (4)] 

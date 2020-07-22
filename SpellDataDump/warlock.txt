@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -55,7 +55,7 @@ Effects          :
 #2 (id=198373)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=830260)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.12000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Corrupts the target, causing$?s334342[ $s3 Shadow damage and an additional][] $146739o1 Shadow damage over $146739d.
 
 Name             : Immolate (id=348) [Spell Family (5)] 
@@ -80,7 +80,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : Cannot cancel aura (31), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=145)      : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=371976)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : Burns the enemy, causing $s1 Fire damage immediately and an additional $157736o1 Fire damage over $157736d.
@@ -117,7 +117,7 @@ Description      : Inflicts impending doom upon the target, causing $o1 Shadow d
 Tooltip          : Doomed to take $w1 Shadow damage.
 
 Name             : Shadow Bolt (id=686) [Spell Family (5)] 
-Class            : Affliction Demonology Warlock
+Class            : Affliction Demonology Destruction Unknown (1454) Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=74)
@@ -138,7 +138,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=267)      : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.34500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]$?a32388[
@@ -519,7 +519,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=929)      : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deals $s1 Fire damage to a target.
 
 |cFF777777(Right-Click to toggle)|r
@@ -743,7 +743,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=2203)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=357188)   : Dummy (3)
@@ -778,7 +778,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=2210)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=740054)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000
 #3 (id=831295)   : Dummy (3)
@@ -899,7 +899,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=3106)     : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=113763)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : Lashes the target, dealing $s1 Shadow damage.
@@ -1027,10 +1027,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
 Effects          :
 #1 (id=9474)     : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.41000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.30000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=831656)   : Dummy (3)
@@ -1080,7 +1080,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1176,7 +1176,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=10879)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=113505)   : Energize Power (30)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Unknown(25)
 Description      : Heals and energizes when an effect is dispelled.
@@ -1197,7 +1197,7 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=11232)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=242870)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Deals Fire damage to all nearby enemies.
@@ -1294,7 +1294,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=12912)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=12913)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : An infernal falls from the sky, dealing $s1 Fire damage to all targets, stunning them for $d.
@@ -1358,7 +1358,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=16922)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc27243
 
 Name             : Strength (id=27973) [Passive, Hidden] 
@@ -1427,7 +1427,7 @@ Effects          :
 #1 (id=19297)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=288276)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.64100 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.64100 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -1549,7 +1549,7 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=19741)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13260 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.13260 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Charge an enemy, instantly causing $30153m1% weapon damage and increasing the $?s108499[Wrathguard][Felguard]'s movement speed by $30151s3% for $30151d.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -1578,7 +1578,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=175537)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.81600 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81600 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Cone Front (104)
 #2 (id=19796)    : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 6 yards | Target: Cone Front (104)
 #3 (id=319698)   : Dummy (3)
@@ -1773,7 +1773,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
 Effects          :
 #1 (id=40331)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.68750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.68750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=40332)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d.
@@ -1800,7 +1800,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=46748)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Bites the enemy, causing $s1 Shadow damage.
 
 |cFF777777(Right-Click to toggle)|r
@@ -2146,7 +2146,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=87009)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.68750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.68750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=155200)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage. Deals $s2% additional damage to targets below 20% health.
@@ -2169,7 +2169,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=87492)    : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.17600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc105174
 
 Name             : Nethermancy (rank=Passive) (id=86091) [Passive, Hidden] 
@@ -2239,7 +2239,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=92651)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.33000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=92652)    : None (0)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=818685)   : Dummy (3)
@@ -2540,7 +2540,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=113740)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.04600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.04600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=113741)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : Deals $s1 Fire damage to a target.
@@ -3161,7 +3161,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.20000 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3548,7 +3548,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=210584)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : Calls forth a cataclysm at the target location, dealing $s1 Shadowflame damage to all enemies within $A1 yards and afflicting them with $?s980[Agony and Unstable Affliction][]$?s104315[Corruption][]$?s348[Immolate][]$?!s980&!s104315&!s348[Agony, Unstable Affliction, Corruption, or Immolate][].
 
 Name             : Immolate (id=157736) [Spell Family (5)] 
@@ -3731,7 +3731,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   x....... ..x..... ........ ........ 
 Effects          :
 #1 (id=242715)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=242716)   : Apply Aura (6) | Stun (12)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : The infernal releases a powerful burst of flames, dealing $s1 Fire damage to nearby targets, and stunning them for $d.
@@ -4009,7 +4009,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=287832)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.43750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.43750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc108503
 
 Name             : Writhe in Agony (id=196102) [Spell Family (5), Passive] 
@@ -4142,7 +4142,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ ...x.
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=288084)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.26400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.26400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc196277
 
 Name             : Hand of Doom (id=196283) [Spell Family (5), Passive] 
@@ -4312,9 +4312,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=288343)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19360 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.19360 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=739648)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.07700 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.07700 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc196447
 
 Name             : Channel Demonfire (id=196449) [Spell Family (5), Hidden] 
@@ -4739,7 +4739,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=302930)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Bite the target, dealing Shadow damage.
 
 Name             : Eye Beam (id=205231) [Spell Family (5)] 
@@ -4758,7 +4758,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=302984)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.32000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Fires an eye beam that deals $s1 Shadow damage.
 
 Name             : Phantom Singularity (id=205246) [Spell Family (5)] 
@@ -6020,7 +6020,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.73400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.73400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Send the fiery soul of a fallen demon at the enemy, causing $s1 Shadowflame damage.$?c2[
 
 |cFFFFFFFFGenerates 2 Soul Shards.|r][]
@@ -6225,7 +6225,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=709327)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.71500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.71500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deal $s1 Shadowflame damage to your enemy target.
 
 Name             : Conflagrate (id=265931) [Spell Family (5)] 
@@ -6516,7 +6516,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Treat as periodic (121), Requires line of sight (186)
 Effects          :
 #1 (id=713715)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc267211
 
 Name             : Sacrificed Souls (id=267214) [Spell Family (5), Passive, Hidden] 
@@ -6838,7 +6838,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=714972)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc264057
 
 Name             : Demonic Consumption (id=267971) [Spell Family (5)] 
@@ -7083,7 +7083,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=715022)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=715023)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : The Vilefiend spits a ball of bile at its target, dealing ${$m1*$<demoMastery>} Nature damage and an additional ${$m2*$<demoMastery>} Nature damage every $t2 sec for $d.
@@ -7108,7 +7108,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=715029)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.36000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.36000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : The Vilefiend rams its bladed head into the target, dealing $s1 Physical damage.
 
 Name             : Summon Ur'zul (id=268001) [Spell Family (5)] 
@@ -7328,7 +7328,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=719405)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.32500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deal $s1 Shadowflame damage to your enemy target.
 
 Name             : Inferno (id=270545) [Spell Family (5), Passive] 
@@ -7475,7 +7475,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=722506)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Bite the target, dealing Shadow damage.
 
 Name             : Shadow Slash (id=272012) 
@@ -7496,7 +7496,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=722575)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : The Satyr strikes at out with its weapons, dealing Shadow damage.
 
 Name             : Demon Fangs (id=272013) 
@@ -7517,7 +7517,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=722577)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : The Vicious Hellhound chomps at its target, dealing Shadowflame damage.
 
 Name             : Eye of Gul'dan (id=272131) 
@@ -7563,9 +7563,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=722785)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=722786)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : The Void Terror unleashes a breath of Fire and Shadow at the target, dealing Shadowflame damage.
 
 Name             : Toxic Bile (id=272167) 
@@ -7587,7 +7587,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=722800)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : The Bilescourge spits wads of Toxic Bile at its target, dealing Nature damage.
 
 Name             : Multi-Slash (id=272172) 
@@ -7607,13 +7607,13 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=722806)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.85000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=722807)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.85000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=722808)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.85000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=722809)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.85000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : The Shivarra stabs wildly at her target with all weapons at the same time, dealing physical damage.
 
 Name             : Overhead Assault (id=272432) 
@@ -7633,7 +7633,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=723213)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : The Wrathguard smashes its target with a heavy overhand swing.
 
 Name             : Fel Bite (id=272435) 
@@ -7653,7 +7653,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=723217)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : The Darkhound bites its target, causing serious Physical damage.
 
 Name             : Many Faced Bite (id=272439) 
@@ -7673,7 +7673,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=723224)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : The Ur'zul rears up and bites its target, dealing Physical damage. 
 
 You're not sure which face actually bit you after thinking about it.
@@ -9390,7 +9390,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=793902)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=793903)   : Apply Aura (6) | Periodic Damage (3): arcane every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deal $s1 Arcane damage instantly, and $o2 over $d. If the enemy dies while affected by Scouring Tithe, you generate ${$312379s1/10} Soul $LShard:Shards;. If they survive, Scouring Tithe's cooldown is refreshed.
@@ -9615,7 +9615,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=810354)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc321792
 
 Name             : Impending Catastrophe (id=322170) [Spell Family (5)] 
@@ -9787,7 +9787,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=818373)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc325289
 
 Name             : Decimating Bolt (rank=Necrolord) (id=327070) [Spell Family (5)] 
@@ -9844,6 +9844,9 @@ Cooldown         : 180 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
+Affecting spells : Fel Celerity (339130 effect#1)
+Triggered by     : Fel Celerity (339130)
+Family Flags     : 123
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -180,7 +180,7 @@ Effects          :
 #1 (id=227730)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=227731)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45279 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45279 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=287985)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 (coefficient=0, delta coefficient=0.4) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Quickly attack for $s2 Physical damage.
@@ -195,7 +195,7 @@ Duration         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Flags       : ..x.x... x...x... x....... ........ 
                  : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Affecting spells : Soul Rending (204909 effect#2), Demonic Origins (235893 effect#2), Metamorphosis (320421 effect#1), Metamorphosis (320422 effect#1)
+Affecting spells : Soul Rending (204909 effect#2), Demonic Origins (235893 effect#2), Metamorphosis (320421 effect#1), Metamorphosis (320422 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Metamorphosis (191427)
 Family Flags     : 15
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -359,6 +359,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Shattered Restoration (338793 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ .....x..   ........ ........ ........ ......x. 
@@ -403,7 +404,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Unleashed Power (206477 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Unleashed Power (206477 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Demon's Touch (339153 effect#1)
 Family Flags     : 16, 17, 32, 43
 Attributes       : ....x... ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -416,7 +417,7 @@ Effects          :
 #1 (id=257307)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=267052)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20475 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20475 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #3 (id=738282)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Unleash an eruption of fel energy, dealing $s2 Chaos damage and stunning all nearby enemies for $d.$?s320412[
@@ -483,7 +484,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1612: Havoc Demon Hunter (212612 effect#5)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 5, 16, 32, 42, 85
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -632,7 +633,7 @@ Cooldown         : 15 seconds
 Category         : 1640
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 15 seconds
-Affecting spells : Metamorphosis (162264 effect#6), First Blood (206416 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1)
+Affecting spells : Metamorphosis (162264 effect#6), First Blood (206416 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 25, 32, 42, 85
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -668,7 +669,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 60 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Spectral Sight (320379 effect#1)
+Affecting spells : Spectral Sight (320379 effect#1), Lost in Darkness (339149 effect#1)
 Family Flags     : 74
 Attributes       : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -739,7 +740,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Not a proc (105), Always hits (114), Requires line of sight (186)
 Effects          :
 #1 (id=276573)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.31122 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.31122 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc189110
 
 Name             : Increased Threat (id=189926) [Spell Family (107), Passive, Hidden] 
@@ -770,7 +771,7 @@ Category         : 1577
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 300 seconds
-Affecting spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demonic Origins (235893 effect#2), Metamorphosis (320421 effect#1), Metamorphosis (320422 effect#1)
+Affecting spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demonic Origins (235893 effect#2), Metamorphosis (320421 effect#1), Metamorphosis (320422 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 15, 32
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -798,7 +799,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 50000 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Demon's Touch (339153 effect#1)
 Family Flags     : 16, 18, 43
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
@@ -810,7 +811,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=282602)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Radius: 0 - 23 yards | Target: Unknown(87) -> Unknown(134)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Radius: 0 - 23 yards | Target: Unknown(87) -> Unknown(134)
 Description      : $@spelldesc195072
 
 Name             : Blade Dance (id=193311) [Spell Family (107)] 
@@ -998,7 +999,7 @@ Cooldown         : 30 seconds
 Category         : 1582
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 30 seconds
-Affecting spells : Blind Fury (203550 effect#1), Soul Flame of Insight (226334 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1)
+Affecting spells : Blind Fury (203550 effect#1), Soul Flame of Insight (226334 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 10
 Attributes       : ........ ........ ........ ........   ..x...x. .x...... ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1026,7 +1027,7 @@ School           : Chromatic
 Spell Type       : Magic
 Range            : 50000 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Blind Fury (203550 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Soul Flame of Insight (226334 effect#1), Chaos Blades (247938 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Eyes of Rage (278500 effect#2), Eye Beam (320415 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Blind Fury (203550 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Soul Flame of Insight (226334 effect#1), Chaos Blades (247938 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Eyes of Rage (278500 effect#2), Eye Beam (320415 effect#1), Demon's Touch (339153 effect#1), Exposed Wound (339229 effect#1)
 Family Flags     : 8, 10, 16, 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -1038,7 +1039,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Requires line of sight (186), Periodic effect can crit (265)
 Effects          :
 #1 (id=291051)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11250 | PvP Coefficient: 1.00000 | Radius: 20 yards | Target: Unknown(129)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11250 | PvP Coefficient: 1.00000 | Radius: 20 yards | Target: Unknown(129)
 Description      : $@spelldesc198013
 
 Name             : Blur (id=198589) [Spell Family (107)] 
@@ -1050,7 +1051,7 @@ Cooldown         : 60 seconds
 Category         : 1621
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
-Affecting spells : Desperate Instincts (205411 effect#3)
+Affecting spells : Desperate Instincts (205411 effect#3), Fel Defender (338671 effect#1)
 Family Flags     : 26
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1115,7 +1116,7 @@ Effects          :
 #1 (id=292270)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=292271)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11934 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11934 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc198793
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -1126,7 +1127,7 @@ Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 6, 16, 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -1139,7 +1140,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=293648)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.55000 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.55000 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc162794
 
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
@@ -1148,7 +1149,7 @@ School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1)
+Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Blade Dance (188499)
 Family Flags     : 16, 25, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -1163,7 +1164,7 @@ Effects          :
 #1 (id=293656)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=293657)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc188499
 
 Name             : Metamorphosis (id=200166) [Spell Family (107)] 
@@ -1185,7 +1186,7 @@ Effects          :
 #1 (id=294655)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Stun | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=294659)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.32760 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32760 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=376438)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare
 Description      : $@spelldesc191427
@@ -1197,7 +1198,7 @@ School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1)
+Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Blade Dance (188499)
 Family Flags     : 12, 16, 25, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -1212,7 +1213,7 @@ Effects          :
 #1 (id=295486)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=295487)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc188499
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -1273,7 +1274,7 @@ Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Annihilation (201427)
 Family Flags     : 16, 43, 50
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -1286,7 +1287,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=296759)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.71500 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.71500 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc201427
 
 Name             : Metamorphosis (id=201453) [Spell Family (107), Hidden] 
@@ -1427,7 +1428,7 @@ Cooldown         : 120 seconds
 Category         : 1608
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Sigil of Silence (320417 effect#1), Darkness (320420 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Sigil of Silence (320417 effect#1), Darkness (320420 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32, 75
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1457,7 +1458,7 @@ Cooldown         : 90 seconds
 Category         : 1606
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 90 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1811,7 +1812,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=300625)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40365 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40365 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=300626)   : Energize Power (30)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Shears an enemy for $s1 Physical damage, and shatters $?a187827[two Lesser Soul Fragments][a Lesser Soul Fragment] from your target.
@@ -1855,6 +1856,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 25 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Shattered Restoration (338793 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ .....x..   ........ ........ ........ ......x. 
@@ -1915,7 +1917,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=300651)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=300652)   : Energize Power (30)
                    Base Value: 16 | Scaled Value: 16 (coefficient=0, delta coefficient=0.5) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Inflicts $s1 Shadow damage and generates $m2 to $M2 Fury.
@@ -1961,7 +1963,7 @@ Cooldown         : 60 seconds
 Category         : 1541
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1 seconds
-Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#1), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#1), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fel Defender (338671 effect#1)
 Family Flags     : 32, 36, 70, 72
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -1975,7 +1977,7 @@ Effects          :
 #1 (id=301059)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=301062)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.33169 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.33169 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Brand an enemy with a demonic symbol, instantly dealing $sw2 Fire damage$?s320962[ and ${$207771s3*$207744d} Fire damage over $207744d][]. The enemy's damage done to you is reduced by $s1% for $207744d.
 Tooltip          : Dealing $s1% less damage to the branding Demon Hunter.
 
@@ -1990,7 +1992,7 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 9 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#1), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#1), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 5, 32, 70, 85
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2004,7 +2006,7 @@ Effects          :
 #1 (id=301300)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #2 (id=301301)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15795 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15795 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 Description      : Throw a demonic glaive at the target, dealing $s2 Physical damage. The glaive can ricochet to $?$s320386[${$x1-1} additional enemies][an additional enemy] within 10 yards. Generates high threat.
 
 Name             : Shattered Souls (id=204254) [Spell Family (107), Passive] 
@@ -2118,7 +2120,7 @@ Cooldown         : 30 seconds
 Category         : 1605
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 30 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2157,7 +2159,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Requires line of sight (186), Periodic effect can crit (265)
 Effects          :
 #1 (id=301971)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11500 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11500 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 #2 (id=301972)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 #3 (id=738599)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
@@ -2513,7 +2515,7 @@ Cooldown         : 180 seconds
 Category         : 1607
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 180 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Sigil of Misery (320418 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Sigil of Misery (320418 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32, 76
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2625,7 +2627,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : .....x.. .....x.. .x.x.... ........ 
                  : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Fiery Brand (207771 effect#2), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1)
+Affecting spells : Fiery Brand (207771 effect#2), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fel Defender (338671 effect#1)
 Family Flags     : 36
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2671,7 +2673,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : .....x.. .....x.. .x.x.... ........ 
                  : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Vengeance Demon Hunter (212613 effect#1), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Vengeance Demon Hunter (212613 effect#1), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fel Defender (338671 effect#1)
 Family Flags     : 36, 70, 72
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
@@ -2902,6 +2904,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 25 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Affecting spells : Shattered Restoration (338793 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ .....x..   ........ ........ ........ ......x. 
@@ -2913,7 +2916,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Cannot crit (93)
 Effects          :
 #1 (id=310973)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.48075 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.48075 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consume a Soul Fragment, healing you for $s1 health.
 
 Name             : Death Sweep (id=210152) [Spell Family (107)] 
@@ -2928,7 +2931,7 @@ Cooldown         : 9 seconds
 Category         : 1640
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 9 seconds
-Affecting spells : First Blood (206416 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1)
+Affecting spells : First Blood (206416 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 32, 37, 42, 85
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2962,7 +2965,7 @@ School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Death Sweep (210152)
 Family Flags     : 16, 37, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -2977,7 +2980,7 @@ Effects          :
 #1 (id=311156)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=311157)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.17400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc210152
 
 Name             : Death Sweep (id=210155) [Spell Family (107)] 
@@ -2986,7 +2989,7 @@ School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Death Sweep (210152)
 Family Flags     : 16, 37, 38, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -3001,7 +3004,7 @@ Effects          :
 #1 (id=311159)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=311160)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.52000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.52000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc210152
 
 Name             : Soul Fragments (id=210788) [Spell Family (107), Hidden] 
@@ -3041,7 +3044,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=313818)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29835 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.29835 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1% weapon damage.
 
 Name             : Chaos Blades (id=211797) [Spell Family (107)] 
@@ -3063,7 +3066,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=313820)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29835 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.29835 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1% off-hand weapon damage.
 
 Name             : Fel Eruption (id=211881) [Spell Family (107)] 
@@ -3089,7 +3092,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
 #1 (id=313950)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.32760 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32760 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=345978)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Stun | Target: Enemy (6)
 Description      : Impales the target for $s1 Chaos damage and stuns them for $d.
@@ -3130,7 +3133,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#1), 
+Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Fel Devastation (212084)
 Family Flags     : 67, 70, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3143,7 +3146,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186), Periodic effect can crit (265)
 Effects          :
 #1 (id=314431)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15561 | PvP Coefficient: 1.00000 | Radius: 13 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15561 | PvP Coefficient: 1.00000 | Radius: 13 yards | Target: Cone Front (104)
 Description      : $@spelldesc212084
 
 Name             : Fel Devastation (id=212106) [Spell Family (107)] 
@@ -3162,7 +3165,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=314433)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40950 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40950 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc212084
 
 Name             : Demon Hunter (id=212611) [Spell Family (107), Passive, Hidden] 
@@ -3277,7 +3280,7 @@ Cooldown         : 60 seconds
 Category         : 1621
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
-Affecting spells : Desperate Instincts (205411 effect#3)
+Affecting spells : Desperate Instincts (205411 effect#3), Fel Defender (338671 effect#1)
 Triggered by     : Blur (198589)
 Family Flags     : 26
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -3364,7 +3367,7 @@ Spell Level      : 50
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), 
+Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), Demon's Touch (339153 effect#1)
 Family Flags     : 16, 30, 42, 70, 72
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3378,7 +3381,7 @@ Effects          :
 #1 (id=316324)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=316325)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.66690 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.66690 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=316326)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : $@spelldesc232893
@@ -3640,7 +3643,7 @@ Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 14, 16, 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3653,7 +3656,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=331359)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc162794
 
 Name             : Fel Barrage (rank=Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
@@ -3698,7 +3701,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106), Always hits (114)
 Effects          :
 #1 (id=338878)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=338879)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc209795
@@ -3723,7 +3726,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Not a proc (105), Always hits (114), Requires off-hand weapon (120)
 Effects          :
 #1 (id=338881)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=338882)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc209795
@@ -3792,7 +3795,7 @@ Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Annihilation (201427)
 Family Flags     : 16, 43, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3805,7 +3808,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=342015)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45500 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45500 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc201427
 
 Name             : Soul Cleave (id=228477) [Spell Family (107)] 
@@ -3837,9 +3840,9 @@ Effects          :
 #3 (id=344030)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=344031)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.05000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.05000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=808444)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Viciously strike $228478s2 enemies in front of you for $228478s1 Physical damage and heal yourself for $s4.
 
 Consumes up to $s3 Soul Fragments within $s1 yds$?s321021[ and heals you for an additional $s5 for each Soul Fragment consumed][].
@@ -3866,7 +3869,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=344032)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.70200 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.70200 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 #2 (id=819792)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc228477
@@ -3900,7 +3903,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 15 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), 
+Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 30, 32, 85
 Attributes       : ....x... ........ ..x..... .....x..   ........ .x...... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -4010,7 +4013,7 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=377040)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22113 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22113 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc247454
 
 Name             : Frailty (id=247456) [Spell Family (107)] 
@@ -4280,7 +4283,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=483076)   : School Damage (2): none
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.53703 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53703 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone Front (104)
 Description      : Slash all enemies in front of you for $s1 Chaos damage, and increase the damage your Chaos Strike and Blade Dance deal to them by $320338s1% for $320338d.
 
 Name             : Insatiable Hunger (id=258876) [Spell Family (107), Passive, Hidden] 
@@ -4381,7 +4384,7 @@ Duration         : 6 seconds
 Cooldown         : 30 seconds
 Category         : 1676
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Agonizing Flames (207548 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1)
+Affecting spells : Agonizing Flames (207548 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 11, 32, 85
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4426,7 +4429,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 11, 16, 49
 Attributes       : ........ ........ ..x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4437,7 +4440,7 @@ Attributes       : ........ ........ ..x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=483170)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24570 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24570 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=258922) [Spell Family (107)] 
@@ -4445,7 +4448,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Immolation Aura (258920)
 Family Flags     : 11, 16, 61
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
@@ -4457,7 +4460,7 @@ Attributes       : ....x... ........ ..x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=483172)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09173 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09173 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=483173)   : Energize Power (30)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 #3 (id=807415)   : Energize Power (30)
@@ -4472,7 +4475,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Mark of the Ogre (326486 effect#3)
+Affecting spells : Mark of the Ogre (326486 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 47
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4497,7 +4500,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 20 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Mark of the Ogre (326486 effect#3)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Mark of the Ogre (326486 effect#3), Demon's Touch (339153 effect#1)
 Triggered by     : Fel Barrage (258925)
 Family Flags     : 16, 43, 47
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4509,7 +4512,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=483180)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=819793)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258925
@@ -5500,7 +5503,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=728000)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.65000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.65000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=728001)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 275144
 Description      : $@spelldesc275144
@@ -5586,7 +5589,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=734062)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
-Description      : Your tattoos reduce magic damage taken by $s1%.
+Description      : Your tattoos reduce magic damage taken by $?s338682[${$s1+$338682s1}][$s1]%.
 
 Name             : Thirsting Blades (id=278493) [Scaling Spell (-8), Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -6791,7 +6794,7 @@ Cooldown         : 60 seconds
 Category         : 1887
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6829,7 +6832,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=785367)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc306830
 
 Name             : Sinful Brand (rank=Venthyr) (id=317009) [Spell Family (107)] 
@@ -6977,7 +6980,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=807352)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc320331
 
 Name             : Essence Break (id=320338) [Spell Family (107)] 
@@ -7022,7 +7025,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=807364)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=807365)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Demolish the spirit of all those around you, dealing $s1 Fire damage to nearby enemies and extracting up to $s2 Lesser Soul Fragments, drawing them to you for immediate consumption.
@@ -7838,7 +7841,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
 Effects          :
 #1 (id=812977)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=812978)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=813286)   : Trigger Spell (64): The Hunt
@@ -8092,7 +8095,7 @@ Spell Type       : Melee
 Range            : 30 yards
 Velocity         : 40 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Throw Glaive (185123)
 Family Flags     : 5, 16, 32, 42, 85
 Attributes       : ........ ........ ..x..x.. ........   ........ .x...... ........ ........ 
@@ -8107,5 +8110,23 @@ Effects          :
 #1 (id=836037)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33345 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 Description      : Throw a demonic glaive at the target, dealing $s1 Physical damage. The glaive can ricochet to $?$s320386[${$x1-1} additional enemies][an additional enemy] within 10 yards. 
+
+Name             : Viscous Ink (id=338682) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=837492)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+Description      : Demonic Wards $?c2[also] reduces magic damage taken by $?c1[an additional ][]|cFFFFFFFF$s1%|r.
 
 

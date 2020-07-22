@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -136,7 +136,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=236)      : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Smites an enemy for $s1 Holy damage$?s231687[ and has a $231687s1% chance to reset the cooldown of Holy Fire][].
 
 Name             : Fade (id=586) [Spell Family (6)] 
@@ -163,9 +163,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=822866)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Fade out, removing all your threat for $d.
-Tooltip          : Reduced threat level.
-$?s327821[Enemies have a reduced attack range against you.][]
+Description      : Fade out, removing all your threat$?s327821[ and reducing enemies' attack range against you][] for $d.
+
+Tooltip          : Reduced threat level.$?s327821[
+
+Enemies have a reduced attack range against you.][]
 
 Name             : Shadow Word: Pain (id=589) [Spell Family (6)] 
 Class            : Priest
@@ -192,7 +194,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=242)      : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=323674)   : Energize Power (30)
@@ -226,7 +228,7 @@ Effects          :
 #1 (id=243)      : Trigger Spell (64): Prayer of Healing
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 98367 | Target: Friend (21)
 #2 (id=105332)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.62500 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE friendly (31)
 #3 (id=288930)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : A powerful prayer that heals the target and the ${$s3-1} nearest allies within $A2 yards for $s2.
@@ -311,7 +313,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=611)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 5.00000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 5.00000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=709474)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
 Description      : Perform a miracle, healing an ally for $s1.$?s63733[
@@ -340,7 +342,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=612)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 2.10000 | PvP Coefficient: 1.20000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 2.10000 | PvP Coefficient: 1.20000 | Target: Friend (21)
 Description      : An efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -366,7 +368,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=613)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 1.35000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 1.35000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : A fast spell that heals an ally for $s1.
 
 Name             : Mind Vision (id=2096) [Spell Family (6)] 
@@ -470,7 +472,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=3283)     : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=139174)   : Energize Power (30)
                    Base Value: 1200 | Scaled Value: 1200 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : Blasts the target's mind for $s1 Shadow damage$?s231682[, preventing the next $<shield> damage they deal][].$?a185916[
@@ -588,7 +590,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=6990)     : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=6991)     : Apply Aura (6) | Periodic Damage (3): holy every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08250 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=808675)   : Apply Aura (6) | Unknown(395)
@@ -932,7 +934,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=22171)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=165318)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=340366)   : Dummy (3)
@@ -973,9 +975,9 @@ Effects          :
 #1 (id=22313)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=22314)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.67000 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 0.67000 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: Unknown(132) -> AOE friendly (31)
 #3 (id=191249)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.67000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.67000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=325998)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Heals you, your target, and another friendly target within 20 yards for $s2.
@@ -1056,7 +1058,7 @@ Attributes       : ........ ........ ..x..... ...x....   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=22918)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.43750 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.43750 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc33076
 
 Name             : Pain Suppression (id=33206) [Spell Family (6)] 
@@ -1145,7 +1147,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=24949)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.75000 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: AOE friendly (31)
 #2 (id=288932)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
 #3 (id=709475)   : Dummy (3)
@@ -1413,7 +1415,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39897)    : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Unknown(77)
 Description      : $@spelldesc47540
 
 Name             : Penance (id=47750) [Spell Family (6)] 
@@ -1435,7 +1437,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39995)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.82000 | PvP Coefficient: 1.00000 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.82000 | PvP Coefficient: 1.00000 | Target: Unknown(77)
 Description      : $@spelldesc47540
 
 Name             : Shield Discipline (id=47755) 
@@ -1565,7 +1567,7 @@ Effects          :
 #1 (id=41944)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.15) | PvP Coefficient: 1.00000 | Target: Unknown(77)
 #2 (id=326288)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.15) | SP Coefficient: 0.21800 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.21800 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
 Description      : $@spelldesc48045
 Tooltip          : Causing shadow damage to all targets within $a2 yards.
 
@@ -1830,7 +1832,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=59165)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.43000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.43000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 #2 (id=59166)    : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc64843
@@ -1979,7 +1981,7 @@ Duration         : 1.5 seconds
 Cooldown         : 90 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Grip
-Affecting spells : Surrender to Madness (193223 effect#2), Death Denied (287723 effect#1), Surrender to Madness (319952 effect#7), Archbishop's Test of Faith (336470 effect#1)
+Affecting spells : Surrender to Madness (193223 effect#2), Death Denied (287723 effect#1), Surrender to Madness (319952 effect#7), Vault of Heavens (336470 effect#1)
 Family Flags     : 83
 Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -2016,7 +2018,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=66820)    : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.11250 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.11250 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=66821)    : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=323988)   : Energize Power (30)
@@ -2220,7 +2222,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=91044)    : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.12500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.12500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=709477)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : Chastises the target for $s1 Holy damage and $?s200199[stuns][incapacitates] them for $?s200199[$200200d][$200196d].$?s63733[
@@ -2481,7 +2483,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=122873)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc110744
 
 Name             : Levitate (id=111759) [Spell Family (6)] 
@@ -2652,7 +2654,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=140516)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.03000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.03000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc120517
 
 Name             : Halo (id=120696) [Spell Family (6)] 
@@ -2673,7 +2675,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=140527)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.03000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.03000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc120517
 
 Name             : Angelic Feather (id=121536) [Spell Family (6)] 
@@ -2738,7 +2740,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=153526)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc110744
 
 Name             : Mindbender (id=123040) [Spell Family (6)] 
@@ -2935,7 +2937,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=165487)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=168466)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : Strikes an enemy with heavenly power, dealing $s1 Holy damage and restoring $<mana>% of your maximum mana.
@@ -2977,7 +2979,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=170810)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=709210)   : Trigger Spell (64): Holy Nova
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 281265 | Target: Self (1)
 Description      : An explosion of holy light around you deals $s1 Holy damage to all enemies and $281265s1 healing to all allies within $A1 yds.$?a231687[ Has a $231687s1% chance to reset the cooldown of Holy Fire if any targets are hit.][]
@@ -3235,7 +3237,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... .....
                  : Does not break stealth (37), Cannot crit (93)
 Effects          :
 #1 (id=203471)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=315217)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : $@spelldesc78203
@@ -3426,7 +3428,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=271185)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 2.20000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 2.20000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Wraps an ally in shadows which heal for $m1, but at a price.
 
 The ally will take ${$m1/20} damage every $187464t1 sec, until they have taken ${$m1/2} total damage from all sources, or leave combat.
@@ -3883,7 +3885,7 @@ Effects          :
 #1 (id=285534)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=298593)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
 #3 (id=298594)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #4 (id=298595)   : Dummy (3)
@@ -4241,7 +4243,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=294269)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=294270)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000
 Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. Only usable on enemies that have less than $s2% health.
@@ -4505,7 +4507,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=301365)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.24800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.24800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=301387)   : Trigger Spell (64): Purge the Wicked
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 204213 | Target: Enemy (6)
 Description      : Cleanses the target with fire, causing $s1 Fire damage and an additional $204213o1 Fire damage over $204213d. Spreads to an additional nearby enemy when you cast Penance on the target.
@@ -4584,7 +4586,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=302436)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
 #2 (id=302437)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Heals the target and ${$s2-1} injured allies within $A1 yards of the target for $s1.
@@ -4639,7 +4641,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=303208)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=303209)   : Energize Power (30)
                    Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : Blasts the target with a word of void for $s1 Shadow damage.$?a185916[
@@ -4769,7 +4771,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=303255)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc205385
 
 Name             : Void Bolt (id=205448) [Spell Family (6)] 
@@ -4797,7 +4799,7 @@ Effects          :
 #1 (id=303382)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 234746 | Target: Enemy (6)
 #2 (id=303383)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=308158)   : Energize Power (30)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : Sends a bolt of pure void energy at the enemy, causing $s2 Shadow damage$?a231688[ and extending the duration of Shadow Word: Pain and Vampiric Touch on all nearby targets by $<ext> sec][]. Requires Voidform.
@@ -5005,7 +5007,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=318771)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.29000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.29000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=318779)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Dark Void (263346), Dark Ascension (280800), Mindgames (323673), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467)
@@ -5223,7 +5225,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=343748)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.95000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.95000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc228260
 
 Name             : Void Eruption (id=228361) [Spell Family (6)] 
@@ -5246,7 +5248,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=343749)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.95000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.95000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc228260
 
 Name             : Mind Blast (rank=Rank 2) (id=231682) [Spell Family (6), Passive] 
@@ -5465,7 +5467,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=369498)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : $@spelldesc238136
 
 Name             : Evangelism (id=246287) [Spell Family (6)] 
@@ -5791,7 +5793,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=706056)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=731117)   : Energize Power (30)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : Unleashes an explosion of dark energy around the target, dealing $s1 Shadow damage and applying Shadow Word: Pain to all nearby enemies.
@@ -6005,7 +6007,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=709207)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 #2 (id=709209)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 #3 (id=709211)   : Dummy (3)
@@ -6538,7 +6540,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=719440)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.09000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc197419
 
 Name             : Luminous Barrier (id=271466) [Spell Family (6)] 
@@ -7937,7 +7939,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=738597)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.95000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.95000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc280711
 
 Name             : Holy Nova (id=281265) [Spell Family (6)] 
@@ -7958,7 +7960,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=739572)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc132157
 
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
@@ -8505,7 +8507,7 @@ Effects          :
 #1 (id=798203)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=798204)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.35000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.35000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
 #3 (id=798205)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #4 (id=810245)   : Trigger Spell (64): Shadow Covenant
@@ -8779,7 +8781,7 @@ Attributes       : ........ ........ ........ x..x.x.x   .....x.. ........ .....
                  : Cannot cancel aura (31), Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=810241)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.10000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.10000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc321950
 
 Name             : Shadow Covenant (id=322105) [Spell Family (6)] 
@@ -8829,7 +8831,7 @@ Effects          :
                    Base Value: -10000 | Scaled Value: -10000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Shadow Word: Death (32379), Shadow Word: Death (199911)
                    Family Flags: 33
-Description      : Shadow Word: Death's cooldown is reduced by ${$m1/1000} sec.
+Description      : Shadow Word: Death's cooldown is reduced by ${$m1/-1000} sec.
 
 Name             : Dispersion (rank=Rank 2) (id=322108) [Spell Family (6), Passive] 
 Class            : Shadow Priest
@@ -8954,7 +8956,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=812771)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=812776)   : Apply Aura (6) | Dummy (4)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=812810)   : Apply Aura (6) | Dummy (4)
@@ -9045,7 +9047,7 @@ Effects          :
 #1 (id=814521)   : Trigger Spell (64): Unholy Transfusion
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 325203 | Target: Self (1)
 #2 (id=815139)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : An explosion of dark energy heals allies within $A2 yds for $s2 and infects enemies with Unholy Transfusion.
 
 |TInterface\ICONS\Spell_AnimaMaldraxxus_Debuff.blp:24|t |cFFFFFFFFUnholy Tranfusion|r
@@ -9111,7 +9113,7 @@ GCD              : 1 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#8)
 Family Flags     : 72, 109
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9120,7 +9122,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=814997)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.42000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.42000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=815031)   : Trigger Spell (64): Ascended Nova
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 325041 | Target: Self (1)
 #3 (id=815723)   : Dummy (3)
@@ -9146,7 +9148,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=815030)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc325020
 
 Name             : Unholy Transfusion (id=325118) [Spell Family (6)] 
@@ -9212,7 +9214,7 @@ Cooldown         : 3 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#8)
 Family Flags     : 72, 109
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9221,7 +9223,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=815465)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=815550)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=815724)   : Dummy (3)
@@ -9252,9 +9254,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=815531)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=815532)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : Explode for $s1 Arcane damage to all enemies and $s2 healing to all allies within $A1 yds, increased by $325013s5% for each stack of Boon of the Ascended.
 
 Name             : Fae Blessings (rank=Night Fae) (id=327661) [Spell Family (6)] 
@@ -9425,7 +9427,7 @@ Effects          :
                    Family Flags: 14
 #2 (id=819471)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
-Description      : Fade now reduces the range at which enemies will attack you when used while active.
+Description      : Fade now reduces the range at which enemies will attack you.
 
 Name             : Mass Dispel (rank=Rank 2) (id=327830) [Spell Family (6), Passive] 
 Class            : Priest

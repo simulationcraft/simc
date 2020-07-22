@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35167 shadowlands-BETA (git build shadowlands 9dddbbbe61)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -420,7 +420,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Heightened Senses (165692 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Blackout Combo (228563 effect#1), The Wind Blows (281452 effect#1), Rushing Tiger Palm (337334 effect#1), Xuen's Battlegear (337481 effect#1)
+Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Heightened Senses (165692 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Blackout Combo (228563 effect#1), The Wind Blows (281452 effect#1), Rushing Tiger Palm (337334 effect#1), Xuen's Battlegear (337481 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 10, 103
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
@@ -432,7 +432,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=108857)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.27027 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.27027 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=134420)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: chi | Target: Self (1)
 #3 (id=281299)   : Dummy (3)
@@ -470,7 +470,7 @@ Category         : 1561
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
-Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1)
+Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 4, 67, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -481,7 +481,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=108867)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.84700 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.84700 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=487715)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.77000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=728117)   : Dummy (3)
@@ -590,7 +590,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effect#1), Dance of Chi-Ji (286587 effect#3)
+Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effect#1), Dance of Chi-Ji (286587 effect#3), Extend Life (337993 effect#2)
 Triggered by     : Spinning Crane Kick (101546), Spinning Crane Kick (322729)
 Family Flags     : 8, 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -603,7 +603,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=117946)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc101546
 Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec.
 
@@ -690,7 +690,7 @@ Duration         : 4 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Cooldown         : 24 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Extend Life (337993 effect#2)
 Triggered by     : Katsuo's Eclipse (208045)
 Family Flags     : 55, 67, 103
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ .....x.. 
@@ -711,7 +711,7 @@ Effects          :
 #4 (id=219526)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=303680)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20750 | PvP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20750 | PvP Coefficient: 1.00000
 #6 (id=480070)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Pummels all targets in front of you, dealing ${5*$s5} damage over $113656d to your primary target and ${5*$s5*$s6/100} damage over $113656d to up to $s1 other targets. Can be channeled while moving.
@@ -935,7 +935,7 @@ Velocity         : 30 yards/sec
 Charges          : 1 (9 seconds cooldown)
 Category         : 1517
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Thunder Focus Tea (116680 effect#3), Chi-ji's Guidance (167717 effect#1), Extend Life (185158 effect#2), Item - Monk T19 Mistweaver 2P Bonus (211418 effect#1), Shelter of Rin (281301 effect#1), 
+Affecting spells : Thunder Focus Tea (116680 effect#3), Chi-ji's Guidance (167717 effect#1), Extend Life (185158 effect#2), Item - Monk T19 Mistweaver 2P Bonus (211418 effect#1), Shelter of Rin (281301 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 23, 97
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ..x...x. 
@@ -988,7 +988,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 24, 48
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
                  : ........ x....... ........ ......x.   ........ ........ ........ ........ 
@@ -1047,7 +1047,7 @@ GCD              : 1 seconds
 Cooldown         : 15 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Item - Monk WoD PvP Brewmaster 4P Bonus (171445 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Combo (228563 effect#2), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Item - Monk WoD PvP Brewmaster 4P Bonus (171445 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Combo (228563 effect#2), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 19, 67, 103
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1058,7 +1058,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=128879)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28501 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28501 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
 Description      : Breathe fire on targets in front of you, causing $s1 Fire damage.
 
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
@@ -1149,7 +1149,7 @@ GCD              : 1.5 seconds
 Cooldown         : 180 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 48, 60
 Attributes       : ........ ........ ........ ........   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -1160,7 +1160,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x....x .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=129071)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | PvP Coefficient: 1.75000 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.25000 | PvP Coefficient: 1.75000 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
 #2 (id=140011)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
 #3 (id=155430)   : Dispel (38)
@@ -1484,7 +1484,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#18), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#11), Extend Life (185158 effect#2), Lifecycles (Vivify) (197916 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effect#1), Celestial Brew (322507 effect#2)
+Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#18), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#11), Extend Life (185158 effect#2), Lifecycles (Vivify) (197916 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effect#1), Celestial Brew (322507 effect#2), Soothing Focus (337476 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 26, 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1495,9 +1495,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=131794)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.01000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.01000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=284314)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.74000 | PvP Coefficient: 1.00000 | Radius: 0 - 60 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.74000 | PvP Coefficient: 1.00000 | Radius: 0 - 60 yards | Target: Unknown(132) -> AOE friendly (31)
 Description      : Causes a surge of invigorating mists, healing the target for $s1$?s274586[ and all allies with your Renewing Mist active for $s2][].
 
 Name             : Thunder Focus Tea (id=116680) [Spell Family (53)] 
@@ -1779,7 +1779,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effect#1), Inner Fury (336452 effect#1)
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effect#1), Inner Fury (336452 effect#1), Extend Life (337993 effect#2)
 Triggered by     : Fists of Fury (113656)
 Family Flags     : 20, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1866,7 +1866,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
-Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Emperor's Capacitor (235054 effect#1), The Wind Blows (281452 effect#1), The Emperor's Capacitor (337291 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Emperor's Capacitor (235054 effect#1), The Wind Blows (281452 effect#1), The Emperor's Capacitor (337291 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 32, 70, 103
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ ...x.x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2042,7 +2042,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Shelter of Rin (281301 effect#1), 
+Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Shelter of Rin (281301 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 23, 48
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ..x..... x....... ........ ........   ........ .x...... ........ ..x...x. 
@@ -2254,7 +2254,7 @@ Charges          : 1 (8 seconds cooldown)
 Category         : 1490: Brewmaster Monk (137023 effect#4)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Stormstout's Last Gasp (248044 effect#2), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Stormstout's Last Gasp (248044 effect#2), The Wind Blows (281452 effect#1), Stormstout's Last Gasp (337288 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 57, 103
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2267,7 +2267,7 @@ Effects          :
 #1 (id=150037)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=229522)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85995 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.85995 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=283420)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #4 (id=335940)   : Dummy (3)
@@ -2366,7 +2366,7 @@ Spell Type       : Magic
 Charges          : 2 (30 seconds cooldown)
 Category         : 1646
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Extend Life (185158 effect#2)
+Affecting spells : Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 77, 116
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
@@ -2461,7 +2461,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Duration         : 4 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 69, 103
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2472,7 +2472,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=155941)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08789 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.08789 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=155942)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | AP Coefficient: 0.14742 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc101545
@@ -2557,7 +2557,7 @@ Velocity         : 30 yards/sec
 Duration         : 1 seconds
 Cooldown         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2)
+Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 38
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
@@ -2605,7 +2605,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Periodic effect can crit (265)
 Effects          :
 #1 (id=156720)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc123904
 
 Name             : Crackling Tiger Lightning Driver (id=123999) [Spell Family (53), Hidden] 
@@ -2845,7 +2845,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Extend Life (185158 effect#2)
+Affecting spells : Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 77, 121
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
@@ -2857,7 +2857,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=157621)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc124502
 
 Name             : Enveloping Mist (id=124682) [Spell Family (53)] 
@@ -2871,7 +2871,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1)
+Affecting spells : Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Soothing Focus (337476 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 48, 67, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -2886,7 +2886,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.43000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Crane Heal (198756), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Crane Heal (198756), Celestial Breath (199656), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123)
                    Family Flags: 48, 102
 Description      : Wraps the target in healing mists, healing for $o1 over $d$?a231605[, and increasing healing received from your other spells by $m2%][].
 Tooltip          : Heals $w1 every $t1 sec.
@@ -2967,7 +2967,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Disable target procs (113)
 Effects          :
 #1 (id=158992)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.96560 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.96560 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc116092
 
 Name             : Glyph of Honor (id=125732) [Spell Family (53), Passive, Hidden] 
@@ -3217,7 +3217,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#7), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#7), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 38, 48, 77, 89
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -3229,7 +3229,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=168072)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.67568 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.67568 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc123986
 
 Name             : Chi Wave (id=132463) [Spell Family (53)] 
@@ -3239,7 +3239,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#20), Mistweaver Monk (137024 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#20), Mistweaver Monk (137024 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 48, 58, 77
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ......x.   ........ .x...... ..x..... ......x. 
@@ -3251,7 +3251,7 @@ Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Always hits (114)
 Effects          :
 #1 (id=171555)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc115098
 
 Name             : Chi Wave (id=132466) [Spell Family (53)] 
@@ -3287,7 +3287,7 @@ Range            : 50000 yards
 Velocity         : 20 yards/sec
 Duration         : 0.1 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 27, 103
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
@@ -3299,7 +3299,7 @@ Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=171561)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14202 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.14202 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=171562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc115098
@@ -3456,11 +3456,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179708)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Crane Heal (198756), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Crane Heal (198756), Celestial Breath (199656), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123)
                    Family Flags: 48
 #2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Crane Heal (198756), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Crane Heal (198756), Celestial Breath (199656), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123)
                    Family Flags: 48
 #3 (id=191105)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 117 | Target: Self (1)
@@ -3660,7 +3660,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#2), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#2), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 38, 103
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -3672,7 +3672,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=201313)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.46000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.46000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc123986
 
 Name             : Rushing Jade Wind (id=148187) [Spell Family (53)] 
@@ -3680,7 +3680,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Triggered by     : Rushing Jade Wind (116847)
 Family Flags     : 5, 103
 Attributes       : ....x... ........ ..x..... ...x....   ........ ........ ........ ........ 
@@ -3693,7 +3693,7 @@ Attributes       : ....x... ........ ..x..... ...x....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=201670)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc116847
 
 Name             : Serenity (id=152173) [Spell Family (53)] 
@@ -3856,7 +3856,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 103, 122
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3868,7 +3868,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Tick on application (169)
 Effects          :
 #1 (id=220760)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.82932 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.82932 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc152175
 
 Name             : Refreshing Jade Wind (id=162530) [Spell Family (53)] 
@@ -3877,7 +3877,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Triggered by     : Refreshing Jade Wind (196725)
 Family Flags     : 48, 85
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3890,7 +3890,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=228215)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08250 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.08250 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc196725
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
@@ -4054,7 +4054,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Extend Life (185158 effect#2)
+Affecting spells : Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 77, 121
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
@@ -4066,7 +4066,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=255483)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : $@spelldesc124502
 
 Name             : Rising Sun Kick (id=185099) [Spell Family (53)] 
@@ -4076,7 +4076,7 @@ Spell Type       : Melee
 Spell Level      : 24
 Range            : 5 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Windwalker 2P Bonus (211427 effect#1), Pressure Point (247255 effect#1), Rising Sun Kick (262840 effect#1), Swift Roundhouse (278710 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Windwalker 2P Bonus (211427 effect#1), Pressure Point (247255 effect#1), Rising Sun Kick (262840 effect#1), Swift Roundhouse (278710 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Extend Life (337993 effect#2)
 Triggered by     : Rising Sun Kick (107428)
 Family Flags     : 39, 103
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -4088,7 +4088,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=268390)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.43800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.43800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc107428
 
 Name             : Essence Font (id=191837) [Spell Family (53)] 
@@ -4140,7 +4140,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=281444)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.33750 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.33750 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
 #2 (id=289619)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.03000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : $@spelldesc191837
@@ -4164,7 +4164,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=281510)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.00100 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.00100 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc117907
 
 Name             : Gale Burst (id=195399) [Spell Family (53), Passive] 
@@ -4342,7 +4342,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Triggered by     : Eye of the Tiger (196607)
 Family Flags     : 44, 103
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4427,7 +4427,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Duration         : 15 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 103
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4438,7 +4438,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=288833)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.32760 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32760 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=288837)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: Unknown(87) -> AOE enemy (instant) (16)
 #3 (id=335941)   : Apply Aura (6) | Dummy (4)
@@ -4775,7 +4775,7 @@ Effects          :
 #1 (id=292176)   : Unknown(254)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 8 | Radius: 0 - 1.75 yards | Target: Unknown(132) -> Unknown(86)
 #2 (id=316503)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Chi-Ji dashes to three allies, healing them for $s2.
 
 Name             : Song of Chi-Ji (id=198898) [Spell Family (53)] 
@@ -4789,7 +4789,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2)
+Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 38
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
@@ -4909,7 +4909,7 @@ Charges          : 1 (4 seconds cooldown)
 Category         : 1561
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
-Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1)
+Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 4, 67, 80, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -4920,7 +4920,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=303663)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61179 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.61179 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=814935)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Strike with a blast of Chi energy, dealing $s1 Physical damage$?s117906[ and granting Shuffle for $s2 sec][].
@@ -4946,7 +4946,7 @@ GCD              : 0.5 seconds
 Duration         : 20 seconds
 Cooldown         : 1 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Extend Life (185158 effect#2)
+Affecting spells : Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 24
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -5329,7 +5329,7 @@ Attributes       : ....x... ........ x....... .....x..   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=341557)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16380 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.16380 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Stomps the ground, dealing $s1 Physical damage to all nearby enemies.
 
 Name             : Surging Mist (rank=PvP Talent) (id=227344) [Spell Family (53)] 
@@ -5345,7 +5345,7 @@ Duration         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Soothing Mist (209525 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Soothing Mist (209525 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 25, 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5356,7 +5356,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=341656)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.28000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.28000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=731442)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Friend (21)
                    Affected Spells: Surging Mist (227344)
@@ -5445,7 +5445,7 @@ Spell Type       : Melee
 Spell Level      : 3
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1)
+Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 4, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -5456,7 +5456,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=344387)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.77000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.77000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Kick with a blast of Chi energy, dealing $s1 Physical damage.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -5994,7 +5994,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2)
+Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 38
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
@@ -6105,7 +6105,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (248101 effect#1), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (248101 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 103, 118
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -6117,7 +6117,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31), Requires off-hand weapon (120)
 Effects          :
 #1 (id=488066)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.87750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.87750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=568996)   : Trigger Spell (64): Fist of the White Tiger
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 500 | Trigger Spell: 261977 | Target: Self (1)
 #3 (id=569000)   : Trigger Spell (64): Fist of the White Tiger
@@ -6132,7 +6132,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (248101 effect#1), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (248101 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Triggered by     : Fist of the White Tiger (261947)
 Family Flags     : 103, 118
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
@@ -6145,7 +6145,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=568997)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.87750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.87750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc261947
 
 Name             : Fist of the White Tiger (id=261978) [Spell Family (53)] 
@@ -7087,7 +7087,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=726171)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc116680
 
 Name             : Vivify (rank=Rank 2) (id=274586) [Spell Family (53), Passive] 
@@ -7170,7 +7170,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=727565)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 60 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 60 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : $@spelldesc274909
 
 Name             : Upwelling (id=274963) [Spell Family (53), Passive] 
@@ -8645,7 +8645,7 @@ Spell Type       : Melee
 Spell Level      : 24
 Range            : 5 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 103
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8967,7 +8967,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=791897)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc310454
 
 Name             : Weapons of Order (rank=Kyrian) (id=312106) 
@@ -9026,7 +9026,7 @@ Range            : 100 yards
 GCD              : 1 seconds
 Cooldown         : 15 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14), Extend Life (185158 effect#2), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2), Harm Denial (336379 effect#1)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14), Extend Life (185158 effect#2), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2), Harm Denial (336379 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 17, 95
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ......x. 
@@ -9037,13 +9037,13 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=810236)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.01000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.01000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=810237)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=810247)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: chi | Target: Self (1)
 #4 (id=816882)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.01000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.01000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Expel negative chi from your body, healing for $s1 and dealing $s2% of the amount healed as Nature damage to an enemy within $115129A1 yards.$?s322102[
 
 Draws in the positive chi of all your Healing Spheres to increase the healing of Expel Harm.][]$?s322104[
@@ -9118,7 +9118,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14), Hidden Master's Forbidden Touch (213112 effect#2), Hidden Master's Forbidden Touch (213114 effect#1)
+Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14), Hidden Master's Forbidden Touch (213112 effect#2), Hidden Master's Forbidden Touch (213114 effect#1), Fatal Touch (337296 effect#1)
 Family Flags     : 40, 67
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -9689,7 +9689,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x......x ..x..... ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
 Effects          :
 #1 (id=815368)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE Custom (8)
@@ -9792,7 +9792,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=818673)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc327104
 
 Name             : Roll (rank=Rank 2) (id=328669) [Spell Family (53), Passive] 
@@ -9872,7 +9872,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Cannot crit (93), Disable player multipliers (221)
 Effects          :
 #1 (id=821479)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33750 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.33750 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc325216
 
 
