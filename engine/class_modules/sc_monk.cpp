@@ -654,7 +654,7 @@ public:
     // Spending Chi has a chance to make your next Spinning Crane Kick free and deal 1274 additional damage.
     azerite_power_t dance_of_chiji;
 
-	azerite_essence_t vision_of_perfection; 
+	azerite_essence_t vision_of_perfection;
     azerite_essence_t memory_of_lucid_dreams;
   } azerite;
 
@@ -7918,7 +7918,8 @@ void monk_t::init_spells()
 
   // Specialization spells ====================================
   // Multi-Specialization & Class Spells
-  spec.blackout_kick            = find_class_spell( "Blackout Kick" );
+  //spec.blackout_kick            = find_class_spell( "Blackout Kick" );
+  spec.blackout_kick            = find_spell( 100784 ); // Mistweaver's spec data links to the wrong blackout kick ID
   spec.blackout_kick_2          = find_specialization_spell( 261916 );
   spec.blackout_kick_3          = find_specialization_spell( 261917 );
   spec.crackling_jade_lightning = find_class_spell( "Crackling Jade Lightning" );
@@ -9807,7 +9808,7 @@ void monk_t::apl_combat_windwalker()
       "pct_30.remains>8|fight_remains<130&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>"
       "2|buff.serenity.up&fight_remains>11",
       "Variable that will tell you if you will need to wait to cast ToD/do not want to cast it at all anymore" );
-	
+
   if ( sim->allow_potions )
   {
     if ( true_level >= 100 )
@@ -9887,7 +9888,7 @@ void monk_t::apl_combat_windwalker()
   cd_serenity->add_action( "use_item,name=lustrous_golden_plumage,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|variable.hold_tod|fight_remains<=20" );
   cd_serenity->add_action( "use_item,effect_name=gladiators_medallion,if=cooldown.touch_of_death.remains<1|cooldown.touch_of_death.remains>20|variable.hold_tod|fight_remains<=20" );
   cd_serenity->add_action( "use_item,effect_name=gladiators_emblem,if=fight_remains>159|cooldown.touch_of_death.remains<1|variable.hold_tod" );
-	
+
   cd_serenity->add_action( this, "Touch of Death", "if=!variable.hold_tod" );
   cd_serenity->add_action( this, "Touch of Karma", "if=fight_remains>159|dot.touch_of_death.remains|variable.hold_tod" );
 
@@ -9911,7 +9912,7 @@ void monk_t::apl_combat_windwalker()
       name_str = items[ i ].name_str;
       if ( name_str != "azsharas_font_of_power" && name_str != "lustrous_golden_plumage" &&
            name_str != "gladiators_medallion" &&  name_str != "gladiators_emblem" &&
-           name_str != "pocketsized_computation_device" &&  name_str != "remote_guidance_device" && 
+           name_str != "pocketsized_computation_device" &&  name_str != "remote_guidance_device" &&
            name_str != "gladiators_badge" && name_str != "galecallers_boon" &&
            name_str != "writhing_segment_of_drestagath" && name_str != "ashvanes_razor_coral" )
       {
@@ -10010,7 +10011,7 @@ void monk_t::apl_combat_windwalker()
           items[ i ].special_effect_with_name( "gladiators_badge", SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE );
       if ( name_str != "azsharas_font_of_power" && name_str != "lustrous_golden_plumage" &&
            name_str != "gladiators_medallion" &&  name_str != "gladiators_emblem" &&
-           name_str != "pocketsized_computation_device" &&  name_str != "remote_guidance_device" && 
+           name_str != "pocketsized_computation_device" &&  name_str != "remote_guidance_device" &&
            name_str != "gladiators_badge" && name_str != "galecallers_boon" &&
            name_str != "writhing_segment_of_drestagath" && name_str != "ashvanes_razor_coral" && gladiators_badge == nullptr
           )
@@ -10071,12 +10072,12 @@ void monk_t::apl_combat_windwalker()
   st->add_talent( this, "Chi Wave" );
   st->add_action( this, "Spinning Crane Kick", "if=combo_strike&buff.dance_of_chiji.react" );
   st->add_action( this, "Blackout Kick",
-                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&((talent.serenity.enabled|cooldown.touch_of_death.remains>2|variable.hold_tod)&(cooldown.rising_sun_kick.remains>2&cooldown.fists_of_fury.remains>2|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>2|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>4|chi>5)|buff.bok_proc.up)", 
+                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&((talent.serenity.enabled|cooldown.touch_of_death.remains>2|variable.hold_tod)&(cooldown.rising_sun_kick.remains>2&cooldown.fists_of_fury.remains>2|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>2|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>4|chi>5)|buff.bok_proc.up)",
                   "Use BoK if both FoF and RSK are not close, or RSK is close and FoF is not close and you have more than 2 chi, or FoF is close RSK is not close and you have more than 3 chi, or you have more than 5 chi, or if you get a proc" );
   st->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>1" );
   st->add_action( this, "Flying Serpent Kick", "interrupt=1", "Use FSK and interrupt it straight away" );
   st->add_action( this, "Blackout Kick",
-                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(cooldown.fists_of_fury.remains<3&chi=2|energy.time_to_max<1)&(prev_gcd.1.tiger_palm|chi.max-chi<2)", 
+                  "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(cooldown.fists_of_fury.remains<3&chi=2|energy.time_to_max<1)&(prev_gcd.1.tiger_palm|chi.max-chi<2)",
                   "Use BoK if FoF is close and you have 2 chi and your last global was TP, or if you are about to cap energy and either your last gcd was TP or if you are less than 2 chi away from capping" );
 
 }  // namespace
