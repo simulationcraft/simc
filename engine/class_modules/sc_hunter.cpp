@@ -719,6 +719,7 @@ public:
     // "simple" passive rank 2 spells
     parse_affecting_aura( this, p -> find_specialization_spell( 231550 ) ); // Harpoon (Rank 2)
     parse_affecting_aura( this, p -> find_specialization_spell( 262838 ) ); // Cobra Shot (Rank 2)
+    parse_affecting_aura( this, p -> find_specialization_spell( 321287 ) ); // True Aim
     parse_affecting_aura( this, p -> find_specialization_spell( 321290 ) ); // Wildfire Bombs (Rank 2)
     parse_affecting_aura( this, p -> find_specialization_spell( 321293 ) ); // Arcane Shot (Rank 2)
   }
