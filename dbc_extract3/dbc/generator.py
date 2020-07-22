@@ -1431,7 +1431,7 @@ class SpellDataGenerator(DataGenerator):
           ( 75, 0 ),     # Auto Shot
           ( 131900, 0 ), # Murder of Crows damage spell
           ( 312365, 0 ), # Thrill of the Hunt
-          ( 171457, 1 ), # Chimaera Shot - Nature
+          ( 171457, 0 ), # Chimaera Shot - Nature
           ( 201594, 1 ), # Stampede
           ( 118459, 5 ), # Beast Cleave
           ( 186254, 5 ), # Bestial Wrath
@@ -1448,6 +1448,7 @@ class SpellDataGenerator(DataGenerator):
           ( 120694, 0 ), # Dire Beast energize
           ( 83381, 5 ),  # BM Pet Kill Command
           ( 259277, 5 ), # SV Pet Kill Command
+          ( 206685, 0 ), # BM Spitting Cobra Cobra Spit
         ),
 
         # Rogue:
