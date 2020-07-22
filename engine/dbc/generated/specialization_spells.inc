@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.0.1.35213
-static const std::array<specialization_spell_entry_t, 889> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.0.1.35256
+static const std::array<specialization_spell_entry_t, 891> __specialization_spell_data { {
   {  0,  535, 264663,      0, "Predator's Thirst"                  },
   {  0,  535, 264667,      0, "Primal Rage"                        },
   {  0,  535, 264656,      0, "Pathfinding"                        },
@@ -635,6 +635,8 @@ static const std::array<specialization_spell_entry_t, 889> __specialization_spel
   {  9,  267, 335174,      0, "Havoc"                              },
   {  9,  267, 335175,      0, "Summon Infernal"                    },
   {  9,  267, 335189,      0, "Rain of Fire"                       },
+  {  9,  267,    686,      0, "Shadow Bolt"                        },
+  {  9, 1454,    686,      0, "Shadow Bolt"                        },
   { 10,  268, 115181,      0, "Breath of Fire"                     },
   { 10,  268, 117906,      0, "Mastery: Elusive Brawler"           },
   { 10,  268, 115069,      0, "Stagger"                            },

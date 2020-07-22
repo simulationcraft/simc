@@ -1,5 +1,5 @@
-// Active class spells, wow build 9.0.1.35213
-static const std::array<active_class_spell_t, 611> __active_spells_data { {
+// Active class spells, wow build 9.0.1.35256
+static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  1,   0,  88163,      0, "Attack"                             },
   {  1,   0,    100,      0, "Charge"                             },
   {  1,   0,   6544,      0, "Heroic Leap"                        },
@@ -444,7 +444,6 @@ static const std::array<active_class_spell_t, 611> __active_spells_data { {
   {  9,   0, 234153,      0, "Drain Life"                         },
   {  9,   0, 334275,      0, "Curse of Exhaustion"                },
   {  9,   0, 333889,      0, "Fel Domination"                     },
-  {  9,   0,    686,      0, "Shadow Bolt"                        },
   {  9,  265,  27243,      0, "Seed of Corruption"                 },
   {  9,  265,    980,      0, "Agony"                              },
   {  9,  265,  30283,      0, "Shadowfury"                         },
@@ -468,6 +467,8 @@ static const std::array<active_class_spell_t, 611> __active_spells_data { {
   {  9,  267,   5740,      0, "Rain of Fire"                       },
   {  9,  267,   1122,      0, "Summon Infernal"                    },
   {  9,  267,  30283,      0, "Shadowfury"                         },
+  {  9,  267,    686,      0, "Shadow Bolt"                        },
+  {  9, 1454,    686,      0, "Shadow Bolt"                        },
   { 10,   0, 100780,      0, "Tiger Palm"                         },
   { 10,   0, 100784,      0, "Blackout Kick"                      },
   { 10,   0, 109132,      0, "Roll"                               },
@@ -613,7 +614,7 @@ static const std::array<active_class_spell_t, 611> __active_spells_data { {
   { 12,  581, 212084,      0, "Fel Devastation"                    },
 } };
 
-// Pet active spells, wow build 9.0.1.35213
+// Pet active spells, wow build 9.0.1.35256
 static const std::array<active_pet_spell_t, 125> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

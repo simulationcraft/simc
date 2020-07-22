@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.1.35213
-static const std::array<item_name_description_t, 344> __item_name_description_data { {
+// Item name descriptions, wow build 9.0.1.35256
+static const std::array<item_name_description_t, 351> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -343,6 +343,13 @@ static const std::array<item_name_description_t, 344> __item_name_description_da
   { 13583, "Maw Lore"                                    },
   { 13584, "Ember Court"                                 },
   { 13585, "Anima"                                       },
-  { 13586, "The Coldest of Fronts [DNT]"                 },
+  { 13586, "The Coldest of Fronts (DNT)"                 },
+  { 13587, "Show them snow mercy! (DNT)"                 },
+  { 13588, "A Triple Threat (DNT)"                       },
+  { 13589, "It's like double trouble, but better! (DNT)" },
+  { 13590, "Campaign"                                    },
+  { 13591, "Renown"                                      },
+  { 13592, "Queen's Conservatory"                        },
+  { 13593, "Prestige"                                    },
 } };
 
