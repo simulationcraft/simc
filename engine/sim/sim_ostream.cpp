@@ -23,7 +23,7 @@ sim_ostream_t& sim_ostream_t::operator<< (const char* rhs)
 
 void sim_ostream_t::print_simulation_time()
 {
-  _raw.print( "{:.3f}", sim.current_time().total_seconds() );
+  _raw.print( "{:.3f} ", sim.current_time().total_seconds() );
 }
 
 void sim_ostream_t::vprintf( util::string_view format, fmt::printf_args args )
