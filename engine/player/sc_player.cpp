@@ -5069,7 +5069,10 @@ void player_t::reset()
   // Restore default target
   target = default_target;
 
-  sim->print_debug( "{} resets current stats ( reset to initial ): {}", *this, current.to_string() );
+  if ( sim->debug )
+  {
+    sim->print_debug( "{} resets current stats ( reset to initial ): {}", *this, current.to_string() );
+  }
 
   for ( auto& buff : buff_list )
     buff->reset();
