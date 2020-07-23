@@ -12,14 +12,40 @@ namespace
 // ==========================================================================
 
 /* ==========================================================================
-// Battle for Azeroth To-Do
+// Shadowlands To-Do
 // ==========================================================================
+
+  Existing Issues
+  ---------------
 
   * Possibly add per-race Nemesis buffs, if any fight styles are configured in a way it matters
   * Add option for Greater Soul spawns on add demise (% chance?) simulating adds in M+/dungeon style situations
-  * Azerite Traits
-  ** Implement Vengeance traits
-  ** Test all Havoc traits when available
+
+  New Issues
+  ----------
+
+  * Add Immolation Aura baseline
+  * Check all Havoc talents
+  ** Add Burning Hatred
+  ** Add Unbound Chaos
+  ** Remove Fel Mastery
+  ** Add Essence Break
+  ** Remove Dark Slash
+  
+  * Add Fel Devastation baseline
+  * Check all Vengeance talents
+  ** Remove Razor Spikes
+  ** Add Demonic
+  ** Add Infernal Armor
+  ** Remove Flame Crash
+  ** Remove Gluttony
+  ** Add Bulk Extraction
+  
+  * Remap spell data from all the new Rank X subspells
+  * Implement Covenant abilities
+  * Implement Soulbinds
+  * Implement Legendaries
+  * Unrestrained Fury passive
 
 */
 
@@ -1363,7 +1389,7 @@ public:
     if ( p()->azerite.memory_of_lucid_dreams.enabled() && ab::last_resource_cost > 0 )
     {
       resource_e cr = ab::current_resource();
-      if ( cr == RESOURCE_FURY || cr == RESOURCE_PAIN )
+      if ( cr == RESOURCE_FURY )
       {
         if ( p()->rng().roll( p()->options.memory_of_lucid_dreams_proc_chance ) )
         {
@@ -1428,7 +1454,7 @@ public:
 
   void trigger_refund()
   {
-    if ( ab::resource_current == RESOURCE_FURY || ab::resource_current == RESOURCE_PAIN )
+    if ( ab::resource_current == RESOURCE_FURY )
     {
       p()->resource_gain( ab::resource_current, ab::last_resource_cost * 0.80, p()->gain.miss_refund );
     }
@@ -2011,9 +2037,7 @@ struct fel_eruption_t : public demon_hunter_spell_t
   fel_eruption_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "fel_eruption", p, p->talent.fel_eruption, options_str )
   {
-    may_crit         = false;
-    resource_current = p->specialization() == DEMON_HUNTER_HAVOC 
-      ? RESOURCE_FURY : RESOURCE_PAIN;
+    may_crit = false;
   }
 };
 
@@ -3656,7 +3680,7 @@ struct fracture_t : public demon_hunter_attack_t
 
     if ( p()->buff.metamorphosis->check() )
     {
-      ea += p()->spec.metamorphosis_buff->effectN( 9 ).resource( RESOURCE_PAIN );
+      ea += p()->spec.metamorphosis_buff->effectN( 9 ).resource( RESOURCE_FURY );
     }
 
     return ea;
@@ -3696,7 +3720,7 @@ struct shear_t : public demon_hunter_attack_t
 
     if ( p()->buff.metamorphosis->check() )
     {
-      ea += p()->spec.metamorphosis_buff->effectN( 4 ).resource( RESOURCE_PAIN );
+      ea += p()->spec.metamorphosis_buff->effectN( 4 ).resource( RESOURCE_FURY );
     }
 
     return ea;
@@ -4668,7 +4692,7 @@ void demon_hunter_t::init_base_stats()
       resources.base[ RESOURCE_FURY ] = 120;
       break;
     case DEMON_HUNTER_VENGEANCE:
-      resources.base[ RESOURCE_PAIN ] = 100;
+      resources.base[ RESOURCE_FURY ] = 100;
       break;
     default:
       break;
@@ -4722,7 +4746,6 @@ void demon_hunter_t::init_resources( bool force )
   base_t::init_resources( force );
 
   resources.current[ RESOURCE_FURY ] = initial_fury;
-  resources.current[ RESOURCE_PAIN ] = 0;
   expected_max_health = calculate_expected_max_health();
 }
 
@@ -4975,9 +4998,8 @@ resource_e demon_hunter_t::primary_resource() const
   switch (specialization())
   {
     case DEMON_HUNTER_HAVOC:
-      return RESOURCE_FURY;
     case DEMON_HUNTER_VENGEANCE:
-      return RESOURCE_PAIN;
+      return RESOURCE_FURY;
     default:
       return RESOURCE_NONE;
   }
@@ -5234,8 +5256,8 @@ void demon_hunter_t::apl_vengeance()
   apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4)" );
   apl_normal->add_action( this, "Soul Cleave", "if=(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4))" );
   apl_normal->add_action( this, "Soul Cleave", "if=talent.spirit_bomb.enabled&soul_fragments=0" );
-  apl_normal->add_action( this, "Immolation Aura", "if=pain<=90" );
-  apl_normal->add_talent( this, "Felblade", "if=pain<=70" );
+  apl_normal->add_action( this, "Immolation Aura", "if=fury<=90" );
+  apl_normal->add_talent( this, "Felblade", "if=fury<=70" );
   apl_normal->add_talent( this, "Fracture", "if=soul_fragments<=3" );
   apl_normal->add_talent( this, "Fel Devastation" );
   apl_normal->add_action( this, "Sigil of Flame" );
@@ -5710,7 +5732,7 @@ void demon_hunter_t::interrupt()
 double demon_hunter_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
   // Memory of Lucid Dreams
-  if ( ( resource_type == RESOURCE_FURY || resource_type == RESOURCE_PAIN ) &&
+  if ( ( resource_type == RESOURCE_FURY ) &&
        buffs.memory_of_lucid_dreams->up() )
   {
     amount *= 1.0 + buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
