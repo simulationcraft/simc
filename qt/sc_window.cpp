@@ -13,6 +13,7 @@
 #include "sc_WelcomeTab.hpp"
 #include "sc_AddonImportTab.hpp"
 #include "sc_UpdateCheck.hpp"
+#include "dbc/spell_query/spell_data_expr.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 #include "util/git_info.hpp"
 #include "interfaces/sc_http.hpp"
